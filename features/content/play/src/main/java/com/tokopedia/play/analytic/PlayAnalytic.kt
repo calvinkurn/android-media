@@ -1,6 +1,11 @@
 package com.tokopedia.play.analytic
 
 import android.os.Bundle
+import com.tokopedia.content.analytic.BusinessUnit
+import com.tokopedia.content.analytic.CurrentSite
+import com.tokopedia.content.analytic.Event
+import com.tokopedia.content.analytic.EventCategory
+import com.tokopedia.content.analytic.Key
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
 import com.tokopedia.play.view.type.*
@@ -8,7 +13,6 @@ import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
-import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.builder.Tracker
@@ -51,15 +55,15 @@ class PlayAnalytic(
         val durationInSec = TimeUnit.MILLISECONDS.toSeconds(durationInMs)
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
-                KEY_EVENT_ACTION to "leave room",
-                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_LABEL to "$mChannelId - $durationInSec - ${mChannelType.value}",
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId,
-                KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
+                Key.event to Event.clickGroupChat,
+                Key.eventAction to "leave room",
+                Key.eventCategory to EventCategory.groupChatRoom,
+                Key.eventLabel to "$mChannelId - $durationInSec - ${mChannelType.value}",
+                Key.businessUnit to BusinessUnit.play,
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
+                Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
+                Key.userId to userId,
+                Key.isLoggedInStatus to isLoggedIn,
                 KEY_CHANNEL to mChannelName,
                 "duration" to durationInSec.toString()
             )
@@ -69,25 +73,25 @@ class PlayAnalytic(
     fun clickWatchArea(screenOrientation: ScreenOrientation) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
-                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_ACTION to "$KEY_TRACK_CLICK watch area",
-                KEY_EVENT_LABEL to "$mChannelId - ${mChannelType.value} - ${screenOrientation.value}",
-                KEY_SCREEN_NAME to "/$KEY_TRACK_SCREEN_NAME/$mChannelId/${mChannelType.value}",
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_CLIENT_ID to TrackApp.getInstance().gtm.cachedClientIDString,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId,
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                Key.event to Event.clickGroupChat,
+                Key.eventCategory to EventCategory.groupChatRoom,
+                Key.eventAction to "click watch area",
+                Key.eventLabel to "$mChannelId - ${mChannelType.value} - ${screenOrientation.value}",
+                Key.screenName to "/$KEY_TRACK_SCREEN_NAME/$mChannelId/${mChannelType.value}",
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
+                Key.clientId to TrackApp.getInstance().gtm.cachedClientIDString,
+                Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
+                Key.userId to userId,
+                Key.businessUnit to BusinessUnit.play
             )
         )
     }
 
     fun clickPinnedMessage(message: String, appLink: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-            KEY_TRACK_CLICK_GROUP_CHAT,
-            KEY_TRACK_GROUP_CHAT_ROOM,
-            "$KEY_TRACK_CLICK on admin pinned message",
+            Event.clickGroupChat,
+            EventCategory.groupChatRoom,
+            "click on admin pinned message",
             "$mChannelId - $message - $appLink - ${mChannelType.value}"
         )
     }
@@ -96,15 +100,15 @@ class PlayAnalytic(
         val action = if (isLike) "like" else "unlike"
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf<String, String>(
-                KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
-                KEY_EVENT_ACTION to "$KEY_TRACK_CLICK $action",
-                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_LABEL to "$mChannelId - ${mChannelType.value}",
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId,
-                KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
+                Key.event to Event.clickGroupChat,
+                Key.eventAction to "click $action",
+                Key.eventCategory to EventCategory.groupChatRoom,
+                Key.eventLabel to "$mChannelId - ${mChannelType.value}",
+                Key.businessUnit to BusinessUnit.play,
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
+                Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
+                Key.userId to userId,
+                Key.isLoggedInStatus to isLoggedIn,
                 KEY_CHANNEL to mChannelName
             )
         )
@@ -120,8 +124,8 @@ class PlayAnalytic(
 
     private fun errorState(errorMessage: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-            KEY_TRACK_VIEW_GROUP_CHAT,
-            KEY_TRACK_GROUP_CHAT_ROOM,
+            Event.viewGroupChat,
+            EventCategory.groupChatRoom,
             "error state",
             "$mChannelId - $errorMessage - ${mChannelType.value}"
         )
@@ -129,36 +133,36 @@ class PlayAnalytic(
 
     fun clickQuickReply() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-            KEY_TRACK_CLICK_GROUP_CHAT,
-            KEY_TRACK_GROUP_CHAT_ROOM,
-            "$KEY_TRACK_CLICK on quick reply component",
+            Event.clickGroupChat,
+            EventCategory.groupChatRoom,
+            "click on quick reply component",
             mChannelId
         )
     }
 
     fun clickSendChat() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-            KEY_TRACK_CLICK_GROUP_CHAT,
-            KEY_TRACK_GROUP_CHAT_ROOM,
-            "$KEY_TRACK_CLICK on button send",
+            Event.clickGroupChat,
+            EventCategory.groupChatRoom,
+            "click on button send",
             mChannelId
         )
     }
 
     fun clickWatchMode() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-            KEY_TRACK_CLICK_GROUP_CHAT,
-            KEY_TRACK_GROUP_CHAT_ROOM,
-            "$KEY_TRACK_CLICK watch mode option",
+            Event.clickGroupChat,
+            EventCategory.groupChatRoom,
+            "click watch mode option",
             "$mChannelId - ${mChannelType.value}"
         )
     }
 
     fun clickPlayVideo() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-            KEY_TRACK_CLICK_GROUP_CHAT,
-            KEY_TRACK_GROUP_CHAT_ROOM,
-            "$KEY_TRACK_CLICK on play button video",
+            Event.clickGroupChat,
+            EventCategory.groupChatRoom,
+            "click on play button video",
             "$mChannelId - ${mChannelType.value}"
         )
     }
@@ -183,13 +187,13 @@ class PlayAnalytic(
 
         val dataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT, KEY_EVENT_ITEM_LIST)
-            putString(KEY_EVENT_CATEGORY, KEY_TRACK_GROUP_CHAT_ROOM)
-            putString(KEY_EVENT_ACTION, eventAction)
-            putString(KEY_EVENT_LABEL, eventLabel)
-            putString(KEY_CURRENT_SITE, KEY_TRACK_CURRENT_SITE)
-            putString(KEY_SESSION_IRIS, TrackApp.getInstance().gtm.irisSessionId)
-            putString(KEY_USER_ID, userId)
-            putString(KEY_BUSINESS_UNIT, KEY_TRACK_BUSINESS_UNIT)
+            putString(Key.eventCategory, EventCategory.groupChatRoom)
+            putString(Key.eventAction, eventAction)
+            putString(Key.eventLabel, eventLabel)
+            putString(Key.currentSite, CurrentSite.tokopediaMarketplace)
+            putString(Key.sessionIris, TrackApp.getInstance().gtm.irisSessionId)
+            putString(Key.userId, userId)
+            putString(Key.businessUnit, BusinessUnit.play)
             putParcelableArrayList(KEY_EVENT_ITEMS, items)
             putString(KEY_ITEM_LIST, "/groupchat - bottom sheet")
         }
@@ -206,15 +210,15 @@ class PlayAnalytic(
         position: Int
     ) {
         val (eventAction, eventLabel) = when (sectionInfo.config.type) {
-            ProductSectionType.Upcoming -> Pair("$KEY_TRACK_CLICK - product in upcoming section", generateBaseEventLabel(product = product, campaignId = sectionInfo.id))
-            ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - product in ongoing section", generateBaseEventLabel(product = product, campaignId = sectionInfo.id))
+            ProductSectionType.Upcoming -> Pair("click - product in upcoming section", generateBaseEventLabel(product = product, campaignId = sectionInfo.id))
+            ProductSectionType.Active -> Pair("click - product in ongoing section", generateBaseEventLabel(product = product, campaignId = sectionInfo.id))
             else -> Pair("click product in bottom sheet", "$mChannelId - ${product.id} - ${mChannelType.value} - product in bottom sheet - is pinned product ${product.isPinned}")
         }
 
         trackingQueue.putEETracking(
             EventModel(
                 "productClick",
-                KEY_TRACK_GROUP_CHAT_ROOM,
+                EventCategory.groupChatRoom,
                 eventAction,
                 eventLabel
             ),
@@ -245,9 +249,9 @@ class PlayAnalytic(
 
         trackingQueue.putEETracking(
             EventModel(
-                KEY_TRACK_ADD_TO_CART,
-                KEY_TRACK_GROUP_CHAT_ROOM,
-                "$KEY_TRACK_CLICK - $action in varian page in ongoing section",
+                Event.addToCart,
+                EventCategory.groupChatRoom,
+                "click - $action in varian page in ongoing section",
                 "$mChannelId - ${product.id} - ${mChannelType.value} - ${sectionInfo.id}"
             ),
             hashMapOf(
@@ -296,9 +300,9 @@ class PlayAnalytic(
 
     fun clickSeeToasterAfterAtc() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-            KEY_TRACK_CLICK_GROUP_CHAT,
-            KEY_TRACK_GROUP_CHAT_ROOM,
-            "$KEY_TRACK_CLICK lihat in message ticker",
+            Event.clickGroupChat,
+            EventCategory.groupChatRoom,
+            "click lihat in message ticker",
             "$mChannelId - ${mChannelType.value}"
         )
     }
@@ -309,16 +313,16 @@ class PlayAnalytic(
     ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                KEY_EVENT to KEY_TRACK_VIEW_GROUP_CHAT,
-                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_ACTION to "buffer",
-                KEY_EVENT_LABEL to "$bufferCount - $bufferDurationInSecond - $mChannelId - ${mChannelType.value}",
-                KEY_SCREEN_NAME to "/$KEY_TRACK_SCREEN_NAME/$mChannelId/${mChannelType.value}",
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_CLIENT_ID to TrackApp.getInstance().gtm.cachedClientIDString,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId,
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                Key.event to Event.viewGroupChat,
+                Key.eventCategory to EventCategory.groupChatRoom,
+                Key.eventAction to "buffer",
+                Key.eventLabel to "$bufferCount - $bufferDurationInSecond - $mChannelId - ${mChannelType.value}",
+                Key.screenName to "/$KEY_TRACK_SCREEN_NAME/$mChannelId/${mChannelType.value}",
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
+                Key.clientId to TrackApp.getInstance().gtm.cachedClientIDString,
+                Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
+                Key.userId to userId,
+                Key.businessUnit to BusinessUnit.play
             )
         )
     }
@@ -329,16 +333,16 @@ class PlayAnalytic(
     fun clickCtaFullScreenFromPortraitToLandscape() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
-                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_ACTION to "$KEY_TRACK_CLICK full screen to landscape",
-                KEY_EVENT_LABEL to "$mChannelId - ${mChannelType.value}",
-                KEY_SCREEN_NAME to "/$KEY_TRACK_SCREEN_NAME/$mChannelId/${mChannelType.value}",
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_CLIENT_ID to TrackApp.getInstance().gtm.cachedClientIDString,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId,
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                Key.event to Event.clickGroupChat,
+                Key.eventCategory to EventCategory.groupChatRoom,
+                Key.eventAction to "click full screen to landscape",
+                Key.eventLabel to "$mChannelId - ${mChannelType.value}",
+                Key.screenName to "/$KEY_TRACK_SCREEN_NAME/$mChannelId/${mChannelType.value}",
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
+                Key.clientId to TrackApp.getInstance().gtm.cachedClientIDString,
+                Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
+                Key.userId to userId,
+                Key.businessUnit to BusinessUnit.play
             )
         )
     }
@@ -349,16 +353,16 @@ class PlayAnalytic(
     fun userTiltFromPortraitToLandscape() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
-                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_ACTION to "rotate phone to full screen",
-                KEY_EVENT_LABEL to "$mChannelId - ${mChannelType.value}",
-                KEY_SCREEN_NAME to "/$KEY_TRACK_SCREEN_NAME/$mChannelId/${mChannelType.value}",
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_CLIENT_ID to TrackApp.getInstance().gtm.cachedClientIDString,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId,
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                Key.event to Event.clickGroupChat,
+                Key.eventCategory to EventCategory.groupChatRoom,
+                Key.eventAction to "rotate phone to full screen",
+                Key.eventLabel to "$mChannelId - ${mChannelType.value}",
+                Key.screenName to "/$KEY_TRACK_SCREEN_NAME/$mChannelId/${mChannelType.value}",
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
+                Key.clientId to TrackApp.getInstance().gtm.cachedClientIDString,
+                Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
+                Key.userId to userId,
+                Key.businessUnit to BusinessUnit.play
             )
         )
     }
@@ -369,7 +373,7 @@ class PlayAnalytic(
         trackingQueue.putEETracking(
             EventModel(
                 "productView",
-                KEY_TRACK_GROUP_CHAT_ROOM,
+                EventCategory.groupChatRoom,
                 "view on featured product",
                 "$mChannelId - ${products.first().first.id} - ${mChannelType.value} - featured product tagging"
             ),
@@ -384,10 +388,10 @@ class PlayAnalytic(
                 )
             ),
             hashMapOf(
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId,
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
+                Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
+                Key.userId to userId,
+                Key.businessUnit to BusinessUnit.play
             )
         )
     }
@@ -396,7 +400,7 @@ class PlayAnalytic(
         trackingQueue.putEETracking(
             EventModel(
                 "productClick",
-                KEY_TRACK_GROUP_CHAT_ROOM,
+                EventCategory.groupChatRoom,
                 "click featured product tagging",
                 "$mChannelId - ${featuredProduct.id} - ${mChannelType.value} - featured product tagging"
             ),
@@ -409,12 +413,12 @@ class PlayAnalytic(
                 )
             ),
             hashMapOf(
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                Key.businessUnit to BusinessUnit.play,
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
                 KEY_ITEM_LIST to "/groupchat - featured product",
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId,
-                KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
+                Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
+                Key.userId to userId,
+                Key.isLoggedInStatus to isLoggedIn,
                 KEY_PRODUCT_ID to featuredProduct.id,
                 KEY_PRODUCT_NAME to featuredProduct.title,
                 KEY_PRODUCT_URL to featuredProduct.applink.toString(),
@@ -426,14 +430,14 @@ class PlayAnalytic(
     fun impressionPrivateVoucher(voucher: PlayVoucherUiModel.Merchant) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                KEY_EVENT to KEY_TRACK_VIEW_GROUP_CHAT_IRIS,
-                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_ACTION to "impression on private voucher",
-                KEY_EVENT_LABEL to "$mChannelId - ${voucher.id} - ${mChannelType.value}",
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId,
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                Key.event to Event.viewGroupChatIris,
+                Key.eventCategory to EventCategory.groupChatRoom,
+                Key.eventAction to "impression on private voucher",
+                Key.eventLabel to "$mChannelId - ${voucher.id} - ${mChannelType.value}",
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
+                Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
+                Key.userId to userId,
+                Key.businessUnit to BusinessUnit.play
             )
         )
     }
@@ -441,14 +445,14 @@ class PlayAnalytic(
     fun clickFeaturedProductSeeMore() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
-                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_ACTION to "click product pinned message",
-                KEY_EVENT_LABEL to "$mChannelId - ${mChannelType.value}",
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId,
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                Key.event to Event.clickGroupChat,
+                Key.eventCategory to EventCategory.groupChatRoom,
+                Key.eventAction to "click product pinned message",
+                Key.eventLabel to "$mChannelId - ${mChannelType.value}",
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
+                Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
+                Key.userId to userId,
+                Key.businessUnit to BusinessUnit.play
             )
         )
     }
@@ -458,14 +462,14 @@ class PlayAnalytic(
     fun connectCast(isSuccess: Boolean, id: String = mChannelId, type: PlayChannelType = mChannelType) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                KEY_EVENT to KEY_TRACK_VIEW_GROUP_CHAT_IRIS,
-                KEY_EVENT_ACTION to "chromecast connecting state",
-                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_LABEL to "$id - ${type.value} - ${if (isSuccess) "success" else "failed"}",
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId
+                Key.event to Event.viewGroupChatIris,
+                Key.eventAction to "chromecast connecting state",
+                Key.eventCategory to EventCategory.groupChatRoom,
+                Key.eventLabel to "$id - ${type.value} - ${if (isSuccess) "success" else "failed"}",
+                Key.businessUnit to BusinessUnit.play,
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
+                Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
+                Key.userId to userId
             )
         )
     }
@@ -477,14 +481,14 @@ class PlayAnalytic(
          */
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                KEY_EVENT to KEY_TRACK_VIEW_GROUP_CHAT_IRIS,
-                KEY_EVENT_ACTION to "chromecast disconnected",
-                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_LABEL to "$channelId - ${mChannelType.value} - $duration",
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId
+                Key.event to Event.viewGroupChatIris,
+                Key.eventAction to "chromecast disconnected",
+                Key.eventCategory to EventCategory.groupChatRoom,
+                Key.eventLabel to "$channelId - ${mChannelType.value} - $duration",
+                Key.businessUnit to BusinessUnit.play,
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
+                Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
+                Key.userId to userId
             )
         )
     }
@@ -561,18 +565,18 @@ class PlayAnalytic(
 
     private fun clickBeliButtonProductWithVariant(productId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-            KEY_TRACK_CLICK_GROUP_CHAT,
-            KEY_TRACK_GROUP_CHAT_ROOM,
-            "$KEY_TRACK_CLICK buy in bottom sheet with varian",
+            Event.clickGroupChat,
+            EventCategory.groupChatRoom,
+            "click buy in bottom sheet with varian",
             "$mChannelId - $productId - ${mChannelType.value}"
         )
     }
 
     private fun clickAtcButtonProductWithVariant(productId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-            KEY_TRACK_CLICK_GROUP_CHAT,
-            KEY_TRACK_GROUP_CHAT_ROOM,
-            "$KEY_TRACK_CLICK atc in bottom sheet with varian",
+            Event.clickGroupChat,
+            EventCategory.groupChatRoom,
+            "click atc in bottom sheet with varian",
             "$mChannelId - $productId - ${mChannelType.value}"
         )
     }
@@ -585,13 +589,13 @@ class PlayAnalytic(
         shopInfo: PlayPartnerInfo
     ) {
         val (eventAction, eventLabel) = when (sectionInfo.config.type) {
-            ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - buy in ongoing section", "${generateBaseEventLabel(product = product, campaignId = sectionInfo.id)} - beli langsung ${action == ProductAction.OCC}")
+            ProductSectionType.Active -> Pair("click - buy in ongoing section", "${generateBaseEventLabel(product = product, campaignId = sectionInfo.id)} - beli langsung ${action == ProductAction.OCC}")
             else -> Pair("click buy in bottom sheet", "$mChannelId - ${product.id} - ${mChannelType.value} - is pinned product ${product.isPinned} - beli langsung ${action == ProductAction.OCC}")
         }
         trackingQueue.putEETracking(
             EventModel(
-                KEY_TRACK_ADD_TO_CART,
-                KEY_TRACK_GROUP_CHAT_ROOM,
+                Event.addToCart,
+                EventCategory.groupChatRoom,
                 eventAction,
                 eventLabel
             ),
@@ -615,13 +619,13 @@ class PlayAnalytic(
         shopInfo: PlayPartnerInfo
     ) {
         val (eventAction, eventLabel) = when (sectionInfo.config.type) {
-            ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - atc in ongoing section", generateBaseEventLabel(product = product, campaignId = sectionInfo.id))
-            else -> Pair("$KEY_TRACK_CLICK atc in bottom sheet", "$mChannelId - ${product.id} - ${mChannelType.value} - is pinned product ${product.isPinned}")
+            ProductSectionType.Active -> Pair("click - atc in ongoing section", generateBaseEventLabel(product = product, campaignId = sectionInfo.id))
+            else -> Pair("click atc in bottom sheet", "$mChannelId - ${product.id} - ${mChannelType.value} - is pinned product ${product.isPinned}")
         }
         trackingQueue.putEETracking(
             EventModel(
-                KEY_TRACK_ADD_TO_CART,
-                KEY_TRACK_GROUP_CHAT_ROOM,
+                Event.addToCart,
+                EventCategory.groupChatRoom,
                 eventAction,
                 eventLabel
             ),
@@ -645,9 +649,9 @@ class PlayAnalytic(
     ) {
         trackingQueue.putEETracking(
             EventModel(
-                KEY_TRACK_ADD_TO_CART,
-                KEY_TRACK_GROUP_CHAT_ROOM,
-                "$KEY_TRACK_CLICK atc in varian page",
+                Event.addToCart,
+                EventCategory.groupChatRoom,
+                "click atc in varian page",
                 "$mChannelId - ${product.id} - ${mChannelType.value}"
             ),
             hashMapOf(
@@ -659,11 +663,11 @@ class PlayAnalytic(
                 )
             ),
             hashMapOf(
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId,
-                KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
+                Key.businessUnit to BusinessUnit.play,
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
+                Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
+                Key.userId to userId,
+                Key.isLoggedInStatus to isLoggedIn,
                 KEY_PRODUCT_ID to product.id,
                 KEY_PRODUCT_NAME to product.title,
                 KEY_PRODUCT_URL to product.applink.toString(),
@@ -680,9 +684,9 @@ class PlayAnalytic(
     ) {
         trackingQueue.putEETracking(
             EventModel(
-                KEY_TRACK_ADD_TO_CART,
-                KEY_TRACK_GROUP_CHAT_ROOM,
-                "$KEY_TRACK_CLICK beli in varian page",
+                Event.addToCart,
+                EventCategory.groupChatRoom,
+                "click beli in varian page",
                 "$mChannelId - ${product.id} - ${mChannelType.value}"
             ),
             hashMapOf(
@@ -694,11 +698,11 @@ class PlayAnalytic(
                 )
             ),
             hashMapOf(
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId,
-                KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
+                Key.businessUnit to BusinessUnit.play,
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
+                Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
+                Key.userId to userId,
+                Key.isLoggedInStatus to isLoggedIn,
                 KEY_PRODUCT_ID to product.id,
                 KEY_PRODUCT_NAME to product.title,
                 KEY_PRODUCT_URL to product.applink.toString(),
@@ -710,14 +714,14 @@ class PlayAnalytic(
     fun clickKebabMenu() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
-                KEY_EVENT_ACTION to "$KEY_TRACK_CLICK - three dots menu",
-                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_LABEL to "$mChannelId - $userId",
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId
+                Key.event to Event.clickGroupChat,
+                Key.eventAction to "click - three dots menu",
+                Key.eventCategory to EventCategory.groupChatRoom,
+                Key.eventLabel to "$mChannelId - $userId",
+                Key.businessUnit to BusinessUnit.play,
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
+                Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
+                Key.userId to userId
             )
         )
     }
@@ -725,14 +729,14 @@ class PlayAnalytic(
     fun clickUserReport() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
-                KEY_EVENT_ACTION to "$KEY_TRACK_CLICK - laporkan video",
-                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_LABEL to "$mChannelId - $userId",
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId
+                Key.event to Event.clickGroupChat,
+                Key.eventAction to "click - laporkan video",
+                Key.eventCategory to EventCategory.groupChatRoom,
+                Key.eventLabel to "$mChannelId - $userId",
+                Key.businessUnit to BusinessUnit.play,
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
+                Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
+                Key.userId to userId
             )
         )
     }
@@ -741,14 +745,14 @@ class PlayAnalytic(
         val useValue = if (isUse) "use" else "not use"
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
-                KEY_EVENT_ACTION to "$KEY_TRACK_CLICK - laporkan on bottom sheet",
-                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_LABEL to "$mChannelId - $userId - $useValue",
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId
+                Key.event to Event.clickGroupChat,
+                Key.eventAction to "click - laporkan on bottom sheet",
+                Key.eventCategory to EventCategory.groupChatRoom,
+                Key.eventLabel to "$mChannelId - $userId - $useValue",
+                Key.businessUnit to BusinessUnit.play,
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
+                Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
+                Key.userId to userId
             )
         )
     }
@@ -756,33 +760,33 @@ class PlayAnalytic(
     fun clickUserReportSubmissionDialogSubmit() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
-                KEY_EVENT_ACTION to "$KEY_TRACK_CLICK - laporkan on pop up",
-                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_LABEL to "$mChannelId - $userId",
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId
+                Key.event to Event.clickGroupChat,
+                Key.eventAction to "click - laporkan on pop up",
+                Key.eventCategory to EventCategory.groupChatRoom,
+                Key.eventLabel to "$mChannelId - $userId",
+                Key.businessUnit to BusinessUnit.play,
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
+                Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
+                Key.userId to userId
             )
         )
     }
 
     fun sendScreenArchived(channelId: String) {
-        val customDimension = mapOf(KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE, KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT, KEY_TRACKER_ID to "40353")
+        val customDimension = mapOf(Key.currentSite to CurrentSite.tokopediaMarketplace, Key.businessUnit to BusinessUnit.play, Key.trackerId to "40353")
         TrackApp.getInstance().gtm.sendScreenAuthenticated("/$KEY_TRACK_SCREEN_NAME/$channelId/archive delete channel", customDimension)
     }
 
     fun clickCtaArchived(channelId: String) {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_CONTENT)
+            .setEvent(Event.clickContent)
             .setEventAction("click - to tokopedia play")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventCategory(EventCategory.groupChatRoom)
             .setEventLabel(channelId)
-            .setCustomProperty(KEY_TRACKER_ID, "40354")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .setCustomProperty(KEY_SESSION_IRIS, TrackApp.getInstance().gtm.irisSessionId)
+            .setCustomProperty(Key.trackerId, "40354")
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.sessionIris, TrackApp.getInstance().gtm.irisSessionId)
             .setUserId(userId)
             .build()
             .send()
@@ -790,14 +794,14 @@ class PlayAnalytic(
 
     fun clickExitArchived(channelId: String) {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_CONTENT)
+            .setEvent(Event.clickContent)
             .setEventAction("click - exit archive page")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventCategory(EventCategory.groupChatRoom)
             .setEventLabel(channelId)
-            .setCustomProperty(KEY_TRACKER_ID, "40355")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .setCustomProperty(KEY_SESSION_IRIS, TrackApp.getInstance().gtm.irisSessionId)
+            .setCustomProperty(Key.trackerId, "40355")
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.sessionIris, TrackApp.getInstance().gtm.irisSessionId)
             .setUserId(userId)
             .build()
             .send()
@@ -805,12 +809,12 @@ class PlayAnalytic(
 
     fun openScreen(channelId: String, channelType: PlayChannelType) {
         Tracker.Builder()
-            .setEvent("openScreen")
-            .setCustomProperty(ProductTrackingConstant.Tracking.KEY_TRACKER_ID, "13881")
-            .setBusinessUnit(VAL_BUSINESS_UNIT)
-            .setCurrentSite(VAL_CURRENT_SITE)
-            .setCustomProperty(KEY_IS_LOGGED_IN_STATUS, isLoggedIn)
-            .setCustomProperty(KEY_SCREEN_NAME, "/group-chat-room/$channelId/${channelType.value}/is coachmark true")
+            .setEvent(Event.openScreen)
+            .setCustomProperty(Key.trackerId, "13881")
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.isLoggedInStatus, isLoggedIn)
+            .setCustomProperty(Key.screenName, "/group-chat-room/$channelId/${channelType.value}/is coachmark true")
             .setUserId(userId)
             .build()
             .send()
@@ -818,14 +822,14 @@ class PlayAnalytic(
 
     fun clickCommentIcon(partnerId: String) {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_CONTENT)
+            .setEvent(Event.clickContent)
             .setEventAction("click - comment button")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventCategory(EventCategory.groupChatRoom)
             .setEventLabel("$channelId - $partnerId")
-            .setCustomProperty(KEY_TRACKER_ID, "42591")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(VAL_CURRENT_SITE)
-            .setCustomProperty(KEY_SESSION_IRIS, TrackApp.getInstance().gtm.irisSessionId)
+            .setCustomProperty(Key.trackerId, "42591")
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.sessionIris, TrackApp.getInstance().gtm.irisSessionId)
             .setUserId(userId)
             .build()
             .send()
@@ -842,15 +846,15 @@ class PlayAnalytic(
 
     private fun generateBaseTracking(product: PlayProductUiModel.Product, type: ProductSectionType): HashMap<String, Any> {
         val base: HashMap<String, Any> = hashMapOf(
-            KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-            KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-            KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-            KEY_USER_ID to userId
+            Key.businessUnit to BusinessUnit.play,
+            Key.currentSite to CurrentSite.tokopediaMarketplace,
+            Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
+            Key.userId to userId
         )
         if (type == ProductSectionType.Other) {
             base.putAll(
                 mapOf(
-                    KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
+                    Key.isLoggedInStatus to isLoggedIn,
                     KEY_PRODUCT_ID to product.id,
                     KEY_PRODUCT_NAME to product.title,
                     KEY_PRODUCT_URL to product.applink.toString(),
@@ -865,14 +869,14 @@ class PlayAnalytic(
     // Tracker ID: 42864
     fun clickCartFromSheet () {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_CONTENT)
+            .setEvent(Event.clickContent)
             .setEventAction("click - cart button bottom sheet")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventCategory(EventCategory.groupChatRoom)
             .setEventLabel("$channelId - ${mChannelType.value}")
-            .setCustomProperty(KEY_TRACKER_ID, "42864")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .setCustomProperty(KEY_SESSION_IRIS, TrackApp.getInstance().gtm.irisSessionId)
+            .setCustomProperty(Key.trackerId, "42864")
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.sessionIris, TrackApp.getInstance().gtm.irisSessionId)
             .setUserId(userId)
             .build()
             .send()
@@ -883,51 +887,29 @@ class PlayAnalytic(
     // Tracker ID: 42863
     fun impressCartFromBottomSheet () {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_VIEW_CONTENT_IRIS)
+            .setEvent(Event.viewContentIris)
             .setEventAction("view - cart button bottom sheet")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventCategory(EventCategory.groupChatRoom)
             .setEventLabel("$channelId - ${mChannelType.value}")
-            .setCustomProperty(KEY_TRACKER_ID, "42863")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .setCustomProperty(KEY_SESSION_IRIS, TrackApp.getInstance().gtm.irisSessionId)
+            .setCustomProperty(Key.trackerId, "42863")
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.sessionIris, TrackApp.getInstance().gtm.irisSessionId)
             .setUserId(userId)
             .build()
             .send()
     }
 
     companion object {
-        private const val KEY_EVENT = "event"
-        private const val KEY_EVENT_CATEGORY = "eventCategory"
-        private const val KEY_EVENT_ACTION = "eventAction"
-        private const val KEY_EVENT_LABEL = "eventLabel"
-        private const val KEY_SCREEN_NAME = "screenName"
-        private const val KEY_CURRENT_SITE = "currentSite"
-        private const val KEY_CLIENT_ID = "clientId"
-        private const val KEY_SESSION_IRIS = "sessionIris"
-        private const val KEY_USER_ID = "userId"
-        private const val KEY_BUSINESS_UNIT = "businessUnit"
-        private const val KEY_IS_LOGGED_IN_STATUS = "isLoggedInStatus"
         private const val KEY_CHANNEL = "channel"
         private const val KEY_PRODUCT_ID = "productId"
         private const val KEY_PRODUCT_NAME = "productName"
         private const val KEY_PRODUCT_URL = "productUrl"
         private const val KEY_ITEM_LIST = "item_list"
         private const val KEY_EVENT_ITEM_LIST = "view_item_list"
-        private const val KEY_TRACKER_ID = "trackerId"
         private const val KEY_EVENT_ITEMS = "items"
 
         private const val KEY_TRACK_SCREEN_NAME = "group-chat-room"
-        private const val KEY_TRACK_ADD_TO_CART = "addToCart"
-        private const val KEY_TRACK_CLICK_GROUP_CHAT = "clickGroupChat"
-        private const val KEY_TRACK_VIEW_GROUP_CHAT = "viewGroupChat"
-        private const val KEY_TRACK_VIEW_GROUP_CHAT_IRIS = "viewGroupChatIris"
-        private const val KEY_TRACK_CURRENT_SITE = "tokopediamarketplace"
-        private const val KEY_TRACK_BUSINESS_UNIT = "play"
-
-        private const val KEY_TRACK_CLICK = "click"
-        private const val KEY_TRACK_CLICK_CONTENT = "clickContent"
-        private const val KEY_TRACK_GROUP_CHAT_ROOM = "groupchat room"
 
         private const val ERR_STATE_VIDEO = "Video Player"
         private const val ERR_STATE_GLOBAL = "Global Error"
