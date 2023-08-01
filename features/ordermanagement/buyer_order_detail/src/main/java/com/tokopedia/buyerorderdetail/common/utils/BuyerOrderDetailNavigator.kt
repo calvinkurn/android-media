@@ -77,7 +77,7 @@ class BuyerOrderDetailNavigator(
         applyTransition()
     }
 
-    fun goToTrackShipmentPage(orderId: String, trackingUrl: String) {
+    fun goToTrackShipmentPage(orderId: String, trackingUrl: String, txId: String, groupType: String) {
         val decodedUrl = if (trackingUrl.startsWith(PREFIX_HTTPS)) {
             trackingUrl
         } else {
@@ -85,6 +85,8 @@ class BuyerOrderDetailNavigator(
         }
         val appLink = Uri.parse(ApplinkConst.ORDER_TRACKING).buildUpon()
             .appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, decodedUrl)
+            .appendQueryParameter(ApplinkConst.Query.TX_ID, txId)
+            .appendQueryParameter(ApplinkConst.Query.GROUP_TYPE, groupType)
             .build()
             .toString()
         val intent = RouteManager.getIntent(activity, appLink, orderId)

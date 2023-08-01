@@ -171,7 +171,9 @@ class BuyerOrderDetailStickyActionButtonHandler(
                 val newUrl = button.url.substringAfter("url=", "")
                 navigator.goToTrackShipmentPage(
                     uiState.orderStatusUiState.data.orderStatusHeaderUiModel.orderId,
-                    newUrl
+                    newUrl,
+                    uiState.shipmentInfoUiState.data.owocInfoUiModel?.txId.orEmpty(),
+                    uiState.shipmentInfoUiState.data.owocInfoUiModel?.groupType.orEmpty()
                 )
             }
         }
