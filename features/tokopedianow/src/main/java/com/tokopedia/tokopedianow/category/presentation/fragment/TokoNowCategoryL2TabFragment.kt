@@ -141,11 +141,15 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
     }
 
     fun loadMore() {
-        viewModel.loadMore()
+        if(::viewModelFactory.isInitialized) {
+            viewModel.loadMore()
+        }
     }
 
     fun handleOnResume() {
-        viewModel.onResume()
+        if(::viewModelFactory.isInitialized) {
+            viewModel.onResume()
+        }
     }
 
     private fun observeLiveData() {
