@@ -850,7 +850,7 @@ public interface ApplinkConst {
         String IS_FROM_TOKOFOOD_POST_PURCHASE = "isFromTokoFoodPostPurchase";
     }
 
-    interface AppNotifSetting{
-        String DEVICE_APP_NOTIF_SETTINGS_PAGE = "device-level-navigation";
+    interface AppNotifSetting {
+        String DEVICE_APP_NOTIF_SETTINGS_PAGE = "";
     }
 }
