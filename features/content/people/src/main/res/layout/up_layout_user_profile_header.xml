@@ -273,8 +273,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         app:backgroundTint="@color/Unify_GN500"
-        app:fbType="circle"
-        app:srcCompat="@drawable/ic_feed_post_plus" />
+        app:fbType="circle"/>
 
     <com.tokopedia.feedcomponent.view.custom.FeedFloatingButton
         android:id="@+id/fab_user_profile"
