@@ -230,7 +230,9 @@ class ThanksPageDataViewModel @Inject constructor(
         if (widgetOrder.isEmpty()) {
             _bottomContentVisitableList.value = visitableList
         } else {
-            _bottomContentVisitableList.value = visitableList.sortedBy {
+            _bottomContentVisitableList.value = visitableList.filter {
+                widgetOrder.contains((it as WidgetTag).tag)
+            }.sortedBy {
                 widgetOrder.indexOf((it as WidgetTag).tag)
             }
         }
