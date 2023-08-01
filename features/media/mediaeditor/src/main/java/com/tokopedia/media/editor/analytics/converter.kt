@@ -11,7 +11,7 @@ import com.tokopedia.media.editor.data.entity.AddTextToolId
 import com.tokopedia.picker.common.types.EditorToolType
 
 // for analytics purpose
-fun getToolEditorText(editorToolType: Int): Int {
+fun getToolEditorTextAnalytics(editorToolType: Int): Int {
     return when (editorToolType) {
         EditorToolType.BRIGHTNESS -> R.string.tracker_tool_name_brightness
         EditorToolType.CONTRAST -> R.string.tracker_tool_name_contrast
@@ -21,6 +21,19 @@ fun getToolEditorText(editorToolType: Int): Int {
         EditorToolType.ADD_LOGO -> R.string.tracker_tool_name_add_logo
         EditorToolType.ADD_TEXT -> R.string.tracker_tool_name_add_text
         else -> R.string.tracker_tool_name_remove_bg
+    }
+}
+
+fun getToolEditorText(editorToolType: Int): Int {
+    return when (editorToolType) {
+        EditorToolType.BRIGHTNESS -> R.string.editor_tool_brightness
+        EditorToolType.CONTRAST -> R.string.editor_tool_contrast
+        EditorToolType.WATERMARK -> R.string.editor_tool_watermark
+        EditorToolType.ROTATE -> R.string.editor_tool_rotate
+        EditorToolType.CROP -> R.string.editor_tool_crop
+        EditorToolType.ADD_LOGO -> R.string.editor_tool_add_logo
+        EditorToolType.ADD_TEXT -> R.string.editor_tool_add_text
+        else -> R.string.editor_tool_remove_background
     }
 }
 

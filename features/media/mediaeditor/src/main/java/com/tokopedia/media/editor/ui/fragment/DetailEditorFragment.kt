@@ -31,6 +31,7 @@ import com.tokopedia.media.editor.analytics.addTextToText
 import com.tokopedia.media.editor.analytics.cropRatioToText
 import com.tokopedia.media.editor.analytics.editordetail.EditorDetailAnalytics
 import com.tokopedia.media.editor.analytics.getToolEditorText
+import com.tokopedia.media.editor.analytics.getToolEditorTextAnalytics
 import com.tokopedia.media.editor.analytics.removeBackgroundToText
 import com.tokopedia.media.editor.analytics.watermarkToText
 import com.tokopedia.media.editor.R as editorR
@@ -1208,7 +1209,7 @@ class DetailEditorFragment @Inject constructor(
             } ?: ""
 
             val currentEditorText =
-                requireContext().getText(getToolEditorText(data.editorToolType)).toString()
+                requireContext().getText(getToolEditorTextAnalytics(data.editorToolType)).toString()
             editorDetailAnalytics.clickSave(
                 data.editorToolType,
                 currentEditorText,
