@@ -3,6 +3,9 @@ package com.tokopedia.editor.ui.main
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.editor.data.repository.NavigationToolRepository
+import com.tokopedia.editor.ui.model.EditorModel
+import com.tokopedia.editor.ui.model.ImageModel
+import com.tokopedia.editor.ui.model.VideoModel
 import com.tokopedia.picker.common.UniversalEditorParam
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,17 +19,18 @@ class MainEditorViewModel @Inject constructor(
     private val paramFetcher: EditorParamFetcher
 ) : ViewModel() {
 
-    private val _event = MutableSharedFlow<MainEditorEvent>(replay = 50)
+    private var _event = MutableSharedFlow<MainEditorEvent>(replay = 50)
 
-    private val _state = MutableStateFlow(MainEditorUiModel())
+    private var _state = MutableStateFlow(MainEditorUiModel())
     val state = _state.asStateFlow()
 
     init {
         viewModelScope.launch {
             _event.collect { event ->
                 when (event) {
-                    is MainEditorEvent.SetParam -> {
+                    is MainEditorEvent.SetupView -> {
                         setParam(event.param)
+                        initEditorModel(event.param)
                         setAction(MainEditorEvent.GetNavigationTool)
                     }
                     is MainEditorEvent.GetNavigationTool -> {
@@ -39,6 +43,20 @@ class MainEditorViewModel @Inject constructor(
 
     fun setAction(action: MainEditorEvent) {
         _event.tryEmit(action)
+    }
+
+    private fun initEditorModel(param: UniversalEditorParam) {
+        val file = param.firstFile
+
+        val model = if (file.isImage()) {
+            EditorModel.createImage(ImageModel())
+        } else {
+            EditorModel.createVideo(VideoModel())
+        }
+
+        _state.update {
+            it.copy(model = model)
+        }
     }
 
     private fun getNavigationTool() {

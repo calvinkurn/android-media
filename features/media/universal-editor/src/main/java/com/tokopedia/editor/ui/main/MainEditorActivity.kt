@@ -3,6 +3,7 @@ package com.tokopedia.editor.ui.main
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentFactory
@@ -14,12 +15,14 @@ import com.tokopedia.editor.ui.EditorFragmentProvider
 import com.tokopedia.editor.ui.EditorFragmentProviderImpl
 import com.tokopedia.editor.ui.main.component.NavigationToolUiComponent
 import com.tokopedia.editor.ui.main.component.PagerContainerUiComponent
+import com.tokopedia.editor.ui.text.InputTextActivity
 import com.tokopedia.picker.common.EXTRA_UNIVERSAL_EDITOR_PARAM
 import com.tokopedia.picker.common.RESULT_UNIVERSAL_EDITOR
 import com.tokopedia.picker.common.UniversalEditorParam
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
 import com.tokopedia.picker.common.component.ToolbarTheme
+import com.tokopedia.picker.common.types.ToolType
 import javax.inject.Inject
 
 /**
@@ -36,8 +39,11 @@ import javax.inject.Inject
  */
 open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listener {
 
-    @Inject lateinit var fragmentFactory: FragmentFactory
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var fragmentFactory: FragmentFactory
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val toolbar by uiComponent {
         NavToolbarComponent(
@@ -57,8 +63,15 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
 
     private val navigationTool by uiComponent {
         NavigationToolUiComponent(
-            parent = it
+            parent = it,
+            listener = ::onToolClicked
         )
+    }
+
+    private val inputTextIntent = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        // TODO
     }
 
     private val viewModel: MainEditorViewModel by viewModels { viewModelFactory }
@@ -88,32 +101,45 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
         finish()
     }
 
+    @Suppress("DEPRECATION")
     private fun setDataParam() {
         val param = intent?.getParcelableExtra<UniversalEditorParam>(
             EXTRA_UNIVERSAL_EDITOR_PARAM
         ) ?: error("Please provide the universal media editor parameter.")
 
-        viewModel.setAction(MainEditorEvent.SetParam(param))
+        viewModel.setAction(MainEditorEvent.SetupView(param))
     }
 
     private fun initObserver() {
         lifecycleScope.launchWhenCreated {
             viewModel.state.collect {
-                initView(it.param)
-
-                // Navigation tool
-                navigationTool.setupView(it.tools)
+                initView(it)
             }
         }
     }
 
-    private fun initView(param: UniversalEditorParam) {
-        pagerContainer.setupView(param)
-        setupToolbar(param)
+    private fun initView(model: MainEditorUiModel) {
+        setupToolbar(model.param)
+        pagerContainer.setupView(model.param)
+        navigationTool.setupView(model.tools)
+    }
+
+    private fun onToolClicked(@ToolType type: Int) {
+        when (type) {
+            ToolType.TEXT -> {
+                val intent = InputTextActivity.create(this)
+                inputTextIntent.launch(intent)
+            }
+            ToolType.PLACEMENT -> {}
+            ToolType.AUDIO_MUTE -> {}
+            ToolType.TRIM -> {}
+            else -> Unit
+        }
     }
 
     private fun setupToolbar(param: UniversalEditorParam) {
         toolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
+        toolbar.showContinueButtonAs(true)
         toolbar.setTitle(getString(param.headerTitle))
         toolbar.setContinueTitle(getString(param.proceedButtonText))
     }

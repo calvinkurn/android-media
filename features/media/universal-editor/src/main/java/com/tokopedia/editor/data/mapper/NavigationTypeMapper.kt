@@ -7,29 +7,33 @@ import com.tokopedia.picker.common.types.ToolType
 
 object NavigationTypeMapper {
 
-    operator fun invoke(@ToolType type: Int): Pair<Int, Int> {
+    operator fun invoke(@ToolType type: Int): Triple<Int, Int, Int> {
         return when (type) {
-            ToolType.TEXT -> Pair(
+            ToolType.TEXT -> Triple(
+                ToolType.TEXT,
                 R.string.universal_editor_nav_tool_text,
                 IconUnify.TEXT
             )
-            ToolType.PLACEMENT -> Pair(
+            ToolType.PLACEMENT -> Triple(
+                ToolType.PLACEMENT,
                 R.string.universal_editor_nav_tool_placement,
                 IconUnify.CROP
             )
-            ToolType.AUDIO_MUTE -> Pair(
+            ToolType.AUDIO_MUTE -> Triple(
+                ToolType.AUDIO_MUTE,
                 R.string.universal_editor_nav_tool_audio_mute,
                 IconUnify.VOLUME_MUTE
             )
-            ToolType.TRIM -> Pair(
+            ToolType.TRIM -> Triple(
+                ToolType.TRIM,
                 R.string.universal_editor_nav_tool_trim,
                 IconUnify.TRIM
             )
-            else -> Pair(0, 0)
+            else -> Triple(0, 0, 0)
         }
     }
 
-    fun Pair<Int, Int>.to(invoke: (Int) -> String): NavigationTool {
-        return NavigationTool(invoke(first), second)
+    fun Triple<Int, Int, Int>.to(invoke: (Int) -> String): NavigationTool {
+        return NavigationTool(first, invoke(second), third)
     }
 }
