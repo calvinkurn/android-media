@@ -284,10 +284,16 @@ class FeedFragment :
     private val feedFollowRecommendationListener = object : FeedFollowRecommendationListener {
 
         override fun onImpressProfile(profile: FeedFollowRecommendationModel.Profile) {
-            feedFollowRecommendationAnalytics.eventImpressProfileRecommendation(profile)
+            feedFollowRecommendationAnalytics.eventImpressProfileRecommendation(
+                trackerModelMapper.transformProfileRecommendationToTrackerModel(profile)
+            )
         }
 
         override fun onClickFollow(profile: FeedFollowRecommendationModel.Profile) {
+            feedFollowRecommendationAnalytics.eventClickFollowProfileRecommendation(
+                trackerModelMapper.transformProfileRecommendationToTrackerModel(profile)
+            )
+
             if (profile.isFollowed) {
                 feedPostViewModel.doUnfollowProfileRecommendation(profile.id, profile.encryptedId, profile.isShop)
             } else {
@@ -296,12 +302,17 @@ class FeedFragment :
         }
 
         override fun onCloseProfileRecommendation(profile: FeedFollowRecommendationModel.Profile) {
-            feedFollowRecommendationAnalytics.eventClickRemoveProfileRecommendation()
+            feedFollowRecommendationAnalytics.eventClickRemoveProfileRecommendation(
+                trackerModelMapper.transformProfileRecommendationToTrackerModel(profile)
+            )
+
             feedPostViewModel.removeProfileRecommendation(profile)
         }
 
         override fun onClickProfileRecommendation(profile: FeedFollowRecommendationModel.Profile) {
-            feedFollowRecommendationAnalytics.eventClickProfileRecommendation()
+            feedFollowRecommendationAnalytics.eventClickProfileRecommendation(
+                trackerModelMapper.transformProfileRecommendationToTrackerModel(profile)
+            )
 
             val templateAppLink = if (profile.isShop) ApplinkConst.SHOP else ApplinkConst.PROFILE
             val completeAppLink = UriUtil.buildUri(templateAppLink, profile.id)
@@ -322,7 +333,10 @@ class FeedFragment :
         }
 
         override fun onSwipeProfileRecommendation() {
-            feedFollowRecommendationAnalytics.eventSwipeProfileRecommendation()
+            feedFollowRecommendationAnalytics.eventSwipeProfileRecommendation(
+                type = trackerModelMapper.tabType,
+                entryPoint = trackerModelMapper.entryPoint,
+            )
         }
     }
 
