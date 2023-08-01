@@ -410,7 +410,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     private fun createRequestQueryParams(
         source: String = TOKONOW_DIRECTORY,
         rows: Int = DEFAULT_VALUE_OF_PARAMETER_ROWS_PROFILE,
-        page: Int = FIRST_PAGE
+        page: Int? = FIRST_PAGE
     ): MutableMap<String?, Any?> {
         return mutableMapOf<String?, Any?>().apply {
             val aceSearchParams = createAceSearchParams(source, rows, page)
@@ -424,7 +424,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     private fun createGetProductCountRequestParams(
         mapParameter: Map<String, String>
     ): RequestParams {
-        val getProductCountParams = createRequestQueryParams(rows = 0)
+        val getProductCountParams = createRequestQueryParams(rows = 0, page = null)
         getProductCountParams.putAll(FilterHelper.createParamsWithoutExcludes(mapParameter))
 
         val getProductCountRequestParams = RequestParams.create()
@@ -489,7 +489,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     private fun createAceSearchParams(
         source: String,
         rows: Int,
-        page: Int
+        page: Int?
     ): MutableMap<String?, Any?> {
         return aceSearchParamMapper.createRequestParams(
             source = source,

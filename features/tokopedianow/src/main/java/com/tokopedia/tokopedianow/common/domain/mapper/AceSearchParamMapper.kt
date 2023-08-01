@@ -16,7 +16,7 @@ class AceSearchParamMapper @Inject constructor(
     }
 
     fun createRequestParams(
-        page: Int = DEFAULT_PAGE,
+        page: Int? = DEFAULT_PAGE,
         rows: Int = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS_PROFILE,
         srpPageId: String = "",
         source: String = "",
@@ -61,9 +61,12 @@ class AceSearchParamMapper @Inject constructor(
             queryParams[SearchApiConst.SOURCE] = source
         }
 
+        if (page != null) {
+            queryParams[SearchApiConst.PAGE] = page
+            queryParams[SearchApiConst.USE_PAGE] = true
+        }
+
         queryParams[SearchApiConst.ROWS] = rows
-        queryParams[SearchApiConst.PAGE] = page
-        queryParams[SearchApiConst.USE_PAGE] = true
         queryParams[SearchApiConst.UNIQUE_ID] = getUniqueId()
         queryParams[SearchApiConst.OB] = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT
         queryParams[SearchApiConst.DEVICE] = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE
