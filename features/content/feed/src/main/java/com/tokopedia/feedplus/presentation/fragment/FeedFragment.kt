@@ -83,6 +83,7 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -175,7 +176,7 @@ class FeedFragment :
         isCdp = arguments?.getBoolean(ARGUMENT_IS_CDP, false) ?: false
 
         MapperFeedModelToTrackerDataModel(
-            if (isCdp) FeedBaseFragment.CDP else data?.type ?: "",
+            if (isCdp) FeedBaseFragment.CDP else data?.type.orEmpty(),
             arguments?.getString(ARGUMENT_ENTRY_POINT) ?: ENTRY_POINT_DEFAULT
         )
     }
@@ -296,13 +297,7 @@ class FeedFragment :
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentFeedImmersiveBinding.inflate(inflater, container, false)
-        with(binding) {
-            if (isCdp) {
-                containerBottomAction.show()
-            } else {
-                containerBottomAction.hide()
-            }
-        }
+        binding.containerBottomAction.showWithCondition(isCdp)
 
         return binding.root
     }
@@ -1533,12 +1528,12 @@ class FeedFragment :
         if (hasVoucher && author?.type?.isShop == true) getMerchantVoucher(author.id)
     }
 
-    private fun convertToSourceType (type: String) : FeedTaggedProductUiModel.SourceType  =
+    private fun convertToSourceType(type: String): FeedTaggedProductUiModel.SourceType =
         when (type) {
-        FeedXCard.TYPE_FEED_ASGC_RESTOCK, FeedXCard.TYPE_FEED_ASGC_NEW_PRODUCTS, FeedXCard.TYPE_FEED_ASGC_SHOP_DISCOUNT,
-        FeedXCard.TYPE_FEED_ASGC_SHOP_FLASH_SALE, FeedXCard.TYPE_FEED_ASGC_SPECIAL_RELEASE, TYPE_FEED_TOP_ADS -> FeedTaggedProductUiModel.SourceType.NonOrganic
-        else -> FeedTaggedProductUiModel.SourceType.Organic
-    }
+            FeedXCard.TYPE_FEED_ASGC_RESTOCK, FeedXCard.TYPE_FEED_ASGC_NEW_PRODUCTS, FeedXCard.TYPE_FEED_ASGC_SHOP_DISCOUNT,
+            FeedXCard.TYPE_FEED_ASGC_SHOP_FLASH_SALE, FeedXCard.TYPE_FEED_ASGC_SPECIAL_RELEASE, TYPE_FEED_TOP_ADS -> FeedTaggedProductUiModel.SourceType.NonOrganic
+            else -> FeedTaggedProductUiModel.SourceType.Organic
+        }
 
     private fun openVariantBottomSheet(product: FeedTaggedProductUiModel) {
         atcVariantViewModel.setAtcBottomSheetParams(
