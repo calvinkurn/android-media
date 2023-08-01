@@ -334,7 +334,7 @@ class FeedFragment :
 
         override fun onSwipeProfileRecommendation() {
             feedFollowRecommendationAnalytics.eventSwipeProfileRecommendation(
-                type = trackerModelMapper.tabType,
+                tabType = trackerModelMapper.tabType,
                 entryPoint = trackerModelMapper.entryPoint,
             )
         }

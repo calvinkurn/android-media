@@ -43,10 +43,10 @@
       "eventAction": "click - follow profile recommendations",
       "eventCategory": "unified feed",
       "eventLabel": ".* - .* - (user|shop) - .*",
-      "trackerId": ".*",
+      "trackerId": "45541",
       "businessUnit": "content",
       "currentSite": "tokopediamarketplace",
-      "sessionIris": "45541",
+      "sessionIris": ".*",
       "userId": ".*"
     },
     {
@@ -54,10 +54,10 @@
       "eventAction": "click - x - profile recommendation",
       "eventCategory": "unified feed",
       "eventLabel": ".* - .* - (user|shop) - .*",
-      "trackerId": ".*",
+      "trackerId": "45542",
       "businessUnit": "content",
       "currentSite": "tokopediamarketplace",
-      "sessionIris": "45542",
+      "sessionIris": ".*",
       "userId": ".*"
     },
     {

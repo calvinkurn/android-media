@@ -14,12 +14,15 @@ import javax.inject.Inject
 import com.tokopedia.content.common.analytic.utils.*
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.feedplus.presentation.model.type.AuthorType
+import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.trackingoptimizer.model.EventModel
 
 /**
  * Created By : Jonathan Darwin on August 01, 2023
  */
 class FeedFollowRecommendationAnalytics @Inject constructor(
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    private val trackingQueue: TrackingQueue,
 ) {
 
     /**
@@ -31,14 +34,68 @@ class FeedFollowRecommendationAnalytics @Inject constructor(
     fun eventImpressProfileRecommendation(
         data: FeedTrackerDataModel
     ) {
-        
+        trackingQueue.putEETracking(
+            EventModel(
+                event = Event.promoView,
+                category = EventCategory.unifiedFeed,
+                action = "view - follow recommendations",
+                label = getEventLabel(data.tabType, data.entryPoint, data.authorType, data.authorId),
+            ),
+            hashMapOf(
+                Key.ecommerce to hashMapOf(
+                    Event.promoView to hashMapOf(
+                        Key.promotions to listOf(
+                            hashMapOf(
+                                Key.creative to "follow recomm in unified feed",
+                                Key.position to "0",
+                                Key.id to data.authorId,
+                                Key.name to "follow-recomm-unified-feed"
+                            )
+                        )
+                    )
+                )
+            ),
+            hashMapOf(
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
+                Key.userId to userSession.userId,
+                Key.businessUnit to BusinessUnit.content,
+                Key.trackerId to "45539",
+            )
+        )
     }
 
     /** Row 51 */
     fun eventClickProfileRecommendation(
         data: FeedTrackerDataModel
     ) {
-
+        trackingQueue.putEETracking(
+            EventModel(
+                event = Event.promoClick,
+                category = EventCategory.unifiedFeed,
+                action = "click - follow recommendations",
+                label = getEventLabel(data.tabType, data.entryPoint, data.authorType, data.authorId),
+            ),
+            hashMapOf(
+                Key.ecommerce to hashMapOf(
+                    Event.promoView to hashMapOf(
+                        Key.promotions to listOf(
+                            hashMapOf(
+                                Key.creative to "follow recomm in unified feed",
+                                Key.position to "0",
+                                Key.id to data.authorId,
+                                Key.name to "follow-recomm-unified-feed"
+                            )
+                        )
+                    )
+                )
+            ),
+            hashMapOf(
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
+                Key.userId to userSession.userId,
+                Key.businessUnit to BusinessUnit.content,
+                Key.trackerId to "45540",
+            )
+        )
     }
 
     /** Row 52 */
@@ -47,7 +104,7 @@ class FeedFollowRecommendationAnalytics @Inject constructor(
     ) {
         sendGeneralTracker(
             eventAction = "click - follow profile recommendations",
-            eventLabel = getEventLabel(data.type, data.entryPoint, data.authorType, data.authorId),
+            eventLabel = getEventLabel(data.tabType, data.entryPoint, data.authorType, data.authorId),
             trackerId = "45541"
         )
     }
@@ -58,19 +115,19 @@ class FeedFollowRecommendationAnalytics @Inject constructor(
     ) {
         sendGeneralTracker(
             eventAction = "click - x - profile recommendation",
-            eventLabel = getEventLabel(data.type, data.entryPoint, data.authorType, data.authorId),
+            eventLabel = getEventLabel(data.tabType, data.entryPoint, data.authorType, data.authorId),
             trackerId = "45542"
         )
     }
 
     /** Row 54 */
     fun eventSwipeProfileRecommendation(
-        type: String,
+        tabType: String,
         entryPoint: String,
     ) {
         sendGeneralTracker(
             eventAction = "scroll - right left follow recommendation cards",
-            eventLabel = getEventLabel(type, entryPoint),
+            eventLabel = getEventLabel(tabType, entryPoint),
             trackerId = "45602"
         )
     }
