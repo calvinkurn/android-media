@@ -6,6 +6,7 @@ import android.view.View.OnAttachStateChangeListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
@@ -40,7 +41,15 @@ class StoriesAvatarManager(
         getViewModel().onIntent(StoriesAvatarIntent.HasSeenCoachMark)
     }
 
+    private var mShopIdCoachMarked: String? = null
+
     init {
+        lifecycleOwner.lifecycle.addObserver(object : LifecycleEventObserver {
+            override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+                if (event == Lifecycle.Event.ON_PAUSE) coachMark.hide()
+            }
+        })
+
         lifecycleOwner.lifecycleScope.launch {
             lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 val viewModel = getViewModel()
@@ -57,6 +66,7 @@ class StoriesAvatarManager(
 
                         when (message) {
                             is StoriesAvatarMessage.ShowCoachMark -> {
+                                mShopIdCoachMarked = message.shopId
                                 showCoachMarkOnId(message.shopId)
                             }
                         }
@@ -120,11 +130,13 @@ class StoriesAvatarManager(
         observer.observe(shopId)
         assign(shopId, observer)
 
-        getViewModel().onIntent(StoriesAvatarIntent.ShowCoachMark)
+        if (shopId == mShopIdCoachMarked) {
+            getViewModel().onIntent(StoriesAvatarIntent.ShowCoachMark)
+        }
     }
 
     private fun StoriesAvatarView.onDetached() {
-        coachMark.forceDismiss(this)
+        coachMark.hide(this)
     }
 
     private fun StoriesAvatarView.getObserver(): StoriesAvatarObserver? {

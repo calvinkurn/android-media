@@ -26,17 +26,24 @@ internal class StoriesAvatarCoachMark(
         )
     }
 
-    fun forceDismiss(view: View) {
-        val coachMark = getOrCreateCoachMark()
-        val items = coachMark.coachMarkItem
-        val isSameAnchor = items.any { it.anchorView == view }
+    fun hide(view: View? = null) {
+        val coachMark = mCoachMark ?: return
 
-        if (isSameAnchor) {
-            val contentView = mCoachMark?.contentView ?: return
-            contentView.apply { alpha = 0f }
-            coachMark.onDismissListener = {}
-            coachMark.dismissCoachMark()
+        if (view == null) {
+            coachMark.hideInternal()
+        } else {
+            val items = coachMark.coachMarkItem
+            val isSameAnchor = items.any { it.anchorView == view }
+
+            if (isSameAnchor) coachMark.hideInternal()
         }
+    }
+
+    private fun CoachMark2.hideInternal() {
+        val contentView = mCoachMark?.contentView ?: return
+        contentView.apply { alpha = 0f }
+        onDismissListener = {}
+        dismissCoachMark()
     }
 
     private fun getOrCreateCoachMark(): CoachMark2 {
