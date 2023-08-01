@@ -43,6 +43,10 @@ import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_IS_GET_P
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.domain.model.Place
+import com.tokopedia.logisticCommon.uimodel.AddressUiState
+import com.tokopedia.logisticCommon.uimodel.isAdd
+import com.tokopedia.logisticCommon.uimodel.isEditOrPinpointOnly
+import com.tokopedia.logisticCommon.uimodel.toAddressUiState
 import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_ADDRESS_STATE
@@ -58,13 +62,9 @@ import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_SAVE_DATA_
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUndefinedBinding
 import com.tokopedia.logisticaddaddress.databinding.FragmentSearchAddressBinding
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
-import com.tokopedia.logisticCommon.uimodel.AddressUiState
-import com.tokopedia.logisticCommon.uimodel.isAdd
-import com.tokopedia.logisticCommon.uimodel.isEditOrPinpointOnly
-import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.PinpointNewPageActivity
-import com.tokopedia.logisticCommon.uimodel.toAddressUiState
 import com.tokopedia.logisticaddaddress.features.analytics.LogisticAddAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.analytics.LogisticEditAddressAnalytics
+import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.PinpointNewPageActivity
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.LOCATION_NOT_FOUND
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_DENIED
@@ -350,7 +350,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
             val gmsAvailable = MapsAvailabilityHelper.isMapsAvailable(it)
             isGmsAvailable = gmsAvailable
             if (!gmsAvailable) {
-                goToAddressForm()
+                goToAddAddressForm()
             }
         }
     }
@@ -422,12 +422,12 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         binding?.tvMessageSearch?.text = getString(R.string.txt_message_initial_load)
         binding?.tvMessageSearch?.setOnClickListener {
             LogisticAddAddressAnalytics.onClickIsiAlamatManualSearch(userSession.userId)
-            goToAddressForm()
+            goToAddAddressForm()
         }
     }
 
-    private fun goToAddressForm() {
-        val intent = RouteManager.getIntent(context, "${ApplinkConstInternalLogistic.EDIT_ADDRESS_REVAMP}${saveAddressDataModel.id}")
+    private fun goToAddAddressForm() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.EDIT_ADDRESS_REVAMP)
         intent.apply {
             putExtra(EXTRA_IS_POSITIVE_FLOW, false)
             putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveAddressDataModel)
