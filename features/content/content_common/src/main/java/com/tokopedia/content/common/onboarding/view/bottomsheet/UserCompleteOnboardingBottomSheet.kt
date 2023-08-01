@@ -126,7 +126,6 @@ class UserCompleteOnboardingBottomSheet @Inject constructor(
     private fun setupObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache()
-                .distinctUntilChangedBy {  }
                 .collectLatest {
                 renderLayout(it.prevValue, it.value)
             }
