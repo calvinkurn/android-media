@@ -60,7 +60,7 @@ class AffiliatePromotionHistoryFragment :
 
     private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
 
-    private lateinit var affiliatePromotionViewModel: AffiliatePromotionHistoryViewModel
+    private var affiliatePromotionViewModel: AffiliatePromotionHistoryViewModel? = null
     private val adapter by lazy {
         AffiliateAdapter(AffiliateAdapterFactory(productClickInterface = this))
     }
@@ -108,14 +108,14 @@ class AffiliatePromotionHistoryFragment :
         loadMoreTriggerListener = getEndlessRecyclerViewListener(layoutManager)
         productsRV?.adapter = adapter
         loadMoreTriggerListener?.let { productsRV?.addOnScrollListener(it) }
-        affiliatePromotionViewModel.getAffiliatePerformance(PAGE_ZERO)
+        affiliatePromotionViewModel?.getAffiliatePerformance(PAGE_ZERO)
     }
 
     private fun resetItems() {
         loadMoreTriggerListener?.resetState()
         listSize = 0
         adapter.resetList()
-        affiliatePromotionViewModel.getAffiliatePerformance(PAGE_ZERO)
+        affiliatePromotionViewModel?.getAffiliatePerformance(PAGE_ZERO)
     }
 
     private fun showNoAffiliate() {
@@ -142,7 +142,7 @@ class AffiliatePromotionHistoryFragment :
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if (totalItemsCount < totalDataItemsCount) {
                     sendImpressionEvent()
-                    affiliatePromotionViewModel.getAffiliatePerformance(page - 1)
+                    affiliatePromotionViewModel?.getAffiliatePerformance(page - 1)
                 }
             }
         }
@@ -178,7 +178,7 @@ class AffiliatePromotionHistoryFragment :
     }
 
     private fun setObservers() {
-        affiliatePromotionViewModel.getShimmerVisibility().observe(this) { visibility ->
+        affiliatePromotionViewModel?.getShimmerVisibility()?.observe(this) { visibility ->
             if (visibility != null) {
                 if (visibility) {
                     adapter.addShimmer()
@@ -187,7 +187,7 @@ class AffiliatePromotionHistoryFragment :
                 }
             }
         }
-        affiliatePromotionViewModel.getAffiliateDataItems().observe(this) { dataList ->
+        affiliatePromotionViewModel?.getAffiliateDataItems()?.observe(this) { dataList ->
             adapter.removeShimmer(listSize)
             if (isSwipeRefresh) {
                 view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.isRefreshing = false
@@ -202,7 +202,7 @@ class AffiliatePromotionHistoryFragment :
                 showNoAffiliate()
             }
         }
-        affiliatePromotionViewModel.getErrorMessage().observe(this) { error ->
+        affiliatePromotionViewModel?.getErrorMessage()?.observe(this) { error ->
             view?.findViewById<GlobalError>(R.id.home_global_error)?.run {
                 when (error) {
                     is UnknownHostException, is SocketTimeoutException -> {
@@ -224,7 +224,7 @@ class AffiliatePromotionHistoryFragment :
                 }
             }
         }
-        affiliatePromotionViewModel.getAffiliateItemCount().observe(this) { itemCount ->
+        affiliatePromotionViewModel?.getAffiliateItemCount()?.observe(this) { itemCount ->
             if (itemCount != 0) {
                 view?.findViewById<Typography>(R.id.affiliate_products_count)?.text =
                     getString(R.string.affiliate_product_count, itemCount.toString())
