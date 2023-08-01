@@ -1,6 +1,6 @@
 package com.tokopedia.logger.datasource.cloud
 
-//import com.newrelic.agent.android.NewRelic
+import com.newrelic.agent.android.NewRelic
 import com.tokopedia.logger.model.newrelic.NewRelicBodySdk
 import com.tokopedia.logger.model.newrelic.NewRelicConfig
 import kotlinx.coroutines.Dispatchers
@@ -13,7 +13,7 @@ class LoggerCloudNewRelicSdkDataSource : LoggerCloudNewRelicSdkImpl {
         return withContext(Dispatchers.IO) {
             try {
                 for (newRelic in newRelicBodyList) {
-//                    NewRelic.recordCustomEvent(newRelic.eventType, newRelic.attributes)
+                    NewRelic.recordCustomEvent(newRelic.eventType, newRelic.attributes)
                 }
                 true
             } catch (e: Exception) {

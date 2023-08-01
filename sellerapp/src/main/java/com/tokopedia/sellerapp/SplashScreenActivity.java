@@ -10,7 +10,7 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-//import com.newrelic.agent.android.NewRelic;
+import com.newrelic.agent.android.NewRelic;
 import com.tokopedia.app.common.SplashScreen;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
@@ -43,9 +43,9 @@ public class SplashScreenActivity extends SplashScreen {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-//        NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_SA)
-//                .start(this.getApplication());
-//        setUserIdNewRelic();
+        NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_SA)
+                .start(this.getApplication());
+        setUserIdNewRelic();
         super.onCreate(savedInstanceState);
         CMPushNotificationManager.getInstance()
                 .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(this.getApplicationContext()), false);
@@ -53,12 +53,12 @@ public class SplashScreenActivity extends SplashScreen {
         syncFcmToken();
     }
 
-//    private void setUserIdNewRelic() {
-//        userSession = new UserSession(this);
-//        if (userSession.isLoggedIn()) {
-//            NewRelic.setUserId(userSession.getUserId());
-//        }
-//    }
+    private void setUserIdNewRelic() {
+        userSession = new UserSession(this);
+        if (userSession.isLoggedIn()) {
+            NewRelic.setUserId(userSession.getUserId());
+        }
+    }
 
     /**
      * handle/forward app link redirection from customer app to seller app
