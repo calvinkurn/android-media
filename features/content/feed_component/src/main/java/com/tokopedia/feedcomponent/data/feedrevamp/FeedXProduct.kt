@@ -72,6 +72,8 @@ data class FeedXProduct(
 
     @SerializedName("affiliate")
     val affiliate: FeedXProductAffiliate = FeedXProductAffiliate(),
+    @SerializedName("isStockAvailable")
+    val isAvailable: Boolean = false,
 
     // TopadsHeadline
     var variant: Int = 1,

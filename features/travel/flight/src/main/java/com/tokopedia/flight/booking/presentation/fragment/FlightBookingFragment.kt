@@ -24,6 +24,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -41,6 +42,7 @@ import com.tokopedia.flight.booking.data.FlightCart
 import com.tokopedia.flight.booking.data.FlightCartViewEntity
 import com.tokopedia.flight.booking.data.FlightCheckoutData
 import com.tokopedia.flight.booking.data.FlightContactData
+import com.tokopedia.flight.booking.data.FlightPriceDetailEntity
 import com.tokopedia.flight.booking.data.FlightPromoViewEntity
 import com.tokopedia.flight.booking.data.FlightVerify
 import com.tokopedia.flight.booking.data.QueryAddToCart
@@ -65,6 +67,7 @@ import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
 import com.tokopedia.flight.common.util.FlightFlowUtil
 import com.tokopedia.flight.common.util.FlightRequestUtil
+import com.tokopedia.flight.common.util.toDpInt
 import com.tokopedia.flight.databinding.FragmentFlightBookingV3Binding
 import com.tokopedia.flight.detail.view.model.FlightDetailModel
 import com.tokopedia.flight.detail.view.widget.FlightDetailBottomSheet
@@ -73,6 +76,7 @@ import com.tokopedia.flight.passenger.view.model.FlightBookingPassengerModel
 import com.tokopedia.flight.search.presentation.model.FlightPriceModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -190,7 +194,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
         outState.putParcelable(EXTRA_FLIGHT_BOOKING_PARAM, bookingViewModel.getFlightBookingParam())
         outState.putString(EXTRA_ORDER_DUE, orderDueTimeStampString)
         outState.putParcelable(
-            EXTRA_CONTACT_DATA, FlightContactData(
+            EXTRA_CONTACT_DATA,
+            FlightContactData(
                 binding?.widgetTravellerInfo?.getContactName() ?: "",
                 binding?.widgetTravellerInfo?.getContactEmail() ?: "",
                 binding?.widgetTravellerInfo?.getContactPhoneNum() ?: "",
@@ -198,136 +203,193 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 binding?.widgetTravellerInfo?.getContactPhoneCode() ?: 0
             )
         )
-        if (bookingViewModel.getPassengerModels().isNotEmpty()) outState.putParcelableArrayList(
-            EXTRA_PASSENGER_MODELS,
-            bookingViewModel.getPassengerModels() as ArrayList<out Parcelable>
-        )
-        if (bookingViewModel.getPriceData().isNotEmpty()) outState.putParcelableArrayList(
-            EXTRA_PRICE_DATA,
-            bookingViewModel.getPriceData() as ArrayList<out Parcelable>
-        )
-        if (bookingViewModel.getOtherPriceData().isNotEmpty()) outState.putParcelableArrayList(
-            EXTRA_OTHER_PRICE_DATA,
-            bookingViewModel.getOtherPriceData() as ArrayList<out Parcelable>
-        )
-        if (bookingViewModel.getAmenityPriceData().isNotEmpty()) outState.putParcelableArrayList(
-            EXTRA_AMENITY_PRICE_DATA,
-            bookingViewModel.getAmenityPriceData() as ArrayList<out Parcelable>
-        )
+        if (bookingViewModel.getPassengerModels().isNotEmpty()) {
+            outState.putParcelableArrayList(
+                EXTRA_PASSENGER_MODELS,
+                bookingViewModel.getPassengerModels() as ArrayList<out Parcelable>
+            )
+        }
+        if (bookingViewModel.getPriceData().isNotEmpty()) {
+            outState.putParcelableArrayList(
+                EXTRA_PRICE_DATA,
+                bookingViewModel.getPriceData() as ArrayList<out Parcelable>
+            )
+        }
+        if (bookingViewModel.getOtherPriceData().isNotEmpty()) {
+            outState.putParcelableArrayList(
+                EXTRA_OTHER_PRICE_DATA,
+                bookingViewModel.getOtherPriceData() as ArrayList<out Parcelable>
+            )
+        }
+        if (bookingViewModel.getAmenityPriceData().isNotEmpty()) {
+            outState.putParcelableArrayList(
+                EXTRA_AMENITY_PRICE_DATA,
+                bookingViewModel.getAmenityPriceData() as ArrayList<out Parcelable>
+            )
+        }
+        if (bookingViewModel.getAdminFeePriceData().isNotEmpty()) {
+            outState.putParcelableArrayList(
+                EXTRA_ADMIN_FEE_PRICE_DATA,
+                bookingViewModel.getAdminFeePriceData() as ArrayList<out Parcelable>
+            )
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        bookingViewModel.flightCartResult.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    if (binding?.layoutLoading?.root?.isVisible == true) launchLoadingPageJob.cancel()
-                    if (!it.data.isRefreshCart || savedInstanceState != null) {
-                        renderData(it.data)
-                        sendAddToCartTracking()
+        bookingViewModel.flightCartResult.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        if (binding?.layoutLoading?.root?.isVisible == true) launchLoadingPageJob.cancel()
+                        if (!it.data.isRefreshCart || savedInstanceState != null) {
+                            renderData(it.data)
+                            sendAddToCartTracking()
+                        }
+                        setUpTimer(it.data.orderDueTimeStamp)
                     }
-                    setUpTimer(it.data.orderDueTimeStamp)
-                }
-                is Fail -> {
-                    showErrorDialog(
-                        mapThrowableToFlightError(
-                            it.throwable.message
-                                ?: ""
-                        ), ::refreshCart
-                    )
-                }
-            }
-            if (bookingViewModel.isStillLoading) showLoadingDialog()
-            else if (bookingViewModel.getDepartureJourney() != null) hideShimmering()
-        })
-
-        bookingViewModel.flightPromoResult.observe(viewLifecycleOwner, Observer {
-            renderAutoApplyPromo(it)
-        })
-
-        bookingViewModel.profileResult.observe(viewLifecycleOwner, Observer {
-            if (it is Success) renderProfileData(it.data)
-        })
-
-        bookingViewModel.flightPassengersData.observe(viewLifecycleOwner, Observer {
-            renderPassengerData(it)
-        })
-
-        bookingViewModel.flightPriceData.observe(viewLifecycleOwner, Observer {
-            renderPriceData(it)
-        })
-
-        bookingViewModel.flightOtherPriceData.observe(viewLifecycleOwner, Observer {
-            renderOtherPriceData(it)
-        })
-
-        bookingViewModel.flightAmenityPriceData.observe(viewLifecycleOwner, Observer {
-            renderAmenityPriceData(it)
-        })
-
-        bookingViewModel.errorToastMessageData.observe(viewLifecycleOwner, Observer {
-            if (it == 0) showLoadingDialog() else renderErrorToast(it)
-        })
-
-        bookingViewModel.flightCheckoutResult.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    sendCheckOutTracking(it.data.parameter.pid)
-                    navigateToTopPay(it.data)
-                }
-                is Fail -> {
-                    showErrorDialog(
-                        mapThrowableToFlightError(
-                            it.throwable.message
-                                ?: ""
+                    is Fail -> {
+                        showErrorDialog(
+                            mapThrowableToFlightError(
+                                it.throwable.message
+                                    ?: ""
+                            ),
+                            ::refreshCart
                         )
-                    ) {
-                        checkOutCart()
                     }
                 }
+                if (bookingViewModel.isStillLoading) {
+                    showLoadingDialog()
+                } else if (bookingViewModel.getDepartureJourney() != null) hideShimmering()
             }
-            if (bookingViewModel.isStillLoading) showLoadingDialog() else hideShimmering()
-        })
+        )
 
-        bookingViewModel.flightVerifyResult.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    it.data.data.cartItems[0]?.let { cart ->
-                        if (cart.newPrice.isNotEmpty()) {
-                            showRepriceTag(cart)
-                            renderRepricePrice(cart)
-                        } else {
-                            showCheckBookingDetailPopUp()
+        bookingViewModel.flightPromoResult.observe(
+            viewLifecycleOwner,
+            Observer {
+                renderAutoApplyPromo(it)
+            }
+        )
+
+        bookingViewModel.profileResult.observe(
+            viewLifecycleOwner,
+            Observer {
+                if (it is Success) renderProfileData(it.data)
+            }
+        )
+
+        bookingViewModel.flightPassengersData.observe(
+            viewLifecycleOwner,
+            Observer {
+                renderPassengerData(it)
+            }
+        )
+
+        bookingViewModel.flightPriceData.observe(
+            viewLifecycleOwner,
+            Observer {
+                renderPriceData(it)
+            }
+        )
+
+        bookingViewModel.flightOtherPriceData.observe(
+            viewLifecycleOwner,
+            Observer {
+                renderOtherPriceData(it)
+            }
+        )
+
+        bookingViewModel.flightAmenityPriceData.observe(
+            viewLifecycleOwner,
+            Observer {
+                renderAmenityPriceData(it)
+            }
+        )
+
+        bookingViewModel.flightAdminFeePriceData.observe(
+            viewLifecycleOwner,
+            Observer {
+                renderAdminFeesData(it)
+            }
+        )
+
+        bookingViewModel.errorToastMessageData.observe(
+            viewLifecycleOwner,
+            Observer {
+                if (it == 0) showLoadingDialog() else renderErrorToast(it)
+            }
+        )
+
+        bookingViewModel.flightCheckoutResult.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        sendCheckOutTracking(it.data.parameter.pid)
+                        navigateToTopPay(it.data)
+                    }
+                    is Fail -> {
+                        showErrorDialog(
+                            mapThrowableToFlightError(
+                                it.throwable.message
+                                    ?: ""
+                            )
+                        ) {
+                            checkOutCart()
                         }
                     }
                 }
-                is Fail -> {
-                    showErrorDialog(
-                        mapThrowableToFlightError(
-                            it.throwable.message
-                                ?: ""
-                        ), ::verifyCart
-                    )
-                }
+                if (bookingViewModel.isStillLoading) showLoadingDialog() else hideShimmering()
             }
-            if (bookingViewModel.isStillLoading) showLoadingDialog() else hideShimmering()
-        })
+        )
 
-        bookingViewModel.tickerData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    if (it.data.message.isNotEmpty()) {
-                        renderTickerView(it.data)
-                    } else {
+        bookingViewModel.flightVerifyResult.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        it.data.data.cartItems[0]?.let { cart ->
+                            if (cart.newPrice.isNotEmpty()) {
+                                showRepriceTag(cart)
+                                renderRepricePrice(cart)
+                            } else {
+                                showCheckBookingDetailPopUp()
+                            }
+                        }
+                    }
+                    is Fail -> {
+                        showErrorDialog(
+                            mapThrowableToFlightError(
+                                it.throwable.message
+                                    ?: ""
+                            ),
+                            ::verifyCart
+                        )
+                    }
+                }
+                if (bookingViewModel.isStillLoading) showLoadingDialog() else hideShimmering()
+            }
+        )
+
+        bookingViewModel.tickerData.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        if (it.data.message.isNotEmpty()) {
+                            renderTickerView(it.data)
+                        } else {
+                            hideTickerView()
+                        }
+                    }
+                    is Fail -> {
                         hideTickerView()
                     }
                 }
-                is Fail -> {
-                    hideTickerView()
-                }
             }
-        })
+        )
 
         bookingViewModel.errorCancelVoucher.observe(viewLifecycleOwner, {
             if (it == EMPTY_VOUCHER_STATE) {
@@ -343,33 +405,32 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 renderErrorToast(it)
             }
         })
-
     }
 
     private fun setUpView() {
         hidePriceDetail()
 
         binding?.widgetTravellerInfo?.setListener(object :
-            TravellerInfoWidget.TravellerInfoWidgetListener {
-            override fun onClickEdit() {
-                context?.let {
-                    startActivityForResult(
-                        TravelContactDataActivity.getCallingIntent(
-                            it,
-                            TravelContactData(
-                                binding?.widgetTravellerInfo?.getContactName() ?: "",
-                                binding?.widgetTravellerInfo?.getContactEmail() ?: "",
-                                binding?.widgetTravellerInfo?.getContactPhoneNum() ?: "",
-                                binding?.widgetTravellerInfo?.getContactPhoneCode() ?: 0,
-                                binding?.widgetTravellerInfo?.getContactPhoneCountry() ?: ""
+                TravellerInfoWidget.TravellerInfoWidgetListener {
+                override fun onClickEdit() {
+                    context?.let {
+                        startActivityForResult(
+                            TravelContactDataActivity.getCallingIntent(
+                                it,
+                                TravelContactData(
+                                    binding?.widgetTravellerInfo?.getContactName() ?: "",
+                                    binding?.widgetTravellerInfo?.getContactEmail() ?: "",
+                                    binding?.widgetTravellerInfo?.getContactPhoneNum() ?: "",
+                                    binding?.widgetTravellerInfo?.getContactPhoneCode() ?: 0,
+                                    binding?.widgetTravellerInfo?.getContactPhoneCountry() ?: ""
+                                ),
+                                TravelContactDataActivity.FLIGHT
                             ),
-                            TravelContactDataActivity.FLIGHT
-                        ),
-                        REQUEST_CODE_CONTACT_FORM
-                    )
+                            REQUEST_CODE_CONTACT_FORM
+                        )
+                    }
                 }
-            }
-        })
+            })
 
         binding?.layoutSeeDetailPrice?.setOnClickListener { if (binding?.rvFlightPriceDetail?.isVisible == true) hidePriceDetail() else showPriceDetail() }
         binding?.switchTravellerAsPassenger?.setOnCheckedChangeListener { _, on ->
@@ -379,18 +440,19 @@ class FlightBookingFragment : BaseDaggerFragment() {
                         binding?.widgetTravellerInfo?.getContactName() ?: ""
                     )
                     passengerAsTraveller = false
-                    if (isFirstTime) navigateToPassengerInfoDetail(
-                        firstPassenger,
-                        getRequestId(),
-                        firstPassenger.passengerFirstName
-                    )
+                    if (isFirstTime) {
+                        navigateToPassengerInfoDetail(
+                            firstPassenger,
+                            getRequestId(),
+                            firstPassenger.passengerFirstName
+                        )
+                    }
                     isFirstTime = true
                 } else {
                     bookingViewModel.resetFirstPassenger()
                 }
             }
             needToDoChangesOnFirstPassenger = true
-
         }
         binding?.buttonSubmit?.setOnClickListener { verifyCart() }
     }
@@ -439,7 +501,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
         flightAnalytics.eventBranchCheckoutFlight(
             "${bookingViewModel.getDepartureJourney()?.departureAirportCity}-${bookingViewModel.getDepartureJourney()?.arrivalAirportCity}",
             "",
-            bookingViewModel.getInvoiceId(), pid,
+            bookingViewModel.getInvoiceId(),
+            pid,
             bookingViewModel.getUserId(),
             totalCartPrice.toString()
         )
@@ -496,7 +559,9 @@ class FlightBookingFragment : BaseDaggerFragment() {
             }
             tickerBookingPromo.setTextDescription(cart.promoEligibility.message)
             tickerBookingPromo.tickerShape = Ticker.SHAPE_LOOSE
-        } else tickerBookingPromo.visibility = View.GONE
+        } else {
+            tickerBookingPromo.visibility = View.GONE
+        }
 
         continueToPayButton.setOnClickListener {
             showCheckBookingDetailPopUp()
@@ -546,7 +611,9 @@ class FlightBookingFragment : BaseDaggerFragment() {
             override fun onFinished() {
                 if (context != null) {
                     refreshCart()
-                } else needRefreshCart = true
+                } else {
+                    needRefreshCart = true
+                }
             }
         })
         binding?.countdownTimeout?.cancel()
@@ -625,32 +692,71 @@ class FlightBookingFragment : BaseDaggerFragment() {
         flightInsuranceAdapter.updateList(insurances)
     }
 
-    private fun renderPriceData(priceList: List<FlightCart.PriceDetail>) {
+    private fun renderPriceData(priceList: List<FlightPriceDetailEntity>) {
         if (!::flightPriceAdapter.isInitialized) {
-            flightPriceAdapter = FlightBookingPriceAdapter()
+            flightPriceAdapter = FlightBookingPriceAdapter(
+                priceListener = object : FlightBookingPriceAdapter.PriceListener {
+                    override fun onPriceChangeListener(totalPrice: String, totalPriceNumeric: Int) {
+                        binding?.tvTotalPaymentAmount?.text = totalPrice
+                        totalCartPrice = totalPriceNumeric
+                    }
+                },
+                priceDetailInfoListener = object : FlightBookingPriceAdapter.PriceDetailInfoListener {
+                    override fun onInfoIconClick(priceDetail: FlightPriceDetailEntity) {
+                        context?.let {
+                            val layoutParams = LinearLayout.LayoutParams(
+                                ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT
+                            )
+                            val descriptionView = Typography(it)
+                            descriptionView.setType(Typography.PARAGRAPH_2)
+                            descriptionView.setWeight(Typography.REGULAR)
+                            descriptionView.text = MethodChecker.fromHtml(priceDetail.popUpDescription)
+                            descriptionView.layoutParams = layoutParams
+                            descriptionView.setPadding(
+                                4f.toDpInt(),
+                                Int.ZERO,
+                                4f.toDpInt(),
+                                16f.toDpInt()
+                            )
+
+                            val moreInfoBottomSheet = BottomSheetUnify()
+                            moreInfoBottomSheet.setTitle(priceDetail.popUpTitle)
+                            moreInfoBottomSheet.isFullpage = false
+                            moreInfoBottomSheet.setChild(descriptionView)
+                            moreInfoBottomSheet.clearAction()
+                            moreInfoBottomSheet.setCloseClickListener {
+                                moreInfoBottomSheet.dismiss()
+                            }
+                            moreInfoBottomSheet.show(childFragmentManager, ADMIN_FEE_INFO_BOTTOM_SHEET_TAG)
+                        }
+                    }
+                }
+            )
             val layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
+            binding?.rvFlightPriceDetail?.recycledViewPool?.setMaxRecycledViews(Int.ZERO, Int.ZERO)
             binding?.rvFlightPriceDetail?.layoutManager = layoutManager
             binding?.rvFlightPriceDetail?.setHasFixedSize(true)
             binding?.rvFlightPriceDetail?.adapter = flightPriceAdapter
-            flightPriceAdapter.listener = object : FlightBookingPriceAdapter.PriceListener {
-                override fun onPriceChangeListener(totalPrice: String, totalPriceNumeric: Int) {
-                    binding?.tvTotalPaymentAmount?.text = totalPrice
-                    totalCartPrice = totalPriceNumeric
-                }
-            }
         }
         flightPriceAdapter.updateRoutePriceList(priceList)
     }
 
-    private fun renderOtherPriceData(priceList: List<FlightCart.PriceDetail>) {
+    private fun renderOtherPriceData(priceList: List<FlightPriceDetailEntity>) {
         if (::flightPriceAdapter.isInitialized) {
             flightPriceAdapter.updateOthersPriceList(priceList)
         }
     }
 
-    private fun renderAmenityPriceData(priceList: List<FlightCart.PriceDetail>) {
+    private fun renderAmenityPriceData(priceList: List<FlightPriceDetailEntity>) {
         if (::flightPriceAdapter.isInitialized) {
             flightPriceAdapter.updateAmenityPriceList(priceList)
+        }
+    }
+
+    private fun renderAdminFeesData(adminFees: List<FlightPriceDetailEntity>) {
+        if (::flightPriceAdapter.isInitialized) {
+            flightPriceAdapter.updateAdminFeePriceList(adminFees)
         }
     }
 
@@ -677,9 +783,9 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 "${firstPassenger.passengerFirstName} ${firstPassenger.passengerLastName}"
             if (!fullName.equals(binding?.widgetTravellerInfo?.getContactName(), true) &&
                 !firstPassenger.passengerFirstName.equals(
-                    binding?.widgetTravellerInfo?.getContactName(),
-                    true
-                )
+                        binding?.widgetTravellerInfo?.getContactName(),
+                        true
+                    )
             ) {
                 needToDoChangesOnFirstPassenger = false
                 binding?.switchTravellerAsPassenger?.isChecked = false
@@ -718,9 +824,13 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun getRequestId(): String =
-        if (getReturnId().isNotEmpty()) generateIdEmpotency("${getDepartureId()}_${getReturnId()}") else generateIdEmpotency(
-            getDepartureId()
-        )
+        if (getReturnId().isNotEmpty()) {
+            generateIdEmpotency("${getDepartureId()}_${getReturnId()}")
+        } else {
+            generateIdEmpotency(
+                getDepartureId()
+            )
+        }
 
     private fun generateIdEmpotency(requestId: String): String {
         var userId = Math.random().toString()
@@ -729,7 +839,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
         val token = FlightRequestUtil.md5(timeMillis)
         return userId + String.format(
             getString(com.tokopedia.flight.R.string.flight_booking_id_empotency_format),
-            requestId, if (token.isEmpty()) timeMillis else token
+            requestId,
+            if (token.isEmpty()) timeMillis else token
         )
     }
 
@@ -795,14 +906,17 @@ class FlightBookingFragment : BaseDaggerFragment() {
         bookingViewModel.setPassengerModels(passengerModels)
 
         val priceData = args.getParcelableArrayList(EXTRA_PRICE_DATA)
-            ?: listOf<FlightCart.PriceDetail>()
+            ?: listOf<FlightPriceDetailEntity>()
         bookingViewModel.setPriceData(priceData)
         val otherPriceData = args.getParcelableArrayList(EXTRA_OTHER_PRICE_DATA)
-            ?: listOf<FlightCart.PriceDetail>()
+            ?: listOf<FlightPriceDetailEntity>()
         bookingViewModel.setOtherPriceData(otherPriceData)
         val amenityPriceData = args.getParcelableArrayList(EXTRA_AMENITY_PRICE_DATA)
-            ?: listOf<FlightCart.PriceDetail>()
+            ?: listOf<FlightPriceDetailEntity>()
         bookingViewModel.setAmenityPriceData(amenityPriceData)
+        val adminFeesData = args.getParcelableArrayList(EXTRA_ADMIN_FEE_PRICE_DATA)
+            ?: listOf<FlightPriceDetailEntity>()
+        bookingViewModel.setAdminFeePriceData(adminFeesData)
 
         refreshCart()
     }
@@ -1151,12 +1265,20 @@ class FlightBookingFragment : BaseDaggerFragment() {
                         }
                         dialog.setCancelable(false)
                         dialog.setOverlayClose(false)
-                        if (flightError.head.isNotEmpty()) dialog.setTitle(flightError.head) else dialog.setTitle(
-                            getString(R.string.flight_booking_general_error_title)
-                        )
-                        if (flightError.message.isNotEmpty()) dialog.setDescription(flightError.message) else dialog.setTitle(
-                            getString(R.string.flight_booking_general_error_subtitle)
-                        )
+                        if (flightError.head.isNotEmpty()) {
+                            dialog.setTitle(flightError.head)
+                        } else {
+                            dialog.setTitle(
+                                getString(R.string.flight_booking_general_error_title)
+                            )
+                        }
+                        if (flightError.message.isNotEmpty()) {
+                            dialog.setDescription(flightError.message)
+                        } else {
+                            dialog.setTitle(
+                                getString(R.string.flight_booking_general_error_subtitle)
+                            )
+                        }
                         dialog.setImageDrawable(FlightBookingErrorCodeMapper.getErrorIcon(errorCode))
                         dialog.show()
                     }
@@ -1217,7 +1339,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
             RouteManager.getIntent(
                 context,
                 ApplinkConstInternalUserPlatform.ADD_PHONE
-            ), REQUEST_CODE_OTP
+            ),
+            REQUEST_CODE_OTP
         )
     }
 
@@ -1308,8 +1431,10 @@ class FlightBookingFragment : BaseDaggerFragment() {
             COUPON_EXTRA_LIST_ACTIVITY_RESULT, COUPON_EXTRA_DETAIL_ACTIVITY_RESULT -> if (resultCode == RESULT_OK) {
                 data?.let {
                     var promoData = PromoData()
-                    if (it.hasExtra(EXTRA_PROMO_DATA)) promoData =
-                        data.getParcelableExtra(COUPON_EXTRA_PROMO_DATA) ?: PromoData()
+                    if (it.hasExtra(EXTRA_PROMO_DATA)) {
+                        promoData =
+                            data.getParcelableExtra(COUPON_EXTRA_PROMO_DATA) ?: PromoData()
+                    }
                     when (promoData.state) {
                         TickerCheckoutView.State.EMPTY -> {
                             promoData.promoCode = ""
@@ -1403,8 +1528,11 @@ class FlightBookingFragment : BaseDaggerFragment() {
         const val EXTRA_PRICE_DATA = "EXTRA_PRICE_DATA"
         const val EXTRA_OTHER_PRICE_DATA = "EXTRA_OTHER_PRICE_DATA"
         const val EXTRA_AMENITY_PRICE_DATA = "EXTRA_AMENITY_PRICE_DATA"
+        const val EXTRA_ADMIN_FEE_PRICE_DATA = "EXTRA_ADMIN_FEE_PRICE_DATA"
         const val EXTRA_CART_ID = "EXTRA_BOOKING_CART_ID"
         const val EXTRA_FLIGHT_BOOKING_PARAM = "EXTRA_FLIGHT_BOOKING_PARAM"
+
+        const val ADMIN_FEE_INFO_BOTTOM_SHEET_TAG = "ADMIN_FEE_INFO_BOTTOM_SHEET_TAG"
 
         const val REQUEST_CODE_PASSENGER = 1
         const val REQUEST_CODE_CONTACT_FORM = 12
@@ -1421,8 +1549,10 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
         fun newInstance(
             searchPassDataModel: FlightSearchPassDataModel,
-            departureId: String, returnId: String,
-            departureTerm: String, returnTerm: String,
+            departureId: String,
+            returnId: String,
+            departureTerm: String,
+            returnTerm: String,
             priceModel: FlightPriceModel
         ): FlightBookingFragment {
             val fragment = FlightBookingFragment()
@@ -1437,5 +1567,4 @@ class FlightBookingFragment : BaseDaggerFragment() {
             return fragment
         }
     }
-
 }
