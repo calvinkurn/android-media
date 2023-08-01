@@ -94,16 +94,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_above="@id/bottom_layout"
-                    android:layout_marginBottom="-10dp"
                     android:orientation="vertical"
                     android:visibility="gone"
                     tools:visibility="visible">
-
-                    <View
-                        android:id="@+id/ll_promo_checkout_shadow"
-                        android:layout_width="match_parent"
-                        android:layout_height="4dp"
-                        android:background="@drawable/shadow_top" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/promo_checkout_ticker_cart"
@@ -142,10 +135,11 @@
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    <com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
+                    <com.tokopedia.promocheckout.common.view.widget.PromoEntryPointWidget
                         android:id="@+id/promo_checkout_btn_cart"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        app:rounded="true" />
 
                 </LinearLayout>
 

@@ -307,8 +307,6 @@ class CartRevampFragment :
         const val DELAY_SHOW_SELECTED_AMOUNT_AFTER_SCROLL = 750L
         const val PROMO_ANIMATION_DURATION = 500L
         const val SELECTED_AMOUNT_ANIMATION_DURATION = 500L
-        const val PROMO_POSITION_BUFFER = 10
-        const val SELECTED_AMOUNT_POSITION_BUFFER = 10
         const val DELAY_CHECK_BOX_GLOBAL = 500L
         const val ANIMATED_IMAGE_ALPHA = 0.5f
         const val ANIMATED_IMAGE_FILLED = 1.0f
@@ -1432,10 +1430,7 @@ class CartRevampFragment :
 
     private fun animatePromoButtonToStartingPosition() {
         binding?.apply {
-            val initialPosition =
-                bottomLayout.y - llPromoCheckout.height + PROMO_POSITION_BUFFER.dpToPx(
-                    resources.displayMetrics
-                )
+            val initialPosition = bottomLayout.y - llPromoCheckout.height
             llPromoCheckout.animate().y(initialPosition).setDuration(0).start()
         }
     }
@@ -1855,10 +1850,7 @@ class CartRevampFragment :
             delayShowPromoButtonJob = viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
                 delay(DELAY_SHOW_PROMO_BUTTON_AFTER_SCROLL)
                 binding?.apply {
-                    val initialPosition =
-                        bottomLayout.y - llPromoCheckout.height + PROMO_POSITION_BUFFER.dpToPx(
-                            resources.displayMetrics
-                        )
+                    val initialPosition = bottomLayout.y - llPromoCheckout.height
                     llPromoCheckout.animate().y(initialPosition)
                         .setDuration(PROMO_ANIMATION_DURATION).start()
                 }
@@ -3253,12 +3245,8 @@ class CartRevampFragment :
         val tickerPromoData = viewModel.cartModel.promoTicker
         if (viewModel.cartModel.showChoosePromoWidget) {
             binding?.promoCheckoutBtnCart?.visible()
-            binding?.llPromoCheckoutShadow?.visible()
 
             val isApplied: Boolean
-
-            binding?.promoCheckoutBtnCart?.state = ButtonPromoCheckoutView.State.ACTIVE
-            binding?.promoCheckoutBtnCart?.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
 
             val title: String = when {
                 lastApplyData.additionalInfo.messageInfo.message.isNotEmpty() -> {
@@ -3274,23 +3262,7 @@ class CartRevampFragment :
                 }
             }
 
-            if (lastApplyData.additionalInfo.messageInfo.detail.isNotEmpty()) {
-                isApplied = true
-                binding?.promoCheckoutBtnCart?.desc =
-                    lastApplyData.additionalInfo.messageInfo.detail
-            } else {
-                isApplied = false
-
-                if (viewModel.getSelectedCartItemData().isEmpty()) {
-                    binding?.promoCheckoutBtnCart?.desc =
-                        getString(R.string.promo_desc_no_selected_item)
-                } else {
-                    binding?.promoCheckoutBtnCart?.desc = ""
-                }
-            }
-
-            binding?.promoCheckoutBtnCart?.title = title
-            binding?.promoCheckoutBtnCart?.setOnClickListener {
+            val onClickListener: (applied: Boolean) -> Unit = { applied ->
                 if (viewModel.getSelectedCartItemData().isEmpty()) {
                     showToastMessageGreen(getString(R.string.promo_choose_item_cart))
                     PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
@@ -3301,17 +3273,42 @@ class CartRevampFragment :
                         viewModel.getAllPromosApplied(
                             lastApplyData
                         ),
-                        isApplied,
+                        applied,
                         userSession.userId
                     )
                 }
             }
+
+            if (lastApplyData.additionalInfo.messageInfo.detail.isNotEmpty()) {
+                isApplied = true
+                binding?.promoCheckoutBtnCart?.showApplied(
+                    title = title,
+                    desc = lastApplyData.additionalInfo.messageInfo.detail,
+                    rightIcon = IconUnify.CHEVRON_RIGHT,
+                    summaries = emptyList(),
+                    onClickListener = { onClickListener(true) },
+                )
+            } else {
+                isApplied = false
+                if (viewModel.getSelectedCartItemData().isEmpty()) {
+                    binding?.promoCheckoutBtnCart?.showInactive(
+                        getString(R.string.promo_desc_no_selected_item),
+                        onClickListener = { onClickListener(false)}
+                    )
+                } else {
+                    binding?.promoCheckoutBtnCart?.showActive(
+                        title,
+                        IconUnify.CHEVRON_RIGHT,
+                        onClickListener = { onClickListener(false) }
+                    )
+                }
+            }
+
             if (isApplied) {
                 PromoRevampAnalytics.eventCartViewPromoAlreadyApplied()
             }
         } else {
             binding?.promoCheckoutBtnCart?.gone()
-            binding?.llPromoCheckoutShadow?.gone()
         }
         if (tickerPromoData.enable) {
             binding?.promoCheckoutTickerCart?.visible()
@@ -3329,43 +3326,36 @@ class CartRevampFragment :
 
     private fun renderPromoCheckoutButtonActiveDefault(listPromoApplied: List<String>) {
         binding?.apply {
-            promoCheckoutBtnCart.state = ButtonPromoCheckoutView.State.ACTIVE
-            promoCheckoutBtnCart.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
-            promoCheckoutBtnCart.title =
-                getString(com.tokopedia.purchase_platform.common.R.string.promo_funnel_label)
-            promoCheckoutBtnCart.desc = ""
-            promoCheckoutBtnCart.setOnClickListener {
-                checkGoToPromo()
-                // analytics
-                PromoRevampAnalytics.eventCartClickPromoSection(
-                    listPromoApplied,
-                    false,
-                    userSession.userId
-                )
-            }
+            promoCheckoutBtnCart.showActive(
+                getString(com.tokopedia.purchase_platform.common.R.string.promo_funnel_label),
+                IconUnify.CHEVRON_RIGHT,
+                onClickListener = {
+                    checkGoToPromo()
+                    // analytics
+                    PromoRevampAnalytics.eventCartClickPromoSection(
+                        listPromoApplied,
+                        false,
+                        userSession.userId
+                    )
+                }
+            )
         }
     }
 
     private fun renderPromoCheckoutButtonNoItemIsSelected() {
         binding?.apply {
-            promoCheckoutBtnCart.state = ButtonPromoCheckoutView.State.ACTIVE
-            promoCheckoutBtnCart.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
-            promoCheckoutBtnCart.title =
-                getString(com.tokopedia.purchase_platform.common.R.string.promo_funnel_label)
-            promoCheckoutBtnCart.desc = getString(R.string.promo_desc_no_selected_item)
-            promoCheckoutBtnCart.setOnClickListener {
-                showToastMessageGreen(getString(R.string.promo_choose_item_cart))
-                PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
-            }
+            promoCheckoutBtnCart.showInactive(
+                getString(R.string.promo_desc_no_selected_item),
+                onClickListener = {
+                    showToastMessageGreen(getString(R.string.promo_choose_item_cart))
+                    PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
+                }
+            )
         }
     }
 
     private fun renderPromoCheckoutLoading() {
-        binding?.apply {
-            promoCheckoutBtnCart.state = ButtonPromoCheckoutView.State.LOADING
-            promoCheckoutBtnCart.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
-            promoCheckoutBtnCart.setOnClickListener { }
-        }
+        binding?.promoCheckoutBtnCart?.showLoading()
     }
 
     private fun renderRecentView(recommendationWidget: RecommendationWidget?) {
@@ -3430,10 +3420,8 @@ class CartRevampFragment :
     }
 
     private fun renderSelectedAmount() {
-//        if (viewModel.hasSelectedCartItem()) {
         initialSelectedAmountPosition = 0f
         viewModel.addItems(0, listOf(CartSelectedAmountHolderData()))
-//        }
         viewModel.updateSelectedAmount()
     }
 
