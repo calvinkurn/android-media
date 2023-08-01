@@ -580,7 +580,7 @@ object WebViewHelper {
             try {
                 val remoteConfig: RemoteConfig =
                     FirebaseRemoteConfigImpl(context.applicationContext)
-                val data = remoteConfig.getString(RemoteConfigKey.CONTACT_US_FORCE_RELOAD_URLS)
+                val data = remoteConfig.getString(RemoteConfigKey.CONTACT_US_DISABLE_FORCE_RELOAD_URLS)
                 if (data.isNotBlank()) {
                     contactUsForceReloadUrl = Gson().fromJson(
                         data,
