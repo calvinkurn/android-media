@@ -1,29 +1,28 @@
 package com.tokopedia.entertainment.pdp.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.entertainment.R
+import androidx.viewbinding.ViewBinding
+import com.tokopedia.entertainment.databinding.ItemCheckoutEventDataTambahanItemBinding
+import com.tokopedia.entertainment.databinding.ItemCheckoutEventDataTambahanItemFilledBinding
 import com.tokopedia.entertainment.pdp.data.checkout.AdditionalType
 import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutAdditionalData
 import com.tokopedia.entertainment.pdp.listener.OnAdditionalListener
-import kotlinx.android.synthetic.main.item_checkout_event_data_tambahan_item_filled.view.*
-import kotlinx.android.synthetic.main.item_checkout_event_data_tambahan_item.view.*
 
 class EventCheckoutAdditionalAdapter(private val listener: OnAdditionalListener) : RecyclerView.Adapter<EventCheckoutAdditionalAdapter.EventCheckoutAdditionalViewHolder>() {
 
     private var listAdditional = mutableListOf<EventCheckoutAdditionalData>()
 
-    inner class EventCheckoutAdditionalViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class EventCheckoutAdditionalViewHolder(val binding: ViewBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(additionalData: EventCheckoutAdditionalData) {
             additionalData.position = position
             with(itemView) {
                 when (additionalData.additionalType.type) {
                     AdditionalType.ITEM_UNFILL.type -> {
-                        tg_event_additional_item_title.text = additionalData.titleItem
-                        item_checkout_event_additional_item.setOnClickListener {
+                        (binding as ItemCheckoutEventDataTambahanItemBinding).tgEventAdditionalItemTitle.text = additionalData.titleItem
+                        (binding as ItemCheckoutEventDataTambahanItemBinding).itemCheckoutEventAdditionalItem.setOnClickListener {
                             clickedItem(additionalData)
                         }
                     }
@@ -31,11 +30,11 @@ class EventCheckoutAdditionalAdapter(private val listener: OnAdditionalListener)
                     AdditionalType.ITEM_FILLED.type -> {
                         val eventCheckoutAdditonalFilledAdapter = EventCheckoutAdditonalFilledAdapter()
                         eventCheckoutAdditonalFilledAdapter.setList(additionalData.listForm)
-                        rv_event_checkout_additional_item_filled.apply {
+                        (binding as ItemCheckoutEventDataTambahanItemFilledBinding).rvEventCheckoutAdditionalItemFilled.apply {
                             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
                             adapter = eventCheckoutAdditonalFilledAdapter
                         }
-                        container_event_checkout_additional_item_filled.setOnClickListener {
+                        (binding as ItemCheckoutEventDataTambahanItemFilledBinding).containerEventCheckoutAdditionalItemFilled.setOnClickListener {
                             clickedItem(additionalData)
                         }
                     }
@@ -51,13 +50,25 @@ class EventCheckoutAdditionalAdapter(private val listener: OnAdditionalListener)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventCheckoutAdditionalViewHolder {
-        val itemView = when (viewType) {
-            AdditionalType.ITEM_UNFILL.type -> LayoutInflater.from(parent.context).inflate(R.layout.item_checkout_event_data_tambahan_item, parent, false)
-            AdditionalType.ITEM_FILLED.type -> LayoutInflater.from(parent.context).inflate(R.layout.item_checkout_event_data_tambahan_item_filled, parent, false)
-            else -> LayoutInflater.from(parent.context).inflate(R.layout.item_checkout_event_data_tambahan_package, parent, false)
+        val binding = when (viewType) {
+            AdditionalType.ITEM_UNFILL.type -> ItemCheckoutEventDataTambahanItemBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+            AdditionalType.ITEM_FILLED.type -> ItemCheckoutEventDataTambahanItemFilledBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+            else -> ItemCheckoutEventDataTambahanItemBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
         }
 
-        return EventCheckoutAdditionalViewHolder(itemView)
+        return EventCheckoutAdditionalViewHolder(binding)
     }
 
     override fun getItemCount(): Int {

@@ -59,6 +59,7 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
                 position = index,
                 shopId = recommendation.shop.id,
                 shopName = recommendation.shop.name,
+                warehouseId = recommendation.warehouseId,
                 quantity = getItemQuantityBasedOnLayoutType(),
                 header = title,
                 pageName = pageName,
