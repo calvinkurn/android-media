@@ -6,15 +6,11 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.helper.FilterSortProduct
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.tokopedianow.common.domain.mapper.AceSearchParamMapper
 import com.tokopedia.tokopedianow.searchcategory.domain.model.QuickFilterModel
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-class GetSortFilterUseCase @Inject constructor(
-    private val aceSearchParamMapper: AceSearchParamMapper,
-    graphqlRepository: GraphqlRepository
-) {
+class GetSortFilterUseCase @Inject constructor(graphqlRepository: GraphqlRepository) {
 
     private val graphql by lazy { GraphqlUseCase<QuickFilterModel>(graphqlRepository) }
 
