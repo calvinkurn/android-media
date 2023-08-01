@@ -4,26 +4,21 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.databinding.WidgetEventPdpCarouselBinding
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.android.synthetic.main.widget_event_pdp_carousel.*
-import kotlinx.android.synthetic.main.widget_event_pdp_carousel.view.*
-
 
 class WidgetEventPDPCarousel @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null,
                                                        defStyleAttr: Int = 0): BaseCustomView(context, attrs, defStyleAttr) {
-
-    private val indicatorBannerContainer: LinearLayout
-    private val vpBannerCategory: RecyclerView
 
     private var indicatorItems: ArrayList<ImageView> = arrayListOf()
     var imageUrls: ArrayList<String> = arrayListOf()
@@ -35,6 +30,10 @@ class WidgetEventPDPCarousel @JvmOverloads constructor(context: Context, attrs: 
 
     var currentPosition: Int = 0
 
+    private val binding = WidgetEventPdpCarouselBinding.inflate(
+        LayoutInflater.from(context),
+        this, true
+    )
     override fun onFinishInflate() {
         super.onFinishInflate()
         invalidate()
@@ -45,55 +44,51 @@ class WidgetEventPDPCarousel @JvmOverloads constructor(context: Context, attrs: 
         fun onImageClicked(position: Int)
     }
 
-    init {
-        val view = View.inflate(context, R.layout.widget_event_pdp_carousel, this)
-        indicatorBannerContainer = view.findViewById(R.id.event_pdp_indicator_banner_container) as LinearLayout
-        vpBannerCategory = view.findViewById(R.id.viewpager_event_pdp) as RecyclerView
-    }
-
     fun buildView() {
-        shimmering_image.gone()
-        event_pdp_indicator_banner_container.show()
-        viewpager_event_pdp.show()
-        visibility = View.VISIBLE
-        indicatorBannerContainer.visibility = View.VISIBLE
+        with(binding) {
+            shimmeringImage.gone()
+            eventPdpIndicatorBannerContainer.show()
+            viewpagerEventPdp.show()
+            visibility = View.VISIBLE
+            eventPdpIndicatorBannerContainer.visibility = View.VISIBLE
 
-        indicatorItems.clear()
-        indicatorBannerContainer.removeAllViews()
-        vpBannerCategory.setHasFixedSize(true)
+            indicatorItems.clear()
+            eventPdpIndicatorBannerContainer.removeAllViews()
+            viewpagerEventPdp.setHasFixedSize(true)
 
-        val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        vpBannerCategory.layoutManager = layoutManager
+            val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            viewpagerEventPdp.layoutManager = layoutManager
 
-        imageViewPagerAdapter = WidgetEventPDPCarouselAdapter(arrayListOf(), imageViewPagerListener)
-        vpBannerCategory.adapter = imageViewPagerAdapter
+            imageViewPagerAdapter = WidgetEventPDPCarouselAdapter(arrayListOf(), imageViewPagerListener)
+            viewpagerEventPdp.adapter = imageViewPagerAdapter
 
-        for (count in 0 until imageUrls.size) {
-            val pointView = ImageView(context)
-            pointView.setPadding(resources.getDimensionPixelSize(R.dimen.dimen_dp_5),resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl0),
-                    resources.getDimensionPixelSize(R.dimen.dimen_dp_5),resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl0))
-            if (count == 0) pointView.setImageDrawable(resizeIndicator(getIndicatorFocus(),imageUrls.size))
-            else pointView.setImageDrawable(resizeIndicator(getIndicator(),imageUrls.size))
+            for (count in 0 until imageUrls.size) {
+                val pointView = ImageView(context)
+                pointView.setPadding(resources.getDimensionPixelSize(R.dimen.dimen_dp_5),resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl0),
+                        resources.getDimensionPixelSize(R.dimen.dimen_dp_5),resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl0))
+                if (count == 0) pointView.setImageDrawable(resizeIndicator(getIndicatorFocus(),imageUrls.size))
+                else pointView.setImageDrawable(resizeIndicator(getIndicator(),imageUrls.size))
 
-            indicatorItems.add(pointView)
-            indicatorBannerContainer.addView(pointView)
-        }
-
-        vpBannerCategory.clearOnScrollListeners()
-        vpBannerCategory.addOnScrollListener(object: RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                currentPosition = (vpBannerCategory.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
-                if (currentPosition != -1) vpBannerCategory.smoothScrollToPosition(currentPosition)
-                setCurrentIndicator()
+                indicatorItems.add(pointView)
+                eventPdpIndicatorBannerContainer.addView(pointView)
             }
-        })
 
-        if (imageUrls.size == 1) indicatorBannerContainer.visibility = View.GONE
+            viewpagerEventPdp.clearOnScrollListeners()
+            viewpagerEventPdp.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    currentPosition = (viewpagerEventPdp.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
+                    if (currentPosition != -1) viewpagerEventPdp.smoothScrollToPosition(currentPosition)
+                    setCurrentIndicator()
+                }
+            })
 
-        val snapHelper = PagerSnapHelper()
-        vpBannerCategory.onFlingListener = null
-        snapHelper.attachToRecyclerView(vpBannerCategory)
+            if (imageUrls.size == 1) eventPdpIndicatorBannerContainer.visibility = View.GONE
+
+            val snapHelper = PagerSnapHelper()
+            viewpagerEventPdp.onFlingListener = null
+            snapHelper.attachToRecyclerView(viewpagerEventPdp)
+        }
     }
 
     fun setCurrentIndicator() {
@@ -110,9 +105,11 @@ class WidgetEventPDPCarousel @JvmOverloads constructor(context: Context, attrs: 
     }
 
     fun shimmering(){
-        shimmering_image.show()
-        event_pdp_indicator_banner_container.invisible()
-        viewpager_event_pdp.invisible()
+        with(binding) {
+            shimmeringImage.show()
+            eventPdpIndicatorBannerContainer.invisible()
+            viewpagerEventPdp.invisible()
+        }
     }
 
     fun resizeIndicator(id: Int, size: Int): GradientDrawable{

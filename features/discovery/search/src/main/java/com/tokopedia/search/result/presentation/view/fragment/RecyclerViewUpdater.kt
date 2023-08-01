@@ -11,6 +11,7 @@ import com.tokopedia.search.di.qualifier.SearchContext
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ProductItemDecoration
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ProductListViewItemDecoration
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.SeparatorItemDecoration
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
@@ -59,6 +60,18 @@ class RecyclerViewUpdater @Inject constructor(
         registerLifecycleObserver(viewLifecycleOwner)
     }
 
+    fun changeLayoutManager(
+        layoutManager: RecyclerView.LayoutManager,
+        removedScrollListeners: List<RecyclerView.OnScrollListener?>,
+        addedScrollListeners: List<RecyclerView.OnScrollListener?>,
+    ) {
+        recyclerView?.apply {
+            this.layoutManager = layoutManager
+            removedScrollListeners.filterNotNull().forEach(::removeOnScrollListener)
+            addedScrollListeners.filterNotNull().forEach(::addOnScrollListener)
+        }
+    }
+
     private fun setupRecyclerView(
         rvLayoutManager: RecyclerView.LayoutManager?,
         onScrollListenerList: List<RecyclerView.OnScrollListener?>,
@@ -68,14 +81,12 @@ class RecyclerViewUpdater @Inject constructor(
         this.recyclerView?.run {
             layoutManager = rvLayoutManager
             adapter = productListAdapter
-            addItemDecoration(createProductItemDecoration())
+            addItemDecoration(ProductItemDecoration(getSpacing(), productListAdapter))
             addItemDecoration(SeparatorItemDecoration(context, productListAdapter))
+            addItemDecoration(ProductListViewItemDecoration(context, productListAdapter))
             onScrollListenerList.filterNotNull().forEach(::addOnScrollListener)
         }
     }
-
-    private fun createProductItemDecoration(): ProductItemDecoration =
-        ProductItemDecoration(getSpacing())
 
     private fun getSpacing(): Int =
         context

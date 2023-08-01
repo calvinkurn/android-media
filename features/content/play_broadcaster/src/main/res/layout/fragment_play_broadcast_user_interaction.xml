@@ -139,7 +139,7 @@
             app:layout_constraintStart_toEndOf="@id/icon_product"
             app:layout_constraintWidth_default="wrap" />
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/iv_share_link"
             android:layout_width="@dimen/layout_lvl5"
             android:layout_height="@dimen/layout_lvl5"
@@ -148,7 +148,11 @@
             android:background="@drawable/bg_play_light_gray_circle"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/ic_play_share_link_white" />
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_light_disabled="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            app:icon_color_night_disabled="@color/Unify_Static_White"
+            app:icon_name="LINK" />
 
         <include
             android:id="@+id/loading_view"

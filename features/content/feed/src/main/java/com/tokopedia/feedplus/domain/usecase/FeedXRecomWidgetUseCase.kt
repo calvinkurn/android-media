@@ -20,12 +20,17 @@ class FeedXRecomWidgetUseCase @Inject constructor(
 ) : CoroutineUseCase<Map<String, Any>, FeedFollowRecommendationModel>(dispatcher.io){
 
     override suspend fun execute(params: Map<String, Any>): FeedFollowRecommendationModel {
+        val widgetId = params[PARAM_WIDGET_ID].toString()
+        val finalParam = params.toMutableMap().apply {
+            remove(PARAM_WIDGET_ID)
+        }
+
         val response = graphqlRepository.request<Map<String, Any>, FeedXRecomWidgetEntity>(
             graphqlQuery(),
-            params
+            finalParam
         )
 
-        return uiMapper.transform(response)
+        return uiMapper.transform(response, widgetId)
     }
 
     override fun graphqlQuery(): String = """
@@ -66,20 +71,26 @@ class FeedXRecomWidgetUseCase @Inject constructor(
         screenName: String,
         limit: Int,
         cursor: String,
+        widgetId: String,
     ) = mapOf(
         PARAM_REQ to mapOf(
             PARAM_SCREEN_NAME to screenName,
             PARAM_LIMIT to limit,
             PARAM_CURSOR to cursor,
-        )
+        ),
+
+        /** PARAM_WIDGET_ID only for mapper, will be removed when calling real gql */
+        PARAM_WIDGET_ID to widgetId
     )
 
     fun createFeedFollowRecomParams(
-        cursor: String
+        cursor: String,
+        widgetId: String,
     ) = createParams(
         screenName = SCREEN_FOLLOWING_TAB,
         limit = FEED_FOLLOW_RECOM_LIMIT,
         cursor = cursor,
+        widgetId = widgetId,
     )
 
     companion object {
@@ -87,6 +98,7 @@ class FeedXRecomWidgetUseCase @Inject constructor(
         private const val PARAM_SCREEN_NAME = "screenName"
         private const val PARAM_LIMIT = "limit"
         private const val PARAM_CURSOR = "cursor"
+        private const val PARAM_WIDGET_ID = "widgetId"
 
         private const val SCREEN_FOLLOWING_TAB = "following_tab"
         private const val FEED_FOLLOW_RECOM_LIMIT = 10

@@ -68,7 +68,7 @@ class MapperFeedXHome @Inject constructor(
                 } else if (isLivePreviewPost(card)) {
                     transformToFeedCardLivePreview(card)
                 } else if (isFollowRecomWidget(card)) {
-                    transformToFollowRecomWidget()
+                    transformToFollowRecomWidget(card)
                 } else {
                     transformToFeedCardImage(card)
                 }
@@ -137,7 +137,7 @@ class MapperFeedXHome @Inject constructor(
             publishedAt = card.publishedAt,
             maxDiscountPercentage = card.maximumDiscountPercentage,
             maxDiscountPercentageFmt = card.maximumDiscountPercentageFmt,
-            topAdsId = if (isTopAdsPost(card)) card.id else ""
+            topAdsId = if (isTopAdsPost(card)) card.id else "",
         )
     }
 
@@ -225,7 +225,7 @@ class MapperFeedXHome @Inject constructor(
             }
         )
 
-    private fun transformToFollowRecomWidget() = FeedFollowRecommendationModel.Empty
+    private fun transformToFollowRecomWidget(card: FeedXCard) = FeedFollowRecommendationModel.Empty.copy(id = card.id)
 
     private fun transformAuthor(author: FeedXAuthor): FeedAuthorModel = FeedAuthorModel(
         id = author.id,
@@ -276,7 +276,8 @@ class MapperFeedXHome @Inject constructor(
             stockSoldPercentage = product.stockSoldPercentage,
             cartable = product.cartable,
             isCashback = product.isCashback,
-            cashbackFmt = product.cashbackFmt
+            cashbackFmt = product.cashbackFmt,
+            isAvailable = product.isAvailable,
         )
 
     private fun transformMedia(media: FeedXMedia): FeedMediaModel =

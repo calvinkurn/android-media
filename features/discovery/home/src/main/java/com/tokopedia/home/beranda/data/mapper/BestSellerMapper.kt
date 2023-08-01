@@ -100,6 +100,7 @@ class BestSellerMapper @Inject constructor() {
             cartId = recommendationItem.cartId,
             categoryBreadcrumbs = recommendationItem.categoryBreadcrumbs,
             pageName = recommendationItem.pageName,
-            header = recommendationItem.header
+            header = recommendationItem.header,
+            warehouseId = recommendationItem.warehouseId.toString()
         )
 }

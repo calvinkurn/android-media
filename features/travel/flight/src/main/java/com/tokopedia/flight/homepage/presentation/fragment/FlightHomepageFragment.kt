@@ -730,8 +730,7 @@ class FlightHomepageFragment :
     }
 
     override fun onOrderListClicked() {
-        // TODO: [Misael] Flight analytics event click transactions
-//        flightAnalytics.eventClickTransactions(screenName)
+        flightHomepageViewModel.sendTrackingClickTransaction(screenName)
         RouteManager.route(activity, ApplinkConst.FLIGHT_ORDER)
     }
 
