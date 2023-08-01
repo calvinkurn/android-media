@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel
+import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductSortingUiModel
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.viewholder.OfferingInfoViewHolder
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.viewholder.OfferingProductSortingViewHolder
@@ -15,6 +16,7 @@ class OlpAdapterTypeFactoryImpl(
 ) : OlpAdapterTypeFactory, BaseAdapterTypeFactory() {
     override fun type(type: OfferInfoForBuyerUiModel) = OfferingInfoViewHolder.LAYOUT
     override fun type(type: OfferProductSortingUiModel) = OfferingProductSortingViewHolder.LAYOUT
+    override fun type(type: OfferProductListUiModel) = 0
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         val viewHolder = when (type) {

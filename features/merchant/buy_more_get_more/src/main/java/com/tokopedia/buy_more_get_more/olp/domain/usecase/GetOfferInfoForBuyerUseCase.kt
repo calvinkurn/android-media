@@ -24,8 +24,6 @@ class GetOfferInfoForBuyerUseCase @Inject constructor(
 
     companion object {
         private const val REQUEST_PARAM_INPUT = "input"
-        private const val REQUEST_PARAM_OFFER_IDS = "offer_ids"
-        private const val REQUEST_PARAM_SOURCE = "source"
     }
 
     private val query = object : GqlQueryInterface {
