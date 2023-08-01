@@ -167,7 +167,7 @@ class PlayBroadcastReportFragment @Inject constructor(
                     }
 
                     PlayBroadcastSummaryEvent.CloseReportPage -> requireActivity().onBackPressed()
-                    PlayBroadcastSummaryEvent.OpenLeaderboardBottomSheet -> showInteractiveLeaderboardSheet()
+                    PlayBroadcastSummaryEvent.OpenLeaderboardBottomSheet -> openInteractiveLeaderboardSheet()
                     PlayBroadcastSummaryEvent.OpenPostVideoPage -> mListener?.onClickPostButton()
                     else -> {}
                 }
@@ -234,7 +234,7 @@ class PlayBroadcastReportFragment @Inject constructor(
         if (prev == state || state.page != TickerBottomSheetPage.LIVE_REPORT) return
 
         when (state.type) {
-            TickerBottomSheetType.TICKER -> openTickerDisableLiveToVod(state)
+            TickerBottomSheetType.TICKER -> showTickerDisableLiveToVod(state)
             else -> return
         }
     }
@@ -245,7 +245,7 @@ class PlayBroadcastReportFragment @Inject constructor(
         binding.btnPostVideo.showWithCondition(state.showPostVideoButton)
     }
 
-    private fun openTickerDisableLiveToVod(state: TickerBottomSheetUiModel) {
+    private fun showTickerDisableLiveToVod(state: TickerBottomSheetUiModel) {
         binding.tickerReportPage.apply {
             tickerTitle = state.mainText.first().title
             setHtmlDescription(
@@ -286,7 +286,7 @@ class PlayBroadcastReportFragment @Inject constructor(
         }
     }
 
-    private fun showInteractiveLeaderboardSheet() {
+    private fun openInteractiveLeaderboardSheet() {
         val leaderboardReportBottomSheet = PlayBroInteractiveBottomSheet.setupReportLeaderboard(
             childFragmentManager,
             requireContext().classLoader
