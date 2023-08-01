@@ -1,5 +1,6 @@
 package com.tokopedia.filter.bottomsheet.filter
 
+import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,13 +17,15 @@ import com.tokopedia.filter.databinding.SortFilterBottomSheetChipsLayoutBinding
 import com.tokopedia.filter.databinding.SortFilterBottomSheetFilterViewHolderBinding
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil;
 import com.tokopedia.utils.view.binding.viewBinding
 
 internal class FilterViewHolder(
-        itemView: View,
-        private val recycledViewPool: RecycledViewPool,
-        private val filterViewListener: FilterViewListener
+    itemView: View,
+    private val isReimagine: Boolean,
+    private val recycledViewPool: RecycledViewPool,
+    private val filterViewListener: FilterViewListener
 ): AbstractViewHolder<FilterViewModel>(itemView) {
 
     companion object {
@@ -61,7 +64,10 @@ internal class FilterViewHolder(
     }
 
     private fun bindOptionList(element: FilterViewModel) {
-        binding?.optionRecyclerView?.swapAdapter(OptionAdapter(element, filterViewListener), false)
+        binding?.optionRecyclerView?.swapAdapter(
+            OptionAdapter(isReimagine, element, filterViewListener),
+            false
+        )
     }
 
     private fun bindSeeAll(element: FilterViewModel) {
@@ -80,13 +86,14 @@ internal class FilterViewHolder(
     }
 
     private class OptionAdapter(
-            val filterViewModel: FilterViewModel,
-            val filterViewListener: FilterViewListener
+        val isReimagine: Boolean,
+        val filterViewModel: FilterViewModel,
+        val filterViewListener: FilterViewListener
     ): RecyclerView.Adapter<OptionViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OptionViewHolder {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.sort_filter_bottom_sheet_chips_layout, parent, false)
-            return OptionViewHolder(view, filterViewModel, filterViewListener)
+            return OptionViewHolder(view, isReimagine, filterViewModel, filterViewListener)
         }
 
         override fun getItemCount() = filterViewModel.optionViewModelList.size
@@ -97,9 +104,10 @@ internal class FilterViewHolder(
     }
 
     private class OptionViewHolder(
-            itemView: View,
-            private val filterViewModel: FilterViewModel,
-            private val filterViewListener: FilterViewListener
+        itemView: View,
+        private val isReimagine: Boolean,
+        private val filterViewModel: FilterViewModel,
+        private val filterViewListener: FilterViewListener
     ): RecyclerView.ViewHolder(itemView) {
         private var binding: SortFilterBottomSheetChipsLayoutBinding? by viewBinding()
 
@@ -107,7 +115,6 @@ internal class FilterViewHolder(
             val sortFilterChipsUnify = binding?.sortFilterChipsUnify ?: return
             sortFilterChipsUnify.chipText = optionViewModel.option.name
             sortFilterChipsUnify.chipType = ChipsUnify.TYPE_NORMAL
-            sortFilterChipsUnify.chipSize = ChipsUnify.SIZE_MEDIUM
             sortFilterChipsUnify.chipType =
                     if (optionViewModel.isSelected) ChipsUnify.TYPE_SELECTED
                     else ChipsUnify.TYPE_NORMAL
@@ -116,6 +123,11 @@ internal class FilterViewHolder(
             sortFilterChipsUnify.setOnClickListener {
                 filterViewListener.onOptionClick(filterViewModel, optionViewModel)
             }
+
+            //TODO:: Reimagine
+//            sortFilterChipsUnify.chipSize =
+//                if (isReimagine) ChipsUnify.SIZE_SMALL
+//                else ChipsUnify.SIZE_MEDIUM
         }
 
         private fun ChipsUnify.showIcon(optionViewModel: OptionViewModel) {

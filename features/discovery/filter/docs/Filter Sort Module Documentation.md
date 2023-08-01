@@ -56,6 +56,7 @@ Show function takes four arguments:
 2. `Map<String, String>` → Map Parameter of the page, usually contains all parameters sent to Back End. This is used by the Bottom Sheet to determine active sort and filters that you have.
 3. `DynamicFilterModel` → DynamicFilterModel retrieved from Back End.
 4. `SortFilterBottomSheet.Callback` → Callback interface used by `SortFilterBottomSheet`.
+5. `isReimagine` → Optional Boolean flag to use the new Reimagine UI. Default is false.
 
 `SortFilterBottomSheet.Callback` has two functions that needs to be implemented by the page using `SortFilterBottomSheet`:
 
