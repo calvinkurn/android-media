@@ -5647,8 +5647,8 @@ class ShipmentViewModel @Inject constructor(
     fun saveAddOnsProductBeforeCheckout() {
         if (shipmentCartItemModelList.isNotEmpty()) {
             val allShipmentCartItemModel: ArrayList<CartItemModel> = arrayListOf()
-            shipmentCartItemModelList.forEach { shipmentCartItem ->
-                (shipmentCartItem as ShipmentCartItemModel).cartItemModels.forEach { cartItemModel ->
+            shipmentCartItemModelList.filterIsInstance<ShipmentCartItemModel>().forEach { shipmentCartItem ->
+                shipmentCartItem.cartItemModels.forEach { cartItemModel ->
                     allShipmentCartItemModel.add(cartItemModel)
                 }
             }
