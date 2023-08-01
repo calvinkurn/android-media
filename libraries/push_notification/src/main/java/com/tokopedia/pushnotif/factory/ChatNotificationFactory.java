@@ -78,9 +78,10 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
         builder.setDeleteIntent(createDismissPendingIntent(notificationType, notificationId, applinkNotificationModel));
         builder.setAutoCancel(true);
         builder.setPriority(NotificationCompat.PRIORITY_HIGH);
-
         if (isAllowBell()) {
-            builder.setSound(getRingtoneUri());
+            Uri ringToneUri = getRingtoneUri();
+            context.grantUriPermission(context.getPackageName(), ringToneUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            builder.setSound(ringToneUri);
             if (isAllowVibrate()) builder.setVibrate(getVibratePattern());
         }
 

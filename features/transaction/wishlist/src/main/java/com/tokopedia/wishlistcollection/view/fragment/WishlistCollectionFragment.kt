@@ -58,7 +58,7 @@ import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter.Companion.LAYOUT_RE
 import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment
 import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics
 import com.tokopedia.wishlistcollection.data.model.WishlistCollectionCarouselEmptyStateData
-import com.tokopedia.wishlistcollection.data.params.UpdateWishlistCollectionParams
+import com.tokopedia.wishlistcommon.data.params.UpdateWishlistCollectionParams
 import com.tokopedia.wishlistcollection.data.response.CreateWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionComponent
@@ -72,7 +72,7 @@ import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.REQUEST_CO
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLECTION_SHARE
 import com.tokopedia.wishlistcollection.util.WishlistCollectionPrefs
 import com.tokopedia.wishlistcollection.util.WishlistCollectionSharingUtils
-import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionEditActivity
+import com.tokopedia.wishlistcollection.view.IWishlistCollectionFragment
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter.Companion.LAYOUT_DIVIDER
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter.Companion.LAYOUT_LOADER
@@ -82,7 +82,6 @@ import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetKebabMenuWis
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetOnboardingWishlistCollection
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetUpdateWishlistCollectionName
 import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerBottomSheetMenu
-import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerFromCollectionPage
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionViewModel
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -92,8 +91,8 @@ import kotlin.math.roundToInt
 @Keep
 class WishlistCollectionFragment :
     BaseDaggerFragment(),
+    IWishlistCollectionFragment,
     WishlistCollectionAdapter.ActionListener,
-    ActionListenerFromCollectionPage,
     BottomSheetUpdateWishlistCollectionName.ActionListener,
     BottomSheetOnboardingWishlistCollection.ActionListener,
     ActionListenerBottomSheetMenu {
@@ -760,10 +759,14 @@ class WishlistCollectionFragment :
 
     override fun onEditCollection(collectionId: String, collectionName: String, actionText: String) {
         bottomSheetKebabMenu?.dismiss()
-        val intent = Intent(context, WishlistCollectionEditActivity::class.java)
-        intent.putExtra(COLLECTION_ID, collectionId)
-        intent.putExtra(COLLECTION_NAME, collectionName)
-        startActivityForResult(intent, EDIT_WISHLIST_COLLECTION_REQUEST_CODE)
+        val intentEditWishlistCollection =
+            RouteManager.getIntent(context, ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_EDIT)
+        intentEditWishlistCollection.putExtra(COLLECTION_ID, collectionId)
+        intentEditWishlistCollection.putExtra(COLLECTION_NAME, collectionName)
+        startActivityForResult(
+            intentEditWishlistCollection,
+            EDIT_WISHLIST_COLLECTION_REQUEST_CODE
+        )
     }
 
     override fun onDeleteCollection(collectionId: String, collectionName: String, actionText: String) {

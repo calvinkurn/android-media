@@ -11,12 +11,14 @@ class MapperFeedXRecomWidget @Inject constructor(
 
 ) {
 
-    fun transform(entity: FeedXRecomWidgetEntity): FeedFollowRecommendationModel {
+    fun transform(
+        entity: FeedXRecomWidgetEntity,
+        widgetId: String
+    ): FeedFollowRecommendationModel {
         val data = entity.wrapper
 
         return FeedFollowRecommendationModel(
-            /** TODO: revisit this later */
-            id = "follow_recommendation",
+            id = widgetId,
             title = data.title,
             description = data.subtitle,
             data = data.items.map { profile ->
