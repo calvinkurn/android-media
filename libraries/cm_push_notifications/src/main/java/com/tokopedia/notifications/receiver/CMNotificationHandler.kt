@@ -117,7 +117,7 @@ class CMNotificationHandler : CoroutineScope {
                                 it,
                                 actionButtonData
                             )
-                            if (excludeEventSend(actionButtonData)) {
+                            if (includeEventSend(actionButtonData)) {
                                 sendElementClickPushEvent(context, it, getActionElementId(actionButtonData))
                             }
                         }
@@ -470,19 +470,17 @@ class CMNotificationHandler : CoroutineScope {
             return it.type == CMConstant.PreDefineActionType.ATC ||
                 it.type == CMConstant.PreDefineActionType.OCC
         }
-        return true
+        return false
     }
 
-    private fun excludeEventSend(actionButton: ActionButton?): Boolean {
+    private fun includeEventSend(actionButton: ActionButton?): Boolean {
         if (isShareButtonClick(actionButton)) {
             return true
         } else {
             actionButton?.type?.let {
-                if (it == CMConstant.PayloadKeys.ADD_TO_CART) {
-                    return false
-                }
+                return it != CMConstant.PayloadKeys.ADD_TO_CART
             }
-            return true
+            return false
         }
     }
 
