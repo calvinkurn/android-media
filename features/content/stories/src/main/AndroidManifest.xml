@@ -14,7 +14,7 @@
 
                 <data
                     android:host="@string/host_stories"
-                    android:pathPattern="@string/path_shop_stories"
+                    android:pathPattern="@string/path_stories_shop"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
