@@ -16,16 +16,21 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
 import com.tokopedia.universal_sharing.model.WishlistCollectionParamModel
+import com.tokopedia.universal_sharing.tracker.PageType
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
+import com.tokopedia.universal_sharing.view.model.PageDetail
+import com.tokopedia.universal_sharing.view.model.Product
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.universal_sharing.view.model.Shop
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionSharingDataResponse
 import java.io.File
 
-class WishlistCollectionSharingUtils() {
+class WishlistCollectionSharingUtils {
     private var collectionShareBottomSheet: UniversalShareBottomSheet? = null
 
     fun showUniversalShareWithMediaBottomSheet(
@@ -52,6 +57,8 @@ class WishlistCollectionSharingUtils() {
                         if (shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
                             ogImageUrl = shareModel.ogImgUrl
                         }
+                        isAffiliate = shareModel.isAffiliate
+                        linkAffiliateType = WISHLIST
                     }
                 )
 
@@ -105,6 +112,7 @@ class WishlistCollectionSharingUtils() {
                 tnTitle = data.collection.name,
                 tnImage = imgUrl
             )
+//            enableAffiliateCommission(createShareInput(data.collection.id.toString()))
         }
         collectionShareBottomSheet?.show(childFragmentManager, fragment)
         WishlistCollectionAnalytics.sendViewOnSharingChannelCollectionEvent(data.collection.id, userId)
@@ -164,12 +172,37 @@ class WishlistCollectionSharingUtils() {
         context.startActivity(Intent.createChooser(shareIntent, title))
     }
 
+    private fun createShareInput(
+        collectionId: String
+    ): AffiliateInput {
+        val pageDetail = PageDetail(
+            pageId = collectionId,
+            pageType = PageType.WISHLIST.value,
+            siteId = SITE_ID,
+            verticalId = VERTICAL_ID
+        )
+
+        return AffiliateInput(
+            pageDetail = pageDetail,
+            pageType = PageType.WISHLIST.value,
+            product = Product(
+                productID = "0"
+            ),
+            shop = Shop(
+                shopID = "0"
+            )
+        )
+    }
+
     companion object {
-        private const val WISHLIST_COLLECTION = "WISHLIST_COLLECTION"
+        private const val WISHLIST = "wishlist"
         private const val PRODUCT_COUNT_2 = 2
         private const val PRODUCT_COUNT_3 = 3
         private const val PRODUCT_COUNT_4 = 4
         private const val PRODUCT_COUNT_5 = 5
         private const val PRODUCT_COUNT_6 = 6
+
+        private const val SITE_ID = "1"
+        private const val VERTICAL_ID = "1"
     }
 }

@@ -10,7 +10,6 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.DrawableRes
-import androidx.annotation.IdRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
@@ -23,7 +22,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadIcon
-import com.tokopedia.productcard.layout.LayoutStrategyBestSeller
 import com.tokopedia.productcard.utils.CLOSE_BOLD_TAG
 import com.tokopedia.productcard.utils.CustomTypefaceSpan
 import com.tokopedia.productcard.utils.OPEN_BOLD_TAG
@@ -39,8 +37,9 @@ import com.tokopedia.unifyprinciples.getTypeface
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
 
 internal fun View.renderProductCardContent(
-        productCardModel: ProductCardModel,
-        isWideContent: Boolean = false,
+    productCardModel: ProductCardModel,
+    isMergePriceSection: Boolean = false,
+    isMergeShippingSection: Boolean = false,
 ) {
     renderTextGimmick(productCardModel)
     renderPdpCountView(productCardModel)
@@ -63,7 +62,7 @@ internal fun View.renderProductCardContent(
     renderTextETA(productCardModel)
     productCardModel.layoutStrategy.configContentPosition(this)
 
-    if (isWideContent) configureWideContent(productCardModel)
+    configureConstraint(productCardModel, isMergePriceSection, isMergeShippingSection)
 }
 
 private fun View.renderTextGimmick(productCardModel: ProductCardModel) {
@@ -393,13 +392,19 @@ private fun View.renderTextETA(productCardModel: ProductCardModel) {
     productCardModel.layoutStrategy.renderTextEta(this, productCardModel)
 }
 
-private fun View.configureWideContent(productCardModel: ProductCardModel) {
+private fun View.configureConstraint(
+    productCardModel: ProductCardModel,
+    isMergePriceSection: Boolean,
+    isMergeShippingSection: Boolean,
+) {
     val view = findViewById<ConstraintLayout?>(R.id.productCardContentLayout)
 
     view?.applyConstraintSet {
-        mergePriceSection(it)
-        configureShopInfoBelowPriceSection(productCardModel, it)
-        mergeShippingSection(it, productCardModel)
+        if (isMergePriceSection) mergePriceSection(it)
+        else splitPriceSection(it)
+
+        if (isMergeShippingSection) mergeShippingSection(it, productCardModel)
+        else splitShippingSection(it)
     }
 }
 
@@ -414,24 +419,6 @@ private fun mergePriceSection(constraintSet: ConstraintSet) {
     constraintSet.setGoneMargin(R.id.textViewSlashedPrice, ConstraintSet.START, 4.toPx())
 }
 
-private fun configureShopInfoBelowPriceSection(productCardModel: ProductCardModel, constraintSet: ConstraintSet) {
-    val visiblePriceSectionId = getVisiblePriceSectionId(productCardModel)
-
-    constraintSet.connect(R.id.imageShopBadge, ConstraintSet.TOP, visiblePriceSectionId, ConstraintSet.BOTTOM, 5.toPx())
-    constraintSet.connect(R.id.textViewShopLocation, ConstraintSet.TOP, visiblePriceSectionId, ConstraintSet.BOTTOM, 4.toPx())
-    constraintSet.connect(R.id.imageFulfillment, ConstraintSet.TOP, visiblePriceSectionId, ConstraintSet.BOTTOM, 5.toPx())
-}
-
-@IdRes
-private fun getVisiblePriceSectionId(productCardModel: ProductCardModel): Int {
-    return when {
-        productCardModel.getPriceToRender().isNotEmpty() -> R.id.textViewPrice
-        productCardModel.discountPercentage.isNotEmpty() -> R.id.labelDiscount
-        productCardModel.slashedPrice.isNotEmpty() -> R.id.textViewSlashedPrice
-        else -> R.id.labelPrice
-    }
-}
-
 private fun mergeShippingSection(it: ConstraintSet, productCardModel: ProductCardModel) {
     it.connect(R.id.textViewShipping, ConstraintSet.TOP, R.id.imageShopRating, ConstraintSet.BOTTOM, 5.toPx())
     it.connect(R.id.textViewShipping, ConstraintSet.START, R.id.imageFreeOngkirPromo, ConstraintSet.END, 0.toPx())
@@ -440,4 +427,84 @@ private fun mergeShippingSection(it: ConstraintSet, productCardModel: ProductCar
     val labelETAMarginStart = if (isShowFreeOngkirBadge) 4.toPx() else 0.toPx()
     it.connect(R.id.textViewETA, ConstraintSet.TOP, R.id.imageShopRating, ConstraintSet.BOTTOM, 7.toPx())
     it.connect(R.id.textViewETA, ConstraintSet.START, R.id.textViewShipping, ConstraintSet.END, labelETAMarginStart)
+}
+
+private fun splitPriceSection(constraintSet: ConstraintSet) {
+    constraintSet.connect(
+        R.id.labelPrice,
+        ConstraintSet.TOP,
+        R.id.textViewPrice,
+        ConstraintSet.BOTTOM,
+        2.toPx()
+    )
+    constraintSet.connect(
+        R.id.labelPrice,
+        ConstraintSet.START,
+        ConstraintSet.PARENT_ID,
+        ConstraintSet.START,
+        0.toPx()
+    )
+
+    constraintSet.connect(
+        R.id.labelDiscount,
+        ConstraintSet.TOP,
+        R.id.textViewPrice,
+        ConstraintSet.BOTTOM,
+        2.toPx()
+    )
+    constraintSet.connect(
+        R.id.labelDiscount,
+        ConstraintSet.START,
+        ConstraintSet.PARENT_ID,
+        ConstraintSet.START,
+        0.toPx()
+    )
+
+    constraintSet.connect(
+        R.id.textViewSlashedPrice,
+        ConstraintSet.TOP,
+        R.id.labelDiscount,
+        ConstraintSet.TOP,
+        0.toPx()
+    )
+    constraintSet.connect(
+        R.id.textViewSlashedPrice,
+        ConstraintSet.START,
+        R.id.labelDiscount,
+        ConstraintSet.END,
+        4.toPx()
+    )
+    constraintSet.setGoneMargin(R.id.textViewSlashedPrice, ConstraintSet.START, 0)
+}
+
+private fun splitShippingSection(constraintSet: ConstraintSet) {
+    constraintSet.connect(
+        R.id.textViewShipping,
+        ConstraintSet.TOP,
+        R.id.imageFreeOngkirPromo,
+        ConstraintSet.BOTTOM,
+        4.toPx()
+    )
+    constraintSet.connect(
+        R.id.textViewShipping,
+        ConstraintSet.START,
+        ConstraintSet.PARENT_ID,
+        ConstraintSet.START,
+        0
+    )
+
+    constraintSet.connect(
+        R.id.textViewETA,
+        ConstraintSet.TOP,
+        R.id.textViewShipping,
+        ConstraintSet.BOTTOM,
+        4.toPx()
+    )
+    constraintSet.connect(
+        R.id.textViewETA,
+        ConstraintSet.START,
+        ConstraintSet.PARENT_ID,
+        ConstraintSet.START,
+        0
+    )
 }

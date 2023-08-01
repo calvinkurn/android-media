@@ -8,7 +8,7 @@
         android:label="Review Test"
         tools:replace="android:label">
         <activity
-            android:name=".stub.reviewdetail.view.activity.SellerReviewDetailActivityStub"
+            android:name="com.tokopedia.review.stub.reviewdetail.view.activity.SellerReviewDetailActivityStub"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
@@ -26,7 +26,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".stub.inbox.presentation.activity.InboxReputationActivityStub"
+            android:name="com.tokopedia.review.stub.inbox.presentation.activity.InboxReputationActivityStub"
             android:exported="false"
             android:label="@string/title_activity_reputation_review"
             android:screenOrientation="portrait"
@@ -45,13 +45,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".stub.reviewreply.view.activity.SellerReviewReplyActivityStub"
+            android:name="com.tokopedia.review.stub.reviewreply.view.activity.SellerReviewReplyActivityStub"
             android:label="@string/title_review_reply"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".stub.bulk_write_review.presentation.activity.BulkReviewActivityStub"
+            android:name="com.tokopedia.review.stub.bulk_write_review.presentation.activity.BulkReviewActivityStub"
             android:exported="false"
             android:label="@string/title_activity_bulk_review"
             android:theme="@style/Theme.White">
