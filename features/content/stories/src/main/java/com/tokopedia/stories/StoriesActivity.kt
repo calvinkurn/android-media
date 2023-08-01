@@ -6,7 +6,9 @@ import com.tokopedia.stories.databinding.ActivityStoriesBinding
 
 class StoriesActivity : BaseActivity() {
 
-    private var binding: ActivityStoriesBinding? = null
+    private var _binding: ActivityStoriesBinding? = null
+    private val binding: ActivityStoriesBinding
+        get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -15,8 +17,8 @@ class StoriesActivity : BaseActivity() {
     }
 
     private fun setupView() {
-        binding = ActivityStoriesBinding.inflate(layoutInflater)
-        setContentView(binding?.root)
+        _binding = ActivityStoriesBinding.inflate(layoutInflater)
+        setContentView(binding.root)
     }
 
     private fun getData() {
@@ -24,6 +26,11 @@ class StoriesActivity : BaseActivity() {
         val pathSegment = data.pathSegments
         val shopId = pathSegment[1]
         val storiesId = pathSegment[2]
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
 }
