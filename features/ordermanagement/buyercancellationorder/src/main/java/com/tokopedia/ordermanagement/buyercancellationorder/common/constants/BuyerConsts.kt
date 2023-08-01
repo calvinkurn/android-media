@@ -44,6 +44,7 @@ object BuyerConsts {
     const val TICKER_TYPE_ERROR = "error"
     const val TICKER_TYPE_INFORMATION = "info"
     const val TICKER_TYPE_WARNING = "warning"
+    const val TICKER_TYPE_ANNOUNCEMENT = "announcement"
 
     const val BUYER_CANCEL_REASON_SCREEN_NAME = "BuyerCancelReason"
 }
