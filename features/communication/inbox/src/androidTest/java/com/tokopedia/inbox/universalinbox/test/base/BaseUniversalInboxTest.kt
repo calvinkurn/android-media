@@ -11,6 +11,8 @@ import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.inbox.universalinbox.di.UniversalInboxActivityComponentFactory
 import com.tokopedia.inbox.universalinbox.stub.common.ActivityScenarioTestRule
+import com.tokopedia.inbox.universalinbox.stub.common.BabbleCourierClientStub
+import com.tokopedia.inbox.universalinbox.stub.common.ConversationsPreferencesStub
 import com.tokopedia.inbox.universalinbox.stub.common.UserSessionStub
 import com.tokopedia.inbox.universalinbox.stub.common.util.FakeAbTestPlatformImpl
 import com.tokopedia.inbox.universalinbox.stub.data.response.GqlResponseStub
@@ -18,7 +20,10 @@ import com.tokopedia.inbox.universalinbox.stub.di.UniversalInboxFakeActivityComp
 import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
 import com.tokopedia.inbox.universalinbox.view.UniversalInboxActivity
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetComponentProvider
+import com.tokopedia.tokochat.config.repository.TokoChatRepository
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -34,6 +39,15 @@ abstract class BaseUniversalInboxTest {
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var conversationsPreferences: ConversationsPreferencesStub
+
+    @Inject
+    lateinit var babbleCourierClient: BabbleCourierClientStub
+
+    @Inject
+    lateinit var tokochatRepository: TokoChatRepository
+
     @ActivityScope
     @Inject
     lateinit var abTestPlatform: UniversalInboxAbPlatform
@@ -46,6 +60,7 @@ abstract class BaseUniversalInboxTest {
     open fun beforeTest() {
         Intents.init()
         setupDaggerComponent()
+        setupConversationAndCourier()
         GqlResponseStub.reset()
     }
 
@@ -86,5 +101,18 @@ abstract class BaseUniversalInboxTest {
     protected fun stubAllIntents() {
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+    }
+
+    private fun setupConversationAndCourier() {
+        runBlocking(Dispatchers.Main) {
+            babbleCourierClient.init(USER_ID_DUMMY)
+            babbleCourierClient.setClientId(USER_ID_DUMMY)
+            conversationsPreferences.setProfileDetails(USER_ID_DUMMY)
+            tokochatRepository.initConversationRepository()
+        }
+    }
+
+    companion object {
+        const val USER_ID_DUMMY = "835a69de-577e-4881-bf1d-4e3eed13c643"
     }
 }

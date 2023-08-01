@@ -8,19 +8,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.tokochat_common.databinding.TokochatBaseFragmentBinding
-import com.tokopedia.tokochat.common.util.TokoChatNetworkUtil
 import com.tokopedia.tokochat.common.util.TokoChatViewUtil.FOUR_DP
 import com.tokopedia.tokochat.common.view.chatroom.adapter.TokoChatBaseAdapter
 import com.tokopedia.tokochat.common.view.chatroom.adapter.viewholder.decoration.VerticalSpaceItemDecoration
 import com.tokopedia.tokochat.common.view.chatroom.customview.bottomsheet.TokoChatErrorBottomSheet
 import com.tokopedia.tokochat.common.view.chatroom.listener.TokoChatEndlessScrollListener
 import com.tokopedia.tokochat.common.view.chatroom.uimodel.TokoChatLoadingUiModel
+import com.tokopedia.tokochat_common.databinding.TokochatBaseFragmentBinding
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
@@ -165,19 +163,5 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
         baseBinding?.tokochatIncludeGlobalError?.tokochatLayoutGlobalError?.show()
     }
 
-    protected fun getErrorType(): Int {
-        return if (isConnectedToNetwork()) {
-            GlobalError.SERVER_ERROR
-        } else {
-            GlobalError.NO_CONNECTION
-        }
-    }
-
-    protected fun isConnectedToNetwork(): Boolean {
-        return if (context != null) {
-            TokoChatNetworkUtil.isNetworkAvailable(requireContext())
-        } else {
-            false
-        }
-    }
+    abstract fun getErrorType(): Int
 }

@@ -13,12 +13,11 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.tokochat.common.util.TokoChatNetworkUtil
-import com.tokopedia.tokochat_common.databinding.TokochatListBaseFragmentBinding
 import com.tokopedia.tokochat.common.view.chatlist.adapter.TokoChatListBaseAdapter
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListShimmerUiModel
 import com.tokopedia.tokochat.common.view.chatroom.listener.TokoChatEndlessScrollListener
 import com.tokopedia.tokochat_common.R
+import com.tokopedia.tokochat_common.databinding.TokochatListBaseFragmentBinding
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 abstract class TokoChatListBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragment() {
@@ -113,21 +112,7 @@ abstract class TokoChatListBaseFragment<viewBinding : ViewBinding> : BaseDaggerF
         baseBinding?.tokochatListRv?.showWithCondition(shouldShow)
     }
 
-    private fun getErrorType(): Int {
-        return if (isConnectedToNetwork()) {
-            GlobalError.SERVER_ERROR
-        } else {
-            GlobalError.NO_CONNECTION
-        }
-    }
-
-    private fun isConnectedToNetwork(): Boolean {
-        return if (context != null) {
-            TokoChatNetworkUtil.isNetworkAvailable(requireContext())
-        } else {
-            false
-        }
-    }
+    abstract fun getErrorType(): Int
 
     protected fun addInitialShimmering() {
         adapter.clearAllItems()
@@ -135,12 +120,6 @@ abstract class TokoChatListBaseFragment<viewBinding : ViewBinding> : BaseDaggerF
             adapter.addItem(TokoChatListShimmerUiModel())
         }
         adapter.notifyItemInserted(adapter.itemCount)
-    }
-
-    protected fun removeInitialShimmeringAndEmptyView() {
-        if (adapter.isShimmeringExist() || adapter.isEmptyViewExist()) {
-            adapter.clearAllItems()
-        }
     }
 
     abstract fun getViewBindingInflate(container: ViewGroup?): viewBinding

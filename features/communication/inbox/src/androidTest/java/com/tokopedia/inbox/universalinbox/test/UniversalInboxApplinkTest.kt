@@ -47,6 +47,7 @@ class UniversalInboxApplinkTest : BaseUniversalInboxTest() {
         // When
         launchActivity()
         stubAllIntents()
+        Thread.sleep(10000)
         menuRobot {
             clickMenuOnPosition(5)
         }
