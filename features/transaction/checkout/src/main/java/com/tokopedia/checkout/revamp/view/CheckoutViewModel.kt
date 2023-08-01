@@ -1144,7 +1144,6 @@ class CheckoutViewModel @Inject constructor(
                 }
 //                sendAnalyticsEpharmacyClickPembayaran()
                 if (notEligiblePromoHolderdataList.size > 0) {
-//                    hasClearPromoBeforeCheckout = true
                     if (promoProcessor.cancelNotEligiblePromo(
                             notEligiblePromoHolderdataList,
                             listData.value
@@ -1183,19 +1182,15 @@ class CheckoutViewModel @Inject constructor(
                                 "Gagal clear, coba lagi"
                             )
                         )
+                        pageState.value = CheckoutPageState.Normal
                     }
                 } else {
-//                    hasClearPromoBeforeCheckout = false
-//                    if (shipmentViewModel.isUsingDynamicDataPassing()) {
-//                        shipmentViewModel.validateDynamicData()
-//                    } else {
                     doCheckout(
                         validateUsePromoRevampUiModel,
                         fingerprintPublicKey,
                         onSuccessCheckout,
                         false
                     )
-//                    }
                 }
             } else {
                 commonToaster.emit(
@@ -1251,10 +1246,12 @@ class CheckoutViewModel @Inject constructor(
         } else if (checkoutResult.checkoutData.prompt.eligible) {
             pageState.value = CheckoutPageState.Prompt(checkoutResult.checkoutData.prompt)
         } else {
-            commonToaster.emit(CheckoutPageToaster(
-                Toaster.TYPE_ERROR,
-                checkoutResult.checkoutData.errorMessage.ifEmpty { "Terjadi kesalahan. Ulangi beberapa saat lagi" }
-            ))
+            commonToaster.emit(
+                CheckoutPageToaster(
+                    Toaster.TYPE_ERROR,
+                    checkoutResult.checkoutData.errorMessage.ifEmpty { "Terjadi kesalahan. Ulangi beberapa saat lagi" }
+                )
+            )
             loadSAF(true, true, false)
         }
     }
