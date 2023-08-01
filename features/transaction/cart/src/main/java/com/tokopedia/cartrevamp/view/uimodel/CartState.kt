@@ -10,6 +10,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.GetWishlistV2Response
 
 sealed class CartState<out T : Any> {
@@ -114,7 +115,7 @@ sealed class UpdateCartAndGetLastApplyEvent {
     data class Failed(val throwable: Throwable) : UpdateCartAndGetLastApplyEvent()
 }
 
-sealed interface AddToWishlistV2Event {
+sealed interface AddCartToWishlistV2Event {
     data class Success(
         val data: AddToWishlistV2Response.Data.WishlistAddV2,
         val productId: String,
@@ -122,9 +123,30 @@ sealed interface AddToWishlistV2Event {
         val source: String,
         val wishlistIcon: IconUnify,
         val animatedWishlistImage: ImageView
-    ) : AddToWishlistV2Event
+    ) : AddCartToWishlistV2Event
 
-    data class Failed(val throwable: Throwable) : AddToWishlistV2Event
+    data class Failed(val throwable: Throwable) : AddCartToWishlistV2Event
+}
+sealed interface RemoveFromWishlistEvent {
+
+    data class RemoveWishlistFromCartSuccess(
+        val wishlistIcon: IconUnify?,
+        val position: Int
+    ) : RemoveFromWishlistEvent
+
+    data class RemoveWishlistFromCartFailed(
+        val throwable: Throwable
+    ) : RemoveFromWishlistEvent
+
+    data class Success(
+        val data: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+        val productId: String,
+    ) : RemoveFromWishlistEvent
+
+    data class Failed(
+        val throwable: Throwable,
+        val productId: String,
+    ) : RemoveFromWishlistEvent
 }
 
 sealed interface LoadWishlistV2State {
@@ -154,6 +176,11 @@ sealed interface UpdateCartPromoState {
     object Success : UpdateCartPromoState
 
     data class Failed(val throwable: Throwable) : UpdateCartPromoState
+}
+
+sealed interface SeamlessLoginEvent {
+    data class Success(val url: String) : SeamlessLoginEvent
+    data class Failed(val msg: String) : SeamlessLoginEvent
 }
 
 @Suppress("UNCHECKED_CAST")

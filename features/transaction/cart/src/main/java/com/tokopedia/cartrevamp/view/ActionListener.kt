@@ -30,25 +30,9 @@ interface ActionListener {
 
     fun checkCartShopGroupTicker(cartGroupHolderData: CartGroupHolderData)
 
-    fun onCartDataEnableToCheckout()
-
-    fun onCartDataDisableToCheckout()
-
     fun onShowAllItem(appLink: String)
 
-    fun onAddLastSeenToWishlist(productId: String)
-
-    fun onAddWishlistToWishlist(productId: String)
-
-    fun onAddRecommendationToWishlist(productId: String)
-
-    fun onRemoveDisabledItemFromWishlist(productId: String)
-
-    fun onRemoveLastSeenFromWishlist(productId: String)
-
     fun onRemoveWishlistFromWishlist(productId: String)
-
-    fun onRemoveRecommendationFromWishlist(productId: String)
 
     fun onWishlistProductClicked(productId: String)
 
@@ -84,21 +68,9 @@ interface ActionListener {
 
     fun onRecentViewProductImpression(element: CartRecentViewItemHolderData)
 
-    fun onGlobalCheckboxCheckedChange(isChecked: Boolean, isCheckUncheckDirectAction: Boolean)
-
     fun onGlobalDeleteClicked()
 
-    fun onNeedToGoneLocalizingAddressWidget()
-
-    fun onLocalizingAddressUpdatedFromWidget()
-
     fun onClickAddOnCart(productId: String, addOnId: String)
-
-    fun onClickEpharmacyInfoCart(
-        enablerLabel: String,
-        shopId: String,
-        productUiModelList: MutableList<CartItemHolderData>
-    )
 
     fun addOnImpression(productId: String)
 
