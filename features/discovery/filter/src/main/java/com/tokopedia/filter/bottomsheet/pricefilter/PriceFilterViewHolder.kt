@@ -21,6 +21,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 internal class PriceFilterViewHolder(
     itemView: View,
+    private val isReimagine: Boolean,
     private val priceFilterViewListener: PriceFilterViewListener,
 ) : AbstractViewHolder<PriceFilterViewModel>(itemView) {
 
@@ -114,23 +115,34 @@ internal class PriceFilterViewHolder(
     }
 
     private fun bindPriceRangeRecyclerView(element: PriceFilterViewModel) {
-        val priceRangeOptionAdapter = PriceRangeOptionAdapter(element, priceFilterViewListener)
-        val removeAndRecycleExistingViews = false
+        val priceRangeOptionAdapter = PriceRangeOptionAdapter(
+            element,
+            isReimagine,
+            priceFilterViewListener
+        )
 
-        binding?.priceRangeFilterRecyclerView
-            ?.swapAdapter(priceRangeOptionAdapter, removeAndRecycleExistingViews)
+        binding
+            ?.priceRangeFilterRecyclerView
+            ?.swapAdapter(priceRangeOptionAdapter, false)
     }
 
     private class PriceRangeOptionAdapter(
-            val priceFilterViewModel: PriceFilterViewModel,
-            val priceFilterViewListener: PriceFilterViewListener
+        val priceFilterViewModel: PriceFilterViewModel,
+        val isReimagine: Boolean,
+        val priceFilterViewListener: PriceFilterViewListener,
     ): RecyclerView.Adapter<PriceRangeOptionViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PriceRangeOptionViewHolder {
             val view = LayoutInflater
                 .from(parent.context)
                 .inflate(R.layout.sort_filter_bottom_sheet_chips_layout, parent, false)
-            return PriceRangeOptionViewHolder(view, priceFilterViewModel, priceFilterViewListener)
+
+            return PriceRangeOptionViewHolder(
+                view,
+                isReimagine,
+                priceFilterViewModel,
+                priceFilterViewListener,
+            )
         }
 
         override fun getItemCount() = priceFilterViewModel.priceRangeOptionViewModelList.size
@@ -141,9 +153,10 @@ internal class PriceFilterViewHolder(
     }
 
     private class PriceRangeOptionViewHolder(
-            itemView: View,
-            private val priceFilterViewModel: PriceFilterViewModel,
-            private val priceFilterViewListener: PriceFilterViewListener
+        itemView: View,
+        private val isReimagine: Boolean,
+        private val priceFilterViewModel: PriceFilterViewModel,
+        private val priceFilterViewListener: PriceFilterViewListener
     ): RecyclerView.ViewHolder(itemView) {
         private var binding: SortFilterBottomSheetChipsLayoutBinding? by viewBinding()
 
@@ -158,6 +171,8 @@ internal class PriceFilterViewHolder(
             sortFilterChipsUnify.setOnClickListener {
                 priceFilterViewListener.onPriceRangeClicked(priceFilterViewModel, optionViewModel)
             }
+
+            // TODO:: Reimagine
         }
     }
 }

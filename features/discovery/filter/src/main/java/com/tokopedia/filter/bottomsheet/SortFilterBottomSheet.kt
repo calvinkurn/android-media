@@ -37,6 +37,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
@@ -61,6 +62,7 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     private var mapParameter: Map<String, String> = mapOf()
     private var dynamicFilterModel: DynamicFilterModel? = null
     private var sortFilterCallback: Callback? = null
+    private var isReimagine: Boolean = false
 
     private var sortFilterBottomSheetViewModel: SortFilterBottomSheetViewModel? = null
     private var sortFilterBottomSheetView: View? = null
@@ -71,7 +73,10 @@ class SortFilterBottomSheet: BottomSheetUnify() {
         }
     }
     private val filterViewListener = object: FilterViewListener {
-        override fun onOptionClick(filterViewModel: FilterViewModel, optionViewModel: OptionViewModel) {
+        override fun onOptionClick(
+            filterViewModel: FilterViewModel,
+            optionViewModel: OptionViewModel,
+        ) {
             sortFilterBottomSheetViewModel?.onOptionClick(filterViewModel, optionViewModel)
         }
 
@@ -86,35 +91,64 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     private fun onSeeAllFilterCategoryClick(filterViewModel: FilterViewModel) {
         val filterDetailCallback = object: FilterCategoryDetailBottomSheet.Callback {
             override fun onApplyButtonClicked(selectedFilterValue: String) {
-                sortFilterBottomSheetViewModel?.onApplyCategoryFilterFromDetailPage(filterViewModel, selectedFilterValue)
+                sortFilterBottomSheetViewModel?.onApplyCategoryFilterFromDetailPage(
+                    filterViewModel,
+                    selectedFilterValue,
+                )
             }
         }
 
-        val selectedCategoryFilterValue = sortFilterBottomSheetViewModel?.getSelectedCategoryFilterValue() ?: ""
-        FilterCategoryDetailBottomSheet().show(requireFragmentManager(), filterViewModel.filter, selectedCategoryFilterValue, filterDetailCallback)
+        val selectedCategoryFilterValue =
+            sortFilterBottomSheetViewModel?.getSelectedCategoryFilterValue() ?: ""
+
+        FilterCategoryDetailBottomSheet().show(
+            parentFragmentManager,
+            filterViewModel.filter,
+            selectedCategoryFilterValue,
+            filterDetailCallback,
+        )
     }
 
     private fun onSeeAllFilterGeneralClick(filterViewModel: FilterViewModel) {
         val filterDetailCallback = object: FilterGeneralDetailBottomSheet.Callback {
             override fun onApplyButtonClicked(optionList: List<Option>?) {
-                sortFilterBottomSheetViewModel?.onApplyFilterFromDetailPage(filterViewModel, optionList)
+                sortFilterBottomSheetViewModel?.onApplyFilterFromDetailPage(
+                    filterViewModel,
+                    optionList,
+                )
             }
         }
 
-        FilterGeneralDetailBottomSheet().show(requireFragmentManager(), filterViewModel.filter, filterDetailCallback)
+        FilterGeneralDetailBottomSheet().show(
+            fragmentManager = parentFragmentManager,
+            filter = filterViewModel.filter,
+            callback = filterDetailCallback,
+        )
     }
 
     private val priceFilterListener = object: PriceFilterViewListener {
-        override fun onMinPriceEditedFromTextInput(priceFilterViewModel: PriceFilterViewModel, minValue: Int) {
+        override fun onMinPriceEditedFromTextInput(
+            priceFilterViewModel: PriceFilterViewModel,
+            minValue: Int,
+        ) {
             sortFilterBottomSheetViewModel?.onMinPriceFilterEdited(priceFilterViewModel, minValue)
         }
 
-        override fun onMaxPriceEditedFromTextInput(priceFilterViewModel: PriceFilterViewModel, maxValue: Int) {
+        override fun onMaxPriceEditedFromTextInput(
+            priceFilterViewModel: PriceFilterViewModel,
+            maxValue: Int,
+        ) {
             sortFilterBottomSheetViewModel?.onMaxPriceFilterEdited(priceFilterViewModel, maxValue)
         }
 
-        override fun onPriceRangeClicked(priceFilterViewModel: PriceFilterViewModel, priceRangeOption: PriceOptionViewModel) {
-            sortFilterBottomSheetViewModel?.onPriceRangeOptionClick(priceFilterViewModel, priceRangeOption)
+        override fun onPriceRangeClicked(
+            priceFilterViewModel: PriceFilterViewModel,
+            priceRangeOption: PriceOptionViewModel,
+        ) {
+            sortFilterBottomSheetViewModel?.onPriceRangeOptionClick(
+                priceFilterViewModel,
+                priceRangeOption
+            )
         }
 
         override fun onPriceTextOutOfFocus() {
@@ -142,31 +176,39 @@ class SortFilterBottomSheet: BottomSheetUnify() {
             priceRangeFilterCheckboxDataView: PriceRangeFilterCheckboxDataView,
             optionViewModel: OptionViewModel
         ) {
-            sortFilterBottomSheetViewModel?.onOptionClick(priceRangeFilterCheckboxDataView, optionViewModel)
+            sortFilterBottomSheetViewModel?.onOptionClick(
+                priceRangeFilterCheckboxDataView,
+                optionViewModel,
+            )
         }
     }
 
-    private val sortFilterBottomSheetAdapter = SortFilterBottomSheetAdapter(
+    private val sortFilterBottomSheetAdapter by lazyThreadSafetyNone {
+        SortFilterBottomSheetAdapter(
             SortFilterBottomSheetTypeFactoryImpl(
+                isReimagine,
                 sortViewListener,
                 filterViewListener,
                 priceFilterListener,
                 keywordFilterListener,
                 priceRangeFilterCheckboxListener,
             )
-    )
+        )
+    }
 
     fun show(
-            fragmentManager: FragmentManager,
-            mapParameter: Map<String, String>?,
-            dynamicFilterModel: DynamicFilterModel?,
-            callback: Callback,
+        fragmentManager: FragmentManager,
+        mapParameter: Map<String, String>?,
+        dynamicFilterModel: DynamicFilterModel?,
+        callback: Callback,
+        isReimagine: Boolean = false,
     ) {
         if (mapParameter == null) return
 
         this.mapParameter = mapParameter
         this.dynamicFilterModel = dynamicFilterModel
         this.sortFilterCallback = callback
+        this.isReimagine = isReimagine
 
         show(fragmentManager, SORT_FILTER_BOTTOM_SHEET_TAG)
     }
@@ -191,7 +233,7 @@ class SortFilterBottomSheet: BottomSheetUnify() {
 
     private fun initViewModel() {
         sortFilterBottomSheetViewModel = SortFilterBottomSheetViewModel()
-        sortFilterBottomSheetViewModel?.init(mapParameter, dynamicFilterModel)
+        sortFilterBottomSheetViewModel?.init(mapParameter, dynamicFilterModel, isReimagine)
     }
 
     private fun initView() {
@@ -288,36 +330,35 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     }
 
     private fun observeViewModel() {
-        sortFilterBottomSheetViewModel?.sortFilterListLiveData?.observe(viewLifecycleOwner, Observer {
-            processSortFilterList(it)
-        })
+        sortFilterBottomSheetViewModel?.run {
+            sortFilterListLiveData.observe(viewLifecycleOwner, ::processSortFilterList)
 
-        sortFilterBottomSheetViewModel?.updateViewInPositionEventLiveData?.observe(viewLifecycleOwner, EventObserver {
-            processUpdateViewInPosition(it)
-        })
+            updateViewInPositionEventLiveData.observe(
+                viewLifecycleOwner,
+                EventObserver(::processUpdateViewInPosition),
+            )
 
-        sortFilterBottomSheetViewModel?.isLoadingLiveData?.observe(viewLifecycleOwner, Observer {
-            processLoading(it)
-        })
+            isLoadingLiveData.observe(viewLifecycleOwner, ::processLoading)
 
-        sortFilterBottomSheetViewModel?.isButtonResetVisibleLiveData?.observe(viewLifecycleOwner, Observer {
-            setActionResetVisibility(it)
-        })
+            isButtonResetVisibleLiveData.observe(viewLifecycleOwner, ::setActionResetVisibility)
 
-        sortFilterBottomSheetViewModel?.isViewExpandedLiveData?.observe(viewLifecycleOwner, Observer {
-            expandBottomSheetView()
-        })
+            isViewExpandedLiveData.observe(viewLifecycleOwner, ::expandBottomSheetView)
 
-        sortFilterBottomSheetViewModel?.trackPriceRangeClickEventLiveData?.observe(viewLifecycleOwner, EventObserver {
-            FilterTracking.sendGeneralEvent(it)
-        })
+            trackPriceRangeClickEventLiveData.observe(
+                viewLifecycleOwner,
+                EventObserver(FilterTracking::sendGeneralEvent)
+            )
 
-        sortFilterBottomSheetViewModel?.isLoadingForDynamicFilterLiveData?.observe(viewLifecycleOwner, Observer {
-            processLoadingForDynamicFilter(it)
-        })
+            isLoadingForDynamicFilterLiveData.observe(
+                viewLifecycleOwner,
+                ::processLoadingForDynamicFilter,
+            )
+        }
     }
 
-    private fun processSortFilterList(sortFilterList: List<Visitable<SortFilterBottomSheetTypeFactory>>) {
+    private fun processSortFilterList(
+        sortFilterList: List<Visitable<SortFilterBottomSheetTypeFactory>>,
+    ) {
         sortFilterBottomSheetAdapter.setSortFilterList(sortFilterList)
         binding?.recyclerViewSortFilterBottomSheet?.scrollToPosition(0)
     }
@@ -376,7 +417,7 @@ class SortFilterBottomSheet: BottomSheetUnify() {
         }
     }
 
-    private fun expandBottomSheetView() {
+    private fun expandBottomSheetView(ignored: Boolean) {
         bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
     }
 

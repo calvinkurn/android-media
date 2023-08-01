@@ -21,6 +21,7 @@ import com.tokopedia.filter.bottomsheet.sort.SortViewListener
 import com.tokopedia.filter.bottomsheet.sort.SortViewModel
 
 internal class SortFilterBottomSheetTypeFactoryImpl(
+    private val isReimagine: Boolean,
     private val sortViewListener: SortViewListener,
     private val filterViewListener: FilterViewListener,
     private val priceFilterViewListener: PriceFilterViewListener,
@@ -51,10 +52,21 @@ internal class SortFilterBottomSheetTypeFactoryImpl(
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*> {
         return when(viewType) {
             SortViewHolder.LAYOUT -> SortViewHolder(view, sortViewListener)
-            FilterViewHolder.LAYOUT -> FilterViewHolder(view, recycledViewPool, filterViewListener)
-            PriceFilterViewHolder.LAYOUT -> PriceFilterViewHolder(view, priceFilterViewListener)
-            KeywordFilterViewHolder.LAYOUT -> KeywordFilterViewHolder(view, keywordFilterListener)
-            PriceRangeFilterCheckboxViewHolder.LAYOUT -> PriceRangeFilterCheckboxViewHolder(view, priceRangeFilterCheckboxListener)
+            FilterViewHolder.LAYOUT -> FilterViewHolder(
+                view,
+                isReimagine,
+                recycledViewPool,
+                filterViewListener,
+            )
+            PriceFilterViewHolder.LAYOUT ->
+                PriceFilterViewHolder(view, isReimagine, priceFilterViewListener)
+            KeywordFilterViewHolder.LAYOUT ->
+                KeywordFilterViewHolder(view, isReimagine, keywordFilterListener)
+            PriceRangeFilterCheckboxViewHolder.LAYOUT ->
+                PriceRangeFilterCheckboxViewHolder(
+                    view,
+                    priceRangeFilterCheckboxListener
+                )
             else -> throw TypeNotSupportedException.create("Layout not supported")
         }
     }
