@@ -2,9 +2,9 @@ package com.tokopedia.webview.data.model
 
 import com.google.gson.annotations.SerializedName
 
-data class WhiteListedDisableGalleryImagePick(
+data class WhiteListedPath(
     @SerializedName("isEnabled")
     val isEnabled: Boolean = false,
-    @SerializedName("urls")
-    val urls: List<String> = emptyList()
+    @SerializedName("whitelistedPrefix")
+    val path: List<String> = emptyList()
 )

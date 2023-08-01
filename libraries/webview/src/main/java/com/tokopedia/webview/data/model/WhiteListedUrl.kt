@@ -2,9 +2,9 @@ package com.tokopedia.webview.data.model
 
 import com.google.gson.annotations.SerializedName
 
-data class WhiteListedFintechPath(
+data class WhiteListedUrl(
     @SerializedName("isEnabled")
     val isEnabled: Boolean = false,
-    @SerializedName("whitelistedPrefix")
-    val path: List<String> = emptyList()
+    @SerializedName("urls")
+    val urls: List<String> = emptyList()
 )
