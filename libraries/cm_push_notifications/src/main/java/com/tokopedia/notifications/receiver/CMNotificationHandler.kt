@@ -252,13 +252,11 @@ class CMNotificationHandler : CoroutineScope {
     private fun handleMainClick(context: Context, intent: Intent, notificationId: Int) {
         val baseNotificationModel: BaseNotificationModel = intent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL) ?: BaseNotificationModel()
         startActivity(context, baseNotificationModel.appLink, intent)
-//        context.applicationContext.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
         NotificationManagerCompat.from(context).cancel(notificationId)
     }
 
     private fun handleMainClick(context: Context, intent: Intent, notificationId: Int, baseNotificationModel: BaseNotificationModel) {
         startActivity(context, baseNotificationModel.appLink, intent)
-//        context.applicationContext.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
         NotificationManagerCompat.from(context).cancel(notificationId)
     }
 
@@ -347,7 +345,6 @@ class CMNotificationHandler : CoroutineScope {
     }
 
     private fun handleGridNotificationClick(context: Context, intent: Intent, notificationId: Int, baseNotificationModel: BaseNotificationModel) {
-//        context.applicationContext.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
         val grid: Grid = intent.getParcelableExtra(CMConstant.ReceiverExtraData.EXTRA_GRID_DATA) ?: Grid()
         sendElementClickPushEvent(
             context,
@@ -367,12 +364,10 @@ class CMNotificationHandler : CoroutineScope {
             PersistentEvent.EVENT_ACTION_CANCELED,
             PersistentEvent.EVENT_LABEL
         )
-//        context.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
         NotificationManagerCompat.from(context).cancel(notificationId)
     }
 
     private fun handlePersistentClick(context: Context, intent: Intent, baseNotificationModel: BaseNotificationModel) {
-//        context.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
         if (intent.hasExtra(CMConstant.ReceiverExtraData.PERSISTENT_BUTTON_DATA)) {
             val persistentButton: PersistentButton = intent.getParcelableExtra(CMConstant.ReceiverExtraData.PERSISTENT_BUTTON_DATA) ?: PersistentButton()
             if (persistentButton.isAppLogo) {
@@ -436,7 +431,7 @@ class CMNotificationHandler : CoroutineScope {
                     it.type?.let { type ->
                         if (type == CMConstant.PayloadKeys.ADD_TO_CART) { // internal ATC
                             handleAddToCartProduct(notifData, it.addToCart)
-                        } else if (it.type == CMConstant.PreDefineActionType.ATC || it.type == CMConstant.PreDefineActionType.OCC) { // external appLink
+                        } else if (type == CMConstant.PreDefineActionType.ATC || type == CMConstant.PreDefineActionType.OCC) { // external appLink
                             handleProductPurchaseClick(context, notifData, this)
                         } else { // applink handler for action button
                             startActivity(context, it.appLink, intent)
@@ -446,7 +441,6 @@ class CMNotificationHandler : CoroutineScope {
             }
         }
         NotificationManagerCompat.from(context.applicationContext).cancel(notificationId)
-//        context.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
         handleCouponCode(intent, context)
     }
 
@@ -542,7 +536,6 @@ class CMNotificationHandler : CoroutineScope {
         val carousel = intent.getParcelableExtra<Carousel>(CMConstant.ReceiverExtraData.CAROUSEL_DATA_ITEM)
         startActivity(context, appLink, intent)
         NotificationManagerCompat.from(context.applicationContext).cancel(notificationId)
-//        context.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
 
         sendElementClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.CAROUSEL_NOTIFICATION, carousel?.element_id ?: "")
 
