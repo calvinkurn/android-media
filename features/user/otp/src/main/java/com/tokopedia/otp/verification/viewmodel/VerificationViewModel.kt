@@ -658,7 +658,7 @@ open class VerificationViewModel @Inject constructor(
     }
 
     suspend fun getPublicKey(): KeyData {
-        val result = generatePublicKeyUseCase().keyData
+        val result = generatePublicKeyUseCase(SessionConstants.GenerateKeyModule.PIN_V2.value).keyData
         result.key = SessionConstants.cleanPublicKey(result.key)
         return result
     }
