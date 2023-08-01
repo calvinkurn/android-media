@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
@@ -144,10 +144,16 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment() {
         tabsUnify?.apply {
             val selectedTabPosition = categoryL2TabModels
                 .indexOfFirst { it.id == categoryIdL2 }
+            setSelectedTab(selectedTabPosition)
+            customTabMode = TabLayout.MODE_SCROLLABLE
+        }
+    }
+
+    private fun TabsUnify.setSelectedTab(selectedTabPosition: Int) {
+        tabLayout.post {
             tabLayout.removeOnTabSelectedListener(tabSelectedListener)
             tabLayout.getTabAt(selectedTabPosition)?.select()
             tabLayout.addOnTabSelectedListener(tabSelectedListener)
-            customTabMode = TabLayout.MODE_SCROLLABLE
         }
     }
 
@@ -178,8 +184,7 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment() {
     private fun createTabListener(): CategoryL2TabListener {
         return object : CategoryL2TabListener {
             override fun onTabSelected(position: Int) {
-                tabsUnify?.tabLayout
-                    ?.getTabAt(position)?.select()
+                tabsUnify?.setSelectedTab(position)
             }
         }
     }
@@ -242,7 +247,7 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment() {
                     if(topPosition < 0) {
                         tabsUnify?.show()
                     } else {
-                        tabsUnify?.hide()
+                        tabsUnify?.invisible()
                     }
                 }
             }
