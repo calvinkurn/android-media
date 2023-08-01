@@ -22,7 +22,6 @@ import com.tokopedia.applink.imagepicker.DeeplinkMapperImagePicker
 import com.tokopedia.applink.inbox.DeeplinkMapperInbox
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
-import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
 import com.tokopedia.applink.internal.ApplinkConstInternalDilayaniTokopedia
 import com.tokopedia.applink.internal.ApplinkConstInternalFeed
 import com.tokopedia.applink.internal.ApplinkConstInternalFintech
@@ -52,11 +51,11 @@ import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.applink.promo.DeeplinkMapperPromo
+import com.tokopedia.applink.promo.DeeplinkMapperPromo.getCelebrationBottomsheetDeeplink
 import com.tokopedia.applink.promo.DeeplinkMapperPromo.getInternalDeeplinkForScpCelebration
 import com.tokopedia.applink.promo.DeeplinkMapperPromo.getInternalDeeplinkForScpMedalCabinet
 import com.tokopedia.applink.promo.DeeplinkMapperPromo.getInternalDeeplinkForScpMedalCabinetSeeMore
 import com.tokopedia.applink.promo.DeeplinkMapperPromo.getInternalDeeplinkForScpMedalDetail
-import com.tokopedia.applink.promo.DeeplinkMapperPromo.getCelebrationBottomsheetDeeplink
 import com.tokopedia.applink.promo.DeeplinkMapperPromo.invokeScpToasterUniversalAppLink
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperUoh
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperWishlist
@@ -518,7 +517,7 @@ object DeeplinkMainApp {
             DLP.matchPattern(
                 "settings/{user_id}",
                 DeeplinkMapperContent::getProfileDeeplink
-            ),
+            )
         ),
         "pesawat" to mutableListOf(
             DLP.matchPattern("order", DeeplinkMapperUoh::getRegisteredNavigationUohOrder),
@@ -991,7 +990,7 @@ object DeeplinkMainApp {
             ),
             DLP.matchPattern(
                 "list",
-                ApplinkConstInternalCommunication.TOKOCHAT_LIST
+                DeeplinkMapperCommunication::getRegisteredNavigationTokoChatList
             )
         ),
         "tokopoints" to mutableListOf(
