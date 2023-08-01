@@ -1,11 +1,11 @@
-package com.tokopedia.buy_more_get_more.presentation.sort.viewmodel
+package com.tokopedia.buy_more_get_more.sort.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.buy_more_get_more.presentation.sort.mapper.ShopProductSortMapper
-import com.tokopedia.buy_more_get_more.presentation.sort.model.ShopProductSortModel
-import com.tokopedia.buy_more_get_more.presentation.sort.model.ShopStickySortFilter
+import com.tokopedia.buy_more_get_more.sort.mapper.ShopProductSortMapper
+import com.tokopedia.buy_more_get_more.sort.model.ShopProductSortModel
+import com.tokopedia.buy_more_get_more.sort.model.ShopStickySortFilter
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.common.graphql.domain.usecase.shopsort.GqlGetShopSortUseCase

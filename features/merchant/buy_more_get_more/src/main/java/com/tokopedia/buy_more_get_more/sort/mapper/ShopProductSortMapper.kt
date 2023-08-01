@@ -1,6 +1,6 @@
-package com.tokopedia.buy_more_get_more.presentation.sort.mapper
+package com.tokopedia.buy_more_get_more.sort.mapper
 
-import com.tokopedia.buy_more_get_more.presentation.sort.model.ShopProductSortModel
+import com.tokopedia.buy_more_get_more.sort.model.ShopProductSortModel
 import com.tokopedia.shop.common.graphql.data.shopsort.ShopProductSort
 
 

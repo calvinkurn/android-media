@@ -1,4 +1,4 @@
-package com.tokopedia.buy_more_get_more.presentation.sort.adapter.viewholder
+package com.tokopedia.buy_more_get_more.sort.adapter.viewholder
 
 import android.view.View
 import android.widget.ImageView
@@ -7,7 +7,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buy_more_get_more.R
 import com.tokopedia.buy_more_get_more.databinding.ItemShopProductSortBinding
-import com.tokopedia.buy_more_get_more.presentation.sort.model.ShopProductSortModel
+import com.tokopedia.buy_more_get_more.sort.model.ShopProductSortModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 

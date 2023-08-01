@@ -24,6 +24,11 @@ open class OlpAdapter(
         this.recyclerView = recyclerView
     }
 
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        this.recyclerView = null
+        super.onDetachedFromRecyclerView(recyclerView)
+    }
+
     fun getNewVisitableItems() = visitables.toMutableList()
 
     fun submitList(newList: List<Visitable<*>>) {
@@ -35,6 +40,12 @@ open class OlpAdapter(
         diffResult.dispatchUpdatesTo(this)
         currentRecyclerViewState?.let {
             recyclerView?.layoutManager?.onRestoreInstanceState(it)
+        }
+    }
+
+    fun refreshSticky() {
+        if (onStickySingleHeaderViewListener != null) {
+            recyclerView?.post { onStickySingleHeaderViewListener?.refreshSticky() }
         }
     }
 
@@ -64,5 +75,17 @@ open class OlpAdapter(
     override fun onStickyHide() {
         val newList = getNewVisitableItems()
         submitList(newList)
+    }
+
+
+    override fun hideLoading() {
+        val newList = getNewVisitableItems()
+        if (newList.contains(loadingModel)) {
+            newList.remove(loadingModel)
+            submitList(newList)
+        } else if (newList.contains(loadingMoreModel)) {
+            newList.remove(loadingMoreModel)
+            submitList(newList)
+        }
     }
 }

@@ -91,6 +91,7 @@ class OfferLandingPageFragment :
     }
 
     private fun setupContent() {
+        olpAdapter?.refreshSticky()
         olpAdapter?.submitList(
             newList = listOf(
                 OfferInfoForBuyerUiModel(),

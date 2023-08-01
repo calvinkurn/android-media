@@ -1,10 +1,10 @@
-package com.tokopedia.buy_more_get_more.presentation.sort.adapter
+package com.tokopedia.buy_more_get_more.sort.adapter
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.buy_more_get_more.presentation.sort.adapter.viewholder.ShopProductSortViewHolder
-import com.tokopedia.buy_more_get_more.presentation.sort.model.ShopProductSortModel
+import com.tokopedia.buy_more_get_more.sort.adapter.viewholder.ShopProductSortViewHolder
+import com.tokopedia.buy_more_get_more.sort.model.ShopProductSortModel
 
 
 

@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.buy_more_get_more.di.scope.ShopProductSortScope
-import com.tokopedia.buy_more_get_more.presentation.sort.viewmodel.ShopProductSortViewModel
+import com.tokopedia.buy_more_get_more.sort.viewmodel.ShopProductSortViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

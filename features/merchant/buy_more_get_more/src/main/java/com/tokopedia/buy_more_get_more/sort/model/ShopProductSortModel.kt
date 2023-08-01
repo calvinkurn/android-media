@@ -1,7 +1,7 @@
-package com.tokopedia.buy_more_get_more.presentation.sort.model
+package com.tokopedia.buy_more_get_more.sort.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.buy_more_get_more.presentation.sort.adapter.ShopProductSortAdapterTypeFactory
+import com.tokopedia.buy_more_get_more.sort.adapter.ShopProductSortAdapterTypeFactory
 import com.tokopedia.kotlin.extensions.view.orZero
 
 

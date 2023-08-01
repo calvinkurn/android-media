@@ -1,4 +1,4 @@
-package com.tokopedia.buy_more_get_more.presentation.sort.fragment
+package com.tokopedia.buy_more_get_more.sort.fragment
 
 
 import android.content.Context
@@ -14,11 +14,11 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buy_more_get_more.di.component.DaggerShopProductSortComponent
 import com.tokopedia.buy_more_get_more.di.module.ShopProductSortModule
-import com.tokopedia.buy_more_get_more.presentation.sort.activity.ShopProductSortActivity
-import com.tokopedia.buy_more_get_more.presentation.sort.adapter.ShopProductSortAdapterTypeFactory
-import com.tokopedia.buy_more_get_more.presentation.sort.listener.ShopProductSortFragmentListener
-import com.tokopedia.buy_more_get_more.presentation.sort.model.ShopProductSortModel
-import com.tokopedia.buy_more_get_more.presentation.sort.viewmodel.ShopProductSortViewModel
+import com.tokopedia.buy_more_get_more.sort.activity.ShopProductSortActivity
+import com.tokopedia.buy_more_get_more.sort.adapter.ShopProductSortAdapterTypeFactory
+import com.tokopedia.buy_more_get_more.sort.listener.ShopProductSortFragmentListener
+import com.tokopedia.buy_more_get_more.sort.model.ShopProductSortModel
+import com.tokopedia.buy_more_get_more.sort.viewmodel.ShopProductSortViewModel
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
