@@ -22,7 +22,6 @@ class InputTextActivity : BaseActivity(), NavToolbarComponent.Listener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.decorView.background = null
         setContentView(R.layout.activity_input_text)
         initView()
     }

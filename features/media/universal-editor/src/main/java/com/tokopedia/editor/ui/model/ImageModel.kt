@@ -6,7 +6,12 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class ImageModel(
     var placement: ImagePlacementModel? = null,
-    var texts: List<InputTextModel> = emptyList()
+
+    /**
+     * 1. text
+     * 2. configuration
+     */
+    var texts: Map<String, InputTextModel> = emptyMap()
 ) : Parcelable
 
 @Parcelize
