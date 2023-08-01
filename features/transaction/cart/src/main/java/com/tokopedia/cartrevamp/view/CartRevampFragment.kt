@@ -1077,7 +1077,9 @@ class CartRevampFragment :
             viewModel.processRemoveFromWishlistV2(
                 cartItemHolderData.productId,
                 userSession.userId,
-                true
+                true,
+                wishlistIcon,
+                position
             )
         }
     }

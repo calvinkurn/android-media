@@ -96,6 +96,12 @@ class PromoEntryPointWidget @JvmOverloads constructor(
             View.GONE
 
         setupViewBackgrounds(attrs)
+
+        // workaround issue wrap content
+        activeViewSummaryLayout?.visibility = View.GONE
+        activeViewDivider?.visibility = View.GONE
+        activeViewTitleWording?.visibility = View.GONE
+        activeViewDescWording?.visibility = View.GONE
     }
 
     private fun setupViewBackgrounds(attrs: AttributeSet?) {
@@ -196,10 +202,6 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         wording: String,
         onClickListener: () -> Unit = {}
     ) {
-        // workaround issue wrap content
-        activeViewTitleWording?.visibility = View.GONE
-        activeViewDescWording?.visibility = View.GONE
-        //
         switcherView?.reset()
         inActiveViewLeftImage?.setImageUrl("https://images.tokopedia.net/img/ios/promo_widget/disabled_product.png")
         inActiveViewWording?.setCurrentText(MethodChecker.fromHtml(wording))

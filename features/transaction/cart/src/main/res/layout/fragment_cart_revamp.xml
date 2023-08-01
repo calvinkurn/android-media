@@ -103,8 +103,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@color/Unify_BN50"
-                        android:orientation="horizontal"
-                        android:paddingBottom="10dp">
+                        android:orientation="horizontal">
 
                         <com.tokopedia.unifyprinciples.Typography
                             android:id="@+id/promo_checkout_ticker_cart_text"
