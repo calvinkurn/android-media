@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductSortingUiModel
+import com.tokopedia.buy_more_get_more.olp.presentation.adapter.viewholder.OfferingProductSortingViewHolder
 import com.tokopedia.buy_more_get_more.olp.view.widget.OnStickySingleHeaderListener
 import com.tokopedia.buy_more_get_more.olp.view.widget.StickySingleHeaderView
 

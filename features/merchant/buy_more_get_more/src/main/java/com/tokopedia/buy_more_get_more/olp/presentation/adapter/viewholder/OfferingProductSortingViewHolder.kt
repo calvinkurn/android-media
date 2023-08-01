@@ -1,4 +1,4 @@
-package com.tokopedia.buy_more_get_more.olp.presentation.adapter
+package com.tokopedia.buy_more_get_more.olp.presentation.adapter.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes

@@ -2,7 +2,6 @@ package com.tokopedia.buy_more_get_more.olp.presentation
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -84,43 +83,42 @@ class OfferLandingPageFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupHeader()
-        setupContent()
         setupObservables()
         viewModel.getOfferingIndo(listOf(0), shopId)
     }
 
-    private fun setupContent() {
-        olpAdapter?.refreshSticky()
-        olpAdapter?.submitList(
-            newList = listOf(
-                OfferInfoForBuyerUiModel(),
-                OfferProductSortingUiModel(67)
-            )
-        )
-    }
-
     private fun setupObservables() {
         viewModel.offeringInfo.observe(viewLifecycleOwner) { offerInfoForBuyer ->
-            Log.d("Masuk", offerInfoForBuyer.offeringJsonData)
+            setupContent(offerInfoForBuyer)
         }
 
         viewModel.error.observe(viewLifecycleOwner) { throwable ->
         }
     }
 
-    private fun setupHeader() {
-        setupToolbar()
+    private fun setupContent(offerInfoForBuyer: OfferInfoForBuyerUiModel) {
+        olpAdapter?.refreshSticky()
+        olpAdapter?.submitList(
+            newList = listOf(
+                generateDummyOfferingData(),
+                OfferProductSortingUiModel(67)
+            )
+        )
+        setupHeader(offerInfoForBuyer)
     }
 
-    private fun setupToolbar() {
+    private fun setupHeader(offerInfoForBuyer: OfferInfoForBuyerUiModel) {
         setStatusBarColor()
+        setupToolbar(offerInfoForBuyer)
+    }
+
+    private fun setupToolbar(offerInfoForBuyer: OfferInfoForBuyerUiModel) {
         binding?.apply {
             val colorBackground = MethodChecker.getColor(
                 context,
                 com.tokopedia.unifyprinciples.R.color.Unify_GN500
             )
-            header.headerSubTitle = "Offering name" //update this with real data
+            header.headerSubTitle = offerInfoForBuyer.offerings.firstOrNull()?.offerName ?: "Offering name"  //update this with real data
             header.addRightIcon(com.tokopedia.iconunify.R.drawable.iconunify_cart)
                 .apply { setOnClickListener { } }
             header.addRightIcon(com.tokopedia.iconunify.R.drawable.iconunify_menu_hamburger)
@@ -159,5 +157,24 @@ class OfferLandingPageFragment :
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, AdapterTypeFactory> {
         return OlpAdapter(olpAdapterTypeFactory)
+    }
+
+    private fun generateDummyOfferingData(): OfferInfoForBuyerUiModel {
+        return OfferInfoForBuyerUiModel(
+            offerings = listOf(
+                OfferInfoForBuyerUiModel.Offering(
+                    tierList = listOf(
+                        OfferInfoForBuyerUiModel.Offering.Tier(
+                            rules = listOf(OfferInfoForBuyerUiModel.Offering.Tier.Rule(value = 3)),
+                            benefits = listOf(OfferInfoForBuyerUiModel.Offering.Tier.Benefit(value = 20))
+                        ),
+                        OfferInfoForBuyerUiModel.Offering.Tier(
+                            rules = listOf(OfferInfoForBuyerUiModel.Offering.Tier.Rule(value = 5)),
+                            benefits = listOf(OfferInfoForBuyerUiModel.Offering.Tier.Benefit(value = 15))
+                        )
+                    )
+                )
+            )
+        )
     }
 }

@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductSortingUiModel
+import com.tokopedia.buy_more_get_more.olp.presentation.adapter.viewholder.OfferingInfoViewHolder
+import com.tokopedia.buy_more_get_more.olp.presentation.adapter.viewholder.OfferingProductSortingViewHolder
 
 class OlpAdapterTypeFactoryImpl: OlpAdapterTypeFactory, BaseAdapterTypeFactory() {
     override fun type(type: OfferInfoForBuyerUiModel) = OfferingInfoViewHolder.LAYOUT
