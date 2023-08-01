@@ -7,6 +7,7 @@ import com.tokopedia.home.analytics.v2.LegoBannerTracking
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
+import com.tokopedia.home_component.util.HomeComponentRemoteConfigController
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.util.ServerTimeOffsetUtil
@@ -530,7 +531,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
             isCache = isCache,
             cardInteraction = true
         )
-        if (!isCache) {
+        if (!isCache && !HomeComponentRemoteConfigController.isUsingNewLegoTracking(remoteConfig)) {
             HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(
                 trackingQueue,
                 channel.convertPromoEnhanceLegoBannerDataLayerForCombination(),
