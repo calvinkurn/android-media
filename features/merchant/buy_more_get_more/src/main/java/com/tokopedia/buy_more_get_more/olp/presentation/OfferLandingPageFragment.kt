@@ -98,6 +98,7 @@ class OfferLandingPageFragment :
 
     private fun setupObservables() {
         viewModel.offeringInfo.observe(viewLifecycleOwner) { offerInfoForBuyer ->
+            hideLoading()
             setupContent(offerInfoForBuyer)
         }
 

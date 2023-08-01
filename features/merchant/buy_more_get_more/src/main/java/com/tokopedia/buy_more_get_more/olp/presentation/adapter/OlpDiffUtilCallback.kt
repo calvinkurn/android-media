@@ -2,6 +2,7 @@ package com.tokopedia.buy_more_get_more.olp.presentation.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductSortingUiModel
 
 class OlpDiffUtilCallback(
     private val oldItems: List<Visitable<*>>,
@@ -20,6 +21,9 @@ class OlpDiffUtilCallback(
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldItem = oldItems.getOrNull(oldItemPosition)
         val newItem = newItems.getOrNull(newItemPosition)
+        if (isItemMatchWithUiModel<OfferProductSortingUiModel>(oldItem, newItem)) {
+            return false
+        }
         return oldItem == newItem
     }
 
@@ -31,4 +35,3 @@ class OlpDiffUtilCallback(
         return newItems.size
     }
 }
-
