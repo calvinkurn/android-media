@@ -34,6 +34,8 @@ import com.tokopedia.affiliate.viewmodel.AffiliatePromoViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.searchbar.navigation_component.NavSource
@@ -168,8 +170,8 @@ class AffiliatePromoSearchFragment :
 
     private fun onGetAffiliateSearchData(affiliateSearchData: AffiliateSearchData) {
         resetAdapter()
-        if (affiliateSearchData.searchAffiliate?.searchData?.status == 0) {
-            if (affiliateSearchData.searchAffiliate?.searchData?.error?.errorType == 1) {
+        if (affiliateSearchData.searchAffiliate?.searchData?.status == Int.ZERO) {
+            if (affiliateSearchData.searchAffiliate?.searchData?.error?.errorType == Int.ONE) {
                 view?.rootView?.let {
                     Toaster.build(
                         it,
