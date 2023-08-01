@@ -463,7 +463,10 @@ open class BuyerOrderDetailFragment :
                             ScpToasterHelper.showToaster(
                                 view = view,
                                 data = data,
-                                customBottomHeight = getStickyActionButtonHeight()
+                                customBottomHeight = getStickyActionButtonHeight(),
+                                ctaClickListener = {
+                                    viewModel.hideScpRewardsMedalTouchPointWidget()
+                                }
                             )
                             ScpRewardsToasterAnalytics.sendViewToasterEvent(
                                 badgeId = data.scpRewardsMedaliTouchpointOrder.medaliTouchpointOrder.medaliID.toString()
