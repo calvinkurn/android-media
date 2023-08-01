@@ -1738,6 +1738,29 @@ class CheckoutFragment :
         }
     }
 
+    override fun onViewErrorInCourierSection(errorMessage: String) {
+        checkoutAnalyticsCourierSelection.eventViewErrorInCourierSection(errorMessage)
+    }
+
+    override fun onOntimeDeliveryClicked(url: String) {
+        context?.let {
+            val intent = CheckoutWebViewActivity.newInstance(
+                it,
+                url,
+                getString(R.string.title_activity_checkout_tnc_webview)
+            )
+            startActivity(intent)
+        }
+    }
+
+    override fun onClickSetPinpoint(position: Int) {
+        setPinpoint(position)
+    }
+
+    override fun onClickRefreshErrorLoadCourier() {
+        checkoutAnalyticsCourierSelection.eventClickRefreshWhenErrorLoadCourier()
+    }
+
     override fun getHostFragmentManager(): FragmentManager {
         return parentFragmentManager
     }

@@ -429,19 +429,20 @@ class CheckoutOrderViewHolder(
     }
 
     override fun onOnTimeDeliveryClicked(url: String) {
-        TODO("Not yet implemented")
+        listener.onOntimeDeliveryClicked(url)
     }
 
     override fun onClickSetPinpoint() {
-        TODO("Not yet implemented")
+        listener.onClickSetPinpoint(bindingAdapterPosition)
     }
 
     override fun onClickLayoutFailedShipping(recipientAddressModel: RecipientAddressModel) {
-        TODO("Not yet implemented")
+        listener.onLoadShippingState(order, bindingAdapterPosition)
+        listener.onClickRefreshErrorLoadCourier()
     }
 
     override fun onViewErrorInCourierSection(logPromoDesc: String) {
-        // todo
+        listener.onViewErrorInCourierSection(logPromoDesc)
     }
 
     override fun onChangeScheduleDelivery(scheduleDeliveryUiModel: ScheduleDeliveryUiModel) {

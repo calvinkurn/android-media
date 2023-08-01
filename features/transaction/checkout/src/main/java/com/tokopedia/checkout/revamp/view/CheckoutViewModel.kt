@@ -1104,6 +1104,7 @@ class CheckoutViewModel @Inject constructor(
                 pageState.value = CheckoutPageState.Normal
                 listData.value = items
                 pageState.value = CheckoutPageState.ScrollTo(firstErrorIndex)
+                return@launch
             }
         }
     }
@@ -1152,50 +1153,37 @@ internal fun <T, R> List<T>.firstOrNullInstanceOf(kClass: Class<R>): R? {
     return item as? R
 }
 
-// internal fun <R> List<CheckoutItem>.firstOrNullInstanceOf(kClass: Class<R>): R? {
-//    val item = firstOrNull { kClass.isInstance(it) }
-//    @Suppress("UNCHECKED_CAST")
-//    return item as? R
-// }
-
 internal fun List<CheckoutItem>.address(): CheckoutAddressModel? {
     val item = getOrNull(1)
-    @Suppress("UNCHECKED_CAST")
     return item as? CheckoutAddressModel
 }
 
 internal fun List<CheckoutItem>.upsell(): CheckoutUpsellModel? {
     val item = getOrNull(2)
-    @Suppress("UNCHECKED_CAST")
     return item as? CheckoutUpsellModel
 }
 
 internal fun List<CheckoutItem>.epharmacy(): CheckoutEpharmacyModel? {
     val item = getOrNull(size - 4)
-    @Suppress("UNCHECKED_CAST")
     return item as? CheckoutEpharmacyModel
 }
 
 internal fun List<CheckoutItem>.promo(): CheckoutPromoModel? {
     val item = getOrNull(size - 4)
-    @Suppress("UNCHECKED_CAST")
     return item as? CheckoutPromoModel
 }
 
 internal fun List<CheckoutItem>.cost(): CheckoutCostModel? {
     val item = getOrNull(size - 3)
-    @Suppress("UNCHECKED_CAST")
     return item as? CheckoutCostModel
 }
 
 internal fun List<CheckoutItem>.crossSellGroup(): CheckoutCrossSellGroupModel? {
     val item = getOrNull(size - 2)
-    @Suppress("UNCHECKED_CAST")
     return item as? CheckoutCrossSellGroupModel
 }
 
 internal fun List<CheckoutItem>.buttonPayment(): CheckoutButtonPaymentModel? {
     val item = getOrNull(size - 1)
-    @Suppress("UNCHECKED_CAST")
     return item as? CheckoutButtonPaymentModel
 }

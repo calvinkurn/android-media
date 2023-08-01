@@ -54,6 +54,14 @@ interface CheckoutAdapterListener {
 
     fun onChangeScheduleDelivery(scheduleDeliveryUiModel: ScheduleDeliveryUiModel, order: CheckoutOrderModel, position: Int)
 
+    fun onViewErrorInCourierSection(errorMessage: String)
+
+    fun onOntimeDeliveryClicked(url: String)
+
+    fun onClickSetPinpoint(position: Int)
+
+    fun onClickRefreshErrorLoadCourier()
+
     fun getHostFragmentManager(): FragmentManager
 
     fun onClickPromoCheckout(lastApplyUiModel: LastApplyUiModel)
