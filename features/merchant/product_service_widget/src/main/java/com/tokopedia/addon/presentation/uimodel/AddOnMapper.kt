@@ -85,6 +85,14 @@ object AddOnMapper {
         return resultValue
     }
 
+    fun getGroupSelectedAddons(addOnGroupUIModels: List<AddOnGroupUIModel>): List<AddOnUIModel> {
+        return addOnGroupUIModels.map { addonGroups ->
+            addonGroups.addon.firstOrNull {
+                it.isSelected
+            } ?: AddOnUIModel()
+        }
+    }
+
     fun getPPSelectedAddons(addOnGroupUIModels: List<AddOnGroupUIModel>?): List<AddOnUIModel> {
         val resultValue: MutableList<AddOnUIModel> = mutableListOf()
         addOnGroupUIModels.orEmpty().forEach { addOnGroupUIModel ->

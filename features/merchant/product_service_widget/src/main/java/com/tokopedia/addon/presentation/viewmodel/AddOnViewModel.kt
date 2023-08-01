@@ -79,10 +79,9 @@ class AddOnViewModel @Inject constructor(
     }
 
     var preselectedAddonIds: List<String> = emptyList()
-    var lastSelectedAddOn: List<AddOnGroupUIModel> = emptyList()
+    var lastSelectedAddOnGroups: List<AddOnGroupUIModel> = emptyList()
+    var lastSelectedAddOn: MutableList<AddOnUIModel> = mutableListOf()
     var isSimplified = false
-
-    var tempAddon: MutableList<AddOnUIModel> = mutableListOf(AddOnUIModel(), AddOnUIModel())
 
     private fun generateEmptyAggregatedData(): AddOnPageResult.AggregatedData {
         return AddOnPageResult.AggregatedData(
@@ -161,7 +160,7 @@ class AddOnViewModel @Inject constructor(
             mAggregatedData.value = AddOnPageResult.AggregatedData(
                 title = result.aggregatedData.title,
                 price = result.aggregatedData.price,
-                selectedAddons = tempAddon.filter { it.id.isNotEmpty() },
+                selectedAddons = lastSelectedAddOn,
                 isGetDataSuccess = result.error.messages.isEmpty(),
                 getDataErrorMessage = result.error.messages
             )
@@ -181,8 +180,8 @@ class AddOnViewModel @Inject constructor(
     }
 
     fun restoreSelection() {
-        if (lastSelectedAddOn.isNotEmpty()) {
-            mGetAddOnResult.value = lastSelectedAddOn
+        if (lastSelectedAddOnGroups.isNotEmpty()) {
+            mGetAddOnResult.value = lastSelectedAddOnGroups
         }
     }
 

@@ -64,6 +64,7 @@ class AddOnWidgetView : BaseCustomView {
             viewModel.getAddOnResult.observe(this) {
                 addonAdapter.setItems(it)
                 viewModel.setSelectedAddons(it)
+                viewModel.lastSelectedAddOn = AddOnMapper.getGroupSelectedAddons(it).toMutableList()
             }
             viewModel.isAddonDataEmpty.observe(this) {
                 if (it) listener?.onDataEmpty()
@@ -95,7 +96,7 @@ class AddOnWidgetView : BaseCustomView {
                                 AddOnMapper.flatmapToChangedAddonSelection(addonGroups),
                                 addonGroups
                             )
-                            viewModel.lastSelectedAddOn = addonGroups
+                            viewModel.lastSelectedAddOnGroups = addonGroups
                         } else {
                             listener?.onSaveAddonLoading()
                         }
@@ -165,11 +166,15 @@ class AddOnWidgetView : BaseCustomView {
     ) {
         listener?.onAddonComponentClick(index, indexChild, addOnGroupUIModels)
         viewModel.setSelectedAddons(addOnGroupUIModels)
-        try {
-            var aaa = addOnGroupUIModels[index].addon[indexChild]
-            viewModel.tempAddon[index] = aaa
-        } catch (e: Exception) {
-            println(e.message)
+        val addonChild = addOnGroupUIModels.getOrNull(index)?.addon?.getOrNull(indexChild) ?: return
+        viewModel.lastSelectedAddOn.addOrUpdate(index, addonChild)
+    }
+
+    private fun <E> MutableList<E>.addOrUpdate(index: Int, addonChild: E) {
+        if (getOrNull(index) == null) {
+            add(index, addonChild)
+        } else {
+            set(index, addonChild)
         }
     }
 

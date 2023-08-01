@@ -1,12 +1,7 @@
 package com.tokopedia.addon.viewmodel
 
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
-import com.tokopedia.addon.domain.model.AddOnByProductResponse
-import com.tokopedia.addon.domain.model.Addon
-import com.tokopedia.addon.domain.model.GetAddOnByProduct
-import com.tokopedia.addon.domain.model.GetAddOnByProductResponse
 import com.tokopedia.addon.presentation.uimodel.AddOnGroupUIModel
-import com.tokopedia.gifting.domain.model.GetAddOnResponse
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product_bundle.util.getOrAwaitValue
