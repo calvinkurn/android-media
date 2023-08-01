@@ -73,8 +73,8 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         activeView = switcherView?.get(0)
         activeViewLeftImage = activeView?.findViewById(R.id.iv_promo_checkout_left)
         activeViewWording = activeView?.findViewById(R.id.tv_promo_checkout_text)
-        activeViewTitleWording = activeView?.findViewById(R.id.tv_promo_checkout_title)
-        activeViewDescWording = activeView?.findViewById(R.id.tv_promo_checkout_desc)
+        activeViewTitleWording = activeView?.findViewById(R.id.tv_promo_checkout_title_wording)
+        activeViewDescWording = activeView?.findViewById(R.id.tv_promo_checkout_desc_wording)
         activeViewRightIcon = activeView?.findViewById(R.id.ic_promo_checkout_right)
         activeViewDivider = activeView?.findViewById(R.id.divider_promo_checkout)
         activeViewSummaryLayout = activeView?.findViewById(R.id.ll_promo_checkout_summary)
@@ -84,9 +84,9 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         inActiveViewLeftImage = inActiveView?.findViewById(R.id.iv_promo_checkout_left)
         inActiveViewWording = inActiveView?.findViewById(R.id.tv_promo_checkout_text)
         inActiveViewRightIcon = inActiveView?.findViewById(R.id.ic_promo_checkout_right)
-        inActiveView?.findViewById<Typography>(R.id.tv_promo_checkout_title)?.visibility =
+        inActiveView?.findViewById<Typography>(R.id.tv_promo_checkout_title_wording)?.visibility =
             View.GONE
-        inActiveView?.findViewById<Typography>(R.id.tv_promo_checkout_desc)?.visibility =
+        inActiveView?.findViewById<Typography>(R.id.tv_promo_checkout_desc_wording)?.visibility =
             View.GONE
         inActiveView?.findViewById<DividerUnify>(R.id.divider_promo_checkout)?.visibility =
             View.GONE
@@ -196,6 +196,10 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         wording: String,
         onClickListener: () -> Unit = {}
     ) {
+        // workaround issue wrap content
+        activeViewTitleWording?.visibility = View.GONE
+        activeViewDescWording?.visibility = View.GONE
+        //
         switcherView?.reset()
         inActiveViewLeftImage?.setImageUrl("https://images.tokopedia.net/img/ios/promo_widget/disabled_product.png")
         inActiveViewWording?.setCurrentText(MethodChecker.fromHtml(wording))

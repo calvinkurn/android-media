@@ -189,7 +189,9 @@ class CheckoutViewModel @Inject constructor(
         isReloadAfterPriceChangeHigher: Boolean
     ) {
         viewModelScope.launch(dispatchers.io) {
-            pageState.value = CheckoutPageState.Loading
+            withContext(dispatchers.main) {
+                pageState.value = CheckoutPageState.Loading
+            }
             val saf = cartProcessor.hitSAF(
                 isOneClickShipment,
                 isTradeIn,

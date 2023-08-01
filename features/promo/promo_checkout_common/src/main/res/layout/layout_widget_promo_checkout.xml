@@ -15,13 +15,13 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:visibility="gone"
-            app:unify_image_corner_radius="0"
-            app:unify_image_url_src="https://images.tokopedia.net/img/ios/promo_widget/confetti.png"
-            app:unify_image_disable_shimmering_placeholder="true"
             app:layout_constraintBottom_toTopOf="@id/barrier_bottom_promo_checkout_header"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:unify_image_corner_radius="0"
+            app:unify_image_disable_shimmering_placeholder="true"
+            app:unify_image_url_src="https://images.tokopedia.net/img/ios/promo_widget/confetti.png" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_promo_checkout_left"
@@ -48,7 +48,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_promo_checkout_title"
+                android:id="@+id/tv_promo_checkout_title_wording"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
@@ -58,16 +58,16 @@
                 tools:text="Kamu bisa hemat Rp100.000" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_promo_checkout_desc"
+                android:id="@+id/tv_promo_checkout_desc_wording"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="12dp"
                 android:textColor="@color/Unify_NN600"
                 app:layout_constraintBottom_toTopOf="@id/barrier_bottom_promo_checkout_header"
-                app:layout_constraintEnd_toEndOf="@id/tv_promo_checkout_title"
-                app:layout_constraintStart_toStartOf="@id/tv_promo_checkout_title"
-                app:layout_constraintTop_toBottomOf="@id/tv_promo_checkout_title"
+                app:layout_constraintEnd_toEndOf="@id/tv_promo_checkout_title_wording"
+                app:layout_constraintStart_toStartOf="@id/tv_promo_checkout_title_wording"
+                app:layout_constraintTop_toBottomOf="@id/tv_promo_checkout_title_wording"
                 app:typographyType="small"
                 app:typographyWeight="reguler"
                 tools:text="1 promo dipakai" />
