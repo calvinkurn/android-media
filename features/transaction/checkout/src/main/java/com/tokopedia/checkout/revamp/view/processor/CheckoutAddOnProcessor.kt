@@ -41,7 +41,7 @@ class CheckoutAddOnProcessor @Inject constructor(
                             prescriptionIds.add(prescription!!.prescriptionId!!)
                         }
                         setPrescriptionIds(prescriptionIds, listData)
-//                            uploadPrescriptionUiModel.isError = false
+                        uploadPrescriptionUiModel.isError = false
 //                            view?.updateUploadPrescription(uploadPrescriptionUiModel)
                     }
                 } catch (e: Throwable) {
@@ -91,107 +91,106 @@ class CheckoutAddOnProcessor @Inject constructor(
 //                                shipmentCartItemModel.cartStringGroup
 //                            ) ?: 0
 //                        if (position > 0) {
-                            for (epharmacyGroup in groupsData.epharmacyGroups!!) {
-                                if (updated) {
-                                    break
-                                }
-                                if (epharmacyGroup?.shopInfo != null) {
-                                    epharmacyGroupIds.add(epharmacyGroup.epharmacyGroupId!!)
-                                    for (productsInfo in epharmacyGroup.shopInfo!!) {
-                                        if (updated) {
-                                            break
-                                        }
-                                        if (productsInfo?.shopId != null &&
-                                            productsInfo.shopId!!.isNotBlankOrZero() &&
-                                            shipmentCartItemModel.shopId == productsInfo.shopId!!.toLong()
-                                        ) {
-                                            if (productsInfo.products != null) {
-                                                for (product in productsInfo.products!!) {
-                                                    if (updated) {
-                                                        break
-                                                    }
-                                                    if (product?.productId != null) {
-                                                        for (i in shipmentCartItemModel.products.indices.reversed()) {
-                                                            val cartItemModel =
-                                                                shipmentCartItemModel.products[i]
-                                                            if (product.productId == cartItemModel.productId && !cartItemModel.isError) {
-                                                                if (epharmacyGroup.consultationData != null && epharmacyGroup.consultationData!!.consultationStatus != null && epharmacyGroup.consultationData!!.consultationStatus == EPHARMACY_CONSULTATION_STATUS_REJECTED) {
-                                                                    shipmentCartItemModel.tokoConsultationId =
-                                                                        ""
-                                                                    shipmentCartItemModel.partnerConsultationId =
-                                                                        ""
-                                                                    shipmentCartItemModel.consultationDataString =
-                                                                        ""
-                                                                    hasInvalidPrescription = true
-                                                                    if (shipmentCartItemModel.hasNonEthicalProducts) {
-                                                                        cartItemModel.isError = true
-                                                                        cartItemModel.errorMessage =
-                                                                            uploadPrescriptionUiModel.rejectedWording
-                                                                        shouldResetCourier = true
-                                                                    } else {
-                                                                        shipmentCartItemModel.firstProductErrorIndex =
-                                                                            0
-                                                                        shipmentCartItemModel.isError =
+                        for (epharmacyGroup in groupsData.epharmacyGroups!!) {
+                            if (updated) {
+                                break
+                            }
+                            if (epharmacyGroup?.shopInfo != null) {
+                                epharmacyGroupIds.add(epharmacyGroup.epharmacyGroupId!!)
+                                for (productsInfo in epharmacyGroup.shopInfo!!) {
+                                    if (updated) {
+                                        break
+                                    }
+                                    if (productsInfo?.shopId != null &&
+                                        productsInfo.shopId!!.isNotBlankOrZero() &&
+                                        shipmentCartItemModel.shopId == productsInfo.shopId!!.toLong()
+                                    ) {
+                                        if (productsInfo.products != null) {
+                                            for (product in productsInfo.products!!) {
+                                                if (updated) {
+                                                    break
+                                                }
+                                                if (product?.productId != null) {
+                                                    for (i in shipmentCartItemModel.products.indices.reversed()) {
+                                                        val cartItemModel =
+                                                            shipmentCartItemModel.products[i]
+                                                        if (product.productId == cartItemModel.productId && !cartItemModel.isError) {
+                                                            if (epharmacyGroup.consultationData != null && epharmacyGroup.consultationData!!.consultationStatus != null && epharmacyGroup.consultationData!!.consultationStatus == EPHARMACY_CONSULTATION_STATUS_REJECTED) {
+                                                                shipmentCartItemModel.tokoConsultationId =
+                                                                    ""
+                                                                shipmentCartItemModel.partnerConsultationId =
+                                                                    ""
+                                                                shipmentCartItemModel.consultationDataString =
+                                                                    ""
+                                                                hasInvalidPrescription = true
+                                                                if (shipmentCartItemModel.hasNonEthicalProducts) {
+                                                                    cartItemModel.isError = true
+                                                                    cartItemModel.errorMessage =
+                                                                        uploadPrescriptionUiModel.rejectedWording
+                                                                    shouldResetCourier = true
+                                                                } else {
+                                                                    shipmentCartItemModel.firstProductErrorIndex =
+                                                                        0
+                                                                    shipmentCartItemModel.isError =
+                                                                        true
+                                                                    shipmentCartItemModel.isAllItemError =
+                                                                        true
+                                                                    for (itemModel in shipmentCartItemModel.products) {
+                                                                        itemModel.isError = true
+                                                                        itemModel.isShopError =
                                                                             true
-                                                                        shipmentCartItemModel.isAllItemError =
-                                                                            true
-                                                                        for (itemModel in shipmentCartItemModel.products) {
-                                                                            itemModel.isError = true
-                                                                            itemModel.isShopError =
-                                                                                true
-                                                                        }
+                                                                    }
 //                                                                        shipmentCartItemModel.errorTitle =
 //                                                                            view?.getStringResourceWithArgs(
 //                                                                                R.string.checkout_error_unblocking_message,
 //                                                                                shipmentCartItemModel.products.size
 //                                                                            ) ?: ""
-                                                                        shipmentCartItemModel.isCustomEpharmacyError =
-                                                                            true
-                                                                        shipmentCartItemModel.spId =
-                                                                            0
+                                                                    shipmentCartItemModel.isCustomEpharmacyError =
+                                                                        true
+                                                                    shipmentCartItemModel.spId =
+                                                                        0
 //                                                                        view?.updateShipmentCartItemGroup(
 //                                                                            shipmentCartItemModel
 //                                                                        )
 //                                                                        view?.resetCourier(
 //                                                                            shipmentCartItemModel
 //                                                                        )
-                                                                        updated = true
-                                                                        break
-                                                                    }
-                                                                } else if (epharmacyGroup.consultationData != null && epharmacyGroup.consultationData!!.consultationStatus != null && epharmacyGroup.consultationData!!.consultationStatus == EPHARMACY_CONSULTATION_STATUS_APPROVED) {
-                                                                    shipmentCartItemModel.tokoConsultationId =
-                                                                        epharmacyGroup.consultationData!!.tokoConsultationId!!
-                                                                    shipmentCartItemModel.partnerConsultationId =
-                                                                        epharmacyGroup.consultationData!!.partnerConsultationId!!
-                                                                    shipmentCartItemModel.consultationDataString =
-                                                                        epharmacyGroup.consultationData!!.consultationString!!
-                                                                    mapPrescriptionCount[epharmacyGroup.epharmacyGroupId] =
-                                                                        1
-                                                                    updated = true
-                                                                    break
-                                                                } else if (epharmacyGroup.prescriptionImages != null && epharmacyGroup.prescriptionImages!!.isNotEmpty()) {
-                                                                    val prescriptionIds =
-                                                                        ArrayList<String>()
-                                                                    for (prescriptionImage in epharmacyGroup.prescriptionImages!!) {
-                                                                        if (prescriptionImage != null && !prescriptionImage.prescriptionId.isNullOrEmpty()
-                                                                        ) {
-                                                                            prescriptionIds.add(
-                                                                                prescriptionImage.prescriptionId!!
-                                                                            )
-                                                                        }
-                                                                    }
-                                                                    shipmentCartItemModel.prescriptionIds =
-                                                                        prescriptionIds
-                                                                    mapPrescriptionCount[epharmacyGroup.epharmacyGroupId] =
-                                                                        prescriptionIds.size
                                                                     updated = true
                                                                     break
                                                                 }
+                                                            } else if (epharmacyGroup.consultationData != null && epharmacyGroup.consultationData!!.consultationStatus != null && epharmacyGroup.consultationData!!.consultationStatus == EPHARMACY_CONSULTATION_STATUS_APPROVED) {
+                                                                shipmentCartItemModel.tokoConsultationId =
+                                                                    epharmacyGroup.consultationData!!.tokoConsultationId!!
+                                                                shipmentCartItemModel.partnerConsultationId =
+                                                                    epharmacyGroup.consultationData!!.partnerConsultationId!!
+                                                                shipmentCartItemModel.consultationDataString =
+                                                                    epharmacyGroup.consultationData!!.consultationString!!
+                                                                mapPrescriptionCount[epharmacyGroup.epharmacyGroupId] =
+                                                                    1
+                                                                updated = true
+                                                                break
+                                                            } else if (epharmacyGroup.prescriptionImages != null && epharmacyGroup.prescriptionImages!!.isNotEmpty()) {
+                                                                val prescriptionIds =
+                                                                    ArrayList<String>()
+                                                                for (prescriptionImage in epharmacyGroup.prescriptionImages!!) {
+                                                                    if (prescriptionImage != null && !prescriptionImage.prescriptionId.isNullOrEmpty()
+                                                                    ) {
+                                                                        prescriptionIds.add(
+                                                                            prescriptionImage.prescriptionId!!
+                                                                        )
+                                                                    }
+                                                                }
+                                                                shipmentCartItemModel.prescriptionIds =
+                                                                    prescriptionIds
+                                                                mapPrescriptionCount[epharmacyGroup.epharmacyGroupId] =
+                                                                    prescriptionIds.size
+                                                                updated = true
+                                                                break
                                                             }
-                                                            if (cartItemModel.isError) {
-                                                                productErrorCount += 1
-                                                                firstProductErrorIndex = i
-                                                            }
+                                                        }
+                                                        if (cartItemModel.isError) {
+                                                            productErrorCount += 1
+                                                            firstProductErrorIndex = i
                                                         }
                                                     }
                                                 }
@@ -200,20 +199,21 @@ class CheckoutAddOnProcessor @Inject constructor(
                                     }
                                 }
                             }
-                            if (shouldResetCourier) {
-                                shipmentCartItemModel.isHasUnblockingError = true
-                                shipmentCartItemModel.firstProductErrorIndex =
-                                    firstProductErrorIndex
+                        }
+                        if (shouldResetCourier) {
+                            shipmentCartItemModel.isHasUnblockingError = true
+                            shipmentCartItemModel.firstProductErrorIndex =
+                                firstProductErrorIndex
 //                                shipmentCartItemModel.unblockingErrorMessage =
 //                                    view?.getStringResourceWithArgs(
 //                                        R.string.checkout_error_unblocking_message,
 //                                        productErrorCount
 //                                    ) ?: ""
-                                shipmentCartItemModel.spId = 0
-                                shipmentCartItemModel.shouldResetCourier = true
+                            shipmentCartItemModel.spId = 0
+                            shipmentCartItemModel.shouldResetCourier = true
 //                                view?.updateShipmentCartItemGroup(shipmentCartItemModel)
 //                                view?.resetCourier(shipmentCartItemModel)
-                            }
+                        }
 //                        }
                     }
                 }
@@ -247,161 +247,161 @@ class CheckoutAddOnProcessor @Inject constructor(
     fun setMiniConsultationResult(results: ArrayList<EPharmacyMiniConsultationResult>, listData: List<CheckoutItem>) {
         val uploadPrescriptionUiModel = listData.firstOrNullInstanceOf(CheckoutEpharmacyModel::class.java)?.epharmacy ?: return
 //        if (view != null) {
-            val epharmacyGroupIds = HashSet<String>()
-            val mapPrescriptionCount = HashMap<String?, Int>()
-            val enablerNames = HashSet<String>()
-            val shopIds = ArrayList<String>()
-            val cartIds = ArrayList<String>()
-            var hasInvalidPrescription = false
-            for (shipmentCartItemModel in listData) {
-                if (shipmentCartItemModel is CheckoutOrderModel && shipmentCartItemModel.hasEthicalProducts) {
-                    shopIds.add(shipmentCartItemModel.shopId.toString())
-                    enablerNames.add(shipmentCartItemModel.enablerLabel)
-                    for (cartItemModel in shipmentCartItemModel.products) {
-                        if (cartItemModel.ethicalDrugDataModel.needPrescription) {
-                            cartIds.add(cartItemModel.cartId.toString())
-                        }
+        val epharmacyGroupIds = HashSet<String>()
+        val mapPrescriptionCount = HashMap<String?, Int>()
+        val enablerNames = HashSet<String>()
+        val shopIds = ArrayList<String>()
+        val cartIds = ArrayList<String>()
+        var hasInvalidPrescription = false
+        for (shipmentCartItemModel in listData) {
+            if (shipmentCartItemModel is CheckoutOrderModel && shipmentCartItemModel.hasEthicalProducts) {
+                shopIds.add(shipmentCartItemModel.shopId.toString())
+                enablerNames.add(shipmentCartItemModel.enablerLabel)
+                for (cartItemModel in shipmentCartItemModel.products) {
+                    if (cartItemModel.ethicalDrugDataModel.needPrescription) {
+                        cartIds.add(cartItemModel.cartId.toString())
                     }
                 }
-                if (shipmentCartItemModel is CheckoutOrderModel && !shipmentCartItemModel.isError && shipmentCartItemModel.hasEthicalProducts) {
-                    var updated = false
-                    var shouldResetCourier = false
-                    var productErrorCount = 0
-                    var firstProductErrorIndex = -1
+            }
+            if (shipmentCartItemModel is CheckoutOrderModel && !shipmentCartItemModel.isError && shipmentCartItemModel.hasEthicalProducts) {
+                var updated = false
+                var shouldResetCourier = false
+                var productErrorCount = 0
+                var firstProductErrorIndex = -1
 //                    val position = view?.getShipmentCartItemModelAdapterPositionByCartStringGroup(
 //                        shipmentCartItemModel.cartStringGroup
 //                    ) ?: 0
 //                    if (position > 0) {
-                        for (result in results) {
+                for (result in results) {
+                    if (updated) {
+                        break
+                    }
+                    if (result.shopInfo != null) {
+                        epharmacyGroupIds.add(result.epharmacyGroupId!!)
+                        for (productsInfo in result.shopInfo!!) {
                             if (updated) {
                                 break
                             }
-                            if (result.shopInfo != null) {
-                                epharmacyGroupIds.add(result.epharmacyGroupId!!)
-                                for (productsInfo in result.shopInfo!!) {
+                            if (productsInfo?.products != null && productsInfo.shopId != null &&
+                                productsInfo.shopId!!.isNotBlankOrZero() &&
+                                shipmentCartItemModel.shopId == productsInfo.shopId!!.toLong()
+                            ) {
+                                for (product in productsInfo.products!!) {
                                     if (updated) {
                                         break
                                     }
-                                    if (productsInfo?.products != null && productsInfo.shopId != null &&
-                                        productsInfo.shopId!!.isNotBlankOrZero() &&
-                                        shipmentCartItemModel.shopId == productsInfo.shopId!!.toLong()
-                                    ) {
-                                        for (product in productsInfo.products!!) {
-                                            if (updated) {
-                                                break
-                                            }
-                                            if (product?.productId != null) {
-                                                for (i in shipmentCartItemModel.products.indices.reversed()) {
-                                                    val cartItemModel =
-                                                        shipmentCartItemModel.products[i]
-                                                    if (!cartItemModel.isError && product.productId == cartItemModel.productId) {
-                                                        if (result.consultationStatus != null && result.consultationStatus == EPHARMACY_CONSULTATION_STATUS_REJECTED) {
-                                                            shipmentCartItemModel.tokoConsultationId =
-                                                                ""
-                                                            shipmentCartItemModel.partnerConsultationId =
-                                                                ""
-                                                            shipmentCartItemModel.consultationDataString =
-                                                                ""
-                                                            hasInvalidPrescription = true
-                                                            if (shipmentCartItemModel.hasNonEthicalProducts) {
-                                                                cartItemModel.isError = true
-                                                                cartItemModel.errorMessage =
-                                                                    uploadPrescriptionUiModel.rejectedWording
-                                                                shouldResetCourier = true
-                                                            } else {
-                                                                shipmentCartItemModel.firstProductErrorIndex =
-                                                                    0
-                                                                shipmentCartItemModel.isError = true
-                                                                shipmentCartItemModel.isAllItemError =
-                                                                    true
-                                                                for (itemModel in shipmentCartItemModel.products) {
-                                                                    itemModel.isError = true
-                                                                    itemModel.isShopError = true
-                                                                }
+                                    if (product?.productId != null) {
+                                        for (i in shipmentCartItemModel.products.indices.reversed()) {
+                                            val cartItemModel =
+                                                shipmentCartItemModel.products[i]
+                                            if (!cartItemModel.isError && product.productId == cartItemModel.productId) {
+                                                if (result.consultationStatus != null && result.consultationStatus == EPHARMACY_CONSULTATION_STATUS_REJECTED) {
+                                                    shipmentCartItemModel.tokoConsultationId =
+                                                        ""
+                                                    shipmentCartItemModel.partnerConsultationId =
+                                                        ""
+                                                    shipmentCartItemModel.consultationDataString =
+                                                        ""
+                                                    hasInvalidPrescription = true
+                                                    if (shipmentCartItemModel.hasNonEthicalProducts) {
+                                                        cartItemModel.isError = true
+                                                        cartItemModel.errorMessage =
+                                                            uploadPrescriptionUiModel.rejectedWording
+                                                        shouldResetCourier = true
+                                                    } else {
+                                                        shipmentCartItemModel.firstProductErrorIndex =
+                                                            0
+                                                        shipmentCartItemModel.isError = true
+                                                        shipmentCartItemModel.isAllItemError =
+                                                            true
+                                                        for (itemModel in shipmentCartItemModel.products) {
+                                                            itemModel.isError = true
+                                                            itemModel.isShopError = true
+                                                        }
 //                                                                shipmentCartItemModel.errorTitle =
 //                                                                    view?.getStringResourceWithArgs(
 //                                                                        R.string.checkout_error_unblocking_message,
 //                                                                        shipmentCartItemModel.products.size
 //                                                                    ) ?: ""
-                                                                shipmentCartItemModel.isCustomEpharmacyError =
-                                                                    true
-                                                                shipmentCartItemModel.spId = 0
+                                                        shipmentCartItemModel.isCustomEpharmacyError =
+                                                            true
+                                                        shipmentCartItemModel.spId = 0
 //                                                                view?.updateShipmentCartItemGroup(
 //                                                                    shipmentCartItemModel
 //                                                                )
 //                                                                view?.resetCourier(
 //                                                                    shipmentCartItemModel
 //                                                                )
-                                                                updated = true
-                                                                break
-                                                            }
-                                                        } else if (result.consultationStatus != null && result.consultationStatus == EPHARMACY_CONSULTATION_STATUS_APPROVED) {
-                                                            shipmentCartItemModel.tokoConsultationId =
-                                                                result.tokoConsultationId!!
-                                                            shipmentCartItemModel.partnerConsultationId =
-                                                                result.partnerConsultationId!!
-                                                            shipmentCartItemModel.consultationDataString =
-                                                                result.consultationString!!
-                                                            mapPrescriptionCount[result.epharmacyGroupId] =
-                                                                1
-                                                            updated = true
-                                                            break
-                                                        } else if (result.prescriptionImages != null && result.prescriptionImages!!.isNotEmpty()) {
-                                                            val prescriptionIds =
-                                                                ArrayList<String>()
-                                                            for (prescriptionImage in result.prescriptionImages!!) {
-                                                                if (prescriptionImage != null && !prescriptionImage.prescriptionId.isNullOrEmpty()
-                                                                ) {
-                                                                    prescriptionIds.add(
-                                                                        prescriptionImage.prescriptionId!!
-                                                                    )
-                                                                }
-                                                            }
-                                                            shipmentCartItemModel.prescriptionIds =
-                                                                prescriptionIds
-                                                            mapPrescriptionCount[result.epharmacyGroupId] =
-                                                                prescriptionIds.size
-                                                            updated = true
-                                                            break
+                                                        updated = true
+                                                        break
+                                                    }
+                                                } else if (result.consultationStatus != null && result.consultationStatus == EPHARMACY_CONSULTATION_STATUS_APPROVED) {
+                                                    shipmentCartItemModel.tokoConsultationId =
+                                                        result.tokoConsultationId!!
+                                                    shipmentCartItemModel.partnerConsultationId =
+                                                        result.partnerConsultationId!!
+                                                    shipmentCartItemModel.consultationDataString =
+                                                        result.consultationString!!
+                                                    mapPrescriptionCount[result.epharmacyGroupId] =
+                                                        1
+                                                    updated = true
+                                                    break
+                                                } else if (result.prescriptionImages != null && result.prescriptionImages!!.isNotEmpty()) {
+                                                    val prescriptionIds =
+                                                        ArrayList<String>()
+                                                    for (prescriptionImage in result.prescriptionImages!!) {
+                                                        if (prescriptionImage != null && !prescriptionImage.prescriptionId.isNullOrEmpty()
+                                                        ) {
+                                                            prescriptionIds.add(
+                                                                prescriptionImage.prescriptionId!!
+                                                            )
                                                         }
                                                     }
-                                                    if (cartItemModel.isError) {
-                                                        productErrorCount += 1
-                                                        firstProductErrorIndex = i
-                                                    }
+                                                    shipmentCartItemModel.prescriptionIds =
+                                                        prescriptionIds
+                                                    mapPrescriptionCount[result.epharmacyGroupId] =
+                                                        prescriptionIds.size
+                                                    updated = true
+                                                    break
                                                 }
+                                            }
+                                            if (cartItemModel.isError) {
+                                                productErrorCount += 1
+                                                firstProductErrorIndex = i
                                             }
                                         }
                                     }
                                 }
                             }
                         }
-                        if (shouldResetCourier) {
-                            shipmentCartItemModel.isHasUnblockingError = true
-                            shipmentCartItemModel.firstProductErrorIndex = firstProductErrorIndex
+                    }
+                }
+                if (shouldResetCourier) {
+                    shipmentCartItemModel.isHasUnblockingError = true
+                    shipmentCartItemModel.firstProductErrorIndex = firstProductErrorIndex
 //                            shipmentCartItemModel.unblockingErrorMessage =
 //                                view?.getStringResourceWithArgs(
 //                                    R.string.checkout_error_unblocking_message,
 //                                    productErrorCount
 //                                ) ?: ""
-                            shipmentCartItemModel.spId = 0
+                    shipmentCartItemModel.spId = 0
 //                            view?.updateShipmentCartItemGroup(shipmentCartItemModel)
 //                            view?.resetCourier(shipmentCartItemModel)
-                        }
-//                    }
                 }
+//                    }
             }
-            var totalPrescription = 0
-            for (value in mapPrescriptionCount.values) {
-                totalPrescription += value
-            }
-            uploadPrescriptionUiModel.epharmacyGroupIds = ArrayList(epharmacyGroupIds)
-            uploadPrescriptionUiModel.isError = false
-            uploadPrescriptionUiModel.uploadedImageCount = totalPrescription
-            uploadPrescriptionUiModel.hasInvalidPrescription = hasInvalidPrescription
-            uploadPrescriptionUiModel.enablerNames = ArrayList(enablerNames)
-            uploadPrescriptionUiModel.shopIds = shopIds
-            uploadPrescriptionUiModel.cartIds = cartIds
+        }
+        var totalPrescription = 0
+        for (value in mapPrescriptionCount.values) {
+            totalPrescription += value
+        }
+        uploadPrescriptionUiModel.epharmacyGroupIds = ArrayList(epharmacyGroupIds)
+        uploadPrescriptionUiModel.isError = false
+        uploadPrescriptionUiModel.uploadedImageCount = totalPrescription
+        uploadPrescriptionUiModel.hasInvalidPrescription = hasInvalidPrescription
+        uploadPrescriptionUiModel.enablerNames = ArrayList(enablerNames)
+        uploadPrescriptionUiModel.shopIds = shopIds
+        uploadPrescriptionUiModel.cartIds = cartIds
 //            view?.updateUploadPrescription(uploadPrescriptionUiModel)
 //        }
     }

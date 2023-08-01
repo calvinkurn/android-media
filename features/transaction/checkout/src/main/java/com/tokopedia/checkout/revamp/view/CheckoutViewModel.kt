@@ -242,16 +242,22 @@ class CheckoutViewModel @Inject constructor(
                     userSessionInterface.name
                 )
 
+                val uploadPrescriptionUiModel = UploadPrescriptionUiModel(
+                    showImageUpload = saf.cartShipmentAddressFormData.epharmacyData.showImageUpload,
+                    uploadImageText = saf.cartShipmentAddressFormData.epharmacyData.uploadText,
+                    leftIconUrl = saf.cartShipmentAddressFormData.epharmacyData.leftIconUrl,
+                    checkoutId = saf.cartShipmentAddressFormData.epharmacyData.checkoutId,
+                    frontEndValidation = saf.cartShipmentAddressFormData.epharmacyData.frontEndValidation,
+                    consultationFlow = saf.cartShipmentAddressFormData.epharmacyData.consultationFlow,
+                    rejectedWording = saf.cartShipmentAddressFormData.epharmacyData.rejectedWording
+                )
+                addOnProcessor.fetchPrescriptionIds(
+                    saf.cartShipmentAddressFormData.epharmacyData,
+                    items,
+                    uploadPrescriptionUiModel
+                )
                 val epharmacy = CheckoutEpharmacyModel(
-                    epharmacy = UploadPrescriptionUiModel(
-                        showImageUpload = saf.cartShipmentAddressFormData.epharmacyData.showImageUpload,
-                        uploadImageText = saf.cartShipmentAddressFormData.epharmacyData.uploadText,
-                        leftIconUrl = saf.cartShipmentAddressFormData.epharmacyData.leftIconUrl,
-                        checkoutId = saf.cartShipmentAddressFormData.epharmacyData.checkoutId,
-                        frontEndValidation = saf.cartShipmentAddressFormData.epharmacyData.frontEndValidation,
-                        consultationFlow = saf.cartShipmentAddressFormData.epharmacyData.consultationFlow,
-                        rejectedWording = saf.cartShipmentAddressFormData.epharmacyData.rejectedWording
-                    )
+                    epharmacy = uploadPrescriptionUiModel
                 )
 
                 val promo = CheckoutPromoModel(
