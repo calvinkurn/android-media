@@ -35,7 +35,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyWeight="bold"
                 app:typographyType="heading_2"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 android:text="@string/add_showcase_title_header"
                 tools:text="@string/add_showcase_title_header"
                 android:layout_marginLeft="16dp"
@@ -67,7 +67,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:typographyWeight="bold"
                 app:typographyType="heading_3"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 android:text="@string/selected_product_text"
                 tools:text="@string/selected_product_text"
                 android:paddingLeft="16dp"
@@ -86,7 +86,7 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:typographyWeight="bold"
                 app:typographyType="body_3"
-                android:textColor="@color/Unify_G500"
+                android:textColor="@color/Unify_GN500"
                 android:text="@string/add_product_text"
                 tools:text="@string/add_product_text"
                 tools:visibility="visible"
@@ -180,7 +180,7 @@
                 android:layout_marginStart="16dp"
                 app:typographyType="heading_5"
                 android:layout_marginTop="12dp"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 />
 
         </RelativeLayout>

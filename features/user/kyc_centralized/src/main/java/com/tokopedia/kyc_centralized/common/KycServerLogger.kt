@@ -16,6 +16,30 @@ object KycServerLogger {
     private const val LIMIT_MESSAGE = 1000
     private const val MB_DIVIDER_FLOAT = 1024F
 
+    private const val STATUS_SUCCESS = "success"
+    private const val STATUS_FAILED = "failed"
+    const val FLOW_GOTO_KYC = "goto kyc"
+    const val FLOW_CKYC = "ckyc"
+    const val FLOW_ALA_CARTE = "ala carte"
+
+    fun sendLogStatusSavePreferenceKyc(
+        flow: String,
+        isSuccess: Boolean
+    ) {
+        ServerLogger.log(
+            priority = Priority.P2,
+            tag = "KYC_SAVE_PREFERENCE",
+            message = mapOf(
+                "flow" to flow,
+                "status" to if (isSuccess) {
+                    STATUS_SUCCESS
+                } else {
+                    STATUS_FAILED
+                }
+            )
+        )
+    }
+
     fun kycUploadMonitoring(
         type: String,
         uploadTime: Long,

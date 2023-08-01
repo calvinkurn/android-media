@@ -3,6 +3,8 @@ package com.tokopedia.epharmacy.utils
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.epharmacy.component.model.EPharmacyAttachmentDataModel
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup as EGroup
+import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo as EProductInfo
 
 object EPharmacyMapper {
 
@@ -16,7 +18,7 @@ object EPharmacyMapper {
             getUniqueModelName(group.epharmacyGroupId, shopIndex), GROUP_COMPONENT,
             group.epharmacyGroupId,
             group.consultationSource?.enablerName,
-            group.shopInfo?.firstOrNull()?.partnerLogoUrl,
+            getPartnerLogo(group, info),
             group.consultationSource?.enablerLogoUrl,
             info,
             group.consultationData?.consultationStatus,
@@ -33,6 +35,13 @@ object EPharmacyMapper {
             isLastIndex(group.shopInfo, shopIndex),
             (isLastIndex(group.shopInfo, shopIndex) && isLastGroup).not()
         )
+    }
+
+    private fun getPartnerLogo(
+        group: EGroup,
+        info: EProductInfo?
+    ): String? {
+        return info?.partnerLogoUrl
     }
 
     private fun getUniqueModelName(ePharmacyGroupId: String?, index: Int): String {

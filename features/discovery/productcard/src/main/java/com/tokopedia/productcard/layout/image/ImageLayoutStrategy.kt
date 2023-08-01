@@ -4,6 +4,7 @@ import android.widget.ImageView
 import android.widget.Space
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.video_widget.VideoPlayerView
 
 internal interface ImageLayoutStrategy {
@@ -16,4 +17,8 @@ internal interface ImageLayoutStrategy {
     )
 
     fun getImageHeight(imageWidth: Int, productCardModel: ProductCardModel): Int
+
+    fun setImageSizeListView(mediaAnchorProduct: Space?) { }
+
+    fun imageCornerRadius(): Float = 6.toPx().toFloat()
 }

@@ -19,4 +19,10 @@ object AddressMapper {
             "${it.warehouse_id}$HASH_TAG${it.service_type}"
         }
     }
+
+    fun mapToWarehouseIds(addressData: LocalCacheModel?): String {
+        return addressData?.warehouses.orEmpty().joinToString(COMMA) {
+            it.warehouse_id.toString()
+        }
+    }
 }

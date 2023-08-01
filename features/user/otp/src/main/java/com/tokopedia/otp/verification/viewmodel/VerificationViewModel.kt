@@ -19,8 +19,24 @@ import com.tokopedia.otp.verification.data.OtpConstant.StaticText.SPAN_USE_SMS_M
 import com.tokopedia.otp.verification.data.OtpConstant.StaticText.spanFactory
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
-import com.tokopedia.otp.verification.domain.pojo.*
-import com.tokopedia.otp.verification.domain.usecase.*
+import com.tokopedia.otp.verification.domain.pojo.GetOtpModeListParam
+import com.tokopedia.otp.verification.domain.pojo.GetVerificationMethodPhoneRegisterMandatoryParam
+import com.tokopedia.otp.verification.domain.pojo.ModeListData
+import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
+import com.tokopedia.otp.verification.domain.pojo.OtpRequestPhoneRegisterMandatoryParam
+import com.tokopedia.otp.verification.domain.pojo.OtpValidatePhoneRegisterMandatoryParam
+import com.tokopedia.otp.verification.domain.usecase.GetOtpModeListUseCase
+import com.tokopedia.otp.verification.domain.usecase.GetVerificationMethodInactivePhoneUseCase
+import com.tokopedia.otp.verification.domain.usecase.GetVerificationMethodPhoneRegisterMandatoryUseCase
+import com.tokopedia.otp.verification.domain.usecase.GetVerificationMethodUseCase
+import com.tokopedia.otp.verification.domain.usecase.GetVerificationMethodUseCase2FA
+import com.tokopedia.otp.verification.domain.usecase.InactivePhoneVerificationMethodeParams
+import com.tokopedia.otp.verification.domain.usecase.OtpValidatePhoneRegisterMandatoryUseCase
+import com.tokopedia.otp.verification.domain.usecase.OtpValidateUseCase
+import com.tokopedia.otp.verification.domain.usecase.OtpValidateUseCase2FA
+import com.tokopedia.otp.verification.domain.usecase.SendOtp2FAUseCase
+import com.tokopedia.otp.verification.domain.usecase.SendOtpPhoneRegisterMandatoryUseCase
+import com.tokopedia.otp.verification.domain.usecase.SendOtpUseCase
 import com.tokopedia.otp.verification.view.uimodel.DefaultOtpUiModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -642,8 +658,7 @@ open class VerificationViewModel @Inject constructor(
     }
 
     suspend fun getPublicKey(): KeyData {
-        generatePublicKeyUseCase.setParams(SessionConstants.GenerateKeyModule.PIN_V2.value)
-        val result = generatePublicKeyUseCase.executeOnBackground().keyData
+        val result = generatePublicKeyUseCase(SessionConstants.GenerateKeyModule.PIN_V2.value).keyData
         result.key = SessionConstants.cleanPublicKey(result.key)
         return result
     }

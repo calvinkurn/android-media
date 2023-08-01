@@ -2,18 +2,17 @@ package com.tokopedia.entertainment.search.adapter.viewholder
 
 import android.graphics.Paint
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.entertainment.R
-import com.tokopedia.entertainment.search.analytics.EventCategoryPageTracking
+import com.tokopedia.entertainment.databinding.EntSearchEventGridItemBinding
+import com.tokopedia.entertainment.databinding.EntSearchProgressbarBinding
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
-import kotlinx.android.synthetic.main.ent_search_event_grid_item.view.*
+import com.tokopedia.media.loader.loadImage
 
 class EventGridAdapter(val listener: EventGridListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -23,11 +22,17 @@ class EventGridAdapter(val listener: EventGridListener) : RecyclerView.Adapter<R
     val VIEW_TYPE_LOADING = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        if(viewType == VIEW_TYPE_ITEM) return EventGridViewHolder(LayoutInflater.from(parent.context)
-                .inflate(R.layout.ent_search_event_grid_item, parent, false))
+        if(viewType == VIEW_TYPE_ITEM) return EventGridViewHolder(EntSearchEventGridItemBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            ), listEvent, listener)
 
-        else return ProgressBarViewHolder(LayoutInflater.from(parent.context)
-                .inflate(R.layout.ent_search_progressbar, parent, false))
+        else return ProgressBarViewHolder(EntSearchProgressbarBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        ))
     }
 
     override fun getItemCount(): Int = if(isLoading) listEvent.size+1 else listEvent.size
@@ -37,20 +42,22 @@ class EventGridAdapter(val listener: EventGridListener) : RecyclerView.Adapter<R
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if(listEvent.size > 0 && position < listEvent.size){
-            val event = listEvent.get(position)
-            with((holder as EventGridViewHolder).view) {
-                Glide.with(context)
-                        .load(event.image_url)
-                        .centerCrop()
-                        .into(image)
+        if(holder is EventGridViewHolder) {
+            holder.bind(listEvent[position])
+        }
+    }
 
-                txt_location.text = event.location
-                txt_title.text = event.nama_event
-                if (event.harga_start.startsWith("Rp")) { //Saat diskon beri stroke
-                    txt_start_title.paintFlags = txt_start_title.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+    class EventGridViewHolder(val binding: EntSearchEventGridItemBinding, var listEvent: MutableList<EventGrid>, val listener: EventGridListener) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(event: EventGrid) {
+            with(binding) {
+                image.loadImage(event.image_url)
+
+                txtLocation.text = event.location
+                txtTitle.text = event.nama_event
+                if (event.harga_start.startsWith("Rp")) {
+                    txtStartTitle.paintFlags = txtStartTitle.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                 }
-                txt_start_title.apply {
+                txtStartTitle.apply {
                     if (event.isFree){
                         gone()
                     } else {
@@ -58,7 +65,7 @@ class EventGridAdapter(val listener: EventGridListener) : RecyclerView.Adapter<R
                         text = event.harga_start
                     }
                 }
-                txt_price.apply {
+                txtPrice.apply {
                     if (event.isFree){
                         text = resources.getString(R.string.ent_free_price)
                     } else {
@@ -66,22 +73,18 @@ class EventGridAdapter(val listener: EventGridListener) : RecyclerView.Adapter<R
                     }
                 }
 
-                addOnImpressionListener(event, {
+                root.addOnImpressionListener(event, {
                     listener.impressionCategory(event, listEvent, position)
                 })
 
-                setOnClickListener {
+                root.setOnClickListener {
                     listener.clickCategory(event, listEvent, position)
-                    RouteManager.route(holder.view.context, event.app_url)
-                    //TODO Open new Activity
-
+                    RouteManager.route(root.context, event.app_url)
                 }
             }
         }
     }
-
-    class EventGridViewHolder(val view: View) : RecyclerView.ViewHolder(view)
-    class ProgressBarViewHolder(val view: View) : RecyclerView.ViewHolder(view)
+    class ProgressBarViewHolder(val binding: EntSearchProgressbarBinding) : RecyclerView.ViewHolder(binding.root)
 
     data class EventGrid(
             val id: String,

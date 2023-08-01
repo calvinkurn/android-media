@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.media.editor.data.repository.BitmapCreationRepository
 import com.tokopedia.media.editor.data.repository.SaveImageRepository
+import com.tokopedia.media.editor.ui.uimodel.BitmapCreation
+import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.picker.common.EditorParam
@@ -34,8 +36,8 @@ class EditorViewModel @Inject constructor(
     private var _editorParam = MutableLiveData<EditorParam>()
     val editorParam: LiveData<EditorParam> get() = _editorParam
 
-    private var _editorResult = MutableLiveData<List<String>>()
-    val editorResult: LiveData<List<String>> = _editorResult
+    private var _editorResult = MutableLiveData<List<String?>>()
+    val editorResult: LiveData<List<String?>> = _editorResult
 
     fun setEditorParam(data: EditorParam) {
         _editorParam.postValue(data)
@@ -113,7 +115,7 @@ class EditorViewModel @Inject constructor(
 
                     val addTextFlatten = async {
                         it.getOverlayTextValue()?.textImagePath?.let { textImagePath ->
-                            saveImageRepository.flattenImage(
+                            return@async saveImageRepository.flattenImage(
                                 it.getImageUrl(),
                                 textImagePath,
                                 it.getOriginalUrl()
@@ -122,15 +124,15 @@ class EditorViewModel @Inject constructor(
                     }
 
                     val addLogoFlatten = async {
-                        val addTextOrOriginalResult = addTextFlatten.await()
-
-                        it.getOverlayLogoValue()?.let { overlayData ->
-                            saveImageRepository.flattenImage(
-                                addTextOrOriginalResult,
-                                overlayData.overlayLogoUrl,
-                                it.getOriginalUrl()
-                            )
-                        } ?: addTextOrOriginalResult
+                        addTextFlatten.await()?.let { addTextResult ->
+                            it.getOverlayLogoValue()?.let { overlayData ->
+                                return@async saveImageRepository.flattenImage(
+                                    addTextResult,
+                                    overlayData.overlayLogoUrl,
+                                    it.getOriginalUrl()
+                                )
+                            } ?: addTextResult
+                        }
                     }
 
                     addLogoFlatten.await()
@@ -161,6 +163,19 @@ class EditorViewModel @Inject constructor(
 
     fun isMemoryOverflow(width: Int, height: Int): Boolean {
         return bitmapCreationRepository.isBitmapOverflow(width, height)
+    }
+
+    fun cropImage(source: Bitmap, cropRotateUiModel: EditorCropRotateUiModel): Bitmap? {
+        val (offsetX, offsetY, imageWidth, imageHeight) = cropRotateUiModel
+        return bitmapCreationRepository.createBitmap(
+            BitmapCreation.cropBitmap(
+                source,
+                x = offsetX,
+                y = offsetY,
+                width = imageWidth,
+                height = imageHeight
+            )
+        )
     }
 
     private fun updateEditedItem(originalUrl: String) {

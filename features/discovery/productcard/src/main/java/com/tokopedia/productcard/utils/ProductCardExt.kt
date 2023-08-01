@@ -151,13 +151,13 @@ internal fun ImageView.loadImageWithOutPlaceholder(url: String?, state: ((Boolea
     }
 }
 
-internal fun ImageView.loadImageRounded(url: String?) {
+internal fun ImageView.loadImageRounded(url: String?, radius: Float) {
     if (url != null && url.isNotEmpty()) {
         this.loadImage(url) {
             setErrorDrawable(R.drawable.product_card_placeholder_grey)
             setPlaceHolder(R.drawable.product_card_placeholder_grey)
             centerCrop()
-            setRoundedRadius(getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_6).toFloat())
+            setRoundedRadius(radius)
         }
     }
 }
@@ -218,8 +218,8 @@ private fun Label.trySetCustomLabelType(labelGroupType: String) {
 private fun String?.toUnifyLabelColor(context: Context): Int {
     return if (context.isDarkMode())
         when (this) {
-            TRANSPARENT_BLACK -> unifyRColor.Unify_N200_68
-            else -> unifyRColor.Unify_N200_68
+            TRANSPARENT_BLACK -> unifyRColor.Unify_Overlay_Lvl1
+            else -> unifyRColor.Unify_Overlay_Lvl1
         }
     else
         when (this) {
@@ -426,8 +426,17 @@ private fun renderStockPercentage(
                 height = it.context.resources.getDimension(FIRE_HEIGHT).toInt()
             )
         }
-        it.progressBarColorType = ProgressBarUnify.COLOR_RED
+        renderStockProgressBarColor(it)
         it.setValue(productCardModel.stockBarPercentage, false)
+    }
+}
+
+private fun renderStockProgressBarColor(progressBarStock: ProgressBarUnify?){
+    progressBarStock?.apply {
+        progressBarColor = intArrayOf(
+            ContextCompat.getColor(context, R.color.Unify_RN600),
+            ContextCompat.getColor(context, R.color.Unify_RN600)
+    )
     }
 }
 
@@ -582,6 +591,7 @@ internal fun renderLabelOverlay(
     labelOverlayBackground: ImageView?,
     labelOverlay: Typography?,
     labelGroup: ProductCardModel.LabelGroup?,
+    isRotateBackground: Boolean = true,
 ) {
     if (isShow && labelGroup != null) {
         labelOverlay?.let {
@@ -590,7 +600,7 @@ internal fun renderLabelOverlay(
         }
         labelOverlayBackground?.let { background ->
             background.show()
-            background.rotationX = 180f
+            if (isRotateBackground) background.rotationX = 180f
             background.loadImageTopRightCrop(labelGroup.imageUrl)
         }
     } else {

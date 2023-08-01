@@ -408,5 +408,8 @@ data class ProductCardModel (
         GIMMICK,
         PORTRAIT,
         ETA,
+        BEST_SELLER,
+        FIXED_GRID,
+        LIST_VIEW,
     }
 }

@@ -20,7 +20,6 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
@@ -52,6 +51,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_ENABLE_AUTO_REFRESH_WISHLIST
 import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -427,7 +427,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
     private fun prepareLayout() {
         context?.let {
-            activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
         }
         setSwipeRefreshLayout()
         binding?.run {
@@ -448,18 +448,16 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     triggerSearch()
                 }
             )
-            val pageSource: String
             val icons: IconBuilder
             if (activityWishlistV2 != PARAM_HOME) {
                 wishlistNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
-                icons = IconBuilder(IconBuilderFlag()).apply {
+                icons = IconBuilder(IconBuilderFlag(pageSource = NavSource.WISHLIST)).apply {
                     addIcon(IconList.ID_CART) {}
                     addIcon(IconList.ID_NAV_GLOBAL) {}
                 }
             } else {
-                pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_V2
                 wishlistNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
-                icons = IconBuilder(IconBuilderFlag(pageSource = pageSource)).apply {
+                icons = IconBuilder(IconBuilderFlag(pageSource = NavSource.HOME_WISHLIST)).apply {
                     addIcon(IconList.ID_MESSAGE) {}
                     addIcon(IconList.ID_NOTIFICATION) {}
                     addIcon(IconList.ID_CART) {}
@@ -1297,12 +1295,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, wishlistItem.id)
                 startActivity(intent)
             }
-        }
-    }
-
-    override fun onViewProductCard(wishlistItem: WishlistV2UiModel.Item, position: Int) {
-        userSession.userId?.let { userId ->
-            WishlistV2Analytics.viewProductCard(trackingQueue, wishlistItem, userId, position.toString())
         }
     }
 

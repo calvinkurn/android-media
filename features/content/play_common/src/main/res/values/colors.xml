@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="play_dms_chat_background">#6631353B</color>
-    <color name="play_dms_background_overlay_82">@color/Unify_N0_68</color>
+    <color name="play_dms_background_overlay_82">@color/Unify_NN0_68</color>
 
     <color name="play_dms_top_gradient_darker">#4D000000</color>
     <color name="play_dms_top_gradient_lighter">#00000000</color>
@@ -40,7 +40,6 @@
     <color name="play_dms_discount_badge">#FFEAEF</color>
     <color name="play_dms_product_tag_stock_bg">#B331353B</color>
     <color name="play_dms_product_tag_empty_stock_bg">#6631353B</color>
-    <color name="play_dms_product_tag_oos_overlay">#802E3137</color>
 
     <!-- Game -->
     <color name="play_dms_quiz_header_title_hint">#80FFFFFF</color>

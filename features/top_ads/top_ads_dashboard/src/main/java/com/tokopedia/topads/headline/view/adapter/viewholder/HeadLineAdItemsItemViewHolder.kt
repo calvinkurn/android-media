@@ -97,7 +97,7 @@ class HeadLineAdItemsItemViewHolder(
                     com.tokopedia.unifyprinciples.R.color.Unify_NN0))
             } else {
                 cardView?.setBackgroundColor(ContextCompat.getColor(view.context,
-                    R.color.Unify_B400_20))
+                    R.color.Unify_BN400_20))
             }
             when (it.data.groupStatusDesc) {
                 ACTIVE -> label?.setLabelType(Label.GENERAL_DARK_GREEN)
@@ -142,7 +142,7 @@ class HeadLineAdItemsItemViewHolder(
                     it.isChecked = checkBox?.isChecked == true
                     if (checkBox?.isChecked == true)
                         cardView?.setBackgroundColor(ContextCompat.getColor(view.context,
-                            R.color.Unify_B400_20))
+                            R.color.Unify_BN400_20))
                     else
                         cardView?.setBackgroundColor(ContextCompat.getColor(view.context,
                             com.tokopedia.unifyprinciples.R.color.Unify_NN0))
@@ -152,7 +152,7 @@ class HeadLineAdItemsItemViewHolder(
                 item.isChecked = true
                 checkBox?.isChecked = true
                 cardView?.setBackgroundColor(ContextCompat.getColor(view.context,
-                    R.color.Unify_B400_20))
+                    R.color.Unify_BN400_20))
                 selectMode.invoke(true)
                 true
             }

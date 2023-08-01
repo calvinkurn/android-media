@@ -19,6 +19,4 @@ internal interface VariantLayoutStrategy {
     fun getLabelVariantSizeCount(productCardModel: ProductCardModel, colorVariantTaken: Int): Int
 
     fun getLabelVariantColorCount(colorVariant: List<ProductCardModel.LabelGroupVariant>): Int
-
-    fun isSingleLine(willShowVariant: Boolean): Boolean
 }

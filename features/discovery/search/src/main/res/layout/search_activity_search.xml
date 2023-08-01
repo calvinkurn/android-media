@@ -19,7 +19,8 @@
         app:toolbarAlwaysShowShadow="false"
         app:toolbarBackButton="back"
         app:toolbarContentType="typeSearchbar"
-        app:toolbarInitialTheme="light" />
+        app:toolbarInitialTheme="light"
+        app:toolbarInvertSearchBarColor="true" />
 
     <androidx.constraintlayout.motion.widget.MotionLayout
         android:id="@+id/container"
@@ -39,10 +40,10 @@
             app:tabMode="fixed"
             app:tabMaxWidth="0dp"
             app:tabGravity="fill"
-            app:tabSelectedTextColor="@color/Unify_G500"
-            app:tabTextColor="@color/Unify_N700_32"
+            app:tabSelectedTextColor="@color/Unify_GN500"
+            app:tabTextColor="@color/Unify_NN950_32"
             app:tabTextAppearance="@style/SearchTabLayoutTextStyle"
-            app:tabIndicatorColor="@color/Unify_G500"
+            app:tabIndicatorColor="@color/Unify_GN500"
             app:tabPaddingBottom="12dp"
             android:theme="@style/ThemeOverlay.AppCompat.Light"
             app:layout_constraintTop_toTopOf="parent"
