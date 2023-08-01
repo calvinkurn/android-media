@@ -19,6 +19,7 @@ import com.tokopedia.checkout.revamp.view.processor.CheckoutLogisticProcessor
 import com.tokopedia.checkout.revamp.view.processor.CheckoutPaymentProcessor
 import com.tokopedia.checkout.revamp.view.processor.CheckoutProcessor
 import com.tokopedia.checkout.revamp.view.processor.CheckoutPromoProcessor
+import com.tokopedia.checkout.revamp.view.processor.CheckoutResult
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutAddressModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutButtonPaymentModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCostModel
@@ -38,7 +39,6 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutUpsellModel
 import com.tokopedia.checkout.view.CheckoutMutableLiveData
-import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
 import com.tokopedia.checkout.view.uimodel.ShipmentAddOnSummaryModel
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
@@ -68,6 +68,9 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.C
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
+import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -92,7 +95,6 @@ class CheckoutViewModel @Inject constructor(
     private val checkoutProcessor: CheckoutProcessor,
     private val calculator: CheckoutCalculator,
     private val dataConverter: CheckoutDataConverter,
-    private val shipmentDataRequestConverter: ShipmentDataRequestConverter,
     private val mTrackerShipment: CheckoutAnalyticsCourierSelection,
     private val mTrackerPurchaseProtection: CheckoutAnalyticsPurchaseProtection,
     private val userSessionInterface: UserSessionInterface,
@@ -187,6 +189,7 @@ class CheckoutViewModel @Inject constructor(
         isReloadAfterPriceChangeHigher: Boolean
     ) {
         viewModelScope.launch(dispatchers.io) {
+            pageState.value = CheckoutPageState.Loading
             val saf = cartProcessor.hitSAF(
                 isOneClickShipment,
                 isTradeIn,
@@ -1072,7 +1075,7 @@ class CheckoutViewModel @Inject constructor(
     }
     // endregion
 
-    fun checkout() {
+    fun checkout(fingerprintPublicKey: String?, onSuccessCheckout: (CheckoutResult) -> Unit) {
         viewModelScope.launch(dispatchers.immediate) {
             pageState.value = CheckoutPageState.Loading
             val items = listData.value.toMutableList()
@@ -1106,6 +1109,153 @@ class CheckoutViewModel @Inject constructor(
                 pageState.value = CheckoutPageState.ScrollTo(firstErrorIndex)
                 return@launch
             }
+            val validateUsePromoRevampUiModel = promoProcessor.finalValidateUse(
+                promoProcessor.generateValidateUsePromoRequest(
+                    listData.value,
+                    isTradeIn,
+                    isTradeInByDropOff,
+                    isOneClickShipment
+                )
+            )
+            if (validateUsePromoRevampUiModel != null) {
+                val notEligiblePromoHolderdataList = arrayListOf<NotEligiblePromoHolderdata>()
+                if (validateUsePromoRevampUiModel.promoUiModel.messageUiModel.state == "red") {
+                    val notEligiblePromoHolderdata = NotEligiblePromoHolderdata()
+                    if (validateUsePromoRevampUiModel.promoUiModel.codes.isNotEmpty()) {
+                        notEligiblePromoHolderdata.promoCode =
+                            validateUsePromoRevampUiModel.promoUiModel.codes[0]
+                    }
+                    notEligiblePromoHolderdata.iconType =
+                        NotEligiblePromoHolderdata.TYPE_ICON_GLOBAL
+                    notEligiblePromoHolderdataList.add(notEligiblePromoHolderdata)
+                }
+                val voucherOrdersItemUiModels =
+                    validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels
+                for (i in voucherOrdersItemUiModels.indices) {
+                    val voucherOrdersItemUiModel = voucherOrdersItemUiModels[i]
+                    if (voucherOrdersItemUiModel.messageUiModel.state == "red") {
+                        val notEligiblePromoHolderdata = NotEligiblePromoHolderdata()
+                        notEligiblePromoHolderdata.promoCode = voucherOrdersItemUiModel.code
+                        notEligiblePromoHolderdata.uniqueId = voucherOrdersItemUiModel.uniqueId
+                        notEligiblePromoHolderdata.cartStringGroup =
+                            voucherOrdersItemUiModel.cartStringGroup
+                        notEligiblePromoHolderdataList.add(notEligiblePromoHolderdata)
+                    }
+                }
+//                sendAnalyticsEpharmacyClickPembayaran()
+                if (notEligiblePromoHolderdataList.size > 0) {
+//                    hasClearPromoBeforeCheckout = true
+                    if (promoProcessor.cancelNotEligiblePromo(
+                            notEligiblePromoHolderdataList,
+                            listData.value
+                        )
+                    ) {
+                        if (validateUsePromoRevampUiModel.promoUiModel.messageUiModel.state == "red") {
+                            validateUsePromoRevampUiModel.promoUiModel.codes = listOf()
+                        }
+                        val deletedVoucherOrder = ArrayList<PromoCheckoutVoucherOrdersItemUiModel>()
+                        val voucherOrderUiModels =
+                            validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels.toMutableList()
+                        for (voucherOrdersItemUiModel in voucherOrderUiModels) {
+                            if (voucherOrdersItemUiModel.messageUiModel.state == "red") {
+                                deletedVoucherOrder.add(voucherOrdersItemUiModel)
+                            }
+                        }
+                        if (deletedVoucherOrder.size > 0) {
+                            for (voucherOrdersItemUiModel in deletedVoucherOrder) {
+                                voucherOrderUiModels.remove(
+                                    voucherOrdersItemUiModel
+                                )
+                            }
+                            validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels =
+                                voucherOrderUiModels
+                        }
+                        doCheckout(
+                            validateUsePromoRevampUiModel,
+                            fingerprintPublicKey,
+                            onSuccessCheckout,
+                            true
+                        )
+                    } else {
+                        commonToaster.emit(
+                            CheckoutPageToaster(
+                                Toaster.TYPE_ERROR,
+                                "Gagal clear, coba lagi"
+                            )
+                        )
+                    }
+                } else {
+//                    hasClearPromoBeforeCheckout = false
+//                    if (shipmentViewModel.isUsingDynamicDataPassing()) {
+//                        shipmentViewModel.validateDynamicData()
+//                    } else {
+                    doCheckout(
+                        validateUsePromoRevampUiModel,
+                        fingerprintPublicKey,
+                        onSuccessCheckout,
+                        false
+                    )
+//                    }
+                }
+            } else {
+                commonToaster.emit(
+                    CheckoutPageToaster(
+                        Toaster.TYPE_ERROR,
+                        "Gagal validate use, coba lagi"
+                    )
+                )
+            }
+        }
+    }
+
+    private suspend fun doCheckout(
+        validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel,
+        fingerprintPublicKey: String?,
+        onSuccessCheckout: (CheckoutResult) -> Unit,
+        hasClearPromoBeforeCheckout: Boolean
+    ) {
+        cartProcessor.processSaveShipmentState(listData.value, recipientAddressModel)
+        val checkoutResult = checkoutProcessor.doCheckout(
+            listData.value,
+            recipientAddressModel,
+            validateUsePromoRevampUiModel,
+            isOneClickShipment,
+            isTradeIn,
+            isTradeInByDropOff,
+            deviceId,
+            checkoutLeasingId,
+            fingerprintPublicKey,
+            hasClearPromoBeforeCheckout
+        )
+        if (checkoutResult.success) {
+            onSuccessCheckout(checkoutResult)
+            pageState.value = CheckoutPageState.Normal
+        } else if (checkoutResult.throwable != null) {
+            commonToaster.emit(
+                CheckoutPageToaster(
+                    Toaster.TYPE_ERROR,
+                    throwable = checkoutResult.throwable
+                )
+            )
+            loadSAF(true, true, false)
+        } else if (checkoutResult.checkoutData == null) {
+            commonToaster.emit(
+                CheckoutPageToaster(
+                    Toaster.TYPE_ERROR,
+                    "Barangmu lagi nggak bisa dibeli. Silakan balik ke keranjang untuk cek belanjaanmu."
+                )
+            )
+            pageState.value = CheckoutPageState.Normal
+        } else if (checkoutResult.checkoutData.priceValidationData.isUpdated) {
+            pageState.value = CheckoutPageState.PriceValidation(checkoutResult.checkoutData.priceValidationData)
+        } else if (checkoutResult.checkoutData.prompt.eligible) {
+            pageState.value = CheckoutPageState.Prompt(checkoutResult.checkoutData.prompt)
+        } else {
+            commonToaster.emit(CheckoutPageToaster(
+                Toaster.TYPE_ERROR,
+                checkoutResult.checkoutData.errorMessage.ifEmpty { "Terjadi kesalahan. Ulangi beberapa saat lagi" }
+            ))
+            loadSAF(true, true, false)
         }
     }
 

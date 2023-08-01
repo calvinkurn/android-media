@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics
@@ -34,6 +36,8 @@ import com.tokopedia.checkout.databinding.HeaderCheckoutBinding
 import com.tokopedia.checkout.databinding.ToastRectangleBinding
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
+import com.tokopedia.checkout.domain.model.checkout.PriceValidationData
+import com.tokopedia.checkout.domain.model.checkout.Prompt
 import com.tokopedia.checkout.revamp.di.CheckoutModule
 import com.tokopedia.checkout.revamp.di.DaggerCheckoutComponent
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapter
@@ -43,6 +47,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
+import com.tokopedia.checkout.utils.CheckoutFingerprintUtil
 import com.tokopedia.checkout.view.ShipmentFragment
 import com.tokopedia.checkout.view.dialog.ExpireTimeDialogListener
 import com.tokopedia.checkout.view.dialog.ExpiredTimeDialog
@@ -53,11 +58,14 @@ import com.tokopedia.checkout.webview.UpsellWebViewActivity
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
+import com.tokopedia.common.payment.PaymentConstant
+import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_RESULT_EXTRA
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CART_RESULT_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.fingerprint.util.FingerPrintUtil
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressTokonow
@@ -445,6 +453,16 @@ class CheckoutFragment :
 
                 is CheckoutPageState.ScrollTo -> {
                     binding.rvCheckout.scrollToPosition(it.index)
+                }
+
+                is CheckoutPageState.PriceValidation -> {
+                    hideLoading()
+                    renderCheckoutPriceUpdated(it.priceValidationData)
+                }
+
+                is CheckoutPageState.Prompt -> {
+                    hideLoading()
+                    renderPrompt(it.prompt)
                 }
             }
         }
@@ -1915,7 +1933,82 @@ class CheckoutFragment :
     }
 
     override fun onProcessToPayment() {
-        viewModel.checkout()
+        var publicKey: String? = null
+        if (CheckoutFingerprintUtil.getEnableFingerprintPayment(activity)) {
+            val fpk = CheckoutFingerprintUtil.getFingerprintPublicKey(
+                activity
+            )
+            if (fpk != null) {
+                publicKey = FingerPrintUtil.getPublicKey(fpk)
+            }
+        }
+        viewModel.checkout(publicKey) {
+            val paymentPassData = PaymentPassData()
+            paymentPassData.redirectUrl = it.checkoutData!!.redirectUrl
+            paymentPassData.transactionId = it.checkoutData.transactionId
+            paymentPassData.paymentId = it.checkoutData.paymentId
+            paymentPassData.callbackSuccessUrl = it.checkoutData.callbackSuccessUrl
+            paymentPassData.callbackFailedUrl = it.checkoutData.callbackFailedUrl
+            paymentPassData.queryString = it.checkoutData.queryString
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
+            intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
+            intent.putExtra(
+                PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT,
+                it.hasClearPromoBeforeCheckout
+            )
+            startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
+        }
+    }
+
+    fun renderCheckoutPriceUpdated(priceValidationData: PriceValidationData) {
+        if (activity != null) {
+            val message = priceValidationData.message
+            val priceValidationDialog =
+                DialogUnify(activity!!, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+            priceValidationDialog.setTitle(message.title)
+            priceValidationDialog.setDescription(message.desc)
+            priceValidationDialog.setPrimaryCTAText(message.action)
+            priceValidationDialog.setPrimaryCTAClickListener {
+                viewModel.loadSAF(
+                    isReloadData = true,
+                    skipUpdateOnboardingState = true,
+                    isReloadAfterPriceChangeHigher = true
+                )
+                priceValidationDialog.dismiss()
+            }
+            priceValidationDialog.show()
+            val eventLabelBuilder = StringBuilder()
+            val trackerData = priceValidationData.trackerData
+            eventLabelBuilder.append(trackerData.productChangesType)
+            eventLabelBuilder.append(" - ")
+            eventLabelBuilder.append(trackerData.campaignType)
+            eventLabelBuilder.append(" - ")
+            eventLabelBuilder.append(trackerData.productIds.joinToString(","))
+            checkoutAnalyticsCourierSelection.eventViewPopupPriceIncrease(eventLabelBuilder.toString())
+        }
+    }
+
+    fun renderPrompt(prompt: Prompt) {
+        val activity: Activity? = activity
+        if (activity != null) {
+            val promptDialog =
+                DialogUnify(activity, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+            promptDialog.setTitle(prompt.title)
+            promptDialog.setDescription(prompt.description)
+            promptDialog.setPrimaryCTAText(prompt.button.text)
+            promptDialog.setPrimaryCTAClickListener {
+                val mActivity: Activity? = getActivity()
+                if (mActivity != null) {
+                    if (!TextUtils.isEmpty(prompt.button.link)) {
+                        RouteManager.route(mActivity, prompt.button.link)
+                    }
+                    mActivity.finish()
+                }
+            }
+            promptDialog.setOverlayClose(false)
+            promptDialog.setCancelable(false)
+            promptDialog.show()
+        }
     }
     // endregion
 

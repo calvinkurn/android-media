@@ -27,6 +27,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearprom
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
+import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
@@ -40,7 +41,7 @@ class CheckoutPromoProcessor @Inject constructor(
     var lastApplyData: LastApplyUiModel = LastApplyUiModel()
     private var lastValidateUseRequest: ValidateUsePromoRequest? = null
     var bboPromoCodes: List<String> = emptyList()
-    private var validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel? = null
+    internal var validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel? = null
 
     fun generateCouponListRecommendationRequest(
         listData: List<CheckoutItem>,
@@ -765,6 +766,113 @@ class CheckoutPromoProcessor @Inject constructor(
             }
         }
         return true
+    }
+
+    suspend fun finalValidateUse(
+        validateUsePromoRequest: ValidateUsePromoRequest
+    ): ValidateUsePromoRevampUiModel? {
+        try {
+            val validateUsePromoRevampUiModel = withContext(dispatchers.io) {
+                setValidateUseBoCodeInOneOrderOwoc(validateUsePromoRequest)
+                validateUsePromoRevampUseCase.setParam(validateUsePromoRequest)
+                    .executeOnBackground()
+            }
+//            promoQueue.remove()
+//            itemToProcess = promoQueue.peek()
+//            if (promoQueue.any { it.cartString == shipmentValidatePromoHolderData.cartString && it.validateUsePromoRequest != null }) {
+            // ignore this, because there is a new one in the queue
+//                continue@loopProcess
+//            }
+            return validateUsePromoRevampUiModel
+        } catch (t: Throwable) {
+//            promoQueue.remove()
+//            itemToProcess = promoQueue.peek()
+//            if (promoQueue.any { it.cartString == shipmentValidatePromoHolderData.cartString }) {
+            // ignore this, because there is a new one in the queue
+//                continue@loopProcess
+//            }
+            return null
+        }
+    }
+
+    suspend fun cancelNotEligiblePromo(notEligiblePromoHolderdataList: ArrayList<NotEligiblePromoHolderdata>, listData: List<CheckoutItem>): Boolean {
+        var hasPromo = false
+        val globalPromoCodes = arrayListOf<String>()
+        val clearOrders = arrayListOf<ClearPromoOrder>()
+        for (notEligiblePromo in notEligiblePromoHolderdataList) {
+            if (notEligiblePromo.iconType == NotEligiblePromoHolderdata.TYPE_ICON_GLOBAL) {
+                globalPromoCodes.add(notEligiblePromo.promoCode)
+                hasPromo = true
+            } else {
+                val clearOrder =
+                    getClearPromoOrderByUniqueId(clearOrders, notEligiblePromo.uniqueId)
+                if (clearOrder != null) {
+                    clearOrder.codes.add(notEligiblePromo.promoCode)
+                    hasPromo = true
+                } else if (listData.isNotEmpty()) {
+                    for (shipmentCartItemModel in listData) {
+                        if (shipmentCartItemModel is CheckoutOrderModel && shipmentCartItemModel.cartStringGroup == notEligiblePromo.cartStringGroup) {
+                            val codes = arrayListOf<String>()
+                            codes.add(notEligiblePromo.promoCode)
+                            clearOrders.add(
+                                ClearPromoOrder(
+                                    notEligiblePromo.uniqueId,
+                                    shipmentCartItemModel.boMetadata.boType,
+                                    codes,
+                                    shipmentCartItemModel.shopId,
+                                    shipmentCartItemModel.isProductIsPreorder,
+                                    shipmentCartItemModel.products[0].preOrderDurationDay.toString(),
+                                    shipmentCartItemModel.fulfillmentId,
+                                    shipmentCartItemModel.cartStringGroup
+                                )
+                            )
+                            hasPromo = true
+                            break
+                        }
+                    }
+                }
+            }
+        }
+        if (hasPromo) {
+//            viewModelScope.launch(dispatchers.immediate) {
+                try {
+                    val response = clearCacheAutoApplyStackUseCase.setParams(
+                        ClearPromoRequest(
+                            ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                            false,
+                            ClearPromoOrderData(globalPromoCodes, clearOrders)
+                        )
+                    ).executeOnBackground()
+//                    if (response.successDataModel.tickerMessage.isNotBlank()) {
+//                        val ticker = tickerAnnouncementHolderData.value
+//                        ticker.title = ""
+//                        ticker.message =
+//                            response.successDataModel.tickerMessage
+//                        tickerAnnouncementHolderData.value = ticker
+//                    }
+                    if (response.successDataModel.success) {
+                        return true
+                    }
+                } catch (t: Throwable) {
+                    Timber.d(t)
+                    return false
+//                    view?.removeIneligiblePromo()
+                }
+//            }
+        }
+        return true
+    }
+
+    private fun getClearPromoOrderByUniqueId(
+        list: ArrayList<ClearPromoOrder>,
+        uniqueId: String
+    ): ClearPromoOrder? {
+        for (clearPromoOrder in list) {
+            if (clearPromoOrder.uniqueId == uniqueId) {
+                return clearPromoOrder
+            }
+        }
+        return null
     }
 
     companion object {
