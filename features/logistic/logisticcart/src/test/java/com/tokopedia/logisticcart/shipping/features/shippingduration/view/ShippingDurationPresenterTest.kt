@@ -3,7 +3,7 @@ package com.tokopedia.logisticcart.shipping.features.shippingduration.view
 import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_PINPOINT_NEEDED
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.Companion.ERROR_PINPOINT_NEEDED
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorServiceData
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.datamock.DummyProvider
@@ -722,10 +722,12 @@ class ShippingDurationPresenterTest {
         // selected shipping duration ui model
         val selectedService =
             getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
-        selectedService.serviceData.error = ErrorServiceData().apply {
-            errorId = ERROR_PINPOINT_NEEDED
-            errorMessage = "error pinpoint"
-        }
+        selectedService.serviceData = selectedService.serviceData.copy(
+            error = ErrorServiceData(
+                errorId = ERROR_PINPOINT_NEEDED,
+                errorMessage = "error pinpoint"
+            )
+        )
         presenter.attachView(view)
 
         // When
@@ -755,10 +757,12 @@ class ShippingDurationPresenterTest {
         // selected shipping duration ui model
         val selectedService =
             getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
-        selectedService.serviceData.error = ErrorServiceData().apply {
-            errorId = ERROR_PINPOINT_NEEDED
-            errorMessage = "error pinpoint"
-        }
+        selectedService.serviceData = selectedService.serviceData.copy(
+            error = ErrorServiceData(
+                errorId = ERROR_PINPOINT_NEEDED,
+                errorMessage = "error pinpoint"
+            )
+        )
         presenter.attachView(view)
 
         // When
@@ -788,10 +792,12 @@ class ShippingDurationPresenterTest {
         // selected shipping duration ui model
         val selectedService =
             getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
-        selectedService.serviceData.error = ErrorServiceData().apply {
-            errorId = "1"
-            errorMessage = "error"
-        }
+        selectedService.serviceData = selectedService.serviceData.copy(
+            error = ErrorServiceData(
+                errorId = "1",
+                errorMessage = "error"
+            )
+        )
         presenter.attachView(view)
 
         // When
@@ -821,7 +827,7 @@ class ShippingDurationPresenterTest {
         // selected shipping duration ui model
         val selectedService =
             getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
-        selectedService.serviceData.error = null
+        selectedService.serviceData = selectedService.serviceData.copy(error = ErrorServiceData())
         presenter.attachView(view)
 
         // When
@@ -884,7 +890,9 @@ class ShippingDurationPresenterTest {
             getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
         val recommendedCourier =
             selectedService.shippingCourierViewModelList.find { it.productData.isRecommend }
-        recommendedCourier?.productData?.isUiRatesHidden = true
+        recommendedCourier?.apply {
+            productData = productData.copy(isUiRatesHidden = true)
+        }
 
         // When
         // onChooseDuration
@@ -912,10 +920,13 @@ class ShippingDurationPresenterTest {
     fun `When in checkout select duration and there is selected shipper product Id Then select the selected shipper product`() {
         // Given
         // selected shipping duration ui model
-        val selectedService = getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
+        val selectedService =
+            getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
         val selectedShipperProductId = 24
-        selectedService.serviceData.selectedShipperProductId = selectedShipperProductId
-        val recommendedCourier = selectedService.shippingCourierViewModelList.find { it.productData.shipperProductId == selectedShipperProductId }
+        selectedService.serviceData =
+            selectedService.serviceData.copy(selectedShipperProductId = selectedShipperProductId)
+        val recommendedCourier =
+            selectedService.shippingCourierViewModelList.find { it.productData.shipperProductId == selectedShipperProductId }
         presenter.attachView(view)
 
         // When
@@ -944,11 +955,15 @@ class ShippingDurationPresenterTest {
     fun `When select duration and there is selected shipper product Id but no shipper product with the recommended id Then select the recommended product`() {
         // Given
         // selected shipping duration ui model
-        val selectedService = getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
+        val selectedService =
+            getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
         val selectedShipperProductId = 25
-        selectedService.serviceData.selectedShipperProductId = selectedShipperProductId
-        val recommendedCourier = selectedService.shippingCourierViewModelList.find { it.productData.shipperProductId == selectedShipperProductId }
-        val recommendedFlagCourier = selectedService.shippingCourierViewModelList.find { it.productData.isRecommend }
+        selectedService.serviceData =
+            selectedService.serviceData.copy(selectedShipperProductId = selectedShipperProductId)
+        val recommendedCourier =
+            selectedService.shippingCourierViewModelList.find { it.productData.shipperProductId == selectedShipperProductId }
+        val recommendedFlagCourier =
+            selectedService.shippingCourierViewModelList.find { it.productData.isRecommend }
         presenter.attachView(view)
         // When
         // onChooseDuration
@@ -977,11 +992,15 @@ class ShippingDurationPresenterTest {
     fun `When select duration and there are recommended courier and selected shipper product Id Then select the selected shipper product`() {
         // Given
         // selected shipping duration ui model
-        val selectedService = getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
+        val selectedService =
+            getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
         val selectedShipperProductId = 24
-        selectedService.serviceData.selectedShipperProductId = selectedShipperProductId
-        val selectedShipper = selectedService.shippingCourierViewModelList.find { it.productData.shipperProductId == selectedShipperProductId }
-        val recommendCourier = selectedService.shippingCourierViewModelList.find { it.productData.isRecommend }
+        selectedService.serviceData =
+            selectedService.serviceData.copy(selectedShipperProductId = selectedShipperProductId)
+        val selectedShipper =
+            selectedService.shippingCourierViewModelList.find { it.productData.shipperProductId == selectedShipperProductId }
+        val recommendCourier =
+            selectedService.shippingCourierViewModelList.find { it.productData.isRecommend }
         presenter.attachView(view)
         // When
         // onChooseDuration
@@ -1049,10 +1068,12 @@ class ShippingDurationPresenterTest {
         val courierList =
             selectedService.shippingCourierViewModelList.filter { courier -> !courier.productData.isRecommend }
         courierList.forEach { courier ->
-            courier.productData.error = ErrorProductData().apply {
-                errorId = "2"
-                errorMessage = "error"
-            }
+            courier.productData = courier.productData.copy(
+                error = ErrorProductData().apply {
+                    errorId = "2"
+                    errorMessage = "error"
+                }
+            )
         }
         selectedService.shippingCourierViewModelList = courierList
         val selectedShipper = courierList.first { !it.productData.isUiRatesHidden }
@@ -1079,11 +1100,13 @@ class ShippingDurationPresenterTest {
         val courierList =
             selectedService.shippingCourierViewModelList.filter { courier -> !courier.productData.isRecommend }
         courierList.forEach { courier ->
-            courier.productData.isUiRatesHidden = true
-            courier.productData.error = ErrorProductData().apply {
-                errorId = "2"
-                errorMessage = null
-            }
+            courier.productData = courier.productData.copy(isUiRatesHidden = true)
+            courier.productData = courier.productData.copy(
+                error = ErrorProductData().apply {
+                    errorId = "2"
+                    errorMessage = ""
+                }
+            )
         }
         selectedService.shippingCourierViewModelList = courierList
         val selectedShipper = courierList.first()
@@ -1105,11 +1128,14 @@ class ShippingDurationPresenterTest {
     fun `When select duration in checkout but service is pinpoint error Then set pinpoint error flag`() {
         // Given
         // selected shipping duration ui model
-        val selectedService = getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
-        selectedService.serviceData.error = ErrorServiceData().apply {
-            errorId = ERROR_PINPOINT_NEEDED
-            errorMessage = "error pinpoint"
-        }
+        val selectedService =
+            getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
+        selectedService.serviceData = selectedService.serviceData.copy(
+            error = ErrorServiceData(
+                errorId = ERROR_PINPOINT_NEEDED,
+                errorMessage = "error pinpoint"
+            )
+        )
         presenter.attachView(view)
 
         // When
@@ -1138,12 +1164,15 @@ class ShippingDurationPresenterTest {
     fun `When select duration and get selected courier and courier is pinpoint error Then set pinpoint flag to true`() {
         // Given
         // selected shipping duration ui model
-        val selectedService = getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
+        val selectedService =
+            getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
         val product = selectedService.shippingCourierViewModelList.first()
-        product.productData.error = ErrorProductData().apply {
-            errorId = ERROR_PINPOINT_NEEDED
-            errorMessage = "error pinpoint"
-        }
+        product.productData = product.productData.copy(
+            error = ErrorProductData().apply {
+                errorId = ERROR_PINPOINT_NEEDED
+                errorMessage = "error pinpoint"
+            }
+        )
         presenter.attachView(view)
 
         // When
@@ -1175,10 +1204,12 @@ class ShippingDurationPresenterTest {
         val selectedService =
             getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
         val product = selectedService.shippingCourierViewModelList.first()
-        product.productData.error = ErrorProductData().apply {
-            errorId = "1"
-            errorMessage = "error"
-        }
+        product.productData = product.productData.copy(
+            error = ErrorProductData().apply {
+                errorId = "1"
+                errorMessage = "error"
+            }
+        )
         presenter.attachView(view)
 
         // When
@@ -1210,7 +1241,7 @@ class ShippingDurationPresenterTest {
         val selectedService =
             getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
         val product = selectedService.shippingCourierViewModelList.first()
-        product.productData.error = null
+        product.productData = product.productData.copy(error = ErrorProductData())
         presenter.attachView(view)
 
         // When
@@ -1242,10 +1273,12 @@ class ShippingDurationPresenterTest {
         val selectedService =
             getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
         val product = selectedService.shippingCourierViewModelList.first()
-        product.productData.error = ErrorProductData().apply {
-            errorId = "2"
-            errorMessage = null
-        }
+        product.productData = product.productData.copy(
+            error = ErrorProductData().apply {
+                errorId = "2"
+                errorMessage = ""
+            }
+        )
         presenter.attachView(view)
 
         // When
@@ -1310,7 +1343,9 @@ class ShippingDurationPresenterTest {
             getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
         val recommendedCourier =
             selectedService.shippingCourierViewModelList.find { it.productData.isRecommend }
-        recommendedCourier?.productData?.isUiRatesHidden = true
+        recommendedCourier?.apply {
+            productData = productData.copy(isUiRatesHidden = true)
+        }
         presenter.attachView(view)
 
         // When
@@ -1342,7 +1377,8 @@ class ShippingDurationPresenterTest {
         val selectedService =
             getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
         val selectedShipperProductId = 24
-        selectedService.serviceData.selectedShipperProductId = selectedShipperProductId
+        selectedService.serviceData =
+            selectedService.serviceData.copy(selectedShipperProductId = selectedShipperProductId)
         val recommendedCourier =
             selectedService.shippingCourierViewModelList.find { it.productData.shipperProductId == selectedShipperProductId }
         presenter.attachView(view)
@@ -1376,7 +1412,8 @@ class ShippingDurationPresenterTest {
         val selectedService =
             getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
         val selectedShipperProductId = 24
-        selectedService.serviceData.selectedShipperProductId = selectedShipperProductId
+        selectedService.serviceData =
+            selectedService.serviceData.copy(selectedShipperProductId = selectedShipperProductId)
         val selectedShipper =
             selectedService.shippingCourierViewModelList.find { it.productData.shipperProductId == selectedShipperProductId }
         presenter.attachView(view)

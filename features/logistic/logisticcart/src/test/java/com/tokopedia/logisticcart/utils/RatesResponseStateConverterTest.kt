@@ -17,9 +17,9 @@ class RatesResponseStateConverterTest {
                 ShippingDurationUiModel().apply {
                     shippingCourierViewModelList = listOf(
                         ShippingCourierUiModel().apply {
-                            productData = ProductData().apply {
+                            productData = ProductData(
                                 shipperProductId = 37
-                            }
+                            )
                         }
                     )
                 }

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_shop_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_Background"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/header_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:visibility="gone"
+        android:background="@color/Unify_NN50" />
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_warning"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_shop_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="16dp">
+
+        <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+            android:id="@+id/cb_select_shop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/image_shop_badge"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="4dp"
+            app:layout_constraintEnd_toStartOf="@id/tv_shop_name"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toEndOf="@id/cb_select_shop"
+            app:layout_constraintTop_toTopOf="@id/cb_select_shop"
+            tools:ignore="ContentDescription"
+            tools:src="@drawable/ic_badge_shop_official"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_shop_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="12dp"
+            android:ellipsize="end"
+            android:lines="1"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintEnd_toStartOf="@id/img_free_shipping"
+            app:layout_constraintStart_toEndOf="@id/image_shop_badge"
+            app:layout_constraintTop_toTopOf="@id/image_shop_badge"
+            app:layout_constraintBottom_toBottomOf="@id/image_shop_badge"
+            app:layout_constraintWidth_default="wrap"
+            app:typographyType="display_3"
+            app:typographyWeight="bold"
+            tools:text="Loaa Store df" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/img_free_shipping"
+            android:layout_width="40dp"
+            android:layout_height="20dp"
+            android:gravity="center_vertical"
+            android:scaleType="fitXY"
+            app:unify_image_corner_radius="0"
+            tools:src="@color/Unify_G500"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!--        <com.tokopedia.iconunify.IconUnify-->
+        <!--            android:id="@+id/icon_pin"-->
+        <!--            android:layout_width="16dp"-->
+        <!--            android:layout_height="16dp"-->
+        <!--            android:layout_gravity="center_vertical"-->
+        <!--            android:layout_marginEnd="12dp"-->
+        <!--            app:icon_color_light_enable="@color/Unify_N700_96"-->
+        <!--            app:icon_name="PUSH_PIN"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="parent" />-->
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/ll"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            app:constraint_referenced_ids="image_shop_badge,tv_shop_name,img_free_shipping"
+            app:barrierDirection="bottom"
+            tools:visibility="invisible" />
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/rl_product_policies_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/ll"
+            android:layout_marginTop="2dp"
+            app:layout_constraintStart_toEndOf="@id/cb_select_shop"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:foregroundGravity="center_vertical"
+            app:flexWrap="wrap">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/iu_image_fulfill"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="4dp"
+                android:scaleType="fitCenter"
+                app:unify_image_corner_radius="0" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_fulfill_district"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:lines="1"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:textColor="@color/Unify_NN600"
+                app:typographyType="display_3"
+                app:typographyWeight="reguler"
+                tools:text="Tangerang Selatan" />
+
+        </com.google.android.flexbox.FlexboxLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_cart_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

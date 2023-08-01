@@ -1,7 +1,6 @@
 package com.tokopedia.logisticcart.shipping.model
 
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
 
 data class ShippingWidgetUiModel(
     // renderErrorCourierState - shipmentCartItemModel.courierSelectionErrorTitle
@@ -22,7 +21,8 @@ data class ShippingWidgetUiModel(
     // Bebas ongkir & NOW Shipment
     val hideShipperName: Boolean = false,
     val freeShippingTitle: String = "",
-    // Now Shipment
+    // promo_stackings.img_url_choosen
+    val freeShippingLogo: String = "",
     // label
     val logPromoDesc: String = "",
     val voucherLogisticExists: Boolean = false,
@@ -46,5 +46,15 @@ data class ShippingWidgetUiModel(
     val whitelabelEtaText: String = "",
 
     val scheduleDeliveryUiModel: ScheduleDeliveryUiModel? = null,
-    val insuranceData: InsuranceData = InsuranceData()
+    val insuranceData: InsuranceWidgetUiModel? = null
+)
+
+data class InsuranceWidgetUiModel(
+    var show: Boolean = false,
+    var useInsurance: Boolean? = null,
+    var insuranceType: Int = 0,
+    var insuranceUsedDefault: Int = 0,
+    var insuranceUsedInfo: String? = null,
+    var insurancePrice: Double = 0.0,
+    var isInsurance: Boolean = false
 )

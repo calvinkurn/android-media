@@ -234,7 +234,7 @@ class ShippingDurationPresenter @Inject constructor(
     ): ShippingCourierUiModel? {
         return shippingCourierUiModelList.takeIf { serviceData.selectedShipperProductId > 0 }
             ?.find { shippingCourierUiModel -> shippingCourierUiModel.productData.shipperProductId == serviceData.selectedShipperProductId }
-            ?: shippingCourierUiModelList.firstOrNull { it.productData.isRecommend && !it.productData.isUiRatesHidden && it.productData.error?.errorMessage?.isEmpty() != false }
+            ?: shippingCourierUiModelList.firstOrNull { it.productData.isRecommend && !it.productData.isUiRatesHidden && it.productData.error.errorMessage.isEmpty() }
     }
 
     private fun findAutoSelectedCourier(
@@ -242,7 +242,7 @@ class ShippingDurationPresenter @Inject constructor(
         shippingCourierUiModelList: List<ShippingCourierUiModel>
     ): ShippingCourierUiModel {
         return findRecommendedCourier(serviceData, shippingCourierUiModelList)
-            ?: shippingCourierUiModelList.firstOrNull { !it.productData.isUiRatesHidden && (it.productData.error?.errorMessage?.isEmpty() != false) }
+            ?: shippingCourierUiModelList.firstOrNull { !it.productData.isUiRatesHidden && it.productData.error.errorMessage.isEmpty() }
             ?: shippingCourierUiModelList.first()
     }
 
@@ -322,9 +322,7 @@ class ShippingDurationPresenter @Inject constructor(
             findRecommendedCourier(serviceData, shippingCourierUiModelList)
         }
         if (!isOcc) {
-            if (serviceData.error != null && serviceData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED &&
-                serviceData.error.errorMessage.isNotEmpty()
-            ) {
+            if (serviceData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED && serviceData.error.errorMessage.isNotEmpty()) {
                 flagNeedToSetPinpoint = true
                 selectedServiceId = serviceData.serviceId
             }
@@ -332,10 +330,7 @@ class ShippingDurationPresenter @Inject constructor(
             shippingCourierUiModelList.forEach { shippingCourierUiModel ->
                 shippingCourierUiModel.isSelected =
                     shippingCourierUiModel == selectedShippingCourierUiModel
-                if (shippingCourierUiModel.productData.error != null &&
-                    shippingCourierUiModel.productData.error.errorMessage != null &&
-                    shippingCourierUiModel.productData.error.errorId != null &&
-                    shippingCourierUiModel.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED
+                if (shippingCourierUiModel.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED
                 ) {
                     selectedServiceId = shippingCourierUiModel.serviceData.serviceId
                     flagNeedToSetPinpoint = true

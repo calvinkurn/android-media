@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cl_cart_addon"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/desc_addon"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:typographyWeight="reguler"
+        app:typographyType="display_3"
+        android:ellipsize="end"
+        android:lines="1"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_default="wrap"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/price_addon"
+        android:text="Jasa Pasang Standard"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/price_addon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="4dp"
+        app:typographyWeight="reguler"
+        app:typographyType="display_3"
+        android:textColor="@color/Unify_NN600"
+        android:lines="1"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/desc_addon"
+        app:layout_constraintEnd_toStartOf="@id/iv_addon_chevron"
+        android:text="(Rp100.000)" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iv_addon_chevron"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="8dp"
+        android:contentDescription="@string/promo_checkout_icon_chev_desc"
+        app:layout_constraintBottom_toBottomOf="@id/desc_addon"
+        app:layout_constraintTop_toTopOf="@id/desc_addon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:icon_name="CHEVRON_RIGHT" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

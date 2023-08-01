@@ -62,11 +62,11 @@ class ShippingCourierConverter @Inject constructor() {
                 courierItemData.priorityPrice = it.serviceData.orderPriority.price
                 courierItemData.priorityFormattedPrice = it.serviceData.orderPriority.formattedPrice
                 courierItemData.priorityInnactiveMessage = it.serviceData.orderPriority.inactiveMessage
-                courierItemData.priorityDurationMessage = it.serviceData.orderPriority.staticMessage.getDurationMessage()
-                courierItemData.priorityFeeMessage = it.serviceData.orderPriority.staticMessage.getFeeMessage()
-                courierItemData.priorityWarningboxMessage = it.serviceData.orderPriority.staticMessage.getWarningBoxMessage()
-                courierItemData.priorityCheckboxMessage = it.serviceData.orderPriority.staticMessage.getCheckboxMessage()
-                courierItemData.priorityPdpMessage = it.serviceData.orderPriority.staticMessage.getPdpMessage()
+                courierItemData.priorityDurationMessage = it.serviceData.orderPriority.staticMessage.durationMessage
+                courierItemData.priorityFeeMessage = it.serviceData.orderPriority.staticMessage.feeMessage
+                courierItemData.priorityWarningboxMessage = it.serviceData.orderPriority.staticMessage.warningBoxMessage
+                courierItemData.priorityCheckboxMessage = it.serviceData.orderPriority.staticMessage.checkboxMessage
+                courierItemData.priorityPdpMessage = it.serviceData.orderPriority.staticMessage.pdpMessage
             }
             courierItemData.isAllowDropshiper = it.isAllowDropshipper
             courierItemData.additionalPrice = it.additionalFee

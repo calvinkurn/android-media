@@ -87,7 +87,7 @@ class ShippingDurationViewHolder(itemView: View, private val cartPosition: Int) 
                 val orderPrioritasTxt = itemView.context.getString(R.string.order_prioritas)
                 val orderPrioritasLabel = SpannableString(orderPrioritasTxt)
                 orderPrioritasLabel.setSpan(StyleSpan(Typeface.BOLD), 16, orderPrioritasTxt.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                tvOrderPrioritas.text = MethodChecker.fromHtml(shippingDurationUiModel.serviceData.orderPriority.staticMessage.getDurationMessage())
+                tvOrderPrioritas.text = MethodChecker.fromHtml(shippingDurationUiModel.serviceData.orderPriority.staticMessage.durationMessage)
                 tvOrderPrioritas.visibility = View.VISIBLE
             } else {
                 tvOrderPrioritas.visibility = View.GONE
