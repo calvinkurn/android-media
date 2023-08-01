@@ -20,7 +20,7 @@ import org.mockito.ArgumentMatchers.anyString
 import java.net.SocketTimeoutException
 
 @ExperimentalCoroutinesApi
-class SellerMenuViewModelTest : SellerMenuViewModelTestFixture() {
+class SellerMenuViewModelOldTest : SellerMenuViewModelOldTestFixture() {
 
     @Test
     fun `when getAllSettingShopInfo type transition period success should set live data success`() {

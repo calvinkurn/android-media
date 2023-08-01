@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.di.component.DaggerSellerMenuComponent
 import com.tokopedia.seller.menu.presentation.base.BaseSellerMenuActivity
-import com.tokopedia.seller.menu.presentation.fragment.SellerMenuFragment
+import com.tokopedia.seller.menu.presentation.fragment.SellerMenuFragmentOld
 import javax.inject.Inject
 
 class SellerMenuActivity : BaseSellerMenuActivity() {
@@ -20,7 +20,7 @@ class SellerMenuActivity : BaseSellerMenuActivity() {
     }
 
     override fun getNewFragment(): Fragment? {
-        return SellerMenuFragment()
+        return SellerMenuFragmentOld()
     }
 
     override fun onBackPressed() {
@@ -30,8 +30,8 @@ class SellerMenuActivity : BaseSellerMenuActivity() {
 
     private fun initInjector() {
         DaggerSellerMenuComponent.builder()
-                .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
+            .inject(this)
     }
 }

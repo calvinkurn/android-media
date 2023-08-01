@@ -32,7 +32,7 @@ import org.junit.Before
 import org.junit.Rule
 
 @ExperimentalCoroutinesApi
-open class SellerMenuViewModelTestFixture {
+open class SellerMenuViewModelOldTestFixture {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -47,7 +47,7 @@ open class SellerMenuViewModelTestFixture {
     private lateinit var getShopScoreLevelUseCase: GetShopScoreLevelUseCase
     private lateinit var userSession: UserSessionInterface
 
-    protected lateinit var viewModel: SellerMenuViewModel
+    protected lateinit var viewModel: SellerMenuViewModelOld
 
     @Before
     fun setUp() {
@@ -58,7 +58,7 @@ open class SellerMenuViewModelTestFixture {
         getShopScoreLevelUseCase = mockk(relaxed = true)
         userSession = mockk(relaxed = true)
 
-        viewModel = SellerMenuViewModel(
+        viewModel = SellerMenuViewModelOld(
                 getAllShopInfoUseCase,
                 getShopCreatedInfoUseCase,
                 getProductListMetaUseCase,

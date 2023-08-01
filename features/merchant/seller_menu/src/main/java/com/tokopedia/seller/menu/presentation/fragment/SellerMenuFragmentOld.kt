@@ -1,7 +1,12 @@
 package com.tokopedia.seller.menu.presentation.fragment
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,7 +19,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.gm.common.utils.ShopScoreReputationErrorLogger
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.menu.R
@@ -22,21 +27,21 @@ import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.view.bottomsheet.RMTransactionBottomSheet
-import com.tokopedia.seller.menu.presentation.uimodel.SellerFeatureUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.SellerMenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState.SettingError
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState.SettingLoading
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpressionTrackable
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
-import com.tokopedia.seller.menu.presentation.adapter.viewholder.ShopInfoErrorViewHolder
-import com.tokopedia.seller.menu.presentation.adapter.viewholder.ShopInfoViewHolder
 import com.tokopedia.seller.menu.databinding.FragmentSellerMenuBinding
 import com.tokopedia.seller.menu.di.component.DaggerSellerMenuComponent
 import com.tokopedia.seller.menu.presentation.adapter.SellerMenuAdapter
 import com.tokopedia.seller.menu.presentation.adapter.SellerMenuAdapterTypeFactory
+import com.tokopedia.seller.menu.presentation.adapter.viewholder.ShopInfoErrorViewHolder
+import com.tokopedia.seller.menu.presentation.adapter.viewholder.ShopInfoViewHolder
+import com.tokopedia.seller.menu.presentation.uimodel.SellerFeatureUiModel
 import com.tokopedia.seller.menu.presentation.util.SellerMenuList
-import com.tokopedia.seller.menu.presentation.viewmodel.SellerMenuViewModel
+import com.tokopedia.seller.menu.presentation.viewmodel.SellerMenuViewModelOld
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 import com.tokopedia.shopadmin.common.util.AdminPermissionMapper
 import com.tokopedia.unifycomponents.Toaster
@@ -46,7 +51,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHolder.ShopInfoListener,
+class SellerMenuFragmentOld : Fragment(), SettingTrackingListener, ShopInfoViewHolder.ShopInfoListener,
         ShopInfoErrorViewHolder.ShopInfoErrorListener {
 
     companion object {
@@ -56,7 +61,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     }
 
     @Inject
-    lateinit var viewModel: SellerMenuViewModel
+    lateinit var viewModel: SellerMenuViewModelOld
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -297,7 +302,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
             val menuList = SellerMenuList.create(context, userSession, adminPermissionMapper)
 
             binding?.listMenu?.run {
-                adapter = this@SellerMenuFragment.adapter
+                adapter = this@SellerMenuFragmentOld.adapter
                 layoutManager = LinearLayoutManager(context)
             }
 

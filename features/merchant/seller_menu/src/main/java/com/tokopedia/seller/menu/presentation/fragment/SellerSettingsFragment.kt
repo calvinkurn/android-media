@@ -17,10 +17,9 @@ import com.tokopedia.seller.menu.di.component.DaggerSellerMenuComponent
 import com.tokopedia.seller.menu.presentation.adapter.SellerMenuAdapter
 import com.tokopedia.seller.menu.presentation.adapter.SellerMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.presentation.util.SellerSettingsList
-import com.tokopedia.seller.menu.presentation.viewmodel.SellerMenuViewModel
 import com.tokopedia.seller.menu.presentation.viewmodel.SellerSettingViewModel
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -96,13 +95,13 @@ class SellerSettingsFragment : Fragment(), SettingTrackingListener {
     private fun setupLocationSettings(isEligibleMultiloc: Result<Boolean>) {
         when (isEligibleMultiloc) {
             is Success -> {
-                val settingsList = context?.let { SellerSettingsList.create(it,isEligibleMultiloc.data) }
+                val settingsList = context?.let { SellerSettingsList.create(it, isEligibleMultiloc.data) }
                 sellerMenuAdapter.clearAllElements()
                 sellerMenuAdapter.addElement(settingsList)
                 sellerMenuAdapter.notifyDataSetChanged()
             }
             else -> {
-                //no-op
+                // no-op
             }
         }
     }
@@ -112,5 +111,4 @@ class SellerSettingsFragment : Fragment(), SettingTrackingListener {
             UpdateShopActiveWorker.execute(it)
         }
     }
-
 }

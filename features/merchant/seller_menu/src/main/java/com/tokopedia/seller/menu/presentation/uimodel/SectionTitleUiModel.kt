@@ -1,13 +1,12 @@
 package com.tokopedia.seller.menu.presentation.uimodel
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.seller.menu.presentation.adapter.SellerMenuTypeFactory
 
 open class SectionTitleUiModel(
     val title: String? = null,
     val ctaText: String? = null,
     val type: SectionTitleType
-): Visitable<SellerMenuTypeFactory> {
+) : SellerMenuItem {
 
     open val onClickApplink: String? = null
 
