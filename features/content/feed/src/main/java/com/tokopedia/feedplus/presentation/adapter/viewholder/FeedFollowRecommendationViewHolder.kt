@@ -54,6 +54,10 @@ class FeedFollowRecommendationViewHolder(
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
 
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    listener.onSwipeProfileRecommendation()
+                }
+
                 if (profileAdapter.itemCount == 0) return
                 if (newState != RecyclerView.SCROLL_STATE_IDLE) return
 

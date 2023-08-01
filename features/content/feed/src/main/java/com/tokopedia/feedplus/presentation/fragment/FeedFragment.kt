@@ -320,6 +320,10 @@ class FeedFragment :
         override fun onClickViewOtherContent() {
             feedMainViewModel.changeCurrentTabByType(FeedBaseFragment.TAB_TYPE_FOR_YOU)
         }
+
+        override fun onSwipeProfileRecommendation() {
+            feedFollowRecommendationAnalytics.eventSwipeProfileRecommendation()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

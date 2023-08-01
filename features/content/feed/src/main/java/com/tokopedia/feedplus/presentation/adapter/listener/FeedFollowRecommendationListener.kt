@@ -23,6 +23,8 @@ interface FeedFollowRecommendationListener {
         profile: FeedFollowRecommendationModel.Profile
     )
 
+    fun onSwipeProfileRecommendation()
+
     fun reloadProfileRecommendation()
 
     fun onLoadNextProfileRecommendation()
