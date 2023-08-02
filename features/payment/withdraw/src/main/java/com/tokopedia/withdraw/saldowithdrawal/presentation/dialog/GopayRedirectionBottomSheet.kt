@@ -60,7 +60,7 @@ class GopayRedirectionBottomSheet: BottomSheetUnify() {
         ctaView?.setOnClickListener {
             context?.let {
                 if (it.isAppInstalled(CUSTOMER_APP)) {
-
+                    startApplink(applink.orEmpty())
                 } else {
                     startApplink(TKPD_MARKET_APPLINK)
                 }
