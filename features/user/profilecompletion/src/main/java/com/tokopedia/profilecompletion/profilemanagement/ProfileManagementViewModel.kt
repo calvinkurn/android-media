@@ -17,11 +17,11 @@ class ProfileManagementViewModel @Inject constructor(
     var url: String = ""
         private set
 
-    private val _getAuth = MutableLiveData<GetUrlProfileManagementResult>()
-    val getAuth: LiveData<GetUrlProfileManagementResult> get() = _getAuth
+    private val _getUrlProfileManagement = MutableLiveData<GetUrlProfileManagementResult>()
+    val getUrlProfileManagement: LiveData<GetUrlProfileManagementResult> get() = _getUrlProfileManagement
 
     fun getProfileManagementData() {
-        _getAuth.value = GetUrlProfileManagementResult.Loading
+        _getUrlProfileManagement.value = GetUrlProfileManagementResult.Loading
         launchCatchError(
             block = {
                 val response = getUrlProfileManagementUseCase.invoke(Unit)
@@ -30,9 +30,9 @@ class ProfileManagementViewModel @Inject constructor(
                     url = response.url
                 }
 
-                _getAuth.value = response
+                _getUrlProfileManagement.value = response
             }, onError = {
-                _getAuth.value = GetUrlProfileManagementResult.Failed(it)
+                _getUrlProfileManagement.value = GetUrlProfileManagementResult.Failed(it)
             }
         )
     }

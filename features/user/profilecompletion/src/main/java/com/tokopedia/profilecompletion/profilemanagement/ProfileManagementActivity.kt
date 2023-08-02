@@ -101,7 +101,7 @@ class ProfileManagementActivity: BaseSimpleWebViewActivity(), HasComponent<Profi
     }
 
     private fun initObserver() {
-        viewModel.getAuth.observe(this) {
+        viewModel.getUrlProfileManagement.observe(this) {
             when(it) {
                 is GetUrlProfileManagementResult.Loading -> {
                     setupLayout(it)
