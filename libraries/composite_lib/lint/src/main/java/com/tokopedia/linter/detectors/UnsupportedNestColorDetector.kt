@@ -35,7 +35,7 @@ class UnsupportedNestColorDetector : Detector(), XmlScanner, SourceCodeScanner {
         private const val ERROR_MESSAGE =
             "The color has deprecated. please use NestColor or consultation to your designer."
         private const val QUICK_FIX_MESSAGE = "\n⚒️ ️Quick Fix:\n@s"
-        private val ISSUE_PRIORITY = Priority.Medium
+        private val ISSUE_PRIORITY = Priority.High
         private val ISSUE_SEVERITY = Severity.ERROR
         private val ISSUE_CATEGORY = Category.CORRECTNESS
         val XML_REGEX_OLD_COLOR = "(Unify_[A-Z]\\d{1,4}_\\d{1,2})|(Unify_[A-Z]\\d{1,4})".toRegex()
