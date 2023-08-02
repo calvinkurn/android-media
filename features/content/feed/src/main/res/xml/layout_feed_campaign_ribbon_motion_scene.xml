@@ -496,12 +496,12 @@
         app:duration="600">
         <KeyFrameSet>
             <KeyPosition
-                app:framePosition="50"
+                app:framePosition="35"
                 app:keyPositionType="parentRelative"
                 app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
                 app:percentY="-1" />
             <KeyPosition
-                app:framePosition="51"
+                app:framePosition="41"
                 app:keyPositionType="parentRelative"
                 app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
                 app:percentY="1.5" />
@@ -510,6 +510,27 @@
                 app:framePosition="1"
                 app:keyPositionType="pathRelative"
                 app:percentY="0" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="28"
+                android:alpha="0" />
+            <KeyPosition
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="43"
+                app:keyPositionType="parentRelative"
+                app:percentY="1" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="42"
+                android:alpha="1" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="20"
+                android:alpha="1" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="41"
+                android:alpha="0" />
         </KeyFrameSet>
     </Transition>
     <Transition
@@ -649,7 +670,7 @@
         app:duration="600">
         <KeyFrameSet>
             <KeyPosition
-                app:framePosition="1"
+                app:framePosition="5"
                 app:keyPositionType="parentRelative"
                 app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
                 app:percentY="1.5" />
@@ -668,6 +689,26 @@
                 app:keyPositionType="pathRelative"
                 app:motionTarget="@+id/ty_feed_campaign_ribbon_subtitle"
                 app:percentY="0" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_subtitle"
+                app:framePosition="23"
+                android:alpha="1" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_subtitle"
+                app:framePosition="50"
+                android:alpha="0" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="1"
+                android:alpha="0" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="8"
+                android:alpha="0" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="10"
+                android:alpha="1" />
         </KeyFrameSet>
     </Transition>
     <Transition
@@ -695,6 +736,18 @@
                 app:keyPositionType="pathRelative"
                 app:motionTarget="@+id/ty_feed_campaign_ribbon_subtitle"
                 app:percentY="0" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_subtitle"
+                app:framePosition="50"
+                android:alpha="0" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_subtitle"
+                app:framePosition="55"
+                android:alpha="1" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_subtitle"
+                app:framePosition="23"
+                android:alpha="1" />
         </KeyFrameSet>
     </Transition>
     <!-- END feed_start_in_state TRANSITION-->
@@ -782,6 +835,23 @@
                 app:keyPositionType="parentRelative"
                 app:motionTarget="@+id/ty_feed_campaign_ribbon_subtitle"
                 app:percentY="1.5" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="30"
+                android:alpha="1" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="55"
+                android:alpha="0" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="60"
+                android:alpha="1" />
+            <KeyPosition
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="65"
+                app:keyPositionType="parentRelative"
+                app:percentY="1" />
         </KeyFrameSet>
     </Transition>
     <Transition
@@ -804,6 +874,22 @@
                 app:keyPositionType="parentRelative"
                 app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
                 app:percentY="1.5" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="40"
+                android:alpha="1" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="45"
+                android:alpha="0" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="60"
+                android:alpha="0" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="61"
+                android:alpha="1" />
         </KeyFrameSet>
     </Transition>
     <!-- END feed_initial_title_with_timer_and_icon_state TRANSITION-->
@@ -981,20 +1067,39 @@
                 app:motionTarget="@+id/pb_feed_campaign_ribbon"
                 app:percentY="-1" />
             <KeyPosition
-                app:framePosition="51"
+                app:framePosition="100"
                 app:keyPositionType="parentRelative"
                 app:motionTarget="@+id/ty_feed_campaign_ribbon_subtitle"
-                app:percentY="1.5" />
+                app:percentY="-1" />
             <KeyPosition
-                app:framePosition="61"
+                app:framePosition="100"
                 app:keyPositionType="parentRelative"
                 app:motionTarget="@+id/pb_feed_campaign_ribbon"
-                app:percentY="1.5" />
+                app:percentY="-1" />
             <KeyPosition
                 app:framePosition="1"
                 app:keyPositionType="parentRelative"
                 app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:percentX="-1" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="1"
+                android:alpha="0" />
+            <KeyPosition
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="3"
+                app:keyPositionType="parentRelative"
+                app:percentX="0"
                 app:percentY="1.5" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="5"
+                android:alpha="1" />
+            <KeyPosition
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="22"
+                app:keyPositionType="parentRelative"
+                app:percentY="1" />
         </KeyFrameSet>
     </Transition>
     <Transition
@@ -1033,10 +1138,38 @@
                 app:motionTarget="@+id/pb_feed_campaign_ribbon"
                 app:percentY="1.5" />
             <KeyPosition
-                app:framePosition="1"
+                app:framePosition="5"
                 app:keyPositionType="parentRelative"
                 app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
                 app:percentY="1.5" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="0"
+                android:alpha="0" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="25"
+                android:alpha="0" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="26"
+                android:alpha="1" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_subtitle"
+                app:framePosition="40"
+                android:alpha="1" />
+            <KeyAttribute
+                app:motionTarget="@+id/pb_feed_campaign_ribbon"
+                app:framePosition="40"
+                android:alpha="1" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_subtitle"
+                app:framePosition="42"
+                android:alpha="0" />
+            <KeyAttribute
+                app:motionTarget="@+id/pb_feed_campaign_ribbon"
+                app:framePosition="42"
+                android:alpha="0" />
         </KeyFrameSet>
     </Transition>
     <!-- END feed_availability_state TRANSITION-->
@@ -1167,20 +1300,35 @@
                 app:motionTarget="@+id/ty_feed_campaign_ribbon_title_second"
                 app:percentY="-1" />
             <KeyPosition
-                app:framePosition="51"
-                app:keyPositionType="parentRelative"
-                app:motionTarget="@+id/ty_feed_campaign_ribbon_title_second"
-                app:percentY="1.5" />
-            <KeyPosition
-                app:framePosition="1"
+                app:framePosition="3"
                 app:keyPositionType="parentRelative"
                 app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
-                app:percentY="1" />
+                app:percentY="1.5" />
             <KeyPosition
                 app:framePosition="1"
                 app:keyPositionType="pathRelative"
                 app:motionTarget="@+id/ty_feed_campaign_ribbon_subtitle"
                 app:percentY="0" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="0"
+                android:alpha="0" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="10"
+                android:alpha="0" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="20"
+                android:alpha="1" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title_second"
+                app:framePosition="45"
+                android:alpha="1" />
+            <KeyAttribute
+                app:motionTarget="@id/ty_feed_campaign_ribbon_title_second"
+                app:framePosition="50"
+                android:alpha="1" />
         </KeyFrameSet>
     </Transition>
     <Transition
@@ -1204,15 +1352,30 @@
                 app:motionTarget="@+id/ty_feed_campaign_ribbon_title_second"
                 app:percentY="1.5" />
             <KeyPosition
-                app:framePosition="1"
+                app:framePosition="3"
                 app:keyPositionType="parentRelative"
                 app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
-                app:percentY="1" />
-            <KeyPosition
-                app:framePosition="1"
-                app:keyPositionType="pathRelative"
-                app:motionTarget="@+id/ty_feed_campaign_ribbon_subtitle"
-                app:percentY="0" />
+                app:percentY="1.5" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="0"
+                android:alpha="0" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="10"
+                android:alpha="0" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="47"
+                android:alpha="1" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title_second"
+                app:framePosition="40"
+                android:alpha="1" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title_second"
+                app:framePosition="45"
+                android:alpha="0" />
         </KeyFrameSet>
     </Transition>
     <!-- END feed_second_title_with_icon_state TRANSITION-->
@@ -1253,6 +1416,22 @@
                 app:keyPositionType="parentRelative"
                 app:motionTarget="@+id/timer_feed_campaign_ribbon"
                 app:percentY="-1" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="40"
+                android:alpha="1" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="45"
+                android:alpha="0" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="65"
+                android:alpha="0" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="70"
+                android:alpha="1" />
         </KeyFrameSet>
     </Transition>
     <Transition
@@ -1270,6 +1449,19 @@
                 app:framePosition="99"
                 app:keyPositionType="parentRelative"
                 app:percentY="-1" />
+            <KeyPosition
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_second_subtitle"
+                app:framePosition="100"
+                app:keyPositionType="parentRelative"
+                app:percentY="-1" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_second_subtitle"
+                app:framePosition="80"
+                android:alpha="1" />
+            <KeyAttribute
+                app:motionTarget="@id/ty_feed_campaign_ribbon_second_subtitle"
+                app:framePosition="85"
+                android:alpha="0" />
         </KeyFrameSet>
     </Transition>
     <Transition
@@ -1297,6 +1489,22 @@
                 app:keyPositionType="parentRelative"
                 app:motionTarget="@id/ty_feed_campaign_ribbon_second_subtitle"
                 app:percentY="-1" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="40"
+                android:alpha="1" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="45"
+                android:alpha="0" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="55"
+                android:alpha="0" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="60"
+                android:alpha="1" />
         </KeyFrameSet>
     </Transition>
     <Transition
@@ -1365,6 +1573,22 @@
                 app:keyPositionType="parentRelative"
                 app:motionTarget="@+id/timer_feed_campaign_ribbon"
                 app:percentY="-1" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="40"
+                android:alpha="1" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="45"
+                android:alpha="0" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="55"
+                android:alpha="0" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="60"
+                android:alpha="1" />
         </KeyFrameSet>
     </Transition>
     <Transition
@@ -1375,7 +1599,7 @@
     </Transition>
     <Transition
         app:constraintSetEnd="@+id/feed_initial_title_with_timer_and_icon_state"
-        app:constraintSetStart="@+id/feed_cta_with_coupon_state"
+        app:constraintSetStart="@+id/feed_cta_only_state"
         app:duration="600">
         <KeyFrameSet>
             <KeyPosition
@@ -1388,16 +1612,22 @@
                 app:keyPositionType="parentRelative"
                 app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
                 app:percentY="1.5" />
-            <KeyPosition
-                app:framePosition="65"
-                app:keyPositionType="parentRelative"
-                app:motionTarget="@+id/ty_feed_campaign_ribbon_subtitle"
-                app:percentY="-1" />
-            <KeyPosition
-                app:framePosition="100"
-                app:keyPositionType="parentRelative"
-                app:motionTarget="@+id/ty_feed_campaign_ribbon_subtitle"
-                app:percentY="-1" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="40"
+                android:alpha="1" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="45"
+                android:alpha="0" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="55"
+                android:alpha="0" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="60"
+                android:alpha="1" />
         </KeyFrameSet>
     </Transition>
     <Transition
