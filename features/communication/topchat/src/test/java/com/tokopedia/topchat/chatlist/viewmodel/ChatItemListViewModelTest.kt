@@ -52,6 +52,7 @@ import kotlinx.coroutines.flow.flowOf
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
+import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
@@ -120,7 +121,7 @@ class ChatItemListViewModelTest {
         viewModel.isWhitelistTopBot.observeForever(isWhitelistTopBotObserver)
         viewModel.isChatAdminEligible.observeForever(isChatAdminEligibleObserver)
 
-        mockkObject(ChatItemListViewModel)
+        mockkObject(ChatItemListViewModel.Companion)
     }
 
     @Test fun `getChatListMessage should return chat list of messages`() {
@@ -905,9 +906,7 @@ class ChatItemListViewModelTest {
     fun should_give_2_filter_titles_when_buyer() {
         // Given
         val testContext: Context = mockk(relaxed = true)
-        every {
-            ChatItemListViewModel.arrayFilterParam.size
-        } returns 3
+        ChatItemListViewModel.arrayFilterParam = arrayListOf("", "", "")
 
         // When
         val result = viewModel.getFilterTitles(testContext, false)
@@ -920,9 +919,7 @@ class ChatItemListViewModelTest {
     fun should_give_3_filter_titles_when_seller_default() {
         // Given
         val testContext: Context = mockk(relaxed = true)
-        every {
-            ChatItemListViewModel.arrayFilterParam.size
-        } returns 3
+        ChatItemListViewModel.arrayFilterParam = arrayListOf("", "", "")
 
         // When
         val result = viewModel.getFilterTitles(testContext, true)
@@ -935,9 +932,7 @@ class ChatItemListViewModelTest {
     fun should_give_4_filter_titles_when_seller_whitelisted() {
         // Given
         val testContext: Context = mockk(relaxed = true)
-        every {
-            ChatItemListViewModel.arrayFilterParam.size
-        } returns 4
+        ChatItemListViewModel.arrayFilterParam = arrayListOf("", "", "", "")
 
         // When
         val result = viewModel.getFilterTitles(testContext, true)
@@ -1270,6 +1265,11 @@ class ChatItemListViewModelTest {
 
         // Then
         assertEquals(result, true)
+    }
+
+    @After
+    fun tearDown() {
+        unmockkAll()
     }
 
     companion object {

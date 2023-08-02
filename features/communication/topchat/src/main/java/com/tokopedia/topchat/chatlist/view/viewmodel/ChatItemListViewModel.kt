@@ -463,7 +463,7 @@ class ChatItemListViewModel @Inject constructor(
         private const val ONE_MILLION = 1_000_000L
         const val OPERATIONAL_INSIGHT_NEXT_MONDAY = "topchat_operational_insight_next_monday"
         const val BUBBLE_TICKER_PREF_NAME = "topchat_seller_bubble_chat_ticker"
-        val arrayFilterParam = arrayListOf(
+        var arrayFilterParam = arrayListOf(
             PARAM_FILTER_ALL,
             PARAM_FILTER_UNREAD,
             PARAM_FILTER_UNREPLIED
