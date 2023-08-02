@@ -45,6 +45,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -129,6 +130,7 @@ class UserProfileViewModel @AssistedInject constructor(
     private val _isLoading = MutableStateFlow(false)
     private val _error = MutableStateFlow<Throwable?>(null)
     private val _reviewSettings = MutableStateFlow(ProfileSettingsUiModel.Empty)
+    private val _likePool = MutableStateFlow(hashMapOf<String, Boolean>())
 
     private val _uiEvent = MutableSharedFlow<UserProfileUiEvent>()
 
@@ -176,6 +178,23 @@ class UserProfileViewModel @AssistedInject constructor(
         )
     }
 
+    init {
+        launch {
+            _likePool
+                .debounce(LIKE_REVIEW_DEBOUNCE)
+                .collect { likePool ->
+
+                    if (likePool.entries.isEmpty()) return@collect
+
+                    likePool.entries.forEach {  map ->
+                        submitAction(UserProfileAction.ProcessLikeRequest(map.key, map.value))
+                    }
+
+                    _likePool.update { hashMapOf() }
+                }
+        }
+    }
+
     fun submitAction(action: UserProfileAction) {
         when (action) {
             is UserProfileAction.ClickFollowButton -> handleClickFollowButton(action.isFromLogin)
@@ -199,6 +218,7 @@ class UserProfileViewModel @AssistedInject constructor(
             is UserProfileAction.ClickSeePerformancePlayChannel -> handleClickSeePerformancePlayChannel(action.channel)
             is UserProfileAction.ClickDeletePlayChannel -> handleClickDeletePlayChannel(action.channel)
             is UserProfileAction.ClickLikeReview -> handleClickLikeReview(action.review)
+            is UserProfileAction.ProcessLikeRequest -> handleProcessLikeRequest(action.feedbackID, action.isLike)
             is UserProfileAction.ClickReviewTextSeeMore -> handleClickReviewTextSeeMore(action.review)
             is UserProfileAction.ClickProductInfo -> handleClickProductInfo(action.review)
             is UserProfileAction.ClickReviewMedia -> handleClickReviewMedia(action.feedbackID, action.attachment)
@@ -581,23 +601,47 @@ class UserProfileViewModel @AssistedInject constructor(
     }
 
     private fun handleClickLikeReview(review: UserReviewUiModel.Review) {
-        launchCatchError(block = {
-            if (_reviewContent.value.reviewList.find { it.feedbackID == review.feedbackID } == null) {
-                return@launchCatchError
-            }
+        launch {
+            /** Immediate follow / unfollow feedback to user */
+            val likeDislikeAfterToggle = toggleLikeDislikeStatus(review.feedbackID) ?: return@launch
 
-            val likeDislikeAfterUpdate = toggleLikeDislikeStatus(review.feedbackID)
+            _likePool.update { likePool ->
+                HashMap(likePool).apply {
+                    if (this.contains(review.feedbackID))
+                        remove(review.feedbackID)
+                    else
+                        put(review.feedbackID, likeDislikeAfterToggle.isLike)
+                }
+            }
+        }
+    }
+
+    private fun handleProcessLikeRequest(feedbackId: String, isLike: Boolean) {
+        viewModelScope.launchCatchError(block = {
+
+            _reviewContent.value.reviewList.firstOrNull { it.feedbackID == feedbackId } ?: return@launchCatchError
+
+            println("JOE LOG process $feedbackId $isLike")
 
             val response = repo.setLikeStatus(
-                feedbackID = review.feedbackID,
-                isLike = !review.likeDislike.isLike
+                feedbackID = feedbackId,
+                isLike = isLike,
             )
 
-            if (response.isLike != likeDislikeAfterUpdate?.isLike) {
-                throw Exception("like response is not expected.")
+            /** Sync follow / unfollow status from BE */
+            _reviewContent.update {
+                it.copy(
+                    reviewList = it.reviewList.map { item ->
+                        if (feedbackId == item.feedbackID) {
+                            item.copy(likeDislike = response)
+                        } else {
+                            item
+                        }
+                    }
+                )
             }
         }) { throwable ->
-            toggleLikeDislikeStatus(review.feedbackID)
+            toggleLikeDislikeStatus(feedbackId)
 
             _uiEvent.emit(UserProfileUiEvent.ErrorLikeDislike(throwable))
         }
@@ -818,5 +862,6 @@ class UserProfileViewModel @AssistedInject constructor(
         private const val DEFAULT_LIMIT = 10
         private const val DELAY_SHOW_REVIEW_ONBOARDING = 1000L
         private const val SPACE = " "
+        private const val LIKE_REVIEW_DEBOUNCE = 500L
     }
 }
