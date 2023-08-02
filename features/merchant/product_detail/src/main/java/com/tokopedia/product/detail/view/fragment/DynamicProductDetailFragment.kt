@@ -2002,7 +2002,7 @@ open class DynamicProductDetailFragment :
         trackOnTickerClicked(tickerTitle, tickerType, componentTrackDataModel, tickerDescription)
         goToRecommendation()
     }
-    
+
     private val mvcLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == MvcView.RESULT_CODE_OK && doActivityResult) {
             onSwipeRefresh()
@@ -4400,7 +4400,7 @@ open class DynamicProductDetailFragment :
 
     private fun getLightToolbarIconColor(): Int {
         val unifyColor = if (requireContext().isDarkMode()) {
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+            com.tokopedia.unifyprinciples.R.color.Unify_Static_White
         } else {
             com.tokopedia.searchbar.R.color.searchbar_dms_state_light_icon
         }
