@@ -1325,6 +1325,7 @@ class CheckoutViewModel @Inject constructor(
 
     fun validateClearAllBoPromo(lastValidateUsePromoRequest: ValidateUsePromoRequest, promoUiModel: PromoUiModel) {
         viewModelScope.launch(dispatchers.immediate) {
+            pageState.value = CheckoutPageState.Loading
             val checkoutItems = listData.value.toMutableList()
             for ((index, checkoutItem) in checkoutItems.withIndex()) {
                 if (checkoutItem is CheckoutOrderModel) {
@@ -1360,7 +1361,202 @@ class CheckoutViewModel @Inject constructor(
                 }
             }
             listData.value = checkoutItems
+            pageState.value = CheckoutPageState.Normal
             validatePromo()
+        }
+    }
+
+    fun validateBoPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel) {
+        viewModelScope.launch(dispatchers.immediate) {
+            pageState.value = CheckoutPageState.Loading
+            val unappliedBoPromoUniqueIds = java.util.ArrayList<String>()
+            val reloadedUniqueIds = java.util.ArrayList<String>()
+            val unprocessedUniqueIds = java.util.ArrayList<String>()
+            var checkoutItems = listData.value.toMutableList()
+            for (shipmentCartItemModel in checkoutItems) {
+                unprocessedUniqueIds.add(shipmentCartItemModel.cartStringGroup)
+            }
+            // loop to list voucher orders to be applied this will be used later
+            val toBeAppliedVoucherOrders: MutableList<PromoCheckoutVoucherOrdersItemUiModel> =
+                ArrayList()
+            for (voucherOrdersItemUiModel in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
+                // voucher with shippingId not zero, spId not zero, and voucher type logistic as promo for BO
+                if (voucherOrdersItemUiModel.shippingId > 0 && voucherOrdersItemUiModel.spId > 0 && voucherOrdersItemUiModel.type == "logistic") {
+                    if (voucherOrdersItemUiModel.messageUiModel.state == "green") {
+                        toBeAppliedVoucherOrders.add(voucherOrdersItemUiModel)
+                        unprocessedUniqueIds.remove(voucherOrdersItemUiModel.cartStringGroup)
+                    }
+                }
+            }
+            var firstScrollIndex = -1
+            for ((index, shipmentCartItemModel) in checkoutItems.withIndex()) {
+                if (shipmentCartItemModel is CheckoutOrderModel) {
+                    val logPromoCode = shipmentCartItemModel.shipment.courierItemData?.logPromoCode
+                    if (!logPromoCode.isNullOrEmpty() &&
+                        unprocessedUniqueIds.contains(shipmentCartItemModel.cartStringGroup)
+                    ) {
+                        promoProcessor.clearPromo(
+                            ClearPromoOrder(
+                                shipmentCartItemModel.boUniqueId,
+                                shipmentCartItemModel.boMetadata.boType,
+                                arrayListOf(logPromoCode),
+                                shipmentCartItemModel.shopId,
+                                shipmentCartItemModel.isProductIsPreorder,
+                                shipmentCartItemModel.products.first().preOrderDurationDay.toString(),
+                                shipmentCartItemModel.fulfillmentId,
+                                shipmentCartItemModel.cartStringGroup
+                            )
+                        )
+                        // reset shipment
+                        checkoutItems[index] =
+                            shipmentCartItemModel.copy(
+                                shipment = CheckoutOrderShipment(),
+                                isTriggerShippingVibrationAnimation = true,
+                                isStateAllItemViewExpanded = false,
+                                isShippingBorderRed = true
+                            )
+                        unappliedBoPromoUniqueIds.add(shipmentCartItemModel.cartStringGroup)
+                        reloadedUniqueIds.add(shipmentCartItemModel.cartStringGroup)
+                        if (firstScrollIndex == -1) {
+                            firstScrollIndex = index
+                        }
+                    }
+                }
+            }
+//            if (unappliedBoPromoUniqueIds.size > 0) {
+//                view?.renderUnapplyBoIncompleteShipment(unappliedBoPromoUniqueIds)
+//            }
+            toBeAppliedVoucherOrders.forEach { voucher ->
+                val cartPosition = checkoutItems.indexOfFirst { it is CheckoutOrderModel && it.cartStringGroup == voucher.cartStringGroup }
+                val order = checkoutItems[cartPosition] as CheckoutOrderModel
+                val result = logisticProcessor.getRatesWithBoCode(
+                    logisticProcessor.getRatesParam(
+                        order,
+                        checkoutItems.address()!!.recipientAddressModel,
+                        isTradeIn,
+                        isTradeInByDropOff,
+                        codData,
+                        cartDataForRates
+                    ),
+                    order.shopShipmentList,
+                    voucher.shippingId,
+                    voucher.spId,
+                    order,
+                    isTradeInByDropOff,
+                    voucher.code
+                )
+                if (result?.first != null) {
+                    val courierItemData = result.first
+                    val shouldValidatePromo =
+                        !result.first.selectedShipper.logPromoCode.isNullOrEmpty()
+                    if (shouldValidatePromo) {
+                        val validateUsePromoRequest = generateValidateUsePromoRequest()
+                        for (ordersItem in validateUsePromoRequest.orders) {
+                            if (ordersItem.cartStringGroup == order.cartStringGroup) {
+                                if (!ordersItem.codes.contains(
+                                        courierItemData.selectedShipper.logPromoCode
+                                    )
+                                ) {
+                                    ordersItem.codes.add(
+                                        courierItemData.selectedShipper.logPromoCode!!
+                                    )
+                                    ordersItem.boCode =
+                                        courierItemData.selectedShipper.logPromoCode!!
+                                }
+                                ordersItem.shippingId =
+                                    courierItemData.selectedShipper.shipperId
+                                ordersItem.spId =
+                                    courierItemData.selectedShipper.shipperProductId
+                                ordersItem.freeShippingMetadata =
+                                    courierItemData.selectedShipper.freeShippingMetadata
+                                ordersItem.boCampaignId =
+                                    courierItemData.selectedShipper.boCampaignId
+                                ordersItem.shippingSubsidy =
+                                    courierItemData.selectedShipper.shippingSubsidy
+                                ordersItem.benefitClass =
+                                    courierItemData.selectedShipper.benefitClass
+                                ordersItem.shippingPrice =
+                                    courierItemData.selectedShipper.shippingRate.toDouble()
+                                ordersItem.etaText =
+                                    courierItemData.selectedShipper.etaText!!
+                                ordersItem.validationMetadata =
+                                    order.validationMetadata
+                            }
+                        }
+                        //                        removeInvalidBoCodeFromPromoRequest(
+                        //                            shipmentGetCourierHolderData,
+                        //                            validateUsePromoRequest
+                        //                        )
+                        checkoutItems = promoProcessor.validateUseLogisticPromo(
+                            validateUsePromoRequest,
+                            order.cartStringGroup,
+                            result.first.logPromoCode!!,
+                            checkoutItems,
+                            courierItemData
+                        ).toMutableList()
+//                        doValidateUseLogisticPromoNew(
+//                            cartPosition,
+//                            order.cartStringGroup,
+//                            validateUsePromoRequest,
+//                            result.first.logPromoCode!!,
+//                            false,
+//                            result.first,
+//                            result.second
+//                        )
+//                        return
+                    }
+                } else {
+                    val newOrderModel = order.copy(
+                        shipment = order.shipment.copy(
+                            isLoading = false,
+                            courierItemData = result?.first,
+                            shippingCourierUiModels = result?.third ?: emptyList(),
+                            insurance = result?.second?.let {
+                                CheckoutOrderInsurance(
+                                    result.second,
+                                    when (result.second.insuranceType) {
+                                        InsuranceConstant.INSURANCE_TYPE_MUST -> {
+                                            true
+                                        }
+
+                                        InsuranceConstant.INSURANCE_TYPE_NO -> {
+                                            false
+                                        }
+
+                                        InsuranceConstant.INSURANCE_TYPE_OPTIONAL -> {
+                                            result.second.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_YES
+                                        }
+
+                                        else -> false
+                                    }
+                                )
+                            } ?: CheckoutOrderInsurance()
+                        )
+                    )
+                    checkoutItems[cartPosition] = newOrderModel
+                }
+//                listData.value = list
+//                cartProcessor.processSaveShipmentState(
+//                    newOrderModel,
+//                    listData.value.address()!!.recipientAddressModel
+//                )
+//                calculateTotal()
+            }
+//            for (voucherOrders in toBeAppliedVoucherOrders) {
+//                reloadedUniqueIds.add(voucherOrders.cartStringGroup)
+//            }
+            listData.value = checkoutItems
+            if (firstScrollIndex != -1) {
+                pageState.value = CheckoutPageState.ScrollTo(firstScrollIndex)
+            }
+            pageState.value = CheckoutPageState.Normal
+            launch {
+                cartProcessor.processSaveShipmentState(
+                    listData.value,
+                    listData.value.address()!!.recipientAddressModel
+                )
+            }
+            calculateTotal()
         }
     }
 

@@ -2337,7 +2337,7 @@ class CheckoutFragment :
 //                    updatePromoTrackingData(validateUsePromoRevampUiModel.promoUiModel.trackingDetailUiModels)
 //                    sendEEStep3()
 //                    val validateBoResult =
-//                        shipmentViewModel.validateBoPromo(validateUsePromoRevampUiModel)
+                    viewModel.validateBoPromo(validateUsePromoRevampUiModel)
 //                    reloadedUniqueIds = validateBoResult.first
 //                    val unappliedUniqueIds = validateBoResult.second
 //                    if (messageInfo.isNotEmpty()) {
