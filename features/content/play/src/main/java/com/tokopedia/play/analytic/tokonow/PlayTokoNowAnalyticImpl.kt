@@ -1,6 +1,11 @@
 package com.tokopedia.play.analytic.tokonow
 
 import android.os.Bundle
+import com.tokopedia.content.analytic.BusinessUnit
+import com.tokopedia.content.analytic.CurrentSite
+import com.tokopedia.content.analytic.Event
+import com.tokopedia.content.analytic.EventCategory
+import com.tokopedia.content.analytic.Key
 import com.tokopedia.play.analytic.*
 import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
 import com.tokopedia.play.view.type.DiscountedPrice
@@ -44,13 +49,13 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
     override fun impressAddressWidgetNow() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                KEY_EVENT to KEY_TRACK_VIEW_CONTENT_IRIS,
-                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_ACTION to "view - out of now coverage",
-                KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_USER_ID to userId
+                Key.event to Event.viewContentIris,
+                Key.eventCategory to EventCategory.groupChatRoom,
+                Key.eventAction to "view - out of now coverage",
+                Key.eventLabel to "$channelId - ${channelType.value}",
+                Key.businessUnit to BusinessUnit.play,
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
+                Key.userId to userId
             )
         )
     }
@@ -61,12 +66,12 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
     override fun impressChooseAddressNow() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                KEY_EVENT to KEY_TRACK_VIEW_CONTENT_IRIS,
-                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_ACTION to "view - ganti alamat",
-                KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE
+                Key.event to Event.viewContentIris,
+                Key.eventCategory to EventCategory.groupChatRoom,
+                Key.eventAction to "view - ganti alamat",
+                Key.eventLabel to "$channelId - ${channelType.value}",
+                Key.businessUnit to BusinessUnit.play,
+                Key.currentSite to CurrentSite.tokopediaMarketplace
             )
         )
     }
@@ -74,12 +79,12 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
     override fun clickChooseAddressNow() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                KEY_EVENT to KEY_TRACK_CLICK_CONTENT,
-                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_ACTION to "click - ganti alamat",
-                KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE
+                Key.event to Event.clickContent,
+                Key.eventCategory to EventCategory.groupChatRoom,
+                Key.eventAction to "click - ganti alamat",
+                Key.eventLabel to "$channelId - ${channelType.value}",
+                Key.businessUnit to BusinessUnit.play,
+                Key.currentSite to CurrentSite.tokopediaMarketplace
             )
         )
     }
@@ -90,13 +95,13 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
     override fun clickInfoAddressWidgetNow() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                KEY_EVENT to KEY_TRACK_CLICK_CONTENT,
-                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_ACTION to "click - now cek jangkauan",
-                KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_USER_ID to userId
+                Key.event to Event.clickContent,
+                Key.eventCategory to EventCategory.groupChatRoom,
+                Key.eventAction to "click - now cek jangkauan",
+                Key.eventLabel to "$channelId - ${channelType.value}",
+                Key.businessUnit to BusinessUnit.play,
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
+                Key.userId to userId
             )
         )
     }
@@ -104,12 +109,12 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
     override fun impressInfoNow() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                KEY_EVENT to KEY_TRACK_VIEW_CONTENT_IRIS,
-                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_ACTION to "view - now info bottomsheet",
-                KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE
+                Key.event to Event.viewContentIris,
+                Key.eventCategory to EventCategory.groupChatRoom,
+                Key.eventAction to "view - now info bottomsheet",
+                Key.eventLabel to "$channelId - ${channelType.value}",
+                Key.businessUnit to BusinessUnit.play,
+                Key.currentSite to CurrentSite.tokopediaMarketplace
             )
         )
     }
@@ -117,12 +122,12 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
     override fun clickInfoNow() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                KEY_EVENT to KEY_TRACK_CLICK_CONTENT,
-                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_ACTION to "click - now info bottomsheet",
-                KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE
+                Key.event to Event.clickContent,
+                Key.eventCategory to EventCategory.groupChatRoom,
+                Key.eventAction to "click - now info bottomsheet",
+                Key.eventLabel to "$channelId - ${channelType.value}",
+                Key.businessUnit to BusinessUnit.play,
+                Key.currentSite to CurrentSite.tokopediaMarketplace
             )
         )
     }
@@ -130,12 +135,12 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
     override fun impressNowToaster() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                KEY_EVENT to KEY_TRACK_VIEW_CONTENT_IRIS,
-                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_ACTION to "view - now toaster",
-                KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE
+                Key.event to Event.viewContentIris,
+                Key.eventCategory to EventCategory.groupChatRoom,
+                Key.eventAction to "view - now toaster",
+                Key.eventLabel to "$channelId - ${channelType.value}",
+                Key.businessUnit to BusinessUnit.play,
+                Key.currentSite to CurrentSite.tokopediaMarketplace
             )
         )
     }
@@ -143,12 +148,12 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
     override fun clickLihatNowToaster() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                KEY_EVENT to KEY_TRACK_CLICK_CONTENT,
-                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_ACTION to "click - lihat now toaster",
-                KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE
+                Key.event to Event.clickContent,
+                Key.eventCategory to EventCategory.groupChatRoom,
+                Key.eventAction to "click - lihat now toaster",
+                Key.eventLabel to "$channelId - ${channelType.value}",
+                Key.businessUnit to BusinessUnit.play,
+                Key.currentSite to CurrentSite.tokopediaMarketplace
             )
         )
     }
@@ -161,8 +166,8 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
         trackingQueue.putEETracking(
             EventModel(
                 "productClick",
-                KEY_TRACK_GROUP_CHAT_ROOM,
-                "$KEY_TRACK_CLICK - now product bottomsheet",
+                EventCategory.groupChatRoom,
+                "click - now product bottomsheet",
                 "$channelId - ${product.id} - ${channelType.value} - is pinned product ${product.isPinned} - ${product.rankType}"
             ),
             hashMapOf(
@@ -181,8 +186,8 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
         trackingQueue.putEETracking(
             EventModel(
                 "productClick",
-                KEY_TRACK_GROUP_CHAT_ROOM,
-                "$KEY_TRACK_CLICK - now product carousel",
+                EventCategory.groupChatRoom,
+                "click - now product carousel",
                 "$channelId - ${featuredProduct.id} - ${channelType.value} - is pinned product ${featuredProduct.isPinned} - ${featuredProduct.rankType}"
             ),
             hashMapOf(
@@ -194,12 +199,12 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
                 )
             ),
             hashMapOf(
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                Key.businessUnit to BusinessUnit.play,
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
                 KEY_ITEM_LIST to "/groupchat - featured product",
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId,
-                KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
+                Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
+                Key.userId to userId,
+                Key.isLoggedInStatus to isLoggedIn,
                 KEY_PRODUCT_ID to featuredProduct.id,
                 KEY_PRODUCT_NAME to featuredProduct.title,
                 KEY_PRODUCT_URL to featuredProduct.applink.toString(),
@@ -221,13 +226,13 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
 
         val dataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT, KEY_EVENT_ITEM_LIST)
-            putString(KEY_EVENT_CATEGORY, KEY_TRACK_GROUP_CHAT_ROOM)
-            putString(KEY_EVENT_ACTION, "view - now product bottomsheet")
-            putString(KEY_EVENT_LABEL, "$channelId - ${products.keys.firstOrNull()?.product?.id.orEmpty()} - ${channelType.value} - is pinned product ${products.keys.firstOrNull()?.product?.isPinned ?: false} - ${products.keys.firstOrNull()?.product?.rankType ?: "no ribbon"}")
-            putString(KEY_CURRENT_SITE, KEY_TRACK_CURRENT_SITE)
-            putString(KEY_SESSION_IRIS, TrackApp.getInstance().gtm.irisSessionId)
-            putString(KEY_USER_ID, userId)
-            putString(KEY_BUSINESS_UNIT, KEY_TRACK_BUSINESS_UNIT)
+            putString(Key.eventCategory, EventCategory.groupChatRoom)
+            putString(Key.eventAction, "view - now product bottomsheet")
+            putString(Key.eventLabel, "$channelId - ${products.keys.firstOrNull()?.product?.id.orEmpty()} - ${channelType.value} - is pinned product ${products.keys.firstOrNull()?.product?.isPinned ?: false} - ${products.keys.firstOrNull()?.product?.rankType ?: "no ribbon"}")
+            putString(Key.currentSite, CurrentSite.tokopediaMarketplace)
+            putString(Key.sessionIris, TrackApp.getInstance().gtm.irisSessionId)
+            putString(Key.userId, userId)
+            putString(Key.businessUnit, BusinessUnit.play)
             putParcelableArrayList("items", items)
             putString(KEY_ITEM_LIST, "/groupchat - bottom sheet")
         }
@@ -246,7 +251,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
         trackingQueue.putEETracking(
             EventModel(
                 "productView",
-                KEY_TRACK_GROUP_CHAT_ROOM,
+                EventCategory.groupChatRoom,
                 "view - now product carousel",
                 "$channelId - ${products.first().first.id} - ${channelType.value} - is pinned product ${products.first().first.isPinned} - ${products.first().first.rankType}"
             ),
@@ -261,10 +266,10 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
                 )
             ),
             hashMapOf(
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId,
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
+                Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
+                Key.userId to userId,
+                Key.businessUnit to BusinessUnit.play
             )
         )
     }
@@ -277,9 +282,9 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
     ) {
         trackingQueue.putEETracking(
             EventModel(
-                KEY_TRACK_ADD_TO_CART,
-                KEY_TRACK_GROUP_CHAT_ROOM,
-                "$KEY_TRACK_CLICK - buy now product",
+                Event.addToCart,
+                EventCategory.groupChatRoom,
+                "click - buy now product",
                 "$channelId - ${product.id} - ${channelType.value} - is pinned product ${product.isPinned} - ${product.rankType}"
             ),
             hashMapOf(
@@ -302,9 +307,9 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
     ) {
         trackingQueue.putEETracking(
             EventModel(
-                KEY_TRACK_ADD_TO_CART,
-                KEY_TRACK_GROUP_CHAT_ROOM,
-                "$KEY_TRACK_CLICK - atc now product",
+                Event.addToCart,
+                EventCategory.groupChatRoom,
+                "click - atc now product",
                 "$channelId - ${product.id} - ${channelType.value} - is pinned product ${product.isPinned} - ${product.rankType}"
             ),
             hashMapOf(
@@ -322,22 +327,22 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
     override fun impressGlobalToaster() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                KEY_EVENT to KEY_TRACK_VIEW_CONTENT_IRIS,
-                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_ACTION to "view - lihat keranjang",
-                KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE
+                Key.event to Event.viewContentIris,
+                Key.eventCategory to EventCategory.groupChatRoom,
+                Key.eventAction to "view - lihat keranjang",
+                Key.eventLabel to "$channelId - ${channelType.value}",
+                Key.businessUnit to BusinessUnit.play,
+                Key.currentSite to CurrentSite.tokopediaMarketplace
             )
         )
     }
 
     private fun generateBaseTracking(): HashMap<String, Any> {
         return hashMapOf(
-            KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-            KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-            KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-            KEY_USER_ID to userId
+            Key.businessUnit to BusinessUnit.play,
+            Key.currentSite to CurrentSite.tokopediaMarketplace,
+            Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
+            Key.userId to userId
         )
     }
 
@@ -412,6 +417,5 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
         private const val KEY_PRODUCT_URL = "productUrl"
         private const val KEY_ITEM_LIST = "item_list"
         private const val KEY_EVENT_ITEM_LIST = "view_item_list"
-        private const val KEY_TRACK_ADD_TO_CART = "addToCart"
     }
 }

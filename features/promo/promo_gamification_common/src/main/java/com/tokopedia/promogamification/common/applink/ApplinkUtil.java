@@ -7,7 +7,6 @@ import android.webkit.URLUtil;
 
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.promogamification.common.R;
 
 /**

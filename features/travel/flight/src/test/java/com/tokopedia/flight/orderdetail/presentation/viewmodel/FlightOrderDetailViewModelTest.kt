@@ -51,13 +51,14 @@ class FlightOrderDetailViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this)
         viewModel = FlightOrderDetailViewModel(
-                userSession,
-                useCase,
-                getInvoiceEticketUseCase,
-                crossSellUseCase,
-                mapper,
-                flightAnalytics,
-                testDispatcherProvider)
+            userSession,
+            useCase,
+            getInvoiceEticketUseCase,
+            crossSellUseCase,
+            mapper,
+            flightAnalytics,
+            testDispatcherProvider
+        )
     }
 
     @Test
@@ -628,6 +629,34 @@ class FlightOrderDetailViewModelTest {
     }
 
     @Test
+    fun fetchInvoiceData_successToFetch() {
+        // given
+        val invoice = "ZYF-DASD-TOKOPEDIA"
+        coEvery { getInvoiceEticketUseCase.executeGetInvoice(any()) } returns invoice
+
+        // when
+        viewModel.fetchInvoiceData()
+
+        // then
+        assert(viewModel.invoiceData.value is Success)
+        (viewModel.invoiceData.value as Success).data shouldBe invoice
+    }
+
+    @Test
+    fun fetchInvoiceData_failedToFetch() {
+        // given
+        val throwable = MessageErrorException("Tokopedia")
+        coEvery { getInvoiceEticketUseCase.executeGetInvoice(any()) } throws throwable
+
+        // when
+        viewModel.fetchInvoiceData()
+
+        // then
+        assert(viewModel.invoiceData.value is Fail)
+        (viewModel.invoiceData.value as Fail).throwable.message shouldBe throwable.message
+    }
+
+    @Test
     fun onNavigateToCancellationClicked() {
         // given
         val dummyData = DUMMY_ORDER_DETAIL_DATA.journeys
@@ -683,151 +712,152 @@ class FlightOrderDetailViewModelTest {
         // given
         // dummy data will be build on runtime because checkIn date need to be dynamic
         val dummyData = FlightOrderDetailDataModel(
+            "1",
+            "0001-01-01T00:00:00Z",
+            700,
+            "Berhasil",
+            "1",
+            "1234567890",
+            "Muhammad Furqan",
+            "email@email.com",
+            "123456789012",
+            "ID",
+            "Rp1.000.000",
+            1000000,
+            "Rp0",
+            0,
+            "Rp0",
+            0,
+            "Rp1.000.000",
+            1000000,
+            "Rp",
+            "dummy pdf",
+            true,
+            false,
+            "Ekonomi",
+            "dummy contact us URL",
+            false,
+            FlightOrderDetailPaymentModel(
                 "1",
+                1,
+                "Paid",
+                "BCA Virtual Account",
+                "dummy icon",
                 "0001-01-01T00:00:00Z",
-                700,
-                "Berhasil",
-                "1",
+                "",
+                "ididid",
+                "",
+                0,
+                "Rp0",
+                0,
+                "rp0",
+                0,
+                "Rp0",
+                0,
+                "Rp0",
+                0,
+                "Rp0",
+                0,
+                "BCA",
+                "Jakarta",
                 "1234567890",
-                "Muhammad Furqan",
-                "email@email.com",
-                "123456789012",
-                "ID",
+                "Furqan",
                 "Rp1.000.000",
-                1000000,
-                "Rp0",
-                0,
-                "Rp0",
-                0,
-                "Rp1.000.000",
-                1000000,
-                "Rp",
-                "dummy pdf",
-                true,
-                false,
-                "Ekonomi",
-                "dummy contact us URL",
-                false,
-                FlightOrderDetailPaymentModel(
-                        "1",
-                        1,
-                        "Paid",
-                        "BCA Virtual Account",
-                        "dummy icon",
-                        "0001-01-01T00:00:00Z",
-                        "",
-                        "ididid",
-                        "",
+                ""
+            ),
+            arrayListOf(
+                FlightOrderDetailJourneyModel(
+                    "1",
+                    1,
+                    "123",
+                    "0001-01-01T00:00:00Z",
+                    "departure airport",
+                    "aceh",
+                    "321",
+                    "0001-01-01T00:00:00Z",
+                    "arrival airport",
+                    "jakarta",
+                    0,
+                    0,
+                    0,
+                    "2j",
+                    120,
+                    FlightOrderDetailFareModel(
+                        1000000,
                         0,
-                        "Rp0",
-                        0,
-                        "rp0",
-                        0,
-                        "Rp0",
-                        0,
-                        "Rp0",
-                        0,
-                        "Rp0",
-                        0,
-                        "BCA",
-                        "Jakarta",
-                        "1234567890",
-                        "Furqan",
-                        "Rp1.000.000"
-                ),
-                arrayListOf(
-                        FlightOrderDetailJourneyModel(
-                                "1",
-                                1,
-                                "123",
-                                "0001-01-01T00:00:00Z",
-                                "departure airport",
-                                "aceh",
-                                "321",
-                                "0001-01-01T00:00:00Z",
-                                "arrival airport",
-                                "jakarta",
-                                0,
-                                0,
-                                0,
-                                "2j",
-                                120,
-                                FlightOrderDetailFareModel(
-                                        1000000,
-                                        0,
-                                        0
-                                ),
-                                arrayListOf(
-                                        FlightOrderDetailRouteModel(
-                                                "123",
-                                                "departure time",
-                                                "departure airport",
-                                                "departure city",
-                                                "321",
-                                                "arrival time",
-                                                "arrival airport",
-                                                "arrival city",
-                                                "123ASD",
-                                                "890",
-                                                "Seulawah Air",
-                                                "",
-                                                "",
-                                                "AN-12345",
-                                                "2j",
-                                                120,
-                                                "",
-                                                0,
-                                                true,
-                                                "2",
-                                                "",
-                                                0,
-                                                "",
-                                                arrayListOf(),
-                                                arrayListOf(),
-                                                FlightOrderDetailFreeAmenityModel(
-                                                        FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
-                                                        FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
-                                                        false,
-                                                        false,
-                                                        false,
-                                                        arrayListOf()
-                                                )
-                                        )
-                                ),
-                                FlightOrderDetailWebCheckInModel(
-                                        "Check In",
-                                        "Check In Available",
-                                        DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.HOUR, -3).toString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
-                                        DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.HOUR, 3).toString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
-                                        "",
-                                        "",
-                                        ""
-                                )
-                        )
-                ),
-                arrayListOf(
-                        FlightOrderDetailPassengerModel(
-                                1,
-                                "1",
-                                1,
-                                "Dewasa",
-                                1,
-                                "Tuan",
-                                "Muhammad",
-                                "Furqan",
-                                "",
-                                "",
-                                "",
-                                "",
-                                "",
-                                arrayListOf(),
+                        0
+                    ),
+                    arrayListOf(
+                        FlightOrderDetailRouteModel(
+                            "123",
+                            "departure time",
+                            "departure airport",
+                            "departure city",
+                            "321",
+                            "arrival time",
+                            "arrival airport",
+                            "arrival city",
+                            "123ASD",
+                            "890",
+                            "Seulawah Air",
+                            "",
+                            "",
+                            "AN-12345",
+                            "2j",
+                            120,
+                            "",
+                            0,
+                            true,
+                            "2",
+                            "",
+                            0,
+                            "",
+                            arrayListOf(),
+                            arrayListOf(),
+                            FlightOrderDetailFreeAmenityModel(
+                                FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
+                                FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
+                                false,
+                                false,
+                                false,
                                 arrayListOf()
+                            )
                         )
-                ),
-                arrayListOf(),
-                arrayListOf(),
-                arrayListOf(),
-                arrayListOf()
+                    ),
+                    FlightOrderDetailWebCheckInModel(
+                        "Check In",
+                        "Check In Available",
+                        DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.HOUR, -3).toString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
+                        DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.HOUR, 3).toString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
+                        "",
+                        "",
+                        ""
+                    )
+                )
+            ),
+            arrayListOf(
+                FlightOrderDetailPassengerModel(
+                    1,
+                    "1",
+                    1,
+                    "Dewasa",
+                    1,
+                    "Tuan",
+                    "Muhammad",
+                    "Furqan",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    arrayListOf(),
+                    arrayListOf()
+                )
+            ),
+            arrayListOf(),
+            arrayListOf(),
+            arrayListOf(),
+            arrayListOf()
         )
 
         // when
@@ -843,151 +873,152 @@ class FlightOrderDetailViewModelTest {
         // given
         // dummy data will be build on runtime because checkIn date need to be dynamic
         val dummyData = FlightOrderDetailDataModel(
+            "1",
+            "0001-01-01T00:00:00Z",
+            700,
+            "Berhasil",
+            "1",
+            "1234567890",
+            "Muhammad Furqan",
+            "email@email.com",
+            "123456789012",
+            "ID",
+            "Rp1.000.000",
+            1000000,
+            "Rp0",
+            0,
+            "Rp0",
+            0,
+            "Rp1.000.000",
+            1000000,
+            "Rp",
+            "dummy pdf",
+            true,
+            false,
+            "Ekonomi",
+            "dummy contact us URL",
+            false,
+            FlightOrderDetailPaymentModel(
                 "1",
+                1,
+                "Paid",
+                "BCA Virtual Account",
+                "dummy icon",
                 "0001-01-01T00:00:00Z",
-                700,
-                "Berhasil",
-                "1",
+                "",
+                "ididid",
+                "",
+                0,
+                "Rp0",
+                0,
+                "rp0",
+                0,
+                "Rp0",
+                0,
+                "Rp0",
+                0,
+                "Rp0",
+                0,
+                "BCA",
+                "Jakarta",
                 "1234567890",
-                "Muhammad Furqan",
-                "email@email.com",
-                "123456789012",
-                "ID",
+                "Furqan",
                 "Rp1.000.000",
-                1000000,
-                "Rp0",
-                0,
-                "Rp0",
-                0,
-                "Rp1.000.000",
-                1000000,
-                "Rp",
-                "dummy pdf",
-                true,
-                false,
-                "Ekonomi",
-                "dummy contact us URL",
-                false,
-                FlightOrderDetailPaymentModel(
-                        "1",
-                        1,
-                        "Paid",
-                        "BCA Virtual Account",
-                        "dummy icon",
-                        "0001-01-01T00:00:00Z",
-                        "",
-                        "ididid",
-                        "",
+                ""
+            ),
+            arrayListOf(
+                FlightOrderDetailJourneyModel(
+                    "1",
+                    1,
+                    "123",
+                    "0001-01-01T00:00:00Z",
+                    "departure airport",
+                    "aceh",
+                    "321",
+                    "0001-01-01T00:00:00Z",
+                    "arrival airport",
+                    "jakarta",
+                    0,
+                    0,
+                    0,
+                    "2j",
+                    120,
+                    FlightOrderDetailFareModel(
+                        1000000,
                         0,
-                        "Rp0",
-                        0,
-                        "rp0",
-                        0,
-                        "Rp0",
-                        0,
-                        "Rp0",
-                        0,
-                        "Rp0",
-                        0,
-                        "BCA",
-                        "Jakarta",
-                        "1234567890",
-                        "Furqan",
-                        "Rp1.000.000"
-                ),
-                arrayListOf(
-                        FlightOrderDetailJourneyModel(
-                                "1",
-                                1,
-                                "123",
-                                "0001-01-01T00:00:00Z",
-                                "departure airport",
-                                "aceh",
-                                "321",
-                                "0001-01-01T00:00:00Z",
-                                "arrival airport",
-                                "jakarta",
-                                0,
-                                0,
-                                0,
-                                "2j",
-                                120,
-                                FlightOrderDetailFareModel(
-                                        1000000,
-                                        0,
-                                        0
-                                ),
-                                arrayListOf(
-                                        FlightOrderDetailRouteModel(
-                                                "123",
-                                                "departure time",
-                                                "departure airport",
-                                                "departure city",
-                                                "321",
-                                                "arrival time",
-                                                "arrival airport",
-                                                "arrival city",
-                                                "123ASD",
-                                                "890",
-                                                "Seulawah Air",
-                                                "",
-                                                "",
-                                                "AN-12345",
-                                                "2j",
-                                                120,
-                                                "",
-                                                0,
-                                                true,
-                                                "2",
-                                                "",
-                                                0,
-                                                "",
-                                                arrayListOf(),
-                                                arrayListOf(),
-                                                FlightOrderDetailFreeAmenityModel(
-                                                        FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
-                                                        FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
-                                                        false,
-                                                        false,
-                                                        false,
-                                                        arrayListOf()
-                                                )
-                                        )
-                                ),
-                                FlightOrderDetailWebCheckInModel(
-                                        "Check In",
-                                        "Check In Not Available",
-                                        DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.HOUR, 1).toString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
-                                        DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.HOUR, 2).toString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
-                                        "",
-                                        "",
-                                        ""
-                                )
-                        )
-                ),
-                arrayListOf(
-                        FlightOrderDetailPassengerModel(
-                                1,
-                                "1",
-                                1,
-                                "Dewasa",
-                                1,
-                                "Tuan",
-                                "Muhammad",
-                                "Furqan",
-                                "",
-                                "",
-                                "",
-                                "",
-                                "",
-                                arrayListOf(),
+                        0
+                    ),
+                    arrayListOf(
+                        FlightOrderDetailRouteModel(
+                            "123",
+                            "departure time",
+                            "departure airport",
+                            "departure city",
+                            "321",
+                            "arrival time",
+                            "arrival airport",
+                            "arrival city",
+                            "123ASD",
+                            "890",
+                            "Seulawah Air",
+                            "",
+                            "",
+                            "AN-12345",
+                            "2j",
+                            120,
+                            "",
+                            0,
+                            true,
+                            "2",
+                            "",
+                            0,
+                            "",
+                            arrayListOf(),
+                            arrayListOf(),
+                            FlightOrderDetailFreeAmenityModel(
+                                FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
+                                FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
+                                false,
+                                false,
+                                false,
                                 arrayListOf()
+                            )
                         )
-                ),
-                arrayListOf(),
-                arrayListOf(),
-                arrayListOf(),
-                arrayListOf()
+                    ),
+                    FlightOrderDetailWebCheckInModel(
+                        "Check In",
+                        "Check In Not Available",
+                        DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.HOUR, 1).toString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
+                        DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.HOUR, 2).toString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
+                        "",
+                        "",
+                        ""
+                    )
+                )
+            ),
+            arrayListOf(
+                FlightOrderDetailPassengerModel(
+                    1,
+                    "1",
+                    1,
+                    "Dewasa",
+                    1,
+                    "Tuan",
+                    "Muhammad",
+                    "Furqan",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    arrayListOf(),
+                    arrayListOf()
+                )
+            ),
+            arrayListOf(),
+            arrayListOf(),
+            arrayListOf(),
+            arrayListOf()
         )
 
         // when
@@ -1003,151 +1034,152 @@ class FlightOrderDetailViewModelTest {
         // given
         // dummy data will be build on runtime because checkIn date need to be dynamic
         val dummyData = FlightOrderDetailDataModel(
+            "1",
+            "0001-01-01T00:00:00Z",
+            700,
+            "Berhasil",
+            "1",
+            "1234567890",
+            "Muhammad Furqan",
+            "email@email.com",
+            "123456789012",
+            "ID",
+            "Rp1.000.000",
+            1000000,
+            "Rp0",
+            0,
+            "Rp0",
+            0,
+            "Rp1.000.000",
+            1000000,
+            "Rp",
+            "dummy pdf",
+            true,
+            false,
+            "Ekonomi",
+            "dummy contact us URL",
+            false,
+            FlightOrderDetailPaymentModel(
                 "1",
+                1,
+                "Paid",
+                "BCA Virtual Account",
+                "dummy icon",
                 "0001-01-01T00:00:00Z",
-                700,
-                "Berhasil",
-                "1",
+                "",
+                "ididid",
+                "",
+                0,
+                "Rp0",
+                0,
+                "rp0",
+                0,
+                "Rp0",
+                0,
+                "Rp0",
+                0,
+                "Rp0",
+                0,
+                "BCA",
+                "Jakarta",
                 "1234567890",
-                "Muhammad Furqan",
-                "email@email.com",
-                "123456789012",
-                "ID",
+                "Furqan",
                 "Rp1.000.000",
-                1000000,
-                "Rp0",
-                0,
-                "Rp0",
-                0,
-                "Rp1.000.000",
-                1000000,
-                "Rp",
-                "dummy pdf",
-                true,
-                false,
-                "Ekonomi",
-                "dummy contact us URL",
-                false,
-                FlightOrderDetailPaymentModel(
-                        "1",
-                        1,
-                        "Paid",
-                        "BCA Virtual Account",
-                        "dummy icon",
-                        "0001-01-01T00:00:00Z",
-                        "",
-                        "ididid",
-                        "",
+                ""
+            ),
+            arrayListOf(
+                FlightOrderDetailJourneyModel(
+                    "1",
+                    1,
+                    "123",
+                    "0001-01-01T00:00:00Z",
+                    "departure airport",
+                    "aceh",
+                    "321",
+                    "0001-01-01T00:00:00Z",
+                    "arrival airport",
+                    "jakarta",
+                    0,
+                    0,
+                    0,
+                    "2j",
+                    120,
+                    FlightOrderDetailFareModel(
+                        1000000,
                         0,
-                        "Rp0",
-                        0,
-                        "rp0",
-                        0,
-                        "Rp0",
-                        0,
-                        "Rp0",
-                        0,
-                        "Rp0",
-                        0,
-                        "BCA",
-                        "Jakarta",
-                        "1234567890",
-                        "Furqan",
-                        "Rp1.000.000"
-                ),
-                arrayListOf(
-                        FlightOrderDetailJourneyModel(
-                                "1",
-                                1,
-                                "123",
-                                "0001-01-01T00:00:00Z",
-                                "departure airport",
-                                "aceh",
-                                "321",
-                                "0001-01-01T00:00:00Z",
-                                "arrival airport",
-                                "jakarta",
-                                0,
-                                0,
-                                0,
-                                "2j",
-                                120,
-                                FlightOrderDetailFareModel(
-                                        1000000,
-                                        0,
-                                        0
-                                ),
-                                arrayListOf(
-                                        FlightOrderDetailRouteModel(
-                                                "123",
-                                                "departure time",
-                                                "departure airport",
-                                                "departure city",
-                                                "321",
-                                                "arrival time",
-                                                "arrival airport",
-                                                "arrival city",
-                                                "123ASD",
-                                                "890",
-                                                "Seulawah Air",
-                                                "",
-                                                "",
-                                                "AN-12345",
-                                                "2j",
-                                                120,
-                                                "",
-                                                0,
-                                                true,
-                                                "2",
-                                                "",
-                                                0,
-                                                "",
-                                                arrayListOf(),
-                                                arrayListOf(),
-                                                FlightOrderDetailFreeAmenityModel(
-                                                        FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
-                                                        FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
-                                                        false,
-                                                        false,
-                                                        false,
-                                                        arrayListOf()
-                                                )
-                                        )
-                                ),
-                                FlightOrderDetailWebCheckInModel(
-                                        "Check In",
-                                        "Check In Not Available",
-                                        DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.HOUR, 1).toString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
-                                        DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.HOUR, -2).toString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
-                                        "",
-                                        "",
-                                        ""
-                                )
-                        )
-                ),
-                arrayListOf(
-                        FlightOrderDetailPassengerModel(
-                                1,
-                                "1",
-                                1,
-                                "Dewasa",
-                                1,
-                                "Tuan",
-                                "Muhammad",
-                                "Furqan",
-                                "",
-                                "",
-                                "",
-                                "",
-                                "",
-                                arrayListOf(),
+                        0
+                    ),
+                    arrayListOf(
+                        FlightOrderDetailRouteModel(
+                            "123",
+                            "departure time",
+                            "departure airport",
+                            "departure city",
+                            "321",
+                            "arrival time",
+                            "arrival airport",
+                            "arrival city",
+                            "123ASD",
+                            "890",
+                            "Seulawah Air",
+                            "",
+                            "",
+                            "AN-12345",
+                            "2j",
+                            120,
+                            "",
+                            0,
+                            true,
+                            "2",
+                            "",
+                            0,
+                            "",
+                            arrayListOf(),
+                            arrayListOf(),
+                            FlightOrderDetailFreeAmenityModel(
+                                FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
+                                FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
+                                false,
+                                false,
+                                false,
                                 arrayListOf()
+                            )
                         )
-                ),
-                arrayListOf(),
-                arrayListOf(),
-                arrayListOf(),
-                arrayListOf()
+                    ),
+                    FlightOrderDetailWebCheckInModel(
+                        "Check In",
+                        "Check In Not Available",
+                        DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.HOUR, 1).toString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
+                        DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.HOUR, -2).toString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
+                        "",
+                        "",
+                        ""
+                    )
+                )
+            ),
+            arrayListOf(
+                FlightOrderDetailPassengerModel(
+                    1,
+                    "1",
+                    1,
+                    "Dewasa",
+                    1,
+                    "Tuan",
+                    "Muhammad",
+                    "Furqan",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    arrayListOf(),
+                    arrayListOf()
+                )
+            ),
+            arrayListOf(),
+            arrayListOf(),
+            arrayListOf(),
+            arrayListOf()
         )
 
         // when
@@ -1163,151 +1195,152 @@ class FlightOrderDetailViewModelTest {
         // given
         // dummy data will be build on runtime because checkIn date need to be dynamic
         val dummyData = FlightOrderDetailDataModel(
+            "1",
+            "0001-01-01T00:00:00Z",
+            700,
+            "Berhasil",
+            "1",
+            "1234567890",
+            "Muhammad Furqan",
+            "email@email.com",
+            "123456789012",
+            "ID",
+            "Rp1.000.000",
+            1000000,
+            "Rp0",
+            0,
+            "Rp0",
+            0,
+            "Rp1.000.000",
+            1000000,
+            "Rp",
+            "dummy pdf",
+            true,
+            false,
+            "Ekonomi",
+            "dummy contact us URL",
+            false,
+            FlightOrderDetailPaymentModel(
                 "1",
+                1,
+                "Paid",
+                "BCA Virtual Account",
+                "dummy icon",
                 "0001-01-01T00:00:00Z",
-                700,
-                "Berhasil",
-                "1",
+                "",
+                "ididid",
+                "",
+                0,
+                "Rp0",
+                0,
+                "rp0",
+                0,
+                "Rp0",
+                0,
+                "Rp0",
+                0,
+                "Rp0",
+                0,
+                "BCA",
+                "Jakarta",
                 "1234567890",
-                "Muhammad Furqan",
-                "email@email.com",
-                "123456789012",
-                "ID",
+                "Furqan",
                 "Rp1.000.000",
-                1000000,
-                "Rp0",
-                0,
-                "Rp0",
-                0,
-                "Rp1.000.000",
-                1000000,
-                "Rp",
-                "dummy pdf",
-                true,
-                false,
-                "Ekonomi",
-                "dummy contact us URL",
-                false,
-                FlightOrderDetailPaymentModel(
-                        "1",
-                        1,
-                        "Paid",
-                        "BCA Virtual Account",
-                        "dummy icon",
-                        "0001-01-01T00:00:00Z",
-                        "",
-                        "ididid",
-                        "",
+                ""
+            ),
+            arrayListOf(
+                FlightOrderDetailJourneyModel(
+                    "1",
+                    1,
+                    "123",
+                    "0001-01-01T00:00:00Z",
+                    "departure airport",
+                    "aceh",
+                    "321",
+                    "0001-01-01T00:00:00Z",
+                    "arrival airport",
+                    "jakarta",
+                    0,
+                    0,
+                    0,
+                    "2j",
+                    120,
+                    FlightOrderDetailFareModel(
+                        1000000,
                         0,
-                        "Rp0",
-                        0,
-                        "rp0",
-                        0,
-                        "Rp0",
-                        0,
-                        "Rp0",
-                        0,
-                        "Rp0",
-                        0,
-                        "BCA",
-                        "Jakarta",
-                        "1234567890",
-                        "Furqan",
-                        "Rp1.000.000"
-                ),
-                arrayListOf(
-                        FlightOrderDetailJourneyModel(
-                                "1",
-                                1,
-                                "123",
-                                "0001-01-01T00:00:00Z",
-                                "departure airport",
-                                "aceh",
-                                "321",
-                                "0001-01-01T00:00:00Z",
-                                "arrival airport",
-                                "jakarta",
-                                0,
-                                0,
-                                0,
-                                "2j",
-                                120,
-                                FlightOrderDetailFareModel(
-                                        1000000,
-                                        0,
-                                        0
-                                ),
-                                arrayListOf(
-                                        FlightOrderDetailRouteModel(
-                                                "123",
-                                                "departure time",
-                                                "departure airport",
-                                                "departure city",
-                                                "321",
-                                                "arrival time",
-                                                "arrival airport",
-                                                "arrival city",
-                                                "123ASD",
-                                                "890",
-                                                "Seulawah Air",
-                                                "",
-                                                "",
-                                                "AN-12345",
-                                                "2j",
-                                                120,
-                                                "",
-                                                0,
-                                                true,
-                                                "2",
-                                                "",
-                                                0,
-                                                "",
-                                                arrayListOf(),
-                                                arrayListOf(),
-                                                FlightOrderDetailFreeAmenityModel(
-                                                        FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
-                                                        FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
-                                                        false,
-                                                        false,
-                                                        false,
-                                                        arrayListOf()
-                                                )
-                                        )
-                                ),
-                                FlightOrderDetailWebCheckInModel(
-                                        "Check In",
-                                        "Check In Not Available",
-                                        DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.HOUR, -2).toString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
-                                        DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.HOUR, -1).toString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
-                                        "",
-                                        "",
-                                        ""
-                                )
-                        )
-                ),
-                arrayListOf(
-                        FlightOrderDetailPassengerModel(
-                                1,
-                                "1",
-                                1,
-                                "Dewasa",
-                                1,
-                                "Tuan",
-                                "Muhammad",
-                                "Furqan",
-                                "",
-                                "",
-                                "",
-                                "",
-                                "",
-                                arrayListOf(),
+                        0
+                    ),
+                    arrayListOf(
+                        FlightOrderDetailRouteModel(
+                            "123",
+                            "departure time",
+                            "departure airport",
+                            "departure city",
+                            "321",
+                            "arrival time",
+                            "arrival airport",
+                            "arrival city",
+                            "123ASD",
+                            "890",
+                            "Seulawah Air",
+                            "",
+                            "",
+                            "AN-12345",
+                            "2j",
+                            120,
+                            "",
+                            0,
+                            true,
+                            "2",
+                            "",
+                            0,
+                            "",
+                            arrayListOf(),
+                            arrayListOf(),
+                            FlightOrderDetailFreeAmenityModel(
+                                FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
+                                FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
+                                false,
+                                false,
+                                false,
                                 arrayListOf()
+                            )
                         )
-                ),
-                arrayListOf(),
-                arrayListOf(),
-                arrayListOf(),
-                arrayListOf()
+                    ),
+                    FlightOrderDetailWebCheckInModel(
+                        "Check In",
+                        "Check In Not Available",
+                        DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.HOUR, -2).toString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
+                        DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.HOUR, -1).toString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
+                        "",
+                        "",
+                        ""
+                    )
+                )
+            ),
+            arrayListOf(
+                FlightOrderDetailPassengerModel(
+                    1,
+                    "1",
+                    1,
+                    "Dewasa",
+                    1,
+                    "Tuan",
+                    "Muhammad",
+                    "Furqan",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    arrayListOf(),
+                    arrayListOf()
+                )
+            ),
+            arrayListOf(),
+            arrayListOf(),
+            arrayListOf(),
+            arrayListOf()
         )
 
         // when
@@ -1419,6 +1452,40 @@ class FlightOrderDetailViewModelTest {
     }
 
     @Test
+    fun buildInsurancePaymentDetailData_failedToFetchOrderDetail() {
+        // given
+        coEvery { useCase.execute(any(), any()) } coAnswers { throw UnsupportedOperationException() }
+
+        // when
+        val paymentData = viewModel.buildInsurancePaymentDetailData()
+
+        // then
+        paymentData.size shouldBe 0
+    }
+
+    @Test
+    fun buildInsurancePaymentDetailData_successToFetchOrderDetail() {
+        // given
+        val dummyData = DUMMY_ORDER_DETAIL_DATA
+        coEvery { useCase.execute(any(), any()) } returns Success(dummyData)
+        viewModel.fetchOrderDetailData()
+
+        // when
+        val insuranceData = viewModel.buildInsurancePaymentDetailData()
+
+        // then
+        insuranceData.size shouldBe 1
+
+        insuranceData[0].leftValue shouldBe "Asuransi Pembatalan Penerbangan"
+        insuranceData[0].rightValue shouldBe "Rp 100.000"
+        insuranceData[0].isLeftBold shouldBe false
+        insuranceData[0].isRightBold shouldBe false
+        insuranceData[0].isLeftStriked shouldBe false
+        insuranceData[0].isRightStriked shouldBe false
+        insuranceData[0].isRightAlign shouldBe true
+    }
+
+    @Test
     fun getTotalAmount() {
         // given
         val dummyData = DUMMY_ORDER_DETAIL_DATA
@@ -1472,8 +1539,8 @@ class FlightOrderDetailViewModelTest {
         // then
         coVerify {
             flightAnalytics.eventSendETicketOrderDetail(
-                    "Berhasil - 1234567890",
-                    "0987654321"
+                "Berhasil - 1234567890",
+                "0987654321"
             )
         }
     }
@@ -1493,8 +1560,8 @@ class FlightOrderDetailViewModelTest {
         // then
         coVerify {
             flightAnalytics.eventWebCheckInOrderDetail(
-                    "Berhasil - 1234567890",
-                    "0987654321"
+                "Berhasil - 1234567890",
+                "0987654321"
             )
         }
     }
@@ -1514,10 +1581,9 @@ class FlightOrderDetailViewModelTest {
         // then
         coVerify {
             flightAnalytics.eventCancelTicketOrderDetail(
-                    "Berhasil - 1234567890",
-                    "0987654321"
+                "Berhasil - 1234567890",
+                "0987654321"
             )
         }
     }
-
 }

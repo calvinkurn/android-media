@@ -16,6 +16,7 @@ data class BestSellerProductDataModel(
     val categoryBreadcrumbs: String,
     val pageName: String,
     val header: String,
+    val warehouseId: String
 ) {
 
     fun hasLabelGroupFulfillment() =

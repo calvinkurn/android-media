@@ -1,28 +1,11 @@
 package com.tokopedia.productcard.layout
 
-import com.tokopedia.productcard.layout.eta.EtaLayoutStrategy
-import com.tokopedia.productcard.layout.eta.EtaLayoutStrategyControl
-import com.tokopedia.productcard.layout.image.ImageLayoutStrategy
-import com.tokopedia.productcard.layout.image.ImageLayoutStrategyControl
-import com.tokopedia.productcard.layout.label.LabelLayoutStrategy
 import com.tokopedia.productcard.layout.label.LabelLayoutStrategyFashionReposition
-import com.tokopedia.productcard.layout.name.NameLayoutStrategy
 import com.tokopedia.productcard.layout.name.NameLayoutStrategyReposition
-import com.tokopedia.productcard.layout.shadow.ShadowLayoutStrategy
-import com.tokopedia.productcard.layout.shadow.ShadowLayoutStrategyControl
-import com.tokopedia.productcard.layout.stockbar.StockBarLayoutStrategy
-import com.tokopedia.productcard.layout.stockbar.StockBarLayoutStrategyControl
-import com.tokopedia.productcard.layout.threedots.ThreeDotsLayoutStrategy
-import com.tokopedia.productcard.layout.threedots.ThreeDotsLayoutStrategyControl
-import com.tokopedia.productcard.layout.variant.VariantLayoutStrategy
 import com.tokopedia.productcard.layout.variant.VariantLayoutStrategyReposition
 
-internal class LayoutStrategyFashionReposition: LayoutStrategy,
-    ImageLayoutStrategy by ImageLayoutStrategyControl(),
-    NameLayoutStrategy by NameLayoutStrategyReposition(),
-    LabelLayoutStrategy by LabelLayoutStrategyFashionReposition(),
-    VariantLayoutStrategy by VariantLayoutStrategyReposition(),
-    EtaLayoutStrategy by EtaLayoutStrategyControl(),
-    ShadowLayoutStrategy by ShadowLayoutStrategyControl(),
-    ThreeDotsLayoutStrategy by ThreeDotsLayoutStrategyControl(),
-    StockBarLayoutStrategy by StockBarLayoutStrategyControl()
+internal class LayoutStrategyFashionReposition: BaseLayoutStrategy(
+    nameLayoutStrategy = NameLayoutStrategyReposition(),
+    labelLayoutStrategy = LabelLayoutStrategyFashionReposition(),
+    variantLayoutStrategy = VariantLayoutStrategyReposition(),
+)

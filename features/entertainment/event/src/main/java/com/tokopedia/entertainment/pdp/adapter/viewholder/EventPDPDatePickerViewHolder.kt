@@ -6,11 +6,12 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.databinding.EntPdpFormDatePickerItemBinding
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter
 import com.tokopedia.entertainment.pdp.data.Form
 import com.tokopedia.entertainment.pdp.listener.OnClickFormListener
 import com.tokopedia.kotlin.extensions.toFormattedString
-import kotlinx.android.synthetic.main.ent_pdp_form_date_picker_item.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 import java.text.SimpleDateFormat
 
 @SuppressLint("ClickableViewAccessibility")
@@ -19,11 +20,12 @@ class EventPDPDatePickerViewHolder(val view: View,
                                    val listener: OnClickFormListener
 ) : RecyclerView.ViewHolder(view) {
 
+    private val binding: EntPdpFormDatePickerItemBinding? by viewBinding()
     fun bind(element: Form, position: Int) {
-        with(itemView) {
+        binding?.run {
 
-            tg_event_date_picker.textFieldWrapper.hint = element.title
-            tg_event_date_picker.textFieldInput.apply {
+            tgEventDatePicker.textFieldWrapper.hint = element.title
+            tgEventDatePicker.textFieldInput.apply {
                 keyListener = null
                 if (element.value.isNullOrEmpty() || element.value.equals(resources.getString(R.string.ent_checkout_data_nullable_form))) {
                     setText(resources.getString(R.string.ent_pdp_form_date_picker_placeholder))
@@ -48,22 +50,22 @@ class EventPDPDatePickerViewHolder(val view: View,
             if (listener.getDate() != null) {
                 val dateTime = listener.getDate()?.time?.toFormattedString(SHOW_FORMAT, LocaleUtils.getIDLocale())
                 val dateValue = SimpleDateFormat(element.options).format(listener.getDate()?.time)
-                tg_event_date_picker.textFieldInput.setText(dateTime)
+                tgEventDatePicker.textFieldInput.setText(dateTime)
                 addOrRemoveData(position, dateValue, "")
             }
 
-            if (!element.value.equals(resources.getString(R.string.ent_checkout_data_nullable_form))) {
-                tg_event_date_picker.setError(false)
+            if (!element.value.equals(root.context.resources.getString(R.string.ent_checkout_data_nullable_form))) {
+                tgEventDatePicker.setError(false)
                 element.isError = false
             }
 
             if (element.isError) {
                 if (element.errorType == EventPDPFormAdapter.EMPTY_TYPE) {
-                    tg_event_date_picker.setMessage(resources.getString(R.string.ent_pdp_form_error_all_msg, element.title))
+                    tgEventDatePicker.setMessage(root.context.resources.getString(R.string.ent_pdp_form_error_all_msg, element.title))
                 } else if (element.errorType == EventPDPFormAdapter.REGEX_TYPE) {
-                    tg_event_date_picker.setMessage(element.errorMessage)
+                    tgEventDatePicker.setMessage(element.errorMessage)
                 }
-                tg_event_date_picker.setError(true)
+                tgEventDatePicker.setError(true)
             }
 
 
@@ -71,7 +73,6 @@ class EventPDPDatePickerViewHolder(val view: View,
     }
 
     companion object {
-        const val VALUE_FORMAT = "yyyy-MM-dd"
         const val SHOW_FORMAT = "dd MMMM yyyy"
         val LAYOUT_DATE_PICKER = R.layout.ent_pdp_form_date_picker_item
     }
