@@ -22,7 +22,7 @@
         app:unify_text_field_label="@string/promo_voucher_enter_voucher_code"
         app:unify_text_field_label_static="false" />
 
-    <com.tokopedia.promousage.view.custom.VoucherView
+    <com.tokopedia.promousage.view.custom.VoucherCompoundView
         android:id="@+id/userInputVoucherView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -1,19 +1,12 @@
 package com.tokopedia.promousage.view.custom
 
 import android.content.Context
-import android.content.res.ColorStateList
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
-import com.google.android.material.bottomappbar.BottomAppBarTopEdgeTreatment
-import com.google.android.material.shape.MaterialShapeDrawable
-import com.google.android.material.shape.OffsetEdgeTreatment
-import com.google.android.material.shape.ShapeAppearanceModel
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -28,12 +21,11 @@ import com.tokopedia.promousage.domain.entity.VoucherSource
 import com.tokopedia.promousage.domain.entity.VoucherState
 import com.tokopedia.promousage.domain.entity.VoucherType
 import com.tokopedia.promousage.util.extension.grayscale
-import com.tokopedia.promousage.util.extension.onDrawn
 import com.tokopedia.promousage.util.extension.removeGrayscale
 import com.tokopedia.promousage.util.extension.setHyperlinkText
 import com.tokopedia.unifycomponents.toPx
 
-class VoucherView @JvmOverloads constructor(
+class VoucherCompoundView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
