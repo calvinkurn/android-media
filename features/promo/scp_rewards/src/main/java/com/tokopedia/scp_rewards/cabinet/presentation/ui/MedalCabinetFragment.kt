@@ -230,8 +230,8 @@ class MedalCabinetFragment : BaseDaggerFragment() {
 
     private fun setWhiteStatusBar() {
         (activity as AppCompatActivity?)?.apply {
-            window?.statusBarColor = Color.WHITE
-            binding.toolbar.setBackgroundColor(Color.WHITE)
+            window?.statusBarColor = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+            binding.toolbar.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN0))
             setToolbarBackButtonTint(R.color.Unify_NN900)
 
             windowInsetsController?.isAppearanceLightStatusBars = true
@@ -242,7 +242,7 @@ class MedalCabinetFragment : BaseDaggerFragment() {
         (activity as AppCompatActivity?)?.apply {
             activity?.window?.statusBarColor = Color.TRANSPARENT
             binding.toolbar.setBackgroundColor(Color.TRANSPARENT)
-            setToolbarBackButtonTint(R.color.Unify_NN0)
+            setToolbarBackButtonTint(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
 
             windowInsetsController?.isAppearanceLightStatusBars = false
         }

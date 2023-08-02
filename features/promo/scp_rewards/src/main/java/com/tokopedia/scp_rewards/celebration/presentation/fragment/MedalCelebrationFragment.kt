@@ -39,19 +39,19 @@ import com.tokopedia.scp_rewards.celebration.analytics.CelebrationAnalytics
 import com.tokopedia.scp_rewards.celebration.di.CelebrationComponent
 import com.tokopedia.scp_rewards.celebration.domain.model.ScpRewardsCelebrationModel
 import com.tokopedia.scp_rewards.celebration.presentation.viewmodel.MedalCelebrationViewModel
-import com.tokopedia.scp_rewards.common.constants.EASE_IN
-import com.tokopedia.scp_rewards.common.constants.NON_WHITELISTED_USER_ERROR_CODE
+import com.tokopedia.scp_rewards.celebration.presentation.viewmodel.MedalCelebrationViewModel.ScpResult.AllMedaliCelebratedError
 import com.tokopedia.scp_rewards.celebration.presentation.viewmodel.MedalCelebrationViewModel.ScpResult.Error
 import com.tokopedia.scp_rewards.celebration.presentation.viewmodel.MedalCelebrationViewModel.ScpResult.Loading
 import com.tokopedia.scp_rewards.celebration.presentation.viewmodel.MedalCelebrationViewModel.ScpResult.Success
-import com.tokopedia.scp_rewards.celebration.presentation.viewmodel.MedalCelebrationViewModel.ScpResult.AllMedaliCelebratedError
+import com.tokopedia.scp_rewards.common.constants.NON_WHITELISTED_USER_ERROR_CODE
 import com.tokopedia.scp_rewards.common.utils.AudioFactory
 import com.tokopedia.scp_rewards.common.utils.DeviceInfo
-import com.tokopedia.scp_rewards.common.utils.dpToPx
 import com.tokopedia.scp_rewards.common.utils.hide
 import com.tokopedia.scp_rewards.common.utils.isNullOrZero
 import com.tokopedia.scp_rewards.common.utils.show
 import com.tokopedia.scp_rewards.databinding.CelebrationFragmentLayoutBinding
+import com.tokopedia.scp_rewards_common.EASE_IN
+import com.tokopedia.scp_rewards_common.dpToPx
 import com.tokopedia.scp_rewards_common.parseColor
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -179,7 +179,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.apply {
             binding?.apply {
                 val color = scpRewardsCelebrationPage?.celebrationPage?.backgroundColor
-                mainView.container.setBackgroundColor(parseColor(color) ?: Color.WHITE)
+                mainView.container.setBackgroundColor(parseColor(color) ?: ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN0))
             }
         }
     }
@@ -368,8 +368,8 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
                 val medaliSourceFontColor = scpRewardsCelebrationPage?.celebrationPage?.medaliSourceFontColor.orEmpty()
                 if (medaliSourceText.isNotEmpty()) {
                     brandTag.text = scpRewardsCelebrationPage?.celebrationPage?.medaliSourceText
-                    brandTag.setTextColor(parseColor(medaliSourceFontColor) ?: Color.WHITE)
-                    sponsorCard.setCardBackgroundColor(parseColor(medaliSourceBgColor) ?: Color.BLACK)
+                    brandTag.setTextColor(parseColor(medaliSourceFontColor) ?: ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+                    sponsorCard.setCardBackgroundColor(parseColor(medaliSourceBgColor) ?: ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN1000))
                 } else {
                     hideSponsorCard()
                 }
@@ -661,7 +661,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
 
     private fun handleError(scpError: Error) {
         context?.let {
-            val defaultBg = ContextCompat.getColor(it, R.color.white)
+            val defaultBg = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN0)
             binding?.mainFlipper?.setBackgroundColor(defaultBg)
         }
         binding?.mainFlipper?.displayedChild = ERROR_STATE
