@@ -3,7 +3,6 @@ package com.tokopedia.product.detail.data.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.detail.common.bmgm.model.BMGMData
-import com.tokopedia.product.detail.common.bmgm.model.asUiModel
 import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.bundleinfo.BundleInfo
@@ -232,5 +231,5 @@ fun ProductInfoP2Data.asUiModel() = ProductInfoP2UiData(
     socialProof = socialProof.asUiModel(),
     shopReview = shopReview.asUiModel(),
     bottomSheetEdu = bottomSheetEdu.asUiModel(),
-    bmgm = bmgm.asUiModel()
+    bmgm = bmgm
 )

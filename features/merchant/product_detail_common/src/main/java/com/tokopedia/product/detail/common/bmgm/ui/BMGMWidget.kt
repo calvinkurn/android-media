@@ -4,11 +4,13 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
+import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
@@ -56,6 +58,7 @@ class BMGMWidget @JvmOverloads constructor(
                 false
             )
             productListBinding.bmgmProductList.adapter = this
+            productListBinding.bmgmProductList.itemAnimator = null
         }
     }
 
@@ -68,15 +71,28 @@ class BMGMWidget @JvmOverloads constructor(
                 // no - ops
             }
 
-            is BMGMUiState.Loaded -> {
-                onLoaded(uiModel = uiState.uiModel, router = router)
+            is BMGMUiState.Hide -> {
+                hideContent()
+            }
+
+            is BMGMUiState.Show -> {
+                showContent(uiModel = uiState.uiModel, router = router)
             }
         }
     }
     // endregion
 
+    // region hide state
+    private fun hideContent() {
+        if (height > Int.ZERO) { // prevent inflate
+            binding.root.setLayoutHeight(0)
+        }
+    }
+    // endregion
+
     // region loaded state
-    private fun onLoaded(uiModel: BMGMUiModel, router: BMGMRouter) {
+    private fun showContent(uiModel: BMGMUiModel, router: BMGMRouter) {
+        binding.root.setLayoutHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
         binding.bmgmImageLeft.loadImage(url = uiModel.iconUrl)
 
         binding.bmgmTitles.setTitle(

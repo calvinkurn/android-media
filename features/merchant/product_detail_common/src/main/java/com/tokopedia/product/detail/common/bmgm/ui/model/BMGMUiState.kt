@@ -7,7 +7,9 @@ package com.tokopedia.product.detail.common.bmgm.ui.model
 
 sealed interface BMGMUiState {
 
-    object Loading: BMGMUiState
+    object Loading : BMGMUiState
 
-    data class Loaded(val uiModel: BMGMUiModel): BMGMUiState
+    object Hide : BMGMUiState
+
+    data class Show(val uiModel: BMGMUiModel) : BMGMUiState
 }

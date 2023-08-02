@@ -17,12 +17,13 @@ class BMGMProductAdapter : ListAdapter<BMGMUiModel.Product, BMGMProductViewHolde
             override fun areItemsTheSame(
                 oldItem: BMGMUiModel.Product,
                 newItem: BMGMUiModel.Product
-            ): Boolean = oldItem == newItem
+            ): Boolean = oldItem.loadMoreText == newItem.loadMoreText &&
+                oldItem.imageUrl == newItem.imageUrl
 
             override fun areContentsTheSame(
                 oldItem: BMGMUiModel.Product,
                 newItem: BMGMUiModel.Product
-            ): Boolean = oldItem.hashCode() == newItem.hashCode()
+            ): Boolean = oldItem == newItem
         }
     }
 

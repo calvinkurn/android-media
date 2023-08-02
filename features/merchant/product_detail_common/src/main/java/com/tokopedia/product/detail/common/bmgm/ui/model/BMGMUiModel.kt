@@ -11,11 +11,9 @@ data class BMGMUiModel(
     val products: List<Product> = emptyList(),
     val backgroundColor: String = "",
     val action: Action = Action(),
-    val titleColor: String = ""
+    val titleColor: String = "",
+    val separator: String = ""
 ) {
-
-    val shouldRendered
-        get() = titles.isNotEmpty()
 
     data class Product(
         val imageUrl: String = "",

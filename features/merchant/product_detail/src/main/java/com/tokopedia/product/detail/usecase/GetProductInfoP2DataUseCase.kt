@@ -613,18 +613,21 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
               appLink
             }
             bmgm {
-                backgroundColor
-                titleColor
-                iconUrl
-                titles
-                action {
-                    type
-                    link
+                separator
+                data {
+                    backgroundColor
+                    titleColor
+                    iconUrl
+                    titles
+                    action {
+                        type
+                        link
+                    }
+                    contents {
+                        imageUrl
+                    }
+                    loadMoreText
                 }
-                contents {
-                    imageUrl
-                }
-                loadMoreText
             }
           }
         }

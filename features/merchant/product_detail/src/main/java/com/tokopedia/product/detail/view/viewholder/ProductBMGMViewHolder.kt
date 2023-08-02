@@ -5,6 +5,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.bmgm.ui.BMGMRouter
+import com.tokopedia.product.detail.common.bmgm.ui.model.BMGMUiState
 import com.tokopedia.product.detail.data.model.datamodel.ProductBMGMDataModel
 import com.tokopedia.product.detail.databinding.ItemDynamicProductBmgmBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -13,7 +14,6 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
  * Created by yovi.putra on 27/07/23"
  * Project name: android-tokopedia-core
  **/
-
 
 class ProductBMGMViewHolder(
     private val view: View,
@@ -42,8 +42,10 @@ class ProductBMGMViewHolder(
             }
         )
 
-        binding.root.addOnImpressionListener(element.impressHolder) {
-            listener.onImpressComponent(getComponentTrackData(element))
+        if (element.state is BMGMUiState.Show) {
+            binding.root.addOnImpressionListener(element.impressHolder) {
+                listener.onImpressComponent(getComponentTrackData(element))
+            }
         }
     }
 }

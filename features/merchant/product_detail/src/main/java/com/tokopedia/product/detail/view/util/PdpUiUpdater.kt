@@ -11,6 +11,8 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.pdp.fintech.view.FintechPriceDataModel
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.bmgm.model.BMGMData
+import com.tokopedia.product.detail.common.bmgm.model.asUiModel
 import com.tokopedia.product.detail.common.bmgm.ui.model.BMGMUiState
 import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
@@ -581,9 +583,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 updateReviewList(it)
             }
 
-            updateData(ProductDetailConstant.BMGM_SNEAK_PEAK_NAME) {
-                updateBMGMSneakPeak(p2UiData = it)
-            }
+            updateBMGMSneakPeak(productId = productId, bmgm = it.bmgm)
         }
     }
 
@@ -1244,13 +1244,21 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    private fun updateBMGMSneakPeak(p2UiData: ProductInfoP2UiData) {
-        val bmgm = p2UiData.bmgm
+    fun updateBMGMSneakPeak(productId: String, bmgm: BMGMData) {
+        val bmgmSelected = bmgm.data.firstOrNull {
+            it.productIDs.contains(productId)
+        }
 
-        if (bmgm.shouldRendered) {
-            bmgmSneakPeak?.state = BMGMUiState.Loaded(uiModel = bmgm)
-        } else {
-            removeComponent(ProductDetailConstant.BMGM_SNEAK_PEAK_NAME)
+        updateData(ProductDetailConstant.BMGM_SNEAK_PEAK_NAME) {
+            if (bmgm.data.isEmpty()) {
+                removeComponent(ProductDetailConstant.BMGM_SNEAK_PEAK_NAME)
+            } else if (bmgmSelected == null) {
+                bmgmSneakPeak?.state = BMGMUiState.Hide
+            } else {
+                bmgmSneakPeak?.state = BMGMUiState.Show(
+                    uiModel = bmgmSelected.asUiModel(separator = bmgm.separator)
+                )
+            }
         }
     }
 }

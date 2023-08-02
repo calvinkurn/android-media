@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.common.bmgm.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.product.detail.common.bmgm.ui.model.BMGMUiModel
 
 /**
  * Created by yovi.putra on 28/07/23"
@@ -10,70 +9,54 @@ import com.tokopedia.product.detail.common.bmgm.ui.model.BMGMUiModel
  **/
 
 data class BMGMData(
-    @SerializedName("backgroundColor")
+    @SerializedName("separator")
     @Expose
-    val backgroundColor: String = "",
-    @SerializedName("titleColor")
+    val separator: String = "",
+    @SerializedName("data")
     @Expose
-    val titleColor: String = "",
-    @SerializedName("iconUrl")
-    @Expose
-    val iconUrl: String = "",
-    @SerializedName("titles")
-    @Expose
-    val titles: List<String> = emptyList(),
-    @SerializedName("action")
-    @Expose
-    val action: Action = Action(),
-    @SerializedName("contents")
-    @Expose
-    val contents: List<Content> = emptyList(),
-    @SerializedName("loadMoreText")
-    @Expose
-    val loadMoreText: String = ""
+    val data: List<Data> = emptyList()
 ) {
 
-    data class Action(
-        @SerializedName("type")
+    data class Data(
+        @SerializedName("backgroundColor")
         @Expose
-        val type: String = "",
-        @SerializedName("link")
+        val backgroundColor: String = "",
+        @SerializedName("titleColor")
         @Expose
-        val link: String = ""
-    )
+        val titleColor: String = "",
+        @SerializedName("iconUrl")
+        @Expose
+        val iconUrl: String = "",
+        @SerializedName("titles")
+        @Expose
+        val titles: List<String> = emptyList(),
+        @SerializedName("action")
+        @Expose
+        val action: Action = Action(),
+        @SerializedName("contents")
+        @Expose
+        val contents: List<Content> = emptyList(),
+        @SerializedName("loadMoreText")
+        @Expose
+        val loadMoreText: String = "",
+        @SerializedName("productIDs")
+        @Expose
+        val productIDs: List<String> = emptyList()
+    ) {
 
-    data class Content(
-        @SerializedName("imageUrl")
-        @Expose
-        val imageUrl: String = ""
-    )
+        data class Action(
+            @SerializedName("type")
+            @Expose
+            val type: String = "",
+            @SerializedName("link")
+            @Expose
+            val link: String = ""
+        )
+
+        data class Content(
+            @SerializedName("imageUrl")
+            @Expose
+            val imageUrl: String = ""
+        )
+    }
 }
-
-fun BMGMData.Content.asUiModel(loadMoreText: String) = BMGMUiModel.Product(
-    imageUrl = imageUrl,
-    loadMoreText = loadMoreText
-)
-
-fun List<BMGMData.Content>.asUiModel(loadMoreText: String) = mapIndexed { index, content ->
-    content.asUiModel(
-        loadMoreText = if (index == size.dec()) {
-            loadMoreText
-        } else {
-            ""
-        }
-    )
-}
-
-fun BMGMData.Action.asUiModel() = BMGMUiModel.Action(
-    type = type,
-    link = link
-)
-
-fun BMGMData.asUiModel() = BMGMUiModel(
-    titles = titles,
-    iconUrl = iconUrl,
-    products = contents.asUiModel(loadMoreText = loadMoreText),
-    backgroundColor = backgroundColor,
-    action = action.asUiModel(),
-    titleColor = titleColor
-)
