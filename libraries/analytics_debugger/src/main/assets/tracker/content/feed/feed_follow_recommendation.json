@@ -13,7 +13,7 @@
       "promotions": [
         {
           "creative_name": "follow recomm in unified feed",
-          "creative_slot": "\\d+",
+          "creative_slot": "",
           "item_id": ".*",
           "item_name": "follow-recomm-unified-feed"
         }
@@ -32,7 +32,7 @@
       "promotions": [
         {
           "creative_name": "follow recomm in unified feed",
-          "creative_slot": "\\d+",
+          "creative_slot": "",
           "item_id": ".*",
           "item_name": "follow-recomm-unified-feed"
         }

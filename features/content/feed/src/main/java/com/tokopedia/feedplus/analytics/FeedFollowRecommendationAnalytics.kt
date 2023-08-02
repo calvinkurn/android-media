@@ -6,12 +6,10 @@ import com.tokopedia.content.analytic.Event
 import com.tokopedia.content.analytic.EventCategory
 import com.tokopedia.content.analytic.Key
 import com.tokopedia.content.analytic.Value
-import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
-import com.tokopedia.content.common.analytic.utils.*
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.feedplus.presentation.model.type.AuthorType
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -47,7 +45,7 @@ class FeedFollowRecommendationAnalytics @Inject constructor(
                         Key.promotions to listOf(
                             hashMapOf(
                                 Key.creative to "follow recomm in unified feed",
-                                Key.position to "0",
+                                Key.position to "",
                                 Key.id to data.authorId,
                                 Key.name to "follow-recomm-unified-feed"
                             )
@@ -81,7 +79,7 @@ class FeedFollowRecommendationAnalytics @Inject constructor(
                         Key.promotions to listOf(
                             hashMapOf(
                                 Key.creative to "follow recomm in unified feed",
-                                Key.position to "0",
+                                Key.position to "",
                                 Key.id to data.authorId,
                                 Key.name to "follow-recomm-unified-feed"
                             )
