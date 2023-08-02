@@ -1089,15 +1089,14 @@ class ProductListPresenter @Inject constructor(
 
         val afProdIds = JSONArray()
         val moengageTrackingCategory = HashMap<String?, String?>()
-        val categoryIdMapping = HashSet<String?>()
-        val categoryNameMapping = HashSet<String?>()
+        val categoryIdNameMapping = mutableMapOf<String, String>()
         val prodIdArray = ArrayList<String?>()
         val allProdIdArray = ArrayList<String?>()
 
         productDataView.productList.forEachIndexed { i, productItemDataView ->
             val productId = productItemDataView.productID
             val categoryIdString = productItemDataView.categoryID.toString()
-            val categoryName = productItemDataView.categoryName
+            val categoryName = productItemDataView.categoryName ?: ""
             allProdIdArray.add(productId)
 
             if (i < SearchConstant.GENERAL_SEARCH_TRACKING_PRODUCT_COUNT) {
@@ -1106,8 +1105,7 @@ class ProductListPresenter @Inject constructor(
                 moengageTrackingCategory[categoryIdString] = categoryName
             }
 
-            categoryIdMapping.add(categoryIdString)
-            categoryNameMapping.add(categoryName)
+            categoryIdNameMapping[categoryIdString] = categoryName
         }
 
         view.sendTrackingEventAppsFlyerViewListingSearch(afProdIds, query, prodIdArray, allProdIdArray)
@@ -1118,8 +1116,8 @@ class ProductListPresenter @Inject constructor(
                 createGeneralSearchTrackingEventLabel(productDataView, query),
                 userId,
                 productDataView.productList.isNotEmpty().toString(),
-                StringUtils.join(categoryIdMapping, ","),
-                StringUtils.join(categoryNameMapping, ","),
+                categoryIdNameMapping.keys.joinToString(","),
+                categoryIdNameMapping.values.joinToString(","),
                 createGeneralSearchTrackingRelatedKeyword(productDataView),
                 dimension90,
                 productDataView.backendFilters,
