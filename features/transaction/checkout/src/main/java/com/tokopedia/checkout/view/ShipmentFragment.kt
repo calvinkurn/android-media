@@ -4315,15 +4315,16 @@ class ShipmentFragment :
                 val needUpdateAddOnItem = shipmentAdapter.getAddOnProductServicePosition(cartIdAddOn)
                 needUpdateAddOnItem.second?.addOnProduct?.listAddOnProductData?.forEach { addOnExisting ->
                     for (addOnUiModel in addOnProductDataResult.aggregatedData.selectedAddons) {
-                        // value 0 from selectedAddons means no changes
-                        addOnExisting.apply {
-                            id = addOnUiModel.id.toLongOrZero()
-                            uniqueId = addOnUiModel.uniqueId
-                            price = addOnUiModel.price.toDouble()
-                            infoLink = addOnUiModel.eduLink
-                            name = addOnUiModel.name
-                            type = addOnUiModel.addOnType
-                            status = addOnUiModel.getSaveAddonSelectedStatus().value
+                        if (addOnExisting.type == addOnUiModel.addOnType) {
+                            addOnExisting.apply {
+                                id = addOnUiModel.id.toLongOrZero()
+                                uniqueId = addOnUiModel.uniqueId
+                                price = addOnUiModel.price.toDouble()
+                                infoLink = addOnUiModel.eduLink
+                                name = addOnUiModel.name
+                                type = addOnUiModel.addOnType
+                                status = addOnUiModel.getSaveAddonSelectedStatus().value
+                            }
                         }
                     }
                 }
