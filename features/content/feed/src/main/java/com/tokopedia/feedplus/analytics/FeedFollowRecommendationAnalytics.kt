@@ -77,7 +77,7 @@ class FeedFollowRecommendationAnalytics @Inject constructor(
             ),
             hashMapOf(
                 Key.ecommerce to hashMapOf(
-                    Event.promoView to hashMapOf(
+                    Event.promoClick to hashMapOf(
                         Key.promotions to listOf(
                             hashMapOf(
                                 Key.creative to "follow recomm in unified feed",
