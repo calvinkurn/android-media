@@ -3,6 +3,7 @@ package com.tokopedia.editor.ui.main
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.widget.FrameLayout
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +17,7 @@ import com.tokopedia.editor.ui.EditorFragmentProviderImpl
 import com.tokopedia.editor.ui.main.component.NavigationToolUiComponent
 import com.tokopedia.editor.ui.main.component.PagerContainerUiComponent
 import com.tokopedia.editor.ui.text.InputTextActivity
+import com.tokopedia.editor.ui.widget.AddTypography
 import com.tokopedia.picker.common.EXTRA_UNIVERSAL_EDITOR_PARAM
 import com.tokopedia.picker.common.RESULT_UNIVERSAL_EDITOR
 import com.tokopedia.picker.common.UniversalEditorParam
@@ -124,8 +126,11 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
     private fun onToolClicked(@ToolType type: Int) {
         when (type) {
             ToolType.TEXT -> {
-                val intent = InputTextActivity.create(this)
-                inputTextIntent.launch(intent)
+                val content = getRandomString(10)
+                val (view, lp) = AddTypography.create(this, content)
+
+                findViewById<FrameLayout>(R.id.canvas)
+                    .addView(view, lp)
             }
             ToolType.PLACEMENT -> {}
             ToolType.AUDIO_MUTE -> {}
@@ -162,5 +167,12 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
         ModuleInjector
             .get(this)
             .inject(this)
+    }
+
+    private fun getRandomString(length: Int) : String {
+        val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
+        return (1..length)
+            .map { allowedChars.random() }
+            .joinToString("")
     }
 }

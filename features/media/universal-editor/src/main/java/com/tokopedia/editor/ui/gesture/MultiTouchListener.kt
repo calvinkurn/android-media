@@ -29,8 +29,10 @@ class MainMultiTouchListener constructor(
     private var prevX: Float = Float.ZERO
     private var prevY: Float = Float.ZERO
 
+    private val mData = MultiTouchData()
+
     override val data: MultiTouchData
-        get() = MultiTouchData()
+        get() = mData
 
     override fun move(view: View, model: AddTextModel) {
         computeRenderOffset(view, model.pivotX, model.pivotY)
@@ -50,11 +52,8 @@ class MainMultiTouchListener constructor(
         scaleGestureDetector.onTouchEvent(view, event)
         gesturelistener.onTouchEvent(event)
 
-        if (data.isTranslateEnabled.not()) return true
-
+        if (mData.isTranslateEnabled.not()) return true
         val action = event.action
-        val x = event.rawX
-        val y = event.rawY
 
         when (action and event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
@@ -162,5 +161,5 @@ data class MultiTouchData(
     var isTranslateEnabled: Boolean = true,
     var minimumScale: Float = 0.2f,
     var maximumScale: Float = 10.0f,
-    var isTextPinchZoomable: Boolean = true,
+    var isTextPinchZoomable: Boolean = true
 )

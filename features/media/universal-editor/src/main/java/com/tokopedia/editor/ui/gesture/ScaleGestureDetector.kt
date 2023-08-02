@@ -7,7 +7,7 @@ import com.tokopedia.editor.ui.gesture.util.Vector2D
 import kotlin.math.sqrt
 
 class ScaleGestureDetector constructor(
-    private val listener: OnScaleGestureListener
+     private val listener: OnScaleGestureListener
 ) {
 
     private var gestureInProgress = false
@@ -50,7 +50,6 @@ class ScaleGestureDetector constructor(
 
                     val index1 = event.actionIndex
                     var index0 = event.findPointerIndex(activeId0)
-
                     activeId1 = event.getPointerId(index1)
                     if (index0 < 0 || index0 == index1) {
                         index0 = findNewActiveIndex(event, activeId1, -1)
@@ -60,27 +59,29 @@ class ScaleGestureDetector constructor(
                     active0MostRecent = false
                     setContext(view, event)
 
-                    gestureInProgress = listener.onScaleBegin(view, this)
+                    // gestureInProgress = listener.onScaleBegin(view, this)
                 }
             }
         } else {
             when (action) {
                 MotionEvent.ACTION_POINTER_DOWN -> {
-                    listener.onScaleEnd(view, this)
+                    // listener.onScaleEnd(view, this)
                     val oldActive0 = activeId0
                     val oldActive1 = activeId1
                     reset()
 
                     prevEvent = MotionEvent.obtain(event)
                     activeId0 = if (active0MostRecent) oldActive0 else oldActive1
+                    activeId1 = event.getPointerId(event.actionIndex)
                     active0MostRecent = false
 
                     var index0 = event.findPointerIndex(activeId0)
                     if (index0 < 0 || activeId0 == activeId1) {
                         index0 = findNewActiveIndex(event, activeId1, -1)
+                        activeId0 = event.getPointerId(index0)
                     }
                     setContext(view, event)
-                    gestureInProgress = listener.onScaleBegin(view, this)
+                    // gestureInProgress = listener.onScaleBegin(view, this)
                 }
                 MotionEvent.ACTION_POINTER_UP -> {
                     val pointerCount = event.pointerCount
@@ -93,22 +94,24 @@ class ScaleGestureDetector constructor(
                         if (actionId == activeId0) {
                             val newIndex = findNewActiveIndex(event, activeId1, actionIndex)
                             if (newIndex >= 0) {
-                                listener.onScaleEnd(view, this)
+                                // listener.onScaleEnd(view, this)
                                 activeId0 = event.getPointerId(newIndex)
                                 active0MostRecent = true
                                 prevEvent = MotionEvent.obtain(event)
                                 setContext(view, event)
-                                gestureInProgress = listener.onScaleBegin(view, this)
+                                // gestureInProgress = listener.onScaleBegin(view, this)
+                            } else {
+                                gestureEnded = true
                             }
                         } else if (actionId == activeId1) {
-                            val newIndex = findNewActiveIndex(event, activeId1, actionIndex)
+                            val newIndex = findNewActiveIndex(event, activeId0, actionIndex)
                             if (newIndex >= 0) {
-                                listener.onScaleEnd(view, this)
+                                // listener.onScaleEnd(view, this)
                                 activeId1 = event.getPointerId(newIndex)
                                 active0MostRecent = false
                                 prevEvent = MotionEvent.obtain(event)
                                 setContext(view, event)
-                                gestureInProgress = listener.onScaleBegin(view, this)
+                                // gestureInProgress = listener.onScaleBegin(view, this)
                             } else {
                                 gestureEnded = true
                             }
@@ -128,15 +131,14 @@ class ScaleGestureDetector constructor(
                         data.focusX = event.getX(index)
                         data.focusY = event.getX(index)
 
-                        listener.onScaleEnd(view, this)
+                        // listener.onScaleEnd(view, this)
                         reset()
-
                         activeId0 = activeId
                         active0MostRecent = true
                     }
                 }
                 MotionEvent.ACTION_CANCEL -> {
-                    listener.onScaleEnd(view, this)
+                    // listener.onScaleEnd(view, this)
                     reset()
                 }
                 MotionEvent.ACTION_UP -> {
@@ -149,9 +151,9 @@ class ScaleGestureDetector constructor(
                     // a certain limit - this can help filter shaky data as a
                     // finger is lifted.
                     if (data.currPressure / data.prevPressure > PRESSURE_THRESHOLD) {
-                        val updatePrevious = listener.onScale(view, this)
+                        // val updatePrevious = listener.onScale(view, this)
 
-                        if (updatePrevious) {
+                        if (true) {
                             prevEvent?.recycle()
                             prevEvent = MotionEvent.obtain(event)
                         }
@@ -174,7 +176,7 @@ class ScaleGestureDetector constructor(
         val otherActiveIndex = ev.findPointerIndex(otherActiveId)
 
         // Pick a new id and update tracking state.
-        for (i in 0..pointerCount) {
+        for (i in 0 until pointerCount) {
             if (i != removePointerIndex && i != otherActiveIndex) {
                 return i
             }
@@ -200,9 +202,9 @@ class ScaleGestureDetector constructor(
         val currIndex1 = prev?.findPointerIndex(activeId1) ?: -1
 
         if (prevIndex0 < 0 || prevIndex1 < 0 || currIndex0 < 0 || currIndex1 < 0) {
-            invalidGesture = false
+            invalidGesture = true
             if (gestureInProgress) {
-                listener.onScaleEnd(view, this)
+                // listener.onScaleEnd(view, this)
             }
             return
         }
@@ -231,7 +233,6 @@ class ScaleGestureDetector constructor(
         data.focusX = cx0 + cvx * 0.5f
         data.focusY = cy0 + cvy * 0.5f
         data.timeDelta = (curr.eventTime - (prev?.eventTime ?: 0)).toFloat()
-
         data.currPressure = curr.getPressure(currIndex0) + curr.getPressure(currIndex1)
         data.prevPressure = (prev?.getPressure(prevIndex0) ?: 0f) + (prev?.getPressure(prevIndex1) ?: 0f)
     }
@@ -294,7 +295,7 @@ class ScaleGestureDetector constructor(
      */
     fun currentSpan(): Float {
         if (data.currLen == -1f) {
-            val cvx = data.currFingerDiffY
+            val cvx = data.currFingerDiffX
             val cvy = data.currFingerDiffY
 
             data.currLen = sqrt(cvx * cvx + cvy * cvy)
