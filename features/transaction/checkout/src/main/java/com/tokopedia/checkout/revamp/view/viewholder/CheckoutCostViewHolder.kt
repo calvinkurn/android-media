@@ -182,7 +182,7 @@ class CheckoutCostViewHolder(
                 if (platformFeeModel.isShowSlashed) {
                     binding.tvCheckoutCostPlatformFeeSlashedValue.visible()
                     binding.tvCheckoutCostPlatformFeeSlashedValue.paintFlags =
-                        Paint.STRIKE_THRU_TEXT_FLAG
+                        binding.tvCheckoutCostPlatformFeeSlashedValue.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                     binding.tvCheckoutCostPlatformFeeSlashedValue.text =
                         CurrencyFormatUtil.convertPriceValueToIdrFormat(
                             platformFeeModel.slashedFee.toLong(),

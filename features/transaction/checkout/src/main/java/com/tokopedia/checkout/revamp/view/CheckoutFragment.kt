@@ -836,13 +836,16 @@ class CheckoutFragment :
     // region adapter listener
 
     override fun onChangeAddress() {
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
-        intent.putExtra(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS, true)
-        intent.putExtra(
-            ApplinkConstInternalLogistic.PARAM_SOURCE,
-            ManageAddressSource.CHECKOUT.source
-        )
-        startActivityForResult(intent, CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS)
+        if (!viewModel.isLoading()) {
+            val intent =
+                RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
+            intent.putExtra(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS, true)
+            intent.putExtra(
+                ApplinkConstInternalLogistic.PARAM_SOURCE,
+                ManageAddressSource.CHECKOUT.source
+            )
+            startActivityForResult(intent, CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS)
+        }
     }
 
     override fun onViewNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel) {
@@ -969,8 +972,14 @@ class CheckoutFragment :
             if (addOnsDataModel.status == ShipmentFragment.ADD_ON_STATUS_ACTIVE) {
                 availableBottomSheetData = AvailableBottomSheetData(
                     addOnInfoWording = AddOnWordingData(
-                        product.addOnGiftingWording.packagingAndGreetingCard.replace(ShipmentAddOnMapper.QTY, product.quantity.toString()),
-                        product.addOnGiftingWording.onlyGreetingCard.replace(ShipmentAddOnMapper.QTY, product.quantity.toString()),
+                        product.addOnGiftingWording.packagingAndGreetingCard.replace(
+                            ShipmentAddOnMapper.QTY,
+                            product.quantity.toString()
+                        ),
+                        product.addOnGiftingWording.onlyGreetingCard.replace(
+                            ShipmentAddOnMapper.QTY,
+                            product.quantity.toString()
+                        ),
                         product.addOnGiftingWording.invoiceNotSendToRecipient
                     ),
                     shopName = product.shopName,
@@ -1055,7 +1064,8 @@ class CheckoutFragment :
 //                        addOnBottomSheetModel,
 //                        order
 //                    )
-                val listUnavailableProduct: MutableList<com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product> = arrayListOf()
+                val listUnavailableProduct: MutableList<com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product> =
+                    arrayListOf()
                 for ((_, productName) in addOnBottomSheetModel.products) {
                     for (item in order.products) {
                         if (productName.equals(item.name, ignoreCase = true)) {
@@ -1091,10 +1101,13 @@ class CheckoutFragment :
                 val addOnWordingData = AddOnWordingData()
                 val addOnWordingModel = order.addOnWordingModel
                 addOnWordingData.onlyGreetingCard = addOnWordingModel.onlyGreetingCard
-                addOnWordingData.packagingAndGreetingCard = addOnWordingModel.packagingAndGreetingCard
-                addOnWordingData.invoiceNotSendToRecipient = addOnWordingModel.invoiceNotSendToRecipient
+                addOnWordingData.packagingAndGreetingCard =
+                    addOnWordingModel.packagingAndGreetingCard
+                addOnWordingData.invoiceNotSendToRecipient =
+                    addOnWordingModel.invoiceNotSendToRecipient
 
-                val listProduct = arrayListOf<com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product>()
+                val listProduct =
+                    arrayListOf<com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product>()
                 for (cartItemModel in order.products) {
                     val product =
                         com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product()
@@ -1639,7 +1652,13 @@ class CheckoutFragment :
             if (courierItemData != null) {
                 val newCourierItemData =
                     CourierItemData.clone(courierItemData, scheduleDeliveryUiModel)
-                viewModel.setSelectedScheduleDelivery(position, order, courierItemData, scheduleDeliveryUiModel, newCourierItemData)
+                viewModel.setSelectedScheduleDelivery(
+                    position,
+                    order,
+                    courierItemData,
+                    scheduleDeliveryUiModel,
+                    newCourierItemData
+                )
 //                val hasNoPromo =
 //                    TextUtils.isEmpty(courierItemData.selectedShipper.logPromoCode) && TextUtils.isEmpty(
 //                        newCourierItemData.selectedShipper.logPromoCode
@@ -1799,24 +1818,25 @@ class CheckoutFragment :
     override fun onClickPromoCheckout(lastApplyUiModel: LastApplyUiModel) {
 //        if (shipmentLoadingIndex == -1 && !shipmentViewModel.shipmentButtonPayment.value.loading) {
 //            if (lastApplyUiModel == null) return
-        val validateUseRequestParam = viewModel.generateValidateUsePromoRequest()
-        val promoRequestParam = viewModel.generateCouponListRecommendationRequest()
-        val intent =
-            RouteManager.getIntent(
-                activity,
-                ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE
-            )
-        intent.putExtra(ARGS_PAGE_SOURCE, PAGE_CHECKOUT)
-        intent.putExtra(ARGS_PROMO_REQUEST, promoRequestParam)
-        intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequestParam)
-        intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, viewModel.getBboPromoCodes())
-        setChosenAddressForTradeInDropOff(intent)
-        setPromoExtraMvcLockCourierFlow(intent)
-        startActivityForResult(intent, REQUEST_CODE_PROMO)
-        if (isTradeIn) {
-            checkoutTradeInAnalytics.eventTradeInClickPromo(viewModel.isTradeInByDropOff)
+        if (!viewModel.isLoading()) {
+            val validateUseRequestParam = viewModel.generateValidateUsePromoRequest()
+            val promoRequestParam = viewModel.generateCouponListRecommendationRequest()
+            val intent =
+                RouteManager.getIntent(
+                    activity,
+                    ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE
+                )
+            intent.putExtra(ARGS_PAGE_SOURCE, PAGE_CHECKOUT)
+            intent.putExtra(ARGS_PROMO_REQUEST, promoRequestParam)
+            intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequestParam)
+            intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, viewModel.getBboPromoCodes())
+            setChosenAddressForTradeInDropOff(intent)
+            setPromoExtraMvcLockCourierFlow(intent)
+            startActivityForResult(intent, REQUEST_CODE_PROMO)
+            if (isTradeIn) {
+                checkoutTradeInAnalytics.eventTradeInClickPromo(viewModel.isTradeInByDropOff)
+            }
         }
-//        }
     }
 
     private fun setChosenAddressForTradeInDropOff(intent: Intent) {
@@ -1930,7 +1950,10 @@ class CheckoutFragment :
 //        shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
         checkoutEgoldAnalytics.eventClickEgoldRoundup(checked)
         if (isTradeIn) {
-            checkoutTradeInAnalytics.eventTradeInClickEgoldOption(viewModel.isTradeInByDropOff, checked)
+            checkoutTradeInAnalytics.eventTradeInClickEgoldOption(
+                viewModel.isTradeInByDropOff,
+                checked
+            )
         }
     }
 
@@ -1963,7 +1986,8 @@ class CheckoutFragment :
             paymentPassData.callbackSuccessUrl = it.checkoutData.callbackSuccessUrl
             paymentPassData.callbackFailedUrl = it.checkoutData.callbackFailedUrl
             paymentPassData.queryString = it.checkoutData.queryString
-            val intent = RouteManager.getIntent(activity, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
+            val intent =
+                RouteManager.getIntent(activity, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
             intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
             intent.putExtra(
                 PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT,

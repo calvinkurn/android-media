@@ -22,6 +22,8 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
                 if (promo.additionalInfo.usageSummaries.isNotEmpty()) {
                     isApplied = true
                     listener.onSendAnalyticsViewPromoCheckoutApplied()
+                } else {
+                    isApplied = false
                 }
             }
             promo.defaultEmptyPromoMessage.isNotBlank() -> {

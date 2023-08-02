@@ -713,6 +713,48 @@ class CheckoutPromoProcessor @Inject constructor(
         return checkoutItems
     }
 
+    suspend fun clearAllBo(checkoutItems: List<CheckoutItem>) {
+        val clearOrders = ArrayList<ClearPromoOrder>()
+        var hasBo = false
+        for (shipmentCartItemModel in checkoutItems) {
+            if (shipmentCartItemModel is CheckoutOrderModel && shipmentCartItemModel.shipment.courierItemData != null && !shipmentCartItemModel.shipment.courierItemData.selectedShipper.logPromoCode.isNullOrEmpty()) {
+                val boCodes = ArrayList<String>()
+                boCodes.add(shipmentCartItemModel.shipment.courierItemData.selectedShipper.logPromoCode!!)
+                clearOrders.add(
+                    ClearPromoOrder(
+                        shipmentCartItemModel.boUniqueId,
+                        shipmentCartItemModel.boMetadata.boType,
+                        boCodes,
+                        shipmentCartItemModel.shopId,
+                        shipmentCartItemModel.isProductIsPreorder,
+                        shipmentCartItemModel.products[0].preOrderDurationDay.toString(),
+                        shipmentCartItemModel.fulfillmentId,
+                        shipmentCartItemModel.cartStringGroup
+                    )
+                )
+                hasBo = true
+            }
+        }
+        if (hasBo) {
+            withContext(dispatchers.io) {
+                try {
+                    clearCacheAutoApplyStackUseCase.setParams(
+                        ClearPromoRequest(
+                            ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                            false,
+                            ClearPromoOrderData(
+                                ArrayList(),
+                                clearOrders
+                            )
+                        )
+                    ).executeOnBackground()
+                } catch (t: Throwable) {
+                    Timber.d(t)
+                }
+            }
+        }
+    }
+
     suspend fun clearPromo(clearPromoOrder: ClearPromoOrder): Boolean {
         return withContext(dispatchers.io) {
             try {

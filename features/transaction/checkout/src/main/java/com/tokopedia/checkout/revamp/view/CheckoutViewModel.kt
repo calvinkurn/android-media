@@ -343,6 +343,7 @@ class CheckoutViewModel @Inject constructor(
                         changeAddressResult.toasterMessage
                     )
                 )
+                hitClearAllBo()
                 loadSAF(true, true, false)
             } else {
                 commonToaster.emit(
@@ -1558,6 +1559,10 @@ class CheckoutViewModel @Inject constructor(
             }
             calculateTotal()
         }
+    }
+
+    private suspend fun hitClearAllBo() {
+        promoProcessor.clearAllBo(listData.value)
     }
 
     companion object {

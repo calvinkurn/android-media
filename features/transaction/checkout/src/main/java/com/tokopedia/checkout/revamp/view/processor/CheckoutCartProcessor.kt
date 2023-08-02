@@ -228,7 +228,7 @@ class CheckoutCartProcessor @Inject constructor(
 //                        }
                     return@withContext ChangeAddressResult(
                         isSuccess = true,
-                        toasterMessage = setShippingAddressData.messages.firstOrNull() ?: ""
+                        toasterMessage = (setShippingAddressData.messages.firstOrNull() ?: "").ifEmpty { "Berhasil mengubah alamat" }
                     )
 //                        hitClearAllBo()
 //                        view!!.renderChangeAddressSuccess(reloadCheckoutPage)
