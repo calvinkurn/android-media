@@ -1,6 +1,7 @@
 // Sort alphabetically by name
 includeDynamicFeatureIfEnabled("customerapp")
 
+includeIfEnabled("features:merchant:buy_more_get_more")
 includeIfEnabled("features:common:developer_options")
 includeIfEnabled("features:common:developer_options_noop")
 includeIfEnabled("features:common:nps")
