@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.view.activity
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
@@ -16,9 +17,9 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -54,6 +55,11 @@ import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INSIGHT_EDUCATIONAL_BOTTOMSHEET_TAG
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.SARAN_TOPADS_EDUCATIONAL_INFO_ARTICLE_LINK
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.SARAN_TOPADS_EDUCATIONAL_INFO_VIDEO_LINK
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.SARAN_TOPADS_EDUCATIONAL_INFO_VIDEO_THUMBNAIL
+import com.tokopedia.topads.dashboard.recommendation.views.fragments.RecommendationFragment
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsDashboardBerandaFragment
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
@@ -64,6 +70,7 @@ import com.tokopedia.topads.dashboard.view.sheet.CustomDatePicker
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
 import com.tokopedia.topads.dashboard.view.sheet.NoProductBottomSheet
 import com.tokopedia.topads.headline.view.fragment.TopAdsHeadlineBaseFragment
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -84,9 +91,13 @@ private const val CLICK_IKLAN_TOKO = " click - iklan toko"
 private const val VIEW_IKLAN_PRODUK = "view - dashboard iklan produk"
 private const val VIEW_HEADLINE_EVENT = "view - iklan toko"
 
-class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComponent>,
-    TopAdsProductIklanFragment.AppBarAction, TopAdsProductIklanFragment.AdInfo,
-    TopAdsHeadlineBaseFragment.AppBarActionHeadline, CustomDatePicker.ActionListener {
+class TopAdsDashboardActivity :
+    BaseActivity(),
+    HasComponent<TopAdsDashboardComponent>,
+    TopAdsProductIklanFragment.AppBarAction,
+    TopAdsProductIklanFragment.AdInfo,
+    TopAdsHeadlineBaseFragment.AppBarActionHeadline,
+    CustomDatePicker.ActionListener {
 
     private var appBarLayout: AppBarLayout? = null
     private var tabLayout: TabsUnify? = null
@@ -101,7 +112,9 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
 
     private val headerToolbarRight by lazy(LazyThreadSafetyMode.NONE) {
         layoutInflater.inflate(
-            R.layout.layout_topads_dashboard_actionbar, null, false
+            R.layout.layout_topads_dashboard_actionbar,
+            null,
+            false
         )
     }
 
@@ -164,7 +177,6 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         tabLayout?.getUnifyTabLayout()
             ?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabReselected(p0: TabLayout.Tab?) {
-
                 }
 
                 override fun onTabUnselected(p0: TabLayout.Tab?) {}
@@ -188,7 +200,8 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                         IKLANKAN_PRODUK_TAB -> {
                             removeBtn()
                             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(
-                                VIEW_IKLAN_PRODUK, ""
+                                VIEW_IKLAN_PRODUK,
+                                ""
                             )
                         }
                         INSIGHT_PAGE -> {
@@ -202,6 +215,10 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                                 checkVisibility()
                             }
                             setMultiActionButtonEnabled(insightMultiActionButtonEnabled)
+                            bottom?.hide()
+                            hideButton(true)
+                            ivEducationTopAdsActionBar.show()
+                            txtBuatIklan.hide()
                         }
                         HEADLINE_ADS_TAB -> {
                             removeBtn()
@@ -228,8 +245,9 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         }
 
         multiActionBtn?.setOnClickListener {
-            if (tabLayout?.getUnifyTabLayout()?.selectedTabPosition == CONST_0)
+            if (tabLayout?.getUnifyTabLayout()?.selectedTabPosition == CONST_0) {
                 navigateToAdTypeSelection()
+            }
             if (tabLayout?.getUnifyTabLayout()?.selectedTabPosition == CONST_3) {
                 val fragments = (viewPager.adapter as TopAdsDashboardBasePagerAdapter).getList()
                 for (frag in fragments) {
@@ -247,7 +265,11 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         }
 
         ivEducationTopAdsActionBar.setOnClickListener {
-            startActivity(Intent(this, TopAdsEducationActivity::class.java))
+            if (tabLayout?.getUnifyTabLayout()?.selectedTabPosition == INSIGHT_PAGE) {
+                showSaransTopAdsEducationalBottomsheet(false)
+            } else {
+                startActivity(Intent(this, TopAdsEducationActivity::class.java))
+            }
         }
 
         txtBuatIklan.setOnClickListener {
@@ -257,6 +279,45 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BUAT_IKLAN, "")
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendAutoAdsEvent(CLICK_BUAT_IKLAN_1, "")
         }
+    }
+
+    private fun showSaransTopAdsEducationalBottomsheet(firstLaunch: Boolean) {
+        val view = layoutInflater.inflate(R.layout.layout_saran_topads_eductional_info_bottomsheet, null, false)
+        val saranTopAdsEducationalBottomSheet = BottomSheetUnify().apply {
+            setChild(view)
+            isDragable = false
+            isHideable = true
+            showCloseIcon = true
+            showKnob = false
+            clearContentPadding = true
+            isFullpage = false
+            setTitle(this@TopAdsDashboardActivity.getString(R.string.topads_what_is_saran_topads_question))
+        }
+        val videoThumbnail = view.findViewById<ImageUnify>(R.id.video_thumbnail)
+        val readArticleCta = view.findViewById<UnifyButton>(R.id.read_articles_cta)
+        val seeSuggestionsCta = view.findViewById<UnifyButton>(R.id.topads_suggestion_cta)
+
+        if (firstLaunch)
+            seeSuggestionsCta.show()
+
+        videoThumbnail.urlSrc = SARAN_TOPADS_EDUCATIONAL_INFO_VIDEO_THUMBNAIL
+        videoThumbnail.setOnClickListener {
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse(
+                    SARAN_TOPADS_EDUCATIONAL_INFO_VIDEO_LINK
+                )
+            )
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        }
+        readArticleCta.setOnClickListener {
+            RouteManager.route(this, ApplinkConstInternalGlobal.WEBVIEW, SARAN_TOPADS_EDUCATIONAL_INFO_ARTICLE_LINK)
+        }
+        seeSuggestionsCta.setOnClickListener {
+            saranTopAdsEducationalBottomSheet.dismiss()
+        }
+        saranTopAdsEducationalBottomSheet.show(supportFragmentManager, INSIGHT_EDUCATIONAL_BOTTOMSHEET_TAG)
     }
 
     private fun initView() {
@@ -333,8 +394,9 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                 false
             )
         ) {
-            if (resultCode == Activity.RESULT_OK)
+            if (resultCode == Activity.RESULT_OK) {
                 renderTabAndViewPager()
+            }
         }
     }
 
@@ -370,7 +432,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
             override fun onPageScrolled(
                 position: Int,
                 positionOffset: Float,
-                positionOffsetPixels: Int,
+                positionOffsetPixels: Int
             ) {
             }
 
@@ -378,7 +440,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                 val sharedPref = getPreferences(Context.MODE_PRIVATE) ?: return
                 if (position == INSIGHT_PAGE) {
                     if (sharedPref.getBoolean(FIRST_LAUNCH, true)) {
-                        showFirstTimeDialog(this@TopAdsDashboardActivity)
+                        showSaransTopAdsEducationalBottomsheet(true)
                         with(sharedPref.edit()) {
                             putBoolean(FIRST_LAUNCH, false)
                             commit()
@@ -390,18 +452,6 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         tabLayout?.setupWithViewPager(viewPager)
     }
 
-    private fun showFirstTimeDialog(context: Context) {
-        val dialog = DialogUnify(context, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION)
-        dialog.setImageDrawable(R.drawable.topads_insight_dialog)
-        dialog.setDescription(context.getString(R.string.topads_dash_insight_dialog_desc))
-        dialog.setTitle(context.getString(R.string.topads_dash_insight_dialog_title))
-        dialog.setPrimaryCTAText(context.getString(R.string.topads_dash_insight_dialog_btn))
-        dialog.setPrimaryCTAClickListener {
-            dialog.dismiss()
-        }
-        dialog.show()
-    }
-
     private fun getViewPagerAdapter(): PagerAdapter {
         multiActionBtn?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
         val btnHeight = multiActionBtn?.measuredHeight
@@ -410,7 +460,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         tabLayout?.addNewTab(getString(R.string.topads_dash_beranda))
         tabLayout?.addNewTab(getString(R.string.topads_dash_iklan_produck))
         tabLayout?.addNewTab(getString(R.string.topads_dash_headline_title))
-        tabLayout?.addNewTab(getString(R.string.topads_dash_recommend))
+        tabLayout?.addNewTab(getString(R.string.topads_dash_suggestion))
         tabLayout?.customTabMode = TabLayout.MODE_SCROLLABLE
         list.add(
             FragmentTabItem(
@@ -432,8 +482,8 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         )
         list.add(
             FragmentTabItem(
-                resources.getString(R.string.topads_dash_recommend),
-                TopAdsRecommendationFragment.createInstance(btnHeight, redirectToTabInsight)
+                resources.getString(R.string.topads_dash_suggestion),
+                RecommendationFragment.createInstance()
             )
         )
         val pagerAdapter = TopAdsDashboardBasePagerAdapter(supportFragmentManager, 0)
@@ -446,7 +496,6 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
             .baseAppComponent((application as BaseMainApplication).baseAppComponent).build()
             .inject(this)
     }
-
 
     private fun actionSendAnalyticsIfFromPushNotif() {
         val intent = intent
@@ -475,8 +524,8 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                 val homeIntent = RouteManager.getIntent(this, applinkConst)
                 startActivity(homeIntent)
                 finish()
-            } else
-            //coming from deeplink
+            } else {
+                // coming from deeplink
                 try {
                     this.startActivity(RouteManager.getIntent(this, applinkConst))
                     this.finish()
@@ -484,6 +533,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                 } catch (e: ClassNotFoundException) {
                     e.printStackTrace()
                 }
+            }
         }
         super.onBackPressed()
     }
@@ -550,7 +600,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
 
     fun toggleMultiActionButton(show: Boolean) {
         when {
-            viewPager.currentItem == IKLANKAN_PRODUK_TAB || viewPager.currentItem == HEADLINE_ADS_TAB || !show -> bottom?.hide()
+            viewPager.currentItem == IKLANKAN_PRODUK_TAB || viewPager.currentItem == HEADLINE_ADS_TAB || viewPager.currentItem == INSIGHT_PAGE || !show -> bottom?.hide()
             show -> bottom?.show()
         }
     }
@@ -574,8 +624,9 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
     private fun showBottomSheet() {
         val dateRange = if (!customStartDate.isNullOrEmpty()) {
             "$customStartDate - $customEndDate"
-        } else
+        } else {
             getString(R.string.topads_dash_custom_date_desc)
+        }
 
         datePickerSheet = DatePickerSheet.newInstance(this, datePickerIndex, dateRange)
         datePickerSheet?.show()

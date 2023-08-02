@@ -177,7 +177,7 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
         `Given view already get initial state`(listInitialStateData)
 
         `Then verify initial state view will call showInitialStateResult behavior`()
-        `Then verify view interaction for load data failed with exception`()
+        `Then verify view interaction for load data with empty item`()
     }
 
     private fun `Then verify initial state view will call showInitialStateResult behavior`() {

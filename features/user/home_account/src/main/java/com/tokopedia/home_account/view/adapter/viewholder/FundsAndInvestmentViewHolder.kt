@@ -28,7 +28,7 @@ class FundsAndInvestmentViewHolder(
         setSubtitleText(item?.subtitle, item?.isFailed.orFalse())
         setAction(item?.isFailed.orFalse(), item?.isActive.orTrue(), item?.isVertical.orFalse())
         item?.let {
-            setClickLitener(
+            setClickListener(
                 it,
                 walletListener
             )
@@ -58,24 +58,28 @@ class FundsAndInvestmentViewHolder(
         binding?.textAction?.gone()
         when {
             isFailed -> {
+                binding?.subtitle?.visible()
                 binding?.imageAction?.visible()
                 binding?.imageAction?.context?.let {
                     val colorGreen =
-                        ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                        ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                     binding?.imageAction?.setImage(IconUnify.RELOAD, colorGreen, colorGreen)
                 }
             }
+
             !isActive && isVertical -> {
                 binding?.subtitle?.gone()
                 binding?.textAction?.visible()
                 binding?.textAction?.text = getString(R.string.funds_and_investment_actiivate)
             }
+
             else -> {
+                binding?.subtitle?.visible()
                 binding?.imageAction?.visible()
                 binding?.imageAction?.context?.let {
                     val colorNeutral = ContextCompat.getColor(
                         it,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950
                     )
                     binding?.imageAction?.setImage(
                         IconUnify.CHEVRON_RIGHT,
@@ -87,7 +91,7 @@ class FundsAndInvestmentViewHolder(
         }
     }
 
-    private fun setClickLitener(
+    private fun setClickListener(
         walletUiModel: WalletUiModel,
         listener: WalletListener
     ) {

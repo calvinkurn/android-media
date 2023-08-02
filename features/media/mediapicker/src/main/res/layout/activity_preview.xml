@@ -11,7 +11,7 @@
         android:id="@+id/toolbar_container"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_NN0"
         app:layout_constraintTop_toTopOf="parent">
 
         <include layout="@layout/ui_component_toolbar_media_picker" />
@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:visibility="gone"
-            app:backgroundColorPlaceHolder="@color/Unify_N0"
+            app:backgroundColorPlaceHolder="@color/Unify_NN0"
             app:draggable="false"
             app:placeholder="@drawable/picker_ic_placeholder_media_preview"
             tools:visibility="visible" />

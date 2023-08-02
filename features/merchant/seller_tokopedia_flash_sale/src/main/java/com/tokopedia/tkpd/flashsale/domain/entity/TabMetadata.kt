@@ -1,8 +1,7 @@
 package com.tokopedia.tkpd.flashsale.domain.entity
 
 data class TabMetadata(
-    val tabs: List<Tab>,
-    val tickerNonMultiLocationMessage: String,
+    val tabs: List<Tab>
 ) {
     data class Tab(
         val tabId: Int,

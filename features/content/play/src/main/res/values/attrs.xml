@@ -4,10 +4,6 @@
         <attr name="maximumHeight" format="dimension"/>
     </declare-styleable>
 
-    <declare-styleable name="NestedScrollableHost">
-        <attr name="lockScroll" format="boolean"/>
-    </declare-styleable>
-
     <declare-styleable name="PlayLikeBubbleView">
         <attr name="bouncing" format="boolean"/>
         <attr name="maxShot" format="integer"/>

@@ -4,21 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.content.common.R
 import com.tokopedia.content.common.databinding.BottomSheetFeedThreeDotsMenuBinding
 import com.tokopedia.content.common.report_content.adapter.ContentReportAdapter
 import com.tokopedia.content.common.report_content.adapter.ContentReportViewHolder
 import com.tokopedia.content.common.report_content.adapter.FeedMenuAdapter
 import com.tokopedia.content.common.report_content.model.*
-import com.tokopedia.content.common.report_content.model.listOfCommentReport
 import com.tokopedia.content.common.report_content.viewholder.FeedMenuViewHolder
 import com.tokopedia.content.common.ui.analytic.FeedAccountTypeAnalytic
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.Toaster
 import kotlin.math.roundToInt
-import com.tokopedia.content.common.R
 
 /**
  * Created By : Shruti Agarwal on Feb 02, 2023
@@ -36,12 +34,11 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
     private val adapter: FeedMenuAdapter by lazy {
         FeedMenuAdapter(object : FeedMenuViewHolder.Listener {
             override fun onClick(item: FeedMenuItem) {
-                if (item.type != FeedMenuIdentifier.LAPORKAN) {
+                if (item.type != FeedMenuIdentifier.Report) {
                     dismiss()
                 } else {
                     showHeader = true
                     bottomSheetHeader.visible()
-                    setTitle(getString(R.string.content_common_report_comment))
                 }
 
                 mListener?.onMenuItemClick(item, contentId)
@@ -85,15 +82,23 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
 
         setCloseClickListener {
             mListener?.onMenuBottomSheetCloseClick(contentId)
+            dismiss()
         }
     }
-    fun showReportLayoutWhenLaporkanClicked() {
-        binding.let {
-            it.root.layoutParams.height = maxSheetHeight
-            it.viewReportGroup.visible()
-            it.rvFeedMenu.gone()
+
+    fun showReportLayoutWhenLaporkanClicked(isVideo: Boolean = false, action: () -> Unit = {}) {
+        if (isVideo) {
+            action()
+        } else {
+            setTitle(getString(R.string.content_common_report_comment))
+            binding.let {
+                it.root.layoutParams.height = maxSheetHeight
+                it.viewReportGroup.visible()
+                it.rvFeedMenu.gone()
+            }
         }
     }
+
     fun sendReport() {
         mListener?.onReportPost(
             FeedComplaintSubmitReportUseCase.Param(
@@ -129,7 +134,10 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
         if (!isAdded) show(fragmentManager, TAG)
     }
 
-    fun setData(feedMenuItemList: List<FeedMenuItem>, contentId: String): ContentThreeDotsMenuBottomSheet {
+    fun setData(
+        feedMenuItemList: List<FeedMenuItem>,
+        contentId: String
+    ): ContentThreeDotsMenuBottomSheet {
         this.contentId = contentId
         mFeedMenuItemList.clear()
         mFeedMenuItemList.addAll(feedMenuItemList)
@@ -137,24 +145,6 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
         if (isAdded) adapter.updateData(mFeedMenuItemList)
 
         return this
-    }
-    fun showToasterOnLoginSuccessFollow(
-        message: String,
-        type: Int,
-        actionText: String? = null
-    ) {
-        view?.rootView?.let {
-            context?.resources?.let { resource ->
-                Toaster.toasterCustomBottomHeight =
-                    resource.getDimensionPixelSize(R.dimen.feed_bottomsheet_toaster_margin_bottom)
-            }
-            if (actionText?.isEmpty() == false) {
-                Toaster.build(it, message, Toaster.LENGTH_LONG, type, actionText)
-                    .show()
-            } else {
-                Toaster.build(it, message, Toaster.LENGTH_LONG, type).show()
-            }
-        }
     }
 
     @Deprecated("Analytic is not valid")
@@ -173,12 +163,15 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
 
         private const val HEIGHT_PERCENTAGE = 0.4
 
-        fun getFragment(
+        fun get(fragmentManager: FragmentManager): ContentThreeDotsMenuBottomSheet? {
+            return fragmentManager.findFragmentByTag(TAG) as? ContentThreeDotsMenuBottomSheet
+        }
+
+        fun getOrCreateFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader
         ): ContentThreeDotsMenuBottomSheet {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? ContentThreeDotsMenuBottomSheet
-            return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
+            return get(fragmentManager) ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
                 ContentThreeDotsMenuBottomSheet::class.java.name
             ) as ContentThreeDotsMenuBottomSheet

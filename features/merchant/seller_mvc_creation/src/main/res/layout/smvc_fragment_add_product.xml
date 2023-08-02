@@ -116,10 +116,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <com.tokopedia.unifycomponents.CardUnify2
+    <androidx.cardview.widget.CardView
         android:id="@+id/cardUnify2"
         android:layout_width="0dp"
+        app:cardElevation="4dp"
         android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/Unify_NN0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -166,7 +168,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </com.tokopedia.unifycomponents.CardUnify2>
+    </androidx.cardview.widget.CardView>
 
     <View
         android:id="@+id/dividerList"

@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.analytic
 
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
+import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalytic
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalytic
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
 import com.tokopedia.play.broadcaster.analytic.pinproduct.PlayBroadcastPinProductAnalytic
@@ -36,6 +37,7 @@ class PlayBroadcastAnalytic(
     private val accountAnalytic: PlayBroadcastAccountAnalytic,
     private val shortsEntryPointAnalytic: PlayShortsEntryPointAnalytic,
     private val playPerformanceDashboardEntryPointAnalytic: PlayPerformanceDashboardEntryPointAnalytic,
+    private val beautificationAnalytic: PlayBroadcastBeautificationAnalytic,
 ) : PlayBroadcastInteractiveAnalytic by interactiveAnalytic,
     PlayBroSetupMenuAnalytic by setupMenuAnalytic,
     PlayBroSetupTitleAnalytic by setupTitleAnalytic,
@@ -46,7 +48,8 @@ class PlayBroadcastAnalytic(
     PlayBroadcastPinProductAnalytic by pinProductAnalytic,
     PlayBroadcastAccountAnalytic by accountAnalytic,
     PlayShortsEntryPointAnalytic by shortsEntryPointAnalytic,
-    PlayPerformanceDashboardEntryPointAnalytic by playPerformanceDashboardEntryPointAnalytic {
+    PlayPerformanceDashboardEntryPointAnalytic by playPerformanceDashboardEntryPointAnalytic,
+    PlayBroadcastBeautificationAnalytic by beautificationAnalytic {
 
     /**
      * View Camera and Microphone Permission Page

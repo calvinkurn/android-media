@@ -143,6 +143,7 @@ class TokoChatGeneralTest : BaseTokoChatTest() {
 
         // When
         launchChatRoomActivity()
+        Thread.sleep(2000)
 
         // Then
         ConsentResult.assertConsentChatBottomSheet(isDisplayed = true)
@@ -150,6 +151,7 @@ class TokoChatGeneralTest : BaseTokoChatTest() {
         // When
         ConsentRobot.clickCheckBoxConsent()
         ConsentRobot.clickSubmitConsent()
+        Thread.sleep(1000)
 
         // Then
         ConsentResult.assertConsentChatBottomSheet(isDisplayed = false)

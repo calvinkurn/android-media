@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.common.viewholder.categorymenu
 
+import android.content.Context
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -62,8 +63,10 @@ class TokoNowCategoryMenuViewHolder(
     }
 
     override fun onSeeAllClicked(
+        context: Context,
         headerName: String,
-        appLink: String
+        appLink: String,
+        widgetId: String
     ) {
         onClickSeeAll(appLink)
     }

@@ -2,10 +2,10 @@ package com.tokopedia.cart.view.presenter
 
 import com.tokopedia.cart.utils.DataProvider
 import com.tokopedia.cart.view.CartListPresenter
+import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartShopGroupTickerData
 import com.tokopedia.cart.view.uimodel.CartShopGroupTickerState
-import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.cartcommon.data.response.common.OutOfService
 import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.ToasterAction
@@ -182,9 +182,9 @@ class UpdateCartTest : BaseCartTest() {
     @Test
     fun `WHEN update cart for checkout success with item checked partial item THEN should navigate to checkout page with matched condition`() {
         // GIVEN
-        val shopDataList = mutableListOf<CartShopHolderData>().apply {
+        val shopDataList = mutableListOf<CartGroupHolderData>().apply {
             add(
-                CartShopHolderData().apply {
+                CartGroupHolderData().apply {
                     productUiModelList = mutableListOf<CartItemHolderData>().apply {
                         add(
                             CartItemHolderData().apply {
@@ -201,7 +201,7 @@ class UpdateCartTest : BaseCartTest() {
         coEvery { updateCartUseCase.execute(any(), any()) } answers {
             firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
         }
-        every { view.getAllShopDataList() } answers { shopDataList }
+        every { view.getAllGroupDataList() } answers { shopDataList }
         every { view.getAllSelectedCartDataList() } answers { listOf(CartItemHolderData()) }
 
         // WHEN
@@ -216,9 +216,9 @@ class UpdateCartTest : BaseCartTest() {
     @Test
     fun `WHEN update cart for checkout success with item checked partial shop THEN should navigate to checkout page with matched condition`() {
         // GIVEN
-        val shopDataList = mutableListOf<CartShopHolderData>().apply {
+        val shopDataList = mutableListOf<CartGroupHolderData>().apply {
             add(
-                CartShopHolderData().apply {
+                CartGroupHolderData().apply {
                     productUiModelList = mutableListOf<CartItemHolderData>().apply {
                         add(
                             CartItemHolderData().apply {
@@ -230,7 +230,7 @@ class UpdateCartTest : BaseCartTest() {
                 }
             )
             add(
-                CartShopHolderData().apply {
+                CartGroupHolderData().apply {
                     productUiModelList = mutableListOf<CartItemHolderData>().apply {
                         add(
                             CartItemHolderData().apply {
@@ -249,7 +249,7 @@ class UpdateCartTest : BaseCartTest() {
             firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
         }
 
-        every { view.getAllShopDataList() } answers { shopDataList }
+        every { view.getAllGroupDataList() } answers { shopDataList }
         every { view.getAllSelectedCartDataList() } answers { listOf(CartItemHolderData()) }
 
         // WHEN
@@ -264,9 +264,9 @@ class UpdateCartTest : BaseCartTest() {
     @Test
     fun `WHEN update cart for checkout success with item checked partial shop and item THEN should navigate to checkout page with matched condition`() {
         // GIVEN
-        val shopDataList = mutableListOf<CartShopHolderData>().apply {
+        val shopDataList = mutableListOf<CartGroupHolderData>().apply {
             add(
-                CartShopHolderData().apply {
+                CartGroupHolderData().apply {
                     productUiModelList = mutableListOf<CartItemHolderData>().apply {
                         add(
                             CartItemHolderData().apply {
@@ -284,7 +284,7 @@ class UpdateCartTest : BaseCartTest() {
                 }
             )
             add(
-                CartShopHolderData().apply {
+                CartGroupHolderData().apply {
                     productUiModelList = mutableListOf<CartItemHolderData>().apply {
                         add(
                             CartItemHolderData().apply {
@@ -302,7 +302,7 @@ class UpdateCartTest : BaseCartTest() {
         coEvery { updateCartUseCase.execute(any(), any()) } answers {
             firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
         }
-        every { view.getAllShopDataList() } answers { shopDataList }
+        every { view.getAllGroupDataList() } answers { shopDataList }
         every { view.getAllSelectedCartDataList() } answers { listOf(CartItemHolderData()) }
 
         // WHEN
@@ -329,9 +329,9 @@ class UpdateCartTest : BaseCartTest() {
                 boType = boType
             )
         }
-        val shopDataList = mutableListOf<CartShopHolderData>().apply {
+        val shopDataList = mutableListOf<CartGroupHolderData>().apply {
             add(
-                CartShopHolderData().apply {
+                CartGroupHolderData().apply {
                     productUiModelList = mutableListOf(cartItem)
                     isAllSelected = true
                     isPartialSelected = false
@@ -344,7 +344,7 @@ class UpdateCartTest : BaseCartTest() {
         coEvery { updateCartUseCase.execute(any(), any()) } answers {
             firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
         }
-        every { view.getAllShopDataList() } answers { shopDataList }
+        every { view.getAllGroupDataList() } answers { shopDataList }
         every { view.getAllSelectedCartDataList() } answers { listOf(cartItem) }
 
         // WHEN
@@ -378,9 +378,9 @@ class UpdateCartTest : BaseCartTest() {
                 boType = boType
             )
         }
-        val shopDataList = mutableListOf<CartShopHolderData>().apply {
+        val shopDataList = mutableListOf<CartGroupHolderData>().apply {
             add(
-                CartShopHolderData().apply {
+                CartGroupHolderData().apply {
                     productUiModelList = mutableListOf(cartItem)
                     isAllSelected = true
                     isPartialSelected = false
@@ -393,7 +393,7 @@ class UpdateCartTest : BaseCartTest() {
         coEvery { updateCartUseCase.execute(any(), any()) } answers {
             firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
         }
-        every { view.getAllShopDataList() } answers { shopDataList }
+        every { view.getAllGroupDataList() } answers { shopDataList }
         every { view.getAllSelectedCartDataList() } answers { listOf(cartItem) }
 
         // WHEN
@@ -422,9 +422,9 @@ class UpdateCartTest : BaseCartTest() {
                 tickerText = tickerText
             )
         }
-        val shopDataList = mutableListOf<CartShopHolderData>().apply {
+        val shopDataList = mutableListOf<CartGroupHolderData>().apply {
             add(
-                CartShopHolderData().apply {
+                CartGroupHolderData().apply {
                     productUiModelList = mutableListOf(cartItem)
                     isAllSelected = true
                     isPartialSelected = false
@@ -437,7 +437,7 @@ class UpdateCartTest : BaseCartTest() {
         coEvery { updateCartUseCase.execute(any(), any()) } answers {
             firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
         }
-        every { view.getAllShopDataList() } answers { shopDataList }
+        every { view.getAllGroupDataList() } answers { shopDataList }
         every { view.getAllSelectedCartDataList() } answers { listOf(cartItem) }
 
         // WHEN

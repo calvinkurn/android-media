@@ -52,6 +52,8 @@ data class Order(
     var freeShippingMetadata: String = "",
     @SerializedName("validation_metadata")
     var validationMetadata: String = "",
+    @SerializedName("cart_string_group")
+    var cartStringGroup: String = "",
     @Transient
     var boType: Int = 0
 ) : Parcelable

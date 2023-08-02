@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.logisticCommon.data.entity.shoplocation.ShopLocationModel
 import com.tokopedia.logisticCommon.data.repository.ShopLocationRepository
-import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocWhitelist
+import com.tokopedia.logisticCommon.data.response.shoplocation.KeroGetRolloutEligibility
 import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocationSetStatusResponse
 import com.tokopedia.manageaddress.domain.mapper.ShopLocationMapper
 import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationState
@@ -28,8 +28,8 @@ class ShopLocationViewModel @Inject constructor(
     val result: LiveData<ShopLocationState<ShopLocationSetStatusResponse>>
         get() = _result
 
-    private val _shopWhitelist = MutableLiveData<ShopLocationState<ShopLocWhitelist>>()
-    val shopWhitelist: LiveData<ShopLocationState<ShopLocWhitelist>>
+    private val _shopWhitelist = MutableLiveData<ShopLocationState<KeroGetRolloutEligibility>>()
+    val shopWhitelist: LiveData<ShopLocationState<KeroGetRolloutEligibility>>
         get() = _shopWhitelist
 
 
@@ -55,7 +55,7 @@ class ShopLocationViewModel @Inject constructor(
         _shopWhitelist.value = ShopLocationState.Loading
         viewModelScope.launch(onErrorGetWhitelistData) {
             val getWhitelistShop = repo.getShopLocationWhitelist(shopId)
-            _shopWhitelist.value = ShopLocationState.Success(getWhitelistShop.shopLocWhitelist)
+            _shopWhitelist.value = ShopLocationState.Success(getWhitelistShop.keroGetRolloutEligibility)
         }
     }
 

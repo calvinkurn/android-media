@@ -27,6 +27,7 @@
     <string name="title_shop_performance">Performa Toko</string>
     <string name="title_penalty_shop_score">Penalti</string>
     <string name="title_penalty_detail_shop_score">Detail Pelanggaran</string>
+    <string name="title_penalty_not_yet_deducted">Belum Berlangsung</string>
 
     <!-- Dynamic feature Product Add Edit -->
     <string name="label_title_add_product">Tambah Produk</string>

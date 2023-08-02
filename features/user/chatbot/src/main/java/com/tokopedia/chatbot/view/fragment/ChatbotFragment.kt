@@ -178,6 +178,7 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
@@ -316,6 +317,7 @@ class ChatbotFragment :
     private var mediaRetryBottomSheet: ChatbotMediaRetryBottomSheet? = null
 
     private var pageSource: String = ""
+    private var isChatbotActive: Boolean = true
 
     companion object {
         private const val ONCLICK_REPLY_TIME_OFFSET_FOR_REPLY_BUBBLE = 5000
@@ -663,6 +665,9 @@ class ChatbotFragment :
         super.onViewCreated(view, savedInstanceState)
         viewState?.initView()
         pageSource = getParamString(PAGE_SOURCE, arguments, savedInstanceState)
+        isChatbotActive = getParamBoolean(ChatbotActivity.IS_CHATBOT_ACTIVE, arguments, savedInstanceState, true)
+
+        setErrorLayoutForServer()
         handlingForMessageIdValidity(messageId)
         presenter.setPageSource(pageSource)
         presenter.checkForSession(messageId)
@@ -1030,6 +1035,11 @@ class ChatbotFragment :
     }
 
     private fun setErrorLayoutForServer() {
+        if (!isChatbotActive)
+            setErrorLayoutForChatbotError()
+    }
+
+    private fun setErrorLayoutForChatbotError() {
         getBindingView().layoutErrorGlobal.run {
             visible()
             getBindingView().homeGlobalError.run {
@@ -1054,7 +1064,7 @@ class ChatbotFragment :
                 throw NumberFormatException()
             }
         } catch (e: NumberFormatException) {
-            setErrorLayoutForServer()
+            setErrorLayoutForChatbotError()
             logNewRelicMessageIdError(
                 messageId,
                 pageSource

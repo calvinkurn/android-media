@@ -180,7 +180,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
                 textFieldWrapper.setHelperTextColor(
                     ContextCompat.getColorStateList(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_R500
+                        com.tokopedia.unifyprinciples.R.color.Unify_RN500
                     )
                 )
                 setAccessAcceptedBtnDisabled()
@@ -190,7 +190,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
                 textFieldWrapper.setHelperTextColor(
                     ContextCompat.getColorStateList(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_R500
+                        com.tokopedia.unifyprinciples.R.color.Unify_RN500
                     )
                 )
                 setAccessAcceptedBtnDisabled()

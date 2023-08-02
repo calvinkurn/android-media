@@ -59,5 +59,8 @@ class HomeMissionWidgetData {
         @SerializedName("isCarousel")
         @Expose
         val isCarousel: Boolean = false,
+        @SerializedName("shopID")
+        @Expose
+        val shopId: String = ""
     )
 }

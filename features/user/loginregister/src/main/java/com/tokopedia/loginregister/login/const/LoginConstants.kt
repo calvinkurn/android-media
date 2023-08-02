@@ -19,6 +19,7 @@ object LoginConstants {
         const val REQUEST_CHOOSE_ACCOUNT_FINGERPRINT = 123
         const val REQUEST_VERIFY_BIOMETRIC = 124
         const val REQUEST_GOTO_SEAMLESS = 125
+        const val REQUEST_CHOOSE_ACCOUNT_OCL = 126
     }
 
     object RemoteConfigKey {

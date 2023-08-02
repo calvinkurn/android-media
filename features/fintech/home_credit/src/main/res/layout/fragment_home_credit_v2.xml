@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_Static_Black">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/camera_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
+    <com.otaliastudios.cameraview.CameraView
+        android:id="@+id/camera"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:keepScreenOn="true"
+        app:cameraGestureLongTap="none"
+        app:cameraGesturePinch="zoom"
+        app:cameraGestureScrollHorizontal="none"
+        app:cameraGestureScrollVertical="none"
+        app:cameraGestureTap="autoFocus"
+        app:cameraGrid="off"
+        app:cameraFlash="off"
+        app:cameraPlaySounds="true"
+        app:cameraAudio="off"
+        app:cameraHdr="off"
+        app:cameraMode="picture" />
+
+    <View
+        android:id="@+id/camera_overlay_top"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/hc_dms_camera_overlay"
+        app:layout_constraintBottom_toTopOf="@id/camera_cutout"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <View
+        android:id="@+id/camera_overlay_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/hc_dms_camera_overlay"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/camera_cutout"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/camera_icon_back"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="12dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_name="ARROW_BACK"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/camera_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_Static_White"
+        android:layout_marginStart="10dp"
+        app:typographyWeight="bold"
+        app:typographyType="display_1"
+        app:layout_constraintTop_toTopOf="@id/camera_icon_back"
+        app:layout_constraintBottom_toBottomOf="@id/camera_icon_back"
+        app:layout_constraintStart_toEndOf="@id/camera_icon_back"/>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/camera_cutout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:scaleType="fitXY"
+        app:unify_image_corner_radius="0"
+        app:layout_constraintTop_toBottomOf="@id/camera_title"
+        app:layout_constraintBottom_toTopOf="@id/camera_tips"
+        android:layout_marginBottom="35dp"
+        android:layout_marginTop="35dp"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/camera_tips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_Static_White"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@id/camera_capture_button"
+        app:typographyWeight="bold"
+        app:typographyType="display_2"
+        android:gravity="center"/>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/camera_capture_button"
+        android:layout_width="58dp"
+        android:layout_height="58dp"
+        app:srcCompat="@drawable/ic_capture_image"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/camera_icon_switch"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginStart="42dp"
+        app:layout_constraintTop_toTopOf="@id/camera_capture_button"
+        app:layout_constraintBottom_toBottomOf="@id/camera_capture_button"
+        app:layout_constraintStart_toEndOf="@id/camera_capture_button"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_name="CAMERA_SWITCH"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/camera_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/camera_retake_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="30dp"
+        android:text="@string/hc_camera_label_foto_ulang"
+        android:visibility="gone"
+        app:unifyButtonType="alternate"
+        app:unifyButtonVariant="ghost"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/camera_guideline"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/camera_continue_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginBottom="30dp"
+        android:text="@string/hc_camera_label_pakai_foto_ini"
+        android:visibility="gone"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/camera_guideline"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

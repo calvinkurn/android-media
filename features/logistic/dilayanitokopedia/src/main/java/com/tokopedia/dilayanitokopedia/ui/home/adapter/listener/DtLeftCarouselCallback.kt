@@ -1,12 +1,18 @@
 package com.tokopedia.dilayanitokopedia.ui.home.adapter.listener
 
+import com.tokopedia.dilayanitokopedia.data.analytics.DtHomepageAnalytics
+import com.tokopedia.dilayanitokopedia.data.analytics.ProductCardAnalyticsMapper
 import com.tokopedia.home_component.listener.MixLeftComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.user.session.UserSessionInterface
 
 object DtLeftCarouselCallback {
 
-    fun createLeftCarouselCallback(onActionLinkClicked: (String) -> Unit): MixLeftComponentListener {
+    fun createLeftCarouselCallback(
+        userSession: UserSessionInterface,
+        onActionLinkClicked: (String) -> Unit
+    ): MixLeftComponentListener {
         return object : MixLeftComponentListener {
 
             override fun onMixLeftImpressed(channel: ChannelModel, parentPos: Int) {
@@ -31,7 +37,10 @@ object DtLeftCarouselCallback {
                 adapterPosition: Int,
                 position: Int
             ) {
-                // no-op
+                DtHomepageAnalytics.sendImpressionProductCardsDtEvent(
+                    userSession,
+                    ProductCardAnalyticsMapper.fromGridChannel(position, channelGrid)
+                )
             }
 
             override fun onProductCardClicked(
@@ -42,6 +51,10 @@ object DtLeftCarouselCallback {
                 applink: String
             ) {
                 onActionLinkClicked(applink)
+                DtHomepageAnalytics.sendClickProductCardsDtEvent(
+                    userSession,
+                    ProductCardAnalyticsMapper.fromGridChannel(position, channelGrid)
+                )
             }
 
             override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {

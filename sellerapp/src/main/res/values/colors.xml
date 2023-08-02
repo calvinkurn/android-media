@@ -2,4 +2,5 @@
 <resources>
     <color name="sa_dms_black_70">#b3000000</color>
     <color name="sa_dms_black_54">#8a000000</color>
+    <color name="ic_launcher_sellerapp_background_dms">#FFFFFF</color>
 </resources>

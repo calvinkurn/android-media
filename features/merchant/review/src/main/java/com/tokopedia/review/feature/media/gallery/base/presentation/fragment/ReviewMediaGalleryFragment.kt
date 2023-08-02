@@ -150,13 +150,16 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
     override fun onImageImpressed(imageUri: String) {
         galleryAdapter.getImageByUri(imageUri)?.let { (index, media) ->
             reviewMediaGalleryTracker.trackImpressImage(
-                sharedReviewMediaGalleryViewModel.getPageSource(),
-                sharedReviewMediaGalleryViewModel.getTotalMediaCount(),
-                sharedReviewMediaGalleryViewModel.getProductId(),
-                media.getAttachmentID(),
-                media.getFileName(),
-                index,
-                userSession.userId
+                pageSource = sharedReviewMediaGalleryViewModel.getPageSource(),
+                imageCount = sharedReviewMediaGalleryViewModel.getTotalMediaCount(),
+                feedbackId = media.feedbackId,
+                productId = sharedReviewMediaGalleryViewModel.getProductId(),
+                attachmentId = media.getAttachmentID(),
+                fileName = media.getFileName(),
+                position = index,
+                userId = userSession.userId,
+                reviewUserId = sharedReviewMediaGalleryViewModel.getReviewUserID(),
+                isReviewOwner = sharedReviewMediaGalleryViewModel.isReviewOwner,
             )
         }
     }
@@ -164,14 +167,16 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
     override fun onVideoImpressed(videoUri: String, videoDurationSecond: Long) {
         galleryAdapter.getVideoByUri(videoUri)?.let { (index, media) ->
             reviewMediaGalleryTracker.trackImpressVideoV2(
-                sharedReviewMediaGalleryViewModel.getTotalMediaCount(),
-                media.feedbackId,
-                sharedReviewMediaGalleryViewModel.getProductId(),
-                media.getAttachmentID(),
-                media.getVideoID(),
-                index,
-                userSession.userId,
-                videoDurationSecond
+                imageCount = sharedReviewMediaGalleryViewModel.getTotalMediaCount(),
+                feedbackId = media.feedbackId,
+                productId = sharedReviewMediaGalleryViewModel.getProductId(),
+                attachmentId = media.getAttachmentID(),
+                videoID = media.getVideoID(),
+                position = index,
+                userId = userSession.userId,
+                reviewUserId = sharedReviewMediaGalleryViewModel.getReviewUserID(),
+                isReviewOwner = sharedReviewMediaGalleryViewModel.isReviewOwner,
+                videoDurationSecond = videoDurationSecond,
             )
         }
     }

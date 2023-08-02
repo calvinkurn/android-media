@@ -12,11 +12,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.detail.di.DaggerOrderDetailsComponent
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent
-import com.tokopedia.buyerorder.detail.view.fragment.OmsDetailFragment as OldOMSFragment
 import com.tokopedia.buyerorder.detail.revamp.fragment.OmsDetailFragment as NewOMSFragment
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -33,10 +29,6 @@ class RevampOrderListDetailActivity: BaseSimpleActivity(), HasComponent<OrderDet
 
     @Inject
     lateinit var userSession: UserSessionInterface
-
-    private val remoteConfig: RemoteConfig by lazy(LazyThreadSafetyMode.NONE) {
-        FirebaseRemoteConfigImpl(this)
-    }
 
     override fun getNewFragment(): Fragment {
         return getSwitchedFragment()
@@ -68,21 +60,12 @@ class RevampOrderListDetailActivity: BaseSimpleActivity(), HasComponent<OrderDet
     }
 
     private fun getSwitchedFragment(): Fragment {
-        return if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_BUYER_ORDER_DETAIL)) {
-            NewOMSFragment.getInstance(
+        return NewOMSFragment.getInstance(
                 orderId ?: "",
                 "",
                 fromPayment,
                 upstream?:""
             )
-        } else {
-            OldOMSFragment.getInstance(
-                orderId ?: "",
-                "",
-                fromPayment,
-                upstream?:""
-            )
-        }
     }
 
     override fun getComponent(): OrderDetailsComponent =

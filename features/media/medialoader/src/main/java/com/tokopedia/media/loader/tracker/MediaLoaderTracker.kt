@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
-object MediaLoaderTracker : CoroutineScope {
+internal object MediaLoaderTracker : CoroutineScope {
 
     private const val CDN_URL = "https://images.tokopedia.net/img/"
     private const val TAG_ANALYTIC = "MEDIALOADER_ANALYTIC"
@@ -155,9 +155,9 @@ object MediaLoaderTracker : CoroutineScope {
     }
 }
 
-data class IsIcon(val value: Boolean)
+internal data class IsIcon(val value: Boolean)
 
-data class MediaLoaderTrackerParam(
+internal data class MediaLoaderTrackerParam(
     val url: String,
     val pageName: String,
     val loadTime: String,

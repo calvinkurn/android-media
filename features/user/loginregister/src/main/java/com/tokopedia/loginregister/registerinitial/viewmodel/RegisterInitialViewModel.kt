@@ -9,20 +9,23 @@ import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginregister.TkpdIdlingResourceProvider
-import com.tokopedia.loginregister.common.data.ResponseConverter.resultUsecaseCoroutineToSubscriber
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
+import com.tokopedia.loginregister.common.domain.pojo.DiscoverData
+import com.tokopedia.loginregister.common.domain.pojo.DynamicBannerDataModel
+import com.tokopedia.loginregister.common.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.common.domain.query.MutationRegisterCheck
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
-import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
-import com.tokopedia.loginregister.common.view.banner.domain.usecase.DynamicBannerUseCase
-import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
-import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoUseCase
-import com.tokopedia.loginregister.discover.pojo.DiscoverData
-import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
+import com.tokopedia.loginregister.common.domain.usecase.DiscoverUseCase
+import com.tokopedia.loginregister.common.domain.usecase.DynamicBannerUseCase
+import com.tokopedia.loginregister.common.domain.usecase.TickerInfoUseCase
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialQueryConstant
 import com.tokopedia.loginregister.registerinitial.domain.RegisterV2Query
 import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
-import com.tokopedia.loginregister.registerinitial.domain.pojo.*
+import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
+import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
+import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestData
+import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestPojo
+import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestV2
 import com.tokopedia.loginregister.registerinitial.view.bottomsheet.OtherMethodState
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
@@ -38,7 +41,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -47,19 +50,20 @@ import javax.inject.Inject
  */
 
 class RegisterInitialViewModel @Inject constructor(
-        private val registerCheckUseCase: GraphqlUseCase<RegisterCheckPojo>,
-        private val registerRequestUseCase: GraphqlUseCase<RegisterRequestPojo>,
-        private val registerRequestUseCaseV2: GraphqlUseCase<RegisterRequestV2>,
-        private val activateUserUseCase: ActivateUserUseCase,
-        private val discoverUseCase: DiscoverUseCase,
-        private val loginTokenUseCase: LoginTokenUseCase,
-        private val getProfileUseCase: GetProfileUseCase,
-        private val tickerInfoUseCase: TickerInfoUseCase,
-        private val dynamicBannerUseCase: DynamicBannerUseCase,
-        private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
-        private val userSession: UserSessionInterface,
-        private val rawQueries: Map<String, String>,
-        private val dispatcherProvider: CoroutineDispatchers) : BaseViewModel(dispatcherProvider.main) {
+    private val registerCheckUseCase: GraphqlUseCase<RegisterCheckPojo>,
+    private val registerRequestUseCase: GraphqlUseCase<RegisterRequestPojo>,
+    private val registerRequestUseCaseV2: GraphqlUseCase<RegisterRequestV2>,
+    private val activateUserUseCase: ActivateUserUseCase,
+    private val discoverUseCase: DiscoverUseCase,
+    private val loginTokenUseCase: LoginTokenUseCase,
+    private val getProfileUseCase: GetProfileUseCase,
+    private val tickerInfoUseCase: TickerInfoUseCase,
+    private val dynamicBannerUseCase: DynamicBannerUseCase,
+    private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
+    private val userSession: UserSessionInterface,
+    private val rawQueries: Map<String, String>,
+    private val dispatcherProvider: CoroutineDispatchers
+) : BaseViewModel(dispatcherProvider.main) {
 
     private val mutableGetProviderResponse = MutableLiveData<Result<DiscoverData>>()
     val getProviderResponse: LiveData<Result<DiscoverData>>
@@ -125,7 +129,8 @@ class RegisterInitialViewModel @Inject constructor(
     val dynamicBannerResponse: LiveData<Result<DynamicBannerDataModel>>
         get() = _dynamicBannerResponse
 
-    var idlingResourceProvider = TkpdIdlingResourceProvider.provideIdlingResource("REGISTER_INITIAL")
+    var idlingResourceProvider =
+        TkpdIdlingResourceProvider.provideIdlingResource("REGISTER_INITIAL")
 
     private var _otherMethodState: OtherMethodState<DiscoverData?> = OtherMethodState.Loading()
     val otherMethodState get() = _otherMethodState
@@ -137,55 +142,64 @@ class RegisterInitialViewModel @Inject constructor(
     fun getProvider() {
         launchCatchError(block = {
             val result = discoverUseCase(PARAM_DISCOVER_REGISTER)
-
-            withContext(dispatcherProvider.main) {
-                mutableGetProviderResponse.value = Success(result.data)
-            }
+            mutableGetProviderResponse.value = Success(result.data)
         }, onError = {
-            mutableGetProviderResponse.value = Fail(it)
-        })
+                mutableGetProviderResponse.value = Fail(it)
+            })
     }
 
     fun registerGoogle(accessToken: String, email: String) {
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_GOOGLE
         idlingResourceProvider?.increment()
-        loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
-                accessToken, LoginTokenUseCase.SOCIAL_TYPE_GOOGLE),
-                LoginTokenSubscriber(
-                        userSession,
-                        onSuccessLoginTokenGoogle(),
-                        onFailedLoginTokenGoogle(),
-                        {
-                            showPopup().invoke(it.loginToken.popupError)
-                            idlingResourceProvider?.decrement()
-                        },
-                        onGoToActivationPage(),
-                        onGoToSecurityQuestion(email)
-                )
+        loginTokenUseCase.executeLoginSocialMedia(
+            LoginTokenUseCase.generateParamSocialMedia(
+                accessToken,
+                LoginTokenUseCase.SOCIAL_TYPE_GOOGLE
+            ),
+            LoginTokenSubscriber(
+                userSession,
+                onSuccessLoginTokenGoogle(),
+                onFailedLoginTokenGoogle(),
+                {
+                    showPopup().invoke(it.loginToken.popupError)
+                    idlingResourceProvider?.decrement()
+                },
+                onGoToActivationPage(),
+                onGoToSecurityQuestion(email)
+            )
         )
-
     }
 
     fun getUserInfo() {
         idlingResourceProvider?.increment()
-        getProfileUseCase.execute(GetProfileSubscriber(userSession,
+        getProfileUseCase.execute(
+            GetProfileSubscriber(
+                userSession,
                 onSuccessGetUserInfo(),
-                onFailedGetUserInfo()))
+                onFailedGetUserInfo()
+            )
+        )
     }
 
     fun getUserInfoAfterAddPin() {
-        getProfileUseCase.execute(GetProfileSubscriber(userSession,
+        getProfileUseCase.execute(
+            GetProfileSubscriber(
+                userSession,
                 onSuccessGetUserInfoAfterAddPin(),
-                onFailedGetUserInfoAfterAddPin()))
+                onFailedGetUserInfoAfterAddPin()
+            )
+        )
     }
 
     fun getTickerInfo() {
-        tickerInfoUseCase.execute(
-                TickerInfoUseCase.createRequestParam(TickerInfoUseCase.REGISTER_PAGE),
-                resultUsecaseCoroutineToSubscriber(
-                        onSuccessGetTickerInfo(),
-                        onFailedGetTickerInfo()
-                ))
+        launch {
+            runCatching {
+                val ticker = tickerInfoUseCase(TickerInfoUseCase.REGISTER_PAGE)
+                mutableGetTickerInfoResponse.value = Success(ticker)
+            }.onFailure {
+                mutableGetTickerInfoResponse.value = Fail(it)
+            }
+        }
     }
 
     fun registerCheck(id: String) {
@@ -203,27 +217,27 @@ class RegisterInitialViewModel @Inject constructor(
     }
 
     private fun createRegisterBasicParams(
-            email: String,
-            password: String,
-            fullname: String,
-            validateToken: String
+        email: String,
+        password: String,
+        fullname: String,
+        validateToken: String
     ): MutableMap<String, String> {
         return mutableMapOf(
-                RegisterInitialQueryConstant.PARAM_EMAIL to email,
-                RegisterInitialQueryConstant.PARAM_PASSWORD to password,
-                RegisterInitialQueryConstant.PARAM_OS_TYPE to OS_TYPE_ANDROID,
-                RegisterInitialQueryConstant.PARAM_REG_TYPE to REG_TYPE_EMAIL,
-                RegisterInitialQueryConstant.PARAM_FULLNAME to fullname,
-                RegisterInitialQueryConstant.PARAM_VALIDATE_TOKEN to validateToken
+            RegisterInitialQueryConstant.PARAM_EMAIL to email,
+            RegisterInitialQueryConstant.PARAM_PASSWORD to password,
+            RegisterInitialQueryConstant.PARAM_OS_TYPE to OS_TYPE_ANDROID,
+            RegisterInitialQueryConstant.PARAM_REG_TYPE to REG_TYPE_EMAIL,
+            RegisterInitialQueryConstant.PARAM_FULLNAME to fullname,
+            RegisterInitialQueryConstant.PARAM_VALIDATE_TOKEN to validateToken
         )
     }
 
     fun registerRequest(
-            email: String,
-            password: String,
-            fullname: String,
-            validateToken: String
-    ){
+        email: String,
+        password: String,
+        fullname: String,
+        validateToken: String
+    ) {
         launchCatchError(coroutineContext, {
             rawQueries[RegisterInitialQueryConstant.MUTATION_REGISTER_REQUEST]?.let { query ->
                 val params = createRegisterBasicParams(email, password, fullname, validateToken)
@@ -240,17 +254,18 @@ class RegisterInitialViewModel @Inject constructor(
     }
 
     fun registerRequestV2(
-            email: String,
-            password: String,
-            fullname: String,
-            validateToken: String
+        email: String,
+        password: String,
+        fullname: String,
+        validateToken: String
     ) {
         launchCatchError(coroutineContext, {
-            val keyData = generatePublicKeyUseCase.executeOnBackground().keyData
-            if(keyData.key.isNotEmpty()) {
+            val keyData = generatePublicKeyUseCase().keyData
+            if (keyData.key.isNotEmpty()) {
                 val encryptedPassword = RsaUtils.encrypt(password, keyData.key.decodeBase64(), true)
 
-                val params = createRegisterBasicParams(email, encryptedPassword, fullname, validateToken)
+                val params =
+                    createRegisterBasicParams(email, encryptedPassword, fullname, validateToken)
                 params[RegisterInitialQueryConstant.PARAM_HASH] = keyData.hash
 
                 userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
@@ -259,51 +274,58 @@ class RegisterInitialViewModel @Inject constructor(
                 registerRequestUseCaseV2.setGraphqlQuery(RegisterV2Query.registerQuery)
                 val result = registerRequestUseCaseV2.executeOnBackground()
                 onSuccessRegisterRequest(result.data)
-            }}, {
-                onFailedRegisterRequest(it)
-            })
+            }
+        }, {
+            onFailedRegisterRequest(it)
+        })
     }
 
     fun activateUser(
-            email: String,
-            validateToken: String
+        email: String,
+        validateToken: String
     ) {
         launchCatchError(coroutineContext, {
             activateUserUseCase.setParams(email, validateToken)
             val result = activateUserUseCase.executeOnBackground().data
-                when {
-                    result.isSuccess == 1 -> {
-                        onSuccessActivateUser().invoke(result)
-                    }
-                    result.message.isNotEmpty() -> {
-                        onFailedActivateUser().invoke(MessageErrorException(result.message))
-                    }
-                    else -> {
-                        onFailedActivateUser().invoke(Throwable())
-                    }
+            when {
+                result.isSuccess == 1 -> {
+                    onSuccessActivateUser().invoke(result)
                 }
+
+                result.message.isNotEmpty() -> {
+                    onFailedActivateUser().invoke(MessageErrorException(result.message))
+                }
+
+                else -> {
+                    onFailedActivateUser().invoke(Throwable())
+                }
+            }
         }, {
             onFailedActivateUser().invoke(it)
         })
     }
 
     fun reloginAfterSQ(validateToken: String) {
-        loginTokenUseCase.executeLoginAfterSQ(LoginTokenUseCase.generateParamLoginAfterSQ(
-                userSession, validateToken), LoginTokenSubscriber(userSession,
+        loginTokenUseCase.executeLoginAfterSQ(
+            LoginTokenUseCase.generateParamLoginAfterSQ(
+                userSession,
+                validateToken
+            ),
+            LoginTokenSubscriber(
+                userSession,
                 onSuccessLoginTokenAfterSQ(),
                 onFailedLoginTokenAfterSQ(validateToken),
-                {showPopup().invoke(it.loginToken.popupError)},
+                { showPopup().invoke(it.loginToken.popupError) },
                 onGoToActivationPageAfterRelogin(validateToken),
-                onGoToSecurityQuestionAfterRelogin("")))
+                onGoToSecurityQuestionAfterRelogin("")
+            )
+        )
     }
 
-    fun getDynamicBannerData(page: String) {
+    fun getDynamicBannerData() {
         launchCatchError(coroutineContext, {
-            val params = DynamicBannerUseCase.createRequestParams(page)
-            dynamicBannerUseCase.createParams(params)
-            dynamicBannerUseCase.executeOnBackground().run {
-                _dynamicBannerResponse.postValue(Success(this))
-            }
+            val model = dynamicBannerUseCase(DynamicBannerUseCase.Page.REGISTER)
+            _dynamicBannerResponse.value = Success(model)
         }, {
             _dynamicBannerResponse.postValue(Fail(it))
         })
@@ -376,11 +398,14 @@ class RegisterInitialViewModel @Inject constructor(
 
     private fun onSuccessRegisterCheck(): (RegisterCheckPojo) -> Unit {
         return {
-            if (it.data.errors.isEmpty())
+            if (it.data.errors.isEmpty()) {
                 mutableRegisterCheckResponse.value = Success(it.data)
-            else if (it.data.errors.isNotEmpty() && it.data.errors[0].isNotEmpty()) mutableRegisterCheckResponse.value =
+            } else if (it.data.errors.isNotEmpty() && it.data.errors[0].isNotEmpty()) {
+                mutableRegisterCheckResponse.value =
                     Fail(com.tokopedia.network.exception.MessageErrorException(it.data.errors[0]))
-            else mutableRegisterCheckResponse.value = Fail(RuntimeException())
+            } else {
+                mutableRegisterCheckResponse.value = Fail(RuntimeException())
+            }
             idlingResourceProvider?.decrement()
         }
     }
@@ -395,16 +420,19 @@ class RegisterInitialViewModel @Inject constructor(
     private fun onSuccessRegisterRequest(result: RegisterRequestData) {
         userSession.clearToken()
         if (result.accessToken.isNotEmpty() &&
-                result.refreshToken.isNotEmpty() &&
-                result.tokenType.isNotEmpty()) {
+            result.refreshToken.isNotEmpty() &&
+            result.tokenType.isNotEmpty()
+        ) {
             mutableRegisterRequestResponse.value = Success(result)
         } else if (result.errors.isNotEmpty() && result.errors[0].message.isNotEmpty()) {
             mutableRegisterRequestResponse.value =
-                    Fail(com.tokopedia.network.exception.MessageErrorException(result.errors[0].message))
-        } else mutableRegisterRequestResponse.value = Fail(RuntimeException())
+                Fail(com.tokopedia.network.exception.MessageErrorException(result.errors[0].message))
+        } else {
+            mutableRegisterRequestResponse.value = Fail(RuntimeException())
+        }
     }
 
-    private fun onFailedRegisterRequest (throwable: Throwable){
+    private fun onFailedRegisterRequest(throwable: Throwable) {
         userSession.clearToken()
         mutableRegisterRequestResponse.value = Fail(throwable)
     }
@@ -413,8 +441,9 @@ class RegisterInitialViewModel @Inject constructor(
         return {
             userSession.clearToken()
             if (it.accessToken.isNotEmpty() &&
-                    it.refreshToken.isNotEmpty() &&
-                    it.tokenType.isNotEmpty()) {
+                it.refreshToken.isNotEmpty() &&
+                it.tokenType.isNotEmpty()
+            ) {
                 mutableActivateUserResponse.value = Success(it)
             } else if (it.message.isNotEmpty()) {
                 mutableActivateUserResponse.value = Fail(MessageErrorException(it.message))
@@ -467,7 +496,6 @@ class RegisterInitialViewModel @Inject constructor(
     fun clearBackgroundTask() {
         registerRequestUseCase.cancelJobs()
         registerCheckUseCase.cancelJobs()
-        tickerInfoUseCase.unsubscribe()
         loginTokenUseCase.unsubscribe()
         getProfileUseCase.unsubscribe()
     }

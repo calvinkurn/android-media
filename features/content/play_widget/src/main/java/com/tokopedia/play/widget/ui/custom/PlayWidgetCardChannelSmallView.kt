@@ -77,7 +77,7 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
         } else {
             if (::mModel.isInitialized) {
                 player.videoUrl = mModel.video.videoUrl
-                player.shouldCache = !mModel.video.isLive
+                player.isLive = mModel.video.isLive
                 player.start()
             }
             player.listener = playerListener
@@ -90,7 +90,7 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
 
     override fun isPlayable(): Boolean {
         return mModel.channelType == PlayWidgetChannelType.Live ||
-                mModel.channelType == PlayWidgetChannelType.Vod
+            mModel.channelType == PlayWidgetChannelType.Vod
     }
 
     override fun onDetachedFromWindow() {
@@ -125,8 +125,11 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
         when {
             model.hasPromo -> {
                 tvContextualInfo.setBackgroundResource(
-                        if (model.video.isLive) R.drawable.bg_play_widget_small_live_context
-                        else R.drawable.bg_play_widget_small_promo_context
+                    if (model.video.isLive) {
+                        R.drawable.bg_play_widget_small_live_context
+                    } else {
+                        R.drawable.bg_play_widget_small_promo_context
+                    }
                 )
                 tvContextualInfo.visible()
             }
@@ -162,17 +165,22 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
     }
 
     private fun handleTotalView(type: PlayWidgetChannelType, totalView: PlayWidgetTotalView) {
-        if (type == PlayWidgetChannelType.Upcoming || type == PlayWidgetChannelType.Unknown) llTotalView.gone()
-        else if (totalView.isVisible) {
+        if (type == PlayWidgetChannelType.Upcoming || type == PlayWidgetChannelType.Unknown) {
+            llTotalView.gone()
+        } else if (totalView.isVisible) {
             llTotalView.visible()
             tvTotalView.text = totalView.totalViewFmt
+        } else {
+            llTotalView.gone()
         }
-        else llTotalView.gone()
     }
 
     private fun handleGame(hasGame: Boolean) {
-        if(hasGame) ivGiveaway.visible()
-        else ivGiveaway.gone()
+        if (hasGame) {
+            ivGiveaway.visible()
+        } else {
+            ivGiveaway.gone()
+        }
     }
 
     interface Listener {

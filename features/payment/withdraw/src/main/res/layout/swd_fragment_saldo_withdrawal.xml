@@ -39,10 +39,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/withdrawalRekeningCarouselView"
-        app:tabIndicatorColor="@color/Unify_G500"
-        app:tabMode="fixed"
-        app:tabSelectedTextColor="@color/Unify_G500"
-        app:tabTextColor="@color/Unify_N700_68" />
+        app:tabMode="fixed"/>
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewPagerSaldoWithdrawal"

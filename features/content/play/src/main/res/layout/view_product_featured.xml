@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.play.util.scroll.NestedScrollableHost
+<com.tokopedia.content.common.util.scroll.NestedScrollableHost
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -16,4 +16,4 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         />
 
-</com.tokopedia.play.util.scroll.NestedScrollableHost>
+</com.tokopedia.content.common.util.scroll.NestedScrollableHost>

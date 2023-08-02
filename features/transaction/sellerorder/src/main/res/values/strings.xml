@@ -13,7 +13,6 @@
     <string name="title_logistic_info">Informasi Terkait Kurir</string>
     <string name="btn_show_order">Tampilkan Pesanan</string>
 
-    <string name="due_day">1 hari</string>
     <string name="same_day">Same Day</string>
 
     <string name="empty_filter_title">Tidak Ada Pesanan dengan Filter Ini</string>
@@ -68,8 +67,6 @@
     <string name="som_detail_product_note_format"><![CDATA[<i>%1$s</i>]]></string>
     <string name="som_response_deadline">Batas respons</string>
 
-    <string name="chat">Chat</string>
-
     <string name="global_error">Terjadi kesalahan. Mohon ulangi kembali</string>
     <string name="message_change_order_status_success">Berhasil merubah status pesanan</string>
     <string name="message_set_delivered_success">Konfirmasi Tiba di Tujuan berhasil diupdate</string>
@@ -94,21 +91,9 @@
     <string name="other_reason_resp_placeholder">Contoh: Saya tidak bisa menerima…</string>
 
     <string name="tv_driver_name_example">Idwan Wangsa</string>
-    <string name="tv_driver_phone_example">081234567890</string>
     <string name="tv_driver_license_example">B 1408 TMB</string>
     <string name="tv_driver_call_btn">Hubungi</string>
 
-    <string name="req_pickup_info_button">Request Pick-Up</string>
-    <string name="req_pickup_location_label">Lokasi Tokomu:</string>
-    <string name="req_pickup_location_icon">Icon Location</string>
-    <string name="req_pickup_phone_icon">Icon Phone</string>
-    <string name="req_pickup_location_desc_sample">Tokopedia Tower Ciputra World 2 \n Prof. DR. Satrio No. Kav. 11, RT.3/RW.3, \n Karet Semanggi, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12950</string>
-    <string name="req_pickup_info_title">Pastikan :</string>
-    <string name="req_pickup_phone_desc_sample">0813166229819</string>
-    <string name="card_courier_title">Detail pengajuan pickup pesanan</string>
-    <string name="card_courier_name_example">SiCepat (Reguler Pick-Up)</string>
-    <string name="card_courier_notes_example">Batas waktu penjemputan 24 jam</string>
-    <string name="card_courier_count_example">Jumlah: 1</string>
     <string name="courier_notes_example">Tidak perlu memberikan ongkir ke kurir</string>
     <string name="courier_option_schedule">Oleh kurir: %1$s</string>
     <string name="req_pickup_ticket_desc_template">%1$s &lt;a href="%2$s"&gt;%3$s&lt;/a&gt;</string>
@@ -151,7 +136,6 @@
     <string name="confirm_msg_2b">sebelum batas respons berakhir</string>
     <string name="confirm_msg_3">Cetak label pengiriman atau tulis kode booking di kemasan paket</string>
     <string name="title_bottomsheet_accept_order">Konfirmasi terima pesanan</string>
-    <string name="title_dialog_set_delivered">Ubah Status Pengiriman</string>
     <string name="ic_checklist_desc">ic_checklist</string>
     <string name="action_batal">Batal</string>
     <string name="action_terima">Terima</string>
@@ -162,7 +146,6 @@
 
     <string name="som_dropshipper_label">Dropshipper</string>
 
-    <string name="dialog_receiver_name">Nama Penerima</string>
     <string name="et_empty_error">Tidak Boleh Kosong</string>
     <string name="default_confirm_shipping_success">Terima kasih telah melakukan pengiriman.</string>
     <string name="label_receiver_name">Nama Penerima</string>
@@ -278,7 +261,6 @@
 
     <string name="som_list_bulk_request_pickup_desc_fail_error">Sedang ada gangguan. Coba lagi atau cek ulang pesananmu, ya.</string>
     <string name="som_list_bulk_request_pickup_desc_fail_all_validation">Tidak ada pesanan yang siap di pickup.</string>
-    <string name="som_list_bulk_request_pickup_desc_fail_partial">Ada pesanan yang tidak bisa dipick-up.</string>
 
     <string name="som_list_bulk_request_pickup_desc_partial_success_not_eligible">Ada %s pesanan yang tidak bisa dipick-up, nih.</string>
 
@@ -287,7 +269,6 @@
     <string name="som_list_bulk_request_pickup_dialog_primary_button_partial_success_can_retry">Coba Lagi</string>
     <string name="som_list_bulk_request_pickup_dialog_secondary_button_partial_success_can_retry">Kembali</string>
 
-    <string name="som_list_bulk_request_pickup_dialog_primary_button_partial_success_cant_retry">Oke Deh</string>
     <string name="som_total_price">Total Harga Paket</string>
 
     <!--  Bulk Accept Order On Progress  -->
@@ -330,7 +311,6 @@
 
     <!--  Bottomsheet Order Extension Request  -->
     <string name="bottomsheet_order_extension_request_title">Perpanjang waktu proses pesanan ini?</string>
-    <string name="bottomsheet_order_extension_request_header">%1s &lt;b&gt;%2s&lt;/b&gt;</string>
     <string name="bottomsheet_order_extension_request_footer"><![CDATA[Pesanan batal otomatis jika pengajuan ditolak pembeli. Tokomu berpotensi kena penalti jika keseringan perpanjang. <a href="tokopedia://webview?url=https://seller.tokopedia.com/edu/mekanisme-perpanjangan-waktu-pesanan/" target="_blank"><span style=color:%s;>Selengkapnya</span></a>]]></string>
     <string name="bottomsheet_order_extension_request_pick_time_header">Pilih waktu perpanjangan pesanan</string>
     <string name="bottomsheet_order_extension_request_options_header">Pilih alasan perpanjangan</string>
@@ -339,9 +319,6 @@
     <string name="bottomsheet_order_extension_request_other_options_text_area_message_illegal_characters">Hindari karakter spesial (@#$%^*).</string>
     <string name="bottomsheet_order_extension_request_other_options_text_area_message_empty_reason">Isi alasan terlebih dulu, ya.</string>
     <string name="bottomsheet_order_extension_request_other_options_text_area_message_insufficient_reason_length">Minimal 15 karakter</string>
-    <string name="bottomsheet_order_extension_request_comment_not_empty_regex">^\s*$</string>
-    <string name="bottomsheet_order_extension_request_comment_not_less_than_fifteen_characters_regex">^.{0,14}$</string>
-    <string name="bottomsheet_order_extension_request_comment_not_allowed_characters_regex">[^,.?!\n A-Za-z0-9]+</string>
     <string name="bottomsheet_order_extension_request_other_options_text_field_time">Pilih Tanggal</string>
     <string name="bottomsheet_order_extension_request_pick_time_rules"><![CDATA[Kirim pesanan sebelum pukul <b><span style=color:%s;>13:00 WIB</span></b>]]></string>
     <string name="bottomsheet_order_extension_request_info_pick_time_desc">Jam mengikuti waktu kamu menerima pesanan ini.</string>
@@ -375,5 +352,9 @@
     <!--   invoice-->
     <string name="click_to_copy_icon_content_description">Tombol salin nomor invoice</string>
     <string name="success_invoice_copied">Nomor invoice berhasil tersalin</string>
+
+    <!-- SOM Operational Guideline -->
+    <string name="som_operational_guideline_confirm_shipping_tooltip_text">Halaman otomatis terbuka menampilkan pesanan yang perlu dikirim. Yuk, segera proses pesanan.</string>
+    <string name="som_operational_guideline_new_order_tooltip_text">Halaman otomatis terbuka menampilkan pesanan yang perlu responmu. Yuk, segera proses pesanan.</string>
 
 </resources>

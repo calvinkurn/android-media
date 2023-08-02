@@ -20,7 +20,7 @@ class BrandRecommendationViewHolder(itemView: View, private val fragment: Fragme
     private val recyclerView: RecyclerView = itemView.findViewById(R.id.brand_recom_rv)
     private val brandRecomTitle: Typography = itemView.findViewById(R.id.brand_recom_title) as Typography
     private var discoveryRecycleAdapter: DiscoveryRecycleAdapter
-    private lateinit var brandRecommendationViewModel: BrandRecommendationViewModel
+    private var brandRecommendationViewModel: BrandRecommendationViewModel? = null
     private val displayMetrics = Utils.getDisplayMetric(fragment.context)
 
     init {
@@ -31,8 +31,8 @@ class BrandRecommendationViewHolder(itemView: View, private val fragment: Fragme
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         brandRecommendationViewModel = discoveryBaseViewModel as BrandRecommendationViewModel
-        brandRecommendationViewModel.mapBrandRecomItems()
-        brandRecommendationViewModel.getListData()?.let {
+        brandRecommendationViewModel?.mapBrandRecomItems()
+        brandRecommendationViewModel?.getListData()?.let {
             if (it.isNotEmpty()) {
                 sendBrandRecommendationImpressionGtm(it)
             }
@@ -41,37 +41,42 @@ class BrandRecommendationViewHolder(itemView: View, private val fragment: Fragme
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         lifecycleOwner?.let { lifecycle ->
-            brandRecommendationViewModel.getComponentDataLiveData().observe(lifecycle, { item ->
+            brandRecommendationViewModel?.getComponentDataLiveData()?.observe(lifecycle) { item ->
                 if (!item.title.isNullOrEmpty()) setTitle(item.title)
-            })
+            }
 
-            brandRecommendationViewModel.getListDataLiveData().observe(lifecycle, { item ->
+            brandRecommendationViewModel?.getListDataLiveData()?.observe(lifecycle) { item ->
                 if (item.isNotEmpty()) {
-                    val noOfItems:Double = if (item.size > STATIC_WIDGET_ITEM_LIMIT) CAROUSEL_WIDGET_ITEM_LIMIT else STATIC_WIDGET_ITEM_LIMIT.toDouble()
+                    val noOfItems: Double = if (item.size > STATIC_WIDGET_ITEM_LIMIT) CAROUSEL_WIDGET_ITEM_LIMIT else STATIC_WIDGET_ITEM_LIMIT.toDouble()
                     val widthOfSingleChild = ((displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(R.dimen.brand_recom_carousel_gap)) / noOfItems)
                     val heightOfRecyclerView = (widthOfSingleChild + itemView.context.resources.getDimensionPixelSize(R.dimen.dp_16)).toInt()
-                    if(recyclerView.layoutParams.height != heightOfRecyclerView) {
+                    if (recyclerView.layoutParams.height != heightOfRecyclerView) {
                         val params = recyclerView.layoutParams
                         params.height = heightOfRecyclerView
                         recyclerView.layoutParams = params
                     }
                     discoveryRecycleAdapter.setDataList(item as? ArrayList<ComponentsItem>)
                 }
-            })
+            }
         }
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            brandRecommendationViewModel.getComponentDataLiveData().removeObservers(it)
-            brandRecommendationViewModel.getListDataLiveData().removeObservers(it)
+            brandRecommendationViewModel?.getComponentDataLiveData()?.removeObservers(it)
+            brandRecommendationViewModel?.getListDataLiveData()?.removeObservers(it)
         }
     }
 
     private fun sendBrandRecommendationImpressionGtm(item: List<ComponentsItem>) {
-        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBrandRecommendationImpression(item,
-                brandRecommendationViewModel.getComponentPosition(), brandRecommendationViewModel.getComponentID())
+        brandRecommendationViewModel?.let {
+            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBrandRecommendationImpression(
+                item,
+                it.getComponentPosition(),
+                it.getComponentID()
+            )
+        }
     }
 
     private fun setTitle(title: String) {
@@ -79,9 +84,8 @@ class BrandRecommendationViewHolder(itemView: View, private val fragment: Fragme
         brandRecomTitle.text = title
     }
 
-    companion object{
+    companion object {
         const val STATIC_WIDGET_ITEM_LIMIT = 4
         const val CAROUSEL_WIDGET_ITEM_LIMIT = 4.5
     }
-
 }

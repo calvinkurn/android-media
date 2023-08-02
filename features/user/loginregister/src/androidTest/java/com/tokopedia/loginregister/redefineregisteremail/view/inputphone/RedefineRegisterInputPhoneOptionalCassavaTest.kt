@@ -10,10 +10,10 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.redefineregisteremail.stub.common.launchFragment
 import com.tokopedia.loginregister.redefineregisteremail.stub.data.RedefineRegisterRepositoryStub
@@ -92,6 +92,7 @@ class RedefineRegisterInputPhoneOptionalCassavaTest {
         activityTestRule.launchFragment(R.id.redefineRegisterInputPhoneFragment, bundleOptional)
         intending(hasData(ApplinkConstInternalUserPlatform.COTP)).respondWithOk()
 
+        Thread.sleep(1000)
         inputValidPhone()
         clickSubmit()
         clickSecondaryButtonDialog()
@@ -129,5 +130,4 @@ class RedefineRegisterInputPhoneOptionalCassavaTest {
         private const val TEST_CASE_ID_324 = "324"
         private const val TEST_CASE_ID_326 = "326"
     }
-
 }

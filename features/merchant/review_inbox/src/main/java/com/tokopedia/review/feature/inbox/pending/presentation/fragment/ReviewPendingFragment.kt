@@ -293,7 +293,7 @@ class ReviewPendingFragment :
                 )
             } else if (resultCode == Activity.RESULT_FIRST_USER) {
                 onFailCreateReview(
-                    data?.getStringExtra(ReviewInboxConstants.BULK_CREATE_REVIEW_MESSAGE)
+                    data?.getStringExtra(ApplinkConstInternalMarketplace.BULK_CREATE_REVIEW_MESSAGE)
                         ?: getString(R.string.review_pending_invalid_to_review)
                 )
             }
@@ -418,7 +418,7 @@ class ReviewPendingFragment :
     }
 
     private fun showBulkReviewToasterFromIntent() {
-        activity?.intent?.extras?.getString(ReviewInboxConstants.BULK_CREATE_REVIEW_MESSAGE)?.let { message ->
+        activity?.intent?.extras?.getString(ApplinkConstInternalMarketplace.BULK_CREATE_REVIEW_MESSAGE)?.let { message ->
             showToaster(message, getString(R.string.review_oke))
         }
     }

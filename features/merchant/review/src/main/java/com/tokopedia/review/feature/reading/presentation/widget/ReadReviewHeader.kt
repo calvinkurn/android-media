@@ -211,7 +211,7 @@ class ReadReviewHeader @JvmOverloads constructor(
             }
             else -> {
                 Pair(selectedFilter.firstOrNull()?.listTitleText
-                        ?: context.getString(R.string.review_reading_filter_all_ratings), getIconUnifyDrawable(context, IconUnify.STAR_FILLED, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y300)))
+                        ?: context.getString(R.string.review_reading_filter_all_ratings), getIconUnifyDrawable(context, IconUnify.STAR_FILLED, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN300)))
             }
         }
     }

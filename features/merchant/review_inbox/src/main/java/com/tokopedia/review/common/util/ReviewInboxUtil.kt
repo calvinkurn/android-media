@@ -8,14 +8,6 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 
 object ReviewInboxUtil {
 
-    fun convertMapObjectToString(map: HashMap<String, Any>): HashMap<String, String> {
-        val newMap = HashMap<String, String>()
-        for ((key, value) in map) {
-            newMap[key] = value.toString()
-        }
-        return newMap
-    }
-
     fun routeToWebview(context: Context, bottomSheet: BottomSheetUnify?, url: String): Boolean {
         val webviewUrl = String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
         bottomSheet?.dismiss()

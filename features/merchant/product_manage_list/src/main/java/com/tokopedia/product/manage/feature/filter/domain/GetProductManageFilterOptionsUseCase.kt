@@ -1,8 +1,8 @@
 package com.tokopedia.product.manage.feature.filter.domain
 
-import com.tokopedia.core.common.category.domain.interactor.GetCategoryListUseCase
-import com.tokopedia.core.common.category.domain.interactor.GetCategoryListUseCase.Companion.PARAM_FILTER
-import com.tokopedia.core.common.category.domain.model.CategoriesResponse
+import com.tokopedia.product.manage.common.feature.category.domain.GetCategoryListUseCase
+import com.tokopedia.product.manage.common.feature.category.domain.GetCategoryListUseCase.Companion.PARAM_FILTER
+import com.tokopedia.product.manage.common.feature.category.model.CategoriesResponse
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionsResponse
 import com.tokopedia.product.manage.common.feature.list.data.model.filter.ProductListMetaResponse
 import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductListMetaUseCase

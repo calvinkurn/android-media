@@ -18,7 +18,7 @@ import com.tokopedia.media.loader.module.GlideRequest
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.media.loader.wrapper.MediaDecodeFormat
 
-abstract class MediaLoaderFactory<T> {
+internal abstract class MediaLoaderFactory<T> {
 
     /*
     * The transformation mechanism carried out by medialoader is

@@ -15,7 +15,7 @@
         android:lines="1"
         android:paddingStart="@dimen/spacing_lvl2"
         android:paddingLeft="@dimen/spacing_lvl2"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyType="heading_5"
         tools:text="Transaksi Terakhir" />
 

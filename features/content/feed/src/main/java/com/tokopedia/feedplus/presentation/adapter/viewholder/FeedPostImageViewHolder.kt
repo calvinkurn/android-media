@@ -3,6 +3,7 @@ package com.tokopedia.feedplus.presentation.adapter.viewholder
 import android.annotation.SuppressLint
 import android.view.GestureDetector
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewParent
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
@@ -11,33 +12,31 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.content.common.report_content.model.FeedContentData
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedPostBinding
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
+import com.tokopedia.feedplus.presentation.adapter.FeedContentAdapter
 import com.tokopedia.feedplus.presentation.adapter.FeedPostImageAdapter
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_CLEAR_MODE
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_COMMENT_COUNT
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_LIKED_UNLIKED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_REMINDER_CHANGED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED_CHANGED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloads
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.*
-import com.tokopedia.feedplus.presentation.uiview.FeedAsgcTagsView
-import com.tokopedia.feedplus.presentation.uiview.FeedAuthorInfoView
-import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonView
-import com.tokopedia.feedplus.presentation.uiview.FeedCaptionView
-import com.tokopedia.feedplus.presentation.uiview.FeedCommentButtonView
-import com.tokopedia.feedplus.presentation.uiview.FeedProductButtonView
-import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
+import com.tokopedia.feedplus.presentation.uiview.*
 import com.tokopedia.feedplus.presentation.util.animation.FeedLikeAnimationComponent
 import com.tokopedia.feedplus.presentation.util.animation.FeedSmallLikeIconAnimationComponent
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.play_common.util.extension.changeConstraint
 import kotlinx.coroutines.*
 import kotlin.math.abs
 
@@ -59,8 +58,18 @@ class FeedPostImageViewHolder(
         LinearLayoutManager(binding.root.context, RecyclerView.HORIZONTAL, false)
     private var adapter: FeedPostImageAdapter? = null
 
+    private val captionViewListener = object : FeedCaptionView.Listener {
+        override fun onExpanded(view: FeedCaptionView) {
+            val screenHeight = getScreenHeight()
+            val maxHeight = screenHeight * 0.45f
+            binding.root.changeConstraint {
+                constrainMaxHeight(binding.layoutFeedCaption.id, maxHeight.toInt())
+            }
+        }
+    }
+
     private val authorView = FeedAuthorInfoView(binding.layoutAuthorInfo, listener)
-    private val captionView = FeedCaptionView(binding.tvFeedCaption, listener)
+    private val captionView = FeedCaptionView(binding.tvFeedCaption, binding.layoutFeedCaption, listener, captionViewListener)
     private val productButtonView = FeedProductButtonView(binding.productTagButton, listener)
     private val asgcTagsView = FeedAsgcTagsView(binding.rvFeedAsgcTags)
     private val campaignView = FeedCampaignRibbonView(binding.feedCampaignRibbon, listener)
@@ -80,6 +89,15 @@ class FeedPostImageViewHolder(
     private var mData: FeedCardImageContentModel? = null
 
     init {
+        binding.root.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+            override fun onViewAttachedToWindow(p0: View) {
+            }
+
+            override fun onViewDetachedFromWindow(p0: View) {
+                onNotSelected()
+            }
+        })
+
         with(binding) {
             indicatorFeedContent.activeColor = ContextCompat.getColor(
                 binding.root.context,
@@ -176,6 +194,12 @@ class FeedPostImageViewHolder(
         binding.scrollableHost.setTargetParent(parentToBeDisabled)
     }
 
+    fun bind(item: FeedContentAdapter.Item) {
+        val data = item.data as FeedCardImageContentModel
+        bind(data)
+        if (item.isSelected) onSelected(data)
+    }
+
     override fun bind(element: FeedCardImageContentModel?) {
         mData = element
         element?.let { data ->
@@ -201,22 +225,18 @@ class FeedPostImageViewHolder(
                 bindAsgcTags(data)
                 bindCampaignRibbon(data)
 
-                val trackerData = trackerDataModel ?: trackerMapper.transformImageContentToTrackerModel(data)
+                val trackerData =
+                    trackerDataModel ?: trackerMapper.transformImageContentToTrackerModel(data)
 
                 menuButton.setOnClickListener {
                     listener.onMenuClicked(
                         data.id,
-                        data.editable,
-                        data.deletable,
-                        data.reportable || data.isTypeProductHighlight,
-                        FeedContentData(
-                            data.text,
-                            data.id,
-                            data.author.id,
-                            absoluteAdapterPosition
-                        ),
+                        data.menuItems.map {
+                            it.copy(
+                                contentData = it.contentData?.copy(rowNumber = absoluteAdapterPosition)
+                            )
+                        },
                         trackerData
-
                     )
                 }
                 shareButton.setOnClickListener {
@@ -228,6 +248,17 @@ class FeedPostImageViewHolder(
                 }
             }
         }
+    }
+
+    fun bind(item: FeedContentAdapter.Item, payloads: MutableList<Any>) {
+        val selectedPayload = if (item.isSelected) FEED_POST_SELECTED else FEED_POST_NOT_SELECTED
+        val feedPayloads = payloads.firstOrNull { it is FeedViewHolderPayloads } as? FeedViewHolderPayloads
+        val newPayloads = if (feedPayloads != null && feedPayloads.payloads.contains(FEED_POST_SELECTED_CHANGED)) {
+            payloads.toMutableList().also { it.add(selectedPayload) }
+        } else {
+            payloads
+        }
+        bind(item.data as FeedCardImageContentModel, newPayloads)
     }
 
     override fun bind(element: FeedCardImageContentModel?, payloads: MutableList<Any>) {
@@ -248,21 +279,16 @@ class FeedPostImageViewHolder(
                 bindComments(it)
             }
 
-            if (payloads.contains(FEED_POST_SELECTED)) {
-                campaignView.startAnimation()
-                sendImpressionTracker(it)
-                updateProductTagText(it)
+            if (payloads.contains(FEED_POST_REMINDER_CHANGED)) {
+                campaignView.bindCampaignReminder(element.campaign.isReminderActive)
+            }
 
-                isAutoSwipeOn = true
-                runAutoSwipe()
+            if (payloads.contains(FEED_POST_SELECTED)) {
+                onSelected(element)
             }
 
             if (payloads.contains(FEED_POST_NOT_SELECTED)) {
-                job?.cancel()
-                campaignView.resetView()
-                hideClearView()
-
-                isAutoSwipeOn = false
+                onNotSelected()
             }
 
             if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_FOLLOW_CHANGED)) {
@@ -280,6 +306,24 @@ class FeedPostImageViewHolder(
         }
     }
 
+    private fun onSelected(data: FeedCardImageContentModel) {
+        campaignView.resetView()
+        campaignView.startAnimation()
+        sendImpressionTracker(data)
+        updateProductTagText(data)
+
+        isAutoSwipeOn = true
+        runAutoSwipe()
+    }
+
+    private fun onNotSelected() {
+        job?.cancel()
+        campaignView.resetView()
+        hideClearView()
+
+        isAutoSwipeOn = false
+    }
+
     private fun updateProductTagText(element: FeedCardImageContentModel) {
         val index = layoutManager.findFirstVisibleItemPosition()
 
@@ -288,11 +332,13 @@ class FeedPostImageViewHolder(
                 if (it.tagging.isNotEmpty()) {
                     if (it.tagging.size == PRODUCT_COUNT_ONE && it.tagging[PRODUCT_COUNT_ZERO].tagIndex in PRODUCT_COUNT_ZERO until element.products.size) {
                         productTagView.bindText(
-                            listOf(element.products[it.tagging[PRODUCT_COUNT_ZERO].tagIndex])
+                            listOf(element.products[it.tagging[PRODUCT_COUNT_ZERO].tagIndex]),
+                            element.totalProducts
                         )
                     } else {
                         productTagView.bindText(
-                            element.products
+                            element.products,
+                            element.totalProducts
                         )
                     }
                 } else {
@@ -392,7 +438,6 @@ class FeedPostImageViewHolder(
             postType = model.typename,
             isFollowing = model.followers.isFollowed,
             campaign = model.campaign,
-            hasVoucher = model.hasVoucher,
             products = products,
             totalProducts = model.totalProducts,
             trackerData = trackerDataModel,
@@ -406,6 +451,7 @@ class FeedPostImageViewHolder(
             campaign = model.campaign,
             hasVoucher = model.hasVoucher,
             products = model.products,
+            totalProducts = model.totalProducts,
             trackerData = trackerDataModel,
             positionInFeed = absoluteAdapterPosition
         )
@@ -442,6 +488,7 @@ class FeedPostImageViewHolder(
             model.campaign,
             model.cta,
             model.products.firstOrNull(),
+            model.products,
             model.hasVoucher,
             model.isTypeProductHighlight,
             trackerDataModel ?: trackerMapper.transformImageContentToTrackerModel(model),

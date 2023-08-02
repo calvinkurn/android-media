@@ -25,11 +25,6 @@ import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
-import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
-import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
@@ -57,6 +52,7 @@ import com.tokopedia.search.result.product.cpm.BannerAdsPresenterDelegate
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterPresenter
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
+import com.tokopedia.search.result.product.grid.ProductGridType
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselPresenter
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselPresenterDelegate
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenter
@@ -75,8 +71,11 @@ import com.tokopedia.search.result.product.performancemonitoring.runCustomMetric
 import com.tokopedia.search.result.product.postprocessing.PostProcessingFilter
 import com.tokopedia.search.result.product.recommendation.RecommendationPresenterDelegate
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
+import com.tokopedia.search.result.product.responsecode.ResponseCodeImpl
+import com.tokopedia.search.result.product.responsecode.ResponseCodeProvider
 import com.tokopedia.search.result.product.safesearch.SafeSearchPresenter
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
+import com.tokopedia.search.result.product.similarsearch.SimilarSearchOnBoardingPresenterDelegate
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
 import com.tokopedia.search.result.product.ticker.TickerPresenter
 import com.tokopedia.search.result.product.visitable.VisitableFactory
@@ -152,6 +151,8 @@ class ProductListPresenter @Inject constructor(
     private val adsLowOrganic: AdsLowOrganic,
     @Named(SearchConstant.AB_TEST_REMOTE_CONFIG)
     private val remoteConfig: RemoteConfig,
+    private val responseCodeImpl: ResponseCodeImpl,
+    private val similarSearchOnBoardingPresenterDelegate: SimilarSearchOnBoardingPresenterDelegate,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
@@ -164,7 +165,8 @@ class ProductListPresenter @Inject constructor(
     SafeSearchPresenter by safeSearchPresenter,
     WishlistPresenter by wishlistPresenterDelegate,
     BottomSheetFilterPresenter by bottomSheetFilterPresenter,
-    InspirationCarouselPresenter by inspirationCarouselPresenter {
+    InspirationCarouselPresenter by inspirationCarouselPresenter,
+    ResponseCodeProvider by responseCodeImpl {
 
     companion object {
         private val generalSearchTrackingRelatedKeywordResponseCodeList = listOf("3", "4", "5", "6")
@@ -176,6 +178,7 @@ class ProductListPresenter @Inject constructor(
         )
         private const val RESPONSE_CODE_RELATED = "3"
         private const val RESPONSE_CODE_SUGGESTION = "6"
+        private const val REQUEST_TIMEOUT_RESPONSE_CODE = "15"
     }
 
     private var compositeSubscription: CompositeSubscription? = CompositeSubscription()
@@ -185,7 +188,6 @@ class ProductListPresenter @Inject constructor(
     private var enableGlobalNavWidget = true
     private var additionalParams = ""
     private var hasLoadData = false
-    private var responseCode = ""
     private var navSource = ""
     private var pageId = ""
     private var pageTitle = ""
@@ -614,7 +616,7 @@ class ProductListPresenter @Inject constructor(
 
         val productDataView = createFirstProductDataView(searchProductModel)
 
-        responseCode = productDataView.responseCode ?: ""
+        responseCodeImpl.setResponseCode(productDataView.responseCode ?: "")
         suggestionPresenter.setSuggestionDataView(productDataView.suggestionModel)
         broadMatchDelegate.setRelatedDataView(productDataView.relatedDataView)
         bannerDelegate.setBannerData(productDataView.bannerDataView)
@@ -629,6 +631,7 @@ class ProductListPresenter @Inject constructor(
 
         view.setAutocompleteApplink(productDataView.autocompleteApplink)
         view.setDefaultLayoutType(productDataView.defaultView)
+        view.setProductGridType(ProductGridType.getProductGridType(productDataView.gridType))
 
         if (!productDataView.isQuerySafe) view.showAdultRestriction()
 
@@ -695,7 +698,7 @@ class ProductListPresenter @Inject constructor(
             keyword = view.queryKey,
             topAdsModel = productDataView.adsModel,
             productData = createAdsLowOrganicProductData(),
-            action = visitableList::addAll
+            action = visitableList::addAll,
         )
         broadMatchDelegate.processBroadMatchReplaceEmptySearch(visitableList::addAll)
 
@@ -790,7 +793,7 @@ class ProductListPresenter @Inject constructor(
             isFilterActive = isAnyFilterActive,
             keyword = view.queryKey,
             localSearch = emptyStateLocalSearch(isAnyFilterActive),
-            isShowAdsLowOrganic = adsLowOrganic.isEnabledRollence,
+            isShowAdsLowOrganic = adsLowOrganic.isEnabled,
         )
     }
 
@@ -876,7 +879,7 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun isShowGlobalSearchRecommendation() =
-        !view.isAnyFilterActive && !adsLowOrganic.isEnabledRollence
+        !view.isAnyFilterActive && !adsLowOrganic.isEnabled
 
     private fun getGlobalSearchRecommendation() {
         view.addLoading()
@@ -924,6 +927,8 @@ class ProductListPresenter @Inject constructor(
             view.addLoading()
 
         view.updateScrollListener()
+
+        checkShouldShowViewTypeOnBoarding(productListType)
     }
 
     private fun getFirstProductPositionWithBOELabel(list: List<Visitable<*>>): Int {
@@ -1135,12 +1140,18 @@ class ProductListPresenter @Inject constructor(
                 SearchEventTracking.Label.GENERAL_SEARCH_EVENT_LABEL,
                 query,
                 getKeywordProcess(productDataView),
-                productDataView.responseCode,
+                getResponseCode(productDataView),
                 source,
                 getNavSourceForGeneralSearchTracking(),
                 getPageTitleForGeneralSearchTracking(),
                 productDataView.totalData
         )
+    }
+
+    private fun getResponseCode(productDataView: ProductDataView): String? {
+        return if(productDataView.productList.isEmpty() && productDataView.responseCode.equals("0")){
+             REQUEST_TIMEOUT_RESPONSE_CODE
+        } else productDataView.responseCode
     }
 
     private fun getTopNavSource(globalNavDataView: GlobalNavDataView?): String {
@@ -1281,6 +1292,15 @@ class ProductListPresenter @Inject constructor(
                 view.showOnBoarding(firstProductPositionWithBOELabel)
     }
 
+    private fun checkShouldShowViewTypeOnBoarding(productListType: String) {
+        if (isViewAttached
+            && productListType == SearchConstant.ProductListType.LIST_VIEW
+            && shouldShowViewTypeCoachmark()
+        ) {
+            view.enableProductViewTypeOnBoarding()
+        }
+    }
+
     private fun checkProductWithBOELabel(position: Int): Boolean {
         return firstProductPositionWithBOELabel >= 0
                 && firstProductPositionWithBOELabel == position
@@ -1288,6 +1308,10 @@ class ProductListPresenter @Inject constructor(
 
     private fun shouldShowBoeCoachmark(): Boolean {
         return searchCoachMarkLocalCache.shouldShowBoeCoachmark()
+    }
+
+    private fun shouldShowViewTypeCoachmark(): Boolean {
+        return searchCoachMarkLocalCache.shouldShowViewTypeCoachmark()
     }
 
     override fun onProductClick(item: ProductItemDataView?, adapterPosition: Int) {
@@ -1302,6 +1326,11 @@ class ProductListPresenter @Inject constructor(
             dimension90,
             externalReference,
             chooseAddressDelegate.getChooseAddressParams(),
+        )
+
+        similarSearchOnBoardingPresenterDelegate.checkShouldDisplaySimilarSearchThreeDotsCoachmark(
+            item,
+            adapterPosition,
         )
 
         view.routeToProductDetail(item, adapterPosition)

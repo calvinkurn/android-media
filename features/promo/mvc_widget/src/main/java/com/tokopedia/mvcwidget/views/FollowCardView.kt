@@ -35,16 +35,16 @@ open class FollowCardView @JvmOverloads constructor(
         paintLarge.style = Paint.Style.FILL
         if (context.isDarkMode()) {
             paintSmall.color =
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N600)
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN800)
             paintLarge.color =
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N500)
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600)
         } else {
             paintSmall.color =
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G200)
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN100)
             paintLarge.color =
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G100)
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN50)
         }
-        background.setColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0), PorterDuff.Mode.SRC)
+        background.setColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0), PorterDuff.Mode.SRC)
         readFromAttrs(attrs)
     }
 

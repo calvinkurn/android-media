@@ -1,8 +1,5 @@
 package com.tokopedia.play.widget.analytic.global
 
-import com.tokopedia.play.widget.analytic.list.jumbo.PlayWidgetInListJumboAnalyticListener
-import com.tokopedia.play.widget.analytic.const.VAL_BUSINESS_UNIT
-import com.tokopedia.play.widget.analytic.const.VAL_CURRENT_SITE
 import com.tokopedia.play.widget.analytic.const.EVENT_CLICK
 import com.tokopedia.play.widget.analytic.const.EVENT_VIEW
 import com.tokopedia.play.widget.analytic.const.KEY_BUSINESS_UNIT
@@ -15,12 +12,15 @@ import com.tokopedia.play.widget.analytic.const.KEY_SESSION_IRIS
 import com.tokopedia.play.widget.analytic.const.KEY_USER_ID
 import com.tokopedia.play.widget.analytic.const.PROMO_CLICK
 import com.tokopedia.play.widget.analytic.const.PROMO_VIEW
-import com.tokopedia.play.widget.analytic.const.trackerMultiFields
+import com.tokopedia.play.widget.analytic.const.VAL_BUSINESS_UNIT
+import com.tokopedia.play.widget.analytic.const.VAL_CURRENT_SITE
 import com.tokopedia.play.widget.analytic.const.irisSessionId
 import com.tokopedia.play.widget.analytic.const.isRilisanSpesial
 import com.tokopedia.play.widget.analytic.const.toTrackingString
 import com.tokopedia.play.widget.analytic.const.toTrackingType
+import com.tokopedia.play.widget.analytic.const.trackerMultiFields
 import com.tokopedia.play.widget.analytic.global.model.PlayWidgetAnalyticModel
+import com.tokopedia.play.widget.analytic.list.jumbo.PlayWidgetInListJumboAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetJumboView
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
@@ -41,14 +41,14 @@ import java.util.HashMap
 class PlayWidgetJumboGlobalAnalytic @AssistedInject constructor(
     @Assisted val model: PlayWidgetAnalyticModel,
     @Assisted val trackingQueue: TrackingQueue,
-    private val userSession: UserSessionInterface,
+    private val userSession: UserSessionInterface
 ) : PlayWidgetInListJumboAnalyticListener {
 
     @AssistedFactory
     interface Factory {
         fun create(
             model: PlayWidgetAnalyticModel,
-            trackingQueue: TrackingQueue,
+            trackingQueue: TrackingQueue
         ): PlayWidgetJumboGlobalAnalytic
     }
 
@@ -60,7 +60,7 @@ class PlayWidgetJumboGlobalAnalytic @AssistedInject constructor(
         item: PlayWidgetChannelUiModel,
         config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        verticalWidgetPosition: Int,
+        verticalWidgetPosition: Int
     ) {
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionView(
             event = PROMO_VIEW,
@@ -102,7 +102,7 @@ class PlayWidgetJumboGlobalAnalytic @AssistedInject constructor(
         item: PlayWidgetChannelUiModel,
         config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        verticalWidgetPosition: Int,
+        verticalWidgetPosition: Int
     ) {
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
             event = PROMO_CLICK,
@@ -144,7 +144,7 @@ class PlayWidgetJumboGlobalAnalytic @AssistedInject constructor(
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
         isRemindMe: Boolean,
-        verticalWidgetPosition: Int,
+        verticalWidgetPosition: Int
     ) {
         TrackApp.getInstance().gtm
             .sendGeneralEvent(
@@ -164,7 +164,7 @@ class PlayWidgetJumboGlobalAnalytic @AssistedInject constructor(
                     KEY_BUSINESS_UNIT to VAL_BUSINESS_UNIT,
                     KEY_CURRENT_SITE to VAL_CURRENT_SITE,
                     KEY_SESSION_IRIS to irisSessionId,
-                    KEY_USER_ID to userId,
+                    KEY_USER_ID to userId
                 )
             )
     }
@@ -174,7 +174,7 @@ class PlayWidgetJumboGlobalAnalytic @AssistedInject constructor(
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
         isRemindMe: Boolean,
-        verticalWidgetPosition: Int,
+        verticalWidgetPosition: Int
     ) {
         TrackApp.getInstance().gtm
             .sendGeneralEvent(
@@ -194,7 +194,7 @@ class PlayWidgetJumboGlobalAnalytic @AssistedInject constructor(
                     KEY_BUSINESS_UNIT to VAL_BUSINESS_UNIT,
                     KEY_CURRENT_SITE to VAL_CURRENT_SITE,
                     KEY_SESSION_IRIS to irisSessionId,
-                    KEY_USER_ID to userId,
+                    KEY_USER_ID to userId
                 )
             )
     }

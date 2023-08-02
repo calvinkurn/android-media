@@ -79,7 +79,7 @@
                     android:ellipsize="end"
                     android:fontFamily="sans-serif"
                     android:lines="1"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     android:visibility="visible"
                     app:layout_constraintBottom_toTopOf="@+id/authorSubtitile"
                     app:layout_constraintEnd_toStartOf="@+id/headerAction"
@@ -102,7 +102,7 @@
                     android:ellipsize="end"
                     android:fontFamily="sans-serif"
                     android:lines="1"
-                    android:textColor="@color/Unify_N700_32"
+                    android:textColor="@color/Unify_NN950_32"
                     android:textSize="10sp"
                     android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -156,7 +156,7 @@
                 android:lineSpacingExtra="5sp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                android:textColor="@color/Unify_N700_44"
+                android:textColor="@color/Unify_NN950_44"
                 app:typographyType="body_3"
                 tools:text="Welcoming October, road to hari batik nasional, you can wear batik and be stylish as well hey?" />
 
@@ -209,7 +209,7 @@
                         android:id="@+id/footerBackground"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@color/Unify_G100"
+                        android:background="@color/Unify_GN50"
                         android:visibility="visible" />
 
                     <com.tokopedia.unifyprinciples.Typography
@@ -222,7 +222,7 @@
                         android:layout_marginEnd="16dp"
                         android:layout_marginRight="16dp"
                         android:fontFamily="sans-serif-medium"
-                        android:textColor="@color/Unify_G400"
+                        android:textColor="@color/Unify_GN500"
                         app:typographyType="body_3"
                         tools:text="Info Vote Atau Enggak, Terserah dong"
                         tools:visibility="visible" />
@@ -263,7 +263,7 @@
                         android:layout_marginLeft="4dp"
                         android:fontFamily="sans-serif"
                         android:text="@string/kol_action_like"
-                        android:textColor="@color/Unify_N700_68"
+                        android:textColor="@color/Unify_NN950_68"
                         app:layout_constraintBottom_toBottomOf="@id/likeIcon"
                         app:layout_constraintStart_toEndOf="@id/likeIcon"
                         app:layout_constraintTop_toTopOf="@id/likeIcon"
@@ -300,7 +300,7 @@
                         android:layout_marginLeft="4dp"
                         android:fontFamily="sans-serif"
                         android:text="@string/kol_action_comment"
-                        android:textColor="@color/Unify_N700_68"
+                        android:textColor="@color/Unify_NN950_68"
                         app:layout_constraintBottom_toBottomOf="@id/commentIcon"
                         app:layout_constraintStart_toEndOf="@id/commentIcon"
                         app:layout_constraintTop_toTopOf="@id/commentIcon"
@@ -334,7 +334,7 @@
                         android:paddingStart="4dp"
                         android:paddingLeft="4dp"
                         android:text="@string/kol_action_share"
-                        android:textColor="@color/Unify_N700_68"
+                        android:textColor="@color/Unify_NN950_68"
                         app:layout_constraintBottom_toBottomOf="@id/shareIcon"
                         app:layout_constraintStart_toEndOf="@id/shareIcon"
                         app:layout_constraintTop_toTopOf="@id/shareIcon"

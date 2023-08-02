@@ -5,8 +5,8 @@ import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.discovery.common.analytics.SearchComponentTracking
 import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel.LABEL_INTEGRITY
+import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.product.detail.common.extensions.ifNullOrBlank
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
@@ -172,7 +172,7 @@ class InspirationCarouselDataView(
                     "category", "none / other",
                     "variant", "none / other",
                     "list", getInspirationCarouselUnificationListName(inspirationCarouselType, componentId),
-                    "position", optionPosition,
+                    "index", optionPosition.toString(),
                     "dimension115", labelGroupDataList.getFormattedPositionName(),
                     "dimension61", filterSortParams,
                     "dimension90", dimension90,
@@ -193,7 +193,7 @@ class InspirationCarouselDataView(
                     "item_brand", "none / other",
                     "item_category", "none / other",
                     "list", getInspirationCarouselUnificationListName(inspirationCarouselType, componentId),
-                    "position", optionPosition,
+                    "index", optionPosition.toString(),
                     "dimension115", labelGroupDataList.getFormattedPositionName(),
                     "dimension61", filterSortParams,
                     "dimension90", dimension90,

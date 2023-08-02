@@ -142,21 +142,21 @@ class InboxReputationViewHolder constructor(
             "1" -> background.colorFilter = PorterDuffColorFilter(
                 MethodChecker.getColor(
                     itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_R600
+                    com.tokopedia.unifyprinciples.R.color.Unify_RN500
                 ),
                 PorterDuff.Mode.MULTIPLY
             )
             "2" -> background.colorFilter = PorterDuffColorFilter(
                 MethodChecker.getColor(
                     itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_Y300
+                    com.tokopedia.unifyprinciples.R.color.Unify_YN300
                 ),
                 PorterDuff.Mode.MULTIPLY
             )
             else -> background.colorFilter = PorterDuffColorFilter(
                 MethodChecker.getColor(
                     itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_B400
+                    com.tokopedia.unifyprinciples.R.color.Unify_BN400
                 ),
                 PorterDuff.Mode.MULTIPLY
             )

@@ -195,4 +195,11 @@ object FilterHelper {
             )
         }
     }
+
+    fun List<Filter>.forEachOptions(action: (Option) -> Unit) {
+        forEach { it.options.forEach(action) }
+    }
+
+    fun List<Filter>.optionList(): List<Option> =
+        map { it.options }.flatten()
 }

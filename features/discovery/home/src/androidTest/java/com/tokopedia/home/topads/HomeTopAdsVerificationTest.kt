@@ -22,19 +22,19 @@ import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelSprintViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.component.disableCoachMark
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.util.HomeInstrumentationTestHelper.deleteHomeDatabase
 import com.tokopedia.home.util.HomeRecyclerViewIdlingResource
 import com.tokopedia.home_component.viewholders.FeaturedShopViewHolder
+import com.tokopedia.home_component.viewholders.FlashSaleViewHolder
 import com.tokopedia.home_component.viewholders.Lego4ProductViewHolder
 import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
 import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
+import com.tokopedia.home_component.visitable.FlashSaleDataModel
 import com.tokopedia.home_component.visitable.Lego4ProductDataModel
 import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.home_component.visitable.MixTopDataModel
@@ -137,12 +137,6 @@ class HomeTopAdsVerificationTest {
                 for (grid in item.channelModel.channelGrids)
                     if (grid.isTopads) count++
             }
-            is DynamicChannelDataModel -> {
-                item.channel?.grids?.let {
-                    for (grid in it)
-                        if (grid.isTopads) count++
-                }
-            }
             is FeaturedShopDataModel -> {
                 for (grid in item.channelModel.channelGrids)
                     if (grid.isTopads) count++
@@ -153,6 +147,11 @@ class HomeTopAdsVerificationTest {
                 }
             }
             is Lego4ProductDataModel -> {
+                for (grid in item.channelModel.channelGrids) {
+                    if (grid.isTopads) count++
+                }
+            }
+            is FlashSaleDataModel -> {
                 for (grid in item.channelModel.channelGrids) {
                     if (grid.isTopads) count++
                 }
@@ -185,9 +184,6 @@ class HomeTopAdsVerificationTest {
                     clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_product, 0)
                 }
             }
-            is DynamicChannelSprintViewHolder -> {
-                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList, 0)
-            }
             is FeaturedShopViewHolder -> {
                 waitForData()
                 clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
@@ -203,6 +199,9 @@ class HomeTopAdsVerificationTest {
             }
             is Lego4ProductViewHolder -> {
                 clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList, 0)
+            }
+            is FlashSaleViewHolder -> {
+                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.carouselProductCardRecyclerView, 0)
             }
         }
     }

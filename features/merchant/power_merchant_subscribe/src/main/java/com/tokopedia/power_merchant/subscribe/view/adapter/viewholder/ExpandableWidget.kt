@@ -52,7 +52,7 @@ class ExpandableWidget(
             if (grade == PMConstant.ShopGrade.PRO_ULTIMATE) {
                 val textColor = PMCommonUtils.getHexColor(
                     itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 )
                 textTitle.text = getString(R.string.pm_info_max_benefit_title)
                 textDescription.text = getString(
@@ -61,7 +61,7 @@ class ExpandableWidget(
             } else {
                 val textColor = PMCommonUtils.getHexColor(
                     itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 )
                 textTitle.text = getString(R.string.pm_info_benefit_increase_title)
                 textDescription.text = getString(

@@ -36,22 +36,22 @@ import com.tokopedia.explore.view.listener.ContentExploreContract
 import com.tokopedia.explore.view.uimodel.ExploreCategoryViewModel
 import com.tokopedia.explore.view.uimodel.ExploreImageViewModel
 import com.tokopedia.explore.view.uimodel.ExploreViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingModel
-import com.tokopedia.user.session.UserSessionInterface
-import javax.inject.Inject
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingModel
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
 /**
  * @author by milhamj on 19/07/18.
  */
 
 class ContentExploreFragment :
-        BaseDaggerFragment(),
-        ContentExploreContract.View,
-        SwipeRefreshLayout.OnRefreshListener,
-        FeedPlusTabParentFragment {
+    BaseDaggerFragment(),
+    ContentExploreContract.View,
+    SwipeRefreshLayout.OnRefreshListener,
+    FeedPlusTabParentFragment {
 
     companion object {
 
@@ -80,16 +80,22 @@ class ContentExploreFragment :
 
     @Inject
     lateinit var presenter: ContentExploreContract.Presenter
+
     @Inject
     lateinit var categoryAdapter: ExploreCategoryAdapter
+
     @Inject
     lateinit var imageAdapter: ExploreImageAdapter
+
     @Inject
     lateinit var affiliatePreference: AffiliatePreference
+
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var analytics: ContentExploreAnalytics
+
     @Inject
     lateinit var feedFloatingButtonManager: FeedFloatingButtonManager
 
@@ -114,15 +120,18 @@ class ContentExploreFragment :
     }
 
     override fun initInjector() {
-        val baseAppComponent = (requireContext().applicationContext as BaseMainApplication).baseAppComponent
+        val baseAppComponent =
+            (requireContext().applicationContext as BaseMainApplication).baseAppComponent
         DaggerExploreComponent.builder()
-                .baseAppComponent(baseAppComponent)
-                .build()
-                .inject(this)
+            .baseAppComponent(baseAppComponent)
+            .build()
+            .inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.fragment_content_explore, container, false)
         exploreCategoryRv = view.findViewById(R.id.explore_category_rv)
         exploreImageRv = view.findViewById(R.id.explore_image_rv)
@@ -152,18 +161,22 @@ class ContentExploreFragment :
         dropKeyboard()
         swipeToRefresh.setOnRefreshListener(this)
 
-        val linearLayoutManager = LinearLayoutManager(context,
-                LinearLayoutManager.HORIZONTAL,
-                false)
+        val linearLayoutManager = LinearLayoutManager(
+            context,
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
         exploreCategoryRv.layoutManager = linearLayoutManager
         categoryAdapter = ExploreCategoryAdapter()
         categoryAdapter.listener = this
         exploreCategoryRv.adapter = categoryAdapter
 
-        val gridLayoutManager = GridLayoutManager(context,
-                IMAGE_SPAN_COUNT,
-                GridLayoutManager.VERTICAL,
-                false)
+        val gridLayoutManager = GridLayoutManager(
+            context,
+            IMAGE_SPAN_COUNT,
+            GridLayoutManager.VERTICAL,
+            false
+        )
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 return when {
@@ -192,9 +205,10 @@ class ContentExploreFragment :
     private fun initVar() {
         if (arguments != null) {
             categoryId = (requireArguments().getString(
-                    PARAM_CATEGORY_ID,
-                    DEFAULT_CATEGORY_STRING).toLong()
-            )
+                PARAM_CATEGORY_ID,
+                DEFAULT_CATEGORY_STRING
+            ).toLong()
+                )
             presenter.updateCategoryId(categoryId)
         }
 
@@ -258,7 +272,8 @@ class ContentExploreFragment :
 
     override fun onErrorGetExploreDataMore() {
         canLoadMore = false
-        NetworkErrorHelper.createSnackbarWithAction(activity) { presenter.getExploreData(false) }.showRetrySnackbar()
+        NetworkErrorHelper.createSnackbarWithAction(activity) { presenter.getExploreData(false) }
+            .showRetrySnackbar()
     }
 
     override fun updateCursor(cursor: String) {
@@ -279,7 +294,12 @@ class ContentExploreFragment :
         imageAdapter.clearData()
     }
 
-    override fun onCategoryClicked(position: Int, categoryId: Long, categoryName: String, view: View) {
+    override fun onCategoryClicked(
+        position: Int,
+        categoryId: Long,
+        categoryName: String,
+        view: View
+    ) {
         NetworkErrorHelper.removeEmptyState(view)
         clearSearch()
         resetDataParam()
@@ -297,8 +317,12 @@ class ContentExploreFragment :
                 categoryAdapter.list[position].isActive = true
                 categoryAdapter.notifyItemChanged(position)
             }
-            if (categoryId == ExploreCategoryAdapter.CAT_ID_AFFILIATE && !affiliatePreference.isCoachmarkExploreAsAffiliateShown(userSession.userId)) {
-                view.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            if (categoryId == ExploreCategoryAdapter.CAT_ID_AFFILIATE && !affiliatePreference.isCoachmarkExploreAsAffiliateShown(
+                    userSession.userId
+                )
+            ) {
+                view.viewTreeObserver.addOnGlobalLayoutListener(object :
+                    ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
                         view.viewTreeObserver.removeOnGlobalLayoutListener(this)
                         val originalPost = IntArray(2)
@@ -307,9 +331,9 @@ class ContentExploreFragment :
                         val ypos2 = originalPost[1] + view.height
                         val arrayList = intArrayOf(originalPost[0], originalPost[1], xpos2, ypos2)
                         val coachMarkItem = CoachMarkItem(
-                                view,
-                                activity!!.resources.getString(R.string.coachmark_explore_title_1),
-                                activity!!.resources.getString(R.string.coachmark_explore_content_1)
+                            view,
+                            activity!!.resources.getString(R.string.coachmark_explore_title_1),
+                            activity!!.resources.getString(R.string.coachmark_explore_content_1)
                         ).withCustomTarget(arrayList)
                         coachMarkItemList.add(coachMarkItem)
                     }
@@ -347,11 +371,11 @@ class ContentExploreFragment :
     }
 
     override fun goToKolPostDetail(postId: String, name: String, recomId: Long) {
-        val contentAppLink = UriUtil.buildUri(ApplinkConst.CONTENT_DETAIL, postId)
+        val contentAppLink = UriUtil.buildUri(ApplinkConst.INTERNAL_CONTENT_DETAIL, postId)
         val finaAppLink = Uri.parse(contentAppLink)
-                .buildUpon()
-                .appendQueryParameter(ENTRY_POINT, EXPLORE_TAB)
-                .build().toString()
+            .buildUpon()
+            .appendQueryParameter(ENTRY_POINT, EXPLORE_TAB)
+            .build().toString()
 
         RouteManager.route(requireContext(), finaAppLink)
         analytics.eventTrackExploreItem(name, postId, recomId)
@@ -359,7 +383,8 @@ class ContentExploreFragment :
 
     override fun addExploreItemCoachmark(view: View) {
         if (!affiliatePreference.isCoachmarkExploreAsAffiliateShown(userSession.userId)) {
-            view.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            view.viewTreeObserver.addOnGlobalLayoutListener(object :
+                ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     view.viewTreeObserver.removeOnGlobalLayoutListener(this)
                     val originalPost = IntArray(2)
@@ -368,9 +393,9 @@ class ContentExploreFragment :
                     val ypos2 = originalPost[1] + view.height
                     val arrayList = intArrayOf(originalPost[0], originalPost[1], xpos2, ypos2)
                     val coachMarkItem = CoachMarkItem(
-                            view,
-                            activity!!.resources.getString(R.string.coachmark_explore_title_2),
-                            activity!!.resources.getString(R.string.coachmark_explore_content_2)
+                        view,
+                        activity!!.resources.getString(R.string.coachmark_explore_title_2),
+                        activity!!.resources.getString(R.string.coachmark_explore_content_2)
                     ).withCustomTarget(arrayList)
                     coachMarkItemList.add(coachMarkItem)
                     showCoachMark()
@@ -382,7 +407,11 @@ class ContentExploreFragment :
 
     fun showCoachMark() {
         coachMark = CoachMarkBuilder().build()
-        coachMark.show(activity, String.format(AffiliatePreference.LABEL_TAG_COACHMARK_CATEGORY, userSession.userId), ArrayList(coachMarkItemList))
+        coachMark.show(
+            activity,
+            String.format(AffiliatePreference.LABEL_TAG_COACHMARK_CATEGORY, userSession.userId),
+            ArrayList(coachMarkItemList)
+        )
         affiliatePreference.setCoachmarkExploreAsAffiliateShown(userSession.userId)
     }
 
@@ -470,8 +499,9 @@ class ContentExploreFragment :
                     val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
                     val visibleThreshold = LOAD_MORE_THRESHOLD * layoutManager.spanCount
                     if (lastVisibleItemPosition + visibleThreshold > imageAdapter.itemCount
-                            && canLoadMore
-                            && !isLoading) {
+                        && canLoadMore
+                        && !isLoading
+                    ) {
                         presenter.getExploreData(false)
                     }
                 }

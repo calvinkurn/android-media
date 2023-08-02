@@ -61,6 +61,7 @@ fun clickSubmit() {
 }
 
 fun clickLewati() {
+    Thread.sleep(1000)
     clickOnText("Lewati")
 }
 
@@ -101,6 +102,7 @@ fun isDialogConfirmPhoneNumberShowing() {
 fun isGlobalErrorShowing() {
     Thread.sleep(200)
     isDisplayed(R.id.global_error)
+    Thread.sleep(2000)
 }
 
 fun clickPrimaryButtonDialog() {

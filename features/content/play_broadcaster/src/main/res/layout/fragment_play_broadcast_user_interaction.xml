@@ -90,11 +90,13 @@
             app:layout_constraintStart_toStartOf="@id/icon_product"
             app:layout_constraintTop_toBottomOf="@id/fl_max_height_chat" />
 
-        <com.tokopedia.play.broadcaster.view.custom.ProductIconView
+        <com.tokopedia.play.broadcaster.view.custom.PlayBroIconWithGreenDotView
             android:id="@+id/icon_product"
             android:layout_width="@dimen/layout_lvl4"
             android:layout_height="@dimen/layout_lvl4"
             android:layout_marginStart="@dimen/play_dp_20"
+            app:icon_id="PRODUCT"
+            app:is_show_dot="true"
             app:layout_constraintBottom_toBottomOf="@id/iv_share_link"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/iv_share_link" />
@@ -112,6 +114,21 @@
             app:layout_constraintStart_toEndOf="@id/icon_product"
             app:layout_constraintTop_toTopOf="@id/icon_product"
             tools:visibility="visible" />
+
+        <com.tokopedia.play.broadcaster.view.custom.PlayBroIconWithGreenDotView
+            android:id="@+id/ic_face_filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:visibility="gone"
+            app:icon_id="SMILE"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            app:icon_name="SMILE"
+            app:layout_constraintBottom_toBottomOf="@id/icon_product"
+            app:layout_constraintStart_toEndOf="@id/ic_game"
+            app:layout_constraintTop_toTopOf="@id/icon_product"
+            />
 
         <FrameLayout
             android:id="@+id/view_play_interactive"
@@ -163,5 +180,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/face_filter_setup_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
 
 </FrameLayout>

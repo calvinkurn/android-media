@@ -11,24 +11,24 @@ import retrofit2.Retrofit
 class MediaUploaderNetworkModule {
 
     @Provides
-    @MediaUploaderQualifier
+    @UploaderQualifier
     fun provideMediaUploaderRetrofit(
-        @MediaUploaderQualifier retrofit: Retrofit.Builder,
-        @MediaUploaderQualifier okHttpClient: OkHttpClient.Builder
+        @UploaderQualifier retrofit: Retrofit.Builder,
+        @UploaderQualifier okHttpClient: OkHttpClient.Builder
     ): Retrofit {
         return retrofit.client(okHttpClient.build()).build()
     }
 
     @Provides
     fun provideImageUploaderServices(
-        @MediaUploaderQualifier retrofit: Retrofit
+        @UploaderQualifier retrofit: Retrofit
     ): ImageUploadServices {
         return retrofit.create(ImageUploadServices::class.java)
     }
 
     @Provides
     fun provideVideoUploaderServices(
-        @MediaUploaderQualifier retrofit: Retrofit
+        @UploaderQualifier retrofit: Retrofit
     ): VideoUploadServices {
         return retrofit.create(VideoUploadServices::class.java)
     }

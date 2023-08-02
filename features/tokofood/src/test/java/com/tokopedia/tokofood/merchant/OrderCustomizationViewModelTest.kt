@@ -9,10 +9,7 @@ import com.tokopedia.tokofood.data.generateTestDataGetCustomListItems
 import com.tokopedia.tokofood.data.generateTestProductUiModel
 import com.tokopedia.tokofood.data.generateTestUiAddOnUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.CustomListItemType
-import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType
-import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomListItem
-import com.tokopedia.tokofood.feature.merchant.presentation.model.OptionUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.viewmodel.OrderCustomizationViewModel
 import io.mockk.MockKAnnotations
 import junit.framework.Assert.assertEquals
@@ -139,6 +136,7 @@ class OrderCustomizationViewModelTest {
         assertFalse(actualResult.first)
     }
 
+
     @Test
     fun `when validateCustomOrderInput, should not apply error checking on items without addOns`() {
         val testData = generateCustomListItemsWithError()
@@ -168,6 +166,31 @@ class OrderCustomizationViewModelTest {
                 orderNote = "orderNote",
                 orderQty = 1,
                 addOnUiModels = listOf(generateTestUiAddOnUiModel())
+        )
+        assertEquals(expectedResult.productList.first().cartId, actualResult.productList.first().cartId)
+        assertEquals(expectedResult.productList.first().productId, actualResult.productList.first().productId)
+        assertEquals(expectedResult.productList.first().notes, actualResult.productList.first().notes)
+        assertEquals(expectedResult.productList.first().quantity, actualResult.productList.first().quantity)
+        assertEquals(expectedResult.shopId, actualResult.shopId)
+    }
+    @Test
+    fun `when generating atc request param with zero quantity expect legit and non zero quantity atc request param `() {
+        val testData = generateTestProductUiModel()
+        val expectedResult = UpdateParam(
+            productList = listOf(UpdateProductParam(
+                cartId = "cartId-garlicKnots",
+                productId = "bf3eba99-534d-4344-9cf8-6a46326feae0",
+                notes = "orderNote",
+                quantity = 1)
+            ), shopId = "shopId"
+        )
+        val actualResult = viewModel.generateRequestParam(
+            shopId = "shopId",
+            productUiModel = testData,
+            cartId = "cartId-garlicKnots",
+            orderNote = "orderNote",
+            orderQty = 0,
+            addOnUiModels = listOf(generateTestUiAddOnUiModel())
         )
         assertEquals(expectedResult.productList.first().cartId, actualResult.productList.first().cartId)
         assertEquals(expectedResult.productList.first().productId, actualResult.productList.first().productId)

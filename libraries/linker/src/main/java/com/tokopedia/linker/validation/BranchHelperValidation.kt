@@ -11,7 +11,6 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.track.TrackApp
 import org.json.JSONArray
@@ -35,60 +34,57 @@ class BranchHelperValidation {
             validateNewBuyer(branchIOPayment.isNewBuyer, branchIOPayment.productType)
             validateMonthlyNewBuyer(branchIOPayment.monthlyNewBuyer, branchIOPayment.productType)
             validateProductType(branchIOPayment.productType)
-            branchIOPayment.products.forEach {item ->
-                validateProductPrice(PURCHASE,LinkerUtils.convertToDouble(item.get(LinkerConstants.PRICE_IDR_TO_DOUBLE), "Product_price-PURCHASE"))
-                validateProductId(PURCHASE,item.get(LinkerConstants.ID))
-                validateProductName(PURCHASE,item.get(LinkerConstants.NAME))
+            branchIOPayment.products.forEach { item ->
+                validateProductPrice(PURCHASE, LinkerUtils.convertToDouble(item.get(LinkerConstants.PRICE_IDR_TO_DOUBLE), "Product_price-PURCHASE"))
+                validateProductId(PURCHASE, item.get(LinkerConstants.ID))
+                validateProductName(PURCHASE, item.get(LinkerConstants.NAME))
             }
-
-        }catch (e: Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
             val messageMap = mapOf("type" to "error", "reason" to "exception_validatePURCHASE", "data" to PURCHASE, "ex" to Log.getStackTraceString(e))
             logging(messageMap)
         }
-
     }
 
-    fun validateATCEvent(linkerData: LinkerData){
-        try{
-            validateQuantity(ADD_TO_CART, linkerData.quantity,linkerData.sku,linkerData.userId)
-            validateCurrency(ADD_TO_CART,linkerData.currency)
-            validateProductPrice(ADD_TO_CART,LinkerUtils.convertToDouble(linkerData.getPrice(), "Product_price-ADD_TO_CART"))
-            validateProductId(ADD_TO_CART,linkerData.sku)
-            validateContentId(ADD_TO_CART,linkerData.contentId)
-            validateProductName(ADD_TO_CART,linkerData.productName)
-            validateProductCate3(ADD_TO_CART,linkerData.level3Id)
-            validateUser(ADD_TO_CART,linkerData.userId)
-            validateContentType(ADD_TO_CART,linkerData.contentType)
-            validateContent(ADD_TO_CART,linkerData.content)
-
-        }catch (e: Exception){
+    fun validateATCEvent(linkerData: LinkerData) {
+        try {
+            validateQuantity(ADD_TO_CART, linkerData.quantity, linkerData.sku, linkerData.userId)
+            validateCurrency(ADD_TO_CART, linkerData.currency)
+            validateProductPrice(ADD_TO_CART, LinkerUtils.convertToDouble(linkerData.getPrice(), "Product_price-ADD_TO_CART"))
+            validateProductId(ADD_TO_CART, linkerData.sku)
+            validateContentId(ADD_TO_CART, linkerData.contentId)
+            validateProductName(ADD_TO_CART, linkerData.productName)
+            validateProductCate3(ADD_TO_CART, linkerData.level3Id)
+            validateUser(ADD_TO_CART, linkerData.userId)
+            validateContentType(ADD_TO_CART, linkerData.contentType)
+            validateContent(ADD_TO_CART, linkerData.content)
+        } catch (e: Exception) {
             e.printStackTrace()
             val messageMap = mapOf("type" to "error", "reason" to "exception_validateADD_TO_CART", "data" to ADD_TO_CART, "ex" to Log.getStackTraceString(e))
             logging(messageMap)
         }
     }
 
-    fun validateItemViewEvent(linkerData: LinkerData){
-        try{
-            validateQuantity(VIEW_ITEM, linkerData.quantity,linkerData.sku,linkerData.userId)
-            validateCurrency(VIEW_ITEM,linkerData.currency)
-            validateProductPrice(VIEW_ITEM,LinkerUtils.convertToDouble(linkerData.getPrice(), "Product_price-VIEW_ITEM"))
-            validateProductId(VIEW_ITEM,linkerData.sku)
-            validateContentId(VIEW_ITEM,linkerData.contentId)
-            validateProductName(VIEW_ITEM,linkerData.productName)
-            validateProductCate3(VIEW_ITEM,linkerData.level3Id)
-            validateUser(VIEW_ITEM,linkerData.userId)
-            validateContentType(VIEW_ITEM,linkerData.contentType)
-            validateContent(VIEW_ITEM,linkerData.content)
-        }catch (e: Exception){
+    fun validateItemViewEvent(linkerData: LinkerData) {
+        try {
+            validateQuantity(VIEW_ITEM, linkerData.quantity, linkerData.sku, linkerData.userId)
+            validateCurrency(VIEW_ITEM, linkerData.currency)
+            validateProductPrice(VIEW_ITEM, LinkerUtils.convertToDouble(linkerData.getPrice(), "Product_price-VIEW_ITEM"))
+            validateProductId(VIEW_ITEM, linkerData.sku)
+            validateContentId(VIEW_ITEM, linkerData.contentId)
+            validateProductName(VIEW_ITEM, linkerData.productName)
+            validateProductCate3(VIEW_ITEM, linkerData.level3Id)
+            validateUser(VIEW_ITEM, linkerData.userId)
+            validateContentType(VIEW_ITEM, linkerData.contentType)
+            validateContent(VIEW_ITEM, linkerData.content)
+        } catch (e: Exception) {
             e.printStackTrace()
             val messageMap = mapOf("type" to "error", "reason" to "exception_validateVIEW_ITEM", "data" to VIEW_ITEM, "ex" to Log.getStackTraceString(e))
             logging(messageMap)
         }
     }
 
-    fun logSkipDeeplinkNonBranchLink(referringParams: JSONObject, isFirstOpen:Boolean){
+    fun logSkipDeeplinkNonBranchLink(referringParams: JSONObject, isFirstOpen: Boolean) {
         try {
             val clickTime = referringParams.optString("+click_timestamp")
             val utm_medium = referringParams.optString("utm_medium")
@@ -101,25 +97,29 @@ class BranchHelperValidation {
             val channel = referringParams.optString("~channel")
             val clientId = TrackApp.getInstance().gtm.clientIDString
 
-            val messageMap = mapOf("type" to "validation", "reason" to "SkipDeeplinkNonBranchLink", "click_time" to clickTime, "utm_medium" to utm_medium,
-                    "utm_source" to utm_source, "campaign" to campaign, "android_deeplink_path" to android_deeplink_path, "clicked_branch_link" to clicked_branch_link,
-                    "is_first_session" to is_first_session, "client_id" to clientId,"is_first_open" to (isFirstOpen?:false).toString(),"feature" to feature,"channel" to channel)
+            val messageMap = mapOf(
+                "type" to "validation", "reason" to "SkipDeeplinkNonBranchLink", "click_time" to clickTime, "utm_medium" to utm_medium,
+                "utm_source" to utm_source, "campaign" to campaign, "android_deeplink_path" to android_deeplink_path, "clicked_branch_link" to clicked_branch_link,
+                "is_first_session" to is_first_session, "client_id" to clientId, "is_first_open" to (isFirstOpen ?: false).toString(), "feature" to feature, "channel" to channel
+            )
             logging(messageMap)
-        }catch (e: Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
             val messageMap = mapOf("type" to "error", "reason" to "exception_skipDeeplink", "data" to "logSkipDeeplinkNonBranchLink", "ex" to Log.getStackTraceString(e))
             logging(messageMap)
         }
     }
 
-    fun logValidCampaignData(utmSource: String, utmMedium: String, utmCampaign: String, clickTime: String, isFirstOpen: Boolean, isBranchLink: Boolean){
+    fun logValidCampaignData(utmSource: String, utmMedium: String, utmCampaign: String, clickTime: String, isFirstOpen: Boolean, isBranchLink: Boolean) {
         try {
             val clientId = TrackApp.getInstance().gtm.clientIDString
-            val messageMap = mapOf("type" to "validation", "reason" to "BranchCallBackValidUTM", "utm_medium" to utmMedium,
-                "utm_source" to utmSource, "campaign" to utmCampaign, "click_time" to clickTime, "client_id" to clientId,"is_first_open" to (isFirstOpen).toString(),
-                "is_branch_link" to (isBranchLink).toString())
+            val messageMap = mapOf(
+                "type" to "validation", "reason" to "BranchCallBackValidUTM", "utm_medium" to utmMedium,
+                "utm_source" to utmSource, "campaign" to utmCampaign, "click_time" to clickTime, "client_id" to clientId, "is_first_open" to (isFirstOpen).toString(),
+                "is_branch_link" to (isBranchLink).toString()
+            )
             logging(messageMap)
-        }catch (e: Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
             val messageMap = mapOf("type" to "error", "reason" to "exception_branchCallBackValidUtm", "data" to "logValidBranchCallBackUtm", "ex" to Log.getStackTraceString(e))
             logging(messageMap)
@@ -140,7 +140,7 @@ class BranchHelperValidation {
         }
     }
 
-    private fun isFromNotNative(isFromNative: Boolean, paymentId: String, orderId:String) {
+    private fun isFromNotNative(isFromNative: Boolean, paymentId: String, orderId: String) {
         if (!isFromNative) {
             val messageMap = mapOf("type" to "validation", "reason" to "transaction_not_new_thankspage", "id" to paymentId, "order_id" to orderId)
             logging(messageMap)
@@ -160,7 +160,6 @@ class BranchHelperValidation {
             logging(messageMap)
         }
     }
-
 
     fun exceptionStringToDouble(ex: String, type: String) {
         val messageMap = mapOf("type" to "error", "reason" to "exceptionStringToDouble", "err" to ex, "type" to type)
@@ -186,60 +185,60 @@ class BranchHelperValidation {
         }
     }
 
-   private fun validateCurrency(eventName: String ,currency: String){
+    private fun validateCurrency(eventName: String, currency: String) {
         if (!VALUE_IDR.equals(currency)) {
             val messageMap = mapOf("type" to "validation", "reason" to "currency_invalid", "eventName" to eventName, "data" to currency)
             logging(messageMap)
         }
     }
 
-    private fun validateProductPrice(eventName: String ,price: Double){
+    private fun validateProductPrice(eventName: String, price: Double) {
         if (price <= 0) {
             val messageMap = mapOf("type" to "validation", "reason" to "productprice_blank", "eventName" to eventName, "data" to price.toString())
             logging(messageMap)
         }
     }
 
-    private fun validateProductId(eventName: String ,productId: String?){
+    private fun validateProductId(eventName: String, productId: String?) {
         if (productId.isNullOrBlank()) {
             val messageMap = mapOf("type" to "validation", "reason" to "productId_blank", "eventName" to eventName, "data" to "")
             logging(messageMap)
         }
     }
 
-    fun validateQuantity(eventName: String, quantity: String,productId: String, userId:String) {
-        if (LinkerUtils.convertToDouble(quantity,"quantity validation" ) <= 0) {
+    fun validateQuantity(eventName: String, quantity: String, productId: String, userId: String) {
+        if (LinkerUtils.convertToDouble(quantity, "quantity validation") <= 0) {
             val messageMap = mapOf("type" to "validation", "reason" to "quantity_blank", "eventName" to eventName, "quantity" to quantity, "productId" to productId, "userId" to userId)
             logging(messageMap)
         }
     }
 
-    private fun validateContentId(eventName: String ,contentId: String) {
+    private fun validateContentId(eventName: String, contentId: String) {
         if (contentId.isNullOrBlank()) {
             val messageMap = mapOf("type" to "validation", "reason" to "contentId_blank", "eventName" to eventName, "data" to "")
             logging(messageMap)
         }
     }
 
-    private fun validateProductName(eventName: String ,productName: String?){
+    private fun validateProductName(eventName: String, productName: String?) {
         if (productName.isNullOrBlank()) {
             val messageMap = mapOf("type" to "validation", "reason" to "productName_blank", "eventName" to eventName, "data" to "")
             logging(messageMap)
         }
     }
 
-    private fun validateProductCate3(eventName: String ,ProductCate3: String){
+    private fun validateProductCate3(eventName: String, ProductCate3: String) {
         if (ProductCate3.isNullOrBlank()) {
             val messageMap = mapOf("type" to "validation", "reason" to "ProductCate3_blank", "eventName" to eventName, "data" to "")
             logging(messageMap)
         }
     }
 
-    private fun validateUser(eventName: String ,userId: String){
+    private fun validateUser(eventName: String, userId: String) {
         if (userId.isNullOrBlank()) {
             val messageMap = mapOf("type" to "validation", "reason" to "userId_blank", "eventName" to eventName, "data" to "")
             logging(messageMap)
-        }else if(userId.trim() == "0"){
+        } else if (userId.trim() == "0") {
             val messageMap = mapOf("type" to "validation", "reason" to "userId_blank", "eventName" to eventName, "data" to "")
             logging(messageMap)
         }
@@ -270,17 +269,20 @@ class BranchHelperValidation {
         }
     }
 
-    private fun validateProductType( productType: String) {
+    private fun validateProductType(productType: String) {
         if (!(LinkerConstants.PRODUCTTYPE_DIGITAL == productType || LinkerConstants.PRODUCTTYPE_MARKETPLACE == productType)) {
             val messageMap = mapOf("type" to "validation", "reason" to "validateProductType", "eventName" to "", "data" to productType)
             logging(messageMap)
         }
     }
 
-    private fun logging(messageMap: Map<String, String>){
+    private fun logging(messageMap: Map<String, String>) {
         ServerLogger.log(Priority.P2, "BRANCH_VALIDATION", messageMap)
     }
 
+    /** function to log when user click the branch link
+     * @param errorCode if null then the error is not coming from branch listener
+     */
     fun sendBranchErrorDataLogs(errorCode: Int?, errorMsg: String?, branchUrl: String?) {
         val messageMap: MutableMap<String, String> = HashMap()
         messageMap[BRANCH_LOG_TYPE] = BRANCH_FLOW_ON_CLICK_LINK
@@ -300,19 +302,29 @@ class BranchHelperValidation {
         messageMap[BRANCH_URL] = branchUrl
         messageMap[BRANCH_LOG_TYPE] = BRANCH_FLOW_ON_CLICK_LINK
         if (referringParams != null) {
-            messageMap[BRANCH_SUCCESS_DATA] = referringParams.toString();
+            messageMap[BRANCH_SUCCESS_DATA] = referringParams.toString()
         } else {
-            messageMap[BRANCH_SUCCESS_DATA] = "Empty Success Response";
+            messageMap[BRANCH_SUCCESS_DATA] = "Empty Success Response"
         }
-        logging(messageMap);
+        logging(messageMap)
+    }
+
+    fun sendGenerateBranchErrorLogs(errorMsg: String?, url: String) {
+        val messageMap = HashMap<String, String>()
+        messageMap[BRANCH_LOG_TYPE] = BRANCH_GENERATE_LINK
+        messageMap[BRANCH_ERROR_DATA_MESSAGE] = errorMsg ?: "Empty error message generate branch error"
+        messageMap[DESKTOP_CLEAN_URL] = url
+        logging(messageMap)
     }
 
     companion object {
-        private val BRANCH_SUCCESS_DATA = "branch_success_data"
-        private val BRANCH_ERROR_DATA_MESSAGE = "branch_error_message"
-        private val BRANCH_ERROR_DATA_CODE = "branch_error_code"
-        private val BRANCH_URL = "branch_url"
-        private val BRANCH_FLOW_ON_CLICK_LINK = "on_click_link"
-        private val BRANCH_LOG_TYPE = "branch_log_type"
+        private const val BRANCH_SUCCESS_DATA = "branch_success_data"
+        private const val BRANCH_ERROR_DATA_MESSAGE = "branch_error_message"
+        private const val BRANCH_ERROR_DATA_CODE = "branch_error_code"
+        private const val BRANCH_URL = "branch_url"
+        private const val BRANCH_FLOW_ON_CLICK_LINK = "on_click_link"
+        private const val BRANCH_LOG_TYPE = "branch_log_type"
+        private const val BRANCH_GENERATE_LINK = "branch_generate_link"
+        private const val DESKTOP_CLEAN_URL = "desktop_clean_url"
     }
 }

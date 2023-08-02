@@ -1,0 +1,5 @@
+<resources>
+    <string name="lihat_semua">Lihat Semua</string>
+
+    <string name="content_desc_header_cta">Header CTA Button</string>
+</resources>

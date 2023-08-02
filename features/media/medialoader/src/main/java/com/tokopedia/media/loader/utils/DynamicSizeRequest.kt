@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import com.bumptech.glide.request.target.BitmapImageViewTarget
 import com.bumptech.glide.request.target.Target
 
-fun Bitmap?.adaptiveSizeImageRequest(target: Target<Bitmap>?) {
+internal fun Bitmap?.adaptiveSizeImageRequest(target: Target<Bitmap>?) {
     if (this == null && target == null) return
 
     if (target is BitmapImageViewTarget) {

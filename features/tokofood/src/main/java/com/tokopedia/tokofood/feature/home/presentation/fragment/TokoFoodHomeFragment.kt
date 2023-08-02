@@ -22,7 +22,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.abstraction.base.view.fragment.enums.BaseMultiFragmentLaunchMode
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -45,10 +44,13 @@ import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBotto
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet.Companion.SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.constant.AddEditAddressSource
+import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.logisticCommon.util.PinpointRolloutHelper
 import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -505,7 +507,7 @@ class TokoFoodHomeFragment :
 
     private fun setIconNavigation() {
         val icons =
-            IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
+            IconBuilder(IconBuilderFlag(pageSource = NavSource.TOKOFOOD))
                 .addIcon(IconList.ID_SHARE, onClick = ::onClickShareButton)
                 .addIcon(IconList.ID_LIST_TRANSACTION, onClick = ::onClickListTransactionButton)
                 .addIcon(IconList.ID_NAV_GLOBAL, onClick = {})
@@ -889,17 +891,32 @@ class TokoFoodHomeFragment :
         }
     }
     private fun navigateToSetPinpoint() {
-        val locationPass = LocationPass().apply {
-            latitude = TOTO_LATITUDE
-            longitude = TOTO_LONGITUDE
+        activity?.let {
+            if (PinpointRolloutHelper.eligibleForRevamp(it, true)) {
+                // go to pinpoint
+                val bundle = Bundle().apply {
+                    putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true)
+                    putDouble(AddressConstant.EXTRA_LAT, TOTO_LATITUDE.toDouble())
+                    putDouble(AddressConstant.EXTRA_LONG, TOTO_LONGITUDE.toDouble())
+                }
+                RouteManager.getIntent(it, ApplinkConstInternalLogistic.PINPOINT).apply {
+                    putExtra(AddressConstant.EXTRA_BUNDLE, bundle)
+                    startActivityForResult(this, REQUEST_CODE_SET_PINPOINT)
+                }
+            } else {
+                val locationPass = LocationPass().apply {
+                    latitude = TOTO_LATITUDE
+                    longitude = TOTO_LONGITUDE
+                }
+                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.GEOLOCATION)
+                val bundle = Bundle().apply {
+                    putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
+                    putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
+                }
+                intent.putExtras(bundle)
+                startActivityForResult(intent, REQUEST_CODE_SET_PINPOINT)
+            }
         }
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
-        val bundle = Bundle().apply {
-            putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
-            putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
-        }
-        intent.putExtras(bundle)
-        startActivityForResult(intent, REQUEST_CODE_SET_PINPOINT)
     }
 
     private fun onResultFromSetPinpoint(resultCode: Int, data: Intent?) {
@@ -907,7 +924,18 @@ class TokoFoodHomeFragment :
             data?.let {
                 val locationPass =
                     it.getParcelableExtra(LogisticConstant.EXTRA_EXISTING_LOCATION) as? LocationPass
-                locationPass?.let { locationPass ->
+                if (locationPass == null) {
+                    val addressData = it.getParcelableExtra(AddressConstant.EXTRA_SAVE_DATA_UI_MODEL) as? SaveAddressDataModel
+                    addressData?.let { address ->
+                        localCacheModel?.address_id?.let { addressId ->
+                            viewModel.setUpdatePinPoint(
+                                addressId,
+                                address.latitude,
+                                address.longitude
+                            )
+                        }
+                    }
+                } else {
                     localCacheModel?.address_id?.let { addressId ->
                         viewModel.setUpdatePinPoint(
                             addressId,
@@ -1021,7 +1049,7 @@ class TokoFoodHomeFragment :
     }
 
     private fun shareClicked() {
-        if (UniversalShareBottomSheet.isCustomSharingEnabled(context)) {
+        if (SharingUtil.isCustomSharingEnabled(context)) {
             context?.let {
                 SharingUtil.saveImageFromURLToStorage(
                     it,
@@ -1038,6 +1066,7 @@ class TokoFoodHomeFragment :
     private fun showUniversalShareBottomSheet(imageSaved: String) {
         if (isAdded) {
             universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+                setFeatureFlagRemoteConfigKey()
                 init(this@TokoFoodHomeFragment)
                 setUtmCampaignData(
                     pageName = PAGE_SHARE_NAME,

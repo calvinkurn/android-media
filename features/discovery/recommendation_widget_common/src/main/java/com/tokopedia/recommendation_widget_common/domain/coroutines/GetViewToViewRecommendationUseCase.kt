@@ -8,21 +8,17 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.recommendation_widget_common.domain.coroutines.base.UseCase
 import com.tokopedia.recommendation_widget_common.domain.query.ListProductRecommendationQuery
-import com.tokopedia.recommendation_widget_common.domain.query.ListProductRecommendationQueryV2
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.ext.toQueryParam
 import com.tokopedia.recommendation_widget_common.extension.mappingToRecommendationModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 
 // [GetViewToViewRecommendationUseCase] already sent choose address location params
 class GetViewToViewRecommendationUseCase @Inject constructor(
     context: Context,
-    graphqlRepository: GraphqlRepository,
+    graphqlRepository: GraphqlRepository
 ) : UseCase<GetRecommendationRequestParam, List<RecommendationWidget>>() {
     private val contextReference: WeakReference<Context> = WeakReference(context)
     private val context: Context?
@@ -31,16 +27,7 @@ class GetViewToViewRecommendationUseCase @Inject constructor(
     private val graphqlUseCase = GraphqlUseCase<RecommendationEntity>(graphqlRepository)
     private val getRecommendationQuery: GqlQueryInterface
         get() {
-            val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(context)
-            val isUseGqlFedQuery = remoteConfig.getBoolean(
-                RemoteConfigKey.RECOM_USE_GQL_FED_QUERY,
-                true
-            )
-            return if (isUseGqlFedQuery) {
-                ListProductRecommendationQueryV2()
-            } else {
-                ListProductRecommendationQuery()
-            }
+            return ListProductRecommendationQuery()
         }
     init {
         graphqlUseCase.setTypeClass(RecommendationEntity::class.java)

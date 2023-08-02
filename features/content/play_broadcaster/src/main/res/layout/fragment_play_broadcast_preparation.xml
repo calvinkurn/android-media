@@ -37,11 +37,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rv_banner_preparation" />
 
-    <com.tokopedia.play.broadcaster.view.custom.preparation.PreparationMenuView
-        android:id="@+id/view_preparation_menu"
+    <com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenuView
+        android:id="@+id/preparation_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginStart="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -94,13 +94,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/face_filter_setup_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
     <androidx.constraintlayout.widget.Group
         android:id="@+id/group_preparation_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:constraint_referenced_ids="toolbar_content_common, banner_shorts,
-                                        view_preparation_menu, fl_bro_start_livestream,
-                                        ic_bro_preparation_switch_camera" />
+                                        preparation_menu, fl_bro_start_livestream,
+                                        ic_bro_preparation_switch_camera,rv_banner_preparation,
+                                        pc_banner_preparation" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/toaster_layout"

@@ -11,7 +11,12 @@ import com.tokopedia.common.topupbills.data.product.CatalogProductData
 import com.tokopedia.common.topupbills.usecase.RechargeCatalogPrefixSelectUseCase
 import com.tokopedia.common.topupbills.usecase.RechargeCatalogProductInputUseCase
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.common_digital.common.presentation.model.DigiPersoRecommendationData
+import com.tokopedia.common_digital.common.presentation.model.DigiPersoRecommendationItem
+import com.tokopedia.common_digital.common.presentation.model.DigitalDppoConsent
+import com.tokopedia.common_digital.common.usecase.GetDppoConsentUseCase
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -19,6 +24,7 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import junit.framework.Assert.assertNull
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -32,6 +38,9 @@ class EmoneyPdpViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
+    @get:Rule
+    val testCoroutineRule = UnconfinedTestRule()
+
     lateinit var emoneyPdpViewModel: EmoneyPdpViewModel
 
     @RelaxedMockK
@@ -43,12 +52,18 @@ class EmoneyPdpViewModelTest {
     @RelaxedMockK
     lateinit var rechargeCatalogProductInputUseCase: RechargeCatalogProductInputUseCase
 
+    @RelaxedMockK
+    lateinit var getDppoConsentUseCase: GetDppoConsentUseCase
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        emoneyPdpViewModel = EmoneyPdpViewModel(userSession,
-                rechargeCatalogPrefixUseCase,
-                rechargeCatalogProductInputUseCase)
+        emoneyPdpViewModel = EmoneyPdpViewModel(
+            userSession,
+            rechargeCatalogPrefixUseCase,
+            rechargeCatalogProductInputUseCase,
+            getDppoConsentUseCase
+        )
     }
 
     @Test
@@ -304,4 +319,46 @@ class EmoneyPdpViewModelTest {
         assert(emoneyPdpViewModel.digitalCheckoutPassData.isFromPDP)
     }
 
+    @Test
+    fun getDppoConsentRecharge_Success() {
+        // given
+        val consentDesc = "Tokopedia"
+        val digitalDPPOConsent = DigitalDppoConsent(
+            DigiPersoRecommendationData(
+                items = listOf(
+                    DigiPersoRecommendationItem(
+                        id = "1",
+                        title = consentDesc
+                    )
+                )
+            )
+        )
+
+        coEvery { getDppoConsentUseCase.execute(any()) } returns digitalDPPOConsent
+
+        // when
+        emoneyPdpViewModel.getDppoConsent()
+
+        // then
+        val actualData = emoneyPdpViewModel.dppoConsent.value
+        Assert.assertNotNull(actualData)
+        Assert.assertTrue(actualData is Success)
+        Assert.assertTrue((actualData as Success).data.description == consentDesc)
+    }
+
+    @Test
+    fun getDppoConsentRecharge_Fail() {
+        // given
+        val errorMessage = "Tokopedia"
+        coEvery { getDppoConsentUseCase.execute(any()) } throws MessageErrorException(errorMessage)
+
+        // when
+        emoneyPdpViewModel.getDppoConsent()
+
+        // then
+        val actualData = emoneyPdpViewModel.dppoConsent.value
+        Assert.assertNotNull(actualData)
+        Assert.assertTrue(actualData is Fail)
+        Assert.assertTrue((actualData as Fail).throwable.message == errorMessage)
+    }
 }

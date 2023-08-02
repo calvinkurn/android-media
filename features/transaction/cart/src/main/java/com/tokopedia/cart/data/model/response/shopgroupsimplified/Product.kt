@@ -5,10 +5,10 @@ import com.google.gson.annotations.SerializedName
 import java.util.*
 
 data class Product(
+    @SerializedName("origin_warehouse_ids")
+    val originWarehouseIds: List<Int> = emptyList(),
     @SerializedName("checkbox_state")
     val isCheckboxState: Boolean = false,
-    @SerializedName("checkbox_show")
-    val isCheckboxShow: Boolean = false,
     @SerializedName("cart_id")
     val cartId: String = "",
     @SerializedName("variant_description_detail")
@@ -23,16 +23,12 @@ data class Product(
     val productId: String = "",
     @SerializedName("product_name")
     val productName: String = "",
-    @SerializedName("sku")
-    val sku: String = "",
     @SerializedName("campaign_id")
     val campaignId: String = "",
     @SerializedName("initial_price")
     val initialPrice: Double = 0.0,
     @SerializedName("initial_price_fmt")
     val initialPriceFmt: String = "",
-    @SerializedName("product_price_fmt")
-    val productPriceFmt: String = "",
     @SerializedName("product_price")
     val productPrice: Double = 0.0,
     @SerializedName("product_original_price")
@@ -43,23 +39,9 @@ data class Product(
     val categoryId: String = "",
     @SerializedName("category")
     val category: String = "",
-    @SerializedName("catalog_id")
-    val catalogId: String = "",
     @SuppressLint("Invalid Data Type")
     @SerializedName("wholesale_price")
     val wholesalePrice: List<WholesalePrice> = ArrayList(),
-    @SerializedName("product_weight_fmt")
-    val productWeightFmt: String = "",
-    @SerializedName("product_condition")
-    val productCondition: Int = 0,
-    @SerializedName("product_status")
-    val productStatus: Int = 0,
-    @SerializedName("product_url")
-    val productUrl: String = "",
-    @SerializedName("product_returnable")
-    val productReturnable: Int = 0,
-    @SerializedName("is_freereturns")
-    val isFreereturns: Int = 0,
     @SerializedName("is_preorder")
     val isPreorder: Int = 0,
     @SerializedName("is_cod")
@@ -78,32 +60,16 @@ data class Product(
     val productWarningMessage: String = "",
     @SerializedName("product_alert_message")
     val productAlertMessage: String = "",
-    @SerializedName("product_invenage_total")
-    val productInvenageTotal: ProductInvenageTotal = ProductInvenageTotal(),
-    @SerializedName("currency_rate")
-    val currencyRate: Int = 0,
-    @SerializedName("product_price_currency")
-    val productPriceCurrency: Int = 0,
     @SerializedName("product_image")
     val productImage: ProductImage = ProductImage(),
-    @SerializedName("product_all_images")
-    val productAllImages: String = "",
     @SerializedName("product_notes")
     val productNotes: String = "",
     @SerializedName("product_quantity")
     val productQuantity: Int = 0,
     @SerializedName("product_weight")
     val productWeight: Int = 0,
-    @SerializedName("product_weight_unit_code")
-    val productWeightUnitCode: Int = 0,
-    @SerializedName("product_weight_unit_text")
-    val productWeightUnitText: String = "",
     @SerializedName("product_preorder")
     val productPreorder: ProductPreorder = ProductPreorder(),
-    @SerializedName("product_showcase")
-    val productShowcase: ProductShowCase = ProductShowCase(),
-    @SerializedName("product_finsurance")
-    val productFinsurance: Int = 0,
     @SerializedName("product_shop_id")
     val productShopId: String = "",
     @SerializedName("is_wishlisted")

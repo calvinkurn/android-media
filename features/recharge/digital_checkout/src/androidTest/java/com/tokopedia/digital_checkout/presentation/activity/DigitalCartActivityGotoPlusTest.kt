@@ -28,6 +28,7 @@ import com.tokopedia.test.application.espresso_component.CommonMatcher.getElemen
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.IsNot
@@ -54,13 +55,17 @@ class DigitalCartActivityGotoPlusTest {
     @Before
     fun stubAllIntent() {
         Intents.init()
-        Intents.intending(IsNot.not(IntentMatchers.isInternal())).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK,
-            null))
+        Intents.intending(IsNot.not(IntentMatchers.isInternal())).respondWith(
+            Instrumentation.ActivityResult(
+                Activity.RESULT_OK,
+                null
+            )
+        )
     }
 
     @Test
     fun testDefaultCartView() {
-        //Setup intent cart page & launch activity
+        // Setup intent cart page & launch activity
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
         setUpMockResponse()
         validateCartInfoOnUi()
@@ -97,7 +102,7 @@ class DigitalCartActivityGotoPlusTest {
     }
 
     private fun validateCartInfoOnUi() {
-        //Info Cart Detail
+        // Info Cart Detail
         Thread.sleep(2000)
         onView(withId(com.tokopedia.digital_checkout.R.id.productTitle)).check(matches(withText("Angsuran Kredit")))
 
@@ -114,7 +119,7 @@ class DigitalCartActivityGotoPlusTest {
         onView(withId(com.tokopedia.digital_checkout.R.id.tvSeeDetailToggle)).check(matches(isDisplayed()))
         onView(withId(com.tokopedia.digital_checkout.R.id.tvSeeDetailToggle)).check(matches(withText("Lihat Detail")))
 
-        //should show Additional Info
+        // should show Additional Info
         onView(withId(com.tokopedia.digital_checkout.R.id.tvSeeDetailToggle)).perform(click())
         Thread.sleep(1000)
         onView(AllOf.allOf(withId(com.tokopedia.digital_checkout.R.id.tvCheckoutDetailSubtitle), withText("Data Pelanggan"))).check(matches(isDisplayed()))
@@ -152,17 +157,18 @@ class DigitalCartActivityGotoPlusTest {
         Thread.sleep(1000)
     }
 
-    private fun clickConsentWidget(){
-        //tick consent widget should enable button
-        onView(getElementFromMatchAtPosition(withId(R.id.cb_consent_widget), 0)).perform(click())
-        onView(getElementFromMatchAtPosition(withId(R.id.cb_consent_widget), 0)).check(matches(isChecked()))
-        onView(getElementFromMatchAtPosition(withId(R.id.btnCheckout),0)).check(matches(isEnabled()))
+    private fun clickConsentWidget() {
+//        layout_digital_checkout_bottom_view
+        // tick consent widget should enable button
+        onView(allOf(withId(com.tokopedia.usercomponents.R.id.checkboxPurposes), isDisplayed())).perform(click())
+        onView(allOf(withId(com.tokopedia.usercomponents.R.id.checkboxPurposes), isDisplayed())).check(matches(isChecked()))
+        onView(getElementFromMatchAtPosition(withId(R.id.btnCheckout), 0)).check(matches(isEnabled()))
         Thread.sleep(1000)
 
-        //untick consent widget should disable button
-        onView(getElementFromMatchAtPosition(withId(R.id.cb_consent_widget), 0)).perform(click())
-        onView(getElementFromMatchAtPosition(withId(R.id.cb_consent_widget), 0)).check(matches(not(isChecked())))
-        onView(getElementFromMatchAtPosition(withId(R.id.btnCheckout),0)).check(matches(not(isEnabled())))
+        // untick consent widget should disable button
+        onView(allOf(withId(com.tokopedia.usercomponents.R.id.checkboxPurposes), isDisplayed())).perform(click())
+        onView(allOf(withId(com.tokopedia.usercomponents.R.id.checkboxPurposes), isDisplayed())).check(matches(not(isChecked())))
+        onView(getElementFromMatchAtPosition(withId(R.id.btnCheckout), 0)).check(matches(not(isEnabled())))
     }
 
     @After
@@ -173,5 +179,4 @@ class DigitalCartActivityGotoPlusTest {
     private companion object {
         const val KEY_DG_CHECKOUT_GET_CART = "rechargeGetCart"
     }
-
 }

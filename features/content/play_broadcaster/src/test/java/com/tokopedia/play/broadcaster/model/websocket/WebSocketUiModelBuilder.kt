@@ -11,6 +11,7 @@ import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
+import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play_common.domain.model.interactive.QuizResponse
 import com.tokopedia.play_common.model.dto.interactive.InteractiveType
@@ -319,6 +320,11 @@ class WebSocketUiModelBuilder {
                         priceNumber = 60000.0,
                     ),
                     number = "0",
+                    hasCommission = false,
+                    commission = 0L,
+                    commissionFmt = "",
+                    extraCommission = false,
+                    pinStatus = PinProductUiModel.Empty,
                 )
             }
         )

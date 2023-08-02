@@ -281,4 +281,11 @@
     <string name="text_add_phone">Tambah Nomor HP</string>
     <string name="text_verify_phone">Verifikasi Nomor HP</string>
 
+    <!-- OCL -->
+    <string name="ocl_btm_sheet_title">Simpan info buat masuk di perangkat ini?</string>
+    <string name="ocl_btm_sheet_subtitle">Nanti kamu bisa masuk lebih cepat tanpa masukin info apa pun lagi. Pastikan kamu sudah membaca Syarat &amp; Ketentuan Tokopedia, ya.</string>
+    <string name="ocl_btm_sheet_negative_btn">Nanti Saja</string>
+    <string name="ocl_btm_sheet_positive_btn">Ya, Simpan</string>
+
+    <string name="ocl_btm_sheet_tnc_index">Syarat &amp; Ketentuan</string>
 </resources>

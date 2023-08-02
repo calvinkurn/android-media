@@ -194,7 +194,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
             if (onImageEditPreviewFragmentListener.canUndo(imageIndex)) {
                 ivUndo.getDrawable().clearColorFilter();
             } else {
-                ivUndo.getDrawable().setColorFilter(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N500),
+                ivUndo.getDrawable().setColorFilter(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN600),
                         PorterDuff.Mode.MULTIPLY);
             }
             ivUndo.setVisibility(View.VISIBLE);
@@ -202,7 +202,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
             if (onImageEditPreviewFragmentListener.canRedo(imageIndex)) {
                 ivRedo.getDrawable().clearColorFilter();
             } else {
-                ivRedo.getDrawable().setColorFilter(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N500),
+                ivRedo.getDrawable().setColorFilter(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN600),
                         PorterDuff.Mode.MULTIPLY);
             }
             ivRedo.setVisibility(View.VISIBLE);
@@ -583,17 +583,17 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         // Overlay view options
         overlayView.setFreestyleCropMode(OverlayView.FREESTYLE_CROP_MODE_DISABLE);
 
-        overlayView.setDimmedColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_32));
+        overlayView.setDimmedColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_32));
         overlayView.setCircleDimmedLayer(isCirclePreview);
 
         overlayView.setShowCropFrame(OverlayView.DEFAULT_SHOW_CROP_FRAME);
-        overlayView.setCropFrameColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0));
+        overlayView.setCropFrameColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0));
         overlayView.setCropFrameStrokeWidth(getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_1));
 
         overlayView.setShowCropGrid(OverlayView.DEFAULT_SHOW_CROP_GRID);
         overlayView.setCropGridRowCount(OverlayView.DEFAULT_CROP_GRID_ROW_COUNT);
         overlayView.setCropGridColumnCount(OverlayView.DEFAULT_CROP_GRID_COLUMN_COUNT);
-        overlayView.setCropGridColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0_68));
+        overlayView.setCropGridColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0_68));
         overlayView.setCropGridStrokeWidth(getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_1));
 
         setToInitialRatio();

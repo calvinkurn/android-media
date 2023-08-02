@@ -32,7 +32,7 @@ val QUERY_ADD_TO_CART = """
                     }
                 }
             }
-        """.trimIndent()
+""".trimIndent()
 
 val MUTATION_ADD_TO_CART_BUNDLE = """
     mutation add_to_cart_bundle(${'$'}params: AddToCartBundleParam, ${'$'}chosen_address: ChosenAddressParam, ${'$'}dummy: Int) {

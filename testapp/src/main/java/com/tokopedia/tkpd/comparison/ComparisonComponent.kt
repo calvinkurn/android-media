@@ -12,12 +12,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.tokopedia.common_compose.ui.NestTheme
+import com.tokopedia.nest.principles.ui.NestTheme
 
 @Composable
 fun ColumnHeader(
     text: String,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     Text(
         modifier = modifier

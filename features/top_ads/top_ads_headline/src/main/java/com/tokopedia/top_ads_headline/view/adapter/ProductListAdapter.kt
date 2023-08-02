@@ -92,7 +92,7 @@ class ProductListAdapter(
             product.isSingleSelect = checkIfSingleSelect(category, product)
             if (product.isSingleSelect) {
                 holder.productCard.setBackgroundColor(
-                    ContextCompat.getColor(holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_R100))
+                    ContextCompat.getColor(holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_RN100))
             } else {
                 holder.productCard.setBackgroundColor(
                     ContextCompat.getColor(holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Background))

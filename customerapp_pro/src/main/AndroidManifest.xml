@@ -666,7 +666,7 @@
         android:resizeableActivity="true"
         android:supportsRtl="true"
         android:fullBackupContent="@xml/backup_descriptor"
-        android:theme="@style/Theme.Tokopedia3"
+        android:theme="@style/Theme.WhiteUnify"
         android:requestLegacyExternalStorage="true"
         tools:replace="name,android:label,android:hasCode,android:fullBackupContent,android:allowBackup,android:resizeableActivity,android:icon">
         <meta-data

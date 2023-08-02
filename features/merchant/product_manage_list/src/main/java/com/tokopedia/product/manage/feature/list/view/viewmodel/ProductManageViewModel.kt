@@ -35,6 +35,7 @@ import com.tokopedia.product.manage.common.feature.variant.presentation.data.Get
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper.Companion.countSelectedFilter
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.list.domain.GetShopManagerPopupsUseCase
+import com.tokopedia.product.manage.feature.list.domain.GetShopWarehouseUseCase
 import com.tokopedia.product.manage.feature.list.domain.GetTickerUseCase
 import com.tokopedia.product.manage.feature.list.domain.SetFeaturedProductUseCase
 import com.tokopedia.product.manage.feature.list.view.datasource.TickerStaticDataProvider
@@ -85,7 +86,6 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -113,6 +113,7 @@ class ProductManageViewModel @Inject constructor(
     private val getMaxStockThresholdUseCase: GetMaxStockThresholdUseCase,
     private val getStatusShop: GetStatusShopUseCase,
     private val getTickerUseCase: GetTickerUseCase,
+    private val getShopWarehouse: GetShopWarehouseUseCase,
     private val tickerStaticDataProvider: TickerStaticDataProvider,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
@@ -121,6 +122,10 @@ class ProductManageViewModel @Inject constructor(
         // Currently update data on server is not realtime.
         // Client need to add request delay in order to receive updated data.
         const val REQUEST_DELAY = 1000L
+
+        // If hit bulk edit more than once in a row
+        const val REQUEST_DELAY_BULK_EDIT = 2500L
+        private const val REASON_DT_FOR_BULK_EDIT = "FORBIDDEN_DT_PRODUCT_DELETION"
     }
 
     val viewState: LiveData<ViewState>
@@ -209,7 +214,6 @@ class ProductManageViewModel @Inject constructor(
     private var warehouseId: String = ""
     private var totalProductCount = 0
 
-
     init {
         initGetUploadStatus()
     }
@@ -264,30 +268,50 @@ class ProductManageViewModel @Inject constructor(
         }
     }
 
-    fun editProductsByStatus(productIds: List<String>, status: ProductStatus) {
+    fun editProductsByStatus(
+        productIds: List<String>,
+        status: ProductStatus
+    ) {
         launchCatchError(block = {
             showProgressDialog()
 
             val response = withContext(dispatchers.io) {
+                val warehouseResponse = async {
+                    getShopWarehouse.execute(userSessionInterface.shopId.toLongOrZero())
+                }.await()
+
+                val isShopDilayaniTokopedia =
+                    warehouseResponse.keroWarehouseShop.data?.fulfillment?.isNotEmpty().orFalse()
+
                 val shopParam = ShopParam(userSessionInterface.shopId)
 
                 val params = productIds.map { productId ->
                     ProductParam(productId = productId, shop = shopParam, status = status)
                 }
 
-                val requestParams = MultiEditProductUseCase.createRequestParam(params)
+                val requestParams =
+                    MultiEditProductUseCase.createRequestParam(params, isShopDilayaniTokopedia)
                 multiEditProductUseCase.execute(requestParams)
             }
 
             val success = response.results?.filter { it.isSuccess() }.orEmpty()
-            val failed = response.results?.filter { !it.isSuccess() }.orEmpty()
+            val failed =
+                response.results?.filter { !it.isSuccess() && it.result?.header?.reason != REASON_DT_FOR_BULK_EDIT }
+                    .orEmpty()
+            val failedDilayaniTokopediaProduct = response.results?.filter {
+                !it.isSuccess() &&
+                    it.result?.header?.reason == REASON_DT_FOR_BULK_EDIT
+            }.orEmpty()
 
-            _multiEditProductResult.value = Success(EditByStatus(status, success, failed))
+            _multiEditProductResult.value =
+                Success(EditByStatus(status, success, failed, failedDilayaniTokopediaProduct))
+
             hideProgressDialog()
         }, onError = {
-            _multiEditProductResult.value = Fail(it)
-            hideProgressDialog()
-        })
+                _multiEditProductResult.value = Fail(it)
+
+                hideProgressDialog()
+            })
     }
 
     fun editProductsEtalase(productIds: List<String>, menuId: String, menuName: String) {
@@ -302,20 +326,20 @@ class ProductManageViewModel @Inject constructor(
                     ProductParam(productId = productId, shop = shopParam, menu = menuParam)
                 }
 
-                val requestParams = MultiEditProductUseCase.createRequestParam(params)
+                val requestParams =
+                    MultiEditProductUseCase.createRequestParam(params)
                 multiEditProductUseCase.execute(requestParams)
             }
 
             val success = response.results?.filter { it.isSuccess() }.orEmpty()
             val failed = response.results?.filter { !it.isSuccess() }.orEmpty()
-
-            val result = EditByMenu(menuId, menuName, success, failed)
+            val result = EditByMenu(menuId, menuName, success, failed, listOf())
             _multiEditProductResult.value = Success(result)
             hideProgressDialog()
         }, onError = {
-            _multiEditProductResult.value = Fail(it)
-            hideProgressDialog()
-        })
+                _multiEditProductResult.value = Fail(it)
+                hideProgressDialog()
+            })
     }
 
     fun getProductList(
@@ -334,7 +358,8 @@ class ProductManageViewModel @Inject constructor(
                 }
                 val getProductList = async {
                     val warehouseId = getWarehouseId(shopId)
-                    val extraInfo = listOf(ExtraInfo.TOPADS, ExtraInfo.RBAC)
+                    val extraInfo =
+                        listOf(ExtraInfo.TOPADS, ExtraInfo.RBAC, ExtraInfo.IS_DT_INBOUND)
                     val requestParams = GQLGetProductListUseCase.createRequestParams(
                         shopId,
                         warehouseId,
@@ -353,7 +378,6 @@ class ProductManageViewModel @Inject constructor(
                 }
 
                 getProductList.await().productList to maxStockDeffered.await()
-
             }
             _refreshList.value = isRefresh
 
@@ -364,12 +388,12 @@ class ProductManageViewModel @Inject constructor(
             showTicker()
             hideProgressDialog()
         }, onError = {
-            if (it is CancellationException) {
-                return@launchCatchError
-            }
-            hideProgressDialog()
-            _productListResult.value = Fail(it)
-        }).let { getProductListJob = it }
+                if (it is CancellationException) {
+                    return@launchCatchError
+                }
+                hideProgressDialog()
+                _productListResult.value = Fail(it)
+            }).let { getProductListJob = it }
     }
 
     fun getProductVariants(productId: String) {
@@ -408,9 +432,9 @@ class ProductManageViewModel @Inject constructor(
 
             hideLoadingDialog()
         }, onError = {
-            _getProductVariantsResult.value = Fail(it)
-            hideLoadingDialog()
-        })
+                _getProductVariantsResult.value = Fail(it)
+                hideLoadingDialog()
+            })
     }
 
     fun getTickerData() {
@@ -425,11 +449,11 @@ class ProductManageViewModel @Inject constructor(
                 result.getTargetedTicker?.tickers.orEmpty()
             )
         }, onError = {
-            _tickerData.value = tickerStaticDataProvider.getTickers(
-                isMultiLocationShop,
-                _shopStatus.value?.shopStatus.orEmpty()
-            )
-        })
+                _tickerData.value = tickerStaticDataProvider.getTickers(
+                    isMultiLocationShop,
+                    _shopStatus.value?.shopStatus.orEmpty()
+                )
+            })
     }
 
     fun getFiltersTab(withDelay: Boolean = false) {
@@ -452,11 +476,11 @@ class ProductManageViewModel @Inject constructor(
                 value = Success(data)
             }
         }, onError = {
-            if (it is CancellationException) {
-                return@launchCatchError
-            }
-            _productFiltersTab.value = Fail(it)
-        }).let { getFilterTabJob = it }
+                if (it is CancellationException) {
+                    return@launchCatchError
+                }
+                _productFiltersTab.value = Fail(it)
+            }).let { getFilterTabJob = it }
     }
 
     fun getProductManageAccess() {
@@ -511,8 +535,8 @@ class ProductManageViewModel @Inject constructor(
 
             productListFeaturedOnly?.let { setProductListFeaturedOnly(it) }
         }, onError = {
-            _productListFeaturedOnlyResult.value = Fail(it)
-        })
+                _productListFeaturedOnlyResult.value = Fail(it)
+            })
     }
 
     fun editPrice(productId: String, price: String, productName: String) {
@@ -538,6 +562,7 @@ class ProductManageViewModel @Inject constructor(
                         )
                     )
                 }
+
                 result.productUpdateV3Data.header.errorMessage.isNotEmpty() -> {
                     _editPriceResult.postValue(
                         Fail(
@@ -550,6 +575,7 @@ class ProductManageViewModel @Inject constructor(
                         )
                     )
                 }
+
                 else -> {
                     _editPriceResult.postValue(
                         Fail(
@@ -596,7 +622,9 @@ class ProductManageViewModel @Inject constructor(
                 result = editProductStock(productId, productName, it, status)
             }
 
-            _editStockResult.postValue(result)
+            result?.let {
+                _editStockResult.postValue(it)
+            }
         }) {
             val message =
                 com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString()
@@ -668,7 +696,8 @@ class ProductManageViewModel @Inject constructor(
             },
             onError = {
                 _getPopUpResult.value = Fail(it)
-            })
+            }
+        )
     }
 
     fun deleteSingleProduct(productName: String, productId: String) {
@@ -689,6 +718,7 @@ class ProductManageViewModel @Inject constructor(
                         )
                     )
                 }
+
                 result.productUpdateV3Data.header.errorMessage.isNotEmpty() -> {
                     _deleteProductResult.postValue(
                         Fail(
@@ -700,6 +730,7 @@ class ProductManageViewModel @Inject constructor(
                         )
                     )
                 }
+
                 else -> {
                     _deleteProductResult.postValue(
                         Fail(
@@ -741,8 +772,8 @@ class ProductManageViewModel @Inject constructor(
                 )
             )
         }, onError = { throwable ->
-            _setFeaturedProductResult.postValue(Fail(throwable))
-        })
+                _setFeaturedProductResult.postValue(Fail(throwable))
+            })
     }
 
     fun showHideOptionsMenu() {
@@ -844,10 +875,12 @@ class ProductManageViewModel @Inject constructor(
                 productUpdateV3Data.isSuccess -> {
                     Success(EditStockResult(productName, productId, stock, status))
                 }
+
                 errorMessage.isNotEmpty() -> {
                     val error = Throwable(message = errorMessage.last())
                     Fail(EditStockResult(productName, productId, stock, status, error))
                 }
+
                 else -> {
                     val message =
                         com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString()
@@ -874,7 +907,10 @@ class ProductManageViewModel @Inject constructor(
         return withContext(dispatchers.io) {
             val warehouseId = getWarehouseId(userSessionInterface.shopId)
             val requestParams = UpdateProductStockWarehouseUseCase.createRequestParams(
-                userSessionInterface.shopId, productId, warehouseId, stock.toString()
+                userSessionInterface.shopId,
+                productId,
+                warehouseId,
+                stock.toString()
             )
             val response = editStockUseCase.execute(requestParams)
             val productStatus = response.getProductStatus() ?: status
@@ -895,6 +931,7 @@ class ProductManageViewModel @Inject constructor(
                     val message = response.header.errorMessage.last()
                     Fail(MessageErrorException(message))
                 }
+
                 else -> {
                     val message = com.tokopedia.product.manage.common.R.string
                         .product_stock_reminder_toaster_failed_desc.toString()
@@ -911,7 +948,9 @@ class ProductManageViewModel @Inject constructor(
                 ProductStock(it.id, it.stock.toString())
             }
             val requestParams = UpdateProductStockWarehouseUseCase.createRequestParams(
-                userSessionInterface.shopId, warehouseId, productList
+                userSessionInterface.shopId,
+                warehouseId,
+                productList
             )
             editStockUseCase.execute(requestParams)
             Success(result)

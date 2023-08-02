@@ -8,6 +8,7 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
@@ -28,12 +29,14 @@ class SomListCoachMarkManager(
         somListBinding?.root?.context?.let {
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
                 CoachMark2(it)
-            } else null
+            } else {
+                null
+            }
         }
     }
 
     private val scrollListener: RecyclerView.OnScrollListener by lazy {
-        object: RecyclerView.OnScrollListener() {
+        object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 if (currentCoachMarkPosition == COACH_MARK_ITEM_ORDER_ITEM_POS) {
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
@@ -66,13 +69,17 @@ class SomListCoachMarkManager(
     private fun createCoachMarkItems(): ArrayList<CoachMark2Item> {
         return arrayListOf<CoachMark2Item>().apply {
             somListBinding?.sortFilterSomList?.let {
-                add(
-                    CoachMark2Item(
-                        it,
-                        it.context?.resources?.getString(R.string.som_list_coachmark_sort_filter_title).orEmpty(),
-                        it.context?.resources?.getString(R.string.som_list_coachmark_sort_filter_description).orEmpty()
+                if (it.isVisible) {
+                    add(
+                        CoachMark2Item(
+                            it,
+                            it.context?.resources?.getString(R.string.som_list_coachmark_sort_filter_title)
+                                .orEmpty(),
+                            it.context?.resources?.getString(R.string.som_list_coachmark_sort_filter_description)
+                                .orEmpty()
+                        )
                     )
-                )
+                }
             }
             findFirstVisibleOrderView()?.let {
                 add(
@@ -87,6 +94,8 @@ class SomListCoachMarkManager(
     }
 
     private fun findFirstVisibleOrderView(): View? {
+        val somListIsNotVisible = somListBinding?.rvSomList?.isVisible == false
+        if (somListIsNotVisible) return null
         val firstVisibleIndex = somListLayoutManager?.findFirstCompletelyVisibleItemPosition().orZero()
         val lastVisibleIndex = somListLayoutManager?.findLastCompletelyVisibleItemPosition().orZero()
         val rangeVisibleIndex = firstVisibleIndex..lastVisibleIndex

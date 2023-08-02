@@ -1,7 +1,7 @@
 package com.tokopedia.report.view.fragment.models
 
 import androidx.compose.runtime.Stable
-import com.tokopedia.common_compose.utils.UiText
+import com.tokopedia.nest.principles.utils.UiText
 import com.tokopedia.report.R
 import com.tokopedia.report.data.model.ProductReportReason
 

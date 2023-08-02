@@ -3,7 +3,6 @@ package com.tokopedia.media.picker.ui.activity.picker
 import androidx.lifecycle.*
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.media.R
-import com.tokopedia.media.picker.data.FeatureToggleManager
 import com.tokopedia.media.picker.data.mapper.mediaToUiModel
 import com.tokopedia.media.picker.data.repository.BitmapConverterRepository
 import com.tokopedia.media.picker.data.repository.DeviceInfoRepository
@@ -30,7 +29,6 @@ class PickerViewModel @Inject constructor(
     private val mediaFiles: MediaFileRepository,
     private val bitmapConverter: BitmapConverterRepository,
     private val param: PickerCacheManager,
-    private val featureToggle: FeatureToggleManager,
     private val networkState: NetworkStateManager,
     private val resources: ResourceManager,
     private val dispatchers: CoroutineDispatchers,
@@ -81,10 +79,6 @@ class PickerViewModel @Inject constructor(
     fun setPickerParam(pickerParam: PickerParam?) {
         val mPickerParam = pickerParam ?: return
 
-        if (mPickerParam.isEditorEnabled() && featureToggle.isEditorEnabled().not()) {
-            mPickerParam.withoutEditor()
-        }
-
         _pickerParam.value = param.set(mPickerParam)
     }
 
@@ -124,7 +118,6 @@ class PickerViewModel @Inject constructor(
             .onCompletion { _isLoading.value = false }
             .map {
                 val uiModels = setIncludedUrls(it)
-
                 _includeMedias.value = uiModels + localFiles
             }
             .launchIn(viewModelScope)
@@ -137,6 +130,9 @@ class PickerViewModel @Inject constructor(
                 ?.toUiModel()
                 ?.also { model ->
                     model.sourcePath = it.second
+
+                    // set loaded url image to skip save gallery process
+                    model.isCacheFile = false
                 }
         }
     }

@@ -74,7 +74,7 @@ internal fun ListItemUnify.setPrimarySelected(context: Context?, isChecked: Bool
 
 // set color to dark mode support
 internal fun ListItemUnify.setTextColorToUnify(context: Context) = let {
-    val unifyBlackColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
+    val unifyBlackColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
     it.listTitle?.setTextColor(unifyBlackColor)
 }
 

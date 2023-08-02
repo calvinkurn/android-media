@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:padding="10dp"
-        android:textColor="@color/Unify_G400"
+        android:textColor="@color/Unify_GN500"
         app:typographyType="body_2"
         app:typographyWeight="reguler"
         tools:text="Pesanan Sedang Diproses" />

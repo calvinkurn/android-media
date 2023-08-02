@@ -12,9 +12,14 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.text.SpannableString
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -24,11 +29,11 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
@@ -50,7 +55,6 @@ import com.tokopedia.home_account.AccountConstants.Analytics.DEVELOPER_OPTIONS
 import com.tokopedia.home_account.AccountConstants.Analytics.LOGOUT
 import com.tokopedia.home_account.AccountConstants.Analytics.PAYMENT_METHOD
 import com.tokopedia.home_account.AccountConstants.Analytics.PERSONAL_DATA
-import com.tokopedia.home_account.AccountConstants.Analytics.PRIVACY_POLICY
 import com.tokopedia.home_account.AccountConstants.Analytics.TERM_CONDITION
 import com.tokopedia.home_account.AccountConstants.TDNBanner.TDN_INDEX
 import com.tokopedia.home_account.PermissionChecker
@@ -59,8 +63,18 @@ import com.tokopedia.home_account.ResultBalanceAndPoint
 import com.tokopedia.home_account.analytics.AddVerifyPhoneAnalytics
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.analytics.TokopediaPlusAnalytics
-import com.tokopedia.home_account.data.model.*
+import com.tokopedia.home_account.data.model.CentralizedUserAssetConfig
+import com.tokopedia.home_account.data.model.CommonDataView
+import com.tokopedia.home_account.data.model.LoadMoreRecommendation
+import com.tokopedia.home_account.data.model.ProfileDataView
+import com.tokopedia.home_account.data.model.RecommendationTitleView
+import com.tokopedia.home_account.data.model.SeparatorView
+import com.tokopedia.home_account.data.model.SettingDataView
+import com.tokopedia.home_account.data.model.ShortcutResponse
+import com.tokopedia.home_account.data.model.UserAccountDataModel
+import com.tokopedia.home_account.data.model.WalletappGetAccountBalance
 import com.tokopedia.home_account.data.pref.AccountPreference
+import com.tokopedia.home_account.databinding.BottomSheetOclBinding
 import com.tokopedia.home_account.databinding.HomeAccountUserFragmentBinding
 import com.tokopedia.home_account.di.HomeAccountUserComponents
 import com.tokopedia.home_account.privacy_account.view.LinkAccountWebViewActivity
@@ -95,21 +109,30 @@ import com.tokopedia.loginfingerprint.tracker.BiometricTracker.Companion.EVENT_L
 import com.tokopedia.loginfingerprint.view.activity.RegisterFingerprintActivity
 import com.tokopedia.loginfingerprint.view.dialog.FingerprintDialogHelper
 import com.tokopedia.loginfingerprint.view.helper.BiometricPromptHelper
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
+import com.tokopedia.sessioncommon.tracker.OclTracker
+import com.tokopedia.sessioncommon.util.OclUtils
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LocalLoad
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -165,8 +188,13 @@ open class HomeAccountUserFragment :
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
+
+    @Inject
+    lateinit var oclUtils: OclUtils
+
     private lateinit var remoteConfigInstance: RemoteConfigInstance
-    private lateinit var firebaseRemoteConfig: FirebaseRemoteConfigImpl
 
     private var biometricOfferingDialog: BottomSheetUnify? = null
 
@@ -203,7 +231,7 @@ open class HomeAccountUserFragment :
     }
 
     private fun isEnablePrivacyAccount(): Boolean {
-        return getRemoteConfig().getBoolean(REMOTE_CONFIG_KEY_PRIVACY_ACCOUNT, false)
+        return remoteConfig.getBoolean(REMOTE_CONFIG_KEY_PRIVACY_ACCOUNT, false)
     }
 
     private fun isEnableExplicitProfileMenu(): Boolean {
@@ -217,13 +245,6 @@ open class HomeAccountUserFragment :
             remoteConfigInstance = RemoteConfigInstance(activity?.application)
         }
         return remoteConfigInstance.abTestPlatform
-    }
-
-    private fun getRemoteConfig(): FirebaseRemoteConfigImpl {
-        if (!::firebaseRemoteConfig.isInitialized) {
-            firebaseRemoteConfig = FirebaseRemoteConfigImpl(requireContext())
-        }
-        return firebaseRemoteConfig
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -259,7 +280,7 @@ open class HomeAccountUserFragment :
         binding?.homeAccountUserToolbar?.let {
             it.setIcon(
                 IconBuilder(
-                    IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_ACCOUNT)
+                    IconBuilderFlag(pageSource = NavSource.ACCOUNT)
                 ).addIcon(iconId = IconList.ID_NAV_GLOBAL) {}
             )
             viewLifecycleOwner.lifecycle.addObserver(it)
@@ -620,8 +641,8 @@ open class HomeAccountUserFragment :
 
     private fun fetchRemoteConfig() {
         context?.let {
-            isShowDarkModeToggle = getRemoteConfig().getBoolean(RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false)
-            isShowScreenRecorder = getRemoteConfig().getBoolean(RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER, false)
+            isShowDarkModeToggle = remoteConfig.getBoolean(RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false)
+            isShowScreenRecorder = remoteConfig.getBoolean(RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER, false)
         }
     }
 
@@ -630,19 +651,16 @@ open class HomeAccountUserFragment :
     }
 
     private fun setupObserver() {
-        viewModel.buyerAccountDataData.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> {
-                        onSuccessGetBuyerAccount(it.data)
-                    }
-                    is Fail -> {
-                        onFailedGetBuyerAccount()
-                    }
+        viewModel.buyerAccountDataData.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    onSuccessGetBuyerAccount(it.data)
+                }
+                is Fail -> {
+                    onFailedGetBuyerAccount()
                 }
             }
-        )
+        }
 
         viewModel.firstRecommendationData.observe(
             viewLifecycleOwner,
@@ -912,14 +930,14 @@ open class HomeAccountUserFragment :
     private fun isFirstItemIsProfile(): Boolean =
         adapter?.getItem(POSITION_0) is ProfileDataView
 
-    private fun onSuccessGetBuyerAccount(buyerAccount: UserAccountDataModel) {
+    private fun onSuccessGetBuyerAccount(buyerAccount: ProfileDataView) {
         displayMemberLocalLoad(false)
         displayBalanceAndPointLocalLoad(false)
         adapter?.run {
             if (isFirstItemIsProfile()) {
                 removeItemAt(POSITION_0)
             }
-            addItem(POSITION_0, mapper.mapToProfileDataView(buyerAccount))
+            addItem(POSITION_0, buyerAccount)
             notifyItemChanged(POSITION_0)
         }
         hideLoading()
@@ -1030,7 +1048,7 @@ open class HomeAccountUserFragment :
     private fun setupStatusBar() {
         activity?.let {
             binding?.statusBarBg?.background = ColorDrawable(
-                ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
             )
             binding?.statusBarBg?.layoutParams?.height = ViewHelper.getStatusBarHeight(it)
         }
@@ -1064,6 +1082,9 @@ open class HomeAccountUserFragment :
         setupSettingList()
         getFirstRecommendation()
         viewModel.getSafeModeValue()
+        if (oclUtils.isOclEnabled()) {
+            viewModel.getOclStatus()
+        }
     }
 
     private fun onRefresh() {
@@ -1348,12 +1369,7 @@ open class HomeAccountUserFragment :
             AccountConstants.SettingCode.SETTING_OUT_ID -> {
                 homeAccountAnalytic.eventClickSetting(LOGOUT)
                 homeAccountAnalytic.eventClickLogout()
-                if (isEnableBiometricOffering()) {
-                    homeAccountAnalytic.trackOnClickLogoutDialog()
-                    viewModel.getFingerprintStatus()
-                } else {
-                    showDialogLogout()
-                }
+                checkLogoutOffering()
             }
             AccountConstants.SettingCode.SETTING_QUALITY_SETTING -> {
                 RouteManager.route(context, ApplinkConstInternalUserPlatform.MEDIA_QUALITY_SETTING)
@@ -1395,6 +1411,79 @@ open class HomeAccountUserFragment :
                 goToApplink(item.applink)
             }
         }
+    }
+
+    private fun checkLogoutOffering() {
+        if (viewModel.getOclStatus.value?.isShowing == true) {
+            showOclBtmSheet()
+        } else if (isEnableBiometricOffering()) {
+            homeAccountAnalytic.trackOnClickLogoutDialog()
+            viewModel.getFingerprintStatus()
+        } else {
+            showDialogLogout()
+        }
+    }
+
+    fun getTncOclSpan(): SpannableString {
+        val sourceString = SpannableString(requireContext().resources.getString(R.string.ocl_btm_sheet_subtitle))
+
+        val startIndexTermAndCondition = sourceString.indexOf(getString(R.string.ocl_btm_sheet_tnc_index))
+        val endIndexTermAndCondition = startIndexTermAndCondition.plus(getString(R.string.ocl_btm_sheet_tnc_index).length)
+
+        sourceString.setSpan(
+            clickableSpan(ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION),
+            startIndexTermAndCondition,
+            endIndexTermAndCondition,
+            0
+        )
+        return sourceString
+    }
+
+    private fun clickableSpan(page: String): ClickableSpan {
+        return object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                context?.let {
+                    startActivity(RouteManager.getIntent(it, ApplinkConstInternalUserPlatform.TERM_PRIVACY, page))
+                }
+            }
+            override fun updateDrawState(ds: TextPaint) {
+                ds.color = MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+            }
+        }
+    }
+
+    private fun showOclBtmSheet() {
+        val child = BottomSheetOclBinding.inflate(
+            LayoutInflater.from(context),
+            null,
+            false
+        )
+        child.btmSheetOclPositiveBtn.setOnClickListener {
+            OclTracker.sendClickOnButtonSimpanLoginAccountEvent()
+            doLogoutAndSaveSession()
+        }
+
+        child.btmSheetOclNegativeBtn.setOnClickListener {
+            OclTracker.sendClickOnButtonNantiLoginAccountEvent()
+            doLogout()
+        }
+        child.oclSubtitleText.movementMethod = LinkMovementMethod.getInstance()
+        child.oclSubtitleText.setText(getTncOclSpan(), TextView.BufferType.SPANNABLE)
+        child.imageUnify.loadImage(getString(R.string.ocl_bottomsheet_main_image))
+        BottomSheetUnify().apply {
+            setChild(child.root)
+            setCloseClickListener {
+                OclTracker.sendClickOnCloseButtonEvent()
+                doLogout()
+                dismiss()
+            }
+        }.show(parentFragmentManager, AccountConstants.LABEL_OCL_BTM_SHEET)
+    }
+
+    private fun doLogoutAndSaveSession() {
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.LOGOUT)
+        intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_IS_SAVE_SESSION, true)
+        startActivity(intent)
     }
 
     private fun doLogout() {
@@ -1646,7 +1735,7 @@ open class HomeAccountUserFragment :
                 addNameLayout.findViewById(R.id.layout_bottom_sheet_add_name_icon)
             val bottomSheet = BottomSheetUnify()
 
-            ImageUtils.loadImage(iconAddName, URL_ICON_ADD_NAME_BOTTOM_SHEET)
+            ImageUtils.loadImage(iconAddName, getString(R.string.add_name_url_icon))
             iconAddName.setOnClickListener {
                 gotoChangeName(profile)
                 bottomSheet.dismiss()
@@ -1751,11 +1840,9 @@ open class HomeAccountUserFragment :
         private const val PDP_EXTRA_PRODUCT_ID = "product_id"
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val FPM_BUYER = "mp_account_buyer"
-        private const val URL_ICON_ADD_NAME_BOTTOM_SHEET =
-            "https://images.tokopedia.net/img/android/user/profile_page/Group3082@3x.png"
         private const val USER_CENTRALIZED_ASSET_CONFIG_USER_PAGE = "user_page"
 
-        private const val REMOTE_CONFIG_KEY_PRIVACY_ACCOUNT = "android_user_privacy_account_enabled"
+        const val REMOTE_CONFIG_KEY_PRIVACY_ACCOUNT = "android_user_privacy_account_enabled"
         private const val EXPLICIT_PROFILE_MENU_ROLLOUT = "explicit_android"
         private const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
 
@@ -1770,6 +1857,8 @@ open class HomeAccountUserFragment :
         private const val ACC_SETTING_POS = 1
 
         private const val COACHMARK_DELAY_MS = 1000L
+        private const val PRIVACY_POLICY = "Kebijakan Privasi"
+
         fun newInstance(bundle: Bundle?): Fragment {
             return HomeAccountUserFragment().apply {
                 arguments = bundle

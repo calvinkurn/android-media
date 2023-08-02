@@ -18,7 +18,7 @@ import com.tokopedia.unifycomponents.Toaster
 import java.util.concurrent.TimeUnit
 import com.tokopedia.media.loader.internal.NetworkManager.state as networkManagerState
 
-class MediaLoaderActivityLifecycle(
+internal class MediaLoaderActivityLifecycle(
     private val context: Context
 ) : ActivityLifecycleCallbacks {
 

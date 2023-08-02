@@ -4,6 +4,7 @@
     android:id="@+id/view_kebab_menu"
     android:layout_width="@dimen/layout_lvl5"
     android:layout_height="@dimen/layout_lvl5"
+    android:padding="@dimen/unify_space_4"
     app:icon_color_light_enable="@color/Unify_Static_White"
     app:icon_color_night_enable="@color/Unify_Static_White"
     app:icon_name="MENU_KEBAB_HORIZONTAL"

@@ -117,7 +117,7 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         val dividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL)
         ContextCompat.getDrawable(
             requireContext(),
-            com.tokopedia.design.R.drawable.divider_horizontal_custom_quick_filter)?.let { dividerItemDecoration.setDrawable(it) }
+            R.drawable.promo_divider_horizontal_custome_quick_filter)?.let { dividerItemDecoration.setDrawable(it) }
         with(view.recyclerViewLastSeenPromo) {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
             adapter = promoLastSeenAdapter

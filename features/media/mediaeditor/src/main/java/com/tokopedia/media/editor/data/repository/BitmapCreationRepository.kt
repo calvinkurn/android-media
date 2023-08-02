@@ -8,6 +8,7 @@ import com.tokopedia.media.editor.ui.uimodel.*
 import com.tokopedia.media.editor.utils.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import javax.inject.Inject
+import kotlin.math.abs
 
 interface BitmapCreationRepository {
     fun createBitmap(bitmapCreationModel: BitmapCreationModel): Bitmap?
@@ -147,11 +148,7 @@ class BitmapCreationRepositoryImpl @Inject constructor(
             source?.let { bitmap ->
                 position?.let { (x, y) ->
                     try {
-                        return if (matrix != null && filter != null) {
-                            Bitmap.createBitmap(bitmap, x, y, width, height, matrix, filter)
-                        } else {
-                            Bitmap.createBitmap(bitmap, x, y, width, height)
-                        }
+                        return validateCroppedSize(bitmap, width, height, x, y, this)
                     } catch (e: Exception) {
                         val sourceSize = Pair(bitmap.width, bitmap.height)
                         val targetSize = Pair(width, height)
@@ -197,10 +194,69 @@ class BitmapCreationRepositoryImpl @Inject constructor(
         return isBitmapOverflow(bitmapCreationModel.width, bitmapCreationModel.height)
     }
 
+    private fun validateCroppedSize(
+        bitmap: Bitmap,
+        width: Int,
+        height: Int,
+        x: Int,
+        y: Int,
+        bitmapCreationModel: BitmapCreationModel
+    ): Bitmap {
+        var finalWidth = width
+        var finalX = x
+
+        var finalHeight = height
+        var finalY = y
+
+        val widthRatio = width/height.toFloat()
+        val heightRatio = height/width.toFloat()
+
+        //===========
+
+        // if width target is more than source but still on tolerance size
+        // then reduce the width target
+        val tempWidth = bitmap.width - finalWidth
+        if (tempWidth in BITMAP_SIZE_TOLERANCE_VALUE..0) {
+            finalWidth -= abs(tempWidth)
+            finalHeight = (finalWidth * heightRatio).toInt()
+        }
+
+        // if width target + x pos is more than source but still on tolerance size
+        // then reduce the x pos
+        val tempX = (bitmap.width - finalWidth) - x
+        if (tempX in BITMAP_SIZE_TOLERANCE_VALUE..0) {
+            finalX = x - abs(tempX)
+        }
+
+        // if height target is more than source but still on tolerance size
+        // then reduce the height target
+        val tempHeight = bitmap.height - finalHeight
+        if (tempHeight in BITMAP_SIZE_TOLERANCE_VALUE..0) {
+            finalHeight -= abs(tempHeight)
+            finalWidth = (finalHeight * widthRatio).toInt()
+        }
+
+        // if height target + y pos is more than source but still on tolerance size
+        // then reduce the y pos
+        val tempY = (bitmap.height - finalHeight) - y
+        if (tempY in BITMAP_SIZE_TOLERANCE_VALUE..0) {
+            finalY = y - abs(tempY)
+        }
+
+        bitmapCreationModel.apply {
+            return if (matrix != null && filter != null) {
+                Bitmap.createBitmap(bitmap, finalX, finalY, finalWidth, finalHeight, matrix, filter)
+            } else {
+                Bitmap.createBitmap(bitmap, finalX, finalY, finalWidth, finalHeight)
+            }
+        }
+    }
+
     companion object {
         private const val BITMAP_PIXEL_SIZE = 4
         private const val HALF_DIVIDER = 2f
         private const val SCALE_MIRROR_VALUE = -1f
+        private const val BITMAP_SIZE_TOLERANCE_VALUE = -3
 
         private const val REMOTE_CONFIG_MULTIPLIER_KEY = "android_media_editor_memory_multiplier"
         private const val DEFAULT_MULTIPLIER = 1.25f

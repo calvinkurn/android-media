@@ -1,6 +1,7 @@
 package com.tokopedia.affiliate.ui.bottomsheet
 
 import android.app.Dialog
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,13 +23,14 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class AffiliateBottomSheetInfo : BottomSheetUnify() {
-    private lateinit var contentView: View
+    private var contentView: View? = null
     private var tickerData: AffiliateAnnouncementDataV2.GetAffiliateAnnouncementV2.Data.TickerData? =
         null
     private var tickerId: Long = 0
 
     @Inject
-    lateinit var userSessionInterface: UserSessionInterface
+    @JvmField
+    var userSessionInterface: UserSessionInterface? = null
 
     companion object {
         private const val TICKER_DATA = "tickerData"
@@ -58,8 +60,14 @@ class AffiliateBottomSheetInfo : BottomSheetUnify() {
     private fun init() {
         arguments?.let {
             tickerId = it.getLong(TICKER_ID)
-            tickerData =
+            tickerData = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
                 it.getSerializable(TICKER_DATA) as AffiliateAnnouncementDataV2.GetAffiliateAnnouncementV2.Data.TickerData
+            } else {
+                it.getSerializable(
+                    TICKER_DATA,
+                    AffiliateAnnouncementDataV2.GetAffiliateAnnouncementV2.Data.TickerData::class.java
+                )
+            }
         }
         contentView = View.inflate(context, R.layout.affiliate_bottom_sheet_info, null)
         setData()
@@ -76,19 +84,19 @@ class AffiliateBottomSheetInfo : BottomSheetUnify() {
             AffiliateAnalytics.ActionKeys.CLICK_CLOSE,
             AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_BOTTOM_SHEET_COMMUNICATION,
             "$tickerId",
-            userSessionInterface.userId
+            userSessionInterface?.userId.orEmpty()
         )
     }
 
     private fun setData() {
         if (!tickerData?.illustrationURL.isNullOrEmpty()) {
-            contentView.findViewById<ImageUnify>(R.id.info_image).apply {
+            contentView?.findViewById<ImageUnify>(R.id.info_image)?.apply {
                 visible()
                 loadImage(tickerData?.illustrationURL)
             }
         }
         if (!tickerData?.ctaTextSecondary.isNullOrEmpty()) {
-            contentView.findViewById<UnifyButton>(R.id.info_button_secondary).apply {
+            contentView?.findViewById<UnifyButton>(R.id.info_button_secondary)?.apply {
                 visible()
                 text = tickerData?.ctaTextSecondary
                 setOnClickListener {
@@ -100,34 +108,33 @@ class AffiliateBottomSheetInfo : BottomSheetUnify() {
                 }
             }
         }
-        contentView.findViewById<Typography>(R.id.info_title).text = tickerData?.announcementTitle
-        contentView.findViewById<Typography>(R.id.info_description).text =
+        contentView?.findViewById<Typography>(R.id.info_title)?.text = tickerData?.announcementTitle
+        contentView?.findViewById<Typography>(R.id.info_description)?.text =
             tickerData?.announcementDescription
-        contentView.findViewById<UnifyButton>(R.id.info_button_primary).text = tickerData?.ctaText
-        contentView.findViewById<UnifyButton>(R.id.info_button_primary).setOnClickListener {
+        contentView?.findViewById<UnifyButton>(R.id.info_button_primary)?.text = tickerData?.ctaText
+        contentView?.findViewById<UnifyButton>(R.id.info_button_primary)?.setOnClickListener {
             sendPrimaryCtaEvent()
             RouteManager.route(requireContext(), tickerData?.ctaLink?.androidURL)
         }
-
     }
 
-    private fun sendPrimaryCtaEvent(){
+    private fun sendPrimaryCtaEvent() {
         AffiliateAnalytics.sendEvent(
             AffiliateAnalytics.EventKeys.CLICK_CONTENT,
             AffiliateAnalytics.ActionKeys.CLICK_PRIMARY_BUTTON,
             AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_BOTTOM_SHEET_COMMUNICATION,
             "$tickerId",
-            userSessionInterface.userId
+            userSessionInterface?.userId.orEmpty()
         )
     }
 
-    private fun sendSecondaryCtaEvent(){
+    private fun sendSecondaryCtaEvent() {
         AffiliateAnalytics.sendEvent(
             AffiliateAnalytics.EventKeys.CLICK_CONTENT,
             AffiliateAnalytics.ActionKeys.CLICK_SECONDARY_BUTTON,
             AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_BOTTOM_SHEET_COMMUNICATION,
             "$tickerId",
-            userSessionInterface.userId
+            userSessionInterface?.userId.orEmpty()
         )
     }
 

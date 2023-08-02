@@ -83,6 +83,7 @@
     <string name="error_text_image_cant_be_accessed">Foto ktp tidak dapat diakses</string>
     <string name="error_text_liveness_image_cant_be_accessed">Foto tidak dapat diakses</string>
     <string name="error_text_image_fail_to_encrypt">Foto tidak dapat disimpan</string>
+    <string name="error_liveness_is_not_supported">Scan wajah gagal, silahkan hubungi Tokopedia Care</string>
 
     <string name="title_kyc_form_ktp">1. Foto KTP</string>
     <string name="title_kyc_form_selfie">2. Foto Diri &amp; KTP</string>
@@ -190,6 +191,7 @@
     <string name="uii_simple_button">Lanjut Isi Formulir</string>
 
     <string name="kyc_consent_text"><![CDATA[Saya setuju untuk bagikan data KTP & foto wajah ke Tokopedia sesuai Syarat & Ketentuan.]]></string>
+    <string name="error_code">Kode Error: %s</string>
 
 
     <!--  MIGRATE FROM USER_IDENTIFICATION_COMMON  -->
@@ -199,4 +201,102 @@
         <font color='#dbdee2'>\u25CF</font> &nbsp Pastikan foto KTP berada dalam bingkai.<br>
         <font color='#dbdee2'>\u25CF</font> &nbsp Pastikan foto KTP terlihat terang dan jelas.]]>"</string>
     <string name="user_identification_common_retake_photo">Foto Ulang</string>
+
+    <!--GOTO KYC-->
+    <string name="goto_kyc_benefit_non_account_title">Nikmatin keuntungannya setelah verifikasi</string>
+    <string name="goto_kyc_benefit_non_account_item_title_1">Nikmatin fitur lengkap buat belanja</string>
+    <string name="goto_kyc_benefit_non_account_item_subtitle_1">Belanja jadi makin untung dan nyaman.</string>
+    <string name="goto_kyc_benefit_non_account_item_title_2">Akses fitur penjualan eksklusif</string>
+    <string name="goto_kyc_benefit_non_account_item_subtitle_2">Tokomu upgrade dan bisa naikin performa.</string>
+    <string name="goto_kyc_benefit_non_account_item_title_3">GoPay Plus kamu langsung aktif</string>
+    <string name="goto_kyc_benefit_non_account_item_subtitle_3">Transaksi jadi makin praktis dan cepat!</string>
+    <string name="goto_kyc_benefit_account_title_trouble">Kamu bisa nikmatin keuntungan ini setelah terverifikasi</string>
+    <string name="goto_kyc_benefit_account_title_pending">Yuk, nikmatin keuntungan ini setelah verifikasi!</string>
+    <string name="goto_kyc_benefit_account_title_verified">Saatnya nikmatin beragam keuntungannya!</string>
+    <string name="goto_kyc_status_pending_title">Sebentar ya, dokumen lagi diproses</string>
+    <string name="goto_kyc_status_pending_subtitle">Sebentar ya, datamu diproses dalam <![CDATA[<b>24 jam</b>]]>. Kamu bisa tutup dan kami kabarin saat selesai.</string>
+    <string name="goto_kyc_status_pending_hours">%s jam</string>
+    <string name="goto_kyc_status_pending_minutes">%s menit</string>
+    <string name="goto_kyc_status_pending_seconds">%s detik</string>
+    <string name="goto_kyc_status_pending_button">Balik ke %s</string>
+    <string name="goto_kyc_status_pending_refresh_status">Cek Status Verifikasi</string>
+    <string name="goto_kyc_status_verified_title">Hore, dokumenmu berhasil terverifikasi!</string>
+    <string name="goto_kyc_status_verified_subtitle">Tenang, data yang kamu berikan akan dijaga kerahasiannya dan disimpan di sistem kami.</string>
+    <string name="goto_kyc_back_to_source">Balik</string>
+    <string name="goto_kyc_status_blacklisted_title">Yaah, dokumen kamu nggak sesuai Syarat &amp; Ketentuan</string>
+    <string name="goto_kyc_status_blacklisted_subtitle">Untuk informasi lebih lanjut, coba hubungi Tokopedia Care ya.</string>
+    <string name="goto_kyc_status_blacklisted_button">Kontak Tokopedia Care</string>
+    <string name="goto_kyc_status_rejected_title">Yaah, verifikasinya belum berhasil</string>
+    <string name="goto_kyc_status_rejected_button_primary">Verifikasi Ulang</string>
+    <string name="goto_kyc_status_rejected_button_secondary">Hubungi Tokopedia Care</string>
+    <string name="goto_kyc_benefit_detail_shopping_header">Fitur buat belanja</string>
+    <string name="goto_kyc_benefit_detail_shopping_title_1">Tarik saldo Tokopedia Affiliate</string>
+    <string name="goto_kyc_benefit_detail_shopping_subtitle_1">Siap raih komisi kalau ada yang beli dari link kamu dan bisa tarik saldonya.</string>
+    <string name="goto_kyc_benefit_detail_shopping_title_2">Beli produk khusus dewasa</string>
+    <string name="goto_kyc_benefit_detail_shopping_subtitle_2">Bisa langsung beli produknya kalau udah memenuhi batas minimum usia.</string>
+    <string name="goto_kyc_benefit_detail_seller_header">Fitur buat jualan</string>
+    <string name="goto_kyc_benefit_detail_seller_title_1">Upgrade toko jadi Power Merchant</string>
+    <string name="goto_kyc_benefit_detail_seller_subtitle_1">Nikmatin fitur spesial dari PM atau PM Pro buat tingkatin penjualan kamu.</string>
+    <string name="goto_kyc_benefit_detail_gopay_header">Keuntungan di GoPay Plus</string>
+    <string name="goto_kyc_benefit_detail_gopay_title_1">Dapat kesempatan akses PayLater</string>
+    <string name="goto_kyc_benefit_detail_gopay_subtitle_1">Kalau bisa aktifin, kamu bisa bayar di akhir bulan pesanan di Gojek dan Tokopedia.</string>
+    <string name="goto_kyc_benefit_detail_gopay_title_2">Isi dompet lebih banyak</string>
+    <string name="goto_kyc_benefit_detail_gopay_subtitle_2">Per bulannya kamu bisa punya saldo sampai 20 juta, lho.</string>
+    <string name="goto_kyc_benefit_detail_gopay_title_3">Nikmatin fitur menarik lainnya</string>
+    <string name="goto_kyc_benefit_detail_gopay_subtitle_3">Transfer ke bank, tarik tunai dan bayar ke teman &amp; keluarga.</string>
+    <string name="goto_kyc_benefit_detail_bottom_sheet_title">Keuntungan setelah verifikasi</string>
+    <string name="goto_kyc_onboard_non_progressive_title">Verifikasi datamu dulu, yuk!\nGampang banget, lho~</string>
+    <string name="goto_kyc_start_verification">Mulai Verifikasi</string>
+    <string name="goto_kyc_onboard_non_progressive_item_account_linking_title">Sambungin akun Gojek</string>
+    <string name="goto_kyc_onboard_non_progressive_item_account_linking_subtitle_unlinked">Tinggal konfirmasi nomor HP-mu dan akun langsung kesambung.</string>
+    <string name="goto_kyc_onboard_non_progressive_item_ktp_title">Ambil foto e-KTP</string>
+    <string name="goto_kyc_onboard_non_progressive_item_ktp_subtitle_not_taken">Siapin e-KTP asli kamu dan pastikan masih berlaku, ya.</string>
+    <string name="goto_kyc_onboard_non_progressive_item_ktp_view_image">Lihat Foto e-KTP</string>
+    <string name="goto_kyc_onboard_non_progressive_item_selfie_title">Ambil selfie</string>
+    <string name="goto_kyc_onboard_non_progressive_item_selfie_subtitle_not_taken">Siap-siap! Cari tempat yang terang, lepas kacamata atau masker kamu.</string>
+    <string name="goto_kyc_onboard_progressive_title">Selangkah lagi buat lanjut verifikasi!</string>
+    <string name="goto_kyc_progressive_description">Kamu udah terdaftar di GoPay Plus, nih. Mau pakai e-KTP ini buat lanjut verifikasi?</string>
+    <string name="goto_kyc_onboard_progressive_item_title">e-KTP di GoPay</string>
+    <string name="goto_kyc_bridging_progressive_item_title">Nama e-KTP</string>
+    <string name="goto_kyc_transparent_something_wrong">Terjadi kesalahan!</string>
+    <string name="goto_kyc_onboard_benefit_title">Yuk, nikmatin keuntungan ini setelah verifikasi!</string>
+    <string name="goto_kyc_onboard_benefit_button_verification">Ambil Keuntungannya</string>
+    <string name="goto_kyc_bridging_title">Sip, akun Gojek-mu udah kesambung!</string>
+    <string name="goto_kyc_bridging_not_done_gopay_subtitle">Kamu tinggal lanjutin proses berikutnya, deh.</string>
+    <string name="goto_kyc_bridging_not_done_gopay_item_ktp_title">Ambil foto e-KTP</string>
+    <string name="goto_kyc_bridging_not_done_gopay_item_selfie_title">Ambil selfie</string>
+    <string name="goto_kyc_bridging_not_done_gopay_item_ktp_number">1</string>
+    <string name="goto_kyc_bridging_not_done_gopay_item_selfie_number">2</string>
+    <string name="goto_kyc_continue_verification">Lanjut Verifikasi</string>
+    <string name="goto_kyc_confirm_KTP_name">Oke, Pakai e-KTP Ini</string>
+    <string name="goto_kyc_question_ktp_issue">Bukan e-KTP kamu? Hubungi Tokopedia Care</string>
+    <string name="goto_kyc_contact_tokopedia_care">Hubungi Tokopedia Care</string>
+    <string name="goto_kyc_dob_challenge_title">Konfirmasi pakai tanggal lahirmu</string>
+    <string name="goto_kyc_dob_challenge_subtitle">Karena udah terdaftar di GoPay Plus, kamu tinggal konfirmasi tanggal lahirmu sesuai e-KTP.</string>
+    <string name="goto_kyc_dob_challenge_choose_dob">Pilih tanggal lahir</string>
+    <string name="goto_kyc_dob_challenge_wrong_answer_message">Tanggal lahir nggak cocok. Sisa %s kali coba lagi, ya.</string>
+    <string name="goto_kyc_dob_challenge_wrong_answer_maximum_attempts_message">Kamu udah masukin tanggal lahir yang salah sebanyak %s kali.</string>
+    <string name="goto_kyc_dob_challenge_wrong_answer_waiting_date_message">Coba lagi pada %s ya.</string>
+    <string name="goto_kyc_dob_challenge_wrong_answer_waiting_seconds_message">Coba beberapa detik lagi.</string>
+    <string name="goto_kyc_dob_failed_title">Yah, sisa coba kamu udah abis</string>
+    <string name="goto_kyc_dob_failed_subtitle">Kamu udah masukin tanggal lahir yang salah sebanyak %s kali. Coba lagi pada %s ya.</string>
+    <string name="goto_kyc_dob_challenge_confirmation">Konfirmasi</string>
+    <string name="goto_kyc_loader_wait_a_moment">Tunggu sebentar, ya…</string>
+    <string name="goto_kyc_loader_data_uploading">Datamu sedang di-upload.</string>
+    <string name="goto_kyc_error_from_be">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
+    <string name="goto_kyc_error_no_connection">Yahh, internet kamu putus. Cek paket data atau WiFi-mu, ya.</string>
+    <string name="goto_kyc_error_timeout">Yahh, waktunya udah habis nih. Coba lagi, yuk!</string>
+    <string name="goto_kyc_permission_camera_denied">Akses kamera sudah ditolak, aktifkan lewat pengaturan HP ya.</string>
+    <string name="goto_kyc_permission_action_active">Aktifkan</string>
+    <string name="goto_kyc_timeout_title">Oops, waktunya habis</string>
+    <string name="goto_kyc_timeout_description">Kamu bisa coba lagi verifikasinya dan pastikan buat ikuti instruksinya, ya!</string>
+    <string name="goto_kyc_awaiting_approval_title">Tunggu ya, lagi ada proses verifikasi di GoPay</string>
+    <string name="goto_kyc_awaiting_approval_description">Prosesnya maks. 24 jam setelah kamu verifikasi di GoPay. Setelah selesai, kamu bisa verifikasi di Tokopedia.</string>
+    <string name="goto_kyc_awaiting_approval_button">Oke, Siap!</string>
+    <string name="goto_kyc_try_again">Coba Lagi</string>
+    <string name="goto_kyc_direct_to_setting">Ke Pengaturan</string>
+    <string name="goto_kyc_internet_issue">Koneksi internetmu terganggu!</string>
+    <string name="goto_kyc_failed_load_data_title">Oops, gagal memuat data</string>
+    <string name="goto_kyc_failed_load_data_subtitle">Datanya gagal dimuat jadi belum bisa lanjut proses verifikasi. Coba lagi, ya.</string>
+
 </resources>

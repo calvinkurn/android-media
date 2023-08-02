@@ -385,6 +385,9 @@ data class DataItem(
     @SerializedName("image")
     val image: String = "",
 
+    @SerializedName("lottie_image")
+    val lottieImage: String = "",
+
     @SerializedName("tracking_fields")
     val trackingFields: TrackingFields? = null,
 
@@ -488,6 +491,9 @@ data class DataItem(
 
     @SerializedName("catalog_slugs")
     var catalogSlug: List<String?>? = null,
+
+    @SerializedName("pinned_slugs")
+    var pinnedSlugs: List<String?>? = null,
 
     @SerializedName("bundle_details")
     var bundleDetails: List<BundleDetails?>? = null,

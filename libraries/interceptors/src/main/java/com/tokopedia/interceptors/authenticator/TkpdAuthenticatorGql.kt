@@ -99,7 +99,6 @@ class TkpdAuthenticatorGql(
                             val forceLogoutInfo = checkForceLogoutInfo()
                             if(forceLogoutInfo?.isForceLogout == true) {
                                 userSession.logoutSession()
-                                clearDataStore()
                                 broadcastForceLogoutInfo(forceLogoutInfo)
                             } else {
                                 networkRouter.showForceLogoutTokenDialog("/")

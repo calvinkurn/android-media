@@ -536,7 +536,7 @@ class MultiBannerViewModelTest {
 
         assert( viewModel.layoutSelector() == R.layout.disco_shimmer_quadruple_banner_layout )
 
-        every { componentsItem.name } returns ComponentNames.BottomNavigation.componentName
+        every { componentsItem.name } returns ComponentNames.AnchorTabs.componentName
 
         assert( viewModel.layoutSelector() == R.layout.multi_banner_layout )
     }

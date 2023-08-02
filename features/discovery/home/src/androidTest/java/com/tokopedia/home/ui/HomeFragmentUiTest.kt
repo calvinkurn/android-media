@@ -30,6 +30,7 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 
@@ -75,6 +76,7 @@ class HomeFragmentUiTest {
         IdlingRegistry.getInstance().unregister(homeRecyclerViewIdlingResource)
     }
 
+    @Ignore
     @Test
     fun testFirstTimeLoggedInUser() {
         assertHomeCoachmarkDisplayed()

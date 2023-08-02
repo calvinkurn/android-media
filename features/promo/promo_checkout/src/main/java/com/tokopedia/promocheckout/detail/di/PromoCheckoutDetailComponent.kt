@@ -10,7 +10,6 @@ import dagger.Component
 interface PromoCheckoutDetailComponent{
     fun inject(promoCheckoutDetailMarketplaceFragment: PromoCheckoutDetailMarketplaceFragment)
     fun inject(promoCheckoutDetailDigitalFragment: PromoCheckoutDetailDigitalFragment)
-    fun inject(checkoutDetailDigitalFragment: CheckoutCatalogDetailFragment)
     fun inject(promoCheckoutDetailFlightFragment: PromoCheckoutDetailFlightFragment)
     fun inject(promoCheckoutDetailHotelFragment: PromoCheckoutDetailHotelFragment)
     fun inject(promoCheckoutDetailEventFragment: PromoCheckoutDetailEventFragment)

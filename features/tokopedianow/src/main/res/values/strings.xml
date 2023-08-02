@@ -6,6 +6,7 @@
     <string name="tokopedianow_common_empty_state_desc">Siap-siap nikmati layanan 2 jam tiba &amp; gratis ongkir. Nantikan kabar dari kami, ya!</string>
     <string name="tokopedianow_common_empty_state_button_change_address">Ubah Alamat</string>
     <string name="tokopedianow_common_empty_state_button_return">Belanja di Tokopedia</string>
+    <string name="tokopedianow_common_error_state_button_back_to_tokonow_home_page">Ke Homepage Tokopedia NOW</string>
 
     <string name="tokopedianow_empty_state_no_address_and_local_cache_title">Masukkan alamat dulu buat akses Tokopedia NOW!</string>
     <string name="tokopedianow_empty_state_no_address_and_local_cache_description">Supaya bisa dapat rekomendasi produk dari Tokopedia NOW! ke alamatmu.</string>
@@ -21,14 +22,15 @@
 
     <string name="tokopedianow_home_choose_address_widget_coachmark_title">Bisa pilih alamat pengirimanmu dulu</string>
     <string name="tokopedianow_home_choose_address_widget_coachmark_description">Biar pengalaman belanja lebih asyik &amp; dapatkan rekomendasi barang terdekat dari alamatmu.</string>
-    <string name="tokopedianow_home_share_thumbnail_title">Tokopedia NOW!</string>
-    <string name="tokopedianow_home_share_thumbnail_title_ss">Screenshot dan link tersimpan</string>
     <string name="tokopedianow_home_share_title">Belanja Sembako Online Langsung Kirim Sekarang | Tokopedia Now</string>
     <string name="tokopedianow_home_share_desc">Belanja kebutuhan sehari-hari 🛒✨. Dapatkan Promo Khusus ✅, Bebas Ongkir ✅ dan 2 jam sampai tujuan ✈️ Hanya di Tokopedia Now</string>
     <string name="tokopedianow_home_share_main_text">Belanja di Tokopedia NOW! sampai dalam 2 jam. Produknya pasti tersedia, lho! </string>
 
+    <string name="tokopedianow_share_thumbnail_title">Tokopedia NOW!</string>
+    <string name="tokopedianow_share_thumbnail_title_ss">Screenshot dan link tersimpan</string>
     <string name="tokopedianow_search_title">Hasil pencarian di Tokopedia NOW!</string>
     <string name="tokopedianow_all_category">Semua Kategori</string>
+    <string name="tokopedianow_category_title_another_category">Kategori Lain</string>
     <string name="tokopedianow_search_category_product_count_template">%s Produk</string>
     <string name="tokopedianow_2h_category_aisle_header">Lihat kategori lainnya di 2 jam tiba</string>
     <string name="tokopedianow_20m_category_aisle_header">Kategori 20 menit tiba lainnya</string>
@@ -245,16 +247,12 @@
     <string name="error_referrral_recurring_user">Yaah, kupon Belanja NOW! hanya berlaku khusus pengguna baru saja.</string>
 
     <string name="tokopedianow_toaster_ok">Oke</string>
-    <string name="tokopedianow_toaster_retry">Coba Lagi</string>
     <string name="tokopedianow_toaster_see">Lihat</string>
 
-    <string name="tokopedianow_product_card_similar_product_error_description">Tidak Ada Produk Serupa yang Tersedia</string>
     <string name="tokopedianow_home_toaster_description_you_are_not_be_able_to_shop">Yaah, kamu belum bisa belanja karena toko sedang tutup. Tunggu toko beroperasi lagi.</string>
 
     <!-- Claim Coupon Widget -->
     <string name="tokopedianow_claim_coupon_widget_button_claim_text">Klaim</string>
-    <string name="tokopedianow_claim_coupon_widget_button_claimed_text">Diklaim</string>
-    <string name="tokopedianow_claim_coupon_widget_button_used_up_text">Habis</string>
     <string name="tokopedianow_claim_coupon_widget_local_load_title">Konten gagal ditampilkan</string>
     <string name="tokopedianow_claim_coupon_widget_local_load_description">Klik ikon di samping buat coba lagi.</string>
     <string name="tokopedianow_claim_coupon_widget_coupon_claimed_toaster_success_description">Selamat, kupon berhasil diklaim! Lihat kupon saya sekarang.</string>
@@ -262,9 +260,7 @@
     <string name="tokopedianow_claim_coupon_widget_coupon_claimed_toaster_error_description_default">Ada yang salah. Silakan coba lagi.</string>
 
     <string name="tokopedianow_similar_product_bottom_sheet_ok">Oke</string>
-    <string name="tokopedianow_similar_product_bottom_sheet_retry">Coba Lagi</string>
     <string name="tokopedianow_similar_product_bottom_sheet_see">Lihat</string>
-    <string name="tokopedianow_similar_product_bottom_sheet_add_to_cart">+ Keranjang</string>
     <string name="tokopedianow_similar_product_bottom_sheet_title">Produk serupa</string>
-    <string name="tokopedianow_similar_product_bottom_sheet_similar_product_text">Produk Serupa</string>
+    <string name="tokopedianow_product_ads_carousel_title">Penawaran spesial</string>
 </resources>

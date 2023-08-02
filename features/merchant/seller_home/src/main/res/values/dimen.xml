@@ -4,6 +4,7 @@
     <dimen name="sah_medium_widget_height">180dp</dimen>
     <dimen name="sah_status_bar_height">24dp</dimen>
     <dimen name="sah_status_bar_elevation">4dp</dimen>
+    <dimen name="sah_toolbar_height">44dp</dimen>
     <dimen name="sah_dimen_1dp">1dp</dimen>
     <dimen name="sah_dimen_2dp">2dp</dimen>
     <dimen name="sah_dimen_4dp">4dp</dimen>

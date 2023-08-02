@@ -82,6 +82,7 @@ class ProductBundleWidgetUiMapper @Inject constructor(@ApplicationContext privat
                 this.minOrder = minOrder
                 this.minOrderWording = context.getString(R.string.bundlewidget_min_order_format, minOrder.getNumberFormatted())
                 this.bundleId = it.bundleID.toString()
+                this.bundleName = it.name
                 this.preOrderInfo = preorder.orEmpty()
                 this.isPreOrder = !preorder.isNullOrBlank()
                 this.useProductSoldInfo = productSoldInfo.isNotBlank()
@@ -102,6 +103,7 @@ class ProductBundleWidgetUiMapper @Inject constructor(@ApplicationContext privat
         return listOf(
             initializeBundleDetail(originalPrice, bundlePrice, shopInfo, this).apply {
                 this.bundleId = bundleInfo.bundleID.toString()
+                this.bundleName = bundleInfo.name
                 this.preOrderInfo = preorder.orEmpty()
                 this.isPreOrder = !preorder.isNullOrBlank()
                 this.useProductSoldInfo = productSoldInfo.isNotBlank()

@@ -73,7 +73,6 @@ import com.tokopedia.notifications.worker.PushWorker;
 import com.tokopedia.oms.di.DaggerOmsComponent;
 import com.tokopedia.oms.di.OmsComponent;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
-import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.promotionstarget.presentation.GratifCmInitializer;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.remoteconfig.GraphqlHelper;
@@ -114,7 +113,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         AbstractionRouter,
         ApplinkRouter,
         LoyaltyModuleRouter,
-        GamificationRouter,
         NetworkRouter,
         TkpdAppsFlyerRouter,
         LinkerRouter {
@@ -273,13 +271,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 e.printStackTrace();
             }
         }
-    }
-
-    @Override
-    public void goToHome(Context context) {
-        Intent intent = RouteManager.getIntent(context, ApplinkConst.HOME);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        context.startActivity(intent);
     }
 
     @Override

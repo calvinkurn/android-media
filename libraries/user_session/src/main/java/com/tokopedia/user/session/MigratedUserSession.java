@@ -19,7 +19,7 @@ import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.user.session.datastore.DataStorePreference;
 import com.tokopedia.user.session.datastore.UserSessionDataStore;
 import com.tokopedia.user.session.datastore.UserSessionDataStoreClient;
-import com.tokopedia.user.session.datastore.UserSessionKeyMapper;
+import com.tokopedia.user.session.datastore.UserSessionUtils;
 import com.tokopedia.user.session.util.EncoderDecoder;
 
 import java.security.GeneralSecurityException;
@@ -58,6 +58,19 @@ public class MigratedUserSession {
         }
         return null;
     }
+
+    protected void logoutDataStoreSession() {
+        if (isEnableDataStore()) {
+            UserSessionUtils.logoutSession(getDataStore());
+        }
+    }
+
+    protected void clearTokenDataStore() {
+        if (isEnableDataStore()) {
+            UserSessionUtils.clearTokenDataStore(getDataStore());
+        }
+    }
+
     protected long getLong(String prefName, String keyName, long defValue) {
         String newPrefName = String.format("%s%s", prefName, suffix);
         String newKeyName = String.format("%s%s", keyName, suffix);
@@ -110,7 +123,7 @@ public class MigratedUserSession {
     protected void setLong(String prefName, String keyName, long value) {
         if (isEnableDataStore()) {
             try {
-                UserSessionKeyMapper.INSTANCE.mapUserSessionKeyString(
+                UserSessionUtils.INSTANCE.mapUserSessionKeyString(
                         keyName,
                         getDataStore(),
                         String.valueOf(value)
@@ -155,19 +168,20 @@ public class MigratedUserSession {
         return aead;
     }
 
-    private String internalGetString(String prefName, String keyName, String defValue) {
+    private String internalGetString(String prefName, String keyName) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(keyName, defValue);
+        return sharedPrefs.getString(keyName, null);
     }
 
     protected void setString(String prefName, String keyName, String value) {
         if (isEnableDataStore()) {
             try {
-                if (keyName != null && value != null) {
-                    UserSessionKeyMapper.INSTANCE.mapUserSessionKeyString(
+                if (keyName != null) {
+                    String finalValue = value == null ? "" : value;
+                    UserSessionUtils.INSTANCE.mapUserSessionKeyString(
                             keyName,
                             getDataStore(),
-                            value
+                            finalValue
                     );
                 }
             } catch (Exception e) {
@@ -322,15 +336,17 @@ public class MigratedUserSession {
         }
 
         try {
-            String oldValue = internalGetString(prefName, keyName, defValue);
+            String oldValue = internalGetString(prefName, keyName);
 
-            if (oldValue != null && !oldValue.equals(defValue)) {
+            if (oldValue != null) {
                 Timber.d("cleaning %s", oldValue);
                 internalCleanKey(prefName, keyName);
-                internalSetString(newPrefName, newKeyName, encryptString(oldValue, newKeyName));
                 UserSessionMap.map.put(key, oldValue);
                 logUserSessionEventWithKey("migrate_from_v1", keyName, null);
-                return oldValue;
+                if (internalGetString(newPrefName, newKeyName) == null) {
+                    internalSetString(newPrefName, newKeyName, encryptString(oldValue, newKeyName));
+                    return oldValue;
+                }
             }
 
             SharedPreferences sharedPrefs = context.getSharedPreferences(newPrefName, Context.MODE_PRIVATE);
@@ -386,7 +402,7 @@ public class MigratedUserSession {
         if (isEnableDataStore()) {
             try {
                 if (keyName != null) {
-                    UserSessionKeyMapper.INSTANCE.mapUserSessionKeyBoolean(
+                    UserSessionUtils.INSTANCE.mapUserSessionKeyBoolean(
                             keyName,
                             getDataStore(),
                             value

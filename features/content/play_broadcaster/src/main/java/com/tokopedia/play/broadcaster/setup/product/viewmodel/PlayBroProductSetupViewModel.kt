@@ -57,8 +57,9 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     @Assisted val maxProduct: Int,
     @Assisted productSectionList: List<ProductTagSectionUiModel>,
     @Assisted private val savedStateHandle: SavedStateHandle,
-    @Assisted isEligibleForPin: Boolean,
     @Assisted private val source: PlayBroPageSource,
+    @Assisted("isEligibleForPin") isEligibleForPin: Boolean,
+    @Assisted("fetchCommissionProduct") private val fetchCommissionProduct: Boolean,
     private val repo: PlayBroadcastRepository,
     userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers
@@ -71,8 +72,9 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             maxProduct: Int,
             productSectionList: List<ProductTagSectionUiModel>,
             savedStateHandle: SavedStateHandle,
-            isEligibleForPin: Boolean,
             source: PlayBroPageSource,
+            @Assisted("isEligibleForPin") isEligibleForPin: Boolean,
+            @Assisted("fetchCommissionProduct") fetchCommissionProduct: Boolean,
         ): PlayBroProductSetupViewModel
     }
 
@@ -416,7 +418,10 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     }
 
     private suspend fun getProductTagSummary() {
-        val response = repo.getProductTagSummarySection(creationId)
+        val response = repo.getProductTagSummarySection(
+            channelID = creationId,
+            fetchCommission = fetchCommissionProduct,
+        )
 
         _productTagSectionList.value = response
         _selectedProductList.value = response.flatMap { it.products }

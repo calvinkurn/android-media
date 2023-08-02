@@ -3,7 +3,6 @@ package com.tokopedia.home_component.viewholders
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
@@ -26,7 +25,6 @@ import com.tokopedia.utils.view.binding.viewBinding
 class Lego4ProductViewHolder(itemView: View,
                              private val legoProductListener: LegoProductListener,
                              private val homeComponentListener: HomeComponentListener,
-                             val parentRecyclerViewPool: RecyclerView.RecycledViewPool? = null,
                              private val cardInteraction: Boolean = false
 ): AbstractViewHolder<Lego4ProductDataModel>(itemView) {
     companion object {
@@ -83,7 +81,6 @@ class Lego4ProductViewHolder(itemView: View,
     }
 
     private fun initRV() {
-        parentRecyclerViewPool?.let { recyclerView?.setRecycledViewPool(parentRecyclerViewPool) }
         recyclerView?.layoutManager = layoutManager
     }
 

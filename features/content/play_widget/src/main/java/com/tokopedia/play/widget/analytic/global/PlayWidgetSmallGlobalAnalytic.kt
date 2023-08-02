@@ -1,8 +1,5 @@
 package com.tokopedia.play.widget.analytic.global
 
-import com.tokopedia.play.widget.analytic.list.small.PlayWidgetInListSmallAnalyticListener
-import com.tokopedia.play.widget.analytic.const.VAL_BUSINESS_UNIT
-import com.tokopedia.play.widget.analytic.const.VAL_CURRENT_SITE
 import com.tokopedia.play.widget.analytic.const.EVENT_CLICK
 import com.tokopedia.play.widget.analytic.const.EVENT_VIEW
 import com.tokopedia.play.widget.analytic.const.KEY_BUSINESS_UNIT
@@ -15,12 +12,15 @@ import com.tokopedia.play.widget.analytic.const.KEY_SESSION_IRIS
 import com.tokopedia.play.widget.analytic.const.KEY_USER_ID
 import com.tokopedia.play.widget.analytic.const.PROMO_CLICK
 import com.tokopedia.play.widget.analytic.const.PROMO_VIEW
-import com.tokopedia.play.widget.analytic.const.trackerMultiFields
+import com.tokopedia.play.widget.analytic.const.VAL_BUSINESS_UNIT
+import com.tokopedia.play.widget.analytic.const.VAL_CURRENT_SITE
 import com.tokopedia.play.widget.analytic.const.irisSessionId
 import com.tokopedia.play.widget.analytic.const.isRilisanSpesial
 import com.tokopedia.play.widget.analytic.const.toTrackingString
 import com.tokopedia.play.widget.analytic.const.toTrackingType
+import com.tokopedia.play.widget.analytic.const.trackerMultiFields
 import com.tokopedia.play.widget.analytic.global.model.PlayWidgetAnalyticModel
+import com.tokopedia.play.widget.analytic.list.small.PlayWidgetInListSmallAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetSmallView
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
@@ -41,14 +41,14 @@ import java.util.HashMap
 class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
     @Assisted val model: PlayWidgetAnalyticModel,
     @Assisted val trackingQueue: TrackingQueue,
-    private val userSession: UserSessionInterface,
+    private val userSession: UserSessionInterface
 ) : PlayWidgetInListSmallAnalyticListener {
 
     @AssistedFactory
     interface Factory {
         fun create(
             model: PlayWidgetAnalyticModel,
-            trackingQueue: TrackingQueue,
+            trackingQueue: TrackingQueue
         ): PlayWidgetSmallGlobalAnalytic
     }
 
@@ -60,7 +60,7 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
         item: PlayWidgetChannelUiModel,
         config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        verticalWidgetPosition: Int,
+        verticalWidgetPosition: Int
     ) {
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionView(
             event = PROMO_VIEW,
@@ -102,7 +102,7 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
         item: PlayWidgetChannelUiModel,
         config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        verticalWidgetPosition: Int,
+        verticalWidgetPosition: Int
     ) {
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
             event = PROMO_CLICK,
@@ -144,7 +144,7 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
      */
     override fun onImpressViewAll(
         view: PlayWidgetSmallView,
-        verticalWidgetPosition: Int,
+        verticalWidgetPosition: Int
     ) {
         TrackApp.getInstance().gtm
             .sendGeneralEvent(
@@ -158,14 +158,14 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
                     KEY_BUSINESS_UNIT to VAL_BUSINESS_UNIT,
                     KEY_CURRENT_SITE to VAL_CURRENT_SITE,
                     KEY_SESSION_IRIS to irisSessionId,
-                    KEY_USER_ID to userId,
+                    KEY_USER_ID to userId
                 )
             )
     }
 
     override fun onClickViewAll(
         view: PlayWidgetSmallView,
-        verticalWidgetPosition: Int,
+        verticalWidgetPosition: Int
     ) {
         TrackApp.getInstance().gtm
             .sendGeneralEvent(
@@ -179,14 +179,14 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
                     KEY_BUSINESS_UNIT to VAL_BUSINESS_UNIT,
                     KEY_CURRENT_SITE to VAL_CURRENT_SITE,
                     KEY_SESSION_IRIS to irisSessionId,
-                    KEY_USER_ID to userId,
+                    KEY_USER_ID to userId
                 )
             )
     }
 
     override fun onImpressBannerCard(
         view: PlayWidgetSmallView,
-        verticalWidgetPosition: Int,
+        verticalWidgetPosition: Int
     ) {
         TrackApp.getInstance().gtm
             .sendGeneralEvent(
@@ -200,14 +200,14 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
                     KEY_BUSINESS_UNIT to VAL_BUSINESS_UNIT,
                     KEY_CURRENT_SITE to VAL_CURRENT_SITE,
                     KEY_SESSION_IRIS to irisSessionId,
-                    KEY_USER_ID to userId,
+                    KEY_USER_ID to userId
                 )
             )
     }
 
     override fun onClickBannerCard(
         view: PlayWidgetSmallView,
-        verticalWidgetPosition: Int,
+        verticalWidgetPosition: Int
     ) {
         TrackApp.getInstance().gtm
             .sendGeneralEvent(
@@ -221,7 +221,7 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
                     KEY_BUSINESS_UNIT to VAL_BUSINESS_UNIT,
                     KEY_CURRENT_SITE to VAL_CURRENT_SITE,
                     KEY_SESSION_IRIS to irisSessionId,
-                    KEY_USER_ID to userId,
+                    KEY_USER_ID to userId
                 )
             )
     }

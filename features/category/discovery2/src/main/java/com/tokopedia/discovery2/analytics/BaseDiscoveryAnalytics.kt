@@ -35,7 +35,6 @@ open class BaseDiscoveryAnalytics(
     open fun trackBrandRecommendationClick(banner: DataItem, bannerPosition: Int, compID: String) {}
     open fun trackBannerClick(banner: DataItem, bannerPosition: Int, userID: String?) {}
     open fun trackPromoBannerClick(banner: DataItem, bannerPosition: Int) {}
-    open fun trackCategoryNavigationImpression(componentsItems: ArrayList<ComponentsItem>) {}
     open fun trackTDNBannerImpression(componentsItem: ComponentsItem, userID: String?, positionInPage: Int, adID: String, shopId: String) {}
     open fun trackPlayWidgetImpression(componentsItem: ComponentsItem, userID: String?, channelId: String, shopId: String, widgetPosition: Int, channelPositionInList: Int, isAutoPlay: Boolean) {}
     open fun trackPlayWidgetClick(componentsItem: ComponentsItem, userID: String?, channelId: String, destinationURL: String, shopId: String, widgetPosition: Int, channelPositionInList: Int, isAutoPlay: Boolean) {}
@@ -45,7 +44,6 @@ open class BaseDiscoveryAnalytics(
     open fun trackPlayWidgetOverLayImpression(componentsItem: ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, destinationURL: String) {}
     open fun trackPlayWidgetReminderClick(componentsItem: ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, channelId: String, isRemindMe: Boolean) {}
     open fun trackTDNBannerClick(componentsItem: ComponentsItem, userID: String?, positionInPage: Int, adID: String, shopId: String) {}
-    open fun trackCategoryNavigationClick(categoryItem: DataItem?, position: Int) {}
     open fun trackClickVideo(videoUrl: String, videoName: String, videoPlayedTime: String) {}
     open fun trackBackClick() {}
     open fun trackShareClick() {}
@@ -53,8 +51,6 @@ open class BaseDiscoveryAnalytics(
     open fun trackGlobalNavBarClick(buttonName: String, userID: String?) {}
     open fun trackLihatSemuaClick(dataItem: DataItem?) {}
     open fun trackPromoLihat(componentsItems: ComponentsItem) {}
-    open fun trackImpressionIconDynamicComponent(headerName: String, icons: List<DataItem>) {}
-    open fun trackClickIconDynamicComponent(iconPosition: Int, icon: DataItem) {}
     open fun trackClickSeeAllBanner() {}
     open fun trackClickCustomTopChat() {}
     open fun trackClickChipsFilter(filterName: String) {}

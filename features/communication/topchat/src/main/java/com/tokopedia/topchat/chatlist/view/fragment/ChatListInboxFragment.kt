@@ -15,7 +15,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -41,6 +40,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.topchat.R
@@ -69,6 +69,9 @@ import com.tokopedia.topchat.chatlist.view.uimodel.IncomingTypingWebSocketModel
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel.Companion.arrayFilterParam
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatListWebSocketViewModel
+import com.tokopedia.topchat.chatlist.view.widget.BroadcastButtonLayout
+import com.tokopedia.topchat.chatlist.view.widget.BroadcastButtonLayout.Companion.BROADCAST_FAB_LABEL_PREF_NAME
+import com.tokopedia.topchat.chatlist.view.widget.BroadcastButtonLayout.Companion.BROADCAST_FAB_LABEL_ROLLENCE_KEY
 import com.tokopedia.topchat.chatlist.view.widget.FilterMenu
 import com.tokopedia.topchat.chatlist.view.widget.OperationalInsightBottomSheet
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
@@ -89,6 +92,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import timber.log.Timber
 import java.util.Locale
 import javax.inject.Inject
 
@@ -114,6 +118,9 @@ open class ChatListInboxFragment :
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var abTestPlatform: AbTestPlatform
+
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy {
         viewModelProvider.get(ChatItemListViewModel::class.java)
@@ -134,7 +141,7 @@ open class ChatListInboxFragment :
     private var rvAdapter: ChatListAdapter? = null
     private var chatFilter: ChatFilterView? = null
     private var emptyUiModel: Visitable<*>? = null
-    private var broadCastButton: FloatingActionButton? = null
+    private var broadCastButton: BroadcastButtonLayout? = null
     private var containerListener: InboxFragmentContainer? = null
     var chatRoomFlexModeListener: TopChatRoomFlexModeListener? = null
     var stopTryingIndicator = false
@@ -335,7 +342,7 @@ open class ChatListInboxFragment :
                 when (it) {
                     is Success -> updateChatBannedSellerStatus(it.data)
                     else -> {
-                        //no-op
+                        // no-op
                     }
                 }
             }
@@ -381,16 +388,13 @@ open class ChatListInboxFragment :
 
     private fun setupSellerBroadcastButtonObserver() {
         viewModel.broadCastButtonVisibility.observe(
-            viewLifecycleOwner,
-            Observer { visibility ->
-                when (visibility) {
-                    true -> {
-                        broadCastButton?.show()
-                    }
-                    false -> broadCastButton?.hide()
-                }
-            }
-        )
+            viewLifecycleOwner
+        ) { visibility ->
+            broadCastButton?.toggleBroadcastButton(
+                shouldShow = visibility,
+                shouldShowLabel = shouldShowBroadcastFabNewLabel()
+            )
+        }
         viewModel.broadCastButtonUrl.observe(
             viewLifecycleOwner,
             Observer { applink ->
@@ -414,13 +418,34 @@ open class ChatListInboxFragment :
                         chatListAnalytics.eventClickBroadcastButton()
                         RouteManager.route(context, applink)
                     }
+                    markBroadcastNewLabel()
                 }
             }
         )
     }
 
+    private fun markBroadcastNewLabel() {
+        if (shouldShowBroadcastFabNewLabel()) {
+            viewModel.saveBooleanCache(
+                cacheName = "${BROADCAST_FAB_LABEL_PREF_NAME}_${userSession.userId}",
+                value = false
+            )
+            broadCastButton?.toggleBroadcastLabel(
+                shouldShowLabel = false
+            )
+        }
+    }
+
+    private fun shouldShowBroadcastFabNewLabel(): Boolean {
+        val labelCache = viewModel.getBooleanCache(
+            "${BROADCAST_FAB_LABEL_PREF_NAME}_${userSession.userId}",
+        )
+        val rollenceValue = getRollenceValue(BROADCAST_FAB_LABEL_ROLLENCE_KEY)
+        return labelCache && rollenceValue
+    }
+
     private fun initView(view: View) {
-        broadCastButton = view.findViewById(R.id.fab_broadcast)
+        broadCastButton = view.findViewById(R.id.layout_fab_broadcast)
         chatBannedSellerTicker = view.findViewById(R.id.ticker_ban_status)
         rv = view.findViewById(R.id.recycler_view)
         chatFilter = view.findViewById(R.id.cf_chat_list)
@@ -556,7 +581,10 @@ open class ChatListInboxFragment :
     override fun onDismissTicker(element: ChatListTickerUiModel) {
         adapter?.removeElement(element)
         if (element.sharedPreferenceKey.isNotBlank()) {
-            viewModel.saveTickerPref(ChatItemListViewModel.BUBBLE_TICKER_PREF_NAME)
+            viewModel.saveBooleanCache(
+                cacheName = ChatItemListViewModel.BUBBLE_TICKER_PREF_NAME,
+                value = false
+            )
         }
     }
 
@@ -574,12 +602,12 @@ open class ChatListInboxFragment :
                                 result.data as IncomingTypingWebSocketModel
                             )
                             else -> {
-                                //no-op
+                                // no-op
                             }
                         }
                     }
                     else -> {
-                        //no-op
+                        // no-op
                     }
                 }
             }
@@ -1097,6 +1125,15 @@ open class ChatListInboxFragment :
         super.onResume()
         if (!isFromTopChatRoom()) {
             adapter?.resetActiveChatIndicator()
+        }
+    }
+
+    override fun getRollenceValue(key: String): Boolean {
+        return try {
+            abTestPlatform.getString(key, "").isNotEmpty()
+        } catch (t: Throwable) {
+            Timber.d(t)
+            false
         }
     }
 

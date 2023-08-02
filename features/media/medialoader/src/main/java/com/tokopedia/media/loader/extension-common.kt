@@ -21,6 +21,31 @@ fun ImageView.loadAsGif(
         .isGif(true)
 )
 
+/**
+ * An ImageLoader for loading GIF images into an ImageView on Android. This class provides methods to
+ * efficiently load and display GIF images in an ImageView with additional options for customization and control.
+ *
+ * <b>Sample Usage</b>
+ *
+ * ```
+ * imageView.loadAsGif("https://tokopedia.net/sample.gif")
+ * ```
+ *
+ * <b>Sample Usage with Custom Properties</b>
+ *
+ * ```
+ * imageView.loadAsGif("https://tokopedia.net/sample.gif") {
+ *    setErrorDrawable(R.drawable.ic_error)
+ *    setCacheStrategy(MediaCacheStrategy.RESOURCE)
+ *    overrideSize(Resize(540, 540))
+ * }
+ * ```
+ *
+ * @receiver [ImageView]
+ * @param url Url to load image
+ * @param properties A custom properties
+ * @since v1.0.0
+ */
 fun ImageView.loadAsGif(
     url: String,
     properties: Properties.() -> Unit
@@ -67,20 +92,21 @@ fun ImageView.loadImage(uri: Uri) {
  * <b>Sample Usage</b>
  *
  * ```
- * imageView.loadImage("https://someurl.com/someImage")
+ * imageView.loadImage("https://tokopedia.net/sample.png")
  * ```
  *
  * <b>Sample Usage with Custom Properties</b>
  *
  * ```
- * imageView.loadImage("https://someurl.com/someImage") {
+ * imageView.loadImage("https://tokopedia.net/sample.png") {
  *    setErrorDrawable(R.drawable.ic_error)
  *    setCacheStrategy(MediaCacheStrategy.RESOURCE)
  * }
  * ```
  *
  * @receiver [ImageView]
- * @param url Url to load image from
+ * @param url Url to load image
+ * @param properties A custom properties
  * @since v1.0.0
  */
 inline fun ImageView.loadImage(
@@ -160,6 +186,26 @@ inline fun ImageView.loadImageRounded(
     )
 }
 
+/**
+ * An ImageLoader for loading small icon images into an ImageView on Android.
+ * This class provides methods to efficiently load and display small icon images in an ImageView
+ * with supporting a custom properties.
+ *
+ * The differentiate between the [loadImage] one is, the [loadIcon] doesn't send the log into tracker,
+ * hence we could optimize our tracking services. Also the [loadIcon] extension it will be override
+ * the image size into [DEFAULT_ICON_SIZE].
+ *
+ * <b>Sample Usage</b>
+ *
+ * ```
+ * imageView.loadIcon("https://tokopedia.net/cart-icon.png")
+ * ```
+ *
+ * @receiver [ImageView]
+ * @param url Url to load icon
+ * @param properties A custom properties
+ * @since v1.0.0
+ */
 inline fun ImageView.loadIcon(
     url: String?,
     crossinline properties: Properties.() -> Unit = {}

@@ -32,13 +32,13 @@ public class ColorSampleView extends View {
     }
 
     private void init(Context context) {
-        int defaultFillColor = context.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N50);
+        int defaultFillColor = context.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN50);
         fillPaint = new Paint();
         fillPaint.setAntiAlias(false);
         fillPaint.setColor(defaultFillColor);
         fillPaint.setStyle(Paint.Style.FILL);
 
-        int outlineColor = context.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N100);
+        int outlineColor = context.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN200);
         outlinePaint = new Paint();
         outlinePaint.setAntiAlias(false);
         outlinePaint.setColor(outlineColor);

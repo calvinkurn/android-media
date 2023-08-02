@@ -8,12 +8,12 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
  * Created by dhaba
  */
 object HomeRecomMockValueHelper {
-    private const val ENABLE_RECOM_USING_GQL_FED = "true"
+    private const val DISABLE_RECOM_USING_GQL_FED = "false"
 
     fun setupRemoteConfig() {
         val remoteConfig = FirebaseRemoteConfigImpl(
             InstrumentationRegistry.getInstrumentation().context
         )
-        remoteConfig.setString(RemoteConfigKey.RECOM_USE_GQL_FED_QUERY, ENABLE_RECOM_USING_GQL_FED)
+        remoteConfig.setString(RemoteConfigKey.RECOM_USE_GQL_FED_QUERY, DISABLE_RECOM_USING_GQL_FED)
     }
 }

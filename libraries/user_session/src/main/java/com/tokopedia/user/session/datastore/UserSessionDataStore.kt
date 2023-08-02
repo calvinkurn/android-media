@@ -35,14 +35,6 @@ interface UserSessionDataStore {
 
     suspend fun setAccessToken(accessToken: String)
 
-    suspend fun clearToken()
-
-    suspend fun logoutSession()
-
-    suspend fun clearAllData()
-
-    suspend fun clearDataStore()
-
     suspend fun setToken(accessToken: String, tokenType: String, refreshToken: String)
 
     suspend fun setRefreshToken(refreshToken: String)
@@ -76,6 +68,30 @@ interface UserSessionDataStore {
     suspend fun setLoginMethod(loginMethod: String)
 
     suspend fun setIsShopOfficialStore(isShopOfficialStore: Boolean)
+
+    suspend fun setIsShopOwner(isShopOwner: Boolean)
+
+    suspend fun setIsShopAdmin(isShopAdmin: Boolean)
+
+    suspend fun setIsLocationAdmin(isLocationAdmin: Boolean)
+
+    suspend fun setIsMultiLocationShop(isMultiLocationShop: Boolean)
+
+    suspend fun setAndroidId(androidId: String)
+
+    suspend fun setTwitterAccessToken(token: String)
+
+    suspend fun setTwitterAccessTokenSecret(token: String)
+
+    suspend fun setTwitterShouldPost(shouldPost: Boolean)
+
+    suspend fun clearToken()
+
+    suspend fun logoutSession()
+
+    suspend fun clearAllData()
+
+    suspend fun clearDataStore()
 
     // Getter
     fun getUserSession(): Flow<UserData>
@@ -120,6 +136,8 @@ interface UserSessionDataStore {
 
     fun getAutofillUserData(): Flow<String>
 
+    // considering to take out these twitter data
+
     fun getTwitterAccessToken(): Flow<String>
 
     fun getTwitterAccessTokenSecret(): Flow<String>
@@ -136,21 +154,11 @@ interface UserSessionDataStore {
 
     fun isShopOwner(): Flow<Boolean>
 
-    suspend fun setIsShopOwner(isShopOwner: Boolean)
-
     fun isShopAdmin(): Flow<Boolean>
-
-    suspend fun setIsShopAdmin(isShopAdmin: Boolean)
 
     fun isLocationAdmin(): Flow<Boolean>
 
-    suspend fun setIsLocationAdmin(isLocationAdmin: Boolean)
-
     fun isMultiLocationShop(): Flow<Boolean>
 
-    suspend fun setIsMultiLocationShop(isMultiLocationShop: Boolean)
-
-    suspend fun getAndroidId(context: Context): Flow<String>
-
-    suspend fun setAndroidId(androidId: String)
+    fun getAndroidId(context: Context): Flow<String>
 }

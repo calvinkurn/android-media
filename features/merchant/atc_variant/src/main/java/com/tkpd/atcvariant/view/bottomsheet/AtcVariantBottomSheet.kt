@@ -583,7 +583,9 @@ class AtcVariantBottomSheet :
     }
 
     private fun getAtcActivity(): Activity {
-        return context as AtcVariantActivity
+        return if (activity is AtcVariantActivity)
+            context as AtcVariantActivity
+        else requireActivity()
     }
 
     private fun onSuccessAtcTokoNow(successMessage: String?, cartId: String) {

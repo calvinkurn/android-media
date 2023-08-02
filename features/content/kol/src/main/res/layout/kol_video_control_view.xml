@@ -5,7 +5,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N700"
+    android:background="@color/Unify_NN950"
     android:layout_gravity="bottom"
     android:padding="16dp"
     android:alpha="0.75">
@@ -63,7 +63,7 @@
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         tools:text="00:00"
-        android:textColor="@color/Unify_N0"
+        android:textColor="@color/Unify_NN0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
@@ -75,7 +75,7 @@
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         android:text="/"
-        android:textColor="@color/Unify_N0"
+        android:textColor="@color/Unify_NN0"
         app:layout_constraintEnd_toStartOf="@id/exo_duration"
         app:layout_constraintTop_toTopOf="@id/exo_duration"
         app:layout_constraintBottom_toBottomOf="@id/exo_duration"
@@ -88,7 +88,7 @@
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         tools:text="00:00"
-        android:textColor="@color/Unify_N0"
+        android:textColor="@color/Unify_NN0"
         app:layout_constraintEnd_toStartOf="@+id/progress_divider"
         app:layout_constraintTop_toTopOf="@id/exo_duration"
         app:layout_constraintBottom_toBottomOf="@id/exo_duration"/>

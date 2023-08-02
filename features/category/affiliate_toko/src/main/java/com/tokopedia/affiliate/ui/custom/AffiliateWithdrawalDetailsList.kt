@@ -105,7 +105,7 @@ class AffiliateWithdrawalDetailsList @JvmOverloads constructor(
         textView?.text = text
         textView?.setWeight(Typography.BOLD)
         textView?.setType(Typography.BODY_2)
-        textView?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+        textView?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
         textView?.visible()
     }
 

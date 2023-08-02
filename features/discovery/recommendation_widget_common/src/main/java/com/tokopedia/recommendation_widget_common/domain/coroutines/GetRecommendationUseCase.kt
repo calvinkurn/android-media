@@ -7,22 +7,18 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.recommendation_widget_common.domain.coroutines.base.UseCase
 import com.tokopedia.recommendation_widget_common.domain.query.ListProductRecommendationQuery
-import com.tokopedia.recommendation_widget_common.domain.query.ListProductRecommendationQueryV2
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.ext.toQueryParam
 import com.tokopedia.recommendation_widget_common.extension.mappingToRecommendationModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
 /**
  * Created by devara fikry on 16/04/19.
  */
-
-// [GetRecommendationUseCase] already sent choose address location params
 open class GetRecommendationUseCase @Inject constructor(
     private val context: Context,
     private val graphqlRepository: GraphqlRepository,
@@ -32,17 +28,7 @@ open class GetRecommendationUseCase @Inject constructor(
     init {
         graphqlUseCase.setTypeClass(RecommendationEntity::class.java)
         val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(context)
-        graphqlUseCase.setGraphqlQuery(
-            if (remoteConfig.getBoolean(
-                    RemoteConfigKey.RECOM_USE_GQL_FED_QUERY,
-                    true
-                )
-            ) {
-                ListProductRecommendationQueryV2()
-            } else {
-                ListProductRecommendationQuery()
-            }
-        )
+        graphqlUseCase.setGraphqlQuery(ListProductRecommendationQuery())
     }
     override suspend fun getData(inputParameter: GetRecommendationRequestParam): List<RecommendationWidget> {
         val userSession = UserSession(context)

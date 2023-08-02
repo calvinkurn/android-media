@@ -1,9 +1,13 @@
+@file:SuppressLint("CheckResult")
+
 package com.tokopedia.media.loader.options
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import com.bumptech.glide.request.BaseRequestOptions
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
@@ -13,9 +17,8 @@ import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.transform.BlurHashDecoder
 import com.tokopedia.media.loader.utils.AspectRatio
 import com.tokopedia.media.loader.utils.isValidUrl
-import com.tokopedia.media.loader.utils.toUri
 
-class PlaceholderOptions constructor(
+internal class PlaceholderOptions constructor(
     private val context: Context,
     private val properties: Properties,
     private val options: BaseRequestOptions<*>
@@ -61,7 +64,7 @@ class PlaceholderOptions constructor(
 
         if (blurHash && data.isValidUrl()) {
             val hash = data.toUri()
-                ?.getQueryParameter(PARAM_BLURHASH)
+                .getQueryParameter(PARAM_BLURHASH)
                 ?: blurHashes.random()
 
             options.placeholder(

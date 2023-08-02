@@ -19,7 +19,7 @@ import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDM
 import com.tokopedia.catalog_library.model.datamodel.CatalogProductLoadMoreDM
 import com.tokopedia.catalog_library.model.raw.CatalogListResponse
 import com.tokopedia.catalog_library.util.*
-import com.tokopedia.catalog_library.viewmodels.CatalogHomepageVM
+import com.tokopedia.catalog_library.viewmodel.CatalogHomepageViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -58,7 +58,7 @@ class CatalogHomepageFragment : CatalogProductsBaseFragment(), CatalogLibraryLis
 
     private val homepageViewModel by lazy {
         viewModelFactory?.let {
-            ViewModelProvider(this, it).get(CatalogHomepageVM::class.java)
+            ViewModelProvider(this, it).get(CatalogHomepageViewModel::class.java)
         }
     }
 

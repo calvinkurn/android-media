@@ -1,10 +1,13 @@
 package com.tokopedia.buyerorder.detail.data
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import com.google.gson.annotations.Expose
 import com.google.gson.Gson
+import kotlinx.android.parcel.Parcelize
 import java.io.Serializable
 
+@Parcelize
 data class ActionButton(
     @SerializedName("body")
     @Expose
@@ -37,7 +40,7 @@ data class ActionButton(
     @SerializedName("color")
     @Expose
     val actionColor: ActionColor = ActionColor()
-) : Serializable {
+) : Serializable, Parcelable {
 
     val headerObject: Header
         get() {

@@ -16,7 +16,7 @@ class TextComponentViewHolder(itemView: View, private val fragment: Fragment) : 
     private val shimmerView: ImageUnify = itemView.findViewById(R.id.shimmer_view)
     private val titleTypography: Typography = itemView.findViewById(R.id.text_component_title)
     private val bodyTypography: Typography = itemView.findViewById(R.id.text_component_body)
-    private lateinit var textComponentViewModel: TextComponentViewModel
+    private var textComponentViewModel: TextComponentViewModel? = null
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         textComponentViewModel = discoveryBaseViewModel as TextComponentViewModel
@@ -24,11 +24,14 @@ class TextComponentViewHolder(itemView: View, private val fragment: Fragment) : 
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
-        textComponentViewModel.getTextComponentLiveData().observe(fragment.viewLifecycleOwner, Observer {
-            showTitleInWebView(it.title)
-            showBodyInWebView(it.body)
-            shimmerView.hide()
-        })
+        textComponentViewModel?.getTextComponentLiveData()?.observe(
+            fragment.viewLifecycleOwner,
+            Observer {
+                showTitleInWebView(it.title)
+                showBodyInWebView(it.body)
+                shimmerView.hide()
+            }
+        )
     }
 
     private fun showBodyInWebView(textComponentBody: String) {

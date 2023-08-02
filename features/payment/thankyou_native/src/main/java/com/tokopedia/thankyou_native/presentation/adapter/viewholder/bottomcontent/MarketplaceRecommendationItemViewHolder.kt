@@ -7,6 +7,7 @@ import com.tokopedia.thankyou_native.databinding.ThankLayoutMarketPlaceRecomBind
 import com.tokopedia.thankyou_native.presentation.adapter.model.MarketplaceRecommendationWidgetModel
 import com.tokopedia.thankyou_native.presentation.views.listener.MarketplaceRecommendationListener
 import com.tokopedia.utils.view.binding.viewBinding
+import timber.log.Timber
 
 class MarketplaceRecommendationItemViewHolder(
     view: View?,
@@ -20,10 +21,17 @@ class MarketplaceRecommendationItemViewHolder(
     }
 
     override fun bind(data: MarketplaceRecommendationWidgetModel) {
-        if (data.thanksPageData.configFlagData?.shouldHideProductRecom == true || data.fragment.isDetached) return
+        try {
+            if (data.thanksPageData.configFlagData?.shouldHideProductRecom == true || data.fragment.isDetached) return
 
-        listener.iRecommendationView = binding?.marketPlaceRecommendationView
+            listener.iRecommendationView = binding?.marketPlaceRecommendationView
 
-        binding?.marketPlaceRecommendationView?.loadRecommendation(data.thanksPageData, data.fragment)
+            binding?.marketPlaceRecommendationView?.loadRecommendation(
+                data.thanksPageData,
+                data.fragment
+            )
+        } catch (e: Exception) {
+            Timber.d(e)
+        }
     }
 }

@@ -33,6 +33,7 @@ import com.tokopedia.productcard.utils.TRANSPARENT_BLACK
 import com.tokopedia.productcard.utils.TYPE_VARIANT_COLOR
 import com.tokopedia.productcard.utils.TYPE_VARIANT_CUSTOM
 import com.tokopedia.productcard.utils.TYPE_VARIANT_SIZE
+import com.tokopedia.unifycomponents.CardUnify2
 import org.hamcrest.Matcher
 
 internal val productCardGridTestData =
@@ -58,6 +59,7 @@ internal val productCardGridTestData =
             testGimmickOverlay(),
             testStatusOverlay(),
             testBestSellerOverlay(),
+            testTopStockBar(),
         )
 
 internal val productCardGridViewStubTestData =
@@ -725,6 +727,26 @@ private fun testStatusOverlay(): ProductCardModelMatcher {
         R.id.labelOverlay to isNotDisplayed(),
         R.id.labelOverlayStatus to isDisplayedWithText(labelStatusOverlay.title),
         R.id.labelProductStatus to isNotDisplayed()
+    )
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testTopStockBar(): ProductCardModelMatcher {
+    val productCardModel = ProductCardModel(
+        productName = "Product Card With Top Stock Bar",
+        productImageUrl = productImageUrl,
+        stockBarLabel = "Segera Habis",
+        stockBarPercentage = 20,
+        isTopStockBar = true,
+    )
+
+    val productCardMatcher = mapOf(
+        R.id.productCardImage to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewTopStockBar to isDisplayedWithText(productCardModel.stockBarLabel),
+        R.id.progressBarTopStockBar to isDisplayed(),
+        R.id.bgTopStockBarView to isDisplayed(),
     )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)

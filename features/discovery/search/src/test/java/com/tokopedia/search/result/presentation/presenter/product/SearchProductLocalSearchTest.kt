@@ -297,13 +297,13 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
 
         `When Load Data`(searchParameter)
 
-        `Then verify recommendation use case is called`()
+        `Then verify recommendation use case is not called`()
         `Then verify empty search view model for non local search`()
         `Then verify get local search recommendation is not called`()
     }
 
-    private fun `Then verify recommendation use case is called`() {
-        verify {
+    private fun `Then verify recommendation use case is not called`() {
+        verify(exactly = 0) {
             recommendationUseCase.execute(any(), any())
         }
     }
@@ -319,7 +319,7 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
         emptyStateDataView.globalSearchApplink shouldBe ""
         emptyStateDataView.keyword shouldBe keyword
         emptyStateDataView.pageTitle shouldBe ""
-        emptyStateDataView.verticalSeparator.hasBottomSeparator shouldBe false
+        emptyStateDataView.verticalSeparator.hasBottomSeparator shouldBe true
     }
 
     private fun `Then verify get local search recommendation is not called`() {

@@ -5,16 +5,16 @@ import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.listShouldBe
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
+import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.product.broadmatch.BroadMatch
 import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
 import com.tokopedia.search.result.product.broadmatch.BroadMatchItemDataView
 import com.tokopedia.search.result.product.broadmatch.BroadMatchProduct
-import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
-import com.tokopedia.search.result.presentation.model.ProductItemDataView
-import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.separator.VerticalSeparable
 import com.tokopedia.search.result.product.separator.VerticalSeparator
+import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
 import io.mockk.every
@@ -55,19 +55,6 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
 
     private val visitableListSlot = slot<List<Visitable<*>>>()
     private val keyword = "samsung"
-
-    @Test
-    fun `Show empty result when response code is NOT 0, 4, or 5`() {
-        val searchProductModel = broadMatchResponseCode1EmptySearch.jsonToObject<SearchProductModel>()
-
-        `Given Search Product API will return SearchProductModel`(searchProductModel)
-
-        `When Load Data`()
-
-        `Then assert view will only show empty search`()
-        `Then verify recommendation use case is called`()
-    }
-
     private fun `Given Search Product API will return SearchProductModel`(searchProductModel: SearchProductModel) {
         every { searchProductFirstPageUseCase.execute(any(), any()) }.answers {
             secondArg<Subscriber<SearchProductModel>>().complete(searchProductModel)

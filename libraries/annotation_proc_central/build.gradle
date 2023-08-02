@@ -1,6 +1,10 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
+android {
+    namespace 'com.tokopedia.analytic_annotation_proc'
+    testNamespace 'com.tokopedia.analytic_annotation_proc.test'
+}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])

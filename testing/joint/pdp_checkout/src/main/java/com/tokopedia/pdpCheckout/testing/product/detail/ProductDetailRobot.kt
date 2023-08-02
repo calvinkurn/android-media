@@ -39,7 +39,9 @@ class ProductDetailRobot {
 
     fun clickBuyNormal() {
         // show and select variant with normal button
-        selectVariantOnVbs(2)
+        onView(withId(R.id.btn_buy_now)).perform(click())
+        selectVariant(2)
+
         onView(withId(R.id.btn_buy_variant))
             .check(matches(isDisplayed()))
             .check(matches(ViewMatchers.withText("Beli test")))
@@ -96,23 +98,23 @@ class ProductDetailRobot {
         onView(withId(R.id.btn_close)).perform(click())
     }
 
-    private fun selectVariantOnVbs(position: Int) {
-        showVariantBottomSheet()
+    private fun selectVariantOnVbs(index: Int) {
+        showVariantBottomSheet(index)
 
-        selectVariant(position)
+        selectVariant(index)
     }
 
-    private fun showVariantBottomSheet() {
+    private fun showVariantBottomSheet(index: Int) {
         onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.rv_single_variant))), ViewActions.scrollTo()))
         val viewInteraction = onView(AllOf.allOf(withId(R.id.rv_single_variant))).check(
-            matches(
-                isDisplayed()
-            )
+            matches(isDisplayed())
         )
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, clickChildViewWithId(R.id.atc_variant_chip)))
+        viewInteraction.perform(
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(index, clickChildViewWithId(R.id.atc_variant_chip_container))
+        )
     }
 
-    private fun selectVariant(position: Int) {
+    private fun selectVariant(index: Int) {
         // checking recyclerview variant bottom sheet is display or not
         onView(AllOf.allOf(withId(R.id.rv_atc_variant_bottomsheet))).check(matches(isDisplayed()))
         // click item on position
@@ -134,7 +136,7 @@ class ProductDetailRobot {
             override fun perform(uiController: UiController?, view: View?) {
                 val chipGroup = view as? ChipGroup
                 chipGroup?.let {
-                    it[position].performClick()
+                    it[index].performClick()
                     uiController?.loopMainThreadUntilIdle()
                 }
             }

@@ -104,5 +104,7 @@ object DigitalPDPEventTracking {
         const val CLICK_CLOSE_PRODUCT_DESC = "43963"
         const val IMPRESS_BOTTOM_SHEET_PRODUCT_DESC = "43961"
         const val IMPRESS_PROMO_CLUSTER_PRODUCT = "43964"
+        const val IMPRESS_OLD_MCCM = "26157"
+        const val CLICK_OLD_MCCM = "26163"
     }
 }

@@ -25,6 +25,7 @@ import com.tokopedia.chat_common.util.IdentifierUtil
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.chatbot2.data.rejectreasons.DynamicAttachmentRejectReasons
 import com.tokopedia.chatbot.chatbot2.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.chatbot2.view.adapter.QuickReplyAdapter
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.QuickReplyListener
@@ -38,6 +39,7 @@ import com.tokopedia.chatbot.chatbot2.view.uimodel.quickreply.QuickReplyUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.rating.ChatRatingUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.seprator.ChatSepratorUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.videoupload.VideoUploadUiModel
+import com.tokopedia.chatbot.chatbot2.view.util.helper.toQuickReplyUiModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.TextAreaUnify2
@@ -277,9 +279,9 @@ class ChatbotViewStateImpl(
         return fromUid != null && userSession.userId == fromUid
     }
 
-    private fun showQuickReply(list: List<QuickReplyUiModel>) {
+    private fun showQuickReply(list: List<QuickReplyUiModel>, isFromDynamicAttachment: Boolean = false) {
         if (::quickReplyAdapter.isInitialized && list.isNotEmpty()) {
-            quickReplyAdapter?.setList(list)
+            quickReplyAdapter.setList(list, isFromDynamicAttachment)
             rvQuickReply?.visibility = View.VISIBLE
         }
     }
@@ -432,6 +434,22 @@ class ChatbotViewStateImpl(
         if (item != null && adapter.list.isNotEmpty()) {
             adapter.clearElement(item)
         }
+    }
+
+    override fun handleQuickReplyFromDynamicAttachment(
+        toShow: Boolean,
+        rejectReasons: DynamicAttachmentRejectReasons
+    ) {
+        val list = mutableListOf<QuickReplyUiModel>()
+        list.addAll(rejectReasons.toQuickReplyUiModel())
+        showQuickReply(list, true)
+    }
+
+    override fun handleQuickReplyFromDynamicAttachment(
+        toShow: Boolean,
+        quickReplyUiModel: List<QuickReplyUiModel>
+    ) {
+        showQuickReply(quickReplyUiModel, true)
     }
 
     override fun getRecyclerViewId(): Int {

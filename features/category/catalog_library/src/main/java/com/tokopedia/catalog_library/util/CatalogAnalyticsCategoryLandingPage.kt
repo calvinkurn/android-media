@@ -3,6 +3,7 @@ package com.tokopedia.catalog_library.util
 import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.catalog_library.model.raw.CatalogListResponse
+import com.tokopedia.catalog_library.util.EventKeys.Companion.OPEN_SCREEN
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.track.constant.TrackerConstant
@@ -18,6 +19,31 @@ object CatalogAnalyticsCategoryLandingPage {
 
     private fun getTracker(): Analytics {
         return TrackApp.getInstance().gtm
+    }
+
+    fun openScreenCategoryLandingPage(categoryName: String, isLoggedInStatus: String, categoryId: String, userId: String) {
+        Tracker.Builder()
+            .setEvent(OPEN_SCREEN)
+            .setCustomProperty(
+                EventKeys.SCREEN_NAME,
+                "/catalog library - kategori - $categoryId - $categoryName"
+            )
+            .setCustomProperty(
+                EventKeys.TRACKER_ID,
+                TrackerId.OPEN_SCREEN_CLP
+            )
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCustomProperty(EventKeys.CATEGORY_ID, categoryId)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
+            .setCustomProperty(
+                EventKeys.PAGE_PATH,
+                "${CatalogLibraryConstant.APP_LINK_KATEGORI}/$categoryId"
+            )
+            .setCustomProperty(EventKeys.SESSION_IRIS, getIrisSessionId())
+            .setCustomProperty(EventKeys.IS_LOGGED_IN_STATUS, isLoggedInStatus)
+            .setUserId(userId)
+            .build()
+            .send()
     }
 
     fun sendImpressionOnTopCatalogsInCategoryEvent(

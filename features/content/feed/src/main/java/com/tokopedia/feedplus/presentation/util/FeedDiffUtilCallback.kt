@@ -66,6 +66,9 @@ class FeedDiffUtilCallback(
                     if (oldItem.comments.countFmt != newItem.comments.countFmt) {
                         add(FeedViewHolderPayloadActions.FEED_POST_COMMENT_COUNT)
                     }
+                    if (oldItem.campaign.isReminderActive != newItem.campaign.isReminderActive) {
+                        add(FeedViewHolderPayloadActions.FEED_POST_REMINDER_CHANGED)
+                    }
                 }
                 if (payloads.isNotEmpty()) FeedViewHolderPayloads(payloads) else null
             }

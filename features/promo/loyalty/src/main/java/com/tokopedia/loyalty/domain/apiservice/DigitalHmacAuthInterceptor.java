@@ -54,7 +54,7 @@ public class DigitalHmacAuthInterceptor extends TkpdAuthInterceptor {
             String path, String strParam, String method, String authKey, String contentTypeHeader
     ) {
         return AuthUtil.generateHeadersWithXUserId(
-                path, strParam, method, authKey, contentTypeHeader, userSession.getUserId(), userSession
+                path, strParam, method, authKey, contentTypeHeader, userSession.getUserId(), userSession, getHeaderTheme()
         );
     }
 }

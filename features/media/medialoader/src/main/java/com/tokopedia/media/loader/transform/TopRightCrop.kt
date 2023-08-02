@@ -59,7 +59,7 @@ class TopRightCrop : BitmapTransformation() {
     }
 
     companion object {
-        private const val ID = "com.tokopedia.productcard.utils.TopRightCrop"
+        private const val ID = "com.tokopedia.media.loader.transform.TopRightCrop"
         private val ID_BYTES = ID.toByteArray(Key.CHARSET)
         private val DEFAULT_PAINT = Paint(TransformationUtils.PAINT_FLAGS)
     }

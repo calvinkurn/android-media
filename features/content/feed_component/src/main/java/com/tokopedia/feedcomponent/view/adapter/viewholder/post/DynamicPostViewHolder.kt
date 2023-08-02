@@ -268,7 +268,7 @@ open class DynamicPostViewHolder(
                     if (header.cardSummary.isNotEmpty()) {
                         SpannableString(
                             String.format(
-                                getString(R.string.feed_header_time_format),
+                                getString(com.tokopedia.content.common.R.string.feed_header_time_format),
                                 header.avatarDate,
                                 header.cardSummary
                             )
@@ -386,7 +386,7 @@ open class DynamicPostViewHolder(
             val tagCaption = FeedCaption.Tag(
                 colorRes = MethodChecker.getColor(
                     itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G400
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 ),
                 clickListener = {
                     onHashtagClicked(it, trackingPostModel)
@@ -403,7 +403,7 @@ open class DynamicPostViewHolder(
                 label = caption.buttonName,
                 colorRes = MethodChecker.getColor(
                     itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N400
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
                 ),
                 clickListener = {
                     itemView.caption.setText(captionBody, TextView.BufferType.SPANNABLE)
@@ -589,7 +589,7 @@ open class DynamicPostViewHolder(
                 itemView.likeText.setTextColor(
                     MethodChecker.getColor(
                         itemView.likeText.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G400
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     )
                 )
             }
@@ -599,19 +599,20 @@ open class DynamicPostViewHolder(
                 itemView.likeText.setTextColor(
                     MethodChecker.getColor(
                         itemView.likeText.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700_44
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_44
                     )
                 )
             }
             else -> {
                 itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_feed_thumb)
                 val text: String =
-                    if (like.fmt.isNotEmpty() && !like.fmt.equals("0")) like.fmt else getString(R.string.kol_action_like)
+                    if (like.fmt.isNotEmpty() && !like.fmt.equals("0")) like.fmt
+                    else getString(com.tokopedia.content.common.R.string.kol_action_like)
                 itemView.likeText.text = text
                 itemView.likeText.setTextColor(
                     MethodChecker.getColor(
                         itemView.likeIcon.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700_44
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_44
                     )
                 )
             }
@@ -620,7 +621,10 @@ open class DynamicPostViewHolder(
 
     private fun bindComment(comment: Comment) {
         itemView.commentText.text =
-            if (comment.value == 0) if (comment.fmt.isNotEmpty()) comment.fmt else getString(R.string.kol_action_comment)
+            if (comment.value == 0) {
+                if (comment.fmt.isNotEmpty()) comment.fmt
+                else getString(com.tokopedia.content.common.R.string.kol_action_comment)
+            }
             else {
                 if (comment.fmt.isNotEmpty()) comment.fmt else comment.value.toString()
             }

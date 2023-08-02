@@ -1,6 +1,7 @@
 package com.tokopedia.play.robot.play
 
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.PlayViewerRepository
@@ -32,9 +33,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.test.runTest
 import java.io.Closeable
 
 /**
@@ -63,7 +62,7 @@ class PlayViewModelRobot2(
     chatManagerFactory: ChatManager.Factory,
     chatStreamsFactory: ChatStreams.Factory,
     playLog: PlayLog,
-    liveRoomMetricsCommon: PlayLiveRoomMetricsCommon,
+    liveRoomMetricsCommon: PlayLiveRoomMetricsCommon
 ) : Closeable {
 
     val viewModel: PlayViewModel = PlayViewModel(
@@ -89,7 +88,7 @@ class PlayViewModelRobot2(
         playLog,
         chatManagerFactory,
         chatStreamsFactory,
-        liveRoomMetricsCommon,
+        liveRoomMetricsCommon
     )
 
     fun createPage(channelData: PlayChannelData) {
@@ -241,6 +240,6 @@ fun createPlayViewModelRobot(
         chatManagerFactory = chatManagerFactory,
         chatStreamsFactory = chatStreamsFactory,
         playLog = playLog,
-        liveRoomMetricsCommon = liveRoomMetricsCommon,
+        liveRoomMetricsCommon = liveRoomMetricsCommon
     ).apply(fn)
 }

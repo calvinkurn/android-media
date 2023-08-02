@@ -4,11 +4,9 @@ import android.content.Context
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.encryption.security.AeadEncryptor
 import com.tokopedia.encryption.security.AeadEncryptorImpl
 import com.tokopedia.iris.util.IrisSession
-import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheet
 import com.tokopedia.loginregister.goto_seamless.GotoSeamlessPreference
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -16,13 +14,11 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreferenceManager
+import com.tokopedia.sessioncommon.util.OclUtils
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import javax.inject.Named
 
 /**
  * @author by nisie on 10/10/18.
@@ -74,4 +70,9 @@ open class LoginModule {
         return RemoteConfigInstance.getInstance().abTestPlatform
     }
 
+    @Provides
+    @ActivityScope
+    fun provideOclUtils(abTestPlatform: AbTestPlatform): OclUtils {
+        return OclUtils(abTestPlatform)
+    }
 }

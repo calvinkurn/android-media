@@ -85,9 +85,10 @@ ext {
     kotlinTestVersion = '1.5.31'
     KotlinMockitoVersion = '1.5.0'
     SpekVersion = "1.1.5"
+    mp4parserVersion = "1.0.6"
     crashlyticsGradleVersion = '2.5.2'
     googleServiceGradleVersion = '4.3.3'
-    chuckerVersion = '4.0.15-tkpd'
+    chuckerVersion = '4.0.18-tkpd'
     chuckerNoopVersion = '4.0.7-tkpd'
     sliceVersion = '1.0.0-alpha6'
     sliceCoreVersion = '1.0.0'
@@ -130,10 +131,10 @@ ext {
     ]
 
     unifyIconVersion = '0.0.4'
-    unifyIconsVersion = '1.0.28'
-    unifyPrinciplesVersion = '1.4.6'
-    unifyComponentsVersion = '1.2.31.rc01'
-    unifyCoachMarkVersion = '1.2.22'
+    unifyIconsVersion = '1.0.30'
+    unifyPrinciplesVersion = '1.4.12'
+    unifyComponentsVersion = '1.2.31-rc02'
+    unifyCoachMarkVersion = '1.2.23'
     unifyCalendarVersion = '1.2.3'
     unifyBannerVersion = '1.0.6.2'
     unifyDialogVersion = '1.0.14.2'
@@ -143,15 +144,15 @@ ext {
     unifyPinVersion = '1.0.5'
     unifyEmptyStateVersion = '1.0.14'
     unifyGlobalErrorVersion = '1.0.19'
-    unifyHeaderVersion = '1.1.13'
-    unifySortFilterVersion = '1.2.2'
+    unifyHeaderVersion = '1.2.0'
+    unifySortFilterVersion = '1.3.0'
     unifyIconNotificationVersion = '1.0.2.2'
     unifyCarouselVersion = '1.0.10.2'
     unifyListVersion = '1.0.12'
     unifyAccordionVersion = '1.1.8'
     unifyTotalAmountVersion = '1.0.7.2'
     unifyExplorePromoVersion = '1.0.3.2'
-    unifyImageGalleryVersion = '1.0.5.2'
+    unifyImageGalleryVersion = '1.0.8'
     unifyViewAllCardVersion = '1.0.8'
 
     gradlePlugin = [
@@ -247,6 +248,14 @@ ext {
             branch     : "io.branch.sdk.android:library:5.2.5",
     ]
 
+    gotoOneKyc = [
+            resource : "com.gojek.android:OneKycResources:1.0.4@aar",
+            oneKycSdk : "com.gojek.android:OneKycSdk:1.0.4@aar",
+            clickStream : "com.gojek.android:clickstream:2.0.1-alpha",
+            protoToko : "com.gojek.clickstream:proto-toko:4.219.0-snapshot-toko-1",
+            protoSdk : "com.gojek.clickstream:proto-sdk:1.18.2"
+    ]
+
     miscDependencies = [
             javaPoet              : 'com.squareup:javapoet:1.11.1',
             autoService           : "com.google.auto.service:auto-service:1.0-rc6",
@@ -270,7 +279,6 @@ ext {
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
             hansel                : "io.hansel.preprocessor:preprocessor:9.3.2",
             protobuf              : "com.google.protobuf:protobuf-gradle-plugin:0.8.12",
-            autopatchbase         : "com.tokopedia.patch:core:1.0.0",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
             flexBoxLayout         : "com.google.android:flexbox:0.3.2",
             cameraView            : "com.otaliastudios:cameraview:2.7.2-fix-pixel",
@@ -327,9 +335,6 @@ ext {
             mp4Composer           : "com.github.MasayukiSuda:Mp4Composer-android:v0.4.1",
             localBroadcastManager : "androidx.localbroadcastmanager:localbroadcastmanager:$localBroadcastManagerVersion",
             startupRuntime        : "androidx.startup:startup-runtime:$startupRuntimeVersion",
-            jjwtApi               : "io.jsonwebtoken:jjwt-api:0.11.2",
-            jjwtImpl              : "io.jsonwebtoken:jjwt-impl:0.11.2",
-            jjwtJson              : "io.jsonwebtoken:jjwt-orgjson:0.11.2",
             gojekSSO              : "com.gojek.android:icp-identity-login-sso:$gojekSSOVersion",
             dynamicAnimation      : "androidx.dynamicanimation:dynamicanimation:1.0.0",
             playIntegrityApi      : "com.google.android.play:integrity:$playIntegrityVersion",
@@ -345,6 +350,7 @@ ext {
             courierClient         : "com.gojek.courier:courier-client:$gojekCourierClientVersion",
             livenessDetection     : "ai.advance.liveness:liveness_lib:1.3.4@aar",
             livenessCore          : "ai.advance.liveness:guardian_core:2.8@aar",
+            mp4parser             : "com.googlecode.mp4parser:isoparser:$mp4parserVersion",
             profileInstaller      : "androidx.profileinstaller:profileinstaller:$profileInstallerVersion",
             desugarJdk            : "com.android.tools:desugar_jdk_libs:$desugarJdkVersion"
     ]
@@ -437,13 +443,16 @@ ext {
             explore_promo   : "com.tokopedia.unify.compositions:explore_promo:${unifyExplorePromoVersion}@aar",
             icons           : "com.tokopedia.unify:icons:${unifyIconsVersion}@aar",
             imageGallery    : "com.tokopedia.unify.compositions:image_gallery:${unifyImageGalleryVersion}@aar",
-            viewAllCard     : "com.tokopedia.unify.compositions:view_all_card:${unifyViewAllCardVersion}"
+            viewAllCard     : "com.tokopedia.unify.compositions:view_all_card:${unifyViewAllCardVersion}",
+            nestPrinciples  : "com.tokopedia.nest:principles:1.0.0",
+            nestComponents  : "com.tokopedia.nest:components:1.0.0"
     ]
 
     composeVersion = "1.3.1"
     composeActivity = "1.5.1"
     composeConstraint = "1.0.1"
     composeCoil = "1.3.2"
+    accompanistPagerVersion = "0.23.1"
 
     composeDependencies = [
             composeCompiler     : "androidx.compose.compiler:compiler:$composeVersion",
@@ -456,6 +465,8 @@ ext {
             composeActivity     : "androidx.activity:activity-compose:$composeActivity",
             composeConstraint   : "androidx.constraintlayout:constraintlayout-compose:$composeConstraint",
             composeLiveData     : "androidx.compose.runtime:runtime-livedata:$composeVersion",
-            composeCoil         : "io.coil-kt:coil-compose:$composeCoil"
+            composeCoil         : "io.coil-kt:coil-compose:$composeCoil",
+            composeVideoCoil    : "io.coil-kt:coil-video:$composeCoil",
+            accompanistPager    : "com.google.accompanist:accompanist-pager:$accompanistPagerVersion"
     ]
 }

@@ -1,7 +1,0 @@
-query reminderCheck($campaignID: Int!) {
-  notifier_checkReminder(campaign: $campaignID) {
-    is_success
-    status
-    error_message
-  }
-}

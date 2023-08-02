@@ -14,7 +14,8 @@ interface KycUploadApi {
         @Part("project_id") projectId: RequestBody,
         @Part("params") params: RequestBody,
         @Part ktpImage: MultipartBody.Part,
-        @Part faceImage: MultipartBody.Part
+        @Part faceImage: MultipartBody.Part,
+        @Part ("selfie_mode") selfieMode: RequestBody
     ): KycResponse
 
     @Multipart
@@ -23,6 +24,7 @@ interface KycUploadApi {
         @Part("project_id") projectId: RequestBody,
         @Part("params") params: RequestBody,
         @Part ktpImage: MultipartBody.Part,
-        @Part faceImage: MultipartBody.Part
+        @Part faceImage: MultipartBody.Part,
+        @Part ("selfie_mode") selfieMode: RequestBody
     ): KycResponse
 }

@@ -5,9 +5,7 @@ import android.content.Context
 import android.content.Intent
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.mediauploader.UploaderUseCase
-import com.tokopedia.mediauploader.common.di.MediaUploaderModule
 import com.tokopedia.mediauploader.di.DaggerMediaUploaderTestComponent
-import com.tokopedia.mediauploader.di.MediaUploaderTestModule
 import dagger.Lazy
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -49,8 +47,6 @@ class UploaderReceiver : BroadcastReceiver(), CoroutineScope {
     private fun initInjector(context: Context) {
         DaggerMediaUploaderTestComponent.builder()
             .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
-            .mediaUploaderTestModule(MediaUploaderTestModule(context))
-            .mediaUploaderModule(MediaUploaderModule())
             .build()
             .inject(this)
     }

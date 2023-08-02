@@ -3,7 +3,6 @@ package com.tokopedia.hotel.common.util
 import android.content.Context
 import com.tokopedia.hotel.booking.data.model.HotelPropertyData
 import com.tokopedia.hotel.search_map.data.model.Property
-import com.tokopedia.media.loader.data.HIGH_QUALITY
 import com.tokopedia.media.loader.internal.NetworkManager
 import com.tokopedia.utils.date.*
 import java.util.*
@@ -58,8 +57,7 @@ class HotelUtils {
         }
 
         fun getImageUrl(context: Context?, highQualityUrl: String, lowQualityUrl : String): String {
-            val isQualitySettingLow = NetworkManager.state(context) != HIGH_QUALITY
-            return if(isQualitySettingLow) lowQualityUrl else highQualityUrl
+            return if (NetworkManager.isHighQualitySettings(context)) highQualityUrl else lowQualityUrl
         }
 
         fun HotelPropertyData.getImageToLoad(context: Context?): String {

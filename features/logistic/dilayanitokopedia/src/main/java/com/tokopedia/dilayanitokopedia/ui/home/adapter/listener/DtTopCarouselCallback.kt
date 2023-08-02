@@ -1,15 +1,21 @@
 package com.tokopedia.dilayanitokopedia.ui.home.adapter.listener
 
+import com.tokopedia.dilayanitokopedia.data.analytics.DtHomepageAnalytics
+import com.tokopedia.dilayanitokopedia.data.analytics.ProductCardAnalyticsMapper
 import com.tokopedia.home_component.listener.MixTopComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.user.session.UserSessionInterface
 
 /**
  * Created by irpan on 16/11/22.
  */
 class DtTopCarouselCallback {
 
-    fun createTopCarouselCallback(onActionLinkClicked: (String) -> Unit): MixTopComponentListener? {
+    fun createTopCarouselCallback(
+        userSession: UserSessionInterface,
+        onActionLinkClicked: (String) -> Unit
+    ): MixTopComponentListener? {
         return object : MixTopComponentListener {
             override fun onMixTopImpressed(channel: ChannelModel, parentPos: Int) {
                 // no-op
@@ -37,7 +43,10 @@ class DtTopCarouselCallback {
                 adapterPosition: Int,
                 position: Int
             ) {
-                // no-op
+                DtHomepageAnalytics.sendImpressionProductCardsDtEvent(
+                    userSession,
+                    ProductCardAnalyticsMapper.fromGridChannel(position, channelGrid)
+                )
             }
 
             override fun onProductCardClicked(
@@ -48,6 +57,10 @@ class DtTopCarouselCallback {
                 applink: String
             ) {
                 onActionLinkClicked(channelGrid.applink)
+                DtHomepageAnalytics.sendClickProductCardsDtEvent(
+                    userSession,
+                    ProductCardAnalyticsMapper.fromGridChannel(position, channelGrid)
+                )
             }
 
             override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {

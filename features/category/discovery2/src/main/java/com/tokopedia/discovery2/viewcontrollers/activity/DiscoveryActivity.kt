@@ -25,7 +25,6 @@ import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.tokopoints_item_layout.*
 import javax.inject.Inject
 
 const val DISCOVERY_RESULT_TRACE = "discovery_result_trace"

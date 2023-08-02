@@ -1,6 +1,6 @@
 package com.tokopedia.media.loader.utils
 
-sealed class NetworkState
-object Fast: NetworkState()
-object Low: NetworkState()
-object Undefined: NetworkState()
+internal sealed class NetworkState
+internal object Fast: NetworkState()
+internal object Low: NetworkState()
+internal object Undefined: NetworkState()

@@ -18,13 +18,13 @@ import com.tokopedia.campaignlist.page.presentation.bottomsheet.CampaignTypeBott
 import com.tokopedia.campaignlist.page.presentation.model.CampaignStatusSelection
 import com.tokopedia.campaignlist.page.presentation.model.CampaignTypeSelection
 import com.tokopedia.campaignlist.page.presentation.viewmodel.CampaignListViewModel
-import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
@@ -82,7 +82,7 @@ class CampaignListActivity : BaseActivity(), ShareBottomsheetListener {
 
         setContent {
             NestTheme {
-                //Observe for any effect / one-time event
+                // Observe for any effect / one-time event
                 LaunchedEffect(Unit) {
                     viewModel.uiEffect.collectLatest { effect ->
                         when (effect) {
@@ -108,7 +108,7 @@ class CampaignListActivity : BaseActivity(), ShareBottomsheetListener {
                             viewModel.getCampaignTypeId(),
                             campaign.campaignId,
                             userSession.shopId,
-                            userSession.userId,
+                            userSession.userId
                         )
                     },
                     onClearFilter = { viewModel.onEvent(CampaignListViewModel.UiEvent.ClearFilter) },
@@ -130,51 +130,53 @@ class CampaignListActivity : BaseActivity(), ShareBottomsheetListener {
                     }
                 )
             }
-
-
         }
     }
-
 
     private fun showCampaignStatusBottomSheet(campaignStatusSelections: List<CampaignStatusSelection>) {
         tracker.sendOpenCampaignStatusFilterClickEvent(userSession.shopId)
 
-        val bottomSheet = CampaignStatusBottomSheet.createInstance(campaignStatusSelections, object : CampaignStatusBottomSheet.OnApplyButtonClickListener {
-            override fun onApplyCampaignStatusFilter(selectedCampaignStatus: CampaignStatusSelection) {
-                viewModel.onEvent(CampaignListViewModel.UiEvent.CampaignStatusFilterApplied(selectedCampaignStatus))
-                viewModel.setCampaignStatusId(selectedCampaignStatus.statusId)
-                viewModel.getCampaignList(statusId = selectedCampaignStatus.statusId)
-                tracker.sendSelectCampaignStatusClickEvent(selectedCampaignStatus.statusId, userSession.shopId)
-            }
+        val bottomSheet = CampaignStatusBottomSheet.createInstance(
+            campaignStatusSelections,
+            object : CampaignStatusBottomSheet.OnApplyButtonClickListener {
+                override fun onApplyCampaignStatusFilter(selectedCampaignStatus: CampaignStatusSelection) {
+                    viewModel.onEvent(CampaignListViewModel.UiEvent.CampaignStatusFilterApplied(selectedCampaignStatus))
+                    viewModel.setCampaignStatusId(selectedCampaignStatus.statusId)
+                    viewModel.getCampaignList(statusId = selectedCampaignStatus.statusId)
+                    tracker.sendSelectCampaignStatusClickEvent(selectedCampaignStatus.statusId, userSession.shopId)
+                }
 
-            override fun onNoCampaignStatusSelected() {
-                viewModel.onEvent(CampaignListViewModel.UiEvent.NoCampaignStatusFilterApplied)
-                viewModel.getCampaignList(
-                    EMPTY_SEARCH_KEYWORD,
-                    viewModel.getCampaignTypeId(),
-                    GetCampaignListUseCase.NPL_LIST_TYPE,
-                    GetCampaignListUseCase.statusId
-                )
+                override fun onNoCampaignStatusSelected() {
+                    viewModel.onEvent(CampaignListViewModel.UiEvent.NoCampaignStatusFilterApplied)
+                    viewModel.getCampaignList(
+                        EMPTY_SEARCH_KEYWORD,
+                        viewModel.getCampaignTypeId(),
+                        GetCampaignListUseCase.NPL_LIST_TYPE,
+                        GetCampaignListUseCase.statusId
+                    )
+                }
             }
-
-        })
+        )
         bottomSheet.show(supportFragmentManager)
     }
 
     private fun showCampaignTypeBottomSheet(campaignTypeSelection: List<CampaignTypeSelection>) {
         tracker.sendOpenCampaignTypeFilterClickEvent(userSession.shopId)
 
-        val bottomSheet = CampaignTypeBottomSheet.createInstance(campaignTypeSelection, object : CampaignTypeBottomSheet.OnApplyButtonClickListener {
-            override fun onApplyCampaignTypeFilter(selectedCampaignType: CampaignTypeSelection) {
-                viewModel.onEvent(CampaignListViewModel.UiEvent.CampaignTypeFilterApplied(selectedCampaignType))
+        val bottomSheet = CampaignTypeBottomSheet.createInstance(
+            campaignTypeSelection,
+            object : CampaignTypeBottomSheet.OnApplyButtonClickListener {
+                override fun onApplyCampaignTypeFilter(selectedCampaignType: CampaignTypeSelection) {
+                    viewModel.onEvent(CampaignListViewModel.UiEvent.CampaignTypeFilterApplied(selectedCampaignType))
 
-                val campaignTypeId = selectedCampaignType.campaignTypeId.toIntOrZero()
+                    val campaignTypeId = selectedCampaignType.campaignTypeId.toIntOrZero()
 
-                viewModel.setCampaignTypeId(campaignTypeId)
-                viewModel.getCampaignList(campaignTypeId = campaignTypeId)
-                tracker.sendSelectCampaignTypeFilterClickEvent(selectedCampaignType.campaignTypeName, userSession.shopId)
+                    viewModel.setCampaignTypeId(campaignTypeId)
+                    viewModel.getCampaignList(campaignTypeId = campaignTypeId)
+                    tracker.sendSelectCampaignTypeFilterClickEvent(selectedCampaignType.campaignTypeName, userSession.shopId)
+                }
             }
-        })
+        )
         bottomSheet.show(supportFragmentManager)
     }
 
@@ -213,18 +215,21 @@ class CampaignListActivity : BaseActivity(), ShareBottomsheetListener {
             val _totalProducts = viewModel.getProductCount(merchantBannerData.campaign.totalProduct)
             val _isOngoing = if (validateIsOngoingCampaign(merchantBannerData)) 1 else 0
 
-            addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.CAMPAIGN_NAME , value = campaignData.name)
-            addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.CAMPAIGN_INFO , value = campaignData.discountPercentageText)
-            addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.SHOP_LOGO , value = shopData.logo)
-            addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.SHOP_NAME , value = shopData.name)
-            addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.BADGE , value = validateShopType(shopData.badge.Title))
+            addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.CAMPAIGN_NAME, value = campaignData.name)
+            addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.CAMPAIGN_INFO, value = campaignData.discountPercentageText)
+            addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.SHOP_LOGO, value = shopData.logo)
+            addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.SHOP_NAME, value = shopData.name)
+            addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.BADGE, value = validateShopType(shopData.badge.Title))
             addImageGeneratorData(
-                key = ImageGeneratorConstants.ImageGeneratorKeys.DATE ,
-                value = if (validateIsOngoingCampaign(merchantBannerData))
-                    merchantBannerData.formattedSharingEndDate else merchantBannerData.formattedSharingStartDate
+                key = ImageGeneratorConstants.ImageGeneratorKeys.DATE,
+                value = if (validateIsOngoingCampaign(merchantBannerData)) {
+                    merchantBannerData.formattedSharingEndDate
+                } else {
+                    merchantBannerData.formattedSharingStartDate
+                }
             )
-            addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.ONGOING , value = _isOngoing.toString())
-            addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCTS_COUNT , value = _totalProducts.toString())
+            addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.ONGOING, value = _isOngoing.toString())
+            addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCTS_COUNT, value = _totalProducts.toString())
             addImageGeneratorData(
                 key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCTS_OVERLOAD,
                 value = viewModel.calculateOverloadProductCount(_totalProducts).toString()
@@ -235,10 +240,10 @@ class CampaignListActivity : BaseActivity(), ShareBottomsheetListener {
                 val _discountedPrice = productData.get(INDEX_ZERO).productCampaign.discountedPriceFmt
                 val _discount = productData.get(INDEX_ZERO).productCampaign.discountPercentage.toString()
 
-                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_1 , value = _imgUrl)
-                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_1_PRICE_BEFORE , value = _originalPrice)
-                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_1_PRICE_AFTER , value = _discountedPrice)
-                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_1_DISCOUNT , value = _discount)
+                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_1, value = _imgUrl)
+                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_1_PRICE_BEFORE, value = _originalPrice)
+                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_1_PRICE_AFTER, value = _discountedPrice)
+                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_1_DISCOUNT, value = _discount)
             }
 
             if (_totalProducts >= INDEX_TWO) {
@@ -247,10 +252,10 @@ class CampaignListActivity : BaseActivity(), ShareBottomsheetListener {
                 val _discountedPrice = productData.get(INDEX_ONE).productCampaign.discountedPriceFmt
                 val _discount = productData.get(INDEX_ONE).productCampaign.discountPercentage.toString()
 
-                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_2 , value = _imgUrl)
-                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_2_PRICE_BEFORE , value = _originalPrice)
-                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_2_PRICE_AFTER , value = _discountedPrice)
-                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_2_DISCOUNT , value = _discount)
+                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_2, value = _imgUrl)
+                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_2_PRICE_BEFORE, value = _originalPrice)
+                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_2_PRICE_AFTER, value = _discountedPrice)
+                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_2_DISCOUNT, value = _discount)
             }
 
             if (_totalProducts >= INDEX_THREE) {
@@ -259,10 +264,10 @@ class CampaignListActivity : BaseActivity(), ShareBottomsheetListener {
                 val _discountedPrice = productData.get(INDEX_TWO).productCampaign.discountedPriceFmt
                 val _discount = productData.get(INDEX_TWO).productCampaign.discountPercentage.toString()
 
-                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_3 , value = _imgUrl)
-                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_3_PRICE_BEFORE , value = _originalPrice)
-                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_3_PRICE_AFTER , value = _discountedPrice)
-                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_3_DISCOUNT , value = _discount)
+                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_3, value = _imgUrl)
+                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_3_PRICE_BEFORE, value = _originalPrice)
+                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_3_PRICE_AFTER, value = _discountedPrice)
+                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_3_DISCOUNT, value = _discount)
             }
 
             if (_totalProducts >= INDEX_FOUR) {
@@ -271,10 +276,10 @@ class CampaignListActivity : BaseActivity(), ShareBottomsheetListener {
                 val _discountedPrice = productData.get(INDEX_THREE).productCampaign.discountedPriceFmt
                 val _discount = productData.get(INDEX_THREE).productCampaign.discountPercentage.toString()
 
-                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_4 , value = _imgUrl)
-                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_4_PRICE_BEFORE , value = _originalPrice)
-                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_4_PRICE_AFTER , value = _discountedPrice)
-                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_4_DISCOUNT , value = _discount)
+                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_4, value = _imgUrl)
+                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_4_PRICE_BEFORE, value = _originalPrice)
+                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_4_PRICE_AFTER, value = _discountedPrice)
+                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_4_DISCOUNT, value = _discount)
             }
         }
         universalShareBottomSheet.show(supportFragmentManager, universalShareBottomSheet.tag)
@@ -302,27 +307,31 @@ class CampaignListActivity : BaseActivity(), ShareBottomsheetListener {
         val linkerShareData = viewModel.generateLinkerShareData(shopData, campaignData, shareModel, campaignStatusId)
 
         LinkerManager.getInstance().executeShareRequest(
-            LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
-                override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                    val shareWording = viewModel.getShareDescriptionWording(
-                        shopData = shopData,
-                        campaignData = campaignData,
-                        merchantBannerData = banner,
-                        shareUri = linkerShareData?.shareUri,
-                        campaignStatusId = campaignStatusId
-                    )
-                    SharingUtil.executeShareIntent(
-                        shareModel,
-                        linkerShareData,
-                        this@CampaignListActivity,
-                        null,
-                        shareWording
-                    )
-                    universalShareBottomSheet?.dismiss()
-                }
+            LinkerUtils.createShareRequest(
+                0,
+                linkerShareData,
+                object : ShareCallback {
+                    override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                        val shareWording = viewModel.getShareDescriptionWording(
+                            shopData = shopData,
+                            campaignData = campaignData,
+                            merchantBannerData = banner,
+                            shareUri = linkerShareData?.shareUri,
+                            campaignStatusId = campaignStatusId
+                        )
+                        SharingUtil.executeShareIntent(
+                            shareModel,
+                            linkerShareData,
+                            this@CampaignListActivity,
+                            null,
+                            shareWording
+                        )
+                        universalShareBottomSheet?.dismiss()
+                    }
 
-                override fun onError(linkerError: LinkerError?) {}
-            })
+                    override fun onError(linkerError: LinkerError?) {}
+                }
+            )
         )
 
         tracker.sendSelectShareChannelClickEvent(
@@ -332,7 +341,6 @@ class CampaignListActivity : BaseActivity(), ShareBottomsheetListener {
             userSession.userId,
             userSession.shopId
         )
-
     }
 
     override fun onCloseOptionClicked() {
@@ -343,5 +351,4 @@ class CampaignListActivity : BaseActivity(), ShareBottomsheetListener {
             userSession.shopId
         )
     }
-
 }

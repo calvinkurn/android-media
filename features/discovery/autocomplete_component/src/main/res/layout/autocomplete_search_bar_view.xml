@@ -13,14 +13,14 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginStart="12dp"
-        app:icon_color_light_enable="@color/Unify_N500"
+        app:icon_color_light_enable="@color/Unify_NN600"
         app:icon_enable_state="true"
         app:icon_name="ARROW_BACK"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatEditText
+    <com.tokopedia.autocompletecomponent.widget.SearchBarEditText
         android:id="@+id/searchTextView"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -34,8 +34,8 @@
         android:lines="1"
         android:paddingStart="28dp"
         android:paddingEnd="32dp"
-        android:textColor="@color/Unify_N700_96"
-        android:textColorHint="@color/Unify_N700_44"
+        android:textColor="@color/Unify_NN950_96"
+        android:textColorHint="@color/Unify_NN950_44"
         android:textCursorDrawable="@drawable/autocomplete_cursor_color"
         android:textSize="14sp"
         app:layout_constraintStart_toEndOf="@id/autocompleteActionUpButton"
@@ -49,8 +49,8 @@
         android:layout_height="14dp"
         android:layout_marginStart="8dp"
         android:visibility="gone"
-        app:icon_color_light_enable="@color/Unify_N700_68"
-        app:icon_color_night_enable="@color/Unify_N700_68"
+        app:icon_color_light_enable="@color/Unify_NN950_68"
+        app:icon_color_night_enable="@color/Unify_NN950_68"
         app:icon_enable_state="true"
         app:icon_name="SEARCH"
         app:layout_constraintBottom_toBottomOf="@id/searchTextView"
@@ -65,7 +65,7 @@
         android:layout_marginEnd="2dp"
         android:padding="8dp"
         android:visibility="gone"
-        app:icon_color_light_enable="@color/Unify_N500"
+        app:icon_color_light_enable="@color/Unify_NN600"
         app:icon_enable_state="true"
         app:icon_name="CLEAR"
         app:layout_constraintBottom_toBottomOf="@id/searchTextView"
@@ -78,11 +78,11 @@
         android:layout_height="16dp"
         android:layout_marginEnd="10dp"
         android:visibility="gone"
-        app:icon_color_light_enable="@color/Unify_N500"
+        app:icon_color_light_enable="@color/Unify_NN600"
         app:icon_enable_state="true"
         app:icon_name="MICROPHONE"
         app:layout_constraintBottom_toBottomOf="@id/searchTextView"
-        app:layout_constraintRight_toRightOf="@id/searchTextView"
+        app:layout_constraintRight_toLeftOf="@+id/autocompleteAddButtonBarrier"
         app:layout_constraintTop_toTopOf="@id/searchTextView"
         tools:visibility="visible" />
 
@@ -114,15 +114,13 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/autocompleteAddButton"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_marginEnd="2dp"
         android:visibility="gone"
-        app:icon_color_light_enable="@color/Unify_N500"
-        app:icon_enable_state="true"
-        app:srcCompat="@drawable/autocomplete_ic_add_animated"
         app:layout_constraintBottom_toBottomOf="@id/searchTextView"
         app:layout_constraintRight_toRightOf="@id/searchTextView"
-        app:layout_constraintTop_toTopOf="@id/searchTextView"/>
+        app:layout_constraintTop_toTopOf="@id/searchTextView"
+        app:srcCompat="@drawable/autocomplete_ic_add_animated" />
 
 </merge>

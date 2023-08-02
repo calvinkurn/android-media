@@ -12,7 +12,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsUtil
@@ -24,6 +23,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topupbills.R
@@ -277,20 +277,9 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(
     }
 
     fun setIconOperator(url: String) {
-        ImageHandler.LoadImage(imgOperator, url)
-        ImageHandler.LoadImage(imgOperatorResult, url)
+        imgOperator.loadImage(url)
+        imgOperatorResult.loadImage(url)
         imgOperator.visibility = View.VISIBLE
-    }
-
-    fun setVisibleResultNumber(show: Boolean) {
-        inputNumberResult.text = getInputNumber()
-        if (show && getInputNumber().isNotEmpty()) {
-            layoutResult.show()
-            layoutInputNumber.hide()
-        } else {
-            layoutInputNumber.show()
-            layoutResult.hide()
-        }
     }
 
     fun setFilterChipShimmer(show: Boolean, shouldHideChip: Boolean = false) {

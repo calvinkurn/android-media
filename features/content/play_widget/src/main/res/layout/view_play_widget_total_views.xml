@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    tools:background="@color/Unify_Static_Black"
+    >
+
+    <com.tokopedia.iconunify.IconUnify
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        app:icon_name="VISIBILITY"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_light_disabled="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_color_night_disabled="@color/Unify_Static_White"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_total_views"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:maxLines="1"
+        android:textColor="@color/Unify_Static_White"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        tools:text="16,5rb"
+        />
+
+</LinearLayout>

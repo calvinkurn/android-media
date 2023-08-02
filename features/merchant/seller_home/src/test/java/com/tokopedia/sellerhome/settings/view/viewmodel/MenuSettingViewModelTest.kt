@@ -2,9 +2,9 @@ package com.tokopedia.sellerhome.settings.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
-import com.tokopedia.logisticCommon.data.response.shoplocation.DataWhitelist
-import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocWhitelist
-import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocationWhitelistResponse
+import com.tokopedia.logisticCommon.data.response.shoplocation.DataEligibility
+import com.tokopedia.logisticCommon.data.response.shoplocation.KeroGetRolloutEligibility
+import com.tokopedia.logisticCommon.data.response.shoplocation.KeroGetRolloutEligibilityResponse
 import com.tokopedia.logisticCommon.domain.usecase.ShopMultilocWhitelistUseCase
 import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.MenuSettingAccess
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
@@ -108,9 +108,9 @@ class MenuSettingViewModelTest {
         runBlocking {
             everyProviderShopLocWhitelist()
             everyShopLocWhitelistSuccess(
-                ShopLocationWhitelistResponse(
-                    ShopLocWhitelist(
-                        data = DataWhitelist(
+                KeroGetRolloutEligibilityResponse(
+                    KeroGetRolloutEligibility(
+                        data = DataEligibility(
                             eligibilityState = 1
                         )
                     )
@@ -130,9 +130,9 @@ class MenuSettingViewModelTest {
         runBlocking {
             everyProviderShopLocWhitelist()
             everyShopLocWhitelistSuccess(
-                ShopLocationWhitelistResponse(
-                    ShopLocWhitelist(
-                        data = DataWhitelist(
+                KeroGetRolloutEligibilityResponse(
+                    KeroGetRolloutEligibility(
+                        data = DataEligibility(
                             eligibilityState = 0
                         )
                     )
@@ -174,7 +174,7 @@ class MenuSettingViewModelTest {
         coEvery { shopMultilocProvider.get() } returns shopMultilocWhitelistUseCase
     }
 
-    private fun everyShopLocWhitelistSuccess(response: ShopLocationWhitelistResponse) {
+    private fun everyShopLocWhitelistSuccess(response: KeroGetRolloutEligibilityResponse) {
         coEvery { shopMultilocWhitelistUseCase.invoke(424424) } returns response
     }
 

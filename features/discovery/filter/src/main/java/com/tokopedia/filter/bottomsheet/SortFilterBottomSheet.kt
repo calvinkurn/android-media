@@ -351,9 +351,9 @@ class SortFilterBottomSheet: BottomSheetUnify() {
 
     private fun getButtonApplyContainerBackground() =
         if (context.isDarkMode())
-            context?.getDrawable(com.tokopedia.unifyprinciples.R.color.Unify_N50)
+            context?.getDrawable(com.tokopedia.unifyprinciples.R.color.Unify_NN50)
         else
-            context?.getDrawable(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            context?.getDrawable(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
 
     private fun hideButtonApplyFilter() {
         binding?.buttonApplyContainer?.visibility = View.GONE

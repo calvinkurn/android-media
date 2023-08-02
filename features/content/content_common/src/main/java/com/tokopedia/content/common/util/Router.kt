@@ -3,6 +3,7 @@ package com.tokopedia.content.common.util
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import androidx.activity.result.ActivityResultLauncher
 import com.tokopedia.applink.RouteManager
 import dagger.Reusable
 import javax.inject.Inject
@@ -24,6 +25,19 @@ class Router @Inject constructor() {
         else {
             activity.startActivityForResult(intent, requestCode)
         }
+    }
+
+    fun route(activityResultLauncher: ActivityResultLauncher<Intent>, intent: Intent) {
+        activityResultLauncher.launch(intent)
+    }
+
+    fun route(
+        context: Context,
+        activityResultLauncher: ActivityResultLauncher<Intent>,
+        appLinkPattern: String,
+        vararg parameter: String
+    ) {
+        activityResultLauncher.launch(getIntent(context, appLinkPattern, *parameter))
     }
 
     fun getIntent(context: Context?, deepLinkPattern: String, vararg parameter: String): Intent {

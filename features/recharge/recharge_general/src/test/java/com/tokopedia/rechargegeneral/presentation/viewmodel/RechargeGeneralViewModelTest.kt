@@ -5,11 +5,14 @@ import com.tokopedia.common.topupbills.data.RechargeAddBillsProductTrackData
 import com.tokopedia.common.topupbills.data.RechargeSBMAddBillRequest
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
 import com.tokopedia.common.topupbills.data.product.CatalogProduct
+import com.tokopedia.common_digital.common.presentation.model.DigitalDppoConsent
+import com.tokopedia.common_digital.common.presentation.model.DigiPersoRecommendationData
+import com.tokopedia.common_digital.common.presentation.model.DigiPersoRecommendationItem
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.rechargegeneral.domain.GetDppoConsentUseCase
+import com.tokopedia.common_digital.common.usecase.GetDppoConsentUseCase
 import com.tokopedia.rechargegeneral.model.*
 import com.tokopedia.rechargegeneral.model.mapper.RechargeGeneralMapper
 import com.tokopedia.rechargegeneral.presentation.model.RechargeGeneralProductSelectData
@@ -326,10 +329,10 @@ class RechargeGeneralViewModelTest {
     fun getDppoConsentRecharge_Success() {
         // given
         val consentDesc = "Tokopedia"
-        val rechargeGeneralDppoConsent = RechargeGeneralDppoConsent(
-            RechargeRecommendationData(
+        val digitalDPPOConsent = DigitalDppoConsent(
+            DigiPersoRecommendationData(
                 items = listOf(
-                    RechargeRecommendationItem(
+                    DigiPersoRecommendationItem(
                         id = "1",
                         title = consentDesc
                     )
@@ -337,7 +340,7 @@ class RechargeGeneralViewModelTest {
             )
         )
 
-        coEvery { getDppoConsentUseCase.execute(any()) } returns rechargeGeneralDppoConsent
+        coEvery { getDppoConsentUseCase.execute(any()) } returns digitalDPPOConsent
 
         // when
         rechargeGeneralViewModel.getDppoConsent(1)

@@ -1,31 +1,20 @@
 <resources>
     <string name="mail_us">Email</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="contact_us_title_home">Tokopedia Care</string>
     <string name="inbox_title_dialog_wrong_scan">Tunggu…</string>
     <string name="inbox_cancel">Batal</string>
     <string name="inbox_exit">Keluar</string>
-    <string name="pembelian">Pembelian</string>
-    <string name="penjualan">Penjualan</string>
     <string name="error_msg_wrong_size">Ups! Ukuran gambar yang di-upload lebih dari 10MB</string>
     <string name="error_msg_wrong_height_width">Ups! Ukuran gambar yang Anda pilih terlalu kecil. Minimal 300 x 300 piksel.</string>
     <string name="masih_butuh_bantuan">Masih butuh bantuan?</string>
     <string name="hubungi_kami">Hubungi Tokopedia Care</string>
     <string name="attachment_required">Mohon lampirkan data yang diminta</string>
-    <string name="barang_yang">Barang yang diterima tidak sesuai</string>
-    <string name="kendala">Kendala</string>
-    <string name="beritahukan_kendala_anda_minimum_30">Beritahukan kendala Anda (Minimum 30 karakter)</string>
-    <string name="semakin_detail_">Semakin detail, semakin mudah kami membantu Anda</string>
     <string name="tutup">Tutup</string>
     <string name="ok">Ok</string>
-    <string name="delete">Delete</string>
     <string name="app_name">contact_us</string>
-    <string name="finish_contact_us">Terima kasih telah menghubungi, senang bisa membantu anda.</string>
     <string name="contact_us_display_a_problem_report_here">Oops, laporanmu tidak ditemukan</string>
 
-    <string name="title_help">Bantuan</string>
     <string name="contact_us_type_here">Tulis di sini (Min. 15 karakter)</string>
     <string name="on_going">Dalam Proses</string>
     <string name="closed">Ditutup</string>
@@ -50,21 +39,12 @@
     <string name="balas">Balas</string>
     <string name="service_priorities_officialstore_desc">Kami akan utamakan &amp; selesaikan kendala terkait Official Store dengan lebih cepat. \n<b>Pelajari Selengkapnya</b></string>
     <string name="tv_service_priorities_officialstore">Layanan Prioritas Official Store</string>
-    <string name="learn_more_link">https://www.tokopedia.com/help/article/a-0827?refid=st-1109</string>
+    <string name="learn_more_link">%s?url=https://www.tokopedia.com/help/article/a-0827?refid=st-1109</string>
     <string name="layanan_prioritas">Layanan Prioritas</string>
     <string name="contact_us_minimum_length_error_text">Pesan terlalu pendek, minimum 15 karakter</string>
     <string name="detail_kendala">Detail Kendala</string>
     <string name="contact_us_inbox">Pesan Bantuan</string>
-    <string name="choose_image">Pilih Gambar</string>
-    <string name="title_activity_contact_us">Pusat Bantuan</string>
     <string name="contact_us_error_upload_image">Gagal mengunggah gambar</string>
-    <string name="title_contact_finish">Pesan sudah berhasil terkirim. Customer Care Tokopedia akan membalas pesan tersebut ke email kamu. Silakan cek email secara berkala.</string>
-    <string name="error_detail_empty">Silakan mengisi keterangan masalah terlebih dahulu</string>
-    <string name="error_detail_too_short">Message terlalu pendek, minimal 30 karakter</string>
-    <string name="failed_create_ticket">Gagal membuat tiket</string>
-    <string name="error_attachment">Mohon tambahkan lampiran.</string>
-    <string name="contactus_error_field_required">Harus diisi</string>
-    <string name="contactus_error_invalid_email">Email ini tidak valid.</string>
     <string name="contact_us_something_went_wrong">Something went wrong</string>
     <string name="contact_us_no_ticket_message">Di sini tempatmu mengecek seluruh balasan dari Tim Tokopedia Care. Butuh bantuan lainnya?</string>
     <string name="contact_us_tokopedia_care">Ke Tokopedia Care</string>
@@ -73,18 +53,11 @@
     <string name="contact_us_ticket_id_prefix">ID: %s</string>
     <string name="contact_us_show_all_ticket">Tampilkan Semua</string>
     <string name="contact_us_greet_user">Halo, %s!</string>
-    <string name="title_problem_category">Masalah</string>
-    <string name="title_name">Nama</string>
-    <string name="title_problem_detail">Keterangan Masalah Anda</string>
-    <string name="title_phone_optional">Telepon (Opsional)</string>
-    <string name="title_attachment">Lampiran</string>
     <string name="filter">Filter</string>
-    <string name="btn_send">Kirim</string>
-    <string name="title_email">Email</string>
     <string name="contact_us_tool_tip_text">Chat Sekarang</string>
-    <string name="contactus_chat_bot_applink">tokopedia://chatbot/%s?is_chat_bot=true&amp;page_source=contact_us</string>
-    <string name="contact_us_step_two_response_failure_message">Maaf, permintaan Anda tidak dapat diproses. Silahkan coba beberapa saat lagi.</string>
     <string name="contact_us_sent_error_message">Pesanmu gagal dikirim, coba kirim ulang</string>
+    <string name="contactus_chat_bot_applink">tokopedia://chatbot/%s?is_chat_bot=true&amp;page_source=contact_us&amp;is_chatbot_active=%b</string>
+    <string name="contact_us_step_two_response_failure_message">Maaf, permintaan Anda tidak dapat diproses. Silahkan coba beberapa saat lagi.</string>
     <string name="contact_us_selesai_button">Selesai</string>
 
 
@@ -94,15 +67,6 @@
     <string name="contact_us_clear_cache_warning">Peringatan</string>
     <string name="contact_us_title_clear_cache">Bersihkan Cache</string>
     <string name="contact_us_maximum_length_error_text">Pesan telah memenuhi batas maksimal 1,000 karakter.</string>
-
-    <string name="title_success_reso">Komplainmu diajukan ke penjual.</string>
-    <string name="description_success_reso">Tenang, danamu sudah kami amankan. Jika penjual tidak merespons, danamu dikembalikan secara otomatis.</string>
-    <string name="title_btn_detail">Lihat Komplain</string>
-    <string name="title_btn_home">Balik Ke Homepage</string>
-    <string name="title_toolbar_resolution">Komplain diajukan</string>
-    <string name="screen_name_resolution">ResolutionFragment</string>
-    <string name="content_desc_success_reso">Success Create Reso</string>
-
 
     <string-array name="contactus_csat_question">
         <item>Apa yang bisa diperbaiki dari layanan kami?</item>
@@ -121,8 +85,6 @@
     </string-array>
 
     <!-- Content Descriptions -->
-    <string name="contact_us_image_uploader">Image Uploader</string>
-    <string name="contact_us_image_uploader_delete_button">Image Uploader Delete Button</string>
     <string name="contact_us_attachment">Add attachment</string>
     <string name="contact_us_delete">Delete Images</string>
     <string name="contact_us_filter">Filter image</string>

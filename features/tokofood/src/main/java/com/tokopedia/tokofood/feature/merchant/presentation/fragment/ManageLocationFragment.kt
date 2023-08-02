@@ -33,9 +33,11 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.constant.AddEditAddressSource
+import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.logisticCommon.util.PinpointRolloutHelper
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
@@ -128,10 +130,10 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
     override fun initInjector() {
         activity?.let {
             DaggerMerchantPageComponent
-                    .builder()
-                    .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
-                    .build()
-                    .inject(this)
+                .builder()
+                .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
         }
     }
 
@@ -226,8 +228,11 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
             when (it) {
                 is Success -> {
                     val isDeliverable = it.data.tokofoodGetMerchantData.merchantProfile.deliverable
-                    if (isDeliverable) navigateToMerchantPage(viewModel.merchantId)
-                    else context?.run { bindOutOfCoverage(this) }
+                    if (isDeliverable) {
+                        navigateToMerchantPage(viewModel.merchantId)
+                    } else {
+                        context?.run { bindOutOfCoverage(this) }
+                    }
                 }
                 is Fail -> {
                     showToaster(it.throwable.message)
@@ -312,25 +317,40 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
                 ApplinkConstInternalTokoFood.MERCHANT_OLD
             }
         val merchantPageUri = Uri.parse(applink)
-                .buildUpon()
-                .appendQueryParameter(DeeplinkMapperTokoFood.PARAM_MERCHANT_ID, merchantId)
-                .build()
+            .buildUpon()
+            .appendQueryParameter(DeeplinkMapperTokoFood.PARAM_MERCHANT_ID, merchantId)
+            .build()
         TokofoodRouteManager.routePrioritizeInternal(context, merchantPageUri.toString(), isFinishCurrent = true)
     }
 
     private fun navigateToSetPinpoint() {
+        activity?.let {
+            if (PinpointRolloutHelper.eligibleForRevamp(it, true)) {
+                // go to pinpoint
+                val bundle = Bundle().apply {
+                    putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true)
+                    putDouble(AddressConstant.EXTRA_LAT, TOTO_LATITUDE.toDouble())
+                    putDouble(AddressConstant.EXTRA_LONG, TOTO_LONGITUDE.toDouble())
+                }
+                RouteManager.getIntent(it, ApplinkConstInternalLogistic.PINPOINT).apply {
+                    putExtra(AddressConstant.EXTRA_BUNDLE, bundle)
+                    startActivityForResult(this, REQUEST_CODE_SET_PINPOINT)
+                }
+            } else {
                 val locationPass = LocationPass().apply {
                     latitude = TOTO_LATITUDE
                     longitude = TOTO_LONGITUDE
                 }
-                val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
+                val intent =
+                    RouteManager.getIntent(it, ApplinkConstInternalMarketplace.GEOLOCATION)
                 val bundle = Bundle().apply {
                     putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
                     putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
                 }
                 intent.putExtras(bundle)
                 startActivityForResult(intent, REQUEST_CODE_SET_PINPOINT)
-
+            }
+        }
     }
 
     private fun onResultFromAddAddress(resultCode: Int, data: Intent?) {
@@ -348,9 +368,18 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
         if (resultCode == Activity.RESULT_OK) {
             data?.let { intent ->
                 val locationPass = intent.getParcelableExtra(LogisticConstant.EXTRA_EXISTING_LOCATION) as? LocationPass
-                locationPass?.let { it ->
-                    localCacheModel?.address_id?.let { addressId ->
-                        viewModel.updatePinPoint(addressId, it.latitude, it.longitude)
+                if (locationPass == null) {
+                    val addressData = intent.getParcelableExtra(AddressConstant.EXTRA_SAVE_DATA_UI_MODEL) as? SaveAddressDataModel
+                    addressData?.let {
+                        localCacheModel?.address_id?.let { addressId ->
+                            viewModel.updatePinPoint(addressId, it.latitude, it.longitude)
+                        }
+                    }
+                } else {
+                    locationPass.let { it ->
+                        localCacheModel?.address_id?.let { addressId ->
+                            viewModel.updatePinPoint(addressId, it.latitude, it.longitude)
+                        }
                     }
                 }
             }
@@ -360,23 +389,19 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
     private fun setupChooseAddress(data: GetStateChosenAddressResponse) {
         data.let { chooseAddressData ->
             ChooseAddressUtils.updateLocalizingAddressDataFromOther(
-                    context = requireContext(),
-                    addressId = chooseAddressData.data.addressId.toString(),
-                    cityId = chooseAddressData.data.cityId.toString(),
-                    districtId = chooseAddressData.data.districtId.toString(),
-                    lat = chooseAddressData.data.latitude,
-                    long = chooseAddressData.data.longitude,
-                    label = String.format(
-                            "%s %s",
-                            chooseAddressData.data.addressName,
-                            chooseAddressData.data.receiverName
-                    ),
-                    postalCode = chooseAddressData.data.postalCode,
-                    warehouseId = chooseAddressData.tokonow.warehouseId.toString(),
-                    shopId = chooseAddressData.tokonow.shopId.toString(),
-                    warehouses = TokonowWarehouseMapper.mapWarehousesResponseToLocal(chooseAddressData.tokonow.warehouses),
-                    serviceType = chooseAddressData.tokonow.serviceType,
-                    lastUpdate = chooseAddressData.tokonow.tokonowLastUpdate
+                context = requireContext(),
+                addressId = chooseAddressData.data.addressId.toString(),
+                cityId = chooseAddressData.data.cityId.toString(),
+                districtId = chooseAddressData.data.districtId.toString(),
+                lat = chooseAddressData.data.latitude,
+                long = chooseAddressData.data.longitude,
+                label = "${chooseAddressData.data.addressName} ${chooseAddressData.data.receiverName}",
+                postalCode = chooseAddressData.data.postalCode,
+                warehouseId = chooseAddressData.tokonow.warehouseId.toString(),
+                shopId = chooseAddressData.tokonow.shopId.toString(),
+                warehouses = TokonowWarehouseMapper.mapWarehousesResponseToLocal(chooseAddressData.tokonow.warehouses),
+                serviceType = chooseAddressData.tokonow.serviceType,
+                lastUpdate = chooseAddressData.tokonow.tokonowLastUpdate
             )
         }
         checkIfChooseAddressWidgetDataUpdated()
@@ -385,22 +410,24 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
 
     private fun setupChooseAddress(addressDataModel: SaveAddressDataModel) {
         context?.let {
-            ChooseAddressUtils.updateLocalizingAddressDataFromOther(it,
-                    addressDataModel.id.toString(), addressDataModel.cityId.toString(), addressDataModel.districtId.toString(),
-                    addressDataModel.latitude, addressDataModel.longitude, "${addressDataModel.addressName} ${addressDataModel.receiverName}",
-                    addressDataModel.postalCode, addressDataModel.shopId.toString(), addressDataModel.warehouseId.toString(),
-                    TokonowWarehouseMapper.mapWarehousesAddAddressModelToLocal(addressDataModel.warehouses), addressDataModel.serviceType)
+            ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                it,
+                addressDataModel.id.toString(), addressDataModel.cityId.toString(), addressDataModel.districtId.toString(),
+                addressDataModel.latitude, addressDataModel.longitude, "${addressDataModel.addressName} ${addressDataModel.receiverName}",
+                addressDataModel.postalCode, addressDataModel.shopId.toString(), addressDataModel.warehouseId.toString(),
+                TokonowWarehouseMapper.mapWarehousesAddAddressModelToLocal(addressDataModel.warehouses), addressDataModel.serviceType
+            )
         }
         checkIfChooseAddressWidgetDataUpdated()
         context?.run {
             ChooseAddressUtils.getLocalizingAddressData(this)
-                    .let { addressData ->
-                        viewModel.checkDeliveryCoverage(
-                                merchantId = viewModel.merchantId,
-                                latlong = addressData.latLong,
-                                timezone = TimeZone.getDefault().id
-                        )
-                    }
+                .let { addressData ->
+                    viewModel.checkDeliveryCoverage(
+                        merchantId = viewModel.merchantId,
+                        latlong = addressData.latLong,
+                        timezone = TimeZone.getDefault().id
+                    )
+                }
         }
     }
 
@@ -414,6 +441,7 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
         localCacheModel?.let { cacheModel ->
             context?.let {
                 return ChooseAddressUtils.isLocalizingAddressHasUpdated(
+
                     it,
                     cacheModel
                 )

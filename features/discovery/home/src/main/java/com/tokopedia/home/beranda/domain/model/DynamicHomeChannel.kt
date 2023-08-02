@@ -46,9 +46,6 @@ data class DynamicHomeChannel(
         @SerializedName("grids")
         val grids: Array<Grid> = arrayOf(),
         @Expose
-        @SerializedName("hero")
-        val hero: Array<Hero> = arrayOf(),
-        @Expose
         @SerializedName("type")
         val type: String = "",
         @SerializedName("pageName")
@@ -161,101 +158,6 @@ data class DynamicHomeChannel(
             return list
         }
 
-        fun convertPromoEnhanceDynamicChannelDataLayerForCombination(): List<Any> {
-            val list: MutableList<Any> = ArrayList()
-            if (hero.isNotEmpty()) {
-                list.add(
-                    DataLayer.mapOf(
-                        "id",
-                        hero[0].id,
-                        "name",
-                        promoName,
-                        "creative",
-                        promoName,
-                        "position",
-                        1.toString()
-                    )
-                )
-            }
-
-            for (i in grids.indices) {
-                val grid: Grid = grids[i]
-                list.add(
-                    DataLayer.mapOf(
-                        "id", grid.id,
-                        "name", promoName,
-                        "creative", promoName,
-                        "creative_url", grid.imageUrl,
-                        "position", (i + 2).toString()
-                    )
-                )
-            }
-
-            return list
-        }
-
-        private fun convertPromoEnhanceDynamicSprintLegoDataLayer(grids: Array<Grid>?): List<Any> {
-            val list: MutableList<Any> = ArrayList()
-            if (grids != null) {
-                for (i in grids.indices) {
-                    val grid: Grid = grids[i]
-                    list.add(
-                        DataLayer.mapOf(
-                            "id", grid.id,
-                            "name", grid.name,
-                            "price",
-                            CurrencyFormatHelper.convertRupiahToInt(
-                                grid.price
-                            ).toString(),
-                            "brand", "none / other",
-                            "variant", "none / other",
-                            "list", "/ - p1 - lego product - product - ${grid.recommendationType} - $pageName - " + header.name,
-                            "position", (i + 1).toString(),
-                            "dimension83", if (grid.freeOngkir.isActive) "bebas ongkir" else "none/other",
-                            "dimension84", id,
-                            "dimension96", persoType + "_" + categoryID
-                        )
-                    )
-                }
-            }
-            return list
-        }
-
-        fun getEnhanceClickDynamicChannelHomePage(grid: Grid, position: Int): Map<String, Any> {
-            return DataLayer.mapOf(
-                "event", "promoClick",
-                "eventCategory", "homepage",
-                "eventAction", "curated list banner click",
-                "eventLabel", "${header.name} - ${header.applink}",
-                channelId, id,
-                "ecommerce",
-                DataLayer.mapOf(
-                    "promoClick",
-                    DataLayer.mapOf(
-                        "promotions",
-                        DataLayer.listOf(
-                            DataLayer.mapOf(
-                                "id",
-                                grid.id,
-                                "name",
-                                promoName,
-                                "creative",
-                                grid.attribution,
-                                "position",
-                                position.toString()
-                            )
-                        )
-                    )
-                ),
-                "attribution", getHomeAttribution(position, grid.attribution)
-            )
-        }
-
-        fun getHomeAttribution(position: Int, creativeName: String?): String {
-            if (homeAttribution.isEmpty()) return ""
-            return homeAttribution.replace("$1", position.toString()).replace("$2", if ((creativeName != null)) creativeName else "")
-        }
-
         fun setPosition(position: Int) {
             this.position = position
         }
@@ -263,23 +165,17 @@ data class DynamicHomeChannel(
         fun getPosition() = position
 
         companion object {
-            const val LAYOUT_HERO: String = "hero_4_image"
-            const val LAYOUT_3_IMAGE: String = "3_image"
-            const val LAYOUT_SPRINT: String = "sprint_3_image"
-            const val LAYOUT_SPRINT_LEGO: String = "sprint_lego"
             const val LAYOUT_6_IMAGE: String = "6_image"
             const val LAYOUT_LEGO_3_IMAGE: String = "lego_3_image"
             const val LAYOUT_LEGO_4_IMAGE: String = "lego_4_image"
             const val LAYOUT_LEGO_2_IMAGE: String = "1x2_banner"
-            const val LAYOUT_LEGO_4_AUTO: String = "4_banners_auto"
             const val LAYOUT_TOPADS: String = "topads"
-            const val LAYOUT_SPOTLIGHT: String = "spotlight"
             const val LAYOUT_HOME_WIDGET: String = "home_widget"
-            const val LAYOUT_BANNER_ORGANIC: String = "banner_organic"
             const val LAYOUT_BANNER_CAROUSEL: String = "banner_carousel"
             const val LAYOUT_REVIEW: String = "product_review"
-            const val LAYOUT_PLAY_BANNER: String = "play_widget"
             const val LAYOUT_PLAY_CAROUSEL_BANNER: String = "play_carousel"
+            const val LAYOUT_PLAY_CAROUSEL_NEW_NO_PRODUCT: String = "play_widget_v2"
+            const val LAYOUT_PLAY_CAROUSEL_NEW_WITH_PRODUCT: String = "play_widget_v2_product"
             const val LAYOUT_DEFAULT_ERROR: String = "default_error"
             const val LAYOUT_LIST_CAROUSEL: String = "list_carousel"
             const val LAYOUT_POPULAR_KEYWORD: String = "popular_keyword"
@@ -295,10 +191,9 @@ data class DynamicHomeChannel(
             const val LAYOUT_BANNER_ADS: String = "banner_ads"
             const val LAYOUT_VERTICAL_BANNER_ADS: String = "tdn_vertical_carousel"
             const val LAYOUT_BEST_SELLING: String = "best_selling"
-            const val LAYOUT_CATEGORY_ICON: String = "category_icon"
+            const val LAYOUT_BEST_SELLING_LIST: String = "best_selling_list"
             const val LAYOUT_BANNER_CAROUSEL_V2 = "banner_carousel_v2"
             const val LAYOUT_LEGO_6_AUTO: String = "6_image_auto"
-            const val LAYOUT_QUESTWIDGET = "quest_widget"
             const val LAYOUT_CAMPAIGN_WIDGET: String = "campaign_widget"
             const val LAYOUT_CAMPAIGN_FEATURING: String = "campaign_featuring"
             const val LAYOUT_CM_HOME_TO_DO: String = "home_todo"
@@ -310,36 +205,12 @@ data class DynamicHomeChannel(
             const val LAYOUT_LEGO_4_PRODUCT: String = "lego_4_product"
             const val LAYOUT_TODO_WIDGET_REVAMP: String = "todo_widget_carousel"
             const val LAYOUT_DEALS_WIDGET: String = "content_card"
+            const val LAYOUT_FLASH_SALE_WIDGET: String = "kejar_diskon_carousel"
             const val channelId: String = "channelId"
             const val campaignCodeLabel: String = "campaignCode"
             const val DIVIDER_NO_DIVIDER = 0
         }
     }
-
-    class Hero(
-        @Expose
-        @SerializedName("id")
-        val id: String = "",
-        @Expose
-        @SerializedName("imageUrl")
-        val imageUrl: String = "",
-        @Expose
-        @SerializedName("name")
-        val name: String = "",
-        @Expose
-        @SerializedName("applink")
-        val applink: String = "",
-        @Expose
-        @SerializedName("url")
-        val url: String = "",
-        @SuppressLint("Invalid Data Type")
-        @Expose
-        @SerializedName("price")
-        val price: String = "0",
-        @Expose
-        @SerializedName("attribution")
-        val attribution: String = ""
-    )
 
     data class Grid(
         @Expose
