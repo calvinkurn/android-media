@@ -28,7 +28,7 @@ class DistrictRecommendationMapper @Inject constructor() {
                 cityName = it.cityName
                 provinceId = it.provinceId
                 provinceName = it.provinceName
-                zipCodes = it.zipCode as ArrayList<String>
+                zipCodes = it.zipCode
             }
         } as ArrayList<Address>
     }

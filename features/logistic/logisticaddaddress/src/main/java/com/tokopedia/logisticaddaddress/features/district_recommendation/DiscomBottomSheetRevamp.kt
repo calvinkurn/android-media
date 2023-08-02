@@ -506,13 +506,13 @@ class DiscomBottomSheetRevamp :
         setTitle(getString(R.string.title_post_code))
         isKodePosShown = true
         val districtModel = Address()
-        districtModel.setDistrictId(data.districtId)
-        districtModel.setDistrictName(data.districtName)
-        districtModel.setCityId(data.cityId)
-        districtModel.setCityName(data.cityName)
-        districtModel.setProvinceId(data.provinceId)
-        districtModel.setProvinceName(data.provinceName)
-        districtModel.setZipCodes(arrayListOf(data.postalCode))
+        districtModel.districtId = data.districtId
+        districtModel.districtName = data.districtName
+        districtModel.cityId = data.cityId
+        districtModel.cityName = data.cityName
+        districtModel.provinceId = data.provinceId
+        districtModel.provinceName = data.provinceName
+        districtModel.zipCodes = arrayListOf(data.postalCode)
         discomRevampListener?.onGetDistrict(districtModel)
         setupRvZipCodeChips()
         getDistrict(districtModel)

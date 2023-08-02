@@ -71,7 +71,7 @@ object SaveAddressMapper {
             this.cityId = address.cityId
             this.provinceId = address.provinceId
             this.districtId = address.districtId
-            this.zipCodes = address.zipCodes
+            this.zipCodes = address.zipCodes.toList()
             this.postalCode = postalCode
             this.formattedAddress =
                 "${address.districtName}, ${address.cityName}, ${address.provinceName}"
