@@ -26,7 +26,7 @@ class InfoBottomSheet : BottomSheetUnify(){
     private fun initChildLayout() {
         val contentView = View.inflate(context, com.tokopedia.topads.common.R.layout.topads_common_info_bs, null)
         setChild(contentView)
-        infoDesc = contentView.findViewById(com.tokopedia.topads.common.R.id.infoDesc)
+        infoDesc = contentView.findViewById(R.id.infoDesc)
         image = contentView.findViewById(R.id.image)
 
         showKnob = true
