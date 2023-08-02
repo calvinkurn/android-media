@@ -87,7 +87,9 @@ class FeedFollowProfileViewHolder private constructor() {
 
             /** resume & pause video when user swipe the recommendation (left-right) / content (up-down) */
             if (model.isSelected) {
-                player.start(model.data.videoUrl, isMute = false)
+                if (!player.getExoPlayer().isPlaying) {
+                    player.start(model.data.videoUrl, isMute = false)
+                }
                 followRecommendationListener.onImpressProfile(model.data)
             } else {
                 player.stop()
