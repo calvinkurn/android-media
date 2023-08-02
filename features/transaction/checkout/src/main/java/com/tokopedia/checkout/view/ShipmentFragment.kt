@@ -4316,16 +4316,14 @@ class ShipmentFragment :
                 needUpdateAddOnItem.second?.addOnProduct?.listAddOnProductData?.forEach { addOnExisting ->
                     for (addOnUiModel in addOnProductDataResult.aggregatedData.selectedAddons) {
                         // value 0 from selectedAddons means no changes
-                        if (addOnUiModel.addOnType == addOnExisting.type && addOnUiModel.getSelectedStatus().value > 0) {
-                            addOnExisting.apply {
-                                id = addOnUiModel.id.toLongOrZero()
-                                uniqueId = addOnUiModel.uniqueId
-                                price = addOnUiModel.price.toDouble()
-                                infoLink = addOnUiModel.eduLink
-                                name = addOnUiModel.name
-                                status = addOnUiModel.getSaveAddonSelectedStatus().value
-                                type = addOnUiModel.addOnType
-                            }
+                        addOnExisting.apply {
+                            id = addOnUiModel.id.toLongOrZero()
+                            uniqueId = addOnUiModel.uniqueId
+                            price = addOnUiModel.price.toDouble()
+                            infoLink = addOnUiModel.eduLink
+                            name = addOnUiModel.name
+                            type = addOnUiModel.addOnType
+                            status = addOnUiModel.getSaveAddonSelectedStatus().value
                         }
                     }
                 }
