@@ -160,6 +160,8 @@ dari Feed.</string>
     <string name="feed_cta_almost_sold_label">Segera Habis</string>
     <string name="feed_cta_sold_label">Terjual Habis</string>
     <string name="feed_success_report_video">Video berhasil dilaporkan</string>
+    <string name="feed_bottom_action_comment_label">Ketik komentarmu…</string>
+    <string name="feed_bottom_action_share_label">Bagikan konten</string>
 
     <!-- Follow Recommendation -->
     <string name="feed_load_follow_recommendation_error">Yaah, gagal memuat konten</string>

@@ -9,8 +9,10 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.content.common.comment.model.CountComment
 import com.tokopedia.content.common.comment.usecase.GetCountCommentsUseCase
+import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
 import com.tokopedia.content.common.model.TrackVisitChannelResponse
 import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
+import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.usecase.GetUserReportListUseCase
 import com.tokopedia.content.common.usecase.PostUserReportUseCase
 import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
@@ -107,9 +109,10 @@ class FeedPostViewModelTest {
     private val trackVisitChannelUseCase: TrackVisitChannelBroadcasterUseCase = mockk()
     private val trackReportViewerUseCase: BroadcasterReportTrackViewerUseCase = mockk()
     private val getReportListUseCase: GetUserReportListUseCase = mockk()
-    private val postReportUseCase : PostUserReportUseCase = mockk()
+    private val postReportUseCase: PostUserReportUseCase = mockk()
     private val feedXRecomWidgetUseCase: FeedXRecomWidgetUseCase = mockk()
     private val affiliateCookieHelper: AffiliateCookieHelper = mockk()
+    private val submitReportUseCase: FeedComplaintSubmitReportUseCase = mockk()
     private val uiEventManager = UiEventManager<FeedPostEvent>()
 
     private lateinit var viewModel: FeedPostViewModel
@@ -117,28 +120,29 @@ class FeedPostViewModelTest {
     @Before
     fun setUp() {
         viewModel = FeedPostViewModel(
-            feedXHomeUseCase,
-            atcUseCase,
-            likeContentUseCase,
-            deletePostUseCase,
-            userSession,
-            shopFollowUseCase,
-            userFollowUseCase,
-            userUnfollowUseCase,
-            campaignReminderUseCase,
-            checkCampaignReminderUseCase,
-            topAdsHeadlineUseCase,
-            mvcSummaryUseCase,
-            topAdsAddressHelper,
-            getCountCommentsUseCase,
-            affiliateCookieHelper,
-            trackVisitChannelUseCase,
-            trackReportViewerUseCase,
-            getReportListUseCase,
-            postReportUseCase,
-            feedXRecomWidgetUseCase,
-            uiEventManager,
-            testDispatcher
+            feedXHomeUseCase = feedXHomeUseCase,
+            addToCartUseCase = atcUseCase,
+            likeContentUseCase = likeContentUseCase,
+            deletePostUseCase = deletePostUseCase,
+            userSession = userSession,
+            shopFollowUseCase = shopFollowUseCase,
+            userFollowUseCase = userFollowUseCase,
+            userUnfollowUseCase = userUnfollowUseCase,
+            setCampaignReminderUseCase = campaignReminderUseCase,
+            checkCampaignReminderUseCase = checkCampaignReminderUseCase,
+            topAdsHeadlineUseCase = topAdsHeadlineUseCase,
+            mvcSummaryUseCase = mvcSummaryUseCase,
+            topAdsAddressHelper = topAdsAddressHelper,
+            getCountCommentsUseCase = getCountCommentsUseCase,
+            affiliateCookieHelper = affiliateCookieHelper,
+            trackVisitChannelUseCase = trackVisitChannelUseCase,
+            trackReportTrackViewerUseCase = trackReportViewerUseCase,
+            submitReportUseCase = submitReportUseCase,
+            getReportUseCase = getReportListUseCase,
+            postReportUseCase = postReportUseCase,
+            feedXRecomWidgetUseCase = feedXRecomWidgetUseCase,
+            uiEventManager = uiEventManager,
+            dispatchers = testDispatcher
         )
     }
 
@@ -335,13 +339,13 @@ class FeedPostViewModelTest {
                 "dummy-shop-id",
                 "dummy Name"
             ),
-            title ="dummy title",
+            title = "dummy title",
             imageUrl = "dummy image url",
             price = FeedTaggedProductUiModel.NormalPrice(
                 "Rp1.000.000",
                 1000000.0
             ),
-            appLink ="dummy applink",
+            appLink = "dummy applink",
             campaign = FeedTaggedProductUiModel.Campaign(
                 FeedTaggedProductUiModel.CampaignType.NoCampaign,
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
@@ -374,13 +378,13 @@ class FeedPostViewModelTest {
                 "dummy-shop-id",
                 "dummy Name"
             ),
-            title ="dummy title",
+            title = "dummy title",
             imageUrl = "dummy image url",
             price = FeedTaggedProductUiModel.NormalPrice(
                 "Rp1.000.000",
                 1000000.0
             ),
-            appLink ="dummy applink",
+            appLink = "dummy applink",
             campaign = FeedTaggedProductUiModel.Campaign(
                 FeedTaggedProductUiModel.CampaignType.NoCampaign,
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
@@ -424,13 +428,13 @@ class FeedPostViewModelTest {
                 "dummy-shop-id",
                 "dummy Name"
             ),
-            title ="dummy title",
+            title = "dummy title",
             imageUrl = "dummy image url",
             price = FeedTaggedProductUiModel.NormalPrice(
                 "Rp1.000.000",
                 1000000.0
             ),
-            appLink ="dummy applink",
+            appLink = "dummy applink",
             campaign = FeedTaggedProductUiModel.Campaign(
                 FeedTaggedProductUiModel.CampaignType.NoCampaign,
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
@@ -479,13 +483,13 @@ class FeedPostViewModelTest {
                 "dummy-shop-id",
                 "dummy Name"
             ),
-            title ="dummy title",
+            title = "dummy title",
             imageUrl = "dummy image url",
             price = FeedTaggedProductUiModel.NormalPrice(
                 "Rp1.000.000",
                 1000000.0
             ),
-            appLink ="dummy applink",
+            appLink = "dummy applink",
             campaign = FeedTaggedProductUiModel.Campaign(
                 FeedTaggedProductUiModel.CampaignType.NoCampaign,
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
@@ -518,13 +522,13 @@ class FeedPostViewModelTest {
                 "dummy-shop-id",
                 "dummy Name"
             ),
-            title ="dummy title",
+            title = "dummy title",
             imageUrl = "dummy image url",
             price = FeedTaggedProductUiModel.NormalPrice(
                 "Rp1.000.000",
                 1000000.0
             ),
-            appLink ="dummy applink",
+            appLink = "dummy applink",
             campaign = FeedTaggedProductUiModel.Campaign(
                 FeedTaggedProductUiModel.CampaignType.NoCampaign,
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
@@ -568,13 +572,13 @@ class FeedPostViewModelTest {
                 "dummy-shop-id",
                 "dummy Name"
             ),
-            title ="dummy title",
+            title = "dummy title",
             imageUrl = "dummy image url",
             price = FeedTaggedProductUiModel.NormalPrice(
                 "Rp1.000.000",
                 1000000.0
             ),
-            appLink ="dummy applink",
+            appLink = "dummy applink",
             campaign = FeedTaggedProductUiModel.Campaign(
                 FeedTaggedProductUiModel.CampaignType.NoCampaign,
                 FeedTaggedProductUiModel.CampaignStatus.Unknown,
@@ -1049,6 +1053,60 @@ class FeedPostViewModelTest {
         )
 
         viewModel.trackVisitChannel(getDummyFeedModel().items[1] as FeedCardVideoContentModel)
+    }
+
+    @Test
+    fun onReportContent_whenFailUsecase_shouldChangeValueToFail() {
+        // given
+        coEvery { submitReportUseCase(any()) } throws MessageErrorException("Failed to fetch")
+
+        // when
+        viewModel.reportContent(FeedComplaintSubmitReportUseCase.Param("", "", "", ""))
+
+        // then
+        val response = viewModel.reportResponse.value
+        assert(response is Fail)
+        assert((response as Fail).throwable is MessageErrorException)
+        assert(response.throwable.message == "Failed to fetch")
+    }
+
+    @Test
+    fun onReportContent_whenNotSuccess_shouldChangeValueToFail() {
+        // given
+        val dummyResponse = FeedComplaintSubmitReportResponse(
+            data = FeedComplaintSubmitReportResponse.FeedComplaintSubmitReport(
+                success = false
+            )
+        )
+        coEvery { submitReportUseCase(any()) } returns dummyResponse
+
+        // when
+        viewModel.reportContent(FeedComplaintSubmitReportUseCase.Param("", "", "", ""))
+
+        // then
+        val response = viewModel.reportResponse.value
+        assert(response is Fail)
+        assert((response as Fail).throwable is MessageErrorException)
+        assert(response.throwable.message == "Error in Reporting")
+    }
+
+    @Test
+    fun onReportContent_whenSuccess_shouldChangeValueToSuccess() {
+        // given
+        val dummyResponse = FeedComplaintSubmitReportResponse(
+            data = FeedComplaintSubmitReportResponse.FeedComplaintSubmitReport(
+                success = true
+            )
+        )
+        coEvery { submitReportUseCase(any()) } returns dummyResponse
+
+        // when
+        viewModel.reportContent(FeedComplaintSubmitReportUseCase.Param("", "", "", ""))
+
+        // then
+        val response = viewModel.reportResponse.value
+        assert(response is Success)
+        assert((response as Success).data == dummyResponse)
     }
 
     private fun provideDefaultFeedPostMockData() {
