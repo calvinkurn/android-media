@@ -631,9 +631,8 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
 
     private fun animateBadge() {
         val badgeDrawable = if (isFallbackCase) {
-//            CelebrationAnalytics.sendImpressionFallbackBadge(medaliSlug)
             changeBadgeSize()
-            ResourcesCompat.getDrawable(resources, R.drawable.fallback_badge, null)
+            ResourcesCompat.getDrawable(resources, com.tokopedia.scp_rewards_common.R.drawable.fallback_badge, null)
         } else {
             badge_image
         }
