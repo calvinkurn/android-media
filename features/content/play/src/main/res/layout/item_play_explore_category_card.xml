@@ -12,7 +12,7 @@
         android:layout_height="@dimen/content_common_space_86"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/gl_play_cat_rank"
+        app:layout_constraintStart_toEndOf="@id/tv_play_category_rank"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
 
@@ -20,13 +20,14 @@
         android:id="@+id/layout_live_badge"
         layout="@layout/layout_live_badge"
         android:layout_width="wrap_content"
-        android:layout_height="20dp"
-        android:layout_marginStart="@dimen/unify_space_4"
+        android:layout_height="@dimen/play_dp_20"
         android:layout_marginTop="@dimen/unify_space_4"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="@id/iv_category_video"
+        android:layout_marginStart="@dimen/unify_space_4"
         app:layout_constraintTop_toTopOf="@id/iv_category_video"
-        tools:visibility="visible" />
+        app:layout_constraintStart_toStartOf="@id/iv_category_video"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_category_video_title"
@@ -98,16 +99,13 @@
         android:id="@+id/tv_play_category_rank"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toStartOf="@id/gl_play_cat_rank"
+        android:paddingStart="0dp"
+        android:paddingEnd="@dimen/unify_space_8"
+        app:layout_constraintEnd_toStartOf="@id/iv_category_video"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/iv_category_video"
         app:typographyType="display_1"
         app:typographyWeight="bold"
         tools:text="1." />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/gl_play_cat_rank"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.05" />
 </androidx.constraintlayout.widget.ConstraintLayout>
