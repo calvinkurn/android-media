@@ -4,8 +4,4 @@
 
     <string name="picker_video_duration_max_limit_sec">detik</string>
     <string name="picker_video_duration_max_limit_min">menit</string>
-
-    <!-- Universal Media Editor -->
-    <string name="universal_editor_toolbar_title">Edit Media</string>
-    <string name="universal_editor_toolbar_action_button">Simpan</string>
 </resources>

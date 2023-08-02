@@ -13,8 +13,8 @@ data class UniversalEditorParam(
     var paths: List<String> = mutableListOf(),
 
     // Toolbar content
-    var headerTitle: Int = R.string.universal_editor_toolbar_title,
-    var proceedButtonText: Int = R.string.universal_editor_toolbar_action_button,
+    var headerTitle: String = "",
+    var proceedButtonText: String = "",
 
     // Editor tool list
     val tools: @RawValue Map<MediaType, List<Int>> = defaultToolList()
@@ -35,8 +35,8 @@ data class UniversalEditorParam(
      * [setHeaderTitle] for a header title
      * [setActionButtonText] for a action button text
      */
-    fun setHeaderTitle(text: Int) = apply { headerTitle = text }
-    fun setActionButtonText(text: Int) = apply { proceedButtonText = text }
+    fun setHeaderTitle(text: String) = apply { headerTitle = text }
+    fun setActionButtonText(text: String) = apply { proceedButtonText = text }
 }
 
 internal fun defaultToolList() = mapOf(

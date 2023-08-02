@@ -1,11 +1,14 @@
 <resources>
     <string name="app_name">Media Editor</string>
 
+    <!-- Toolbar -->
+    <string name="universal_editor_toolbar_title">Edit Media</string>
+    <string name="universal_editor_toolbar_action_button">Simpan</string>
+    <string name="universal_editor_nav_bar_add_text">Tambah Teks</string>
+
     <!-- Navigation Editor Tool -->
     <string name="universal_editor_nav_tool_text">Teks</string>
     <string name="universal_editor_nav_tool_placement">Atur</string>
     <string name="universal_editor_nav_tool_audio_mute">Mute</string>
     <string name="universal_editor_nav_tool_trim">Trim</string>
-
-    <string name="universal_editor_nav_bar_add_text">Tambah Teks</string>
 </resources>

@@ -137,8 +137,18 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
     private fun setupToolbar(param: UniversalEditorParam) {
         toolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
         toolbar.showContinueButtonAs(true)
-        toolbar.setTitle(getString(param.headerTitle))
-        toolbar.setContinueTitle(getString(param.proceedButtonText))
+        toolbar.setTitle(defaultHeaderTitle(param))
+        toolbar.setContinueTitle(defaultActionButtonText(param))
+    }
+
+    private fun defaultHeaderTitle(param: UniversalEditorParam): String {
+        if (param.headerTitle.isNotEmpty()) return param.headerTitle
+        return getString(R.string.universal_editor_toolbar_title)
+    }
+
+    private fun defaultActionButtonText(param: UniversalEditorParam): String {
+        if (param.proceedButtonText.isNotEmpty()) return param.proceedButtonText
+        return getString(R.string.universal_editor_toolbar_action_button)
     }
 
     private fun fragmentProvider(): EditorFragmentProvider {
