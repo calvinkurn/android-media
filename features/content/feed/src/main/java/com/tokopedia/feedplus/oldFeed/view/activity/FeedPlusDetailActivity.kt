@@ -89,7 +89,7 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
     }
 
     override fun getLayoutRes(): Int {
-        return R.layout.activity_feed_detail
+        return R.layout.activity_feedplus_detail
     }
 
     override fun isShowCloseButton(): Boolean {

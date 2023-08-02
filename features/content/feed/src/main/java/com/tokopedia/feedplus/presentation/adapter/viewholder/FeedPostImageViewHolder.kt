@@ -27,6 +27,7 @@ import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED_CHANGED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloads
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
+import com.tokopedia.feedplus.presentation.adapter.util.animateAlpha
 import com.tokopedia.feedplus.presentation.model.*
 import com.tokopedia.feedplus.presentation.uiview.*
 import com.tokopedia.feedplus.presentation.util.animation.FeedLikeAnimationComponent
@@ -69,7 +70,12 @@ class FeedPostImageViewHolder(
     }
 
     private val authorView = FeedAuthorInfoView(binding.layoutAuthorInfo, listener)
-    private val captionView = FeedCaptionView(binding.tvFeedCaption, binding.layoutFeedCaption, listener, captionViewListener)
+    private val captionView = FeedCaptionView(
+        binding.tvFeedCaption,
+        binding.layoutFeedCaption,
+        listener,
+        captionViewListener
+    )
     private val productButtonView = FeedProductButtonView(binding.productTagButton, listener)
     private val asgcTagsView = FeedAsgcTagsView(binding.rvFeedAsgcTags)
     private val campaignView = FeedCampaignRibbonView(binding.feedCampaignRibbon, listener)
@@ -87,6 +93,23 @@ class FeedPostImageViewHolder(
     private var isInClearView: Boolean = false
 
     private var mData: FeedCardImageContentModel? = null
+
+    private val opacityViewList = listOf(
+        binding.layoutAuthorInfo.root,
+        binding.tvFeedCaption,
+        binding.menuButton,
+        binding.shareButton,
+        binding.overlayTop.root,
+        binding.overlayBottom.root,
+        binding.overlayRight.root,
+        binding.btnDisableClearMode,
+        binding.postLikeButton.root,
+        binding.feedCommentButton.root,
+        binding.productTagView.root,
+        binding.productTagButton.root,
+        binding.rvFeedAsgcTags,
+        binding.feedCampaignRibbon.root,
+    )
 
     init {
         binding.root.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
@@ -252,12 +275,14 @@ class FeedPostImageViewHolder(
 
     fun bind(item: FeedContentAdapter.Item, payloads: MutableList<Any>) {
         val selectedPayload = if (item.isSelected) FEED_POST_SELECTED else FEED_POST_NOT_SELECTED
-        val feedPayloads = payloads.firstOrNull { it is FeedViewHolderPayloads } as? FeedViewHolderPayloads
-        val newPayloads = if (feedPayloads != null && feedPayloads.payloads.contains(FEED_POST_SELECTED_CHANGED)) {
-            payloads.toMutableList().also { it.add(selectedPayload) }
-        } else {
-            payloads
-        }
+        val feedPayloads =
+            payloads.firstOrNull { it is FeedViewHolderPayloads } as? FeedViewHolderPayloads
+        val newPayloads =
+            if (feedPayloads != null && feedPayloads.payloads.contains(FEED_POST_SELECTED_CHANGED)) {
+                payloads.toMutableList().also { it.add(selectedPayload) }
+            } else {
+                payloads
+            }
         bind(item.data as FeedCardImageContentModel, newPayloads)
     }
 
@@ -293,6 +318,14 @@ class FeedPostImageViewHolder(
 
             if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_FOLLOW_CHANGED)) {
                 bindAuthor(element)
+            }
+
+            if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_SCROLLING)) {
+                onScrolling()
+            }
+
+            if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_DONE_SCROLL)) {
+                onDoneScroll()
             }
 
             payloads.forEach { payload ->
@@ -560,6 +593,18 @@ class FeedPostImageViewHolder(
         productButtonView.showIfPossible()
     }
 
+    private fun onScrolling() {
+        opacityViewList.forEach {
+            it.animateAlpha(SCROLL_OPACITY, OPACITY_ANIMATE_DURATION)
+        }
+    }
+
+    private fun onDoneScroll() {
+        opacityViewList.forEach {
+            it.alpha = FULL_OPACITY
+        }
+    }
+
     private fun runAutoSwipe() {
         job?.cancel()
         job = scope.launch {
@@ -599,6 +644,10 @@ class FeedPostImageViewHolder(
     companion object {
         const val PRODUCT_COUNT_ZERO = 0
         const val PRODUCT_COUNT_ONE = 1
+
+        const val SCROLL_OPACITY = .3f
+        const val FULL_OPACITY = 1f
+        const val OPACITY_ANIMATE_DURATION = 300L
 
         private const val MINIMUM_DISTANCE_SWIPE = 100
 
