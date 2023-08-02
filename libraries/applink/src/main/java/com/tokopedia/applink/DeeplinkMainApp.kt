@@ -976,9 +976,13 @@ object DeeplinkMainApp {
         ),
         "stories" to mutableListOf(
             DLP.matchPattern(
+                "shop/{shop_id}",
+                DeeplinkMapperContent::getRegisteredNavigation
+            ),
+            DLP.matchPattern(
                 "shop/{shop_id}/{stories_id}",
                 DeeplinkMapperContent::getRegisteredNavigation
-            )
+            ),
         ),
         "talk" to mutableListOf(
             DLP.goTo(DeeplinkMapper::getRegisteredNavigationTalk)
