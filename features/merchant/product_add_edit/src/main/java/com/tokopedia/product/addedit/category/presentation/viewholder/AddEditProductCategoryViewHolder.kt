@@ -94,7 +94,7 @@ class AddEditProductCategoryViewHolder(
                 tvCategoryNameParent?.setTextColor(
                     ContextCompat.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950
                     )
                 )
                 rvLevelCategory?.hide()
@@ -110,7 +110,7 @@ class AddEditProductCategoryViewHolder(
                     com.tokopedia.unifyprinciples.R.color.Unify_NN900)
             } else {
                 tvCategoryNameParent?.setTextColor(ContextCompat.getColor(context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500))
                 rvLevelCategory?.show()
                 spacingLevelCategory?.show()
                 resultCategories.add(category)

@@ -174,7 +174,7 @@ class RechargeBUWidgetProductCardViewHolder(
                         throwable.printStackTrace()
                         ContextCompat.getColor(
                             context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_R600
+                            com.tokopedia.unifyprinciples.R.color.Unify_RN500
                         )
                     }
                     setTextColor(color)

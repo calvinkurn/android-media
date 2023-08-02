@@ -18,6 +18,7 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationAssetStatus
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.util.*
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -320,12 +321,14 @@ class PlayBroadcastBeautificationViewModelTest {
         )
 
         robot.use {
-            val state = it.recordState {
+            val (state, events) = it.recordStateAndEvents {
                 getAccountConfiguration()
                 it.getViewModel().submitAction(PlayBroadcastAction.RemoveBeautificationMenu)
             }
 
             assert(state.menuList.firstOrNull { item -> item.menu == DynamicPreparationMenu.Menu.FaceFilter } == null)
+            state.beautificationConfig.assertEqualTo(BeautificationConfigUiModel.Empty)
+            events.last().assertEvent(PlayBroadcastEvent.InitializeBroadcaster(BroadcastingConfigUiModel()))
         }
     }
 

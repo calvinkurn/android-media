@@ -130,6 +130,7 @@ object SomGetOrderDetailResponseMapper {
             customer.name,
             deadline.text,
             deadline.color,
+            deadline.style,
             listLabelInfo,
             orderId,
             shipment.awbUploadUrl,

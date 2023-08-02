@@ -99,4 +99,30 @@ class RegisterProgressiveUseCaseTest {
         assertEquals(status, result.status)
         assertEquals(rejectionReason, result.rejectionReason)
     }
+
+    @Test
+    fun `get register progressive then return exhausted`() = runBlocking {
+        val parameter = RegisterProgressiveParam()
+        val message = "KYC_CHALLENGE_CREATION_QUOTA_EXCEEDED"
+        val cooldownTimeInSeconds = "3600"
+        val maximumAttemptsAllowed = "3"
+        val response = createSuccessResponse(
+            RegisterProgressiveResponse(
+                RegisterProgressiveKYC(
+                    data = RegisterProgressiveKYCData(
+                        message = message,
+                        cooldownTimeInSeconds = cooldownTimeInSeconds,
+                        maximumAttemptsAllowed = maximumAttemptsAllowed
+                    )
+                )
+            )
+        )
+
+        coEvery { repository.response(any(), any()) } returns response
+
+        val result = useCase(parameter)
+        assertTrue(result is RegisterProgressiveResult.Exhausted)
+        assertEquals(cooldownTimeInSeconds, result.cooldownTimeInSeconds)
+        assertEquals(maximumAttemptsAllowed, result.maximumAttemptsAllowed)
+    }
 }

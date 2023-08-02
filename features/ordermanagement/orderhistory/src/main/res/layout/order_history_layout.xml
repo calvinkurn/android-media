@@ -33,22 +33,22 @@
                 <com.tokopedia.unifyprinciples.Typography
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/Unify_N0"
+                    android:background="@color/Unify_NN0"
                     android:padding="20dp"
-                    android:textColor="@color/Unify_N300"
+                    android:textColor="@color/Unify_NN500"
                     android:text="@string/order_management_history_order_status"
                     app:typographyType="heading_3" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/Unify_N100" />
+                    android:background="@color/Unify_NN200" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/order_history_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/Unify_N0"
+                    android:background="@color/Unify_NN0"
                     android:padding="10dp" />
 
             </LinearLayout>

@@ -68,6 +68,7 @@ import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
@@ -135,9 +136,9 @@ class TopPayActivity :
             window?.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                window?.statusBarColor = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500, null)
+                window?.statusBarColor = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500, null)
             } else {
-                window?.statusBarColor = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                window?.statusBarColor = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
             }
         }
         initInjector()
@@ -256,14 +257,8 @@ class TopPayActivity :
         callbackPaymentCanceled()
     }
 
-    fun navigateToActivity(goToIntent: Intent) {
-        startActivityForResult(goToIntent, REQUEST_CODE_GOPAY_TOP_UP)
-    }
-
-    fun navigateToActivityAndFinish(goToIntent: Intent) {
-        startActivity(goToIntent)
-        setResult(Activity.RESULT_OK)
-        finish()
+    fun navigateAutoReload(goToIntent: Intent) {
+        startActivityForResult(goToIntent, REQURST_CODE_AUTO_RELOAD)
     }
 
     fun callbackPaymentCanceled() {
@@ -459,7 +454,7 @@ class TopPayActivity :
             } else {
                 hideFullLoading()
             }
-        } else if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_GOPAY_TOP_UP) {
+        } else if (requestCode == REQURST_CODE_AUTO_RELOAD) {
             if (reloadUrl.contains(getBaseUrlDomainPayment())) {
                 reloadPayment()
             }
@@ -641,11 +636,11 @@ class TopPayActivity :
                     val intent = RouteManager.getIntent(this@TopPayActivity, url).apply {
                         data = Uri.parse(url)
                     }
-                    if (isGoPayTopUpLink(url)) {
+                    if (isURLReloadParamExist(url)) {
                         reloadUrl = scroogeWebView?.url.orEmpty()
-                        navigateToActivity(intent)
+                        navigateAutoReload(intent)
                     } else {
-                        navigateToActivityAndFinish(intent)
+                        startActivity(intent)
                     }
                     return true
                 }
@@ -883,7 +878,14 @@ class TopPayActivity :
         return url.contains(LINK_AJA_APP_LINK)
     }
 
-    private fun isGoPayTopUpLink(url: String) = url.contains(GOPAY_TOP_UP)
+    private fun isURLReloadParamExist(url: String): Boolean {
+        val decodedURL = try {
+            URLDecoder.decode(url, CHARSET_UTF_8)
+        } catch (e: Exception) {
+            ""
+        }
+        return decodedURL.contains(PAYMENT_RELOAD_IS_TRUE)
+    }
 
     private fun redirectToLinkAjaApp(url: String) {
         try {
@@ -895,7 +897,9 @@ class TopPayActivity :
             if (isIntentSafe) {
                 startActivity(linkAjaIntent)
             }
-        } catch (e: ActivityNotFoundException) { }
+        } catch (e: ActivityNotFoundException) {
+            Timber.e(e)
+        }
     }
 
     companion object {
@@ -930,7 +934,9 @@ class TopPayActivity :
         private const val CUST_HEADER = "header_text"
 
         private const val REQUEST_CODE_LINK_ACCOUNT = 101
-        private const val REQUEST_CODE_GOPAY_TOP_UP = 102
+        private const val REQURST_CODE_AUTO_RELOAD = 103
+
+        private const val PAYMENT_RELOAD_IS_TRUE = "payment_reload=true"
 
         @JvmStatic
         fun createInstance(context: Context, paymentPassData: PaymentPassData?): Intent {

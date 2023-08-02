@@ -19,11 +19,15 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.notification.common'
+    testNamespace 'com.tokopedia.notification.common.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation projectOrAar(rootProject.ext.libraries.utils)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.logger)
 }
 

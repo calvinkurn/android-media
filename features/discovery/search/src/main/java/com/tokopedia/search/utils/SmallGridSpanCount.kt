@@ -15,7 +15,7 @@ class SmallGridSpanCount @Inject constructor(@ApplicationContext private val con
     }
 
     operator fun invoke(): Int {
-        val context = context ?: return COMPACT_SCREEN_SMALL_GRID_LAYOUT_SPAN_COUNT
+        val context = context ?: return COMPACT_SCREEN_SMALL_GRI`D_LAYOUT_SPAN_COUNT
 
         val screenDensity = context.resources.displayMetrics.density
         val screenWidthInDp = DeviceScreenInfo.getScreenWidth(context) / screenDensity

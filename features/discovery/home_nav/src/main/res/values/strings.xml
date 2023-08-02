@@ -2,6 +2,7 @@
     <string name="internal_scheme" translatable="false">tokopedia-android-internal</string>
 
     <string name="main_nav_args_source_key">pageSource</string>
+    <string name="main_nav_args_source_path_key">pageSourcePath</string>
 
     <string name="content_desc_review">review star</string>
 

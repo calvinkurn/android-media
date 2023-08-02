@@ -164,13 +164,12 @@ class TokoNowSearchViewModel @Inject constructor (
 
     override fun createProductAdsParam(): GetProductAdsParam {
         val query = queryParamMutable[SearchApiConst.Q].orEmpty()
-        val warehouseIds = AddressMapper.mapToWarehouseIds(chooseAddressData)
 
         return GetProductAdsParam(
             query = query,
-            warehouseIds = warehouseIds,
             src = GetProductAdsParam.SRC_SEARCH_TOKONOW,
-            userId = userSession.userId
+            userId = userSession.userId,
+            addressData = chooseAddressData
         )
     }
 

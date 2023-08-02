@@ -43,7 +43,7 @@ class FilterMenu : BottomSheetUnify() {
     private fun changeCloseButtonColour() {
         context?.let { ctx ->
             val color =
-                MethodChecker.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_N400)
+                MethodChecker.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_NN600)
             bottomSheetClose.drawable?.apply {
                 mutate()
                 setColorFilter(color, PorterDuff.Mode.SRC_ATOP)

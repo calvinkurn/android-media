@@ -17,7 +17,7 @@
             android:layout_marginBottom="@dimen/layout_lvl2"
             android:layout_weight="1"
             android:text="@string/flight_search_filter_ticket_price_label"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:typographyType="heading_4" />
 
         <com.tokopedia.iconunify.IconUnify
@@ -88,6 +88,6 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/flight_dp_1"
         android:layout_marginTop="@dimen/layout_lvl2"
-        android:background="@color/Unify_N75" />
+        android:background="@color/Unify_NN50" />
 
 </LinearLayout>

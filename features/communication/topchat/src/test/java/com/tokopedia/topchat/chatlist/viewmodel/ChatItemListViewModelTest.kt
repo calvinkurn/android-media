@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.chatlist.viewmodel
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
@@ -25,6 +24,7 @@ import com.tokopedia.topchat.chatlist.domain.pojo.operational_insight.ShopChatMe
 import com.tokopedia.topchat.chatlist.domain.pojo.whitelist.ChatWhitelistFeature
 import com.tokopedia.topchat.chatlist.domain.pojo.whitelist.ChatWhitelistFeatureResponse
 import com.tokopedia.topchat.chatlist.domain.usecase.ChatBanedSellerUseCase
+import com.tokopedia.topchat.chatlist.domain.usecase.GetChatBlastSellerMetaDataUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatListMessageUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatListTickerUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatWhitelistFeature
@@ -34,15 +34,22 @@ import com.tokopedia.topchat.chatlist.domain.usecase.MutationUnpinChatUseCase
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel.Companion.BUBBLE_TICKER_PREF_NAME
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel.Companion.OPERATIONAL_INSIGHT_NEXT_MONDAY
+import com.tokopedia.topchat.chatlist.view.widget.BroadcastButtonLayout.Companion.BROADCAST_FAB_LABEL_PREF_NAME
 import com.tokopedia.topchat.chatroom.view.uimodel.ReplyParcelableModel
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
+import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.util.Utils
+import com.tokopedia.unit.test.TestUtils
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
+import io.mockk.impl.annotations.RelaxedMockK
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
@@ -52,11 +59,14 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.lang.reflect.Field
-import java.lang.reflect.Modifier
 
 class ChatItemListViewModelTest {
 
     @get:Rule val rule = InstantTaskExecutorRule()
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @get:Rule
+    val coroutineTestRule = UnconfinedTestRule()
 
     private val repository: GraphqlRepository = mockk(relaxed = true)
 
@@ -70,7 +80,12 @@ class ChatItemListViewModelTest {
     private val moveChatToTrashUseCase: MutationMoveChatToTrashUseCase = mockk(relaxed = true)
     private val operationalInsightUseCase: GetOperationalInsightUseCase = mockk(relaxed = true)
     private val getChatListTickerUseCase: GetChatListTickerUseCase = mockk(relaxed = true)
-    private val sharedPref: SharedPreferences = mockk(relaxed = true)
+
+    @RelaxedMockK
+    lateinit var getChatBlastSellerMetaDataUseCase: GetChatBlastSellerMetaDataUseCase
+
+    @RelaxedMockK
+    lateinit var cacheManager: TopchatCacheManager
 
     private val mutateChatListObserver: Observer<Result<ChatListPojo>> = mockk(relaxed = true)
     private val deleteChatObserver: Observer<Result<ChatDelete>> = mockk(relaxed = true)
@@ -83,6 +98,7 @@ class ChatItemListViewModelTest {
     private lateinit var viewModel: ChatItemListViewModel
 
     @Before fun setUp() {
+        MockKAnnotations.init(this)
         viewModel = ChatItemListViewModel(
             repository,
             chatWhitelistFeature,
@@ -94,7 +110,8 @@ class ChatItemListViewModelTest {
             moveChatToTrashUseCase,
             operationalInsightUseCase,
             getChatListTickerUseCase,
-            sharedPref,
+            getChatBlastSellerMetaDataUseCase,
+            cacheManager,
             userSession,
             CoroutineTestDispatchersProvider
         )
@@ -746,14 +763,10 @@ class ChatItemListViewModelTest {
         val expectedData = BlastSellerMetaDataResponse(
             ChatBlastSellerMetadata(urlBroadcast = testUrlBroadcast)
         )
-        val expectedResponse = GraphqlResponse(
-            mapOf(Pair(BlastSellerMetaDataResponse::class.java, expectedData)),
-            mapOf(),
-            false
-        )
         coEvery {
-            repository.response(any(), any())
-        } returns expectedResponse
+            getChatBlastSellerMetaDataUseCase(Unit)
+        } returns flowOf(expectedData)
+
         every {
             userSession.isShopOwner
         } returns true
@@ -778,14 +791,9 @@ class ChatItemListViewModelTest {
     fun should_get_data_when_load_success_get_chat_blast_seller_metadata_but_no_access() {
         // Given
         val expectedData = BlastSellerMetaDataResponse()
-        val expectedResponse = GraphqlResponse(
-            mapOf(Pair(BlastSellerMetaDataResponse::class.java, expectedData)),
-            mapOf(),
-            false
-        )
         coEvery {
-            repository.response(any(), any())
-        } returns expectedResponse
+            getChatBlastSellerMetaDataUseCase(Unit)
+        } returns flowOf(expectedData)
 
         // When
         viewModel.loadChatBlastSellerMetaData()
@@ -806,7 +814,7 @@ class ChatItemListViewModelTest {
         // Given
         val expectedError = Throwable("Oops!")
         coEvery {
-            repository.response(any(), any())
+            getChatBlastSellerMetaDataUseCase(Unit)
         } throws expectedError
 
         // When
@@ -985,7 +993,7 @@ class ChatItemListViewModelTest {
             operationalInsightUseCase(any())
         } returns expectedResponse
         every {
-            sharedPref.getLong(any(), any())
+            cacheManager.getLongCache(any(), any())
         } returns 0
 
         // When
@@ -1005,7 +1013,7 @@ class ChatItemListViewModelTest {
             operationalInsightUseCase(any())
         } returns expectedResponse
         every {
-            sharedPref.getLong(any(), any())
+            cacheManager.getLongCache(any(), any())
         } returns Long.MAX_VALUE
 
         // When
@@ -1127,7 +1135,7 @@ class ChatItemListViewModelTest {
         mockkObject(Utils)
         val expectedTimeMillis: Long = 1
         every {
-            sharedPref.getLong(any(), any())
+            cacheManager.getLongCache(any(), any())
         } returns expectedTimeMillis
         every {
             Utils.getNextParticularDay(any())
@@ -1135,7 +1143,7 @@ class ChatItemListViewModelTest {
 
         // When
         viewModel.saveNextMondayDate()
-        val result = sharedPref.getLong(OPERATIONAL_INSIGHT_NEXT_MONDAY, 0)
+        val result = cacheManager.getLongCache(OPERATIONAL_INSIGHT_NEXT_MONDAY, 0)
 
         // Then
         assertEquals(
@@ -1149,7 +1157,7 @@ class ChatItemListViewModelTest {
         // Given
         setFinalStatic(Build.VERSION::class.java.getField(SDK_INT), 30)
         every {
-            sharedPref.getBoolean(any(), any())
+            cacheManager.getPreviousState(any(), any())
         } returns true
 
         // When
@@ -1164,7 +1172,7 @@ class ChatItemListViewModelTest {
         // Given
         setFinalStatic(Build.VERSION::class.java.getField(SDK_INT), 29)
         every {
-            sharedPref.getBoolean(any(), any())
+            cacheManager.getPreviousState(any(), any())
         } returns true
 
         // When
@@ -1179,7 +1187,7 @@ class ChatItemListViewModelTest {
         // Given
         setFinalStatic(Build.VERSION::class.java.getField(SDK_INT), 30)
         every {
-            sharedPref.getBoolean(any(), any())
+            cacheManager.getPreviousState(any(), any())
         } returns false
 
         // When
@@ -1194,7 +1202,7 @@ class ChatItemListViewModelTest {
         // Given
         setFinalStatic(Build.VERSION::class.java.getField(SDK_INT), 29)
         every {
-            sharedPref.getBoolean(any(), any())
+            cacheManager.getPreviousState(any(), any())
         } returns false
 
         // When
@@ -1209,27 +1217,53 @@ class ChatItemListViewModelTest {
         // Given
         setFinalStatic(Build.VERSION::class.java.getField(SDK_INT), 30)
         every {
-            sharedPref.getBoolean(any(), any())
+            cacheManager.getPreviousState(any(), any())
         } returns false
 
         // When
-        viewModel.saveTickerPref(BUBBLE_TICKER_PREF_NAME)
+        viewModel.saveBooleanCache(BUBBLE_TICKER_PREF_NAME, false)
         val result = viewModel.shouldShowBubbleTicker()
 
         // Then
         assertEquals(result, false)
     }
 
+    @Test
+    fun should_show_broadcast_fab_new_label_when_cache_true() {
+        // Given
+        every {
+            cacheManager.getPreviousState(any(), any())
+        } returns true
+
+        // When
+        val result = viewModel.getBooleanCache("${BROADCAST_FAB_LABEL_PREF_NAME}_${userSession.userId}",)
+
+        // Then
+        assertEquals(result, true)
+    }
+
+    @Test
+    fun test_save_broadcast_fab() {
+        // Given
+        every {
+            cacheManager.getPreviousState(any(), any())
+        } returns true
+
+        // When
+        viewModel.saveBooleanCache(
+            "${BROADCAST_FAB_LABEL_PREF_NAME}_${userSession.userId}",
+            true
+        )
+        val result = viewModel.getBooleanCache("${BROADCAST_FAB_LABEL_PREF_NAME}_${userSession.userId}",)
+
+        // Then
+        assertEquals(result, true)
+    }
+
     // Mock the OS Build Version
     @Throws(Exception::class)
     private fun setFinalStatic(field: Field, newValue: Any) {
-        field.isAccessible = true
-
-        val modifiersField = Field::class.java.getDeclaredField("modifiers")
-        modifiersField.isAccessible = true
-        modifiersField.setInt(field, field.modifiers and Modifier.FINAL.inv())
-
-        field.set(null, newValue)
+        TestUtils.setFinalStatic(field, newValue)
     }
 
     @After

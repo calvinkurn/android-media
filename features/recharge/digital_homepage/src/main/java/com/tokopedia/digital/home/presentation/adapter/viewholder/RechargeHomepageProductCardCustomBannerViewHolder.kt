@@ -131,7 +131,7 @@ class RechargeHomepageProductCardCustomBannerViewHolder(
             try {
                 if (section.label1.isNotEmpty()) parallaxBackground.setBackgroundColor(Color.parseColor(section.label1))
             } catch (e: IllegalArgumentException) {
-                parallaxBackground.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                parallaxBackground.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
             }
         }
     }

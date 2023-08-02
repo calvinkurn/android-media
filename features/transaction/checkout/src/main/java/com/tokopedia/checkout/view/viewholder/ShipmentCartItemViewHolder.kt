@@ -125,7 +125,7 @@ class ShipmentCartItemViewHolder(
                 productInfo.setTextColor(
                     ContextCompat.getColor(
                         itemView.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
                     )
                 )
                 productInfo.setType(SMALL)
@@ -225,6 +225,7 @@ class ShipmentCartItemViewHolder(
             binding.textItemPerProduct.text = CurrencyFormatUtil
                 .convertPriceValueToIdrFormat(cartItem.protectionPricePerProduct.toLong(), false)
                 .removeDecimalSuffix()
+            binding.checkboxPpp.setOnCheckedChangeListener { _, _ -> }
             if (cartItem.isProtectionCheckboxDisabled) {
                 binding.checkboxPpp.isEnabled = false
                 binding.checkboxPpp.isChecked = true
@@ -316,7 +317,7 @@ class ShipmentCartItemViewHolder(
                 ImageHandler.loadImage2(
                     binding.imageBundle,
                     cartItemModel.bundleIconUrl,
-                    com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder
+                    com.tokopedia.utils.R.drawable.ic_loading_placeholder
                 )
             }
 

@@ -90,7 +90,7 @@ import javax.inject.Inject
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class TokoFoodPurchaseFragmentOld :
+open class TokoFoodPurchaseFragmentOld :
     BaseMultiFragment(),
     TokoFoodPurchaseActionListener,
     TokoFoodPurchaseToolbarListener,

@@ -263,12 +263,12 @@ class ProductShopCredibilityViewHolder(
         if (shopLastActiveData == context.getString(R.string.shop_online)) {
             shopCredibilityLastActive.setWeight(Typography.BOLD)
             shopCredibilityLastActive.setTextColor(
-                context.getColorChecker(com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                context.getColorChecker(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
             )
         } else {
             shopCredibilityLastActive.setType(Typography.DISPLAY_3)
             shopCredibilityLastActive.setTextColor(
-                context.getColorChecker(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+                context.getColorChecker(com.tokopedia.unifyprinciples.R.color.Unify_NN950_68)
             )
         }
     }

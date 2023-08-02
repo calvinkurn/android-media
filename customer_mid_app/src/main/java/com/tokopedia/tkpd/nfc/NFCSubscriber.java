@@ -106,6 +106,8 @@ public class NFCSubscriber implements Application.ActivityLifecycleCallbacks {
                 nfcAdapter.disableForegroundDispatch(activity);
             } catch (SecurityException e) {
                 FirebaseCrashlytics.getInstance().recordException(e);
+            } catch (IllegalStateException e) {
+                FirebaseCrashlytics.getInstance().recordException(e);
             }
     }
 

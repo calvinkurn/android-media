@@ -47,6 +47,7 @@ import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant.ALL_SHOWCASE_ID
 import com.tokopedia.shop.common.constant.ShopPageConstant.CODE_STATUS_SUCCESS
 import com.tokopedia.shop.common.constant.ShopPageConstant.RequestParamValue.PAGE_NAME_SHOP_COMPARISON_WIDGET
+import com.tokopedia.shop.common.data.mapper.ShopPageWidgetMapper
 import com.tokopedia.shop.common.data.model.*
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
 import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
@@ -69,7 +70,6 @@ import com.tokopedia.shop.home.WidgetType
 import com.tokopedia.shop.home.data.model.CheckCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.ShopLayoutWidgetParamsModel
-import com.tokopedia.shop.home.data.model.ShopPageWidgetRequestModel
 import com.tokopedia.shop.home.domain.CheckCampaignNotifyMeUseCase
 import com.tokopedia.shop.home.domain.GetCampaignNotifyMeUseCase
 import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutV2UseCase
@@ -128,17 +128,13 @@ class ShopHomeViewModel @Inject constructor(
         get() = _productListData
     private val _productListData = MutableLiveData<Result<GetShopHomeProductUiModel>>()
 
-    val shopHomeWidgetLayoutData: LiveData<Result<ShopPageHomeWidgetLayoutUiModel>>
-        get() = _shopHomeWidgetLayoutData
-    private val _shopHomeWidgetLayoutData = MutableLiveData<Result<ShopPageHomeWidgetLayoutUiModel>>()
-
     val shopHomeWidgetContentData: Flow<Result<Map<Pair<String, String>, Visitable<*>?>>>
         get() = _shopHomeWidgetContentData
     private val _shopHomeWidgetContentData = MutableSharedFlow<Result<Map<Pair<String, String>, Visitable<*>?>>>()
 
-    val shopHomeWidgetContentDataError: Flow<List<ShopPageWidgetLayoutUiModel>>
+    val shopHomeWidgetContentDataError: Flow<List<ShopPageWidgetUiModel>>
         get() = _shopHomeWidgetContentDataError
-    private val _shopHomeWidgetContentDataError = MutableSharedFlow<List<ShopPageWidgetLayoutUiModel>>()
+    private val _shopHomeWidgetContentDataError = MutableSharedFlow<List<ShopPageWidgetUiModel>>()
 
     val shopHomeMerchantVoucherLayoutData: LiveData<Result<ShopHomeVoucherUiModel>>
         get() = _shopHomeMerchantVoucherLayoutData
@@ -231,31 +227,26 @@ class ShopHomeViewModel @Inject constructor(
 
     private var miniCartData: MiniCartSimplifiedData? = null
 
-    val latestShopHomeWidgetLayoutData: LiveData<Result<ShopPageHomeWidgetLayoutUiModel>>
+    val latestShopHomeWidgetLayoutData: LiveData<Result<ShopPageLayoutUiModel>>
         get() = _latestShopHomeWidgetLayoutData
-    private val _latestShopHomeWidgetLayoutData = MutableLiveData<Result<ShopPageHomeWidgetLayoutUiModel>>()
+    private val _latestShopHomeWidgetLayoutData = MutableLiveData<Result<ShopPageLayoutUiModel>>()
 
-    fun getShopPageHomeWidgetLayoutData(
-        shopId: String,
-        extParam: String
-    ) {
-        launchCatchError(block = {
-            val shopHomeLayoutResponse = withContext(dispatcherProvider.io) {
-                gqlShopPageGetHomeType.isFromCacheFirst = false
-                gqlShopPageGetHomeType.params = GqlShopPageGetHomeType.createParams(
-                    shopId,
-                    extParam
-                )
-                gqlShopPageGetHomeType.executeOnBackground()
-            }
-            val shopHomeLayoutUiModelPlaceHolder = ShopPageHomeMapper.mapToShopHomeWidgetLayoutData(
-                shopHomeLayoutResponse.homeLayoutData
-            )
-            _shopHomeWidgetLayoutData.postValue(Success(shopHomeLayoutUiModelPlaceHolder))
-        }) {
-            _shopHomeWidgetLayoutData.postValue(Fail(it))
-        }
-    }
+    val bannerTimerRemindMeStatusData: LiveData<Result<GetCampaignNotifyMeUiModel>>
+        get() = _bannerTimerRemindMeStatusData
+    private val _bannerTimerRemindMeStatusData = MutableLiveData<Result<GetCampaignNotifyMeUiModel>>()
+
+    //TODO need to check if we can combine other CheckCampaignNotifyMeUiModel live data since it is the same
+    val checkBannerTimerRemindMeStatusData: LiveData<Result<CheckCampaignNotifyMeUiModel>>
+        get() = _checkBannerTimerRemindMeStatusData
+    private val _checkBannerTimerRemindMeStatusData = MutableLiveData<Result<CheckCampaignNotifyMeUiModel>>()
+
+    private val _homeWidgetListVisitable = MutableLiveData<Result<List<Visitable<*>>>>()
+    val homeWidgetListVisitable: LiveData<Result<List<Visitable<*>>>>
+        get() = _homeWidgetListVisitable
+
+    private val _updatedBannerTimerUiModelData = MutableLiveData<ShopWidgetDisplayBannerTimerUiModel?>()
+    val updatedBannerTimerUiModelData: LiveData<ShopWidgetDisplayBannerTimerUiModel?>
+        get() = _updatedBannerTimerUiModelData
 
     fun getNewProductList(
         shopId: String,
@@ -644,6 +635,32 @@ class ShopHomeViewModel @Inject constructor(
         }
     }
 
+    fun clickBannerTimerReminder(campaignId: String, action: String) {
+        launchCatchError(block = {
+            val checkCampaignNotifyMeModel = withContext(dispatcherProvider.io) {
+                checkCampaignNotifyMe(campaignId, action)
+            }
+            val checkCampaignNotifyMeUiModel = CheckCampaignNotifyMeUiModel(
+                checkCampaignNotifyMeModel.campaignId,
+                checkCampaignNotifyMeModel.success,
+                checkCampaignNotifyMeModel.message,
+                checkCampaignNotifyMeModel.errorMessage,
+                action
+            )
+            _checkBannerTimerRemindMeStatusData.postValue(Success(checkCampaignNotifyMeUiModel))
+        }) {
+            _checkBannerTimerRemindMeStatusData.postValue(
+                Fail(
+                    CheckCampaignNplException(
+                        it.cause,
+                        it.message,
+                        campaignId
+                    )
+                )
+            )
+        }
+    }
+
     private suspend fun checkCampaignNotifyMe(campaignId: String, action: String): CheckCampaignNotifyMeModel {
         return checkCampaignNotifyMeUseCase.get().run {
             params = CheckCampaignNotifyMeUseCase.createParams(
@@ -722,12 +739,12 @@ class ShopHomeViewModel @Inject constructor(
     /**
      * Play widget
      */
-    fun getPlayWidget(shopId: String, carouselPlayWidgetUiModel: CarouselPlayWidgetUiModel) {
+    fun getPlayWidget(
+        carouselPlayWidgetUiModel: CarouselPlayWidgetUiModel,
+        playWidgetType: PlayWidgetUseCase.WidgetType
+    ) {
         launchCatchError(block = {
-            val response = playWidgetTools.getWidgetFromNetwork(
-                if (shopId == userSessionShopId) PlayWidgetUseCase.WidgetType.SellerApp(shopId) else PlayWidgetUseCase.WidgetType.ShopPage(shopId),
-                dispatcherProvider.io
-            )
+            val response = playWidgetTools.getWidgetFromNetwork(playWidgetType, dispatcherProvider.io)
             val widgetUiModel = playWidgetTools.mapWidgetToModel(widgetResponse = response, prevState = _playWidgetObservable.value?.playWidgetState)
             _playWidgetObservable.postValue(
                 carouselPlayWidgetUiModel.copy(
@@ -831,7 +848,7 @@ class ShopHomeViewModel @Inject constructor(
     }
 
     fun getWidgetContentData(
-        listWidgetLayout: List<ShopPageWidgetLayoutUiModel>,
+        listWidgetLayout: List<ShopPageWidgetUiModel>,
         shopId: String,
         widgetUserAddressLocalData: LocalCacheModel,
         isThematicWidgetShown: Boolean,
@@ -847,14 +864,7 @@ class ShopHomeViewModel @Inject constructor(
                         cityId = widgetUserAddressLocalData.city_id,
                         latitude = widgetUserAddressLocalData.lat,
                         longitude = widgetUserAddressLocalData.long,
-                        listWidgetRequest = listWidgetLayout.map {
-                            ShopPageWidgetRequestModel(
-                                it.widgetId,
-                                it.widgetMasterId,
-                                it.widgetType,
-                                it.widgetName
-                            )
-                        }
+                        listWidgetRequest = ShopPageWidgetMapper.mapToShopPageWidgetRequest(listWidgetLayout)
                     )
                 )
                 useCase.executeOnBackground()
@@ -1250,20 +1260,22 @@ class ShopHomeViewModel @Inject constructor(
         _shopPageAtcTracker.postValue(shopPageAtcTracker)
     }
 
-    fun isWidgetBundle(data: ShopPageWidgetLayoutUiModel): Boolean {
+    fun isWidgetBundle(data: ShopPageWidgetUiModel): Boolean {
         return data.widgetType == WidgetType.BUNDLE
     }
 
     fun getLatestShopHomeWidgetLayoutData(
         shopId: String,
         extParam: String,
-        locData: LocalCacheModel
+        locData: LocalCacheModel,
+        tabName: String
     ) {
         launchCatchError(dispatcherProvider.io, block = {
             val shopHomeWidgetData = getShopDynamicHomeTabWidgetData(
                 shopId,
                 extParam,
-                locData
+                locData,
+                tabName
             )
             _latestShopHomeWidgetLayoutData.postValue(Success(shopHomeWidgetData))
         }) {
@@ -1276,8 +1288,9 @@ class ShopHomeViewModel @Inject constructor(
     private suspend fun getShopDynamicHomeTabWidgetData(
         shopId: String,
         extParam: String,
-        locData: LocalCacheModel
-    ): ShopPageHomeWidgetLayoutUiModel {
+        locData: LocalCacheModel,
+        tabName: String
+    ): ShopPageLayoutUiModel {
         val useCase = getShopDynamicTabUseCase.get()
         useCase.isFromCacheFirst = false
         useCase.setRequestParams(
@@ -1287,7 +1300,8 @@ class ShopHomeViewModel @Inject constructor(
                 locData.district_id,
                 locData.city_id,
                 locData.lat,
-                locData.long
+                locData.long,
+                tabName
             ).parameters
         )
         val layoutData = useCase.executeOnBackground().shopPageGetDynamicTab.tabData.firstOrNull {
@@ -1332,5 +1346,61 @@ class ShopHomeViewModel @Inject constructor(
                 shopIds = listOf(shopId),
             )
         )
+    }
+
+    fun getBannerTimerRemindMeStatus(campaignId: String) {
+        launchCatchError(block = {
+            val getCampaignNotifyMeModel = withContext(dispatcherProvider.io) {
+                getCampaignNotifyMe(campaignId)
+            }
+            val getCampaignNotifyMeUiModel = ShopPageHomeMapper.mapToGetCampaignNotifyMeUiModel(
+                getCampaignNotifyMeModel
+            )
+            _bannerTimerRemindMeStatusData.value = Success(getCampaignNotifyMeUiModel)
+        }) {}
+    }
+
+    fun toggleBannerTimerRemindMe(
+        newList: MutableList<Visitable<*>>,
+        isRemindMe: Boolean,
+        isClickRemindMe: Boolean
+    ) {
+        launchCatchError(dispatcherProvider.io, block = {
+            newList.filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>()
+                .onEach { bannerTimerUiModel ->
+                    bannerTimerUiModel.data?.let {
+                        it.isRemindMe = isRemindMe
+                        if (isClickRemindMe) {
+                            if (isRemindMe)
+                                ++it.totalNotify
+                            else
+                                --it.totalNotify
+                        }
+                        it.showRemindMeLoading = false
+                        bannerTimerUiModel.isNewData = true
+                    }
+                }
+            _updatedBannerTimerUiModelData.postValue(newList.filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>().firstOrNull())
+            _homeWidgetListVisitable.postValue(Success(newList))
+        }) { throwable ->
+            _homeWidgetListVisitable.postValue(Fail(throwable))
+        }
+    }
+
+    fun updateBannerTimerWidgetUiModel(
+        newList: MutableList<Visitable<*>>,
+        bannerTimerUiModel: ShopWidgetDisplayBannerTimerUiModel
+    ) {
+        launchCatchError(dispatcherProvider.io, block = {
+            val position = newList.indexOfFirst{ it is ShopWidgetDisplayBannerTimerUiModel }
+            if(position != -1){
+                newList.setElement(position, bannerTimerUiModel.copy().apply {
+                    isNewData = true
+                })
+            }
+            _homeWidgetListVisitable.postValue(Success(newList))
+        }) { throwable ->
+            _homeWidgetListVisitable.postValue(Fail(throwable))
+        }
     }
 }

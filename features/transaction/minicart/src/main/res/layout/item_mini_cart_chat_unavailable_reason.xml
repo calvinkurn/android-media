@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:textColor="@color/Unify_R600"
+        android:textColor="@color/Unify_RN500"
         app:typographyType="heading_6"
         tools:text="Stok Kosong" />
 </LinearLayout>

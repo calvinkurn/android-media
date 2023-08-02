@@ -2,6 +2,7 @@ package com.tokopedia.home_component
 
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.BannerRevampDataModel
+import com.tokopedia.home_component.visitable.BestSellerDataModel
 import com.tokopedia.home_component.visitable.CampaignWidgetDataModel
 import com.tokopedia.home_component.visitable.CategoryWidgetDataModel
 import com.tokopedia.home_component.visitable.CategoryWidgetV2DataModel
@@ -53,4 +54,5 @@ interface HomeComponentTypeFactory {
     fun type(todoWidgetListDataModel: TodoWidgetListDataModel): Int = 0
     fun type(dealsDataModel: DealsDataModel): Int = 0
     fun type(flashSaleDataModel: FlashSaleDataModel): Int = 0
+    fun type(bestSellerDataModel: BestSellerDataModel): Int = 0
 }

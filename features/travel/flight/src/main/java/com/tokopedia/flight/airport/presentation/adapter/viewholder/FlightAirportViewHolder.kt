@@ -22,7 +22,7 @@ class FlightAirportViewHolder(val binding: ItemFlightAirportBinding,
     : AbstractViewHolder<FlightAirportModel>(binding.root) {
 
     private val boldColor: ForegroundColorSpan = ForegroundColorSpan(ContextCompat.getColor(itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+            com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
 
     override fun bind(airport: FlightAirportModel) {
         val context = itemView.context

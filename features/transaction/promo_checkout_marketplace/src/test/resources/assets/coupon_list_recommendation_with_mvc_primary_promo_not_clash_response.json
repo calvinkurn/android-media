@@ -1,0 +1,2947 @@
+{
+  "coupon_list_recommendation": {
+    "message": [],
+    "error_code": "200",
+    "status": "OK",
+    "data": {
+      "error_page": {
+        "is_show_error_page": false,
+        "image": "",
+        "title": "",
+        "description": "",
+        "button": {
+          "text": "",
+          "destination": ""
+        }
+      },
+      "result_status": {
+        "code": "200",
+        "message": [
+          "OK"
+        ],
+        "reason": ""
+      },
+      "empty_state": {
+        "title": "",
+        "description": "",
+        "image_url": ""
+      },
+      "title": "",
+      "sub_title": "",
+      "promo_recommendation": {
+        "codes": [
+          "BOREGINTRA20PL"
+        ],
+        "message": "Kamu bisa hemat Rp21.500"
+      },
+      "coupon_sections": [
+        {
+          "title": "Gabungin promo biar makin hemat",
+          "sub_title": "",
+          "is_enabled": true,
+          "id": "",
+          "sub_sections": [
+            {
+              "title": "",
+              "sub_title": "Promo dipilih",
+              "icon_unify": "URL",
+              "icon_url": "https://images.tokopedia.net/img/plus/logo/plus_badge_default.png",
+              "is_enabled": true,
+              "id": "bebas_ongkir_plus",
+              "coupon_groups": [],
+              "coupons": [
+                {
+                  "promo_id": 0,
+                  "code": "BOREGINTRA20PL",
+                  "title": "Diskon Pengiriman Plus Rp11.500",
+                  "message": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 11500,
+                  "is_recommended": true,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": true,
+                  "clashing_infos": [
+                    {
+                      "code": "TKC250MAY11KBRJJUTH",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "TKC750MAY11KBRARFKD",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "SHB3AYS877",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "SHB3AYSV6N",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "SHB3AYSY00",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "PSWB3LYWG1",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [
+                    {
+                      "code": "BOREGINTRA20PL",
+                      "unique_id": "4915516-0-5698194-134300533",
+                      "shipping_id": 23,
+                      "sp_id": 45,
+                      "benefit_amount": 11500,
+                      "promo_id": 0,
+                      "shipping_subsidy": 0,
+                      "shipping_price": 11500,
+                      "benefit_class": "intracity",
+                      "bo_campaign_id": 330,
+                      "eta_txt": "Estimasi tiba 1 - 2 Jun"
+                    }
+                  ],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 0,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Estimasi tiba 1 - 2 Jun",
+                      "icon": "NONE",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [
+                    {
+                      "amount_idr": 11500,
+                      "benefit_type": "discount",
+                      "data_type": "total_shipping_price"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "title": "Hush Puppies",
+              "sub_title": "Promo dipilih",
+              "icon_unify": "",
+              "icon_url": "",
+              "is_enabled": true,
+              "id": "merchant_vouchers",
+              "coupon_groups": [
+                {
+                  "id": 17895977,
+                  "count": 1
+                }
+              ],
+              "coupons": [
+                {
+                  "promo_id": 18625295,
+                  "code": "HUSHABVM1N",
+                  "title": "Diskon Rp15.000",
+                  "message": "",
+                  "coupon_app_link": "HCKCSCP4915516-",
+                  "unique_id": "4915516-0-5698194-134300533",
+                  "shop_id": 4915516,
+                  "benefit_amount": 15000,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [
+                    {
+                      "code": "KRDLOW11KBR2PP9C84W",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "KRDDOR3A11KBR4NTD17",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 17895977,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 4 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [
+                    {
+                      "amount_idr": 15000,
+                      "benefit_type": "discount",
+                      "data_type": "total_product_price"
+                    }
+                  ],
+                  "benefit_adjustment_message": "Promonya sudah disesuaikan supaya kamu bisa pilih promo lainnya.",
+                  "secondary_coupons": [
+                    {
+                      "promo_id": 18625295,
+                      "code": "HUSHABVM1N22",
+                      "title": "Diskon Rp10.000",
+                      "message": "",
+                      "coupon_app_link": "HCKCSCP4915516-",
+                      "unique_id": "4915516-0-5698194-134300533",
+                      "shop_id": 4915516,
+                      "benefit_amount": 10000,
+                      "is_recommended": true,
+                      "is_selected": false,
+                      "is_attempted": false,
+                      "is_bebas_ongkir": false,
+                      "clashing_infos": [
+                        {
+                          "code": "KRDLOW11KBR2PP9C84W",
+                          "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                          "icon": "INFORMATION"
+                        },
+                        {
+                          "code": "KRDDOR3A11KBR4NTD17",
+                          "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                          "icon": "INFORMATION"
+                        }
+                      ],
+                      "bo_clashing_infos": [],
+                      "additional_bo_datas": [],
+                      "currency_details_str": "",
+                      "coachmark": {
+                        "is_shown": false,
+                        "title": "",
+                        "content": ""
+                      },
+                      "is_highlighted": false,
+                      "group_id": 17895977,
+                      "is_group_header": true,
+                      "promo_infos": [
+                        {
+                          "type": "promo_validity",
+                          "title": "Berakhir 5 menit lagi!",
+                          "icon": "CLOCK",
+                          "validation_type": "",
+                          "methods": []
+                        }
+                      ],
+                      "benefit_details": [
+                        {
+                          "amount_idr": 10000,
+                          "benefit_type": "discount",
+                          "data_type": "total_product_price"
+                        }
+                      ],
+                      "benefit_adjustment_message": "Promonya sudah disesuaikan supaya kamu bisa pilih promo lainnya. 2"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "title": "Kupon saya",
+              "sub_title": "Promo dipilih",
+              "icon_unify": "COUPON",
+              "icon_url": "https://images.tokopedia.net/img/blog/promo/2022/01/My-Coupons.png",
+              "is_enabled": true,
+              "id": "my_coupons",
+              "coupon_groups": [
+                {
+                  "id": 17827115,
+                  "count": 1
+                },
+                {
+                  "id": 18091498,
+                  "count": 1
+                },
+                {
+                  "id": 17827100,
+                  "count": 1
+                },
+                {
+                  "id": 18269331,
+                  "count": 1
+                }
+              ],
+              "coupons": [
+                {
+                  "promo_id": 18997850,
+                  "code": "KRDDOR3A11KBR4NTD17",
+                  "title": "Diskon Rp43.778",
+                  "message": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 43778,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [
+                    {
+                      "code": "HUSHABVM1N",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 18269331,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Khusus pembayaran \u003cb\u003eKredivo\u003c/b\u003e",
+                      "icon": "FINANCE",
+                      "validation_type": "payment",
+                      "methods": [
+                        "Kredivo"
+                      ]
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 1 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [
+                    {
+                      "amount_idr": 43778,
+                      "benefit_type": "discount",
+                      "data_type": "total_product_price"
+                    }
+                  ]
+                },
+                {
+                  "promo_id": 18556219,
+                  "code": "TKC750MAY11KBRARFKD",
+                  "title": "Cashback Rp16.837",
+                  "message": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 16837,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [
+                    {
+                      "code": "BOREGINTRA20PL",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "SHB3AYS877",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "SHB3AYSV6N",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "SHB3AYSY00",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "PSWB3LYWG1",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "bo_clashing_infos": [
+                    {
+                      "code": "https://images.tokopedia.net/img/blog/promo/2022/07/courier_fast%402x.png",
+                      "message": "Pengiriman PLUS/Bebas Ongkir tidak tersedia.",
+                      "icon": "https://images.tokopedia.net/img/blog/promo/2022/07/courier_fast%402x.png"
+                    }
+                  ],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "(16.837 GoPay Coins)",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 17827115,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Khusus pembayaran \u003cb\u003eTokopedia Card (Cicilan)\u003c/b\u003e",
+                      "icon": "FINANCE",
+                      "validation_type": "payment",
+                      "methods": [
+                        "Tokopedia Card (Cicilan)"
+                      ]
+                    },
+                    {
+                      "type": "promo_info",
+                      "title": "\u003cb\u003ePengiriman PLUS/Bebas Ongkir\u003c/b\u003e tidak tersedia.",
+                      "icon": "NONE",
+                      "validation_type": "promo",
+                      "methods": [
+                        "Pengiriman Plus"
+                      ]
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 1 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [
+                    {
+                      "amount_idr": 16837,
+                      "benefit_type": "cashback",
+                      "data_type": "total_product_price"
+                    }
+                  ]
+                },
+                {
+                  "promo_id": 18780202,
+                  "code": "KRDLOW11KBR2PP9C84W",
+                  "title": "Diskon Rp20.000",
+                  "message": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 20000,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [
+                    {
+                      "code": "HUSHABVM1N",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 18091498,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Khusus pembayaran \u003cb\u003eKredivo\u003c/b\u003e",
+                      "icon": "FINANCE",
+                      "validation_type": "payment",
+                      "methods": [
+                        "Kredivo"
+                      ]
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 1 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [
+                    {
+                      "amount_idr": 20000,
+                      "benefit_type": "discount",
+                      "data_type": "total_product_price"
+                    }
+                  ]
+                },
+                {
+                  "promo_id": 18556169,
+                  "code": "TKC250MAY11KBRJJUTH",
+                  "title": "Cashback Rp13.470",
+                  "message": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 13470,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [
+                    {
+                      "code": "BOREGINTRA20PL",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "SHB3AYS877",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "SHB3AYSV6N",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "SHB3AYSY00",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "PSWB3LYWG1",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "bo_clashing_infos": [
+                    {
+                      "code": "https://images.tokopedia.net/img/blog/promo/2022/07/courier_fast%402x.png",
+                      "message": "Pengiriman PLUS/Bebas Ongkir tidak tersedia.",
+                      "icon": "https://images.tokopedia.net/img/blog/promo/2022/07/courier_fast%402x.png"
+                    }
+                  ],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "(13.470 GoPay Coins)",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 17827100,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Khusus pembayaran \u003cb\u003eTokopedia Card (Pembayaran Penuh \u0026 Cicilan)\u003c/b\u003e",
+                      "icon": "FINANCE",
+                      "validation_type": "payment",
+                      "methods": [
+                        "Tokopedia Card (Pembayaran Penuh \u0026 Cicilan)"
+                      ]
+                    },
+                    {
+                      "type": "promo_info",
+                      "title": "\u003cb\u003ePengiriman PLUS/Bebas Ongkir\u003c/b\u003e tidak tersedia.",
+                      "icon": "NONE",
+                      "validation_type": "promo",
+                      "methods": [
+                        "Pengiriman Plus"
+                      ]
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 1 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [
+                    {
+                      "amount_idr": 13470,
+                      "benefit_type": "cashback",
+                      "data_type": "total_product_price"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Promo yang belum bisa dipakai",
+          "sub_title": "",
+          "is_enabled": false,
+          "id": "",
+          "sub_sections": [
+            {
+              "title": "aromakaldi",
+              "sub_title": "Promo dipilih",
+              "icon_unify": "",
+              "icon_url": "",
+              "is_enabled": false,
+              "id": "ineligible_coupons",
+              "coupon_groups": [
+                {
+                  "id": 17874869,
+                  "count": 1
+                }
+              ],
+              "coupons": [
+                {
+                  "promo_id": 18604185,
+                  "code": "TD0523P009",
+                  "title": "Promo Cashback TD0523P009",
+                  "message": "Promo bisa dipakai jika memilih barang dari toko ini",
+                  "coupon_app_link": "HCKCSCP3390183-",
+                  "unique_id": "",
+                  "shop_id": 3390183,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 17874869,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 16 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                }
+              ]
+            },
+            {
+              "title": "JAZE ID",
+              "sub_title": "Promo dipilih",
+              "icon_unify": "",
+              "icon_url": "",
+              "is_enabled": false,
+              "id": "",
+              "coupon_groups": [
+                {
+                  "id": 18511089,
+                  "count": 1
+                }
+              ],
+              "coupons": [
+                {
+                  "promo_id": 19241254,
+                  "code": "PSWB3HYWG1",
+                  "title": "Promo Cashback PSWB3HYWG1",
+                  "message": "Tambah Rp101.000 untuk pakai promo",
+                  "coupon_app_link": "HCKCSCP2433124-",
+                  "unique_id": "",
+                  "shop_id": 2433124,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 18511089,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "\u003cb\u003ePengiriman PLUS/Bebas Ongkir\u003c/b\u003e tidak tersedia.",
+                      "icon": "NONE",
+                      "validation_type": "promo",
+                      "methods": [
+                        "Pengiriman Plus"
+                      ]
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 4 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                }
+              ]
+            },
+            {
+              "title": "Hush Puppies",
+              "sub_title": "Promo dipilih",
+              "icon_unify": "",
+              "icon_url": "",
+              "is_enabled": false,
+              "id": "",
+              "coupon_groups": [
+                {
+                  "id": 17945365,
+                  "count": 1
+                },
+                {
+                  "id": 18221114,
+                  "count": 1
+                },
+                {
+                  "id": 17896011,
+                  "count": 1
+                },
+                {
+                  "id": 17895995,
+                  "count": 1
+                }
+              ],
+              "coupons": [
+                {
+                  "promo_id": 18950934,
+                  "code": "HUSHYRV3FE",
+                  "title": "Promo Discount HUSHYRV3FE",
+                  "message": "Promo ini hanya berlaku untuk produk tertentu.",
+                  "coupon_app_link": "HCKCSCP4915516-",
+                  "unique_id": "",
+                  "shop_id": 4915516,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 18221114,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 4 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 18625329,
+                  "code": "HUSH3DWOWZ",
+                  "title": "Promo Discount HUSH3DWOWZ",
+                  "message": "Tambah Rp75.500 untuk pakai promo",
+                  "coupon_app_link": "HCKCSCP4915516-",
+                  "unique_id": "",
+                  "shop_id": 4915516,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 17896011,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 4 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 18625313,
+                  "code": "HUSHXYKITI",
+                  "title": "Promo Discount HUSHXYKITI",
+                  "message": "Tambah Rp25.500 untuk pakai promo",
+                  "coupon_app_link": "HCKCSCP4915516-",
+                  "unique_id": "",
+                  "shop_id": 4915516,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 17895995,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 4 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 18674751,
+                  "code": "HUSHELEVMP",
+                  "title": "New Followers",
+                  "message": "Kupon ini bisa anda dapatkan dengan follow toko ini",
+                  "coupon_app_link": "HCKCSCP4915516-",
+                  "unique_id": "",
+                  "shop_id": 4915516,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 17945365,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 29 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                }
+              ]
+            },
+            {
+              "title": "LAPAKiTEM INDONESIA",
+              "sub_title": "Promo dipilih",
+              "icon_unify": "",
+              "icon_url": "",
+              "is_enabled": false,
+              "id": "",
+              "coupon_groups": [
+                {
+                  "id": 18433222,
+                  "count": 1
+                }
+              ],
+              "coupons": [
+                {
+                  "promo_id": 19163252,
+                  "code": "MVELII485",
+                  "title": "Promo Cashback MVELII485",
+                  "message": "Promo bisa dipakai jika memilih barang dari toko ini",
+                  "coupon_app_link": "HCKCSCP1242208-",
+                  "unique_id": "",
+                  "shop_id": 1242208,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 18433222,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 4 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                }
+              ]
+            },
+            {
+              "title": "Abditama Official",
+              "sub_title": "Promo dipilih",
+              "icon_unify": "",
+              "icon_url": "",
+              "is_enabled": false,
+              "id": "",
+              "coupon_groups": [
+                {
+                  "id": 17939916,
+                  "count": 1
+                },
+                {
+                  "id": 18510836,
+                  "count": 1
+                }
+              ],
+              "coupons": [
+                {
+                  "promo_id": 18669300,
+                  "code": "JLLMAY9",
+                  "title": "Promo Cashback JLLMAY9",
+                  "message": "Promo bisa dipakai jika memilih barang dari toko ini",
+                  "coupon_app_link": "HCKCSCP4879536-",
+                  "unique_id": "",
+                  "shop_id": 4879536,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 17939916,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 4 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 19241001,
+                  "code": "MAYMAX9",
+                  "title": "Promo Cashback MAYMAX9",
+                  "message": "Promo bisa dipakai jika memilih barang dari toko ini",
+                  "coupon_app_link": "HCKCSCP4879536-",
+                  "unique_id": "",
+                  "shop_id": 4879536,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 18510836,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 4 menit lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                }
+              ]
+            },
+            {
+              "title": "Kupon saya",
+              "sub_title": "Promo dipilih",
+              "icon_unify": "COUPON",
+              "icon_url": "https://images.tokopedia.net/img/blog/promo/2022/01/My-Coupons.png",
+              "is_enabled": false,
+              "id": "",
+              "coupon_groups": [
+                {
+                  "id": 18035483,
+                  "count": 2
+                },
+                {
+                  "id": 17951286,
+                  "count": 2
+                },
+                {
+                  "id": 13825180,
+                  "count": 2
+                },
+                {
+                  "id": 18097467,
+                  "count": 2
+                },
+                {
+                  "id": 18087333,
+                  "count": 1
+                },
+                {
+                  "id": 18218345,
+                  "count": 1
+                },
+                {
+                  "id": 18087044,
+                  "count": 1
+                },
+                {
+                  "id": 18402147,
+                  "count": 1
+                },
+                {
+                  "id": 14214701,
+                  "count": 1
+                },
+                {
+                  "id": 17440333,
+                  "count": 2
+                },
+                {
+                  "id": 18086466,
+                  "count": 1
+                },
+                {
+                  "id": 18337318,
+                  "count": 1
+                },
+                {
+                  "id": 17496268,
+                  "count": 1
+                },
+                {
+                  "id": 17496341,
+                  "count": 1
+                },
+                {
+                  "id": 17496223,
+                  "count": 1
+                },
+                {
+                  "id": 17734195,
+                  "count": 3
+                },
+                {
+                  "id": 18084368,
+                  "count": 1
+                },
+                {
+                  "id": 18337277,
+                  "count": 1
+                },
+                {
+                  "id": 17764256,
+                  "count": 1
+                },
+                {
+                  "id": 18085122,
+                  "count": 1
+                },
+                {
+                  "id": 18085654,
+                  "count": 1
+                },
+                {
+                  "id": 15843804,
+                  "count": 1
+                },
+                {
+                  "id": 17951223,
+                  "count": 2
+                },
+                {
+                  "id": 18218341,
+                  "count": 1
+                },
+                {
+                  "id": 17827161,
+                  "count": 1
+                },
+                {
+                  "id": 18468347,
+                  "count": 1
+                },
+                {
+                  "id": 18323452,
+                  "count": 1
+                },
+                {
+                  "id": 15909523,
+                  "count": 1
+                },
+                {
+                  "id": 17496175,
+                  "count": 1
+                },
+                {
+                  "id": 17747676,
+                  "count": 2
+                },
+                {
+                  "id": 18091236,
+                  "count": 2
+                }
+              ],
+              "coupons": [
+                {
+                  "promo_id": 18777236,
+                  "code": "KRDLIM11KBR9MHJA83L",
+                  "title": "Diskon dengan Kredivo",
+                  "message": "Promo ini hanya berlaku untuk minimum pembelanjaan Rp6.000.000  dan  minimum pembelanjaan Rp10.000.000.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 18085122,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Khusus pembayaran \u003cb\u003eKredivo\u003c/b\u003e",
+                      "icon": "FINANCE",
+                      "validation_type": "payment",
+                      "methods": [
+                        "Kredivo"
+                      ]
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 1 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 18556354,
+                  "code": "TKC1JTMAY11KBRDVDV6",
+                  "title": "Cashback hingga Rp1.000.000",
+                  "message": "Tambah Rp4.326.500 untuk pakai promo",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 17827161,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Khusus pembayaran \u003cb\u003eTokopedia Card\u003c/b\u003e",
+                      "icon": "FINANCE",
+                      "validation_type": "payment",
+                      "methods": [
+                        "Tokopedia Card"
+                      ]
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 1 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 18463035,
+                  "code": "SMCMBMAY2811KBRG66E",
+                  "title": "Cashback 3% hingga Rp800.000",
+                  "message": "Promo ini hanya berlaku untuk Produk Ibu\u0026Bayi, Fashion Anak.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 17734195,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "\u003cb\u003ePengiriman PLUS/Bebas Ongkir\u003c/b\u003e tidak tersedia.",
+                      "icon": "NONE",
+                      "validation_type": "promo",
+                      "methods": [
+                        "Pengiriman Plus"
+                      ]
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 13 jam lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 18463035,
+                  "code": "SMCMBMAY2811KBR0AWA",
+                  "title": "Cashback 3% hingga Rp800.000",
+                  "message": "Promo ini hanya berlaku untuk Produk Ibu\u0026Bayi, Fashion Anak.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 17734195,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "\u003cb\u003ePengiriman PLUS/Bebas Ongkir\u003c/b\u003e tidak tersedia.",
+                      "icon": "NONE",
+                      "validation_type": "promo",
+                      "methods": [
+                        "Pengiriman Plus"
+                      ]
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 13 jam lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 18463035,
+                  "code": "SMCMBMAY2811KBRDQ2D",
+                  "title": "Cashback 3% hingga Rp800.000",
+                  "message": "Promo ini hanya berlaku untuk Produk Ibu\u0026Bayi, Fashion Anak.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 17734195,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "\u003cb\u003ePengiriman PLUS/Bebas Ongkir\u003c/b\u003e tidak tersedia.",
+                      "icon": "NONE",
+                      "validation_type": "promo",
+                      "methods": [
+                        "Pengiriman Plus"
+                      ]
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 13 jam lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 18778763,
+                  "code": "KRDGAD211KBRWVRC379",
+                  "title": "Diskon dengan Kredivo",
+                  "message": "Promo ini hanya berlaku untuk Kategori HP, Gadget dan Elektronik.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 18086466,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Khusus pembayaran \u003cb\u003eKredivo\u003c/b\u003e",
+                      "icon": "FINANCE",
+                      "validation_type": "payment",
+                      "methods": [
+                        "Kredivo"
+                      ]
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 1 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 18778007,
+                  "code": "KRDASH11KBRKU0ML365",
+                  "title": "Diskon Kredivo hingga 750rb",
+                  "message": "Promo ini hanya berlaku untuk Kategori Otomotif, Olahraga dan Hobi.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 18085654,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Khusus pembayaran \u003cb\u003eKredivo\u003c/b\u003e",
+                      "icon": "FINANCE",
+                      "validation_type": "payment",
+                      "methods": [
+                        "Kredivo"
+                      ]
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 1 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 18778783,
+                  "code": "KRDFASHION11KBR5GR3",
+                  "title": "Diskon dengan Kredivo",
+                  "message": "Tambah Rp475.500 untuk pakai promo",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 18087044,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Khusus pembayaran \u003cb\u003eKredivo\u003c/b\u003e",
+                      "icon": "FINANCE",
+                      "validation_type": "payment",
+                      "methods": [
+                        "Kredivo"
+                      ]
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 1 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 18776320,
+                  "code": "KRDCICIL11KBRL3FDQD",
+                  "title": "Diskon dengan Kredivo",
+                  "message": "Promo ini hanya berlaku untuk minimum pembelanjaan Rp3.000.000 ,  minimum pembelanjaan Rp4.000.000,   minimum pembelanjaan Rp6.000.000 , dan  minimum pembelanjaan Rp10.000.000.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 18084368,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Khusus pembayaran \u003cb\u003eKredivo\u003c/b\u003e",
+                      "icon": "FINANCE",
+                      "validation_type": "payment",
+                      "methods": [
+                        "Kredivo"
+                      ]
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 1 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 18780195,
+                  "code": "KRDRET11KBRFPX7PDBX",
+                  "title": "Diskon dengan Kredivo",
+                  "message": "Promo ini hanya berlaku untuk minimum pembelanjaan Rp1.000.000 ,  minimum pembelanjaan Rp2.000.000 ,  minimum pembelanjaan Rp2.500.000 , dan  minimum pembelanjaan Rp3.000.000.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 18091236,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Khusus pembayaran \u003cb\u003eKredivo\u003c/b\u003e",
+                      "icon": "FINANCE",
+                      "validation_type": "payment",
+                      "methods": [
+                        "Kredivo"
+                      ]
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 1 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 18780195,
+                  "code": "KRDRET11KBR0H4G8V12",
+                  "title": "Diskon dengan Kredivo",
+                  "message": "Promo ini hanya berlaku untuk minimum pembelanjaan Rp1.000.000 ,  minimum pembelanjaan Rp2.000.000 ,  minimum pembelanjaan Rp2.500.000 , dan  minimum pembelanjaan Rp3.000.000.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 18091236,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Khusus pembayaran \u003cb\u003eKredivo\u003c/b\u003e",
+                      "icon": "FINANCE",
+                      "validation_type": "payment",
+                      "methods": [
+                        "Kredivo"
+                      ]
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 1 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 18778806,
+                  "code": "KRDCANTIK11KBRE75DG",
+                  "title": "Diskon dengan Kredivo",
+                  "message": "Promo ini hanya berlaku untuk Kategori Fashion.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 18087333,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Khusus pembayaran \u003cb\u003eKredivo\u003c/b\u003e",
+                      "icon": "FINANCE",
+                      "validation_type": "payment",
+                      "methods": [
+                        "Kredivo"
+                      ]
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 1 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 18168564,
+                  "code": "EEPLUS2311KBRA7TDA2",
+                  "title": "Cashback 3% hingga Rp500.000",
+                  "message": "Tambah Rp326.500 untuk pakai promo",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 17440333,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "bottom_banner",
+                      "title": "Khusus Pelanggan PLUS",
+                      "icon": "USER",
+                      "validation_type": "",
+                      "methods": []
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 1 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 18168564,
+                  "code": "EEPLUS2311KBRR3199X",
+                  "title": "Cashback 3% hingga Rp500.000",
+                  "message": "Tambah Rp326.500 untuk pakai promo",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 17440333,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "bottom_banner",
+                      "title": "Khusus Pelanggan PLUS",
+                      "icon": "USER",
+                      "validation_type": "",
+                      "methods": []
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 1 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 19131521,
+                  "code": "LTVC263111KBR04GJ8R",
+                  "title": "Cashback 3% hingga Rp200.000",
+                  "message": "Tambah Rp225.500 untuk pakai promo",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 18402147,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "\u003cb\u003ePengiriman PLUS/Bebas Ongkir\u003c/b\u003e tidak tersedia.",
+                      "icon": "NONE",
+                      "validation_type": "promo",
+                      "methods": [
+                        "Pengiriman Plus"
+                      ]
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 1 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 16568589,
+                  "code": "PLUSRG11KBRQ77QBCNJ",
+                  "title": "Diskon 5% hingga Rp100.000",
+                  "message": "Promo ini hanya berlaku untuk pembelian di toko Ruang Guru.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 15843804,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "bottom_banner",
+                      "title": "Khusus Pelanggan PLUS",
+                      "icon": "USER",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 18826892,
+                  "code": "VETTOPLUS11KBRNHRNJ",
+                  "title": "Diskon 4% hingga Rp100.000",
+                  "message": "Promo ini hanya berlaku untuk pembelian di toko Vetto Indonesia.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 18097467,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "bottom_banner",
+                      "title": "Khusus Pelanggan PLUS",
+                      "icon": "USER",
+                      "validation_type": "",
+                      "methods": []
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 1 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 18826892,
+                  "code": "VETTOPLUS11KBRLMC54",
+                  "title": "Diskon 4% hingga Rp100.000",
+                  "message": "Promo ini hanya berlaku untuk pembelian di toko Vetto Indonesia.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 18097467,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "bottom_banner",
+                      "title": "Khusus Pelanggan PLUS",
+                      "icon": "USER",
+                      "validation_type": "",
+                      "methods": []
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 1 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 16568589,
+                  "code": "PLUSRG11KBRFAU8E4G8",
+                  "title": "Diskon 5% hingga Rp100.000",
+                  "message": "Promo ini hanya berlaku untuk pembelian di toko Ruang Guru.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 15909523,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "bottom_banner",
+                      "title": "Khusus Pelanggan PLUS",
+                      "icon": "USER",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 18947673,
+                  "code": "RSSLHBS0511KBRD414J",
+                  "title": "Diskon 10% hingga Rp50.000",
+                  "message": "Promo ini hanya berlaku untuk pembelian di toko Russell Hobbs Indonesia.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 18337318,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 23 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 18680571,
+                  "code": "DCPLUS11KBRQ2V5P9PQ",
+                  "title": "Diskon 10% hingga Rp50.000",
+                  "message": "Promo ini hanya berlaku untuk pembelian di toko Dancow Official Store.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 17951223,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "bottom_banner",
+                      "title": "Khusus Pelanggan PLUS",
+                      "icon": "USER",
+                      "validation_type": "",
+                      "methods": []
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 1 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 18680571,
+                  "code": "DCPLUS11KBRXDGNRR72",
+                  "title": "Diskon 10% hingga Rp50.000",
+                  "message": "Promo ini hanya berlaku untuk pembelian di toko Dancow Official Store.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 17951223,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "bottom_banner",
+                      "title": "Khusus Pelanggan PLUS",
+                      "icon": "USER",
+                      "validation_type": "",
+                      "methods": []
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 1 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 18224154,
+                  "code": "MCPLUS11KBR9GTEU510",
+                  "title": "Diskon 10% hingga Rp50.000",
+                  "message": "Promo ini hanya berlaku untuk pembelian di toko Mothercare Official Shop.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 17496175,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "bottom_banner",
+                      "title": "Khusus Pelanggan PLUS",
+                      "icon": "USER",
+                      "validation_type": "",
+                      "methods": []
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 1 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 19046736,
+                  "code": "PLUSNOW211KBR5H1NHP",
+                  "title": "Cashback 15% hingga Rp50.000",
+                  "message": "Promo ini hanya berlaku untuk pembelian di toko Tokopedia NOW!.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 18323452,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "\u003cb\u003ePengiriman PLUS/Bebas Ongkir\u003c/b\u003e tidak tersedia.",
+                      "icon": "NONE",
+                      "validation_type": "promo",
+                      "methods": [
+                        "Pengiriman Plus"
+                      ]
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 18947659,
+                  "code": "WINIXSMC0511KBR6L9M",
+                  "title": "Diskon 100% hingga Rp40.000",
+                  "message": "Tambah Rp825.500 untuk pakai promo",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 18337277,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 23 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 18680695,
+                  "code": "ITPLUS2311KBRPMP73J",
+                  "title": "Cashback 4% hingga Rp35.000",
+                  "message": "Promo ini hanya berlaku untuk pembelian di toko ISKU Tools.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 18035483,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "bottom_banner",
+                      "title": "Khusus Pelanggan PLUS",
+                      "icon": "USER",
+                      "validation_type": "",
+                      "methods": []
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 1 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 18680695,
+                  "code": "ITPLUS2311KBRUXL0JQ",
+                  "title": "Cashback 4% hingga Rp35.000",
+                  "message": "Promo ini hanya berlaku untuk pembelian di toko ISKU Tools.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 18035483,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "bottom_banner",
+                      "title": "Khusus Pelanggan PLUS",
+                      "icon": "USER",
+                      "validation_type": "",
+                      "methods": []
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 1 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 10894039,
+                  "code": "NOWPLUS11KBR3BKKTN9",
+                  "title": "Cashback 10% hingga Rp25.000",
+                  "message": "Promo ini hanya berlaku untuk pembelian di toko Tokopedia NOW!.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 14214701,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "bottom_banner",
+                      "title": "Khusus Pelanggan PLUS",
+                      "icon": "USER",
+                      "validation_type": "",
+                      "methods": []
+                    },
+                    {
+                      "type": "promo_info",
+                      "title": "\u003cb\u003ePengiriman PLUS/Bebas Ongkir\u003c/b\u003e tidak tersedia.",
+                      "icon": "NONE",
+                      "validation_type": "promo",
+                      "methods": [
+                        "Pengiriman Plus"
+                      ]
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 5 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 19151033,
+                  "code": "PHILIPS1511KBRE1C4L",
+                  "title": "Diskon 15% hingga Rp20.000",
+                  "message": "Promo ini hanya berlaku untuk pembelian di toko Philips Lighting Store.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 18468347,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 26 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 18680636,
+                  "code": "MKKPLUS11KBRP15ACUL",
+                  "title": "Diskon 10% hingga Rp20.000",
+                  "message": "Promo ini hanya berlaku untuk pembelian di toko Makuku Official Store.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 17951286,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "bottom_banner",
+                      "title": "Khusus Pelanggan PLUS",
+                      "icon": "USER",
+                      "validation_type": "",
+                      "methods": []
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 1 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 18680636,
+                  "code": "MKKPLUS11KBR00M7066",
+                  "title": "Diskon 10% hingga Rp20.000",
+                  "message": "Promo ini hanya berlaku untuk pembelian di toko Makuku Official Store.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 17951286,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "bottom_banner",
+                      "title": "Khusus Pelanggan PLUS",
+                      "icon": "USER",
+                      "validation_type": "",
+                      "methods": []
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 1 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 11265768,
+                  "code": "PLUSSEHAT11KBRKG55B",
+                  "title": "Diskon 10% hingga Rp20.000",
+                  "message": "Promo ini hanya berlaku untuk pembelian di toko Tokopedia Sehat x Halodoc.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 13825180,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "bottom_banner",
+                      "title": "Khusus Pelanggan PLUS",
+                      "icon": "USER",
+                      "validation_type": "",
+                      "methods": []
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 20 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 11265768,
+                  "code": "PLUSSEHAT11KBRQT3PE",
+                  "title": "Diskon 10% hingga Rp20.000",
+                  "message": "Promo ini hanya berlaku untuk pembelian di toko Tokopedia Sehat x Halodoc.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 13825180,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "bottom_banner",
+                      "title": "Khusus Pelanggan PLUS",
+                      "icon": "USER",
+                      "validation_type": "",
+                      "methods": []
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 20 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 18224835,
+                  "code": "MOOIPLUS11KBRT8NNM2",
+                  "title": "Cashback 10% hingga Rp19.000",
+                  "message": "Promo ini hanya berlaku untuk pembelian di toko Mooi Official.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 17496268,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "bottom_banner",
+                      "title": "Khusus Pelanggan PLUS",
+                      "icon": "USER",
+                      "validation_type": "",
+                      "methods": []
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 1 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 18224876,
+                  "code": "UNIPLUS11KBRPVHELWM",
+                  "title": "Cashback 10% hingga Rp15.000",
+                  "message": "Promo ini hanya berlaku untuk pembelian di toko Unicharm Official Store.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 17496341,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "bottom_banner",
+                      "title": "Khusus Pelanggan PLUS",
+                      "icon": "USER",
+                      "validation_type": "",
+                      "methods": []
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 1 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 18473593,
+                  "code": "SMCDORAPR11KBRFMJDQ",
+                  "title": "Cashback hingga Rp15.000",
+                  "message": "Promo ini hanya berlaku untuk pembelian di toko Tokopedia NOW!.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 17764256,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "\u003cb\u003ePengiriman PLUS/Bebas Ongkir\u003c/b\u003e tidak tersedia.",
+                      "icon": "NONE",
+                      "validation_type": "promo",
+                      "methods": [
+                        "Pengiriman Plus"
+                      ]
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 1 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 18948119,
+                  "code": "TTK23MAY1711KBREJBM",
+                  "title": "Diskon hingga Rp10.000",
+                  "message": "Promo ini hanya berlaku untuk pembelian di toko Pronas Official Store.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 18218345,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 13 jam lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 18948114,
+                  "code": "TTK23MAY1611KBREA7L",
+                  "title": "Diskon Rp10.000",
+                  "message": "Promo ini hanya berlaku untuk pembelian di toko Pronas Official Store.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 18218341,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 13 jam lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 18476455,
+                  "code": "MAMAPLUS11KBRBAKEEX",
+                  "title": "Diskon 10% hingga Rp10.000",
+                  "message": "Promo ini hanya berlaku untuk pembelian di toko Mama's Choice ID.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 17747676,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "bottom_banner",
+                      "title": "Khusus Pelanggan PLUS",
+                      "icon": "USER",
+                      "validation_type": "",
+                      "methods": []
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 1 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 18476455,
+                  "code": "MAMAPLUS11KBR74RCHH",
+                  "title": "Diskon 10% hingga Rp10.000",
+                  "message": "Promo ini hanya berlaku untuk pembelian di toko Mama's Choice ID.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 17747676,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "bottom_banner",
+                      "title": "Khusus Pelanggan PLUS",
+                      "icon": "USER",
+                      "validation_type": "",
+                      "methods": []
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 1 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 18224790,
+                  "code": "LBPLUS11KBRFU37RR6N",
+                  "title": "Cashback 10% hingga Rp10.000",
+                  "message": "Promo ini hanya berlaku untuk pembelian di toko Libby Baby Official Shop.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "is_bebas_ongkir": false,
+                  "clashing_infos": [],
+                  "bo_clashing_infos": [],
+                  "additional_bo_datas": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 17496223,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "bottom_banner",
+                      "title": "Khusus Pelanggan PLUS",
+                      "icon": "USER",
+                      "validation_type": "",
+                      "methods": []
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 1 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "attempted_promo_code_error": {
+        "code": "",
+        "message": ""
+      },
+      "section_tabs": [
+        {
+          "id": "bebas_ongkir_plus",
+          "title": "Bebas Ongkir Plus"
+        },
+        {
+          "id": "my_coupons",
+          "title": "Kupon Saya"
+        },
+        {
+          "id": "merchant_vouchers",
+          "title": "Kupon Toko"
+        },
+        {
+          "id": "ineligible_coupons",
+          "title": "Belum Bisa Dipakai"
+        }
+      ],
+      "bottom_sheet": {
+        "title": "Promo dan Pengiriman PLUS",
+        "content_title": "Lebih mudah pilih Pengiriman PLUS di halaman promo",
+        "content_description": "\u003cul\u003e\u003cli\u003eKamu bisa bandingkan keuntungan pakai Pengiriman PLUS atau promo lainnya di satu halaman.\u003c/li\u003e\u003cli\u003eKalau lihat syarat promo seperti gambar di atas, pilih selain Pengiriman PLUS.\u003c/li\u003e\u003c/ul\u003e",
+        "image_url": "https://images.tokopedia.net/img/blog/promo/2022/08/PLUS-Introduction-Banner.png",
+        "button_txt": "Oke, Saya Mengerti"
+      }
+    }
+  }
+}

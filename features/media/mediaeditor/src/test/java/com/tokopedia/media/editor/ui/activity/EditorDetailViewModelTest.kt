@@ -11,6 +11,7 @@ import com.tokopedia.media.editor.domain.SetRemoveBackgroundUseCase
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorViewModel
 import com.tokopedia.media.editor.ui.uimodel.BitmapCreation
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
+import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.ui.uimodel.ProcessedBitmapModel
@@ -635,6 +636,26 @@ class EditorDetailViewModelTest {
 
         // Then
         assertEquals(false, isOverflow)
+    }
+
+    @Test
+    fun `check crop is success`() {
+        // Given
+        val source = ShadowBitmapFactory.create("", BitmapFactory.Options())
+        var resultSource: Bitmap? = null
+        val cropRotateData = EditorCropRotateUiModel(
+            offsetX = 10,
+            offsetY = 20,
+            imageWidth = 100,
+            imageHeight = 100
+        )
+
+        // When
+        every { bitmapCreationRepository.createBitmap(any()) } returns source
+        resultSource = viewModel.cropImage(source, cropRotateData)
+
+        // Then
+        assertNotNull(resultSource)
     }
 
     companion object {

@@ -256,7 +256,7 @@ class MilestoneViewHolder(
     private fun showTimerMoreThanNineDays(deadlineMillis: Long) {
         successStateBinding?.run {
             val timerBackground =
-                root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_T100)
+                root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_TN50)
             timerShcMilestone.setBackgroundColor(timerBackground)
             timerShcMilestone.timerVariant = TimerUnifySingle.VARIANT_INFORMATIVE
             timerShcMilestone.timerFormat = TimerUnifySingle.FORMAT_DAY
@@ -269,7 +269,7 @@ class MilestoneViewHolder(
     private fun showTimerLastNineDays(deadlineMillis: Long) {
         successStateBinding?.run {
             val timerBackground =
-                root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Y400)
+                root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_YN400)
             timerShcMilestone.setBackgroundColor(timerBackground)
             timerShcMilestone.timerFormat = TimerUnifySingle.FORMAT_DAY
             timerShcMilestone.targetDate = Calendar.getInstance().apply {
@@ -281,7 +281,7 @@ class MilestoneViewHolder(
     private fun showTimerLastFourDays(deadlineMillis: Long) {
         successStateBinding?.run {
             val timerBackground =
-                root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_R500)
+                root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_RN500)
             timerShcMilestone.setBackgroundColor(timerBackground)
             timerShcMilestone.timerFormat = TimerUnifySingle.FORMAT_DAY
             timerShcMilestone.targetDate = Calendar.getInstance().apply {
@@ -293,7 +293,7 @@ class MilestoneViewHolder(
     private fun setupCountDownTimer(deadlineMillis: Long) {
         successStateBinding?.run {
             val timerBackground =
-                root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_R500)
+                root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_RN500)
             timerShcMilestone.setBackgroundColor(timerBackground)
             timerShcMilestone.timerFormat = TimerUnifySingle.FORMAT_HOUR
             timerShcMilestone.targetDate = Calendar.getInstance().apply {
@@ -337,7 +337,7 @@ class MilestoneViewHolder(
                     listener.sendMilestoneWidgetCtaClickEvent()
                 }
                 val iconColor = root.context.getResColor(
-                    com.tokopedia.unifyprinciples.R.color.Unify_G400
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 )
                 val iconWidth = root.context.resources.getDimension(
                     com.tokopedia.unifyprinciples.R.dimen.layout_lvl3

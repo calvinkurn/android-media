@@ -4,6 +4,8 @@ apply plugin: 'io.hansel.preprocessor.module'
 apply from: "../../compile-instrument-test.gradle"
 
 android{
+    namespace 'com.tokopedia.watch'
+    testNamespace 'com.tokopedia.watch.test'
     packagingOptions {
         exclude 'META-INF/**'
     }
@@ -35,11 +37,15 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.watch'
+    testNamespace 'com.tokopedia.watch.test'
+}
+
 dependencies {
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.applink)

@@ -7,7 +7,6 @@ import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaul
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.model.AtfData
 import com.tokopedia.home.beranda.domain.model.*
-import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
@@ -20,7 +19,6 @@ import com.tokopedia.home.constant.AtfKey.TYPE_BANNER
 import com.tokopedia.home.constant.AtfKey.TYPE_CHANNEL
 import com.tokopedia.home.constant.AtfKey.TYPE_ICON
 import com.tokopedia.home.constant.AtfKey.TYPE_TICKER
-import com.tokopedia.home_component.HomeComponentRollenceController
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.DynamicIconComponent
@@ -385,8 +383,8 @@ class HomeVisitableFactoryImpl(
                         dimenMarginTop = com.tokopedia.home_component.R.dimen.home_banner_default_margin_vertical_design,
                         dimenMarginBottom = com.tokopedia.home_component.R.dimen.home_banner_default_margin_vertical_design,
                         cardInteraction = true,
-                        enableDotsAndInfiniteScroll = HomeComponentRollenceController.isHPBUsingDotsAndInfiniteScroll(),
-                        scrollTransitionDuration = HomeComponentRollenceController.getHPBDuration()
+                        enableDotsAndInfiniteScroll = true,
+                        scrollTransitionDuration = BannerDataModel.NEW_IDLE_DURATION
                     )
                 )
             }
@@ -394,41 +392,43 @@ class HomeVisitableFactoryImpl(
     }
 
     private fun addHomePageBannerAtf2Data(bannerDataModel: com.tokopedia.home.beranda.domain.model.banner.BannerDataModel?, index: Int) {
-        if (!isCache) {
-            bannerDataModel?.let {
-                val channelModel = ChannelModel(
-                    verticalPosition = index,
-                    channelGrids = it.slides?.map {
-                        ChannelGrid(
-                            applink = it.applink,
-                            campaignCode = it.campaignCode,
-                            id = it.id.toString(),
-                            imageUrl = it.imageUrl,
-                            attribution = it.creativeName,
-                            persona = it.persona,
-                            categoryPersona = it.categoryPersona,
-                            brandId = it.brandId,
-                            categoryId = it.categoryId
-                        )
-                    } ?: listOf(),
-                    groupId = "",
-                    id = "",
-                    trackingAttributionModel = TrackingAttributionModel(
-                        promoName = String.format(
-                            PROMO_NAME_BANNER_CAROUSEL,
-                            (index + 1).toString(),
-                            VALUE_BANNER_DEFAULT
-                        )
+        bannerDataModel?.let {
+            val channelModel = ChannelModel(
+                verticalPosition = index,
+                channelGrids = mapIntoGrids(it),
+                groupId = "",
+                id = "",
+                trackingAttributionModel = TrackingAttributionModel(
+                    promoName = String.format(
+                        PROMO_NAME_BANNER_CAROUSEL,
+                        (index + 1).toString(),
+                        VALUE_BANNER_DEFAULT
                     )
                 )
-                visitableList.add(
-                    BannerRevampDataModel(
-                        channelModel = channelModel,
-                        isCache = isCache
-                    )
+            )
+            visitableList.add(
+                BannerRevampDataModel(
+                    channelModel = channelModel,
+                    isCache = isCache
                 )
-            }
+            )
         }
+    }
+
+    private fun mapIntoGrids(bannerDataModel: com.tokopedia.home.beranda.domain.model.banner.BannerDataModel): List<ChannelGrid> {
+        return bannerDataModel.slides.takeIf { !isCache }?.map {
+            ChannelGrid(
+                applink = it.applink,
+                campaignCode = it.campaignCode,
+                id = it.id.toString(),
+                imageUrl = it.imageUrl,
+                attribution = it.creativeName,
+                persona = it.persona,
+                categoryPersona = it.categoryPersona,
+                brandId = it.brandId,
+                categoryId = it.categoryId
+            )
+        }.orEmpty()
     }
 
     override fun build(): List<Visitable<*>> = visitableList

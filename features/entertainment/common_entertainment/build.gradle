@@ -4,6 +4,8 @@ apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'kotlin-parcelize'
 
 android {
+    namespace 'com.tokopedia.common_entertainment'
+    testNamespace 'com.tokopedia.common_entertainment.test'
     buildFeatures {
         viewBinding true
     }
@@ -24,7 +26,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.converterGson
     implementation rootProject.ext.miscDependencies.gson
 
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     androidTestImplementation rootProject.ext.miscDependencies.dagger
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler

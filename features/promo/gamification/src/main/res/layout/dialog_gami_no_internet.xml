@@ -35,7 +35,7 @@
         android:layout_marginTop="@dimen/dp_18"
         android:gravity="center_horizontal"
         android:text="@string/gami_no_internet_title"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyType="heading_2"
         app:typographyWeight="bold" />
 
@@ -45,7 +45,7 @@
         android:layout_marginTop="8dp"
         android:gravity="center"
         android:text="@string/gami_no_internet_message"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:typographyType="body_3"
         app:typographyWeight="reguler" />
 

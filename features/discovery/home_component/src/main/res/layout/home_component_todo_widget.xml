@@ -74,7 +74,7 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/container_todo_widget_item"
-        tools:background="@color/Unify_B500"
+        tools:background="@color/Unify_BN500"
         tools:layout_height="8dp"
         tools:visibility="visible" />
 

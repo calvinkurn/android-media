@@ -15,6 +15,7 @@ import androidx.work.Configuration;
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.relic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
+import com.tokopedia.analytics.performance.fpi.FrameMetricsMonitoring;
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.analyticsdebugger.cassava.data.RemoteSpec;
@@ -122,22 +123,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         initEmbrace();
 
         if (GlobalConfig.isAllowDebuggingTools()) {
-            new Cassava.Builder(this)
-                    .setRemoteValidator(new RemoteSpec() {
-                        @NonNull
-                        @Override
-                        public String getUrl() {
-                            return TokopediaUrl.getInstance().getAPI();
-                        }
-
-                        @NonNull
-                        @Override
-                        public String getToken() {
-                            return  getString(com.tokopedia.keys.R.string.thanos_token_key);
-                        }
-                    })
-                    .setLocalRootPath("tracker")
-                    .initialize();
+            initCassava();
         }
         TrackApp.initTrackApp(this);
 
@@ -160,9 +146,31 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         setEmbraceUserId();
         EmbraceMonitoring.INSTANCE.setCarrierProperties(this);
 
-        showDevOptNotification();
-        initDevMonitoringTools();
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            showDevOptNotification();
+            initDevMonitoringTools();
+        }
     }
+
+    private void initCassava() {
+        new Cassava.Builder(this)
+                .setRemoteValidator(new RemoteSpec() {
+                    @NonNull
+                    @Override
+                    public String getUrl() {
+                        return TokopediaUrl.getInstance().getAPI();
+                    }
+
+                    @NonNull
+                    @Override
+                    public String getToken() {
+                        return  getString(com.tokopedia.keys.R.string.thanos_token_key);
+                    }
+                })
+                .setLocalRootPath("tracker")
+                .initialize();
+    }
+
     private TkpdAuthenticatorGql getAuthenticator() {
         return new TkpdAuthenticatorGql(this, this, new UserSession(context), new RefreshTokenGql());
     }
@@ -306,6 +314,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
             registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
             registerActivityLifecycleCallbacks(new DevOptsSubscriber());
             registerActivityLifecycleCallbacks(new JourneySubscriber());
+            registerActivityLifecycleCallbacks(new FrameMetricsMonitoring(this));
         }
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
         registerActivityLifecycleCallbacks(new MediaLoaderActivityLifecycle(this));

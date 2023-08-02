@@ -20,7 +20,7 @@ abstract class HomeDatabase: RoomDatabase() {
     abstract fun homeDao(): HomeDao
     companion object{
         const val homeDatabase = "HomeCache.db"
-        const val homeVersion = 9
+        const val homeVersion = 10
 
         @Volatile private var INSTANCE: HomeDatabase? = null
 
