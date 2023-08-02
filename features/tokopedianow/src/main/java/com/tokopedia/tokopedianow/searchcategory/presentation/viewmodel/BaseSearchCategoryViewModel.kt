@@ -479,7 +479,9 @@ abstract class BaseSearchCategoryViewModel(
 
         val isEmptyProductList = contentDataView.aceSearchProductData.productList.isEmpty()
 
-        initFilterController(headerDataView)
+        if (dynamicFilterModelLiveData.value == null) {
+            initFilterController(headerDataView)
+        }
         createVisitableListFirstPage(headerDataView, contentDataView, isEmptyProductList)
         processEmptyState(isEmptyProductList)
         if (getKeywordForGeneralSearchTracking().isNotEmpty()) {
@@ -686,13 +688,17 @@ abstract class BaseSearchCategoryViewModel(
         queryParamMutable.putAll(filterController.getParameter())
     }
 
-    open fun onViewReloadPage() {
+    open fun onViewReloadPage(
+        isDynamicFilterRemoved: Boolean = true
+    ) {
+        if (isDynamicFilterRemoved) {
+            dynamicFilterModelMutableLiveData.value = null
+        }
         totalData = 0
         totalFetchedData = 0
         nextPage = 1
         chooseAddressData = chooseAddressWrapper.getChooseAddressData()
         chooseAddressDataView = ChooseAddressDataView(chooseAddressData)
-        dynamicFilterModelMutableLiveData.value = null
         isFeedbackFieldVisible = false
         showLoading()
         processLoadDataPage()
@@ -704,7 +710,6 @@ abstract class BaseSearchCategoryViewModel(
         nextPage = 1
         chooseAddressData = chooseAddressWrapper.getChooseAddressData()
         chooseAddressDataView = ChooseAddressDataView(chooseAddressData)
-        dynamicFilterModelMutableLiveData.value = null
 
         showProgressBar()
         processLoadDataPage()
@@ -1020,6 +1025,7 @@ abstract class BaseSearchCategoryViewModel(
 
     open fun onViewClickCategoryFilterChip(option: Option, isSelected: Boolean) {
         resetSortFilterIfExclude(option)
+        filterController.refreshMapParameter(queryParam)
         filter(option, isSelected)
     }
 
@@ -1031,14 +1037,24 @@ abstract class BaseSearchCategoryViewModel(
         queryParamMutable.remove(option.key)
         queryParamMutable.entries.retainAll { it.isNotFilterAndSortKey() }
         queryParamMutable[SearchApiConst.OB] = DEFAULT_VALUE_OF_PARAMETER_SORT
-        filterController.refreshMapParameter(queryParam)
+    }
+
+    private fun resetSortFilterIfPminPmax(option: Option) {
+        val isOptionKeyHasPminPmax = option.key == SearchApiConst.PMIN || option.key == SearchApiConst.PMAX
+
+        if (!isOptionKeyHasPminPmax) return
+
+        queryParamMutable.remove(SearchApiConst.PMIN)
+        queryParamMutable.remove(SearchApiConst.PMAX)
     }
 
     open fun onViewApplySortFilter(applySortFilterModel: ApplySortFilterModel) {
         filterController.refreshMapParameter(applySortFilterModel.mapParameter)
         refreshQueryParamFromFilterController()
 
-        onViewReloadPage()
+        onViewReloadPage(
+            isDynamicFilterRemoved = false
+        )
     }
 
     open fun onViewGetProductCount(mapParameter: Map<String, String>) {
@@ -1314,6 +1330,8 @@ abstract class BaseSearchCategoryViewModel(
 
     fun onViewRemoveFilter(option: Option) {
         resetSortFilterIfExclude(option)
+        resetSortFilterIfPminPmax(option)
+        filterController.refreshMapParameter(queryParam)
         filter(option, false)
     }
 
