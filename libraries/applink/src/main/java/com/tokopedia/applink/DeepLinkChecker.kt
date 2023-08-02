@@ -68,6 +68,7 @@ object DeepLinkChecker {
     const val NOW_RECIPE = 45
     const val EPHARMACY = 46
     const val NOW_HOME = 47
+    const val STORIES = 48
 
     private val deeplinkMatcher: DeeplinkMatcher by lazy { DeeplinkMatcher() }
 
