@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.goToFirst
 import com.tokopedia.kotlin.extensions.view.moveTo
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatAdminNoAccessUiModel
@@ -240,9 +239,10 @@ class ChatListAdapter constructor(
     }
 
     private fun findElementFinalIndex(element: ItemChatListPojo, offset: Int): Int {
-        if (offset < 0 || offset >= visitables.size) return RecyclerView.NO_POSITION
+        val newOffset = calculateOffsetPinChat(offset)
+        if (newOffset < 0 || newOffset >= visitables.size) return RecyclerView.NO_POSITION
         var finalIndex = RecyclerView.NO_POSITION
-        for (i in offset until visitables.size) {
+        for (i in newOffset until visitables.size) {
             val chat = visitables[i]
             if (chat is ItemChatListPojo) {
                 val itemChatTimeStamp = chat.lastReplyTime
@@ -254,6 +254,20 @@ class ChatListAdapter constructor(
             }
         }
         return finalIndex
+    }
+
+    private fun calculateOffsetPinChat(offset: Int): Int {
+        var newOffset = offset
+        run loop@{
+            visitables.forEach {
+                if (it !is ItemChatListPojo) {
+                    newOffset++
+                } else {
+                    return@loop
+                }
+            }
+        }
+        return newOffset
     }
 
     fun findChat(newChat: IncomingChatWebSocketModel): Int {
