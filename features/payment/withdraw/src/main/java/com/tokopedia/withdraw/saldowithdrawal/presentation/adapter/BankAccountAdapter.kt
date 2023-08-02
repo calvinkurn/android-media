@@ -94,7 +94,7 @@ class BankAccountAdapter(private val withdrawAnalytics: WithdrawAnalytics,
     }
 
     private fun onBankAccountSelected(newSelectedBankAccount: BankAccount) {
-        if ((newSelectedBankAccount.isGopay() && !newSelectedBankAccount.isGopayEligible())) return
+        if (newSelectedBankAccount.isGopay() && !newSelectedBankAccount.isGopayEligible()) return
 
         if (::currentSelectedBankAccount.isInitialized) {
             if (currentSelectedBankAccount == newSelectedBankAccount) {
