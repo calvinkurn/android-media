@@ -86,8 +86,8 @@ class VoucherCardView @JvmOverloads constructor(
         drawLeftCircleCut(canvas)
         drawRightCircleCut(canvas)
 
-        drawTopBackground(canvas)
-        drawBottomBackground(canvas)
+        drawBackground(canvas)
+        drawExpiredDateBackground(canvas)
     }
 
     override fun dispatchDraw(canvas: Canvas?) {
@@ -133,7 +133,7 @@ class VoucherCardView @JvmOverloads constructor(
         canvas?.drawPath(cardViewBorderPath, cardViewBorder)
     }
 
-    private fun drawTopBackground(canvas: Canvas?) {
+    private fun drawBackground(canvas: Canvas?) {
         canvas?.drawRoundRect(
             0f,
             0f,
@@ -145,7 +145,7 @@ class VoucherCardView @JvmOverloads constructor(
         )
     }
 
-    private fun drawBottomBackground(canvas: Canvas?) {
+    private fun drawExpiredDateBackground(canvas: Canvas?) {
         canvas?.drawRoundRect(
             0f,
             (height - voucherExpiryDateHeightPx) + (voucherCircleMarginBottomPX/2) - 4f.toPx(),
