@@ -3,6 +3,7 @@ package com.tokopedia.stories
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.stories.databinding.ActivityStoriesBinding
+import timber.log.Timber
 
 class StoriesActivity : BaseActivity() {
 
@@ -25,7 +26,8 @@ class StoriesActivity : BaseActivity() {
         val data = intent.data ?: return
         val pathSegment = data.pathSegments
         val shopId = pathSegment[1]
-        val storiesId = pathSegment[2]
+        val storiesId = if (pathSegment.size > 2) pathSegment[2] else ""
+        Timber.d("data ${"$shopId - $storiesId"}")
     }
 
     override fun onDestroy() {
