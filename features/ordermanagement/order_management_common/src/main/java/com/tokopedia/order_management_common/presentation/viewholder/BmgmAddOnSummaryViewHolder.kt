@@ -4,7 +4,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
@@ -57,7 +56,7 @@ class BmgmAddOnSummaryViewHolder(
             val dividerDrawable = try {
                 MethodChecker.getDrawable(
                     root.context,
-                    R.drawable.om_detail_add_on_divider
+                    R.drawable.om_detail_add_on_dash_divider
                 )
             } catch (t: Throwable) {
                 null

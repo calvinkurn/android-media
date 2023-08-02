@@ -66,4 +66,26 @@
         app:typographyType="body_3"
         tools:text="43 Size. Packing rapi plis." />
 
+    <View
+        android:id="@+id/dividerAddOn"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/om_detail_add_on_dash_divider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/layoutProductAddOn"
+        app:layout_constraintTop_toBottomOf="@id/tv_item_order_bmgm_product_note"
+        app:layout_constraintVertical_bias="0" />
+
+    <include
+        android:id="@+id/layoutProductAddOn"
+        layout="@layout/partial_bmgm_add_on_summary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dividerAddOn" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

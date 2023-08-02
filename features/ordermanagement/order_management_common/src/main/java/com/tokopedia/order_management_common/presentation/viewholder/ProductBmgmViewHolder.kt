@@ -95,17 +95,9 @@ class ProductBmgmViewHolder(
 
     private fun RecyclerView.setupRecyclerViewItemDecoration() {
         if (itemDecorationCount == Int.ZERO) {
-            val dividerDrawable = try {
-                MethodChecker.getDrawable(
-                    context,
-                    com.tokopedia.order_management_common.R.drawable.om_detail_add_on_divider
-                )
-            } catch (t: Throwable) {
-                null
-            }
             addItemDecoration(
                 RecyclerViewItemDivider(
-                    dividerDrawable,
+                    null,
                     ITEM_DECORATION_VERTICAL_MARGIN.toPx(),
                     ITEM_DECORATION_VERTICAL_MARGIN.toPx()
                 )

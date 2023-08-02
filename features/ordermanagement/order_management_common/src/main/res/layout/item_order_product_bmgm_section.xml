@@ -100,6 +100,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             tools:text="Harga ini belum termasuk potongan Rp500.000"/>
 
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.tokopedia.unifycomponents.CardUnify>
