@@ -32,6 +32,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderInsurance
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderShipment
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageToaster
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
@@ -67,8 +68,10 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveA
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrder
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
@@ -1318,6 +1321,47 @@ class CheckoutViewModel @Inject constructor(
             }
         }
         return null
+    }
+
+    fun validateClearAllBoPromo(lastValidateUsePromoRequest: ValidateUsePromoRequest, promoUiModel: PromoUiModel) {
+        viewModelScope.launch(dispatchers.immediate) {
+            val checkoutItems = listData.value.toMutableList()
+            for ((index, checkoutItem) in checkoutItems.withIndex()) {
+                if (checkoutItem is CheckoutOrderModel) {
+                    val logPromoCode =
+                        checkoutItem.shipment.courierItemData?.selectedShipper?.logPromoCode
+                    if (!logPromoCode.isNullOrEmpty()) {
+                        for (order in lastValidateUsePromoRequest.orders) {
+                            if (order.cartStringGroup == checkoutItem.cartStringGroup && !order.codes.contains(
+                                    logPromoCode
+                                )
+                            ) {
+                                promoProcessor.clearPromo(
+                                    ClearPromoOrder(
+                                        checkoutItem.boUniqueId,
+                                        checkoutItem.boMetadata.boType,
+                                        arrayListOf(logPromoCode),
+                                        checkoutItem.shopId,
+                                        checkoutItem.isProductIsPreorder,
+                                        checkoutItem.products.first().preOrderDurationDay.toString(),
+                                        checkoutItem.fulfillmentId,
+                                        checkoutItem.cartStringGroup
+                                    )
+                                )
+                                // reset shipment
+                                checkoutItems[index] =
+                                    checkoutItem.copy(shipment = CheckoutOrderShipment())
+                            }
+                        }
+                    }
+                }
+                if (checkoutItem is CheckoutPromoModel) {
+                    checkoutItems[index] = checkoutItem.copy(promo = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel))
+                }
+            }
+            listData.value = checkoutItems
+            validatePromo()
+        }
     }
 
     companion object {

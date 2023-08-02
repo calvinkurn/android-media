@@ -102,9 +102,14 @@ import com.tokopedia.purchase_platform.common.analytics.EPharmacyAnalytics
 import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics
 import com.tokopedia.purchase_platform.common.constant.ARGS_BBO_PROMO_CODES
 import com.tokopedia.purchase_platform.common.constant.ARGS_CHOSEN_ADDRESS
+import com.tokopedia.purchase_platform.common.constant.ARGS_CLEAR_PROMO_RESULT
+import com.tokopedia.purchase_platform.common.constant.ARGS_FINISH_ERROR
+import com.tokopedia.purchase_platform.common.constant.ARGS_LAST_VALIDATE_USE_REQUEST
 import com.tokopedia.purchase_platform.common.constant.ARGS_PAGE_SOURCE
+import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_ERROR
 import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_MVC_LOCK_COURIER_FLOW
 import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
+import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_DATA_RESULT
 import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant
@@ -125,7 +130,11 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Avail
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.UnavailableBottomSheetData
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.utils.animateGone
 import com.tokopedia.purchase_platform.common.utils.animateShow
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -2267,61 +2276,61 @@ class CheckoutFragment :
     // endregion
 
     private fun onResultFromPromo(resultCode: Int, data: Intent?) {
-//        if (resultCode == Activity.RESULT_OK) {
-//            if (data!!.getStringExtra(ARGS_PROMO_ERROR) != null && data.getStringExtra(
-//                    ARGS_PROMO_ERROR
-//                ) == ARGS_FINISH_ERROR && activity != null
-//            ) {
-//                activity!!.finish()
-//            } else {
+        if (resultCode == Activity.RESULT_OK) {
+            if (data!!.getStringExtra(ARGS_PROMO_ERROR) != null && data.getStringExtra(
+                    ARGS_PROMO_ERROR
+                ) == ARGS_FINISH_ERROR && activity != null
+            ) {
+                activity!!.finish()
+            } else {
 //                shipmentViewModel.couponStateChanged = true
-//                val validateUsePromoRequest =
-//                    data.getParcelableExtra<ValidateUsePromoRequest>(ARGS_LAST_VALIDATE_USE_REQUEST)
-//                if (validateUsePromoRequest != null) {
-//                    var stillHasPromo = false
-//                    for (promoGlobalCode in validateUsePromoRequest.codes) {
-//                        if (promoGlobalCode.isNotEmpty()) {
-//                            stillHasPromo = true
-//                            break
-//                        }
-//                    }
-//                    if (!stillHasPromo) {
-//                        for (order in validateUsePromoRequest.orders) {
-//                            for (promoMerchantCode in order.codes) {
-//                                if (promoMerchantCode.isNotEmpty()) {
-//                                    stillHasPromo = true
-//                                    break
-//                                }
-//                            }
-//                        }
-//                    }
-//                    val validateUsePromoRevampUiModel =
-//                        data.getParcelableExtra<ValidateUsePromoRevampUiModel>(
-//                            ARGS_VALIDATE_USE_DATA_RESULT
-//                        )
-//                    if (validateUsePromoRevampUiModel != null) {
-//                        for (voucherOrdersItemUiModel in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
-//                            for (order in validateUsePromoRequest.orders) {
-//                                if (voucherOrdersItemUiModel.uniqueId == order.uniqueId && voucherOrdersItemUiModel.isTypeLogistic()) {
-//                                    order.codes.remove(voucherOrdersItemUiModel.code)
-//                                    order.boCode = ""
-//                                }
-//                            }
-//                        }
-//                    }
+                val validateUsePromoRequest =
+                    data.getParcelableExtra<ValidateUsePromoRequest>(ARGS_LAST_VALIDATE_USE_REQUEST)
+                if (validateUsePromoRequest != null) {
+                    var stillHasPromo = false
+                    for (promoGlobalCode in validateUsePromoRequest.codes) {
+                        if (promoGlobalCode.isNotEmpty()) {
+                            stillHasPromo = true
+                            break
+                        }
+                    }
+                    if (!stillHasPromo) {
+                        for (order in validateUsePromoRequest.orders) {
+                            for (promoMerchantCode in order.codes) {
+                                if (promoMerchantCode.isNotEmpty()) {
+                                    stillHasPromo = true
+                                    break
+                                }
+                            }
+                        }
+                    }
+                    val validateUsePromoRevampUiModel =
+                        data.getParcelableExtra<ValidateUsePromoRevampUiModel>(
+                            ARGS_VALIDATE_USE_DATA_RESULT
+                        )
+                    if (validateUsePromoRevampUiModel != null) {
+                        for (voucherOrdersItemUiModel in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
+                            for (order in validateUsePromoRequest.orders) {
+                                if (voucherOrdersItemUiModel.uniqueId == order.uniqueId && voucherOrdersItemUiModel.isTypeLogistic()) {
+                                    order.codes.remove(voucherOrdersItemUiModel.code)
+                                    order.boCode = ""
+                                }
+                            }
+                        }
+                    }
 //                    shipmentViewModel.setLastValidateUseRequest(validateUsePromoRequest)
-//                    if (!stillHasPromo) {
+                    if (!stillHasPromo) {
 //                        doResetButtonPromoCheckout()
-//                    }
-//                }
-//                val validateUsePromoRevampUiModel =
-//                    data.getParcelableExtra<ValidateUsePromoRevampUiModel>(
-//                        ARGS_VALIDATE_USE_DATA_RESULT
-//                    )
-//                var reloadedUniqueIds = java.util.ArrayList<String>()
-//                if (validateUsePromoRevampUiModel != null) {
-//                    val messageInfo =
-//                        validateUsePromoRevampUiModel.promoUiModel.additionalInfoUiModel.errorDetailUiModel.message
+                    }
+                }
+                val validateUsePromoRevampUiModel =
+                    data.getParcelableExtra<ValidateUsePromoRevampUiModel>(
+                        ARGS_VALIDATE_USE_DATA_RESULT
+                    )
+                var reloadedUniqueIds = ArrayList<String>()
+                if (validateUsePromoRevampUiModel != null) {
+                    val messageInfo =
+                        validateUsePromoRevampUiModel.promoUiModel.additionalInfoUiModel.errorDetailUiModel.message
 //                    shipmentViewModel.validateUsePromoRevampUiModel =
 //                        validateUsePromoRevampUiModel
 //                    doUpdateButtonPromoCheckout(validateUsePromoRevampUiModel.promoUiModel)
@@ -2340,13 +2349,13 @@ class CheckoutFragment :
 //                    doSetPromoBenefit(
 //                        validateUsePromoRevampUiModel.promoUiModel.benefitSummaryInfoUiModel.summaries
 //                    )
-//                }
-//                val clearPromoUiModel =
-//                    data.getParcelableExtra<ClearPromoUiModel>(ARGS_CLEAR_PROMO_RESULT)
-//                if (clearPromoUiModel != null) {
-//                    val promoUiModel = PromoUiModel()
-//                    promoUiModel.titleDescription =
-//                        clearPromoUiModel.successDataModel.defaultEmptyPromoMessage
+                }
+                val clearPromoUiModel =
+                    data.getParcelableExtra<ClearPromoUiModel>(ARGS_CLEAR_PROMO_RESULT)
+                if (clearPromoUiModel != null) {
+                    val promoUiModel = PromoUiModel()
+                    promoUiModel.titleDescription =
+                        clearPromoUiModel.successDataModel.defaultEmptyPromoMessage
 //                    val tickerAnnouncementHolderData =
 //                        shipmentViewModel.tickerAnnouncementHolderData.value
 //                    if (clearPromoUiModel.successDataModel.tickerMessage.isNotEmpty()) {
@@ -2358,18 +2367,13 @@ class CheckoutFragment :
 //                    }
 //                    doUpdateButtonPromoCheckout(promoUiModel)
 //                    shipmentViewModel.validateUsePromoRevampUiModel = null
-//                    shipmentViewModel.validateClearAllBoPromo()
+                    if (validateUsePromoRequest != null) {
+                        viewModel.validateClearAllBoPromo(validateUsePromoRequest, promoUiModel)
+                    }
 //                    shipmentAdapter.checkHasSelectAllCourier(false, -1, "", false, false)
-//                }
-//                val requiredToReloadRatesForMvcCourier =
-//                    data.getBooleanExtra(ARGS_PROMO_MVC_LOCK_COURIER_FLOW, false)
-//                val appliedMvcCartStrings =
-//                    data.getStringArrayListExtra(ARGS_APPLIED_MVC_CART_STRINGS)
-//                if (requiredToReloadRatesForMvcCourier) {
-//                    reloadCourierForMvc(appliedMvcCartStrings, reloadedUniqueIds)
-//                }
-//            }
-//        }
+                }
+            }
+        }
     }
 
     private fun releaseBookingIfAny() {

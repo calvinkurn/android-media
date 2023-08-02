@@ -349,6 +349,7 @@ class CheckoutOrderViewHolder(
             if (!order.isStateHasLoadCourierState) {
                 val position = bindingAdapterPosition
                 if (position != RecyclerView.NO_POSITION) {
+                    order.isStateHasLoadCourierState = true
                     listener.onLoadShippingState(order, position)
 //                            loadCourierStateData(
 //                                shipmentCartItemModel,

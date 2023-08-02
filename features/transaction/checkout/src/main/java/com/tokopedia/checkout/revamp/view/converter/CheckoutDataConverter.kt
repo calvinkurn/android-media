@@ -16,7 +16,6 @@ import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
-import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
@@ -196,7 +195,7 @@ class CheckoutDataConverter @Inject constructor() {
             }
             checkoutItems.addAll(products)
 //            cartItemModels.lastOrNull()?.isLastItemInOrder = true
-//            val fobject = levelUpParametersFromProductToCartSeller(cartItemModels)
+            val fobject = levelUpParametersFromProductToCartSeller(products)
             val order = CheckoutOrderModel(
                 cartStringGroup = groupShop.cartString,
                 groupType = groupShop.groupType,
@@ -255,9 +254,9 @@ class CheckoutDataConverter @Inject constructor() {
                 validationMetadata = groupShop.scheduleDelivery.validationMetadata,
                 ratesValidationFlow = groupShop.ratesValidationFlow,
                 addOnDefaultTo = receiverName,
-//                isProductFcancelPartial = fobject.isFcancelPartial == 1,
+                isProductFcancelPartial = fobject.isFcancelPartial == 1,
                 products = products,
-//                isProductIsPreorder = fobject.isPreOrder == 1,
+                isProductIsPreorder = fobject.isPreOrder == 1,
                 isTokoNow = shop.isTokoNow,
                 shopTickerTitle = shop.shopTickerTitle,
                 shopTicker = shop.shopTicker,
@@ -380,7 +379,7 @@ class CheckoutDataConverter @Inject constructor() {
         return addOnWordingModel
     }
 
-    private fun levelUpParametersFromProductToCartSeller(cartItemList: List<CartItemModel>): Fobject {
+    private fun levelUpParametersFromProductToCartSeller(cartItemList: ArrayList<CheckoutProductModel>): Fobject {
         var isPreOrder = 0
         var isFcancelPartial = 0
         var isFinsurance = 0
