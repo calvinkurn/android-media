@@ -315,6 +315,10 @@ class CheckoutViewModel @Inject constructor(
         }
     }
 
+    fun isLoading(): Boolean {
+        return listData.value.indexOfFirst { it is CheckoutOrderModel && it.shipment.isLoading } != -1
+    }
+
     fun changeAddress(
         newRecipientAddressModel: RecipientAddressModel?,
         chosenAddressModel: ChosenAddressModel?,
@@ -733,7 +737,7 @@ class CheckoutViewModel @Inject constructor(
                         orderModel.cartStringGroup,
                         validateUsePromoRequest,
                         result.first.logPromoCode!!,
-                        true,
+                        false,
                         result.first,
                         result.second
                     )
@@ -784,6 +788,7 @@ class CheckoutViewModel @Inject constructor(
         insurance: InsuranceData
     ) {
         viewModelScope.launch(dispatchers.immediate) {
+            pageState.value = CheckoutPageState.Loading
             val checkoutItems = listData.value.toMutableList()
             val checkoutOrderModel = checkoutItems[cartPosition] as CheckoutOrderModel
             val shipment = checkoutOrderModel.shipment
@@ -851,7 +856,8 @@ class CheckoutViewModel @Inject constructor(
                 newOrder,
                 listData.value.address()!!.recipientAddressModel
             )
-            calculateTotal()
+            validatePromo()
+            pageState.value = CheckoutPageState.Normal
         }
     }
 
@@ -877,6 +883,21 @@ class CheckoutViewModel @Inject constructor(
         return ArrayList(promoProcessor.bboPromoCodes)
     }
 
+    private suspend fun validatePromo() {
+        val checkoutItems = listData.value
+        val newItems = promoProcessor.validateUse(
+            promoProcessor.generateValidateUsePromoRequest(
+                checkoutItems,
+                isTradeIn,
+                isTradeInByDropOff,
+                isOneClickShipment
+            ),
+            checkoutItems
+        )
+        listData.value = newItems
+        calculateTotal()
+    }
+
     fun doValidateUseLogisticPromoNew(
         cartPosition: Int,
         cartString: String,
@@ -886,8 +907,9 @@ class CheckoutViewModel @Inject constructor(
         courierItemData: CourierItemData,
         insurance: InsuranceData
     ) {
-        viewModelScope.launch {
+        viewModelScope.launch(dispatchers.main) {
             if (showLoading) {
+                pageState.value = CheckoutPageState.Loading
                 val checkoutItems = listData.value.toMutableList()
                 val checkoutOrderModel = checkoutItems[cartPosition] as CheckoutOrderModel
                 checkoutItems[cartPosition] =
@@ -905,6 +927,7 @@ class CheckoutViewModel @Inject constructor(
                 courierItemData
             )
             listData.value = newItems
+            pageState.value = CheckoutPageState.Normal
             calculateTotal()
         }
     }

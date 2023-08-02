@@ -1168,11 +1168,13 @@ class CheckoutFragment :
     }
 
     override fun onChangeShippingDuration(order: CheckoutOrderModel, position: Int) {
-        showShippingDurationBottomsheet(
-            order,
-            viewModel.listData.value.address()!!.recipientAddressModel,
-            position
-        )
+        if (!viewModel.isLoading()) {
+            showShippingDurationBottomsheet(
+                order,
+                viewModel.listData.value.address()!!.recipientAddressModel,
+                position
+            )
+        }
     }
 
     private fun showShippingDurationBottomsheet(
@@ -1553,19 +1555,21 @@ class CheckoutFragment :
 //                    shipmentCartItemModel!!.orderNumber
 //                )
 //            }
-        val activity: Activity? = activity
-        if (activity != null) {
-            val shippingCourierBottomsheet = ShippingCourierBottomsheet()
-            shippingCourierBottomsheet.show(
-                activity,
-                fragmentManager!!,
-                this,
-                order.shipment.shippingCourierUiModels,
-                viewModel.listData.value.address()!!.recipientAddressModel,
-                position,
-                false
-            )
+        if (!viewModel.isLoading()) {
+            val activity: Activity? = activity
+            if (activity != null) {
+                val shippingCourierBottomsheet = ShippingCourierBottomsheet()
+                shippingCourierBottomsheet.show(
+                    activity,
+                    fragmentManager!!,
+                    this,
+                    order.shipment.shippingCourierUiModels,
+                    viewModel.listData.value.address()!!.recipientAddressModel,
+                    position,
+                    false
+                )
 //                shippingCourierUiModels?.let { checkHasCourierPromo(it) }
+            }
         }
 //        }
     }

@@ -5689,9 +5689,9 @@ class ShipmentViewModel @Inject constructor(
     companion object {
         private const val LAST_THREE_DIGIT_MODULUS: Long = 1000
 
-        private const val statusOK = "OK"
+        const val statusOK = "OK"
 
-        private const val statusCode200 = "200"
+        const val statusCode200 = "200"
 
         private const val WEIGHT_DIVIDER_TO_KG = 1000
     }

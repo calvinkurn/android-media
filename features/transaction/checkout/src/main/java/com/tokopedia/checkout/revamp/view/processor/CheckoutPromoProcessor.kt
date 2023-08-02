@@ -5,6 +5,7 @@ import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.checkout.revamp.view.promo
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
+import com.tokopedia.checkout.view.ShipmentViewModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
@@ -50,12 +51,12 @@ class CheckoutPromoProcessor @Inject constructor(
         isOneClickShipment: Boolean
     ): PromoRequest {
         val promoRequest = PromoRequest()
-        val listOrderItem = java.util.ArrayList<Order>()
+        val listOrderItem = ArrayList<Order>()
         for (shipmentCartItemModel in listData) {
             if (shipmentCartItemModel is CheckoutOrderModel) {
                 for ((cartStringOrder, cartItemList) in shipmentCartItemModel.cartItemModelsGroupByOrder) {
                     val ordersItem = Order()
-                    val productDetailsItems = java.util.ArrayList<ProductDetail>()
+                    val productDetailsItems = ArrayList<ProductDetail>()
                     for (cartItemModel in cartItemList) {
                         val productDetail = ProductDetail()
                         productDetail.productId = cartItemModel.productId
@@ -65,9 +66,14 @@ class CheckoutPromoProcessor @Inject constructor(
                     }
                     ordersItem.product_details = productDetailsItems
                     ordersItem.isChecked = true
-                    val listCodes = java.util.ArrayList<String>()
+                    val listCodes = ArrayList<String>()
                     for (code in shipmentCartItemModel.listPromoCodes) {
                         listCodes.add(code)
+                    }
+                    val logPromoCode =
+                        shipmentCartItemModel.shipment.courierItemData?.selectedShipper?.logPromoCode
+                    if (!logPromoCode.isNullOrEmpty()) {
+                        listCodes.add(logPromoCode)
                     }
                     ordersItem.codes = listCodes
                     ordersItem.cartStringGroup = shipmentCartItemModel.cartStringGroup
@@ -107,7 +113,7 @@ class CheckoutPromoProcessor @Inject constructor(
                             shipmentCartItemModel.shipment.courierItemData.selectedShipper.shipperId
                         ordersItem.spId =
                             shipmentCartItemModel.shipment.courierItemData.selectedShipper.shipperProductId
-                        if (shipmentCartItemModel.voucherLogisticItemUiModel != null) {
+                        if (!logPromoCode.isNullOrEmpty()) {
                             ordersItem.freeShippingMetadata =
                                 shipmentCartItemModel.shipment.courierItemData.selectedShipper.freeShippingMetadata
                         } else {
@@ -139,7 +145,7 @@ class CheckoutPromoProcessor @Inject constructor(
             promoRequest.isTradeInDropOff = if (isTradeInByDropOff) 1 else 0
         }
         val lastApplyUiModel = lastApplyData
-        val globalPromoCodes = java.util.ArrayList<String>()
+        val globalPromoCodes = ArrayList<String>()
         if (lastApplyUiModel.codes.isNotEmpty()) {
             globalPromoCodes.addAll(lastApplyUiModel.codes)
         }
@@ -241,15 +247,17 @@ class CheckoutPromoProcessor @Inject constructor(
                         }
                     }
                     // Add data BBO
-                    if (shipmentCartItemModel.voucherLogisticItemUiModel != null) {
-                        if (!listOrderCodes.contains(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)) {
-                            listOrderCodes.add(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)
+                    val logPromoCode =
+                        shipmentCartItemModel.shipment.courierItemData?.selectedShipper?.logPromoCode
+                    if (!logPromoCode.isNullOrEmpty()) {
+                        if (!listOrderCodes.contains(logPromoCode)) {
+                            listOrderCodes.add(logPromoCode)
                         }
-                        if (!bboPromoCodes.contains(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)) {
-                            bboPromoCodes.add(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)
+                        if (!bboPromoCodes.contains(logPromoCode)) {
+                            bboPromoCodes.add(logPromoCode)
                         }
                         ordersItem.boCode =
-                            shipmentCartItemModel.voucherLogisticItemUiModel!!.code
+                            logPromoCode
                     } else {
                         ordersItem.boCode = ""
                     }
@@ -355,7 +363,7 @@ class CheckoutPromoProcessor @Inject constructor(
                     shipmentCartItemModel.shipment.courierItemData.selectedShipper.shipperId
                 ordersItem.spId =
                     shipmentCartItemModel.shipment.courierItemData.selectedShipper.shipperProductId
-                if (shipmentCartItemModel.voucherLogisticItemUiModel != null) {
+                if (!shipmentCartItemModel.shipment.courierItemData.selectedShipper.logPromoCode.isNullOrEmpty()) {
                     ordersItem.freeShippingMetadata =
                         shipmentCartItemModel.shipment.courierItemData.selectedShipper.freeShippingMetadata
                     ordersItem.benefitClass =
@@ -768,6 +776,182 @@ class CheckoutPromoProcessor @Inject constructor(
         return true
     }
 
+    private fun getBBOCount(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel): Int {
+        var bboCount = 0
+        for (voucherOrder in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
+            if (voucherOrder.type.equals("logistic", ignoreCase = true)) {
+                bboCount++
+            }
+        }
+        return bboCount
+    }
+
+    private fun showErrorValidateUseIfAny(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel) {
+        val bboCount = getBBOCount(validateUsePromoRevampUiModel)
+        if (bboCount == 1) {
+            for (voucherOrder in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
+                if (voucherOrder.type.equals(
+                        "logistic",
+                        ignoreCase = true
+                    ) && voucherOrder.messageUiModel.state.equals(
+                            "red",
+                            ignoreCase = true
+                        )
+                ) {
+//                    view?.showToastError(voucherOrder.messageUiModel.text)
+                    return
+                }
+            }
+        }
+        val messageInfo =
+            validateUsePromoRevampUiModel.promoUiModel.additionalInfoUiModel.errorDetailUiModel.message
+        if (messageInfo.isNotEmpty()) {
+//            view?.showToastNormal(messageInfo)
+        }
+    }
+
+    suspend fun validateUse(
+        validateUsePromoRequest: ValidateUsePromoRequest,
+        checkoutItems: List<CheckoutItem>
+    ): List<CheckoutItem> {
+        var items = checkoutItems.toMutableList()
+        return withContext(dispatchers.io) {
+            try {
+                val validateUsePromoRevampUiModel = withContext(dispatchers.io) {
+                    setValidateUseBoCodeInOneOrderOwoc(validateUsePromoRequest)
+                    validateUsePromoRevampUseCase.setParam(validateUsePromoRequest)
+                        .executeOnBackground()
+                }
+                this@CheckoutPromoProcessor.validateUsePromoRevampUiModel =
+                    validateUsePromoRevampUiModel
+                showErrorValidateUseIfAny(validateUsePromoRevampUiModel)
+                validateBBO(validateUsePromoRevampUiModel, checkoutItems)
+                if (!validateUsePromoRevampUiModel.status.equals(
+                        ShipmentViewModel.statusOK,
+                        ignoreCase = true
+                    ) || validateUsePromoRevampUiModel.errorCode != ShipmentViewModel.statusCode200
+                ) {
+                    val message: String =
+                        if (validateUsePromoRevampUiModel.message.isNotEmpty()) {
+                            validateUsePromoRevampUiModel.message[0]
+                        } else {
+                            CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
+                        }
+//                        view!!.renderErrorCheckPromoShipmentData(message)
+//                        view!!.resetPromoBenefit()
+//                        view!!.resetAllCourier()
+                } else {
+//                        view!!.updateButtonPromoCheckout(
+//                            validateUsePromoRevampUiModel.promoUiModel,
+//                            false
+//                        )
+                    val newPromo = items.promo()!!.copy(
+                        promo = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(
+                            validateUsePromoRevampUiModel.promoUiModel
+                        )
+                    )
+                    items[items.size - 4] = newPromo
+                    if (validateUsePromoRevampUiModel.promoUiModel.messageUiModel.state == "red") {
+//                            analyticsActionListener.sendAnalyticsViewPromoAfterAdjustItem(
+//                                validateUsePromoRevampUiModel.promoUiModel.messageUiModel.text
+//                            )
+                    } else {
+                        for (voucherOrder in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
+                            if (voucherOrder.messageUiModel.state == "red") {
+//                                    analyticsActionListener.sendAnalyticsViewPromoAfterAdjustItem(
+//                                        voucherOrder.messageUiModel.text
+//                                    )
+                                break
+                            }
+                        }
+                    }
+                }
+//                    reloadCourierForMvc(
+//                        validateUsePromoRevampUiModel,
+//                        lastSelectedCourierOrderIndex,
+//                        cartString
+//                    )
+//                    checkUnCompletedPublisher()
+//                    isValidatingFinalPromo = false
+//                    updateShipmentButtonPaymentModel(loading = false)
+                return@withContext items
+            } catch (t: Throwable) {
+                Timber.d(t)
+                if (t is AkamaiErrorException) {
+                    clearAllPromo(validateUsePromoRequest)
+                    items[items.size - 4] = items.promo()!!.copy(promo = LastApplyUiModel())
+//                    view!!.showToastError(t.message)
+//                    view!!.resetAllCourier()
+//                    view!!.doResetButtonPromoCheckout()
+                } else {
+//                    view!!.renderErrorCheckPromoShipmentData(
+//                        ErrorHandler.getErrorMessage(
+//                            view!!.activity,
+//                            t
+//                        )
+//                    )
+                }
+//                    checkUnCompletedPublisher()
+//                    isValidatingFinalPromo = false
+//                    updateShipmentButtonPaymentModel(loading = false)
+                return@withContext items
+            }
+        }
+    }
+
+    private fun validateBBO(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel, checkoutItems: List<CheckoutItem>) {
+        val updatedCartStringGroup: ArrayList<String> = arrayListOf<String>()
+        voucherLoop@for (voucherOrder in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
+            if (voucherOrder.type.equals(
+                    "logistic",
+                    ignoreCase = true
+                ) && voucherOrder.messageUiModel.state.equals(
+                        "red",
+                        ignoreCase = true
+                    )
+            ) {
+                for (shipmentCartItemModel in checkoutItems) {
+                    if (shipmentCartItemModel is CheckoutOrderModel && shipmentCartItemModel.cartStringGroup == voucherOrder.cartStringGroup) {
+//                        if (view != null) {
+//                            updatedCartStringGroup.add(voucherOrder.cartStringGroup)
+//                            view!!.resetCourier(shipmentCartItemModel)
+//                            view!!.logOnErrorApplyBo(
+//                                MessageErrorException(
+//                                    voucherOrder.messageUiModel.text
+//                                ),
+//                                shipmentCartItemModel,
+//                                voucherOrder.code
+//                            )
+//                            break@voucherLoop
+//                        }
+                    }
+                }
+            } else if (voucherOrder.type.equals("logistic", ignoreCase = true) && voucherOrder.messageUiModel.state.equals(
+                    "green",
+                    ignoreCase = true
+                )
+            ) {
+                updatedCartStringGroup.add(voucherOrder.cartStringGroup)
+            }
+        }
+        // if not voucher order found for attempted apply BO order,
+        // then should reset courier and not apply the BO
+        // this should be a rare case
+        for (shipmentCartItemModel in checkoutItems) {
+            if (shipmentCartItemModel is CheckoutOrderModel) {
+                val code = shipmentCartItemModel.voucherLogisticItemUiModel?.code
+                if (!code.isNullOrEmpty() && !updatedCartStringGroup.contains(shipmentCartItemModel.cartStringGroup)) {
+//                    view!!.resetCourier(shipmentCartItemModel)
+//                    view!!.logOnErrorApplyBo(
+//                        MessageErrorException("voucher order not found"),
+//                        shipmentCartItemModel,
+//                        code
+//                    )
+                }
+            }
+        }
+    }
+
     suspend fun finalValidateUse(
         validateUsePromoRequest: ValidateUsePromoRequest
     ): ValidateUsePromoRevampUiModel? {
@@ -835,14 +1019,14 @@ class CheckoutPromoProcessor @Inject constructor(
         }
         if (hasPromo) {
 //            viewModelScope.launch(dispatchers.immediate) {
-                try {
-                    val response = clearCacheAutoApplyStackUseCase.setParams(
-                        ClearPromoRequest(
-                            ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
-                            false,
-                            ClearPromoOrderData(globalPromoCodes, clearOrders)
-                        )
-                    ).executeOnBackground()
+            try {
+                val response = clearCacheAutoApplyStackUseCase.setParams(
+                    ClearPromoRequest(
+                        ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                        false,
+                        ClearPromoOrderData(globalPromoCodes, clearOrders)
+                    )
+                ).executeOnBackground()
 //                    if (response.successDataModel.tickerMessage.isNotBlank()) {
 //                        val ticker = tickerAnnouncementHolderData.value
 //                        ticker.title = ""
@@ -850,14 +1034,14 @@ class CheckoutPromoProcessor @Inject constructor(
 //                            response.successDataModel.tickerMessage
 //                        tickerAnnouncementHolderData.value = ticker
 //                    }
-                    if (response.successDataModel.success) {
-                        return true
-                    }
-                } catch (t: Throwable) {
-                    Timber.d(t)
-                    return false
-//                    view?.removeIneligiblePromo()
+                if (response.successDataModel.success) {
+                    return true
                 }
+            } catch (t: Throwable) {
+                Timber.d(t)
+                return false
+//                    view?.removeIneligiblePromo()
+            }
 //            }
         }
         return true
@@ -873,6 +1057,56 @@ class CheckoutPromoProcessor @Inject constructor(
             }
         }
         return null
+    }
+
+    private suspend fun clearAllPromo(validateUsePromoRequest: ValidateUsePromoRequest) {
+        var hasPromo = false
+        val globalCodes = ArrayList<String>()
+        for (code in validateUsePromoRequest.codes) {
+            globalCodes.add(code)
+            hasPromo = true
+        }
+        validateUsePromoRequest.codes = ArrayList()
+        val cloneOrders = ArrayList<OrdersItem>()
+        val clearOrders = ArrayList<ClearPromoOrder>()
+        for (order in validateUsePromoRequest.orders) {
+            clearOrders.add(
+                ClearPromoOrder(
+                    order.uniqueId,
+                    order.boType,
+                    order.codes,
+                    order.shopId,
+                    order.isPo,
+                    order.poDuration.toString(),
+                    order.warehouseId,
+                    order.cartStringGroup
+                )
+            )
+            if (order.codes.isNotEmpty()) {
+                hasPromo = true
+            }
+            order.codes = ArrayList()
+            order.boCode = ""
+            cloneOrders.add(order)
+        }
+        validateUsePromoRequest.orders = cloneOrders
+        val params = ClearPromoRequest(
+            ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+            false,
+            ClearPromoOrderData(globalCodes, clearOrders)
+        )
+        if (hasPromo) {
+            withContext(dispatchers.io) {
+                try {
+                    clearCacheAutoApplyStackUseCase.setParams(params).executeOnBackground()
+                } catch (t: Throwable) {
+                    Timber.d(t)
+                }
+            }
+        }
+        lastValidateUseRequest = validateUsePromoRequest
+        validateUsePromoRevampUiModel = null
+        lastApplyData = LastApplyUiModel()
     }
 
     companion object {
