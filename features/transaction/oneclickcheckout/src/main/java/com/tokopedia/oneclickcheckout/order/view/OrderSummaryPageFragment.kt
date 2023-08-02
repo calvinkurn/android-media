@@ -392,6 +392,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                                         name = addOnUiModel.name
                                         status = addOnUiModel.getSelectedStatus().value
                                         type = addOnUiModel.addOnType
+                                        productQuantity = listProducts[index].orderQuantity
                                     }
                                 }
                             }
