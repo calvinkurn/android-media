@@ -60,5 +60,4 @@ dependencies {
     implementation project(rootProject.ext.app.customerapp)
 
     implementation projectOrAar(rootProject.ext.features.scpRewards)
-    implementation projectOrAar(rootProject.ext.features.scpRewardsTouchpoints)
 }
