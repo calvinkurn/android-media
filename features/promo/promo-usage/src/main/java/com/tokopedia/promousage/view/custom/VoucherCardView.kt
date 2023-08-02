@@ -18,19 +18,21 @@ class VoucherCardView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : CardView(context, attrs, defStyleAttr) {
 
+    private val cornerRadius = 24f // Corner radius for the CardView
 
     init {
-        cardElevation = 4f
-    }
-    private val borderWidth = 2f // Width of the border
-    private val cornerRadius = 16f // Corner radius for the CardView
+        radius = cornerRadius
+        cardElevation = 0f
 
-    private val borderPaint = Paint().apply {
-        color = Color.GRAY // Set the desired border color
-        style = Paint.Style.STROKE
-        strokeWidth = borderWidth
-        isAntiAlias = true
+        // Set card background to transparent to remove the default card view background
+        setCardBackgroundColor(Color.TRANSPARENT)
     }
+
+    private val bottomWhiteBackground = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        style = Paint.Style.FILL
+    }
+
     private val bottomGrayBackground = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN50)
         style = Paint.Style.FILL
@@ -44,7 +46,7 @@ class VoucherCardView @JvmOverloads constructor(
     }
 
     private val cardViewBorderGray = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.TRANSPARENT
+        color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN200)
         strokeWidth = 4f
         style = Paint.Style.STROKE
     }
@@ -55,17 +57,23 @@ class VoucherCardView @JvmOverloads constructor(
         strokeWidth = 4f
     }
 
+    private val circleCutFillColor = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = Color.TRANSPARENT
+        style = Paint.Style.FILL
+    }
+
     private val circleCutStrokeColor = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN50)
+        color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN200)
         style = Paint.Style.STROKE
         strokeWidth = 4f
     }
 
+
     private val corners = floatArrayOf(
-        32f, 32f,   // Top left radius in px
-        32f, 32f,   // Top right radius in px
-        32f, 32f,     // Bottom right radius in px
-        32f, 32f      // Bottom left radius in px
+        cornerRadius, cornerRadius,   // Top left radius in px
+        cornerRadius, cornerRadius,   // Top right radius in px
+        cornerRadius, cornerRadius,     // Bottom right radius in px
+        cornerRadius, cornerRadius      // Bottom left radius in px
     )
 
     private val borderPath by lazy {
@@ -88,6 +96,8 @@ class VoucherCardView @JvmOverloads constructor(
         }
     }
     private val voucherExpiryDateHeightPx by lazy { dpToPx(32f).toFloat() }
+    private val voucherCircleMarginBottom by lazy { dpToPx(22f).toFloat() }
+
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
@@ -95,26 +105,25 @@ class VoucherCardView @JvmOverloads constructor(
         drawLeftCircleCut(canvas)
         drawRightCircleCut(canvas)
 
+        drawTopBackground(canvas)
         drawBottomBackground(canvas)
     }
 
     override fun dispatchDraw(canvas: Canvas?) {
         drawCardViewBorder(canvas)
-
         super.dispatchDraw(canvas)
 
     }
     private fun drawLeftCircleCut(canvas: Canvas?) {
-        //Left cut
-        canvas?.clipPath(Path().also {
-            it.addCircle(0f, (height - voucherExpiryDateHeightPx), 20f, Path.Direction.CW)
-        }, Region.Op.DIFFERENCE)
-
         //Left cut stroke color
         canvas?.drawPath(Path().also {
-            it.addCircle(0f, (height - voucherExpiryDateHeightPx), 20f, Path.Direction.CW)
+            it.addCircle(0f, (height - voucherCircleMarginBottom), 20f, Path.Direction.CW)
         }, circleCutStrokeColor)
 
+        //Left cut
+        canvas?.clipPath(Path().also {
+            it.addCircle(0f, (height - voucherCircleMarginBottom), 20f, Path.Direction.CW)
+        }, Region.Op.DIFFERENCE)
     }
 
     private fun drawRightCircleCut(canvas: Canvas?) {
@@ -122,7 +131,7 @@ class VoucherCardView @JvmOverloads constructor(
         canvas?.clipPath(Path().also {
             it.addCircle(
                 width.toFloat(),
-                (height - voucherExpiryDateHeightPx),
+                (height - voucherCircleMarginBottom),
                 20f,
                 Path.Direction.CW
             )
@@ -132,7 +141,7 @@ class VoucherCardView @JvmOverloads constructor(
         canvas?.drawPath(Path().also {
             it.addCircle(
                 width.toFloat(),
-                (height - voucherExpiryDateHeightPx),
+                (height - voucherCircleMarginBottom),
                 20f,
                 Path.Direction.CW
             )
@@ -144,10 +153,22 @@ class VoucherCardView @JvmOverloads constructor(
         canvas?.drawPath(borderPath, cardViewBorderGray)
     }
 
+    private fun drawTopBackground(canvas: Canvas?) {
+        canvas?.drawRoundRect(
+            0f,
+            0f,
+            width.toFloat(),
+            height.toFloat(),
+            16f,
+            0f,
+            bottomWhiteBackground
+        )
+    }
+
     private fun drawBottomBackground(canvas: Canvas?) {
         canvas?.drawRoundRect(
             0f,
-            (height - voucherExpiryDateHeightPx),
+            (height - voucherExpiryDateHeightPx) + (voucherCircleMarginBottom/2) - dpToPx(4f),
             width.toFloat(),
             height.toFloat(),
             16f,
