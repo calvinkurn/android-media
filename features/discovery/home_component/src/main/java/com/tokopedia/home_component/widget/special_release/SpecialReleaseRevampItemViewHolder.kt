@@ -6,9 +6,12 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.HomeComponentSpecialReleaseRevampItemBinding
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelShop
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.CardUnify2
 
@@ -26,66 +29,94 @@ class SpecialReleaseRevampItemViewHolder(itemView: View) : AbstractViewHolder<Sp
     private val binding: HomeComponentSpecialReleaseRevampItemBinding? by viewBinding()
 
     override fun bind(element: SpecialReleaseRevampItemDataModel) {
-        binding?.cardContainer?.animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
-        renderShop(element)
-        renderProduct(element)
-    }
-
-    private fun renderShop(element: SpecialReleaseRevampItemDataModel) {
         binding?.run {
-            val grid = element.grid
-            val shop = grid.shop
-            shopImage.setImageUrl(shop.shopProfileUrl)
-            if(grid.badges.isEmpty()) {
-                containerShopBadge.gone()
-            } else {
-                containerShopBadge.visible()
-                shopBadge.setImageUrl(grid.badges[0].imageUrl)
-            }
-            shopName.text = shop.shopName
-            if(grid.benefit.value.isNotEmpty()) {
-                groupLocation.gone()
-                label.visible()
-                label.text = grid.benefit.value
-            } else {
-                label.gone()
-                groupLocation.visible()
-                textLocation.text = grid.shop.shopLocation
-            }
-            if(shop.shopApplink.isEmpty()) cta.gone() else cta.visible()
-            cardContainer.addOnImpressionListener(element.shopImpressHolder) {
-                element.listener.onShopImpressed(
-                    element.trackingAttributionModel,
-                    element.grid
-                )
-            }
-            cardContainer.setOnClickListener {
-                element.listener.onShopClicked(element.trackingAttributionModel, grid, grid.shop.shopApplink)
-            }
+            cardContainer.cardType = CardUnify2.TYPE_BORDER
+            cardContainer.animateOnPress = element.cardInteraction
+            renderShop(element)
+            renderProduct(element)
         }
     }
 
-    private fun renderProduct(element: SpecialReleaseRevampItemDataModel) {
-        binding?.productCard?.run {
-            setProductModel(element.productCardModel)
+    private fun HomeComponentSpecialReleaseRevampItemBinding.renderShop(element: SpecialReleaseRevampItemDataModel) {
+        val grid = element.grid
+        val shop = grid.shop
+        setShopListener(element)
+        renderShopImage(grid)
+        renderShopTitleAndSubtitle(grid)
+        renderShopCta(shop)
+    }
 
-            setOnClickListener {
-                if(element.grid.isTopads){
-                    TopAdsUrlHitter(context).hitClickUrl(
-                        className,
-                        element.grid.impression,
-                        element.grid.id,
-                        element.grid.name,
-                        element.grid.imageUrl
-                    )
-                }
-                element.listener.onProductCardClicked(
-                    element.trackingAttributionModel,
-                    element.grid,
-                    element.grid.position,
-                    element.grid.applink
+    private fun HomeComponentSpecialReleaseRevampItemBinding.setShopListener(element: SpecialReleaseRevampItemDataModel) {
+        val shopClickListener = View.OnClickListener {
+            element.listener.onShopClicked(
+                element.trackingAttributionModel,
+                element.grid,
+                element.grid.shop.shopApplink
+            )
+        }
+        cardContainer.setOnClickListener(shopClickListener)
+        cta.setOnClickListener(shopClickListener)
+        cardContainer.addOnImpressionListener(element.shopImpressHolder) {
+            element.listener.onShopImpressed(
+                element.trackingAttributionModel,
+                element.grid
+            )
+        }
+    }
+
+    private fun HomeComponentSpecialReleaseRevampItemBinding.renderShopImage(grid: ChannelGrid) {
+        shopImage.loadImage(grid.shop.shopProfileUrl)
+        if(grid.badges.isEmpty()) {
+            containerShopBadge.gone()
+        } else {
+            containerShopBadge.visible()
+            shopBadge.loadImage(grid.badges[0].imageUrl)
+        }
+    }
+
+    private fun HomeComponentSpecialReleaseRevampItemBinding.renderShopTitleAndSubtitle(grid: ChannelGrid) {
+        shopName.text = grid.shop.shopName
+        if(grid.benefit.value.isNotEmpty()) {
+            groupLocation.gone()
+            label.visible()
+            label.text = grid.benefit.value
+        } else {
+            label.gone()
+            groupLocation.visible()
+            textLocation.text = grid.shop.shopLocation
+        }
+    }
+
+    private fun HomeComponentSpecialReleaseRevampItemBinding.renderShopCta(shop: ChannelShop) {
+        if(shop.shopApplink.isEmpty()) cta.gone() else cta.visible()
+    }
+
+    private fun HomeComponentSpecialReleaseRevampItemBinding.renderProduct(element: SpecialReleaseRevampItemDataModel) {
+        setProductListener(element)
+        productCard.setProductModel(element.productCardModel)
+    }
+
+    private fun HomeComponentSpecialReleaseRevampItemBinding.setProductListener(element: SpecialReleaseRevampItemDataModel) {
+        val productClickListener = View.OnClickListener {
+            if(element.grid.isTopads){
+                TopAdsUrlHitter(itemView.context).hitClickUrl(
+                    className,
+                    element.grid.impression,
+                    element.grid.id,
+                    element.grid.name,
+                    element.grid.imageUrl
                 )
             }
+            element.listener.onProductCardClicked(
+                element.trackingAttributionModel,
+                element.grid,
+                element.grid.position,
+                element.grid.applink
+            )
+        }
+        productLayout.setOnClickListener(productClickListener)
+        productCard.run {
+            setOnClickListener(productClickListener)
             addOnImpressionListener(element.productImpressHolder) {
                 if(element.grid.isTopads){
                     TopAdsUrlHitter(context).hitImpressionUrl(

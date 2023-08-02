@@ -32,7 +32,7 @@
         android:id="@+id/home_component_special_release_rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/home_flash_sale_bottom_margin"
+        android:paddingBottom="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/home_component_header_view" />

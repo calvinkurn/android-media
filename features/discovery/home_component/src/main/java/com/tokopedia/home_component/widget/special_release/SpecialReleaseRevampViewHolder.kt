@@ -93,6 +93,7 @@ class SpecialReleaseRevampViewHolder(
                     excludeShop = true
                 ),
                 model.channelModel.trackingAttributionModel,
+                cardInteraction = CardUnify2.ANIMATE_NONE,
                 listener = specialReleaseRevampListener
             )
         }

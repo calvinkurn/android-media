@@ -11,8 +11,8 @@ import com.tokopedia.home_component.util.toDpInt
 internal object SpecialReleaseRevampItemDecoration : RecyclerView.ItemDecoration() {
     private const val FIRST_POSITION = 0
     private const val SINGLE_ITEM = 1
-    private const val OUTSIDE_MARGIN = 14f
-    private const val INNER_MARGIN = 2f
+    private const val OUTSIDE_MARGIN = 16f
+    private const val INNER_MARGIN = 6f
 
     override fun getItemOffsets(
         outRect: Rect,

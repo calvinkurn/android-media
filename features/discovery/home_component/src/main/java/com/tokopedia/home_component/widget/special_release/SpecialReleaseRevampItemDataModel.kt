@@ -15,6 +15,7 @@ data class SpecialReleaseRevampItemDataModel (
     val grid: ChannelGrid,
     val productCardModel: ProductCardModel,
     val trackingAttributionModel: TrackingAttributionModel,
+    val cardInteraction: Int,
     val shopImpressHolder: ImpressHolder = ImpressHolder(),
     val productImpressHolder: ImpressHolder = ImpressHolder(),
     val listener: SpecialReleaseRevampListener
