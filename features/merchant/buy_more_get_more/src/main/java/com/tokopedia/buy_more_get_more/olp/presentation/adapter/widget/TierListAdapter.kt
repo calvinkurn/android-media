@@ -29,7 +29,7 @@ class TierListAdapter : RecyclerView.Adapter<TierListAdapter.TierListViewHolder>
     }
 
     inner class TierListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        lateinit var context: Context
+        var context: Context
 
         private val binding: ItemTierListBinding? by viewBinding()
 

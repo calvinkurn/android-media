@@ -38,7 +38,7 @@ class OfferingInfoViewHolder(itemView: View) :
                     com.tokopedia.unifyprinciples.R.color.Unify_TN50
                 )
             )
-            rvTierList?.apply {
+            rvTierList.apply {
                 layoutManager = LinearLayoutManager(
                     itemView.context,
                     LinearLayoutManager.HORIZONTAL,

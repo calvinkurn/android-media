@@ -20,6 +20,7 @@ import com.tokopedia.buy_more_get_more.R
 import com.tokopedia.buy_more_get_more.databinding.FragmentOfferLandingPageBinding
 import com.tokopedia.buy_more_get_more.olp.di.component.DaggerBuyMoreGetMoreComponent
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel
+import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductSortingUiModel
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapter
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapterTypeFactoryImpl
@@ -117,7 +118,8 @@ class OfferLandingPageFragment :
         olpAdapter?.submitList(
             newList = listOf(
                 generateDummyOfferingData(),
-                OfferProductSortingUiModel(67)
+                OfferProductSortingUiModel(67),
+                generateDummyProductData()
             )
         )
         setupHeader(offerInfoForBuyer)
@@ -192,6 +194,19 @@ class OfferLandingPageFragment :
                     )
                 )
             )
+        )
+    }
+
+    private fun generateDummyProductData(): OfferProductListUiModel {
+        val products: MutableList<OfferProductListUiModel.Product> = mutableListOf()
+        for (product in 1..50) {
+            products.add(
+                OfferProductListUiModel.Product(
+                name = "Product $product"
+            ))
+        }
+        return OfferProductListUiModel (
+            productList = products
         )
     }
 

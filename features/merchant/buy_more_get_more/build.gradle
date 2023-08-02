@@ -111,6 +111,9 @@ dependencies {implementation rootProject.ext.supportLibDependencies.recyclerView
     //Image assets
     implementation projectOrAar(rootProject.ext.libraries.imageAssets)
 
+    //Product card
+    implementation projectOrAar(rootProject.ext.features.productCard)
+
     // UI test
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
