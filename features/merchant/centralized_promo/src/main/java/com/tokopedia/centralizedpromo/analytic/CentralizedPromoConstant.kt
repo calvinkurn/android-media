@@ -1,6 +1,7 @@
 package com.tokopedia.centralizedpromo.analytic
 
 object CentralizedPromoConstant {
+    const val CENTRALIZED_PROMO_PREF = "centralizedpromocomposepref"
     const val EVENT_NAME_IMPRESSION = "viewAdsPromoIris"
     const val EVENT_NAME_CLICK = "clickAdsPromo"
     const val EVENT_CATEGORY_ADS_AND_PROMO = "ads and promotion"

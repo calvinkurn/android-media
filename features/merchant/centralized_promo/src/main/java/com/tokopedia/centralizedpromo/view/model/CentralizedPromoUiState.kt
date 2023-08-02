@@ -1,7 +1,19 @@
 package com.tokopedia.centralizedpromo.view.model
 
+import com.tokopedia.centralizedpromo.view.LoadingType
+import com.tokopedia.centralizedpromo.view.LoadingType.ALL
+import com.tokopedia.centralizedpromo.view.LoadingType.PROMO_LIST
+import com.tokopedia.usecase.coroutines.Result
+
 data class CentralizedPromoUiState(
-    val isLoading: Boolean = false,
+    val isLoading: LoadingType = LoadingType.NONE,
+    val selectedTabFilterData: Pair<String, String> = Pair("", ""),
     val errorOnePage: String? = null,
-    val data: List<BaseUiModel> = listOf()
-)
+    val onGoingData: Result<BaseUiModel>? = null,
+    val promoCreationData: Result<BaseUiModel>? = null
+) {
+    fun selectedTabId() = selectedTabFilterData.first
+    fun selectedTabName() = selectedTabFilterData.second
+    fun isLoadingHeader() = isLoading == ALL
+    fun isLoadingBody() = isLoading == ALL || isLoading == PROMO_LIST
+}

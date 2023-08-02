@@ -4,14 +4,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
@@ -19,17 +22,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.centralizedpromo.R
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.components.NestLabel
 import com.tokopedia.nest.components.NestLabelType.HIGHLIGHT_DARK_RED
 import com.tokopedia.nest.components.card.NestCard
 import com.tokopedia.nest.components.card.NestCardType
+import com.tokopedia.nest.components.loader.NestLoader
+import com.tokopedia.nest.components.loader.NestLoaderType.Shimmer
+import com.tokopedia.nest.components.loader.NestShimmerType
+import com.tokopedia.nest.components.loader.NestShimmerType.Rect
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
@@ -39,12 +48,15 @@ fun PromotionCard(
     title: String,
     labelNew: String,
     description: String,
+    notAvailableText: String,
     imageUrl: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onPromoClicked: () -> Unit
 ) {
     NestCard(
-        modifier = modifier.heightIn(min = 140.dp).fillMaxWidth(),
-        type = NestCardType.Shadow
+        modifier = modifier.heightIn(min = 130.dp).fillMaxWidth(),
+        type = NestCardType.Shadow,
+        onClick = onPromoClicked
     ) {
         Column {
             Row(modifier = Modifier) {
@@ -61,8 +73,19 @@ fun PromotionCard(
                 ImageWithBackground(ImageSource.Painter(R.drawable.ic_voucher_waktu), labelNew)
             }
 
+            val context = LocalContext.current
+            val desc = if (notAvailableText.isEmpty()) {
+                description
+            } else {
+                context.getString(
+                    R.string.centralized_promo_description,
+                    notAvailableText,
+                    description
+                ).parseAsHtml()
+            }
+
             NestTypography(
-                text = description,
+                text = desc,
                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 15.dp),
                 textStyle = NestTheme.typography.small.copy(color = NestTheme.colors.NN._600),
                 overflow = TextOverflow.Ellipsis,
@@ -99,6 +122,66 @@ private fun ImageWithBackground(imageSource: ImageSource, labelNew: String) {
     }
 }
 
+fun LazyGridScope.PromotionCardShimmerGrid(modifier: Modifier = Modifier) = items(6) {
+    PromotionCardShimmer(modifier = modifier.padding(top = 8.dp))
+}
+
+@Composable
+private fun PromotionCardShimmer(modifier: Modifier = Modifier) {
+    NestCard(
+        modifier = modifier.heightIn(min = 130.dp).fillMaxWidth(),
+        type = NestCardType.Shadow
+    ) {
+        Column {
+            Row {
+                Column(
+                    modifier = Modifier.weight(1F).padding(start = 12.dp, top = 10.dp, end = 16.dp)
+                ) {
+                    NestLoader(
+                        variant = Shimmer(type = Rect(rounded = 8.dp)),
+                        modifier = Modifier.fillMaxWidth().height(12.dp)
+                    )
+
+                    Spacer(modifier = Modifier.padding(4.dp))
+
+                    NestLoader(
+                        variant = Shimmer(type = Rect(rounded = 8.dp)),
+                        modifier = Modifier.fillMaxWidth(0.3F).height(12.dp)
+                    )
+                }
+
+                Box(
+                    modifier = Modifier.padding(bottom = 10.dp).wrapContentSize()
+                ) {
+                    Box(
+                        modifier = Modifier.size(45.dp).clip(RoundedCornerShape(bottomStart = 8.dp))
+                            .background(NestTheme.colors.NN._50)
+                    )
+
+                    NestLoader(
+                        variant = Shimmer(type = NestShimmerType.Circle),
+                        modifier = Modifier.size(16.dp).align(Alignment.Center)
+                    )
+                }
+            }
+
+            Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 15.dp)) {
+                NestLoader(
+                    variant = Shimmer(type = Rect(rounded = 8.dp)),
+                    modifier = Modifier.fillMaxWidth().height(12.dp)
+                )
+
+                Spacer(modifier = Modifier.padding(4.dp))
+
+                NestLoader(
+                    variant = Shimmer(type = Rect(rounded = 8.dp)),
+                    modifier = Modifier.fillMaxWidth(0.6F).height(12.dp)
+                )
+            }
+        }
+    }
+}
+
 @Composable
 @Preview(name = "NEXUS_7", device = Devices.NEXUS_5)
 private fun PromotionCardPreview() {
@@ -107,9 +190,18 @@ private fun PromotionCardPreview() {
             title = "Flash Sale Tokopedia",
             description = "Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli",
             imageUrl = "",
-            labelNew = "Baru"
-        )
+            labelNew = "Baru",
+            notAvailableText = ""
+        ) {
+
+        }
     }
+}
+
+@Composable
+@Preview
+private fun PromotionCardShimmerPreview() {
+    PromotionCardShimmer()
 }
 
 @Composable
@@ -126,8 +218,11 @@ private fun PromotionCardGridPreview() {
                         title = "Flash Sale Tokopedia",
                         description = "Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli",
                         imageUrl = "",
-                        labelNew = "Baru"
-                    )
+                        labelNew = "Baru",
+                        notAvailableText = ""
+                    ) {
+
+                    }
                 }
             }
         }

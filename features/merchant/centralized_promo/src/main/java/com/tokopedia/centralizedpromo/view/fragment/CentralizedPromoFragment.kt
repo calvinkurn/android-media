@@ -61,8 +61,8 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
 
         private const val ERROR_GET_LAYOUT_DATA = "Error when get layout data for %s."
 
-        private const val WEBVIEW_APPLINK_FORMAT = "%s?url=%s"
-        private const val PLAY_PERFORMANCE_URL = "https://www.tokopedia.com/play/live"
+        const val WEBVIEW_APPLINK_FORMAT = "%s?url=%s"
+        const val PLAY_PERFORMANCE_URL = "https://www.tokopedia.com/play/live"
 
         @JvmStatic
         fun createInstance(): CentralizedPromoFragment = CentralizedPromoFragment()
