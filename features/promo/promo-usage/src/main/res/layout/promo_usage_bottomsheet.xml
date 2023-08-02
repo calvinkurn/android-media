@@ -24,7 +24,8 @@
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iconTickerInfo"
             android:layout_width="20dp"
-            android:layout_height="20dp" />
+            android:layout_height="20dp"
+            android:tint="@color/promo_dms_white" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tpgTickerInfoMessage"
@@ -52,7 +53,7 @@
         tools:visibility="visible">
 
         <ImageView
-            android:id="@+id/bottom_sheet_close"
+            android:id="@+id/buttonClose"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginStart="16dp"
@@ -65,10 +66,10 @@
             android:id="@+id/bottom_sheet_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@id/bottom_sheet_close"
-            android:layout_alignBottom="@id/bottom_sheet_close"
+            android:layout_alignTop="@id/buttonClose"
+            android:layout_alignBottom="@id/buttonClose"
             android:layout_marginStart="8dp"
-            android:layout_toRightOf="@id/bottom_sheet_close"
+            android:layout_toRightOf="@id/buttonClose"
             android:ellipsize="end"
             android:maxLines="1"
             android:singleLine="true"
@@ -86,7 +87,7 @@
         tools:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/rvPromo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/layoutSavingInfo"
@@ -99,7 +100,7 @@
         android:id="@+id/layoutSavingInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/cardViewTotalPrice"
+        android:layout_above="@id/cvTotalAmount"
         android:layout_marginStart="-1dp"
         android:layout_marginEnd="-1dp"
         android:layout_marginBottom="-2dp"
@@ -134,7 +135,7 @@
 
     <!--Total Price -->
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardViewTotalPrice"
+        android:id="@+id/cvTotalAmount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -148,7 +149,7 @@
             android:layout_height="wrap_content">
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tpgTotalPriceLabel"
+                android:id="@+id/tpgTotalAmountLabel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -161,7 +162,7 @@
                 app:typographyType="display_3" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tpgTotalPrice"
+                android:id="@+id/tpgTotalAmount"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"

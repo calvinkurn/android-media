@@ -2,12 +2,20 @@ package com.tokopedia.promousage.view.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.Animation.AnimationListener
+import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherBinding
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherRecommendationBinding
+import com.tokopedia.promousage.domain.entity.PromoItemState
 import com.tokopedia.promousage.domain.entity.list.PromoItem
 import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 import com.tokopedia.promousage.util.composite.DelegateAdapter
@@ -42,22 +50,49 @@ class PromoRecommendationDelegateAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
 
         init {
-            binding.recyclerView.applyPaddingToLastItem(PADDING_BOTTOM_DP)
+            binding.rvPromoRecommendation.applyPaddingToLastItem(PADDING_BOTTOM_DP)
         }
 
         fun bind(item: PromoRecommendationItem) {
+            val voucherAdapter = VoucherAdapter(onVoucherClick)
+            val selectedRecommendedPromoCount = item.promos.count { it.state is PromoItemState.Selected }
+            val recommendedPromoCount = item.promos.size
+            binding.tpgRecommendationTitle.text = item.title
             binding.btnRecommendationUseVoucher.setOnClickListener {
                 onButtonUseRecommendedVoucherClick(item)
+                binding.btnRecommendationUseVoucher.gone()
+                binding.ivCheckmark.visible()
+                binding.ivCheckmarkOutline.visible()
+                startButtonUseVoucherAnimation()
             }
-
-            val voucherAdapter = VoucherAdapter(onVoucherClick)
-            binding.tpgRecommendationTitle.text = item.title
-            binding.recyclerView.apply {
-                layoutManager = LinearLayoutManager(binding.recyclerView.context)
+            binding.rvPromoRecommendation.apply {
+                layoutManager = LinearLayoutManager(binding.rvPromoRecommendation.context)
                 adapter = voucherAdapter
             }
-
+            binding.btnRecommendationUseVoucher.isVisible = selectedRecommendedPromoCount < recommendedPromoCount
+            binding.ivCheckmark.isVisible = selectedRecommendedPromoCount == recommendedPromoCount
+            binding.ivCheckmarkOutline.isVisible = selectedRecommendedPromoCount == recommendedPromoCount
             voucherAdapter.submit(item.promos)
+        }
+
+        private fun startButtonUseVoucherAnimation() {
+            val shrinkOutAnimation =
+                AnimationUtils.loadAnimation(binding.ivCheckmarkOutline.context, R.anim.shrink_out)
+            shrinkOutAnimation.setAnimationListener(object : AnimationListener {
+                override fun onAnimationStart(p0: Animation?) {}
+
+                override fun onAnimationEnd(p0: Animation?) {
+                    binding.ivCheckmarkOutline.gone()
+                }
+
+                override fun onAnimationRepeat(p0: Animation?) {}
+
+            })
+            binding.ivCheckmarkOutline.startAnimation(shrinkOutAnimation)
+
+            val zoomInAnimation =
+                AnimationUtils.loadAnimation(binding.rvPromoRecommendation.context, R.anim.zoom_in)
+            binding.rvPromoRecommendation.startAnimation(zoomInAnimation)
         }
     }
 

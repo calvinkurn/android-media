@@ -11,7 +11,7 @@
         android:layout_height="0dp"
         android:background="@drawable/promo_usage_bg_bottomsheet_voucher_recommendation"
         android:contentDescription="@string/promo_voucher_cd_recommended_voucher_background"
-        app:layout_constraintBottom_toBottomOf="@id/recyclerView"
+        app:layout_constraintBottom_toBottomOf="@id/rvPromoRecommendation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -71,7 +71,7 @@
         tools:visibility="visible" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/rvPromoRecommendation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
