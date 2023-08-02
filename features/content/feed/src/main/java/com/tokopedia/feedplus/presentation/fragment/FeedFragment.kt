@@ -286,6 +286,7 @@ class FeedFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        showLoading()
         feedPostViewModel.fetchFeedPosts(
             data?.type ?: "",
             isNewData = true,
@@ -914,16 +915,11 @@ class FeedFragment :
             it.rvFeedPost.removeOnScrollListener(contentScrollListener)
             it.rvFeedPost.addOnScrollListener(contentScrollListener)
             it.rvFeedPost.itemAnimator = null
-
-            if (adapter.itemCount == 0) {
-                showLoading()
-            }
         }
     }
 
     private fun observePostData() {
         feedPostViewModel.feedHome.observe(viewLifecycleOwner) {
-            hideLoading()
             binding.swipeRefreshFeedLayout.isRefreshing = false
             adapter.hideLoading()
             when (it) {
@@ -946,8 +942,10 @@ class FeedFragment :
                         feedPostViewModel.fetchTopAdsData()
                     }
                     feedMainViewModel.onPostDataLoaded(it.data.items.isNotEmpty())
+                    hideLoading()
                 }
                 is Fail -> {
+                    hideLoading()
                     adapter.showErrorNetwork()
                 }
                 else -> {}
@@ -1468,8 +1466,9 @@ class FeedFragment :
         campaign: FeedCardCampaignModel
     ) {
         var isTopAds = false
+        val sourceType = convertToSourceType(trackerData?.type.orEmpty())
         val taggedProductList = products.map {
-            MapperProductsToXProducts.transform(it, campaign)
+            MapperProductsToXProducts.transform(it, campaign, sourceType)
         }
 
         if (products.isEmpty()) return
@@ -1500,9 +1499,17 @@ class FeedFragment :
             viewModelFactory = viewModelFactory,
             manager = childFragmentManager,
             tag = TAG_FEED_PRODUCT_BOTTOM_SHEET,
-            products = if (isTopAds) taggedProductList else emptyList()
+            products = if (isTopAds) taggedProductList else emptyList(),
+            sourceType = sourceType
         )
         if (hasVoucher && author?.type?.isShop == true) getMerchantVoucher(author.id)
+    }
+
+    private fun convertToSourceType (type: String) : FeedTaggedProductUiModel.SourceType  =
+        when (type) {
+        FeedXCard.TYPE_FEED_ASGC_RESTOCK, FeedXCard.TYPE_FEED_ASGC_NEW_PRODUCTS, FeedXCard.TYPE_FEED_ASGC_SHOP_DISCOUNT,
+        FeedXCard.TYPE_FEED_ASGC_SHOP_FLASH_SALE, FeedXCard.TYPE_FEED_ASGC_SPECIAL_RELEASE, TYPE_FEED_TOP_ADS -> FeedTaggedProductUiModel.SourceType.NonOrganic
+        else -> FeedTaggedProductUiModel.SourceType.Organic
     }
 
     private fun openVariantBottomSheet(product: FeedTaggedProductUiModel) {

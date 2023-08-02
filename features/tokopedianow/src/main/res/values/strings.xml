@@ -40,7 +40,7 @@
     <string name="tokopedianow_feedback_widget_desc">Kirim saran biar produk yang kamu butuhkan tersedia di NOW!</string>
     <string name="tokopedianow_feedback_widget_cta_text">Sarankan Produk</string>
     <string name="tokopedianow_feedback_bottomsheet_desc">Produk apa yang kamu butuhkan?</string>
-    <string name="tokopedianow_feedback_bottomsheet_input_hint">Tulis nama brand produk, boleh\n lengkap dengan varian, ukuran\n dll.</string>
+    <string name="tokopedianow_feedback_bottomsheet_input_hint">Tulis nama brand produk, boleh lengkap dengan varian, ukuran dll.</string>
     <string name="tokopedianow_feedback_bottomsheet_btn_text">Kirim</string>
     <string name="tokopedianow_feedback_bottomsheet_title">Sarankan produk untuk NOW!</string>
     <string name="tokopedianow_feedback_bottomsheet_input_message">Gunakan koma (,) jika produk lebih dari 1</string>
@@ -247,16 +247,12 @@
     <string name="error_referrral_recurring_user">Yaah, kupon Belanja NOW! hanya berlaku khusus pengguna baru saja.</string>
 
     <string name="tokopedianow_toaster_ok">Oke</string>
-    <string name="tokopedianow_toaster_retry">Coba Lagi</string>
     <string name="tokopedianow_toaster_see">Lihat</string>
 
-    <string name="tokopedianow_product_card_similar_product_error_description">Tidak Ada Produk Serupa yang Tersedia</string>
     <string name="tokopedianow_home_toaster_description_you_are_not_be_able_to_shop">Yaah, kamu belum bisa belanja karena toko sedang tutup. Tunggu toko beroperasi lagi.</string>
 
     <!-- Claim Coupon Widget -->
     <string name="tokopedianow_claim_coupon_widget_button_claim_text">Klaim</string>
-    <string name="tokopedianow_claim_coupon_widget_button_claimed_text">Diklaim</string>
-    <string name="tokopedianow_claim_coupon_widget_button_used_up_text">Habis</string>
     <string name="tokopedianow_claim_coupon_widget_local_load_title">Konten gagal ditampilkan</string>
     <string name="tokopedianow_claim_coupon_widget_local_load_description">Klik ikon di samping buat coba lagi.</string>
     <string name="tokopedianow_claim_coupon_widget_coupon_claimed_toaster_success_description">Selamat, kupon berhasil diklaim! Lihat kupon saya sekarang.</string>
@@ -264,10 +260,7 @@
     <string name="tokopedianow_claim_coupon_widget_coupon_claimed_toaster_error_description_default">Ada yang salah. Silakan coba lagi.</string>
 
     <string name="tokopedianow_similar_product_bottom_sheet_ok">Oke</string>
-    <string name="tokopedianow_similar_product_bottom_sheet_retry">Coba Lagi</string>
     <string name="tokopedianow_similar_product_bottom_sheet_see">Lihat</string>
-    <string name="tokopedianow_similar_product_bottom_sheet_add_to_cart">+ Keranjang</string>
     <string name="tokopedianow_similar_product_bottom_sheet_title">Produk serupa</string>
-    <string name="tokopedianow_similar_product_bottom_sheet_similar_product_text">Produk Serupa</string>
     <string name="tokopedianow_product_ads_carousel_title">Penawaran spesial</string>
 </resources>

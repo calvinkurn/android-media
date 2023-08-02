@@ -853,6 +853,13 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check external wishlist collection detail appLink with affiliate unique id then should return tokopedia internal marketplace`() {
+        val affUniqueId = "sSAJfRm6Gujkdy7kR8EXYhJyRl7f0Xoq-K9geactpYaJiwQWbQ1tlTg4jnDsiw=="
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://transaction/wishlist/collection/{collection_id}/?aff_unique_id=$affUniqueId"
+        assertEqualsDeepLinkMapper(ApplinkConst.WISHLIST_COLLECTION_DETAIL + "?aff_unique_id=$affUniqueId", expectedDeepLink)
+    }
+
+    @Test
     fun `check login appLink then should return tokopedia internal login in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/login"
         assertEqualsDeepLinkMapper(ApplinkConst.LOGIN, expectedDeepLink)

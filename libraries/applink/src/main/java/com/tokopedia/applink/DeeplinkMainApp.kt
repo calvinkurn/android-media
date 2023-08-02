@@ -34,7 +34,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOperational
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
-import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
@@ -517,7 +516,7 @@ object DeeplinkMainApp {
             DLP.matchPattern(
                 "settings/{user_id}",
                 DeeplinkMapperContent::getProfileDeeplink
-            ),
+            )
         ),
         "pesawat" to mutableListOf(
             DLP.matchPattern("order", DeeplinkMapperUoh::getRegisteredNavigationUohOrder),
@@ -1024,12 +1023,7 @@ object DeeplinkMainApp {
         ),
         "wishlist" to mutableListOf(
             DLP.matchPattern("", DeeplinkMapperWishlist::getRegisteredNavigationWishlist),
-            DLP.matchPattern("collection/{collection_id}") { _, _, _, idList ->
-                UriUtil.buildUri(
-                    ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_INTERNAL,
-                    idList?.getOrNull(0)
-                )
-            }
+            DLP.matchPattern("collection/{collection_id}", DeeplinkMapperMarketplace::getRegisteredWishlistCollectionDetail)
         ),
         "www.tokopedia.com" to mutableListOf(
             DLP.goTo(DeeplinkMapperContent::getWebHostWebViewLink)
