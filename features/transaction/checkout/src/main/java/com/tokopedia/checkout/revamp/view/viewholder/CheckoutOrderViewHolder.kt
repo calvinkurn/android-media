@@ -83,13 +83,19 @@ class CheckoutOrderViewHolder(
             if (courierItemData == null) {
                 binding.shippingWidget.prepareLoadCourierState()
                 binding.shippingWidget.hideShippingStateLoading()
-                binding.shippingWidget.showLayoutNoSelectedShipping(RecipientAddressModel())
-                // todo coachmark
+                if (order.isDisableChangeCourier && order.hasGeolocation) {
+                    binding.shippingWidget.showLayoutStateFailedShipping(
+                        RecipientAddressModel()
+                    )
+                } else {
+                    binding.shippingWidget.showLayoutNoSelectedShipping(RecipientAddressModel())
+                    // todo coachmark
 
-                //                showMultiplePlusOrderCoachmark(
+                    //                showMultiplePlusOrderCoachmark(
 //                    shipmentCartItemModel,
 //                    shippingWidget.layoutStateNoSelectedShipping
 //                )
+                }
                 loadCourierState(order, addressModel?.recipientAddressModel)
             } else if (courierItemData.scheduleDeliveryUiModel != null) {
                 binding.shippingWidget.prepareLoadCourierState()

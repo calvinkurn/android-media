@@ -932,9 +932,13 @@ class CheckoutViewModel @Inject constructor(
                 cartString,
                 promoCode,
                 listData.value,
-                courierItemData
+                courierItemData,
+                isOneClickShipment,
+                isTradeIn,
+                isTradeInByDropOff
             )
             listData.value = newItems
+            cartProcessor.processSaveShipmentState(listData.value, listData.value.address()!!.recipientAddressModel)
             pageState.value = CheckoutPageState.Normal
             calculateTotal()
         }
@@ -948,6 +952,7 @@ class CheckoutViewModel @Inject constructor(
         newCourierItemData: CourierItemData
     ) {
         viewModelScope.launch(dispatchers.immediate) {
+            pageState.value = CheckoutPageState.Loading
             if (scheduleDeliveryUiModel.isSelected) {
                 order.scheduleDate = newCourierItemData.selectedShipper.scheduleDate
                 order.timeslotId = newCourierItemData.selectedShipper.timeslotId
@@ -975,7 +980,8 @@ class CheckoutViewModel @Inject constructor(
                     newOrder,
                     listData.value.address()!!.recipientAddressModel
                 )
-                calculateTotal()
+                validatePromo()
+                pageState.value = CheckoutPageState.Normal
             } else if (!courierItemData.selectedShipper.logPromoCode.isNullOrEmpty() && newCourierItemData.selectedShipper.logPromoCode.isNullOrEmpty()) {
                 // need to clear old promo code
                 val checkoutItems = listData.value.toMutableList()
@@ -1019,7 +1025,8 @@ class CheckoutViewModel @Inject constructor(
                     newOrder1,
                     listData.value.address()!!.recipientAddressModel
                 )
-                calculateTotal()
+                validatePromo()
+                pageState.value = CheckoutPageState.Normal
             } else {
                 // need to apply promo
                 if (courierItemData.selectedShipper.logPromoCode != newCourierItemData.selectedShipper.logPromoCode) {
@@ -1086,10 +1093,15 @@ class CheckoutViewModel @Inject constructor(
                     order.cartStringGroup,
                     newCourierItemData.selectedShipper.logPromoCode!!,
                     listData.value,
-                    newCourierItemData
+                    newCourierItemData,
+                    isOneClickShipment,
+                    isTradeIn,
+                    isTradeInByDropOff
                 )
                 listData.value = newItems
-                calculateTotal()
+                cartProcessor.processSaveShipmentState(listData.value, listData.value.address()!!.recipientAddressModel)
+                validatePromo()
+                pageState.value = CheckoutPageState.Normal
             }
         }
     }
@@ -1497,7 +1509,10 @@ class CheckoutViewModel @Inject constructor(
                             order.cartStringGroup,
                             result.first.logPromoCode!!,
                             checkoutItems,
-                            courierItemData
+                            courierItemData,
+                            isOneClickShipment,
+                            isTradeIn,
+                            isTradeInByDropOff
                         ).toMutableList()
 //                        doValidateUseLogisticPromoNew(
 //                            cartPosition,

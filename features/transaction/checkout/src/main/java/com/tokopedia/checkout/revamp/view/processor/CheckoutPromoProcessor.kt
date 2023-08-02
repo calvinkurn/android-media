@@ -5,6 +5,7 @@ import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.checkout.revamp.view.promo
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
+import com.tokopedia.checkout.view.CheckoutLogger
 import com.tokopedia.checkout.view.ShipmentViewModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -405,7 +406,10 @@ class CheckoutPromoProcessor @Inject constructor(
         cartString: String,
         promoCode: String,
         shipmentCartItemModelList: List<CheckoutItem>,
-        courierItemData: CourierItemData
+        courierItemData: CourierItemData,
+        isOneClickShipment: Boolean,
+        isTradeIn: Boolean,
+        isTradeInByDropOff: Boolean
     ): List<CheckoutItem> {
         try {
             val validateUsePromoRevampUiModel = withContext(dispatchers.io) {
@@ -433,7 +437,7 @@ class CheckoutPromoProcessor @Inject constructor(
             // ignore this, because there is a new one in the queue
 //                continue@loopProcess
 //            }
-            return onValidatePromoError(t, cartString, promoCode, shipmentCartItemModelList)
+            return onValidatePromoError(t, cartString, promoCode, shipmentCartItemModelList, validateUsePromoRequest, isOneClickShipment, isTradeIn, isTradeInByDropOff)
         }
     }
 
@@ -452,7 +456,7 @@ class CheckoutPromoProcessor @Inject constructor(
             }
     }
 
-    private fun onValidatePromoSuccess(
+    private suspend fun onValidatePromoSuccess(
         validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel,
         cartString: String,
         promoCode: String,
@@ -468,14 +472,6 @@ class CheckoutPromoProcessor @Inject constructor(
                 ignoreCase = true
             ) && validateUsePromoRevampUiModel.errorCode == statusCode200
         if (isValidatePromoRevampSuccess) {
-//                view!!.updateButtonPromoCheckout(
-//                    validateUsePromoRevampUiModel.promoUiModel,
-//                    true
-//                )
-//                view!!.setStateLoadingCourierStateAtIndex(
-//                    shipmentValidatePromoHolderData.cartPosition,
-//                    false
-//                )
             this.validateUsePromoRevampUiModel =
                 validateUsePromoRevampUiModel
             val checkoutItems = shipmentCartItemModelList.toMutableList()
@@ -485,7 +481,6 @@ class CheckoutPromoProcessor @Inject constructor(
                 )
             )
             checkoutItems[checkoutItems.size - 4] = promo
-//                updateTickerAnnouncementData(validateUsePromoRevampUiModel)
 //                showErrorValidateUseIfAny(validateUsePromoRevampUiModel)
             return validateBBOWithSpecificOrder(
                 validateUsePromoRevampUiModel,
@@ -495,65 +490,64 @@ class CheckoutPromoProcessor @Inject constructor(
                 courierItemData
             )
         } else {
-//                view!!.setStateLoadingCourierStateAtIndex(
-//                    shipmentValidatePromoHolderData.cartPosition,
-//                    false
-//                )
-            if (validateUsePromoRevampUiModel.message.isNotEmpty()) {
-                val errMessage =
-                    validateUsePromoRevampUiModel.message[0]
+            var errMessage =
+                validateUsePromoRevampUiModel.message.firstOrNull()
+            if (errMessage != null) {
 //                    mTrackerShipment.eventClickLanjutkanTerapkanPromoError(
 //                        errMessage
 //                    )
                 PromoRevampAnalytics.eventCheckoutViewPromoMessage(errMessage)
+            } else {
+                errMessage = CheckoutConstant.DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO
+            }
 //                    view!!.showToastError(errMessage)
 //                    view!!.resetCourier(shipmentValidatePromoHolderData.cartPosition)
-//                    view!!.getShipmentCartItemModel(shipmentValidatePromoHolderData.cartPosition)
-//                        ?.let {
-//                            if (it.boCode.isNotEmpty()) {
-//                                clearCacheAutoApply(
-//                                    it,
-//                                    shipmentValidatePromoHolderData.promoCode,
-//                                    it.boUniqueId
-//                                )
-//                                clearOrderPromoCodeFromLastValidateUseRequest(
-//                                    shipmentValidatePromoHolderData.cartString,
-//                                    shipmentValidatePromoHolderData.promoCode
-//                                )
-//                                it.boCode = ""
-//                                it.boUniqueId = ""
-//                            }
-//                        }
-            } else {
-//                    view!!.showToastError(
-//                        CheckoutConstant.DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO
-//                    )
-//                    view!!.resetCourier(shipmentValidatePromoHolderData.cartPosition)
-//                    view!!.getShipmentCartItemModel(shipmentValidatePromoHolderData.cartPosition)
-//                        ?.let {
-//                            if (it.boCode.isNotEmpty()) {
-//                                clearCacheAutoApply(
-//                                    it,
-//                                    shipmentValidatePromoHolderData.promoCode,
-//                                    it.boUniqueId
-//                                )
-//                                clearOrderPromoCodeFromLastValidateUseRequest(
-//                                    shipmentValidatePromoHolderData.cartString,
-//                                    shipmentValidatePromoHolderData.promoCode
-//                                )
-//                                it.boCode = ""
-//                                it.boUniqueId = ""
-//                            }
-//                        }
+            val checkoutItems = shipmentCartItemModelList.toMutableList()
+            for ((index, checkoutItem) in checkoutItems.withIndex()) {
+                if (checkoutItem is CheckoutOrderModel && checkoutItem.cartStringGroup == cartString) {
+                    if (checkoutItem.boCode.isNotEmpty()) {
+                        doClearBoSilently(checkoutItem)
+                    }
+                    checkoutItems[index] = checkoutItem.copy(
+                        shipment = checkoutItem.shipment.copy(
+                            isLoading = false,
+                            courierItemData = null
+                        ),
+                        boCode = "",
+                        boUniqueId = ""
+                    )
+                }
             }
+            return checkoutItems
         }
-//        }
-//        val shipmentScheduleDeliveryMapData =
-//            getScheduleDeliveryMapData(shipmentValidatePromoHolderData.cartString)
-//        if (shipmentScheduleDeliveryMapData != null && shipmentScheduleDeliveryMapData.shouldStopInValidateUsePromo) {
-//            shipmentScheduleDeliveryMapData.donePublisher.onCompleted()
-//        }
-        return shipmentCartItemModelList
+    }
+
+    private suspend fun doClearBoSilently(checkoutItem: CheckoutOrderModel) {
+        try {
+            clearCacheAutoApplyStackUseCase.setParams(
+                ClearPromoRequest(
+                    ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                    false,
+                    ClearPromoOrderData(
+                        emptyList(),
+                        arrayListOf(
+                            ClearPromoOrder(
+                                checkoutItem.boUniqueId,
+                                checkoutItem.boMetadata.boType,
+                                arrayListOf(checkoutItem.boCode),
+                                checkoutItem.shopId,
+                                checkoutItem.isProductIsPreorder,
+                                checkoutItem.products[0].preOrderDurationDay.toString(),
+                                checkoutItem.fulfillmentId,
+                                checkoutItem.cartStringGroup
+                            )
+                        )
+                    )
+                )
+            ).executeOnBackground()
+        } catch (t: Throwable) {
+            Timber.d(t)
+        }
     }
 
     private fun validateBBOWithSpecificOrder(
@@ -653,18 +647,22 @@ class CheckoutPromoProcessor @Inject constructor(
         return checkoutItems
     }
 
-    private fun onValidatePromoError(
+    private suspend fun onValidatePromoError(
         t: Throwable,
         cartString: String,
         promoCode: String,
-        shipmentCartItemModelList: List<CheckoutItem>
+        shipmentCartItemModelList: List<CheckoutItem>,
+        validateUsePromoRequest: ValidateUsePromoRequest,
+        isOneClickShipment: Boolean,
+        isTradeIn: Boolean,
+        isTradeInByDropOff: Boolean
     ): List<CheckoutItem> {
         Timber.d(t)
         val checkoutItems = shipmentCartItemModelList.toMutableList()
         val orderIndex =
             checkoutItems.indexOfFirst { it is CheckoutOrderModel && it.cartStringGroup == cartString }
         val orderModel = checkoutItems[orderIndex] as CheckoutOrderModel
-        var newOrderModel = orderModel.copy(shipment = orderModel.shipment.copy(isLoading = false), isShippingBorderRed = false)
+        var newOrderModel = orderModel.copy(shipment = orderModel.shipment.copy(isLoading = false, courierItemData = null), isShippingBorderRed = false)
 //        if (view != null) {
 //            view!!.setStateLoadingCourierStateAtIndex(
 //                shipmentValidatePromoHolderData.cartPosition,
@@ -672,43 +670,28 @@ class CheckoutPromoProcessor @Inject constructor(
 //            )
 //            mTrackerShipment.eventClickLanjutkanTerapkanPromoError(t.message)
         if (t is AkamaiErrorException) {
-//                clearAllPromo()
+            clearAllPromo(validateUsePromoRequest)
 //                view!!.showToastError(t.message)
 //                view!!.resetAllCourier()
 //                view!!.doResetButtonPromoCheckout()
         } else {
-            newOrderModel =
-                newOrderModel.copy(shipment = newOrderModel.shipment.copy(courierItemData = null))
+//            newOrderModel =
+//                newOrderModel.copy(shipment = newOrderModel.shipment.copy(courierItemData = null))
 //                view!!.showToastError(t.message)
 //                view!!.resetCourier(shipmentValidatePromoHolderData.cartPosition)
-//                view!!.getShipmentCartItemModel(shipmentValidatePromoHolderData.cartPosition)
-//                    ?.let {
-//                        if (it.boCode.isNotEmpty()) {
-//                            clearCacheAutoApply(
-//                                it,
-//                                shipmentValidatePromoHolderData.promoCode,
-//                                it.boUniqueId
-//                            )
-//                            clearOrderPromoCodeFromLastValidateUseRequest(
-//                                shipmentValidatePromoHolderData.cartString,
-//                                shipmentValidatePromoHolderData.promoCode
-//                            )
-//                            it.boCode = ""
-//                            it.boUniqueId = ""
-//                        }
-//                    }
+            if (orderModel.boCode.isNotEmpty()) {
+                doClearBoSilently(orderModel)
+                newOrderModel = newOrderModel.copy(boCode = "", boUniqueId = "")
+            }
         }
-//            view!!.logOnErrorApplyBo(
-//                t,
-//                shipmentValidatePromoHolderData.cartPosition,
-//                shipmentValidatePromoHolderData.promoCode
-//            )
-//            val shipmentScheduleDeliveryMapData =
-//                getScheduleDeliveryMapData(shipmentValidatePromoHolderData.cartString)
-//            if (shipmentScheduleDeliveryMapData != null && shipmentScheduleDeliveryMapData.shouldStopInValidateUsePromo) {
-//                shipmentScheduleDeliveryMapData.donePublisher.onCompleted()
-//            }
-//        }
+        CheckoutLogger.logOnErrorApplyBoNew(
+            t,
+            orderModel,
+            isOneClickShipment,
+            isTradeIn,
+            isTradeInByDropOff,
+            promoCode
+        )
         checkoutItems[orderIndex] = newOrderModel
         return checkoutItems
     }
