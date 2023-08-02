@@ -137,6 +137,8 @@ class FeedFollowRecommendationAnalytics @Inject constructor(
     }
 
     fun sendAll() {
+        if (impressedAuthorId.isEmpty()) return
+
         trackingQueue.sendAll()
         impressedAuthorId.clear()
     }
