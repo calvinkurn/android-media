@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.order_management_common.R
@@ -94,6 +93,4 @@ class BmgmAddOnSummaryViewHolder(
     fun bind(addOnSummary: AddOnSummaryUiModel?) {
         setupAddOnSummary(addOnSummary)
     }
-
-    fun isShowing() = binding?.root?.isVisible == true
 }

@@ -2,21 +2,16 @@ package com.tokopedia.order_management_common.presentation.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.order_management_common.R
 import com.tokopedia.order_management_common.constants.OrderManagementConstants
 import com.tokopedia.order_management_common.databinding.ItemOrderProductBmgmSectionBinding
 import com.tokopedia.order_management_common.presentation.adapter.ProductBmgmItemAdapter
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
-import com.tokopedia.order_management_common.util.RecyclerViewItemDivider
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.toPx
 
-class ProductBmgmViewHolder(
+class BmgmSectionViewHolder(
     view: View?,
     private val listener: Listener,
 ) : AbstractViewHolder<ProductBmgmSectionUiModel>(view),
@@ -71,7 +66,7 @@ class ProductBmgmViewHolder(
 
     override fun onBmgmItemClicked(item: ProductBmgmSectionUiModel.ProductUiModel) {
         if (item.orderId != OrderManagementConstants.WAITING_INVOICE_ORDER_ID) {
-            listener.onPurchaseBmgmClicked(item)
+            listener.onBmgmItemClicked(item)
         } else {
             showToaster(getString(R.string.om_error_message_cant_open_snapshot_when_waiting_invoice))
         }
@@ -89,21 +84,9 @@ class ProductBmgmViewHolder(
         binding.rvOrderBmgm.run {
             layoutManager = LinearLayoutManager(itemView.context)
             adapter = bmgmItemAdapter
-            setupRecyclerViewItemDecoration()
         }
     }
 
-    private fun RecyclerView.setupRecyclerViewItemDecoration() {
-        if (itemDecorationCount == Int.ZERO) {
-            addItemDecoration(
-                RecyclerViewItemDivider(
-                    null,
-                    ITEM_DECORATION_VERTICAL_MARGIN.toPx(),
-                    ITEM_DECORATION_VERTICAL_MARGIN.toPx()
-                )
-            )
-        }
-    }
 
     private fun setupBmgmHeader(bmgmName: String, bmgmIconUrl: String) {
         binding.tvOrderBmgmName.text = bmgmName
@@ -123,6 +106,6 @@ class ProductBmgmViewHolder(
     }
 
     interface Listener {
-        fun onPurchaseBmgmClicked(uiModel: ProductBmgmSectionUiModel.ProductUiModel)
+        fun onBmgmItemClicked(uiModel: ProductBmgmSectionUiModel.ProductUiModel)
     }
 }

@@ -5,18 +5,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.order_management_common.presentation.factory.BmgmAdapterTypeFactory
+import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
+import com.tokopedia.order_management_common.presentation.viewholder.BmgmSectionViewHolder
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.*
 import com.tokopedia.sellerorder.detail.presentation.model.DividerUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.NonProductBundleUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.ProductBundleUiModel
-import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
 
 class SomDetailAdapterFactoryImpl(
     private val actionListener: ActionListener,
     private val recyclerViewSharedPool: RecyclerView.RecycledViewPool
-) : SomDetailAdapterFactory, BaseAdapterTypeFactory() {
+) : SomDetailAdapterFactory, BaseAdapterTypeFactory(), BmgmAdapterTypeFactory {
     override fun type(typeLayout: String): Int {
         return when (typeLayout) {
             SomConsts.DETAIL_HEADER_TYPE -> {
@@ -56,6 +58,10 @@ class SomDetailAdapterFactoryImpl(
         return SomDetailDividerViewHolder.LAYOUT
     }
 
+    override fun type(productBmgmSectionUiModel: ProductBmgmSectionUiModel): Int {
+        return BmgmSectionViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             SomDetailHeaderViewHolder.LAYOUT -> {
@@ -90,11 +96,14 @@ class SomDetailAdapterFactoryImpl(
             SomDetailPofDataViewHolder.LAYOUT -> {
                 SomDetailPofDataViewHolder(parent)
             }
+            BmgmSectionViewHolder.LAYOUT -> {
+                BmgmSectionViewHolder(parent, actionListener)
+            }
             else -> super.createViewHolder(parent, type)
         }
     }
 
-    interface ActionListener {
+    interface ActionListener : BmgmSectionViewHolder.Listener {
         fun onTextCopied(label: String, str: String, readableDataName: String)
         fun onInvalidResiUpload(awbUploadUrl: String)
         fun onDialPhone(strPhoneNo: String)

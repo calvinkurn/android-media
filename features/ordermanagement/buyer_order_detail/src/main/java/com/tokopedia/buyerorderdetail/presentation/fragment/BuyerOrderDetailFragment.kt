@@ -64,7 +64,6 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
 import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
-import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -72,6 +71,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
+import com.tokopedia.order_management_common.presentation.viewholder.BmgmSectionViewHolder
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -84,8 +85,6 @@ import com.tokopedia.utils.text.currency.StringUtils
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.resume
 
 open class BuyerOrderDetailFragment :
     BaseDaggerFragment(),
@@ -97,7 +96,8 @@ open class BuyerOrderDetailFragment :
     PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener,
     OrderResolutionViewHolder.OrderResolutionListener,
     ProductListToggleViewHolder.Listener,
-    PofRefundInfoViewHolder.Listener {
+    PofRefundInfoViewHolder.Listener,
+    BmgmSectionViewHolder.Listener {
 
     companion object {
         @JvmStatic
@@ -149,6 +149,7 @@ open class BuyerOrderDetailFragment :
             this,
             this,
             navigator,
+            this,
             this,
             this
         )
@@ -214,9 +215,9 @@ open class BuyerOrderDetailFragment :
                 null
             ) as? BuyerOrderDetailToolbarMenu
             )?.apply {
-                setViewModel(viewModel)
-                setNavigator(navigator)
-            }
+            setViewModel(viewModel)
+            setNavigator(navigator)
+        }
     }
 
     override fun getScreenName() = BuyerOrderDetailFragment::class.java.simpleName
@@ -535,7 +536,7 @@ open class BuyerOrderDetailFragment :
             val errorMessage = context?.let {
                 ErrorHandler.getErrorMessage(it, result.throwable)
             } ?: this@BuyerOrderDetailFragment.context?.getString(R.string.failed_to_get_information)
-                    .orEmpty()
+                .orEmpty()
             showErrorToaster(errorMessage)
         }
     }
@@ -837,5 +838,8 @@ open class BuyerOrderDetailFragment :
         val bottomSheet =
             PofDetailRefundedBottomSheet.newInstance(cacheManager?.id.orEmpty())
         bottomSheet.show(childFragmentManager)
+    }
+
+    override fun onBmgmItemClicked(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
     }
 }

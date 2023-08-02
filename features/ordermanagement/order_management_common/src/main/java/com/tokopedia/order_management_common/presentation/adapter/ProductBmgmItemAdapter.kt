@@ -10,6 +10,7 @@ import com.tokopedia.order_management_common.R
 import com.tokopedia.order_management_common.databinding.ItemOrderProductBmgmListItemBinding
 import com.tokopedia.order_management_common.presentation.adapter.diffutil.ProductBmgmItemDiffUtilCallback
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
+import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnSummaryViewHolder
 import com.tokopedia.order_management_common.util.composeItalicNote
 
 class ProductBmgmItemAdapter(
@@ -67,6 +68,8 @@ class ProductBmgmItemAdapter(
 
         private var element: ProductBmgmSectionUiModel.ProductUiModel? = null
 
+        private var addOnSummaryViewHolder: BmgmAddOnSummaryViewHolder? = null
+
         fun bind(model: ProductBmgmSectionUiModel.ProductUiModel?) {
             model?.let {
                 element = it
@@ -74,8 +77,14 @@ class ProductBmgmItemAdapter(
                 setBmgmItemProductName(it.productName)
                 setBmgmItemProductPriceQuantity(it.quantity, it.priceText)
                 setupBundleItemProductNote(it.productNote)
+                addOnSummaryViewHolder?.bind(it.addOnSummaryUiModel)
+                setupDividerAddonSummary(it)
                 setItemOnClickListener(it)
             }
+        }
+
+        private fun setupDividerAddonSummary(uiModel: ProductBmgmSectionUiModel.ProductUiModel?) {
+            binding.dividerAddOn.showWithCondition(uiModel?.addOnSummaryUiModel != null)
         }
 
         private fun setBmgmItemThumbnail(thumbnailUrl: String) {
@@ -104,7 +113,7 @@ class ProductBmgmItemAdapter(
         private fun setItemOnClickListener(
             item: ProductBmgmSectionUiModel.ProductUiModel
         ) {
-            itemView.setOnClickListener {
+            binding.containerProductInfo.setOnClickListener {
                 listener.onBmgmItemClicked(item)
             }
         }

@@ -67,6 +67,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.tokochat_common)
+    implementation projectOrAar(rootProject.ext.features.orderManagementCommon)
 
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
