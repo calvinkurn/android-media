@@ -2279,7 +2279,18 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         }
                     }
                 }
-                userSession.userId?.let { UohAnalytics.clickPrimaryButtonOnOrderCard(order.verticalCategory, button.label, it) }
+                userSession.userId?.let { userId ->
+                    val eventLabel = if (button.label.contains(other = UohConsts.ULAS_LABEL, ignoreCase = true)) {
+                        UohConsts.EVENT_LABEL_ULAS_BUTTON
+                    } else {
+                        button.label
+                    }
+                    UohAnalytics.clickPrimaryButtonOnOrderCard(
+                        verticalLabel = order.verticalCategory,
+                        primaryButton = eventLabel,
+                        userId = userId
+                    )
+                }
             }
         } catch (e: Exception) {
             e.printStackTrace()
