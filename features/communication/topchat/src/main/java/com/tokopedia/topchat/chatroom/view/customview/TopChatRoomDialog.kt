@@ -16,7 +16,7 @@ class TopChatRoomDialog @Inject constructor() {
         val title = context.getString(com.tokopedia.chat_common.R.string.exit_chat_title)
         val desc = context.getString(com.tokopedia.chat_common.R.string.exit_chat_body)
         val primaryCta = context.getString(com.tokopedia.chat_common.R.string.exit_chat_yes)
-        val secondaryCta = context.getString(com.tokopedia.design.R.string.button_cancel)
+        val secondaryCta = context.getString(com.tokopedia.chat_common.R.string.button_cancel)
         return DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
             setTitle(title)
             setDescription(desc)
