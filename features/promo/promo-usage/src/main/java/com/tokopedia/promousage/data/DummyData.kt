@@ -30,6 +30,8 @@ object DummyData {
             id = "1",
             index = 1,
             code = "ATTEMPTED01",
+            shopId = 0,
+            uniqueId = "",
             benefitAmount = 30000.0,
             benefitAmountStr = "Rp30.000",
             benefitDetail = PromoItemBenefitDetail(
@@ -82,6 +84,8 @@ object DummyData {
                 id = "2",
                 index = 2,
                 code = "CASHBACK1",
+                shopId = 0,
+                uniqueId = "",
                 benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
                 benefitDetail = PromoItemBenefitDetail(
@@ -134,6 +138,8 @@ object DummyData {
                 id = "3",
                 index = 3,
                 code = "CASHBACK2",
+                shopId = 0,
+                uniqueId = "",
                 benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
                 benefitDetail = PromoItemBenefitDetail(
@@ -185,6 +191,8 @@ object DummyData {
                 id = "5",
                 index = 5,
                 code = "CASHBACK3",
+                shopId = 0,
+                uniqueId = "",
                 benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
                 benefitDetail = PromoItemBenefitDetail(
@@ -230,6 +238,8 @@ object DummyData {
                 id = "6",
                 index = 6,
                 code = "CASHBACK4",
+                shopId = 0,
+                uniqueId = "",
                 benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
                 benefitDetail = PromoItemBenefitDetail(
@@ -274,6 +284,8 @@ object DummyData {
                 id = "7",
                 index = 7,
                 code = "CASHBACK5",
+                shopId = 0,
+                uniqueId = "",
                 benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
                 benefitDetail = PromoItemBenefitDetail(
@@ -316,6 +328,8 @@ object DummyData {
                 id = "8",
                 index = 8,
                 code = "FREESHIPPING1",
+                shopId = 0,
+                uniqueId = "",
                 benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
                 benefitDetail = PromoItemBenefitDetail(
@@ -367,6 +381,8 @@ object DummyData {
                 id = "9",
                 index = 9,
                 code = "FREESHIPPING2",
+                shopId = 0,
+                uniqueId = "",
                 benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
                 benefitDetail = PromoItemBenefitDetail(
@@ -419,6 +435,8 @@ object DummyData {
                 id = "10",
                 index = 10,
                 code = "FREESHIPPING3",
+                shopId = 0,
+                uniqueId = "",
                 benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
                 benefitDetail = PromoItemBenefitDetail(
@@ -463,6 +481,8 @@ object DummyData {
                 id = "11",
                 index = 11,
                 code = "FREESHIPPING4",
+                shopId = 0,
+                uniqueId = "",
                 benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
                 benefitDetail = PromoItemBenefitDetail(
@@ -507,6 +527,8 @@ object DummyData {
                 id = "12",
                 index = 12,
                 code = "FREESHIPPING5",
+                shopId = 0,
+                uniqueId = "",
                 benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
                 benefitDetail = PromoItemBenefitDetail(
@@ -556,6 +578,8 @@ object DummyData {
                 id = "13",
                 index = 13,
                 code = "DISCOUNT1",
+                shopId = 0,
+                uniqueId = "",
                 benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
                 benefitDetail = PromoItemBenefitDetail(
@@ -607,6 +631,8 @@ object DummyData {
                 id = "14",
                 index = 14,
                 code = "DISCOUNT2",
+                shopId = 0,
+                uniqueId = "",
                 benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
                 benefitDetail = PromoItemBenefitDetail(
@@ -658,6 +684,8 @@ object DummyData {
                 id = "15",
                 index = 15,
                 code = "DISCOUNT3",
+                shopId = 0,
+                uniqueId = "",
                 benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
                 benefitDetail = PromoItemBenefitDetail(
@@ -702,6 +730,8 @@ object DummyData {
                 id = "16",
                 index = 16,
                 code = "DISCOUNT4",
+                shopId = 0,
+                uniqueId = "",
                 benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
                 benefitDetail = PromoItemBenefitDetail(
@@ -746,6 +776,8 @@ object DummyData {
                 id = "17",
                 index = 17,
                 code = "DISCOUNT5",
+                shopId = 0,
+                uniqueId = "",
                 benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
                 benefitDetail = PromoItemBenefitDetail(
@@ -796,6 +828,8 @@ object DummyData {
                 id = "18",
                 index = 18,
                 code = "RECOMDISCOUNT",
+                shopId = 0,
+                uniqueId = "",
                 benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
                 benefitDetail = PromoItemBenefitDetail(
@@ -849,6 +883,8 @@ object DummyData {
                 id = "19",
                 index = 19,
                 code = "RECOMCASHBACK",
+                shopId = 0,
+                uniqueId = "",
                 benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
                 benefitDetail = PromoItemBenefitDetail(
@@ -927,12 +963,14 @@ object DummyData {
                 )
             }
         )
-        items.add(PromoAccordionViewAllItem(
-            headerId = "payment_coupons",
-            hiddenPromoCount = discountPromos.size - discountPromos.count { it.isVisible },
-            isExpanded = false,
-            isVisible = true
-        ))
+        items.add(
+            PromoAccordionViewAllItem(
+                headerId = "payment_coupons",
+                hiddenPromoCount = discountPromos.size - discountPromos.count { it.isVisible },
+                isExpanded = false,
+                isVisible = true
+            )
+        )
         items.add(
             PromoAccordionHeaderItem(
                 id = "shipping_coupons",
@@ -947,12 +985,14 @@ object DummyData {
                 )
             }
         )
-        items.add(PromoAccordionViewAllItem(
-            headerId = "shipping_coupons",
-            hiddenPromoCount = freeShippingPromos.size - freeShippingPromos.count { it.isVisible },
-            isExpanded = false,
-            isVisible = true
-        ))
+        items.add(
+            PromoAccordionViewAllItem(
+                headerId = "shipping_coupons",
+                hiddenPromoCount = freeShippingPromos.size - freeShippingPromos.count { it.isVisible },
+                isExpanded = false,
+                isVisible = true
+            )
+        )
         items.add(
             PromoAccordionHeaderItem(
                 id = "other_coupons",
@@ -967,12 +1007,14 @@ object DummyData {
                 )
             }
         )
-        items.add(PromoAccordionViewAllItem(
-            headerId = "other_coupons",
-            hiddenPromoCount = cashbackPromos.size - cashbackPromos.count { it.isVisible },
-            isExpanded = false,
-            isVisible = true
-        ))
+        items.add(
+            PromoAccordionViewAllItem(
+                headerId = "other_coupons",
+                hiddenPromoCount = cashbackPromos.size - cashbackPromos.count { it.isVisible },
+                isExpanded = false,
+                isVisible = true
+            )
+        )
         items.add(PromoAttemptItem())
         val selectedPromoCodes = items.filterIsInstance<PromoItem>()
             .filter { it.state is PromoItemState.Selected }

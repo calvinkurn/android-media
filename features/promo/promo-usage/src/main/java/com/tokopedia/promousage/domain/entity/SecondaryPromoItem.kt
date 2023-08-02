@@ -7,6 +7,7 @@ data class SecondaryPromoItem(
     val headerId: String = "",
     val index: Int = 0,
     val code: String = "",
+    val uniqueId: String = "",
     val message: String = "",
     val benefitAmount: Double = 0.0,
     val benefitAmountStr: String = "",
