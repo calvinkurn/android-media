@@ -23,6 +23,8 @@ data class GetBroadcasterAuthorConfigResponse(
                 val config: String = "",
                 @SerializedName("tnc")
                 val tnc: List<TermsAndCondition> = emptyList(),
+                @SerializedName("beautificationConfig")
+                val beautificationConfig: String = "",
         )
 
         data class TermsAndCondition(

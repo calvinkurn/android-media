@@ -8,6 +8,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
@@ -20,7 +21,6 @@ import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.data.createHomeProductCardUiModel
 import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
 import com.tokopedia.tokopedianow.home.analytic.HomeRemoveFromCartTracker
-import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse
 import com.tokopedia.tokopedianow.home.domain.model.Grid
 import com.tokopedia.tokopedianow.home.domain.model.Header
@@ -85,7 +85,8 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
             viewModel.getHomeLayout(
                 localCacheModel = LocalCacheModel(),
-                removeAbleWidgets = listOf()
+                removeAbleWidgets = listOf(),
+                enableNewRepurchase = true
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
             viewModel.onCartQuantityChanged(channelId, productId, quantity, shopId, 5, false, type)
@@ -185,7 +186,8 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
             viewModel.getHomeLayout(
                 localCacheModel = LocalCacheModel(),
-                removeAbleWidgets = listOf()
+                removeAbleWidgets = listOf(),
+                enableNewRepurchase = true
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
             viewModel.getMiniCart(listOf(shopId), warehouseId)
@@ -276,9 +278,13 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
             onUpdateItemCart_thenReturn(UpdateCartV2Data())
             onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
 
-            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+            viewModel.getHomeLayout(
+                localCacheModel = LocalCacheModel(),
+                removeAbleWidgets = listOf(),
+                enableNewRepurchase = true
+            )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-            viewModel.onScroll(2, LocalCacheModel(), listOf())
+            viewModel.onScroll(2, LocalCacheModel(), listOf(), true)
             viewModel.getMiniCart(listOf(shopId), warehouseId)
             viewModel.onCartQuantityChanged(channelId, productId, 4, shopId, 1, false, type)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
@@ -324,7 +330,11 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
             onGetHomeLayoutData_thenReturn(homeLayoutResponse)
             onAddToCart_thenReturn(addToCartResponse)
 
-            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+            viewModel.getHomeLayout(
+                localCacheModel = LocalCacheModel(),
+                removeAbleWidgets = listOf(),
+                enableNewRepurchase = true
+            )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
             viewModel.onCartQuantityChanged(channelId, productId, quantity, shopId, 1, false, type)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
@@ -429,9 +439,13 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
             onUpdateItemCart_thenReturn(updateCartResponse)
             onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
 
-            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+            viewModel.getHomeLayout(
+                localCacheModel = LocalCacheModel(),
+                removeAbleWidgets = listOf(),
+                enableNewRepurchase = true
+            )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-            viewModel.onScroll(2, LocalCacheModel(), listOf())
+            viewModel.onScroll(2, LocalCacheModel(), listOf(), true)
             viewModel.getMiniCart(listOf(shopId), warehouseId)
             viewModel.onCartQuantityChanged(channelId, productId, 4, shopId, 1, false, type)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
@@ -539,9 +553,13 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
             onUpdateItemCart_thenReturn(error)
             onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
 
-            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+            viewModel.getHomeLayout(
+                localCacheModel = LocalCacheModel(),
+                removeAbleWidgets = listOf(),
+                enableNewRepurchase = true
+            )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-            viewModel.onScroll(2, LocalCacheModel(), listOf())
+            viewModel.onScroll(2, LocalCacheModel(), listOf(), true)
             viewModel.getMiniCart(listOf(shopId), warehouseId)
             viewModel.onCartQuantityChanged(channelId, productId, 4, shopId, 1, false, type)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
@@ -601,9 +619,13 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
             onRemoveItemCart_thenReturn(RemoveFromCartData())
             onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
 
-            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+            viewModel.getHomeLayout(
+                localCacheModel = LocalCacheModel(),
+                removeAbleWidgets = listOf(),
+                enableNewRepurchase = true
+            )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-            viewModel.onScroll(2, LocalCacheModel(), listOf())
+            viewModel.onScroll(2, LocalCacheModel(), listOf(), true)
             viewModel.getMiniCart(listOf(shopId), warehouseId)
             viewModel.onCartQuantityChanged(channelId, productId, 0, shopId, 1, false, type)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
@@ -742,9 +764,13 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
             onRemoveItemCart_thenReturn(error)
             onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
 
-            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+            viewModel.getHomeLayout(
+                localCacheModel = LocalCacheModel(),
+                removeAbleWidgets = listOf(),
+                enableNewRepurchase = true
+            )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-            viewModel.onScroll(2, LocalCacheModel(), listOf())
+            viewModel.onScroll(2, LocalCacheModel(), listOf(), true)
             viewModel.getMiniCart(listOf(shopId), warehouseId)
             viewModel.onCartQuantityChanged(channelId, productId, 0, shopId, 1, false, type)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
@@ -784,12 +810,16 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
             onGetHomeLayoutData_thenReturn(homeLayoutResponse)
             onAddToCart_thenReturn(addToCartResponse)
 
-            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+            viewModel.getHomeLayout(
+                localCacheModel = LocalCacheModel(),
+                removeAbleWidgets = listOf(),
+                enableNewRepurchase = true
+            )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
             onGetHomeLayoutData_thenReturn(listOf(homeRecomResponse))
 
-            viewModel.onScroll(2, LocalCacheModel(), listOf())
+            viewModel.onScroll(2, LocalCacheModel(), listOf(), true)
             viewModel.onCartQuantityChanged(channelId, productId, quantity, shopId, 1, false, type)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
@@ -839,10 +869,11 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
             viewModel.getHomeLayout(
                 localCacheModel = LocalCacheModel(),
-                removeAbleWidgets = listOf()
+                removeAbleWidgets = listOf(),
+                enableNewRepurchase = true
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-            viewModel.onScroll(2, LocalCacheModel(), listOf())
+            viewModel.onScroll(2, LocalCacheModel(), listOf(), true)
             viewModel.onCartQuantityChanged(channelId, "3", quantity, shopId, 1, false, type)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
@@ -889,12 +920,16 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
             onGetHomeLayoutData_thenReturn(homeLayoutResponse)
             onAddToCart_thenReturn(addToCartResponse)
 
-            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+            viewModel.getHomeLayout(
+                localCacheModel = LocalCacheModel(),
+                removeAbleWidgets = listOf(),
+                enableNewRepurchase = true
+            )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
             onGetHomeLayoutData_thenReturn(listOf(homeRecomResponse))
 
-            viewModel.onScroll(2, LocalCacheModel(), listOf())
+            viewModel.onScroll(2, LocalCacheModel(), listOf(), true)
             viewModel.onCartQuantityChanged(channelId, "3", quantity, shopId, 1, false, type)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
@@ -946,9 +981,13 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
             onGetRepurchaseWidget_thenReturn(repurchaseResponse)
             onAddToCart_thenReturn(addToCartResponse)
 
-            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+            viewModel.getHomeLayout(
+                localCacheModel = LocalCacheModel(),
+                removeAbleWidgets = listOf(),
+                enableNewRepurchase = true
+            )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-            viewModel.onScroll(2, LocalCacheModel(), listOf())
+            viewModel.onScroll(2, LocalCacheModel(), listOf(), true)
             viewModel.onCartQuantityChanged(
                 channelId,
                 "2",
@@ -969,6 +1008,88 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                 maxOrder = 4,
                 position = 2,
                 originalPosition = 2,
+                headerName = "Kamu pernah beli"
+            )
+
+            val expected = HomeAddToCartTracker(
+                position = 2,
+                quantity = 2,
+                cartId = "1999",
+                productCardUiModel
+            )
+
+            verifyGetRepurchaseWidgetUseCaseCalled()
+            verifyAddToCartUseCaseCalled()
+
+            viewModel.homeAddToCartTracker
+                .verifyValueEquals(expected)
+        }
+    }
+
+    @Test
+    fun `when add repurchase product to cart should track add old repurchase product`() {
+        runTest {
+            val channelId = "1001"
+
+            val homeLayoutResponse = listOf(
+                HomeLayoutResponse(
+                    id = "1001",
+                    layout = "recent_purchase_tokonow",
+                    header = Header(
+                        name = "Kamu pernah beli",
+                        serverTimeUnix = 0
+                    )
+                )
+            )
+
+            val repurchaseResponse = GetRepurchaseResponse.RepurchaseData(
+                title = "Kamu pernah beli",
+                products = listOf(
+                    RepurchaseProduct(
+                        id = "1",
+                        stock = 5,
+                        maxOrder = 4,
+                        minOrder = 3
+                    ),
+                    RepurchaseProduct(
+                        id = "2",
+                        stock = 3,
+                        maxOrder = 4,
+                        minOrder = 1
+                    )
+                )
+            )
+
+            val addToCartResponse = AddToCartDataModel(data = DataModel(cartId = "1999"))
+
+            onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+            onGetRepurchaseWidget_thenReturn(repurchaseResponse)
+            onAddToCart_thenReturn(addToCartResponse)
+
+            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf(), false)
+            viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
+            viewModel.onScroll(2, LocalCacheModel(), listOf(), false)
+            viewModel.onCartQuantityChanged(
+                channelId,
+                "2",
+                2,
+                "100",
+                1,
+                false,
+                TokoNowLayoutType.REPURCHASE_PRODUCT
+            )
+            advanceTimeBy(CHANGE_QUANTITY_DELAY)
+
+            val productCardUiModel = createHomeProductCardUiModel(
+                channelId = channelId,
+                productId = "2",
+                stock = 3,
+                quantity = 2,
+                product = ProductCardModel(
+                    hasAddToCartButton = false,
+                    nonVariant = ProductCardModel.NonVariant(2, 1, 4)
+                ),
+                position = 2,
                 headerName = "Kamu pernah beli"
             )
 
@@ -1025,9 +1146,13 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
             onGetRepurchaseWidget_thenReturn(repurchaseResponse)
             onAddToCart_thenReturn(addToCartResponse)
 
-            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+            viewModel.getHomeLayout(
+                localCacheModel = LocalCacheModel(),
+                removeAbleWidgets = listOf(),
+                enableNewRepurchase = true
+            )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-            viewModel.onScroll(2, LocalCacheModel(), listOf())
+            viewModel.onScroll(2, LocalCacheModel(), listOf(), true)
             viewModel.onCartQuantityChanged(
                 channelId,
                 "4",
@@ -1057,9 +1182,13 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
             onGetHomeLayoutData_thenReturn(homeLayoutResponse)
             onAddToCart_thenReturn(addToCartResponse)
 
-            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+            viewModel.getHomeLayout(
+                localCacheModel = LocalCacheModel(),
+                removeAbleWidgets = listOf(),
+                enableNewRepurchase = true
+            )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-            viewModel.onScroll(2, LocalCacheModel(), listOf())
+            viewModel.onScroll(2, LocalCacheModel(), listOf(), true)
             viewModel.onCartQuantityChanged(
                 channelId,
                 "4",
@@ -1107,7 +1236,11 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
             onGetHomeLayoutData_thenReturn(homeLayoutResponse)
             onAddToCart_thenReturn(addToCartResponse)
 
-            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+            viewModel.getHomeLayout(
+                localCacheModel = LocalCacheModel(),
+                removeAbleWidgets = listOf(),
+                enableNewRepurchase = true
+            )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
             viewModel.onCartQuantityChanged(
                 channelId,
@@ -1177,7 +1310,11 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
             onGetHomeLayoutData_thenReturn(homeLayoutResponse)
             onAddToCart_thenReturn(addToCartResponse)
 
-            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+            viewModel.getHomeLayout(
+                localCacheModel = LocalCacheModel(),
+                removeAbleWidgets = listOf(),
+                enableNewRepurchase = true
+            )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
             viewModel.onCartQuantityChanged(
                 channelId,
@@ -1222,9 +1359,13 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
             onGetHomeLayoutData_thenReturn(homeLayoutResponse)
             onAddToCart_thenReturn(addToCartResponse)
 
-            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+            viewModel.getHomeLayout(
+                localCacheModel = LocalCacheModel(),
+                removeAbleWidgets = listOf(),
+                enableNewRepurchase = true
+            )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-            viewModel.onScroll(2, LocalCacheModel(), listOf())
+            viewModel.onScroll(2, LocalCacheModel(), listOf(), true)
             viewModel.onCartQuantityChanged(
                 channelId,
                 "4",
@@ -1265,9 +1406,13 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
             onGetHomeLayoutData_thenReturn(homeLayoutResponse)
             onAddToCart_thenReturn(addToCartResponse)
 
-            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+            viewModel.getHomeLayout(
+                localCacheModel = LocalCacheModel(),
+                removeAbleWidgets = listOf(),
+                enableNewRepurchase = true
+            )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-            viewModel.onScroll(2, LocalCacheModel(), listOf())
+            viewModel.onScroll(2, LocalCacheModel(), listOf(), true)
             viewModel.onCartQuantityChanged(
                 channelId,
                 "4",
@@ -1296,9 +1441,13 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
             onGetHomeLayoutData_thenReturn(homeLayoutResponse)
             onAddToCart_thenReturn(addToCartResponse)
 
-            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+            viewModel.getHomeLayout(
+                localCacheModel = LocalCacheModel(),
+                removeAbleWidgets = listOf(),
+                enableNewRepurchase = true
+            )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-            viewModel.onScroll(2, LocalCacheModel(), listOf())
+            viewModel.onScroll(2, LocalCacheModel(), listOf(), true)
             viewModel.onCartQuantityChanged(
                 channelId,
                 "4",
@@ -1418,7 +1567,8 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
             viewModel.getHomeLayout(
                 localCacheModel = LocalCacheModel(),
-                removeAbleWidgets = listOf()
+                removeAbleWidgets = listOf(),
+                enableNewRepurchase = true
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
             viewModel.onCartQuantityChanged(channelId, productId, quantity, shopId, 5, false, type)

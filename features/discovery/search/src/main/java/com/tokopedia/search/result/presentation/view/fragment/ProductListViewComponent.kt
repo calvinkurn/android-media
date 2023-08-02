@@ -4,12 +4,12 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.recommendation_widget_common.di.RecommendationModule
 import com.tokopedia.search.di.module.FilterControllerModule
 import com.tokopedia.search.di.module.IrisModule
+import com.tokopedia.search.di.module.ProductGridLayoutManagerModule
 import com.tokopedia.search.di.module.RecycledViewPoolModule
 import com.tokopedia.search.di.module.RemoteConfigModule
 import com.tokopedia.search.di.module.SearchContextModule
 import com.tokopedia.search.di.module.SearchNavigationListenerModule
 import com.tokopedia.search.di.module.SearchOnBoardingLocalCacheModule
-import com.tokopedia.search.di.module.StaggeredGridLayoutManagerModule
 import com.tokopedia.search.di.module.TrackingQueueModule
 import com.tokopedia.search.di.module.UserSessionModule
 import com.tokopedia.search.di.scope.SearchScope
@@ -34,6 +34,7 @@ import com.tokopedia.search.result.product.performancemonitoring.PerformanceMoni
 import com.tokopedia.search.result.product.responsecode.ResponseCodeProviderModule
 import com.tokopedia.search.result.product.safesearch.SafeSearchModule
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationModule
+import com.tokopedia.search.result.product.similarsearch.SimilarSearchModule
 import com.tokopedia.search.result.product.ticker.TickerModule
 import com.tokopedia.search.result.product.video.VideoModule
 import com.tokopedia.search.result.product.wishlist.WishlistModule
@@ -68,7 +69,7 @@ import dagger.Component
     ProductListProvidersModule::class,
     FilterControllerModule::class,
     ProductListPresenterModule::class,
-    StaggeredGridLayoutManagerModule::class,
+    ProductGridLayoutManagerModule::class,
     BannedProductsViewModule::class,
     RecycledViewPoolModule::class,
     SearchNavigationListenerModule::class,
@@ -83,6 +84,7 @@ import dagger.Component
     LastFilterModule::class,
     BottomSheetFilterModule::class,
     ResponseCodeProviderModule::class,
+    SimilarSearchModule::class,
  ], dependencies = [BaseAppComponent::class])
 interface ProductListViewComponent {
 

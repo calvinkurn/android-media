@@ -10,7 +10,7 @@
         android:id="@+id/image"
         android:layout_width="@dimen/top_ads_common_dp_20"
         android:layout_height="@dimen/top_ads_common_dp_20"
-        android:tint="@color/Unify_G500"
+        android:tint="@color/Unify_GN500"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/iconunify_check_circle" />

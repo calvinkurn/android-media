@@ -6,8 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentFactory
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -32,8 +35,11 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.databinding.SearchResultShopFragmentLayoutBinding
-import com.tokopedia.search.result.presentation.view.listener.*
-import com.tokopedia.search.result.presentation.viewmodel.SearchViewModel
+import com.tokopedia.search.result.SearchViewModel
+import com.tokopedia.search.result.presentation.view.activity.SearchComponent
+import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
+import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
+import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation
 import com.tokopedia.search.result.shop.chooseaddress.ChooseAddressListener
 import com.tokopedia.search.result.shop.presentation.adapter.ShopListAdapter
 import com.tokopedia.search.result.shop.presentation.itemdecoration.ShopListItemDecoration
@@ -42,6 +48,7 @@ import com.tokopedia.search.result.shop.presentation.model.ShopDataView
 import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactory
 import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactoryImpl
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModel
+import com.tokopedia.search.utils.BackToTopView
 import com.tokopedia.search.utils.applyQuickFilterElevation
 import com.tokopedia.search.utils.convertValuesToString
 import com.tokopedia.search.utils.removeQuickFilterElevation
@@ -49,32 +56,42 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import java.util.ArrayList
+import javax.inject.Inject
 
-internal class ShopListFragment:
+internal class ShopListFragment @Inject constructor(
+    private val viewModelFactory: ViewModelProvider.Factory,
+):
     TkpdBaseV4Fragment(),
     ShopListener,
     EmptyStateListener,
     BannerAdsListener,
     QuickFilterElevation,
     ChooseAddressListener,
-    SortFilterBottomSheet.Callback {
+    SortFilterBottomSheet.Callback,
+    BackToTopView {
 
     companion object {
         private const val SHOP = "shop"
         private const val SEARCH_SHOP_TRACE = "search_shop_trace"
 
         @JvmStatic
-        fun newInstance(): ShopListFragment {
-            return ShopListFragment()
+        fun newInstance(
+            classLoader: ClassLoader,
+            fragmentFactory: FragmentFactory,
+        ): ShopListFragment {
+            return fragmentFactory.instantiate(
+                classLoader,
+                ShopListFragment::class.java.name,
+            ) as ShopListFragment
         }
     }
+
+    private val searchShopViewModel: SearchShopViewModel? by viewModels { viewModelFactory }
+    private val searchViewModel: SearchViewModel? by viewModels { viewModelFactory }
 
     private var gridLayoutManager: GridLayoutManager? = null
     private var shopListAdapter: ShopListAdapter? = null
     private var gridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
-    private var searchShopViewModel: SearchShopViewModel? = null
-    private var searchViewModel: SearchViewModel? = null
     private var performanceMonitoring: PerformanceMonitoring? = null
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
     private val filterTrackingData by lazy {
@@ -96,18 +113,10 @@ internal class ShopListFragment:
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initViewModel()
         initViews()
         observeViewModelData()
 
         searchShopViewModel?.onViewCreated()
-    }
-
-    private fun initViewModel() {
-        activity?.let { activity ->
-            searchShopViewModel = ViewModelProviders.of(activity).get(SearchShopViewModel::class.java)
-            searchViewModel = ViewModelProviders.of(activity).get(SearchViewModel::class.java)
-        }
     }
 
     private fun initViews() {
@@ -208,12 +217,10 @@ internal class ShopListFragment:
                 hideRefreshLayout()
                 updateList(searchShopLiveData)
                 updateScrollListener()
-                hideSearchPageLoading()
             }
             is State.Error -> {
                 hideRefreshLayout()
                 showRetryLayout(searchShopLiveData)
-                hideSearchPageLoading()
             }
             else -> {
                 //no-op
@@ -238,11 +245,7 @@ internal class ShopListFragment:
         gridLayoutLoadMoreTriggerListener?.setHasNextPage(searchShopViewModel?.getHasNextPage() ?: false)
     }
 
-    private fun hideSearchPageLoading() {
-        searchViewModel?.hideSearchPageLoading()
-    }
-
-    private fun showRetryLayout(searchShopLiveData: State<List<Visitable<*>>>) {
+    private fun showRetryLayout(searchShopLiveData: State.Error<List<Visitable<*>>>) {
         activity?.let { activity ->
             val retryClickedListener = NetworkErrorHelper.RetryClickedListener {
                 searchShopViewModel?.onViewClickRetry()
@@ -523,9 +526,10 @@ internal class ShopListFragment:
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
 
+        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) return
+
         trackScreen()
 
-        searchViewModel?.changeBottomNavigationVisibility(false)
         searchShopViewModel?.onViewVisibilityChanged(isVisibleToUser, isAdded)
     }
 
@@ -596,7 +600,7 @@ internal class ShopListFragment:
             )
     }
 
-    fun backToTop() {
+    override fun backToTop() {
         binding?.recyclerViewSearchShop?.smoothScrollToPosition(0)
     }
 

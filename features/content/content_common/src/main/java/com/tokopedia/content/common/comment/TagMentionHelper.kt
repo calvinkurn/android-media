@@ -73,7 +73,7 @@ object TagMentionBuilder {
     private const val MENTION_VALUE = 3
 
     fun createNewMentionTag(item: CommentUiModel.Item): String {
-        return "{$MENTION_CHAR${item.userId}$MENTION_CHAR|$MENTION_CHAR${item.userType.value}$MENTION_CHAR|$MENTION_CHAR${item.username}$MENTION_CHAR}"
+        return "{$MENTION_CHAR${item.userId}$MENTION_CHAR|$MENTION_CHAR${item.userType.value}$MENTION_CHAR|$MENTION_CHAR${item.username}$MENTION_CHAR} "
     }
 
     fun isChildOrParent(text: Spanned?, commentId: String): CommentType {
@@ -171,7 +171,7 @@ object TagMentionBuilder {
                         mentionSpanned,
                         Spanned.SPAN_COMPOSING
                     )
-                    append(" $content")
+                    append(content)
                 }
             } else {
                 throw Exception()

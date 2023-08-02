@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <stroke android:width="1dp"
+        android:color="@color/dms_header_cta_inverted_border"/>
+    <size
+        android:width="@dimen/home_channel_header_cta_container"
+        android:height="@dimen/home_channel_header_cta_container"/>
+    <solid
+        android:color="@color/Unify_Static_White"/>
+</shape>

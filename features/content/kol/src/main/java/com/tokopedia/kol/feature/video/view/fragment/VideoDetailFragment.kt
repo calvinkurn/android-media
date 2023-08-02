@@ -28,6 +28,7 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXLike
 import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kol.R
 import com.tokopedia.kol.common.di.DaggerKolComponent
 import com.tokopedia.kol.common.util.resize
@@ -41,7 +42,6 @@ import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
-import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -246,6 +246,8 @@ class VideoDetailFragment :
     }
 
     private fun initView() {
+        ivClose.setImageResource(IconUnify.CLOSE)
+
         val detailId = arguments?.getString(VideoDetailActivity.PARAM_ID, "")
         if (detailId?.isEmpty() == true || detailId == "0") {
             activity?.finish()
@@ -452,7 +454,7 @@ class VideoDetailFragment :
             shareIcon.show()
             shareText.show()
             val desc = requireContext().getString(
-                com.tokopedia.feedcomponent.R.string.feed_share_default_text,
+                com.tokopedia.content.common.R.string.feed_share_default_text,
                 feedXCard.author.name
             )
 
@@ -479,43 +481,65 @@ class VideoDetailFragment :
     private fun bindLike(like: FeedXLike) {
         when {
             like.isLiked -> {
-                likeIcon.loadImageWithoutPlaceholder(com.tokopedia.feedcomponent.R.drawable.ic_thumb_green)
+                updateLikeButton(true)
                 likeText.text = like.countFmt
                 likeText.setTextColor(
                     MethodChecker.getColor(
                         likeText.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G400
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     )
                 )
             }
 
             like.count > 0 -> {
-                likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_white)
+                updateLikeButton(false)
                 likeText.text = like.countFmt
                 likeText.setTextColor(
                     MethodChecker.getColor(
                         likeText.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N0
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN0
                     )
                 )
             }
 
             else -> {
-                likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_white)
-                likeText.setText(com.tokopedia.feedcomponent.R.string.kol_action_like)
+                updateLikeButton(false)
+                likeText.setText(com.tokopedia.content.common.R.string.kol_action_like)
                 likeText.setTextColor(
                     MethodChecker.getColor(
                         likeIcon.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N0
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN0
                     )
                 )
             }
         }
     }
 
+    private fun updateLikeButton(isLiked: Boolean) {
+        val likedColor = MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+        val dislikeColor = MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+        if (isLiked) {
+            likeIcon.setImage(
+                newIconId = IconUnify.THUMB_FILLED,
+                newLightEnable = likedColor,
+                newLightDisable = dislikeColor,
+                newDarkEnable = likedColor,
+                newDarkDisable = dislikeColor,
+            )
+        } else {
+            likeIcon.setImage(
+                newIconId = IconUnify.THUMB_FILLED,
+                newLightEnable = dislikeColor,
+                newLightDisable = likedColor,
+                newDarkEnable = dislikeColor,
+                newDarkDisable = likedColor,
+            )
+        }
+    }
+
     private fun bindComment(comments: FeedXComments) {
         commentText.text =
-            if (comments.count == 0) getString(com.tokopedia.feedcomponent.R.string.kol_action_comment)
+            if (comments.count == 0) getString(com.tokopedia.content.common.R.string.kol_action_comment)
             else comments.countFmt
     }
 

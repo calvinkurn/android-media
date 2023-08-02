@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="sah_dms_new_seller_gradient_bg_end_color">#2020CE7D</color>
-    <color name="sah_dms_bottom_nav_shadow">#3331353B</color>
+    <color name="sah_dms_bottom_nav_shadow">#1431353B</color>
+    <color name="sah_dms_bottom_gradient_color">#20FFFFFF</color>
+    <color name="sah_dms_top_gradient_color_rm">#70EAFA</color>
+    <color name="sah_dms_top_gradient_color_pm">#C9FDE0</color>
+    <color name="sah_dms_top_gradient_color_os">#F0DAFF</color>
 </resources>

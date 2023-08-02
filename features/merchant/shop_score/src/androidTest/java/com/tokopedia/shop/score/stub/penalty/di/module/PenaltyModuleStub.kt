@@ -2,15 +2,17 @@ package com.tokopedia.shop.score.stub.penalty.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.shop.score.common.ShopScorePrefManager
 import com.tokopedia.shop.score.penalty.di.scope.PenaltyScope
-import com.tokopedia.shop.score.penalty.domain.mapper.PenaltyMapper
-import com.tokopedia.shop.score.penalty.domain.usecase.GetShopPenaltyDetailMergeUseCase
-import com.tokopedia.shop.score.penalty.domain.usecase.GetShopPenaltyDetailUseCase
+import com.tokopedia.shop.score.penalty.domain.old.mapper.PenaltyMapperOld
+import com.tokopedia.shop.score.penalty.domain.old.usecase.GetShopPenaltyDetailMergeUseCaseOld
+import com.tokopedia.shop.score.penalty.domain.old.usecase.GetShopPenaltyDetailUseCaseOld
 import com.tokopedia.shop.score.stub.common.UserSessionStub
 import com.tokopedia.shop.score.stub.common.graphql.repository.GraphqlRepositoryStub
-import com.tokopedia.shop.score.stub.penalty.domain.mapper.PenaltyMapperStub
-import com.tokopedia.shop.score.stub.penalty.domain.usecase.GetShopPenaltyDetailMergeUseCaseStub
-import com.tokopedia.shop.score.stub.penalty.domain.usecase.GetShopPenaltyDetailUseCaseStub
+import com.tokopedia.shop.score.stub.common.util.ShopScorePrefManagerStub
+import com.tokopedia.shop.score.stub.penalty.domain.mapper.PenaltyMapperOldStub
+import com.tokopedia.shop.score.stub.penalty.domain.usecase.GetShopPenaltyDetailMergeUseCaseOldStub
+import com.tokopedia.shop.score.stub.penalty.domain.usecase.GetShopPenaltyDetailUseCaseOldStub
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -22,15 +24,15 @@ class PenaltyModuleStub {
     @Provides
     fun provideGetShopPenaltyDetailMergeUseCaseStub(
         graphqlRepositoryStub: GraphqlRepositoryStub,
-        penaltyMapper: PenaltyMapper
-    ): GetShopPenaltyDetailMergeUseCase {
-        return GetShopPenaltyDetailMergeUseCaseStub(graphqlRepositoryStub, penaltyMapper)
+        penaltyMapperOld: PenaltyMapperOld
+    ): GetShopPenaltyDetailMergeUseCaseOld {
+        return GetShopPenaltyDetailMergeUseCaseOldStub(graphqlRepositoryStub, penaltyMapperOld)
     }
 
     @PenaltyScope
     @Provides
-    fun provideGetShopPenaltyDetailUseCaseStub(graphqlRepositoryStub: GraphqlRepositoryStub): GetShopPenaltyDetailUseCase {
-        return GetShopPenaltyDetailUseCaseStub(graphqlRepositoryStub)
+    fun provideGetShopPenaltyDetailUseCaseStub(graphqlRepositoryStub: GraphqlRepositoryStub): GetShopPenaltyDetailUseCaseOld {
+        return GetShopPenaltyDetailUseCaseOldStub(graphqlRepositoryStub)
     }
 
     @PenaltyScope
@@ -41,7 +43,13 @@ class PenaltyModuleStub {
 
     @PenaltyScope
     @Provides
-    fun providePenaltyMapper(@ApplicationContext context: Context): PenaltyMapper {
-        return PenaltyMapperStub(context)
+    fun providePenaltyMapper(@ApplicationContext context: Context): PenaltyMapperOld {
+        return PenaltyMapperOldStub(context)
+    }
+
+    @PenaltyScope
+    @Provides
+    fun providePrefManager(@ApplicationContext context: Context): ShopScorePrefManager {
+        return ShopScorePrefManagerStub(context)
     }
 }

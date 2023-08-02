@@ -22,8 +22,23 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".performance.presentation.activity.ShopPerformanceYoutubeActivity"
-            android:theme="@style/Theme.WhiteUnify" />
+            android:name=".penalty.presentation.old.activity.ShopPenaltyPageOldActivity"
+            android:label="@string/title_penalty_shop_score"
+            android:theme="@style/Theme.WhiteUnify"
+            android:screenOrientation="portrait"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_marketplace"
+                    android:path="@string/path_shop_penalty_old" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".penalty.presentation.activity.ShopPenaltyPageActivity"
             android:label="@string/title_penalty_shop_score"
@@ -42,6 +57,10 @@
                     android:path="@string/path_shop_penalty" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".penalty.presentation.activity.ShopPenaltyNotYetDeductedActivity"
+            android:label="@string/title_penalty_not_yet_deducted"
+            android:theme="@style/Theme.WhiteUnify" />
         <activity
             android:name=".penalty.presentation.activity.ShopPenaltyDetailPageActivity"
             android:label="@string/title_penalty_detail_shop_score"

@@ -24,9 +24,17 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
  * created by @bayazidnasir on 6/9/2022
  */
 
-class QrEventBottomSheet(private val actionButton: ActionButton) : BottomSheetUnify() {
+class QrEventBottomSheet: BottomSheetUnify() {
 
     private var binding by autoClearedNullable<LayoutScanQrCodeBinding>()
+    private var actionButton: ActionButton? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {arguments ->
+            actionButton = arguments.getParcelable(ACTION_BUTTON_EXTRA)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,7 +49,9 @@ class QrEventBottomSheet(private val actionButton: ActionButton) : BottomSheetUn
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setData(actionButton)
+        actionButton?.let {actionButton ->
+            setData(actionButton)
+        }
     }
 
     private fun setData(actionButton: ActionButton) {
@@ -121,5 +131,15 @@ class QrEventBottomSheet(private val actionButton: ActionButton) : BottomSheetUn
         private const val PADDING_5 = 5
         private const val PADDING_0 = 0
         private const val FIRST_INDEX = 0
+
+        private const val ACTION_BUTTON_EXTRA = "ACTION_BUTTON_EXTRA"
+
+        fun newInstance(actionButton: ActionButton):  QrEventBottomSheet {
+            val bottomSheet = QrEventBottomSheet()
+            val bundle = Bundle()
+            bundle.putParcelable(ACTION_BUTTON_EXTRA, actionButton)
+            bottomSheet.arguments = bundle
+            return bottomSheet
+        }
     }
 }

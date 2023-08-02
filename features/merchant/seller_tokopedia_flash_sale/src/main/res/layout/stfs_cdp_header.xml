@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:text="@string/registration_over_in_label"
-        android:textColor="@color/gr_700"
+        android:textColor="@color/Unify_NN700"
         app:layout_constraintBottom_toBottomOf="@+id/img_campaign_status_indicator"
         app:layout_constraintStart_toEndOf="@id/img_campaign_status_indicator"
         app:layout_constraintTop_toTopOf="@+id/img_campaign_status_indicator"

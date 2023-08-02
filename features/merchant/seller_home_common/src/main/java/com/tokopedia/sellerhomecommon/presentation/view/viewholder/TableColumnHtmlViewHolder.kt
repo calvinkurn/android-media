@@ -26,8 +26,7 @@ import timber.log.Timber
  */
 
 class TableColumnHtmlViewHolder(
-    itemView: View,
-    private val listener: Listener
+    itemView: View, private val listener: Listener
 ) : AbstractViewHolder<TableRowsUiModel.RowColumnHtml>(itemView) {
 
     companion object {
@@ -60,35 +59,28 @@ class TableColumnHtmlViewHolder(
     private fun setOnHtmlTextClicked(element: TableRowsUiModel.RowColumnHtml) {
         with(binding) {
             val textColorInt = element.colorInt ?: MethodChecker.getColor(
-                root.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_NN900
+                root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900
             )
             element.colorInt = textColorInt
             tvTableColumnHtml.run {
-                setClickableUrlHtml(
-                    element.valueStr,
-                    applyCustomStyling = {
-                        isUnderlineText = false
-                        color = textColorInt
-                        context?.let {
-                            applyTypographyFont(it)
-                        }
-                    },
-                    onTouchListener = { spannable ->
-                        SpannableTouchListener(spannable)
-                    },
-                    onUrlClicked = { url, text ->
-                        listener.onHyperlinkClicked(url, text, element.meta)
-                        Uri.parse(url).let { uri ->
-                            if (isAppLink(uri)) {
-                                RouteManager.route(context, url)
-                            } else {
-                                if (!checkUrlForNativePage(context, uri)) {
-                                    goToDefaultIntent(context, uri)
-                                }
+                setClickableUrlHtml(htmlText = element.valueStr, applyCustomStyling = {
+                    isUnderlineText = false
+                    color = textColorInt
+                    applyTypographyFont(context)
+                }, onTouchListener = { spannable ->
+                    SpannableTouchListener(spannable)
+                }, onUrlClicked = { url, text ->
+                    listener.onHyperlinkClicked(url, text, element.meta)
+                    Uri.parse(url).let { uri ->
+                        if (isAppLink(uri)) {
+                            RouteManager.route(context, url)
+                        } else {
+                            if (!checkUrlForNativePage(context, uri)) {
+                                goToDefaultIntent(context, uri)
                             }
                         }
-                    })
+                    }
+                })
                 setTextColor(textColorInt)
             }
         }

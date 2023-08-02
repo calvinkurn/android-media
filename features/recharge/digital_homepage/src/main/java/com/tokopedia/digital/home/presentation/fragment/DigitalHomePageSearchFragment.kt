@@ -229,7 +229,7 @@ open class DigitalHomePageSearchFragment :
                 errorMessage = errMsg
                 subErrorMessage = "${
                     getString(
-                        com.tokopedia.kotlin.extensions.R.string.title_try_again
+                        com.tokopedia.utils.R.string.title_try_again
                     )
                 }. Kode Error: ($errCode)"
                 onRetryListener = ErrorNetworkModel.OnRetryListener {

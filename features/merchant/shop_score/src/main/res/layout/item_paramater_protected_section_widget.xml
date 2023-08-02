@@ -41,7 +41,7 @@
         android:layout_marginBottom="16dp"
         app:cardCornerRadius="8dp"
         app:cardElevation="0dp"
-        app:card_background_color="@color/Unify_N50"
+        app:card_background_color="@color/Unify_NN50"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/icProtectionCheck"

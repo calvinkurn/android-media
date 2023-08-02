@@ -51,6 +51,13 @@ internal class CarouselProductCardListenerInfo {
             }
         }
 
+    var onSeeOtherProductClickListener: CarouselProductCardListener.OnSeeOtherProductClickListener? = null
+        set(value) {
+            if (value != null) {
+                field = value
+            }
+        }
+
     var onViewAllCardClickListener: CarouselProductCardListener.OnViewAllCardClickListener? = null
         set(value) {
             if (value != null) {

@@ -13,7 +13,7 @@
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginLeft="@dimen/widget_denom_margin"
         android:layout_marginRight="@dimen/spacing_lvl4"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:visibility="gone"
         app:typographyType="heading_4" />
 

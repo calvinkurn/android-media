@@ -1,0 +1,1331 @@
+{
+  "productRecommendationWidget": {
+    "data": [
+      {
+        "tID": "oLYZNAWssr2JVN2Nv1T2ROkW9zY=",
+        "source": "custom",
+        "title": "Dibeli bersamaan",
+        "subtitle": "",
+        "foreignTitle": "Recommendation for you",
+        "widgetUrl": "",
+        "pageName": "tokonow_clp",
+        "seeMoreAppLink": "tokopedia://rekomendasi/tokonow/0/?ref=tokonow_clp\u0026category_id=4858",
+        "layoutType": "horizontal-atc",
+        "pagination": {
+          "currentPage": 1,
+          "nextPage": 2,
+          "prevPage": -1,
+          "hasNext": true
+        },
+        "campaign": {
+          "appLandingPageLink": "",
+          "landingPageLink": "",
+          "thematicID": 0,
+          "assets": {
+            "banner": {
+              "apps": ""
+            }
+          }
+        },
+        "recommendation": [
+          {
+            "id": 4208745965,
+            "name": "Pocari_Sweat_Ionessence_250_ml",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Tahu \u0026 Tempe/Tahu Sutra",
+            "url": "https://www.tokopedia.com/11515028tknw/pocari-sweat-ionessence-250-ml",
+            "appUrl": "tokopedia://product/4208745965",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4935\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=tokonow_clp\u0026pid=4208745965\u0026pos=1\u0026recommendation=category\u0026rectype=category\u0026redirect=https://www.tokopedia.com/11515028tknw/pocari-sweat-ionessence-250-ml?catid4935=%26ref=tokonow_clp_pa1_po1%26src=r3category\u0026tid=oLYZNAWssr2JVN2Nv1T2ROkW9zY=\u0026uid=217365640\u0026unique_id=\u0026utime=1685925048\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/6/10/6e489f86-2f6c-40ff-86ff-c1e30d83197e.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/6/10/6e489f86-2f6c-40ff-86ff-c1e30d83197e.jpg",
+            "price": "Rp 6.300",
+            "priceInt": 6300,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 99,
+            "shop": {
+              "id": 11515028,
+              "name": "11515028tknw",
+              "city": "Jakarta Selatan",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 4935,
+            "labels": [
+              {
+                "title": "Gratis Ongkir",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "eta",
+                "title": "",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 10",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 0,
+            "countReview": 0,
+            "ratingAverage": "",
+            "recommendationType": "category",
+            "stock": 99,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 5208528751,
+            "name": "multiple_kiwi",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Buah-buahan/Kiwi",
+            "url": "https://www.tokopedia.com/11515028tknw/multiple-kiwi",
+            "appUrl": "tokopedia://product/5208528751",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4914\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=tokonow_clp\u0026pid=5208528751\u0026pos=2\u0026recommendation=category\u0026rectype=category\u0026redirect=https://www.tokopedia.com/11515028tknw/multiple-kiwi?catid4914=%26ref=tokonow_clp_pa1_po2%26src=r3category\u0026tid=oLYZNAWssr2JVN2Nv1T2ROkW9zY=\u0026uid=217365640\u0026unique_id=\u0026utime=1685925048\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/8/4/39601da2-2536-4bb1-9d37-e4abecc7e8a6.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/8/4/39601da2-2536-4bb1-9d37-e4abecc7e8a6.jpg",
+            "price": "Rp 2.500",
+            "priceInt": 2500,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 499,
+            "shop": {
+              "id": 11515028,
+              "name": "11515028tknw",
+              "city": "Jakarta Selatan",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 4914,
+            "labels": [
+              {
+                "title": "Gratis Ongkir",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "eta",
+                "title": "",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 1",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Diskon Bundling 5%",
+                "type": "lightGreen",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 0,
+            "countReview": 0,
+            "ratingAverage": "",
+            "recommendationType": "category",
+            "stock": 499,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 5208528902,
+            "name": "multiple_lemon",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Buah-buahan/Lemon",
+            "url": "https://www.tokopedia.com/11515028tknw/multiple-lemon",
+            "appUrl": "tokopedia://product/5208528902",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4917\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=tokonow_clp\u0026pid=5208528902\u0026pos=3\u0026recommendation=category\u0026rectype=category\u0026redirect=https://www.tokopedia.com/11515028tknw/multiple-lemon?catid4917=%26ref=tokonow_clp_pa1_po3%26src=r3category\u0026tid=oLYZNAWssr2JVN2Nv1T2ROkW9zY=\u0026uid=217365640\u0026unique_id=\u0026utime=1685925048\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/8/4/57731708-34a7-4f8e-9a3d-a267e8675028.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/8/4/57731708-34a7-4f8e-9a3d-a267e8675028.jpg",
+            "price": "Rp 4.000",
+            "priceInt": 4000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 499,
+            "shop": {
+              "id": 11515028,
+              "name": "11515028tknw",
+              "city": "Jakarta Selatan",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 4917,
+            "labels": [
+              {
+                "title": "Gratis Ongkir",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "eta",
+                "title": "",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 7",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Diskon Bundling 5%",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Diskon Bundling 2%",
+                "type": "lightGreen",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 0,
+            "countReview": 0,
+            "ratingAverage": "",
+            "recommendationType": "category",
+            "stock": 499,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 6889800551,
+            "name": "card_terong",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Aneka Sayuran/Terong",
+            "url": "https://www.tokopedia.com/11515028tknw/card-terong",
+            "appUrl": "tokopedia://product/6889800551",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4901\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=tokonow_clp\u0026pid=6889800551\u0026pos=4\u0026recommendation=category\u0026rectype=category\u0026redirect=https://www.tokopedia.com/11515028tknw/card-terong?catid4901=%26ref=tokonow_clp_pa1_po4%26src=r3category\u0026tid=oLYZNAWssr2JVN2Nv1T2ROkW9zY=\u0026uid=217365640\u0026unique_id=\u0026utime=1685925048\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/2/10/043d95aa-26e4-4d40-9d21-3de23e699007.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/2/10/043d95aa-26e4-4d40-9d21-3de23e699007.jpg",
+            "price": "Rp 2.500",
+            "priceInt": 2500,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 5,
+            "shop": {
+              "id": 11515028,
+              "name": "11515028tknw",
+              "city": "Jakarta Selatan",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 4901,
+            "labels": [
+              {
+                "title": "Gratis Ongkir",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "eta",
+                "title": "",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 0,
+            "countReview": 0,
+            "ratingAverage": "",
+            "recommendationType": "category",
+            "stock": 5,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 2025598474,
+            "name": "PDP0FS0CAMPAIGN0NONVARRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Aneka Sayuran/Wortel",
+            "url": "https://www.tokopedia.com/11515028tknw/pdp0fs0campaign0nonvarrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
+            "appUrl": "tokopedia://product/2025598474",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4870\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=tokonow_clp\u0026pid=2025598474\u0026pos=5\u0026recommendation=category\u0026rectype=category\u0026redirect=https://www.tokopedia.com/11515028tknw/pdp0fs0campaign0nonvarrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr?catid4870=%26ref=tokonow_clp_pa1_po5%26src=r3category\u0026tid=oLYZNAWssr2JVN2Nv1T2ROkW9zY=\u0026uid=217365640\u0026unique_id=\u0026utime=1685925048\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2021/7/26/940f7e89-b18d-4e22-ace6-ee8be5374db1.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2021/7/26/940f7e89-b18d-4e22-ace6-ee8be5374db1.jpg",
+            "price": "Rp 1.000",
+            "priceInt": 1000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 95,
+            "shop": {
+              "id": 11515028,
+              "name": "11515028tknw",
+              "city": "Jakarta Selatan",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 4870,
+            "labels": [
+              {
+                "title": "Gratis Ongkir",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "eta",
+                "title": "",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 19",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 1,
+            "ratingAverage": "5.0",
+            "recommendationType": "category",
+            "stock": 95,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 7029764088,
+            "name": "flash_sale_salak",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Buah-buahan/Salak",
+            "url": "https://www.tokopedia.com/11515028tknw/flash-sale-salak",
+            "appUrl": "tokopedia://product/7029764088",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4923\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=tokonow_clp\u0026pid=7029764088\u0026pos=6\u0026recommendation=category\u0026rectype=category\u0026redirect=https://www.tokopedia.com/11515028tknw/flash-sale-salak?catid4923=%26ref=tokonow_clp_pa1_po6%26src=r3category\u0026tid=oLYZNAWssr2JVN2Nv1T2ROkW9zY=\u0026uid=217365640\u0026unique_id=\u0026utime=1685925048\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/11/22/c79df332-0cef-458a-add7-2a3d989c3a3a.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/11/22/c79df332-0cef-458a-add7-2a3d989c3a3a.jpg",
+            "price": "Rp 85.000",
+            "priceInt": 85000,
+            "discountPercentage": 15,
+            "slashedPrice": "Rp 100.000",
+            "slashedPriceInt": 100000,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 5,
+            "shop": {
+              "id": 11515028,
+              "name": "11515028tknw",
+              "city": "Jakarta Selatan",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 4923,
+            "labels": [
+              {
+                "title": "Gratis Ongkir",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "eta",
+                "title": "",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 0,
+            "countReview": 0,
+            "ratingAverage": "",
+            "recommendationType": "category",
+            "stock": 5,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 4208745535,
+            "name": "Chupa_Chups_Big_Babol_Gum_15_g",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Buah-buahan/Alpukat",
+            "url": "https://www.tokopedia.com/11515028tknw/chupa-chups-big-babol-gum-15-g",
+            "appUrl": "tokopedia://product/4208745535",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4905\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=tokonow_clp\u0026pid=4208745535\u0026pos=7\u0026recommendation=category\u0026rectype=category\u0026redirect=https://www.tokopedia.com/11515028tknw/chupa-chups-big-babol-gum-15-g?catid4905=%26ref=tokonow_clp_pa1_po7%26src=r3category\u0026tid=oLYZNAWssr2JVN2Nv1T2ROkW9zY=\u0026uid=217365640\u0026unique_id=\u0026utime=1685925048\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/6/10/c8572c5c-caf6-4bec-8277-db065ea3fb8c.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/6/10/c8572c5c-caf6-4bec-8277-db065ea3fb8c.jpg",
+            "price": "Rp 2.300",
+            "priceInt": 2300,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 99,
+            "shop": {
+              "id": 11515028,
+              "name": "11515028tknw",
+              "city": "Jakarta Selatan",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 4905,
+            "labels": [
+              {
+                "title": "Gratis Ongkir",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "eta",
+                "title": "",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 40+",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 0,
+            "countReview": 0,
+            "ratingAverage": "",
+            "recommendationType": "category",
+            "stock": 99,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 6903919751,
+            "name": "Multiloc_labu_test",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Aneka Sayuran/Labu",
+            "url": "https://www.tokopedia.com/11515028tknw/multiloc-labu-test",
+            "appUrl": "tokopedia://product/6903919751",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4892\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=tokonow_clp\u0026pid=6903919751\u0026pos=8\u0026recommendation=category\u0026rectype=category\u0026redirect=https://www.tokopedia.com/11515028tknw/multiloc-labu-test?catid4892=%26ref=tokonow_clp_pa1_po8%26src=r3category\u0026tid=oLYZNAWssr2JVN2Nv1T2ROkW9zY=\u0026uid=217365640\u0026unique_id=\u0026utime=1685925048\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/11/7/99b96769-c978-4ac0-8ee1-3e573c1cdf99.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/11/7/99b96769-c978-4ac0-8ee1-3e573c1cdf99.jpg",
+            "price": "Rp 20.000",
+            "priceInt": 20000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 20,
+            "shop": {
+              "id": 11515028,
+              "name": "11515028tknw",
+              "city": "Jakarta Selatan",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 4892,
+            "labels": [
+              {
+                "title": "Gratis Ongkir",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "eta",
+                "title": "",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 0,
+            "countReview": 0,
+            "ratingAverage": "",
+            "recommendationType": "category",
+            "stock": 20,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 7029764036,
+            "name": "flash_sale_mangga",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Buah-buahan/Mangga",
+            "url": "https://www.tokopedia.com/11515028tknw/flash-sale-mangga",
+            "appUrl": "tokopedia://product/7029764036",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4918\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=tokonow_clp\u0026pid=7029764036\u0026pos=9\u0026recommendation=category\u0026rectype=category\u0026redirect=https://www.tokopedia.com/11515028tknw/flash-sale-mangga?catid4918=%26ref=tokonow_clp_pa1_po9%26src=r3category\u0026tid=oLYZNAWssr2JVN2Nv1T2ROkW9zY=\u0026uid=217365640\u0026unique_id=\u0026utime=1685925048\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/11/22/3424bcea-c7ed-4672-8abb-60e82db22646.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/11/22/3424bcea-c7ed-4672-8abb-60e82db22646.jpg",
+            "price": "Rp 80.000",
+            "priceInt": 80000,
+            "discountPercentage": 20,
+            "slashedPrice": "Rp 100.000",
+            "slashedPriceInt": 100000,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 3,
+            "shop": {
+              "id": 11515028,
+              "name": "11515028tknw",
+              "city": "Jakarta Selatan",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 4918,
+            "labels": [
+              {
+                "title": "Gratis Ongkir",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "eta",
+                "title": "",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 0,
+            "countReview": 0,
+            "ratingAverage": "",
+            "recommendationType": "category",
+            "stock": 3,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 6903919781,
+            "name": "Multiloc_melon_test",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Buah-buahan/Melon",
+            "url": "https://www.tokopedia.com/11515028tknw/multiloc-melon-test",
+            "appUrl": "tokopedia://product/6903919781",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=5130\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=tokonow_clp\u0026pid=6903919781\u0026pos=10\u0026recommendation=category\u0026rectype=category\u0026redirect=https://www.tokopedia.com/11515028tknw/multiloc-melon-test?catid5130=%26ref=tokonow_clp_pa1_po10%26src=r3category\u0026tid=oLYZNAWssr2JVN2Nv1T2ROkW9zY=\u0026uid=217365640\u0026unique_id=\u0026utime=1685925048\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/11/7/27ef6fc6-dcb7-4155-b9d6-69767bd83079.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/11/7/27ef6fc6-dcb7-4155-b9d6-69767bd83079.jpg",
+            "price": "Rp 20.000",
+            "priceInt": 20000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 20,
+            "shop": {
+              "id": 11515028,
+              "name": "11515028tknw",
+              "city": "Jakarta Selatan",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 5130,
+            "labels": [
+              {
+                "title": "Gratis Ongkir",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "eta",
+                "title": "",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 0,
+            "countReview": 0,
+            "ratingAverage": "",
+            "recommendationType": "category",
+            "stock": 20,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 2891413426,
+            "name": "[2hr]_ikan_ikansalmon_var - 400 gram",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Aneka Sayuran/Wortel",
+            "url": "https://www.tokopedia.com/11515028tknw/2hr-ikan-ikansalmon-var-400-gram",
+            "appUrl": "tokopedia://product/2891413426",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4870\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=tokonow_clp\u0026pid=2891413426\u0026pos=11\u0026recommendation=category\u0026rectype=category\u0026redirect=https://www.tokopedia.com/11515028tknw/2hr-ikan-ikansalmon-var-400-gram?catid4870=%26ref=tokonow_clp_pa1_po11%26src=r3category\u0026tid=oLYZNAWssr2JVN2Nv1T2ROkW9zY=\u0026uid=217365640\u0026unique_id=\u0026utime=1685925048\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/2/6/52e3c18b-89b3-4eed-a824-00b2d48d4f0e.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/2/6/52e3c18b-89b3-4eed-a824-00b2d48d4f0e.jpg",
+            "price": "Rp 5.000",
+            "priceInt": 5000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 500,
+            "shop": {
+              "id": 11515028,
+              "name": "11515028tknw",
+              "city": "Jakarta Selatan",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 4870,
+            "labels": [
+              {
+                "title": "Gratis Ongkir",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "eta",
+                "title": "",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 0,
+            "countReview": 0,
+            "ratingAverage": "",
+            "recommendationType": "category",
+            "stock": 500,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 2891413420
+          },
+          {
+            "id": 5194296223,
+            "name": "single_tempe_phase_2",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Tahu \u0026 Tempe/Tempe",
+            "url": "https://www.tokopedia.com/11515028tknw/single-tempe-phase-2",
+            "appUrl": "tokopedia://product/5194296223",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4937\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=tokonow_clp\u0026pid=5194296223\u0026pos=12\u0026recommendation=category\u0026rectype=category\u0026redirect=https://www.tokopedia.com/11515028tknw/single-tempe-phase-2?catid4937=%26ref=tokonow_clp_pa1_po12%26src=r3category\u0026tid=oLYZNAWssr2JVN2Nv1T2ROkW9zY=\u0026uid=217365640\u0026unique_id=\u0026utime=1685925048\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/8/3/46428a1f-d69d-4daa-a2c2-433ccb9e7e9e.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/8/3/46428a1f-d69d-4daa-a2c2-433ccb9e7e9e.jpg",
+            "price": "Rp 2.500",
+            "priceInt": 2500,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 2000,
+            "shop": {
+              "id": 11515028,
+              "name": "11515028tknw",
+              "city": "Jakarta Selatan",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 4937,
+            "labels": [
+              {
+                "title": "Gratis Ongkir",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "eta",
+                "title": "",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 1",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 0,
+            "countReview": 0,
+            "ratingAverage": "",
+            "recommendationType": "category",
+            "stock": 2000,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 7029764051,
+            "name": "flash_sale_ubi",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Aneka Sayuran/Ubi",
+            "url": "https://www.tokopedia.com/11515028tknw/flash-sale-ubi",
+            "appUrl": "tokopedia://product/7029764051",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4904\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=tokonow_clp\u0026pid=7029764051\u0026pos=13\u0026recommendation=category\u0026rectype=category\u0026redirect=https://www.tokopedia.com/11515028tknw/flash-sale-ubi?catid4904=%26ref=tokonow_clp_pa1_po13%26src=r3category\u0026tid=oLYZNAWssr2JVN2Nv1T2ROkW9zY=\u0026uid=217365640\u0026unique_id=\u0026utime=1685925048\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/11/22/799702ad-1fde-4d33-887f-11768668ef10.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/11/22/799702ad-1fde-4d33-887f-11768668ef10.jpg",
+            "price": "Rp 80.000",
+            "priceInt": 80000,
+            "discountPercentage": 20,
+            "slashedPrice": "Rp 100.000",
+            "slashedPriceInt": 100000,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 1,
+            "shop": {
+              "id": 11515028,
+              "name": "11515028tknw",
+              "city": "Jakarta Selatan",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 4904,
+            "labels": [
+              {
+                "title": "Gratis Ongkir",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "eta",
+                "title": "",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 1",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 0,
+            "countReview": 0,
+            "ratingAverage": "",
+            "recommendationType": "category",
+            "stock": 1,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 4208642431,
+            "name": "Multiloc_labu",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Aneka Sayuran/Labu",
+            "url": "https://www.tokopedia.com/11515028tknw/multiloc-labu",
+            "appUrl": "tokopedia://product/4208642431",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4892\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=tokonow_clp\u0026pid=4208642431\u0026pos=14\u0026recommendation=category\u0026rectype=category\u0026redirect=https://www.tokopedia.com/11515028tknw/multiloc-labu?catid4892=%26ref=tokonow_clp_pa1_po14%26src=r3category\u0026tid=oLYZNAWssr2JVN2Nv1T2ROkW9zY=\u0026uid=217365640\u0026unique_id=\u0026utime=1685925048\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/6/10/3a4b7c9f-2624-402b-b38b-d7601f7a770d.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/6/10/3a4b7c9f-2624-402b-b38b-d7601f7a770d.jpg",
+            "price": "Rp 1.000",
+            "priceInt": 1000,
+            "discountPercentage": 67,
+            "slashedPrice": "Rp 3.000",
+            "slashedPriceInt": 3000,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 3,
+            "shop": {
+              "id": 11515028,
+              "name": "11515028tknw",
+              "city": "Jakarta Selatan",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 4892,
+            "labels": [
+              {
+                "title": "Gratis Ongkir",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "eta",
+                "title": "",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 0,
+            "countReview": 0,
+            "ratingAverage": "",
+            "recommendationType": "category",
+            "stock": 3,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 6903919689,
+            "name": "Multiloc_jeruk_test",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Buah-buahan/Jeruk",
+            "url": "https://www.tokopedia.com/11515028tknw/multiloc-jeruk-test",
+            "appUrl": "tokopedia://product/6903919689",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4912\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=tokonow_clp\u0026pid=6903919689\u0026pos=15\u0026recommendation=category\u0026rectype=category\u0026redirect=https://www.tokopedia.com/11515028tknw/multiloc-jeruk-test?catid4912=%26ref=tokonow_clp_pa1_po15%26src=r3category\u0026tid=oLYZNAWssr2JVN2Nv1T2ROkW9zY=\u0026uid=217365640\u0026unique_id=\u0026utime=1685925048\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/11/7/f416483e-9c0e-4f1f-a8ca-f45479ee8418.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/11/7/f416483e-9c0e-4f1f-a8ca-f45479ee8418.jpg",
+            "price": "Rp 15.000",
+            "priceInt": 15000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 150,
+            "shop": {
+              "id": 11515028,
+              "name": "11515028tknw",
+              "city": "Jakarta Selatan",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 4912,
+            "labels": [
+              {
+                "title": "Gratis Ongkir",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "eta",
+                "title": "",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 0,
+            "countReview": 0,
+            "ratingAverage": "",
+            "recommendationType": "category",
+            "stock": 150,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 6889998460,
+            "name": "card_strawberry",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Buah-buahan/Strawberry",
+            "url": "https://www.tokopedia.com/11515028tknw/card-strawberry",
+            "appUrl": "tokopedia://product/6889998460",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4925\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=tokonow_clp\u0026pid=6889998460\u0026pos=16\u0026recommendation=category\u0026rectype=category\u0026redirect=https://www.tokopedia.com/11515028tknw/card-strawberry?catid4925=%26ref=tokonow_clp_pa1_po16%26src=r3category\u0026tid=oLYZNAWssr2JVN2Nv1T2ROkW9zY=\u0026uid=217365640\u0026unique_id=\u0026utime=1685925048\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/11/4/7d4b210f-7d99-459f-88ed-8ff2d5fad1a4.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/11/4/7d4b210f-7d99-459f-88ed-8ff2d5fad1a4.jpg",
+            "price": "Rp 2.000",
+            "priceInt": 2000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 5,
+            "maxOrder": 95,
+            "shop": {
+              "id": 11515028,
+              "name": "11515028tknw",
+              "city": "Jakarta Selatan",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 4925,
+            "labels": [
+              {
+                "title": "Gratis Ongkir",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "eta",
+                "title": "",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 5",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 0,
+            "countReview": 0,
+            "ratingAverage": "",
+            "recommendationType": "category",
+            "stock": 95,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 2891413397,
+            "name": "[2hr]_buah_pisang_var - 100 gram",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Aneka Sayuran/Wortel",
+            "url": "https://www.tokopedia.com/11515028tknw/2hr-buah-pisang-var-100-gram",
+            "appUrl": "tokopedia://product/2891413397",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4870\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=tokonow_clp\u0026pid=2891413397\u0026pos=17\u0026recommendation=category\u0026rectype=category\u0026redirect=https://www.tokopedia.com/11515028tknw/2hr-buah-pisang-var-100-gram?catid4870=%26ref=tokonow_clp_pa1_po17%26src=r3category\u0026tid=oLYZNAWssr2JVN2Nv1T2ROkW9zY=\u0026uid=217365640\u0026unique_id=\u0026utime=1685925048\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/2/6/8740d0b4-22a6-40c2-8412-1307dfeaefd8.png",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/2/6/8740d0b4-22a6-40c2-8412-1307dfeaefd8.png",
+            "price": "Rp 1.500",
+            "priceInt": 1500,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 500,
+            "shop": {
+              "id": 11515028,
+              "name": "11515028tknw",
+              "city": "Jakarta Selatan",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 4870,
+            "labels": [
+              {
+                "title": "Gratis Ongkir",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "eta",
+                "title": "",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 1",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 0,
+            "countReview": 0,
+            "ratingAverage": "",
+            "recommendationType": "category",
+            "stock": 500,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 2891413389
+          },
+          {
+            "id": 4208746239,
+            "name": "Minute_Maid_Nutriboost_Mango_Botol_300_ml",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Tahu \u0026 Tempe/Tempe",
+            "url": "https://www.tokopedia.com/11515028tknw/minute-maid-nutriboost-mango-botol-300-ml",
+            "appUrl": "tokopedia://product/4208746239",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4937\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=tokonow_clp\u0026pid=4208746239\u0026pos=18\u0026recommendation=category\u0026rectype=category\u0026redirect=https://www.tokopedia.com/11515028tknw/minute-maid-nutriboost-mango-botol-300-ml?catid4937=%26ref=tokonow_clp_pa1_po18%26src=r3category\u0026tid=oLYZNAWssr2JVN2Nv1T2ROkW9zY=\u0026uid=217365640\u0026unique_id=\u0026utime=1685925048\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/6/10/769baa01-8581-4e70-9247-d098d5ac4e85.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/6/10/769baa01-8581-4e70-9247-d098d5ac4e85.jpg",
+            "price": "Rp 7.000",
+            "priceInt": 7000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 99,
+            "shop": {
+              "id": 11515028,
+              "name": "11515028tknw",
+              "city": "Jakarta Selatan",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 4937,
+            "labels": [
+              {
+                "title": "Gratis Ongkir",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "eta",
+                "title": "",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 11",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Beli 6 Diskon 5%",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Beli 12 Diskon 8%",
+                "type": "lightGreen",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 0,
+            "countReview": 0,
+            "ratingAverage": "",
+            "recommendationType": "category",
+            "stock": 99,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 2727605599,
+            "name": "durian_monthong_premium",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Buah-buahan/Durian",
+            "url": "https://www.tokopedia.com/11515028tknw/durian-monthong-premium",
+            "appUrl": "tokopedia://product/2727605599",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4910\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=tokonow_clp\u0026pid=2727605599\u0026pos=19\u0026recommendation=category\u0026rectype=category\u0026redirect=https://www.tokopedia.com/11515028tknw/durian-monthong-premium?catid4910=%26ref=tokonow_clp_pa1_po19%26src=r3category\u0026tid=oLYZNAWssr2JVN2Nv1T2ROkW9zY=\u0026uid=217365640\u0026unique_id=\u0026utime=1685925048\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/1/14/961bea0a-bed0-40ff-80ff-8b33ee1b6b2a.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/1/14/961bea0a-bed0-40ff-80ff-8b33ee1b6b2a.jpg",
+            "price": "Rp 27.500",
+            "priceInt": 27500,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 100,
+            "shop": {
+              "id": 11515028,
+              "name": "11515028tknw",
+              "city": "Jakarta Selatan",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 4910,
+            "labels": [
+              {
+                "title": "Gratis Ongkir",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "eta",
+                "title": "",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 0,
+            "countReview": 0,
+            "ratingAverage": "",
+            "recommendationType": "category",
+            "stock": 100,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 6269646235,
+            "name": "wms_jambu_kristal",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Buah-buahan/Jambu",
+            "url": "https://www.tokopedia.com/11515028tknw/wms-jambu-kristal",
+            "appUrl": "tokopedia://product/6269646235",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4911\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=tokonow_clp\u0026pid=6269646235\u0026pos=20\u0026recommendation=category\u0026rectype=category\u0026redirect=https://www.tokopedia.com/11515028tknw/wms-jambu-kristal?catid4911=%26ref=tokonow_clp_pa1_po20%26src=r3category\u0026tid=oLYZNAWssr2JVN2Nv1T2ROkW9zY=\u0026uid=217365640\u0026unique_id=\u0026utime=1685925048\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/9/19/2a3025a0-c767-40da-8f03-17aacd3a90b4.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/9/19/2a3025a0-c767-40da-8f03-17aacd3a90b4.jpg",
+            "price": "Rp 15.000",
+            "priceInt": 15000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 98,
+            "shop": {
+              "id": 11515028,
+              "name": "11515028tknw",
+              "city": "Jakarta Selatan",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 4911,
+            "labels": [
+              {
+                "title": "Gratis Ongkir",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "eta",
+                "title": "",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 19",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 0,
+            "countReview": 0,
+            "ratingAverage": "",
+            "recommendationType": "category",
+            "stock": 98,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          }
+        ]
+      }
+    ]
+  }
+}

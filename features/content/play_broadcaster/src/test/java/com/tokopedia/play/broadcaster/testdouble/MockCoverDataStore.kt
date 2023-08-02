@@ -8,6 +8,7 @@ import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import io.mockk.mockk
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Created by jegul on 25/09/20
@@ -22,6 +23,10 @@ class MockCoverDataStore(
 
     override fun getObservableSelectedCover(): LiveData<PlayCoverUiModel> {
         return realImpl.getObservableSelectedCover()
+    }
+
+    override fun getSelectedCoverAsFlow(): Flow<PlayCoverUiModel> {
+        return realImpl.getSelectedCoverAsFlow()
     }
 
     override fun getSelectedCover(): PlayCoverUiModel? {

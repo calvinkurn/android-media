@@ -38,6 +38,8 @@ import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.ExploreWidgetInitialState
+import com.tokopedia.play.view.uimodel.event.ShowInfoEvent
+import com.tokopedia.play.view.uimodel.event.UiString
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
@@ -54,7 +56,6 @@ import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.play_common.util.extension.doOnPreDraw
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.net.UnknownHostException
@@ -119,10 +120,11 @@ class PlayExploreWidgetFragment @Inject constructor(
                 if (dx < 0 && dy < 0) return
                 val lastVisibleItem = widgetLayoutManager.findLastVisibleItemPosition()
                 val firstVisibleItem = widgetLayoutManager.findFirstVisibleItemPosition()
-                if ((firstVisibleItem == 0 && lastVisibleItem == layoutManager.itemCount - 1) && hasNextPage)
+                if ((firstVisibleItem == 0 && lastVisibleItem == layoutManager.itemCount - 1) && hasNextPage) {
                     loadMoreNextPage()
-                else
+                } else {
                     super.checkLoadMore(view, dx, dy)
+                }
             }
         }
     }
@@ -319,6 +321,12 @@ class PlayExploreWidgetFragment @Inject constructor(
             viewModel.uiEvent.collect { event ->
                 when (event) {
                     ExploreWidgetInitialState -> scrollListener.resetState()
+                    is ShowInfoEvent -> {
+                        toaster.showToasterInView(
+                            message = getTextFromUiString(event.message),
+                            view = requireView()
+                        )
+                    }
                     else -> {}
                 }
             }
@@ -387,7 +395,7 @@ class PlayExploreWidgetFragment @Inject constructor(
                 )
             }
             else -> {
-                //no-op
+                // no-op
             }
         }
     }
@@ -516,7 +524,7 @@ class PlayExploreWidgetFragment @Inject constructor(
     }
 
     private fun setLayoutManager(state: ExploreWidgetState) {
-        if(state is ExploreWidgetState.Fail) return
+        if (state is ExploreWidgetState.Fail) return
 
         binding.rvWidgets.layoutManager = if (state is ExploreWidgetState.Loading) shimmerLayoutManager else widgetLayoutManager
         scrollListener.updateLayoutManager(binding.rvWidgets.layoutManager)
@@ -535,6 +543,13 @@ class PlayExploreWidgetFragment @Inject constructor(
             }
         }
         return emptyMap()
+    }
+
+    private fun getTextFromUiString(uiString: UiString): String {
+        return when (uiString) {
+            is UiString.Text -> uiString.text
+            is UiString.Resource -> getString(uiString.resource)
+        }
     }
 
     companion object {

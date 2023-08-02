@@ -23,7 +23,7 @@ import com.tokopedia.quest_widget.view.QuestWidgetView
 class TopQuestViewHolder(itemView: View, val fragment: Fragment) :
     AbstractViewHolder(itemView, fragment.viewLifecycleOwner), QuestWidgetCallbacks, QuestWidgetStatusCallback {
 
-    private lateinit var viewModel: TopQuestViewModel
+    private var viewModel: TopQuestViewModel? = null
     private val questWidget: QuestWidgetView = itemView.findViewById(R.id.questWidget)
 
     init {
@@ -34,71 +34,72 @@ class TopQuestViewHolder(itemView: View, val fragment: Fragment) :
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         viewModel = discoveryBaseViewModel as TopQuestViewModel
-        getSubComponent().inject(viewModel)
+        viewModel?.let {
+            getSubComponent().inject(it)
+        }
         questWidget.getQuestList(
-            page = "${QuestWidgetLocations.DISCO}-${viewModel.components.pageEndPoint}",
+            page = "${QuestWidgetLocations.DISCO}-${viewModel?.components?.pageEndPoint}",
             source = QuestSource.DISCO,
             position = adapterPosition
         )
     }
 
     override fun questLogin() {
-        (fragment as DiscoveryFragment).openLoginScreen(viewModel.position)
+        viewModel?.position?.let { (fragment as DiscoveryFragment).openLoginScreen(it) }
     }
 
     override fun deleteQuestWidget() {
-
     }
 
     override fun updateQuestWidget(position: Int) {
-        viewModel.shouldUpdate = true
+        viewModel?.shouldUpdate = true
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            viewModel.navigateData.observe(it, { applink ->
+            viewModel?.navigateData?.observe(it) { applink ->
                 if (!applink.isNullOrEmpty() && fragment.activity != null) {
                     RouteManager.route(fragment.activity, applink)
                 }
-            })
+            }
         }
         lifecycleOwner?.let {
-            viewModel.updateQuestData.observe(it, { shouldUpdate ->
+            viewModel?.updateQuestData?.observe(it) { shouldUpdate ->
                 if (shouldUpdate) {
                     questWidget.getQuestList(
-                        page = "${QuestWidgetLocations.DISCO}-${viewModel.components.pageEndPoint}",
+                        page = "${QuestWidgetLocations.DISCO}-${viewModel?.components?.pageEndPoint}",
                         source = QuestSource.DISCO,
                         position = adapterPosition
                     )
                 }
-            })
-            viewModel.hideSectionLD.observe(it, { sectionId ->
+            }
+            viewModel?.hideSectionLD?.observe(it) { sectionId ->
                 (fragment as DiscoveryFragment).handleHideSection(sectionId)
-            })
-            viewModel.shouldHideWidget.observe(it, { shouldHideWidget ->
+            }
+            viewModel?.shouldHideWidget?.observe(it) { shouldHideWidget ->
                 if (shouldHideWidget) {
                     questWidget.hide()
                 } else {
                     questWidget.show()
                 }
-            })
-            viewModel.getSyncPageLiveData().observe(it, { shouldSync->
-                if(shouldSync){
+            }
+            viewModel?.getSyncPageLiveData()?.observe(it) { shouldSync ->
+                if (shouldSync) {
                     (fragment as DiscoveryFragment).reSync()
                 }
-            })
+            }
         }
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            viewModel.navigateData.removeObservers(it)
-            viewModel.updateQuestData.removeObservers(it)
-            viewModel.hideSectionLD.removeObservers(it)
-            viewModel.shouldHideWidget.removeObservers(it)
-            viewModel.getSyncPageLiveData().removeObservers(it)
+            viewModel?.navigateData?.removeObservers(it)
+            viewModel?.updateQuestData?.removeObservers(it)
+            viewModel?.hideSectionLD?.removeObservers(it)
+            viewModel?.shouldHideWidget?.removeObservers(it)
+            viewModel?.getSyncPageLiveData()?.removeObservers(it)
         }
     }
 
@@ -107,6 +108,6 @@ class TopQuestViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     override fun getQuestWidgetStatus(status: LiveDataResult.STATUS) {
-            viewModel.handleWidgetStatus(status)
+        viewModel?.handleWidgetStatus(status)
     }
 }

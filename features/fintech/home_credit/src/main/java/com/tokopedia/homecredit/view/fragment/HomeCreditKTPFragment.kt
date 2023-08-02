@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,13 +15,13 @@ import androidx.annotation.RequiresPermission
 import androidx.fragment.app.Fragment
 import com.otaliastudios.cameraview.controls.Facing
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.internal.ApplinkConstInternalFintech
 import com.tokopedia.homecredit.R
 import com.tokopedia.homecredit.applink.Constants
 import com.tokopedia.homecredit.utils.Utils.isFrontCameraAvailable
 import com.tokopedia.homecredit.view.activity.HomeCreditRegisterActivity
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.unifycomponents.CardUnify
-
 
 class HomeCreditKTPFragment : HomeCreditBaseCameraFragment() {
     override fun onCreateView(
@@ -66,9 +65,9 @@ class HomeCreditKTPFragment : HomeCreditBaseCameraFragment() {
 
     private fun setMarginInCamView(cardBorderCamera: View) {
         val height = Resources.getSystem().displayMetrics.heightPixels
-        val calculatedTopMargin = (MARGIN_FIGMA_TOP*height)/SCREEN_FIGMA_HEIGHT
-        val calculatedBottomMargin = (MARGIN_FIGMA_BOTTOM*height)/SCREEN_FIGMA_HEIGHT
-        cardBorderCamera.setMargin(LEFT_MARGIN,calculatedTopMargin,RIGHT_MARGIN,calculatedBottomMargin)
+        val calculatedTopMargin = (MARGIN_FIGMA_TOP * height) / SCREEN_FIGMA_HEIGHT
+        val calculatedBottomMargin = (MARGIN_FIGMA_BOTTOM * height) / SCREEN_FIGMA_HEIGHT
+        cardBorderCamera.setMargin(LEFT_MARGIN, calculatedTopMargin, RIGHT_MARGIN, calculatedBottomMargin)
     }
 
     private fun setCameraOverlayValue(cameraOverlayImage: ImageView?) {
@@ -80,8 +79,9 @@ class HomeCreditKTPFragment : HomeCreditBaseCameraFragment() {
             if (!TextUtils.isEmpty(customHeaderText)) {
                 headerText?.text = customHeaderText
             }
-            if (!TextUtils.isEmpty(cameraType)
-                    && Constants.KTP_NO_OVERLAY.equals(cameraType, ignoreCase = true)) {
+            if (!TextUtils.isEmpty(cameraType) &&
+                Constants.KTP_NO_OVERLAY.equals(cameraType, ignoreCase = true)
+            ) {
                 cameraOverlayImage?.visibility = View.GONE
             } else if (!TextUtils.isEmpty(cutOutImgUrl)) {
                 ImageHandler.loadImageAndCache(cameraOverlayImage, cutOutImgUrl)
@@ -95,6 +95,10 @@ class HomeCreditKTPFragment : HomeCreditBaseCameraFragment() {
             intent.putExtra(
                 HomeCreditRegisterActivity.HCI_KTP_IMAGE_PATH,
                 finalCameraResultFilePath
+            )
+            intent.putExtra(
+                ApplinkConstInternalFintech.HCI_TYPE,
+                TYPE
             )
             if (activity != null) {
                 requireActivity().setResult(Activity.RESULT_OK, intent)
@@ -110,6 +114,8 @@ class HomeCreditKTPFragment : HomeCreditBaseCameraFragment() {
         const val MARGIN_FIGMA_BOTTOM = 122
         const val LEFT_MARGIN = 16
         const val RIGHT_MARGIN = 16
+        const val TYPE = "ktp"
+
         @RequiresPermission(Manifest.permission.CAMERA)
         fun createInstance(): Fragment {
             return HomeCreditKTPFragment()

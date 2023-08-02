@@ -16,27 +16,27 @@ sealed class PlayViewerNewAction {
     object GiveawayOngoingEnded : PlayViewerNewAction()
     object TapGiveaway : PlayViewerNewAction()
 
-    data class ClickQuizOptionAction(val item: QuizChoicesUiModel): PlayViewerNewAction()
+    data class ClickQuizOptionAction(val item: QuizChoicesUiModel) : PlayViewerNewAction()
     object QuizEnded : PlayViewerNewAction()
 
     object StartPlayingInteractive : PlayViewerNewAction()
     object StopPlayingInteractive : PlayViewerNewAction()
     object FollowInteractive : PlayViewerNewAction()
-    object AutoOpenInteractive: PlayViewerNewAction()
+    object AutoOpenInteractive : PlayViewerNewAction()
 
     object Follow : PlayViewerNewAction()
 
     data class BuyProduct(
         val product: PlayProductUiModel.Product,
-        val isProductFeatured: Boolean = false,
+        val isProductFeatured: Boolean = false
     ) : PlayViewerNewAction()
     data class AtcProduct(
         val product: PlayProductUiModel.Product,
-        val isProductFeatured: Boolean = false,
+        val isProductFeatured: Boolean = false
     ) : PlayViewerNewAction()
     data class OCCProduct(
         val product: PlayProductUiModel.Product,
-        val isProductFeatured: Boolean = false,
+        val isProductFeatured: Boolean = false
     ) : PlayViewerNewAction()
 }
 
@@ -50,7 +50,7 @@ object ClickRetryInteractiveAction : PlayViewerNewAction()
 
 object ClickCloseLeaderboardSheetAction : PlayViewerNewAction()
 
-object RefreshLeaderboard: PlayViewerNewAction()
+object RefreshLeaderboard : PlayViewerNewAction()
 
 /**
  * Partner
@@ -66,7 +66,6 @@ object ClickLikeAction : PlayViewerNewAction()
  * Share
  */
 object ClickShareAction : PlayViewerNewAction()
-object CopyLinkAction: PlayViewerNewAction()
 
 /**
  * Swipe
@@ -76,11 +75,10 @@ object SetChannelActiveAction : PlayViewerNewAction()
 /**
  * Sharing Experience
  */
-object ShowShareExperienceAction: PlayViewerNewAction()
-data class ClickSharingOptionAction(val shareModel: ShareModel): PlayViewerNewAction()
-object CloseSharingOptionAction: PlayViewerNewAction()
-object ScreenshotTakenAction: PlayViewerNewAction()
-data class SharePermissionAction(val label: String): PlayViewerNewAction()
+data class ClickSharingOptionAction(val shareModel: ShareModel, val isScreenshotBottomSheet: Boolean) : PlayViewerNewAction()
+data class CloseSharingOptionAction(val isScreenshotBottomSheet: Boolean) : PlayViewerNewAction()
+object ScreenshotTakenAction : PlayViewerNewAction()
+data class SharePermissionAction(val label: String) : PlayViewerNewAction()
 
 /**
  * Product
@@ -91,30 +89,31 @@ data class AtcProductAction(val sectionInfo: ProductSectionUiModel.Section, val 
 data class OCCProductAction(val sectionInfo: ProductSectionUiModel.Section, val product: PlayProductUiModel.Product) : PlayViewerNewAction()
 data class OpenPageResultAction(val isSuccess: Boolean, val requestCode: Int) : PlayViewerNewAction()
 
-object OpenKebabAction: PlayViewerNewAction()
-object OpenUserReport: PlayViewerNewAction()
-data class OpenFooterUserReport(val appLink: String): PlayViewerNewAction()
+object OpenKebabAction : PlayViewerNewAction()
+object OpenUserReport : PlayViewerNewAction()
+data class OpenFooterUserReport(val appLink: String) : PlayViewerNewAction()
 data class SelectReason(val reasonId: Int) : PlayViewerNewAction()
 
-data class SendUpcomingReminder(val section: ProductSectionUiModel.Section): PlayViewerNewAction()
+data class SendUpcomingReminder(val section: ProductSectionUiModel.Section) : PlayViewerNewAction()
 
 data class SendWarehouseId(val id: String, val isOOC: Boolean) : PlayViewerNewAction()
 
 object DismissFollowPopUp : PlayViewerNewAction()
-object OpenCart: PlayViewerNewAction()
+object OpenCart : PlayViewerNewAction()
 
 /**
  * Explore Widget
  */
-object FetchWidgets: PlayViewerNewAction()
+object FetchWidgets : PlayViewerNewAction()
 data class ClickChipWidget(val item: ChipWidgetUiModel) : PlayViewerNewAction()
 object NextPageWidgets : PlayViewerNewAction()
 object RefreshWidget : PlayViewerNewAction()
-data class UpdateReminder(val channelId : String, val reminderType: PlayWidgetReminderType) : PlayViewerNewAction()
+data class UpdateReminder(val channelId: String, val reminderType: PlayWidgetReminderType) : PlayViewerNewAction()
 object DismissExploreWidget : PlayViewerNewAction()
 object EmptyPageWidget : PlayViewerNewAction()
 
-//Atc Variant
-data class CommentVisibilityAction(val isOpen: Boolean) : PlayViewerNewAction ()
+// Atc Variant
+data class CommentVisibilityAction(val isOpen: Boolean) : PlayViewerNewAction()
 
 data class ShowVariantAction(val product: PlayProductUiModel.Product, val forcePushTop: Boolean) : PlayViewerNewAction()
+object HideBottomSheet : PlayViewerNewAction()

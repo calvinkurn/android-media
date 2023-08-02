@@ -28,8 +28,9 @@ class FeedPlusContainerTest {
     private lateinit var viewModel: FeedPlusContainerViewModel
 
     private val mockRepo: FeedPlusRepository = mockk(relaxed = true)
-    private val mockUserSession : UserSessionInterface = mockk(relaxed = true)
-    private val mockPlayShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig = mockk(relaxed = true)
+    private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
+    private val mockPlayShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig =
+        mockk(relaxed = true)
 
     @Before
     fun setup() {

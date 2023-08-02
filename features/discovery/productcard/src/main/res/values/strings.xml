@@ -13,6 +13,7 @@
     <string name="home_flashsale_card_ad">Ad</string>
     <string name="product_card_text_notify_me">Ingatkan Saya</string>
     <string name="product_card_text_variant_quantity_grid">99+ pcs</string>
+    <string name="product_card_see_other_product_text">Lihat %s Lainnya</string>
 
     <string name="content_desc_textViewProductName">text nama produk</string>
     <string name="content_desc_labelDiscount">text diskon</string>
@@ -39,4 +40,6 @@
     <string name="content_desc_imageTopAds">image topads</string>
     <string name="content_desc_videoPlay">button play</string>
     <string name="product_card_content_desc_imageRating">image rating</string>
+    <string name="product_card_content_desc_seeOtherProduct">lihat produk lainnya</string>
+    <string name="product_card_content_desc_ribbon">ribbon</string>
 </resources>

@@ -24,6 +24,11 @@ sealed class BroadcastInitState {
             get() = "$ERROR, cause: ${cause.message}"
     }
 
+    data class ByteplusInitializationError(val cause: BroadcasterException): BroadcastInitState() {
+        override val tag: String
+            get() = "$ERROR, cause: ${cause.message}"
+    }
+
     companion object {
         private const val INITIALIZED = "Initialized"
         private const val UNINITIALIZED = "Uninitialized"

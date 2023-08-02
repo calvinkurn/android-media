@@ -37,24 +37,36 @@ object AddToCartBaseAnalytics {
             val content = JSONArray().put(JSONObject().put(CONTENT_PARAM_PRODUCT_ID, productId).put(CONTENT_PARAM_QUANTITY, quantity))
             TrackApp.getInstance().appsFlyer.sendEvent(
                 AFInAppEventType.ADD_TO_CART,
-                    mutableMapOf<String, Any>(
-                            AFInAppEventParameterName.CONTENT_ID to productId,
-                            AFInAppEventParameterName.CONTENT_TYPE to CONTENT_TYPE,
-                            AFInAppEventParameterName.DESCRIPTION to productName,
-                            AFInAppEventParameterName.CURRENCY to VALUE_CURRENCY,
-                            AFInAppEventParameterName.QUANTITY to quantity,
-                            AFInAppEventParameterName.PRICE to convertPriceToIntString(price),
-                            AF_PARAM_CATEGORY to category,
-                            AFInAppEventParameterName.CONTENT to content.toString())
+                mutableMapOf<String, Any>(
+                    AFInAppEventParameterName.CONTENT_ID to productId,
+                    AFInAppEventParameterName.CONTENT_TYPE to CONTENT_TYPE,
+                    AFInAppEventParameterName.DESCRIPTION to productName,
+                    AFInAppEventParameterName.CURRENCY to VALUE_CURRENCY,
+                    AFInAppEventParameterName.QUANTITY to quantity,
+                    AFInAppEventParameterName.PRICE to convertPriceToIntString(price),
+                    AF_PARAM_CATEGORY to category,
+                    AFInAppEventParameterName.CONTENT to content.toString()
+                )
             )
         } catch (t: Throwable) {
             Timber.d(t)
         }
     }
 
-    fun sendBranchIoTracking(productId: String, productName: String, price: String, quantity: String, catLvl1: String,
-                             level1Id: String, level1Name: String, level2Id: String, level2Name: String, level3Id: String, level3Name: String,
-                             userId: String) {
+    fun sendBranchIoTracking(
+        productId: String,
+        productName: String,
+        price: String,
+        quantity: String,
+        catLvl1: String,
+        level1Id: String,
+        level1Name: String,
+        level2Id: String,
+        level2Name: String,
+        level3Id: String,
+        level3Name: String,
+        userId: String
+    ) {
         try {
             val splitCategory = catLvl1.split(CATEGORY_SPLITTER)
             val isCategoryHasAllLevel = splitCategory.size == 3

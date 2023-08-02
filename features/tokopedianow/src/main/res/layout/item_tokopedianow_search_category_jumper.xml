@@ -12,7 +12,7 @@
         android:id="@+id/tokoNowSearchCategoryJumperTopDivider"
         android:layout_width="0dp"
         android:layout_height="8dp"
-        android:background="@color/Unify_N50"
+        android:background="@color/Unify_NN50"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:text="@string/tokopedianow_see_all"
-        android:textColor="@color/Unify_G500"
+        android:textColor="@color/Unify_GN500"
         android:background="?attr/selectableItemBackground"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tokoNowSearchCategoryJumperTitle"

@@ -1,7 +1,11 @@
 package com.tokopedia.content.common.util
 
+import android.os.Build
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toDate
 import java.time.Duration
 import java.time.ZonedDateTime
+import java.util.concurrent.TimeUnit
 
 /**
  * @author by astidhiyaa on 10/05/23
@@ -12,29 +16,37 @@ object ContentDateConverter {
     private const val MINUTE = "menit"
     private const val DEFAULT_WORDING = "Beberapa detik yang lalu"
 
+    data class Converted(
+        val minute: Long,
+        val hour: Long,
+        val day: Long,
+        val yearMonth: String
+    )
+
     fun convertTime(date: String): String {
-        return try {
+        val data: Converted = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val now = ZonedDateTime.now()
             val convert = ZonedDateTime.parse(date)
             val diff = Duration.between(convert, now)
-            val minute = diff.toMinutes()
-            val hour = diff.toHours()
-            val day = diff.toDays()
+            Converted(minute = diff.toMinutes(), hour = diff.toHours(), day = diff.toDays(), yearMonth = "${convert.month.name.take(3).lowercase().replaceFirstChar { it.uppercaseChar() }} ${convert.year}")
+        } else {
+            val convert = date.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS)
+            val diff = DateUtil.getCurrentCalendar().time.time - convert.time
+            val minute = TimeUnit.MINUTES.convert(diff, TimeUnit.MILLISECONDS)
+            val hour = TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS)
+            val day = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)
 
-            return if (day in 1..90) {
-                "$day $DAY"
-            } else if (day > 90) {
-                "${convert.month.name.take(3).capitalize()} ${convert.year}"
-            } else if (hour in 1..24) {
-                "$hour $HOUR"
-            } else if (minute in 1..60) {
-                "$minute $MINUTE"
-            } else {
-                DEFAULT_WORDING
-            }
-        } catch (e: Exception) {
-            DEFAULT_WORDING
+            val yearMonth = DateUtil.formatDate(currentFormat = DateUtil.YYYY_MM_DD_T_HH_MM_SS, newFormat = "MMM yyyy", date)
+
+            Converted(minute = minute, hour = hour, day = day, yearMonth = yearMonth)
+        }
+
+        return when {
+            data.day in 1..90 -> "${data.day} $DAY"
+            data.day > 90 -> data.yearMonth
+            data.hour in 1..24 -> "${data.hour} $HOUR"
+            data.minute in 1..60 -> "${data.minute} $MINUTE"
+            else -> DEFAULT_WORDING
         }
     }
-
 }

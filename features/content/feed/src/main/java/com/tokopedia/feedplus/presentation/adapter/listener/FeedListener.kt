@@ -103,7 +103,7 @@ interface FeedListener {
     fun detachPlayer(player: FeedExoPlayer)
     fun onPauseVideoPost(trackerModel: FeedTrackerDataModel)
     fun onTapHoldSeekbarVideoPost(trackerModel: FeedTrackerDataModel)
-    fun onWatchPostVideo(trackerModel: FeedTrackerDataModel)
+    fun onWatchPostVideo(model: FeedCardVideoContentModel, trackerModel: FeedTrackerDataModel)
 
     fun onSwipeMultiplePost(trackerModel: FeedTrackerDataModel)
 

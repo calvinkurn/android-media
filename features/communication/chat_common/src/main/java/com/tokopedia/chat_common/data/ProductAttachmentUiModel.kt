@@ -152,12 +152,22 @@ open class ProductAttachmentUiModel protected constructor(
         for (variant in variants) {
             val variantOption = variant.options
             if (variantOption.isColor()) {
-                colorVariantId = variantOption.id
-                colorVariant = variantOption.value
-                colorHexVariant = variantOption.hex
+                variantOption.id?.let {
+                    colorVariantId = it
+                }
+                variantOption.value?.let {
+                    colorVariant = it
+                }
+                variantOption.hex?.let {
+                    colorHexVariant = it
+                }
             } else {
-                sizeVariantId = variantOption.id
-                sizeVariant = variantOption.value
+                variantOption.id?.let {
+                    sizeVariantId = it
+                }
+                variantOption.value?.let {
+                    sizeVariant = it
+                }
             }
         }
     }

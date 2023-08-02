@@ -23,7 +23,8 @@ include "libraries:core_network"
 include 'libraries:device_info'
 include "libraries:image_picker"
 include "libraries:inappupdate"
-include "libraries:kotlin_extensions"
+
+
 include 'libraries:iris'
 include 'libraries:permissionchecker'
 include "libraries:play_core"

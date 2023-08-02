@@ -5,15 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.contactus.inboxtickets.data.ImageUpload
-import com.tokopedia.contactus.inboxtickets.data.model.ChipUploadHostConfig
-import com.tokopedia.contactus.inboxtickets.data.model.SecureImageParameter
-import com.tokopedia.contactus.inboxtickets.data.model.Tickets
+import com.tokopedia.contactus.inboxtickets.data.model.*
 import com.tokopedia.contactus.inboxtickets.domain.AttachmentItem
 import com.tokopedia.contactus.inboxtickets.domain.CommentsItem
 import com.tokopedia.contactus.inboxtickets.domain.CreatedBy
+import com.tokopedia.contactus.inboxtickets.domain.StepTwoResponse
 import com.tokopedia.contactus.inboxtickets.domain.usecase.ChipUploadHostConfigUseCase
 import com.tokopedia.contactus.inboxtickets.domain.usecase.CloseTicketByUserUseCase
-import com.tokopedia.contactus.inboxtickets.domain.usecase.ContactUsUploadImageUseCase
+import com.tokopedia.contactus.inboxtickets.domain.usecase.GetFileUseCase
 import com.tokopedia.contactus.inboxtickets.domain.usecase.InboxDetailUseCase
 import com.tokopedia.contactus.inboxtickets.domain.usecase.PostMessageUseCase
 import com.tokopedia.contactus.inboxtickets.domain.usecase.PostMessageUseCase2
@@ -23,7 +22,6 @@ import com.tokopedia.contactus.inboxtickets.domain.usecase.param.PostMessage2Par
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.KEY_DISLIKED
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.KEY_LIKED
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.SUCCESS_HIT_API
-import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.SUCCESS_KEY_SECURE_IMAGE_PARAMETER
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.TICKET_STATUS_CLOSED
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.TICKET_STATUS_IN_PROCESS
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.TICKET_STATUS_NEED_RATING
@@ -51,10 +49,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import java.io.File
 import javax.inject.Inject
 
 class InboxDetailViewModel @Inject constructor(
@@ -63,7 +57,7 @@ class InboxDetailViewModel @Inject constructor(
     private val inboxDetailUseCase: InboxDetailUseCase,
     private val submitRatingUseCase: SubmitRatingUseCase,
     private val closeTicketByUserUseCase: CloseTicketByUserUseCase,
-    private val contactUsUploadImageUseCase: ContactUsUploadImageUseCase,
+    private val getFileUseCase: GetFileUseCase,
     private val chipUploadHostConfigUseCase: ChipUploadHostConfigUseCase,
     private val secureUploadUseCase: SecureUploadUseCase,
     private val userSession: UserSessionInterface,
@@ -79,7 +73,6 @@ class InboxDetailViewModel @Inject constructor(
 
         const val LAST_COMMENT_POSITION = 0
         private const val FORM_DATA_KEY = "file_upload"
-        private const val MEDIA_TYPE = "image/*"
         private const val AGENT = "agent"
         private const val REPLY_TICKET_RESPONSE_STATUS = "OK"
         private const val ROLE_TYPE_CUSTOMER = "customer"
@@ -445,9 +438,7 @@ class InboxDetailViewModel @Inject constructor(
 
                 val replyTicketResponse = postMessageUseCase(requestParam)
 
-                if (replyTicketResponse.getTicketReplay()
-                    .getTicketReplayData().status == REPLY_TICKET_RESPONSE_STATUS
-                ) {
+                if (isReplayingTicketSuccess(replyTicketResponse)) {
                     val newItemMessage = addNewLocalComment(imageList, message)
                     _uiEffect.emit(InboxDetailUiEffect.SendTextMessageSuccess(newItemMessage))
                 } else {
@@ -463,19 +454,18 @@ class InboxDetailViewModel @Inject constructor(
     private fun sendMessageWithImages(imageList: List<ImageUpload>, message: String) {
         launchCatchError(
             block = {
-                val files = contactUsUploadImageUseCase.getFile(imageList)
-                val list = arrayListOf<ImageUpload>()
-
+                val files = getFileUseCase.getFilePath(imageList)
+                val securelyUploadedImages: String
                 val chipUploadHostConfig = chipUploadHostConfigUseCase(Unit)
+                val uniqIDs = arrayListOf<String>()
+                files.forEach { _ ->
+                    uniqIDs.add(utils.createUniqID())
+                }
 
-                if (chipUploadHostConfig.getUploadHostConfig().getUploadHostConfigData().getHost()
-                    .getServerID() != FAILURE_KEY_UPLOAD_HOST_CONFIG
-                ) {
-                    val securelyUploadedImages =
-                        getSecurelyUploadedImages(imageList, files, chipUploadHostConfig)
-                    if (securelyUploadedImages.isNotEmpty()) {
-                        list.addAll(securelyUploadedImages)
-                    }
+                if (isCanUploadImageWithSecureUpload(chipUploadHostConfig)) {
+                    securelyUploadedImages =
+                        secureUploadUseCase.uploadSecureImage(files, chipUploadHostConfig, uniqIDs)
+
                 } else {
                     val errorMessage =
                         chipUploadHostConfig.getUploadHostConfig().getErrorMessage()
@@ -484,33 +474,30 @@ class InboxDetailViewModel @Inject constructor(
                     return@launchCatchError
                 }
 
-                if (list.isNotEmpty()) {
-                    val requestParam = postMessageUseCase.createRequestParams(
+                if (securelyUploadedImages.isNotEmpty()) {
+                    val replayTicketRequestParam = postMessageUseCase.createRequestParams(
                         ticketId,
                         message,
                         SIZE_ONE,
-                        utils.getAttachmentAsString(imageList),
+                        utils.getAttachmentAsString(uniqIDs),
                         getLastReplyFromAgent(),
                         userSession.userId
                     )
 
-                    val createTicketResponse =
-                        postMessageUseCase(requestParam)
+                    val replayTicketResponse =
+                        postMessageUseCase(replayTicketRequestParam)
 
-                    if (createTicketResponse.getTicketReplay()
-                        .getTicketReplayData().status == REPLY_TICKET_RESPONSE_STATUS
-                    ) {
+                    if (isReplayingTicketSuccess(replayTicketResponse)) {
                         val ticketReplyData =
-                            createTicketResponse.getTicketReplay().getTicketReplayData()
-                        val das = utils.getFileUploaded(list)
+                            replayTicketResponse.getTicketReplay().getTicketReplayData()
                         if (ticketReplyData.postKey.isNotEmpty()) {
-                            val requestParams = postMessageUseCase2.createRequestParams(
+                            val sendAttachmentUrlRequestParams = postMessageUseCase2.createRequestParams(
                                 currentState.ticketDetail.getTicketId(),
                                 userSession.userId,
-                                das,
+                                securelyUploadedImages,
                                 ticketReplyData.postKey
                             )
-                            sendImages(requestParams, imageList, message)
+                            sendAttachmentUrl(sendAttachmentUrlRequestParams, imageList, message)
                         } else {
                             _uiEffect.emit(InboxDetailUiEffect.SendTextMessageFailed())
                         }
@@ -527,65 +514,14 @@ class InboxDetailViewModel @Inject constructor(
         )
     }
 
-    private suspend fun getSecurelyUploadedImages(
-        imageList: List<ImageUpload>,
-        files: List<String>,
-        chipUploadHostConfig: ChipUploadHostConfig
-    ): ArrayList<ImageUpload> {
-        val listOfSecureImageParmeter = getListOfSecureImageParameter(files, chipUploadHostConfig)
-        if (listOfSecureImageParmeter.isEmpty() || files.size != listOfSecureImageParmeter.size) {
-            return arrayListOf()
-        }
-
-        val uploadedImageList = getUploadedImageList(imageList, files, listOfSecureImageParmeter)
-        return if (uploadedImageList.isEmpty()) {
-            arrayListOf()
-        } else {
-            uploadedImageList
-        }
+    private fun isCanUploadImageWithSecureUpload(chipUploadHostConfig: ChipUploadHostConfig) : Boolean {
+        return chipUploadHostConfig.getUploadHostConfig().getUploadHostConfigData().getHost()
+            .getServerID() != FAILURE_KEY_UPLOAD_HOST_CONFIG
     }
 
-    private suspend fun getListOfSecureImageParameter(
-        files: List<String>,
-        chipUploadHostConfig: ChipUploadHostConfig
-    ): ArrayList<SecureImageParameter> {
-        val list = arrayListOf<SecureImageParameter>()
-        files.forEachIndexed { _, file ->
-            val secureImageParmeter = secureUploadUseCase
-                .getSecureImageParameter(
-                    getMultiPartObject(file),
-                    chipUploadHostConfig
-                )
-            if (secureImageParmeter.getImage().isSuccess() == SUCCESS_KEY_SECURE_IMAGE_PARAMETER) {
-                list.add(secureImageParmeter)
-            } else {
-                return list
-            }
-        }
-        return list
-    }
-
-    private fun getMultiPartObject(pathFile: String): MultipartBody.Part {
-        val file = File(pathFile)
-        val reqFile = file.asRequestBody(MEDIA_TYPE.toMediaTypeOrNull())
-        return MultipartBody.Part.createFormData(FORM_DATA_KEY, file.name, reqFile)
-    }
-
-    private suspend fun getUploadedImageList(
-        imageList: List<ImageUpload>,
-        files: List<String>,
-        listOfSecureImageParmeter: ArrayList<SecureImageParameter>
-    ): ArrayList<ImageUpload> {
-        val list = arrayListOf<ImageUpload>()
-        list.addAll(
-            contactUsUploadImageUseCase.uploadFile(
-                userSession.userId,
-                imageList,
-                files,
-                listOfSecureImageParmeter
-            )
-        )
-        return list
+    private fun isReplayingTicketSuccess(replayingTicketResponse: TicketReplyResponse) : Boolean{
+        return replayingTicketResponse.getTicketReplay()
+            .getTicketReplayData().status == REPLY_TICKET_RESPONSE_STATUS
     }
 
     private fun getLastReplyFromAgent(): String {
@@ -601,15 +537,15 @@ class InboxDetailViewModel @Inject constructor(
         return reply
     }
 
-    private fun sendImages(
+    private fun sendAttachmentUrl(
         requestParams: PostMessage2Param,
         imageList: List<ImageUpload>,
         message: String
     ) {
         launchCatchError(
             block = {
-                val stepTwoResponse = postMessageUseCase2(requestParams)
-                if (stepTwoResponse.getTicketAttach().getAttachment().isSuccess > SIZE_ZERO) {
+                val sendingAttachmentUrlResponse = postMessageUseCase2(requestParams)
+                if (isSendAttachmentSuccess(sendingAttachmentUrlResponse)) {
                     val newItemMessage = addNewLocalComment(imageList, message)
                     _uiEffect.emit(InboxDetailUiEffect.SendTextMessageSuccess(newItemMessage))
                 } else {
@@ -620,6 +556,10 @@ class InboxDetailViewModel @Inject constructor(
                 _uiEffect.emit(InboxDetailUiEffect.SendTextMessageFailed(throwable = it))
             }
         )
+    }
+
+    private fun isSendAttachmentSuccess(sendingAttachmentUrlResponse: StepTwoResponse) : Boolean {
+        return sendingAttachmentUrlResponse.getTicketAttach().getAttachment().isSuccess > INDEX_ZERO
     }
 
     private fun addNewLocalComment(

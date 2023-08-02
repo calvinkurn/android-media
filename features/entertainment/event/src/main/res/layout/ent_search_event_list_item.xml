@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/spacing_lvl3"
         tools:text="14 Jan"
-        android:textColor="@color/Unify_T500"
+        android:textColor="@color/Unify_TN500"
         app:layout_constraintStart_toEndOf="@+id/imgEvent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="small"/>

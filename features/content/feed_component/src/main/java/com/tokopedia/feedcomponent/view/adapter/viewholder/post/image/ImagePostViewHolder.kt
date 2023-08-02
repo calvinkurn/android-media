@@ -20,7 +20,12 @@ class ImagePostViewHolder(private val listener: ImagePostListener) :
 
     override fun bind(element: ImagePostModel) {
         itemView.image.setOnClickListener {
-            listener.onImageClick(element.positionInFeed, pagerPosition, element.redirectLink)
+            listener.onImageClick(
+                element.postId,
+                element.positionInFeed,
+                pagerPosition,
+                element.redirectLink
+            )
             if (element.trackingList.isNotEmpty()) {
                 listener.onAffiliateTrackClicked(element.trackingList, true)
             }
@@ -66,7 +71,12 @@ class ImagePostViewHolder(private val listener: ImagePostListener) :
         )
 
 
-        fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String)
+        fun onImageClick(
+            postId: String,
+            positionInFeed: Int,
+            contentPosition: Int,
+            redirectLink: String
+        )
 
         fun onAffiliateTrackClicked(trackList: List<TrackingModel>, isClick: Boolean)
     }

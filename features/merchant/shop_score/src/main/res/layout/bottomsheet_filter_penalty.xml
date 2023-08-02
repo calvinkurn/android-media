@@ -1,46 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    android:paddingBottom="8dp"
     xmlns:tools="http://schemas.android.com/tools">
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/separatorDividerPenalty"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="1dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/rvPenaltyFilterBottomSheet"/>
+        android:layout_alignParentTop="true"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvPenaltyFilterBottomSheet"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constrainedHeight="true"
-        android:layout_below="@+id/separatorDividerPenalty"
-        app:layout_constraintTop_toBottomOf="@id/separatorDividerPenalty"
-        app:layout_constraintBottom_toTopOf="@id/btnShowPenalty"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:itemCount="2"
-        tools:listitem="@layout/item_penalty_filter_list"/>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/separatorDividerPenalty"
+        android:layout_above="@id/btnShowPenalty"
+        tools:itemCount="1"
+        tools:listitem="@layout/item_penalty_filter_list_old"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnShowPenalty"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rvPenaltyFilterBottomSheet"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"
         app:unifyButtonSize="large"
         app:unifyButtonType="main"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:text="@string/btn_show_penalty" />
+        android:text="@string/btn_penalty_apply_filter" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

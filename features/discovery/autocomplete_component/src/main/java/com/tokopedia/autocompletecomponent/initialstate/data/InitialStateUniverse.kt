@@ -5,5 +5,8 @@ import com.tokopedia.autocompletecomponent.initialstate.domain.InitialStateData
 
 data class InitialStateUniverse (
     @SerializedName("data")
-    val data: List<InitialStateData> = listOf()
+    val data: List<InitialStateData> = listOf(),
+
+    @SerializedName("is_mps")
+    val isMps: Boolean = false,
 )

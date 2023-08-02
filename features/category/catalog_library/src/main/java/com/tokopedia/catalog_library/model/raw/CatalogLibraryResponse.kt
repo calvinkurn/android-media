@@ -10,10 +10,6 @@ data class CatalogLibraryResponse(
     val categoryList: CategoryListLibraryPage = CategoryListLibraryPage()
 ) {
     data class CategoryListLibraryPage(
-        @SerializedName("header")
-        @Expose
-        val header: CatalogSpecialResponse.CatalogCategorySpecial.CatalogSpecialHeader = CatalogSpecialResponse.CatalogCategorySpecial.CatalogSpecialHeader(),
-
         @SerializedName("BrandName")
         @Expose
         val brandName: String? = "",

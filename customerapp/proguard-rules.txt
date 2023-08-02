@@ -347,3 +347,11 @@ public static com.tokopedia.stability.ChangeDelegate *;
     # Keep the public no-argument constructor while allowing other methods to be optimized.
     <init>();
 }
+
+# Byteplus
+-keep class com.bytedance.labcv.effectsdk.** {*;}
+-keep class com.bef.effectsdk.* {*;}
+-keep class com.bytedance.labcv.licenselibrary.** {*;}
+
+# kyc ds sdk
+-keep class com.gojek.ojosdk.** {*;}

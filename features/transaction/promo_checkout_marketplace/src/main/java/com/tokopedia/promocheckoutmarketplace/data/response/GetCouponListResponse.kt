@@ -200,6 +200,51 @@ data class Coupon(
     @SerializedName("is_bebas_ongkir")
     val isBebasOngkir: Boolean = false,
     @SerializedName("additional_bo_datas")
+    val additionalBoData: List<AdditionalBoData> = emptyList(),
+    @SerializedName("benefit_adjustment_message")
+    val benefitAdjustmentMessage: String = "",
+    @SerializedName("secondary_coupons")
+    val secondaryCoupons: List<SecondaryCoupon> = emptyList()
+)
+
+data class SecondaryCoupon(
+    @SerializedName("promo_id")
+    val promoId: String = "",
+    @SerializedName("code")
+    val code: String = "",
+    @SerializedName("title")
+    val title: String = "",
+    @SerializedName("message")
+    val message: String = "",
+    @SerializedName("coupon_app_link")
+    val couponAppLink: String = "",
+    @SerializedName("unique_id")
+    val uniqueId: String = "",
+    @SerializedName("shop_id")
+    val shopId: String = "",
+    @SerializedName("benefit_amount")
+    val benefitAmount: Int = 0,
+    @SerializedName("is_recommended")
+    val isRecommended: Boolean = false,
+    @SerializedName("is_selected")
+    var isSelected: Boolean = false,
+    @SerializedName("is_attempted")
+    val isAttempted: Boolean = false,
+    @SerializedName("clashing_infos")
+    val clashingInfos: List<ClashingInfo> = emptyList(),
+    @SerializedName("bo_clashing_infos")
+    val boClashingInfos: List<BoClashingInfo> = emptyList(),
+    @SerializedName("currency_details_str")
+    val currencyDetailStr: String = "",
+    @SerializedName("is_highlighted")
+    val isHighlighted: Boolean = false,
+    @SerializedName("promo_infos")
+    val promoInfos: List<PromoInfo> = emptyList(),
+    @SerializedName("benefit_details")
+    val benefitDetail: List<BenefitDetail> = emptyList(),
+    @SerializedName("is_bebas_ongkir")
+    val isBebasOngkir: Boolean = false,
+    @SerializedName("additional_bo_datas")
     val additionalBoData: List<AdditionalBoData> = emptyList()
 )
 
@@ -208,6 +253,8 @@ data class AdditionalBoData(
     val code: String = "",
     @SerializedName("unique_id")
     val uniqueId: String = "",
+    @SerializedName("cart_string_group")
+    val cartStringGroup: String = "",
     @SuppressLint("Invalid Data Type")
     @SerializedName("shipping_id")
     val shippingId: Int = 0,
@@ -328,4 +375,11 @@ data class BottomSheet(
     val imageUrl: String = "",
     @SerializedName("button_txt")
     val buttonText: String = ""
+)
+
+data class ShippingMetadata(
+    @SerializedName("unique_id")
+    val uniqueId: String = "",
+    @SerializedName("json_string")
+    val jsonString: String = ""
 )

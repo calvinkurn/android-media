@@ -9,6 +9,7 @@ import com.tokopedia.play.broadcaster.setup.productSetupViewModel
 import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.test.application.annotations.CassavaTest
 import io.mockk.mockk
@@ -30,6 +31,12 @@ class ProductSummaryAnalyticTest {
             imageUrl = "",
             stock = 1,
             price = OriginalPrice("Rp ${it}000", it * 1000.0),
+            hasCommission = false,
+            commissionFmt = "",
+            commission = 0L,
+            extraCommission = false,
+            pinStatus = PinProductUiModel.Empty,
+            number = "",
         )
     }
 

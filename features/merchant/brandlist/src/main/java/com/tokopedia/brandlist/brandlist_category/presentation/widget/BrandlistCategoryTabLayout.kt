@@ -115,19 +115,19 @@ class BrandlistCategoryTabLayout(context: Context, attrs: AttributeSet?) : TabLa
     }
 
     private fun setTabIcon(iconView: ImageView, iconUrl: String) {
-        ImageHandler.loadImage(context, iconView, iconUrl, com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
+        ImageHandler.loadImage(context, iconView, iconUrl, com.tokopedia.utils.R.drawable.ic_loading_placeholder)
     }
 
     private fun setActiveText(categoryView: Typography) {
         categoryView.apply {
-            setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_P600))
+            setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_PN600))
             setWeight(Typography.BOLD)
         }
     }
 
     private fun setInactiveText(categoryView: Typography) {
         categoryView.apply {
-            setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+            setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
             setWeight(Typography.REGULAR)
         }
     }

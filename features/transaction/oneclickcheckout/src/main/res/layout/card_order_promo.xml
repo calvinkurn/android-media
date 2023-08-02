@@ -7,7 +7,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="8dp"
-        android:background="@color/Unify_N50" />
+        android:background="@color/Unify_NN50" />
 
     <com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
         android:id="@+id/btn_promo_checkout"

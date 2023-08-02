@@ -2,79 +2,82 @@ package com.tokopedia.play.widget.data
 
 import com.google.gson.annotations.SerializedName
 
-
 /**
  * Created by mzennis on 05/10/20.
  */
 data class PlayWidget(
-        @SerializedName("data") val data: List<PlayWidgetItem> = emptyList(),
-        @SerializedName("meta") val meta: PlayWidgetMeta = PlayWidgetMeta()
+    @SerializedName("data") val data: List<PlayWidgetItem> = emptyList(),
+    @SerializedName("meta") val meta: PlayWidgetMeta = PlayWidgetMeta()
 )
 
 data class PlayWidgetResponse(
-        @SerializedName("playGetWidgetV2") val playWidget: PlayWidget = PlayWidget()
+    @SerializedName("playGetWidgetV2") val playWidget: PlayWidget = PlayWidget()
 )
 
 data class PlayWidgetItem(
-        @SerializedName("__typename") val typename: String = "",
-        @SerializedName("ID") val id: String = "",
-        @SerializedName("title") val title: String = "",
-        @SerializedName("widgetType") val widgetType: String = "",
-        @SerializedName("appLink") val appLink: String = "",
-        @SerializedName("webLink") val webLink: String = "",
-        @SerializedName("startTime") val startTime: String = "",
-        @SerializedName("widgetSortingMethod") val widgetSortingMethod: String = "",
-        @SerializedName("recommendationType") val recommendationType: String = "",
-        @SerializedName("config") val config: PlayWidgetItemConfig = PlayWidgetItemConfig(),
-        @SerializedName("partner") val partner: PlayWidgetItemPartner = PlayWidgetItemPartner(),
-        @SerializedName("video") val video: PlayWidgetItemVideo = PlayWidgetItemVideo(),
-        @SerializedName("stats") val stats: PlayWidgetItemStat = PlayWidgetItemStat(),
-        @SerializedName("share") val share: PlayWidgetItemShare = PlayWidgetItemShare(),
-        @SerializedName("backgroundURL") val backgroundUrl : String = "",
-        @SerializedName("performanceSummaryPageLink") val performanceSummaryPageLink : String = ""
+    @SerializedName("__typename") val typename: String = "",
+    @SerializedName("ID") val id: String = "",
+    @SerializedName("title") val title: String = "",
+    @SerializedName("widgetType") val widgetType: String = "",
+    @SerializedName("appLink") val appLink: String = "",
+    @SerializedName("webLink") val webLink: String = "",
+    @SerializedName("startTime") val startTime: String = "",
+    @SerializedName("widgetSortingMethod") val widgetSortingMethod: String = "",
+    @SerializedName("recommendationType") val recommendationType: String = "",
+    @SerializedName("config") val config: PlayWidgetItemConfig = PlayWidgetItemConfig(),
+    @SerializedName("partner") val partner: PlayWidgetItemPartner = PlayWidgetItemPartner(),
+    @SerializedName("video") val video: PlayWidgetItemVideo = PlayWidgetItemVideo(),
+    @SerializedName("stats") val stats: PlayWidgetItemStat = PlayWidgetItemStat(),
+    @SerializedName("share") val share: PlayWidgetItemShare = PlayWidgetItemShare(),
+    @SerializedName("backgroundURL") val backgroundUrl: String = "",
+    @SerializedName("performanceSummaryPageLink") val performanceSummaryPageLink: String = "",
+    @SerializedName("pinnedProducts") val products: List<PlayWidgetItemProduct> = emptyList()
 )
 
 data class PlayWidgetItemConfig(
-        @SerializedName("hasPromo") val hasPromo: Boolean = false,
-        @SerializedName("isReminderSet") val isReminderSet: Boolean = false,
-        @SerializedName("promo_labels") val promoLabels: List<PlayWidgetPromoLabel> = emptyList(),
+    @SerializedName("hasPromo") val hasPromo: Boolean = false,
+    @SerializedName("isReminderSet") val isReminderSet: Boolean = false,
+    @SerializedName("promo_labels") val promoLabels: List<PlayWidgetPromoLabel> = emptyList()
 )
 
 data class PlayWidgetPromoLabel(
-        @SerializedName("text") val text: String = "",
-        @SerializedName("type") val type: String = "",
+    @SerializedName("text") val text: String = "",
+    @SerializedName("type") val type: String = ""
 )
 
 data class PlayWidgetItemPartner(
-        @SerializedName("ID") val id: String = "",
-        @SerializedName("name") val name: String = "",
-        @SerializedName("type") val type: String = "",
+    @SerializedName("ID") val id: String = "",
+    @SerializedName("name") val name: String = "",
+    @SerializedName("type") val type: String = "",
+    @SerializedName("thumbnailURL") val thumbnailUrl: String = "",
+    @SerializedName("badgeURL") val badgeUrl: String = "",
+    @SerializedName("appLink") val appLink: String = ""
 )
 
 data class PlayWidgetItemStat(
-        @SerializedName("view") val view: PlayWidgetItemStatView = PlayWidgetItemStatView()
+    @SerializedName("view") val view: PlayWidgetItemStatView = PlayWidgetItemStatView()
 )
 
 data class PlayWidgetItemShare(
-        @SerializedName("text") val text: String = "",
-        @SerializedName("redirect_url") val redirectUrl: String = "",
-        @SerializedName("use_short_url") val useShortUrl: Boolean = false,
-        @SerializedName("meta_title") val metaTitle: String = "",
-        @SerializedName("meta_description") val metaDescription: String = "",
-        @SerializedName("is_show_button") val isShowButton: Boolean = false
+    @SerializedName("text") val text: String = "",
+    @SerializedName("redirect_url") val redirectUrl: String = "",
+    @SerializedName("use_short_url") val useShortUrl: Boolean = false,
+    @SerializedName("meta_title") val metaTitle: String = "",
+    @SerializedName("meta_description") val metaDescription: String = "",
+    @SerializedName("is_show_button") val isShowButton: Boolean = false
 )
 
 data class PlayWidgetItemStatView(
-        @SerializedName("formatted") val formatted: String = ""
+    @SerializedName("formatted") val formatted: String = ""
 )
 
 data class PlayWidgetItemVideo(
-        @SerializedName("ID") val id: String = "",
-        @SerializedName("type") val type: String = "",
-        @SerializedName("coverUrl") val coverUrl: String = "",
-        @SerializedName("streamSource") val streamSource: String = "",
-        @SerializedName("isShowTotalView") val isShowTotalView: Boolean = false,
-        @SerializedName("isLive") val isLive: Boolean = false
+    @SerializedName("ID") val id: String = "",
+    @SerializedName("type") val type: String = "",
+    @SerializedName("coverUrl") val coverUrl: String = "",
+    @SerializedName("streamSource") val streamSource: String = "",
+    @SerializedName("isShowTotalView") val isShowTotalView: Boolean = false,
+    @SerializedName("isLive") val isLive: Boolean = false
 )
 
 data class PlayWidgetMeta(
@@ -96,4 +99,16 @@ data class PlayWidgetMeta(
     @SerializedName("template") val template: String = "",
     @SerializedName("isButtonVisible") val isButtonVisible: Boolean = true,
     @SerializedName("businessWidgetPosition") val businessWidgetPosition: Int = 0
+)
+
+data class PlayWidgetItemProduct(
+    @SerializedName("id") val id: String = "",
+    @SerializedName("name") val name: String = "",
+    @SerializedName("image_url") val imageUrl: String = "",
+    @SerializedName("discount") val discount: Int = 0,
+    @SerializedName("price") val price: String = "",
+    @SerializedName("price_fmt") val priceFmt: String = "",
+    @SerializedName("original_price") val originalPrice: String = "",
+    @SerializedName("original_price_fmt") val originalPriceFmt: String = "",
+    @SerializedName("app_link") val appLink: String = ""
 )

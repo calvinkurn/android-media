@@ -13,8 +13,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.device.info.DeviceScreenInfo
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.analytics.ShopScorePenaltyTracking
@@ -120,6 +122,8 @@ open class ShopPenaltyDetailFragment : BaseDaggerFragment() {
             binding?.tvDescResultDetailPenalty?.text = getString(it)
         }
 
+        setupProductInfo(shopPenaltyDetailUiModel.productName)
+
         setupRvStepper(shopPenaltyDetailUiModel.stepperPenaltyDetailList)
 
         binding?.icInfoStatusPenalty?.setOnClickListener {
@@ -171,6 +175,33 @@ open class ShopPenaltyDetailFragment : BaseDaggerFragment() {
                     onBackPressed()
                 }
             }
+        }
+    }
+
+    private fun setupProductInfo(productName: String?) {
+        if (productName == null) {
+            binding?.cardProductDetailPenalty?.gone()
+            binding?.tvSummaryCtaDetailPenalty?.gone()
+            binding?.tvTypeTitlePenaltyDetail?.gone()
+        } else {
+            binding?.cardProductDetailPenalty?.visible()
+            binding?.tvSummaryCtaDetailPenalty?.run {
+                visible()
+                setOnClickListener {
+                    RouteManager.route(
+                        context,
+                        ApplinkConstInternalGlobal.WEBVIEW,
+                        ShopScoreConstant.PRODUCT_PENALTY_URL
+                    )
+                }
+            }
+            binding?.tvTypeTitlePenaltyDetail?.visible()
+            binding?.tvProductDetailPenalty?.text = MethodChecker.fromHtml(
+                getString(
+                    R.string.product_name_detail,
+                    productName
+                )
+            )
         }
     }
 

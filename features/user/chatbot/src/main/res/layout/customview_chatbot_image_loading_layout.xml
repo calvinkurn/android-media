@@ -21,7 +21,7 @@
         android:layout_width="@dimen/spacing_lvl5"
         android:layout_height="@dimen/spacing_lvl4"
         android:src="@drawable/ic_action_x"
-        android:tint="@color/Unify_N0"
+        android:tint="@color/Unify_NN0"
         android:layout_gravity="center"
         android:visibility="visible"
         android:contentDescription="@null"

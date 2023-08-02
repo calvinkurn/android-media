@@ -1,6 +1,7 @@
 package com.tokopedia.autocompletecomponent.initialstate.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.autocompletecomponent.di.AutoCompleteComponent
 import com.tokopedia.autocompletecomponent.initialstate.InitialStateFragment
 import com.tokopedia.autocompletecomponent.initialstate.analytics.InitialStateTrackingModule
 import com.tokopedia.autocompletecomponent.initialstate.domain.deleterecentsearch.DeleteRecentSearchUseCaseModule

@@ -27,8 +27,9 @@ class CategoryBestSellerViewModel(val application: Application, val components: 
     private val maxHeightProductCard: MutableLiveData<Int> = MutableLiveData()
     private val backgroundImageUrl: MutableLiveData<String> = MutableLiveData()
 
+    @JvmField
     @Inject
-    lateinit var productCardsUseCase: ProductCardsUseCase
+    var productCardsUseCase: ProductCardsUseCase? = null
 
     fun getComponentData(): LiveData<ComponentsItem> = componentData
     fun getProductCarouselItemsListData(): LiveData<ArrayList<ComponentsItem>> = productCarouselList
@@ -38,7 +39,6 @@ class CategoryBestSellerViewModel(val application: Application, val components: 
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
-
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
@@ -52,17 +52,17 @@ class CategoryBestSellerViewModel(val application: Application, val components: 
     }
 
     private fun setupBackground() {
-            backgroundImageUrl.value = components.properties?.backgroundImageUrl
+        backgroundImageUrl.value = components.properties?.backgroundImageUrl ?: ""
     }
 
     private fun fetchProductCarouselData() {
         launchCatchError(block = {
-            productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, PRODUCT_PER_PAGE)
+            productCardsUseCase?.loadFirstPageComponents(components.id, components.pageEndPoint, PRODUCT_PER_PAGE)
             setProductsList()
         }, onError = {
-            productLoadError.value = true
-            it.printStackTrace()
-        })
+                productLoadError.value = true
+                it.printStackTrace()
+            })
     }
 
     private suspend fun setProductsList() {
@@ -100,5 +100,4 @@ class CategoryBestSellerViewModel(val application: Application, val components: 
         }
         return null
     }
-
 }

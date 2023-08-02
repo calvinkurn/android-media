@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/buyerOrderDetailStickyActionButtons"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:layoutDescription="@xml/partial_buyer_order_detail_sticky_action_buttons_scene">
+    android:layout_height="wrap_content">
 
     <View
         android:id="@+id/shadow"
@@ -19,6 +18,8 @@
         android:id="@+id/btnBuyerOrderDetailSecondaryActions"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:visibility="gone"
+        tools:visibility="visible"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl3"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -31,6 +32,8 @@
         android:id="@+id/btnBuyerOrderDetailPrimaryActions"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl3"
@@ -41,4 +44,4 @@
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled"
         tools:text="Chat Penjual" />
-</androidx.constraintlayout.motion.widget.MotionLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

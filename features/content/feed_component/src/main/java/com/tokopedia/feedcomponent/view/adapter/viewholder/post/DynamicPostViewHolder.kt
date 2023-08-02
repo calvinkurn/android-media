@@ -52,13 +52,13 @@ import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.clearImage
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
-import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
@@ -268,7 +268,7 @@ open class DynamicPostViewHolder(
                     if (header.cardSummary.isNotEmpty()) {
                         SpannableString(
                             String.format(
-                                getString(R.string.feed_header_time_format),
+                                getString(com.tokopedia.content.common.R.string.feed_header_time_format),
                                 header.avatarDate,
                                 header.cardSummary
                             )
@@ -386,7 +386,7 @@ open class DynamicPostViewHolder(
             val tagCaption = FeedCaption.Tag(
                 colorRes = MethodChecker.getColor(
                     itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G400
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 ),
                 clickListener = {
                     onHashtagClicked(it, trackingPostModel)
@@ -403,7 +403,7 @@ open class DynamicPostViewHolder(
                 label = caption.buttonName,
                 colorRes = MethodChecker.getColor(
                     itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N400
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
                 ),
                 clickListener = {
                     itemView.caption.setText(captionBody, TextView.BufferType.SPANNABLE)
@@ -583,44 +583,70 @@ open class DynamicPostViewHolder(
     private fun bindLike(like: Like) {
         when {
             like.isChecked -> {
-                itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_green)
+                updateLikeButton(true)
                 val likeCount = if (like.fmt.isEmpty()) like.value.toString() else like.fmt
                 itemView.likeText.text = likeCount
                 itemView.likeText.setTextColor(
                     MethodChecker.getColor(
                         itemView.likeText.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G400
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     )
                 )
             }
             like.value > 0 -> {
-                itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_feed_thumb)
+                updateLikeButton(false)
                 itemView.likeText.text = like.fmt
                 itemView.likeText.setTextColor(
                     MethodChecker.getColor(
                         itemView.likeText.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700_44
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_44
                     )
                 )
             }
             else -> {
-                itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_feed_thumb)
+                updateLikeButton(false)
                 val text: String =
-                    if (like.fmt.isNotEmpty() && !like.fmt.equals("0")) like.fmt else getString(R.string.kol_action_like)
+                    if (like.fmt.isNotEmpty() && !like.fmt.equals("0")) like.fmt
+                    else getString(com.tokopedia.content.common.R.string.kol_action_like)
                 itemView.likeText.text = text
                 itemView.likeText.setTextColor(
                     MethodChecker.getColor(
                         itemView.likeIcon.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700_44
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_44
                     )
                 )
             }
         }
     }
+    
+    private fun updateLikeButton(isLiked: Boolean) {
+        val likedColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+        val dislikeColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN300)
+        if (isLiked) {
+            itemView.likeIcon.setImage(
+                newIconId = IconUnify.THUMB_FILLED,
+                newLightEnable = likedColor,
+                newLightDisable = dislikeColor,
+                newDarkEnable = likedColor,
+                newDarkDisable = dislikeColor,
+            )
+        } else {
+            itemView.likeIcon.setImage(
+                newIconId = IconUnify.THUMB_FILLED,
+                newLightEnable = dislikeColor,
+                newLightDisable = likedColor,
+                newDarkEnable = dislikeColor,
+                newDarkDisable = likedColor,
+            )
+        }
+    }
 
     private fun bindComment(comment: Comment) {
         itemView.commentText.text =
-            if (comment.value == 0) if (comment.fmt.isNotEmpty()) comment.fmt else getString(R.string.kol_action_comment)
+            if (comment.value == 0) {
+                if (comment.fmt.isNotEmpty()) comment.fmt
+                else getString(com.tokopedia.content.common.R.string.kol_action_comment)
+            }
             else {
                 if (comment.fmt.isNotEmpty()) comment.fmt else comment.value.toString()
             }

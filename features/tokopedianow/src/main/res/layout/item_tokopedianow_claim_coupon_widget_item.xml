@@ -8,31 +8,33 @@
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iu_coupon_large_image"
         android:layout_width="0dp"
-        android:layout_height="109dp"
+        android:layout_height="0dp"
         android:scaleType="centerCrop"
         android:visibility="gone"
+        app:layout_constraintDimensionRatio="H,3:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:unify_image_corner_radius="8"
-        tools:background="@color/Unify_N100"
+        tools:background="@color/Unify_NN200"
         tools:visibility="gone" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iu_coupon_small_image"
         android:layout_width="0dp"
-        android:layout_height="80dp"
+        android:layout_height="0dp"
         android:scaleType="centerCrop"
         android:visibility="gone"
+        app:layout_constraintDimensionRatio="H,2:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:unify_image_corner_radius="8"
-        tools:background="@color/Unify_N100"
+        tools:background="@color/Unify_NN200"
         tools:visibility="gone" />
 
     <com.tokopedia.unifycomponents.UnifyButton

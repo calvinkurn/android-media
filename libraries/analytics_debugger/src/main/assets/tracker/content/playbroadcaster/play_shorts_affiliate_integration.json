@@ -1,0 +1,94 @@
+{
+    "readme": "Play Shorts Affiliate Integration",
+    "mode": "exact",
+    "query": [
+        {
+            "event": "clickContent",
+            "eventAction": "click - daftar affiliate card",
+            "eventCategory": "play broadcast short",
+            "eventLabel": ".* - (seller|user)",
+            "trackerId": "41405",
+            "businessUnit": "content",
+            "currentSite": "(tokopediamarketplace|tokopediaseller)",
+            "sessionIris": ".*",
+            "userId": ".*"
+        },
+        {
+            "event": "clickContent",
+            "eventAction": "click - accept t&c affiliate",
+            "eventCategory": "play broadcast short",
+            "eventLabel": ".* - (seller|user)",
+            "trackerId": "41406",
+            "businessUnit": "content",
+            "currentSite": "(tokopediamarketplace|tokopediaseller)",
+            "sessionIris": ".*",
+            "userId": ".*"
+        },
+        {
+            "event": "clickContent",
+            "eventAction": "click - lanjut register affiliate",
+            "eventCategory": "play broadcast short",
+            "eventLabel": ".* - (seller|user)",
+            "trackerId": "41407",
+            "businessUnit": "content",
+            "currentSite": "(tokopediamarketplace|tokopediaseller)",
+            "sessionIris": ".*",
+            "userId": ".*"
+        },
+        {
+            "event": "viewContentIris",
+            "eventAction": "impression - produk ada komisi",
+            "eventCategory": "play broadcast short",
+            "eventLabel": ".* - (seller|user)",
+            "trackerId": "41409",
+            "businessUnit": "content",
+            "currentSite": "(tokopediamarketplace|tokopediaseller)",
+            "sessionIris": ".*",
+            "userId": ".*"
+        },
+        {
+            "event": "clickContent",
+            "eventAction": "click - lanjut buat konten",
+            "eventCategory": "play broadcast short",
+            "eventLabel": ".* - (seller|user)",
+            "trackerId": "42840",
+            "businessUnit": "content",
+            "currentSite": "(tokopediamarketplace|tokopediaseller)",
+            "sessionIris": ".*",
+            "userId": ".*"
+        },
+        {
+            "event": "viewContentIris",
+            "eventAction": "impression - cek produk komisi",
+            "eventCategory": "play broadcast short",
+            "eventLabel": ".* - (seller|user)",
+            "trackerId": "42841",
+            "businessUnit": "content",
+            "currentSite": "(tokopediamarketplace|tokopediaseller)",
+            "sessionIris": ".*",
+            "userId": ".*"
+        },
+        {
+            "event": "viewContentIris",
+            "eventAction": "impression - tag product komisi",
+            "eventCategory": "play broadcast short",
+            "eventLabel": ".* - (seller|user)",
+            "trackerId": "42842",
+            "businessUnit": "content",
+            "currentSite": "(tokopediamarketplace|tokopediaseller)",
+            "sessionIris": ".*",
+            "userId": ".*"
+        },
+        {
+            "event": "viewContentIris",
+            "eventAction": "impression - affiliate link gagal dimuat",
+            "eventCategory": "play broadcast short",
+            "eventLabel": ".* - (seller|user)",
+            "trackerId": "42953",
+            "businessUnit": "content",
+            "currentSite": "(tokopediamarketplace|tokopediaseller)",
+            "sessionIris": ".*",
+            "userId": ".*"
+        }
+    ]
+}

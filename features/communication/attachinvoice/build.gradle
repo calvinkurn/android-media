@@ -3,12 +3,16 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 android{
+    namespace 'com.tokopedia.attachinvoice'
+    testNamespace 'com.tokopedia.attachinvoice.test'
     buildFeatures {
         viewBinding true
     }
 }
 
 android {
+    namespace 'com.tokopedia.attachinvoice'
+    testNamespace 'com.tokopedia.attachinvoice.test'
     testOptions {
         unitTests.all {
             testLogging.events = ["passed", "skipped", "failed"]
@@ -43,7 +47,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.track)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.multiDex

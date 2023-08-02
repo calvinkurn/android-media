@@ -1,5 +1,7 @@
 package com.tokopedia.entertainment.home.utils
 
+import com.tokopedia.common_digital.common.presentation.model.DigitalDppoConsent
+import com.tokopedia.entertainment.common.model.EventDppoConsentModel
 import com.tokopedia.entertainment.home.adapter.HomeEventItem
 import com.tokopedia.entertainment.home.adapter.viewmodel.BannerModel
 import com.tokopedia.entertainment.home.adapter.viewmodel.CategoryModel
@@ -8,6 +10,7 @@ import com.tokopedia.entertainment.home.adapter.viewmodel.EventGridModel
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventLocationModel
 import com.tokopedia.entertainment.home.adapter.viewmodel.TickerModel
 import com.tokopedia.entertainment.home.data.EventHomeDataResponse
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 
 object MapperHomeData {
@@ -45,5 +48,11 @@ object MapperHomeData {
             }
         }
         return items
+    }
+
+    fun mapDppoConsentToEventModel(data: DigitalDppoConsent): EventDppoConsentModel {
+        return EventDppoConsentModel(
+            description = data.persoData.items.getOrNull(Int.ZERO)?.title ?: ""
+        )
     }
 }

@@ -1,0 +1,55 @@
+{
+  "readme": "Digital PDP paket data autocomplete",
+  "mode": "exact",
+  "query": [
+    {
+      "eventAction": "click autocomplete fav contact",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*_.*_.*",
+      "event": "clickDigital",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "eventAction": "click autocomplete fav number",
+      "eventLabel": ".*_.*_.*",
+      "eventCategory": "digital - homepage",
+      "event": "clickDigital",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "eventAction": "click x on input number",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*",
+      "event": "clickDigital",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "eventAction": "impression pdp banner",
+      "eventLabel": ".*_.*",
+      "eventCategory": "digital - homepage",
+      "event": "view_item",
+      "businessUnit": "recharge",
+      "clientId": ".*",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": ".*",
+      "sessionIris": ".*",
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".*",
+          "item_name": ".*"
+        }
+      ]
+    }
+  ]
+}

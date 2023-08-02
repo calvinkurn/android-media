@@ -6,4 +6,5 @@ sealed class ConfigState {
     object Device: ConfigState()
     object Ringtone: ConfigState()
     object Undefined: ConfigState()
+    object GooglePlayServices: ConfigState()
 }

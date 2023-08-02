@@ -23,11 +23,6 @@ class DeepLinkMapperSellerAppTest : DeepLinkMapperTestFixture() {
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
     }
 
-    override fun finish() {
-        super.finish()
-        GlobalConfig.APPLICATION_TYPE = GlobalConfig.CONSUMER_APPLICATION
-    }
-
     @Test
     fun `check home appLink login then return seller home in sellerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/sellerhome"
@@ -374,6 +369,13 @@ class DeepLinkMapperSellerAppTest : DeepLinkMapperTestFixture() {
         val deepLink = ApplinkConst.SellerApp.TOPCHAT_BUBBLE_ACTIVATION
         val expectedDeepLink = ApplinkConstInternalMarketplace.TOPCHAT_BUBBLE_ACTIVATION
         assertEqualsDeepLinkMapperApp(AppType.SELLER_APP, deepLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check seller shop nib app link should mapping to sellerapp internal app link`() {
+        val appLink = ApplinkConst.SellerApp.SELLER_SHOP_NIB
+        val expectedDeepLink = ApplinkConstInternalSellerapp.SELLER_SHOP_NIB
+        assertEqualsDeepLinkMapperApp(AppType.SELLER_APP, appLink, expectedDeepLink)
     }
 
     @Test

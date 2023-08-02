@@ -17,7 +17,7 @@
             android:layout_marginTop="12dp"
             android:layout_marginStart="12dp"
             app:icon_name="WARNING"
-            app:icon_color_light_enable="@color/Unify_Y300"
+            app:icon_color_light_enable="@color/Unify_YN300"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
 
@@ -40,7 +40,7 @@
             android:text="@string/reply_unmask_no"
             android:layout_marginTop="12dp"
             android:layout_marginEnd="16dp"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:typographyWeight="bold"
             app:typographyType="body_3"
             app:layout_constraintTop_toBottomOf="@id/talk_reply_unmask_body"
@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:text="@string/reply_unmask_yes"
-            android:textColor="@color/Unify_G500"
+            android:textColor="@color/Unify_GN500"
             app:typographyWeight="bold"
             app:typographyType="body_3"
             app:layout_constraintTop_toTopOf="@id/talkReplyUnmaskYesOption"

@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/unify_space_8"
             android:text="@string/text_customizable"
-            android:textColor="@color/Unify_Y400"
+            android:textColor="@color/Unify_YN400"
             app:layout_constraintLeft_toRightOf="@id/productImage"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="small"

@@ -112,11 +112,6 @@
             app:layout_constraintTop_toTopOf="parent" />
     </ConstraintSet>
 
-    <Transition
-        app:constraintSetEnd="@+id/start_in_state"
-        app:constraintSetStart="@+id/initial_title_with_icon"
-        app:duration="600" />
-
     <ConstraintSet android:id="@+id/initial_title_with_timer_and_icon">
         <Constraint
             android:id="@+id/ty_feed_campaign_ribbon_title"
@@ -231,22 +226,17 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </ConstraintSet>
-    <Transition
-        app:constraintSetEnd="@+id/availability_state"
-        app:constraintSetStart="@+id/initial_title_with_timer_and_icon"
-        app:duration="600" />
+
     <ConstraintSet android:id="@+id/second_title_with_icon">
         <Constraint
             android:id="@+id/ty_feed_campaign_ribbon_title"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="2dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:layout_marginBottom="16dp"
             android:visibility="visible"
             app:layout_constraintBottom_toTopOf="@id/ty_feed_campaign_ribbon_title_second"
-            app:layout_constraintEnd_toStartOf="@id/ic_feed_campaign_ribbon_icon"
-            app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintEnd_toStartOf="@id/timer_feed_campaign_ribbon"
             app:layout_constraintStart_toStartOf="parent" />
         <Constraint
             android:id="@+id/ty_feed_campaign_ribbon_title_second"
@@ -291,76 +281,489 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </ConstraintSet>
+
+    <!-- START initial_title_with_icon TRANSITION-->
     <Transition
         app:constraintSetEnd="@+id/second_title_with_icon"
         app:constraintSetStart="@+id/initial_title_with_icon"
-        app:duration="600" />
+        app:duration="600">
+<KeyFrameSet>
+    <KeyPosition
+        app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+        app:framePosition="99"
+        app:keyPositionType="parentRelative"
+        app:percentY="-1" />
+</KeyFrameSet>
+    </Transition>
     <Transition
+        app:constraintSetEnd="@+id/availability_state"
         app:constraintSetStart="@+id/initial_title_with_icon"
-        app:constraintSetEnd="@+id/availability_state"
-        app:duration="600" />
+        app:duration="600">
+        <KeyFrameSet></KeyFrameSet>
+    </Transition>
     <Transition
+        app:constraintSetEnd="@+id/initial_title_with_timer_and_icon"
         app:constraintSetStart="@+id/initial_title_with_icon"
-        app:constraintSetEnd="@+id/initial_title_with_timer_and_icon"
-        app:duration="600" />
+        app:duration="600">
+        <KeyFrameSet></KeyFrameSet>
+    </Transition>
     <Transition
-        app:constraintSetStart="@+id/start_in_state"
+        app:constraintSetEnd="@+id/start_in_state"
+        app:constraintSetStart="@+id/initial_title_with_icon"
+        app:duration="600">
+        <KeyFrameSet>
+
+            <KeyPosition
+                app:framePosition="1"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/timer_feed_campaign_ribbon"
+                app:percentX=".4" />
+            <KeyPosition
+                app:framePosition="99"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:percentY="-1" />
+        </KeyFrameSet>
+    </Transition>
+    <!-- END initial_title_with_icon TRANSITION-->
+
+    <!-- START start_in_state TRANSITION-->
+    <Transition
         app:constraintSetEnd="@+id/initial_title_with_icon"
-        app:duration="600" />
-    <Transition
         app:constraintSetStart="@+id/start_in_state"
+        app:duration="600">
+        <KeyFrameSet>
+            <KeyPosition
+                app:framePosition="1"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:percentY="1.5" />
+            <KeyPosition
+                app:framePosition="99"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_subtitle"
+                app:percentY="-1" />
+            <KeyPosition
+                app:framePosition="65"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/timer_feed_campaign_ribbon"
+                app:percentX=".4"
+                app:percentY="-1" />
+            <KeyPosition
+                app:framePosition="100"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_subtitle"
+                app:percentY="-1" />
+            <KeyPosition
+                app:framePosition="100"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/timer_feed_campaign_ribbon"
+                app:percentX=".4"
+                app:percentY="-1" />
+            <KeyPosition
+                app:framePosition="1"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/timer_feed_campaign_ribbon"
+                app:percentX=".4" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="0"
+                android:alpha="0" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="50"
+                android:alpha="1" />
+        </KeyFrameSet>
+    </Transition>
+    <Transition
         app:constraintSetEnd="@+id/initial_title_with_timer_and_icon"
-        app:duration="600" />
-    <Transition
         app:constraintSetStart="@+id/start_in_state"
+        app:duration="600">
+        <KeyFrameSet>
+            <KeyPosition
+                app:framePosition="99"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_subtitle"
+                app:percentY="-1" />
+            <KeyPosition
+                app:framePosition="100"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_subtitle"
+                app:percentY="-1" />
+            <KeyPosition
+                app:framePosition="1"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:percentY="1.5" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="0"
+                android:alpha="0" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="50"
+                android:alpha="1" />
+        </KeyFrameSet>
+    </Transition>
+    <Transition
         app:constraintSetEnd="@+id/availability_state"
-        app:duration="600" />
-    <Transition
         app:constraintSetStart="@+id/start_in_state"
+        app:duration="600">
+        <KeyFrameSet></KeyFrameSet>
+    </Transition>
+    <Transition
         app:constraintSetEnd="@+id/second_title_with_icon"
-        app:duration="600" />
+        app:constraintSetStart="@+id/start_in_state"
+        app:duration="600">
+<KeyFrameSet>
+    <KeyPosition
+        app:motionTarget="@+id/ty_feed_campaign_ribbon_subtitle"
+        app:framePosition="99"
+        app:keyPositionType="parentRelative"
+        app:percentY="-1" />
+    <KeyPosition
+        app:motionTarget="@+id/ty_feed_campaign_ribbon_subtitle"
+        app:framePosition="100"
+        app:keyPositionType="parentRelative"
+        app:percentY="-1" />
+    <KeyPosition
+        app:motionTarget="@+id/timer_feed_campaign_ribbon"
+        app:framePosition="70"
+        app:keyPositionType="parentRelative"
+        app:percentY="-1"
+        app:percentX=".4" />
+    <KeyPosition
+        app:motionTarget="@+id/timer_feed_campaign_ribbon"
+        app:framePosition="100"
+        app:keyPositionType="parentRelative"
+        app:percentY="-1" />
+</KeyFrameSet>
+    </Transition>
+    <!-- END start_in_state TRANSITION-->
+
+    <!-- START initial_title_with_timer_and_icon TRANSITION-->
     <Transition
-        app:constraintSetStart="@+id/initial_title_with_timer_and_icon"
         app:constraintSetEnd="@+id/initial_title_with_icon"
-        app:duration="600" />
-    <Transition
         app:constraintSetStart="@+id/initial_title_with_timer_and_icon"
-        app:constraintSetEnd="@+id/start_in_state"
-        app:duration="600" />
+        app:duration="600">
+        <KeyFrameSet>
+            <KeyPosition
+                app:framePosition="99"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/timer_feed_campaign_ribbon"
+                app:percentY="-1" />
+            <KeyPosition
+                app:framePosition="100"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/timer_feed_campaign_ribbon"
+                app:percentY="-1" />
+        </KeyFrameSet>
+    </Transition>
     <Transition
+        app:constraintSetEnd="@+id/start_in_state"
         app:constraintSetStart="@+id/initial_title_with_timer_and_icon"
-        app:constraintSetEnd="@+id/second_title_with_icon"
-        app:duration="600" />
+        app:duration="600">
+        <KeyFrameSet>
+            <KeyPosition
+                app:framePosition="1"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:percentY=".5" />
+            <KeyPosition
+                app:framePosition="99"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:percentY="-1" />
+        </KeyFrameSet>
+    </Transition>
     <Transition
-        app:constraintSetStart="@+id/availability_state"
-        app:constraintSetEnd="@+id/initial_title_with_icon"
-        app:duration="600" />
-    <Transition
-        app:constraintSetStart="@+id/availability_state"
-        app:constraintSetEnd="@+id/start_in_state"
-        app:duration="600" />
-    <Transition
-        app:constraintSetStart="@+id/availability_state"
-        app:constraintSetEnd="@+id/initial_title_with_timer_and_icon"
-        app:duration="600" />
-    <Transition
-        app:constraintSetStart="@+id/availability_state"
-        app:constraintSetEnd="@+id/second_title_with_icon"
-        app:duration="600" />
-    <Transition
-        app:constraintSetStart="@+id/second_title_with_icon"
-        app:constraintSetEnd="@+id/initial_title_with_icon"
-        app:duration="600" />
-    <Transition
-        app:constraintSetStart="@+id/second_title_with_icon"
-        app:constraintSetEnd="@+id/start_in_state"
-        app:duration="600"/>
-    <Transition
-        app:constraintSetStart="@+id/second_title_with_icon"
-        app:constraintSetEnd="@+id/initial_title_with_timer_and_icon"
-        app:duration="600" />
-    <Transition
-        app:constraintSetStart="@+id/second_title_with_icon"
         app:constraintSetEnd="@+id/availability_state"
-        app:duration="600"/>
+        app:constraintSetStart="@+id/initial_title_with_timer_and_icon"
+        app:duration="600">
+        <KeyFrameSet></KeyFrameSet>
+    </Transition>
+    <Transition
+        app:constraintSetEnd="@+id/second_title_with_icon"
+        app:constraintSetStart="@+id/initial_title_with_timer_and_icon"
+        app:duration="600" >
+        <KeyFrameSet>
+            <KeyPosition
+                app:motionTarget="@+id/timer_feed_campaign_ribbon"
+                app:framePosition="65"
+                app:keyPositionType="parentRelative"
+                app:percentY="-1" />
+            <KeyPosition
+                app:motionTarget="@+id/timer_feed_campaign_ribbon"
+                app:framePosition="100"
+                app:keyPositionType="parentRelative"
+                app:percentY="-1" />
+            <KeyPosition
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="99"
+                app:keyPositionType="parentRelative"
+                app:percentY="-1" />
+        </KeyFrameSet>
+    </Transition>
+    <!-- END initial_title_with_timer_and_icon TRANSITION-->
+
+    <!-- START availability_state TRANSITION-->
+    <Transition
+        app:constraintSetEnd="@+id/initial_title_with_icon"
+        app:constraintSetStart="@+id/availability_state"
+        app:duration="600">
+        <KeyFrameSet>
+            <KeyPosition
+                app:framePosition="1"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:percentY="1.5" />
+            <KeyPosition
+                app:framePosition="99"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_subtitle"
+                app:percentY="-1" />
+            <KeyPosition
+                app:framePosition="100"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@id/ty_feed_campaign_ribbon_subtitle"
+                app:percentY="-1" />
+            <KeyPosition
+                app:framePosition="99"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/pb_feed_campaign_ribbon"
+                app:percentY="-.3" />
+            <KeyPosition
+                app:framePosition="50"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/pb_feed_campaign_ribbon"
+                app:percentY="0" />
+            <KeyPosition
+                app:framePosition="100"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/pb_feed_campaign_ribbon"
+                app:percentY="-.3" />
+            <KeyPosition
+                app:framePosition="99"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/timer_feed_campaign_ribbon"
+                app:percentY="-1" />
+            <KeyPosition
+                app:framePosition="100"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/timer_feed_campaign_ribbon"
+                app:percentY="-1" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="0"
+                android:alpha="0" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="50"
+                android:alpha="1" />
+        </KeyFrameSet>
+    </Transition>
+    <Transition
+        app:constraintSetEnd="@+id/start_in_state"
+        app:constraintSetStart="@+id/availability_state"
+        app:duration="600" />
+    <Transition
+        app:constraintSetEnd="@+id/initial_title_with_timer_and_icon"
+        app:constraintSetStart="@+id/availability_state"
+        app:duration="600">
+        <KeyFrameSet>
+            <KeyPosition
+                app:framePosition="1"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:percentY="1.5" />
+            <KeyPosition
+                app:framePosition="99"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_subtitle"
+                app:percentY="-1" />
+            <KeyPosition
+                app:framePosition="99"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/pb_feed_campaign_ribbon"
+                app:percentY="-.5" />
+            <KeyPosition
+                app:framePosition="50"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/pb_feed_campaign_ribbon"
+                app:percentY="0" />
+            <KeyPosition
+                app:framePosition="100"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/pb_feed_campaign_ribbon"
+                app:percentY="-.5" />
+            <KeyPosition
+                app:framePosition="100"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_subtitle"
+                app:percentY="-1" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="0"
+                android:alpha="0" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="50"
+                android:alpha="1" />
+        </KeyFrameSet>
+    </Transition>
+    <Transition
+        app:constraintSetEnd="@+id/second_title_with_icon"
+        app:constraintSetStart="@+id/availability_state"
+        app:duration="600">
+        <KeyFrameSet>
+            <KeyPosition
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_subtitle"
+                app:framePosition="99"
+                app:keyPositionType="parentRelative"
+                app:percentY="-1" />
+            <KeyPosition
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_subtitle"
+                app:framePosition="100"
+                app:keyPositionType="parentRelative"
+                app:percentY="-1" />
+            <KeyPosition
+                app:motionTarget="@+id/pb_feed_campaign_ribbon"
+                app:framePosition="50"
+                app:keyPositionType="parentRelative"
+                app:percentY="0" />
+            <KeyPosition
+                app:motionTarget="@+id/pb_feed_campaign_ribbon"
+                app:framePosition="99"
+                app:keyPositionType="parentRelative"
+                app:percentY="-.4" />
+            <KeyPosition
+                app:motionTarget="@+id/pb_feed_campaign_ribbon"
+                app:framePosition="100"
+                app:keyPositionType="parentRelative"
+                app:percentY="-.4" />
+            <KeyPosition
+                app:motionTarget="@+id/timer_feed_campaign_ribbon"
+                app:framePosition="99"
+                app:keyPositionType="parentRelative"
+                app:percentY="-1" />
+            <KeyPosition
+                app:motionTarget="@+id/timer_feed_campaign_ribbon"
+                app:framePosition="100"
+                app:keyPositionType="parentRelative"
+                app:percentY="-1" />
+        </KeyFrameSet>
+    </Transition>
+    <!-- END availability_state TRANSITION-->
+
+    <!-- START second_title_with_icon TRANSITION-->
+    <Transition
+        app:constraintSetEnd="@+id/initial_title_with_icon"
+        app:constraintSetStart="@+id/second_title_with_icon"
+        app:duration="600">
+        <KeyFrameSet>
+            <KeyPosition
+                app:framePosition="1"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:percentY="1.5" />
+            <KeyPosition
+                app:framePosition="100"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title_second"
+                app:percentY="-1" />
+            <KeyPosition
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title_second"
+                app:framePosition="99"
+                app:keyPositionType="parentRelative"
+                app:percentY="-1" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="0"
+                android:alpha="0" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="50"
+                android:alpha="1" />
+        </KeyFrameSet>
+    </Transition>
+    <Transition
+        app:constraintSetEnd="@+id/start_in_state"
+        app:constraintSetStart="@+id/second_title_with_icon"
+        app:duration="600">
+        <KeyFrameSet>
+            <KeyPosition
+                app:framePosition="1"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/timer_feed_campaign_ribbon"
+                app:percentX=".4" />
+            <KeyPosition
+                app:framePosition="99"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title_second"
+                app:percentY="-1" />
+            <KeyPosition
+                app:framePosition="100"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title_second"
+                app:percentY="-1" />
+            <KeyPosition
+                app:framePosition="1"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:percentY="-1" />
+            <KeyPosition
+                app:framePosition="100"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:percentY="-1" />
+            <KeyPosition
+                app:framePosition="99"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:percentY="-1" />
+        </KeyFrameSet>
+    </Transition>
+    <Transition
+        app:constraintSetEnd="@+id/initial_title_with_timer_and_icon"
+        app:constraintSetStart="@+id/second_title_with_icon"
+        app:duration="600">
+        <KeyFrameSet>
+            <KeyPosition
+                app:framePosition="99"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title_second"
+                app:percentY="-1" />
+            <KeyPosition
+                app:framePosition="1"
+                app:keyPositionType="parentRelative"
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:percentY="1.5" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="0"
+                android:alpha="0" />
+            <KeyAttribute
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title"
+                app:framePosition="50"
+                android:alpha="1" />
+        </KeyFrameSet>
+    </Transition>
+    <Transition
+        app:constraintSetEnd="@+id/availability_state"
+        app:constraintSetStart="@+id/second_title_with_icon"
+        app:duration="600">
+        <KeyFrameSet>
+            <KeyPosition
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title_second"
+                app:framePosition="99"
+                app:keyPositionType="parentRelative"
+                app:percentY="-1" />
+            <KeyPosition
+                app:motionTarget="@+id/ty_feed_campaign_ribbon_title_second"
+                app:framePosition="100"
+                app:keyPositionType="parentRelative"
+                app:percentY="-1" />
+        </KeyFrameSet>
+    </Transition>
+    <!-- END second_title_with_icon TRANSITION-->
 </MotionScene>

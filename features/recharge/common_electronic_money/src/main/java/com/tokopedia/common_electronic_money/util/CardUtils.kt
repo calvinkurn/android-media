@@ -7,6 +7,7 @@ import android.nfc.tech.IsoDep
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.common_electronic_money.util.NFCUtils.Companion.hexStringToByteArray
 import com.tokopedia.common_electronic_money.util.NFCUtils.Companion.toHex
+import com.tokopedia.config.GlobalConfig
 
 /**
  * Author errysuprayogi on 15,May,2020
@@ -17,6 +18,9 @@ class CardUtils {
 
         private const val TRANSCEIVE_TIMEOUT_IN_SEC = 5000
         private const val PREFIX_SELECT_COMMAND = "00A4040008"
+        private const val PREFIX_SELECT_COMMAND_JAKCARD = "00A4040007"
+        private const val JAKCARD_AID_PROD = "A0000005714E4A43"
+        private const val JAKCARD_AID_STAG = "D3600000030003"
         private const val TAPCASH_AID = "A000424E49100001"
         private const val EMONEY_AID = "0000000000000001"
         private const val SUCCESSFULLY_EXECUTED = "9000"
@@ -90,5 +94,45 @@ class CardUtils {
             }
             return false
         }
+
+        @JvmStatic
+        fun isJakCard(intent: Intent): Boolean {
+            try {
+                val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
+                if (tag != null) {
+                    val isoDep = IsoDep.get(tag)
+                    isoDep.connect()
+                    isoDep.timeout = TRANSCEIVE_TIMEOUT_IN_SEC
+                    val selectCommand = PREFIX_SELECT_COMMAND + JAKCARD_AID_PROD
+                    val bytes = isoDep.transceive(hexStringToByteArray(selectCommand))
+                    isoDep.close()
+                    return !NFCUtils.isCommandFailed(bytes)
+                }
+            } catch (e: Exception){
+                FirebaseCrashlytics.getInstance().recordException(e)
+            }
+            return false
+        }
+
+        @JvmStatic
+        fun isJakCardDev(intent: Intent): Boolean {
+            try {
+                val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
+                if (tag != null) {
+                    val isoDep = IsoDep.get(tag)
+                    isoDep.connect()
+                    isoDep.timeout = TRANSCEIVE_TIMEOUT_IN_SEC
+                    val selectCommand = PREFIX_SELECT_COMMAND_JAKCARD + JAKCARD_AID_STAG
+                    val bytes = isoDep.transceive(hexStringToByteArray(selectCommand))
+                    isoDep.close()
+                    return !NFCUtils.isCommandFailed(bytes)
+                }
+            } catch (e: Exception){
+                FirebaseCrashlytics.getInstance().recordException(e)
+            }
+            return false
+        }
+
+
     }
 }

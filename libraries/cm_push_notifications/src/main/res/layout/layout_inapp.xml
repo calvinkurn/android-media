@@ -12,7 +12,7 @@
         android:id="@+id/innerContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/Unify_N700_96">
+        android:textColor="@color/Unify_NN950_96">
 
         <TextView
             android:id="@+id/tv_cmTitle"
@@ -24,7 +24,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
             android:gravity="center"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:layout_constraintBottom_toTopOf="@+id/iv_cmImage"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -60,7 +60,7 @@
             android:layout_marginRight="16dp"
             android:layout_marginBottom="8dp"
             android:gravity="center"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:layout_constraintBottom_toTopOf="@+id/ll_buttonContainer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

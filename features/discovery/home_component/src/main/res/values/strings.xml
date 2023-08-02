@@ -24,8 +24,6 @@
 
     <string name="content_desc_home_category_widget">Category widget</string>
 
-    <string name="content_desc_featured_brand_icon">featured brand icon</string>
-    <string name="content_desc_featured_brand_image">featured brand image</string>
     <string name="content_desc_merchant_background">Background merchant voucher</string>
     <string name="content_desc_cue_widget">Featured Cue Widget</string>
 
@@ -33,8 +31,6 @@
 
     <string name="content_desc_background_see_more">background see more</string>
     <string name="content_desc_see_more">see more</string>
-
-    <string name="content_desc_category_icon">category icon</string>
 
     <string name="content_desc_shimmering_image">shimmering image</string>
 
@@ -52,4 +48,8 @@
 
     <string name="content_desc_deals_widget">Deals Widget Image</string>
     <string name="content_desc_deals_widget_ribbon">Deals Widget Ribbon</string>
+
+    <string name="content_desc_header_cta">Header CTA Button</string>
+
+    <string name="content_desc_flash_sale_supergraphic">Flash sale supergraphic</string>
 </resources>

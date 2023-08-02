@@ -4,7 +4,6 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
@@ -30,15 +29,9 @@ interface HomeTypeFactory {
 
     fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>
 
-    fun type(dynamicChannelDataModel: DynamicChannelDataModel): Int
-
-    fun type(spotlightDataModel: SpotlightDataModel): Int
-
     fun type(homeRecommendationFeedDataModel: HomeRecommendationFeedDataModel): Int
 
     fun type(reviewDataModel: ReviewDataModel): Int
-
-    fun type(playCard: PlayCardDataModel): Int
 
     fun type(homeLoadingMoreModel: HomeLoadingMoreModel): Int
 
@@ -51,6 +44,8 @@ interface HomeTypeFactory {
     fun type(homeTopAdsVerticalBannerDataModel: HomeTopAdsVerticalBannerDataModel): Int
 
     fun type(dynamicChannelLoadingModel: DynamicChannelLoadingModel): Int
+
+    fun type(dynamicChannelErrorModel: DynamicChannelErrorModel): Int
 
     fun type(dynamicChannelRetryModel: DynamicChannelRetryModel): Int
 

@@ -16,6 +16,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.gojek.kyc.plus.OneKycConstants
+import com.gojek.kyc.plus.getKycSdkDocumentDirectoryPath
+import com.gojek.kyc.plus.getKycSdkFrameDirectoryPath
+import com.gojek.kyc.plus.getKycSdkLogDirectoryPath
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -45,6 +49,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user.session.datastore.DataStorePreference
 import com.tokopedia.user.session.datastore.UserSessionDataStore
 import com.tokopedia.user.session.util.EncoderDecoder
+import com.tokopedia.utils.file.FileUtil
+import java.io.File
 import javax.inject.Inject
 
 /**
@@ -178,6 +184,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
     private fun clearData() {
         hideLoading()
+        clearCacheGotoKyc()
         disconnectTokoChat()
         clearStickyLogin()
         logoutGoogleAccountIfExist()
@@ -302,6 +309,33 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     private fun disconnectTokoChat() {
         if (application is AbstractionRouter) {
             (application as AbstractionRouter).disconnectTokoChat()
+        }
+    }
+
+    private fun clearCacheGotoKyc() {
+        try {
+            val preferenceName = OneKycConstants.KYC_SDK_PREFERENCE_NAME
+            val preferenceKey = OneKycConstants.KYC_UPLOAD_PROGRESS_STATE
+            val preference = applicationContext.getSharedPreferences(preferenceName, Context.MODE_PRIVATE)
+
+            val state = preference.getString(preferenceKey, "").orEmpty()
+            if (state.isNotEmpty()) {
+                preference.edit().remove(preferenceKey).apply()
+            }
+
+            val directory1 = getKycSdkDocumentDirectoryPath(this)
+            val directory2 = getKycSdkFrameDirectoryPath(this)
+            val directory3 = getKycSdkLogDirectoryPath(this)
+            removeGotoKycImage(directory1)
+            removeGotoKycImage(directory2)
+            removeGotoKycImage(directory3)
+        } catch (ignored: Exception) {}
+    }
+
+    private fun removeGotoKycImage(directory: String) {
+        val file = File(directory)
+        if (file.isDirectory) {
+            FileUtil.deleteFolder(directory)
         }
     }
 

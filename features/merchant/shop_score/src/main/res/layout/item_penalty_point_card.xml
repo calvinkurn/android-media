@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify2
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="4dp"
+    app:card_type="clear">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/img_penalty_card"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_penalty_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="20dp"
+        tools:background="@color/Unify_RN500">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_penalty_card_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_card_penalty_point"
+            android:textColor="@color/Unify_Static_White"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="display_2"
+            app:typographyWeight="bold"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_penalty_card_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_Static_White"
+            android:layout_marginTop="4dp"
+            app:layout_constraintTop_toBottomOf="@id/tv_penalty_card_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:typographyType="display_3"
+            tools:text="5 Jun - 6 Agu 2020"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_penalty_card_point"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_Static_White"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_penalty_card_title"
+            app:layout_constraintBottom_toBottomOf="@id/tv_penalty_card_date"
+            app:typographyType="heading_1"
+            tools:text="-4"/>
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_penalty_card_point"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="@string/btn_card_penalty_point"
+            app:layout_constraintTop_toBottomOf="@id/tv_penalty_card_date"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:unifyButtonSize="medium"
+            app:unifyButtonVariant="ghost"
+            app:unifyButtonType="alternate"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify2>

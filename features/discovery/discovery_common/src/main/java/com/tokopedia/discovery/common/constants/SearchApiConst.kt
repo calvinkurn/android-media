@@ -26,6 +26,9 @@ class SearchApiConst {
         const val WHOLESALE = "wholesale"
         const val CONDITION = "condition"
         const val Q = "q" // (keyword) or (query)
+        const val Q1 = "q1" // first query for MPS
+        const val Q2 = "q2" // second query for MPS
+        const val Q3 = "q3" // third query for MPS
         const val H = "hc" // hotlist id
         const val ID = "id"
         const val NEGATIVE = "negative"
@@ -51,6 +54,10 @@ class SearchApiConst {
         const val HINT = "hint"
         const val PLACEHOLDER = "placeholder"
         const val ACTIVE_TAB = "st"
+        const val ACTIVE_TAB_DEFAULT = ""
+        const val ACTIVE_TAB_MPS = "mps"
+        const val ACTIVE_TAB_PRODUCT = "product"
+        const val ACTIVE_TAB_SHOP = "shop"
         const val ORIGIN_FILTER = "origin_filter" // which page filter params come from
         const val TOKEN = "token"
         const val SEARCH_REF = "search_ref"
@@ -90,6 +97,8 @@ class SearchApiConst {
         const val MANUAL_FILTER = "manual_filter"
 
         const val DEFAULT_VALUE_OF_SHOW_ADULT = "false"
+        const val MPS = "mps"
+
         const val DEFAULT_VALUE_OF_PARAMETER_DEVICE = "android"
         const val DEFAULT_VALUE_OF_PARAMETER_MOBILE = "mobile"
         const val DEFAULT_VALUE_OF_PARAMETER_ROWS = "8"

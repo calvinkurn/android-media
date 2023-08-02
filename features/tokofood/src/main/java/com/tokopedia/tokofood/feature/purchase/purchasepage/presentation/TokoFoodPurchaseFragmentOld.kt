@@ -83,7 +83,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.collect
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -91,7 +90,7 @@ import javax.inject.Inject
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class TokoFoodPurchaseFragmentOld :
+open class TokoFoodPurchaseFragmentOld :
     BaseMultiFragment(),
     TokoFoodPurchaseActionListener,
     TokoFoodPurchaseToolbarListener,
@@ -990,14 +989,8 @@ class TokoFoodPurchaseFragmentOld :
             val paymentCheckoutString = ApplinkConstInternalPayment.PAYMENT_CHECKOUT
             val intent = RouteManager.getIntent(context, paymentCheckoutString)
             intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, checkoutResultData)
-            intent.putPaymentTimestampExtra()
             startActivityForResult(intent, REQUEST_CODE_PAYMENT)
         }
-    }
-
-    private fun Intent.putPaymentTimestampExtra() {
-        val currentTimestamp = System.currentTimeMillis()
-        putExtra(ApplinkConstInternalPayment.CHECKOUT_TIMESTAMP, currentTimestamp)
     }
 
     override fun getNextItems(currentIndex: Int, count: Int): List<Visitable<*>> {

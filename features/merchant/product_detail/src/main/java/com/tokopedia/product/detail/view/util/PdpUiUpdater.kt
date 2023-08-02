@@ -2,7 +2,7 @@ package com.tokopedia.product.detail.view.util
 
 import android.content.Context
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -20,7 +20,6 @@ import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.data.model.rates.ShipmentPlus
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
-import com.tokopedia.product.detail.common.extensions.ifNullOrBlank
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
@@ -71,6 +70,7 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.RECOM_VERTICAL
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.VIEW_TO_VIEW
 import com.tokopedia.recommendation_widget_common.extension.LAYOUTTYPE_HORIZONTAL_ATC
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
@@ -79,11 +79,13 @@ import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationC
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
+import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetMetadata
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetModel
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetSource
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetTrackingModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlin.math.roundToLong
 
 /**
@@ -287,6 +289,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 }
             }
 
+            updateVerticalRecommendationWidget(productId, loadInitialData)
+
             if (loadInitialData) {
                 verticalRecommendationItems.clear()
             }
@@ -363,7 +367,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                             true
                         )
                     ).orEmpty()
-                } else if (!tradeinResponse.widgetString.isNullOrEmpty()) {
+                } else if (tradeinResponse.widgetString.isNotBlank()) {
                     tradeinResponse.widgetString
                 } else {
                     context?.getString(com.tokopedia.common_tradein.R.string.trade_in_exchange)
@@ -486,10 +490,13 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
             updateData(ProductDetailConstant.MVC) {
                 mvcSummaryData?.run {
-                    animatedInfos = it.merchantVoucherSummary.animatedInfos
-                    isShown = it.merchantVoucherSummary.isShown
-                    shopId = it.shopInfo.shopCore.shopID
-                    productIdMVC = productId
+                    uiModel = uiModel.copy(
+                        animatedInfo = it.merchantVoucherSummary.animatedInfos,
+                        isShown = it.merchantVoucherSummary.isShown,
+                        shopId = it.shopInfo.shopCore.shopID,
+                        productIdMVC = productId,
+                        additionalData = it.merchantVoucherSummary.additionalData
+                    )
                 }
             }
 
@@ -896,20 +903,14 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateVariantData(processedVariant: List<VariantCategory>?) {
+    /**
+     * this function should call when first render variant and update from vbs only
+     */
+    fun updateVariantData(title: String, processedVariant: List<VariantCategory>?) {
         updateData(ProductDetailConstant.MINI_VARIANT_OPTIONS) {
             val variantLvlOne = processedVariant?.firstOrNull()
+            productSingleVariant?.title = title
             productSingleVariant?.variantLevelOne = doRetainImpressOfVariantOptions(variantLvlOne)
-        }
-    }
-
-    fun updateVariantSelected(variantId: String, variantKey: String) {
-        updateData(ProductDetailConstant.MINI_VARIANT_OPTIONS) {
-            productSingleVariant?.let {
-                val copyMap: MutableMap<String, String> = it.mapOfSelectedVariant.toMutableMap()
-                copyMap[variantKey] = variantId
-                it.mapOfSelectedVariant = copyMap
-            }
         }
     }
 
@@ -1206,6 +1207,30 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    private fun updateVerticalRecommendationWidget(productId: String, loadInitialData: Boolean) {
+        if (mapOfData.containsKey(RECOM_VERTICAL)) {
+            updateData(RECOM_VERTICAL, loadInitialData) {
+                val globalRecomWidgetTrackingModel = RecommendationWidgetTrackingModel(
+                    androidPageName = RecommendationCarouselTrackingConst.Category.PDP,
+                    eventActionImpression = RecommendationCarouselTrackingConst.Action.IMPRESSION_ON_PRODUCT_RECOMMENDATION_PDP,
+                    eventActionClick = RecommendationCarouselTrackingConst.Action.CLICK_ON_PRODUCT_RECOMMENDATION_PDP,
+                    listPageName = RecommendationCarouselTrackingConst.List.PDP
+                )
+                val globalRecomWidgetMetadata = RecommendationWidgetMetadata(
+                    pageSource = RecommendationWidgetSource.PDP.xSourceValue,
+                    pageName = RECOM_VERTICAL,
+                    productIds = if (productId.isBlank()) listOf() else listOf(productId)
+                )
+                mapOfData[RECOM_VERTICAL] = PdpRecommendationWidgetDataModel(
+                    RecommendationWidgetModel(
+                        metadata = globalRecomWidgetMetadata,
+                        trackingModel = globalRecomWidgetTrackingModel
+                    )
+                )
             }
         }
     }

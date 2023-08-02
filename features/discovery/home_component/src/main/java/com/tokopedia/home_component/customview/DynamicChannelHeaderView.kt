@@ -10,9 +10,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewStub
 import android.widget.FrameLayout
-import android.widget.TextView
 import androidx.annotation.AttrRes
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.home_component.HomeComponentRollenceController
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.header.HeaderLayoutStrategy
@@ -31,7 +31,7 @@ class DynamicChannelHeaderView : FrameLayout {
 
     private val channelHeaderContainer: ConstraintLayout
     private var channelTitle: Typography? = null
-    private var channelSubtitle: TextView? = null
+    private var channelSubtitle: Typography? = null
     private var countDownView: TimerUnifySingle? = null
 
     private var headerColorMode: Int = COLOR_MODE_NORMAL
@@ -57,10 +57,10 @@ class DynamicChannelHeaderView : FrameLayout {
     }
 
     private fun initHeaderWithAttrs(attrs: AttributeSet?) {
-        val attributes: TypedArray = context.obtainStyledAttributes(attrs, R.styleable.DynamicChannelHeaderRevampView)
+            val attributes: TypedArray = context.obtainStyledAttributes(attrs, R.styleable.HomeChannelHeaderView)
         try {
-            headerColorMode = attributes.getInt(R.styleable.DynamicChannelHeaderRevampView_color_mode, COLOR_MODE_NORMAL)
-            headerCtaMode = attributes.getInt(R.styleable.DynamicChannelHeaderRevampView_cta_mode, CTA_MODE_SEE_ALL)
+            headerColorMode = attributes.getInt(R.styleable.HomeChannelHeaderView_color_mode, COLOR_MODE_NORMAL)
+            headerCtaMode = attributes.getInt(R.styleable.HomeChannelHeaderView_cta_mode, CTA_MODE_SEE_ALL)
         } finally {
             attributes.recycle()
         }
@@ -134,6 +134,16 @@ class DynamicChannelHeaderView : FrameLayout {
                 channelTitle,
                 headerColorMode
             )
+
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(channelHeaderContainer)
+            constraintSet.connect(R.id.channel_title, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 0)
+            if(channel.channelHeader.subtitle.isEmpty() && !hasExpiredTime(channel)) {
+                constraintSet.connect(R.id.channel_title, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0)
+            } else {
+                constraintSet.clear(R.id.channel_title, ConstraintSet.BOTTOM)
+            }
+            constraintSet.applyTo(channelHeaderContainer)
         } else {
             channelHeaderContainer.visibility = View.GONE
         }
@@ -158,7 +168,7 @@ class DynamicChannelHeaderView : FrameLayout {
             layoutStrategy.renderSubtitle(
                 context,
                 channel.channelHeader,
-                channelTitle,
+                channelSubtitle,
                 headerColorMode
             )
         } else {

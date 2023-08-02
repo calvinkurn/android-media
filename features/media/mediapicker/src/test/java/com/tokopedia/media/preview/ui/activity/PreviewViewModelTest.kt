@@ -42,8 +42,7 @@ class PreviewViewModelTest {
         viewModel = PreviewViewModel(
             imageCompressorRepository,
             saveToGalleryRepository,
-            coroutineScopeRule.dispatchers,
-            paramCache
+            coroutineScopeRule.dispatchers
         )
     }
 

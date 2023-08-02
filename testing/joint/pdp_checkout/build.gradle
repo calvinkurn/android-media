@@ -32,7 +32,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.productDetailCommon)
     implementation projectOrAar(rootProject.ext.features.purchase_platform_common)
     implementation projectOrAar(rootProject.ext.features.oneclickcheckout)
-    implementation projectOrAar(rootProject.ext.features.variantCommon)
 
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest

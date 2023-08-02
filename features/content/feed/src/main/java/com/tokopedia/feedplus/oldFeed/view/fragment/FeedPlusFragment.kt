@@ -2326,6 +2326,7 @@ class FeedPlusFragment :
     }
 
     override fun onImageClick(
+        postId: String,
         positionInFeed: Int,
         contentPosition: Int,
         redirectLink: String

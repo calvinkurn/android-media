@@ -12,6 +12,12 @@ open class ActivityComponentFactory {
             .build()
     }
 
+    open fun createGoToKycActivityComponent(activity: Activity): GoToKycComponent {
+        return DaggerGoToKycComponent.builder()
+            .baseAppComponent((activity.application as BaseMainApplication).baseAppComponent)
+            .build()
+    }
+
     companion object {
         private var sInstance: ActivityComponentFactory? = null
 

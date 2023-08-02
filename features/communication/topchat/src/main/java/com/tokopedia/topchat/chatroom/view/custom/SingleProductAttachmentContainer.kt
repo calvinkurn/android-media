@@ -13,6 +13,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -35,7 +36,6 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.item_topchat_product_card.view.*
 
 class SingleProductAttachmentContainer : ConstraintLayout {
 
@@ -62,6 +62,14 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     private var btnUpdateStock: UnifyButton? = null
     private var footerContainer: LinearLayout? = null
     private var shippingLocation: Typography? = null
+    private var variant: LinearLayout? = null
+    private var productColorVariant: LinearLayout? = null
+    private var productColorVariantValue: Typography? = null
+    private var productSizeVariant: LinearLayout? = null
+    private var productVariantSize: Typography? = null
+    private var campaignDiscount: Label? = null
+    private var campaignPrice: Typography? = null
+    private var price: Typography? = null
     private var adapterPosition: Int = RecyclerView.NO_POSITION
 
     private var listener: TopchatProductAttachmentListener? = null
@@ -153,6 +161,14 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         btnUpdateStock = findViewById(R.id.btn_update_stock)
         footerContainer = findViewById(R.id.ll_footer)
         shippingLocation = findViewById(R.id.tv_shipping_location)
+        productColorVariant = findViewById(R.id.ll_variant_color)
+        productColorVariantValue = findViewById(R.id.tv_variant_color)
+        productSizeVariant = findViewById(R.id.ll_variant_size)
+        productVariantSize = findViewById(R.id.tv_variant_size)
+        campaignDiscount = findViewById(R.id.tv_campaign_discount)
+        campaignPrice = findViewById(R.id.tv_campaign_price)
+        price = findViewById(R.id.tv_price)
+        variant = findViewById(R.id.ll_variant)
     }
 
     private fun initLayoutView() {
@@ -349,21 +365,21 @@ class SingleProductAttachmentContainer : ConstraintLayout {
 
         showVariantLayout()
         if (product.hasColorVariant()) {
-            ll_variant_color?.show()
-            tv_variant_color?.text = ellipsizeLongText(
+            productColorVariant?.show()
+            productColorVariantValue?.text = ellipsizeLongText(
                 product.colorVariant, MAX_VARIANT_LABEL_CHAR
             )
         } else {
-            ll_variant_color?.hide()
+            productColorVariant?.hide()
         }
 
         if (product.hasSizeVariant()) {
-            ll_variant_size?.show()
-            tv_variant_size?.text = ellipsizeLongText(
+            productSizeVariant?.show()
+            productVariantSize?.text = ellipsizeLongText(
                 product.sizeVariant, MAX_VARIANT_LABEL_CHAR
             )
         } else {
-            ll_variant_size?.hide()
+            productSizeVariant?.hide()
         }
     }
 
@@ -492,7 +508,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private fun bindImageClick(product: ProductAttachmentUiModel) {
-        iv_thumbnail?.setOnClickListener {
+        thumbnail?.setOnClickListener {
             listener?.trackClickProductThumbnail(product)
             it.context.startActivity(
                 ImagePreviewActivity.getCallingIntent(
@@ -507,18 +523,18 @@ class SingleProductAttachmentContainer : ConstraintLayout {
 
     @SuppressLint("SetTextI18n")
     private fun bindDiscount(product: ProductAttachmentUiModel) {
-        tv_campaign_discount?.text = "${product.dropPercentage}%"
+        campaignDiscount?.text = "${product.dropPercentage}%"
     }
 
     private fun bindDropPrice(product: ProductAttachmentUiModel) {
-        tv_campaign_price?.let {
+        campaignPrice?.let {
             it.paintFlags = it.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             it.text = product.priceBefore
         }
     }
 
     private fun bindPrice(product: ProductAttachmentUiModel) {
-        tv_price?.text = product.productPrice
+        price?.text = product.productPrice
     }
 
     @SuppressLint("SetTextI18n")
@@ -675,16 +691,16 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private fun hideVariantLayout() {
-        ll_variant?.hide()
+        variant?.hide()
     }
 
     private fun showVariantLayout() {
-        ll_variant?.show()
+        variant?.show()
     }
 
     private fun toggleCampaign(visibility: Int) {
-        tv_campaign_discount?.visibility = visibility
-        tv_campaign_price?.visibility = visibility
+        campaignDiscount?.visibility = visibility
+        campaignPrice?.visibility = visibility
     }
 
     private fun setLayoutGravity(@Slide.GravityFlag gravity: Int) {

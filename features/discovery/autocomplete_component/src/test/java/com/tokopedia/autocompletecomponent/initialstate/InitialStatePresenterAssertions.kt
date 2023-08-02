@@ -8,6 +8,7 @@ import com.tokopedia.autocompletecomponent.initialstate.domain.InitialStateData
 import com.tokopedia.autocompletecomponent.initialstate.domain.InitialStateItem
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateSearchDataView
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateTitleDataView
+import com.tokopedia.autocompletecomponent.initialstate.mps.MpsDataView
 import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSearchDataView
 import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSearchTitleDataView
 import com.tokopedia.autocompletecomponent.initialstate.productline.InitialStateProductLineTitleDataView
@@ -369,4 +370,44 @@ internal fun `Then verify SearchBarEducationDataView`(
         expectedSearchBarEducationData.trackingOption,
         expectedKeyword,
     )
+}
+
+internal fun `Then verify MpsDataView`(
+    actualData: List<Visitable<*>>,
+    expectedData: List<InitialStateData>,
+    expectedDimension90: String = "",
+    expectedKeyword: String,
+) {
+    val actualMpsDataViewPosition = actualData.indexOfFirst { it is MpsDataView }
+    val expectedMpsDataPosition = expectedData.indexOfFirst {
+        it.id == InitialStateData.INITIAL_STATE_MPS
+    }
+
+    actualData[actualMpsDataViewPosition].shouldBeInstanceOf<MpsDataView>()
+
+    val mpsDataView = actualData[actualMpsDataViewPosition] as MpsDataView
+    mpsDataView.assertMpsDataView(
+        expectedData[expectedMpsDataPosition],
+        expectedDimension90,
+        expectedKeyword,
+    )
+}
+
+private fun MpsDataView.assertMpsDataView(
+    expectedData: InitialStateData,
+    expectedDimension90: String,
+    expectedKeyword: String,
+) {
+    list.forEachIndexed { index, actualRecentSearch ->
+        val position = index + 1
+        actualRecentSearch.assertBaseItemInitialStateSearch(
+            expectedData.items[index],
+            "",
+            "",
+            position,
+            expectedDimension90,
+            expectedData.trackingOption,
+            expectedKeyword,
+        )
+    }
 }

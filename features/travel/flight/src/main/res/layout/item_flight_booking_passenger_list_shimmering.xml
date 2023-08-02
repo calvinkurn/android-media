@@ -11,7 +11,7 @@
         android:id="@+id/shimmering_seperator_1"
         android:layout_width="match_parent"
         android:layout_height="@dimen/flight_dp_1"
-        android:background="@color/Unify_N50"
+        android:background="@color/Unify_NN50"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifycomponents.LoaderUnify

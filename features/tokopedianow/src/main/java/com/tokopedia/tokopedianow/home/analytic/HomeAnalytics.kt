@@ -81,6 +81,7 @@ import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimode
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_GROCERIES
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_117
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_118
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseProductUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseProductUiModel.LabelGroup
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
@@ -739,6 +740,80 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
                 id = data.productId,
                 name = data.name,
                 price = data.formattedPrice
+            ).apply {
+                putString(KEY_CATEGORY_ID, "")
+                putString(KEY_QUANTITY, quantity.toString())
+                putString(KEY_SHOP_ID, data.shopId)
+                putString(KEY_SHOP_NAME, "")
+                putString(KEY_SHOP_TYPE, "")
+            }
+        )
+
+        val eventLabel = getProductCardLabel(data)
+        val dataLayer = getProductDataLayer(
+            event = EVENT_ADD_TO_CART,
+            action = EVENT_ACTION_ATC_PAST_PURCHASE,
+            category = EVENT_CATEGORY_HOME_PAGE,
+            label = eventLabel,
+            items = items
+        )
+        getTracker().sendEnhanceEcommerceEvent(EVENT_ADD_TO_CART, dataLayer)
+    }
+
+    fun onImpressRepurchase(
+        position: Int,
+        data: TokoNowProductCardUiModel
+    ) {
+        val items = arrayListOf(
+            productCardItemDataLayer(
+                position = position.toString(),
+                id = data.productId,
+                name = data.product.productName,
+                price = data.product.formattedPrice
+            )
+        )
+
+        val eventLabel = getProductCardLabel(data)
+        val dataLayer = getProductDataLayer(
+            event = EVENT_VIEW_ITEM_LIST,
+            action = EVENT_ACTION_IMPRESSION_PAST_PURCHASE,
+            category = EVENT_CATEGORY_HOME_PAGE,
+            label = eventLabel,
+            items = items,
+            itemList = "/ - p$position - past purchase - carousel - ${data.headerName}"
+        )
+        getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM_LIST, dataLayer)
+    }
+
+    fun onClickRepurchase(position: Int, data: TokoNowProductCardUiModel) {
+        val items = arrayListOf(
+            productCardItemDataLayer(
+                position = position.toString(),
+                id = data.productId,
+                name = data.product.productName,
+                price = data.product.formattedPrice
+            )
+        )
+
+        val eventLabel = getProductCardLabel(data)
+
+        val dataLayer = getProductDataLayer(
+            event = EVENT_SELECT_CONTENT,
+            action = EVENT_ACTION_CLICK_PAST_PURCHASE,
+            category = EVENT_CATEGORY_HOME_PAGE,
+            label = eventLabel,
+            items = items,
+            itemList = "/ - p$position - past purchase - carousel - ${data.headerName}"
+        )
+        getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
+    }
+
+    fun onRepurchaseAddToCart(quantity: Int, data: TokoNowProductCardUiModel) {
+        val items = arrayListOf(
+            productCardItemDataLayer(
+                id = data.productId,
+                name = data.product.productName,
+                price = data.product.formattedPrice
             ).apply {
                 putString(KEY_CATEGORY_ID, "")
                 putString(KEY_QUANTITY, quantity.toString())
@@ -2287,6 +2362,11 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         return if (withHalalLabel == null) WITHOUT_HALAL_LABEL else WITH_HALAL_LABEL
     }
 
+    private fun getProductCardHalalLabel(labelGroup: List<com.tokopedia.productcard.ProductCardModel.LabelGroup>): String {
+        val withHalalLabel = labelGroup.firstOrNull { it.title == LABEL_GROUP_HALAL }
+        return if (withHalalLabel == null) WITHOUT_HALAL_LABEL else WITH_HALAL_LABEL
+    }
+
     private fun getSlashedPriceLabel(slashedPrice: String?): String {
         return if (slashedPrice.isNullOrEmpty()) NORMAL_PRICE else SLASH_PRICE
     }
@@ -2298,6 +2378,13 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     private fun getProductCardLabel(data: TokoNowRepurchaseProductUiModel): String {
         val halalLabel = getHalalLabel(data.labelGroupList)
         val slashedPriceLabel = getSlashedPriceLabel(data.slashPrice)
+        val variantLabel = getVariantLabel(data.parentId)
+        return "$halalLabel - $slashedPriceLabel - $variantLabel"
+    }
+
+    private fun getProductCardLabel(data: TokoNowProductCardUiModel): String {
+        val halalLabel = getProductCardHalalLabel(data.product.labelGroupList)
+        val slashedPriceLabel = getSlashedPriceLabel(data.product.slashedPrice)
         val variantLabel = getVariantLabel(data.parentId)
         return "$halalLabel - $slashedPriceLabel - $variantLabel"
     }

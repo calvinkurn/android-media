@@ -1,6 +1,6 @@
 package com.tokopedia.mediauploader.video.data.params
 
-import com.tokopedia.mediauploader.common.util.byteBody
+import com.tokopedia.mediauploader.common.util.network.byteBody
 
 data class ChunkUploadParam(
     var sourceId: String,

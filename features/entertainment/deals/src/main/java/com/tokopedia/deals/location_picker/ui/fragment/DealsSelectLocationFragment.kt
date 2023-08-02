@@ -9,7 +9,6 @@ import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -43,13 +42,12 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class DealsSelectLocationFragment(
-        private val isLandmarkPage: Boolean,
-        private val callback: CurrentLocationCallback
-) : BaseListFragment<Visitable<*>,
+class DealsSelectLocationFragment : BaseListFragment<Visitable<*>,
         BaseAdapterTypeFactory>(),
         DealsLocationListener,
         CoroutineScope {
+
+    private var callback: CurrentLocationCallback? = null
 
     private var binding by autoCleared<FragmentDealsSelectLocationBinding>()
     private var binding2 by autoCleared<LayoutDealsSearchLocationBottomsheetBinding>()
@@ -64,6 +62,7 @@ class DealsSelectLocationFragment(
 
     private var selectedLocation: String? = ""
     private var location: Location? = null
+    private var isLandmarkPage: Boolean = false
 
     private var permissionCheckerHelper = PermissionCheckerHelper()
 
@@ -80,8 +79,13 @@ class DealsSelectLocationFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         selectedLocation = arguments?.getString(DealsLocationConstants.SELECTED_LOCATION)
         location = arguments?.getParcelable(DealsLocationConstants.LOCATION_OBJECT)
+        isLandmarkPage = arguments?.getBoolean(DealsLocationConstants.IS_LANDMARK_PAGE_EXTRA, false) ?: false
         super.onViewCreated(view, savedInstanceState)
         initViews()
+    }
+
+    fun setCallback(callback: CurrentLocationCallback) {
+        this.callback = callback
     }
 
     private fun initViews() {
@@ -334,7 +338,9 @@ class DealsSelectLocationFragment(
                     override fun onNeverAskAgain(permissionText: String) {}
                     override fun onPermissionDenied(permissionText: String) {}
                     override fun onPermissionGranted() {
-                        dealsLocationUtils.detectAndSendLocation(activity as Activity, permissionCheckerHelper, callback)
+                        callback?.let { callback ->
+                            dealsLocationUtils.detectAndSendLocation(activity as Activity, permissionCheckerHelper, callback)
+                        }
                     }
                 })
     }
@@ -369,13 +375,17 @@ class DealsSelectLocationFragment(
 
     override fun onCityClicked(itemView: View, location: Location, position: Int) {
         itemView.setOnClickListener {
-            dealsLocationUtils.updateLocationAndCallback(location, callback)
+            callback?.let { callback ->
+                dealsLocationUtils.updateLocationAndCallback(location, callback)
+            }
         }
     }
 
     override fun onLocationClicked(itemView: View, location: Location, position: Int) {
         itemView.setOnClickListener {
-            dealsLocationUtils.updateLocationAndCallback(location, callback)
+            callback?.let { callback ->
+                dealsLocationUtils.updateLocationAndCallback(location, callback)
+            }
         }
     }
 
@@ -387,12 +397,12 @@ class DealsSelectLocationFragment(
 
         fun createInstance(selectedLocation: String?,
                            location: Location?,
-                           isLandmarkPage: Boolean,
-                           callback: CurrentLocationCallback): Fragment {
-            val fragment: Fragment = DealsSelectLocationFragment(isLandmarkPage, callback)
+                           isLandmarkPage: Boolean): DealsSelectLocationFragment {
+            val fragment = DealsSelectLocationFragment()
             val bundle = Bundle()
             bundle.putString(DealsLocationConstants.SELECTED_LOCATION, selectedLocation)
             bundle.putParcelable(DealsLocationConstants.LOCATION_OBJECT, location)
+            bundle.putBoolean(DealsLocationConstants.IS_LANDMARK_PAGE_EXTRA, isLandmarkPage)
             fragment.arguments = bundle
             return fragment
         }

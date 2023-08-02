@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/common_topup_autocomplete_header"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:typographyType="small"
         app:typographyWeight="bold"
         app:layout_constraintTop_toTopOf="parent"

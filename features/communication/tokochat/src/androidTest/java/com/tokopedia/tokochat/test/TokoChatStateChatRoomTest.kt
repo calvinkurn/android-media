@@ -24,6 +24,7 @@ class TokoChatStateChatRoomTest : BaseTokoChatTest() {
 
         // When
         launchChatRoomActivity()
+        Thread.sleep(3000)
 
         // Then
         StateResult.assertGlobalErrorIsDisplayed()

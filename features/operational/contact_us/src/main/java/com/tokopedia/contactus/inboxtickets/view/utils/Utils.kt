@@ -10,14 +10,13 @@ import android.text.style.AbsoluteSizeSpan
 import android.util.TypedValue
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.contactus.inboxtickets.data.ImageUpload
-import org.json.JSONException
-import org.json.JSONObject
 import java.io.File
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
 import java.util.regex.PatternSyntaxException
+import kotlin.math.ceil
 
 const val CLOSED = "closed"
 const val OPEN = "open"
@@ -60,7 +59,7 @@ class Utils {
             val occurences = findOccurrences(what, src)
             for (start in occurences) {
                 val styleSpan = getColorResource(
-                    com.tokopedia.unifyprinciples.R.color.Unify_Y200,
+                    com.tokopedia.unifyprinciples.R.color.Unify_YN200,
                     context
                 )
                 spannableString.setSpan(
@@ -191,10 +190,13 @@ class Utils {
         return count
     }
 
-    fun getAttachmentAsString(list: List<ImageUpload>): String {
+    /**
+     * change list object to string with ~ as  separator instead ,
+     * */
+    fun getAttachmentAsString(list: List<String>): String {
         var attachmentString = StringBuilder()
         list.forEach {
-            attachmentString.append("~").append(it.imageId)
+            attachmentString.append("~").append(it)
         }
         attachmentString = StringBuilder(attachmentString.toString().replace("~~", "~"))
         if (attachmentString.isNotEmpty()) attachmentString = StringBuilder(
@@ -204,19 +206,79 @@ class Utils {
         return attachmentString.toString()
     }
 
-    fun getFileUploaded(attachment: List<ImageUpload>): String {
-        var reviewPhotos: JSONObject? = null
-        try {
-            attachment.forEachIndexed { index, imageUpload ->
-                if (index == 0) {
-                    reviewPhotos = JSONObject()
-                }
-                reviewPhotos?.put(imageUpload.imageId.orEmpty(), imageUpload.picObj)
-            }
-        } catch (e: JSONException) {
-            e.printStackTrace()
+    fun createUniqID() :String  {
+        val lenghtID= 29
+        val consistID= arrayListOf(
+            '0',
+            '1',
+            '2',
+            '3',
+            '4',
+            '5',
+            '6',
+            '7',
+            '8',
+            '9',
+            'a',
+            'b',
+            'c',
+            'd',
+            'e',
+            'f',
+            'g',
+            'h',
+            'i',
+            'j',
+            'k',
+            'l',
+            'm',
+            'n',
+            'o',
+            'p',
+            'q',
+            'r',
+            's',
+            't',
+            'u',
+            'v',
+            'w',
+            'x',
+            'y',
+            'z',
+            'A',
+            'B',
+            'C',
+            'D',
+            'E',
+            'F',
+            'G',
+            'H',
+            'I',
+            'J',
+            'K',
+            'L',
+            'M',
+            'N',
+            'O',
+            'P',
+            'Q',
+            'R',
+            'S',
+            'T',
+            'U',
+            'V',
+            'W',
+            'X',
+            'Y',
+            'Z',
+        )
+        var uniqId = ""
+        for (i in 1 until lenghtID){
+            val rndNum = ceil(Math.random() * consistID.size) - 1
+            uniqId += consistID[rndNum.toInt()]
         }
-        return reviewPhotos?.toString() ?: ""
+        return "O_${uniqId}"
+
     }
 
     private fun convertDpToPx(dp: Int, mContext: Context): Float {
