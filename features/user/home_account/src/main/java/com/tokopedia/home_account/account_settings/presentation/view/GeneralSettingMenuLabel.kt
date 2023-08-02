@@ -42,9 +42,9 @@ object GeneralSettingMenuLabel {
                 .getString(R.string.title_dark_mode)
 
         if (title == notificationTitle || title == darkModeTitle) {
-            return com.tokopedia.unifycomponents.R.color.Unify_RN400
+            return com.tokopedia.unifyprinciples.R.color.Unify_RN400
         } else if (title == mediaTitle) {
-             return com.tokopedia.unifycomponents.R.color.Unify_RN500
+             return com.tokopedia.unifyprinciples.R.color.Unify_RN500
         }
 
         return -1
@@ -68,7 +68,7 @@ object GeneralSettingMenuLabel {
                     context,
                     4,
                     boxColor,
-                com.tokopedia.unifycomponents.R.color.Unify_NN0
+                com.tokopedia.unifyprinciples.R.color.Unify_NN0
             )
             spannable.setSpan(
                     RelativeSizeSpan(0.57f),

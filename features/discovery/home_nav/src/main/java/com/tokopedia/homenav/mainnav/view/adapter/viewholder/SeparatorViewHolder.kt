@@ -25,7 +25,7 @@ class SeparatorViewHolder(itemView: View,
     @SuppressLint("ResourcePackage")
     override fun bind(element: SeparatorDataModel) {
         val context = itemView.context
-        binding?.dividerUnify?.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_NN200))
+        binding?.dividerUnify?.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN200))
     }
 }
 

@@ -3579,7 +3579,7 @@ open class ProductManageFragment :
                 context?.let { context ->
                     ContextCompat.getColor(
                         context,
-                        com.tokopedia.unifycomponents.R.color.Unify_NN300
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN300
                     )
                 }?.let { color ->
                     iconMenuAddProduct?.setColorFilter(
