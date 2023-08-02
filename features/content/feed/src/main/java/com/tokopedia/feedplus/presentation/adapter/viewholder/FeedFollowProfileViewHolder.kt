@@ -113,7 +113,11 @@ class FeedFollowProfileViewHolder private constructor() {
         }
 
         private fun setupListener(model: FeedFollowProfileAdapter.Model.Profile) {
-            binding.root.setOnClickListener { listener.onScrollProfile(absoluteAdapterPosition) }
+            binding.root.setOnClickListener {
+                followRecommendationListener.onSwipeProfileRecommendation()
+
+                listener.onScrollProfile(absoluteAdapterPosition)
+            }
 
             binding.imgProfile.setOnClickListener { onClickProfile(model.data) }
             binding.tvProfileName.setOnClickListener { onClickProfile(model.data) }
