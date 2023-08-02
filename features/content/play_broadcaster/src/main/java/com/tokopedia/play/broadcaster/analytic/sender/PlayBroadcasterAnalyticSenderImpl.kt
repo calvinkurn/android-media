@@ -1,10 +1,13 @@
 package com.tokopedia.play.broadcaster.analytic.sender
 
-import com.tokopedia.config.GlobalConfig
+import com.tokopedia.content.analytic.BusinessUnit
+import com.tokopedia.content.analytic.Event
+import com.tokopedia.content.analytic.Key
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.play.broadcaster.analytic.const.Value
-import com.tokopedia.play.broadcaster.analytic.const.Label
+import com.tokopedia.play.broadcaster.analytic.currentSite
 import com.tokopedia.play.broadcaster.analytic.helper.PlayBroadcasterAnalyticHelper
+import com.tokopedia.play.broadcaster.analytic.sessionIris
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
@@ -19,15 +22,15 @@ class PlayBroadcasterAnalyticSenderImpl @Inject constructor(
 
     override fun sendGeneralOpenScreen(
         screenName: String,
-        trackerId: String,
+        trackerId: String
     ) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(
             screenName,
             mapOf(
-                Label.TRACKER_ID_LABEL to trackerId,
-                Label.BUSINESS_UNIT_LABEL to Value.BROADCASTER_BUSINESS_UNIT,
-                Label.CURRENT_SITE_LABEL to PlayBroadcasterAnalyticHelper.currentSite,
-                Label.SESSION_IRIS_LABEL to PlayBroadcasterAnalyticHelper.sessionIris,
+                Key.trackerId to trackerId,
+                Key.businessUnit to BusinessUnit.play,
+                Key.currentSite to currentSite,
+                Key.sessionIris to sessionIris
             )
         )
     }
@@ -39,22 +42,22 @@ class PlayBroadcasterAnalyticSenderImpl @Inject constructor(
     ) {
         sendGeneralEvent(
             Tracker.Builder()
-                .setEvent(Value.BROADCASTER_VIEW_CONTENT)
+                .setEvent(Event.viewContentIris)
                 .setEventCategory(Value.BROADCASTER_EVENT_CATEGORY)
                 .setEventAction(eventAction)
                 .setEventLabel(PlayBroadcasterAnalyticHelper.getEventLabelByAccount(account))
-                .setCustomProperty(Label.TRACKER_ID_LABEL, trackerId)
+                .setCustomProperty(Key.trackerId, trackerId)
         )
     }
 
     override fun sendGeneralViewEvent(eventAction: String, eventLabel: String, trackerId: String) {
         sendGeneralEvent(
             Tracker.Builder()
-                .setEvent(Value.BROADCASTER_VIEW_CONTENT)
+                .setEvent(Event.viewContentIris)
                 .setEventCategory(Value.BROADCASTER_EVENT_CATEGORY)
                 .setEventAction(eventAction)
                 .setEventLabel(eventLabel)
-                .setCustomProperty(Label.TRACKER_ID_LABEL, trackerId)
+                .setCustomProperty(Key.trackerId, trackerId)
         )
     }
 
@@ -65,11 +68,11 @@ class PlayBroadcasterAnalyticSenderImpl @Inject constructor(
     ) {
         sendGeneralEvent(
             Tracker.Builder()
-                .setEvent(Value.BROADCASTER_CLICK_CONTENT)
+                .setEvent(Event.clickContent)
                 .setEventCategory(Value.BROADCASTER_EVENT_CATEGORY)
                 .setEventAction(eventAction)
                 .setEventLabel(PlayBroadcasterAnalyticHelper.getEventLabelByAccount(account))
-                .setCustomProperty(Label.TRACKER_ID_LABEL, trackerId)
+                .setCustomProperty(Key.trackerId, trackerId)
         )
     }
 
@@ -80,11 +83,11 @@ class PlayBroadcasterAnalyticSenderImpl @Inject constructor(
     ) {
         sendGeneralEvent(
             Tracker.Builder()
-                .setEvent(Value.BROADCASTER_CLICK_CONTENT)
+                .setEvent(Event.clickContent)
                 .setEventCategory(Value.BROADCASTER_EVENT_CATEGORY)
                 .setEventAction(eventAction)
                 .setEventLabel(eventLabel)
-                .setCustomProperty(Label.TRACKER_ID_LABEL, trackerId)
+                .setCustomProperty(Key.trackerId, trackerId)
         )
     }
 
@@ -92,10 +95,10 @@ class PlayBroadcasterAnalyticSenderImpl @Inject constructor(
         trackerBuilder: Tracker.Builder
     ) {
         trackerBuilder
-            .setBusinessUnit(Value.BROADCASTER_BUSINESS_UNIT)
-            .setCurrentSite(PlayBroadcasterAnalyticHelper.currentSite)
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(currentSite)
             .setUserId(userSession.userId)
-            .setCustomProperty(Label.SESSION_IRIS_LABEL, PlayBroadcasterAnalyticHelper.sessionIris)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .build()
             .send()
     }

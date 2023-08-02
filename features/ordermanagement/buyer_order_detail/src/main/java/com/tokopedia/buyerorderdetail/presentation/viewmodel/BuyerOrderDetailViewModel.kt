@@ -81,7 +81,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
     companion object {
         private const val FLOW_TIMEOUT_MILLIS = 5000L
         private const val DELAY_FINISH_ORDER_RESULT = 2000L
-        private const val PRODUCT_LIST_COLLAPSE_DEBOUNCE_TIME = 500L
+        private const val PRODUCT_LIST_COLLAPSE_DEBOUNCE_TIME = 300L
     }
 
     private val _finishOrderResult = MutableLiveData<Result<FinishOrderResponse.Data.FinishOrderBuyer>>()
@@ -132,8 +132,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
     private val epharmacyInfoUiState = buyerOrderDetailDataRequestState.mapLatest(
         ::mapEpharmacyInfoUiState
     ).catch { t ->
-        //There is a case that additional_info returning null from backend, so make this default yet
-        //it will be hide in the section
+        // There is a case that additional_info returning null from backend, so make this default yet
+        // it will be hide in the section
         emit(EpharmacyInfoUiState.HasData.Showing(EpharmacyInfoUiModel()))
     }.toStateFlow(EpharmacyInfoUiState.Loading)
 
@@ -372,7 +372,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
     }
 
     private fun mapEpharmacyInfoUiState(
-        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
+        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState
     ): EpharmacyInfoUiState {
         return EpharmacyInfoUiStateMapper.map(
             getBuyerOrderDetailDataRequestState,
