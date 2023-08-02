@@ -14,6 +14,7 @@ import com.tokopedia.profilecompletion.common.LoadingDialog
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinUtil
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -103,7 +104,7 @@ open class ProfileCompletionSettingModule(private val context: Context) {
     @ProfileCompletionSettingScope
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://accounts-integration.goto-products.com")
+            .baseUrl(TokopediaUrl.getInstance().GOTO_ACCOUNTS)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

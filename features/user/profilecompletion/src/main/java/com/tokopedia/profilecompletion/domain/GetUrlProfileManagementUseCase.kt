@@ -4,6 +4,7 @@ import android.util.Base64
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.profilecompletion.di.ProfileManagementApi
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.time.TimeHelper
 import com.tokopedia.webview.ext.encode
@@ -46,7 +47,7 @@ class GetUrlProfileManagementUseCase@Inject constructor(
         token: String,
         userId: String,
         clientId: String = VALUE_CLIENT_ID,
-        url: String = "$BASE_URL$VALUE_URL",
+        url: String = TokopediaUrl.getInstance().GOTO_ACCOUNTS + VALUE_URL,
         backUrl: String = VALUE_BACK_URL,
         appLanguage: String = VALUE_LANGUAGE_IND,
         date: String
@@ -64,7 +65,7 @@ class GetUrlProfileManagementUseCase@Inject constructor(
         token: String,
         userId: String,
         clientId: String = VALUE_CLIENT_ID,
-        url: String = "$BASE_URL$VALUE_URL",
+        url: String = TokopediaUrl.getInstance().GOTO_ACCOUNTS + VALUE_URL,
         backUrl: String = VALUE_BACK_URL,
         appLanguage: String = VALUE_LANGUAGE_IND,
         date: String,
@@ -82,7 +83,7 @@ class GetUrlProfileManagementUseCase@Inject constructor(
                 "$KEY_X_TOKEN=$token"
             )
 
-        return "$BASE_URL$URL_PATH_SEAMLESS?$parameter"
+        return TokopediaUrl.getInstance().GOTO_ACCOUNTS + "$URL_PATH_SEAMLESS?$parameter"
     }
 
     private fun replaceHmacSignature(signature: String): String {
@@ -119,7 +120,6 @@ class GetUrlProfileManagementUseCase@Inject constructor(
         private const val VALUE_CLIENT_ID = "tokopedia:consumer:app"
         private const val VALUE_URL = "/profile/web/"
         private const val URL_PATH_SEAMLESS = "/goto-auth/seamless"
-        private const val BASE_URL = "https://accounts-integration.goto-products.com"
     }
 
 }
