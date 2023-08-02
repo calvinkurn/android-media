@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew
+package com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew
 
 import android.content.Context
 import android.content.Intent

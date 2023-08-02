@@ -24,7 +24,7 @@ public class AddressMapper {
         districtAddress.setDistrictName(address.getDistrictName());
         districtAddress.setProvinceId(address.getProvinceId());
         districtAddress.setProvinceName(address.getProvinceName());
-        districtAddress.setZipCodes(address.getZipCodes());
+        districtAddress.setZipCodes(new ArrayList<>(address.getZipCodes()));
 
         return districtAddress;
     }
@@ -59,7 +59,7 @@ public class AddressMapper {
         districtAddressModel.setDistrictName(address.getDistrictName());
         districtAddressModel.setProvinceId(address.getProvinceId());
         districtAddressModel.setProvinceName(address.getProvinceName());
-        districtAddressModel.setProvinceCode(address.getZipCodes());
+        districtAddressModel.setProvinceCode(new ArrayList<>(address.getZipCodes()));
 
         return districtAddressModel;
     }

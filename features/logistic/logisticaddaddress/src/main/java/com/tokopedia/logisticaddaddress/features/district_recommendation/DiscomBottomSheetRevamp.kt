@@ -20,6 +20,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.google.android.gms.common.api.ApiException
@@ -35,16 +36,16 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.logisticCommon.data.entity.response.Data
+import com.tokopedia.logisticCommon.uimodel.AddressUiState
+import com.tokopedia.logisticCommon.uimodel.isEdit
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.ChipsItemDecoration
 import com.tokopedia.logisticaddaddress.common.adapter.ZipCodeChipsAdapter
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetDistcrictReccomendationRevampBinding
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.DaggerAddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.domain.model.Address
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.AddressUiState
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.EditAddressRevampAnalytics
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.isEdit
+import com.tokopedia.logisticaddaddress.features.analytics.LogisticAddAddressAnalytics
+import com.tokopedia.logisticaddaddress.features.analytics.LogisticEditAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DiscomAdapterRevamp
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.PopularCityAdapter
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant
@@ -52,6 +53,8 @@ import com.tokopedia.logisticaddaddress.utils.AddNewAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
@@ -65,8 +68,25 @@ class DiscomBottomSheetRevamp :
     DiscomContract.View,
     DiscomAdapterRevamp.ActionListener {
 
+    companion object {
+        private const val SUCCESS = "success"
+        private const val NOT_SUCCESS = "not success"
+
+        private const val MIN_TEXT_LENGTH = 4
+        private const val DELAY_MILIS: Long = 200
+        private const val LOCATION_REQUEST_INTERVAL = 10000L
+        private const val LOCATION_REQUEST_FASTEST_INTERVAL = 2000L
+    }
+
     @Inject
-    lateinit var presenter: DiscomContract.Presenter
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel: DiscomViewModel by lazy {
+        ViewModelProvider(
+            requireParentFragment(),
+            viewModelFactory
+        )[DiscomViewModel::class.java]
+    }
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -91,7 +111,7 @@ class DiscomBottomSheetRevamp :
     private val searchHandler = Handler()
     private val mEndlessListener = object : EndlessRecyclerViewScrollListener(mLayoutManager) {
         override fun onLoadMore(page: Int, totalItemsCount: Int) {
-            presenter.loadData(input, page + 1)
+            viewModel?.loadData(input, page + 1)
         }
     }
 
@@ -126,7 +146,42 @@ class DiscomBottomSheetRevamp :
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initLayout()
+        initObserver()
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun initObserver() {
+        viewModel?.autoFill?.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    setResultDistrict(it.data.data, it.data.lat, it.data.long)
+                }
+
+                is Fail -> {
+                    showToasterError(it.throwable.message.orEmpty())
+                }
+            }
+        }
+
+        viewModel?.districtRecommendation?.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    if (it.data.addresses.isNotEmpty()) {
+                        renderData(it.data.addresses, it.data.isNextAvailable)
+                    } else {
+                        showEmpty()
+                    }
+                }
+
+                is Fail -> {
+                    showGetListError(it.throwable)
+                }
+            }
+        }
+
+        viewModel?.loading?.observe(viewLifecycleOwner) {
+            setLoadingState(it)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -155,18 +210,10 @@ class DiscomBottomSheetRevamp :
         }
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        if (::presenter.isInitialized) {
-            presenter.detach()
-        }
-    }
-
     private fun initInjector() {
         DaggerAddNewAddressRevampComponent.builder()
             .baseAppComponent((context?.applicationContext as BaseMainApplication).baseAppComponent)
             .build().inject(this)
-        presenter.attach(this)
     }
 
     private fun initLayout() {
@@ -178,10 +225,10 @@ class DiscomBottomSheetRevamp :
             if (isKodePosShown) {
                 when (addressUiState) {
                     AddressUiState.AddAddress -> {
-                        AddNewAddressRevampAnalytics.onClickBackArrowKodePos(userSession.userId)
+                        LogisticAddAddressAnalytics.onClickBackArrowKodePos(userSession.userId)
                     }
                     AddressUiState.EditAddress -> {
-                        EditAddressRevampAnalytics.onClickBackArrowKodePos(userSession.userId)
+                        LogisticEditAddressAnalytics.onClickBackArrowKodePos(userSession.userId)
                     }
                     else -> {
                         // no op
@@ -193,10 +240,10 @@ class DiscomBottomSheetRevamp :
             } else {
                 when (addressUiState) {
                     AddressUiState.AddAddress -> {
-                        AddNewAddressRevampAnalytics.onClickBackArrowDiscom(userSession.userId)
+                        LogisticAddAddressAnalytics.onClickBackArrowDiscom(userSession.userId)
                     }
                     AddressUiState.EditAddress -> {
-                        EditAddressRevampAnalytics.onClickBackArrowDiscom(userSession.userId)
+                        LogisticEditAddressAnalytics.onClickBackArrowDiscom(userSession.userId)
                     }
                     else -> {
                         // no op
@@ -258,10 +305,10 @@ class DiscomBottomSheetRevamp :
                 if (hasFocus) {
                     when (addressUiState) {
                         AddressUiState.AddAddress -> {
-                            AddNewAddressRevampAnalytics.onClickFieldCariKotaKecamatanNegative(userSession.userId)
+                            LogisticAddAddressAnalytics.onClickFieldCariKotaKecamatanNegative(userSession.userId)
                         }
                         AddressUiState.EditAddress -> {
-                            EditAddressRevampAnalytics.onClickFieldCariKotaKecamatan(userSession.userId)
+                            LogisticEditAddressAnalytics.onClickFieldCariKotaKecamatan(userSession.userId)
                         }
                         else -> {
                             // no op
@@ -272,10 +319,10 @@ class DiscomBottomSheetRevamp :
             setOnClickListener {
                 when (addressUiState) {
                     AddressUiState.AddAddress -> {
-                        AddNewAddressRevampAnalytics.onClickFieldCariKotaKecamatanNegative(userSession.userId)
+                        LogisticAddAddressAnalytics.onClickFieldCariKotaKecamatanNegative(userSession.userId)
                     }
                     AddressUiState.EditAddress -> {
-                        EditAddressRevampAnalytics.onClickFieldCariKotaKecamatan(userSession.userId)
+                        LogisticEditAddressAnalytics.onClickFieldCariKotaKecamatan(userSession.userId)
                     }
                     else -> {
                         // no op
@@ -308,7 +355,7 @@ class DiscomBottomSheetRevamp :
                         input = viewBinding?.searchPageInput?.searchBarTextField?.text.toString()
                         mIsInitialLoading = true
                         searchHandler.postDelayed({
-                            presenter.loadData(input, page)
+                            viewModel?.loadData(input, page)
                         }, DELAY_MILIS)
                     }
                 }
@@ -325,12 +372,12 @@ class DiscomBottomSheetRevamp :
             if (viewBinding?.etKodepos?.textFieldInput?.text.toString().length < MIN_TEXT_LENGTH) {
                 when (addressUiState) {
                     AddressUiState.AddAddress -> {
-                        AddNewAddressRevampAnalytics.onViewErrorToasterPilih(userSession.userId)
-                        AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, NOT_SUCCESS)
+                        LogisticAddAddressAnalytics.onViewErrorToasterPilih(userSession.userId)
+                        LogisticAddAddressAnalytics.onClickPilihKodePos(userSession.userId, NOT_SUCCESS)
                     }
                     AddressUiState.EditAddress -> {
-                        EditAddressRevampAnalytics.onViewErrorToaster(userSession.userId)
-                        EditAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, false)
+                        LogisticEditAddressAnalytics.onViewErrorToaster(userSession.userId)
+                        LogisticEditAddressAnalytics.onClickPilihKodePos(userSession.userId, false)
                     }
                     else -> {
                         // no op
@@ -340,10 +387,10 @@ class DiscomBottomSheetRevamp :
             } else {
                 when (addressUiState) {
                     AddressUiState.AddAddress -> {
-                        AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, SUCCESS)
+                        LogisticAddAddressAnalytics.onClickPilihKodePos(userSession.userId, SUCCESS)
                     }
                     AddressUiState.EditAddress -> {
-                        EditAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, true)
+                        LogisticEditAddressAnalytics.onClickPilihKodePos(userSession.userId, true)
                     }
                     else -> {
                         // no op
@@ -355,7 +402,7 @@ class DiscomBottomSheetRevamp :
             }
         }
         viewBinding?.layoutUseCurrentLoc?.setOnClickListener {
-            EditAddressRevampAnalytics.onClickGunakanLokasiIni(userSession.userId)
+            LogisticEditAddressAnalytics.onClickGunakanLokasiIni(userSession.userId)
             requestPermissionLocation()
         }
     }
@@ -374,10 +421,10 @@ class DiscomBottomSheetRevamp :
     override fun onZipCodeClicked(zipCode: String) {
         when (addressUiState) {
             AddressUiState.AddAddress -> {
-                AddNewAddressRevampAnalytics.onClickChipsKodePosNegative(userSession.userId)
+                LogisticAddAddressAnalytics.onClickChipsKodePosNegative(userSession.userId)
             }
             AddressUiState.EditAddress -> {
-                EditAddressRevampAnalytics.onClickChipsKodePos(userSession.userId)
+                LogisticEditAddressAnalytics.onClickChipsKodePos(userSession.userId)
             }
             else -> {
                 // no op
@@ -392,10 +439,10 @@ class DiscomBottomSheetRevamp :
     override fun onCityChipClicked(city: String) {
         when (addressUiState) {
             AddressUiState.AddAddress -> {
-                AddNewAddressRevampAnalytics.onClickChipsKotaKecamatanNegative(userSession.userId)
+                LogisticAddAddressAnalytics.onClickChipsKotaKecamatanNegative(userSession.userId)
             }
             AddressUiState.EditAddress -> {
-                EditAddressRevampAnalytics.onClickChipsKotaKecamatan(userSession.userId)
+                LogisticEditAddressAnalytics.onClickChipsKotaKecamatan(userSession.userId)
             }
             else -> {
                 // no op
@@ -459,13 +506,13 @@ class DiscomBottomSheetRevamp :
         setTitle(getString(R.string.title_post_code))
         isKodePosShown = true
         val districtModel = Address()
-        districtModel.setDistrictId(data.districtId)
-        districtModel.setDistrictName(data.districtName)
-        districtModel.setCityId(data.cityId)
-        districtModel.setCityName(data.cityName)
-        districtModel.setProvinceId(data.provinceId)
-        districtModel.setProvinceName(data.provinceName)
-        districtModel.setZipCodes(arrayListOf(data.postalCode))
+        districtModel.districtId = data.districtId
+        districtModel.districtName = data.districtName
+        districtModel.cityId = data.cityId
+        districtModel.cityName = data.cityName
+        districtModel.provinceId = data.provinceId
+        districtModel.provinceName = data.provinceName
+        districtModel.zipCodes = arrayListOf(data.postalCode)
         discomRevampListener?.onGetDistrict(districtModel)
         setupRvZipCodeChips()
         getDistrict(districtModel)
@@ -487,10 +534,10 @@ class DiscomBottomSheetRevamp :
     override fun onDistrictItemRevampClicked(districtModel: Address) {
         when (addressUiState) {
             AddressUiState.AddAddress -> {
-                AddNewAddressRevampAnalytics.onClickDropDownSuggestionKotaNegative(userSession.userId)
+                LogisticAddAddressAnalytics.onClickDropDownSuggestionKotaNegative(userSession.userId)
             }
             AddressUiState.EditAddress -> {
-                EditAddressRevampAnalytics.onClickDropDownSuggestionKota(userSession.userId)
+                LogisticEditAddressAnalytics.onClickDropDownSuggestionKota(userSession.userId)
             }
             else -> {
                 // no op
@@ -536,10 +583,10 @@ class DiscomBottomSheetRevamp :
                     if (hasFocus) {
                         when (addressUiState) {
                             AddressUiState.AddAddress -> {
-                                AddNewAddressRevampAnalytics.onClickFieldKodePosNegative(userSession.userId)
+                                LogisticAddAddressAnalytics.onClickFieldKodePosNegative(userSession.userId)
                             }
                             AddressUiState.EditAddress -> {
-                                EditAddressRevampAnalytics.onClickFieldKodePos(userSession.userId)
+                                LogisticEditAddressAnalytics.onClickFieldKodePos(userSession.userId)
                             }
                             else -> {
                                 // no op
@@ -552,10 +599,10 @@ class DiscomBottomSheetRevamp :
                 setOnClickListener {
                     when (addressUiState) {
                         AddressUiState.AddAddress -> {
-                            AddNewAddressRevampAnalytics.onClickFieldKodePosNegative(userSession.userId)
+                            LogisticAddAddressAnalytics.onClickFieldKodePosNegative(userSession.userId)
                         }
                         AddressUiState.EditAddress -> {
-                            EditAddressRevampAnalytics.onClickFieldKodePos(userSession.userId)
+                            LogisticEditAddressAnalytics.onClickFieldKodePos(userSession.userId)
                         }
                         else -> {
                             // no op
@@ -642,7 +689,7 @@ class DiscomBottomSheetRevamp :
     fun getLocation() {
         fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
             if (data != null) {
-                presenter.autoFill(data.latitude, data.longitude)
+                viewModel?.reverseGeoCode(data.latitude, data.longitude)
             } else {
                 fusedLocationClient?.requestLocationUpdates(
                     AddNewAddressUtils.getLocationRequest(),
@@ -744,7 +791,7 @@ class DiscomBottomSheetRevamp :
         object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 stopLocationUpdate()
-                presenter.autoFill(locationResult.lastLocation.latitude, locationResult.lastLocation.longitude)
+                viewModel?.reverseGeoCode(locationResult.lastLocation.latitude, locationResult.lastLocation.longitude)
             }
         }
 
@@ -753,15 +800,5 @@ class DiscomBottomSheetRevamp :
             PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
             PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION
         )
-    }
-
-    companion object {
-        private const val SUCCESS = "success"
-        private const val NOT_SUCCESS = "not success"
-
-        private const val MIN_TEXT_LENGTH = 4
-        private const val DELAY_MILIS: Long = 200
-        private const val LOCATION_REQUEST_INTERVAL = 10000L
-        private const val LOCATION_REQUEST_FASTEST_INTERVAL = 2000L
     }
 }

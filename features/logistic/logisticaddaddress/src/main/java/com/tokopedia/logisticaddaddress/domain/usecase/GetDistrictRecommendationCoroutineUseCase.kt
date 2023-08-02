@@ -22,4 +22,9 @@ class GetDistrictRecommendationCoroutineUseCase @Inject constructor(
     override suspend fun execute(params: GetDistrictRecomParam): DistrictRecommendationResponse {
         return repository.request(graphqlQuery(), params)
     }
+
+    companion object {
+        const val FOREIGN_COUNTRY_MESSAGE = "Lokasi di luar Indonesia."
+        const val LOCATION_NOT_FOUND_MESSAGE = "Lokasi gagal ditemukan"
+    }
 }
