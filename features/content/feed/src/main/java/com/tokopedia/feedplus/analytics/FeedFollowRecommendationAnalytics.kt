@@ -28,10 +28,16 @@ class FeedFollowRecommendationAnalytics @Inject constructor(
      * Row 50 - 54
      */
 
+    private val impressedAuthorId = mutableSetOf<String>()
+
     /** Row 50 */
     fun eventImpressProfileRecommendation(
         data: FeedTrackerDataModel
     ) {
+        if (impressedAuthorId.contains(data.authorId)) return
+
+        impressedAuthorId.add(data.authorId)
+
         trackingQueue.putEETracking(
             EventModel(
                 event = Event.promoView,
