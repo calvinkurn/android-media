@@ -84,6 +84,9 @@ class AddEditProductVariantViewModel @Inject constructor(
     private val mSelectedVariantUnitValuesLevel2 = MutableLiveData<MutableList<UnitValue>>()
 
     var productInputModel = MutableLiveData<ProductInputModel>()
+    var hasDTStock = Transformations.map(productInputModel) {
+        it.hasDTStock
+    }
 
     private val mGetVariantCategoryCombinationResult = MutableLiveData<Result<GetVariantCategoryCombinationResponse>>()
     val getVariantCategoryCombinationResult: LiveData<Result<GetVariantCategoryCombinationResponse>>
@@ -315,10 +318,24 @@ class AddEditProductVariantViewModel @Inject constructor(
         }
 
         productInputModel.getValueOrDefault().variantInputModel.apply {
+            updateDefaultValueSource(selections, sortedSelectedVariantUnitMap.map { it.value })
             products = mapProducts(selectedVariantDetails, variantPhotos, sortedVariantUnitValuesMap)
             selections = mapSelections(selectedVariantDetails, sortedVariantUnitValuesMap, sortedSelectedVariantUnitMap)
             sizecharts = mapSizechart(variantSizechart.value)
         }
+    }
+
+    fun updateDefaultValueSource(
+        selectedVariantList: List<SelectionInputModel>,
+        selectedVariantUnitList: List<Unit>
+    ) {
+        val isUnitChanged = !selectedVariantUnitList.all { unit ->
+            selectedVariantList.any {
+                it.unitID == unit.variantUnitID.toString()
+            }
+        }
+
+        if (isUnitChanged) productInputModel.getValueOrDefault().resetVariantData()
     }
 
     fun updateSizechart(url: String) {

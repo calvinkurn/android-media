@@ -10,6 +10,7 @@ import com.tokopedia.play.util.assertFalse
 import com.tokopedia.play.util.assertTrue
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.PlayChannelType
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import org.junit.Rule
 import org.junit.Test
 
@@ -20,6 +21,9 @@ class PlayViewModelInsetsTest {
 
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val rule: CoroutineTestRule = CoroutineTestRule()
 
     private val channelInfoBuilder = PlayChannelInfoModelBuilder()
     private val channelDataBuilder = PlayChannelDataModelBuilder()
@@ -77,19 +81,6 @@ class PlayViewModelInsetsTest {
                     .isShown.assertTrue()
         }
     }
-
-    @Test
-    fun `when show variant bottom sheet, variant bottom sheet insets should be shown`() {
-        givenPlayViewModelRobot(
-        ) andWhen {
-            showVariantBottomSheet()
-        } thenVerify {
-            viewModel.observableBottomInsetsState
-                    .getOrAwaitValue()[BottomInsetsType.VariantSheet]!!
-                    .isShown.assertTrue()
-        }
-    }
-
     @Test
     fun `when show leaderboard bottom sheet, leaderboard bottom sheet insets should be shown`() {
         givenPlayViewModelRobot(
@@ -153,23 +144,6 @@ class PlayViewModelInsetsTest {
         } thenVerify {
             viewModel.observableBottomInsetsState
                     .getOrAwaitValue()[BottomInsetsType.ProductSheet]!!
-                    .isHidden.assertTrue()
-        }
-    }
-
-    @Test
-    fun `given variant bottom sheet is shown, when hide bottom sheet, then bottom sheet should be hidden`() {
-        givenPlayViewModelRobot {
-            showVariantBottomSheet()
-        } thenVerify {
-            viewModel.observableBottomInsetsState
-                    .getOrAwaitValue()[BottomInsetsType.VariantSheet]!!
-                    .isShown.assertTrue()
-        } andWhen {
-            hideVariantBottomSheet()
-        } thenVerify {
-            viewModel.observableBottomInsetsState
-                    .getOrAwaitValue()[BottomInsetsType.VariantSheet]!!
                     .isHidden.assertTrue()
         }
     }
@@ -249,25 +223,6 @@ class PlayViewModelInsetsTest {
         } thenVerify { result ->
             viewModel.observableBottomInsetsState
                     .getOrAwaitValue()[BottomInsetsType.CouponSheet]!!
-                    .isHidden.assertTrue()
-
-            result.assertTrue()
-        }
-    }
-
-    @Test
-    fun `given variant bottom sheet is shown, when back button is pressed, then variant bottom sheet should be hidden and back will be consumed`() {
-        givenPlayViewModelRobot {
-            showVariantBottomSheet()
-        } thenVerify {
-            viewModel.observableBottomInsetsState
-                    .getOrAwaitValue()[BottomInsetsType.VariantSheet]!!
-                    .isShown.assertTrue()
-        } andWhen {
-            goBack()
-        } thenVerify { result ->
-            viewModel.observableBottomInsetsState
-                    .getOrAwaitValue()[BottomInsetsType.VariantSheet]!!
                     .isHidden.assertTrue()
 
             result.assertTrue()

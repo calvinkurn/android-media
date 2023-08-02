@@ -42,10 +42,10 @@ import com.tokopedia.product.addedit.variant.presentation.model.ValidationResult
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel.Result.*
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
 import com.tokopedia.product.manage.common.feature.getstatusshop.domain.GetStatusShopUseCase
-import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.shop.common.graphql.data.shopopen.SaveShipmentLocation
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ShopOpenRevampSaveShipmentLocationUseCase
+import com.tokopedia.shopadmin.common.util.AccessId
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -113,6 +113,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
     // observing the use case result, and will become true if no variant
     val isVariantEmpty = Transformations.map(productInputModel) {
         !it.variantInputModel.hasVariant()
+    }
+
+    val hasDTStock = Transformations.map(productInputModel) {
+        it.hasDTStock
     }
 
     val priceRangeFormatted = Transformations.map(productInputModel) {
@@ -661,22 +665,26 @@ class AddEditProductPreviewViewModel @Inject constructor(
      * */
     fun clearProductPhotoUrl(
         imagePickerResult: ArrayList<String>,
-        originalImageUrl: ArrayList<String>
+        originalImageUrls: ArrayList<String>
     ): Pair<ArrayList<String>, ArrayList<Boolean>> {
         val resultCleaner = arrayListOf<String>()
         val isEdited = arrayListOf<Boolean>()
         imagePickerResult.forEachIndexed { index, uriEditImage ->
+            val originalImageUrl = originalImageUrls.getOrNull(index)
             when {
                 uriEditImage.isNotEmpty() -> {
                     resultCleaner.add(uriEditImage)
                     isEdited.add(true)
                 }
-                isPictureFromInternet(originalImageUrl[index]) -> {
-                    resultCleaner.add(originalImageUrl[index])
+                originalImageUrl.isNullOrEmpty() -> {
+                    return@forEachIndexed
+                }
+                isPictureFromInternet(originalImageUrl) -> {
+                    resultCleaner.add(originalImageUrl)
                     isEdited.add(false)
                 }
                 else -> {
-                    resultCleaner.add(originalImageUrl[index])
+                    resultCleaner.add(originalImageUrl)
                     isEdited.add(true)
                 }
             }

@@ -248,7 +248,7 @@
 -keep class com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment
 -keep class com.tokopedia.home_recom.view.fragment.RecommendationFragment
 -keep class com.tokopedia.home_recom.view.fragment.SimilarProductRecommendationFragment
--keep class com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment
+-keep class com.tokopedia.feedplus.presentation.fragment.FeedIntermediaryFragment
 -keep class com.tokopedia.cart.view.CartFragment
 -keep class com.tokopedia.dynamicfeatures.DFInstallerFragment
 -keep class com.tokopedia.review.feature.reading.presentation.fragment.ShopReviewFragment
@@ -347,3 +347,11 @@ public static com.tokopedia.stability.ChangeDelegate *;
     # Keep the public no-argument constructor while allowing other methods to be optimized.
     <init>();
 }
+
+# Byteplus
+-keep class com.bytedance.labcv.effectsdk.** {*;}
+-keep class com.bef.effectsdk.* {*;}
+-keep class com.bytedance.labcv.licenselibrary.** {*;}
+
+# kyc ds sdk
+-keep class com.gojek.ojosdk.** {*;}

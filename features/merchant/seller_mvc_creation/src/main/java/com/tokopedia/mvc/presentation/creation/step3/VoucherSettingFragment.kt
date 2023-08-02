@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.campaign.entity.RemoteTicker
 import com.tokopedia.campaign.utils.extension.disable
 import com.tokopedia.campaign.utils.extension.enable
 import com.tokopedia.campaign.utils.extension.routeToUrl
@@ -25,7 +26,6 @@ import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepThreeDiscountInputSe
 import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepThreeFreeShippingInputSectionBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepThreePromoTypeSectionBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
-import com.tokopedia.mvc.domain.entity.RemoteTicker
 import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
@@ -261,6 +261,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 )
                 renderFreeShippingQuotaInputValidation(state.isQuotaError, state.quotaErrorMsg)
             }
+            else -> {
+                // no-op
+            }
         }
     }
 
@@ -305,6 +308,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     state.minimumBuyErrorMsg
                 )
                 renderCashbackQuotaInputValidation(state.isQuotaError, state.quotaErrorMsg)
+            }
+            else -> {
+                // no-op
             }
         }
     }
@@ -351,6 +357,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     state.minimumBuyErrorMsg
                 )
                 renderDiscountQuotaInputValidation(state.isQuotaError, state.quotaErrorMsg)
+            }
+            else -> {
+                // no-op
             }
         }
     }
@@ -570,7 +579,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 getString(R.string.smvc_creation_step_three_out_of_three_sub_title_label)
             }
             setNavigationOnClickListener {
-                viewModel.processEvent(VoucherCreationStepThreeEvent.TapBackButton)
+                onFragmentBackPressed()
                 tracker.sendClickKembaliArrowEvent(voucherConfiguration.voucherId)
             }
         }
@@ -987,6 +996,8 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         discountInputSectionBinding?.tfDiscountPercentage?.invisible()
         discountInputSectionBinding?.tpgDiscountMaxDeductionLabel?.gone()
         discountInputSectionBinding?.tfDiscountMaxDeduction?.gone()
+
+        viewModel.handleVoucherInputValidation()
     }
 
     private fun setupDiscountNominalSection() {
@@ -1015,9 +1026,10 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setDiscountPercentageInput() {
         discountInputSectionBinding?.tfDiscountPercentage?.visible()
         discountInputSectionBinding?.tfDiscountNominal?.invisible()
-
         discountInputSectionBinding?.tpgDiscountMaxDeductionLabel?.visible()
         discountInputSectionBinding?.tfDiscountMaxDeduction?.visible()
+
+        viewModel.handleVoucherInputValidation()
     }
 
     private fun setupDiscountPercentageSection() {
@@ -1269,6 +1281,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         } else {
             navigateToVoucherSummaryPage(voucherConfiguration)
         }
+        activity?.finish()
     }
 
     private fun continueToNextStep(voucherConfiguration: VoucherConfiguration) {

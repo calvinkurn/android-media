@@ -19,7 +19,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_DEVICE
@@ -50,6 +49,7 @@ import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.REC
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.searchbar.helper.ViewHelper
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -92,6 +92,7 @@ import com.tokopedia.tokopedianow.repurchase.presentation.adapter.RepurchaseAdap
 import com.tokopedia.tokopedianow.repurchase.presentation.adapter.RepurchaseAdapterTypeFactory
 import com.tokopedia.tokopedianow.repurchase.presentation.adapter.differ.RepurchaseListDiffer
 import com.tokopedia.tokopedianow.repurchase.presentation.listener.CategoryMenuCallback
+import com.tokopedia.tokopedianow.repurchase.presentation.listener.ProductCardCompactCallback
 import com.tokopedia.tokopedianow.repurchase.presentation.listener.ProductRecommendationCallback
 import com.tokopedia.tokopedianow.repurchase.presentation.listener.ProductRecommendationOocCallback
 import com.tokopedia.tokopedianow.repurchase.presentation.listener.RepurchaseProductCardListener
@@ -104,6 +105,7 @@ import com.tokopedia.tokopedianow.repurchase.presentation.viewholder.RepurchaseE
 import com.tokopedia.tokopedianow.repurchase.presentation.viewholder.RepurchaseProductViewHolder
 import com.tokopedia.tokopedianow.repurchase.presentation.viewholder.RepurchaseSortFilterViewHolder.SortFilterListener
 import com.tokopedia.tokopedianow.repurchase.presentation.viewmodel.TokoNowRepurchaseViewModel
+import com.tokopedia.tokopedianow.similarproduct.presentation.activity.TokoNowSimilarProductBottomSheetActivity
 import com.tokopedia.tokopedianow.sortfilter.presentation.activity.TokoNowSortFilterActivity.Companion.REQUEST_CODE_SORT_FILTER_BOTTOMSHEET
 import com.tokopedia.tokopedianow.sortfilter.presentation.activity.TokoNowSortFilterActivity.Companion.SORT_VALUE
 import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet.Companion.FREQUENTLY_BOUGHT
@@ -125,7 +127,6 @@ class TokoNowRepurchaseFragment:
     SortFilterListener,
     ServerErrorListener
 {
-
     companion object {
         const val SOURCE = "tokonow"
         const val CATEGORY_LEVEL_DEPTH = 1
@@ -171,7 +172,8 @@ class TokoNowRepurchaseFragment:
                 sortFilterListener = this,
                 serverErrorListener = this,
                 tokonowRecomBindPageNameListener = createProductRecommendationOocListener(),
-                productRecommendationListener = createProductRecommendationListener()
+                productRecommendationListener = createProductRecommendationListener(),
+                productCardCompactListener = createProductCardCompactCallback()
             ),
             RepurchaseListDiffer()
         )
@@ -199,6 +201,7 @@ class TokoNowRepurchaseFragment:
         setupSwipeRefreshLayout()
         observeLiveData()
         updateCurrentPageLocalCacheModelData()
+        initAffiliateCookie()
 
         viewModel.showLoading()
     }
@@ -438,14 +441,14 @@ class TokoNowRepurchaseFragment:
     }
 
     private fun setIconNewTopNavigation() {
-        val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
+        val icons = IconBuilder(IconBuilderFlag(pageSource = NavSource.TOKONOW))
             .addIcon(IconList.ID_CART, onClick = ::onClickCartButton)
             .addIcon(IconList.ID_NAV_GLOBAL) {}
         navToolbar?.setIcon(icons)
     }
 
     private fun setIconOldTopNavigation() {
-        val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
+        val icons = IconBuilder(IconBuilderFlag(pageSource = NavSource.TOKONOW))
             .addIcon(IconList.ID_CART, onClick = ::onClickCartButton)
         navToolbar?.setIcon(icons)
     }
@@ -862,6 +865,10 @@ class TokoNowRepurchaseFragment:
         }
     }
 
+    private fun initAffiliateCookie() {
+        viewModel.initAffiliateCookie()
+    }
+
     private fun submitList(data: RepurchaseLayoutUiModel) {
         adapter.submitList(data.layoutList)
     }
@@ -942,8 +949,8 @@ class TokoNowRepurchaseFragment:
     }
 
     private fun onScrollProductList() {
-        val layoutManager = rvRepurchase?.layoutManager as? StaggeredGridLayoutManager
-        val index = layoutManager?.findLastCompletelyVisibleItemPositions(null)
+        val layoutManager = rvRepurchase?.layoutManager as? GridLayoutManager
+        val index = layoutManager?.findLastCompletelyVisibleItemPosition()
         val itemCount = layoutManager?.itemCount.orZero()
         viewModel.onScrollProductList(index, itemCount)
     }
@@ -1045,6 +1052,15 @@ class TokoNowRepurchaseFragment:
 
     private fun createSimilarProductTrackerCallback(): ProductCardCompactSimilarProductTrackerCallback {
         return ProductCardCompactSimilarProductTrackerCallback(analytics)
+    }
+
+    private fun createProductCardCompactCallback(): ProductCardCompactCallback {
+        return ProductCardCompactCallback { productId, similarProductTrackerListener ->
+            context?.apply {
+                val intent = TokoNowSimilarProductBottomSheetActivity.createNewIntent(this, productId, similarProductTrackerListener)
+                startActivity(intent)
+            }
+        }
     }
 
     private fun createCategoryMenuCallback(): CategoryMenuCallback {

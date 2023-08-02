@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'kotlin-kapt'
 
 buildscript {
     repositories {
@@ -12,6 +11,11 @@ buildscript {
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
     }
+}
+
+android {
+    namespace 'com.tokopedia.sessioncommon'
+    testNamespace 'com.tokopedia.sessioncommon.test'
 }
 
 dependencies {
@@ -47,8 +51,8 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.workManager
 
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
-
+    implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.track)
     //Test
     testImplementation rootProject.ext.testDependencies.junit
 }

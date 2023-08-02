@@ -50,8 +50,6 @@ data class ShipmentAddressFormDataResponse(
     val campaignTimer: CampaignTimer = CampaignTimer(),
     @SerializedName("addresses")
     val addresses: Addresses = Addresses(),
-    @SerializedName("disabled_features_detail")
-    val disabledFeaturesDetail: DisabledFeaturesDetail = DisabledFeaturesDetail(),
     @SerializedName("promo")
     val promoSAFResponse: PromoSAFResponse = PromoSAFResponse(),
     @SerializedName("open_prerequisite_site")
@@ -75,5 +73,7 @@ data class ShipmentAddressFormDataResponse(
     @SerializedName("coachmark")
     val coachmark: CoachmarkPlusResponse = CoachmarkPlusResponse(),
     @SerializedName("dynamic_data_passing")
-    val dynamicDataPassing: ShipmentDynamicDataPassing = ShipmentDynamicDataPassing()
+    val dynamicDataPassing: ShipmentDynamicDataPassing = ShipmentDynamicDataPassing(),
+    @SerializedName("platform_fee")
+    val shipmentPlatformFee: ShipmentPlatformFee = ShipmentPlatformFee()
 )

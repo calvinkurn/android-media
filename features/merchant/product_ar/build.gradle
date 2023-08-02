@@ -1,14 +1,9 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply from: "../../../compile-instrument-test.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
 
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
-}
 repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
 }
@@ -24,6 +19,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.product_ar'
+    testNamespace 'com.tokopedia.product_ar.test'
     defaultConfig {
         multiDexEnabled true
     }
@@ -57,7 +54,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
     implementation rootProject.ext.supportLibDependencies.design
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx

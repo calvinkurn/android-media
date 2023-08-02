@@ -31,7 +31,7 @@
     <string name="branch_sdk_key_pro" translatable="false">key_live_abhHgIh1DQiuPxdBNg9EXepdDugwwkHr</string>
     <string name="branch_sdk_key_sa" translatable="false">key_live_abhHgIh1DQiuPxdBNg9EXepdDugwwkHr</string>
 
-    <string name="thanos_token_key" translatable="false">aTrowPGl-F_2-WjbY5HN7GkrDzK1aMeNiefkrIS1_Xg=</string>
+    <string name="thanos_token_key" translatable="false">pcS4d507axr3xgCxa84qu_Tuc9cXKynH4smhSipeDmM=</string>
 
     <string name="gojek_sso_client_id" translatable="false">tokopedia:consumer:app</string>
     <string name="gojek_sso_client_secret" translatable="false">qmcpRpZPBC7DTRNQiI7dIkuGoxrqsu</string>
@@ -40,7 +40,14 @@
     <string name="one_trust_client_secret" translatable="false">RKwtU9yHUEuQRiOhVp797cPZpy9zlKR9</string>
     <string name="one_trust_template_id" translatable="false">570ceffa-c436-4b8f-b5ac-3c2e5b010c31</string>
 
+    <string name="one_kyc_click_stream_api_key" translatable="false">a1b3f286-bb73-4f02-b2bb-34781cceab6d</string>
+
     <string name="qodndmcgfk" translatable="false">lbldazuusi.pdhrqcyvpb.obndtfvxfp</string>
     <string name="ompyqgcgdk" translatable="false">lqkspgghfn.ftzsljzsic.rbqqvtlvxt</string>
+
+    <string name="ijnuhbygv" translatable="false"></string>
+    <string name="plmoknijb" translatable="false"></string>
+    <string name="rfvtgbyhn" translatable="false"></string>
+    <string name="qazwsxedc" translatable="false"></string>
 </resources>
 

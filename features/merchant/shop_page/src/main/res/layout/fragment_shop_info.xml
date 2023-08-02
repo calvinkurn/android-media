@@ -7,6 +7,7 @@
     android:layout_height="match_parent">
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/container_report"
@@ -29,7 +30,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="16dp"
-                android:background="@color/Unify_N75" />
+                android:background="@color/Unify_NN50" />
 
             <include
                 android:id="@+id/layout_partial_shop_info_note"
@@ -108,7 +109,7 @@
                 android:layout_height="wrap_content"
                 android:paddingStart="4dp"
                 android:text="@string/label_report"
-                android:textColor="@color/Unify_G400"
+                android:textColor="@color/Unify_GN500"
                 app:layout_constraintBottom_toBottomOf="@+id/label_warning_text"
                 app:layout_constraintStart_toEndOf="@+id/label_warning_text"
                 app:layout_constraintTop_toTopOf="@+id/label_warning_text"
@@ -136,5 +137,16 @@
             android:layout_height="wrap_content" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/globalError"
+        app:globalerrors_type="NO_CONNECTION"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

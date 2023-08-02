@@ -163,6 +163,9 @@ class InteractiveDialogFragment @Inject constructor(
                         state.interactive.game,
                         state.partner
                     )
+                    else -> {
+                        //no-op
+                    }
                 }
 
             }

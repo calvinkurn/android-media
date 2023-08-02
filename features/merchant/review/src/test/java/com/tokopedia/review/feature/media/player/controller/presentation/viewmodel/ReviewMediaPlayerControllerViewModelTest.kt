@@ -10,25 +10,25 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
 
 class ReviewMediaPlayerControllerViewModelTest: ReviewMediaPlayerControllerViewModelTestFixture() {
     @Test
-    fun `shouldShowVideoPlayerController should be true when _currentMediaItem is VideoMediaItemUiModel`() = runBlockingTest {
+    fun `shouldShowVideoPlayerController should be true when _currentMediaItem is VideoMediaItemUiModel`() = runTest {
         viewModel.updateCurrentMediaItem(mockk<VideoMediaItemUiModel>(relaxed = true))
         Assert.assertTrue(viewModel.uiState.first().shouldShowVideoPlayerController)
     }
 
     @Test
-    fun `shouldShowVideoPlayerController should be false when _currentMediaItem is not VideoMediaItemUiModel`() = runBlockingTest {
+    fun `shouldShowVideoPlayerController should be false when _currentMediaItem is not VideoMediaItemUiModel`() = runTest {
         viewModel.updateCurrentMediaItem(mockk<ImageMediaItemUiModel>(relaxed = true))
         Assert.assertFalse(viewModel.uiState.first().shouldShowVideoPlayerController)
     }
 
     @Test
-    fun `shouldShowMediaCounter should be true when totalMedia and _currentMediaItem mediaNumber is more than zero and _currentMediaItem is not LoadingStateItemUiModel`() = runBlockingTest {
+    fun `shouldShowMediaCounter should be true when totalMedia and _currentMediaItem mediaNumber is more than zero and _currentMediaItem is not LoadingStateItemUiModel`() = runTest {
         viewModel.updateGetDetailedReviewMediaResult(getDetailedReviewMediaResult1stPage.productrevGetReviewMedia)
         viewModel.updateCurrentMediaItem(
             mockk<ImageMediaItemUiModel>(relaxed = true) {
@@ -39,7 +39,7 @@ class ReviewMediaPlayerControllerViewModelTest: ReviewMediaPlayerControllerViewM
     }
 
     @Test
-    fun `shouldShowMediaCounter should be false when totalMedia is zero`() = runBlockingTest {
+    fun `shouldShowMediaCounter should be false when totalMedia is zero`() = runTest {
         viewModel.updateCurrentMediaItem(
             mockk<ImageMediaItemUiModel>(relaxed = true) {
                 every { mediaNumber } returns 1
@@ -49,54 +49,54 @@ class ReviewMediaPlayerControllerViewModelTest: ReviewMediaPlayerControllerViewM
     }
 
     @Test
-    fun `shouldShowMediaCounter should be false when _currentMediaItem is null`() = runBlockingTest {
+    fun `shouldShowMediaCounter should be false when _currentMediaItem is null`() = runTest {
         viewModel.updateGetDetailedReviewMediaResult(getDetailedReviewMediaResult1stPage.productrevGetReviewMedia)
         viewModel.updateCurrentMediaItem(null)
         Assert.assertFalse(viewModel.uiState.first().shouldShowMediaCounter)
     }
 
     @Test
-    fun `shouldShowMediaCounter should be false when _currentMediaItem is LoadingStateItemUiModel`() = runBlockingTest {
+    fun `shouldShowMediaCounter should be false when _currentMediaItem is LoadingStateItemUiModel`() = runTest {
         viewModel.updateGetDetailedReviewMediaResult(getDetailedReviewMediaResult1stPage.productrevGetReviewMedia)
         viewModel.updateCurrentMediaItem(mockk<LoadingStateItemUiModel>(relaxed = true))
         Assert.assertFalse(viewModel.uiState.first().shouldShowMediaCounter)
     }
 
     @Test
-    fun `shouldShowMediaCounterLoader should be true when _currentMediaItem is LoadingStateItemUiModel`() = runBlockingTest {
+    fun `shouldShowMediaCounterLoader should be true when _currentMediaItem is LoadingStateItemUiModel`() = runTest {
         viewModel.updateGetDetailedReviewMediaResult(getDetailedReviewMediaResult1stPage.productrevGetReviewMedia)
         viewModel.updateCurrentMediaItem(mockk<LoadingStateItemUiModel>(relaxed = true))
         Assert.assertTrue(viewModel.uiState.first().shouldShowMediaCounterLoader)
     }
 
     @Test
-    fun `shouldShowMediaCounterLoader should be true when _currentMediaItem is not LoadingStateItemUiModel`() = runBlockingTest {
+    fun `shouldShowMediaCounterLoader should be true when _currentMediaItem is not LoadingStateItemUiModel`() = runTest {
         viewModel.updateGetDetailedReviewMediaResult(getDetailedReviewMediaResult1stPage.productrevGetReviewMedia)
         viewModel.updateCurrentMediaItem(mockk<ImageMediaItemUiModel>(relaxed = true))
         Assert.assertFalse(viewModel.uiState.first().shouldShowMediaCounterLoader)
     }
 
     @Test
-    fun `unmute should update _muted to false`() = runBlockingTest {
+    fun `unmute should update _muted to false`() = runTest {
         viewModel.unmute()
         Assert.assertFalse(viewModel.uiState.first().muted)
     }
 
     @Test
-    fun `mute should update _muted to true`() = runBlockingTest {
+    fun `mute should update _muted to true`() = runTest {
         viewModel.mute()
         Assert.assertTrue(viewModel.uiState.first().muted)
     }
 
     @Test
-    fun `saveState should save current states`() = runBlockingTest {
+    fun `saveState should save current states`() = runTest {
         val outState = mockk<Bundle>(relaxed = true)
         viewModel.saveState(outState)
         verify { outState.putBoolean(ReviewMediaPlayerControllerViewModel.SAVED_STATE_MUTED, any()) }
     }
 
     @Test
-    fun `restoreState should save current states`() = runBlockingTest {
+    fun `restoreState should save current states`() = runTest {
         val latestMutedStatus = false
         val savedState = mockk<Bundle>(relaxed = true) {
             every {
@@ -108,19 +108,19 @@ class ReviewMediaPlayerControllerViewModelTest: ReviewMediaPlayerControllerViewM
     }
 
     @Test
-    fun `updateOrientationUiState should update orientationUiState`() = runBlockingTest {
+    fun `updateOrientationUiState should update orientationUiState`() = runTest {
         viewModel.updateOrientationUiState(OrientationUiState(OrientationUiState.Orientation.LANDSCAPE))
         Assert.assertEquals(OrientationUiState(OrientationUiState.Orientation.LANDSCAPE), viewModel.uiState.first().orientationUiState)
     }
 
     @Test
-    fun `updateOverlayVisibility should update overlayVisibility`() = runBlockingTest {
+    fun `updateOverlayVisibility should update overlayVisibility`() = runTest {
         viewModel.updateOverlayVisibility(false)
         Assert.assertFalse(viewModel.uiState.first().overlayVisibility)
     }
 
     @Test
-    fun `updateCurrentMediaItem should update currentGalleryPosition`() = runBlockingTest {
+    fun `updateCurrentMediaItem should update currentGalleryPosition`() = runTest {
         val currentPosition = 5
         viewModel.updateCurrentMediaItem(mockk<ImageMediaItemUiModel>(relaxed = true) {
             every { mediaNumber } returns currentPosition
@@ -129,13 +129,13 @@ class ReviewMediaPlayerControllerViewModelTest: ReviewMediaPlayerControllerViewM
     }
 
     @Test
-    fun `updateGetDetailedReviewMediaResult should update totalMedia`() = runBlockingTest {
+    fun `updateGetDetailedReviewMediaResult should update totalMedia`() = runTest {
         viewModel.updateGetDetailedReviewMediaResult(getDetailedReviewMediaResult1stPage.productrevGetReviewMedia)
         Assert.assertEquals(getDetailedReviewMediaResult1stPage.productrevGetReviewMedia.detail.mediaCount.toInt(), viewModel.uiState.first().totalMedia)
     }
 
     @Test
-    fun `updateVideoDurationMillis should update videoDurationMillis value`() = runBlockingTest {
+    fun `updateVideoDurationMillis should update videoDurationMillis value`() = runTest {
         val newVideoDurationMillis = 10000L
         viewModel.updateVideoDurationMillis(newVideoDurationMillis)
         Assert.assertEquals(newVideoDurationMillis, viewModel.uiState.first().videoDurationMillis)

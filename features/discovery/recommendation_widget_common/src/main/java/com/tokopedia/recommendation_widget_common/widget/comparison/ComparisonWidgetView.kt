@@ -26,21 +26,24 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
-class ComparisonWidgetView: FrameLayout, CoroutineScope  {
+class ComparisonWidgetView : FrameLayout, CoroutineScope {
 
     private var specOnScrollChangedListener: ViewTreeObserver.OnScrollChangedListener? = null
     private var comparisonListModel: ComparisonListModel? = null
     private var adapter: ComparedItemAdapter? = null
     private var comparedAdapter: ComparisonWidgetAdapter? = null
+    private var isAnchorClickable: Boolean = false
 
     private var userSessionInterface = UserSession(context)
 
     private val masterJob = SupervisorJob()
     override val coroutineContext = masterJob + Dispatchers.IO
 
-    constructor(context: Context) : super(context)
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context) : super(context) { init() }
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) { init(attrs) }
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+        init(attrs)
+    }
 
     private var rv_comparison_widget: RecyclerView? = null
     private var rv_compared_item: RecyclerView? = null
@@ -48,7 +51,10 @@ class ComparisonWidgetView: FrameLayout, CoroutineScope  {
     private var btn_see_more: TextView? = null
     private var btn_collapse: LinearLayout? = null
     private var comparison_widget_container: LinearLayout? = null
-    init {
+
+    private fun init(attrs: AttributeSet? = null) {
+        initAttributes(attrs)
+
         LayoutInflater.from(context).inflate(R.layout.view_comparison_widget, this)
         rv_comparison_widget = rootView.findViewById(R.id.rv_comparison_widget)
         rv_compared_item = rootView.findViewById(R.id.rv_compared_item)
@@ -57,8 +63,6 @@ class ComparisonWidgetView: FrameLayout, CoroutineScope  {
         btn_collapse = rootView.findViewById(R.id.btn_collapse)
         comparison_widget_container = rootView.findViewById(R.id.comparison_widget_container)
 
-
-
         if (rv_comparison_widget?.itemDecorationCount == 0) {
             rv_comparison_widget?.addItemDecoration(ComparisonWidgetDecoration())
             rv_compared_item?.addItemDecoration(ComparisonWidgetDecoration())
@@ -66,16 +70,38 @@ class ComparisonWidgetView: FrameLayout, CoroutineScope  {
         switchToCollapsedState(resources.getDimensionPixelSize(R.dimen.comparison_widget_collapsed_height))
     }
 
+    private fun initAttributes(attrs: AttributeSet?) {
+        attrs ?: return
+
+        val typedArray = context.obtainStyledAttributes(
+            attrs,
+            R.styleable.ComparisonWidgetView, 0, 0)
+
+        try {
+            isAnchorClickable = typedArray.getBoolean(R.styleable.ComparisonWidgetView_clickableAnchor, false)
+        } finally {
+            typedArray.recycle()
+        }
+    }
+
     fun setComparisonWidgetData(
-            recommendationWidget: RecommendationWidget,
-            comparisonWidgetInterface: ComparisonWidgetInterface,
-            recommendationTrackingModel: RecommendationTrackingModel,
-            trackingQueue: TrackingQueue?
+        recommendationWidget: RecommendationWidget,
+        comparisonWidgetInterface: ComparisonWidgetInterface,
+        recommendationTrackingModel: RecommendationTrackingModel,
+        trackingQueue: TrackingQueue?,
+        isAnchorClickable: Boolean? = null,
     ) {
         launch {
             try {
+                isAnchorClickable?.let { this@ComparisonWidgetView.isAnchorClickable = it }
+
                 val comparisonListModel =
-                        ComparisonWidgetMapper.mapToComparisonWidgetModel(recommendationWidget, context)
+                    ComparisonWidgetMapper.mapToComparisonWidgetModel(
+                        recommendationWidget,
+                        context,
+                        this@ComparisonWidgetView.isAnchorClickable,
+                    )
+
                 if (this@ComparisonWidgetView.adapter == null) {
                     launch(Dispatchers.Main) {
                         tv_header_title?.text = comparisonListModel.recommendationWidget?.title
@@ -87,32 +113,31 @@ class ComparisonWidgetView: FrameLayout, CoroutineScope  {
 
                         this@ComparisonWidgetView.comparisonListModel = comparisonListModel
                         this@ComparisonWidgetView.adapter = ComparedItemAdapter(
-                                comparisonListModel = comparisonListModel,
-                                comparisonWidgetInterface = comparisonWidgetInterface,
-                                trackingQueue = trackingQueue,
-                                userSessionInterface = userSessionInterface,
-                                recommendationTrackingModel = recommendationTrackingModel,
+                            comparisonListModel = comparisonListModel,
+                            comparisonWidgetInterface = comparisonWidgetInterface,
+                            trackingQueue = trackingQueue,
+                            userSessionInterface = userSessionInterface,
+                            recommendationTrackingModel = recommendationTrackingModel
                         )
                         rv_comparison_widget?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                         rv_comparison_widget?.adapter = adapter
                         btn_collapse?.setOnClickListener {
                             val tracking = ProductRecommendationTracking.getClickSpecDetailTracking(
-                                    eventClick = recommendationTrackingModel.eventClick,
-                                    eventCategory = recommendationTrackingModel.eventCategory,
-                                    isLoggedIn = userSessionInterface.isLoggedIn,
-                                    recomTitle = recommendationTrackingModel.headerTitle,
-                                    pageName = comparisonListModel.recommendationWidget.pageName,
-                                    userId = userSessionInterface.userId
-                                )
+                                eventClick = recommendationTrackingModel.eventClick,
+                                eventCategory = recommendationTrackingModel.eventCategory,
+                                isLoggedIn = userSessionInterface.isLoggedIn,
+                                recomTitle = recommendationTrackingModel.headerTitle,
+                                pageName = comparisonListModel.recommendationWidget.pageName,
+                                userId = userSessionInterface.userId
+                            )
                             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(tracking.second, tracking.first)
                             onSpecDetailsClick(comparisonListModel)
                         }
-                        comparison_widget_container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING);
+                        comparison_widget_container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
                     }
                 }
                 if (this@ComparisonWidgetView.comparedAdapter == null) {
                     launch(Dispatchers.Main) {
-
                         this@ComparisonWidgetView.comparisonListModel = comparisonListModel
                         this@ComparisonWidgetView.comparedAdapter = ComparisonWidgetAdapter(
                             comparisonListModel = comparisonListModel,
@@ -156,14 +181,16 @@ class ComparisonWidgetView: FrameLayout, CoroutineScope  {
     private fun switchToExpandState() {
         if (!isExpandingState()) {
             val layoutParams = ConstraintLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT)
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
             rv_comparison_widget?.layoutParams = layoutParams
             adapter?.notifyDataSetChanged()
 
             val layoutParamsComparedItem = ConstraintLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT)
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
             rv_compared_item?.layoutParams = layoutParamsComparedItem
             btn_collapse?.visibility = View.GONE
             comparedAdapter?.notifyDataSetChanged()
@@ -172,7 +199,7 @@ class ComparisonWidgetView: FrameLayout, CoroutineScope  {
 
     private fun isExpandingState(): Boolean {
         return rv_comparison_widget?.layoutParams?.width == LinearLayout.LayoutParams.MATCH_PARENT &&
-                rv_comparison_widget?.layoutParams?.height == LinearLayout.LayoutParams.WRAP_CONTENT
+            rv_comparison_widget?.layoutParams?.height == LinearLayout.LayoutParams.WRAP_CONTENT
     }
 
     override fun onDetachedFromWindow() {

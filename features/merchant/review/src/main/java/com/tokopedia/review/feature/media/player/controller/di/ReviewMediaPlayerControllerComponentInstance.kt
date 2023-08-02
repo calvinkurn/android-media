@@ -8,15 +8,13 @@ import com.tokopedia.review.feature.media.player.controller.di.component.DaggerR
 import com.tokopedia.review.feature.media.player.controller.di.component.ReviewMediaPlayerControllerComponent
 
 object ReviewMediaPlayerControllerComponentInstance {
-    private var INSTANCE: ReviewMediaPlayerControllerComponent? = null
 
     @JvmStatic
     fun getInstance(context: Context): ReviewMediaPlayerControllerComponent {
-        return INSTANCE ?: DaggerReviewMediaPlayerControllerComponent.builder()
+        return DaggerReviewMediaPlayerControllerComponent.builder()
             .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
             .reviewMediaGalleryComponent(ReviewMediaGalleryComponentInstance.getInstance(context))
             .detailedReviewMediaGalleryComponent(DetailedReviewMediaGalleryComponentInstance.getInstance(context))
             .build()
-            .also { INSTANCE = it }
     }
 }

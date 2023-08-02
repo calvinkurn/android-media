@@ -5,7 +5,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
-import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
+import com.tokopedia.tokopedianow.common.util.ProductAdsMapper
+import com.tokopedia.tokopedianow.common.domain.model.GetProductAdsResponse.ProductAdsResponse
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.Product
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.ProductLabelGroup
@@ -20,6 +22,7 @@ import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.CoreMatchers.nullValue
 import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThat
 import java.io.File
 import org.hamcrest.CoreMatchers.`is` as shouldBe
@@ -99,6 +102,11 @@ fun Visitable<*>.assertProductCountDataView(productCountText: String) {
     assertThat(productCountDataView.totalDataText, shouldBe(productCountText))
 }
 
+fun Visitable<*>.assertProductAdsCarousel(response: ProductAdsResponse) {
+    val expected = ProductAdsMapper.mapProductAdsCarousel(response)
+    assertEquals(expected, this)
+}
+
 fun verifyProductItemDataViewList(
         expectedProductList: List<Product>,
         actualProductItemDataViewList: List<ProductItemDataView>,
@@ -132,7 +140,7 @@ fun verifyProductItemDataViewList(
 }
 
 private fun assertLabelGroupDataView(
-    labelGroupDataViewList: List<TokoNowProductCardViewUiModel.LabelGroup>,
+    labelGroupDataViewList: List<ProductCardCompactUiModel.LabelGroup>,
     labelGroupList: List<ProductLabelGroup>
 ) {
     assertThat(labelGroupDataViewList.size, shouldBe(labelGroupList.size))

@@ -1,9 +1,9 @@
 package com.tokopedia.product.detail.common.data.model.pdplayout
 
-
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.detail.common.data.model.product.Cashback
+import com.tokopedia.product.detail.common.data.model.product.PostAtcLayout
 import com.tokopedia.product.detail.common.data.model.product.PreOrder
 import com.tokopedia.product.detail.common.data.model.product.Stock
 import com.tokopedia.product.detail.common.data.model.product.VariantBasic
@@ -57,6 +57,8 @@ data class ComponentData(
     val isWishlist: Boolean = false,
     @SerializedName("media")
     val media: List<Media> = listOf(),
+    @SerializedName("recommendation")
+    val productMediaRecomBasicInfo: ProductMediaRecomBasicInfo = ProductMediaRecomBasicInfo(),
     @SerializedName("containerType")
     val containerType: String = "",
     @SerializedName("name")
@@ -88,12 +90,21 @@ data class ComponentData(
     val sizeChart: String = "",
     @SerializedName("maxFinalPrice")
     val maxFinalPrice: Float = 0F,
+    @SerializedName("postATCLayout")
+    val postAtcLayout: PostAtcLayout = PostAtcLayout(),
     @SerializedName("defaultChild")
     val defaultChild: String = "",
     @SerializedName("variants")
     val variants: List<Variant> = listOf(),
     @SerializedName("children")
     val children: List<VariantChild> = listOf(),
+    /**
+     * used when landing on pdp, if it is empty use hardcode FE
+     * and if there’s a user activity for choosing the variant, use children.subText below
+     * Details: https://tokopedia.atlassian.net/wiki/spaces/PDP/pages/2245002923/PDP+P1+Product+Variant+Partial+OOS
+     */
+    @SerializedName("landingSubText")
+    val landingSubText: String = "",
     //endregioncopy
 
     //region one liners data
@@ -141,15 +152,15 @@ data class ComponentData(
     // region Variant Thumb
     // componentType value is thumbnail or chips
     @SerializedName("componentType")
-    val componentType: String = ""
+    val componentType: String = "",
     // endregion
+
+    @SerializedName("variantCampaign")
+    val variantCampaign: VariantCampaign = VariantCampaign()
 ) {
     companion object {
         private const val PRODUCT_IMAGE_TYPE = "image"
     }
-
-    val hasWholesale: Boolean
-        get() = wholesale != null && wholesale.isNotEmpty()
 
     fun getFirstProductImage(): String? {
         if (media.isEmpty()) return null
@@ -175,29 +186,6 @@ data class ComponentData(
         return media.find {
             it.type == PRODUCT_IMAGE_TYPE
         }?.uRLThumbnail
-    }
-
-    fun getImagePathExceptVideo(): ArrayList<String>? {
-        val imageData =
-            media.filter { it.type == PRODUCT_IMAGE_TYPE && it.uRLOriginal.isNotEmpty() }
-                .map { it.uRLOriginal }
-        val arrayList = arrayListOf<String>()
-        return if (imageData.isEmpty()) {
-            null
-        } else {
-            arrayList.addAll(imageData)
-            arrayList
-        }
-    }
-
-    fun getImagePath(): ArrayList<String> {
-        return ArrayList(media.map {
-            if (it.type == PRODUCT_IMAGE_TYPE) {
-                it.uRLOriginal
-            } else {
-                it.uRLThumbnail
-            }
-        })
     }
 
     fun getGalleryItems(): List<ProductDetailGallery.Item> {
@@ -237,4 +225,11 @@ data class CategoryCarousel(
     val applink: String = "",
     @SerializedName("categoryID")
     val categoryId: String = ""
+)
+
+data class VariantCampaign(
+    @SerializedName("campaigns")
+    val campaigns: List<com.tokopedia.product.detail.common.data.model.variant.VariantCampaign> = emptyList(),
+    @SerializedName("thematicCampaigns")
+    val thematicCampaigns: List<ThematicCampaign> = emptyList()
 )

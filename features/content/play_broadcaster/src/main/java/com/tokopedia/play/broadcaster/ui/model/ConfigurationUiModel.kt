@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.ui.model
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
 import java.util.*
 
 /**
@@ -12,6 +13,7 @@ import java.util.*
 data class ConfigurationUiModel(
     val streamAllowed: Boolean,
     val shortVideoAllowed: Boolean,
+    val hasContent: Boolean,
     val channelId: String,
     val channelStatus: ChannelStatus,
     val durationConfig: DurationConfigUiModel,
@@ -20,6 +22,7 @@ data class ConfigurationUiModel(
     val countDown: Long, // second
     val scheduleConfig: BroadcastScheduleConfigUiModel,
     val tnc: List<TermsAndConditionUiModel>,
+    val beautificationConfig: BeautificationConfigUiModel,
 ) : Parcelable
 
 @Parcelize

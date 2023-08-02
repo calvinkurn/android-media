@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'kotlin-kapt'
 
 repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
@@ -19,6 +18,8 @@ buildscript {
 }
 
 android{
+    namespace 'com.tokopedia.managename'
+    testNamespace 'com.tokopedia.managename.test'
     defaultConfig {
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
         multiDexEnabled true
@@ -26,6 +27,11 @@ android{
     buildFeatures {
         viewBinding true
     }
+}
+
+android {
+    namespace 'com.tokopedia.managename'
+    testNamespace 'com.tokopedia.managename.test'
 }
 
 dependencies {
@@ -42,7 +48,7 @@ dependencies {
     }
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     // Unify Dependencies
     implementation rootProject.ext.unifyDependencies.principles
@@ -57,7 +63,6 @@ dependencies {
     // Support Library
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
-    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     // Misc Dependencies
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions

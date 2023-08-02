@@ -59,9 +59,9 @@ import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.pageheader.data.model.NewShopPageHeaderP1
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
 import com.tokopedia.shop.pageheader.data.model.ShopRequestUnmoderateSuccessResponse
-import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterShopConfigUseCase
+import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterAuthorConfig
 import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageHeaderLayoutUseCase
-import com.tokopedia.shop.pageheader.domain.interactor.NewGetShopPageP1DataUseCase
+import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageP1DataUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.ShopModerateRequestStatusUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.ShopRequestUnmoderateUseCase
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderP1HeaderData
@@ -70,6 +70,9 @@ import com.tokopedia.shop.pageheader.util.ShopPageHeaderMapper
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
+import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
+import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -77,9 +80,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageProcessingUtil
 import dagger.Lazy
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
@@ -87,11 +90,11 @@ class ShopPageHeaderViewModel @Inject constructor(
     private val userSessionInterface: UserSessionInterface,
     @GqlGetShopInfoForHeaderUseCaseQualifier
     private val gqlGetShopInfoForHeaderUseCase: Lazy<GQLGetShopInfoUseCase>,
-    private val getBroadcasterShopConfigUseCase: Lazy<GetBroadcasterShopConfigUseCase>,
+    private val getBroadcasterAuthorConfig: Lazy<GetBroadcasterAuthorConfig>,
     @GqlGetShopInfoUseCaseCoreAndAssetsQualifier
     private val gqlGetShopInfobUseCaseCoreAndAssets: Lazy<GQLGetShopInfoUseCase>,
     private val shopQuestGeneralTrackerUseCase: Lazy<ShopQuestGeneralTrackerUseCase>,
-    private val newGetShopPageP1DataUseCase: Lazy<NewGetShopPageP1DataUseCase>,
+    private val getShopPageP1DataUseCase: Lazy<GetShopPageP1DataUseCase>,
     private val getShopProductListUseCase: Lazy<GqlGetShopProductUseCase>,
     private val shopModerateRequestStatusUseCase: Lazy<ShopModerateRequestStatusUseCase>,
     private val shopRequestUnmoderateUseCase: Lazy<ShopRequestUnmoderateUseCase>,
@@ -99,6 +102,7 @@ class ShopPageHeaderViewModel @Inject constructor(
     private val getFollowStatusUseCase: Lazy<GetFollowStatusUseCase>,
     private val updateFollowStatusUseCase: Lazy<UpdateFollowStatusUseCase>,
     private val gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>,
+    private val affiliateEligibilityCheckUseCase: Lazy<AffiliateEligibilityCheckUseCase>,
     private val sharedPreferences: SharedPreferences,
     private val dispatcherProvider: CoroutineDispatchers,
     private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig
@@ -157,6 +161,16 @@ class ShopPageHeaderViewModel @Inject constructor(
     val shopPageShopShareData: LiveData<Result<ShopInfo>>
         get() = _shopPageShopShareData
 
+    private val _resultAffiliate = MutableLiveData<Result<GenerateAffiliateLinkEligibility>>()
+    val resultAffiliate: LiveData<Result<GenerateAffiliateLinkEligibility>>
+        get() = _resultAffiliate
+
+    /*
+    Function getNewShopPageTabData is expected to perform faster than
+    older version due to:
+    1. Remove the usages of getIsShopOfficialRequest, getIsShopPowerMerchantRequest & getShopInfoTopContentDataRequest
+    2. We only use ShopInfo data to identify whether the Shop is RM, PM, or OS
+     */
     fun getNewShopPageTabData(
         shopId: String,
         shopDomain: String,
@@ -167,18 +181,20 @@ class ShopPageHeaderViewModel @Inject constructor(
         etalaseId: String,
         isRefresh: Boolean,
         widgetUserAddressLocalData: LocalCacheModel,
-        extParam: String
+        extParam: String,
+        tabName: String
     ) {
         launchCatchError(block = {
             val shopP1DataAsync = asyncCatchError(
                 dispatcherProvider.io,
                 block = {
                     getNewShopP1Data(
-                        shopId,
-                        shopDomain,
-                        isRefresh,
-                        extParam,
-                        widgetUserAddressLocalData
+                        shopId = shopId,
+                        shopDomain = shopDomain,
+                        isRefresh = isRefresh,
+                        extParam = extParam,
+                        widgetUserAddressLocalData = widgetUserAddressLocalData,
+                        tabName = tabName
                     )
                 },
                 onError = {
@@ -198,9 +214,9 @@ class ShopPageHeaderViewModel @Inject constructor(
                 dispatcherProvider.io,
                 block = {
                     getShopPageHeaderData(
-                        shopId,
-                        isRefresh,
-                        widgetUserAddressLocalData
+                        shopId = shopId,
+                        isRefresh = isRefresh,
+                        widgetUserAddressLocalData = widgetUserAddressLocalData
                     )
                 },
                 onError = {
@@ -220,13 +236,13 @@ class ShopPageHeaderViewModel @Inject constructor(
                 dispatcherProvider.io,
                 block = {
                     getProductListData(
-                        shopId,
-                        page,
-                        itemPerPage,
-                        shopProductFilterParameter,
-                        keyword,
-                        etalaseId,
-                        widgetUserAddressLocalData
+                        shopId = shopId,
+                        page = page,
+                        itemPerPage = itemPerPage,
+                        shopProductFilterParameter = shopProductFilterParameter,
+                        keyword = keyword,
+                        etalaseId = etalaseId,
+                        widgetUserAddressLocalData = widgetUserAddressLocalData
                     )
                 },
                 onError = {
@@ -249,11 +265,10 @@ class ShopPageHeaderViewModel @Inject constructor(
                     shopPageP1Data.postValue(
                         Success(
                             ShopPageHeaderMapper.mapToNewShopPageP1HeaderData(
-                                shopPageHeaderP1Data.isShopOfficialStore,
-                                shopPageHeaderP1Data.isShopPowerMerchant,
-                                shopPageHeaderP1Data.shopPageGetDynamicTabResponse,
-                                shopPageHeaderP1Data.feedWhitelist,
-                                shopPageHeaderWidgetData
+                                shopInfoCoreData = shopPageHeaderP1Data.shopInfoCoreAndAssetsData,
+                                shopPageGetDynamicTabResponse = shopPageHeaderP1Data.shopPageGetDynamicTabResponse,
+                                feedWhitelistData = shopPageHeaderP1Data.feedWhitelist,
+                                shopPageHeaderLayoutData = shopPageHeaderWidgetData
                             )
                         )
                     )
@@ -320,15 +335,17 @@ class ShopPageHeaderViewModel @Inject constructor(
         shopDomain: String,
         isRefresh: Boolean,
         extParam: String,
-        widgetUserAddressLocalData: LocalCacheModel
+        widgetUserAddressLocalData: LocalCacheModel,
+        tabName: String
     ): NewShopPageHeaderP1 {
-        val useCase = newGetShopPageP1DataUseCase.get()
+        val useCase = getShopPageP1DataUseCase.get()
         useCase.isFromCacheFirst = !isRefresh
-        useCase.params = NewGetShopPageP1DataUseCase.createParams(
+        useCase.params = GetShopPageP1DataUseCase.createParams(
             shopId = shopId,
             shopDomain = shopDomain,
             extParam = extParam,
-            widgetUserAddressLocalData = widgetUserAddressLocalData
+            widgetUserAddressLocalData = widgetUserAddressLocalData,
+            tabName = tabName
         )
         return useCase.executeOnBackground()
     }
@@ -400,8 +417,8 @@ class ShopPageHeaderViewModel @Inject constructor(
     }
 
     private suspend fun getShopBroadcasterConfig(shopId: String): Broadcaster.Config {
-        getBroadcasterShopConfigUseCase.get().params = GetBroadcasterShopConfigUseCase.createParams(shopId)
-        return getBroadcasterShopConfigUseCase.get().executeOnBackground()
+        getBroadcasterAuthorConfig.get().params = GetBroadcasterAuthorConfig.createParams(shopId)
+        return getBroadcasterAuthorConfig.get().executeOnBackground()
     }
 
     fun getFollowStatusData(shopId: String, followButtonVariantType: String) {
@@ -584,5 +601,18 @@ class ShopPageHeaderViewModel @Inject constructor(
                 affiliateChannel
             ).apply()
         }) {}
+    }
+
+    fun checkAffiliate(affiliateInput: AffiliateInput) {
+        launch {
+            try {
+                val result = affiliateEligibilityCheckUseCase.get().apply {
+                    params = AffiliateEligibilityCheckUseCase.createParam(affiliateInput)
+                }.executeOnBackground()
+                _resultAffiliate.value = Success(result)
+            } catch (e: Exception) {
+                _resultAffiliate.value = Fail(e)
+            }
+        }
     }
 }

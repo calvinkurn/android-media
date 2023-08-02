@@ -173,7 +173,6 @@ object AccountConstants {
         const val BASE_WEBVIEW_APPLINK = "tokopedia://webview?url="
         const val PATH_ABOUT_US = "about"
         const val OVO_IMG = "/img/android/ovo/drawable-xxxhdpi/ovo.png"
-        const val KEY_IMAGE_HOST = "image_host"
         const val CDN_URL = "https://images.tokopedia.net"
         const val PLAYSTORE_URL = "https://play.google.com/store/apps/details?id="
         const val TOKOPOINTS_ICON = TokopediaImageUrl.TOKOPOINTS_ICON
@@ -249,6 +248,7 @@ object AccountConstants {
         const val OVO = "ovo"
         const val GOPAY = "gopay"
         const val GOPAYLATER = "gopaylater"
+        const val GOPAYLATERCICIL = "gopaylatercicil"
         const val TOKOPOINT = "tokopoints"
         const val SALDO = "saldo"
         const val CO_BRAND_CC = "cobrandcc"
@@ -266,4 +266,7 @@ object AccountConstants {
         const val OFFER_VERIFY_PHONE = "phone-verif"
         const val OFFER_ACCOUNT_LINKING = "account-link"
     }
+
+    const val LABEL_OCL_BTM_SHEET = "one_click_login"
+
 }

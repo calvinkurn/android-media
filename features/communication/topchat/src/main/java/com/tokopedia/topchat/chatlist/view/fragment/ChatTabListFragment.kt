@@ -2,7 +2,6 @@ package com.tokopedia.topchat.chatlist.view.fragment
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,16 +12,13 @@ import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
-import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -32,10 +28,10 @@ import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
 import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
+import com.tokopedia.topchat.chatlist.data.ChatListPreference
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
+import com.tokopedia.topchat.chatlist.di.ActivityComponentFactory
 import com.tokopedia.topchat.chatlist.di.ChatListComponent
-import com.tokopedia.topchat.chatlist.di.ChatListContextModule
-import com.tokopedia.topchat.chatlist.di.DaggerChatListComponent
 import com.tokopedia.topchat.chatlist.view.activity.ChatListActivity
 import com.tokopedia.topchat.chatlist.view.activity.ChatListActivity.Companion.BUYER_ANALYTICS_LABEL
 import com.tokopedia.topchat.chatlist.view.activity.ChatListActivity.Companion.SELLER_ANALYTICS_LABEL
@@ -54,7 +50,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 import javax.inject.Inject
 
-open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract.TabFragment,
+class ChatTabListFragment constructor() :
+    BaseDaggerFragment(),
+    ChatListContract.TabFragment,
     SellerHomeFragmentListener {
 
     override fun getScreenName(): String = "/new-inbox/chat"
@@ -70,6 +68,9 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
 
     @Inject
     lateinit var chatListAnalytics: ChatListAnalytic
+
+    @Inject
+    lateinit var chatListPref: ChatListPreference
 
     private lateinit var viewModelProvider: ViewModelProvider
     private lateinit var webSocketViewModel: WebSocketViewModel
@@ -150,15 +151,12 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
         searchToolTip?.dismiss()
     }
 
-    /**
-     * set to `protected open` so that it can be disabled on UI test
-     */
-    protected open fun initToolTip() {
-        searchToolTip = ToolTipSearchPopupWindow(context, chatNotifCounterViewModel)
+    private fun initToolTip() {
+        searchToolTip = ToolTipSearchPopupWindow(context, chatListPref)
     }
 
-    protected open fun isOnBoardingAlreadyShown(): Boolean {
-        return context?.let { CoachMarkPreference.hasShown(it, TAG_ONBOARDING) } ?: true
+    private fun isOnBoardingAlreadyShown(): Boolean {
+        return chatListPref.coachMarkShown
     }
 
     override fun initInjector() {
@@ -170,11 +168,10 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
     }
 
     private fun initInjectorSellerApp() {
-        DaggerChatListComponent.builder()
-            .baseAppComponent((activity?.application as BaseMainApplication?)?.baseAppComponent)
-            .chatListContextModule(context?.let { ChatListContextModule(it) })
-            .build()
-            .inject(this)
+        ActivityComponentFactory.instance.createChatListComponent(
+            requireActivity().application,
+            requireContext()
+        ).inject(this)
     }
 
     override fun notifyViewCreated() {
@@ -225,21 +222,18 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
     }
 
     private fun initChatCounterObserver() {
-        chatNotifCounterViewModel.chatNotifCounter.observe(viewLifecycleOwner,
-            Observer { result ->
-                when (result) {
-                    is Success -> {
-                        tabList[0].counter =
-                            result.data.chatNotifications.chatTabCounter.unreadsSeller.toString()
-                        if (tabList.size > 1) {
-                            tabList[1].counter =
-                                result.data.chatNotifications.chatTabCounter.unreadsUser.toString()
-                        }
-                        setNotificationCounterOnTab()
+        chatNotifCounterViewModel.chatNotifCounter.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    tabList[0].counter = result.data.notification.chat.unreadsSeller.toString()
+                    if (tabList.size > 1) {
+                        tabList[1].counter = result.data.notification.chat.unreadsUser.toString()
                     }
+                    setNotificationCounterOnTab()
                 }
+                else -> {}
             }
-        )
+        }
     }
 
     private fun bindView(view: View) {
@@ -268,7 +262,8 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
             tabLayout?.newTab()?.let { tabLayout?.addTab(it) }
             tabLayout?.setBackgroundColor(
                 MethodChecker.getColor(
-                    context, com.tokopedia.unifyprinciples.R.color.Unify_Background
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_Background
                 )
             )
         }
@@ -285,9 +280,7 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
             }
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            tabLayout?.elevation = 0f
-        }
+        tabLayout?.elevation = 0f
         tabLayout?.background = context?.let {
             ContextCompat.getDrawable(it, R.drawable.bg_chat_list_tab_layout)
         }
@@ -322,7 +315,12 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
         if (tabList.size == 1) {
             tabLayout?.hide()
         } else {
-            goToLastSeenTab()
+            val selectedTab = arguments?.getInt(SELECTED_TAB_KEY)
+            if (selectedTab != null) {
+                goToSelectedTab(selectedTab)
+            } else {
+                goToLastSeenTab()
+            }
         }
     }
 
@@ -339,7 +337,8 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
         val titleView = customView?.findViewById<TextView>(R.id.title)
         titleView?.setTextColor(
             MethodChecker.getColor(
-                context, textColor
+                context,
+                textColor
             )
         )
 
@@ -349,8 +348,10 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
                 icon?.setImageDrawable(
                     context?.let {
                         getIconUnifyDrawable(
-                            it, IconUnify.SHOP,
-                            context?.let { ContextCompat.getColor(it, iconColor) })
+                            it,
+                            IconUnify.SHOP,
+                            context?.let { ContextCompat.getColor(it, iconColor) }
+                        )
                     }
                 )
             }
@@ -358,13 +359,18 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
                 icon?.setImageDrawable(
                     context?.let {
                         getIconUnifyDrawable(
-                            it, IconUnify.SMILE,
-                            context?.let { ContextCompat.getColor(it, iconColor) })
+                            it,
+                            IconUnify.SMILE,
+                            context?.let { ContextCompat.getColor(it, iconColor) }
+                        )
                     }
                 )
             }
-
         }
+    }
+
+    private fun goToSelectedTab(selectedTab: Int) {
+        viewPager?.setCurrentItem(selectedTab, false)
     }
 
     private fun goToLastSeenTab() {
@@ -379,18 +385,17 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
     private fun setTitleTab(title: String, counter: String): CharSequence? {
         if (counter.toLongOrZero() > 0) {
             val counterFormatted: String =
-                    if (counter.toLongOrZero() > 99) {
-                        "99+"
-                    } else {
-                        counter
-                    }
+                if (counter.toLongOrZero() > 99) {
+                    "99+"
+                } else {
+                    counter
+                }
 
             return if (title.length > MAX_LENGTH_TITLE) {
                 title.take(TITLE_LENGTH) + ".. ($counterFormatted)"
             } else {
                 "$title ($counterFormatted)"
             }
-
         }
         return MethodChecker.fromHtml(title)
     }
@@ -442,18 +447,17 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
     }
 
     private fun initWebsocketChatObserver() {
-        webSocketViewModel.itemChat.observe(this,
-            Observer { result ->
-                when (result) {
-                    is Success -> {
-                        when (result.data) {
-                            is IncomingChatWebSocketModel -> forwardToFragment(result.data as IncomingChatWebSocketModel)
-                            is IncomingTypingWebSocketModel -> forwardToFragment(result.data as IncomingTypingWebSocketModel)
-                        }
+        webSocketViewModel.itemChat.observe(this) { result ->
+            when (result) {
+                is Success -> {
+                    when (result.data) {
+                        is IncomingChatWebSocketModel -> forwardToFragment(result.data as IncomingChatWebSocketModel)
+                        is IncomingTypingWebSocketModel -> forwardToFragment(result.data as IncomingTypingWebSocketModel)
                     }
                 }
+                else -> {}
             }
-        )
+        }
     }
 
     private fun forwardToFragment(incomingChatWebSocketModel: IncomingChatWebSocketModel) {
@@ -533,10 +537,12 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
 
     override fun showSearchOnBoardingTooltip() {
         if (
-            chatNotifCounterViewModel.isSearchOnBoardingTooltipHasShown() ||
+            chatListPref.searchTooltipShown ||
             !isFinishShowingCoachMarkOnBoarding ||
             activity?.lifecycle?.currentState?.isAtLeast(Lifecycle.State.STARTED) == false
-        ) return
+        ) {
+            return
+        }
         val toolbar = chatTabListListener?.getActivityToolbar()
         toolbar?.post {
             val searchView = toolbar.findViewById<View>(R.id.menu_chat_search)
@@ -584,16 +590,16 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
             return
         }
         tabLayout?.viewTreeObserver?.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                tabLayout?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-                if (!isOnBoardingAlreadyShown()) {
-                    showOnBoarding()
-                } else {
-                    isFinishShowingCoachMarkOnBoarding = true
+                ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    tabLayout?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                    if (!isOnBoardingAlreadyShown()) {
+                        showOnBoarding()
+                    } else {
+                        isFinishShowingCoachMarkOnBoarding = true
+                    }
                 }
-            }
-        })
+            })
     }
 
     private fun showOnBoarding() {
@@ -621,9 +627,8 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
             showSearchOnBoardingTooltip()
         }
         coachMarkOnBoarding.show(activity, TAG_ONBOARDING, tutorials)
-        context?.let { CoachMarkPreference.setShown(it, TAG_ONBOARDING, true) }
+        chatListPref.coachMarkShown = true
     }
-
 
     private fun stopLiveDataObserver() {
         if (::chatNotifCounterViewModel.isInitialized) {
@@ -640,25 +645,29 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
     }
 
     companion object {
-        private val TAG_ONBOARDING = ChatTabListFragment::class.java.name + ".OnBoarding"
+        val TAG_ONBOARDING = ChatTabListFragment::class.java.name + ".OnBoarding"
         private const val LIMIT_NOTIFICATION = 99
         private const val LIMIT_NOTIFICATION_STRING = "99+"
         private const val MAX_LENGTH_TITLE = 10
         private const val TITLE_LENGTH = 9
 
         // Text Color vals
-        private val SELECTED_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_G500
+        private val SELECTED_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_GN500
         private val UNSELECTED_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_NN600
 
         // Icon Color vals
-        private val SELECTED_ICON_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_G500
+        private val SELECTED_ICON_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_GN500
         private val UNSELECTED_ICON_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_NN500
 
+        const val SELECTED_TAB_KEY = "selected_tab"
 
         @JvmStatic
-        fun create(): ChatTabListFragment {
-            return ChatTabListFragment()
+        fun create(bundle: Bundle? = null): ChatTabListFragment {
+            return ChatTabListFragment().also { fragment ->
+                bundle?.let {
+                    fragment.arguments = it
+                }
+            }
         }
     }
-
 }

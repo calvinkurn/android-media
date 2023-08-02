@@ -15,6 +15,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.contactus'
+    testNamespace 'com.tokopedia.contactus.test'
     buildFeatures {
         viewBinding true
     }
@@ -49,11 +51,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.coreNetwork)
     implementation projectOrAar(rootProject.ext.libraries.webview)
     implementation projectOrAar(rootProject.ext.features.basemvvm)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.features.csat_rating)
     implementation projectOrAar(rootProject.ext.libraries.utils)
-    implementation projectOrAar(rootProject.ext.libraries.imageuploader)
     implementation rootProject.ext.networkDependencies.glide
     implementation projectOrAar(rootProject.ext.libraries.imagePreview)
 
@@ -94,6 +94,8 @@ dependencies {
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
 
+    implementation rootProject.ext.firebase.crashlytics
+
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
@@ -121,6 +123,7 @@ dependencies {
 
     //Tracker
     implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation rootProject.ext.firebase.crashlytics
 
 }
 

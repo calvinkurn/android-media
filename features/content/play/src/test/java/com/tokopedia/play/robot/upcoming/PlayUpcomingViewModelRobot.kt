@@ -1,7 +1,6 @@
 package com.tokopedia.play.robot.upcoming
 
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.domain.GetChannelStatusUseCase
 import com.tokopedia.play.domain.GetSocketCredentialUseCase
 import com.tokopedia.play.domain.PlayChannelReminderUseCase
@@ -17,7 +16,6 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.test.runBlockingTest
 import java.io.Closeable
 

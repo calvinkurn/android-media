@@ -5,13 +5,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.gm.common.utils.SpannableUtil
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil
 import com.tokopedia.power_merchant.subscribe.databinding.ItemPmRegistrationTermBinding
 import com.tokopedia.power_merchant.subscribe.view.model.PmActiveTermUiModel
-import com.tokopedia.power_merchant.subscribe.view.model.RegistrationTermUiModel
 
 /**
  * Created By @ilhamsuaib on 03/03/21
@@ -57,8 +56,8 @@ class PmActiveTermAdapter(
         private fun setupTermDescription(term: PmActiveTermUiModel) {
             with(binding) {
                 if (!term.clickableText.isNullOrBlank() && !term.appLinkOrUrl.isNullOrBlank()) {
-                    val ctaTextColor = com.tokopedia.unifyprinciples.R.color.Unify_G500
-                    val termDescription = PowerMerchantSpannableUtil.createSpannableString(
+                    val ctaTextColor = com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    val termDescription = SpannableUtil.createSpannableString(
                         text = term.descriptionHtml.parseAsHtml(),
                         highlightText = term.clickableText.orEmpty(),
                         colorId = root.context.getResColor(ctaTextColor),

@@ -1,10 +1,10 @@
 package com.tokopedia.topchat.chatlist.view.viewmodel
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Build
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -13,12 +13,11 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
+import com.tokopedia.shopadmin.common.util.AccessId
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.data.ChatListQueries.MUTATION_CHAT_MARK_READ
 import com.tokopedia.topchat.chatlist.data.ChatListQueries.MUTATION_CHAT_MARK_UNREAD
-import com.tokopedia.topchat.chatlist.data.ChatListQueries.QUERY_CHAT_BLAST_SELLER_METADATA
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_ALL
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_TOPBOT
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREAD
@@ -28,13 +27,14 @@ import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_SEL
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_USER
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatChangeStateResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatDelete
+import com.tokopedia.topchat.chatlist.domain.pojo.ChatListParam
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
-import com.tokopedia.topchat.chatlist.domain.pojo.chatblastseller.BlastSellerMetaDataResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.chatblastseller.ChatBlastSellerMetadata
 import com.tokopedia.topchat.chatlist.domain.pojo.chatlistticker.ChatListTickerResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.operational_insight.ShopChatTicker
 import com.tokopedia.topchat.chatlist.domain.pojo.whitelist.ChatWhitelistFeatureResponse
 import com.tokopedia.topchat.chatlist.domain.usecase.ChatBanedSellerUseCase
+import com.tokopedia.topchat.chatlist.domain.usecase.GetChatBlastSellerMetaDataUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatListMessageUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatListTickerUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatWhitelistFeature
@@ -44,6 +44,7 @@ import com.tokopedia.topchat.chatlist.domain.usecase.MutationUnpinChatUseCase
 import com.tokopedia.topchat.chatroom.view.uimodel.ReplyParcelableModel
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
+import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -53,6 +54,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -67,10 +69,10 @@ interface ChatItemListContract {
     fun markChatAsUnread(msgIds: List<String>, result: (Result<ChatChangeStateResponse>) -> Unit)
     fun loadChatBannedSellerStatus()
     fun pinUnpinChat(
-            msgId: String,
-            isPinChat: Boolean = true,
-            onSuccess: (Boolean) -> Unit,
-            onError: (Throwable) -> Unit
+        msgId: String,
+        isPinChat: Boolean = true,
+        onSuccess: (Boolean) -> Unit,
+        onError: (Throwable) -> Unit
     )
 
     fun clearPinUnpinData()
@@ -88,7 +90,8 @@ class ChatItemListViewModel @Inject constructor(
     private val moveChatToTrashUseCase: MutationMoveChatToTrashUseCase,
     private val operationalInsightUseCase: GetOperationalInsightUseCase,
     private val getChatListTickerUseCase: GetChatListTickerUseCase,
-    private val sharedPref: SharedPreferences,
+    private val getChatBlastSellerMetaDataUseCase: GetChatBlastSellerMetaDataUseCase,
+    private val cacheManager: TopchatCacheManager,
     private val userSession: UserSessionInterface,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main), ChatItemListContract {
@@ -129,11 +132,11 @@ class ChatItemListViewModel @Inject constructor(
 
     private val _chatOperationalInsight = MutableLiveData<Result<ShopChatTicker>>()
     val chatOperationalInsight: LiveData<Result<ShopChatTicker>>
-        get()= _chatOperationalInsight
+        get() = _chatOperationalInsight
 
     private val _chatListTicker = MutableLiveData<Result<ChatListTickerResponse.ChatListTicker>>()
     val chatListTicker: LiveData<Result<ChatListTickerResponse.ChatListTicker>>
-        get()= _chatListTicker
+        get() = _chatListTicker
 
     private var getChatAdminAccessJob: Job? = null
 
@@ -162,18 +165,19 @@ class ChatItemListViewModel @Inject constructor(
     }
 
     private fun queryGetChatListMessage(page: Int, filter: String, tab: String) {
-        getChatListUseCase.getChatList(page, filter, tab,
-                { chats, pinChats, unpinChats ->
-                    if (page == 1) {
-                        pinnedMsgId.addAll(pinChats)
-                    }
-                    unpinnedMsgId.addAll(unpinChats)
-                    _mutateChatList.value = Success(chats)
-                },
-                {
-                    _mutateChatList.value = Fail(it)
+        val p = ChatListParam(page, filter, tab)
+        launch {
+            try {
+                val result = getChatListUseCase(p)
+                if (page == 1) {
+                    pinnedMsgId.addAll(result.pinned)
                 }
-        )
+                unpinnedMsgId.addAll(result.unpinned)
+                _mutateChatList.value = Success(result.chatListPojo)
+            } catch (e: Exception) {
+                _mutateChatList.value = Fail(e)
+            }
+        }
     }
 
     fun whenChatAdminAuthorized(tab: String, action: () -> Unit) {
@@ -195,17 +199,17 @@ class ChatItemListViewModel @Inject constructor(
 
     private fun setChatAdminAccessJob() {
         if (getChatAdminAccessJob?.isCompleted != false) {
-            getChatAdminAccessJob =
-                    launchCatchError(
-                            block = {
-                                _isChatAdminEligible.postValue(withContext(dispatcher.io) {
-                                    Success(getIsChatAdminAccessAuthorized())
-                                })
-                            },
-                            onError = {
-                                _isChatAdminEligible.value = Fail(it)
-                            }
-                    )
+            getChatAdminAccessJob = viewModelScope.launch {
+                try {
+                    withContext(dispatcher.io) {
+                        _isChatAdminEligible.postValue(
+                            Success(getIsChatAdminAccessAuthorized())
+                        )
+                    }
+                } catch (throwable: Throwable) {
+                    _isChatAdminEligible.value = Fail(throwable)
+                }
+            }
         }
     }
 
@@ -218,7 +222,10 @@ class ChatItemListViewModel @Inject constructor(
     }
 
     private suspend fun checkChatAdminEligiblity(): Boolean {
-        return AuthorizeAccessUseCase.createRequestParams(userSession.shopId.toLongOrZero(), AccessId.CHAT).let { requestParams ->
+        return AuthorizeAccessUseCase.createRequestParams(
+            userSession.shopId.toLongOrZero(),
+            AccessId.CHAT
+        ).let { requestParams ->
             authorizeAccessUseCase.execute(requestParams)
         }
     }
@@ -227,9 +234,9 @@ class ChatItemListViewModel @Inject constructor(
         launch {
             try {
                 val result = moveChatToTrashUseCase(messageId)
-                if(result.chatMoveToTrash.list.isNotEmpty()) {
+                if (result.chatMoveToTrash.list.isNotEmpty()) {
                     val deletedChat = result.chatMoveToTrash.list.first()
-                    if(deletedChat.isSuccess == Constant.INT_STATUS_TRUE) {
+                    if (deletedChat.isSuccess == Constant.INT_STATUS_TRUE) {
                         _deleteChat.value = Success(deletedChat)
                         clearFromPinUnpin(deletedChat.messageId)
                     } else {
@@ -247,12 +254,18 @@ class ChatItemListViewModel @Inject constructor(
         unpinnedMsgId.remove(messageId)
     }
 
-    override fun markChatAsRead(msgIds: List<String>, result: (Result<ChatChangeStateResponse>) -> Unit) {
+    override fun markChatAsRead(
+        msgIds: List<String>,
+        result: (Result<ChatChangeStateResponse>) -> Unit
+    ) {
         val query = MUTATION_CHAT_MARK_READ
         changeMessageState(query, msgIds, result)
     }
 
-    override fun markChatAsUnread(msgIds: List<String>, result: (Result<ChatChangeStateResponse>) -> Unit) {
+    override fun markChatAsUnread(
+        msgIds: List<String>,
+        result: (Result<ChatChangeStateResponse>) -> Unit
+    ) {
         val query = MUTATION_CHAT_MARK_UNREAD
         changeMessageState(query, msgIds, result)
     }
@@ -266,10 +279,10 @@ class ChatItemListViewModel @Inject constructor(
     }
 
     override fun pinUnpinChat(
-            msgId: String,
-            isPinChat: Boolean,
-            onSuccess: (Boolean) -> Unit,
-            onError: (Throwable) -> Unit
+        msgId: String,
+        isPinChat: Boolean,
+        onSuccess: (Boolean) -> Unit,
+        onError: (Throwable) -> Unit
     ) {
         if (isPinChat) {
             pinChatUseCase.pinChat(msgId, onSuccess, onError)
@@ -288,39 +301,40 @@ class ChatItemListViewModel @Inject constructor(
     }
 
     private fun changeMessageState(
-            query: String,
-            msgIds: List<String>,
-            result: (Result<ChatChangeStateResponse>) -> Unit
+        query: String,
+        msgIds: List<String>,
+        result: (Result<ChatChangeStateResponse>) -> Unit
     ) {
         val params = mapOf(PARAM_MESSAGE_IDS to msgIds)
 
-        launchCatchError(block = {
-            val data = withContext(dispatcher.io) {
-                val request = GraphqlRequest(query, ChatChangeStateResponse::class.java, params)
-                repository.response(listOf(request))
-            }.getSuccessData<ChatChangeStateResponse>()
-            result(Success(data))
-        }
+        launchCatchError(
+            block = {
+                val data = withContext(dispatcher.io) {
+                    val request = GraphqlRequest(query, ChatChangeStateResponse::class.java, params)
+                    repository.response(listOf(request))
+                }.getSuccessData<ChatChangeStateResponse>()
+                result(Success(data))
+            }
         ) {
             result(Fail(it))
         }
     }
 
     fun loadChatBlastSellerMetaData() {
-        val query = QUERY_CHAT_BLAST_SELLER_METADATA
-        launchCatchError(block = {
-            val data = withContext(dispatcher.io) {
-                val request = GraphqlRequest(query, BlastSellerMetaDataResponse::class.java, emptyMap())
-                repository.response(listOf(request))
-            }.getSuccessData<BlastSellerMetaDataResponse>()
-            getChatAdminAccessJob?.join()
-            if (isAdminHasAccess) {
-                onSuccessLoadChatBlastSellerMetaData(data.chatBlastSellerMetadata)
-            } else {
+        viewModelScope.launch {
+            try {
+                getChatBlastSellerMetaDataUseCase(Unit).collect {
+                    getChatAdminAccessJob?.join()
+                    if (isAdminHasAccess) {
+                        onSuccessLoadChatBlastSellerMetaData(it.chatBlastSellerMetadata)
+                    } else {
+                        onErrorLoadChatBlastSellerMetaData()
+                    }
+                }
+            } catch (throwable: Throwable) {
+                Timber.d(throwable)
                 onErrorLoadChatBlastSellerMetaData()
             }
-        }) {
-            onErrorLoadChatBlastSellerMetaData()
         }
     }
 
@@ -348,7 +362,9 @@ class ChatItemListViewModel @Inject constructor(
 
     fun loadTopBotWhiteList() {
         chatWhitelistFeature.getWhiteList(
-                GetChatWhitelistFeature.PARAM_VALUE_FEATURE_TOPBOT, ::onSuccessLoadWhiteList, ::onErrorGetWhiteList
+            GetChatWhitelistFeature.PARAM_VALUE_FEATURE_TOPBOT,
+            ::onSuccessLoadWhiteList,
+            ::onErrorGetWhiteList
         )
     }
 
@@ -365,8 +381,8 @@ class ChatItemListViewModel @Inject constructor(
 
     fun getFilterTitles(context: Context, isTabSeller: Boolean): List<String> {
         val filters = arrayListOf(
-                context.getString(R.string.filter_chat_all),
-                context.getString(R.string.filter_chat_unread)
+            context.getString(R.string.filter_chat_all),
+            context.getString(R.string.filter_chat_unread)
         )
         if (isTabSeller) {
             filters.add(context.getString(R.string.filter_chat_unreplied))
@@ -386,7 +402,6 @@ class ChatItemListViewModel @Inject constructor(
     }
 
     private fun cancelAllUseCase() {
-        getChatListUseCase.cancelRunningOperation()
         coroutineContext.cancelChildren()
     }
 
@@ -401,30 +416,28 @@ class ChatItemListViewModel @Inject constructor(
                 _chatOperationalInsight.value = Success(it)
             }
         }, onError = {
-            _chatOperationalInsight.value = Fail(it)
-        })
+                _chatOperationalInsight.value = Fail(it)
+            })
     }
 
     fun getChatListTicker() {
-        launchCatchError(block =  {
+        launchCatchError(block = {
             val response = getChatListTickerUseCase(Unit).chatlistTicker
             _chatListTicker.value = Success(response)
         }, onError = {
-            _chatListTicker.value = Fail(it)
-        })
+                _chatListTicker.value = Fail(it)
+            })
     }
 
     private fun shouldShowOperationalInsightTicker(): Boolean {
-        val nextMonday = sharedPref.getLong(getTickerPrefName(), 0)
+        val nextMonday = cacheManager.getLongCache(getTickerPrefName(), 0)
         val todayTimeMillis = System.currentTimeMillis()
         return todayTimeMillis > nextMonday
     }
 
     fun saveNextMondayDate() {
         val newNextMonday = Utils.getNextParticularDay(Calendar.MONDAY)
-        sharedPref.edit()
-            .putLong(getTickerPrefName(), newNextMonday)
-            .apply()
+        cacheManager.saveLongCache(getTickerPrefName(), newNextMonday)
     }
 
     private fun getTickerPrefName(): String {
@@ -432,14 +445,16 @@ class ChatItemListViewModel @Inject constructor(
     }
 
     fun shouldShowBubbleTicker(): Boolean {
-        return sharedPref.getBoolean(BUBBLE_TICKER_PREF_NAME, true) &&
+        return getBooleanCache(BUBBLE_TICKER_PREF_NAME) &&
             (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
     }
 
-    fun saveTickerPref(prefName: String) {
-        sharedPref.edit()
-            .putBoolean(prefName, false)
-            .apply()
+    fun saveBooleanCache(cacheName: String, value: Boolean) {
+        cacheManager.saveState(cacheName, value)
+    }
+
+    fun getBooleanCache(cacheName: String): Boolean {
+        return cacheManager.getPreviousState(cacheName, true)
     }
 
     companion object {
@@ -448,9 +463,9 @@ class ChatItemListViewModel @Inject constructor(
         const val OPERATIONAL_INSIGHT_NEXT_MONDAY = "topchat_operational_insight_next_monday"
         const val BUBBLE_TICKER_PREF_NAME = "topchat_seller_bubble_chat_ticker"
         val arrayFilterParam = arrayListOf(
-                PARAM_FILTER_ALL,
-                PARAM_FILTER_UNREAD,
-                PARAM_FILTER_UNREPLIED
+            PARAM_FILTER_ALL,
+            PARAM_FILTER_UNREAD,
+            PARAM_FILTER_UNREPLIED
         )
     }
 }

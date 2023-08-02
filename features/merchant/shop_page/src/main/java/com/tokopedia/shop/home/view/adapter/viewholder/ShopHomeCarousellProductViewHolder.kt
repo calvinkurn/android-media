@@ -117,7 +117,7 @@ class ShopHomeCarousellProductViewHolder(
         )
         val defaultCtaColor = MethodChecker.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_G500
+            com.tokopedia.unifyprinciples.R.color.Unify_GN500
         )
         textViewTitle?.setTextColor(defaultTitleColor)
         textViewCta?.setTextColor(defaultCtaColor)
@@ -135,10 +135,11 @@ class ShopHomeCarousellProductViewHolder(
         initProductCardListener(shopHomeProductViewModelList)
         val listProductCardModel = shopHomeProductViewModelList.map {
             ShopPageHomeMapper.mapToProductCardModel(
-                isHasAtc(),
-                false,
-                it,
-                false
+                isHasAddToCartButton = isHasAtc(),
+                hasThreeDots = false,
+                shopHomeProductViewModel = it,
+                isWideContent = false,
+                productRating = if (it.rating != 0.0) it.rating.toString() else ""
             )
         }
         if (isProductCardSingleOrDouble(shopHomeProductViewModelList)) {

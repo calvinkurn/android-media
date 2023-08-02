@@ -309,6 +309,7 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
 
     public void clearToken() {
         setToken(null, null);
+        clearTokenDataStore();
     }
 
     public void setToken(String accessToken, String tokenType) {
@@ -512,8 +513,9 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
         setPhoneNumber(phoneNumber);
     }
 
-    public void logoutSession() {
+    public void logoutUserSession() {
         cleanKey(LOGIN_SESSION, LOGIN_ID);
+        cleanKey(LOGIN_SESSION, GTM_LOGIN_ID);
         cleanKey(LOGIN_SESSION, FULL_NAME);
         cleanKey(LOGIN_SESSION, SHOP_ID);
         cleanKey(LOGIN_SESSION, SHOP_NAME);
@@ -534,6 +536,11 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
         setString(LOGIN_SESSION, LOGIN_METHOD, "");
         setBoolean(LOGIN_SESSION, TWITTER_SHOULD_POST, false);
         cleanKey(LOGIN_SESSION, IS_SHOP_OFFICIAL_STORE);
+    }
+
+    public void logoutSession() {
+        logoutUserSession();
+        logoutDataStoreSession();
     }
 
     /**

@@ -6,11 +6,15 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebView
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -34,8 +38,6 @@ import com.tokopedia.merchantvoucher.voucherDetail.presenter.MerchantVoucherDeta
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.shop.common.di.ShopCommonModule
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.fragment_merchant_voucher_detail.*
-import kotlinx.android.synthetic.main.partial_merchant_voucher_detail_loading.*
 import javax.inject.Inject
 
 /**
@@ -50,6 +52,21 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
     var voucherShopId: String? = null
 
     var loadingUseMerchantVoucher: ProgressDialog? = null
+
+    private var btnUseVoucher: Button? = null
+    private var tvSeeCart: TextView? = null
+    private var btnContainer: LinearLayout? = null
+    private var vgVoucherStatus: LinearLayout? = null
+    private var vgContent: LinearLayout? = null
+    private var loadingView: LinearLayout? = null
+    private var ivVoucherBanner: ImageView? = null
+    private var tvVoucherTitle: TextView? = null
+    private var tvMinTransaction: TextView? = null
+    private var tvMinTransactionLabel: TextView? = null
+    private var tvValidThru: TextView? = null
+    private var tvVoucherStatus: TextView? = null
+    private var tvTncLabel: TextView? = null
+    private var webViewTnc: WebView? = null
 
     @Inject
     lateinit var presenter: MerchantVoucherDetailPresenter
@@ -86,13 +103,27 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_merchant_voucher_detail, container, false)
+        btnUseVoucher = view.findViewById(R.id.btnUseVoucher)
+        tvSeeCart = view.findViewById(R.id.tvSeeCart)
+        btnContainer = view.findViewById(R.id.btnContainer)
+        vgVoucherStatus = view.findViewById(R.id.vgVoucherStatus)
+        vgContent = view.findViewById(R.id.vgContent)
+        ivVoucherBanner = view.findViewById(R.id.ivVoucherBanner)
+        tvVoucherTitle = view.findViewById(R.id.tvVoucherTitle)
+        tvMinTransactionLabel = view.findViewById(R.id.tvMinTransactionLabel)
+        tvMinTransaction = view.findViewById(R.id.tvMinTransaction)
+        tvValidThru = view.findViewById(R.id.tvValidThru)
+        tvVoucherStatus = view.findViewById(R.id.tvVoucherStatus)
+        tvTncLabel = view.findViewById(R.id.tvTncLabel)
+        webViewTnc = view.findViewById(R.id.webViewTnc)
+        loadingView = view.findViewById(R.id.loadingView)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         loadVoucherDetail()
-        tvSeeCart.setOnClickListener {
+        tvSeeCart?.setOnClickListener {
             if (RouteManager.isSupportApplink(context!!, ApplinkConst.CART)) {
                 val intent = RouteManager.getIntent(context!!, ApplinkConst.CART)
                 intent?.run {
@@ -100,7 +131,7 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
                 }
             }
         }
-        btnUseVoucher.setOnClickListener {
+        btnUseVoucher?.setOnClickListener {
             merchantVoucherTracking?.clickUseVoucherFromDetail(voucherId.toString())
 
             //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below code for future release
@@ -121,7 +152,7 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
                 val snackbar = Snackbar.make(findViewById(android.R.id.content), getString(R.string.title_voucher_code_copied),
                         Snackbar.LENGTH_LONG)
                 snackbar.setAction(activity!!.getString(R.string.close)) { snackbar.dismiss() }
-                snackbar.setActionTextColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                snackbar.setActionTextColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
                 snackbar.show()
             }
         }
@@ -129,7 +160,7 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
             btnContainer?.show()
             btnUseVoucher?.show()
         } else {
-            btnUseVoucher.hide()
+            btnUseVoucher?.hide()
         }
     }
 
@@ -186,51 +217,51 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
     override fun onSuccessGetMerchantVoucherDetail(merchantVoucherViewModel: MerchantVoucherViewModel) {
         hideLoading()
         if (merchantVoucherViewModel.bannerUrl.isNullOrEmpty()) {
-            ivVoucherBanner.visibility = View.GONE
+            ivVoucherBanner?.visibility = View.GONE
         } else {
             ImageHandler.loadImageAndCache(ivVoucherBanner, merchantVoucherViewModel.bannerUrl)
-            ivVoucherBanner.visibility = View.VISIBLE
+            ivVoucherBanner?.visibility = View.VISIBLE
         }
         val voucherString = merchantVoucherViewModel.getTypeString(context!!) + " " +
                 merchantVoucherViewModel.getAmountString()
-        tvVoucherTitle.text = voucherString
+        tvVoucherTitle?.text = voucherString
         if (merchantVoucherViewModel.minimumSpend <= 0) {
-            tvMinTransaction.visibility = View.GONE
-            tvMinTransactionLabel.text = getString(R.string.no_min_spend)
+            tvMinTransaction?.visibility = View.GONE
+            tvMinTransactionLabel?.text = getString(R.string.no_min_spend)
         } else {
-            tvMinTransaction.visibility = View.VISIBLE
-            tvMinTransactionLabel.text = getString(R.string.min_transaction_colon)
-            tvMinTransaction.text = merchantVoucherViewModel.getMinSpendAmountString()
+            tvMinTransaction?.visibility = View.VISIBLE
+            tvMinTransactionLabel?.text = getString(R.string.min_transaction_colon)
+            tvMinTransaction?.text = merchantVoucherViewModel.getMinSpendAmountString()
         }
-        tvValidThru.text = merchantVoucherViewModel.getValidThruString()
+        tvValidThru?.text = merchantVoucherViewModel.getValidThruString()
 
         if (merchantVoucherViewModel.status == MerchantVoucherStatusTypeDef.TYPE_AVAILABLE &&
                 !presenter.isMyShop(voucherShopId)) {
-            vgVoucherStatus.visibility = View.GONE
-            btnContainer.visibility = View.VISIBLE
+            vgVoucherStatus?.visibility = View.GONE
+            btnContainer?.visibility = View.VISIBLE
         } else if (merchantVoucherViewModel.status == MerchantVoucherStatusTypeDef.TYPE_IN_USE) {
             //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below code for future release
-            /*vgVoucherStatus.visibility = View.VISIBLE
+            /*vgVoucherStatus?.visibility = View.VISIBLE
             tvSeeCart.visibility = View.VISIBLE
             tvVoucherStatus.text = merchantVoucherViewModel.getStatusString(context!!)
             btnContainer.visibility = View.GONE*/
 
             //TOGGLE_MVC_OFF
-            vgVoucherStatus.visibility = View.GONE
-            btnContainer.visibility = View.VISIBLE
+            vgVoucherStatus?.visibility = View.GONE
+            btnContainer?.visibility = View.VISIBLE
         } else {
-            vgVoucherStatus.visibility = View.VISIBLE
-            tvSeeCart.visibility = View.GONE
-            tvVoucherStatus.text = merchantVoucherViewModel.getStatusString(context!!)
-            btnContainer.visibility = View.GONE
+            vgVoucherStatus?.visibility = View.VISIBLE
+            tvSeeCart?.visibility = View.GONE
+            tvVoucherStatus?.text = merchantVoucherViewModel.getStatusString(context!!)
+            btnContainer?.visibility = View.GONE
         }
         if (merchantVoucherViewModel.tnc.isNullOrEmpty()) {
-            tvTncLabel.visibility = View.GONE
-            webViewTnc.visibility = View.GONE
+            tvTncLabel?.visibility = View.GONE
+            webViewTnc?.visibility = View.GONE
         } else {
-            tvTncLabel.visibility = View.VISIBLE
-            webViewTnc.visibility = View.VISIBLE
-            webViewTnc.loadData(processWebViewHtmlStyle(merchantVoucherViewModel.tnc!!), "text/html; charset=utf-8", "UTF-8")
+            tvTncLabel?.visibility = View.VISIBLE
+            webViewTnc?.visibility = View.VISIBLE
+            webViewTnc?.loadData(processWebViewHtmlStyle(merchantVoucherViewModel.tnc!!), "text/html; charset=utf-8", "UTF-8")
         }
     }
 
@@ -285,13 +316,13 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
     }
 
     private fun showLoading() {
-        loadingView.visibility = View.VISIBLE
-        vgContent.visibility = View.GONE
+        loadingView?.visibility = View.VISIBLE
+        vgContent?.visibility = View.GONE
     }
 
     private fun hideLoading() {
-        loadingView.visibility = View.GONE
-        vgContent.visibility = View.VISIBLE
+        loadingView?.visibility = View.GONE
+        vgContent?.visibility = View.VISIBLE
     }
 
     override fun onDestroy() {

@@ -12,6 +12,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.visible
@@ -23,11 +25,23 @@ import com.tokopedia.thankyou_native.presentation.views.GyroView
 import com.tokopedia.thankyou_native.presentation.views.TopAdsView
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.htmltags.HtmlUtil
 import java.util.Calendar
 import java.util.Date
 import kotlinx.android.synthetic.main.thank_fragment_deferred.*
+import kotlinx.android.synthetic.main.thank_fragment_deferred.btnShopAgain
+import kotlinx.android.synthetic.main.thank_fragment_deferred.carouselBanner
+import kotlinx.android.synthetic.main.thank_fragment_deferred.featureListingContainer
+import kotlinx.android.synthetic.main.thank_fragment_deferred.loadingLayout
+import kotlinx.android.synthetic.main.thank_fragment_deferred.recommendationContainer
+import kotlinx.android.synthetic.main.thank_fragment_deferred.rvBottomContent
+import kotlinx.android.synthetic.main.thank_fragment_deferred.topAdsView
+import kotlinx.android.synthetic.main.thank_fragment_deferred.topTicker
+import kotlinx.android.synthetic.main.thank_fragment_deferred.tvBannerTitle
+import kotlinx.android.synthetic.main.thank_fragment_deferred.tvTotalAmount
+import kotlinx.android.synthetic.main.thank_fragment_success_payment.*
 
 class DeferredPaymentFragment : ThankYouBaseFragment() {
 
@@ -46,6 +60,9 @@ class DeferredPaymentFragment : ThankYouBaseFragment() {
     override fun getRecommendationContainer(): LinearLayout? = recommendationContainer
     override fun getFeatureListingContainer(): GyroView? = featureListingContainer
     override fun getTopAdsView(): TopAdsView? = topAdsView
+    override fun getBottomContentRecyclerView(): RecyclerView? = rvBottomContent
+    override fun getBannerTitle(): Typography? = tvBannerTitle
+    override fun getBannerCarousel(): CarouselUnify? = carouselBanner
 
     override fun getTopTickerView(): Ticker? = topTicker
 
@@ -79,6 +96,9 @@ class DeferredPaymentFragment : ThankYouBaseFragment() {
                     highlightAmountDigits = false,
                     paymentType = paymentType
                 )
+                else -> {
+                    //no-op
+                }
             }
         }
         if (thanksPageData.customDataMessage == null || thanksPageData.customDataMessage.wtvText.isNullOrBlank()) {
@@ -99,7 +119,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment() {
             tvTotalAmount.setTextColor(
                 ContextCompat.getColor(
                     it,
-                    com.tokopedia.unifycomponents.R.color.Unify_N700_96
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
                 )
             )
             val spannable =
@@ -110,7 +130,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment() {
                     ForegroundColorSpan(
                         ContextCompat.getColor(
                             it,
-                            com.tokopedia.unifycomponents.R.color.Unify_G500
+                            com.tokopedia.unifyprinciples.R.color.Unify_GN500
                         )
                     ),
                     startIndex, spannable.length,
@@ -297,11 +317,15 @@ class DeferredPaymentFragment : ThankYouBaseFragment() {
 
         const val GATEWAY_KLIK_BCA = "KlikBCA"
 
-        fun getFragmentInstance(bundle: Bundle, thanksPageData: ThanksPageData):
-                DeferredPaymentFragment = DeferredPaymentFragment().apply {
+        fun getFragmentInstance(
+            bundle: Bundle,
+            thanksPageData: ThanksPageData,
+            isWidgetOrderingEnabled: Boolean,
+        ): DeferredPaymentFragment = DeferredPaymentFragment().apply {
             bundle.let {
                 arguments = bundle
                 bundle.putParcelable(ARG_THANK_PAGE_DATA, thanksPageData)
+                bundle.putBoolean(ARG_IS_WIDGET_ORDERING_ENABLED, isWidgetOrderingEnabled)
             }
         }
     }

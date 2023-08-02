@@ -31,10 +31,12 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
         init {
             itemView.setOnClickListener { v: View ->
                 RouteManager.route(v.context, ApplinkConstInternalPromo.TOKOPOINTS_COUPON)
-                AnalyticsTrackerUtil.sendEvent(itemView.context,
-                        AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                        AnalyticsTrackerUtil.ActionKeys.CLICK_SEE_ALL_COUPON, ""
+                AnalyticsTrackerUtil.sendEvent(
+                    itemView.context,
+                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_SEE_ALL_COUPON,
+                    ""
                 )
             }
         }
@@ -76,22 +78,24 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
         val itemView: View
         if (viewType == VIEW_HEADER) {
             itemView = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.tp_item_my_coupon_section_header, parent, false)
+                .inflate(R.layout.tp_item_my_coupon_section_header, parent, false)
             return HeaderViewHolder(itemView)
         }
         itemView = LayoutInflater.from(parent.context)
-                .inflate(R.layout.tp_item_my_coupon_section, parent, false)
+            .inflate(R.layout.tp_item_my_coupon_section, parent, false)
         return ViewHolder(itemView)
     }
 
     override fun onBindViewHolder(pHolder: RecyclerView.ViewHolder, position: Int) {
-
         if (position > 0 && mItems.size > position - 1) {
             val item = mItems[position - 1]
             if (pHolder is ViewHolder) {
                 val holder = pHolder
-                ImageHandler.loadImageFitCenter(holder.imgBanner.context, holder.imgBanner,
-                        if (TextUtils.isEmpty(item.thumbnailUrlMobile)) item.imageUrlMobile else item.thumbnailUrlMobile)
+                ImageHandler.loadImageFitCenter(
+                    holder.imgBanner.context,
+                    holder.imgBanner,
+                    if (TextUtils.isEmpty(item.thumbnailUrlMobile)) item.imageUrlMobile else item.thumbnailUrlMobile
+                )
                 if (item.usage != null) {
                     holder.label.visibility = View.VISIBLE
                     holder.value.visibility = View.VISIBLE
@@ -122,8 +126,9 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
                     holder.timer!!.cancel()
                 }
                 if (item.usage != null && item.usage.activeCountDown < 1) {
-                    if (item.usage.expiredCountDown > 0
-                            && item.usage.expiredCountDown <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S) {
+                    if (item.usage.expiredCountDown > 0 &&
+                        item.usage.expiredCountDown <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S
+                    ) {
                         holder.progressTimer.max = CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S.toInt()
                         holder.progressTimer.visibility = View.VISIBLE
                         holder.value.visibility = View.VISIBLE
@@ -139,15 +144,17 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
                                 val hours = (l / (1000 * 60 * 60) % 24).toInt()
                                 holder.value.text = String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds)
                                 try {
-                                    holder.value.setTextColor(ContextCompat.getColor(holder.value.context, com.tokopedia.unifyprinciples.R.color.Unify_R500))
+                                    holder.value.setTextColor(ContextCompat.getColor(holder.value.context, com.tokopedia.unifyprinciples.R.color.Unify_RN500))
                                 } catch (e: Exception) {
                                 }
                                 holder.progressTimer.progress = l.toInt() / 1000
                                 try {
-                                    holder.value.setPadding(holder.label.resources.getDimensionPixelSize(R.dimen.tp_padding_small),
-                                            holder.label.resources.getDimensionPixelSize(R.dimen.tp_padding_xsmall),
-                                            holder.label.resources.getDimensionPixelSize(R.dimen.tp_padding_small),
-                                            holder.label.resources.getDimensionPixelSize(R.dimen.tp_padding_xsmall))
+                                    holder.value.setPadding(
+                                        holder.label.resources.getDimensionPixelSize(R.dimen.tp_padding_small),
+                                        holder.label.resources.getDimensionPixelSize(R.dimen.tp_padding_xsmall),
+                                        holder.label.resources.getDimensionPixelSize(R.dimen.tp_padding_small),
+                                        holder.label.resources.getDimensionPixelSize(R.dimen.tp_padding_xsmall)
+                                    )
                                 } catch (e: Exception) {
                                 }
                             }
@@ -159,11 +166,11 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
                     } else {
                         holder.progressTimer.visibility = View.GONE
                         holder.value.setPadding(0, 0, 0, 0)
-                        holder.value.setTextColor(ContextCompat.getColor(holder.value.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                        holder.value.setTextColor(ContextCompat.getColor(holder.value.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
                     }
                 } else {
                     holder.progressTimer.visibility = View.GONE
-                    holder.value.setTextColor(ContextCompat.getColor(holder.value.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                    holder.value.setTextColor(ContextCompat.getColor(holder.value.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
                 }
                 enableOrDisableImages(holder, item)
             } else if (pHolder is HeaderViewHolder) {
@@ -173,8 +180,9 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
 
     private fun enableOrDisableImages(holder: ViewHolder, item: CouponValueEntity) {
         if (item.usage != null) {
-            if (item.usage.activeCountDown > 0
-                    || item.usage.expiredCountDown <= 0) {
+            if (item.usage.activeCountDown > 0 ||
+                item.usage.expiredCountDown <= 0
+            ) {
                 disableImages(holder)
             } else {
                 enableImages(holder)
@@ -185,17 +193,17 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
     }
 
     private fun disableImages(holder: ViewHolder) {
-        holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.context, com.tokopedia.unifyprinciples.R.color.Unify_N100), PorterDuff.Mode.SRC_IN)
-        holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.context, com.tokopedia.unifyprinciples.R.color.Unify_N100), PorterDuff.Mode.SRC_IN)
+        holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.context, com.tokopedia.unifyprinciples.R.color.Unify_NN200), PorterDuff.Mode.SRC_IN)
+        holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.context, com.tokopedia.unifyprinciples.R.color.Unify_NN200), PorterDuff.Mode.SRC_IN)
     }
 
     private fun enableImages(holder: ViewHolder) {
-        holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.context, com.tokopedia.unifyprinciples.R.color.Unify_G400), PorterDuff.Mode.SRC_IN)
-        holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.context, com.tokopedia.unifyprinciples.R.color.Unify_G400), PorterDuff.Mode.SRC_IN)
+        holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500), PorterDuff.Mode.SRC_IN)
+        holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500), PorterDuff.Mode.SRC_IN)
     }
 
     override fun getItemCount(): Int {
-        return mItems?.size + 1
+        return mItems.size + 1
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -204,7 +212,9 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
         }
         return if (position == 0) { // This is where we'll add footer.
             VIEW_HEADER
-        } else VIEW_DATA
+        } else {
+            VIEW_DATA
+        }
     }
 
     override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {

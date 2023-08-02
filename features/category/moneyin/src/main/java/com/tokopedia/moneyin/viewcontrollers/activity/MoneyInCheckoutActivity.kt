@@ -111,7 +111,7 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
             }
 
             override fun updateDrawState(ds: TextPaint) {
-                ds.color = MethodChecker.getColor(this@MoneyInCheckoutActivity, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                ds.color = MethodChecker.getColor(this@MoneyInCheckoutActivity, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                 ds.isUnderlineText = false
                 ds.typeface = Typeface.DEFAULT_BOLD
             }
@@ -144,6 +144,9 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
                         if (!it.data.scheduleDate.isNullOrEmpty()) {
                             setScheduleBottomSheet(it.data.scheduleDate)
                         }
+                    }
+                    else -> {
+                        // no op
                     }
                 }
             }
@@ -180,6 +183,9 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
                             }
                         }
                     }
+                    else -> {
+                        // no op
+                    }
                 }
             }
         )
@@ -204,6 +210,9 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
                         val intent = RouteManager.getIntent(this, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
                         intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
                         startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
+                    }
+                    else -> {
+                        // no op
                     }
                 }
             }
@@ -276,12 +285,12 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
         courierPrice.hide()
         courierButton.text = getString(R.string.choose)
         MethodChecker.setBackground(courierButton, MethodChecker.getDrawable(this, R.drawable.bg_tradein_button_green))
-        courierButton.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        courierButton.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
         retrieverTimeLabel.text = getString(R.string.retrieval_time)
         retrieverTime.hide()
         retrieverTimeButton.text = getString(R.string.choose)
         MethodChecker.setBackground(retrieverTimeButton, MethodChecker.getDrawable(this, R.drawable.bg_tradein_button_green))
-        retrieverTimeButton.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        retrieverTimeButton.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
         isCourierSet = false
         isTimeSet = false
     }
@@ -295,7 +304,7 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
         courierPrice.text = price
         MethodChecker.setBackground(courierButton, MethodChecker.getDrawable(this, R.drawable.rect_white_rounded_stroke_gray_trade_in))
         courierButton.text = getString(R.string.change_courier)
-        courierButton.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+        courierButton.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
         isCourierSet = true
     }
 
@@ -327,7 +336,7 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
         retrieverTime.text = scheduleTime.timeFmt
         MethodChecker.setBackground(retrieverTimeButton, MethodChecker.getDrawable(this, R.drawable.rect_white_rounded_stroke_gray_trade_in))
         retrieverTimeButton.text = getString(R.string.change_time)
-        retrieverTimeButton.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+        retrieverTimeButton.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
         isTimeSet = true
         sendGeneralEvent(
             MoneyInGTMConstants.ACTION_CLICK_MONEYIN,

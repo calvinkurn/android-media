@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textColor="@color/Unify_N700"
+                android:textColor="@color/Unify_NN950"
                 android:textSize="@dimen/unify_font_16"
                 android:textStyle="bold"
                 tools:text="Tomodachi Shop" />
@@ -53,7 +53,7 @@
                 android:id="@+id/tvSawSmallOrderUpdated"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Unify_N700_44"
+                android:textColor="@color/Unify_NN950_44"
                 android:textSize="@dimen/unify_font_10"
                 tools:text="Diperbarui 11.00" />
         </LinearLayout>
@@ -90,7 +90,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/saw_new_order"
-                    android:textColor="@color/Unify_N700_96"
+                    android:textColor="@color/Unify_NN950_96"
                     android:textSize="@dimen/unify_font_12"
                     android:textStyle="bold" />
 
@@ -100,7 +100,7 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:textColor="@color/Unify_G500"
+                    android:textColor="@color/Unify_GN500"
                     android:textSize="@dimen/unify_font_16"
                     android:textStyle="bold"
                     tools:text="0 pesanan" />
@@ -111,7 +111,7 @@
                 android:layout_width="@dimen/saw_dimen_1dp"
                 android:layout_height="@dimen/layout_lvl6"
                 android:layout_centerHorizontal="true"
-                android:background="@color/Unify_N75" />
+                android:background="@color/Unify_NN50" />
 
             <LinearLayout
                 android:id="@+id/containerSawSmallOrderReadyToShip"
@@ -129,7 +129,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/saw_ready_to_ship"
-                    android:textColor="@color/Unify_N700_96"
+                    android:textColor="@color/Unify_NN950_96"
                     android:textSize="@dimen/unify_font_12"
                     android:textStyle="bold" />
 
@@ -139,7 +139,7 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:textColor="@color/Unify_G500"
+                    android:textColor="@color/Unify_GN500"
                     android:textSize="@dimen/unify_font_16"
                     android:textStyle="bold"
                     tools:text="0 pesanan" />
@@ -174,7 +174,7 @@
             android:layout_toEndOf="@+id/imgSawOrderAppIcon"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/Unify_N700"
+            android:textColor="@color/Unify_NN950"
             android:textSize="@dimen/unify_font_16"
             android:textStyle="bold"
             tools:text="Tomodachi Shop" />
@@ -185,7 +185,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvSawOrderShopName"
             android:layout_alignStart="@+id/tvSawOrderShopName"
-            android:textColor="@color/Unify_G500"
+            android:textColor="@color/Unify_GN500"
             android:textSize="@dimen/unify_font_10"
             android:textStyle="bold"
             tools:text="5 Pesanan Baru" />
@@ -208,7 +208,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginEnd="@dimen/unify_space_12"
-            android:textColor="@color/Unify_N700_44"
+            android:textColor="@color/Unify_NN950_44"
             android:textSize="@dimen/unify_font_10"
             tools:text="Diperbarui 11.00" />
 
@@ -230,7 +230,7 @@
             android:layout_below="@+id/icSawOrderMoreOrder"
             android:layout_marginTop="@dimen/layout_lvl2"
             android:divider="@null"
-            android:scrollbarThumbVertical="@color/Unify_N700_44"
+            android:scrollbarThumbVertical="@color/Unify_NN950_44"
             tools:itemCount="4"
             tools:listitem="@layout/saw_app_widget_order_item" />
 
@@ -245,7 +245,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_above="@+id/containerSawOrderSwitch"
-            android:background="@color/Unify_N50" />
+            android:background="@color/Unify_NN50" />
 
         <LinearLayout
             android:id="@+id/containerSawOrderSwitch"
@@ -269,7 +269,7 @@
                 android:layout_marginTop="@dimen/unify_space_12"
                 android:layout_marginBottom="@dimen/unify_space_12"
                 android:text="@string/saw_ready_to_ship"
-                android:textColor="@color/Unify_G500"
+                android:textColor="@color/Unify_GN500"
                 android:textSize="@dimen/unify_space_12"
                 android:textStyle="bold" />
 

@@ -29,9 +29,6 @@ import com.tokopedia.common_electronic_money.util.EmoneyAnalytics
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.permission.PermissionCheckerHelper
@@ -183,6 +180,8 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
             return OPERATOR_NAME_BRIZZI
         } else if(issuerId == ISSUER_ID_TAP_CASH){
             return OPERATOR_NAME_TAPCASH
+        } else if (issuerId == ISSUER_ID_JAKCARD) {
+            return OPERATOR_NAME_JAKCARD
         }
         return OPERATOR_NAME_EMONEY
     }
@@ -254,10 +253,6 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
     }
 
     abstract fun processTagIntent(intent: Intent)
-
-    protected fun isDigitalSmartcardEnabled(): Boolean {
-        return remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_SMARTCARD, false)
-    }
 
     protected fun navigateToNFCSettings() {
         val intent = Intent(Settings.ACTION_NFC_SETTINGS)
@@ -340,10 +335,12 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
         const val ISSUER_ID_EMONEY = 1
         const val ISSUER_ID_BRIZZI = 2
         const val ISSUER_ID_TAP_CASH = 3
+        const val ISSUER_ID_JAKCARD = 4
 
         const val OPERATOR_NAME_EMONEY = "emoney"
         const val OPERATOR_NAME_BRIZZI = "brizzi"
         const val OPERATOR_NAME_TAPCASH = "tapcash"
+        const val OPERATOR_NAME_JAKCARD = "jakcard"
 
         const val ETOLL_CATEGORY_ID = "34"
 

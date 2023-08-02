@@ -172,6 +172,8 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
                     context, redeemColor.Unify_NN950
                 ), PorterDuff.Mode.SRC_IN
             )
+            tfRedeem.editText.isFocusable = false
+            tfRedeem.editText.isClickable = true
         }
     }
 
@@ -406,10 +408,8 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
                 }
             } else if (isStatusNotAllDisabled(getUpdateListRedemption())) {
                 hideVisitorLayout()
-                tfRedeem.addOnFocusChangeListener = { _, hasFocus ->
-                    if (hasFocus) {
-                        showBottomSheet(redeem.schedule.name)
-                    }
+                tfRedeem.editText.setOnClickListener {
+                    showBottomSheet(redeem.schedule.name)
                 }
                 btnRedeem.setOnClickListener {
                     processRedeem()

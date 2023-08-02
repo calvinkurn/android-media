@@ -139,9 +139,14 @@ class OrderPreferenceCard(
     }
 
     private fun renderBboTicker(shipping: OrderShipment) {
+        val logisticPromoTickerMessage = if (shipping.isShowLogisticPromoTickerMessage) {
+            shipping.logisticPromoTickerMessage
+        } else {
+            null
+        }
         binding.shippingOccWidget.renderBboTicker(
             logisticPromo = shipping.shippingRecommendationData?.logisticPromo,
-            logisticPromoTickerMessage = shipping.logisticPromoTickerMessage,
+            logisticPromoTickerMessage = logisticPromoTickerMessage,
             onTickerClickListener = {
                 if (profile.enable) {
                     shipping.shippingRecommendationData?.logisticPromo?.apply {
@@ -320,7 +325,7 @@ class OrderPreferenceCard(
                                 ForegroundColorSpan(
                                     ContextCompat.getColor(
                                         it,
-                                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                                     )
                                 ),
                                 message.length + 1,
@@ -405,7 +410,7 @@ class OrderPreferenceCard(
                                 ForegroundColorSpan(
                                     ContextCompat.getColor(
                                         it,
-                                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                                     )
                                 ),
                                 message.length + 1,

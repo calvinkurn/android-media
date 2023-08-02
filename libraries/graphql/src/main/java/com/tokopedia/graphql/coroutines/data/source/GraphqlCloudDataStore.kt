@@ -17,14 +17,17 @@ import com.tokopedia.graphql.data.model.GraphqlResponseInternal
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApiSuspend
 import com.tokopedia.graphql.util.CacheHelper
 import com.tokopedia.graphql.util.Const
-import com.tokopedia.graphql.util.registeredGqlForTopAds
-import com.tokopedia.graphql.util.STATUS_QUERY
-import com.tokopedia.graphql.util.TOP_ADS_TRACKING_KEY
 import com.tokopedia.graphql.util.Const.AKAMAI_SENSOR_DATA_HEADER
 import com.tokopedia.graphql.util.Const.QUERY_HASHING_HEADER
 import com.tokopedia.graphql.util.Const.TKPD_AKAMAI
+import com.tokopedia.graphql.util.IRIS_SESSION_ID_KEY
 import com.tokopedia.graphql.util.LoggingUtils
 import com.tokopedia.graphql.util.LoggingUtils.logGqlErrorSsl
+import com.tokopedia.graphql.util.RemoteConfigHelper
+import com.tokopedia.graphql.util.STATUS_QUERY
+import com.tokopedia.graphql.util.TOP_ADS_TRACKING_KEY
+import com.tokopedia.graphql.util.registeredGqlForTopAds
+import com.tokopedia.graphql.util.registeredGqlForTopAdsTdn
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import kotlinx.coroutines.*
@@ -39,9 +42,6 @@ import java.util.*
 import javax.inject.Inject
 import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLHandshakeException
-
-
-
 
 class GraphqlCloudDataStore @Inject constructor(
     private val api: GraphqlApiSuspend,
@@ -61,6 +61,7 @@ class GraphqlCloudDataStore @Inject constructor(
 
         putAkamaiHeader(header, requests)
         putTopAdsTrackingHeader(header, requests)
+        putTopAdsTDNBannerHeader(header, requests)
 
         if (requests[0].isDoQueryHash) {
             val queryHashingHeaderValue = StringBuilder()
@@ -86,17 +87,36 @@ class GraphqlCloudDataStore @Inject constructor(
             header[QUERY_HASHING_HEADER] = queryHashingHeaderValue.toString()
         }
         var url = requests[0].url
-        if(url.isNullOrEmpty()){
+        if (url.isNullOrEmpty()) {
             var opName: String? = requests[0].operationName
             if (TextUtils.isEmpty(opName)) {
                 opName = CacheHelper.getQueryName(requests[0].query)
             }
             url = CommonUtils.getGraphqlUrlAppend(opName)
         }
-        return if(!url.isNullOrEmpty()){
+        return if (!url.isNullOrEmpty()) {
             api.getResponseSuspendWithPath(url, requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests))
         } else {
             api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests))
+        }
+    }
+
+    private fun putTopAdsTDNBannerHeader(
+        header: MutableMap<String, String>,
+        requests: List<GraphqlRequest>
+    ) {
+        if (!RemoteConfigHelper.isEnableTdnHeader()) return
+        for (req in requests) {
+            val list: List<String> = getQueryListFromQueryString(req.query)
+            for (temp in list) {
+                if (temp.equals(registeredGqlForTopAdsTdn, true)) {
+                    val newHeader = GraphqlClient.getFunction().topAdsTDNHeader
+                    if (!newHeader.isNullOrEmpty()) {
+                        header[IRIS_SESSION_ID_KEY] = newHeader
+                    }
+                    break
+                }
+            }
         }
     }
 
@@ -120,7 +140,7 @@ class GraphqlCloudDataStore @Inject constructor(
     }
 
     private fun putAkamaiHeader(header: MutableMap<String, String>, requests: List<GraphqlRequest>) {
-        //akamai query Logic
+        // akamai query Logic
         var akamaiQuery = ""
         requests.forEach { req ->
             val queryNamelist = req.queryNameList
@@ -184,26 +204,31 @@ class GraphqlCloudDataStore @Inject constructor(
 
             val gJsonArray = CommonUtils.getOriginalResponse(result)
 
-            //Checking response CLC headers.
+            // Checking response CLC headers.
             val cacheHeaders =
-                if (result?.headers()?.get(GraphqlConstant.GqlApiKeys.CACHE) == null) ""
-                else result.headers().get(GraphqlConstant.GqlApiKeys.CACHE);
+                if (result?.headers()?.get(GraphqlConstant.GqlApiKeys.CACHE) == null) {
+                    ""
+                } else {
+                    result.headers().get(GraphqlConstant.GqlApiKeys.CACHE)
+                }
 
             val queryHashHeaders =
-                if (result?.headers()?.get(GraphqlConstant.GqlApiKeys.QUERYHASH) == null) ""
-                else result.headers().get(GraphqlConstant.GqlApiKeys.QUERYHASH)
+                if (result?.headers()?.get(GraphqlConstant.GqlApiKeys.QUERYHASH) == null) {
+                    ""
+                } else {
+                    result.headers().get(GraphqlConstant.GqlApiKeys.QUERYHASH)
+                }
 
             val gResponse =
                 GraphqlResponseInternal(gJsonArray, false, cacheHeaders, queryHashHeaders)
 
             try {
                 result?.let {
-
                     launch(Dispatchers.IO) {
                         gResponse.httpStatusCode = result.code()
                         if (result.code() == Const.GQL_QUERY_HASHING_ERROR) {
                             val queryHashValues = StringBuilder()
-                            //Reset request bodies
+                            // Reset request bodies
                             if (requests.size > 0) {
                                 for (graphqlRequest in requests) {
                                     graphqlRequest.query = graphqlRequest.queryCopy
@@ -225,7 +250,8 @@ class GraphqlCloudDataStore @Inject constructor(
                             }
                             val opName = requests[0].operationName
                             ServerLogger.log(
-                                Priority.P1, "GQL_HASHING",
+                                Priority.P1,
+                                "GQL_HASHING",
                                 mapOf(
                                     "type" to "error",
                                     "name" to if (opName?.isNotEmpty() == true) {
@@ -238,14 +264,14 @@ class GraphqlCloudDataStore @Inject constructor(
                                 )
                             )
                             var url = requests[0].url
-                            if(url.isNullOrEmpty()){
+                            if (url.isNullOrEmpty()) {
                                 var opName: String? = requests[0].operationName
                                 if (TextUtils.isEmpty(opName)) {
                                     opName = CacheHelper.getQueryName(requests[0].query)
                                 }
                                 url = CommonUtils.getGraphqlUrlAppend(opName)
                             }
-                            if(!url.isNullOrEmpty()){
+                            if (!url.isNullOrEmpty()) {
                                 api.getResponseSuspendWithPath(url, requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests))
                             } else {
                                 api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests))
@@ -263,9 +289,9 @@ class GraphqlCloudDataStore @Inject constructor(
                             requests,
                             gResponse.originalResponse.toString()
                         )
-                        //Handling backend cache
+                        // Handling backend cache
                         val caches = CacheHelper.parseCacheHeaders(gResponse.beCache)
-                        //handling query hash
+                        // handling query hash
                         val qhValues = CacheHelper.parseQueryHashHeader(gResponse.queryHash)
 
                         var executeCacheFlow = false
@@ -283,7 +309,8 @@ class GraphqlCloudDataStore @Inject constructor(
                                 cacheManager.saveQueryHash(request.md5, qhValues.get(index))
                                 val opName = requests[0].operationName
                                 ServerLogger.log(
-                                    Priority.P1, "GQL_HASHING",
+                                    Priority.P1,
+                                    "GQL_HASHING",
                                     mapOf(
                                         "type" to "success",
                                         "name" to if (opName?.isNotEmpty() == true) {
@@ -297,10 +324,10 @@ class GraphqlCloudDataStore @Inject constructor(
                                 )
                             }
                             if (request.isNoCache || (executeCacheFlow && caches[request.md5] == null)) {
-                                return@forEachIndexed  //Do nothing
+                                return@forEachIndexed // Do nothing
                             }
                             if (executeCacheFlow) {
-                                //Saving response for indivisual query.
+                                // Saving response for indivisual query.
                                 val cache = caches[request.md5]
                                 val objectData =
                                     gResponse.originalResponse[index].asJsonObject[GraphqlConstant.GqlApiKeys.DATA]
@@ -314,7 +341,7 @@ class GraphqlCloudDataStore @Inject constructor(
                             }
                         }
 
-                        //Proceed for local cache as usual
+                        // Proceed for local cache as usual
                         when (cacheStrategy.type) {
                             CacheType.CACHE_FIRST, CacheType.ALWAYS_CLOUD -> {
                                 gResponse.originalResponse.forEachIndexed { index, jsonElement ->
@@ -329,6 +356,9 @@ class GraphqlCloudDataStore @Inject constructor(
                                         )
                                     }
                                 }
+                            }
+                            else -> {
+                                // no op
                             }
                         }
                     }

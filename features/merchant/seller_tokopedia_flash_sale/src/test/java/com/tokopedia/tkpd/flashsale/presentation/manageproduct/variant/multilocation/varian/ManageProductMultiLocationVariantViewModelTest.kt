@@ -23,7 +23,7 @@ import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.*
 
 
@@ -86,7 +86,7 @@ class ManageProductMultiLocationVariantViewModelTest {
 
     @Test
     fun `Not Correct Criteria because product child wrong name`() {
-        runBlockingTest {
+        runTest {
             val dummyData = createDummyProduct()
             val dummyOfWarehouse = createWarehousesDummy(true)[0]
             val positionTarget = 0
@@ -100,7 +100,7 @@ class ManageProductMultiLocationVariantViewModelTest {
 
     @Test
     fun `Correct Criteria`() {
-        runBlockingTest {
+        runTest {
             val dummyData = createDummyProduct()
             val dummyOfWarehouse = createWarehousesDummy(true)[0]
             val positionTarget = 0
@@ -114,7 +114,7 @@ class ManageProductMultiLocationVariantViewModelTest {
 
     @Test
     fun `Criteria null because false city name`() {
-        runBlockingTest {
+        runTest {
             val dummyData = createDummyProduct()
             val dummyOfWarehouse = createWarehousesDummy(true)[1].copy(name = "A")
             val positionTarget = 0
@@ -128,7 +128,7 @@ class ManageProductMultiLocationVariantViewModelTest {
 
     @Test
     fun `Criteria null because empty location`() {
-        runBlockingTest {
+        runTest {
             val dummyData = createDummyProduct()
             val dummyOfWarehouse = createWarehousesDummy(true)[0]
             val positionTarget = 0
@@ -142,7 +142,7 @@ class ManageProductMultiLocationVariantViewModelTest {
 
     @Test
     fun `Criteria throw exception`() {
-        runBlockingTest {
+        runTest {
             val dummyData = createDummyProduct()
             val dummyOfWarehouse = createWarehousesDummy(true)[0]
             val positionTarget = 0
@@ -328,7 +328,7 @@ class ManageProductMultiLocationVariantViewModelTest {
 
     @Test
     fun `enableBulkApply is return true`() {
-        runBlockingTest {
+        runTest {
             setValueOfProductAndVariantAttribute(true)
             val actualResult = viewModel.enableBulkApply.getOrAwaitValue(500)
             Assert.assertTrue(actualResult)
@@ -656,7 +656,7 @@ class ManageProductMultiLocationVariantViewModelTest {
 
     @Test
     fun `do Nominal Discount TrackerInput`() {
-        runBlockingTest {
+        runTest {
             viewModel.doNominalDiscountTrackerInput(MAX_PRICE_MESSAGE)
             val actualResult = viewModel.doTrackingNominal.getOrAwaitValue()
             Assert.assertTrue(actualResult == MAX_PRICE_MESSAGE)
@@ -665,7 +665,7 @@ class ManageProductMultiLocationVariantViewModelTest {
 
     @Test
     fun `do Percentage Discount TrackerInput`() {
-        runBlockingTest {
+        runTest {
             viewModel.doPercentageDiscountTrackerInput("10%")
             val actualResult = viewModel.doTrackingPercent.getOrAwaitValue()
             Assert.assertTrue(actualResult == "10%")

@@ -1,9 +1,9 @@
 package com.tokopedia.seller.menu.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.logisticCommon.data.response.shoplocation.DataWhitelist
-import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocWhitelist
-import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocationWhitelistResponse
+import com.tokopedia.logisticCommon.data.response.shoplocation.DataEligibility
+import com.tokopedia.logisticCommon.data.response.shoplocation.KeroGetRolloutEligibility
+import com.tokopedia.logisticCommon.data.response.shoplocation.KeroGetRolloutEligibilityResponse
 import com.tokopedia.logisticCommon.domain.usecase.ShopMultilocWhitelistUseCase
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
@@ -48,12 +48,12 @@ class SellerSettingViewModelTest {
 
     @Test
     fun `given shop id when get shop location eligibility should be eligible multi location`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val shopId = 123L
             val eligibleMultiLoc = 1
-            val mockResponse = ShopLocationWhitelistResponse(
-                ShopLocWhitelist(
-                    data = DataWhitelist(eligibilityState = eligibleMultiLoc)
+            val mockResponse = KeroGetRolloutEligibilityResponse(
+                KeroGetRolloutEligibility(
+                    data = DataEligibility(eligibilityState = eligibleMultiLoc)
                 )
             )
 
@@ -73,12 +73,12 @@ class SellerSettingViewModelTest {
 
     @Test
     fun `given shop id when get shop location eligibility should not be eligible multi location`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val shopId = 123L
             val notEligibleMultiLoc = -1
-            val mockResponse = ShopLocationWhitelistResponse(
-                ShopLocWhitelist(
-                    data = DataWhitelist(
+            val mockResponse = KeroGetRolloutEligibilityResponse(
+                KeroGetRolloutEligibility(
+                    data = DataEligibility(
                         eligibilityState = notEligibleMultiLoc
                     )
                 )
@@ -100,7 +100,7 @@ class SellerSettingViewModelTest {
 
     @Test
     fun `given shop id when get shop location eligibility should be failed`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val shopId = 123L
             val throwable = Throwable("error")
 

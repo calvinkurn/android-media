@@ -1,7 +1,7 @@
 package com.tokopedia.chatbot.data
 
 import com.google.gson.GsonBuilder
-import com.tokopedia.chatbot.websocket.ChatWebSocketResponse
+import com.tokopedia.chatbot.chatbot2.websocket.ChatWebSocketResponse
 
 object SocketResponse {
 
@@ -62,6 +62,26 @@ object SocketResponse {
         {
   "type": "",
   "code": 203,
+  "data": {
+    "msg_id": 4058088,
+    "from": "Tanya",
+    "from_uid": 5515973,
+    "from_user_name": "Tanya",
+    "from_role": "User",
+    "is_bot": true,
+    "reminder_ticker": null,
+    "is_opposite": true,
+    "to_uid": 9120466,
+    "to_buyer": true,
+    "client_connect_time": "0001-01-01T00:00:00Z"
+  }
+}
+    """
+
+    const val RESPONSE_WITH_CODE_NOT_HANDLED = """
+        {
+  "type": "",
+  "code": 1000,
   "data": {
     "msg_id": 4058088,
     "from": "Tanya",
@@ -236,6 +256,41 @@ object SocketResponse {
 }
     """
 
+    const val ATTACHMENT_14_UPDATE_TOOLBAR_ATTACHMENT_NULL = """
+        {
+  "type": "",
+  "code": 103,
+  "data": {
+    "msg_id": 4058088,
+    "from": "Tanya",
+    "from_uid": 5515973,
+    "from_user_name": "Tanya",
+    "from_role": "User",
+    "thumbnail": "https://ecs7.tokopedia.net/img/cache/100-square/user-1/2020/8/13/5515973/5515973_bf39448d-d1bd-410b-9e7b-b5acdf54555a.png",
+    "is_bot": true,
+    "reminder_ticker": null,
+    "is_opposite": true,
+    "to_uid": 9120466,
+    "message": {
+      "censored_reply": "",
+      "original_reply": "",
+      "timestamp": "2022-09-30T13:09:32.614342+07:00",
+      "timestamp_fmt": "30 September 2022, 13:09 WIB",
+      "timestamp_unix": 1664518172614,
+      "timestamp_unix_nano": 1664518172614342000
+    },
+    "start_time": "2022-09-30T13:09:32.614342+07:00",
+    "attachment_id": 1,
+    "attachment": null,
+    "show_rating": false,
+    "rating_status": 0,
+    "to_buyer": true,
+    "client_connect_time": "0001-01-01T00:00:00Z",
+    "source": ""
+  }
+}
+    """
+
     const val ATTACHMENT_31_SESSION_CHANGE_WITH_MODE_AGENT = """
         {
   "type": "",
@@ -330,6 +385,53 @@ object SocketResponse {
 }
     """
 
+    const val ATTACHMENT_31_SESSION_CHANGE_WITH_MODE_UNKNOWN = """
+        {
+  "type": "",
+  "code": 103,
+  "data": {
+    "msg_id": 4058088,
+    "from": "Tanya",
+    "from_uid": 5515973,
+    "from_user_name": "Tanya",
+    "from_role": "User",
+    "thumbnail": "https://ecs7.tokopedia.net/img/cache/100-square/user-1/2020/8/13/5515973/5515973_bf39448d-d1bd-410b-9e7b-b5acdf54555a.png",
+    "is_bot": true,
+    "reminder_ticker": null,
+    "is_opposite": true,
+    "to_uid": 9120466,
+    "message": {
+      "censored_reply": "",
+      "original_reply": "",
+      "timestamp": "2022-09-30T13:09:42.943512423+07:00",
+      "timestamp_fmt": "30 September 2022, 13:09 WIB",
+      "timestamp_unix": 1664518182943,
+      "timestamp_unix_nano": 1664518182943512000
+    },
+    "start_time": "2022-09-30T13:09:42.943512423+07:00",
+    "attachment_id": 1,
+    "attachment": {
+      "attributes": {
+        "session_change": {
+          "mode": "unknown",
+          "session_id": "4058088_1664518172"
+        }
+      },
+      "fallback_attachment": {
+        "html": "<div></div>"
+      },
+      "id": 1,
+      "type": 31
+    },
+    "show_rating": false,
+    "rating_status": 0,
+    "to_buyer": true,
+    "client_connect_time": "0001-01-01T00:00:00Z",
+    "source": ""
+  }
+}
+    """
+
     const val ATTACHMENT_15_CHAT_DIVIDER = """
         {
   "type": "",
@@ -384,9 +486,10 @@ object SocketResponse {
 
     const val DYNAMIC_ATTACHMENT_CODE_100_IS_ACTIVE_TRUE_RENDER_ANDROID = """
 {
+  "type": "",
   "code": 103,
   "data": {
-    "msg_id": 3181924,
+    "msg_id": 4058088,
     "from": "Tanya",
     "from_uid": 5515973,
     "from_user_name": "Tanya",
@@ -395,7 +498,7 @@ object SocketResponse {
     "is_bot": true,
     "reminder_ticker": null,
     "is_opposite": true,
-    "to_uid": 5480593,
+    "to_uid": 9120466,
     "message": {
       "censored_reply": "",
       "original_reply": "",
@@ -439,9 +542,10 @@ object SocketResponse {
 
     const val DYNAMIC_ATTACHMENT_CODE_100_IS_ACTIVE_FALSE_RENDER_ANDROID = """
 {
+  "type": "",
   "code": 103,
   "data": {
-    "msg_id": 3181924,
+    "msg_id": 4058088,
     "from": "Tanya",
     "from_uid": 5515973,
     "from_user_name": "Tanya",
@@ -450,7 +554,7 @@ object SocketResponse {
     "is_bot": true,
     "reminder_ticker": null,
     "is_opposite": true,
-    "to_uid": 5480593,
+    "to_uid": 9120466,
     "message": {
       "censored_reply": "",
       "original_reply": "",
@@ -494,9 +598,10 @@ object SocketResponse {
 
     const val DYNAMIC_ATTACHMENT_CODE_100_IS_ACTIVE_FALSE_RENDER_IOS = """
 {
+  "type": "",
   "code": 103,
   "data": {
-    "msg_id": 3181924,
+    "msg_id": 4058088,
     "from": "Tanya",
     "from_uid": 5515973,
     "from_user_name": "Tanya",
@@ -505,7 +610,7 @@ object SocketResponse {
     "is_bot": true,
     "reminder_ticker": null,
     "is_opposite": true,
-    "to_uid": 5480593,
+    "to_uid": 9120466,
     "message": {
       "censored_reply": "",
       "original_reply": "",
@@ -549,9 +654,10 @@ object SocketResponse {
 
     const val DYNAMIC_ATTACHMENT_ATTACHMENT_NULL = """
 {
+  "type": "",
    "code":103,
    "data":{
-      "msg_id":3181924,
+      "msg_id":4058088,
       "from":"Tanya",
       "from_uid":5515973,
       "from_user_name":"Tanya",
@@ -560,7 +666,7 @@ object SocketResponse {
       "is_bot":true,
       "reminder_ticker":null,
       "is_opposite":true,
-      "to_uid":5480593,
+      "to_uid":9120466,
       "message":{
          "censored_reply":"",
          "original_reply":"",
@@ -588,9 +694,10 @@ object SocketResponse {
 
     const val DYNAMIC_ATTACHMENT_DYNAMIC_ATTACHMENT_IS_NULL = """
 {
+  "type": "",
    "code":103,
    "data":{
-      "msg_id":3181924,
+      "msg_id":4058088,
       "from":"Tanya",
       "from_uid":5515973,
       "from_user_name":"Tanya",
@@ -599,7 +706,7 @@ object SocketResponse {
       "is_bot":true,
       "reminder_ticker":null,
       "is_opposite":true,
-      "to_uid":5480593,
+      "to_uid":9120466,
       "message":{
          "censored_reply":"",
          "original_reply":"",
@@ -630,10 +737,11 @@ object SocketResponse {
     """
 
     const val DYNAMIC_ATTACHMENT_DYNAMIC_ATTACHMENT_ATTRIBUTE_DYNAMIC_CONTENT_IS_NULL = """
-        {
+{
+  "type": "",
   "code": 103,
   "data": {
-    "msg_id": 3181924,
+    "msg_id": 4058088,
     "from": "Tanya",
     "from_uid": 5515973,
     "from_user_name": "Tanya",
@@ -642,7 +750,7 @@ object SocketResponse {
     "is_bot": true,
     "reminder_ticker": null,
     "is_opposite": true,
-    "to_uid": 5480593,
+    "to_uid": 9120466,
     "message": {
       "censored_reply": "",
       "original_reply": "",
@@ -685,10 +793,11 @@ object SocketResponse {
     """
 
     const val DYNAMIC_ATTACHMENT_DYNAMIC_ATTACHMENT_ATTRIBUTE_IS_NULL = """
-        {
+{
+  "type": "",
   "code": 103,
   "data": {
-    "msg_id": 3181924,
+    "msg_id": 4058088,
     "from": "Tanya",
     "from_uid": 5515973,
     "from_user_name": "Tanya",
@@ -697,7 +806,7 @@ object SocketResponse {
     "is_bot": true,
     "reminder_ticker": null,
     "is_opposite": true,
-    "to_uid": 5480593,
+    "to_uid": 9120466,
     "message": {
       "censored_reply": "",
       "original_reply": "",
@@ -735,10 +844,11 @@ object SocketResponse {
     """
 
     const val DYNAMIC_ATTACHMENT_CODE_101_RENDER_ANDROID_HIDDEN_TRUE = """
-        {
+{
+   "type": "",
   "code": 103,
   "data": {
-    "msg_id": 3181924,
+    "msg_id": 4058088,
     "from": "Tanya",
     "from_uid": 5515973,
     "from_user_name": "Tanya",
@@ -747,7 +857,7 @@ object SocketResponse {
     "is_bot": true,
     "reminder_ticker": null,
     "is_opposite": true,
-    "to_uid": 5480593,
+    "to_uid": 9120466,
     "message": {
       "censored_reply": "",
       "original_reply": "",
@@ -790,10 +900,11 @@ object SocketResponse {
     """
 
     const val DYNAMIC_ATTACHMENT_CODE_101_RENDER_ANDROID_HIDDEN_FALSE = """
-        {
+{
+  "type": "",
   "code": 103,
   "data": {
-    "msg_id": 3181924,
+    "msg_id": 4058088,
     "from": "Tanya",
     "from_uid": 5515973,
     "from_user_name": "Tanya",
@@ -802,7 +913,7 @@ object SocketResponse {
     "is_bot": true,
     "reminder_ticker": null,
     "is_opposite": true,
-    "to_uid": 5480593,
+    "to_uid": 9120466,
     "message": {
       "censored_reply": "",
       "original_reply": "",
@@ -845,10 +956,11 @@ object SocketResponse {
     """
 
     const val DYNAMIC_ATTACHMENT_CODE_101_RENDER_IOS = """
-        {
+{
+   "type": "",
   "code": 103,
   "data": {
-    "msg_id": 3181924,
+    "msg_id": 4058088,
     "from": "Tanya",
     "from_uid": 5515973,
     "from_user_name": "Tanya",
@@ -857,7 +969,7 @@ object SocketResponse {
     "is_bot": true,
     "reminder_ticker": null,
     "is_opposite": true,
-    "to_uid": 5480593,
+    "to_uid": 9120466,
     "message": {
       "censored_reply": "",
       "original_reply": "",
@@ -900,10 +1012,11 @@ object SocketResponse {
     """
 
     const val DYNAMIC_ATTACHMENT_CODE_101_DYNAMIC_CONTENT_NULL = """
-        {
+{
+  "type": "",
   "code": 103,
   "data": {
-    "msg_id": 3181924,
+    "msg_id": 4058088,
     "from": "Tanya",
     "from_uid": 5515973,
     "from_user_name": "Tanya",
@@ -912,7 +1025,7 @@ object SocketResponse {
     "is_bot": true,
     "reminder_ticker": null,
     "is_opposite": true,
-    "to_uid": 5480593,
+    "to_uid": 9120466,
     "message": {
       "censored_reply": "",
       "original_reply": "",
@@ -1123,7 +1236,7 @@ object SocketResponse {
         {
   "code": 103,
   "data": {
-    "msg_id": 3181924,
+    "msg_id": 4058088,
     "from": "Tanya",
     "from_uid": 5515973,
     "from_user_name": "Tanya",
@@ -1132,7 +1245,7 @@ object SocketResponse {
     "is_bot": true,
     "reminder_ticker": null,
     "is_opposite": true,
-    "to_uid": 5480593,
+    "to_uid": 9120466,
     "message": {
       "censored_reply": "",
       "original_reply": "",
@@ -1226,6 +1339,118 @@ object SocketResponse {
         "client_connect_time": "0001-01-01T00:00:00Z",
         "source": ""
     }
+}
+    """
+
+    const val ATTACHMENT_NOT_AVAILABLE_RIGHT_NOW_SHOW_FALLBACK = """
+{
+   "type": "",
+  "code": 103,
+  "data": {
+    "msg_id": 4058088,
+    "from": "Tanya",
+    "from_uid": 5515973,
+    "from_user_name": "Tanya",
+    "from_role": "User",
+    "thumbnail": "https://ecs7.tokopedia.net/img/cache/100-square/user-1/2020/8/13/5515973/5515973_bf39448d-d1bd-410b-9e7b-b5acdf54555a.png",
+    "is_bot": true,
+    "reminder_ticker": null,
+    "is_opposite": true,
+    "to_uid": 9120466,
+    "message": {
+      "censored_reply": "",
+      "original_reply": "",
+      "timestamp": "2022-11-02T18:21:31.89069273+07:00",
+      "timestamp_fmt": "02 November 2022, 18:21 WIB",
+      "timestamp_unix": 1667388091890,
+      "timestamp_unix_nano": 1667388091890693000
+    },
+    "start_time": "2020-07-23T15:59:44.997841231+07:00",
+    "attachment_id": 1,
+    "attachment": {
+      "attributes": {
+        "dynamic_attachment": {
+          "attribute": {
+            "content_code": 102,
+            "dynamic_content": "{\"isHidden\":true}",
+            "render_target": "android",
+            "user_id": 5480593
+          },
+          "fallback": {
+            "html": "\u003cdiv\u003eFallback\u003c/div\u003e",
+            "message": "Fallback"
+          },
+          "is_log_history": true
+        }
+      },
+      "fallback_attachment": {
+        "html": "\u003cdiv\u003e\u003c/div\u003e"
+      },
+      "id": 1,
+      "type": 600
+    },
+    "show_rating": false,
+    "rating_status": 0,
+    "to_buyer": true,
+    "client_connect_time": "0001-01-01T00:00:00Z",
+    "source": ""
+  }
+}
+    """
+
+    const val JSON_NOT_FORMATTED_THROWS_EXCEPTION = """
+{
+   "type": "",
+  "code": 103,
+  "data": { {
+    "msg_id": 4058088
+    "from": "Tanya",
+    "from_uid": 5515973,
+    "from_user_name": "Tanya",
+    "from_role": "User",
+    "thumbnail": "https://ecs7.tokopedia.net/img/cache/100-square/user-1/2020/8/13/5515973/5515973_bf39448d-d1bd-410b-9e7b-b5acdf54555a.png",
+    "is_bot": true,
+    "reminder_ticker": null,
+    "is_opposite": true,
+    "to_uid": 9120466,
+    "message": {
+      "censored_reply": "",
+      "original_reply": "",
+      "timestamp": "2022-11-02T18:21:31.89069273+07:00",
+      "timestamp_fmt": "02 November 2022, 18:21 WIB",
+      "timestamp_unix": 1667388091890,
+      "timestamp_unix_nano": 1667388091890693000
+    },
+    "start_time": "2020-07-23T15:59:44.997841231+07:00",
+    "attachment_id": 1,
+    "attachment": {
+      "attributes": {
+        "dynamic_attachment": {
+          "attribute": {
+            "content_code": 102,
+            "dynamic_content": "{\"isHidden\":true}",
+            "render_target": "android",
+            "user_id": 5480593
+          },
+          "fallback": {
+            "html": "\u003cdiv\u003eFallback\u003c/div\u003e",
+            "message": "Fallback"
+          },
+          "is_log_history": true
+        }
+      },
+      "fallback_attachment": {
+        "html": "\u003cdiv\u003e\u003c/div\u003e"
+      },
+      "id": 1,
+      "type": 600
+    },
+    "show_rating": false,
+    "rating_status": 0,
+    "to_buyer": true,
+    "client_connect_time": "0001-01-01T00:00:00Z",
+    "source": ""
+  }
 }
     """
 
@@ -1381,11 +1606,240 @@ object SocketResponse {
 }
     """
 
+    const val DYNAMIC_ATTACHMENT_CODE_107 = """
+        {
+    "code": 103,
+    "data": {
+        "msg_id": 3181924,
+        "from": "Tanya",
+        "from_uid": 5515973,
+        "from_user_name": "Tanya",
+        "from_role": "User",
+        "thumbnail": "https://ecs7.tokopedia.net/img/cache/100-square/user-1/2020/8/13/5515973/5515973_bf39448d-d1bd-410b-9e7b-b5acdf54555a.png",
+        "is_bot": true,
+        "reminder_ticker": null,
+        "is_opposite": true,
+        "to_uid": 5480593,
+        "message": {
+            "censored_reply": "",
+            "original_reply": "",
+            "timestamp": "2022-10-14T13:17:58.525513371+07:00",
+            "timestamp_fmt": "14 October 2022, 13:17 WIB",
+            "timestamp_unix": 1665728278525,
+            "timestamp_unix_nano": 1665728278525513000
+        },
+        "start_time": "2020-07-23T15:59:44.997841231+07:00",
+        "attachment_id": 1,
+        "attachment": {
+            "attributes": {
+                "dynamic_attachment": {
+                    "attribute": {
+                        "content_code": 107, 
+                        "render_target": "all", 
+                        "dynamic_content": "{\"helpful_question\":{\"message\":\"Apakah jawaban ini membantu? \\n Kamu bisa klik/ketik 'ya' atau 'tidak'\",\"new_quick_replies\":[{\"action\":\"csat-yes\",\"text\":\"Ya\",\"value\":\"Ya\"},{\"action\":\"csat-no\",\"text\":\"Tidak\",\"value\":\"Tidak\"}],\"quick_replies\":[{\"message\":\"Ya\"},{\"message\":\"Tidak\"}]},\"feedback_form\":{\"title\":\"Bantu TANYA jadi lebih baik lagi\",\"icon_tanya\":\"https://images.tokopedia.net/img/chatbot/tanya.png\",\"reason_title\":\"Apa yang bikin kamu merasa tidak terbantu?\",\"reason_chip_list\":[{\"code\":31,\"text\":\"Kecepatan respons\"},{\"code\":32,\"text\":\"Kejelasan bahasa\"},{\"code\":35,\"text\":\"Solusi yang diberikan\"},{\"code\":36,\"text\":\"Pemahaman masalah\"},{\"code\":33,\"text\":\"Waktu penyelesaian\"}],\"text_box_placeholder\":\"Ceritakan secara lengkap apa yang membuat kamu tidak puas dengan TANYA dan perlu ditingkatkan\",\"reason_minimum_character\":30}}",
+                        "user_id": 5480593
+                    },
+                    "fallback": {
+                        "html": "<div>Mohon segera upgrade version tokopedia anda</div>",
+                        "message": "Mohon segera upgrade version tokopedia anda"
+                    },
+                    "is_log_history": true
+                }
+            },
+            "fallback_attachment": {
+                "html": "<div>Mohon segera upgrade version tokopedia anda</div>",
+                "message": "Mohon segera upgrade version tokopedia anda"
+            },
+            "id": 1,
+            "type": 34
+        },
+        "show_rating": false,
+        "rating_status": 0,
+        "to_buyer": true,
+        "client_connect_time": "0001-01-01T00:00:00Z",
+        "source": ""
+    }
+}
+    """
+
+    const val DYNAMIC_ATTACHMENT_104_MEDIA_BUTTON_DISABLED = """
+        {
+    "code": 103,
+    "data": {
+        "msg_id": 3181924,
+        "from": "Tanya",
+        "from_uid": 5515973,
+        "from_user_name": "Tanya",
+        "from_role": "User",
+        "thumbnail": "https://ecs7.tokopedia.net/img/cache/100-square/user-1/2020/8/13/5515973/5515973_bf39448d-d1bd-410b-9e7b-b5acdf54555a.png",
+        "is_bot": true,
+        "reminder_ticker": null,
+        "is_opposite": true,
+        "to_uid": 5480593,
+        "message": {
+            "censored_reply": "",
+            "original_reply": "",
+            "timestamp": "2022-10-14T13:17:58.525513371+07:00",
+            "timestamp_fmt": "14 October 2022, 13:17 WIB",
+            "timestamp_unix": 1665728278525,
+            "timestamp_unix_nano": 1665728278525513000
+        },
+        "start_time": "2020-07-23T15:59:44.997841231+07:00",
+        "attachment_id": 1,
+        "attachment": {
+            "attributes": {
+                "dynamic_attachment": {
+                    "attribute": {
+                        "content_code": 104,
+                        "dynamic_content": "{\"is_media_button_enabled\":false,\"attributes\":{\"is_upload_image_enabled\":true,\"is_upload_video_enabled\":true}}",
+                        "render_target": "all",
+                        "user_id": 5480593
+                    },
+                    "fallback": {
+                        "html": "<div>Fallback</div>",
+                        "message": "Fallback"
+                    },
+                    "is_log_history": false
+                }
+            },
+            "fallback_attachment": {
+                "html": "<div></div>"
+            },
+            "id": 1,
+            "type": 34
+        },
+        "show_rating": false,
+        "rating_status": 0,
+        "to_buyer": true,
+        "client_connect_time": "0001-01-01T00:00:00Z",
+        "source": ""
+    }
+}
+    """
+
+    const val DYNAMIC_ATTACHMENT_104_MEDIA_BUTTON_ENABLED = """
+        {
+    "code": 103,
+    "data": {
+        "msg_id": 3181924,
+        "from": "Tanya",
+        "from_uid": 5515973,
+        "from_user_name": "Tanya",
+        "from_role": "User",
+        "thumbnail": "https://ecs7.tokopedia.net/img/cache/100-square/user-1/2020/8/13/5515973/5515973_bf39448d-d1bd-410b-9e7b-b5acdf54555a.png",
+        "is_bot": true,
+        "reminder_ticker": null,
+        "is_opposite": true,
+        "to_uid": 5480593,
+        "message": {
+            "censored_reply": "",
+            "original_reply": "",
+            "timestamp": "2022-10-14T13:17:58.525513371+07:00",
+            "timestamp_fmt": "14 October 2022, 13:17 WIB",
+            "timestamp_unix": 1665728278525,
+            "timestamp_unix_nano": 1665728278525513000
+        },
+        "start_time": "2020-07-23T15:59:44.997841231+07:00",
+        "attachment_id": 1,
+        "attachment": {
+            "attributes": {
+                "dynamic_attachment": {
+                    "attribute": {
+                        "content_code": 104,
+                        "dynamic_content": "{\"is_media_button_enabled\":true,\"attributes\":{\"is_upload_image_enabled\":true,\"is_upload_video_enabled\":true}}",
+                        "render_target": "all",
+                        "user_id": 5480593
+                    },
+                    "fallback": {
+                        "html": "<div>Fallback</div>",
+                        "message": "Fallback"
+                    },
+                    "is_log_history": false
+                }
+            },
+            "fallback_attachment": {
+                "html": "<div></div>"
+            },
+            "id": 1,
+            "type": 34
+        },
+        "show_rating": false,
+        "rating_status": 0,
+        "to_buyer": true,
+        "client_connect_time": "0001-01-01T00:00:00Z",
+        "source": ""
+    }
+}
+    """
+
+    const val DYNAMIC_ATTACHMENT_UNAVAILABLE = """
+        {
+    "code": 103,
+    "data": {
+        "msg_id": 3181924,
+        "from": "Tanya",
+        "from_uid": 5515973,
+        "from_user_name": "Tanya",
+        "from_role": "User",
+        "thumbnail": "https://ecs7.tokopedia.net/img/cache/100-square/user-1/2020/8/13/5515973/5515973_bf39448d-d1bd-410b-9e7b-b5acdf54555a.png",
+        "is_bot": true,
+        "reminder_ticker": null,
+        "is_opposite": true,
+        "to_uid": 5480593,
+        "message": {
+            "censored_reply": "",
+            "original_reply": "",
+            "timestamp": "2022-10-14T13:17:58.525513371+07:00",
+            "timestamp_fmt": "14 October 2022, 13:17 WIB",
+            "timestamp_unix": 1665728278525,
+            "timestamp_unix_nano": 1665728278525513000
+        },
+        "start_time": "2020-07-23T15:59:44.997841231+07:00",
+        "attachment_id": 1,
+        "attachment": {
+            "attributes": {
+                "dynamic_attachment": {
+                    "attribute": {
+                        "content_code": 1000,
+                        "dynamic_content": "{\"is_media_button_enabled\":false,\"attributes\":{\"is_upload_image_enabled\":true,\"is_upload_video_enabled\":true}}",
+                        "render_target": "all",
+                        "user_id": 5480593
+                    },
+                    "fallback": {
+                        "html": "<div>Fallback</div>",
+                        "message": "Fallback"
+                    },
+                    "is_log_history": false
+                }
+            },
+            "fallback_attachment": {
+                "html": "<div></div>"
+            },
+            "id": 1,
+            "type": 34
+        },
+        "show_rating": false,
+        "rating_status": 0,
+        "to_buyer": true,
+        "client_connect_time": "0001-01-01T00:00:00Z",
+        "source": ""
+    }
+}
+    """
+
     fun getResponse(response: String): ChatWebSocketResponse {
         return GsonBuilder().create()
-            .fromJson<ChatWebSocketResponse>(
+            .fromJson(
                 response,
                 ChatWebSocketResponse::class.java
+            )
+    }
+
+    fun getOldResponse(response: String): com.tokopedia.chatbot.websocket.ChatWebSocketResponse {
+        return GsonBuilder().create()
+            .fromJson(
+                response,
+                com.tokopedia.chatbot.websocket.ChatWebSocketResponse::class.java
             )
     }
 }

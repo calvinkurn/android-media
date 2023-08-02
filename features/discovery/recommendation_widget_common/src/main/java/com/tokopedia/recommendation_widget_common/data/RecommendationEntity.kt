@@ -77,6 +77,9 @@ data class RecommendationEntity(
         @SerializedName("shop")
         val shop: Shop = Shop()
 
+        @SerializedName("warehouseID")
+        val warehouseId: Long = 0L
+
         @SerializedName("freeOngkir")
         val freeOngkirInformation: FreeOngkirInformation = FreeOngkirInformation()
 
@@ -129,6 +132,20 @@ data class RecommendationEntity(
 
             @SerializedName("value")
             val value: String = ""
+
+            @SerializedName("type")
+            val type: String = ""
+
+            @SerializedName("specificationContent")
+            val content: List<SpecificationContents> = listOf()
+
+            class SpecificationContents {
+                @SerializedName("url")
+                val iconUrl: String = ""
+
+                @SerializedName("description")
+                val description: String = ""
+            }
         }
 
         class LabelGroup {

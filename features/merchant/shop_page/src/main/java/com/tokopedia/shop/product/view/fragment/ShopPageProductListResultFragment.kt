@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
@@ -457,7 +456,6 @@ class ShopPageProductListResultFragment :
     }
 
     private fun loadProductDataEmptyState(shopInfo: ShopInfo, page: Int) {
-        selectedEtalaseId = ""
         sortId = SORT_NEWEST
         context?.let {
             viewModel.getShopProductEmptyState(
@@ -465,7 +463,7 @@ class ShopPageProductListResultFragment :
                 page,
                 ShopPageConstant.SHOP_PRODUCT_EMPTY_STATE_LIMIT,
                 sortId.toIntOrZero(),
-                selectedEtalaseId,
+                "",
                 keywordEmptyState,
                 localCacheModel ?: LocalCacheModel(),
                 isEnableDirectPurchase
@@ -476,10 +474,7 @@ class ShopPageProductListResultFragment :
     private fun initRecyclerView(view: View) {
         recyclerView = super.getRecyclerView(view)
         recyclerView?.let {
-            val animator = it.itemAnimator
-            if (animator is SimpleItemAnimator) {
-                animator.supportsChangeAnimations = false
-            }
+            it.itemAnimator = null
             rvDefaultPaddingBottom = it.paddingBottom
         }
     }
@@ -599,6 +594,9 @@ class ShopPageProductListResultFragment :
                     is Success -> {
                         onSuccessGetBottomSheetFilterData(it.data)
                     }
+                    else -> {
+                        //no-op
+                    }
                 }
             }
         )
@@ -609,6 +607,9 @@ class ShopPageProductListResultFragment :
                 when (it) {
                     is Success -> {
                         onSuccessGetShopProductFilterCount(count = it.data)
+                    }
+                    else -> {
+                        //no-op
                     }
                 }
             }

@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -30,6 +29,8 @@ import com.tokopedia.withdraw.saldowithdrawal.domain.model.SubmitWithdrawalRespo
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.WithdrawalRequest
 import com.tokopedia.withdraw.saldowithdrawal.util.WithdrawConstant
 import kotlinx.android.synthetic.main.swd_success_page.*
+import java.text.NumberFormat
+import java.util.Locale
 import javax.inject.Inject
 
 class ThankYouFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
@@ -56,18 +57,24 @@ class ThankYouFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            if (it.containsKey(ARG_WITHDRAWAL_REQUEST)
-                    && it.containsKey(ARG_SUBMIT_WITHDRAWAL_RESPONSE)) {
+            if (it.containsKey(ARG_WITHDRAWAL_REQUEST) &&
+                it.containsKey(ARG_SUBMIT_WITHDRAWAL_RESPONSE)
+            ) {
                 withdrawalRequest = it.getParcelable(ARG_WITHDRAWAL_REQUEST) ?: WithdrawalRequest()
                 withdrawalResponse = it.getParcelable(ARG_SUBMIT_WITHDRAWAL_RESPONSE) ?: SubmitWithdrawalResponse()
+
+                val bankImage = withdrawalRequest.bankAccount.bankImageUrl
             } else {
                 activity?.finish()
             }
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater,
-                              container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.swd_success_page, container, false)
     }
 
@@ -82,18 +89,53 @@ class ThankYouFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
             tvWithdrawalTimeNote.text = withdrawalResponse.description
             tvBankName.text = bankAccount.bankName
             if (bankAccount.adminFee > 0) {
-                tvAdminFees.text = String.format(activity.resources.getString(R.string.swd_admin_fee_msg)
-                        ?: "", bankAccount.adminFee.toString())
+                tvAdminFees.text = String.format(
+                    activity.resources.getString(R.string.swd_admin_fee_msg)
+                        ?: "",
+                    bankAccount.adminFee.toString()
+                )
                 tvAdminFees.visible()
             }
-            tvAccountNumber.text = bankAccount.accountNo + "-" + bankAccount.accountName
-            tvTotalWithdrawalAmount.text = CurrencyFormatHelper.convertToRupiah(withdrawalRequest.withdrawal.toString())
+            tvAccountNumber.text =
+                if (bankAccount.accountNo?.isNotEmpty() == true && bankAccount.accountName?.isNotEmpty() == true)
+                    context?.getString(
+                        R.string.swd_account_number_name,
+                        bankAccount.accountNo,
+                        bankAccount.accountName
+                ) ?: ""
+                else if (bankAccount.accountNo?.isNotEmpty() == true) bankAccount.accountNo
+                else bankAccount.accountName
+
+            val localeID = Locale("in", "ID")
+            tvTotalWithdrawalAmount.text = getString(
+                R.string.swd_rp,
+                NumberFormat.getNumberInstance(localeID).format(withdrawalRequest.withdrawal)
+            )
             showRekeningWidgets(activity)
         }
         btnCta.setOnClickListener { onCtaClick() }
         btnCta.text = withdrawalResponse.ctaWording
+        ivBankImage.setImageUrl(withdrawalRequest.bankAccount.bankImageUrl ?: "")
         tvWithdrawalTitle.text = withdrawalResponse.title
+
         setContentImage()
+        sendPageImpressionAnalytics()
+    }
+
+    private fun sendPageImpressionAnalytics() {
+        if (withdrawalResponse.isSuccess()) {
+            analytics.get().eventViewSuccessThankYouWithdrawalPage(withdrawalRequest.withdrawal)
+        } else {
+            analytics.get().eventViewFailedThankYouWithdrawalPage(withdrawalRequest.withdrawal)
+        }
+    }
+
+    private fun sendCtaClickAnalytics() {
+        if (withdrawalResponse.isSuccess()) {
+            analytics.get().eventClickCtaSuccessThankYouWithdrawalPage(withdrawalRequest.withdrawal)
+        } else {
+            analytics.get().eventClickCtaFailedThankYouWithdrawalPage(withdrawalRequest.withdrawal)
+        }
     }
 
     private fun setContentImage() {
@@ -103,6 +145,7 @@ class ThankYouFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
     }
 
     private fun onCtaClick() {
+        sendCtaClickAnalytics()
         openApplink(withdrawalResponse.ctaLink ?: "")
     }
 
@@ -128,18 +171,22 @@ class ThankYouFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
             withdrawalRequest.showJoinRekeningWidget -> {
                 tvComeOnJoinRPDescriptionClickable.movementMethod = LinkMovementMethod()
                 tvComeOnJoinRPDescriptionClickable
-                        .text = getJoinRPProgramSpannableDescription(context)
+                    .text = getJoinRPProgramSpannableDescription(context)
                 withdrawalSuccessTicker.gone()
                 cardUnifyJoinRekeningProgram.visible()
                 analytics.get().onShowJoinRekeningPremiumWidgetOnSuccessPage(
-                        withdrawalRequest.bankAccount.bankName)
+                    withdrawalRequest.bankAccount.bankName
+                )
             }
             else -> {
                 withdrawalSuccessTicker.gone()
                 cardUnifyJoinRekeningProgram.gone()
                 analytics.get().onNoTickerDisplayedOnSuccessPage(
-                        getString(R.string.swd_label_no_ticker
-                                , withdrawalRequest.bankAccount.bankName ?: ""))
+                    getString(
+                        R.string.swd_label_no_ticker,
+                        withdrawalRequest.bankAccount.bankName ?: ""
+                    )
+                )
             }
         }
     }
@@ -147,22 +194,30 @@ class ThankYouFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
     private fun showJoinRekeningRequestTicker(joinPromptMessageResponse: JoinPromptMessageResponse) {
         withdrawalSuccessTicker.tickerTitle = joinPromptMessageResponse.title
         withdrawalSuccessTicker
-                .setHtmlDescription(getString(R.string.swd_ticker_description_html,
-                        joinPromptMessageResponse.description, joinPromptMessageResponse.actionText))
+            .setHtmlDescription(
+                getString(
+                    R.string.swd_ticker_description_html,
+                    joinPromptMessageResponse.description,
+                    joinPromptMessageResponse.actionText
+                )
+            )
         withdrawalSuccessTicker.setDescriptionClickEvent(this)
         if (joinPromptMessageResponse.isSuccess) {
             withdrawalSuccessTicker.tickerType = Ticker.TYPE_ANNOUNCEMENT
             analytics.get().onViewRekeningPremiumApplicationIsINProgress(
-                    withdrawalRequest.bankAccount.bankName)
+                withdrawalRequest.bankAccount.bankName
+            )
         } else {
             withdrawalSuccessTicker.tickerType = Ticker.TYPE_WARNING
             analytics.get().onViewRekeningPremiumApplicationFailed(
-                    String.format(LABEL_FORMAT_REASON,
-                            withdrawalRequest.bankAccount.bankName,
-                            joinPromptMessageResponse.description))
+                String.format(
+                    LABEL_FORMAT_REASON,
+                    withdrawalRequest.bankAccount.bankName,
+                    joinPromptMessageResponse.description
+                )
+            )
         }
     }
-
 
     private fun getJoinRPProgramSpannableDescription(context: Context): SpannableStringBuilder? {
         val originalText = getString(R.string.swd_come_on_join_rp_description)
@@ -170,22 +225,30 @@ class ThankYouFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
         val spannableString = SpannableString(tryNowStr)
         val startIndex = 0
         val endIndex = spannableString.length
-        val color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+        val color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         spannableString.setSpan(color, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        spannableString.setSpan(object : ClickableSpan() {
-            override fun onClick(widget: View) {
-                WithdrawConstant.openRekeningAccountInfoPage(context)
-                val label = String.format(LABEL_FORMAT_TICKER, withdrawalRequest.bankAccount.bankName,
-                        getString(R.string.swd_come_on_join_rp))
-                analytics.get().onSuccessPageRekeningPremiumLinkClick(label)
-            }
+        spannableString.setSpan(
+            object : ClickableSpan() {
+                override fun onClick(widget: View) {
+                    WithdrawConstant.openRekeningAccountInfoPage(context)
+                    val label = String.format(
+                        LABEL_FORMAT_TICKER,
+                        withdrawalRequest.bankAccount.bankName,
+                        getString(R.string.swd_come_on_join_rp)
+                    )
+                    analytics.get().onSuccessPageRekeningPremiumLinkClick(label)
+                }
 
-            override fun updateDrawState(ds: TextPaint) {
-                super.updateDrawState(ds)
-                ds.isUnderlineText = false
-                ds.color = color
-            }
-        }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                override fun updateDrawState(ds: TextPaint) {
+                    super.updateDrawState(ds)
+                    ds.isUnderlineText = false
+                    ds.color = color
+                }
+            },
+            startIndex,
+            endIndex,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
         return SpannableStringBuilder.valueOf(originalText).append(" ").append(spannableString)
     }
 
@@ -193,60 +256,73 @@ class ThankYouFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
         val eventLabel = when {
             withdrawalRequest.isJoinRekeningPremium -> {
                 withdrawalResponse.joinPromptMessageResponse?.let {
-                    String.format(LABEL_FORMAT_TICKER_REASON, withdrawalRequest.bankAccount.bankName,
-                            it.title,it.description)
+                    String.format(
+                        LABEL_FORMAT_TICKER_REASON,
+                        withdrawalRequest.bankAccount.bankName,
+                        it.title,
+                        it.description
+                    )
                 }
             }
             withdrawalRequest.showJoinRekeningWidget -> {
-                String.format(LABEL_FORMAT_TICKER_REASON, withdrawalRequest.bankAccount.bankName,
-                        getString(R.string.swd_come_on_join_rp),
-                        getString(R.string.swd_come_on_join_rp_description))
+                String.format(
+                    LABEL_FORMAT_TICKER_REASON,
+                    withdrawalRequest.bankAccount.bankName,
+                    getString(R.string.swd_come_on_join_rp),
+                    getString(R.string.swd_come_on_join_rp_description)
+                )
             }
             else -> String.format(LABEL_FORMAT_TICKER_REASON, withdrawalRequest.bankAccount.bankName, "", "")
         }
         activity?.let { activity ->
             val resultIntent = Intent()
             activity.setResult(Activity.RESULT_OK, resultIntent)
-            eventLabel?.let {
-                analytics.get().eventClickBackToSaldoPage(eventLabel)
-            }
             activity.finish()
         }
     }
 
-
     override fun onDescriptionViewClick(linkUrl: CharSequence) {
         val joinPromptMessageResponse = withdrawalResponse.joinPromptMessageResponse
         joinPromptMessageResponse?.let {
-            WithdrawConstant.openSessionBaseURL(context,
-                    joinPromptMessageResponse.actionLink)
+            WithdrawConstant.openSessionBaseURL(
+                context,
+                joinPromptMessageResponse.actionLink
+            )
             if (joinPromptMessageResponse.isSuccess) {
                 analytics.get().onSuccessPageRekeningPremiumLinkClick(
-                        String.format(LABEL_FORMAT_TICKER, withdrawalRequest.bankAccount.bankName,
-                                joinPromptMessageResponse.title)
+                    String.format(
+                        LABEL_FORMAT_TICKER,
+                        withdrawalRequest.bankAccount.bankName,
+                        joinPromptMessageResponse.title
+                    )
                 )
             } else {
                 analytics.get().onClickUpgradeToPowerMerchant(
-                        String.format(LABEL_FORMAT_TICKER, withdrawalRequest.bankAccount.bankName,
-                                joinPromptMessageResponse.title)
+                    String.format(
+                        LABEL_FORMAT_TICKER,
+                        withdrawalRequest.bankAccount.bankName,
+                        joinPromptMessageResponse.title
+                    )
                 )
             }
         }
-
     }
 
     override fun onDismiss() {
-        //no required as ticker don't have close button
+        // no required as ticker don't have close button
     }
 
     fun onCloseButtonClick() {
-        val joinPromptMessageResponse= withdrawalResponse.joinPromptMessageResponse
+        val joinPromptMessageResponse = withdrawalResponse.joinPromptMessageResponse
         val label = when {
             withdrawalRequest.isJoinRekeningPremium -> {
                 joinPromptMessageResponse?.let {
-                    String.format(LABEL_FORMAT_TICKER_REASON, withdrawalRequest.bankAccount.bankName,
-                            joinPromptMessageResponse.title,
-                            joinPromptMessageResponse.description)
+                    String.format(
+                        LABEL_FORMAT_TICKER_REASON,
+                        withdrawalRequest.bankAccount.bankName,
+                        joinPromptMessageResponse.title,
+                        joinPromptMessageResponse.description
+                    )
                 }
             }
             else -> String.format(LABEL_FORMAT_TICKER_REASON, withdrawalRequest.bankAccount.bankName, "", "")
@@ -263,8 +339,10 @@ class ThankYouFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
         private const val ARG_WITHDRAWAL_REQUEST = "arg_withdrawal_request"
         private const val ARG_SUBMIT_WITHDRAWAL_RESPONSE = "arg_submit_withdrawal_response"
 
-        fun getInstance(withdrawalRequest: WithdrawalRequest,
-                        submitWithdrawalResponse: SubmitWithdrawalResponse): Fragment {
+        fun getInstance(
+            withdrawalRequest: WithdrawalRequest,
+            submitWithdrawalResponse: SubmitWithdrawalResponse
+        ): Fragment {
             val successFragment: Fragment = ThankYouFragmentWithdrawal()
             val bundle = Bundle()
             bundle.putParcelable(ARG_WITHDRAWAL_REQUEST, withdrawalRequest)
@@ -273,5 +351,4 @@ class ThankYouFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
             return successFragment
         }
     }
-
 }

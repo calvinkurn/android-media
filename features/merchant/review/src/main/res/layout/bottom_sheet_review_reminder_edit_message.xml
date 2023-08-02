@@ -60,14 +60,14 @@
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_marginEnd="4dp"
-            app:icon_color_light_enable="@color/Unify_G500"
+            app:icon_color_light_enable="@color/Unify_GN500"
             app:icon_name="ADD_CIRCLE" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/review_reminder_edit_message_add_buyer"
-            android:textColor="@color/Unify_G500"
+            android:textColor="@color/Unify_GN500"
             app:typographyType="body_3"
             app:typographyWeight="bold" />
 

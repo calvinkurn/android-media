@@ -3,6 +3,7 @@ package com.tokopedia.search.result.presentation.model
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel
+import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
@@ -10,7 +11,7 @@ import com.tokopedia.search.result.product.addtocart.AddToCartConstant.DEFAULT_P
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationConstant.DEFAULT_KEYWORD_INTENT
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationConstant.KEYWORD_INTENT_LOW
 import com.tokopedia.search.result.product.wishlist.Wishlistable
-import com.tokopedia.search.utils.getFormattedPositionName
+import com.tokopedia.search.utils.getPositionNameMap
 import com.tokopedia.search.utils.orNone
 import com.tokopedia.topads.sdk.domain.model.Badge
 import com.tokopedia.topads.sdk.domain.model.FreeOngkir
@@ -88,6 +89,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory>, 
     fun getProductAsObjectDataLayer(
         filterSortParams: String,
         componentId: String,
+        additionalPositionMap: Map<String, String> = emptyMap(),
     ): Any {
         return DataLayer.mapOf(
                 "name", productName,
@@ -97,8 +99,9 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory>, 
                 "category", categoryBreadcrumb,
                 "variant", "none / other",
                 "list", SearchTracking.getActionFieldString(isOrganicAds, topadsTag, componentId),
-                "position", position.toString(),
-                "dimension61", if (filterSortParams.isEmpty()) "none / other" else filterSortParams,
+                "index", position.toString(),
+                "dimension56", warehouseID.ifNullOrBlank { "0" },
+                "dimension61", filterSortParams.ifEmpty { "none / other" },
                 "dimension79", shopID,
                 "dimension81", getDimension81(),
                 "dimension83", getFreeOngkirDataLayer(),
@@ -108,7 +111,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory>, 
                 "dimension96", boosterList,
                 "dimension99", System.currentTimeMillis(),
                 "dimension100", sourceEngine,
-                "dimension115", dimension115,
+                "dimension115", getDimension115(additionalPositionMap),
                 "dimension131", dimension131.orNone(),
         )
     }
@@ -117,6 +120,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory>, 
         filterSortParams: String,
         componentId: String,
         cartId: String?,
+        additionalPositionMap: Map<String, String> = emptyMap(),
     ): Any {
         return DataLayer.mapOf(
             "name", productName,
@@ -126,12 +130,13 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory>, 
             "category", categoryBreadcrumb,
             "variant", "none / other",
             "list", SearchTracking.getActionFieldString(isOrganicAds, topadsTag, componentId),
-            "position", position.toString(),
+            "index", position.toString(),
             "dimension45", cartId,
-            "dimension61", if (filterSortParams.isEmpty()) "none / other" else filterSortParams,
+            "dimension56", warehouseID.ifNullOrBlank { "0" },
+            "dimension61", filterSortParams.ifEmpty { "none / other" },
             "dimension87", "search result",
             "dimension88", "search - product",
-            "dimension115", dimension115,
+            "dimension115", getDimension115(additionalPositionMap),
             "dimension131", dimension131.orNone(),
             "quantity", minOrder,
             "shop_id", shopID,
@@ -164,8 +169,11 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory>, 
     val hasLabelGroupFulfillment: Boolean
         get() = labelGroupList?.any { it.position == ProductCardLabel.LABEL_FULFILLMENT } == true
 
-    val dimension115: String
-        get() = labelGroupList.getFormattedPositionName()
+    fun getDimension115(positionMap: Map<String, String>): String {
+        return labelGroupList.getPositionNameMap().plus(positionMap)
+            .map { with(it) { "$key.$value" } }
+            .joinToString { it }
+    }
 
     val isKeywordIntentionLow : Boolean
         get() = keywordIntention == KEYWORD_INTENT_LOW

@@ -23,7 +23,9 @@ class DateUtilHelper {
         val dateFormat: DateFormat = SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH)
         var minDate = Date()
         try {
-            minDate = dateFormat?.parse(MIN_DATE)
+            dateFormat.parse(MIN_DATE)?.let {
+                minDate = it
+            }
         } catch (e: ParseException) {
             e.printStackTrace()
         }

@@ -4,7 +4,7 @@ import android.app.Activity
 import android.graphics.Color
 import android.os.Build
 import android.text.method.LinkMovementMethod
-import android.view.Display
+import androidx.core.app.ActivityCompat
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.topchat.common.Constant
@@ -71,7 +71,7 @@ object Utils {
         }
     }
 
-    //this bubble will be shown within sellerapp and OS version 11/above
+    // this bubble will be shown within sellerapp and OS version 11/above
     fun isBubbleChatEnabled() =
         GlobalConfig.isSellerApp() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && getShouldBubbleChatEnabled()
 
@@ -81,20 +81,10 @@ object Utils {
 
     fun Activity?.isFromBubble(): Boolean {
         return try {
-            this?.let {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    isLaunchedFromBubble
-                } else {
-                    val displayId = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                        display?.displayId
-                    } else {
-                        @Suppress("DEPRECATION")
-                        windowManager.defaultDisplay.displayId
-                    }
-                    displayId != Display.DEFAULT_DISPLAY
-                }
+            this?.let { activity ->
+                ActivityCompat.isLaunchedFromBubble(activity)
             } ?: false
-        } catch (e: Exception) {
+        } catch (ignored: Throwable) {
             false
         }
     }

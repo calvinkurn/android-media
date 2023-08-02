@@ -1,7 +1,7 @@
 package com.tokopedia.play.domain.repository
 
-import com.tokopedia.play.ui.toolbar.model.PartnerType
-import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
+import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
+import com.tokopedia.play.widget.ui.model.PartnerType
 
 /**
  * @author by astidhiyaa on 13/12/21

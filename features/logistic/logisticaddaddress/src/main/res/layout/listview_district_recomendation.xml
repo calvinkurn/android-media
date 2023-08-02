@@ -11,7 +11,7 @@
         android:id="@+id/vDevider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/Unify_N100" />
+        android:background="@color/Unify_NN200" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvAddress"

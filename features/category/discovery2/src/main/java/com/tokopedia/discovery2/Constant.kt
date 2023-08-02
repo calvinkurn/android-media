@@ -26,6 +26,8 @@ object Constant {
         const val SHARE = "Share"
         const val CART = "Cart"
         const val GLOBAL_MENU = "Global Menu"
+        const val INBOX = "Inbox"
+        const val NOTIF = "Notif"
     }
 
     object ProductTemplate {
@@ -70,6 +72,7 @@ object Constant {
         const val RPC_USER_LONG = "rpc_UserLong"
         const val RPC_USER_POST_CODE = "rpc_UserPostCode"
         const val RPC_USER_WAREHOUSE_ID = "rpc_UserWarehouseId"
+        const val RPC_USER_WAREHOUSE_IDS = "rpc_UserWarehouseIds"
         const val RPC_PRODUCT_ID = "rpc_ProductId"
         const val USER_ADDRESS_KEY = "user_address"
     }
@@ -100,8 +103,27 @@ object Constant {
 
     const val LABEL_FULFILLMENT = "fulfillment"
     const val DISCO_EMPTY_STATE_IMG = "disco_empty_state_img"
+    const val DISCO_PAGE_SOURCE = "discovery_page_source"
+    const val DISCOVERY_APPLINK = "discovery_applink"
+
+    object DiscoveryPageSource {
+        const val HOME = "home"
+    }
 
     object TopAdsSdk{
         const val TOP_ADS_GSLP_TDN = "topads gslp"
+    }
+
+    const val RESETTING_SELECTED_TAB = -1
+
+    object ProductHighlight{
+        const val SINGLE = "single"
+        const val DOUBLE = "double"
+        const val TRIPLE = "triple"
+        const val DOUBLESINGLEEMPTY = "doubleSingleEmpty"
+        const val TRIPLESINGLEEMPTY = "tripleSingleEmpty"
+        const val TRIPLEDOUBLEEMPTY = "tripleDoubleEmpty"
+        const val STATUS = "status"
+        const val PROMO = "promo"
     }
 }

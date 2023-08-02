@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parent_constraint_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/dp_8"
+    android:layout_marginTop="@dimen/unify_space_4">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/product_highlight_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/unify_space_8"
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:adjustViewBounds="true"
+        android:cropToPadding="false"
+        android:elevation="@dimen/unify_space_2"
+        android:foreground="@drawable/disco_ph_rounded_image_bg"
+        android:scaleType="fitCenter"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:minHeight="@dimen/dp_144" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/ph_image_text_bottom"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/unify_space_8"
+        android:layout_marginBottom="@dimen/unify_space_8"
+        android:background="@drawable/product_card_discount_text_background"
+        android:backgroundTint="@color/discovery2_dms_clr_2E3137B2"
+        android:elevation="@dimen/unify_space_2"
+        android:padding="@dimen/unify_space_4"
+        android:textColor="@color/Unify_NN0"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/product_highlight_image"
+        app:layout_constraintStart_toStartOf="@id/product_highlight_image"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        tools:text="Terjual Habis"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ph_shop_logo"
+        android:layout_width="@dimen/unify_space_32"
+        android:layout_height="@dimen/unify_space_32"
+        android:adjustViewBounds="true"
+        android:elevation="@dimen/unify_space_4"
+        android:foreground="@drawable/disco_ph_rounded_image_bg"
+        android:gravity="center"
+        android:scaleType="fitXY"
+        android:visibility="gone"
+        app:layout_constraintDimensionRatio="H,1:1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_type="circle" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="@dimen/dp_104" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/data_card_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/product_highlight_image"
+        app:layout_constraintStart_toStartOf="@id/product_highlight_image"
+        app:layout_constraintTop_toBottomOf="@id/guideline">
+
+        <ImageView
+            android:id="@+id/bg_image"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="null"
+            android:scaleType="fitXY"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/multi_ph_card_bg" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/bg_image_supergraphic"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="null"
+            android:scaleType="fitXY"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/ph_product_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/unify_space_8"
+            android:layout_marginTop="@dimen/unify_space_48"
+            android:ellipsize="end"
+            android:lines="2"
+            android:maxLength="38"
+            android:maxLines="2"
+            android:textColor="@color/Unify_Static_White"
+            app:layout_constraintBottom_toTopOf="@id/ph_product_price"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="display_3"
+            app:typographyWeight="reguler"
+            tools:text="Xiaomi Poco M4 Pro 6/128 GB + 8/256 GB Xiaomi Poco M4 Pro " />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/ph_product_price"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_4"
+            android:textColor="@color/Unify_Static_White"
+            app:layout_constraintBottom_toTopOf="@id/ph_product_discount"
+            app:layout_constraintEnd_toEndOf="@id/ph_product_name"
+            app:layout_constraintStart_toStartOf="@id/ph_product_name"
+            app:layout_constraintTop_toBottomOf="@id/ph_product_name"
+            app:typographyType="display_2"
+            app:typographyWeight="bold"
+            tools:text="Rp4.199.000" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/ph_product_discount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/unify_space_8"
+            android:background="@drawable/product_card_discount_text_background"
+            android:backgroundTint="@color/discovery2_dms_clr_FFCCD9"
+            android:gravity="center"
+            android:padding="@dimen/spacing_lvl2"
+            android:textColor="@color/Unify_RN500"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/ph_product_name"
+            app:layout_constraintTop_toBottomOf="@id/ph_product_price"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            tools:text="35%" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/ph_discounted_product_price"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_4"
+            android:lines="1"
+            android:textColor="@color/Unify_Static_White"
+            app:layout_constraintBottom_toBottomOf="@id/ph_product_discount"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ph_product_discount"
+            app:layout_constraintTop_toTopOf="@id/ph_product_discount"
+            app:typographyType="small"
+            app:typographyWeight="reguler"
+            tools:text="Rp6.499.000" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

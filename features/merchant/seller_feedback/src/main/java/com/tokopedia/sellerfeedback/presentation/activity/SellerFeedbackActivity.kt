@@ -9,9 +9,9 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
+import com.tokopedia.seller.active.common.features.sellerfeedback.SuccessToasterHelper
 import com.tokopedia.sellerfeedback.presentation.fragment.SellerFeedbackFragment
 import com.tokopedia.sellerfeedback.presentation.fragment.SellerFeedbackFragment.Companion.EXTRA_URI_IMAGE
-import com.tokopedia.sellerfeedback.presentation.util.SuccessToasterHelper
 
 class SellerFeedbackActivity : BaseSimpleActivity() {
 
@@ -19,7 +19,7 @@ class SellerFeedbackActivity : BaseSimpleActivity() {
         super.onCreate(savedInstanceState)
         val colorId = ContextCompat.getColor(
             this@SellerFeedbackActivity,
-            com.tokopedia.unifyprinciples.R.color.Unify_N400
+            com.tokopedia.unifyprinciples.R.color.Unify_NN600
         )
 
         setupToolbar(colorId)

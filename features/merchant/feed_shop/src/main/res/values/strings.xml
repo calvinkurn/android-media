@@ -6,6 +6,7 @@
     <string name="feed_shop_empty_feed_subtitle">Yuk, post promo dan update dari Tokomu \nsupaya makin banyak yang belanja!</string>
     <string name="feed_shop_empty_feed_btn">Post Sekarang</string>
 
+    <string name="feed_shop_button_cancel">Batal</string>
     <string name="feed_shop_delete_post">Hapus Post</string>
     <string name="feed_shop_title_cancel">Batal</string>
     <string name="feed_shop_title_delete">Hapus</string>

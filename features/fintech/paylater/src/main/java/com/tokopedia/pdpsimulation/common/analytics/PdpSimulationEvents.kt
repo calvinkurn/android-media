@@ -38,7 +38,6 @@ sealed class PdpSimulationEvent {
         val variantName: String
     ) : PdpSimulationEvent()
 
-
     data class ClickChangePartnerEvent(
         val productId: String,
         val userStatus: String,
@@ -60,16 +59,21 @@ sealed class PdpSimulationEvent {
         val limit: String,
         val variantName: String,
         val promoName: String,
-    ):PdpSimulationEvent()
+        val productPrice: String,
+        val prevRate: String,
+        val newRate: String
+    ) : PdpSimulationEvent()
 
     data class ClickTenureEvent(
         val productId: String,
         val userStatus: String,
-        val productPrice:String,
+        val productPrice: String,
         val tenure: String,
         val partnerName: String,
         val promoName: String,
-    ):PdpSimulationEvent()
+        val prevRate: String,
+        val newRate: String
+    ) : PdpSimulationEvent()
 }
 
 open class PayLaterAnalyticsBase {
@@ -80,6 +84,8 @@ open class PayLaterAnalyticsBase {
     var linkingStatus: String = ""
     var action: String = ""
     var promoName: String = ""
+    var previousRate: String = ""
+    var newRate: String = ""
 }
 
 class PayLaterCtaClick : PayLaterAnalyticsBase() {
@@ -89,19 +95,26 @@ class PayLaterCtaClick : PayLaterAnalyticsBase() {
     var ctaWording: String = ""
 }
 
+class PayLaterTickerCtaClick : PayLaterAnalyticsBase() {
+    var tickerType: String = ""
+    var tickerCta: String = ""
+}
+
+class PayLaterTickerImpression : PayLaterAnalyticsBase() {
+    var tickerType: String = ""
+}
+
 @Parcelize
- class PayLaterBottomSheetImpression: PayLaterAnalyticsBase(), Parcelable {
+class PayLaterBottomSheetImpression : PayLaterAnalyticsBase(), Parcelable {
     var limit: String = ""
     var emiAmount: String = ""
 }
 
 @Parcelize
-class OccBottomSheetImpression : PayLaterAnalyticsBase(), Parcelable
-{
-    var productPrice:String = ""
+class OccBottomSheetImpression : PayLaterAnalyticsBase(), Parcelable {
+    var productPrice: String = ""
 }
 
-class PayLaterTenureClick :PayLaterAnalyticsBase()
-{
+class PayLaterTenureClick : PayLaterAnalyticsBase() {
     var productPrice: String = ""
 }

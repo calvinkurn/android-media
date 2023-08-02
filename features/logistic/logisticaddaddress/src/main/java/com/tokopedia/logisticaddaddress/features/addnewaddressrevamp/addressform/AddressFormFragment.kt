@@ -2,7 +2,6 @@ package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressfor
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -22,7 +21,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_EDIT_ADDRESS
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant.EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
-import com.tokopedia.logisticCommon.util.LogisticUserConsentHelper
 import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_ADDRESS_ID
@@ -56,6 +54,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
@@ -313,6 +312,9 @@ class AddressFormFragment :
                         binding?.layoutCbDefaultLoc?.gone()
                     }
                 }
+                else -> {
+                    // no-op
+                }
             }
         }
     }
@@ -340,10 +342,14 @@ class AddressFormFragment :
         }
 
         viewModel.pinpointValidation.observe(viewLifecycleOwner) {
-            binding?.loaderAddressForm?.visibility = View.GONE
+            binding?.loaderAddressForm?.gone()
             when (it) {
                 is Success -> {
-                    if (it.data.result.not()) {
+                    if (it.data.result) {
+                        viewModel.saveDataModel?.let { addressData ->
+                            checkLocation(addressData)
+                        }
+                    } else {
                         showToaster(
                             message = getString(R.string.error_district_pinpoint_mismatch),
                             toasterType = Toaster.TYPE_ERROR
@@ -357,6 +363,9 @@ class AddressFormFragment :
                         message = it.throwable.message.toString(),
                         toasterType = Toaster.TYPE_ERROR
                     )
+                }
+                else -> {
+                    // no-op
                 }
             }
         }
@@ -373,7 +382,7 @@ class AddressFormFragment :
 
     private fun observeAddressDetail() {
         viewModel.addressDetail.observe(viewLifecycleOwner) {
-            binding?.loaderAddressForm?.visibility = View.GONE
+            binding?.loaderAddressForm?.gone()
             when (it) {
                 is Success -> {
                     if (viewModel.isEdit) {
@@ -387,6 +396,9 @@ class AddressFormFragment :
                         message = it.throwable.message.toString(),
                         toasterType = Toaster.TYPE_ERROR
                     )
+                }
+                else -> {
+                    // no-op
                 }
             }
         }
@@ -403,13 +415,7 @@ class AddressFormFragment :
             renderNegativeFlow(data = addressData, isEdit = false)
         }
 
-        LogisticUserConsentHelper.displayUserConsent(
-            activity as Context,
-            userSession.userId,
-            binding?.userConsent,
-            getString(R.string.btn_simpan),
-            if (viewModel.isPositiveFlow) LogisticUserConsentHelper.ANA_REVAMP_POSITIVE else LogisticUserConsentHelper.ANA_REVAMP_NEGATIVE
-        )
+        setUserConsent()
 
         binding?.btnSaveAddressNew?.setOnClickListener {
             if (validateForm()) {
@@ -585,13 +591,7 @@ class AddressFormFragment :
             renderNegativeFlow(isEdit = true, data = data)
         }
 
-        LogisticUserConsentHelper.displayUserConsent(
-            activity as Context,
-            userSession.userId,
-            binding?.userConsent,
-            getString(R.string.btn_simpan),
-            EditAddressRevampAnalytics.CATEGORY_EDIT_ADDRESS_PAGE
-        )
+        setUserConsent()
 
         binding?.btnSaveAddressNew?.setOnClickListener {
             if (validateForm()) {
@@ -1077,17 +1077,19 @@ class AddressFormFragment :
 
     private fun doSaveAddress() {
         setSaveAddressDataModel()
-        viewModel.saveAddress()
+        viewModel.saveAddress(
+            consentJson = binding?.userConsentWidget?.generatePayloadData().orEmpty()
+        )
     }
 
     private fun doSaveEditAddress() {
         setSaveAddressDataModel()
         viewModel.saveDataModel?.let {
             if (it.hasPinpoint()) {
-                binding?.loaderAddressForm?.visibility = View.VISIBLE
+                binding?.loaderAddressForm?.visible()
                 viewModel.validatePinpoint(it)
             } else {
-                viewModel.saveEditAddress(it)
+                checkLocation(it)
             }
         }
     }
@@ -1191,6 +1193,61 @@ class AddressFormFragment :
                 }
             }
         }
+    }
+
+    private fun checkLocation(addressData: SaveAddressDataModel) {
+        if (viewModel.isDifferentLocation(
+                address1 = addressData.address1,
+                address2 = addressData.address2
+            )
+        ) {
+            showDifferentLocationDialog(addressData)
+        } else {
+            viewModel.saveEditAddress(addressData)
+        }
+    }
+
+    private fun showDifferentLocationDialog(
+        addressData: SaveAddressDataModel
+    ) {
+        activity?.apply {
+            DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(R.string.title_edit_address_confirmation_dialog))
+                setDescription(getString(R.string.description_edit_address_confirmation_dialog))
+                setPrimaryCTAText(getString(R.string.btn_simpan))
+                setPrimaryCTAClickListener {
+                    dismiss()
+                    viewModel.saveEditAddress(addressData)
+                }
+                setSecondaryCTAText(getString(R.string.btn_back))
+                setSecondaryCTAClickListener { dismiss() }
+                show()
+            }
+        }
+    }
+
+    private fun setUserConsent() {
+        binding?.userConsentWidget?.visible()
+
+        binding?.userConsentWidget?.apply {
+            setBtnSaveAddressEnable(viewModel.isEdit)
+            setOnCheckedChangeListener { isChecked ->
+                setBtnSaveAddressEnable(isChecked)
+            }
+            setOnFailedGetCollectionListener {
+                setBtnSaveAddressEnable(true)
+            }
+        }?.load(
+            viewLifecycleOwner,
+            this,
+            ConsentCollectionParam(
+                collectionId = viewModel.getCollectionId()
+            )
+        )
+    }
+
+    private fun setBtnSaveAddressEnable(isEnabled: Boolean) {
+        binding?.btnSaveAddressNew?.isEnabled = isEnabled
     }
 
     companion object {

@@ -1,9 +1,13 @@
 package com.tokopedia.manageaddress.shareaddress.shareaddressfromnotif
 
+import android.app.Activity
+import android.app.Instrumentation
 import android.content.Intent
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
@@ -53,7 +57,11 @@ class ShareAddressRobot {
             .perform(ViewActions.click())
     }
 
-    private fun waitForData(millis: Long = 1000L) {
+    fun intendingIntent() {
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+    }
+
+    private fun waitForData(millis: Long = 500L) {
         Thread.sleep(millis)
     }
 

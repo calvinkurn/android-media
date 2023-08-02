@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
@@ -10,6 +11,8 @@ buildscript {
     }
 }
 android {
+    namespace 'com.tokopedia.macrobenchmark_util'
+    testNamespace 'com.tokopedia.macrobenchmark_util.test'
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {

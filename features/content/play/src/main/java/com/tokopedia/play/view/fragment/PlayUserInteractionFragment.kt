@@ -8,9 +8,12 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.view.WindowInsets
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -19,32 +22,46 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.content.common.comment.PageSource
+import com.tokopedia.content.common.comment.analytic.ContentCommentAnalytics
+import com.tokopedia.content.common.comment.analytic.ContentCommentAnalyticsModel
+import com.tokopedia.content.common.comment.ui.ContentCommentBottomSheet
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
-import com.tokopedia.play.analytic.*
+import com.tokopedia.play.analytic.PlayAnalytic
+import com.tokopedia.play.analytic.PlayNewAnalytic
+import com.tokopedia.play.analytic.PlayPiPAnalytic
 import com.tokopedia.play.animation.PlayDelayFadeOutAnimation
 import com.tokopedia.play.animation.PlayFadeInAnimation
 import com.tokopedia.play.animation.PlayFadeInFadeOutAnimation
 import com.tokopedia.play.animation.PlayFadeOutAnimation
 import com.tokopedia.play.channel.analytic.PlayChannelAnalyticManager
+import com.tokopedia.play.channel.ui.component.CommentIconUiComponent
 import com.tokopedia.play.channel.ui.component.KebabIconUiComponent
 import com.tokopedia.play.channel.ui.component.ProductCarouselUiComponent
 import com.tokopedia.play.databinding.FragmentPlayInteractionBinding
-import com.tokopedia.play.extensions.*
+import com.tokopedia.play.extensions.hasAlpha
+import com.tokopedia.play.extensions.isAnyBottomSheetsShown
+import com.tokopedia.play.extensions.isAnyShown
+import com.tokopedia.play.extensions.isFullAlpha
+import com.tokopedia.play.extensions.isFullSolid
+import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.gesture.PlayClickTouchListener
 import com.tokopedia.play.ui.component.UiComponent
 import com.tokopedia.play.ui.engagement.model.EngagementUiModel
-import com.tokopedia.play.util.*
 import com.tokopedia.play.util.CachedState
 import com.tokopedia.play.util.changeConstraint
 import com.tokopedia.play.util.isChanged
+import com.tokopedia.play.util.isNotChanged
 import com.tokopedia.play.util.measureWithTimeout
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.BufferSource
@@ -69,18 +86,98 @@ import com.tokopedia.play.view.measurement.bounds.provider.videobounds.VideoBoun
 import com.tokopedia.play.view.measurement.layout.DynamicLayoutManager
 import com.tokopedia.play.view.measurement.layout.PlayDynamicLayoutManager
 import com.tokopedia.play.view.storage.multiplelikes.MultipleLikesIconCacheStorage
-import com.tokopedia.play.view.type.*
-import com.tokopedia.play.view.uimodel.*
-import com.tokopedia.play.view.uimodel.action.*
-import com.tokopedia.play.view.uimodel.event.*
-import com.tokopedia.play.view.uimodel.recom.*
+import com.tokopedia.play.view.type.BottomInsetsState
+import com.tokopedia.play.view.type.BottomInsetsType
+import com.tokopedia.play.view.type.PlayChannelType
+import com.tokopedia.play.view.type.ProductAction
+import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.type.ScreenOrientation2
+import com.tokopedia.play.view.type.VideoOrientation
+import com.tokopedia.play.view.type.isCompact
+import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.action.ClickLikeAction
+import com.tokopedia.play.view.uimodel.action.ClickPartnerNameAction
+import com.tokopedia.play.view.uimodel.action.ClickShareAction
+import com.tokopedia.play.view.uimodel.action.ClickSharingOptionAction
+import com.tokopedia.play.view.uimodel.action.CloseSharingOptionAction
+import com.tokopedia.play.view.uimodel.action.CommentVisibilityAction
+import com.tokopedia.play.view.uimodel.action.FetchWidgets
+import com.tokopedia.play.view.uimodel.action.InteractiveGameResultBadgeClickedAction
+import com.tokopedia.play.view.uimodel.action.OpenFooterUserReport
+import com.tokopedia.play.view.uimodel.action.OpenKebabAction
+import com.tokopedia.play.view.uimodel.action.OpenPageResultAction
+import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
+import com.tokopedia.play.view.uimodel.action.RetryGetTagItemsAction
+import com.tokopedia.play.view.uimodel.action.ScreenshotTakenAction
+import com.tokopedia.play.view.uimodel.action.SendWarehouseId
+import com.tokopedia.play.view.uimodel.action.SharePermissionAction
+import com.tokopedia.play.view.uimodel.action.ShowVariantAction
+import com.tokopedia.play.view.uimodel.event.AnimateLikeEvent
+import com.tokopedia.play.view.uimodel.event.CloseShareExperienceBottomSheet
+import com.tokopedia.play.view.uimodel.event.CommentVisibilityEvent
+import com.tokopedia.play.view.uimodel.event.CopyToClipboardEvent
+import com.tokopedia.play.view.uimodel.event.ErrorGenerateShareLink
+import com.tokopedia.play.view.uimodel.event.FailedFollow
+import com.tokopedia.play.view.uimodel.event.HideCoachMarkWinnerEvent
+import com.tokopedia.play.view.uimodel.event.LoginEvent
+import com.tokopedia.play.view.uimodel.event.OpenKebabEvent
+import com.tokopedia.play.view.uimodel.event.OpenPageEvent
+import com.tokopedia.play.view.uimodel.event.OpenSelectedSharingOptionEvent
+import com.tokopedia.play.view.uimodel.event.OpenSharingOptionEvent
+import com.tokopedia.play.view.uimodel.event.PreloadLikeBubbleIconEvent
+import com.tokopedia.play.view.uimodel.event.RemindToLikeEvent
+import com.tokopedia.play.view.uimodel.event.ShowCoachMarkWinnerEvent
+import com.tokopedia.play.view.uimodel.event.ShowErrorEvent
+import com.tokopedia.play.view.uimodel.event.ShowInfoEvent
+import com.tokopedia.play.view.uimodel.event.ShowLikeBubbleEvent
+import com.tokopedia.play.view.uimodel.event.ShowRealTimeNotificationEvent
+import com.tokopedia.play.view.uimodel.event.ShowWinningDialogEvent
+import com.tokopedia.play.view.uimodel.event.UiString
+import com.tokopedia.play.view.uimodel.recom.PinnedMessageUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayChannelDetailUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
+import com.tokopedia.play.view.uimodel.recom.PlayQuickReplyInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayStatusSource
+import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayerType
 import com.tokopedia.play.view.uimodel.recom.interactive.InteractiveStateUiModel
+import com.tokopedia.play.view.uimodel.recom.isGeneral
+import com.tokopedia.play.view.uimodel.recom.shouldShow
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
-import com.tokopedia.play.view.uimodel.state.*
-import com.tokopedia.play.view.viewcomponent.*
-import com.tokopedia.play.view.viewcomponent.interactive.*
+import com.tokopedia.play.view.uimodel.state.AddressWidgetUiState
+import com.tokopedia.play.view.uimodel.state.EngagementUiState
+import com.tokopedia.play.view.uimodel.state.PlayLikeUiState
+import com.tokopedia.play.view.uimodel.state.PlayRtnUiState
+import com.tokopedia.play.view.uimodel.state.PlayTitleUiState
+import com.tokopedia.play.view.uimodel.state.PlayTotalViewUiState
+import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
+import com.tokopedia.play.view.uimodel.state.PlayWinnerBadgeUiState
+import com.tokopedia.play.view.viewcomponent.ChatListViewComponent
+import com.tokopedia.play.view.viewcomponent.ChooseAddressViewComponent
+import com.tokopedia.play.view.viewcomponent.EmptyViewComponent
+import com.tokopedia.play.view.viewcomponent.EndLiveInfoViewComponent
+import com.tokopedia.play.view.viewcomponent.EngagementCarouselViewComponent
+import com.tokopedia.play.view.viewcomponent.ExploreWidgetViewComponent
+import com.tokopedia.play.view.viewcomponent.GradientBackgroundViewComponent
+import com.tokopedia.play.view.viewcomponent.ImmersiveBoxViewComponent
+import com.tokopedia.play.view.viewcomponent.LikeBubbleViewComponent
+import com.tokopedia.play.view.viewcomponent.LikeCountViewComponent
+import com.tokopedia.play.view.viewcomponent.LikeViewComponent
+import com.tokopedia.play.view.viewcomponent.PinnedViewComponent
+import com.tokopedia.play.view.viewcomponent.PlayButtonViewComponent
+import com.tokopedia.play.view.viewcomponent.ProductSeeMoreViewComponent
+import com.tokopedia.play.view.viewcomponent.QuickReplyViewComponent
+import com.tokopedia.play.view.viewcomponent.SendChatViewComponent
+import com.tokopedia.play.view.viewcomponent.ShareExperienceViewComponent
+import com.tokopedia.play.view.viewcomponent.StatsInfoViewComponent
+import com.tokopedia.play.view.viewcomponent.ToolbarRoomViewComponent
+import com.tokopedia.play.view.viewcomponent.VideoControlViewComponent
+import com.tokopedia.play.view.viewcomponent.VideoSettingsViewComponent
+import com.tokopedia.play.view.viewcomponent.interactive.InteractiveGameResultViewComponent
 import com.tokopedia.play.view.viewcomponent.partnerinfo.PartnerInfoViewComponent
 import com.tokopedia.play.view.viewcomponent.realtimenotif.RealTimeNotificationViewComponent
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
@@ -89,13 +186,16 @@ import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play_common.eventbus.EventBus
 import com.tokopedia.play_common.lifecycle.lifecycleBound
-import com.tokopedia.play_common.model.dto.interactive.GameUiModel
-import com.tokopedia.play_common.util.ActivityResultHelper
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.lifecycle.whenLifecycle
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
+import com.tokopedia.play_common.util.ActivityResultHelper
 import com.tokopedia.play_common.util.PerformanceClassConfig
 import com.tokopedia.play_common.util.event.EventObserver
-import com.tokopedia.play_common.util.extension.*
+import com.tokopedia.play_common.util.extension.awaitMeasured
+import com.tokopedia.play_common.util.extension.dismissToaster
+import com.tokopedia.play_common.util.extension.doOnLayout
+import com.tokopedia.play_common.util.extension.recreateView
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
@@ -105,9 +205,10 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.url.TokopediaUrl
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.play_common.R as commonR
@@ -121,11 +222,11 @@ class PlayUserInteractionFragment @Inject constructor(
     private val pipAnalytic: PlayPiPAnalytic,
     private val analytic: PlayAnalytic,
     private val multipleLikesIconCacheStorage: MultipleLikesIconCacheStorage,
-    private val castAnalyticHelper: CastAnalyticHelper,
     private val performanceClassConfig: PerformanceClassConfig,
     private val newAnalytic: PlayNewAnalytic,
     private val analyticManager: PlayChannelAnalyticManager,
-    private val router: Router
+    private val router: Router,
+    private val commentAnalytics: ContentCommentAnalytics.Creator
 ) :
     TkpdBaseV4Fragment(),
     PlayMoreActionBottomSheet.Listener,
@@ -154,7 +255,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val videoControlView by viewComponent { VideoControlViewComponent(it, R.id.pcv_video, this) }
     private val likeView by viewComponent { LikeViewComponent(it, this) }
     private val likeCountView by viewComponent { LikeCountViewComponent(it) }
-    private val shareExperienceView by viewComponentOrNull { ShareExperienceViewComponent(it, R.id.view_share_experience, childFragmentManager, this, this, requireContext(), dispatchers) }
+    private val shareExperienceView by viewComponentOrNull { ShareExperienceViewComponent(it, R.id.view_share_experience, childFragmentManager, this, this, requireContext()) }
     private val sendChatView by viewComponentOrNull { SendChatViewComponent(it, R.id.view_send_chat, this) }
     private val quickReplyView by viewComponentOrNull { QuickReplyViewComponent(it, R.id.rv_quick_reply, this) }
     private val chatListView by viewComponentOrNull { ChatListViewComponent(it, R.id.scrollable_host_chat) }
@@ -163,7 +264,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val immersiveBoxView by viewComponent { ImmersiveBoxViewComponent(it, R.id.v_immersive_box, this) }
     private val playButtonView by viewComponent { PlayButtonViewComponent(it, R.id.view_play_button, this) }
     private val endLiveInfoView by viewComponent { EndLiveInfoViewComponent(it, R.id.view_end_live_info) }
-    private val topmostLikeView by viewComponentOrNull(isEagerInit = true) { EmptyViewComponent(it, R.id.view_topmost_like) }
+
     private val rtnView by viewComponentOrNull { RealTimeNotificationViewComponent(it) }
     private val likeBubbleView by viewComponent {
         LikeBubbleViewComponent(
@@ -176,12 +277,14 @@ class PlayUserInteractionFragment @Inject constructor(
     }
     private val productSeeMoreView by viewComponentOrNull(isEagerInit = true) { ProductSeeMoreViewComponent(it, R.id.view_product_see_more, this) }
     private val chooseAddressView by viewComponentOrNull { ChooseAddressViewComponent(it, this, childFragmentManager) }
-    private val engagementCarouselView by viewComponentOrNull { EngagementCarouselViewComponent(
-        listener = this,
-        resId = R.id.scrollable_host_engagement,
-        scope = viewLifecycleOwner.lifecycleScope,
-        container = it
-    ) }
+    private val engagementCarouselView by viewComponentOrNull {
+        EngagementCarouselViewComponent(
+            listener = this,
+            resId = R.id.scrollable_host_engagement,
+            scope = viewLifecycleOwner.lifecycleScope,
+            container = it
+        )
+    }
 
     /**
      * Interactive
@@ -189,6 +292,8 @@ class PlayUserInteractionFragment @Inject constructor(
     private val interactiveResultView by viewComponentOrNull(isEagerInit = true) { InteractiveGameResultViewComponent(it, this, viewLifecycleOwner.lifecycleScope) }
 
     private val exploreView by viewComponentOrNull { ExploreWidgetViewComponent(it, this) }
+
+    private val glQuick by viewComponentOrNull(isEagerInit = true) { EmptyViewComponent(it, R.id.gl_quick_reply) }
 
     private val activityResultHelper by lifecycleBound({
         ActivityResultHelper(this)
@@ -248,11 +353,13 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private var localCache: LocalCacheModel = LocalCacheModel()
 
+    private var commentAnalyticsModel: ContentCommentAnalyticsModel? = null
+
     /**
      * Animation
      */
-    private val fadeInAnimation by viewLifecycleBound( { PlayFadeInAnimation(FADE_DURATION) } )
-    private val fadeOutAnimation by viewLifecycleBound( { PlayFadeOutAnimation(FADE_DURATION) })
+    private val fadeInAnimation by viewLifecycleBound({ PlayFadeInAnimation(FADE_DURATION) })
+    private val fadeOutAnimation by viewLifecycleBound({ PlayFadeOutAnimation(FADE_DURATION) })
     private val fadeInFadeOutAnimation by viewLifecycleBound(
         { PlayFadeInFadeOutAnimation(FADE_DURATION, FADE_TRANSITION_DELAY) }
     )
@@ -269,6 +376,13 @@ class PlayUserInteractionFragment @Inject constructor(
     private val interactiveDialogDataSource = object : InteractiveDialogFragment.DataSource {
         override fun getViewModelProvider(): ViewModelProvider {
             return getPlayViewModelProvider()
+        }
+    }
+
+    private val commentEntrySource = object : ContentCommentBottomSheet.EntrySource {
+        override fun getPageSource(): PageSource = PageSource.Play(channelId)
+        override fun onCommentDismissed() {
+            playViewModel.submitAction(CommentVisibilityAction(isOpen = false))
         }
     }
 
@@ -400,6 +514,17 @@ class PlayUserInteractionFragment @Inject constructor(
             is InteractiveDialogFragment -> {
                 childFragment.setDataSource(interactiveDialogDataSource)
             }
+            is ContentCommentBottomSheet -> {
+                childFragment.setEntrySource(commentEntrySource)
+                commentAnalyticsModel?.let {
+                    childFragment.setAnalytic(
+                        commentAnalytics.create(
+                            PageSource.Play(channelId),
+                            model = it
+                        )
+                    )
+                }
+            }
         }
     }
 
@@ -422,16 +547,12 @@ class PlayUserInteractionFragment @Inject constructor(
         playViewModel.submitAction(ClickShareAction)
     }
 
-    override fun onShareOpenBottomSheet(view: ShareExperienceViewComponent) {
-        playViewModel.submitAction(ShowShareExperienceAction)
-    }
-
     override fun onShareOptionClick(view: ShareExperienceViewComponent, shareModel: ShareModel) {
-        playViewModel.submitAction(ClickSharingOptionAction(shareModel))
+        playViewModel.submitAction(ClickSharingOptionAction(shareModel, view.isScreenshotBottomSheet))
     }
 
     override fun onShareOptionClosed(view: ShareExperienceViewComponent) {
-        playViewModel.submitAction(CloseSharingOptionAction)
+        playViewModel.submitAction(CloseSharingOptionAction(view.isScreenshotBottomSheet))
     }
 
     override fun onScreenshotTaken(view: ShareExperienceViewComponent) {
@@ -443,10 +564,6 @@ class PlayUserInteractionFragment @Inject constructor(
         label: String
     ) {
         playViewModel.submitAction(SharePermissionAction(label))
-    }
-
-    override fun onHandleShareFallback(view: ShareExperienceViewComponent) {
-        playViewModel.submitAction(CopyLinkAction)
     }
 
     override fun onShareIconImpressed(view: ShareExperienceViewComponent) {
@@ -529,6 +646,8 @@ class PlayUserInteractionFragment @Inject constructor(
      * ImmersiveBox View Component Listener
      */
     override fun onImmersiveBoxClicked(view: ImmersiveBoxViewComponent, currentAlpha: Float) {
+        if (playViewModel.hasNoMedia) return
+
         analytic.clickWatchArea(
             screenOrientation = orientation.orientation
         )
@@ -606,6 +725,16 @@ class PlayUserInteractionFragment @Inject constructor(
             )
         }
 
+        val commentBinding = binding.grComment
+        if (commentBinding != null) {
+            components.add(
+                CommentIconUiComponent(
+                    group = commentBinding,
+                    bus = eventBus
+                )
+            )
+        }
+
         fun setupLandscapeView() {
             container.setOnTouchListener(PlayClickTouchListener(INTERACTION_TOUCH_CLICK_TOLERANCE))
             container.setOnClickListener {
@@ -648,7 +777,9 @@ class PlayUserInteractionFragment @Inject constructor(
                 val insets = if (orientation.isPortrait) portraitInsets else rootInsets
                 if (insets != null) {
                     layoutParams?.updateMargins(top = insets.systemWindowInsetTop, bottom = initialBottomMargin + insets.systemWindowInsetBottom)
-                } else error("Insets not supported")
+                } else {
+                    error("Insets not supported")
+                }
             } catch (e: Throwable) {
                 Timber.e(e)
             }
@@ -709,7 +840,6 @@ class PlayUserInteractionFragment @Inject constructor(
         observeChats()
 
         observeLoggedInInteractionEvent()
-        observeCastState()
 
         observeAnalytic()
 
@@ -829,6 +959,9 @@ class PlayUserInteractionFragment @Inject constructor(
                         is BottomInsetsState.Shown -> {
                             pushParentPlayByKeyboardHeight(keyboardState.estimatedInsetsHeight)
                         }
+                        else -> {
+                            // no-op
+                        }
                     }
                 }
 
@@ -920,6 +1053,10 @@ class PlayUserInteractionFragment @Inject constructor(
                         )
                     }
                     is ShowInfoEvent -> {
+                        if (PlayExploreWidgetFragment.get(childFragmentManager) != null) {
+                            return@collect
+                        }
+
                         doShowToaster(
                             toasterType = Toaster.TYPE_NORMAL,
                             message = getTextFromUiString(event.message)
@@ -974,7 +1111,6 @@ class PlayUserInteractionFragment @Inject constructor(
                     }
                     RemindToLikeEvent -> likeView.playReminderAnimation()
                     is PreloadLikeBubbleIconEvent -> likeBubbleView.preloadIcons(event.urls)
-                    is SaveTemporarySharingImage -> shareExperienceView?.saveTemporaryImage(event.imageUrl)
                     is OpenSharingOptionEvent -> {
                         shareExperienceView?.showSharingOptions(event.title, event.coverUrl, event.userId, event.channelId)
                     }
@@ -1011,6 +1147,20 @@ class PlayUserInteractionFragment @Inject constructor(
                             }
                         )
                     }
+                    is CommentVisibilityEvent -> {
+                        val sheet = ContentCommentBottomSheet.getOrCreate(
+                            childFragmentManager,
+                            requireActivity().classLoader
+                        )
+                        commentAnalyticsModel = ContentCommentAnalyticsModel(
+                            eventCategory = "groupchat room",
+                            eventLabel = "$channelId - ${playViewModel.partnerId}"
+                        )
+                        if (event.isOpen) sheet.show(childFragmentManager) else sheet.dismiss()
+                    }
+                    else -> {
+                        // no-op
+                    }
                 }
             }
         }
@@ -1022,14 +1172,9 @@ class PlayUserInteractionFragment @Inject constructor(
                 when (event) {
                     is ProductCarouselUiComponent.Event -> onProductCarouselEvent(event)
                     is KebabIconUiComponent.Event -> onKebabIconEvent(event)
+                    is CommentIconUiComponent.Event -> onCommentIconEvent(event)
                 }
             }
-        }
-    }
-
-    private fun observeCastState() {
-        playViewModel.observableCastState.observe(viewLifecycleOwner) {
-            sendCastAnalytic(it)
         }
     }
 
@@ -1051,22 +1196,6 @@ class PlayUserInteractionFragment @Inject constructor(
                     widthFromEnd = (FADING_EDGE_PRODUCT_FEATURED_WIDTH_MULTIPLIER * it.width).toInt()
                 )
             )
-        }
-    }
-
-    private fun sendCastAnalytic(cast: PlayCastUiModel) {
-        when {
-            cast.connectFailed() -> {
-                analytic.connectCast(false)
-            }
-            cast.currentState == PlayCastState.CONNECTED -> {
-                val channelData = playViewModel.latestCompleteChannelData
-                analytic.connectCast(true, channelData.id, channelData.channelDetail.channelInfo.channelType)
-                castAnalyticHelper.startRecording()
-            }
-            cast.previousState == PlayCastState.CONNECTED -> {
-                castAnalyticHelper.stopRecording()
-            }
         }
     }
 
@@ -1198,6 +1327,9 @@ class PlayUserInteractionFragment @Inject constructor(
         when (event) {
             InteractionEvent.SendChat -> shouldComposeChat()
             is InteractionEvent.OpenProductDetail -> doOpenProductDetail(event.product, event.position)
+            else -> {
+                // no-op
+            }
         }
     }
 
@@ -1286,7 +1418,7 @@ class PlayUserInteractionFragment @Inject constructor(
             getVideoBoundsProvider().getVideoBottomBoundsOnKeyboardShown(
                 requireView(),
                 estimatedKeyboardHeight,
-                playViewModel.videoOrientation,
+                playViewModel.videoOrientation
             )
         } catch (e: Throwable) { getScreenHeight() }
     }
@@ -1471,7 +1603,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun gradientBackgroundViewOnStateChanged(
         videoOrientation: VideoOrientation = playViewModel.videoOrientation,
         bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
-        isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned,
+        isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
         if (bottomInsets.isAnyShown ||
             (videoOrientation.isHorizontal && orientation.isPortrait)
@@ -1509,7 +1641,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun statsInfoViewOnStateChanged(
         channelType: PlayChannelType = playViewModel.channelType,
-        bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
+        bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
     ) {
         statsInfoView.setLiveBadgeVisibility(channelType.isLive)
 
@@ -1526,7 +1658,6 @@ class PlayUserInteractionFragment @Inject constructor(
     ) {
         if (channelType.isLive &&
             bottomInsets[BottomInsetsType.ProductSheet]?.isShown == false &&
-            bottomInsets[BottomInsetsType.VariantSheet]?.isShown == false &&
             bottomInsets[BottomInsetsType.CouponSheet]?.isShown == false &&
             bottomInsets[BottomInsetsType.LeaderboardSheet]?.isShown == false
         ) {
@@ -1667,16 +1798,16 @@ class PlayUserInteractionFragment @Inject constructor(
         tagItem: TagItemUiModel,
         bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
         address: AddressWidgetUiState,
-        status: PlayStatusUiModel,
+        status: PlayStatusUiModel
     ) {
-        if (!bottomInsets.isAnyShown && !address.shouldShow && status.channelStatus.statusType.isActive) {
+        val productListSize = tagItem.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>().sumOf {
+            it.productList.size
+        }
+
+        if (!bottomInsets.isAnyShown && !address.shouldShow && productListSize.isMoreThanZero() && status.channelStatus.statusType.isActive) {
             productSeeMoreView?.show()
         } else {
             productSeeMoreView?.hide()
-        }
-
-        val productListSize = tagItem.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>().sumOf {
-            it.productList.size
         }
 
         productSeeMoreView?.setTotalProduct(productListSize)
@@ -1753,15 +1884,16 @@ class PlayUserInteractionFragment @Inject constructor(
                 { it.status },
                 { it.channel.channelInfo.channelType.isLive }
             )
-        ) return
+        ) {
+            return
+        }
 
         val isLive = state.value.channel.channelInfo.channelType.isLive
 
         if (isAllowAutoSwipe(
                 if (isLive) {
                     !state.value.status.channelStatus.statusType.isActive
-                }
-                else {
+                } else {
                     !state.value.status.channelStatus.statusType.isActive ||
                         state.value.combinedState.videoProperty.state == PlayViewerVideoState.End
                 }
@@ -1787,14 +1919,14 @@ class PlayUserInteractionFragment @Inject constructor(
          * and I don't know why arghhh
          */
         val quickReplyViewId = quickReplyView?.id ?: return
-        val topmostLikeView = this.topmostLikeView ?: return
+        val glScreen = this.glQuick ?: return
         view?.changeConstraint {
             if (isShown) {
                 sendChatView?.let {
                     connect(quickReplyViewId, ConstraintSet.BOTTOM, it.id, ConstraintSet.TOP, offset8)
                 }
             } else {
-                connect(quickReplyViewId, ConstraintSet.BOTTOM, topmostLikeView.id, ConstraintSet.TOP)
+                connect(quickReplyViewId, ConstraintSet.BOTTOM, glScreen.id, ConstraintSet.TOP)
             }
         }
     }
@@ -1866,30 +1998,26 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun onProductCarouselEvent(event: ProductCarouselUiComponent.Event) {
         when (event) {
             is ProductCarouselUiComponent.Event.OnTransactionClicked -> {
-                // TODO("Temporary, maybe best to combine bottom sheet into this fragment")
                 if (event.product.isVariantAvailable) {
-                    playFragment.openVariantBottomSheet(
-                        event.action,
-                        event.product
+                    playViewModel.submitAction(ShowVariantAction(event.product, true))
+                } else {
+                    playViewModel.submitAction(
+                        when (event.action) {
+                            ProductAction.Buy -> PlayViewerNewAction.BuyProduct(
+                                event.product,
+                                isProductFeatured = true
+                            )
+                            ProductAction.AddToCart -> PlayViewerNewAction.AtcProduct(
+                                event.product,
+                                isProductFeatured = true
+                            )
+                            ProductAction.OCC -> PlayViewerNewAction.OCCProduct(
+                                event.product,
+                                isProductFeatured = true
+                            )
+                        }
                     )
                 }
-
-                playViewModel.submitAction(
-                    when (event.action) {
-                        ProductAction.Buy -> PlayViewerNewAction.BuyProduct(
-                            event.product,
-                            isProductFeatured = true
-                        )
-                        ProductAction.AddToCart -> PlayViewerNewAction.AtcProduct(
-                            event.product,
-                            isProductFeatured = true
-                        )
-                        ProductAction.OCC -> PlayViewerNewAction.OCCProduct(
-                            event.product,
-                            isProductFeatured = true
-                        )
-                    }
-                )
             }
             is ProductCarouselUiComponent.Event.OnClicked -> {
                 if (event.product.applink == null) return
@@ -1906,6 +2034,9 @@ class PlayUserInteractionFragment @Inject constructor(
         when (event) {
             KebabIconUiComponent.Event.OnClicked -> {
                 playViewModel.submitAction(OpenKebabAction)
+            }
+            else -> {
+                // no-op
             }
         }
     }
@@ -1934,6 +2065,9 @@ class PlayUserInteractionFragment @Inject constructor(
             is GameUiModel.Quiz -> {
                 handleQuiz(game = engagement.game)
             }
+            else -> {
+                // no-op
+            }
         }
     }
 
@@ -1947,6 +2081,9 @@ class PlayUserInteractionFragment @Inject constructor(
             }
             is GameUiModel.Giveaway.Status.Ongoing ->
                 playViewModel.submitAction(PlayViewerNewAction.GiveawayOngoingEnded)
+            else -> {
+                // no-op
+            }
         }
     }
 
@@ -1957,6 +2094,9 @@ class PlayUserInteractionFragment @Inject constructor(
         when (game.status) {
             is GameUiModel.Quiz.Status.Ongoing ->
                 playViewModel.submitAction(PlayViewerNewAction.QuizEnded)
+            else -> {
+                // no-op
+            }
         }
     }
 
@@ -2016,6 +2156,15 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onExploreWidgetIconImpressed(viewComponent: ExploreWidgetViewComponent) {
         eventBus.emit(ExploreWidgetViewComponent.Event.OnImpressed)
+    }
+
+    private fun onCommentIconEvent(event: CommentIconUiComponent.Event) {
+        when (event) {
+            CommentIconUiComponent.Event.OnCommentClicked -> {
+                playViewModel.submitAction(CommentVisibilityAction(isOpen = true))
+                analytic.clickCommentIcon(playViewModel.partnerId.toString())
+            }
+        }
     }
 
     companion object {

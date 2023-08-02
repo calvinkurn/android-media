@@ -48,6 +48,12 @@ class PlayBroadcastSetupTitleBottomSheet @Inject constructor(): BottomSheetUnify
         _binding = BottomSheetPlayBroSetupTitleBinding.inflate(
             LayoutInflater.from(requireContext())
         )
+
+        setCloseClickListener {
+            if (!binding.btnSetupTitle.isLoading)
+                dismiss()
+        }
+
         setChild(binding.root)
     }
 
@@ -70,13 +76,12 @@ class PlayBroadcastSetupTitleBottomSheet @Inject constructor(): BottomSheetUnify
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
                 override fun afterTextChanged(text: Editable?) {
-                    if (text?.isBlank() == true) return
                     if (mErrorState) {
                         mErrorState = false
                         isInputError = mErrorState
                         setMessage("")
                     }
-                    btnSetupTitle.isEnabled = (text != null && !text.contentEquals(mTitle))
+                    btnSetupTitle.isEnabled = ((text != null && text.isNotBlank()) && !text.contentEquals(mTitle))
                 }
 
                 override fun onTextChanged(text: CharSequence?, textLength: Int, p2: Int, p3: Int) {
@@ -131,6 +136,7 @@ class PlayBroadcastSetupTitleBottomSheet @Inject constructor(): BottomSheetUnify
 
     private fun setLoading(isLoading: Boolean) {
         binding.btnSetupTitle.isLoading = isLoading
+        isCancelable = !isLoading
     }
 
     private fun hideSetupTitleKeyboard() {

@@ -2,6 +2,7 @@ package com.tokopedia.productbundlewidget.model
 
 data class BundleDetailUiModel(
     var bundleId: String = "0",
+    var bundleName: String = "",
     var originalPrice: String = "0",
     var displayPrice: String = "0",
     var displayPriceRaw: Long = 0,

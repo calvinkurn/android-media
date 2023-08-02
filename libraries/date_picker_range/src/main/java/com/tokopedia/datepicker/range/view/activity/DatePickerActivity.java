@@ -43,8 +43,6 @@ public class DatePickerActivity extends BaseTabActivity {
     protected void onCreate(Bundle savedInstanceState) {
         fetchIntent(getIntent().getExtras());
         super.onCreate(savedInstanceState);
-
-        setWhiteStatusBar();
     }
 
     @Override
@@ -109,11 +107,4 @@ public class DatePickerActivity extends BaseTabActivity {
         return null;
     }
 
-    private void setWhiteStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            getWindow().setStatusBarColor(androidx.core.content.ContextCompat.getColor(this,com.tokopedia.unifyprinciples.R.color.Unify_N0));
-        }
-    }
 }

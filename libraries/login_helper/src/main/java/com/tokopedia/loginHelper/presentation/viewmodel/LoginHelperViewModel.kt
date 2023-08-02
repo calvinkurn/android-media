@@ -140,7 +140,7 @@ class LoginHelperViewModel @Inject constructor(
 
     private fun loginUser(email: String, password: String, useHash: Boolean = true) {
         launchCatchError(coroutineContext, {
-            val keyData = generatePublicKeyUseCase.executeOnBackground().keyData
+            val keyData = generatePublicKeyUseCase().keyData
             if (keyData.key.isNotEmpty()) {
                 var finalPassword = password
                 if (useHash) {
@@ -257,6 +257,9 @@ class LoginHelperViewModel @Inject constructor(
                     filteredUserList = Success(LoginDataUiModel(HeaderUiModel(list?.size ?: 0), list))
                 }
                 is Fail -> Unit
+                else -> {
+                    // no op
+                }
             }
         }
 
@@ -279,7 +282,6 @@ class LoginHelperViewModel @Inject constructor(
         super.onCleared()
         getProfileUseCase.unsubscribe()
         loginTokenV2UseCase.cancelJobs()
-        generatePublicKeyUseCase.cancelJobs()
         getUserDetailsRestUseCase.cancelJobs()
     }
 }

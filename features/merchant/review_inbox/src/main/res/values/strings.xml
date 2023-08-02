@@ -13,8 +13,6 @@
     <string name="review_pending_network_error_content">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
     <string name="review_pending_tab_title">Menunggu Diulas</string>
     <string name="review_pending_network_error_retry_button">Coba Lagi</string>
-    <string name="review_pending_no_product_empty_title">Minum kopi sambil makan kue bolu</string>
-    <string name="review_pending_no_product_empty_content">Saatnya belanja dan kasih ulasan untuk barang-barang incaranmu!</string>
     <string name="review_pending_variant">Varian: %s</string>
     <string name="review_pending_invalid_to_review">Oops, kamu sudah kasih ulasan untuk barang ini. Coba refresh, ya.</string>
     <string name="review_pending_shop_button">Mulai Belanja</string>
@@ -39,7 +37,6 @@
     <string name="already_favorite">\u2713</string>
     <string name="seller">Penjual</string>
     <string name="filter_time">Waktu</string>
-    <string name="filter_all_time">Semua Waktu</string>
     <string name="filter_last_7_days">7 Hari Terakhir</string>
     <string name="filter_this_month">Bulan Ini</string>
     <string name="filter_last_3_month">3 Bulan Terakhir</string>
@@ -53,8 +50,6 @@
     <string name="reply">Balas</string>
     <string name="your_scoring">Penilaian dari Anda</string>
     <string name="reputation_prompt">Bagaimana pengalaman Anda bertransaksi dengan</string>
-    <string name="success_share_review">Sukses membagikan ulasan</string>
-    <string name="error_share_review">Gagal membagikan ulasan</string>
     <string name="smiley_bad">Kecewa</string>
     <string name="smiley_netral">Netral</string>
     <string name="smiley_good">Puas</string>
@@ -100,13 +95,13 @@
     <string name="product_is_banned">Produk telah diban</string>
     <string name="seller_migration_review_title">Ulasan produk dan template</string>
     <string name="seller_migration_review_description">Fitur unggulan untuk mempermudah pantau dan balas ulasan pembeli.</string>
-    <string-array name="talk_read">
-        <item>Semua</item>
-        <item>Belum Dibaca</item>
-    </string-array>
     <string name="review_expand">&lt;a href="#"&gt;Selengkapnya&lt;/a&gt;</string>
     <string name="review_report_unknown_error">Terjadi kesalahan ketika mengirim laporan ulasan. Ulangi beberapa saat lagi</string>
     <string name="review_reply_unknown_error">Terjadi kesalahan ketika mengirim balasan ulasan. Ulangi beberapa saat lagi</string>
     <string name="review_delete_unknown_error">Terjadi kesalahan ketika menghapus balasan ulasan. Ulangi beberapa saat lagi</string>
+
+    <string name="seller_reputation_given_by_buyer">Nilai toko yang diberikan pembeli</string>
+    <string name="seller_reputation">Reputasi Toko</string>
+    <string name="no_reputation_yet">Belum ada nilai reputasi</string>
 
 </resources>

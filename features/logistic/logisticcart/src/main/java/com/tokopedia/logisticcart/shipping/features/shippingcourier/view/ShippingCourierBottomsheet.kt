@@ -21,8 +21,6 @@ import com.tokopedia.logisticcart.shipping.model.NotifierModel
 import com.tokopedia.logisticcart.shipping.model.PreOrderModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import javax.inject.Inject
@@ -96,21 +94,6 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
         bottomSheet?.setOnDismissListener { bottomSheet = null }
     }
 
-    fun setShippingCourierViewModels(
-        shippingCourierUiModels: List<ShippingCourierUiModel>?,
-        cartPosition: Int,
-        preOrderModel: PreOrderModel?
-    ) {
-        hideLoading()
-        if (shippingCourierUiModels != null && shippingCourierUiModels.isNotEmpty()) {
-            mCourierModelList = shippingCourierUiModels
-            mPreOrderModel = preOrderModel
-            setupRecyclerView(cartPosition)
-        } else if (activity != null) {
-            showErrorPage(activity!!.getString(R.string.message_error_shipping_general))
-        }
-    }
-
     private fun initializeInjector() {
         val component = DaggerShippingCourierComponent.builder()
             .shippingCourierModule(ShippingCourierModule())
@@ -140,8 +123,8 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
             if (shippingCourierUiModels != null) {
                 mCourierModelList = shippingCourierUiModels
                 setupRecyclerView(cartPosition)
-            } else {
-                showLoading()
+            } else if (activity != null) {
+                showErrorPage(activity!!.getString(R.string.message_error_shipping_general))
             }
         }
     }
@@ -150,7 +133,6 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
         shippingCourierAdapter.setShippingCourierAdapterListener(this)
         shippingCourierAdapter.setShippingCourierViewModels(convertCourierListToUiModel(mCourierModelList, mPreOrderModel, isOcc))
         shippingCourierAdapter.setCartPosition(cartPosition)
-        shippingCourierAdapter.setEndYearPromotion(isToogleYearEndPromotionOn())
         val linearLayoutManager = LinearLayoutManager(
             activity,
             LinearLayoutManager.VERTICAL,
@@ -186,18 +168,6 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
             mCourierModelList
         )
         bottomSheet?.dismiss()
-    }
-
-    private fun isToogleYearEndPromotionOn(): Boolean {
-        if (isOcc) {
-            return false
-        } else {
-            if (activity != null) {
-                val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(activity)
-                return remoteConfig.getBoolean("mainapp_enable_year_end_promotion")
-            }
-            return false
-        }
     }
 
     override fun showLoading() {

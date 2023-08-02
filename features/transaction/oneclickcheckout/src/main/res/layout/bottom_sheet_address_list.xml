@@ -5,6 +5,15 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_occ_address_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tickerShapeType="full"
+        app:closeButtonVisibility="gone"
+        app:enableAutoSlide="true"
+        android:visibility="gone"/>
+
     <com.tokopedia.unifycomponents.SearchBarUnify
         android:id="@+id/search_input_view"
         android:layout_width="match_parent"
@@ -27,7 +36,7 @@
         android:layout_marginStart="@dimen/dp_25"
         android:layout_marginEnd="@dimen/dp_25"
         android:text="@string/search_not_found"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/search_input_view" />

@@ -105,7 +105,7 @@ object EPharmacyMiniConsultationAnalytics {
 
     fun clickChatDokter(enablerName: String?, ePharmacyGroupId: String) {
         Tracker.Builder()
-            .setEvent(EventKeys.VIEW_PG_IRIS)
+            .setEvent(EventKeys.CLICK_PG)
             .setEventAction(ActionKeys.CLICK_CHAT_DOKTER)
             .setEventCategory(CategoryKeys.ATTACH_PRESCRIPTION_PAGE)
             .setEventLabel("$enablerName - $ePharmacyGroupId")

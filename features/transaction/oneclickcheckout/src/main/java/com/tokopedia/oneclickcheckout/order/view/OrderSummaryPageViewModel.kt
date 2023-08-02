@@ -3,6 +3,7 @@ package com.tokopedia.oneclickcheckout.order.view
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressTokonow
@@ -73,7 +74,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -176,6 +176,7 @@ class OrderSummaryPageViewModel @Inject constructor(
                 OccState.Failed(Failure(result.throwable))
             }
             orderShipment.value = OrderShipment()
+                .copy(isShowLogisticPromoTickerMessage = orderShipment.value.isShowLogisticPromoTickerMessage)
             orderPayment.value = result.orderPayment
             validateUsePromoRevampUiModel = null
             lastValidateUsePromoRequest = null
@@ -199,7 +200,7 @@ class OrderSummaryPageViewModel @Inject constructor(
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
             }
             if (result.imageUpload.showImageUpload) {
-                var prescriptionIds = cartProcessor.getPrescriptionId(result.imageUpload.checkoutId)
+                val prescriptionIds = cartProcessor.getPrescriptionId(result.imageUpload.checkoutId)
                 uploadPrescriptionUiModel.value = uploadPrescriptionUiModel.value.copy(
                     showImageUpload = result.imageUpload.showImageUpload,
                     uploadImageText = result.imageUpload.text,
@@ -359,6 +360,11 @@ class OrderSummaryPageViewModel @Inject constructor(
                 orderShop.value.shopShipment
             )
         }
+
+        if (result.throwable is AkamaiErrorException) {
+            globalEvent.value = OccGlobalEvent.Error(result.throwable)
+        }
+
         var hasOldPromoCode = result.clearOldPromoCode.isNotEmpty()
         if (hasOldPromoCode) {
             clearOldLogisticPromo(result.clearOldPromoCode)
@@ -394,7 +400,13 @@ class OrderSummaryPageViewModel @Inject constructor(
                 hasOldPromoCode = true
             }
         }
-        orderShipment.value = result.orderShipment
+        if (hasOldPromoCode) {
+            orderShipment.value = result.orderShipment
+                .copy(isShowLogisticPromoTickerMessage = true)
+        } else {
+            orderShipment.value = result.orderShipment
+                .copy(isShowLogisticPromoTickerMessage = orderShipment.value.isShowLogisticPromoTickerMessage)
+        }
         sendViewOspEe()
         sendPreselectedCourierOption(result.preselectedSpId)
         if (result.overweight != null) {
@@ -686,7 +698,10 @@ class OrderSummaryPageViewModel @Inject constructor(
             val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
             if (isSuccess) {
                 globalEvent.value = OccGlobalEvent.UpdateLocalCacheAddress(newChosenAddress)
-                clearBboIfExist()
+                clearBboIfExist().also { isBoExist ->
+                    orderShipment.value =
+                        orderShipment.value.copy(isShowLogisticPromoTickerMessage = true)
+                }
             }
             globalEvent.value = newGlobalEvent
         }
@@ -731,7 +746,7 @@ class OrderSummaryPageViewModel @Inject constructor(
                     it.isError = false
                 }
                 orderPayment.value = orderPayment.value.copy(creditCard = creditCard.copy(selectedTerm = selectedInstallmentTerm, availableTerms = installmentList))
-                calculateTotal(skipDynamicFee = true)
+                validateUsePromo()
                 globalEvent.value = OccGlobalEvent.Normal
                 orderSummaryAnalytics.eventViewTenureOption(selectedInstallmentTerm.term.toString())
                 return@launch
@@ -744,7 +759,8 @@ class OrderSummaryPageViewModel @Inject constructor(
         selectedInstallmentTerm: OrderPaymentGoCicilTerms,
         installmentList: List<OrderPaymentGoCicilTerms>,
         tickerMessage: String,
-        isSilent: Boolean
+        isSilent: Boolean,
+        shouldRevalidatePromo: Boolean = true
     ) {
         launch(executorDispatchers.immediate) {
             val walletData = orderPayment.value.walletData
@@ -756,25 +772,48 @@ class OrderSummaryPageViewModel @Inject constructor(
                 )
             )
             orderPayment.value = orderPayment.value.copy(walletData = newWalletData)
-            calculateTotal(skipDynamicFee = true)
-            if (isSilent) {
-                return@launch
+            if (shouldRevalidatePromo) {
+                var param = cartProcessor.generateUpdateCartParam(
+                    orderCart,
+                    orderProfile.value,
+                    orderShipment.value,
+                    orderPayment.value
+                )
+                if (param == null) {
+                    globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
+                } else {
+                    param = param.copy(
+                        skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(
+                            orderShipment.value
+                        ),
+                        source = SOURCE_UPDATE_OCC_PAYMENT
+                    )
+                    // ignore result, result is important only in final update
+                    cartProcessor.updatePreference(param)
+                }
+                validateUsePromo()
+            } else {
+                calculateTotal(skipDynamicFee = true)
             }
-            orderSummaryAnalytics.eventViewTenureOption(selectedInstallmentTerm.installmentTerm.toString())
-            var param: UpdateCartOccRequest = cartProcessor.generateUpdateCartParam(
-                orderCart,
-                orderProfile.value,
-                orderShipment.value,
-                orderPayment.value
-            ) ?: return@launch
-            param = param.copy(
-                skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(
-                    orderShipment.value
-                ),
-                source = SOURCE_UPDATE_OCC_PAYMENT
-            )
-            // ignore result, result is important only in final update
-            cartProcessor.updatePreference(param)
+            if (!isSilent) {
+                orderSummaryAnalytics.eventViewTenureOption(selectedInstallmentTerm.installmentTerm.toString())
+                if (!shouldRevalidatePromo) {
+                    var param: UpdateCartOccRequest = cartProcessor.generateUpdateCartParam(
+                        orderCart,
+                        orderProfile.value,
+                        orderShipment.value,
+                        orderPayment.value
+                    ) ?: return@launch
+                    param = param.copy(
+                        skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(
+                            orderShipment.value
+                        ),
+                        source = SOURCE_UPDATE_OCC_PAYMENT
+                    )
+                    // ignore result, result is important only in final update
+                    cartProcessor.updatePreference(param)
+                }
+            }
         }
     }
 
@@ -799,7 +838,15 @@ class OrderSummaryPageViewModel @Inject constructor(
             globalEvent.value = OccGlobalEvent.Loading
             val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
             if (isSuccess) {
-                clearBboIfExist()
+                clearBboIfExist().also { isBoExist ->
+                    if (orderShipment.value.isShowLogisticPromoTickerMessage) {
+                        orderShipment.value =
+                            orderShipment.value.copy(isShowLogisticPromoTickerMessage = true)
+                    } else {
+                        orderShipment.value =
+                            orderShipment.value.copy(isShowLogisticPromoTickerMessage = isBoExist)
+                    }
+                }
             }
             globalEvent.value = newGlobalEvent
         }
@@ -954,10 +1001,7 @@ class OrderSummaryPageViewModel @Inject constructor(
 
     fun finalUpdate(onSuccessCheckout: (CheckoutOccResult) -> Unit, skipCheckIneligiblePromo: Boolean) {
         if (orderTotal.value.buttonState == OccButtonState.NORMAL && orderPromo.value.state == OccButtonState.NORMAL && !orderShipment.value.isLoading) {
-            if (uploadPrescriptionUiModel.value.showImageUpload == true &&
-                (uploadPrescriptionUiModel.value.uploadedImageCount ?: 0) < 1 &&
-                uploadPrescriptionUiModel.value.frontEndValidation
-            ) {
+            if (uploadPrescriptionUiModel.value.showImageUpload && uploadPrescriptionUiModel.value.uploadedImageCount < 1 && uploadPrescriptionUiModel.value.frontEndValidation) {
                 uploadPrescriptionUiModel.value =
                     uploadPrescriptionUiModel.value.copy(isError = true)
                 return
@@ -1145,7 +1189,8 @@ class OrderSummaryPageViewModel @Inject constructor(
                     result.selectedInstallment,
                     result.installmentList,
                     result.tickerMessage,
-                    !result.shouldUpdateCart
+                    !result.shouldUpdateCart,
+                    false
                 )
                 return
             } else {

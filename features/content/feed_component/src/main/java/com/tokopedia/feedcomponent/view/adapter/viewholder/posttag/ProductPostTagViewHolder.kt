@@ -73,10 +73,10 @@ class ProductPostTagViewHolder(val mainView: View,
                 text =
                         if (!isCTADisabled) btnCtaPojo.text
                         else btnCtaPojo.textDisabled
-                if (text.isEmpty()) text = getString(R.string.empty_product)
+                if (text.isEmpty()) text = getString(com.tokopedia.content.common.R.string.empty_product)
                 setTextColor(ContextCompat.getColor(
                         context,
-                        if (isCTADisabled) unifyR.color.Unify_N200 else unifyR.color.Unify_N0
+                        if (isCTADisabled) com.tokopedia.unifyprinciples.R.color.Unify_NN500 else com.tokopedia.unifyprinciples.R.color.Unify_NN0
                 ))
             }
         } else btnBuy.gone()
@@ -114,7 +114,7 @@ class ProductPostTagViewHolder(val mainView: View,
         if (tag.textColor.hex.isEmpty() || tag.textColor.opacity.isEmpty()) {
             tag.textColor = getDefaultTextColor()
         }
-        val textColor = if(tag.textColor.hex.isEmpty()) getString(R.string.feed_color_pojo_dms_hex_black_value) else tag.textColor.hex
+        val textColor = if(tag.textColor.hex.isEmpty()) getString(com.tokopedia.content.common.R.string.feed_color_pojo_dms_hex_black_value) else tag.textColor.hex
         textView.setTextColor(Color.parseColor(textColor))
         textView.background = renderDrawable(tag.bgColor.hex, OPACITY_70)
     }
@@ -134,11 +134,11 @@ class ProductPostTagViewHolder(val mainView: View,
     }
 
     private fun getDefaultBackgroundColor(): ColorPojo {
-        return ColorPojo(getString(R.string.feed_color_pojo_dms_hex_black_value), OPACITY_70)
+        return ColorPojo(getString(com.tokopedia.content.common.R.string.feed_color_pojo_dms_hex_black_value), OPACITY_70)
     }
 
     private fun getDefaultTextColor(): ColorPojo {
-        return ColorPojo(getString(R.string.feed_color_pojo_dms_hex_white_value), OPACITY_100)
+        return ColorPojo(getString(com.tokopedia.content.common.R.string.feed_color_pojo_dms_hex_white_value), OPACITY_100)
     }
 
     private fun getItemClickNavigationListener(listener: DynamicPostViewHolder.DynamicPostListener,

@@ -87,6 +87,8 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.locationmanager.RequestLocationType
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -113,7 +115,6 @@ class HotelSearchMapFragment :
     HotelSearchResultAdapter.OnClickListener,
     OnMapReadyCallback,
     GoogleMap.OnMarkerClickListener,
-    SubmitFilterListener,
     GoogleMap.OnCameraMoveStartedListener,
     GoogleMap.OnCameraMoveListener {
 
@@ -214,7 +215,7 @@ class HotelSearchMapFragment :
                     is Success -> {
                         showCollapsingHeader()
                         onSuccessGetResult(it.data)
-                        if (!it.data.properties.isNullOrEmpty() && currentPage == defaultInitialPage) {
+                        if (it.data.properties.isNotEmpty() && currentPage == defaultInitialPage) {
                             changeMarkerState(cardListPosition)
                         } else {
                             buildFilter(it.data)
@@ -225,10 +226,6 @@ class HotelSearchMapFragment :
                     }
                     is Fail -> {
                         hideLoader()
-                        hideCollapsingHeader()
-                        hideSearchWithMap()
-                        hideQuickFilter()
-                        expandBottomSheet()
                         showGetListError(it.throwable)
                     }
                 }
@@ -307,6 +304,9 @@ class HotelSearchMapFragment :
                             lat = it.data.latitude
                         }
                     }
+                    else -> {
+                        // no op
+                    }
                 }
             }
         )
@@ -365,17 +365,69 @@ class HotelSearchMapFragment :
     override fun getMinimumScrollableNumOfItems(): Int = MINIMUM_NUMBER_OF_RESULT_LOADED
 
     override fun showGetListError(throwable: Throwable?) {
-        binding?.containerError?.root?.visible()
-        context?.run {
-            binding?.containerError?.globalError?.let {
-                ErrorHandlerHotel.getErrorUnify(
-                    this,
-                    throwable,
-                    { onRetryClicked() },
-                    it
-                )
+        val error = throwable?:return
+        when {
+            isEmptyError(error) && adapter.data.isEmpty() -> {
+                hideCardListView()
+                hideSearchWithMap()
+                hideHotelResultList()
+                showErrorNoResult()
+                showQuickFilterShimmering(false)
+                halfExpandBottomSheet()
+            }
+
+            isEmptyError(error) && adapter.data.isNotEmpty() -> {
+                disableLoadMore()
+                hideLoading()
+            }
+
+            !isEmptyError(error) && adapter.data.isEmpty() -> {
+                hideCollapsingHeader()
+                hideSearchWithMap()
+                hideQuickFilter()
+                expandBottomSheet()
+                binding?.containerError?.root?.visible()
+                context?.run {
+                    binding?.containerError?.globalError?.let {
+                        ErrorHandlerHotel.getErrorUnify(
+                            this,
+                            error,
+                            { onRetryClicked() },
+                            it
+                        )
+                    }
+                }
+            }
+
+            else -> {
+                showToastError(error)
             }
         }
+    }
+
+    private fun isEmptyError(throwable: Throwable): Boolean {
+        return if (throwable is MessageErrorException) {
+            throwable.errorCode == ERROR_EMPTY_CODE
+        } else {
+            false
+        }
+    }
+
+    private fun getMessageError(throwable: Throwable): String {
+        return ErrorHandler.getErrorMessage(
+            context,
+            throwable
+        )
+    }
+    private fun showToastError(throwable: Throwable) {
+        view?.run {
+            Toaster.build(
+                this,
+                getMessageError(throwable),
+                Toaster.toasterLength,
+                Toaster.TYPE_ERROR
+            ).show()
+            }
     }
 
     override fun onRetryClicked() {
@@ -407,7 +459,7 @@ class HotelSearchMapFragment :
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentHotelSearchMapBinding.inflate(inflater, container, false)
-        binding?.root?.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        binding?.root?.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         return binding?.root
     }
 
@@ -656,7 +708,7 @@ class HotelSearchMapFragment :
         }
     }
 
-    override fun onSubmitFilter(selectedFilter: MutableList<ParamFilterV2>) {
+    fun onProcessFilter(selectedFilter: MutableList<ParamFilterV2>, sort: List<Sort>) {
         trackingHotelUtil.clickSubmitFilterOnBottomSheet(
             context,
             SEARCH_SCREEN_NAME,
@@ -671,8 +723,8 @@ class HotelSearchMapFragment :
         }
 
         sortIndex?.let { index ->
-            val sort = findSortValue(selectedFilter[index])
-            sort?.let { hotelSearchMapViewModel.addSort(it) }
+            val selectedSort = findSortValue(selectedFilter[index], sort)
+            selectedSort?.let { hotelSearchMapViewModel.addSort(it) }?: hotelSearchMapViewModel.addSort(Sort())
             selectedFilter.removeAt(index)
         }
 
@@ -701,7 +753,7 @@ class HotelSearchMapFragment :
                 setBackgroundColor(
                     ContextCompat.getColor(
                         it,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N0
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN0
                     )
                 )
                 layoutParams = param
@@ -718,7 +770,7 @@ class HotelSearchMapFragment :
             textView.setTextColor(
                 ContextCompat.getColor(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 )
             )
 
@@ -730,7 +782,7 @@ class HotelSearchMapFragment :
             binding?.headerHotelSearchMap?.headerView?.setTextColor(
                 ContextCompat.getColor(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
                 )
             )
             binding?.headerHotelSearchMap?.addCustomRightContent(wrapper)
@@ -915,7 +967,7 @@ class HotelSearchMapFragment :
                 view.subheaderView?.setTextColor(
                     ContextCompat.getColor(
                         it,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700_44
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_44
                     )
                 )
             }
@@ -1257,7 +1309,7 @@ class HotelSearchMapFragment :
                 setTextColor(
                     color = ContextCompat.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N0
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN0
                     )
                 )
                 setWeight(Typography.BOLD)
@@ -1618,18 +1670,19 @@ class HotelSearchMapFragment :
         )
 
         filterBottomSheet = HotelFilterBottomSheets()
-            .setSubmitFilterListener(this)
+            .setSubmitFilterListener(object : SubmitFilterListener{
+                override fun onSubmitFilter(selectedFilter: MutableList<ParamFilterV2>) {
+                    onProcessFilter(selectedFilter, sort)
+                }
+            })
             .setSelected(selectedFilter)
             .setFilter(filterItems)
         filterBottomSheet.show(childFragmentManager, this.javaClass.simpleName)
     }
 
-    private fun findSortValue(filter: ParamFilterV2): Sort? =
-        if (hotelSearchMapViewModel.liveSearchResult.value != null &&
-            hotelSearchMapViewModel.liveSearchResult.value is Success
-        ) {
-            val sortOption = (hotelSearchMapViewModel.liveSearchResult.value as Success).data.displayInfo.sort
-            sortOption.firstOrNull { it.displayName == filter.values.firstOrNull() }
+    private fun findSortValue(filter: ParamFilterV2, sort: List<Sort>): Sort? =
+        if (hotelSearchMapViewModel.liveSearchResult.value != null) {
+            sort.firstOrNull { it.displayName == filter.values.firstOrNull() }
         } else {
             null
         }
@@ -1740,7 +1793,7 @@ class HotelSearchMapFragment :
                 setTextColor(
                     ContextCompat.getColor(
                         it,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N0
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN0
                     )
                 )
                 text = getString(R.string.hotel_search_map_search_with_map)
@@ -1904,6 +1957,8 @@ class HotelSearchMapFragment :
         private const val MAP_CENTER_DIVIDER = 4
         private const val SLIDE_MINUS_OPACITY: Float = 1f
         private const val SLIDE_MULT_OPACITY: Float = 3f
+
+        private const val ERROR_EMPTY_CODE = "358"
 
         const val PREFERENCES_NAME = "hotel_search_map_preferences"
         const val SHOW_COACH_MARK_KEY = "hotel_search_map_show_coach_mark"

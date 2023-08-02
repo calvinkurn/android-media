@@ -1,7 +1,6 @@
 package com.tokopedia.play_common.detachableview
 
 import android.view.View
-import androidx.annotation.IdRes
 import androidx.lifecycle.LifecycleObserver
 
 /**

@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.transition.ChangeBounds
@@ -29,12 +28,10 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPostVideoBinding
-import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.ViewModelFactoryProvider
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
 import com.tokopedia.play.broadcaster.ui.state.TagUiState
@@ -45,7 +42,6 @@ import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBo
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.TagListViewComponent
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
@@ -55,7 +51,6 @@ import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -66,13 +61,11 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
     private val analytic: PlayBroadcastAnalytic,
     private val userSession: UserSessionInterface,
     private val router: Router,
-    private val viewModelFactory: ViewModelProvider.Factory,
-    private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
-    ) : PlayBaseBroadcastFragment(),
+    private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator
+) : PlayBaseBroadcastFragment(),
     TagListViewComponent.Listener,
     PlayBroadcastSetupCoverBottomSheet.Listener {
 
-    private val prepareViewModel: PlayBroadcastPrepareViewModel by viewModels { viewModelFactory }
     private val parentViewModel: PlayBroadcastViewModel by activityViewModels {
         parentViewModelFactoryCreator.create(
             requireActivity()
@@ -96,7 +89,8 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity(), (parentFragment as ViewModelFactoryProvider).getFactory()).get(
-            PlayBroadcastSummaryViewModel::class.java)
+            PlayBroadcastSummaryViewModel::class.java
+        )
 
         setupTransition()
     }
@@ -107,7 +101,7 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentPlayBroadcastPostVideoBinding.inflate(
-            LayoutInflater.from(requireContext()),
+            LayoutInflater.from(requireContext())
         )
         return _binding?.root
     }
@@ -125,64 +119,36 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
 
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
-        when(childFragment) {
+        when (childFragment) {
             is PlayBroadcastSetupCoverBottomSheet -> {
                 childFragment.setupListener(listener = this)
-                childFragment.setupDataSource(dataSource = object : DataSource {
-                    override fun getEntryPoint(): String {
-                        return PAGE_NAME
-                    }
+                childFragment.setupDataSource(
+                    dataSource = object : DataSource {
+                        override fun getEntryPoint(): String {
+                            return PAGE_NAME
+                        }
 
-                    override fun getContentAccount(): ContentAccountUiModel {
-                        return parentViewModel.selectedAccount
-                    }
+                        override fun getContentAccount(): ContentAccountUiModel {
+                            return parentViewModel.selectedAccount
+                        }
 
-                    override fun getChannelId(): String {
-                        return parentViewModel.channelId
-                    }
+                        override fun getChannelId(): String {
+                            return parentViewModel.channelId
+                        }
 
-                    override fun getChannelTitle(): String {
-                        return parentViewModel.channelTitle
-                    }
+                        override fun getChannelTitle(): String {
+                            return parentViewModel.channelTitle
+                        }
 
-                    override fun getDataStore(): PlayBroadcastDataStore {
-                        return parentViewModel.mDataStore
+                        override fun getDataStore(): PlayBroadcastDataStore {
+                            return parentViewModel.mDataStore
+                        }
                     }
-
-                })
+                )
 
                 val isShowCoachMark = parentViewModel.isShowSetupCoverCoachMark
                 childFragment.needToShowCoachMark(isShowCoachMark)
                 if (isShowCoachMark) parentViewModel.submitAction(PlayBroadcastAction.SetShowSetupCoverCoachMark)
-            }
-            is ProductSetupFragment -> {
-                childFragment.setDataSource(object : ProductSetupFragment.DataSource {
-                    override fun getProductSectionList(): List<ProductTagSectionUiModel> {
-                        return parentViewModel.productSectionList
-                    }
-
-                    override fun isEligibleForPin(): Boolean = false
-
-                    override fun getSelectedAccount(): ContentAccountUiModel {
-                        return parentViewModel.uiState.value.selectedContentAccount
-                    }
-
-                    override fun creationId(): String {
-                        return parentViewModel.channelId
-                    }
-
-                    override fun maxProduct(): Int {
-                        return parentViewModel.maxProduct
-                    }
-                })
-
-                childFragment.setListener(object : ProductSetupFragment.Listener {
-                    override fun onProductChanged(productTagSectionList: List<ProductTagSectionUiModel>) {
-                        parentViewModel.submitAction(
-                            PlayBroadcastAction.SetProduct(productTagSectionList)
-                        )
-                    }
-                })
             }
         }
     }
@@ -205,7 +171,6 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
 
     private fun setupObservable() {
         observeUiState()
-        observeCover()
         observeEvent()
     }
 
@@ -221,7 +186,7 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
     private fun observeEvent() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect {
-                when(it) {
+                when (it) {
                     PlayBroadcastSummaryEvent.BackToReportPage -> requireActivity().onBackPressed()
                     PlayBroadcastSummaryEvent.OpenSelectCoverBottomSheet -> openSetupCoverBottomSheet()
                     is PlayBroadcastSummaryEvent.PostVideo -> {
@@ -238,6 +203,9 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
                                     actionListener = { networkResult.onRetry() }
                                 )
                             }
+                            else -> {
+                                // no-op
+                            }
                         }
                     }
                     else -> { }
@@ -246,24 +214,8 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
         }
     }
 
-    private fun observeCover() {
-        parentViewModel.observableCover.observe(viewLifecycleOwner) {
-            when (val croppedCover = it.croppedCover) {
-                is CoverSetupState.Cropped.Uploaded -> {
-                    val newCover = if (croppedCover.localImage.toString().isNotEmpty()) croppedCover.localImage.toString()
-                    else croppedCover.coverImage.toString()
-                    binding.clCoverPreview.setCoverWithPlaceholder(newCover)
-                }
-                is CoverSetupState.GeneratedCover -> {
-                    binding.clCoverPreview.setCoverWithPlaceholder(croppedCover.coverImage)
-                }
-                else -> {}
-            }
-        }
-    }
-
     private fun renderCoverInfo(prev: ChannelSummaryUiState?, value: ChannelSummaryUiState) {
-        if(prev == value || value.isEmpty()) return
+        if (prev == value || value.isEmpty()) return
 
         binding.clCoverPreview.apply {
             setCoverWithPlaceholder(value.coverUrl)
@@ -273,17 +225,20 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
     }
 
     private fun renderTag(prev: NetworkResult<TagUiState>?, value: NetworkResult<TagUiState>) {
-        if(prev == value) return
+        if (prev == value) return
 
-        when(value) {
+        when (value) {
             NetworkResult.Loading -> tagListView.setPlaceholder()
             is NetworkResult.Success -> tagListView.setTags(value.data.tags.toList())
             is NetworkResult.Fail -> tagListView.setError()
+            else -> {
+                // no-op
+            }
         }
     }
 
     private fun redirectAfterPostVideo() {
-        if(GlobalConfig.isSellerApp()) {
+        if (GlobalConfig.isSellerApp()) {
             /** Keep existing flow */
             if (activity?.callingActivity == null) {
                 val intent = router.getIntent(context, ApplinkConst.SHOP, userSession.shopId)
@@ -297,8 +252,7 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
                 )
                 activity?.finish()
             }
-        }
-        else {
+        } else {
             /** Go to Feed */
             val intent = router.getIntent(context, ApplinkConst.FEED)
                 .putExtraForPostVideoRedirection()
@@ -314,19 +268,22 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
     }
 
     private fun generateSeeTranscodingChannelAppLink(): String {
-        return if(viewModel.account.isUser)
+        return if (viewModel.account.isUser) {
             UserProfileNavigation.generateAppLink(viewModel.account.id) {
                 setSelectedTab(UserProfileParam.SelectedTab.Video)
             }
-        else if(viewModel.account.isShop)
+        } else if (viewModel.account.isShop) {
             UriUtil.buildUri(ApplinkConst.SHOP, viewModel.account.id)
-        else ""
+        } else {
+            ""
+        }
     }
 
     private fun openSetupCoverBottomSheet() {
         childFragmentManager.executePendingTransactions()
         val existingFragment = childFragmentManager.findFragmentByTag(
-            PlayBroadcastSetupCoverBottomSheet.TAG)
+            PlayBroadcastSetupCoverBottomSheet.TAG
+        )
         if (existingFragment is PlayBroadcastSetupCoverBottomSheet && existingFragment.isVisible) return
         getSetupCoverBottomSheet()?.show(childFragmentManager)
     }
@@ -379,8 +336,7 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
     }
 
     companion object {
-        private const val NEWLY_BROADCAST_CHANNEL_SAVED = "EXTRA_NEWLY_BROADCAST_SAVED"
-        private const val PAGE_NAME = "report page"
+        const val PAGE_NAME = "report page"
     }
 
     override fun dismissSetupCover(source: Int) {
@@ -392,16 +348,6 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
             toaster.showToaster(getString(R.string.play_setup_cover_auto_generated_toaster))
         }
         parentViewModel.submitAction(PlayBroadcastAction.SetCoverUploadedSource(source))
-    }
-
-    override fun setupCoverProductClicked() {
-        openSetupProductBottomSheet()
-    }
-
-    private fun openSetupProductBottomSheet() {
-        childFragmentManager.beginTransaction()
-            .add(ProductSetupFragment::class.java, null, null)
-            .commit()
     }
 
 }

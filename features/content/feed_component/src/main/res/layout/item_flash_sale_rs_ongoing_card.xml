@@ -37,7 +37,7 @@
             android:layout_width="96dp"
             android:layout_height="wrap_content"
             app:unify_progress_bar_value="75"
-            android:layout_marginTop="@dimen/feed_component_dp_10"
+            android:layout_marginTop="@dimen/content_common_space_10"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/flash_sale_ongoing_title"/>
 

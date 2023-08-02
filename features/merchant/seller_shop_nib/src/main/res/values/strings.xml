@@ -1,0 +1,30 @@
+<resources>
+    <!--Submission Page-->
+    <string name="ssn_nib_instruction_title">Masukan Dokumen NIB Tokomu, yuk!</string>
+    <string name="ssn_nib_instruction_description">Lengkapi dokumen NIB agar semakin mudah berjualan.</string>
+    <string name="ssn_nib">Nomor Induk Berusaha</string>
+    <string name="ssn_select_picture">Pilih Gambar</string>
+    <string name="ssn_max_file_size">Ukuran file maks. 5 MB dengan format .jpg, .png, .pdf.</string>
+    <string name="ssn_nib_publish_date">Tanggal NIB diterbitkan</string>
+    <string name="ssn_nib_benefit">Belum punya NIB? Daftar dan lihat berbagai keuntungannya di sini</string>
+    <string name="ssn_finish">Selesai</string>
+    <string name="ssn_placeholder_file_size">File size: %smb </string>
+    <string name="ssn_error_message_file_size">Ukuran file tidak bisa lebih besar dari 5 MB</string>
+    <string name="ssn_error_message_file_extension">Format file harus .jpg, .png, atau .pdf</string>
+    <string name="ssn_here">di sini</string>
+    <string name="ssn_ok">Oke</string>
+    <string name="ssn_cd_close">Icon Hapus Gambar</string>
+
+    <!--Date Picker Bottomsheet-->
+    <string name="ssn_select">Pilih</string>
+
+    <!--Submission Success Page-->
+    <string name="ssn_success_register_title">Yay, NIB-mu sudah terdaftar!</string>
+    <string name="ssn_success_register_description">Dengan Nomor Induk Berusaha, kamu bisa lebih mudah berjualan.</string>
+    <string name="ssn_back_to_home">Kembali ke Home</string>
+
+    <!--Already Submit NIB Page-->
+    <string name="ssn_already_submitted_title">NIB-mu sudah pernah didaftarkan</string>
+    <string name="ssn_already_submitted_description">Kamu sudah pernah memasukan NIB ke akun Tokopediamu. Jika ingin cek atau ganti NIB, kamu bisa hubungi Tokopedia Care, ya.</string>
+    <string name="ssn_call_tokopedia_care">Hubungi Tokopedia Care</string>
+</resources>

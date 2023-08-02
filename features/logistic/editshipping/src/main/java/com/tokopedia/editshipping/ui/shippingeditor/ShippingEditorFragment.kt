@@ -69,6 +69,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
+// Edit shipping for multi location
 class ShippingEditorFragment :
     BaseDaggerFragment(),
     ShippingEditorItemAdapter.ShippingEditorItemAdapterListener,
@@ -170,7 +171,7 @@ class ShippingEditorFragment :
         val textDetailCourier = MethodChecker.fromHtml(getString(R.string.tv_detail_kurir))
         val selengkapnyaButton = getString(R.string.selengkapnya)
         val spannableString = SpannableString(textDetailCourier)
-        val color = getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+        val color = getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         spannableString.setSpan(
             ForegroundColorSpan(color),
             spannableString.length - selengkapnyaButton.length,
@@ -263,6 +264,9 @@ class ShippingEditorFragment :
                         binding?.btnSaveShipper?.visible()
                         binding?.globalError?.gone()
                         updateHeaderTickerData(it.data.headerTicker)
+                    }
+                    else -> {
+                        //no-op
                     }
                 }
             }
@@ -368,7 +372,7 @@ class ShippingEditorFragment :
         if (tickers.isNotEmpty()) {
             for (item in tickers) {
                 val spannableString = SpannableString(item.body + " " + item.textLink)
-                val color = getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                val color = getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                 spannableString.setSpan(
                     ForegroundColorSpan(color),
                     spannableString.length - item.textLink.length,

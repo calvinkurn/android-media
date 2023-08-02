@@ -13,7 +13,10 @@ import com.tokopedia.logisticCommon.data.response.DataAddAddress
 import com.tokopedia.logisticCommon.data.response.DefaultAddressData
 import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.logisticCommon.data.response.PinpointValidationResponse
+import com.tokopedia.logisticaddaddress.common.AddressConstants
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.FieldType
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -86,6 +89,9 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
         get() = saveDataModel?.let { it.latitude.isNotEmpty() || it.longitude.isNotEmpty() }
             ?: false
 
+    private var tempAddress1 = ""
+    private var tempAddress2 = ""
+
     fun setDataFromArguments(
         isEdit: Boolean,
         saveDataModel: SaveAddressDataModel?,
@@ -124,10 +130,17 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
         if (draftAddressDataModel == null) {
             viewModelScope.launch {
                 try {
-                    val addressDetail = repo.getAddressDetail(addressId, getSourceValue())
+                    val addressDetail = repo.getAddressDetail(addressId, getSourceValue(), needToTrack = true)
                     addressDetail.keroGetAddress.data.firstOrNull()?.let {
                         AddAddressMapper.mapAddressDetailToSaveAddressDataModel(it).apply {
                             saveDataModel = this
+
+                            setCurrentLocation(
+                                address = address1,
+                                currentLat = latitude,
+                                currentLong = longitude
+                            )
+
                             isPositiveFlow = hasPinpoint().orFalse()
                             _addressDetail.value = Success(this)
                         }
@@ -144,7 +157,7 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
     fun getDefaultAddress(source: String) {
         viewModelScope.launch {
             try {
-                val defaultAddress = repo.getDefaultAddress(source)
+                val defaultAddress = repo.getDefaultAddress(source, needToTrack = true)
                 _defaultAddress.value = Success(defaultAddress.response.data)
             } catch (e: Throwable) {
                 _defaultAddress.value = Fail(e)
@@ -152,11 +165,11 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
         }
     }
 
-    fun saveAddress() {
+    fun saveAddress(consentJson: String) {
         saveDataModel?.let { model ->
             viewModelScope.launch {
                 try {
-                    val saveAddressData = repo.saveAddress(model, getSourceValue())
+                    val saveAddressData = repo.saveAddress(model, getSourceValue(), consentJson)
 
                     saveAddressData.keroAddAddress.data.takeIf {
                         it.isSuccess == 1
@@ -208,12 +221,10 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
                     model.longitude,
                     model.postalCode
                 )
-                if (pinpointValidationResult.pinpointValidations.data.result) {
-                    saveDataModel?.let { addressData -> saveEditAddress(addressData) }
-                }
+
                 _pinpointValidation.value =
                     Success(pinpointValidationResult.pinpointValidations.data)
-            } catch (e: Throwable) {
+            } catch (e: Exception) {
                 _pinpointValidation.value = Fail(e)
             }
         }
@@ -345,5 +356,39 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
     fun saveDraftAddress(saveAddressDataModel: SaveAddressDataModel) {
         this.saveDataModel = saveAddressDataModel
         _addressDetail.value = Success(saveAddressDataModel)
+    }
+
+    fun isDifferentLocation(
+        address1: String,
+        address2: String
+    ): Boolean {
+        return address1 != tempAddress1 || address2 != tempAddress2
+    }
+
+    private fun setCurrentLocation(
+        address: String,
+        currentLat: String,
+        currentLong: String
+    ) {
+        tempAddress1 = address
+        if (currentLat.isNotBlank() && currentLong.isNotBlank()) {
+            tempAddress2 = "$currentLat,$currentLong"
+        }
+    }
+
+    fun getCollectionId(): String {
+        return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+            if (isEdit) {
+                AddressConstants.EDIT_ADDRESS_COLLECTION_ID_STAGING
+            } else {
+                AddressConstants.ADD_ADDRESS_COLLECTION_ID_STAGING
+            }
+        } else {
+            if (isEdit) {
+                AddressConstants.EDIT_ADDRESS_COLLECTION_ID_PRODUCTION
+            } else {
+                AddressConstants.ADD_ADDRESS_COLLECTION_ID_PRODUCTION
+            }
+        }
     }
 }

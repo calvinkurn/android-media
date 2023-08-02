@@ -6,7 +6,12 @@ import android.text.Editable
 import android.text.TextWatcher
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.common.util.TokofoodExt
 import com.tokopedia.tokofood.common.util.TokofoodExt.addAndReturnImpressionListener
@@ -35,6 +40,8 @@ class ProductCardViewHolder(
 
     private var context: Context? = null
     private var productListItem: ProductListItem? = null
+
+    private var canUpdateQuantity = false
 
     init {
         context = binding.root.context
@@ -87,11 +94,13 @@ class ProductCardViewHolder(
                 val dataSetPosition = binding.root.getTag(com.tokopedia.tokofood.R.id.dataset_position) as Int
                 val quantity = binding.qeuProductQtyEditor.getValue().orZero()
                 if (quantity != productUiModel.orderQty && quantity >= Int.ONE) {
-                    clickListener.onUpdateProductQty(
+                    if (canUpdateQuantity) {
+                        clickListener.onUpdateProductQty(
                             productId = productUiModel.id,
                             quantity = quantity,
                             cardPositions = Pair(dataSetPosition, adapterPosition)
-                    )
+                        )
+                    }
                 }
             }
 
@@ -124,6 +133,7 @@ class ProductCardViewHolder(
 
     fun bindData(productListItem: ProductListItem, productUiModel: ProductUiModel, dataSetPosition: Int) {
         // bind product ui model and data set position
+        canUpdateQuantity = false
         this.productListItem = productListItem
         bindImpressionProductListener(productListItem, dataSetPosition)
         binding.root.setTag(com.tokopedia.tokofood.R.id.product_ui_model, productUiModel)
@@ -184,6 +194,7 @@ class ProductCardViewHolder(
             }
             // set order detail quantity
             binding.qeuProductQtyEditor.setValue(productUiModel.orderQty)
+            canUpdateQuantity = true
         }
         // atc button wording e.g. Pesan or 2 Pesanan
         val customOrderCount = productUiModel.customOrderDetails.size

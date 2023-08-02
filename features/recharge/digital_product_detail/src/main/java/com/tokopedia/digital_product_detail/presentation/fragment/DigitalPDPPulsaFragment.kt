@@ -277,6 +277,9 @@ class DigitalPDPPulsaFragment :
                 is RechargeNetworkResult.Loading -> {
                     onShimmeringRecommendation()
                 }
+                else -> {
+                    //no-op
+                }
             }
         })
 
@@ -286,18 +289,27 @@ class DigitalPDPPulsaFragment :
                 is RechargeNetworkResult.Loading -> {
                     binding?.rechargePdpPulsaClientNumberWidget?.setFilterChipShimmer(true)
                 }
+                else -> {
+                    //no-op
+                }
             }
         })
 
         viewModel.autoCompleteData.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetAutoComplete(it.data)
+                else -> {
+                    //no-op
+                }
             }
         })
 
         viewModel.prefillData.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetPrefill(it.data)
+                else -> {
+                    //no-op
+                }
             }
         })
 
@@ -305,6 +317,9 @@ class DigitalPDPPulsaFragment :
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetPrefixOperator()
                 is RechargeNetworkResult.Fail -> onFailedGetPrefixOperator(it.error)
+                else -> {
+                    //no-op
+                }
             }
         })
 
@@ -356,6 +371,9 @@ class DigitalPDPPulsaFragment :
                 is RechargeNetworkResult.Loading -> {
                     onShimmeringDenomGrid()
                     onLoadingAndFailMCCM()
+                }
+                else -> {
+                    //no-op
                 }
             }
         })
@@ -711,7 +729,7 @@ class DigitalPDPPulsaFragment :
             if (denomGrid.listDenomData.isNotEmpty()) {
                 val colorHexInt = ContextCompat.getColor(
                     requireContext(),
-                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN0
                 )
                 val colorHexString = "#${Integer.toHexString(colorHexInt)}"
 

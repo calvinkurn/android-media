@@ -3,6 +3,7 @@ package com.tokopedia.media.picker.data.repository
 
 import android.database.Cursor
 import android.net.Uri
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.media.picker.data.MediaQueryDataSource
 import com.tokopedia.media.picker.data.MediaQueryDataSourceImpl.Companion.BUCKET_ALL_MEDIA_ID
 import com.tokopedia.media.picker.data.entity.Album
@@ -21,48 +22,51 @@ class BucketAlbumRepositoryImpl @Inject constructor(
 
     override operator fun invoke(): Flow<List<Album>> {
         return flow {
-            val cursor = setupMediaQuery(BUCKET_ALL_MEDIA_ID)
-            val albumMap = mutableMapOf<Long, Album>()
-            var mediaTotal = 1
+            try {
+                val cursor = setupMediaQuery(BUCKET_ALL_MEDIA_ID)
+                val albumMap = mutableMapOf<Long, Album>()
+                var mediaTotal = 1
 
-            if (cursor?.moveToFirst() == true) {
-                do {
-                    val media = createMedia(cursor)?: continue
-                    val bucketName = getOrSetBucketName(cursor, media)
-                    val bucketId = getBucketId(cursor)
+                if (cursor?.moveToFirst() == true) {
+                    do {
+                        val media = createMedia(cursor)?: continue
+                        val bucketName = getOrSetBucketName(cursor, media)
+                        val bucketId = getBucketId(cursor)
 
-                    val album = albumMap[bucketId]
+                        val album = albumMap[bucketId]
 
-                    if (album == null) {
-                        if (media.file.exists().not()) continue
-                        if (isFileValidFromParam(media).not()) continue
+                        if (album == null) {
+                            if (media.file.exists().not()) continue
 
-                        albumMap[bucketId] = Album(
-                            bucketId,
-                            bucketName,
-                            media.uri
-                        )
-                    }
+                            albumMap[bucketId] = Album(
+                                bucketId,
+                                bucketName,
+                                media.uri
+                            )
+                        }
 
-                    if (album != null) {
-                        // media total by bucketId
-                        album.count++
+                        if (album != null) {
+                            // media total by bucketId
+                            album.count++
 
-                        // calculate all media items
-                        mediaTotal++
-                    }
-                } while (cursor.moveToNext())
-            }
-
-            cursor?.close()
-
-            val result = albumMap.values
-                .toMutableList()
-                .also {
-                    it.add(0, recentAlbumItem(it.first().uri, mediaTotal))
+                            // calculate all media items
+                            mediaTotal++
+                        }
+                    } while (cursor.moveToNext())
                 }
 
-            emit(result)
+                cursor?.close()
+
+                val result = albumMap.values
+                    .toMutableList()
+                    .also {
+                        it.add(Int.ZERO, recentAlbumItem(it.firstOrNull()?.uri, mediaTotal))
+                    }
+
+                emit(result)
+            } catch (t: Throwable) {
+                emit(emptyList())
+            }
         }
     }
 

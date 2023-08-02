@@ -83,7 +83,7 @@ class KolCommentNewCardView : LinearLayout {
         setBackgroundColor(
             MethodChecker.getColor(
                 context,
-                com.tokopedia.unifyprinciples.R.color.Unify_N0
+                com.tokopedia.unifyprinciples.R.color.Unify_NN0
             )
         )
     }
@@ -95,9 +95,9 @@ class KolCommentNewCardView : LinearLayout {
     fun setModel(element: KolCommentNewModel, canComment: Boolean) {
         ImageHandler.loadImageCircle2(avatar.context, avatar, element.avatarUrl)
         element.time?.let {
-            if (it == context.getString(com.tokopedia.kolcommon.R.string.post_time_just_now))
+            if (it == context.getString(com.tokopedia.content.common.R.string.post_time_just_now))
                 time.text =
-                    context.getString(com.tokopedia.feedcomponent.R.string.post_time_few_moments_ago)
+                    context.getString(com.tokopedia.content.common.R.string.post_time_few_moments_ago)
             else
                 time.text = TimeConverter.generateTimeNewForComment(context, it)
         }
@@ -218,7 +218,7 @@ class KolCommentNewCardView : LinearLayout {
     }
 
     private val colorLinkHashtag: Int
-        get() = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
+        get() = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
 
     private fun constructProfileApplink(isShop: Boolean, userId: String): String {
         return if (!isShop) {

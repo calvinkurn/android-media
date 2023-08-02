@@ -3,10 +3,10 @@ package com.tokopedia.sellerhome.view.helper
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant
-import com.tokopedia.sellerhome.common.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.common.const.WidgetHeight
-import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
+import com.tokopedia.sellerhomecommon.domain.model.ParamCommonWidgetModel
+import com.tokopedia.sellerhomecommon.domain.model.ParamTableWidgetModel
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.domain.usecase.BaseGqlUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetAnnouncementDataUseCase
@@ -21,6 +21,7 @@ import com.tokopedia.sellerhomecommon.domain.usecase.GetPieChartDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetPostDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetProgressDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetRecommendationDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetRichListDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetTableDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetUnificationDataUseCase
 import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementDataUiModel
@@ -50,12 +51,13 @@ import com.tokopedia.sellerhomecommon.presentation.model.ProgressDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RichListDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RichListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.WidgetLayoutUiModel
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.user.session.UserSessionInterface
@@ -86,19 +88,19 @@ class SellerHomeLayoutHelper @Inject constructor(
     private val getMilestoneDataUseCase: Lazy<GetMilestoneDataUseCase>,
     private val getCalendarDataUseCase: Lazy<GetCalendarDataUseCase>,
     private val getUnificationDataUseCase: Lazy<GetUnificationDataUseCase>,
+    private val getRichListDataUseCase: Lazy<GetRichListDataUseCase>,
     private val userSession: Lazy<UserSessionInterface>,
-    private val remoteConfig: Lazy<SellerHomeRemoteConfig>,
     private val dispatcher: CoroutineDispatchers
 ) {
 
     private var startWidgetCustomMetricTag = MutableLiveData<String>()
     private var stopWidgetType = MutableLiveData<String>()
-    private var dynamicParameter: DynamicParameterModel = DynamicParameterModel()
+    private var dynamicParameter: ParamCommonWidgetModel = ParamCommonWidgetModel()
 
     fun init(
         startWidgetLiveData: MutableLiveData<String>,
         stopWidgetLiveData: MutableLiveData<String>,
-        dynamicParameter: DynamicParameterModel
+        dynamicParameter: ParamCommonWidgetModel
     ) {
         this.startWidgetCustomMetricTag = startWidgetLiveData
         this.stopWidgetType = stopWidgetLiveData
@@ -124,7 +126,9 @@ class SellerHomeLayoutHelper @Inject constructor(
         )
         return widgetFlow.combine(predictedInitialWidgetFlow) { widgetsFromFlow, initialWidgets ->
             widgetsFromFlow.map { widget ->
-                initialWidgets.find { it.id == widget.id } ?: widget
+                initialWidgets.find {
+                    it.dataKey == widget.dataKey && it.id == widget.id
+                } ?: widget
             }.filter { !it.isNeedToBeRemoved }
         }
     }
@@ -174,7 +178,7 @@ class SellerHomeLayoutHelper @Inject constructor(
     ): Flow<List<BaseWidgetUiModel<*>>> {
         val loadedWidgetList = widgetList.filter { it.isLoading }
             .map {
-                if (it.widgetType == WidgetType.SECTION) {
+                if (it.widgetType == WidgetType.SECTION || it.widgetType == WidgetType.DESCRIPTION) {
                     it.isLoaded = true
                 }
                 return@map it
@@ -249,12 +253,16 @@ class SellerHomeLayoutHelper @Inject constructor(
             WidgetType.UNIFICATION,
             isFromCache
         )
+        val richListDataFlow = groupedWidgets.getWidgetDataByType<RichListDataUiModel>(
+            WidgetType.RICH_LIST,
+            isFromCache
+        )
 
         return combine(
             lineGraphDataFlow, announcementDataFlow, cardDataFlow, progressDataFlow,
             carouselDataFlow, postDataFlow, tableDataFlow, pieChartDataFlow,
             barChartDataFlow, multiLineGraphDataFlow, recommendationDataFlow, milestoneDataFlow,
-            calendarDataFlow, unificationDataFlow
+            calendarDataFlow, unificationDataFlow, richListDataFlow
         ) { widgetDataList ->
             val widgetsData = widgetDataList.flatMap { it }
             widgetsData.mapToWidgetModel(widgets)
@@ -293,6 +301,7 @@ class SellerHomeLayoutHelper @Inject constructor(
                             WidgetType.MILESTONE -> getMilestoneData(it)
                             WidgetType.CALENDAR -> getCalendarData(it)
                             WidgetType.UNIFICATION -> getUnificationData(it)
+                            WidgetType.RICH_LIST -> getRichListData(it)
                             else -> null
                         }
                     }.orEmpty()
@@ -386,8 +395,7 @@ class SellerHomeLayoutHelper @Inject constructor(
             startWidgetCustomMetricTag.value =
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_CARD_TRACE
         }
-        val shouldUseCache = remoteConfig.get().isSellerHomeDashboardCachingEnabled()
-                && useCase.isFirstLoad
+        val shouldUseCache = useCase.isFirstLoad
         return getDataFromUseCase(useCase, shouldUseCache)
     }
 
@@ -397,7 +405,10 @@ class SellerHomeLayoutHelper @Inject constructor(
     ): List<LineGraphDataUiModel> {
         widgets.setLoading()
         val dataKeys = Utils.getWidgetDataKeys<LineGraphWidgetUiModel>(widgets)
-        val params = GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        val params = GetLineGraphDataUseCase.getRequestParams(
+            dataKey = dataKeys,
+            dynamicParam = dynamicParameter
+        )
         val useCase = getLineGraphDataUseCase.get()
         useCase.params = params
         withContext(dispatcher.main) {
@@ -418,9 +429,7 @@ class SellerHomeLayoutHelper @Inject constructor(
             startWidgetCustomMetricTag.value =
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_PROGRESS_TRACE
         }
-        val shouldUseCache = remoteConfig.get().isSellerHomeDashboardCachingEnabled()
-                && useCase.isFirstLoad
-        return getDataFromUseCase(useCase, shouldUseCache)
+        return getDataFromUseCase(useCase, useCase.isFirstLoad)
     }
 
     private suspend fun getPostData(widgets: List<BaseWidgetUiModel<*>>): List<PostListDataUiModel> {
@@ -431,16 +440,18 @@ class SellerHomeLayoutHelper @Inject constructor(
                 val postFilters = postFilter?.value.orEmpty()
                 return@map TableAndPostDataKey(it.dataKey, postFilters, it.maxData, it.maxDisplay)
             }
-        val params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        val params = GetPostDataUseCase.getRequestParams(
+            dataKey = dataKeys,
+            startDate = dynamicParameter.startDate,
+            endDate = dynamicParameter.endDate
+        )
         val useCase = getPostDataUseCase.get()
         useCase.params = params
         withContext(dispatcher.main) {
             startWidgetCustomMetricTag.value =
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_POST_LIST_TRACE
         }
-        val shouldUseCache = remoteConfig.get().isSellerHomeDashboardCachingEnabled()
-                && useCase.isFirstLoad
-        return getDataFromUseCase(useCase, shouldUseCache)
+        return getDataFromUseCase(useCase, useCase.isFirstLoad)
     }
 
     private suspend fun getCarouselData(widgets: List<BaseWidgetUiModel<*>>): List<CarouselDataUiModel> {
@@ -453,9 +464,7 @@ class SellerHomeLayoutHelper @Inject constructor(
             startWidgetCustomMetricTag.value =
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_CAROUSEL_TRACE
         }
-        val shouldUseCache = remoteConfig.get().isSellerHomeDashboardCachingEnabled()
-                && useCase.isFirstLoad
-        return getDataFromUseCase(useCase, shouldUseCache)
+        return getDataFromUseCase(useCase, useCase.isFirstLoad)
     }
 
     private suspend fun getTableData(widgets: List<BaseWidgetUiModel<*>>): List<TableDataUiModel> {
@@ -466,16 +475,19 @@ class SellerHomeLayoutHelper @Inject constructor(
                 val postFilters = postFilter?.value.orEmpty()
                 return@map TableAndPostDataKey(it.dataKey, postFilters, it.maxData, it.maxDisplay)
             }
-        val params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        val tableParam = ParamTableWidgetModel(
+            startDate = dynamicParameter.startDate,
+            endDate = dynamicParameter.endDate,
+            pageSource = dynamicParameter.pageSource
+        )
+        val params = GetTableDataUseCase.getRequestParams(dataKeys, tableParam)
         val useCase = getTableDataUseCase.get()
         useCase.params = params
         withContext(dispatcher.main) {
             startWidgetCustomMetricTag.value =
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_TABLE_TRACE
         }
-        val shouldUseCache = remoteConfig.get().isSellerHomeDashboardCachingEnabled()
-                && useCase.isFirstLoad
-        return getDataFromUseCase(useCase, shouldUseCache)
+        return getDataFromUseCase(useCase, useCase.isFirstLoad)
     }
 
     private suspend fun getPieChartData(widgets: List<BaseWidgetUiModel<*>>): List<PieChartDataUiModel> {
@@ -488,9 +500,7 @@ class SellerHomeLayoutHelper @Inject constructor(
             startWidgetCustomMetricTag.value =
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_PIE_CHART_TRACE
         }
-        val shouldUseCache = remoteConfig.get().isSellerHomeDashboardCachingEnabled()
-                && useCase.isFirstLoad
-        return getDataFromUseCase(useCase, shouldUseCache)
+        return getDataFromUseCase(useCase, useCase.isFirstLoad)
     }
 
     private suspend fun getBarChartData(widgets: List<BaseWidgetUiModel<*>>): List<BarChartDataUiModel> {
@@ -503,24 +513,23 @@ class SellerHomeLayoutHelper @Inject constructor(
             startWidgetCustomMetricTag.value =
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_BAR_CHART_TRACE
         }
-        val shouldUseCache = remoteConfig.get().isSellerHomeDashboardCachingEnabled()
-                && useCase.isFirstLoad
-        return getDataFromUseCase(useCase, shouldUseCache)
+        return getDataFromUseCase(useCase, useCase.isFirstLoad)
     }
 
     private suspend fun getMultiLineGraphData(widgets: List<BaseWidgetUiModel<*>>): List<MultiLineGraphDataUiModel> {
         widgets.setLoading()
         val dataKeys = Utils.getWidgetDataKeys<MultiLineGraphWidgetUiModel>(widgets)
-        val params = GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
+        val params = GetMultiLineGraphUseCase.getRequestParams(
+            dataKey = dataKeys,
+            dynamicParam = dynamicParameter
+        )
         val useCase = getMultiLineGraphUseCase.get()
         useCase.params = params
         withContext(dispatcher.main) {
             startWidgetCustomMetricTag.value =
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_MULTI_LINE_GRAPH_TRACE
         }
-        val shouldUseCache = remoteConfig.get().isSellerHomeDashboardCachingEnabled()
-                && useCase.isFirstLoad
-        return getDataFromUseCase(useCase, shouldUseCache)
+        return getDataFromUseCase(useCase, useCase.isFirstLoad)
     }
 
     private suspend fun getRecommendationData(widgets: List<BaseWidgetUiModel<*>>): List<RecommendationDataUiModel> {
@@ -533,9 +542,7 @@ class SellerHomeLayoutHelper @Inject constructor(
             startWidgetCustomMetricTag.value =
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_RECOMMENDATION_TRACE
         }
-        val shouldUseCache = remoteConfig.get().isSellerHomeDashboardCachingEnabled()
-                && useCase.isFirstLoad
-        return getDataFromUseCase(useCase, shouldUseCache)
+        return getDataFromUseCase(useCase, useCase.isFirstLoad)
     }
 
     private suspend fun getMilestoneData(widgets: List<BaseWidgetUiModel<*>>): List<MilestoneDataUiModel> {
@@ -548,9 +555,7 @@ class SellerHomeLayoutHelper @Inject constructor(
             startWidgetCustomMetricTag.value =
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_MILESTONE_TRACE
         }
-        val shouldUseCache = remoteConfig.get().isSellerHomeDashboardCachingEnabled()
-                && useCase.isFirstLoad
-        return getDataFromUseCase(useCase, shouldUseCache)
+        return getDataFromUseCase(useCase, useCase.isFirstLoad)
     }
 
     private suspend fun getCalendarData(widgets: List<BaseWidgetUiModel<*>>): List<CalendarDataUiModel> {
@@ -565,9 +570,7 @@ class SellerHomeLayoutHelper @Inject constructor(
             startWidgetCustomMetricTag.value =
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_CALENDAR_TRACE
         }
-        val shouldUseCache = remoteConfig.get().isSellerHomeDashboardCachingEnabled()
-                && useCase.isFirstLoad
-        return getDataFromUseCase(useCase, shouldUseCache)
+        return getDataFromUseCase(useCase, useCase.isFirstLoad)
     }
 
     private suspend fun getUnificationData(widgets: List<BaseWidgetUiModel<*>>): List<UnificationDataUiModel> {
@@ -580,9 +583,7 @@ class SellerHomeLayoutHelper @Inject constructor(
             startWidgetCustomMetricTag.value =
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_UNIFICATION_TRACE
         }
-        val shouldUseCache = remoteConfig.get().isSellerHomeDashboardCachingEnabled()
-                && useCase.isFirstLoad
-        return getDataFromUseCase(useCase, shouldUseCache)
+        return getDataFromUseCase(useCase, useCase.isFirstLoad)
     }
 
     private suspend fun getAnnouncementData(widgets: List<BaseWidgetUiModel<*>>): List<AnnouncementDataUiModel> {
@@ -595,9 +596,22 @@ class SellerHomeLayoutHelper @Inject constructor(
             startWidgetCustomMetricTag.value =
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_ANNOUNCEMENT_TRACE
         }
-        val shouldUseCache = remoteConfig.get().isSellerHomeDashboardCachingEnabled()
-                && useCase.isFirstLoad
-        return getDataFromUseCase(useCase, shouldUseCache)
+        return getDataFromUseCase(useCase, useCase.isFirstLoad)
+    }
+
+    private suspend fun getRichListData(widgets: List<BaseWidgetUiModel<*>>): List<RichListDataUiModel> {
+        widgets.setLoading()
+        val dataKeys = Utils.getWidgetDataKeys<RichListWidgetUiModel>(widgets)
+        val useCase = getRichListDataUseCase.get()
+        val shopId = userSession.get().shopId
+        useCase.params = GetRichListDataUseCase.createParam(
+            dataKeys = dataKeys, shopId = shopId, pageSource = dynamicParameter.pageSource
+        )
+        withContext(dispatcher.main) {
+            startWidgetCustomMetricTag.value =
+                SellerHomePerformanceMonitoringConstant.SELLER_HOME_RICH_LIST_TRACE
+        }
+        return getDataFromUseCase(useCase, useCase.isFirstLoad)
     }
 
     private fun List<BaseWidgetUiModel<*>>.setLoading() {

@@ -11,13 +11,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.detail.data.OrderCategory
 import com.tokopedia.buyerorder.detail.revamp.activity.RevampOrderListDetailActivity
-import com.tokopedia.buyerorder.detail.view.activity.OrderListDetailActivity
 import com.tokopedia.buyerorder.recharge.di.DaggerRechargeOrderDetailComponent
 import com.tokopedia.buyerorder.recharge.di.RechargeOrderDetailComponent
 import com.tokopedia.buyerorder.recharge.presentation.fragment.RechargeOrderDetailFragment
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSession
 
 /**
@@ -30,16 +26,7 @@ class RechargeOrderDetailActivity : BaseSimpleActivity(), HasComponent<RechargeO
     private var category: String? = null
     private var upstream: String? = null
 
-    private lateinit var remoteConfig: RemoteConfig
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        remoteConfig = FirebaseRemoteConfigImpl(this)
-
-        if (!remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_NEW_ORDER_DETAIL, true)) {
-            startActivity(RevampOrderListDetailActivity.getIntent(this, orderId, intent.data))
-            finish()
-        }
-
         intent?.let { mIntent ->
             mIntent.data?.let { mData ->
                 category = mData.toString()
@@ -103,7 +90,7 @@ class RechargeOrderDetailActivity : BaseSimpleActivity(), HasComponent<RechargeO
                                 .add(com.tokopedia.abstraction.R.id.parent_view, RechargeOrderDetailFragment.getInstance(orderId, OrderCategory.DIGITAL))
                                 .commit()
                     } else {
-                        startActivity(OrderListDetailActivity.getIntent(this, orderId, intent.data))
+                        startActivity(RevampOrderListDetailActivity.getIntent(this, orderId, intent.data))
                         finish()
                     }
                 }

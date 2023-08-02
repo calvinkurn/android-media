@@ -3,7 +3,6 @@ package com.tokopedia.media.picker.ui.activity.picker
 import androidx.lifecycle.*
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.media.R
-import com.tokopedia.media.picker.data.FeatureToggleManager
 import com.tokopedia.media.picker.data.mapper.mediaToUiModel
 import com.tokopedia.media.picker.data.repository.BitmapConverterRepository
 import com.tokopedia.media.picker.data.repository.DeviceInfoRepository
@@ -18,7 +17,6 @@ import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.picker.common.uimodel.MediaUiModel
-import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toRemovableUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
 import com.tokopedia.picker.common.utils.isUrl
 import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
@@ -31,7 +29,6 @@ class PickerViewModel @Inject constructor(
     private val mediaFiles: MediaFileRepository,
     private val bitmapConverter: BitmapConverterRepository,
     private val param: PickerCacheManager,
-    private val featureToggle: FeatureToggleManager,
     private val networkState: NetworkStateManager,
     private val resources: ResourceManager,
     private val dispatchers: CoroutineDispatchers,
@@ -73,18 +70,14 @@ class PickerViewModel @Inject constructor(
         }
 
     fun navigateToEditorPage(result: PickerResult) {
-        viewModelScope.launch {
-            val data = Pair(result, param.get().getEditorParam() ?: EditorParam())
-            _editorParam.value = data
-        }
+        val editorParam = param.get().getEditorParam() ?: EditorParam()
+        val data = Pair(result, editorParam)
+
+        _editorParam.value = data
     }
 
     fun setPickerParam(pickerParam: PickerParam?) {
         val mPickerParam = pickerParam ?: return
-
-        if (mPickerParam.isEditorEnabled() && featureToggle.isEditorEnabled().not()) {
-            mPickerParam.withoutEditor()
-        }
 
         _pickerParam.value = param.set(mPickerParam)
     }
@@ -124,11 +117,24 @@ class PickerViewModel @Inject constructor(
             .onStart { _isLoading.value = true }
             .onCompletion { _isLoading.value = false }
             .map {
-                val pickerFile = it.asPickerFile()
-                val uiModels = pickerFile.toRemovableUiModel()
+                val uiModels = setIncludedUrls(it)
                 _includeMedias.value = uiModels + localFiles
             }
             .launchIn(viewModelScope)
+    }
+
+    private fun setIncludedUrls(result: List<Pair<String, String>?>): List<MediaUiModel?> {
+        return result.map {
+            it?.first
+                ?.asPickerFile()
+                ?.toUiModel()
+                ?.also { model ->
+                    model.sourcePath = it.second
+
+                    // set loaded url image to skip save gallery process
+                    model.isCacheFile = false
+                }
+        }
     }
 
     fun loadMedia(bucketId: Long, start: Int = 0) {

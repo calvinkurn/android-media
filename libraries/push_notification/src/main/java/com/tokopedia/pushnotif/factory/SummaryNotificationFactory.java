@@ -1,6 +1,7 @@
 package com.tokopedia.pushnotif.factory;
 
 import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Context;
 
 import com.tokopedia.applink.ApplinkConst;
@@ -22,9 +23,9 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
 
     private List<HistoryNotification> listHistoryNotification;
 
-
     public SummaryNotificationFactory(Context context) {
         super(context);
+        createNotificationInboxStyle();
     }
 
     @Override
@@ -34,8 +35,6 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Constant.NotificationChannel.GENERAL);
         builder.setContentTitle(getTitleSummary(notificationType));
         builder.setSmallIcon(getDrawableIcon());
-
-        NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 
         HistoryRepository.storeNotification(
                 context,
@@ -62,8 +61,9 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
             builder.setGroup(generateGroupKey(applinkNotificationModel.getApplinks()));
             builder.setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN);
         }
-        builder.setContentIntent(createPendingIntent(getGenericApplinks(notificationType), notificationType, 0));
-        builder.setDeleteIntent(createDismissPendingIntent(notificationType, 0));
+        PendingIntent pendingContentIntent = createPendingIntent(getGenericApplinks(notificationType), notificationType, 0, applinkNotificationModel);
+        builder.setContentIntent(pendingContentIntent);
+        builder.setDeleteIntent(createDismissPendingIntent(notificationType, 0, applinkNotificationModel));
         builder.setAutoCancel(true);
 
         if (isAllowBell()) {
@@ -72,17 +72,6 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
         }
 
         return builder.build();
-    }
-
-    private static String generateSummaryText(int notificationType) {
-        switch (notificationType) {
-            case Constant.NotificationId.TALK:
-                return "Tokopedia - Diskusi";
-            case Constant.NotificationId.CHAT:
-                return "Tokopedia - Chat";
-            default:
-                return "Tokopedia - Notifikasi";
-        }
     }
 
     private String getGenericApplinks(int notficationType) {

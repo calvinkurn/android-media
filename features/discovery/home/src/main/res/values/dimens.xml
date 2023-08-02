@@ -6,21 +6,10 @@
     <dimen name="tab_home_feed_width">104dp</dimen>
     <dimen name="tab_home_feed_max_height">64dp</dimen>
     <dimen name="home_feeds_padding_info">16dp</dimen>
-    <dimen name="spotlight_width">240dp</dimen>
-    <dimen name="spotlight_height">80dp</dimen>
     <dimen name="use_case_and_dynamic_image_size">48dp</dimen>
     <dimen name="use_case_and_dynamic_icon_size">56dp</dimen>
     <dimen name="home_revamp_searchbar_transition_range">16dp</dimen>
     <dimen name="keyboard_min_height">200dp</dimen>
-
-    <!--Banner Play-->
-    <dimen name="home_play_banner_play_icon_size">34dp</dimen>
-    <dimen name="home_play_banner_title_margin_bottom">3dp</dimen>
-    <dimen name="home_play_banner_desc_margin_bottom">12dp</dimen>
-    <dimen name="home_play_banner_gradient_height">120dp</dimen>
-    <dimen name="home_play_banner_thumbnail_margin_top">8dp</dimen>
-    <dimen name="home_play_banner_player_margin_top">8dp</dimen>
-    <dimen name="home_play_banner_viewer_margin_end">4dp</dimen>
 
     <dimen name="new_margin_sm">24dp</dimen>
 
@@ -38,8 +27,7 @@
     <dimen name="corner_radius_shimmering">10dp</dimen>
 
     <!-- Balance Widget -->
-    <dimen name="balance_atf2_item_max_width_balance">175dp</dimen>
-    <dimen name="balance_atf2_item_max_width_other">169dp</dimen>
+    <dimen name="balance_atf2_item_max_width">182dp</dimen>
     <dimen name="balance_atf2_outer_margin">4dp</dimen>
     <dimen name="balance_divider_width">1dp</dimen>
     <dimen name="balance_image_size">32dp</dimen>

@@ -6,11 +6,12 @@ import com.tokopedia.play.broadcaster.shorts.analytic.const.Label.BUSINESS_UNIT_
 import com.tokopedia.play.broadcaster.shorts.analytic.const.Label.CURRENT_SITE_LABEL
 import com.tokopedia.play.broadcaster.shorts.analytic.const.Label.SESSION_IRIS_LABEL
 import com.tokopedia.play.broadcaster.shorts.analytic.const.Label.TRACKER_ID_LABEL
-import com.tokopedia.play.broadcaster.shorts.analytic.const.Value.SHORTS_CURRENT_SITE_SELLER
-import com.tokopedia.play.broadcaster.shorts.analytic.const.Value.SHORTS_CURRENT_SITE_MAIN
-import com.tokopedia.play.broadcaster.shorts.analytic.const.Value.SHORTS_BUSINESS_UNIT
 import com.tokopedia.play.broadcaster.shorts.analytic.const.Value.SHORTS_CLICK_CONTENT
+import com.tokopedia.play.broadcaster.shorts.analytic.const.Value.SHORTS_CONTENT_BUSINESS_UNIT
+import com.tokopedia.play.broadcaster.shorts.analytic.const.Value.SHORTS_CURRENT_SITE_MAIN
+import com.tokopedia.play.broadcaster.shorts.analytic.const.Value.SHORTS_CURRENT_SITE_SELLER
 import com.tokopedia.play.broadcaster.shorts.analytic.const.Value.SHORTS_EVENT_CATEGORY
+import com.tokopedia.play.broadcaster.shorts.analytic.const.Value.SHORTS_PLAY_BUSINESS_UNIT
 import com.tokopedia.play.broadcaster.shorts.analytic.const.Value.SHORTS_VIEW_CONTENT
 import com.tokopedia.play.broadcaster.shorts.analytic.helper.PlayShortsAnalyticHelper
 import com.tokopedia.track.TrackApp
@@ -43,7 +44,7 @@ class PlayShortsAnalyticSenderImpl @Inject constructor(
             screenName,
             mapOf(
                 TRACKER_ID_LABEL to trackerId,
-                BUSINESS_UNIT_LABEL to SHORTS_BUSINESS_UNIT,
+                BUSINESS_UNIT_LABEL to SHORTS_PLAY_BUSINESS_UNIT,
                 CURRENT_SITE_LABEL to currentSite,
                 SESSION_IRIS_LABEL to sessionIris,
             )
@@ -76,6 +77,21 @@ class PlayShortsAnalyticSenderImpl @Inject constructor(
         )
     }
 
+    override fun sendGeneralViewEventContent(
+        eventAction: String,
+        eventLabel: String,
+        trackerId: String
+    ) {
+        sendGeneralEventContent(
+            Tracker.Builder()
+                .setEvent(SHORTS_VIEW_CONTENT)
+                .setEventCategory(SHORTS_EVENT_CATEGORY)
+                .setEventAction(eventAction)
+                .setEventLabel(eventLabel)
+                .setCustomProperty(TRACKER_ID_LABEL, trackerId)
+        )
+    }
+
     override fun sendGeneralClickEvent(
         eventAction: String,
         account: ContentAccountUiModel,
@@ -94,9 +110,24 @@ class PlayShortsAnalyticSenderImpl @Inject constructor(
     override fun sendGeneralClickEvent(
         eventAction: String,
         eventLabel: String,
-        trackerId: String
+        trackerId: String,
     ) {
         sendGeneralEvent(
+            Tracker.Builder()
+                .setEvent(SHORTS_CLICK_CONTENT)
+                .setEventCategory(SHORTS_EVENT_CATEGORY)
+                .setEventAction(eventAction)
+                .setEventLabel(eventLabel)
+                .setCustomProperty(TRACKER_ID_LABEL, trackerId)
+        )
+    }
+
+    override fun sendGeneralClickEventContent(
+        eventAction: String,
+        eventLabel: String,
+        trackerId: String
+    ) {
+        sendGeneralEventContent(
             Tracker.Builder()
                 .setEvent(SHORTS_CLICK_CONTENT)
                 .setEventCategory(SHORTS_EVENT_CATEGORY)
@@ -110,7 +141,19 @@ class PlayShortsAnalyticSenderImpl @Inject constructor(
         trackerBuilder: Tracker.Builder
     ) {
         trackerBuilder
-            .setBusinessUnit(SHORTS_BUSINESS_UNIT)
+            .setBusinessUnit(SHORTS_PLAY_BUSINESS_UNIT)
+            .setCurrentSite(currentSite)
+            .setUserId(userSession.userId)
+            .setCustomProperty(SESSION_IRIS_LABEL, sessionIris)
+            .build()
+            .send()
+    }
+
+    private fun sendGeneralEventContent(
+        trackerBuilder: Tracker.Builder
+    ) {
+        trackerBuilder
+            .setBusinessUnit(SHORTS_CONTENT_BUSINESS_UNIT)
             .setCurrentSite(currentSite)
             .setUserId(userSession.userId)
             .setCustomProperty(SESSION_IRIS_LABEL, sessionIris)

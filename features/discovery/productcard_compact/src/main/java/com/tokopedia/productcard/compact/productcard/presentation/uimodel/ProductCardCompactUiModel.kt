@@ -1,6 +1,8 @@
 package com.tokopedia.productcard.compact.productcard.presentation.uimodel
 
-data class TokoNowProductCardViewUiModel(
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+
+data class ProductCardCompactUiModel(
     val productId: String = "",
     val imageUrl: String = "",
     val minOrder: Int = 0,
@@ -22,6 +24,7 @@ data class TokoNowProductCardViewUiModel(
     val needToShowQuantityEditor: Boolean = false,
     val labelGroupList: List<LabelGroup> = listOf(),
     val needToChangeMaxLinesName: Boolean = false,
+    val hasBlockedAddToCart: Boolean = false,
     /**
      * use pre draw only if need dynamic height of product card (ex: carousel)
      */
@@ -45,6 +48,8 @@ data class TokoNowProductCardViewUiModel(
     fun isOos() = getOosLabelGroup() != null
     fun isFlashSale() = progressBarLabel.isNotBlank() && !isOos()
     fun isNormal() = !isOos() && !isFlashSale()
+
+    fun getPriceLong() = price.filter { it.isDigit() }.toLongOrZero()
 
     data class LabelGroup(
         val position: String = "",

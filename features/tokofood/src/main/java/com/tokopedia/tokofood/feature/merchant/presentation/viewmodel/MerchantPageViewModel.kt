@@ -12,13 +12,24 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.mvcwidget.AnimatedInfos
 import com.tokopedia.mvcwidget.MvcData
-import com.tokopedia.tokofood.common.domain.response.CartTokoFood
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProduct
+import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
+import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodBusinessData
+import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodCart
+import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodParam
+import com.tokopedia.tokofood.common.domain.response.CartListCartGroupCart
 import com.tokopedia.tokofood.common.presentation.mapper.CustomOrderDetailsMapper.mapTokoFoodProductsToCustomOrderDetails
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
-import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
 import com.tokopedia.tokofood.common.util.ResourceProvider
-import com.tokopedia.tokofood.feature.merchant.domain.model.response.*
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.GetMerchantDataResponse
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCatalogVariantDetail
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCatalogVariantOptionDetail
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCategoryCatalog
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCategoryFilter
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodGetMerchantData
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodMerchantOpsHour
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodMerchantProfile
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodTickerDetail
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodTopBanner
 import com.tokopedia.tokofood.feature.merchant.domain.usecase.GetMerchantDataUseCase
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.CarouselDataType
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.CustomListItemType
@@ -27,20 +38,26 @@ import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionContr
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType.MULTIPLE_SELECTION
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType.SINGLE_SELECTION
 import com.tokopedia.tokofood.feature.merchant.presentation.mapper.TokoFoodMerchantUiModelMapper
-import com.tokopedia.tokofood.feature.merchant.presentation.model.*
+import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CarouselData
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CategoryUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomListItem
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
+import com.tokopedia.tokofood.feature.merchant.presentation.model.MerchantOpsHour
+import com.tokopedia.tokofood.feature.merchant.presentation.model.OptionUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
+import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.*
 import javax.inject.Inject
 
 class MerchantPageViewModel @Inject constructor(
@@ -58,15 +75,17 @@ class MerchantPageViewModel @Inject constructor(
     val mvcLiveData: LiveData<MvcData?> get() = _mvcLiveData
 
     private val _quantityUpdateState = MutableSharedFlow<Boolean>()
-    private val _currentProductsWithUpdatedQuantity: MutableMap<String, List<UpdateProductParam>> = mutableMapOf()
-    val updateQuantityParam = MutableSharedFlow<UpdateParam>(Int.ONE)
+    private val _currentProductsWithUpdatedQuantity: MutableMap<String, Int> = mutableMapOf()
+    val updateQuantityParam = MutableSharedFlow<UpdateQuantityTokofoodParam>(Int.ONE)
 
     // map of productId to card positions info <dataset,adapter>
     val productMap: HashMap<String, Pair<Int, Int>> = hashMapOf()
 
+    var sameProductList: List<String> = listOf()
+
     var productListItems: MutableList<ProductListItem> = mutableListOf()
 
-    var selectedProducts: List<CheckoutTokoFoodProduct> = listOf()
+    var selectedProducts: List<CartListCartGroupCart> = listOf()
 
     var isAddressManuallyUpdated = false
 
@@ -119,6 +138,7 @@ class MerchantPageViewModel @Inject constructor(
             }
             filterList = result.tokofoodGetMerchantData.filters
             merchantData = result.tokofoodGetMerchantData
+            sameProductList = result.tokofoodGetMerchantData.getProductsWithSameId()
             getMerchantDataResultLiveData.value = Success(result)
             _mvcLiveData.value = getMvcData(result.tokofoodGetMerchantData.topBanner)
         }, onError = {
@@ -283,16 +303,16 @@ class MerchantPageViewModel @Inject constructor(
         }
     }
 
-    fun applyProductSelection(productListItems: List<ProductListItem>, selectedProducts: List<CheckoutTokoFoodProduct>): List<ProductListItem> {
+    fun applyProductSelection(productListItems: List<ProductListItem>, selectedProducts: List<CartListCartGroupCart>): List<ProductListItem> {
         val mutableProductListItems = productListItems.toMutableList()
         val selectedProductMap = selectedProducts.groupBy { it.productId }
         selectedProductMap.forEach { entry ->
-            if (entry.value.first().variants.isNotEmpty()) {
-                val selectedProductListItem = mutableProductListItems.firstOrNull() { productListItem ->
+            if (entry.value.first().customResponse.variants.isNotEmpty()) {
+                val selectedProductListItems = mutableProductListItems.filter { productListItem ->
                     productListItem.productUiModel.id == entry.key
                 }
-                if (selectedProductListItem != null) {
-                    with(selectedProductListItem.productUiModel) {
+                selectedProductListItems.forEach {
+                    with(it.productUiModel) {
                         isAtc = true
                         customOrderDetails = mapTokoFoodProductsToCustomOrderDetails(entry.value)
                     }
@@ -300,15 +320,15 @@ class MerchantPageViewModel @Inject constructor(
             } else {
                 // NON-VARIANT PRODUCT ORDER
                 val selectedProduct = entry.value.first()
-                val selectedProductListItem = mutableProductListItems.firstOrNull() { productListItem ->
+                val selectedProductListItems = mutableProductListItems.filter { productListItem ->
                     productListItem.productUiModel.id == entry.key
                 }
-                if (selectedProductListItem != null) {
-                    with(selectedProductListItem.productUiModel) {
+                selectedProductListItems.forEach {
+                    with(it.productUiModel) {
                         isAtc = true
                         cartId = selectedProduct.cartId
                         orderQty = selectedProduct.quantity
-                        orderNote = selectedProduct.notes
+                        orderNote = selectedProduct.customResponse.notes
                     }
                 }
             }
@@ -346,7 +366,7 @@ class MerchantPageViewModel @Inject constructor(
         )
     }
 
-    fun mapCartTokoFoodToCustomOrderDetail(cartTokoFood: CartTokoFood, productUiModel: ProductUiModel): CustomOrderDetail? {
+    fun mapCartTokoFoodToCustomOrderDetail(cartTokoFood: CartListCartGroupCart, productUiModel: ProductUiModel): CustomOrderDetail? {
         if (!productUiModel.isCustomizable) return null
         resetMasterData(productUiModel.customListItems)
         return TokoFoodMerchantUiModelMapper.mapCartTokoFoodToCustomOrderDetail(
@@ -355,61 +375,31 @@ class MerchantPageViewModel @Inject constructor(
         )
     }
 
-    fun updateQuantity(shopId: String, productUiModel: ProductUiModel) {
-        val currentProducts = _currentProductsWithUpdatedQuantity[shopId].orEmpty().toMutableList()
-        val shouldReplaceProductIndex = getShouldReplaceProductIndex(currentProducts, productUiModel.cartId, productUiModel.id)
-        val updatedProductParam = TokoFoodMerchantUiModelMapper.mapProductUiModelToUpdateProductParams(productUiModel)
-        if (shouldReplaceProductIndex == null) {
-            currentProducts.add(updatedProductParam)
-        } else {
-            currentProducts[shouldReplaceProductIndex] = updatedProductParam
-        }
-        _currentProductsWithUpdatedQuantity[shopId] = currentProducts
-
-        viewModelScope.launch {
-            _quantityUpdateState.emit(true)
-        }
-    }
-
     fun updateQuantity(
-        shopId: String,
-        productId: String,
-        customOrderDetail: CustomOrderDetail
+        cartId: String,
+        quantity: Int
     ) {
-        val currentProducts = _currentProductsWithUpdatedQuantity[shopId].orEmpty().toMutableList()
-        val shouldReplaceProductIndex = getShouldReplaceProductIndex(currentProducts, customOrderDetail.cartId, productId)
-        val updatedProductParam = TokoFoodMerchantUiModelMapper.mapCustomOrderDetailToUpdateProductParams(productId, customOrderDetail)
-        if (shouldReplaceProductIndex == null) {
-            currentProducts.add(updatedProductParam)
-        } else {
-            currentProducts[shouldReplaceProductIndex] = updatedProductParam
-        }
-        _currentProductsWithUpdatedQuantity[shopId] = currentProducts
+        _currentProductsWithUpdatedQuantity[cartId]
+        _currentProductsWithUpdatedQuantity[cartId] = quantity
 
         viewModelScope.launch {
             _quantityUpdateState.emit(true)
         }
     }
 
-    private fun getShouldReplaceProductIndex(
-        currentProducts: List<UpdateProductParam>,
-        cartId: String,
-        productId: String
-    ): Int? {
-        var shouldReplaceProductIndex: Int? = null
-        currentProducts.forEachIndexed { index, updateProductParam ->
-            if (updateProductParam.cartId == cartId && updateProductParam.productId == productId) {
-                shouldReplaceProductIndex = index
-            }
-        }
-        return shouldReplaceProductIndex
-    }
-
-    private fun getCurrentQuantityUpdateParams(): List<UpdateParam> {
+    private fun getCurrentQuantityUpdateParams(): List<UpdateQuantityTokofoodParam> {
         return _currentProductsWithUpdatedQuantity.entries.map {
-            UpdateParam(
-                shopId = it.key,
-                productList = it.value
+            UpdateQuantityTokofoodParam(
+                source = SOURCE,
+                businessData = UpdateQuantityTokofoodBusinessData(
+                    businessId = TokoFoodCartUtil.getBusinessId(),
+                    carts = listOf(
+                        UpdateQuantityTokofoodCart(
+                            cartId = it.key,
+                            quantity = it.value
+                        )
+                    )
+                )
             )
         }
     }
@@ -451,5 +441,6 @@ class MerchantPageViewModel @Inject constructor(
         private const val DAYS_INCREASE = 2
 
         private const val UPDATE_QUANTITY_DEBOUNCE = 500L
+        private const val SOURCE = "merchant_page"
     }
 }

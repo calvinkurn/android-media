@@ -49,7 +49,7 @@ class PlayActivityRobot(
             withId(
                 if (!isYouTube) R.id.view_video
                 else if (isErrorPage) R.id.fl_global_error
-                else R.id.fl_youtube_player
+                else R.id.youtube_webview
             )
         )
         delay(initialDelay)
@@ -312,6 +312,26 @@ class PlayActivityRobot(
         Espresso.onView(
             withId(R.id.view_kebab_menu)
         ).perform(ViewActions.click())
+    }
+
+    /**
+     * Comment
+     */
+
+    fun openCommentBottomSheet() = chainable {
+        Espresso.onView(withId(R.id.view_vod_comment)).perform(ViewActions.click())
+    }
+
+    fun clickWithId(viewId: Int) = chainable {
+        Espresso.onView(withId(viewId)).perform(ViewActions.click())
+    }
+
+    fun impressIsAvailable(viewId: Int) = chainable {
+        Espresso.onView(withId(viewId)).check(matches(isDisplayed()))
+    }
+
+    fun typeInEditText(text: String = "test", viewId: Int) = chainable {
+        Espresso.onView(withId(viewId)).perform(ViewActions.typeText(text))
     }
 
     private fun chainable(fn: () -> Unit): PlayActivityRobot {

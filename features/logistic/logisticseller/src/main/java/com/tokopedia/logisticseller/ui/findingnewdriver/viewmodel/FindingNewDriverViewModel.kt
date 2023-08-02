@@ -18,7 +18,7 @@ class FindingNewDriverViewModel @Inject constructor(
     dispatcher: CoroutineDispatchers,
     private val newDriverAvailabilityUseCase: NewDriverAvailabilityUseCase,
     private val newDriverBookingUseCase: NewDriverBookingUseCase,
-    private val findingNewDriverMapper: FindingNewDriverMapper,
+    private val findingNewDriverMapper: FindingNewDriverMapper
 ) : BaseViewModel(dispatcher.main) {
 
     private val _newDriverAvailability =

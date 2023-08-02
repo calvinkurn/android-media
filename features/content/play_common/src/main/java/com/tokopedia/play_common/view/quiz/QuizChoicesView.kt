@@ -49,7 +49,7 @@ class QuizChoicesView : ConstraintLayout {
 
         bgDrawable = MethodChecker.getDrawable(context, commonR.drawable.bg_quiz_choice)
         defaultFontColor = MethodChecker.getColor(context, unifyR.color.Unify_NN950)
-        filledFontColor = MethodChecker.getColor(context, unifyR.color.Unify_N0)
+        filledFontColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
     }
 
     /***
@@ -89,13 +89,17 @@ class QuizChoicesView : ConstraintLayout {
              */
             is PlayQuizOptionState.Participant -> {
                 binding.tvQuizQuestion.setTextColor(defaultFontColor)
-                if (item.type.isCorrect)
+                if (item.type.isCorrect) {
                     getIconOption(isCorrect = item.type.isCorrect)
-                else
+                } else {
                     getIconOption(alphabet = item.type.alphabet)
+                }
                 getBackground(isDefault = true)
                 setupResponded(item.type.count)
                 binding.llQuizOptionRight.ivArrow.showWithCondition(item.type.showArrow)
+            }
+            else -> {
+                // no op
             }
         }
         binding.tvQuizQuestion.text = item.text
@@ -105,7 +109,7 @@ class QuizChoicesView : ConstraintLayout {
     private fun getIconOption(
         alphabet: Char? = null,
         isCorrect: Boolean? = null,
-        isAnswered: Boolean = false,
+        isAnswered: Boolean = false
     ) {
         alphabet?.let {
             binding.ivQuizOption.tvAlphabet.show()
@@ -122,7 +126,7 @@ class QuizChoicesView : ConstraintLayout {
                 context,
                 if (it) IconUnify.CHECK_CIRCLE else IconUnify.CLEAR,
                 when {
-                    isAnswered -> MethodChecker.getColor(context, unifyR.color.Unify_N0)
+                    isAnswered -> MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
                     it -> MethodChecker.getColor(context, unifyR.color.Unify_GN400)
                     else -> MethodChecker.getColor(context, unifyR.color.Unify_RN500)
                 }
@@ -132,20 +136,24 @@ class QuizChoicesView : ConstraintLayout {
         }
     }
 
-    private fun getBackground(isDefault: Boolean? = null, isCorrect: Boolean? = null){
+    private fun getBackground(isDefault: Boolean? = null, isCorrect: Boolean? = null) {
         val shape = GradientDrawable()
         shape.shape = GradientDrawable.RECTANGLE
         shape.cornerRadius = QUIZ_OPTION_RADIUS
 
         isDefault?.let {
-            if(it)
-                shape.setColor(MethodChecker.getColor(context, unifyR.color.Unify_N0))
-                shape.setStroke(QUIZ_OPTION_STROKE_WIDTH, MethodChecker.getColor(context, commonR.color.play_dms_stroke_quiz))
+            if (it) {
+                shape.setColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+            }
+            shape.setStroke(QUIZ_OPTION_STROKE_WIDTH, MethodChecker.getColor(context, commonR.color.play_dms_stroke_quiz))
         }
 
         isCorrect?.let {
-            if(it) shape.setColor(MethodChecker.getColor(context, unifyR.color.Unify_GN400))
-            else shape.setColor(MethodChecker.getColor(context, unifyR.color.Unify_RN500))
+            if (it) {
+                shape.setColor(MethodChecker.getColor(context, unifyR.color.Unify_GN400))
+            } else {
+                shape.setColor(MethodChecker.getColor(context, unifyR.color.Unify_RN500))
+            }
         }
         binding.root.background = shape
     }
@@ -161,14 +169,14 @@ class QuizChoicesView : ConstraintLayout {
     /***
      * Use this method if you want to show loader
      */
-    fun setupLoading(isLoading: Boolean){
+    fun setupLoading(isLoading: Boolean) {
         binding.llQuizOptionRight.loaderQuizOption.showWithCondition(isLoading)
     }
 
     /***
      * Use this method if you want to show responded view
      */
-    fun setupResponded(respondent: String){
+    fun setupResponded(respondent: String) {
         binding.root.isClickable = true
         binding.llQuizOptionRight.tvRespondent.text = respondent
         binding.llQuizOptionRight.tvRespondent.show()
@@ -179,11 +187,11 @@ class QuizChoicesView : ConstraintLayout {
         mListener = listener
     }
 
-    interface Listener  {
+    interface Listener {
         fun onOptionClicked()
     }
 
-    companion object{
+    companion object {
         private const val QUIZ_OPTION_RADIUS = 20f
         private const val QUIZ_OPTION_STROKE_WIDTH = 2
     }

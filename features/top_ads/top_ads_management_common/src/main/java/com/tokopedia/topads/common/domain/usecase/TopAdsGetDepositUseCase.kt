@@ -16,6 +16,7 @@ const val DEPOSIT = """query topadsDashboardDepositsV2(${'$'}shop_id: String!) {
     data {
       amount
       amount_fmt
+      amount_html
     }
   }
 }

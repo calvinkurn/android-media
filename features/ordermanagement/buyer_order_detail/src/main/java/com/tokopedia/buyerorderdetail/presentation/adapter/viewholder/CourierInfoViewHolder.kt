@@ -69,7 +69,7 @@ class CourierInfoViewHolder(
 
     private fun setupFreeShippingBadge(freeShipping: Boolean, boBadgeUrl: String) {
         binding?.ivBuyerOrderDetailFreeShipmentBadge?.apply {
-            ImageHandler.loadImage2(this, boBadgeUrl, com.tokopedia.kotlin.extensions.R.drawable.ic_loading_error)
+            ImageHandler.loadImage2(this, boBadgeUrl, com.tokopedia.utils.R.drawable.ic_loading_error)
             showWithCondition(freeShipping)
         }
     }

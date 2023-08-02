@@ -31,7 +31,6 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.R
 import com.tokopedia.review.common.extension.collectLatestWhenResumed
 import com.tokopedia.review.common.extension.collectWhenResumed
@@ -47,6 +46,7 @@ import com.tokopedia.review.feature.media.gallery.detailed.presentation.bottomsh
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.ActionMenuBottomSheetUiState
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.MediaCounterUiState
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.OrientationUiState
+import com.tokopedia.review.feature.media.gallery.detailed.presentation.util.DetailedReviewMediaGalleryStorage
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.viewmodel.SharedReviewMediaGalleryViewModel
 import com.tokopedia.review.feature.media.player.controller.presentation.fragment.ReviewMediaPlayerControllerFragment
 import com.tokopedia.reviewcommon.extension.hideSystemUI
@@ -76,6 +76,9 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
 
     @Inject
     lateinit var dispatchers: CoroutineDispatchers
+
+    @Inject
+    lateinit var reviewDetailTracker: ReviewDetailTracker
 
     @Inject
     @DetailedReviewMediaGalleryViewModelFactory
@@ -137,6 +140,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        initDetailReviewMediaGalleryStorage()
         initInjector()
         initUiState(savedInstanceState)
         super.onCreate(savedInstanceState)
@@ -165,6 +169,11 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         outState.putString(KEY_CACHE_MANAGER_ID, cacheManager.id)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        DetailedReviewMediaGalleryStorage.clear()
+    }
+
     override fun dispatchTouchEvent(e: MotionEvent): Boolean {
         autoHideOverlayHandler.restartTimerIfAlreadyStarted()
         return if (
@@ -173,7 +182,9 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
             !e.isAboveCounter() && gestureDetector?.onTouchEvent(e) == true
         ) {
             true
-        } else super.dispatchTouchEvent(e)
+        } else {
+            super.dispatchTouchEvent(e)
+        }
     }
 
     override fun onBackPressed() {
@@ -182,6 +193,11 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         } else {
             finishActivity()
         }
+    }
+
+    private fun initDetailReviewMediaGalleryStorage() {
+        val pageSource = intent.extras?.getInt(ReviewMediaGalleryRouter.EXTRAS_PAGE_SOURCE) ?: ReviewMediaGalleryRouter.PageSource.REVIEW
+        DetailedReviewMediaGalleryStorage.pageSource = pageSource
     }
 
     private fun initInjector() {
@@ -328,7 +344,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
             combine(
                 sharedReviewMediaGalleryViewModel.orientationUiState,
                 sharedReviewMediaGalleryViewModel.overlayVisibility,
-                sharedReviewMediaGalleryViewModel.currentReviewDetail,
+                sharedReviewMediaGalleryViewModel.currentReviewDetail
             ) { orientationUiState, overlayVisibility, currentReviewDetail ->
                 Triple(orientationUiState, overlayVisibility, currentReviewDetail)
             }
@@ -361,7 +377,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
 
     private fun collectOrientationUiStateUpdate() {
         collectLatestWhenResumed(sharedReviewMediaGalleryViewModel.orientationUiState) {
-            requestedOrientation = when(it.orientation) {
+            requestedOrientation = when (it.orientation) {
                 OrientationUiState.Orientation.LANDSCAPE -> {
                     enableFullscreen()
                     ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
@@ -520,7 +536,13 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
 
     private fun finishActivity() {
         if (sharedReviewMediaGalleryViewModel.hasSuccessToggleLikeStatus()) {
-            setResult(Activity.RESULT_OK)
+            setResult(
+                Activity.RESULT_OK,
+                ReviewMediaGalleryRouter.setResultData(
+                    sharedReviewMediaGalleryViewModel.getFeedbackId(),
+                    sharedReviewMediaGalleryViewModel.getLikeStatus(),
+                )
+            )
         }
         finish()
     }
@@ -540,7 +562,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
 
         private fun getActionMenuBottomSheet(): ActionMenuBottomSheet {
             return actionMenuBottomSheet ?: getAddedActionMenuBottomSheet()
-            ?: createActionMenuBottomSheet()
+                ?: createActionMenuBottomSheet()
         }
 
         fun showActionMenuBottomSheet() {
@@ -568,7 +590,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
             connectivityManager.unregisterNetworkCallback(callback)
         }
 
-        private inner class Callback: ConnectivityManager.NetworkCallback() {
+        private inner class Callback : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
                 sharedReviewMediaGalleryViewModel.updateWifiConnectivityStatus(connected = true)
             }
@@ -581,7 +603,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
 
     private inner class AutoHideOverlayHandler {
         private val timer by lazy(LazyThreadSafetyMode.NONE) {
-            object: CountDownTimer(AUTO_HIDE_OVERLAY_DURATION, AUTO_HIDE_OVERLAY_DURATION) {
+            object : CountDownTimer(AUTO_HIDE_OVERLAY_DURATION, AUTO_HIDE_OVERLAY_DURATION) {
                 override fun onTick(millisUntilFinished: Long) {
                     // noop
                 }
@@ -640,7 +662,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
                     .toString()
             )
             if (routed) {
-                ReviewDetailTracker.trackClickReviewerName(
+                reviewDetailTracker.trackClickReviewerName(
                     sharedReviewMediaGalleryViewModel.isFromGallery(),
                     sharedReviewMediaGalleryViewModel.currentReviewDetail.value?.feedbackID.orEmpty(),
                     userId,

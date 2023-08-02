@@ -1,14 +1,10 @@
 package com.tokopedia.tkpd
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -23,9 +19,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.constrain
 import androidx.compose.ui.unit.dp
-import com.tokopedia.common_compose.components.NestButton
-import com.tokopedia.common_compose.principles.NestHeader
-import com.tokopedia.common_compose.ui.NestTheme
+import com.tokopedia.nest.components.NestButton
+import com.tokopedia.nest.principles.NestTypography
+import com.tokopedia.nest.principles.ui.NestTheme
 
 @OptIn(ExperimentalFoundationApi::class)
 @SuppressLint("UnsupportedDarkModeColor")
@@ -38,15 +34,20 @@ fun HomeScreen(
 ) {
     val scrollState = rememberScrollState()
     val constraints = remember { mutableStateOf(Constraints()) }
-    val bringIntoViewRequester =  BringIntoViewRequester()
+    val bringIntoViewRequester = BringIntoViewRequester()
 
     Surface(modifier = Modifier.fillMaxSize()) {
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .onMeasureConstraints { constraints.value = it }
-            .verticalScroll(scrollState)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .onMeasureConstraints { constraints.value = it }
+                .verticalScroll(scrollState)
         ) {
-            NestHeader(title = "Tokopedia Test App", showBackIcon = false)
+            NestTypography(
+                "Tokopedia Test App",
+                modifier = Modifier.padding(8.dp),
+                textStyle = NestTheme.typography.heading3
+            )
             val urlBgColor = if (model.urlState.contains("live", true)) {
                 NestTheme.colors.GN._600
             } else {
@@ -85,22 +86,15 @@ fun HomeScreen(
                 if (model.isLoggedIn) {
                     NestButton(
                         text = "Logout",
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = { onNavigateTo(MainActivity.HomeDestination.LOGOUT) }
+                        onClick = { onNavigateTo(MainActivity.HomeDestination.LOGOUT) },
+                        modifier = Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                 }
                 NestButton(
                     text = "Developer Option",
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = { onNavigateTo(MainActivity.HomeDestination.DEVELOPER_OPTION) }
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-
-                NestButton(
-                    text = "Login Helper",
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = { onNavigateTo(MainActivity.HomeDestination.LOGINHELPER) }
+                    onClick = { onNavigateTo(MainActivity.HomeDestination.DEVELOPER_OPTION) },
+                    modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -119,8 +113,8 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.height(16.dp))
                 NestButton(
                     text = "Open",
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = { onNavigateTo(MainActivity.HomeDestination.APPLINK) }
+                    onClick = { onNavigateTo(MainActivity.HomeDestination.APPLINK) },
+                    modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
@@ -137,6 +131,7 @@ fun HomeScreen(
         }
     }
 }
+
 private fun Modifier.onMeasureConstraints(
     block: (Constraints) -> Unit
 ) = layout { measurable, constraints ->

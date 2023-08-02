@@ -61,7 +61,8 @@ data class TrackHistoryModel(
 
 @Parcelize
 data class PageModel(
-    var additionalInfo: List<AdditionalInfoModel> = listOf()
+    var additionalInfo: List<AdditionalInfoModel> = listOf(),
+    var contactUsUrl: String = ""
 ) : Parcelable
 
 @Parcelize
@@ -83,7 +84,7 @@ data class EtaModel(
 data class TippingModel(
     var status: Int = 0,
     var statusTitle: String = "",
-    var statusSubtitle: String = "",
+    var statusSubtitle: String = ""
 ) : Parcelable
 
 @Parcelize

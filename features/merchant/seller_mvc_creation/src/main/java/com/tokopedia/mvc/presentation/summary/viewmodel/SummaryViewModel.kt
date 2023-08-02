@@ -1,6 +1,8 @@
 package com.tokopedia.mvc.presentation.summary.viewmodel
 
+import android.content.SharedPreferences
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
@@ -8,6 +10,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
@@ -19,8 +22,11 @@ import com.tokopedia.mvc.domain.usecase.GetCouponImagePreviewFacadeUseCase
 import com.tokopedia.mvc.domain.usecase.MerchantPromotionGetMVDataByIDUseCase
 import com.tokopedia.mvc.domain.usecase.VoucherValidationPartialUseCase
 import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.DateStartEndData
+import com.tokopedia.mvc.util.constant.CommonConstant
 import com.tokopedia.mvc.util.formatTo
 import com.tokopedia.mvc.util.tracker.SummaryPageTracker
+import com.tokopedia.utils.date.addTimeToSpesificDate
+import com.tokopedia.utils.date.removeTime
 import java.util.*
 import javax.inject.Inject
 
@@ -30,7 +36,8 @@ class SummaryViewModel @Inject constructor(
     private val getCouponImagePreviewUseCase: GetCouponImagePreviewFacadeUseCase,
     private val addEditCouponFacadeUseCase: AddEditCouponFacadeUseCase,
     private val voucherValidationPartialUseCase: VoucherValidationPartialUseCase,
-    private val tracker: SummaryPageTracker
+    private val tracker: SummaryPageTracker,
+    private val sharedPreferences: SharedPreferences
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -55,8 +62,8 @@ class SummaryViewModel @Inject constructor(
         if (isDuplicate) {
             it.copy(
                 voucherId = ADDING_VOUCHER_ID,
-                startPeriod = Date(),
-                endPeriod = Date(),
+                startPeriod = Date().addTimeToSpesificDate(Calendar.HOUR, 3),
+                endPeriod = Date().addTimeToSpesificDate(Calendar.MONTH, 1).removeTime(),
                 duplicatedVoucherId = it.voucherId
             )
         } else {
@@ -131,19 +138,19 @@ class SummaryViewModel @Inject constructor(
 
     fun previewImage(
         voucherConfiguration: VoucherConfiguration,
-        parentProductIds : List<Long>,
+        parentProductIds: List<Long>,
         imageRatio: ImageRatio
     ) {
         launchCatchError(
             dispatchers.io,
             block = {
                 val result = getCouponImagePreviewUseCase.execute(
-                        checkIsAdding(voucherConfiguration),
-                        voucherConfiguration,
-                        parentProductIds,
-                        imageRatio
-                    )
-                _couponImage.postValue(result)
+                    checkIsAdding(voucherConfiguration),
+                    voucherConfiguration,
+                    parentProductIds,
+                    imageRatio
+                )
+                _couponImage.postValue(BitmapFactory.decodeByteArray(result, Int.ZERO, result.size))
             },
             onError = {
                 _error.postValue(it)
@@ -255,5 +262,18 @@ class SummaryViewModel @Inject constructor(
                     hourEnd = it.hourEnd
                 )
             }
+    }
+
+    fun coachMarkIsShown(): Boolean {
+        return sharedPreferences.getBoolean(
+            CommonConstant.SHARED_PREF_VOUCHER_CREATION_SUMMARY_COACH_MARK,
+            false
+        )
+    }
+
+    fun setSharedPrefCoachMarkAlreadyShown() {
+        sharedPreferences.edit()
+            .putBoolean(CommonConstant.SHARED_PREF_VOUCHER_CREATION_SUMMARY_COACH_MARK, true)
+            .apply()
     }
 }

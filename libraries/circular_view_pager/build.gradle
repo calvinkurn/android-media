@@ -17,8 +17,12 @@ buildscript {
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
-        classpath rootProject.ext.miscDependencies.androidjunit5
     }
+}
+
+android {
+    namespace 'com.tokopedia.home_page_banner'
+    testNamespace 'com.tokopedia.home_page_banner.test'
 }
 
 dependencies {

@@ -346,6 +346,7 @@
     <string name="page_name_wishlist_collection_detail">Wishlist Collection Detail</string>
     <string name="page_name_wishlist_edit">Ubah Wishlist</string>
     <string name="page_name_wishlist_collection_host_bottomsheet">Wishlist Collection Host BottomSheet Activity</string>
+    <string name="page_name_wishlist_collection_create_host_bottomsheet">Wishlist Collection Create Host BottomSheet Activity</string>
 
     <!-- Dynamic feature for cart -->
     <string name="checkout_module_title_activity_cart">Keranjang</string>
@@ -386,7 +387,6 @@
     <!-- Seller Menu -->
     <string name="title_seller_menu">Toko Saya</string>
     <string name="title_seller_settings">Pengaturan Toko</string>
-    <string name="admin_authorize_title">Admin Role Access Authorize</string>
 
     <!--Dynamic feature for profile-->
     <string name="title_profile_df">Profile</string>
@@ -414,6 +414,7 @@
 
     <!-- Shop Admin -->
     <string name="title_shop_admin">Shop Admin</string>
+    <string name="admin_authorize_title">Admin Role Access Authorize</string>
 
     <!-- Review   -->
     <string name="title_product_ar">Product Ar</string>

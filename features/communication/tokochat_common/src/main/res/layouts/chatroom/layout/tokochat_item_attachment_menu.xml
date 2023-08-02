@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/tokochat_icon_attachment_menu"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="24dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Attachment Menu Icon"
+        tools:ignore="HardcodedText"
+        tools:srcCompat="@drawable/tokochat_ic_attachment_menu_image" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tokochat_tv_attachment_menu_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tokochat_icon_attachment_menu"
+        app:layout_constraintLeft_toLeftOf="@id/tokochat_icon_attachment_menu"
+        app:layout_constraintRight_toRightOf="@id/tokochat_icon_attachment_menu"
+        android:layout_marginTop="8dp"
+        android:textAlignment="center"
+        android:textColor="@color/Unify_NN950"
+        app:typographyType="paragraph_3"
+        app:typographyWeight="bold"
+        tools:text="Gambar" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

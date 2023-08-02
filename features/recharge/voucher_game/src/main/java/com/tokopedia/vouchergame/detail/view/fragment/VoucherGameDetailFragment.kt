@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryMainInfo
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
@@ -40,6 +39,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.showUnifyError
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -539,7 +539,7 @@ class VoucherGameDetailFragment :
         context?.run {
             if (value) {
                 binding?.inputFieldLabel?.text = getString(R.string.vg_input_field_error_message)
-                binding?.inputFieldLabel?.setTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_R600))
+                binding?.inputFieldLabel?.setTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_RN500))
             } else {
                 binding?.inputFieldLabel?.visibility = View.GONE
             }
@@ -611,7 +611,7 @@ class VoucherGameDetailFragment :
             if (::voucherGameOperatorData.isInitialized) {
                 voucherGameOperatorData.run {
                     productName.text = name
-                    ImageHandler.LoadImage(productImage, imageUrl)
+                    productImage.loadImage(imageUrl)
 
                     productImage.setOnClickListener { showProductInfo(name, description) }
                     btnInfoIcon.setOnClickListener {

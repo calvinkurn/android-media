@@ -6,8 +6,9 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.broadcaster.revamp.Broadcaster
-import com.tokopedia.content.common.producttag.di.module.ContentCreationProductTagBindModule
+import com.tokopedia.content.common.di.ContentCoachMarkSharedPrefModule
 import com.tokopedia.content.common.onboarding.di.UGCOnboardingModule
+import com.tokopedia.content.common.producttag.di.module.ContentCreationProductTagBindModule
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
@@ -23,6 +24,7 @@ import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreference
 import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
 import com.tokopedia.play.broadcaster.view.activity.PlayCoverCameraActivity
 import com.tokopedia.play_common.websocket.PlayWebSocket
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
 
@@ -34,8 +36,10 @@ import dagger.Component
         PlayBroadcastConfigStoreModule::class,
         PlayBroadcastDataStoreModule::class,
         PlayBroadcastRepositoryModule::class,
+        PlayBroadcastNetworkModule::class,
         PlayBroadcastBindModule::class,
         PlayBroadcastModule::class,
+        ContentCoachMarkSharedPrefModule::class,
         ContentCreationProductTagBindModule::class,
         UGCOnboardingModule::class
     ]
@@ -83,6 +87,8 @@ abstract class ActivityRetainedComponent : ViewModel() {
     abstract fun playLogger(): PlayLogger
 
     abstract fun hydraSharedPref(): HydraSharedPreferences
+
+    abstract fun remoteConfig(): RemoteConfig
 
     /**
      * Inject

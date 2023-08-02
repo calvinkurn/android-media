@@ -50,7 +50,7 @@ class ProductBundlingViewModelTest {
     @Test
     fun `test for useCase`() {
         val viewModel: ProductBundlingViewModel =
-                spyk(ProductBundlingViewModel(application, componentsItem, 99))
+            spyk(ProductBundlingViewModel(application, componentsItem, 99))
 
         val productBundlingUseCase = mockk<ProductBundlingUseCase>()
         viewModel.productBundlingUseCase = productBundlingUseCase
@@ -71,13 +71,13 @@ class ProductBundlingViewModelTest {
 
     /****************************************** test for component ****************************************/
     @Test
-    fun `test for component passed to VM`(){
+    fun `test for component passed to VM`() {
         TestCase.assertEquals(viewModel.components, componentsItem)
     }
 
     /****************************************** test for position ****************************************/
     @Test
-    fun `test for component position`(){
+    fun `test for component position`() {
         TestCase.assertEquals(viewModel.position, 99)
     }
 
@@ -184,7 +184,7 @@ class ProductBundlingViewModelTest {
 
         viewModel.fetchProductBundlingPaginatedData()
 
-        TestCase.assertEquals(viewModel.getEmptyBundleData().value == null, true)
+        TestCase.assertEquals(viewModel.isLoadingData(), false)
     }
 
     @Test
@@ -254,7 +254,7 @@ class ProductBundlingViewModelTest {
     /**************************** end of pagination() *******************************************/
 
     @Test
-    fun `test for resetComponent`(){
+    fun `test for resetComponent`() {
         viewModel.resetComponent()
 
         TestCase.assertEquals(viewModel.components.noOfPagesLoaded, 0)

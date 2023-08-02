@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:paddingTop="16dp"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         app:layout_constraintBottom_toBottomOf="@+id/check"
         app:layout_constraintEnd_toStartOf="@+id/check"
         app:layout_constraintStart_toStartOf="parent"

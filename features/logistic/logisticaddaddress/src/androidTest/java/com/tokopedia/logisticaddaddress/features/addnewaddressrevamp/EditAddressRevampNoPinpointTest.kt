@@ -1,6 +1,7 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp
 
 import android.Manifest
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -46,6 +47,7 @@ class EditAddressRevampNoPinpointTest {
         logisticInterceptor.getAddressResponsePath = getRawString(context, R.raw.address_detail_no_pinpoint)
         logisticInterceptor.getDistrictRecommendationResponsePath = getRawString(context, R.raw.district_recommendation_jakarta)
         logisticInterceptor.editAddressResponsePath = getRawString(context, R.raw.editaddress_success_response)
+        logisticInterceptor.getCollectionPointResponsePath = getRawString(context, R.raw.get_collection_point_edit)
         IdlingRegistry.getInstance().register(SimpleIdlingResource.countingIdlingResource)
     }
 
@@ -59,12 +61,14 @@ class EditAddressRevampNoPinpointTest {
         val queryPath = "tracker/logistic/editaddress_user_revamp_negative.json"
         editAddressRevamp {
             launchWithParam(context, mActivityTestRule)
+            Espresso.closeSoftKeyboard()
             clickKotaKecamatan()
             searchKotaKecamatan(KEYWORD)
             clickKotaKecamatanItem()
             clickPostalCode()
             clickPostalCodeItem()
             clickChoosePostalCode()
+            scrollToBottom()
         } submit {
             hasPassedAnalytics(cassavaTestRule, queryPath)
         }

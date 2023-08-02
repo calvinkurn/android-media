@@ -1,7 +1,6 @@
 package com.tokopedia.media.editor.data.repository
 
 import android.content.Context
-import android.graphics.RectF
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
 import com.tokopedia.media.editor.ui.component.RotateToolUiComponent
@@ -52,8 +51,6 @@ class RotateFilterRepositoryImpl @Inject constructor(
         }
     private var latestZoomPoint = 0f
 
-    private var originalTargetWidth: RectF = RectF()
-
     override fun rotate(
         editorDetailPreview: EditorDetailPreviewWidget?,
         degree: Float,
@@ -68,9 +65,6 @@ class RotateFilterRepositoryImpl @Inject constructor(
             val normalizeDegree = degree * previewWidget.scaleNormalizeValue
 
             if (initialScale == 0f) initialScale = cropImageView.currentScale
-            if (originalTargetWidth.width() == 0f) {
-                originalTargetWidth.set(previewWidget.overlayView.cropViewRect)
-            }
 
             // if set rotate is triggered by implemented previous state, then ignore all set
             if (isPreviousState) {
@@ -138,26 +132,46 @@ class RotateFilterRepositoryImpl @Inject constructor(
             return
         }
 
-        // isRatioRotated = false mean initial ratio going to rotate 90 degree
+        var prevImageWidth: Float
+        var prevImageHeight: Float
+        cropOverlay.cropViewRect.let {
+            prevImageWidth = it.width()
+            prevImageHeight = it.height()
+        }
+
+        val currentScale = cropImageView.currentScale
         var newScale = initialRatioZoom
+
+        // isRatioRotated = false mean initial ratio going to rotate 90 degree
         if (isRatioRotated) {
             cropOverlay.setTargetAspectRatio(imageRatio?.first ?: 1f)
         } else {
-            if (initialRatioZoom == 0f) initialRatioZoom = cropImageView.currentScale
             cropOverlay.setTargetAspectRatio(imageRatio?.second ?: 1f)
 
             if (rotatedRatioZoom == 0f) {
                 val newTargetWidth = cropOverlay.cropViewRect
-                rotatedRatioZoom = if (newTargetWidth == originalTargetWidth) {
-                    initialScale
-                } else {
-                    (newTargetWidth.height() / originalTargetWidth.width()) * initialScale
-                }
+
+                // cannot compare directly, need tolerance value since Ucrop overlay size can return diff rect value after each init
+                // cropOverlay.setTargetAspectRatio => will re-init the overlay size
+                val diffWidth = abs(newTargetWidth.width() - prevImageWidth)
+                val diffHeight = abs(newTargetWidth.height() - prevImageHeight)
+
+                rotatedRatioZoom =
+                    if (diffWidth <= TOLERANCE_SIZE_VALUE && diffHeight <= TOLERANCE_SIZE_VALUE) {
+                        initialScale
+                    } else {
+                        (newTargetWidth.height() / prevImageWidth) * currentScale
+                    }
             }
+
             newScale = rotatedRatioZoom
+
+            if (initialRatioZoom == 0f) {
+                initialRatioZoom = currentScale
+            }
         }
 
-        if (newScale > initialScale) {
+        if (newScale > currentScale) {
             cropImageView.zoomInImage(newScale)
         } else {
             cropImageView.zoomOutImage(newScale)
@@ -199,5 +213,6 @@ class RotateFilterRepositoryImpl @Inject constructor(
 
     companion object {
         private const val CROP_VIEW_ZOOM_DELAY = 500L
+        private const val TOLERANCE_SIZE_VALUE = 5 // in pixel
     }
 }

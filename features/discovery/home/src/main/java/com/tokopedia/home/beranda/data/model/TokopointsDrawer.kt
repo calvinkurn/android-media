@@ -8,6 +8,9 @@ data class TokopointsDrawer(
         @SerializedName("type")
         val type: String = "",
         @Expose
+        @SerializedName("label")
+        val label: String = "",
+        @Expose
         @SerializedName("redirectURL")
         val redirectURL: String = "",
         @Expose

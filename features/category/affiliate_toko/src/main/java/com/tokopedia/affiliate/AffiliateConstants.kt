@@ -3,6 +3,7 @@ package com.tokopedia.affiliate
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.unifyprinciples.Typography
+import java.util.Locale
 
 const val AFFILIATE_LOGIN_REQUEST_CODE = 1023
 const val AFFILIATE_REGISTER_REQUEST_CODE = 1024
@@ -22,6 +23,9 @@ const val PAGE_SEGMENT_TRANSACTION_HISTORY = "transaction-history"
 const val PAGE_SEGMENT_SSA_SHOP_LIST = "shoplist-dipromosikan-affiliate"
 const val PAGE_SEGMENT_EDU_PAGE = "edu-page"
 const val PAGE_SEGMENT_ONBOARDING = "onboarding"
+const val PAGE_SEGMENT_DISCO_PAGE_LIST = "discopage-list"
+const val PAGE_SEGMENT_PROMO_PAGE = "promosikan"
+const val PAGE_SEGMENT_PERFORMA = "performa"
 const val KYC_DONE = 1
 
 const val TRANSACTION_ID = "TransactionID"
@@ -51,6 +55,7 @@ const val ON_BOARDING_TUTORIAL_IMAGE_3 =
     "https://images.tokopedia.net/img/android/res/singleDpi/affiliate_onboaring_third_image.png"
 
 const val AFFILIATE_SPLASH_TIME = 4000L
+const val AFFILIATE_SCROLL_DELAY = 500L
 
 const val PROJECT_ID = 20
 
@@ -65,12 +70,18 @@ const val APP_LINK_DESTINATION =
 
 const val QUERY_CONST = "titlebar=false"
 
-val uri = String.format("%s?%s?url=%s", ApplinkConst.WEBVIEW, QUERY_CONST, APP_LINK_DESTINATION)
+val uri = String.format(
+    Locale.ENGLISH,
+    "%s?%s?url=%s",
+    ApplinkConst.WEBVIEW,
+    QUERY_CONST,
+    APP_LINK_DESTINATION
+)
 
-const val APP_LINK_PARAMS_KYC = "projectId=$PROJECT_ID"
+const val SOURCE_AFFILIATE = "Tokopedia Affiliate"
 
 val APP_LINK_KYC =
-    "${ApplinkConst.KYC_NO_PARAM}?$APP_LINK_PARAMS_KYC&${ApplinkConstInternalUserPlatform.PARAM_CALL_BACK}=$uri"
+    ApplinkConstInternalUserPlatform.getGotoKYCApplink(PROJECT_ID.toString(), SOURCE_AFFILIATE, uri)
 
 const val AFFILIATE_MICRO_SITE_LINK = "https://affiliate.tokopedia.com/"
 
@@ -181,15 +192,22 @@ const val TOTAL_ITEMS_METRIC_TYPE = "totalItems"
 
 const val PAGE_ANNOUNCEMENT_ALL = 0
 const val PAGE_ANNOUNCEMENT_HOME = 1
-const val PAGE_ANNOUNCEMENT_PROMOSIKAN = 2
+const val PAGE_ANNOUNCEMENT_PROMO_PERFORMA = 2
 const val PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY = 3
 
 const val AFFILIATE_SSA_SHOP = "aff_ssa_portal"
 const val AFFILIATE_DISCO_PROMO = "aff_disco_link_gen"
+const val AFFILIATE_TOKONOW_BANNER = "aff_now_att"
+const val AFFILIATE_NC = "Affiliate_NC"
+const val AFFILIATE_PROMOTE_HOME = "aff_promote_home"
+const val AFFILIATE_PROMO_WEBVIEW = "aff_webview"
 
 const val AFFILIATE_GAMIFICATION_VISIBILITY = "affil_banner_gami"
 const val AFFILIATE_GAMIFICATION_REDIRECTION = "affil_gami_disco"
-const val AFFILIATE_GAMIFICATION_REDIRECTION_APPLINK = "tokopedia://discovery/tantangan-hadiah-ramadan"
+const val AFFILIATE_GAMIFICATION_REDIRECTION_APPLINK =
+    "tokopedia://discovery/tantangan-hadiah-ramadan"
+
+const val AFFILIATE_TOKONOW_DATA = "android_affiliate_tokonow_static_data"
 
 const val PAGE_TYPE_PDP = "pdp"
 
@@ -230,3 +248,7 @@ val SOCIAL_CHANNEL_LINK = mapOf(
 )
 const val AFFILIATE_SSE_URL_STAGING = "https://sse-staging.tokopedia.com/affiliate/sse/connect"
 const val AFFILIATE_SSE_URL_PROD = "https://sse.tokopedia.com/affiliate/sse/connect"
+const val PROMO_WEBVIEW_URL_STAGING =
+    "https://affiliate-staging.tokopedia.com/browse"
+const val PROMO_WEBVIEW_URL_PROD =
+    "https://affiliate.tokopedia.com/browse?titlebar=false"

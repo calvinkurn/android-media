@@ -94,6 +94,8 @@ class DeveloperOptionAdapter(
         const val KEYWORD_LOGIN_HELPER = "Login Helper"
         const val KEYWORD_DEV_OPTS_AUTHORIZE = "Authorize"
         const val KEYWORD_DEPRECATED_API_SWITCHER_TOASTER = "Depcreated API Switcher Toaster"
+        const val KEYWORD_EXTRACT_BRANCH_LINK = "Extract Branchlink"
+        const val FPI_MONITORING = "FPI Monitoring"
     }
 
     /**
@@ -103,7 +105,6 @@ class DeveloperOptionAdapter(
      **/
     private val generalItems = mutableListOf(
         DevOptsAuthorizationUiModel(listOf(KEYWORD_DEV_OPTS_AUTHORIZE)),
-        LoginHelperUiModel(listOf(KEYWORD_LOGIN_HELPER)),
         DeveloperOptionsOnNotificationUiModel(listOf(KEYWORD_DEVELOPER_OPTIONS_ON_NOTIFICATION)),
         PdpDevUiModel(listOf(KEYWORD_PRODUCT_DETAIL_DEV)),
         SystemNonSystemAppsUiModel(
@@ -126,7 +127,8 @@ class DeveloperOptionAdapter(
                 KEYWORD_LANGUAGE_SETTING,
                 KEYWORD_CURRENTLY_SELECTED_LANGUAGES,
                 KEYWORD_TOTAL_TRANSLATED_TEXT
-            )),
+            )
+        ),
         ResetOnBoardingNavigationUiModel(listOf(KEYWORD_RESET_ONBOARDING_NAVIGATION)),
         HomeAndNavigationRevampSwitcherUiModel(
             listOf(
@@ -145,7 +147,8 @@ class DeveloperOptionAdapter(
         ConvertResourceIdUiModel(
             listOf(KEYWORD_CONVERT_RESOURCE_ID)
         ),
-        ViewHanselPatchUiModel(listOf(KEYWORD_VIEW_HANSEL_PATCH_LIST))
+        ViewHanselPatchUiModel(listOf(KEYWORD_VIEW_HANSEL_PATCH_LIST)),
+        BranchLinkUiModel(listOf(KEYWORD_EXTRACT_BRANCH_LINK))
     )
 
     private val hiddenItems = mutableListOf(
@@ -209,7 +212,15 @@ class DeveloperOptionAdapter(
                 KEYWORD_VIEW_SSE_LOGGING
             )
         ),
-        TopchatWebSocketLoggingUiModel(listOf(KEYWORD_TOPCHAT_WEB_SOCKET_LOGGING))
+        TopchatWebSocketLoggingUiModel(listOf(KEYWORD_TOPCHAT_WEB_SOCKET_LOGGING)),
+        FpiMonitoringUiModel(listOf(FPI_MONITORING))
+    )
+
+    /**
+     * To Show Login Helper at the top
+     **/
+    private val topHiddenItems = mutableListOf(
+        LoginHelperUiModel(listOf(KEYWORD_LOGIN_HELPER))
     )
 
     private var defaultItems = mutableListOf<OptionItemUiModel>()
@@ -221,9 +232,10 @@ class DeveloperOptionAdapter(
 
     fun initializeList() {
         defaultItems.clear()
-        if(isAuthorized.not()) {
+        if (isAuthorized.not()) {
             defaultItems.addAll(generalItems)
         } else {
+            defaultItems.addAll(topHiddenItems)
             defaultItems.addAll(generalItems)
             defaultItems.addAll(hiddenItems)
             removeWidget(DevOptsAuthorizationUiModel::class.java)

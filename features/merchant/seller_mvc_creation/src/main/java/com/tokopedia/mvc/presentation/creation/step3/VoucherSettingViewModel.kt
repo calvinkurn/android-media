@@ -3,7 +3,9 @@ package com.tokopedia.mvc.presentation.creation.step3
 import android.content.SharedPreferences
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.campaign.usecase.GetTargetedTickerUseCase
 import com.tokopedia.campaign.utils.constant.DateConstant
+import com.tokopedia.campaign.utils.constant.TickerConstant
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
@@ -16,13 +18,11 @@ import com.tokopedia.mvc.domain.entity.enums.VoucherServiceType
 import com.tokopedia.mvc.domain.entity.enums.VoucherTarget
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
-import com.tokopedia.mvc.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.mvc.domain.usecase.VoucherValidationPartialUseCase
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeAction
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeEvent
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeUiState
 import com.tokopedia.mvc.util.constant.CommonConstant
-import com.tokopedia.mvc.util.constant.TickerConstant
 import com.tokopedia.mvc.util.extension.isCashback
 import com.tokopedia.mvc.util.extension.isDiscount
 import com.tokopedia.mvc.util.extension.isFreeShipping
@@ -192,7 +192,7 @@ class VoucherSettingViewModel @Inject constructor(
                 voucherConfiguration = it.voucherConfiguration.copy(
                     benefitIdr = nominal.orZero()
                 ),
-                fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.NOMINAL)
+                fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.ALL)
             )
         }
         handleVoucherInputValidation()
@@ -206,7 +206,7 @@ class VoucherSettingViewModel @Inject constructor(
                 voucherConfiguration = it.voucherConfiguration.copy(
                     benefitPercent = percentage.toInt().orZero()
                 ),
-                fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.PERCENTAGE)
+                fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.ALL)
             )
         }
         handleVoucherInputValidation()
@@ -220,7 +220,7 @@ class VoucherSettingViewModel @Inject constructor(
                 voucherConfiguration = it.voucherConfiguration.copy(
                     benefitMax = maxDeduction.orZero()
                 ),
-                fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.MAX_DEDUCTION)
+                fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.ALL)
             )
         }
         handleVoucherInputValidation()
@@ -234,7 +234,7 @@ class VoucherSettingViewModel @Inject constructor(
                 voucherConfiguration = it.voucherConfiguration.copy(
                     minPurchase = minimumBuy.orZero()
                 ),
-                fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.MINIMUM_BUY)
+                fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.ALL)
             )
         }
         handleVoucherInputValidation()
@@ -247,7 +247,7 @@ class VoucherSettingViewModel @Inject constructor(
                 voucherConfiguration = it.voucherConfiguration.copy(
                     quota = quota.orZero()
                 ),
-                fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.QUOTA)
+                fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.ALL)
             )
         }
         handleVoucherInputValidation()
@@ -266,7 +266,7 @@ class VoucherSettingViewModel @Inject constructor(
         handleVoucherInputValidation()
     }
 
-    private fun handleVoucherInputValidation() {
+    fun handleVoucherInputValidation() {
         val voucherConfiguration = currentState.voucherConfiguration
         launchCatchError(
             dispatchers.io,

@@ -2,8 +2,6 @@ package com.tokopedia.product.detail.view.viewholder.product_detail_info
 
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -12,10 +10,10 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
 import com.tokopedia.product.detail.common.utils.extensions.updateLayoutParams
-import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.databinding.ItemDynamicProductDetailInfoBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_detail_info.nested_adapter.ProductDetailInfoAdapter
 import com.tokopedia.unifycomponents.toPx
 
@@ -25,7 +23,7 @@ import com.tokopedia.unifycomponents.toPx
 class ProductDetailInfoViewHolder(
     private val view: View,
     private val listener: DynamicProductDetailListener
-) : AbstractViewHolder<ProductDetailInfoDataModel>(view) {
+) : ProductDetailPageViewHolder<ProductDetailInfoDataModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_dynamic_product_detail_info
@@ -137,14 +135,6 @@ class ProductDetailInfoViewHolder(
             }
         }
     }
-
-    private fun getComponentTrackData(
-        element: ProductDetailInfoDataModel?
-    ) = ComponentTrackDataModel(
-        componentType = element?.type.orEmpty(),
-        componentName = element?.name.orEmpty(),
-        adapterPosition = adapterPosition + Int.ONE
-    )
 
     private fun setImpression(element: ProductDetailInfoDataModel) {
         view.addOnImpressionListener(element.impressHolder) {

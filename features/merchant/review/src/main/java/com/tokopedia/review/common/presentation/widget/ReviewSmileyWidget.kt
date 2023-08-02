@@ -39,7 +39,7 @@ class ReviewSmileyWidget : BaseCustomView {
 
     private var isActive = false
     private var score = 0
-    
+
     private val binding = WidgetReviewSmileyBinding.inflate(LayoutInflater.from(context), this, true)
 
     fun showActiveBad() {
@@ -67,7 +67,7 @@ class ReviewSmileyWidget : BaseCustomView {
     }
 
     fun deactivateBad(hideText: Boolean) {
-        if(isActive) {
+        if (isActive) {
             setLottieAnimationFromUrl(BAD_SMILEY_ANIMATION_REVERSE, true)
             hideSmileyText(hideText)
             isActive = false
@@ -75,7 +75,7 @@ class ReviewSmileyWidget : BaseCustomView {
     }
 
     fun deactivateMediocre(hideText: Boolean) {
-        if(isActive) {
+        if (isActive) {
             setLottieAnimationFromUrl(MEDIOCRE_SMILEY_ANIMATION_REVERSE, true)
             hideSmileyText(hideText)
             isActive = false
@@ -83,7 +83,7 @@ class ReviewSmileyWidget : BaseCustomView {
     }
 
     fun deactivateExcellent(hideText: Boolean) {
-        if(isActive) {
+        if (isActive) {
             setLottieAnimationFromUrl(EXCELLENT_SMILEY_ANIMATION_REVERSE, true)
             hideSmileyText(hideText)
             isActive = false
@@ -174,7 +174,7 @@ class ReviewSmileyWidget : BaseCustomView {
     fun hideSmileyText(hideText: Boolean) {
         binding.reviewEditableText.apply {
             animate().alpha(0f)
-            if(hideText) {
+            if (hideText) {
                 hide()
             }
         }
@@ -186,7 +186,7 @@ class ReviewSmileyWidget : BaseCustomView {
                 binding.reviewEditableImageView.apply {
                     setOnClickListener {
                         val shouldAnimate = reviewScoreClickListener.onReviewScoreClicked(score)
-                        if(!isActive) {
+                        if (!isActive) {
                             isActive = true
                             setLottieAnimationFromUrl(BAD_SMILEY_ANIMATION, shouldAnimate)
                         } else {
@@ -200,7 +200,7 @@ class ReviewSmileyWidget : BaseCustomView {
                 binding.reviewEditableImageView.apply {
                     setOnClickListener {
                         val shouldAnimate = reviewScoreClickListener.onReviewScoreClicked(score)
-                        if(!isActive) {
+                        if (!isActive) {
                             isActive = true
                             setLottieAnimationFromUrl(MEDIOCRE_SMILEY_ANIMATION, shouldAnimate)
                         } else {
@@ -214,7 +214,7 @@ class ReviewSmileyWidget : BaseCustomView {
                 binding.reviewEditableImageView.apply {
                     setOnClickListener {
                         val shouldAnimate = reviewScoreClickListener.onReviewScoreClicked(score)
-                        if(!isActive) {
+                        if (!isActive) {
                             isActive = true
                             setLottieAnimationFromUrl(EXCELLENT_SMILEY_ANIMATION, shouldAnimate)
                         } else {
@@ -228,7 +228,7 @@ class ReviewSmileyWidget : BaseCustomView {
     }
 
     private fun setLottieAnimationFromUrl(animationUrl: String, shouldAnimate: Boolean) {
-        if(!shouldAnimate) {
+        if (!shouldAnimate) {
             return
         }
         context?.let {
@@ -266,21 +266,21 @@ class ReviewSmileyWidget : BaseCustomView {
     private fun setBadSmileyText() {
         binding.reviewEditableText.apply {
             text = context.getString(R.string.review_detail_score_bad)
-            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y500))
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN500))
         }
     }
 
     private fun setMediocreSmileyText() {
         binding.reviewEditableText.apply {
             text = context.getString(R.string.review_detail_score_mediocre)
-            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y300))
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN300))
         }
     }
 
     private fun setExcellentSmileyText() {
         binding.reviewEditableText.apply {
             text = context.getString(R.string.review_detail_score_excellent)
-            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
         }
     }
 }

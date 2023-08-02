@@ -44,15 +44,11 @@ interface SearchEventTracking {
             const val CLICK_SHOP_ALTERNATIVE = "click - shop - alternative"
             const val IMPRESSION_PRODUCT_SHOP_TAB = "impression - product - shop tab"
             const val IMPRESSION_PRODUCT_SHOP_TAB_ALTERNATIVE = "impression - product - shop tab - alternative"
-            const val CLICK_PRODUCT_SHOP_TAB = "click - product - shop tab"
-            const val CLICK_PRODUCT_SHOP_TAB_ALTERNATIVE = "click - product - shop tab - alternative"
             const val CLICK = "click"
             const val CLICK_BROAD_MATCH = "click - broad match"
             const val CLICK_INSPIRATION_CARD = "click inspiration card"
             const val GENERAL_SEARCH_SHOP = "general search shop"
             const val CLICK_CAROUSEL_PRODUCT = "click - carousel product"
-            const val CLICK_DROPDOWN_QUICK_FILTER = "filter product dropdown - click"
-            const val APPLY_DROPDOWN_QUICK_FILTER = "filter product dropdown - apply"
         }
     }
 
@@ -81,6 +77,7 @@ interface SearchEventTracking {
 
     interface ECommerce {
         companion object {
+            const val ECOMMERCE = "ecommerce"
             const val CURRENCY_CODE = "currencyCode"
             const val IDR = "IDR"
             const val ADD = "add"

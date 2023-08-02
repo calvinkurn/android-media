@@ -220,7 +220,7 @@ class VoucherGameListFragment :
                 errorMessage = errMsg
                 subErrorMessage = "${
                 getString(
-                    com.tokopedia.kotlin.extensions.R.string.title_try_again
+                    com.tokopedia.utils.R.string.title_try_again
                 )
                 }. Kode Error: ($errCode)"
                 onRetryListener = ErrorNetworkModel.OnRetryListener {
@@ -353,10 +353,10 @@ class VoucherGameListFragment :
                 promoBanner.setOnPromoScrolledListener { voucherGameAnalytics.impressionBanner(data[it], it) }
                 promoBanner.setOnPromoAllClickListener {
                     voucherGameAnalytics.eventClickViewAllBanner()
-                    RouteManager.route(context, ApplinkConst.PROMO_LIST)
+                    RouteManager.route(context, BaseVoucherGameActivity.APPLINK_CONST_DEALS)
                 }
                 context?.let {
-                    promoBanner.setBannerSeeAllTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                    promoBanner.setBannerSeeAllTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
                     promoBanner.setBannerIndicator(Indicator.GREEN)
                     promoBanner.bannerSeeAll.setTextSize(TypedValue.COMPLEX_UNIT_PX, it.resources.getDimension(BANNER_SEE_ALL_TEXT_SIZE))
                 }

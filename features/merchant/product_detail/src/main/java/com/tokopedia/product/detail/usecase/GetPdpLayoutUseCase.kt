@@ -24,8 +24,10 @@ import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 import javax.inject.Named
 
-open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: MultiRequestGraphqlUseCase,
-                                                   @Named(NAME_LAYOUT_ID_DAGGER) private val layoutIdTest: String) : UseCase<ProductDetailDataModel>() {
+open class GetPdpLayoutUseCase @Inject constructor(
+    private val gqlUseCase: MultiRequestGraphqlUseCase,
+    @Named(NAME_LAYOUT_ID_DAGGER) private val layoutIdTest: String
+) : UseCase<ProductDetailDataModel>() {
 
     companion object {
         const val QUERY = """
@@ -36,11 +38,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                 pdpSession
                 basicInfo {
                   shopMultilocation {
-                    isReroute
                     cityName
-                    eduLink {
-                        appLink
-                    }
                   }
                   isGiftable
                   isTokoNow
@@ -118,12 +116,50 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         variantOptionID
                         URLMaxRes
                       }
+                      recommendation {
+                        lightIcon
+                        darkIcon
+                        iconText
+                        bottomsheetTitle
+                        recommendation
+                      }
                       videos {
                         source
                         url
                       }
                       containerType
             		}
+                    ... on pdpDataOnGoingCampaign {
+                      campaign {
+                        campaignID
+                        campaignType
+                        campaignTypeName
+                        percentageAmount
+                        originalPrice
+                        discountedPrice
+                        stock
+                        stockSoldPercentage
+                        threshold
+                        startDate
+                        endDate
+                        endDateUnix
+                        appLinks
+                        isAppsOnly
+                        isActive
+                        hideGimmick
+                        isCheckImei
+                        isUsingOvo
+                        background
+                        campaignIdentifier
+                        paymentInfoWording
+                      }
+                      thematicCampaign{
+                        campaignName
+                        icon
+                        background
+                        additionalInfo
+                      }
+                    }
             		... on pdpDataProductContent {
                       name
                       parentName
@@ -199,6 +235,10 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                     ... on pdpDataProductDetail {
                       title
                       content {
+                        key
+                        type
+                        action
+                        extParam
                         title
                         subtitle
                         applink
@@ -272,6 +312,10 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                       defaultChild
                       sizeChart
                       maxFinalPrice
+                      landingSubText
+                      postATCLayout {
+                        layoutID
+                      }
                       variants {
                         productVariantID
                         variantID
@@ -290,6 +334,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                       }
                       children {
                         productID
+                        subText
                         price
                         priceFmt
                         sku

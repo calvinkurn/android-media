@@ -114,6 +114,9 @@ class OperationalInsightBottomSheet(
                     val notMaintainTickerColor = getNotMaintainTickerColors()
                     drawable.colors = notMaintainTickerColor
                 }
+                else -> {
+                    //no-op
+                }
             }
         }
     }
@@ -127,8 +130,8 @@ class OperationalInsightBottomSheet(
 
     private fun getNotMaintainTickerColors(): IntArray {
         return intArrayOf(
-            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y100),
-            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y200)
+            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN50),
+            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN100)
         )
     }
 

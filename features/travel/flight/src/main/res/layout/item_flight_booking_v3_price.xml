@@ -10,25 +10,42 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_price_description"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:typographyType="body_3"
-        tools:text="CGK - SUB (x2 Dewasa)"
-        app:layout_constraintEnd_toStartOf="@+id/tv_price_amount"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
+        app:typographyType="body_3"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintWidth_max="wrap"
+        app:layout_constraintWidth_percent="0.65"
+        tools:text="CGK - SUB (x2 Dewasa)"
+        app:layout_constraintEnd_toStartOf="@id/tv_price_amount"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icon_price_detail_info"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="4dp"
+        app:icon_name="INFORMATION"
+        app:layout_constraintStart_toEndOf="@id/tv_price_description"
+        app:layout_constraintTop_toTopOf="@id/tv_price_description"
+        app:layout_constraintBottom_toBottomOf="@id/tv_price_description"
         />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_price_amount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintHorizontal_bias="1"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         tools:text="Rp7.300.000"
         app:typographyType="body_3"
-        android:textColor="@color/Unify_N700_96"/>
+        android:textColor="@color/Unify_NN950_96"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

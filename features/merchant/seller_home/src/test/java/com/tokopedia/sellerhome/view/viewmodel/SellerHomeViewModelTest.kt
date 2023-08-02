@@ -2,7 +2,6 @@ package com.tokopedia.sellerhome.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.sellerhome.common.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.model.ShopCoreInfoResponse
 import com.tokopedia.sellerhome.domain.model.ShopInfoResultResponse
@@ -15,7 +14,8 @@ import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
 import com.tokopedia.sellerhome.view.model.ShopStateInfoUiModel
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.common.const.WidgetGridSize
-import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
+import com.tokopedia.sellerhomecommon.domain.model.ParamCommonWidgetModel
+import com.tokopedia.sellerhomecommon.domain.model.ParamTableWidgetModel
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.domain.usecase.GetAnnouncementDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetBarChartDataUseCase
@@ -30,6 +30,7 @@ import com.tokopedia.sellerhomecommon.domain.usecase.GetPieChartDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetPostDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetProgressDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetRecommendationDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetRichListDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetSellerHomeTickerUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetTableDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetUnificationDataUseCase
@@ -60,6 +61,8 @@ import com.tokopedia.sellerhomecommon.presentation.model.ProgressDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RichListDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RichListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SubmitWidgetDismissUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
@@ -92,10 +95,10 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -107,6 +110,7 @@ import org.mockito.ArgumentMatchers.anyString
  * Created By @ilhamsuaib on 19/03/20
  */
 
+@Suppress("DEPRECATION")
 @ExperimentalCoroutinesApi
 class SellerHomeViewModelTest {
 
@@ -124,6 +128,7 @@ class SellerHomeViewModelTest {
         private const val DATA_KEY_RECOMMENDATION = "RECOMMENDATION"
         private const val DATA_KEY_MILESTONE = "MILESTONE"
         private const val DATA_KEY_UNIFICATION = "UNIFICATION"
+        private const val DATA_KEY_RICH_LIST = "RICH_LIST"
     }
 
     @RelaxedMockK
@@ -181,6 +186,9 @@ class SellerHomeViewModelTest {
     lateinit var getUnificationDataUseCase: GetUnificationDataUseCase
 
     @RelaxedMockK
+    lateinit var getRichListDataUseCase: GetRichListDataUseCase
+
+    @RelaxedMockK
     lateinit var getShopInfoByIdUseCase: GetShopInfoByIdUseCase
 
     @RelaxedMockK
@@ -193,9 +201,6 @@ class SellerHomeViewModelTest {
     lateinit var getShopStateInfoUseCase: GetShopStateInfoUseCase
 
     @RelaxedMockK
-    lateinit var remoteConfig: SellerHomeRemoteConfig
-
-    @RelaxedMockK
     lateinit var widgetSse: SellerHomeWidgetSSE
 
     @get:Rule
@@ -206,7 +211,7 @@ class SellerHomeViewModelTest {
 
     private lateinit var sellerHomeLayoutHelper: SellerHomeLayoutHelper
     private lateinit var viewModel: SellerHomeViewModel
-    private lateinit var dynamicParameter: DynamicParameterModel
+    private lateinit var dynamicParameter: ParamCommonWidgetModel
 
     @Before
     fun setup() {
@@ -227,8 +232,8 @@ class SellerHomeViewModelTest {
             { getMilestoneDataUseCase },
             { getCalendarDataUseCase },
             { getUnificationDataUseCase },
+            { getRichListDataUseCase },
             { userSession },
-            { remoteConfig },
             coroutineTestRule.dispatchers
         )
 
@@ -251,21 +256,21 @@ class SellerHomeViewModelTest {
             { getMilestoneDataUseCase },
             { getCalendarDataUseCase },
             { getUnificationDataUseCase },
+            { getRichListDataUseCase },
             { getShopInfoByIdUseCase },
             { shopQuestGeneralTrackerUseCase },
             { submitWidgetDismissUseCase },
             { getShopStateInfoUseCase },
             { sellerHomeLayoutHelper },
             { widgetSse },
-            remoteConfig,
             coroutineTestRule.dispatchers
         )
 
         dynamicParameter = getDynamicParameter()
     }
 
-    private fun getDynamicParameter(): DynamicParameterModel {
-        return DynamicParameterModel(
+    private fun getDynamicParameter(): ParamCommonWidgetModel {
+        return ParamCommonWidgetModel(
             startDate = "15-07-20202",
             endDate = "21-07-20202",
             pageSource = "seller-home"
@@ -291,14 +296,10 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `get ticker when cache enabled then fetch from cache should success result`() {
-        coroutineTestRule.runBlockingTest {
+    fun `when get ticker on cache enabled, should retrun success result`() {
+        runTest {
             val networkException = Exception("from network")
             val cacheResult = listOf(TickerItemUiModel())
-
-            every {
-                remoteConfig.isSellerHomeDashboardCachingEnabled()
-            } returns true
 
             var useCaseExecutedCount = 0
             coEvery {
@@ -332,14 +333,10 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `get ticker when cache enabled then throw exception should return remote exception`() {
-        coroutineTestRule.runBlockingTest {
+    fun `get ticker when cache enabled then throw exception, should return remote exception`() {
+        runTest {
             val networkException = Exception("from network")
             val cacheException = Exception("from cache")
-
-            every {
-                remoteConfig.isSellerHomeDashboardCachingEnabled()
-            } returns true
 
             var useCaseExecutedCount = 0
             coEvery {
@@ -461,10 +458,6 @@ class SellerHomeViewModelTest {
             userSession.shopId
         } returns shopId
 
-        every {
-            remoteConfig.isSellerHomeDashboardCachingEnabled()
-        } returns true
-
         coEvery {
             getLayoutUseCase.executeOnBackground()
         } returns widgetLayout
@@ -568,9 +561,6 @@ class SellerHomeViewModelTest {
                 userSession.shopId
             } returns shopId
 
-            every {
-                remoteConfig.isSellerHomeDashboardCachingEnabled()
-            } returns true
             coEvery {
                 getLayoutUseCase.executeOnBackground()
             } returns widgetLayout
@@ -634,14 +624,9 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `when get widget layout with given height and new caching disabled then throws exception should return failed result`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val exception = Throwable()
-            val isCachingEnabled = true
             val isFirstLoad = false
-
-            every {
-                remoteConfig.isSellerHomeDashboardCachingEnabled()
-            } returns isCachingEnabled
 
             coEvery {
                 getLayoutUseCase.executeOnBackground()
@@ -672,9 +657,6 @@ class SellerHomeViewModelTest {
         every {
             userSession.shopId
         } returns shopId
-        every {
-            remoteConfig.isSellerHomeDashboardCachingEnabled()
-        } returns false
 
         coEvery {
             getLayoutUseCase.executeOnBackground()
@@ -703,10 +685,6 @@ class SellerHomeViewModelTest {
         coEvery {
             getLayoutUseCase.executeOnBackground()
         } throws throwable
-
-        coEvery {
-            remoteConfig.isSellerHomeDashboardCachingEnabled()
-        } returns true
 
         viewModel.getWidgetLayout(10f)
 
@@ -737,10 +715,6 @@ class SellerHomeViewModelTest {
             coEvery {
                 getLayoutUseCase.executeOnBackground()
             } throws throwable
-
-            coEvery {
-                remoteConfig.isSellerHomeDashboardCachingEnabled()
-            } returns true
 
             coEvery {
                 getLayoutUseCase.isFirstLoad
@@ -816,7 +790,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `when get milestone widget data then return success`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val dataKeys = listOf(anyString())
             val result = listOf(MilestoneDataUiModel())
 
@@ -837,7 +811,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `when get milestone widget data then throw exception`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val dataKeys = listOf(anyString())
             val exception = RuntimeException("")
             getMilestoneDataUseCase.params = GetMilestoneDataUseCase.createParams(dataKeys)
@@ -855,7 +829,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `when fetch shop info by id then return success`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val shopId = "12345"
             val shopInfo = ShopInfoResultResponse(
                 coreInfo = ShopCoreInfoResponse("abc"),
@@ -883,7 +857,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `when fetch shop info by id then return null data should still success`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val shopId = "12345"
             val shopInfo = ShopInfoResultResponse(
                 coreInfo = null,
@@ -911,7 +885,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `when fetch shop info by id then throw exception`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val shopId = "12345"
             val exception = MessageErrorException()
             every {
@@ -931,7 +905,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `when send shop quest tracker then return success`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val response = ShopQuestGeneralTracker()
             shopQuestGeneralTrackerUseCase.params =
                 ShopQuestGeneralTrackerUseCase.createRequestParams(
@@ -953,7 +927,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `when send shop quest tracker then throw exception`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val exception = Exception()
             shopQuestGeneralTrackerUseCase.params =
                 ShopQuestGeneralTrackerUseCase.createRequestParams(
@@ -1021,8 +995,10 @@ class SellerHomeViewModelTest {
 
         val lineGraphDataResult =
             listOf(LineGraphDataUiModel(), LineGraphDataUiModel(), LineGraphDataUiModel())
-        getLineGraphDataUseCase.params =
-            GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(
+            dataKey = dataKeys,
+            dynamicParam = dynamicParameter
+        )
 
         coEvery {
             getLineGraphDataUseCase.executeOnBackground()
@@ -1046,8 +1022,10 @@ class SellerHomeViewModelTest {
         val dataKeys = listOf("x", "y", "z")
 
         val throwable = MessageErrorException("error message")
-        getLineGraphDataUseCase.params =
-            GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(
+            dataKey = dataKeys,
+            dynamicParam = dynamicParameter
+        )
 
         coEvery {
             getLineGraphDataUseCase.executeOnBackground()
@@ -1066,14 +1044,12 @@ class SellerHomeViewModelTest {
     fun `when get line graph from network and cache are failed, will return throwable from network`() {
         val dataKeys = listOf("x", "y", "z")
 
-        getLineGraphDataUseCase.params =
-            GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(
+            dataKey = dataKeys,
+            dynamicParam = dynamicParameter
+        )
         val networkException = Exception("from network")
         val cacheException = Exception("from cache")
-
-        every {
-            remoteConfig.isSellerHomeDashboardCachingEnabled()
-        } returns true
 
         var useCaseExecutedCount = 0
         coEvery {
@@ -1154,10 +1130,6 @@ class SellerHomeViewModelTest {
         getCalendarDataUseCase.params = GetCalendarDataUseCase.createParams(dataKeys)
         val networkException = Exception("from network")
         val cacheException = Exception("from cache")
-
-        every {
-            remoteConfig.isSellerHomeDashboardCachingEnabled()
-        } returns true
 
         var useCaseExecutedCount = 0
         coEvery {
@@ -1255,10 +1227,6 @@ class SellerHomeViewModelTest {
         val networkException = Exception("from network")
         val cacheException = Exception("from cache")
 
-        every {
-            remoteConfig.isSellerHomeDashboardCachingEnabled()
-        } returns true
-
         var useCaseExecutedCount = 0
         coEvery {
             getUnificationDataUseCase.executeOnBackground()
@@ -1287,6 +1255,96 @@ class SellerHomeViewModelTest {
 
         val expectedResult = Fail(networkException)
         viewModel.unificationWidgetData.verifyErrorEquals(expectedResult)
+    }
+
+    @Test
+    fun `get rich list widget data then returns success result`() = runBlocking {
+        val widgets = getRichListMockData()
+        val dataKeys = listOf(DATA_KEY_RICH_LIST)
+        val shopId = "123"
+        val result = listOf(RichListDataUiModel(dataKey = DATA_KEY_RICH_LIST))
+
+        getRichListDataUseCase.params = GetRichListDataUseCase.createParam(
+            dataKeys = dataKeys,
+            shopId = shopId,
+            pageSource = dynamicParameter.pageSource
+        )
+
+        coEvery {
+            getRichListDataUseCase.executeOnBackground()
+        } returns result
+
+        viewModel.getRichListWidgetData(dataKeys)
+
+        coVerify {
+            getRichListDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Success(result)
+        Assertions.assertTrue(widgets.size == expectedResult.data.size)
+        viewModel.richListWidgetData.verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `get rich list widget data then returns failed result`() = runBlocking {
+        val dataKeys = listOf(DATA_KEY_RICH_LIST)
+        val shopId = "123"
+        val throwable = MessageErrorException("error message")
+
+        getRichListDataUseCase.params = GetRichListDataUseCase.createParam(
+            dataKeys = dataKeys,
+            shopId = shopId,
+            pageSource = dynamicParameter.pageSource
+        )
+
+        coEvery {
+            getRichListDataUseCase.executeOnBackground()
+        } throws throwable
+
+        viewModel.getRichListWidgetData(dataKeys)
+
+        coVerify {
+            getRichListDataUseCase.executeOnBackground()
+        }
+
+        viewModel.richListWidgetData.verifyErrorEquals(Fail(throwable))
+    }
+
+    @Test
+    fun `when get rich list from network and cache are failed, will return throwable from network`() {
+        val dataKeys = listOf(DATA_KEY_RICH_LIST)
+
+        val networkException = Exception("from network")
+        val cacheException = Exception("from cache")
+
+        var useCaseExecutedCount = 0
+        coEvery {
+            getRichListDataUseCase.executeOnBackground()
+        } coAnswers {
+            useCaseExecutedCount++
+            if (useCaseExecutedCount <= 1) {
+                throw networkException
+            } else {
+                throw cacheException
+            }
+        }
+
+        viewModel.getRichListWidgetData(dataKeys)
+
+        verify(exactly = 1) {
+            getRichListDataUseCase.setUseCache(false)
+        }
+
+        verify(exactly = 1) {
+            getRichListDataUseCase.setUseCache(true)
+        }
+
+        coVerify(exactly = 2) {
+            getRichListDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Fail(networkException)
+        viewModel.richListWidgetData.verifyErrorEquals(expectedResult)
     }
 
     @Test
@@ -1347,10 +1405,6 @@ class SellerHomeViewModelTest {
         val networkException = Exception("from network")
         val cacheException = Exception("from cache")
 
-        every {
-            remoteConfig.isSellerHomeDashboardCachingEnabled()
-        } returns true
-
         var useCaseExecutedCount = 0
         coEvery {
             getProgressDataUseCase.executeOnBackground()
@@ -1390,8 +1444,11 @@ class SellerHomeViewModelTest {
             )
             val postList = listOf(PostListDataUiModel(), PostListDataUiModel())
 
-            getPostDataUseCase.params =
-                GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+            getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(
+                dataKey = dataKeys,
+                startDate = dynamicParameter.startDate,
+                endDate = dynamicParameter.endDate
+            )
 
             coEvery {
                 getPostDataUseCase.executeOnBackground()
@@ -1416,7 +1473,11 @@ class SellerHomeViewModelTest {
         )
         val exception = MessageErrorException("error msg")
 
-        getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(
+            dataKey = dataKeys,
+            startDate = dynamicParameter.startDate,
+            endDate = dynamicParameter.endDate
+        )
 
         coEvery {
             getPostDataUseCase.executeOnBackground()
@@ -1440,13 +1501,13 @@ class SellerHomeViewModelTest {
             TableAndPostDataKey("y", "y", 6, 3)
         )
 
-        getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(
+            dataKey = dataKeys,
+            startDate = dynamicParameter.startDate,
+            endDate = dynamicParameter.endDate
+        )
         val networkException = Exception("from network")
         val cacheException = Exception("from cache")
-
-        every {
-            remoteConfig.isSellerHomeDashboardCachingEnabled()
-        } returns true
 
         var useCaseExecutedCount = 0
         coEvery {
@@ -1480,7 +1541,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `when submit feedback dismissal widget should return success result`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val param = SubmitWidgetDismissUiModel()
             val mockResult = WidgetDismissalResultUiModel()
 
@@ -1503,7 +1564,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `when submit feedback dismissal widget should return error result`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val param = SubmitWidgetDismissUiModel(
                 action = SubmitWidgetDismissUiModel.Action.DISMISS
             )
@@ -1526,7 +1587,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `when get shop state info should return success result`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val shopId = "123"
             val dataKeys = "shopStateChanged"
             val pageSource = "seller-home"
@@ -1554,7 +1615,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `when get shop state info should return error result`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val shopId = "123"
             val dataKeys = "shopStateChanged"
             val pageSource = "seller-home"
@@ -1654,10 +1715,6 @@ class SellerHomeViewModelTest {
         val networkException = Exception("from network")
         val cacheException = Exception("from cache")
 
-        every {
-            remoteConfig.isSellerHomeDashboardCachingEnabled()
-        } returns true
-
         var useCaseExecutedCount = 0
         coEvery {
             getCarouselDataUseCase.executeOnBackground()
@@ -1696,8 +1753,12 @@ class SellerHomeViewModelTest {
         )
         val result = listOf(TableDataUiModel(), TableDataUiModel())
 
-        getTableDataUseCase.params =
-            GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        val dynamicParam = ParamTableWidgetModel(
+            startDate = dynamicParameter.startDate,
+            endDate = dynamicParameter.endDate,
+            pageSource = dynamicParameter.pageSource
+        )
+        getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParam)
 
         coEvery {
             getTableDataUseCase.executeOnBackground()
@@ -1721,8 +1782,12 @@ class SellerHomeViewModelTest {
             TableAndPostDataKey("y", "y", 6, 3)
         )
 
-        getTableDataUseCase.params =
-            GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        val dynamicParam = ParamTableWidgetModel(
+            startDate = dynamicParameter.startDate,
+            endDate = dynamicParameter.endDate,
+            pageSource = dynamicParameter.pageSource
+        )
+        getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParam)
 
         coEvery {
             getTableDataUseCase.executeOnBackground()
@@ -1746,14 +1811,15 @@ class SellerHomeViewModelTest {
             TableAndPostDataKey("y", "y", 6, 3)
         )
 
-        getTableDataUseCase.params =
-            GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        val dynamicParam = ParamTableWidgetModel(
+            startDate = dynamicParameter.startDate,
+            endDate = dynamicParameter.endDate,
+            pageSource = dynamicParameter.pageSource
+        )
+        getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParam)
+
         val networkException = Exception("from network")
         val cacheException = Exception("from cache")
-
-        every {
-            remoteConfig.isSellerHomeDashboardCachingEnabled()
-        } returns true
 
         var useCaseExecutedCount = 0
         coEvery {
@@ -1841,10 +1907,6 @@ class SellerHomeViewModelTest {
         val networkException = Exception("from network")
         val cacheException = Exception("from cache")
 
-        every {
-            remoteConfig.isSellerHomeDashboardCachingEnabled()
-        } returns true
-
         var useCaseExecutedCount = 0
         coEvery {
             getPieChartDataUseCase.executeOnBackground()
@@ -1931,10 +1993,6 @@ class SellerHomeViewModelTest {
         val networkException = Exception("from network")
         val cacheException = Exception("from cache")
 
-        every {
-            remoteConfig.isSellerHomeDashboardCachingEnabled()
-        } returns true
-
         var useCaseExecutedCount = 0
         coEvery {
             getBarChartDataUseCase.executeOnBackground()
@@ -1970,8 +2028,10 @@ class SellerHomeViewModelTest {
         val dataKeys = listOf(anyString(), anyString())
         val result = listOf(MultiLineGraphDataUiModel(), MultiLineGraphDataUiModel())
 
-        getMultiLineGraphUseCase.params =
-            GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getMultiLineGraphUseCase.params = GetMultiLineGraphUseCase.getRequestParams(
+            dataKey = dataKeys,
+            dynamicParam = dynamicParameter
+        )
 
         coEvery {
             getMultiLineGraphUseCase.executeOnBackground()
@@ -1994,8 +2054,10 @@ class SellerHomeViewModelTest {
     fun `should failed when get multi line graph widget data`() = runBlocking {
         val dataKeys = listOf(anyString(), anyString())
 
-        getMultiLineGraphUseCase.params =
-            GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getMultiLineGraphUseCase.params = GetMultiLineGraphUseCase.getRequestParams(
+            dataKey = dataKeys,
+            dynamicParam = dynamicParameter
+        )
 
         coEvery {
             getMultiLineGraphUseCase.executeOnBackground()
@@ -2016,14 +2078,12 @@ class SellerHomeViewModelTest {
     fun `when get multi line graph data from network and cache are failed, will return throwable from network`() {
         val dataKeys = listOf(anyString())
 
-        getMultiLineGraphUseCase.params =
-            GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getMultiLineGraphUseCase.params = GetMultiLineGraphUseCase.getRequestParams(
+            dataKey = dataKeys,
+            dynamicParam = dynamicParameter
+        )
         val networkException = Exception("from network")
         val cacheException = Exception("from cache")
-
-        every {
-            remoteConfig.isSellerHomeDashboardCachingEnabled()
-        } returns true
 
         var useCaseExecutedCount = 0
         coEvery {
@@ -2110,10 +2170,6 @@ class SellerHomeViewModelTest {
         getAnnouncementDataUseCase.params = GetAnnouncementDataUseCase.createRequestParams(dataKeys)
         val networkException = Exception("from network")
         val cacheException = Exception("from cache")
-
-        every {
-            remoteConfig.isSellerHomeDashboardCachingEnabled()
-        } returns true
 
         var useCaseExecutedCount = 0
         coEvery {
@@ -2204,10 +2260,6 @@ class SellerHomeViewModelTest {
         val networkException = Exception("from network")
         val cacheException = Exception("from cache")
 
-        every {
-            remoteConfig.isSellerHomeDashboardCachingEnabled()
-        } returns true
-
         var useCaseExecutedCount = 0
         coEvery {
             getRecommendationDataUseCase.executeOnBackground()
@@ -2245,11 +2297,7 @@ class SellerHomeViewModelTest {
 
         val cardDataResult = listOf(CardDataUiModel(), CardDataUiModel(), CardDataUiModel())
         getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-
-        every {
-            remoteConfig.isSellerHomeDashboardCachingEnabled()
-        } returns true
-
+        
         every {
             getCardDataUseCase.isFirstLoad
         } returns true
@@ -2281,10 +2329,6 @@ class SellerHomeViewModelTest {
 
         val cardDataResult = listOf(CardDataUiModel(), CardDataUiModel(), CardDataUiModel())
         getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-
-        every {
-            remoteConfig.isSellerHomeDashboardCachingEnabled()
-        } returns true
 
         every {
             getCardDataUseCase.isFirstLoad
@@ -2328,10 +2372,6 @@ class SellerHomeViewModelTest {
         getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(dataKeys, dynamicParameter)
 
         every {
-            remoteConfig.isSellerHomeDashboardCachingEnabled()
-        } returns true
-
-        every {
             getCardDataUseCase.isFirstLoad
         } returns false
 
@@ -2365,10 +2405,6 @@ class SellerHomeViewModelTest {
         getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(dataKeys, dynamicParameter)
         val networkException = Exception("from network")
         val cacheException = Exception("from cache")
-
-        every {
-            remoteConfig.isSellerHomeDashboardCachingEnabled()
-        } returns true
 
         var useCaseExecutedCount = 0
         coEvery {
@@ -2492,9 +2528,6 @@ class SellerHomeViewModelTest {
                 userSession.shopId
             } returns shopId
 
-            every {
-                remoteConfig.isSellerHomeDashboardCachingEnabled()
-            } returns true
             coEvery {
                 getLayoutUseCase.executeOnBackground()
             } returns widgetLayout
@@ -2672,9 +2705,6 @@ class SellerHomeViewModelTest {
             userSession.shopId
         } returns shopId
 
-        every {
-            remoteConfig.isSellerHomeDashboardCachingEnabled()
-        } returns true
         coEvery {
             getLayoutUseCase.executeOnBackground()
         } returns widgetLayout
@@ -2754,9 +2784,6 @@ class SellerHomeViewModelTest {
         every {
             userSession.shopId
         } returns shopId
-        every {
-            remoteConfig.isSellerHomeDashboardCachingEnabled()
-        } returns true
         coEvery {
             getLayoutUseCase.executeOnBackground()
         } returns widgetLayout
@@ -2809,9 +2836,6 @@ class SellerHomeViewModelTest {
         every {
             userSession.shopId
         } returns shopId
-        every {
-            remoteConfig.isSellerHomeDashboardCachingEnabled()
-        } returns true
         coEvery {
             getLayoutUseCase.executeOnBackground()
         } returns widgetLayout
@@ -2861,9 +2885,6 @@ class SellerHomeViewModelTest {
         every {
             userSession.shopId
         } returns shopId
-        every {
-            remoteConfig.isSellerHomeDashboardCachingEnabled()
-        } returns true
         coEvery {
             getLayoutUseCase.executeOnBackground()
         } returns widgetLayout
@@ -2913,9 +2934,6 @@ class SellerHomeViewModelTest {
         every {
             userSession.shopId
         } returns shopId
-        every {
-            remoteConfig.isSellerHomeDashboardCachingEnabled()
-        } returns true
         coEvery {
             getLayoutUseCase.executeOnBackground()
         } returns widgetLayout
@@ -2966,9 +2984,6 @@ class SellerHomeViewModelTest {
         every {
             userSession.shopId
         } returns shopId
-        every {
-            remoteConfig.isSellerHomeDashboardCachingEnabled()
-        } returns true
         coEvery {
             getLayoutUseCase.executeOnBackground()
         } returns widgetLayout
@@ -3026,9 +3041,6 @@ class SellerHomeViewModelTest {
             userSession.shopId
         } returns shopId
 
-        every {
-            remoteConfig.isSellerHomeDashboardCachingEnabled()
-        } returns true
         coEvery {
             getLayoutUseCase.executeOnBackground()
         } returns widgetLayout
@@ -3092,9 +3104,6 @@ class SellerHomeViewModelTest {
             userSession.shopId
         } returns shopId
 
-        every {
-            remoteConfig.isSellerHomeDashboardCachingEnabled()
-        } returns true
         coEvery {
             getLayoutUseCase.executeOnBackground()
         } returns widgetLayout
@@ -3118,7 +3127,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `on start SSE when realTimeDataKeys is not empty then set card widgets data liveData`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val page = "home"
             val param = listOf("cardWidget")
             val cardData = CardDataUiModel()
@@ -3138,7 +3147,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `on start SSE when realTimeDataKeys is not empty and sse is not connected then set card widgets data liveData`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val page = "home"
             val param = listOf("cardWidget")
             val cardData = CardDataUiModel()
@@ -3160,7 +3169,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `on start SSE when realTimeDataKeys is not empty then set milestone widgets data liveData`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val page = "home"
             val param = listOf("milestoneWidget")
             val milestoneData = MilestoneDataUiModel()
@@ -3179,7 +3188,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `on start SSE when realTimeDataKeys is not empty and sse is not connected then set milestone widgets data liveData`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val page = "home"
             val param = listOf("milestoneWidget")
             val milestoneData = MilestoneDataUiModel()
@@ -3549,6 +3558,29 @@ class SellerHomeViewModelTest {
                 tag = "",
                 appLink = "",
                 dataKey = DATA_KEY_UNIFICATION,
+                ctaText = "",
+                gridSize = WidgetGridSize.GRID_SIZE_1,
+                isShowEmpty = true,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = false,
+                emptyState = WidgetEmptyStateUiModel()
+            )
+        )
+    }
+
+    private fun getRichListMockData(): List<RichListWidgetUiModel> {
+        return listOf(
+            RichListWidgetUiModel(
+                id = "123",
+                widgetType = WidgetType.RICH_LIST,
+                title = "richlist",
+                subtitle = "",
+                tooltip = null,
+                tag = "",
+                appLink = "",
+                dataKey = DATA_KEY_RICH_LIST,
                 ctaText = "",
                 gridSize = WidgetGridSize.GRID_SIZE_1,
                 isShowEmpty = true,

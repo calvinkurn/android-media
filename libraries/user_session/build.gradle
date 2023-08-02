@@ -16,6 +16,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.user.session'
+    testNamespace 'com.tokopedia.user.session.test'
     defaultConfig {
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
         testInstrumentationRunnerArguments clearPackageData: 'true'
@@ -58,6 +60,21 @@ protobuf {
             }
         }
     }
+}
+
+// https://youtrack.jetbrains.com/issue/KT-52761/Kotlin-170-breaks-kapt-processing-for-protobuf-generated-java-sources
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KaptGenerateStubs).configureEach {
+    source("$buildDir/generated/source/proto/debug/main/java")
+    source("$buildDir/generated/source/proto/release/main/java")
+    source("$buildDir/generated/source/proto/debug/java")
+    source("$buildDir/generated/source/proto/release/java")
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.internal.KaptWithoutKotlincTask$KaptExecutionWorkAction).configureEach {
+    source("$buildDir/generated/source/proto/debug/main/java")
+    source("$buildDir/generated/source/proto/release/main/java")
+    source("$buildDir/generated/source/proto/debug/java")
+    source("$buildDir/generated/source/proto/release/java")
 }
 
 project.ext {

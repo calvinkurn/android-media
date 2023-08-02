@@ -11,4 +11,10 @@ data class ChannelHeader(
         val backColor: String = "",
         val backImage: String = "",
         val textColor: String = ""
-)
+) {
+
+    fun getTitleSubtitle(defaultTitle: String, defaultSubtitle: String): Pair<String, String> {
+        return if (name.isEmpty()) defaultTitle to defaultSubtitle
+        else name to subtitle
+    }
+}

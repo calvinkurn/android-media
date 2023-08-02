@@ -22,12 +22,15 @@ class TokoNowProductRecommendationViewHolder(
     private var binding: ItemTokopedianowProductRecommendationBinding? by viewBinding()
 
     override fun bind(element: TokoNowProductRecommendationUiModel) {
-        binding?.productRecommendation?.setRequestParam(
-            getRecommendationRequestParam = element.requestParam
-        )
-        binding?.productRecommendation?.setListener(
-            productRecommendationListener = listener
-        )
-        binding?.realTimeRecommendationCarousel?.hide()
+        binding?.apply {
+            productRecommendation.setRequestParam(
+                getRecommendationRequestParam = element.requestParam,
+                tickerPageSource = element.tickerPageSource
+            )
+            productRecommendation.setListener(
+                productRecommendationListener = listener
+            )
+            realTimeRecommendationCarousel.hide()
+        }
     }
 }

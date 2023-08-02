@@ -15,6 +15,7 @@ import com.tokopedia.notifications.common.NotificationReminderPromptGtmTracker
 import com.tokopedia.notifications.common.NotificationSettingsGtmEvents
 import com.tokopedia.notifications.databinding.CmLayoutNotificationsGeneralPromptBinding
 import com.tokopedia.notifications.utils.NotificationSettingsUtils
+import com.tokopedia.notifications.utils.NotificationUserSettingsTracker
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -22,6 +23,7 @@ import com.tokopedia.user.session.UserSessionInterface
 class NotificationGeneralPromptBottomSheet : BottomSheetUnify() {
 
     private var binding: CmLayoutNotificationsGeneralPromptBinding? = null
+    private var bypassCloseEventTracking = false
 
     private val userSession: UserSessionInterface by lazy(LazyThreadSafetyMode.NONE) {
         UserSession(context)
@@ -70,11 +72,15 @@ class NotificationGeneralPromptBottomSheet : BottomSheetUnify() {
 
     private fun getResourcesConfig(): Triple<Int, Int, Int> =
         if (GlobalConfig.isSellerApp()) {
-            Triple(
-                R.drawable.cm_notifications_general_prompt_bottomsheet_sellerapp,
-                R.string.cm_notifications_general_prompt_sellerapp_title,
-                R.string.cm_notifications_general_prompt_sellerapp_description
-            )
+            if (isReminderPrompt) {
+                getResourcesConfigForReminderPrompt()
+            } else {
+                Triple(
+                    R.drawable.cm_notifications_general_prompt_bottomsheet_sellerapp,
+                    R.string.cm_notifications_general_prompt_sellerapp_title,
+                    R.string.cm_notifications_general_prompt_sellerapp_description
+                )
+            }
         } else {
             if (isReminderPrompt) {
                 getResourcesConfigForReminderPrompt()
@@ -88,7 +94,7 @@ class NotificationGeneralPromptBottomSheet : BottomSheetUnify() {
         }
 
     private fun getResourcesConfigForReminderPrompt(): Triple<Int, Int, Int> =
-        when(pageName) {
+        when (pageName) {
             KEJAR_DISKON -> {
                 Triple(
                     R.drawable.cm_notifications_general_prompt_bottomsheet_mainapp,
@@ -108,6 +114,13 @@ class NotificationGeneralPromptBottomSheet : BottomSheetUnify() {
                     R.drawable.cm_notifications_general_prompt_bottomsheet_mainapp,
                     R.string.cm_notifications_general_prompt_live_shopping_title,
                     R.string.cm_notifications_general_prompt_live_shopping_description
+                )
+            }
+            STOCK_REMINDER -> {
+                Triple(
+                    R.drawable.cm_notifications_general_prompt_bottomsheet_sellerapp,
+                    R.string.cm_notifications_general_prompt_product_list_title,
+                    R.string.cm_notifications_general_prompt_product_list_description
                 )
             }
             else -> {
@@ -154,13 +167,14 @@ class NotificationGeneralPromptBottomSheet : BottomSheetUnify() {
                     it.applicationContext
                 ).sendGeneralPromptClickCloseEvent(it, activityName)
             }
-
         }
     }
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        sendEventClose()
+        if(!bypassCloseEventTracking) {
+            sendEventClose()
+        }
     }
 
     private fun onTurnOnNotificationClick(activity: FragmentActivity?) {
@@ -170,6 +184,7 @@ class NotificationGeneralPromptBottomSheet : BottomSheetUnify() {
         }
         lastTimeClicked = SystemClock.elapsedRealtime()
         sendEventClickCta()
+        bypassCloseEventTracking = true
         if (isReminderPrompt && activity != null) {
             OpenAppNotificationSettingPage().goToAppNotificationSettingsPage(activity)
             dismiss()
@@ -226,11 +241,18 @@ class NotificationGeneralPromptBottomSheet : BottomSheetUnify() {
 
     private fun sendEventPostNotificationPermissionResult(grantResults: IntArray) {
         val context = context ?: return
-
+        sendNotificationUserSetting()
         if (grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED) {
             NotificationSettingsGtmEvents(userSession, context).sendActionAllowEvent(context)
         } else {
             NotificationSettingsGtmEvents(userSession, context).sendActionNotAllowEvent(context)
+        }
+    }
+
+    private fun sendNotificationUserSetting() {
+        val context = context?.applicationContext ?: return
+        if (userSession.isLoggedIn) {
+            NotificationUserSettingsTracker(context).sendNotificationUserSettings()
         }
     }
 
@@ -252,6 +274,6 @@ class NotificationGeneralPromptBottomSheet : BottomSheetUnify() {
         const val KEJAR_DISKON = "kejarDiskon"
         const val TAP_TAP_KOTAK = "tapTapKotak"
         const val LIVE_SHOPPING = "liveShopping"
-
+        const val STOCK_REMINDER = "stockReminder"
     }
 }

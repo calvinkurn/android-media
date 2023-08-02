@@ -31,7 +31,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
 
     @Test
     fun `when get Som List Order Param should return equal value`() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val mockSomListOrderParam = SomListGetOrderListParam(
                 statusList = listOf(450, 500, 501, 520, 530, 540, 550, 600, 601),
                 orderTypeList = mutableSetOf(1, 2, 3, 4),
@@ -54,7 +54,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
         }
 
     @Test
-    fun `when get Som Filter List should return equal value`() = coroutineTestRule.runBlockingTest {
+    fun `when get Som Filter List should return equal value`() = coroutineTestRule.runTest {
         val mockSomFilterList = getMockSomFilterList()
         val expectedSomFilterUiModels = mockSomFilterList.filterIsInstance<SomFilterUiModel>()
         somFilterViewModel.setSomFilterUiModel(mockSomFilterList.filterIsInstance<SomFilterUiModel>())
@@ -79,7 +79,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
         coEvery {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModel
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             somFilterViewModel.getSomFilterData()
         }
         val filterResult = somFilterViewModel.filterResult.observeAwaitValue() as Success
@@ -98,7 +98,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
         coEvery {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModel
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             somFilterViewModel.getSomFilterData()
         }
         val filterResult = somFilterViewModel.filterResult.observeAwaitValue() as Success
@@ -117,7 +117,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
         coEvery {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModel
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             somFilterViewModel.getSomFilterData()
         }
         val filterResult = somFilterViewModel.filterResult.observeAwaitValue() as Success
@@ -134,7 +134,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
         coEvery {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModel
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             somFilterViewModel.getSomFilterData()
         }
         val filterResult = somFilterViewModel.filterResult.observeAwaitValue() as Success
@@ -150,7 +150,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
         coEvery {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModel
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             somFilterViewModel.getSomFilterData()
         }
         somFilterViewModel.filterResult.observeAwaitValue()
@@ -166,7 +166,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
         coEvery {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModel
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             somFilterViewModel.getSomFilterData()
         }
         somFilterViewModel.filterResult.observeAwaitValue()
@@ -181,7 +181,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
         coEvery {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModel
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             somFilterViewModel.getSomFilterData()
         }
         somFilterViewModel.filterResult.observeAwaitValue()
@@ -190,7 +190,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
     }
 
     @Test
-    fun `when get som filter data should return fail`() = coroutineTestRule.runBlockingTest {
+    fun `when get som filter data should return fail`() = coroutineTestRule.runTest {
         val exception = NullPointerException()
         coEvery { getSomOrderFilterUseCase.execute() } coAnswers { throw exception }
         somFilterViewModel.getSomFilterData()
@@ -208,11 +208,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
         coEvery {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             somFilterViewModel.getSomFilterData()
         }
         somFilterViewModel.filterResult.observeAwaitValue()
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             somFilterViewModel.updateFilterSelected(idFilter, 0, ChipsUnify.TYPE_NORMAL)
         }
         val somFilterSuccess = (somFilterViewModel.updateFilterSelected.observeAwaitValue() as Success).data
@@ -232,11 +232,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
         coEvery {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             somFilterViewModel.getSomFilterData()
         }
         somFilterViewModel.filterResult.observeAwaitValue()
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             somFilterViewModel.updateFilterSelected(idFilter, 0, ChipsUnify.TYPE_SELECTED)
         }
         val somFilterSuccess = (somFilterViewModel.updateFilterSelected.observeAwaitValue() as Success).data
@@ -256,11 +256,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
         coEvery {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             somFilterViewModel.getSomFilterData()
         }
         somFilterViewModel.filterResult.observeAwaitValue()
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             somFilterViewModel.updateFilterSelected(idFilter, 2, ChipsUnify.TYPE_NORMAL)
         }
         val somFilterSuccess = (somFilterViewModel.updateFilterSelected.observeAwaitValue() as Success).data
@@ -281,11 +281,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
         coEvery {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             somFilterViewModel.getSomFilterData()
         }
         somFilterViewModel.filterResult.observeAwaitValue()
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             somFilterViewModel.updateFilterManySelected(idFilter, ChipsUnify.TYPE_NORMAL, 0)
             somFilterViewModel.updateFilterManySelected(idFilter, ChipsUnify.TYPE_SELECTED, 6)
         }
@@ -297,7 +297,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
     }
 
     @Test
-    fun `when given valid idFilter, update som filter see all should update corresponding filter items and then return success`() = coroutineTestRule.runBlockingTest {
+    fun `when given valid idFilter, update som filter see all should update corresponding filter items and then return success`() = coroutineTestRule.runTest {
         val idFilter = SomConsts.FILTER_STATUS_ORDER
         val mockSomFilterUiModels = getMockSomFilterList()
         val mockSomSubFilter = mockSomFilterUiModels.filterIsInstance<SomFilterUiModel>().find {
@@ -306,14 +306,14 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
         coEvery {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             somFilterViewModel.getSomFilterData()
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         mockSomSubFilter.forEach {
             it.isSelected = true
         }
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             somFilterViewModel.updateSomFilterSeeAll(idFilter, mockSomSubFilter)
         }
         val somFilterSuccess = (somFilterViewModel.updateFilterSelected.observeAwaitValue() as Success).data
@@ -323,7 +323,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
     }
 
     @Test
-    fun `when given invalid idFilter, update som filter see all should not make any changes and then return success`() = coroutineTestRule.runBlockingTest {
+    fun `when given invalid idFilter, update som filter see all should not make any changes and then return success`() = coroutineTestRule.runTest {
         val idFilter = SomConsts.FILTER_STATUS_ORDER
         val mockSomFilterUiModels = getMockSomFilterList()
         val mockSomSubFilter = mockSomFilterUiModels.filterIsInstance<SomFilterUiModel>().find {
@@ -332,14 +332,14 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
         coEvery {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             somFilterViewModel.getSomFilterData()
         }
         somFilterViewModel.filterResult.observeAwaitValue()
         mockSomSubFilter.forEach {
             it.isSelected = true
         }
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             somFilterViewModel.updateSomFilterSeeAll("", mockSomSubFilter)
         }
         val somFilterSuccess = (somFilterViewModel.updateFilterSelected.observeAwaitValue() as Success).data
@@ -353,17 +353,17 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
         val idFilter = SomConsts.FILTER_SORT
         val mockSomFilterUiModels = getMockSomFilterList()
         val indexOfSelectedSortFilterItem = mockSomFilterUiModels.filterIsInstance<SomFilterUiModel>()
-                .find {
-                    it.nameFilter == idFilter
-                }!!.somFilterData.indexOfFirst { it.id == SomConsts.SORT_BY_PAYMENT_DATE_ASCENDING }
+            .find {
+                it.nameFilter == idFilter
+            }!!.somFilterData.indexOfFirst { it.id == SomConsts.SORT_BY_PAYMENT_DATE_ASCENDING }
         coEvery {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             somFilterViewModel.getSomFilterData()
         }
         somFilterViewModel.filterResult.observeAwaitValue()
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             somFilterViewModel.updateFilterManySelected(idFilter, ChipsUnify.TYPE_NORMAL, indexOfSelectedSortFilterItem)
             somFilterViewModel.updateParamSom(idFilter)
         }
@@ -392,11 +392,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
         coEvery {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             somFilterViewModel.getSomFilterData()
         }
         somFilterViewModel.filterResult.observeAwaitValue()
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             somFilterViewModel.updateFilterManySelected(idFilter, ChipsUnify.TYPE_NORMAL, indexOfSelectedStatusOrderFilterItem)
             somFilterViewModel.updateParamSom(idFilter)
         }
@@ -425,11 +425,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
         coEvery {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             somFilterViewModel.getSomFilterData()
         }
         somFilterViewModel.filterResult.observeAwaitValue()
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             somFilterViewModel.updateFilterManySelected(idFilter, ChipsUnify.TYPE_NORMAL, indexOfSelectedOrderTypeFilterItem)
             somFilterViewModel.updateParamSom(idFilter)
         }
@@ -458,11 +458,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
         coEvery {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             somFilterViewModel.getSomFilterData()
         }
         somFilterViewModel.filterResult.observeAwaitValue()
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             somFilterViewModel.updateFilterManySelected(idFilter, ChipsUnify.TYPE_NORMAL, indexOfSelectedCourierFilterItem)
             somFilterViewModel.updateParamSom(idFilter)
         }
@@ -491,11 +491,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
         coEvery {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             somFilterViewModel.getSomFilterData()
         }
         somFilterViewModel.filterResult.observeAwaitValue()
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             somFilterViewModel.updateFilterManySelected(idFilter, ChipsUnify.TYPE_NORMAL, indexOfSelectedLabelFilterItem)
             somFilterViewModel.updateParamSom(idFilter)
         }
@@ -520,11 +520,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
         coEvery {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             somFilterViewModel.getSomFilterData()
         }
         somFilterViewModel.filterResult.observeAwaitValue()
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             somFilterViewModel.updateFilterManySelected(idFilter, ChipsUnify.TYPE_NORMAL, 0)
             somFilterViewModel.updateParamSom(idFilter)
         }
@@ -540,7 +540,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
     }
 
     @Test
-    fun `when reset all of som filter should return success`() = coroutineTestRule.runBlockingTest {
+    fun `when reset all of som filter should return success`() = coroutineTestRule.runTest {
         val mockSomFilterUiModels = getMockSomFilterList()
         val expectedSortByValue = getSelectedSortFilterId(mockSomFilterUiModels)
         val expectedStatusListValue = getSelectedStatusOrderFilterIds(mockSomFilterUiModels)
@@ -550,7 +550,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
         coEvery {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             somFilterViewModel.getSomFilterData()
         }
         somFilterViewModel.filterResult.observeAwaitValue()
@@ -566,7 +566,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
     }
 
     @Test
-    fun `when reset all of som filter should return fail`() = coroutineTestRule.runBlockingTest {
+    fun `when reset all of som filter should return fail`() = coroutineTestRule.runTest {
         mockkObject(Utils) {
             val mockSomFilterUiModels = getMockSomFilterList()
             every {
@@ -575,7 +575,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             coEvery {
                 getSomOrderFilterUseCase.execute()
             } returns mockSomFilterUiModels
-            coroutineTestRule.runBlockingTest {
+            coroutineTestRule.runTest {
                 somFilterViewModel.getSomFilterData()
             }
             somFilterViewModel.filterResult.observeAwaitValue()
@@ -592,7 +592,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             }!!.somFilterData
             .find {
                 it.isSelected
-            }?.id ?: SomConsts.SORT_BY_PAYMENT_DATE_DESCENDING.toLong()
+            }?.id ?: SomConsts.SORT_BY_DEADLINE_DATE_ASCENDING.toLong()
     }
 
     private fun getSelectedStatusOrderFilterIds(somFilterUiModels: List<BaseSomFilter>): List<Int> {

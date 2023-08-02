@@ -31,8 +31,8 @@ public class SnackbarManager {
 
         Button snackBarAction = (Button) snack.getView().findViewById(com.google.android.material.R.id.snackbar_action);
         if (activity != null) {
-            snackBarAction.setTextColor(ContextCompat.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_G400));
-            snack.getView().setBackgroundColor(ContextCompat.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
+            snackBarAction.setTextColor(ContextCompat.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_GN500));
+            snack.getView().setBackgroundColor(ContextCompat.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68));
         }
         return snack;
     }
@@ -68,7 +68,7 @@ public class SnackbarManager {
             @Snackbar.Duration int duration
     ) {
 
-        return make(coordinatorLayout, text, duration, com.tokopedia.unifyprinciples.R.color.Unify_G400, com.tokopedia.unifyprinciples.R.color.Unify_N700_68);
+        return make(coordinatorLayout, text, duration, com.tokopedia.unifyprinciples.R.color.Unify_GN500, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68);
     }
 
 }

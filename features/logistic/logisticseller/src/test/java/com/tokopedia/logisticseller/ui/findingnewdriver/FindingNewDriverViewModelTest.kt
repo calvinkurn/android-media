@@ -12,14 +12,27 @@ import com.tokopedia.logisticseller.ui.findingnewdriver.uimodel.NewDriverAvailab
 import com.tokopedia.logisticseller.ui.findingnewdriver.uimodel.NewDriverBookingState
 import com.tokopedia.logisticseller.ui.findingnewdriver.viewmodel.FindingNewDriverViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import io.mockk.*
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
+import io.mockk.coEvery
+import io.mockk.mockk
+import io.mockk.spyk
+import io.mockk.verify
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class FindingNewDriverViewModelTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineTestRule = UnconfinedTestRule()
 
     private val newDriverAvailabilityUseCase = mockk<NewDriverAvailabilityUseCase>(relaxed = true)
     private val newDriverBookingUseCase = mockk<NewDriverBookingUseCase>(relaxed = true)

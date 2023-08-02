@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:ellipsize="end"
-            android:textColor="@color/Unify_N700"
+            android:textColor="@color/Unify_NN950"
             android:fontFamily="sans-serif-medium"
             android:gravity="center_horizontal"
             android:maxLines="2"
@@ -39,6 +39,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.1dp"
-        android:background="@color/Unify_N700_20" />
+        android:background="@color/Unify_NN950_20" />
 
 </LinearLayout>

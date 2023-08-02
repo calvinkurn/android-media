@@ -12,6 +12,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.manageaddress.data.analytics.ShareAddressAnalytics
@@ -152,6 +153,7 @@ class FromFriendFragment :
                                     getString(R.string.title_failed_saved_share_address_from_notif)
                                 errorDescription.text =
                                     getString(R.string.description_failed_saved_share_address_from_notif)
+                                errorAction.hide()
                             }
                         } else {
                             globalError.gone()

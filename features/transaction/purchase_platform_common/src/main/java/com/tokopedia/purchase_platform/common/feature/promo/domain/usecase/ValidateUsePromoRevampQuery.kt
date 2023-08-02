@@ -31,6 +31,7 @@ const val VALIDATE_USE_QUERY = """
              code
              success
              unique_id
+             cart_string_group
              shipping_id
              sp_id
              cart_id
@@ -55,6 +56,7 @@ const val VALIDATE_USE_QUERY = """
                type
                order_id
                unique_id
+               cart_string_group
                discount_amount
                discount_details{
                  amount
@@ -84,6 +86,7 @@ const val VALIDATE_USE_QUERY = """
                type
                order_id
                unique_id
+               cart_string_group
                discount_amount
                discount_details{
                  amount

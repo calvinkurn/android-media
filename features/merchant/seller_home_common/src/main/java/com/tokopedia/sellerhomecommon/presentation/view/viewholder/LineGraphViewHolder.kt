@@ -169,8 +169,8 @@ class LineGraphViewHolder(
                 setupEmptyState(element)
             }
 
-            horLineShcLineGraphBtm.isVisible = btnLineGraphMore.isVisible
-                    || luvShcLineGraph.isVisible
+            horLineShcLineGraphBtm.isVisible = btnLineGraphMore.isVisible ||
+                luvShcLineGraph.isVisible
         }
     }
 
@@ -228,7 +228,7 @@ class LineGraphViewHolder(
             }
 
             val iconColor = root.context.getResColor(
-                com.tokopedia.unifyprinciples.R.color.Unify_G400
+                com.tokopedia.unifyprinciples.R.color.Unify_GN500
             )
             val iconWidth = root.context.resources.getDimension(
                 com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
@@ -318,7 +318,7 @@ class LineGraphViewHolder(
             xAxis {
                 val xAxisLabels = lineChartData.chartEntry.map { it.xLabel }
                 gridEnabled { false }
-                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96) }
+                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600) }
                 labelFormatter {
                     ChartXAxisLabelFormatter(xAxisLabels)
                 }
@@ -326,7 +326,7 @@ class LineGraphViewHolder(
 
             yAxis {
                 val yAxisLabels = lineChartData.yAxisLabel
-                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96) }
+                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600) }
                 labelFormatter {
                     ChartYAxisLabelFormatter(yAxisLabels)
                 }

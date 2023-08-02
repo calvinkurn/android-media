@@ -17,7 +17,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginEnd="16dp"
-        android:textColor="@color/Unify_G500"
+        android:textColor="@color/Unify_GN500"
         tools:visibility="visible"
         tools:text="Lihat 9 pertanyaan lainnya"/>
 

@@ -3,7 +3,6 @@ package com.tokopedia.home_component.viewholders
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
@@ -25,8 +24,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class VpsWidgetViewHolder(
     itemView: View,
     val vpsWidgetListener: VpsWidgetListener?,
-    val homeComponentListener: HomeComponentListener?,
-    val parentRecyclerViewPool: RecyclerView.RecycledViewPool? = null
+    val homeComponentListener: HomeComponentListener?
 ) : AbstractViewHolder<VpsDataModel>(itemView) {
     companion object {
         @LayoutRes
@@ -55,7 +53,7 @@ class VpsWidgetViewHolder(
             element.channelModel,
             object : HeaderListener {
                 override fun onSeeAllClick(link: String) {
-                    vpsWidgetListener?.onSeeAllClicked(element.channelModel, adapterPosition)
+                    vpsWidgetListener?.onSeeAllClicked(element.channelModel, link, adapterPosition)
                 }
 
                 override fun onChannelExpired(channelModel: ChannelModel) {
@@ -84,7 +82,6 @@ class VpsWidgetViewHolder(
     }
 
     private fun initRV() {
-        parentRecyclerViewPool?.let { recyclerView?.setRecycledViewPool(parentRecyclerViewPool) }
         recyclerView?.layoutManager = layoutManager
     }
 

@@ -45,6 +45,7 @@ open class UploadImageChatService : JobIntentServiceX(), CoroutineScope {
     private var image: ImageUploadUiModel? = null
     private var messageId = ""
     private var isSecure = false
+    private var sourceReply = ""
     private var notificationManager: UploadImageNotificationManager? = null
 
     override fun onCreate() {
@@ -92,6 +93,7 @@ open class UploadImageChatService : JobIntentServiceX(), CoroutineScope {
     private fun setupData(intent: Intent) {
         messageId = intent.getStringExtra(MESSAGE_ID) ?: ""
         isSecure = intent.getBooleanExtra(IS_SECURE, false)
+        sourceReply = intent.getStringExtra(SOURCE_REPLY) ?: ""
         val imageUploadService = ImageUploadServiceModel(
             messageId = messageId,
             fromUid = intent.getStringExtra(FROM_UI_ID) ?: "",
@@ -145,7 +147,7 @@ open class UploadImageChatService : JobIntentServiceX(), CoroutineScope {
                         msgId = msgId,
                         msg = msg,
                         filePath = filePath,
-                        source = dummyMessage.source,
+                        source = sourceReply,
                         parentReply = dummyMessage.parentReply
                     )
                     param.isSecure = isSecure
@@ -187,7 +189,8 @@ open class UploadImageChatService : JobIntentServiceX(), CoroutineScope {
         LocalBroadcastManager.getInstance(this).sendBroadcast(result)
 
         ErrorHandler.getErrorMessage(
-            this, throwable,
+            this,
+            throwable,
             ErrorHandler.Builder().apply {
                 className = UploadImageChatService::class.java.name
             }.build()
@@ -267,13 +270,15 @@ open class UploadImageChatService : JobIntentServiceX(), CoroutineScope {
         const val LOCAL_ID = "localId"
         const val BROADCAST_UPLOAD_IMAGE = "BROADCAST_UPLOAD_IMAGE"
         const val IS_SECURE = "isSecure"
+        const val SOURCE_REPLY = "sourceReply"
         var dummyMap = arrayListOf<UploadImageDummy>()
 
         fun enqueueWork(
             context: Context,
             image: ImageUploadServiceModel,
             messageId: String,
-            isSecure: Boolean
+            isSecure: Boolean,
+            sourceReply: String
         ) {
             val intent = Intent(context, UploadImageChatService::class.java)
             intent.putExtra(MESSAGE_ID, messageId)
@@ -295,6 +300,7 @@ open class UploadImageChatService : JobIntentServiceX(), CoroutineScope {
             intent.putExtra(IS_READ, image.isRead)
             intent.putExtra(IS_DUMMY, image.isDummy)
             intent.putExtra(IS_SECURE, isSecure)
+            intent.putExtra(SOURCE_REPLY, sourceReply)
             enqueueWork(context, UploadImageChatService::class.java, JOB_ID_UPLOAD_IMAGE, intent)
         }
 

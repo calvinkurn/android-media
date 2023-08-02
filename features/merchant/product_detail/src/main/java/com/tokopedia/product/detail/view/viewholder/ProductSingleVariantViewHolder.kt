@@ -30,7 +30,7 @@ class ProductSingleVariantViewHolder(
 
     private var containerAdapter: AtcVariantOptionAdapter? = null
     private val layoutManager = LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
-    private val emptyVariantData = VariantOptionWithAttribute()
+    private val emptyVariantData = VariantOptionWithAttribute.EMPTY
 
     companion object {
         val LAYOUT = R.layout.item_single_variant_view_holder
@@ -57,7 +57,7 @@ class ProductSingleVariantViewHolder(
             showError(element)
         } else {
             element.variantLevelOne?.let {
-                binding.txtVariantIdentifierTitle.text = pdpListener.getVariantString()
+                binding.txtVariantIdentifierTitle.text = element.title
                 binding.rvSingleVariant.adapter = containerAdapter
                 binding.rvSingleVariant.itemAnimator = null
                 binding.rvSingleVariant.layoutManager = layoutManager

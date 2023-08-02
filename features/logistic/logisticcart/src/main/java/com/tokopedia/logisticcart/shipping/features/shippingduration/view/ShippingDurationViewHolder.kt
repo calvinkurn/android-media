@@ -29,7 +29,6 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil.setTextAndContentDescription
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import java.util.*
 import com.tokopedia.unifyprinciples.R as RUnify
 
 /**
@@ -45,7 +44,6 @@ class ShippingDurationViewHolder(itemView: View, private val cartPosition: Int) 
     private val tvTextDesc: TextView = itemView.findViewById(R.id.tv_text_desc)
     private val imgCheck: IconUnify = itemView.findViewById(R.id.img_check)
     private val rlContent: RelativeLayout = itemView.findViewById(R.id.rl_content)
-    private val tvPromoPotency: TextView = itemView.findViewById(R.id.tv_promo_potency)
     private val tvOrderPrioritas: TextView = itemView.findViewById(R.id.tv_order_prioritas)
     private val tvShippingInformation: Typography = itemView.findViewById(R.id.tv_shipping_information)
     private val labelCodAvailable: Label = itemView.findViewById(R.id.lbl_cod_available)
@@ -60,19 +58,12 @@ class ShippingDurationViewHolder(itemView: View, private val cartPosition: Int) 
     fun bindData(
         shippingDurationUiModel: ShippingDurationUiModel,
         shippingDurationAdapterListener: ShippingDurationAdapterListener?,
-        isDisableOrderPrioritas: Boolean,
-        isYearEndPromotion: Boolean
+        isDisableOrderPrioritas: Boolean
     ) {
         if (shippingDurationUiModel.isShowShippingInformation && shippingDurationUiModel.etaErrorCode == 1) {
             tvShippingInformation.visibility = View.VISIBLE
         } else {
             tvShippingInformation.visibility = View.GONE
-        }
-
-        if (isYearEndPromotion && shippingDurationUiModel.serviceData.isPromo == 1) {
-            tvPromoPotency.visibility = View.VISIBLE
-        } else {
-            tvPromoPotency.visibility = View.GONE
         }
 
         if (!TextUtils.isEmpty(shippingDurationUiModel.errorMessage)) {
@@ -190,12 +181,12 @@ class ShippingDurationViewHolder(itemView: View, private val cartPosition: Int) 
     private fun createShowCaseDialog(): ShowCaseDialog {
         return ShowCaseBuilder()
             .customView(R.layout.show_case_checkout)
-            .titleTextColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            .titleTextColorRes(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
             .spacingRes(R.dimen.dp_12)
             .arrowWidth(R.dimen.dp_16)
-            .textColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N150)
-            .shadowColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
-            .backgroundContentColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N700)
+            .textColorRes(com.tokopedia.unifyprinciples.R.color.Unify_NN400)
+            .shadowColorRes(com.tokopedia.unifyprinciples.R.color.Unify_NN950_68)
+            .backgroundContentColorRes(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
             .circleIndicatorBackgroundDrawableRes(com.tokopedia.showcase.R.drawable.selector_circle_green)
             .textSizeRes(R.dimen.sp_12)
             .finishStringRes(R.string.label_shipping_show_case_finish)

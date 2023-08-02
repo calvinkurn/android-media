@@ -1,20 +1,16 @@
 package com.tokopedia.play.view.uimodel.mapper
 
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.content.common.report_content.model.UserReportOptions
+import com.tokopedia.content.common.report_content.model.UserReportSubmissionResponse
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.play.data.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
-import com.tokopedia.play.view.type.DiscountedPrice
-import com.tokopedia.play.view.type.OriginalPrice
-import com.tokopedia.play.view.type.OutOfStock
-import com.tokopedia.play.view.type.StockAvailable
+import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.PlayChatHistoryUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
-import com.tokopedia.play.view.uimodel.recom.BannedUiModel
-import com.tokopedia.play.view.uimodel.recom.FreezeUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayStatusConfig
+import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VoucherUiModel
@@ -45,22 +41,21 @@ class PlayUiModelMapper @Inject constructor(
     private val interactiveMapper: PlayInteractiveMapper,
     private val interactiveLeaderboardMapper: PlayInteractiveLeaderboardMapper,
     private val playUserReportMapper: PlayUserReportReasoningMapper,
-    private val cartMapper: PlayCartMapper,
+    private val cartMapper: PlayCartMapper
 ) {
 
-    fun mapProductSection(input: List<Section>): List<ProductSectionUiModel.Section> {
+    fun mapProductSection(input: List<Section>, channelType: PlayChannelType): List<ProductSectionUiModel.Section> {
         val controlTime = DateUtil.getCurrentDate()
         return input.map {
-            productTagMapper.mapSection(it, controlTime)
+            productTagMapper.mapSection(it, controlTime, channelType)
         }
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     fun mapMerchantVouchers(input: List<Voucher>, partnerName: String): VoucherUiModel {
         val vouchers = input.map(merchantVoucherMapper::mapMerchantVoucher)
         val eligibleForShown = vouchers.find { !it.isPrivate }
         val newVoucher = buildList {
-            if(eligibleForShown != null) add(PlayVoucherUiModel.InfoHeader(partnerName))
+            if (eligibleForShown != null) add(PlayVoucherUiModel.InfoHeader(partnerName))
             addAll(vouchers)
         }
         return VoucherUiModel(newVoucher)
@@ -123,7 +118,7 @@ class PlayUiModelMapper @Inject constructor(
 
     fun mapVariantChildToProduct(
         child: VariantChild,
-        prevDetail: PlayProductUiModel.Product,
+        prevDetail: PlayProductUiModel.Product
     ): PlayProductUiModel.Product {
         val stock = child.stock
 
@@ -132,8 +127,11 @@ class PlayUiModelMapper @Inject constructor(
             shopId = prevDetail.shopId,
             imageUrl = child.picture?.original.orEmpty(),
             title = child.name,
-            stock = if (stock == null) OutOfStock
-            else StockAvailable(stock.stock ?: 0),
+            stock = if (stock == null) {
+                OutOfStock
+            } else {
+                StockAvailable(stock.stock ?: 0)
+            },
             isVariantAvailable = true,
             price = if (child.campaign?.discountedPercentage != 0f) {
                 DiscountedPrice(
@@ -152,6 +150,10 @@ class PlayUiModelMapper @Inject constructor(
             isPinned = prevDetail.isPinned,
             isRilisanSpesial = prevDetail.isRilisanSpesial,
             buttons = prevDetail.buttons,
+            number = prevDetail.number,
+            isNumerationShown = prevDetail.isNumerationShown,
+            rating = prevDetail.rating,
+            soldQuantity = prevDetail.soldQuantity,
         )
     }
 }

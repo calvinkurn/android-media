@@ -1,9 +1,6 @@
 package com.tokopedia.mvc.domain.usecase
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.mvc.common.util.PaginationConstant.INITIAL_PAGE
 import com.tokopedia.mvc.data.mapper.GetCouponImagePreviewFacadeMapper
 import com.tokopedia.mvc.data.source.ImageGeneratorRemoteDataSource
@@ -37,7 +34,7 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
         voucherConfiguration: VoucherConfiguration,
         parentProductIds: List<Long>,
         imageRatio: ImageRatio
-    ): Bitmap {
+    ): ByteArray {
         return coroutineScope {
             val initiateCoupon = async {
                 initiateCoupon(
@@ -63,8 +60,7 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
                     )
                 )
             }
-            val image = generateImageDeferred.await()
-            return@coroutineScope BitmapFactory.decodeByteArray(image, Int.ZERO, image.size)
+            return@coroutineScope generateImageDeferred.await()
         }
     }
 

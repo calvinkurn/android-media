@@ -34,18 +34,17 @@ class VideoScreenHeader(context: Context, attributeSet: AttributeSet) :
         }
         screenTitle?.apply {
             text = context.getString(R.string.chatbot_video_title)
-            setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0))
             setType(Typography.DISPLAY_1)
             setWeight(Typography.BOLD)
         }
     }
 
     companion object {
-        val LAYOUT = R.layout.chatbot_video_header_layout
+        val LAYOUT = R.layout.customview_chatbot_video_header_layout
     }
 
     interface OnClickBackButton {
         fun navigateToChatbotActivity()
     }
-
 }

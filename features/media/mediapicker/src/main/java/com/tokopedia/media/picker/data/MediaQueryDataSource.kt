@@ -44,6 +44,4 @@ interface MediaQueryDataSource {
     fun createMedia(cursor: Cursor): Media?
 
     fun getVideoDuration(file: PickerFile): Int
-
-    fun isFileValidFromParam(media: Media): Boolean
 }

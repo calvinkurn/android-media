@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'kotlin-kapt'
 
 repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
@@ -18,6 +17,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.ordermanagement.buyercancellationorder'
+    testNamespace 'com.tokopedia.ordermanagement.buyercancellationorder.test'
     packagingOptions {
         exclude 'META-INF/**'
     }
@@ -44,7 +45,6 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.swipeRefresh
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.track)

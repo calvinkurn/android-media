@@ -3,6 +3,8 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 android {
+    namespace 'com.tokopedia.play_common'
+    testNamespace 'com.tokopedia.play_common.test'
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
@@ -32,7 +34,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.mediauploader)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
 
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.adapterDelegate)
     implementation projectOrAar(rootProject.ext.libraries.utils)
@@ -63,6 +64,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.iconNotification
+    implementation rootProject.ext.unifyDependencies.dialog
 
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.url
@@ -83,6 +85,10 @@ dependencies {
     implementation rootProject.ext.miscDependencies.workManager
 
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 }
 

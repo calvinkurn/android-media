@@ -1,0 +1,78 @@
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+}
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        vectorDrawables.useSupportLibrary=vectorDrawable.toBoolean()
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        multiDexEnabled (project.hasProperty('coverage'))
+    }
+    buildTypes {
+        debug{
+            ext.enableHansel = project.hasProperty('hanselEnableDebug')
+            testCoverageEnabled (project.hasProperty('coverage'))
+        }
+        release {
+            ext.enableHansel = !project.hasProperty('hanselDisableRelease')
+            minifyEnabled false
+            //proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_11
+    }
+
+    testOptions {
+        unitTests {
+            returnDefaultValues = true
+        }
+    }
+
+    packagingOptions {
+        pickFirst "win32-x86-64/attach_hotspot_windows.dll"
+        pickFirst "win32-x86/attach_hotspot_windows.dll"
+        exclude 'META-INF/**'
+    }
+
+    lintOptions {
+        abortOnError false
+        xmlReport true
+        htmlReport false
+    }
+}
+
+dependencies {
+    implementation rootProject.ext.supportLibDependencies.kotlinSupport
+    // Caused by: com.sun.tools.javac.processing.AnnotationProcessingError: java.lang.IllegalStateException: Unsupported metadata version. Check that your Kotlin version is >= 1.0
+    // https://stackoverflow.com/questions/67744002/hilt-unsupported-metadata-version-in-kotlin
+    kapt rootProject.ext.supportLibDependencies.kotlinMetaData
+
+    implementation (rootProject.ext.debugToolsDependencies.timber){
+        exclude group: 'org.jetbrains', module: 'annotations'
+    }
+    implementation rootProject.ext.miscDependencies.gson
+
+    testImplementation rootProject.ext.testDependencies.junit
+    androidTestImplementation(rootProject.ext.testDependencies.androidTestRunner) {
+        exclude module: 'support-annotations'
+    }
+
+    lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
+}

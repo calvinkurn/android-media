@@ -33,15 +33,17 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
     }
 
     val shadowDrawable: Drawable? by lazy {
-        view.generateBackgroundWithShadow(com.tokopedia.unifyprinciples.R.color.Unify_N0,
-                com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-                R.dimen.dp_12,
-                R.dimen.dp_12,
-                com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
-                com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
-                R.dimen.dp_2,
-                R.dimen.dp_2,
-                Gravity.TOP)
+        view.generateBackgroundWithShadow(
+            com.tokopedia.unifyprinciples.R.color.Unify_Background,
+            com.tokopedia.unifyprinciples.R.color.Unify_Static_Black_32,
+            R.dimen.dp_12,
+            R.dimen.dp_12,
+            com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
+            com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
+            R.dimen.dp_2,
+            R.dimen.dp_2,
+            Gravity.TOP
+        )
     }
 
     var setupVisibility: Boolean = false
@@ -68,14 +70,18 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
         }
     }
 
-    fun renderView(title: String, desc: String, alreadyFollowShop: Boolean = true,
-                   buttonLabel: String? = null,
-                   voucherIconUrl: String? = null,
-                   iconUrl: String = "",
-                   hideButton: Boolean = false,
-                   maxLine: Int = 1,
-                   centerImage: Boolean = false,
-                   customPaddingBottom: Int = 8) = with(view) {
+    fun renderView(
+        title: String,
+        desc: String,
+        alreadyFollowShop: Boolean = true,
+        buttonLabel: String? = null,
+        voucherIconUrl: String? = null,
+        iconUrl: String = "",
+        hideButton: Boolean = false,
+        maxLine: Int = 1,
+        centerImage: Boolean = false,
+        customPaddingBottom: Int = 8
+    ) = with(view) {
         if (alreadyFollowShop) {
             setupVisibility = false
             return@with
@@ -155,9 +161,9 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
         voucherIconUrl?.run {
             followersBtn?.layoutParams?.width = 110.toPx()
             followersBtn?.loadLeftDrawable(
-                    context = view.context,
-                    url = voucherIconUrl,
-                    convertIntoSize = 20.toPx()
+                context = view.context,
+                url = voucherIconUrl,
+                convertIntoSize = 20.toPx()
             )
         }
         followersBtn?.run {

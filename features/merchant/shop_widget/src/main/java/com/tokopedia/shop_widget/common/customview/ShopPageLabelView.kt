@@ -81,12 +81,12 @@ class ShopPageLabelView : ShopPageBaseCustomView {
             imageHeight = styledAttributes.getDimension(R.styleable.ShopPageLabelView_shop_lv_image_height, imageWidth.toFloat()).toInt()
             imageMarginRight = styledAttributes.getDimension(R.styleable.ShopPageLabelView_shop_lv_image_margin_right, resources.getDimension(R.dimen.dp_8)).toInt()
             titleText = styledAttributes.getString(R.styleable.ShopPageLabelView_shop_lv_title)
-            titleColorValue = styledAttributes.getColor(R.styleable.ShopPageLabelView_shop_lv_title_color, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-            subtitleColorValue = styledAttributes.getColor(R.styleable.ShopPageLabelView_shop_lv_sub_title_color, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+            titleColorValue = styledAttributes.getColor(R.styleable.ShopPageLabelView_shop_lv_title_color, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
+            subtitleColorValue = styledAttributes.getColor(R.styleable.ShopPageLabelView_shop_lv_sub_title_color, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_32))
             subTitleText = styledAttributes.getString(R.styleable.ShopPageLabelView_shop_lv_sub_title)
             contentText = styledAttributes.getString(R.styleable.ShopPageLabelView_shop_lv_content)
             badgeCounter = styledAttributes.getInt(R.styleable.ShopPageLabelView_shop_lv_badge, 0)
-            contentColorValue = styledAttributes.getColor(R.styleable.ShopPageLabelView_shop_lv_content_color, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+            contentColorValue = styledAttributes.getColor(R.styleable.ShopPageLabelView_shop_lv_content_color, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
             contentTextStyleValue = styledAttributes.getInt(R.styleable.ShopPageLabelView_shop_lv_content_text_style, Typeface.NORMAL)
             titleTextStyleValue = styledAttributes.getInt(R.styleable.ShopPageLabelView_shop_lv_title_text_style, Typeface.NORMAL)
             maxLines = styledAttributes.getInt(R.styleable.ShopPageLabelView_shop_lv_content_max_lines, 1)
@@ -157,12 +157,14 @@ class ShopPageLabelView : ShopPageBaseCustomView {
         requestLayout()
     }
 
+    @Suppress("unused")
     fun resetContentText() {
         content = contentText
         invalidate()
         requestLayout()
     }
 
+    @Suppress("unused")
     val isContentDefault: Boolean
         get() = contentTextView?.text == contentText
 
@@ -174,9 +176,9 @@ class ShopPageLabelView : ShopPageBaseCustomView {
             contentTextView?.setTextColor(contentColorValue)
             subTitleTextView?.setTextColor(subtitleColorValue)
         } else {
-            titleTextView?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
-            contentTextView?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
-            subTitleTextView?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+            titleTextView?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_32))
+            contentTextView?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_32))
+            subTitleTextView?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_32))
         }
     }
 
@@ -205,6 +207,7 @@ class ShopPageLabelView : ShopPageBaseCustomView {
         requestLayout()
     }
 
+    @Suppress("unused")
     fun setTitleContentTypeFace(typeFace: Int) {
         titleTextView?.setTypeface(null, typeFace)
         invalidate()
@@ -219,48 +222,6 @@ class ShopPageLabelView : ShopPageBaseCustomView {
             requestLayout()
         }
 
-    fun setContentTypeface(typefaceType: Int) {
-        contentTextView?.setTypeface(null, typefaceType)
-        invalidate()
-        requestLayout()
-    }
-
-    fun setContentColorValue(@ColorInt colorValue: Int) {
-        contentColorValue = colorValue
-        contentTextView?.setTextColor(colorValue)
-        invalidate()
-        requestLayout()
-    }
-
-    fun showRightArrow(hideArrow: Boolean) {
-        rightArrow?.visibility = if (hideArrow) GONE else VISIBLE
-        invalidate()
-        requestLayout()
-    }
-
-    fun setImageResource(imageResource: Int) {
-        if (imageResource >= 0) {
-            imageDrawable = AppCompatResources.getDrawable(context, imageResource)
-            imageView?.setImageDrawable(imageDrawable)
-            imageView?.visibility = VISIBLE
-            titleTextView?.setPadding(imageMarginRight, 0, 0, 0)
-            subTitleTextView?.setPadding(imageMarginRight, 0, 0, 0)
-        } else {
-            imageView?.visibility = GONE
-            titleTextView?.setPadding(0, 0, 0, 0)
-            subTitleTextView?.setPadding(0, 0, 0, 0)
-        }
-        invalidate()
-        requestLayout()
-    }
-
-    fun setBadgeCounter(badge: Int) {
-        badgeTextView?.text = badgeCounter(badge)
-        badgeTextView?.visibility = if (badge > 0) VISIBLE else GONE
-        invalidate()
-        requestLayout()
-    }
-
     private fun badgeCounter(badge: Int): String {
         var counter = badge.toString()
         if (badge > MAXIMUM_COUNTER) {
@@ -268,23 +229,6 @@ class ShopPageLabelView : ShopPageBaseCustomView {
         }
         return counter
     }
-
-    fun setContentClick(onClickListener: OnClickListener?) {
-        if (onClickListener == null) {
-            contentTextView?.isClickable = false
-        } else {
-            contentTextView?.isClickable = true
-            contentTextView?.setOnClickListener(onClickListener)
-        }
-    }
-
-    fun setSubTitle(subtitle: SpannableString?) {
-        subTitleTextView?.text = subtitle
-        subTitleTextView?.visibility = if (TextUtils.isEmpty(subtitle)) GONE else VISIBLE
-        invalidate()
-        requestLayout()
-    }
-
     companion object {
         private const val MAX_WIDTH_PERCENT_CONTENT = 0.3f
         private const val MAXIMUM_COUNTER = 99

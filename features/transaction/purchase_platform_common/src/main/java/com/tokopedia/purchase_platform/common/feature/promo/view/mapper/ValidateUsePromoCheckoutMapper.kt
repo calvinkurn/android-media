@@ -49,7 +49,7 @@ class ValidateUsePromoCheckoutMapper {
                 messageUiModel = mapMessageUiModel(promo.message),
                 additionalInfoUiModel = mapToAdditionalInfoUiModel(promo.additionalInfo),
                 benefitSummaryInfoUiModel = mapToBenefitSummaryInfoUiModel(promo.benefitSummaryInfo),
-                voucherOrderUiModels = mapListVoucherOrders(promo.voucherOrders),
+                voucherOrderUiModels = ArrayList(mapListVoucherOrders(promo.voucherOrders)),
                 tickerInfoUiModel = mapTickerInfoUiModel(promo.tickerInfo),
                 trackingDetailUiModels = mapTrackingDetails(promo.trackingDetails)
             )
@@ -100,7 +100,8 @@ class ValidateUsePromoCheckoutMapper {
                 uniqueId = voucherOrdersItem.uniqueId,
                 messageUiModel = mapMessageUiModel(voucherOrdersItem.message),
                 shippingId = voucherOrdersItem.shippingId,
-                spId = voucherOrdersItem.spId
+                spId = voucherOrdersItem.spId,
+                cartStringGroup = voucherOrdersItem.cartStringGroup
             )
         }
 

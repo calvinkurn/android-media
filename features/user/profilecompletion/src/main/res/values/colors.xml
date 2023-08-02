@@ -2,12 +2,12 @@
 <resources>
 
     <array name="green_indicator">
-        <item>@color/Unify_G100</item>
-        <item>@color/Unify_G400</item>
-        <item>@color/Unify_G400</item>
-        <item>@color/Unify_G600</item>
-        <item>@color/Unify_G600</item>
-        <item>@color/Unify_G700</item>
+        <item>@color/Unify_GN50</item>
+        <item>@color/Unify_GN500</item>
+        <item>@color/Unify_GN500</item>
+        <item>@color/Unify_GN600</item>
+        <item>@color/Unify_GN600</item>
+        <item>@color/Unify_GN700</item>
     </array>
 
 </resources>

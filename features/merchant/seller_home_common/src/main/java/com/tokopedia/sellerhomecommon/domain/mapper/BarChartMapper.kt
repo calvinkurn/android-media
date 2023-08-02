@@ -2,6 +2,7 @@ package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.charts.common.ChartColor
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.sellerhomecommon.common.DarkModeHelper
 import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.sellerhomecommon.domain.model.BarChartMetricModel
 import com.tokopedia.sellerhomecommon.domain.model.BarChartValueModel
@@ -20,7 +21,8 @@ import javax.inject.Inject
 
 class BarChartMapper @Inject constructor(
     lastUpdatedSharedPref: WidgetLastUpdatedSharedPrefInterface,
-    lastUpdatedEnabled: Boolean
+    lastUpdatedEnabled: Boolean,
+    private val darkModeHelper: DarkModeHelper
 ) : BaseWidgetMapper(lastUpdatedSharedPref, lastUpdatedEnabled),
     BaseResponseMapper<GetBarChartDataResponse, List<BarChartDataUiModel>> {
 
@@ -52,9 +54,9 @@ class BarChartMapper @Inject constructor(
     private fun mapBarChartSummary(summary: ChartSummaryModel): ChartSummaryUiModel {
         return ChartSummaryUiModel(
             diffPercentage = summary.diffPercentage,
-            diffPercentageFmt = summary.diffPercentageFmt,
+            diffPercentageFmt = darkModeHelper.makeHtmlDarkModeSupport(summary.diffPercentageFmt),
             value = summary.value,
-            valueFmt = summary.valueFmt
+            valueFmt = darkModeHelper.makeHtmlDarkModeSupport(summary.valueFmt)
         )
     }
 
@@ -94,6 +96,11 @@ class BarChartMapper @Inject constructor(
             }
         ]*/
     private fun getBarHexColor(metric: BarChartMetricModel): String {
-        return metric.value.getOrNull(COLOR_INDEX)?.hexColor ?: ChartColor.DMS_DEFAULT_BAR_COLOR
+        val hexColor = metric.value.getOrNull(COLOR_INDEX)?.hexColor
+        return if (hexColor == null) {
+            ChartColor.DMS_DEFAULT_BAR_COLOR
+        } else {
+            darkModeHelper.getUnifyHexColor(hexColor)
+        }
     }
 }

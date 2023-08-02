@@ -10,6 +10,7 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Price
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceTextData
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
@@ -27,46 +28,17 @@ import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentTicke
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccCartRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
-import com.tokopedia.oneclickcheckout.order.view.model.AddressState
-import com.tokopedia.oneclickcheckout.order.view.model.CreditCardTenorListData
-import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
-import com.tokopedia.oneclickcheckout.order.view.model.OccButtonType
-import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding
-import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
+import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt.Companion.TYPE_DIALOG
-import com.tokopedia.oneclickcheckout.order.view.model.OccToasterAction
-import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
-import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
-import com.tokopedia.oneclickcheckout.order.view.model.OrderCostInstallmentData
-import com.tokopedia.oneclickcheckout.order.view.model.OrderData
-import com.tokopedia.oneclickcheckout.order.view.model.OrderInsurance
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCard
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCardAdditionalData
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentErrorData
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilData
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilTerms
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentWalletActionData
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentWalletAdditionalData
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPreference
-import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
-import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
-import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
-import com.tokopedia.oneclickcheckout.order.view.model.OrderProfilePayment
-import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileShipment
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
-import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
-import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
-import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
-import com.tokopedia.oneclickcheckout.order.view.model.TenorListData
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
+import io.mockk.Ordering
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -495,7 +467,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         // When
         orderSummaryPageViewModel.updateProduct(OrderProduct(orderQuantity = 10), 0)
         assertEquals(OccButtonState.LOADING, orderSummaryPageViewModel.orderTotal.value.buttonState)
-        testDispatchers.main.advanceUntilIdle()
+        testDispatchers.main.scheduler.advanceUntilIdle()
 
         // Then
         assertEquals(10, orderSummaryPageViewModel.orderProducts.value.first().orderQuantity)
@@ -513,7 +485,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // When
         orderSummaryPageViewModel.updateProduct(OrderProduct(orderQuantity = 10), 0, false)
-        testDispatchers.main.advanceUntilIdle()
+        testDispatchers.main.scheduler.advanceUntilIdle()
 
         // Then
         verify(inverse = true) { ratesUseCase.execute(any()) }
@@ -530,9 +502,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // When
         orderSummaryPageViewModel.updateProduct(OrderProduct(orderQuantity = 10), 0)
-        testDispatchers.main.advanceTimeBy(500)
+        testDispatchers.main.scheduler.apply { advanceTimeBy(500); runCurrent() }
         orderSummaryPageViewModel.updateProduct(OrderProduct(orderQuantity = 20), 0)
-        testDispatchers.main.advanceUntilIdle()
+        testDispatchers.main.scheduler.advanceUntilIdle()
 
         // Then
         verify(exactly = 1) { ratesUseCase.execute(any()) }
@@ -840,6 +812,46 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
+    fun `Choose Installment Success With Promo`() {
+        // Given
+        var preference = helper.preference
+        preference = preference.copy(
+            payment = preference.payment.copy(
+                metadata = """
+            {
+                "express_checkout_param" : {"installment_term": "1"}
+            }
+                """.trimIndent()
+            )
+        )
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = preference
+        orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(codes = arrayListOf("code1"))
+        val term1 = OrderPaymentInstallmentTerm(term = 1, isEnable = true, isSelected = true)
+        val term2 = OrderPaymentInstallmentTerm(term = 2, isEnable = true, isSelected = false)
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, creditCard = OrderPaymentCreditCard(availableTerms = listOf(term1, term2), selectedTerm = term1))
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
+
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(
+            PromoUiModel(
+                codes = listOf("code1"),
+                globalSuccess = true
+            ),
+            status = "OK",
+            errorCode = "200"
+        )
+
+        // When
+        orderSummaryPageViewModel.chooseInstallment(term2, listOf(term1, term2))
+
+        // Then
+        coVerify {
+            updateCartOccUseCase.executeSuspend(any())
+            validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
+        }
+    }
+
+    @Test
     fun `Update Credit Card Success`() {
         // Given
         orderSummaryPageViewModel.orderProfile.value = helper.preference
@@ -852,6 +864,50 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.choosePayment(gatewayCode, metadata)
 
         // Then
+        assertEquals(OccGlobalEvent.TriggerRefresh(), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Update Payment Success With Logistic Ticker Not Showing And BO Promo Exist`() {
+        // Given
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(
+            isShowLogisticPromoTickerMessage = false,
+            isApplyLogisticPromo = true,
+            logisticPromoShipping = ShippingCourierUiModel(),
+            logisticPromoViewModel = LogisticPromoUiModel(promoCode = "BOPromo")
+        )
+        val metadata = "metadata"
+        val gatewayCode = "gatewayCode"
+        coEvery { updateCartOccUseCase.executeSuspend(match { it.profile.metadata == metadata && it.profile.gatewayCode == gatewayCode }) } returns null
+
+        // When
+        orderSummaryPageViewModel.choosePayment(gatewayCode, metadata)
+
+        // Then
+        assertEquals(orderSummaryPageViewModel.orderShipment.value.isShowLogisticPromoTickerMessage, true)
+        assertEquals(OccGlobalEvent.TriggerRefresh(), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Update Payment Success With Logistic Ticker Not Showing And BO Promo Not Exist`() {
+        // Given
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(
+            isShowLogisticPromoTickerMessage = false,
+            isApplyLogisticPromo = false
+        )
+        val metadata = "metadata"
+        val gatewayCode = "gatewayCode"
+        coEvery { updateCartOccUseCase.executeSuspend(match { it.profile.metadata == metadata && it.profile.gatewayCode == gatewayCode }) } returns null
+
+        // When
+        orderSummaryPageViewModel.choosePayment(gatewayCode, metadata)
+
+        // Then
+        assertEquals(orderSummaryPageViewModel.orderShipment.value.isShowLogisticPromoTickerMessage, false)
         assertEquals(OccGlobalEvent.TriggerRefresh(), orderSummaryPageViewModel.globalEvent.value)
     }
 
@@ -1897,6 +1953,43 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
+    fun `Choose GoCicil Installment Options With Promo`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000.0)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(
+            isEnable = true,
+            maximumAmount = 1000000,
+            walletAmount = 1000000,
+            walletData = OrderPaymentWalletAdditionalData(
+                walletType = 4,
+                goCicilData = OrderPaymentGoCicilData(selectedTenure = 2, selectedTerm = OrderPaymentGoCicilTerms(isActive = true), availableTerms = listOf(OrderPaymentGoCicilTerms(isActive = true)))
+            )
+        )
+        orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(codes = arrayListOf("code1"))
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(
+            PromoUiModel(
+                codes = listOf("code1"),
+                globalSuccess = true
+            ),
+            status = "OK",
+            errorCode = "200"
+        )
+
+        // When
+        orderSummaryPageViewModel.chooseInstallment(OrderPaymentGoCicilTerms(), listOf(OrderPaymentGoCicilTerms()), "", false)
+
+        // Then
+        coVerify(ordering = Ordering.ORDERED) {
+            updateCartOccUseCase.executeSuspend(any())
+            validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
+            goCicilInstallmentOptionUseCase.executeSuspend(any())
+        }
+    }
+
+    @Test
     fun `Choose GoCicil Installment Options Silently`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
@@ -1906,6 +1999,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(
             isEnable = true,
             maximumAmount = 1000000,
+            walletAmount = 1000000,
             walletData = OrderPaymentWalletAdditionalData(
                 walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(selectedTenure = 2, selectedTerm = OrderPaymentGoCicilTerms(isActive = true), availableTerms = listOf(OrderPaymentGoCicilTerms(isActive = true)))
@@ -1916,10 +2010,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.chooseInstallment(OrderPaymentGoCicilTerms(), listOf(OrderPaymentGoCicilTerms()), "", true)
 
         // Then
-        coVerify(inverse = true) {
+        coVerify {
             goCicilInstallmentOptionUseCase.executeSuspend(any())
-        }
-        coVerify(inverse = true) {
             updateCartOccUseCase.executeSuspend(any())
         }
     }
@@ -1945,7 +2037,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.chooseInstallment(OrderPaymentGoCicilTerms(), listOf(OrderPaymentGoCicilTerms()), "", false)
 
         // Then
-        coVerify(inverse = true) {
+        coVerify {
             goCicilInstallmentOptionUseCase.executeSuspend(any())
         }
         coVerify(inverse = true) {

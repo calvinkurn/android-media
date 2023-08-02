@@ -5,11 +5,13 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
@@ -34,46 +36,52 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     fun bindData(data: LogisticPromoUiModel, listener: ShippingDurationAdapterListener?) {
         val formattedTitle = HtmlLinkHelper(itemView.context, data.freeShippingItemTitle).spannedString
 
-        tvTitle.text = formattedTitle
-        tvTitle.visibility = View.VISIBLE
-        tvTitleExtra.visibility = View.GONE
-        tvEta.visibility = View.GONE
+        if (formattedTitle?.isNotEmpty() == true) {
+            tvTitle.text = formattedTitle
+            tvTitle.visible()
+        } else {
+            tvTitle.gone()
+        }
+
+        tvTitleExtra.gone()
+        tvEta.gone()
 
         if (data.codData.isCodAvailable == 1) {
             lblCodAvailableEta.apply {
-                visibility = View.VISIBLE
+                visible()
                 text = data.codData.codText
             }
         } else {
-            lblCodAvailableEta.visibility = View.GONE
+            lblCodAvailableEta.gone()
         }
 
         if (data.bottomSheetDescription.isNotEmpty()) {
             tvInfo.text = MethodChecker.fromHtml(data.bottomSheetDescription)
-            tvInfo.visibility = View.VISIBLE
+            tvInfo.visible()
         } else if (data.promoMessage.isNotBlank()) {
             tvInfo.text = MethodChecker.fromHtml(data.promoMessage)
-            tvInfo.visibility = View.VISIBLE
+            tvInfo.visible()
         } else {
-            tvInfo.visibility = View.GONE
+            tvInfo.gone()
         }
 
         if (data.imageUrl.isNotEmpty()) {
             imgLogo.contentDescription = itemView.context.getString(R.string.content_description_img_logo_rates_promo_prefix, data.title)
-            ImageHandler.LoadImage(imgLogo, data.imageUrl)
+            imgLogo.loadImage(data.imageUrl)
+            imgLogo.visible()
         } else {
-            imgLogo.visibility = View.GONE
+            imgLogo.gone()
         }
 
         val fontColor = if (data.disabled) {
-            ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32)
+            ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_32)
         } else {
-            ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+            ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68)
         }
         val boldFontColor = if (data.disabled) {
-            ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)
+            ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_44)
         } else {
-            ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+            ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)
         }
 
         tvInfo.setTextColor(fontColor)
@@ -85,15 +93,15 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             }
             flImageContainer.foreground = ContextCompat.getDrawable(itemView.context, R.drawable.fg_enabled_item)
         } else {
-            tvTitle.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+            tvTitle.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
             flImageContainer.foreground = ContextCompat.getDrawable(itemView.context, R.drawable.fg_disabled_item)
             itemView.setOnClickListener(null)
         }
 
         if (data.isApplied) {
-            imgCheck.visibility = View.VISIBLE
+            imgCheck.visible()
         } else {
-            imgCheck.visibility = View.GONE
+            imgCheck.gone()
         }
     }
 }

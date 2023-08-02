@@ -8,7 +8,10 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.utils.RemoteConfig
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.getReviewStar
 import com.tokopedia.review.databinding.WidgetReviewGalleryVideoThumbnailBinding
@@ -29,14 +32,15 @@ class ReviewGalleryVideoThumbnail @JvmOverloads constructor(
         this,
         true
     )
-
-    private val reviewVideoPlayer = ReviewVideoPlayer(
-        context = binding.root.context,
-        minBufferDuration = 50,
-        maxBufferDuration = 50,
-        minPlaybackStartBuffer = 50,
-        minPlaybackResumeBuffer = 50
-    )
+    private val reviewVideoPlayer by lazy {
+        ReviewVideoPlayer(
+            context = binding.root.context,
+            minBufferDuration = 50,
+            maxBufferDuration = 50,
+            minPlaybackStartBuffer = 50,
+            minPlaybackResumeBuffer = 50
+        )
+    }
     private var element: ReviewGalleryVideoThumbnailUiModel? = null
     private var reviewGalleryMediaThumbnailListener: ReviewGalleryMediaThumbnailListener? = null
 
@@ -62,9 +66,18 @@ class ReviewGalleryVideoThumbnail @JvmOverloads constructor(
         reviewGalleryMediaThumbnailListener = newListener
     }
 
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        element?.let { element -> bind(element) }
+    }
+
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        reviewVideoPlayer.cleanupVideoPlayer()
+        if (RemoteConfig.glideM3U8ThumbnailLoaderEnabled(context)) {
+            binding.ivReviewGalleryVideoThumbnail.clearImage()
+        } else {
+            reviewVideoPlayer.cleanupVideoPlayer()
+        }
     }
 
     private fun setupLayout() {
@@ -81,6 +94,32 @@ class ReviewGalleryVideoThumbnail @JvmOverloads constructor(
     }
 
     private fun WidgetReviewGalleryVideoThumbnailBinding.setupThumbnail(videoUrl: String) {
+        if (RemoteConfig.glideM3U8ThumbnailLoaderEnabled(context)) {
+            setupThumbnailWithGlide(videoUrl)
+            playerViewReviewGalleryVideoThumbnail.gone()
+            ivReviewGalleryVideoThumbnail.show()
+        } else {
+            setupThumbnailWithExoPlayer(videoUrl)
+            ivReviewGalleryVideoThumbnail.gone()
+            playerViewReviewGalleryVideoThumbnail.show()
+        }
+    }
+
+    private fun WidgetReviewGalleryVideoThumbnailBinding.setupThumbnailWithGlide(videoUrl: String) {
+        loaderReviewGalleryVideoThumbnail.show()
+        ivReviewGalleryVideoThumbnail.loadImage(videoUrl) {
+            listener(onSuccess = { _, _ ->
+                onReviewVideoPlayerIsPaused()
+            }, onError = { throwable ->
+                val errorCode = throwable?.let {
+                    ErrorHandler.getErrorMessagePair(context, it, ErrorHandler.Builder()).second
+                }.orEmpty()
+                onReviewVideoPlayerError(errorCode)
+            })
+        }
+    }
+
+    private fun WidgetReviewGalleryVideoThumbnailBinding.setupThumbnailWithExoPlayer(videoUrl: String) {
         loaderReviewGalleryVideoThumbnail.show()
         reviewVideoPlayer.initializeVideoPlayer(
             videoUrl,
