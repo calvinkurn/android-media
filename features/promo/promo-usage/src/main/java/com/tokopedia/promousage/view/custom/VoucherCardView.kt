@@ -21,8 +21,9 @@ class VoucherCardView @JvmOverloads constructor(
 
     companion object {
         private const val CARD_VIEW_CORNER_RADIUS = 24f // Corner radius for the CardView
-        private const val EXPIRED_DATE_BACKGROUND_HEIGHT = 32F
-        private const val CIRCLE_CUT_OUT_MARGIN_BOTTOM = 22F
+        private const val EXPIRED_DATE_BACKGROUND_HEIGHT = 38f
+        private const val CIRCLE_CUT_OUT_MARGIN_BOTTOM = 28f
+        private const val CIRCLE_RADIUS = 20F
     }
 
     init {
@@ -45,26 +46,15 @@ class VoucherCardView @JvmOverloads constructor(
         style = Paint.Style.FILL
     }
 
-    private val voucherBottomBackgroundNormal = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+    private val voucherExpiredDateBackground = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN50)
         style = Paint.Style.FILL
     }
 
-    private val voucherBottomBackgroundSelected = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
-        style = Paint.Style.FILL
-    }
-
-    private val cardViewBorderGray = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+    private val cardViewBorder = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN200)
         strokeWidth = 4f
         style = Paint.Style.STROKE
-    }
-
-    private val cardViewBorderGreen = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN100)
-        style = Paint.Style.STROKE
-        strokeWidth = 4f
     }
 
 
@@ -108,12 +98,12 @@ class VoucherCardView @JvmOverloads constructor(
     private fun drawLeftCircleCut(canvas: Canvas?) {
         //Left cut stroke color
         canvas?.drawPath(Path().also {
-            it.addCircle(0f, (height - voucherCircleMarginBottomPX), 20f, Path.Direction.CW)
+            it.addCircle(0f, (height - voucherCircleMarginBottomPX), CIRCLE_RADIUS, Path.Direction.CW)
         }, circleCutStrokeColor)
 
         //Left cut circle
         canvas?.clipPath(Path().also {
-            it.addCircle(0f, (height - voucherCircleMarginBottomPX), 20f, Path.Direction.CW)
+            it.addCircle(0f, (height - voucherCircleMarginBottomPX), CIRCLE_RADIUS, Path.Direction.CW)
         }, Region.Op.DIFFERENCE)
     }
 
@@ -123,7 +113,7 @@ class VoucherCardView @JvmOverloads constructor(
             it.addCircle(
                 width.toFloat(),
                 (height - voucherCircleMarginBottomPX),
-                20f,
+                CIRCLE_RADIUS,
                 Path.Direction.CW
             )
         }, circleCutStrokeColor)
@@ -133,14 +123,14 @@ class VoucherCardView @JvmOverloads constructor(
             it.addCircle(
                 width.toFloat(),
                 (height - voucherCircleMarginBottomPX),
-                20f,
+                CIRCLE_RADIUS,
                 Path.Direction.CW
             )
         }, Region.Op.DIFFERENCE)
     }
 
     private fun drawCardViewBorder(canvas: Canvas?) {
-        canvas?.drawPath(cardViewBorderPath, cardViewBorderGray)
+        canvas?.drawPath(cardViewBorderPath, cardViewBorder)
     }
 
     private fun drawTopBackground(canvas: Canvas?) {
@@ -163,7 +153,25 @@ class VoucherCardView @JvmOverloads constructor(
             height.toFloat(),
             16f,
             0f,
-            voucherBottomBackgroundNormal
+            voucherExpiredDateBackground
         )
+    }
+
+    fun updateToSelectedState() {
+        circleCutStrokeColor.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+        voucherBackground.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN50)
+        voucherExpiredDateBackground.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN100)
+        cardViewBorder.color  = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+        cardViewBorder.strokeWidth = 6f
+        invalidate()
+    }
+
+    fun updateToNormalState() {
+        circleCutStrokeColor.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN200)
+        voucherBackground.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        voucherExpiredDateBackground.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN50)
+        cardViewBorder.color  = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN200)
+        cardViewBorder.strokeWidth = 4f
+        invalidate()
     }
 }

@@ -113,6 +113,8 @@ class VoucherCompoundView @JvmOverloads constructor(
                     layoutActionable.gone()
 
                     showLoadingAppearance()
+
+                    cardView.updateToNormalState()
                 }
 
                 VoucherState.Normal -> {
@@ -124,6 +126,8 @@ class VoucherCompoundView @JvmOverloads constructor(
                     layoutActionable.gone()
 
                     hideLoadingAppearance()
+
+                    cardView.updateToNormalState()
                 }
                 is VoucherState.Ineligible -> {
                     imgCheckmark.gone()
@@ -135,6 +139,8 @@ class VoucherCompoundView @JvmOverloads constructor(
                     layoutActionable.gone()
 
                     hideLoadingAppearance()
+
+                    cardView.updateToNormalState()
                 }
                 is VoucherState.Actionable -> {
                     imgCheckmark.gone()
@@ -151,6 +157,8 @@ class VoucherCompoundView @JvmOverloads constructor(
                     )
 
                     hideLoadingAppearance()
+
+                    cardView.updateToNormalState()
                 }
                 is VoucherState.Disabled -> {
                     imgCheckmark.gone()
@@ -161,6 +169,8 @@ class VoucherCompoundView @JvmOverloads constructor(
                     layoutActionable.gone()
 
                     hideLoadingAppearance()
+
+                    cardView.updateToNormalState()
                 }
                 is VoucherState.Selected -> {
                     imgCheckmark.visible()
@@ -171,6 +181,8 @@ class VoucherCompoundView @JvmOverloads constructor(
                     layoutActionable.gone()
 
                     hideLoadingAppearance()
+
+                    cardView.updateToSelectedState()
                 }
 
             }
