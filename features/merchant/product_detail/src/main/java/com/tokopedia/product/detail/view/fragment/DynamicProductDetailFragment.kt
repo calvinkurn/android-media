@@ -4395,7 +4395,7 @@ open class DynamicProductDetailFragment :
 
     private fun getDarkToolbarIconColor(): Int = ContextCompat.getColor(
         requireContext(),
-        com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+        com.tokopedia.unifyprinciples.R.color.Unify_Static_White
     )
 
     private fun getLightToolbarIconColor(): Int {

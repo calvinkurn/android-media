@@ -8,6 +8,5 @@
     android:orientation="horizontal"
     android:paddingHorizontal="16dp"
     android:paddingBottom="12dp"
-    android:background="@color/unify_N75"
     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
     app:layout_constraintTop_toTopOf="parent" />
