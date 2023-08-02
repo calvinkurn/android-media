@@ -46,6 +46,7 @@ import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.util.Utils
+import com.tokopedia.topchat.common.util.Utils.getBuildVersion
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -446,7 +447,7 @@ class ChatItemListViewModel @Inject constructor(
 
     fun shouldShowBubbleTicker(): Boolean {
         return getBooleanCache(BUBBLE_TICKER_PREF_NAME) &&
-            (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+            (getBuildVersion() >= Build.VERSION_CODES.R)
     }
 
     fun saveBooleanCache(cacheName: String, value: Boolean) {
