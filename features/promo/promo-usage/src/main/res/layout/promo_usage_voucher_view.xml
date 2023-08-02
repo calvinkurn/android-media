@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <androidx.cardview.widget.CardView
+    <com.tokopedia.promousage.view.custom.VoucherCardView
         android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_marginStart="4dp"
@@ -149,7 +149,6 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="1dp"
                 android:layout_marginBottom="1dp"
-                android:background="@drawable/promo_usage_shape_voucher_expired_date"
                 android:textColor="@color/Unify_NN600"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -178,7 +177,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    </androidx.cardview.widget.CardView>
+    </com.tokopedia.promousage.view.custom.VoucherCardView>
 
     <FrameLayout
         android:id="@+id/layoutRemainingQuotaRibbon"
