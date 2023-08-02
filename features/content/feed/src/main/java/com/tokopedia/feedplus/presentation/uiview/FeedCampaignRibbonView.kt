@@ -181,46 +181,46 @@ class FeedCampaignRibbonView(
 
     private fun runRecursiveDelayDiscount(index: Int) {
         mCta?.texts?.let {
-            if (it.isNotEmpty()) {
-                val ctaIndex = index % it.size
-                if (ctaIndex < it.size) {
-                    with(binding) {
-                        when (root.currentState) {
-                            R.id.initial_title_with_icon -> {
-                                tyFeedCampaignRibbonTitleSecond.text = it[ctaIndex]
+            if (it.isEmpty()) return@let
 
-                                startDelayProcess(THREE_SECOND) {
-                                    root.setTransition(
-                                        root.currentState,
-                                        R.id.second_title_with_icon
-                                    )
-                                    root.transitionToEnd()
-                                    runRecursiveDelayDiscount(index + ONE)
-                                }
+            val ctaIndex = index % it.size
+            if (ctaIndex < it.size) {
+                with(binding) {
+                    when (root.currentState) {
+                        R.id.initial_title_with_icon -> {
+                            tyFeedCampaignRibbonTitleSecond.text = it[ctaIndex]
+
+                            startDelayProcess(THREE_SECOND) {
+                                root.setTransition(
+                                    root.currentState,
+                                    R.id.second_title_with_icon
+                                )
+                                root.transitionToEnd()
+                                runRecursiveDelayDiscount(index + ONE)
                             }
-                            R.id.second_title_with_icon -> {
-                                tyFeedCampaignRibbonTitle.text = it[ctaIndex]
+                        }
+                        R.id.second_title_with_icon -> {
+                            tyFeedCampaignRibbonTitle.text = it[ctaIndex]
 
-                                startDelayProcess(THREE_SECOND) {
-                                    root.setTransition(
-                                        root.currentState,
-                                        R.id.initial_title_with_icon
-                                    )
-                                    root.transitionToEnd()
-                                    runRecursiveDelayDiscount(index + ONE)
-                                }
+                            startDelayProcess(THREE_SECOND) {
+                                root.setTransition(
+                                    root.currentState,
+                                    R.id.initial_title_with_icon
+                                )
+                                root.transitionToEnd()
+                                runRecursiveDelayDiscount(index + ONE)
                             }
-                            else -> {
-                                tyFeedCampaignRibbonTitleSecond.text = it[ctaIndex]
+                        }
+                        else -> {
+                            tyFeedCampaignRibbonTitleSecond.text = it[ctaIndex]
 
-                                startDelayProcess(THREE_SECOND) {
-                                    root.setTransition(
-                                        root.currentState,
-                                        R.id.initial_title_with_icon
-                                    )
-                                    root.transitionToEnd()
-                                    runRecursiveDelayDiscount(index + ONE)
-                                }
+                            startDelayProcess(THREE_SECOND) {
+                                root.setTransition(
+                                    root.currentState,
+                                    R.id.initial_title_with_icon
+                                )
+                                root.transitionToEnd()
+                                runRecursiveDelayDiscount(index + ONE)
                             }
                         }
                     }
