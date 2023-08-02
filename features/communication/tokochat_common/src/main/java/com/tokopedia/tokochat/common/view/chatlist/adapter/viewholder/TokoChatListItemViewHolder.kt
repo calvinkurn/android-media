@@ -3,7 +3,6 @@ package com.tokopedia.tokochat.common.view.chatlist.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.adapterdelegate.BaseViewHolder
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -37,7 +36,7 @@ class TokoChatListItemViewHolder(
     }
 
     private fun bindDriver(element: TokoChatListItemUiModel) {
-        binding?.tokochatListTvDriverName?.text = element.driverName + "alksjdlakjsdlaksjdalksjdlaksjdalksjd"
+        binding?.tokochatListTvDriverName?.text = element.driverName
         if (imageUrl != element.imageUrl) {
             binding?.tokochatListIvDriver?.loadImage(element.imageUrl)
             imageUrl = element.imageUrl
@@ -50,8 +49,10 @@ class TokoChatListItemViewHolder(
     }
 
     private fun bindOrderType(element: TokoChatListItemUiModel) {
-        val orderName = " ${getString(R.string.tokochat_list_driver_order_type,
-            element.getStringOrderType())}"
+        val orderName = " ${getString(
+            R.string.tokochat_list_driver_order_type,
+            element.getStringOrderType()
+        )}"
         binding?.tokochatListTvOrderType?.text = orderName
     }
 
