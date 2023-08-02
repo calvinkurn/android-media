@@ -7,8 +7,9 @@ import com.tokopedia.usecase.coroutines.Result
 
 data class CentralizedPromoUiState(
     val isLoading: LoadingType = LoadingType.NONE,
+    val isSwipeRefresh: Boolean = false,
+    val showRbac: Boolean = false,
     val selectedTabFilterData: Pair<String, String> = Pair("", ""),
-    val errorOnePage: String? = null,
     val onGoingData: Result<BaseUiModel>? = null,
     val promoCreationData: Result<BaseUiModel>? = null
 ) {

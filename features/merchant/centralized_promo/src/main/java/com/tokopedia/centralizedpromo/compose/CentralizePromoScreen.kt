@@ -21,7 +21,6 @@ import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,14 +36,20 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.centralizedpromo.R.drawable
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.view.LayoutType.PROMO_CREATION
+import com.tokopedia.centralizedpromo.view.LoadingType
+import com.tokopedia.centralizedpromo.view.LoadingType.ALL
 import com.tokopedia.centralizedpromo.view.bottomSheet.DetailPromoBottomSheet
 import com.tokopedia.centralizedpromo.view.fragment.CentralizedPromoFragment
+import com.tokopedia.centralizedpromo.view.model.BaseUiModel
 import com.tokopedia.centralizedpromo.view.model.CentralizedPromoEvent
+import com.tokopedia.centralizedpromo.view.model.CentralizedPromoUiState
 import com.tokopedia.centralizedpromo.view.model.FilterPromoUiModel
+import com.tokopedia.centralizedpromo.view.model.Footer
 import com.tokopedia.centralizedpromo.view.model.OnGoingPromoListUiModel
+import com.tokopedia.centralizedpromo.view.model.OnGoingPromoUiModel
 import com.tokopedia.centralizedpromo.view.model.PromoCreationListUiModel
 import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
-import com.tokopedia.centralizedpromo.view.viewmodel.CentralizedPromoComposeViewModel
+import com.tokopedia.centralizedpromo.view.model.Status
 import com.tokopedia.header.compose.NestHeader
 import com.tokopedia.header.compose.NestHeaderType
 import com.tokopedia.sortfilter.compose.NestSortFilter
@@ -56,13 +61,15 @@ import java.util.*
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CentralizedPromoScreen(viewModel: CentralizedPromoComposeViewModel) {
+fun CentralizedPromoScreen(
+    uiState: CentralizedPromoUiState,
+    onEvent: (CentralizedPromoEvent) -> Unit = {},
+    checkRbac: (String) -> Boolean = { false },
+    onBackPressed: () -> Unit = {}
+) {
 
-    val uiState = viewModel.layoutList.collectAsState().value
-    val isRefreshing = viewModel.isSwipeRefresh.collectAsState().value
-
-    val pullRefreshState = rememberPullRefreshState(isRefreshing, {
-        viewModel.sendEvent(CentralizedPromoEvent.SwipeRefresh)
+    val pullRefreshState = rememberPullRefreshState(uiState.isSwipeRefresh, {
+        onEvent.invoke(CentralizedPromoEvent.SwipeRefresh)
     })
     val context = LocalContext.current
 
@@ -70,7 +77,8 @@ fun CentralizedPromoScreen(viewModel: CentralizedPromoComposeViewModel) {
         topBar = {
             NestHeader(
                 type = NestHeaderType.SingleLine().copy(
-                    title = "Iklan dan Promosi"
+                    title = "Iklan dan Promosi",
+                    onBackClicked = onBackPressed
                 )
             )
         }) {
@@ -90,7 +98,7 @@ fun CentralizedPromoScreen(viewModel: CentralizedPromoComposeViewModel) {
             ) {
 
                 HeaderSection(
-                    uiState.onGoingData as? Result<OnGoingPromoListUiModel>,
+                    uiState.onGoingData,
                     uiState.isLoadingHeader()
                 ) {
                     RouteManager.route(
@@ -99,32 +107,31 @@ fun CentralizedPromoScreen(viewModel: CentralizedPromoComposeViewModel) {
                 }
 
                 BodySection(
-                    uiState.promoCreationData as? Result<PromoCreationListUiModel>,
+                    uiState.promoCreationData,
                     uiState.selectedTabId(),
                     uiState.isLoadingBody(),
                     onFilterClicked = { tabData ->
-                        viewModel.sendEvent(
+                        onEvent.invoke(
                             CentralizedPromoEvent.FilterUpdate(
                                 selectedTabFilterData = tabData.first to tabData.second
                             )
                         )
                     },
                     onPromoClicked = { promoCreationUiModel ->
-                        val showRbac = !viewModel.getKeyRBAC(promoCreationUiModel.title)
                         onPromoClicked(
                             context,
                             uiState.selectedTabName(),
                             promoCreationUiModel,
-                            showRbac
+                            !checkRbac.invoke(promoCreationUiModel.title)
                         ) {
-                            viewModel.sendEvent(CentralizedPromoEvent.UpdateRbacBottomSheet(it))
+                            onEvent.invoke(CentralizedPromoEvent.UpdateRbacBottomSheet(it))
                         }
                     }
                 )
             }
 
             PullRefreshIndicator(
-                isRefreshing,
+                uiState.isSwipeRefresh,
                 pullRefreshState,
                 Modifier.align(Alignment.TopCenter)
             )
@@ -212,16 +219,18 @@ private fun getPlayPerformanceApplink(): String {
 
 
 private fun LazyGridScope.BodySection(
-    promoCreationData: Result<PromoCreationListUiModel>?,
+    promoCreationData: Result<BaseUiModel>?,
     selectedTabId: String,
     isLoadingPromoList: Boolean,
     onFilterClicked: (Pair<String, String>) -> Unit,
     onPromoClicked: (PromoCreationUiModel) -> Unit
 ) {
-    TitleSection("Buat Promosi")
+    val promoCreationDataCast = (promoCreationData as? Success)?.data as? PromoCreationListUiModel
 
-    if (promoCreationData is Success && promoCreationData.data.filterItems.isNotEmpty()) {
-        FilterSection(promoCreationData.data.filterItems, selectedTabId) {
+    TitleBody()
+
+    if (promoCreationDataCast != null) {
+        FilterSection(promoCreationDataCast.filterItems, selectedTabId) {
             onFilterClicked.invoke(it)
         }
     }
@@ -231,10 +240,11 @@ private fun LazyGridScope.BodySection(
     } else if (promoCreationData != null) {
         when (promoCreationData) {
             is Success -> {
-                PromoCreationSection(promoCreationData.data.items, onPromoClicked)
+                if (promoCreationDataCast != null) {
+                    PromoCreationSection(promoCreationDataCast.items, onPromoClicked)
+                }
             }
             is Fail -> {
-
             }
         }
     }
@@ -266,37 +276,41 @@ private fun LazyGridScope.FilterSection(
 }
 
 private fun LazyGridScope.HeaderSection(
-    onGoingResult: Result<OnGoingPromoListUiModel>?,
+    onGoingResult: Result<BaseUiModel>?,
     isOnGoingLoading: Boolean,
     routeToUrl: (String) -> Unit
 ) {
 
-    TitleSection("Fitur promosi aktifmu")
     if (isOnGoingLoading) {
+        TitleHeader()
         OnGoingCardShimmerRow()
     } else if (onGoingResult != null) {
         when (onGoingResult) {
             is Success -> {
-                OnGoingPromoSection(
-                    result = onGoingResult,
-                    routeToUrl = routeToUrl
-                )
+                val onGoingResultCast = onGoingResult.data as? OnGoingPromoListUiModel
+
+                if (onGoingResultCast != null && onGoingResultCast.items.isNotEmpty()) {
+                    TitleHeader()
+                    OnGoingPromoSection(
+                        result = onGoingResultCast,
+                        routeToUrl = routeToUrl
+                    )
+                }
             }
             is Fail -> {
-
+                TitleHeader()
+                //TODO Show error
             }
         }
     }
 }
 
-private fun LazyGridScope.TitleSection(
-    title: String,
-    modifier: Modifier = Modifier
-) = item(span = { GridItemSpan(2) }) {
-    PromoSectionTitle(
-        text = title,
-        modifier = modifier.padding(vertical = 16.dp)
-    )
+private fun LazyGridScope.TitleHeader() {
+    TitleSection("Fitur promosi aktifmu")
+}
+
+private fun LazyGridScope.TitleBody() {
+    TitleSection("Buat Promosi")
 }
 
 private fun LazyGridScope.PromoCreationSection(
@@ -320,29 +334,22 @@ private fun LazyGridScope.PromoCreationSection(
 }
 
 private fun LazyGridScope.OnGoingPromoSection(
-    result: Result<OnGoingPromoListUiModel>,
+    result: OnGoingPromoListUiModel,
     routeToUrl: (String) -> Unit
 ) = item(span = { GridItemSpan(2) }) {
-    when (result) {
-        is Success -> {
-            LazyRow {
-                this@LazyRow.items(result.data.items) { onGoingData ->
-                    OnGoingCard(
-                        title = onGoingData.title,
-                        counter = onGoingData.status.count,
-                        counterTitle = onGoingData.status.text,
-                        onTitleClicked = {
-                            routeToUrl.invoke(onGoingData.status.url)
-                        },
-                        onFooterClicked = {
-                            routeToUrl.invoke(onGoingData.status.url)
-                        }
-                    )
+    LazyRow {
+        this@LazyRow.items(result.items) { onGoingData ->
+            OnGoingCard(
+                title = onGoingData.title,
+                counter = onGoingData.status.count,
+                counterTitle = onGoingData.status.text,
+                onTitleClicked = {
+                    routeToUrl.invoke(onGoingData.status.url)
+                },
+                onFooterClicked = {
+                    routeToUrl.invoke(onGoingData.status.url)
                 }
-            }
-        }
-        is Fail -> {
-
+            )
         }
     }
 }
@@ -360,6 +367,51 @@ private fun BackgroundDrawable() {
 
 @Preview(name = "NEXUS_7", device = Devices.NEXUS_5)
 @Composable
-private fun CentralizedPromoScreenPreview() {
-//    CentralizedPromoScreen()
+private fun CentralizedPromoScreenLoadingPreview() {
+    CentralizedPromoScreen(
+        uiState = CentralizedPromoUiState(
+            isLoading = ALL
+        )
+    )
+}
+
+@Preview(name = "NEXUS_7", device = Devices.NEXUS_5)
+@Composable
+private fun CentralizedPromoScreenSuccessPreview() {
+    CentralizedPromoScreen(
+        uiState = CentralizedPromoUiState(
+            isLoading = LoadingType.PROMO_LIST,
+            onGoingData = Success(
+                OnGoingPromoListUiModel(
+                    title = "Fitur Ku", items = listOf(
+                        OnGoingPromoUiModel(
+                            title = "Flash Sale Tokopedia",
+                            status = Status(
+                                text = "Mendatang",
+                                count = 3,
+                                url = "test"
+                            ),
+                            footer = Footer(
+                                text = "",
+                                url = "test"
+                            )
+                        ),
+                        OnGoingPromoUiModel(
+                            title = "Flash Sale Tokopedia",
+                            status = Status(
+                                text = "Mendatang",
+                                count = 3,
+                                url = "test"
+                            ),
+                            footer = Footer(
+                                text = "",
+                                url = "test"
+                            )
+                        )
+                    ),
+                    errorMessage = ""
+                )
+            )
+        )
+    )
 }

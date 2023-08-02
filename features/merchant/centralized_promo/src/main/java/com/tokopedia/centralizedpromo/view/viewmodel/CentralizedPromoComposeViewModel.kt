@@ -44,9 +44,6 @@ class CentralizedPromoComposeViewModel @Inject constructor(
     private val _layoutList = MutableStateFlow(CentralizedPromoUiState(isLoading = LoadingType.ALL))
     val layoutList = _layoutList.asStateFlow()
 
-    private val _isSwipeRefresh = MutableStateFlow(false)
-    val isSwipeRefresh = _isSwipeRefresh.asStateFlow()
-
     init {
         // Initial load tabId = "", means no filter is selected
         viewModelScope.launch {
@@ -58,7 +55,7 @@ class CentralizedPromoComposeViewModel @Inject constructor(
         }
     }
 
-    fun sendEvent(event: CentralizedPromoEvent) {
+    fun sendEvent(event: CentralizedPromoEvent) = viewModelScope.launch {
         when (event) {
             is FilterUpdate -> {
                 updateFilter(event.selectedTabFilterData)
@@ -81,8 +78,15 @@ class CentralizedPromoComposeViewModel @Inject constructor(
     }
 
     private fun updateFilter(selectedTabFilterData: Pair<String, String>) {
+        if (selectedTabFilterData.first == _layoutList.value.selectedTabId()) {
+            return
+        }
+
         _layoutList.update {
-            it.copy(selectedTabFilterData = selectedTabFilterData)
+            it.copy(
+                selectedTabFilterData = selectedTabFilterData,
+                isLoading = LoadingType.PROMO_LIST
+            )
         }
         getOnGoingOrPromoCreation(
             PROMO_CREATION,
@@ -91,8 +95,8 @@ class CentralizedPromoComposeViewModel @Inject constructor(
     }
 
     private fun swipeToRefresh() {
-        _isSwipeRefresh.update {
-            true
+        _layoutList.update {
+            it.copy(isSwipeRefresh = true)
         }
 
         getOnGoingOrPromoCreation(
@@ -118,9 +122,8 @@ class CentralizedPromoComposeViewModel @Inject constructor(
                         PROMO_CREATION -> state.copy(promoCreationData = result)
                     }
                 }
-                updatedState.copy(isLoading = LoadingType.NONE)
+                updatedState.copy(isLoading = LoadingType.NONE, isSwipeRefresh = false)
             }
-            _isSwipeRefresh.update { false }
         }
     }
 

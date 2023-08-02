@@ -3,6 +3,7 @@ package com.tokopedia.centralizedpromo.view.activity
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.centralizedpromo.compose.CentralizedPromoScreen
@@ -33,7 +34,17 @@ class CentralizedPromoComposeActivity : AppCompatActivity() {
 
         setContent {
             NestTheme {
-                CentralizedPromoScreen(viewModel)
+                val uiState = viewModel.layoutList.collectAsState().value
+                CentralizedPromoScreen(
+                    uiState = uiState,
+                    onEvent = viewModel::sendEvent,
+                    checkRbac = {
+                        viewModel.getKeyRBAC(it)
+                    },
+                    onBackPressed = {
+                        finish()
+                    }
+                )
             }
         }
     }
