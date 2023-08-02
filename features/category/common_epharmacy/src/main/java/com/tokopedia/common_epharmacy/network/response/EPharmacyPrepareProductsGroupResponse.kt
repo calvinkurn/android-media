@@ -194,6 +194,16 @@ data class EPharmacyPrepareProductsGroupResponse(
                         val quantity: String?
                     ) : Parcelable
                 }
+
+                data class QuantityChangedModel (
+                    var productQuantity: Int? = 0,
+                    var productPrice: Double? = 0.0,
+                    var medicalQuantity: Int? = 0,
+                    var currentQuantity: Int? = 0,
+                    var type : String? = "",
+                    var subTotalQuantity: Int? = 0,
+                    var subTotalAmount: Int? = 0
+                )
             }
         }
     }

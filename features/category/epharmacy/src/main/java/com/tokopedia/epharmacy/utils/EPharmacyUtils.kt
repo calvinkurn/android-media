@@ -7,6 +7,9 @@ import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyAttachmentDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyTickerDataModel
+import com.tokopedia.epharmacy.network.params.CartGeneralAddToCartInstantParams
+import com.tokopedia.epharmacy.network.params.CheckoutCartGeneralParams
+import com.tokopedia.epharmacy.network.params.EPharmacyCheckoutParams
 import com.tokopedia.usecase.BuildConfig
 import java.text.DateFormat
 import java.text.ParseException
@@ -202,6 +205,59 @@ object EPharmacyUtils {
         isLastGroup: Boolean
     ): BaseEPharmacyDataModel {
         return EPharmacyMapper.mapGroupsToAttachmentComponents(group, orderNumber, info, shopIndex, isLastGroup)
+    }
+
+    fun createCheckoutGeneralParams(ePharmacyCheckoutParams: EPharmacyCheckoutParams): CheckoutCartGeneralParams {
+        return CheckoutCartGeneralParams(
+            CheckoutCartGeneralParams.Transaction(
+                arrayListOf(
+                    CheckoutCartGeneralParams.Transaction.BusinessData(
+                    ePharmacyCheckoutParams.businessId,
+                    arrayListOf(
+                        CheckoutCartGeneralParams.Transaction.BusinessData.CartGroup(
+                            ePharmacyCheckoutParams.ePharmacyCheckoutCartGroup?.cartGroupId, arrayListOf(
+                                CheckoutCartGeneralParams.Transaction.BusinessData.CartGroup.Cart(
+                                    ePharmacyCheckoutParams.ePharmacyCheckoutCartGroup?.carts?.firstOrNull()?.cartId,
+                                    CheckoutCartGeneralParams.Transaction.BusinessData.CartGroup.Cart.Metadata(
+                                        ePharmacyCheckoutParams.ePharmacyCheckoutCartGroup?.carts?.firstOrNull()?.metadata?.enablerId,
+                                        ePharmacyCheckoutParams.ePharmacyCheckoutCartGroup?.carts?.firstOrNull()?.metadata?.epharmacyGroupId,
+                                        ePharmacyCheckoutParams.ePharmacyCheckoutCartGroup?.carts?.firstOrNull()?.metadata?.tokoConsultationId
+                                    ),
+                                    ePharmacyCheckoutParams.ePharmacyCheckoutCartGroup?.carts?.firstOrNull()?.price,
+                                    ePharmacyCheckoutParams.ePharmacyCheckoutCartGroup?.carts?.firstOrNull()?.productId,
+                                    ePharmacyCheckoutParams.ePharmacyCheckoutCartGroup?.carts?.firstOrNull()?.quantity,
+                                    ePharmacyCheckoutParams.ePharmacyCheckoutCartGroup?.carts?.firstOrNull()?.shopId
+                                )
+                            )
+                        )
+                    ),
+                    ePharmacyCheckoutParams.checkoutBusinessType,
+                    ePharmacyCheckoutParams.checkoutDataType,
+                )), ePharmacyCheckoutParams.flowType
+            )
+        )
+    }
+
+    fun createAtcParams(groupId: String, enablerId: String, tConsultationId: String, ePharmacyCheckoutParams: EPharmacyCheckoutParams): CartGeneralAddToCartInstantParams {
+        return CartGeneralAddToCartInstantParams(
+            CartGeneralAddToCartInstantParams.CartGeneralAddToCartInstantRequestBusinessData(
+                ePharmacyCheckoutParams.businessId,
+                arrayListOf(
+                    CartGeneralAddToCartInstantParams.CartGeneralAddToCartInstantRequestBusinessData.CartGeneralAddToCartInstantRequestProductData(
+                        ePharmacyCheckoutParams.productId,
+                        ePharmacyCheckoutParams.productQuantity,
+                        CartGeneralAddToCartInstantParams.CartGeneralAddToCartInstantRequestBusinessData.CartGeneralAddToCartInstantRequestProductData.CartGeneralCustomStruct(
+                            groupId,
+                            enablerId,
+                            tConsultationId
+                        ),
+                        ePharmacyCheckoutParams.shopId,
+                        ePharmacyCheckoutParams.note
+                    )
+                )
+            ),
+            EPHARMACY_ANDROID_SOURCE
+        )
     }
 }
 

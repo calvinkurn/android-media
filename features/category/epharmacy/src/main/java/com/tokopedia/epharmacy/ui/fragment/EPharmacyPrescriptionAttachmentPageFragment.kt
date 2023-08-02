@@ -64,6 +64,7 @@ import com.tokopedia.epharmacy.utils.SHIMMER_COMPONENT_1
 import com.tokopedia.epharmacy.utils.SHIMMER_COMPONENT_2
 import com.tokopedia.epharmacy.utils.TYPE_DOCTOR_NOT_AVAILABLE_REMINDER
 import com.tokopedia.epharmacy.utils.UPLOAD_PAGE_SOURCE_PAP
+import com.tokopedia.epharmacy.utils.WEB_LINK_PREFIX
 import com.tokopedia.epharmacy.utils.openDocument
 import com.tokopedia.epharmacy.viewmodel.EPharmacyPrescriptionAttachmentViewModel
 import com.tokopedia.globalerror.GlobalError
@@ -298,18 +299,18 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                 consultationResponse.getInitiateConsultation?.initiateConsultationData?.consultationSource?.id.toString()
             )
             activity?.let { safeContext ->
-                RouteManager.getIntent(activity, EPHARMACY_CHECKOUT_APPLINK).apply {
-                    putExtra(EPHARMACY_GROUP_ID, consultationResponse.epharmacyGroupId)
-                    putExtra(EPHARMACY_ENABLER_ID, consultationResponse.getInitiateConsultation?.initiateConsultationData?.consultationSource?.id.toString())
-                    putExtra(EPHARMACY_TOKO_CONSULTATION_ID, consultationResponse.getInitiateConsultation?.initiateConsultationData?.tokoConsultationId)
-                }.also {
-                    startActivityForResult(it, 11111)
-                }
+//                RouteManager.getIntent(activity, EPHARMACY_CHECKOUT_APPLINK).apply {
+//                    putExtra(EPHARMACY_GROUP_ID, consultationResponse.epharmacyGroupId)
+//                    putExtra(EPHARMACY_ENABLER_ID, consultationResponse.getInitiateConsultation?.initiateConsultationData?.consultationSource?.id.toString())
+//                    putExtra(EPHARMACY_TOKO_CONSULTATION_ID, consultationResponse.getInitiateConsultation?.initiateConsultationData?.tokoConsultationId)
+//                }.also {
+//                    startActivityForResult(it, 11111)
+//                }
                 // TODO Remove
-//                startActivityForResult(
-//                    RouteManager.getIntent(safeContext, "${WEB_LINK_PREFIX}${consultationResponse.getInitiateConsultation?.initiateConsultationData?.consultationSource?.pwaLink}"),
-//                    EPHARMACY_MINI_CONSULTATION_REQUEST_CODE
-//                )
+                startActivityForResult(
+                    RouteManager.getIntent(safeContext, "${WEB_LINK_PREFIX}${consultationResponse.getInitiateConsultation?.initiateConsultationData?.consultationSource?.pwaLink}"),
+                    EPHARMACY_MINI_CONSULTATION_REQUEST_CODE
+                )
             }
         }
     }

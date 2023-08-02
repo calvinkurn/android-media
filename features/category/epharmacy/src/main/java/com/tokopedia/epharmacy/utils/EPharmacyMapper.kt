@@ -25,8 +25,9 @@ object EPharmacyMapper {
             info,
             group.consultationData?.consultationStatus,
             group.consultationData?.consultationString,
-            "Rp0",
-            "15 Merit",
+            group.consultationSource?.price,
+            group.consultationSource?.operatingSchedule?.duration,
+            getQuantityChangedModel(group),
             group.consultationData?.prescription,
             group.consultationData?.partnerConsultationId,
             group.consultationData?.tokoConsultationId,
@@ -46,6 +47,15 @@ object EPharmacyMapper {
         info: EProductInfo?
     ): String? {
         return info?.partnerLogoUrl
+    }
+
+    private fun getQuantityChangedModel(group: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup): EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.QuantityChangedModel? {
+        if(group.consultationData?.medicalRecommendation.isNullOrEmpty()){
+            return null
+        }
+        return EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.QuantityChangedModel(
+            10,100.0,1000,10000,"barang",100000,1000000
+        )
     }
 
     private fun getUniqueModelName(ePharmacyGroupId: String?, index: Int): String {

@@ -32,6 +32,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 
@@ -60,7 +61,12 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     private val bottomView = view.findViewById<View>(R.id.transparent_view_bottom)
     private val ticker = view.findViewById<Ticker>(R.id.ticker)
     private val divisionSingleProduct = view.findViewById<View>(R.id.division_single_card)
-
+    private val quantityChangedLayout = view.findViewById<ConstraintLayout>(R.id.quantity_change_layout)
+    private val medicalProductQuantity = view.findViewById<Typography>(R.id.medical_product_quantity)
+    private val quantityChangedEditor = view.findViewById<QuantityEditorUnify>(R.id.quantity_change)
+    private val productQuantityType = view.findViewById<Typography>(R.id.quantity_type)
+    private val totalQuantity = view.findViewById<Typography>(R.id.total_quantity)
+    private val totalAmount = view.findViewById<Typography>(R.id.total_amount)
     companion object {
         val LAYOUT = R.layout.epharmacy_prescription_attachment_view_item
         private const val VIBRATION_ANIMATION_DURATION = 1250
@@ -88,12 +94,26 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     private fun renderGroupData() {
         renderError()
         renderOrderTitle()
+        renderQuantityChangedLayout()
         renderPartnerData()
         renderShopData()
         renderProductsData()
         renderButton()
         renderDivider()
         renderObstruction()
+    }
+
+    private fun renderQuantityChangedLayout() {
+        if(dataModel?.quantityChangedModel != null){
+            quantityChangedLayout?.show()
+            medicalProductQuantity.text = dataModel?.quantityChangedModel?.productQuantity.toString()
+            productQuantityType.text = dataModel?.quantityChangedModel?.type.toString()
+            quantityChangedEditor.setValue(dataModel?.quantityChangedModel?.medicalQuantity ?: 0)
+            totalAmount.displayTextOrHide(dataModel?.quantityChangedModel?.subTotalAmount.toString())
+            totalQuantity.displayTextOrHide(dataModel?.quantityChangedModel?.subTotalQuantity.toString())
+        }else {
+            quantityChangedLayout?.hide()
+        }
     }
 
     private fun renderOrderTitle() {
@@ -233,10 +253,10 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     }
 
     private fun renderDivider() {
-        if (dataModel?.shopInfo?.products?.size == 1 && dataModel?.showUploadWidget == false) {
+        if ((dataModel?.shopInfo?.products?.size == 1 && dataModel?.showUploadWidget == false)) {
             divisionSingleProduct.show()
         } else {
-            divisionSingleProduct.hide()
+            if(dataModel?.quantityChangedModel != null) divisionSingleProduct.hide()
         }
         if (dataModel?.showDivider == true) divider.show() else divider.hide()
     }

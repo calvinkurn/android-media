@@ -30,7 +30,4 @@ interface EPharmacyListener {
 
     fun onToast(toasterType: Int, message: String) {}
 
-    interface EPharmacyCheckoutListener {
-
-    }
 }

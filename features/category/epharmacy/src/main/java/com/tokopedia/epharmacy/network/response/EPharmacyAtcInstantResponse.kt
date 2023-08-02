@@ -3,7 +3,7 @@ package com.tokopedia.epharmacy.network.response
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class EPharmacyCheckoutResponse(
+data class EPharmacyAtcInstantResponse(
     @SerializedName("cart_general_add_to_cart_instant")
     @Expose
     val cartGeneralAddToCartInstant: CartGeneralAddToCartInstant?
@@ -30,9 +30,6 @@ data class EPharmacyCheckoutResponse(
                 val businessData: List<BusinessData?>?
             ) {
                 data class BusinessData(
-                    @SerializedName("additional_grouping")
-                    @Expose
-                    val additionalGrouping: AdditionalGrouping?,
                     @SerializedName("business_id")
                     @Expose
                     val businessId: String?,
@@ -50,13 +47,8 @@ data class EPharmacyCheckoutResponse(
                     val shoppingSummary: ShoppingSummary?,
                     @SerializedName("success")
                     @Expose
-                    val success: Int?,
-                    @SerializedName("ticker")
-                    @Expose
-                    val ticker: Ticker?
+                    val success: Int?
                 ) {
-                    class AdditionalGrouping
-
                     data class CartGroup(
                         @SerializedName("cart_group_id")
                         @Expose
@@ -64,9 +56,6 @@ data class EPharmacyCheckoutResponse(
                         @SerializedName("carts")
                         @Expose
                         val carts: List<Cart?>?,
-                        @SerializedName("custom_response")
-                        @Expose
-                        val customResponse: CustomResponse?,
                         @SerializedName("success")
                         @Expose
                         val success: Int?
@@ -103,7 +92,7 @@ data class EPharmacyCheckoutResponse(
                             data class CustomResponse(
                                 @SerializedName("duration_minutes")
                                 @Expose
-                                val durationMinutes: Int?,
+                                val durationMinutes: String?,
                                 @SerializedName("enabler_name")
                                 @Expose
                                 val enablerName: String?,
@@ -124,23 +113,33 @@ data class EPharmacyCheckoutResponse(
                                 val tokoConsultationId: Int?
                             )
                         }
-
-                        class CustomResponse
                     }
 
                     data class CustomResponse(
-                        @SerializedName("img_icon")
+                        @SerializedName("checkout_additional_data")
                         @Expose
-                        val imgIcon: String?,
+                        val checkoutAdditionalData: CheckoutAdditionalData?,
+                        @SerializedName("img_url")
+                        @Expose
+                        val imgUrl: String?,
                         @SerializedName("title")
                         @Expose
                         val title: String?
-                    )
+                    ) {
+                        data class CheckoutAdditionalData(
+                            @SerializedName("checkout_business_id")
+                            @Expose
+                            val checkoutBusinessId: Int?,
+                            @SerializedName("data_type")
+                            @Expose
+                            val dataType: String?,
+                            @SerializedName("flow_type")
+                            @Expose
+                            val flowType: String?
+                        )
+                    }
 
                     data class ShoppingSummary(
-                        @SerializedName("add_ons")
-                        @Expose
-                        val addOns: List<Any?>?,
                         @SerializedName("custom_response")
                         @Expose
                         val customResponse: CustomResponse?,
@@ -179,8 +178,6 @@ data class EPharmacyCheckoutResponse(
                             class CustomResponse
                         }
                     }
-
-                    class Ticker
                 }
             }
         }

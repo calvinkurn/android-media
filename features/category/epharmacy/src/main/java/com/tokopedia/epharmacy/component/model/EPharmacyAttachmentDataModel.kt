@@ -18,6 +18,7 @@ data class EPharmacyAttachmentDataModel(
     val consultationString: String?,
     val price: String?,
     val duration: String?,
+    val quantityChangedModel : EG.QuantityChangedModel?,
     val prescription: List<EG.ConsultationData.Prescription?>?,
     val partnerConsultationId: String?,
     val tokoConsultationId: String?,

@@ -9,6 +9,7 @@ import com.tokopedia.epharmacy.ui.bottomsheet.EPharmacyReminderScreenBottomSheet
 import com.tokopedia.epharmacy.ui.bottomsheet.MiniConsultationMasterBottomSheetInfo
 import com.tokopedia.epharmacy.ui.fragment.EPharmacyCheckoutFragment
 import com.tokopedia.epharmacy.ui.fragment.EPharmacyPrescriptionAttachmentPageFragment
+import com.tokopedia.epharmacy.ui.fragment.EPharmacyQuantityChangeFragment
 import com.tokopedia.epharmacy.ui.fragment.UploadPrescriptionFragment
 import dagger.Component
 
@@ -17,6 +18,8 @@ import dagger.Component
 interface EPharmacyComponent {
 
     fun inject(fragment: EPharmacyCheckoutFragment)
+
+    fun inject(fragment: EPharmacyQuantityChangeFragment)
 
     fun inject(ePharmacyActivity: EPharmacyActivity) {}
 

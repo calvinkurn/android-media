@@ -23,6 +23,7 @@ interface CategoryKeys {
         const val UPLOAD_PRESCRIPTION_PAGE = "upload prescription page"
         const val ATTACH_PRESCRIPTION_PAGE = "epharmacy attach prescription page"
         const val EPHARMACY_CHECKOUT_PAGE = "epharmacy checkout page"
+        const val EPHARMACY_QUANTITY_CHANGE_BS = "epharmacy quantity change bottom sheet"
     }
 }
 
