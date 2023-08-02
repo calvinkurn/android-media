@@ -3,6 +3,8 @@ package com.tokopedia.profilecompletion.domain
 import android.util.Base64
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.profilecompletion.data.SecretResponse
 import com.tokopedia.profilecompletion.di.ProfileManagementApi
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
@@ -22,6 +24,18 @@ class GetUrlProfileManagementUseCase@Inject constructor(
     override suspend fun execute(params: Unit): GetUrlProfileManagementResult {
         val response = profileManagementApi.getSecret(MODULE_NAME_SEAMLESS).body()
 
+        val result = if (response?.success == true) {
+            val url = getUrl(response)
+            GetUrlProfileManagementResult.Success(url)
+        } else {
+            val throwable = MessageErrorException(response.toString())
+            GetUrlProfileManagementResult.Failed(throwable)
+        }
+
+        return result
+    }
+
+    private fun getUrl(response: SecretResponse?): String {
         val currentTimeStamp = TimeHelper.getNowTimeStamp()
         val timeRfc3339 = TimeHelper.format(currentTimeStamp, FORMAT_RFC_3339)
 
@@ -33,14 +47,13 @@ class GetUrlProfileManagementUseCase@Inject constructor(
 
         val hmacSignature = hmacDigest(content, response?.data?.secretKey.toString())
 
-        val url = createUrl(
+        return createUrl(
             token = response?.data?.token.toString(),
             userId = userSessionInterface.userId,
             date = timeRfc3339,
             keyId = response?.data?.secretKeyId.toString(),
             hmacSignature = replaceHmacSignature(hmacSignature)
         )
-        return GetUrlProfileManagementResult.Success(url)
     }
 
     private fun createContent(

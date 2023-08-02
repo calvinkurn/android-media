@@ -13,6 +13,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.databinding.ActivityProfileManagementBinding
 import com.tokopedia.profilecompletion.di.ActivityComponentFactory
@@ -153,14 +154,27 @@ class ProfileManagementActivity: BaseSimpleWebViewActivity(), HasComponent<Profi
                         binding?.globalError?.setType(GlobalError.SERVER_ERROR)
                     }
                     else -> {
-                        binding?.globalError?.setType(GlobalError.SERVER_ERROR)
+                        sendLogAndShowError(throwable)
                     }
                 }
             }
             else -> {
-                binding?.globalError?.setType(GlobalError.SERVER_ERROR)
+                sendLogAndShowError(throwable)
             }
         }
+    }
+
+    private fun sendLogAndShowError(throwable: Throwable) {
+        binding?.globalError?.setType(GlobalError.SERVER_ERROR)
+
+        val errorHandler = ErrorHandler.getErrorMessagePair(
+            context = this,
+            e = throwable,
+            builder = ErrorHandler.Builder().build()
+        )
+
+        val description = "${binding?.globalError?.errorDescription?.text} (${errorHandler.second})"
+        binding?.globalError?.errorDescription?.text = description
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
