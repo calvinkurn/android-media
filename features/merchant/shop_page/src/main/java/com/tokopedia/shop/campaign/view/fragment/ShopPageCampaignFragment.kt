@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -86,6 +87,7 @@ import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
+import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragmentV2
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.unifycomponents.Toaster
@@ -396,7 +398,7 @@ class ShopPageCampaignFragment :
 
             if (widget?.model?.hasSuccessfulTranscodedChannel == true) showWidgetTranscodeSuccessToaster()
 
-            val parent = parentFragment
+            val parent = getRealParentFragment()
             if (parent is InterfaceShopPageHeader) {
                 val recyclerView = getRecyclerView(view)
 
@@ -517,7 +519,11 @@ class ShopPageCampaignFragment :
                         .orZero()
                 if (firstCompletelyVisibleItemPosition == 0 && isClickToScrollToTop) {
                     isClickToScrollToTop = false
-                    (parentFragment as? ShopPageHeaderFragment)?.expandHeader()
+                    if(ShopUtil.isEnableShopPageReImagined()){
+                        (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.expandHeader()
+                    } else {
+                        (getRealParentFragment() as? ShopPageHeaderFragment)?.expandHeader()
+                    }
                 }
                 if (firstCompletelyVisibleItemPosition != latestCompletelyVisibleItemIndex) {
                     hideScrollToTopButton()
@@ -656,11 +662,19 @@ class ShopPageCampaignFragment :
     }
 
     private fun hideScrollToTopButton() {
-        (parentFragment as? ShopPageHeaderFragment)?.hideScrollToTopButton()
+        if(ShopUtil.isEnableShopPageReImagined()){
+            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.hideScrollToTopButton()
+        } else {
+            (getRealParentFragment() as? ShopPageHeaderFragment)?.hideScrollToTopButton()
+        }
     }
 
     private fun showScrollToTopButton() {
-        (parentFragment as? ShopPageHeaderFragment)?.showScrollToTopButton()
+        if(ShopUtil.isEnableShopPageReImagined()){
+            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.showScrollToTopButton()
+        } else {
+            (getRealParentFragment() as? ShopPageHeaderFragment)?.showScrollToTopButton()
+        }
     }
 
     fun setCampaignTabListBackgroundColor(listBackgroundColor: List<String>) {
@@ -758,7 +772,11 @@ class ShopPageCampaignFragment :
     private fun checkShouldSelectHomeTab(appLink: String) {
         val tabValue = Uri.parse(appLink).getQueryParameter(QUERY_PARAM_TAB).orEmpty()
         if (tabValue == ShopPageHeaderTabName.HOME) {
-            (parentFragment as? ShopPageHeaderFragment)?.selectShopTab(ShopPageHeaderTabName.HOME)
+            if(ShopUtil.isEnableShopPageReImagined()){
+                (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.selectShopTab(ShopPageHeaderTabName.HOME)
+            } else {
+                (getRealParentFragment() as? ShopPageHeaderFragment)?.selectShopTab(ShopPageHeaderTabName.HOME)
+            }
         }
     }
 
@@ -1302,5 +1320,13 @@ class ShopPageCampaignFragment :
                 userId
             )
         )
+    }
+
+    private fun getRealParentFragment(): Fragment? {
+        return if (ShopUtil.isEnableShopPageReImagined()) {
+            parentFragment?.parentFragment
+        } else {
+            parentFragment
+        }
     }
 }

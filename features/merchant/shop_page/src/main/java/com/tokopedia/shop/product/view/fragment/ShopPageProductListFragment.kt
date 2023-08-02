@@ -85,6 +85,7 @@ import com.tokopedia.shop.common.widget.MembershipBottomSheetSuccess
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
+import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragmentV2
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
@@ -289,6 +290,9 @@ class ShopPageProductListFragment :
             it.addOnScrollListener(endlessRecyclerViewScrollListener)
             it.itemAnimator = null
             recyclerViewTopPadding = it.paddingTop
+            if(ShopUtil.isEnableShopPageReImagined()){
+                it.isNestedScrollingEnabled = true
+            }
         }
     }
 
@@ -300,7 +304,11 @@ class ShopPageProductListFragment :
                 val firstCompletelyVisibleItemPosition = (layoutManager as? StaggeredGridLayoutManager)?.findFirstCompletelyVisibleItemPositions(null)?.getOrNull(0).orZero()
                 if (firstCompletelyVisibleItemPosition == 0 && isClickToScrollToTop) {
                     isClickToScrollToTop = false
-                    (parentFragment as? ShopPageHeaderFragment)?.expandHeader()
+                    if(ShopUtil.isEnableShopPageReImagined()){
+                        (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.expandHeader()
+                    } else {
+                        (getRealParentFragment() as? ShopPageHeaderFragment)?.expandHeader()
+                    }
                 }
                 if (firstCompletelyVisibleItemPosition != latestCompletelyVisibleItemIndex) {
                     hideScrollToTopButton()
@@ -609,7 +617,11 @@ class ShopPageProductListFragment :
     }
 
     private fun getSelectedTabName(): String {
-        return (parentFragment as? ShopPageHeaderFragment)?.getSelectedTabName().orEmpty()
+        return if(ShopUtil.isEnableShopPageReImagined()){
+            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.getSelectedTabName().orEmpty()
+        } else {
+            (getRealParentFragment() as? ShopPageHeaderFragment)?.getSelectedTabName().orEmpty()
+        }
     }
 
     override fun getSelectedEtalaseName(): String {
@@ -664,7 +676,7 @@ class ShopPageProductListFragment :
                 loadMembership()
             }
             REQUEST_CODE_USER_LOGIN -> {
-                (parentFragment as? InterfaceShopPageHeader)?.refreshData()
+                (getRealParentFragment() as? InterfaceShopPageHeader)?.refreshData()
             }
             REQUEST_CODE_SORT -> {
                 if (resultCode == Activity.RESULT_OK) {
@@ -1119,7 +1131,7 @@ class ShopPageProductListFragment :
     }
 
     private fun isShopProductTabSelected(): Boolean {
-        return (parentFragment as? InterfaceShopPageHeader)?.isTabSelected(this::class.java) ?: false
+        return (getRealParentFragment() as? InterfaceShopPageHeader)?.isTabSelected(this::class.java) ?: false
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -1330,7 +1342,11 @@ class ShopPageProductListFragment :
     }
 
     private fun updateMiniCartWidget() {
-        (parentFragment as? ShopPageHeaderFragment)?.updateMiniCartWidget()
+        if(ShopUtil.isEnableShopPageReImagined()){
+            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.updateMiniCartWidget()
+        } else {
+            (getRealParentFragment() as? ShopPageHeaderFragment)?.updateMiniCartWidget()
+        }
     }
 
     private fun observeShopProductFilterParameterSharedViewModel() {
@@ -1346,7 +1362,11 @@ class ShopPageProductListFragment :
     }
 
     private fun getSelectedFragment(): Fragment? {
-        return (parentFragment as? ShopPageHeaderFragment)?.getSelectedFragmentInstance()
+        return if(ShopUtil.isEnableShopPageReImagined()){
+            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.getSelectedFragmentInstance()
+        } else {
+            (getRealParentFragment() as? ShopPageHeaderFragment)?.getSelectedFragmentInstance()
+        }
     }
 
     override fun onPause() {
@@ -1688,7 +1708,11 @@ class ShopPageProductListFragment :
     }
 
     private fun isShopWidgetAlreadyShown(): Boolean {
-        return (parentFragment as? ShopPageHeaderFragment)?.isShopWidgetAlreadyShown() ?: false
+        return if(ShopUtil.isEnableShopPageReImagined()){
+            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.isShopWidgetAlreadyShown() ?: false
+        } else {
+            (getRealParentFragment() as? ShopPageHeaderFragment)?.isShopWidgetAlreadyShown() ?: false
+        }
     }
 
     private fun onSuccessClaimBenefit(data: MembershipClaimBenefitResponse) {
@@ -1895,11 +1919,19 @@ class ShopPageProductListFragment :
     }
 
     private fun hideScrollToTopButton() {
-        (parentFragment as? ShopPageHeaderFragment)?.hideScrollToTopButton()
+        if(ShopUtil.isEnableShopPageReImagined()){
+            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.hideScrollToTopButton()
+        } else {
+            (getRealParentFragment() as? ShopPageHeaderFragment)?.hideScrollToTopButton()
+        }
     }
 
     private fun showScrollToTopButton() {
-        (parentFragment as? ShopPageHeaderFragment)?.showScrollToTopButton()
+        if(ShopUtil.isEnableShopPageReImagined()){
+            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.showScrollToTopButton()
+        } else {
+            (getRealParentFragment() as? ShopPageHeaderFragment)?.showScrollToTopButton()
+        }
     }
 
     private fun handleAtcFlow(
@@ -1918,5 +1950,13 @@ class ShopPageProductListFragment :
     override fun onDestroyView() {
         Toaster.onCTAClick = View.OnClickListener { }
         super.onDestroyView()
+    }
+
+    private fun getRealParentFragment(): Fragment? {
+        return if (ShopUtil.isEnableShopPageReImagined()) {
+            parentFragment?.parentFragment
+        } else {
+            parentFragment
+        }
     }
 }
