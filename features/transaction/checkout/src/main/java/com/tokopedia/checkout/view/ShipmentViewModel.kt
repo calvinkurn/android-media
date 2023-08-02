@@ -1581,8 +1581,10 @@ class ShipmentViewModel @Inject constructor(
                         }
                         onValidatePromoSuccess(shipmentValidatePromoHolderData, validateUsePromoRevampUiModel)
                     } catch (t: Throwable) {
-                        promoQueue.remove()
-                        itemToProcess = promoQueue.peek()
+                        if (promoQueue.isNotEmpty()) {
+                            promoQueue.remove()
+                            itemToProcess = promoQueue.peek()
+                        }
                         if (promoQueue.any { it.cartString == shipmentValidatePromoHolderData.cartString }) {
                             // ignore this, because there is a new one in the queue
                             continue@loopProcess
@@ -1623,8 +1625,10 @@ class ShipmentViewModel @Inject constructor(
                         onCancelPromoSuccess(shipmentValidatePromoHolderData, responseData)
                     } catch (t: Throwable) {
                         Timber.d(t)
-                        promoQueue.remove()
-                        itemToProcess = promoQueue.peek()
+                        if (promoQueue.isNotEmpty()) {
+                            promoQueue.remove()
+                            itemToProcess = promoQueue.peek()
+                        }
                         if (promoQueue.any { it.cartString == shipmentValidatePromoHolderData.cartString }) {
                             // ignore this, because there is a new one in the queue
                             continue@loopProcess
@@ -2350,19 +2354,18 @@ class ShipmentViewModel @Inject constructor(
     }
 
     fun validateClearAllBoPromo() {
-        if (lastValidateUseRequest != null) {
+        val validateUseRequest = lastValidateUseRequest
+        if (validateUseRequest != null) {
             for (shipmentCartItemModel in shipmentCartItemModelList) {
                 if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.voucherLogisticItemUiModel != null) {
-                    for (order in lastValidateUseRequest!!.orders) {
-                        if (order.cartStringGroup == shipmentCartItemModel.cartStringGroup && order.codes.contains(
-                                shipmentCartItemModel.voucherLogisticItemUiModel!!.code
-                            )
-                        ) {
+                    for (order in validateUseRequest.orders) {
+                        if (order.cartStringGroup == shipmentCartItemModel.cartStringGroup && order.codes.isEmpty()) {
                             doUnapplyBo(
                                 shipmentCartItemModel.cartStringGroup,
                                 shipmentCartItemModel.voucherLogisticItemUiModel!!.uniqueId,
                                 shipmentCartItemModel.voucherLogisticItemUiModel!!.code
                             )
+                            break
                         }
                     }
                 }
@@ -3181,8 +3184,10 @@ class ShipmentViewModel @Inject constructor(
                                 v.showToastErrorAkamai(exception.message)
                             }
                         }
-                        ratesQueue.remove()
-                        itemToProcess = ratesQueue.peek()
+                        if (ratesQueue.isNotEmpty()) {
+                            ratesQueue.remove()
+                            itemToProcess = ratesQueue.peek()
+                        }
                     }
                 } else {
                     try {
@@ -3554,8 +3559,10 @@ class ShipmentViewModel @Inject constructor(
                                 v.showToastErrorAkamai(exception.message)
                             }
                         }
-                        ratesQueue.remove()
-                        itemToProcess = ratesQueue.peek()
+                        if (ratesQueue.isNotEmpty()) {
+                            ratesQueue.remove()
+                            itemToProcess = ratesQueue.peek()
+                        }
                     }
                 }
             }
@@ -5490,26 +5497,28 @@ class ShipmentViewModel @Inject constructor(
     // endregion
 
     fun getDynamicPaymentFee(request: PaymentFeeCheckoutRequest?) {
-        view?.showPaymentFeeSkeletonLoading()
+        if (view != null) {
+            view?.showPaymentFeeSkeletonLoading()
 
-        getPaymentFeeCheckoutUseCase.setParams(request!!)
-        getPaymentFeeCheckoutUseCase.execute(
-            { (platformFeeData): PaymentFeeGqlResponse ->
-                if (view != null) {
-                    if (platformFeeData.success) {
-                        view?.showPaymentFeeData(platformFeeData)
-                    } else {
-                        view?.showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.errorWording)
+            getPaymentFeeCheckoutUseCase.setParams(request!!)
+            getPaymentFeeCheckoutUseCase.execute(
+                { (platformFeeData): PaymentFeeGqlResponse ->
+                    if (view != null) {
+                        if (platformFeeData.success) {
+                            view?.showPaymentFeeData(platformFeeData)
+                        } else {
+                            view?.showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.errorWording)
+                        }
                     }
+                    Unit
+                }
+            ) { throwable: Throwable ->
+                Timber.d(throwable)
+                if (view != null) {
+                    view?.showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.errorWording)
                 }
                 Unit
             }
-        ) { throwable: Throwable ->
-            Timber.d(throwable)
-            if (view != null) {
-                view?.showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.errorWording)
-            }
-            Unit
         }
     }
 

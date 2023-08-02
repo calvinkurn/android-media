@@ -9,7 +9,6 @@ import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.entity.VoucherCreationMetadata
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
-import com.tokopedia.mvc.presentation.bottomsheet.OtherPeriodBottomSheet
 import com.tokopedia.mvc.presentation.detail.VoucherDetailFragment
 import com.tokopedia.mvc.presentation.list.fragment.MvcListFragment
 import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
@@ -143,23 +142,6 @@ class MoreMenuViewModelTest {
     }
 
     @Test
-    fun `when getMenuList() is called from OtherPeriodBottomSheet, should return menuListItem data accordingly`() {
-        // Given
-        val pageSource = OtherPeriodBottomSheet::class.java.simpleName
-        val expected = getOtherScheduleListMenu().map { listOf(it.icon) }
-
-        // When
-        val actual = viewModel.getMenuList(
-            voucher = null,
-            voucherStatus = VoucherStatus.ENDED,
-            pageSource = pageSource,
-            isDiscountPromoType = true,
-            isDiscountPromoTypeEnabled = true
-        ).map { listOf(it.icon) }
-
-        // Then
-        assertEquals(expected, actual)
-    } @Test
     fun `when getMenuList() is called from voucher detail or voucher list and sending null voucher, should return empty menuListItem`() {
         // Given
         val pageSource = MvcListFragment::class.java.simpleName
@@ -183,7 +165,7 @@ class MoreMenuViewModelTest {
         // Given
         val pageSource = MvcListFragment::class.java.simpleName
         val voucher = Voucher(status = VoucherStatus.ONGOING)
-        val expected = getOptionsListForOngoingPromo(voucher).map { listOf(it.icon) }
+        val expected = getOngoingVpsSubsidyMenu().map { listOf(it.icon) }
 
         // When
         val actual = viewModel.getMenuList(
@@ -243,7 +225,7 @@ class MoreMenuViewModelTest {
         // Given
         val pageSource = MvcListFragment::class.java.simpleName
         val voucher = Voucher(status = VoucherStatus.NOT_STARTED)
-        val expected = getOptionsListForUpcomingPromo(voucher).map { listOf(it.icon) }
+        val expected = getUpcomingVpsSubsidyMenu().map { listOf(it.icon) }
 
         // When
         val actual = viewModel.getMenuList(

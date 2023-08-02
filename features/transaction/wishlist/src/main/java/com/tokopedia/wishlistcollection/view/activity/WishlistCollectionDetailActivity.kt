@@ -6,6 +6,7 @@ import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
 import com.tokopedia.wishlist.R
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_CHANNEL
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_NEED_REFRESH
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionDetailFragment
 
@@ -26,7 +27,16 @@ class WishlistCollectionDetailActivity : BaseSimpleActivity() {
         if (uri != null && uri.pathSegments.size > 1) {
             val uriSegment = uri.pathSegments
             collectionId = uriSegment[uriSegment.size - 1]
+            val affiliateUniqueId =
+                uri.getQueryParameter(ApplinkConstInternalPurchasePlatform.PATH_AFFILIATE_UNIQUE_ID)
+                    ?: ""
+            val channel = uri.getQueryParameter(EXTRA_CHANNEL) ?: ""
             bundle.putString(ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID, collectionId)
+            bundle.putString(
+                ApplinkConstInternalPurchasePlatform.PATH_AFFILIATE_UNIQUE_ID,
+                affiliateUniqueId
+            )
+            bundle.putString(EXTRA_CHANNEL, channel)
         }
         return WishlistCollectionDetailFragment.newInstance(bundle)
     }

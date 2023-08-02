@@ -3099,6 +3099,9 @@ class ShipmentFragment :
                                 if (shipmentCartItemModel.voucherLogisticItemUiModel != null) {
                                     // remove previous logistic promo code
                                     order.codes.remove(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)
+                                } else if (courierItemData.selectedShipper.logPromoCode != null) {
+                                    // remove previous logistic promo code
+                                    order.codes.remove(courierItemData.selectedShipper.logPromoCode)
                                 }
                                 order.codes.add(selectedShipper.logPromoCode!!)
                                 order.boCode = selectedShipper.logPromoCode!!
