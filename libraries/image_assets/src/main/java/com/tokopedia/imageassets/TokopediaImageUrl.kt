@@ -363,7 +363,7 @@ object TokopediaImageUrl {
     const val IMG_GUIDE_CHAT = "https://images.tokopedia.net/img/android/communication/tokochat/tokochat_guide_chat.png"
     const val GIF_TYPING_LIGHT = "https://images.tokopedia.net/img/android/user/typing_motion_lightmode.gif"
     const val GIF_TYPING_DARK = "https://images.tokopedia.net/img/android/user/typing_motion_darkmode.gif"
-    const val IMG_UNAVAILABLE_GENERAL =  "https://images.tokopedia.net/img/android/tokochat/tokochat_img_chat_unavailable_general.png"
+    const val IMG_UNAVAILABLE_GENERAL = "https://images.tokopedia.net/img/android/tokochat/tokochat_img_chat_unavailable_general.png"
     const val IMG_TOKOCHAT_CONSENT = "https://images.tokopedia.net/img/android/communication/tokochat/tokochat_consent.png"
     const val IMG_SHOP_SCORE_PENALTY_GREEN = "https://images.tokopedia.net/img/android/shop_score/bg_shop_score_penalty_green.png"
     const val IMG_SHOP_SCORE_PENALTY_RED = "https://images.tokopedia.net/img/android/shop_score/bg_shop_score_penalty_red.png"
@@ -378,4 +378,7 @@ object TokopediaImageUrl {
     const val IMG_14TH_ANNIV_HOME_RM = "https://images.tokopedia.net/img/android/seller_home/img_14th_anniv_rm_background_effect.png"
     const val IMG_14TH_ANNIV_HOME_PM = "https://images.tokopedia.net/img/android/seller_home/img_14th_anniv_pm_background_effect.png"
     const val IMG_14TH_ANNIV_HOME_OS = "https://images.tokopedia.net/img/android/seller_home/img_14th_anniv_os_background_effect.png"
+    const val ILLUSTRATION_MVC_DETAIL_ENDED_VOUCHER = "https://images.tokopedia.net/img/android/mvc/illustration_recap.png"
+    const val ILLUSTRATION_MVC_DETAIL_CARD_PERFORMANCE = "https://images.tokopedia.net/img/android/mvc/bg_image.png"
+    const val IMG_OPEN_IN_MAIN_APP_WITHDRAW = "https://images.tokopedia.net/img/android/payment/update-app-to-withdraw.png"
 }

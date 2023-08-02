@@ -1,13 +1,10 @@
 package com.tokopedia.feedplus.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
-import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
-import com.tokopedia.content.common.util.UiEventManager
-import com.tokopedia.createpost.common.domain.usecase.cache.DeleteMediaPostCacheUseCase
 import com.tokopedia.content.common.model.AuthorItem
 import com.tokopedia.content.common.model.Authors
 import com.tokopedia.content.common.model.Creation
+import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
 import com.tokopedia.content.common.model.FeedXHeader
 import com.tokopedia.content.common.model.FeedXHeaderData
 import com.tokopedia.content.common.model.FeedXHeaderResponse
@@ -16,7 +13,10 @@ import com.tokopedia.content.common.model.Live
 import com.tokopedia.content.common.model.MetaData
 import com.tokopedia.content.common.model.Tab
 import com.tokopedia.content.common.model.UserProfile
+import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.usecase.FeedXHeaderUseCase
+import com.tokopedia.content.common.util.UiEventManager
+import com.tokopedia.createpost.common.domain.usecase.cache.DeleteMediaPostCacheUseCase
 import com.tokopedia.feedplus.presentation.model.CreateContentType
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.onboarding.OnboardingPreferences
@@ -48,7 +48,6 @@ class FeedMainViewModelTest {
     val coroutineTestRule = UnconfinedTestRule()
 
     private val feedXHeaderUseCase: FeedXHeaderUseCase = mockk()
-    private val submitReportUseCase: FeedComplaintSubmitReportUseCase = mockk()
     private val deletePostCacheUseCase: DeleteMediaPostCacheUseCase = mockk()
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -73,7 +72,6 @@ class FeedMainViewModelTest {
 
         viewModel = FeedMainViewModel(
             feedXHeaderUseCase,
-            submitReportUseCase,
             deletePostCacheUseCase,
             testDispatcher,
             onBoardingPreferences,
@@ -94,7 +92,6 @@ class FeedMainViewModelTest {
         // when
         val mViewModel = FeedMainViewModel(
             feedXHeaderUseCase,
-            submitReportUseCase,
             deletePostCacheUseCase,
             testDispatcher,
             onBoardingPreferences,
@@ -312,6 +309,7 @@ class FeedMainViewModelTest {
         viewModel.fetchFeedTabs()
 
         // get current tab type
+        viewModel.changeCurrentTabByIndex(0)
         currentTabType = viewModel.getCurrentTabType()
         assert(currentTabType == "foryou")
 
@@ -600,60 +598,6 @@ class FeedMainViewModelTest {
 
         viewModel.setReadyToShowOnboarding()
         coVerify(exactly = 1) { uiEventManager.emitEvent(FeedMainEvent.ShowSwipeOnboarding) }
-    }
-
-    @Test
-    fun onReportContent_whenFailUsecase_shouldChangeValueToFail() {
-        // given
-        coEvery { submitReportUseCase(any()) } throws MessageErrorException("Failed to fetch")
-
-        // when
-        viewModel.reportContent(FeedComplaintSubmitReportUseCase.Param("", "", "", ""))
-
-        // then
-        val response = viewModel.reportResponse.value
-        assert(response is Fail)
-        assert((response as Fail).throwable is MessageErrorException)
-        assert(response.throwable.message == "Failed to fetch")
-    }
-
-    @Test
-    fun onReportContent_whenNotSuccess_shouldChangeValueToFail() {
-        // given
-        val dummyResponse = FeedComplaintSubmitReportResponse(
-            data = FeedComplaintSubmitReportResponse.FeedComplaintSubmitReport(
-                success = false
-            )
-        )
-        coEvery { submitReportUseCase(any()) } returns dummyResponse
-
-        // when
-        viewModel.reportContent(FeedComplaintSubmitReportUseCase.Param("", "", "", ""))
-
-        // then
-        val response = viewModel.reportResponse.value
-        assert(response is Fail)
-        assert((response as Fail).throwable is MessageErrorException)
-        assert(response.throwable.message == "Error in Reporting")
-    }
-
-    @Test
-    fun onReportContent_whenSuccess_shouldChangeValueToSuccess() {
-        // given
-        val dummyResponse = FeedComplaintSubmitReportResponse(
-            data = FeedComplaintSubmitReportResponse.FeedComplaintSubmitReport(
-                success = true
-            )
-        )
-        coEvery { submitReportUseCase(any()) } returns dummyResponse
-
-        // when
-        viewModel.reportContent(FeedComplaintSubmitReportUseCase.Param("", "", "", ""))
-
-        // then
-        val response = viewModel.reportResponse.value
-        assert(response is Success)
-        assert((response as Success).data == dummyResponse)
     }
 
     private fun getDummyFeedXHeaderData() = FeedXHeaderResponse(

@@ -9,15 +9,12 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.snackbar.Snackbar
-import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.unifyprinciples.UnifyMotion
 import com.tokopedia.scp_rewards_touchpoints.R
-import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.loadImage
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.model.ScpToasterData
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
-
+import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.UnifyMotion
 
 object ScpRewardsToaster {
     private val emptyClickListener = View.OnClickListener { }
@@ -27,7 +24,6 @@ object ScpRewardsToaster {
     private const val WITHOUT_CTA = 0
     private const val WITH_CTA = 1
 
-
     /**
      * Toaster normal style
      */
@@ -36,7 +32,6 @@ object ScpRewardsToaster {
     /**
      * Toaster error style
      */
-    const val TYPE_ERROR = 1
 
     const val LENGTH_SHORT = Snackbar.LENGTH_SHORT
     const val LENGTH_LONG = Snackbar.LENGTH_LONG
@@ -49,7 +44,7 @@ object ScpRewardsToaster {
     var toasterCustomCtaWidth: Int = 0
 
     @JvmStatic
-    fun build(view: View,toasterData: ScpToasterData,duration: Int = LENGTH_SHORT, type: Int = TYPE_NORMAL,clickListener: View.OnClickListener = View.OnClickListener {}) : Snackbar{
+    fun build(view: View, toasterData: ScpToasterData, duration: Int = LENGTH_SHORT, type: Int = TYPE_NORMAL, clickListener: View.OnClickListener = View.OnClickListener {}): Snackbar {
         toasterLength = duration
         val cta = if (toasterData.ctaIsShown) WITH_CTA else WITHOUT_CTA
         if (cta == WITH_CTA) {
@@ -59,10 +54,9 @@ object ScpRewardsToaster {
         return initToaster(view, toasterData, type, cta)!!
     }
 
+    private fun initToaster(view: View, toasterData: ScpToasterData, type: Int = TYPE_NORMAL, cta: Int = WITHOUT_CTA): Snackbar {
+        val viewTarget: View = view
 
-    private fun initToaster(view: View,toasterData: ScpToasterData, type: Int = TYPE_NORMAL, cta: Int = WITHOUT_CTA): Snackbar? {
-        val viewTarget : View = view
-        Toaster
         val tempSnackBar = Snackbar.make(viewTarget, "", toasterLength)
 
         val viewLayout = View.inflate(viewTarget.context, R.layout.scp_toaster, null)
@@ -74,8 +68,8 @@ object ScpRewardsToaster {
         tv_title.text = toasterData.title
         tv_desc.text = toasterData.subtitle
 
-        frame_icon.loadImage(toasterData.sunflare)
-        badge.loadImage(toasterData.badgeImage)
+        frame_icon.setImageBitmap(toasterData.sunflare)
+        badge.setImageBitmap(toasterData.badgeImage)
 
         val constraintLayoutToaster = viewLayout.findViewById<View>(R.id.constraintLayoutToaster)
 
@@ -86,14 +80,14 @@ object ScpRewardsToaster {
         }
 
         val actionTextButton = viewLayout.findViewById<Typography>(R.id.snackbar_btn)
-        if(toasterCustomCtaWidth > 0) {
+        if (toasterCustomCtaWidth > 0) {
             actionTextButton.maxWidth = toasterCustomCtaWidth
             toasterCustomCtaWidth = 0
         }
 
         if (cta == WITH_CTA) {
             actionTextButton.text = ctaText
-            actionTextButton.setOnClickListener{
+            actionTextButton.setOnClickListener {
                 viewLayout.animate().alpha(0f).setDuration(UnifyMotion.T3).setInterpolator(UnifyMotion.EASE_OUT).start()
                 tempSnackBar.dismiss()
                 onCTAClick.onClick(it)
@@ -111,10 +105,10 @@ object ScpRewardsToaster {
         layout.addView(viewLayout, 0)
 
         val params = layout.layoutParams
-        if(params is FrameLayout.LayoutParams) {
+        if (params is FrameLayout.LayoutParams) {
             params.gravity = Gravity.BOTTOM
             params.width = FrameLayout.LayoutParams.MATCH_PARENT
-        } else if(params is CoordinatorLayout.LayoutParams) {
+        } else if (params is CoordinatorLayout.LayoutParams) {
             params.gravity = Gravity.BOTTOM
             params.width = CoordinatorLayout.LayoutParams.MATCH_PARENT
         }
@@ -124,12 +118,12 @@ object ScpRewardsToaster {
         layout.isEnabled = false
 
         if (toasterCustomBottomHeight > 0) {
-            layout.setPadding(16.toPx(),0,16.toPx(), toasterCustomBottomHeight +16.toPx())
+            layout.setPadding(16.toPx(), 0, 16.toPx(), toasterCustomBottomHeight + 16.toPx())
         }
 
         viewLayout.visibility = View.INVISIBLE
 
-        tempSnackBar.addCallback(object: Snackbar.Callback() {
+        tempSnackBar.addCallback(object : Snackbar.Callback() {
             override fun onShown(sb: Snackbar?) {
                 viewLayout.visibility = View.VISIBLE
 
@@ -172,4 +166,3 @@ object ScpRewardsToaster {
         }
     }
 }
-
