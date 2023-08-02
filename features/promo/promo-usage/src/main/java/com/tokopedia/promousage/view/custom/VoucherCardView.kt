@@ -162,7 +162,6 @@ class VoucherCardView @JvmOverloads constructor(
         voucherBackground.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN50)
         voucherExpiredDateBackground.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN100)
         cardViewBorder.color  = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
-        cardViewBorder.strokeWidth = 6f
         invalidate()
     }
 
@@ -171,7 +170,6 @@ class VoucherCardView @JvmOverloads constructor(
         voucherBackground.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         voucherExpiredDateBackground.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN50)
         cardViewBorder.color  = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN200)
-        cardViewBorder.strokeWidth = 4f
         invalidate()
     }
 }
