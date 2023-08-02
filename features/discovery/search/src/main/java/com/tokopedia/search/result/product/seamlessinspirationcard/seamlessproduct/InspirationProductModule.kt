@@ -8,12 +8,6 @@ import dagger.Module
 abstract class InspirationProductModule {
 
     @Binds
-    @SearchScope
-    abstract fun provideInspirationProductView(
-        inspirationProductViewDelegate: InspirationProductViewDelegate
-    ): InspirationProductView
-
-    @Binds
     abstract fun provideInspirationProductPresenter(
         inspirationProductPresenterDelegate: InspirationProductPresenterDelegate
     ): InspirationProductPresenter
@@ -21,6 +15,6 @@ abstract class InspirationProductModule {
     @Binds
     @SearchScope
     abstract fun provideInspirationCarouselDynamicProductView(
-        delegate: InspirationProductItemTrackerDelegate
-    ): InspirationProductItemTracker
+        delegate: InspirationProductViewDelegate
+    ): InspirationProductView
 }

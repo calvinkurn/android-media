@@ -183,13 +183,12 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         externalReference: String
     ): List<Visitable<*>> {
         val inspirationKeywordVisitableList = mutableListOf<Visitable<*>>()
-        val (inspirationKeyboard, inspirationProduct) = InspirationSeamlessMapper.convertToInspirationList(
+        val (inspirationKeyboard, inspirationProduct, isOneOrMoreItemIsEmptyImage) = InspirationSeamlessMapper.convertToInspirationList(
             data.options,
-            data.type,
             externalReference
         )
         inspirationKeywordVisitableList.add(
-            InspirationKeywordCardView.create(data.title, inspirationKeyboard)
+            InspirationKeywordCardView.create(data.title, inspirationKeyboard, isOneOrMoreItemIsEmptyImage)
         )
         inspirationKeywordVisitableList.addAll(inspirationProduct)
         return inspirationKeywordVisitableList

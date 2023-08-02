@@ -8,32 +8,44 @@ object InspirationSeamlessMapper {
 
     fun convertToInspirationList(
         inspirationOptions: List<InspirationCarouselDataView.Option>,
-        type: String,
         externalReference: String
     ):
-        Pair<List<InspirationKeywordDataView>, List<InspirationProductItemDataView>> {
+        Triple<List<InspirationKeywordDataView>, List<InspirationProductItemDataView>, Boolean> {
         val listOfInspirationKeywordItems = mutableListOf<InspirationKeywordDataView>()
         val listOfOptionProductItems = mutableListOf<InspirationProductItemDataView>()
+        var isOneOrMoreItemIsEmptyImage = false
         inspirationOptions.map { option ->
             listOfInspirationKeywordItems.add(
-                option.convertToInspirationKeywordDataView(type)
+                option.convertToInspirationKeywordDataView()
             )
-            listOfOptionProductItems.addAll(option.getTopThreeOfInspirationProduct(externalReference))
+
+            if (option.bannerImageUrl.isEmpty()) {
+                isOneOrMoreItemIsEmptyImage = true
+            }
+
+            listOfOptionProductItems.addAll(
+                option.getProductAndConvertToInspirationProductDataView(
+                    externalReference
+                )
+            )
         }
-        return Pair(listOfInspirationKeywordItems, listOfOptionProductItems)
+        return Triple(listOfInspirationKeywordItems, listOfOptionProductItems, isOneOrMoreItemIsEmptyImage)
     }
 
-    private fun InspirationCarouselDataView.Option.convertToInspirationKeywordDataView(type: String) =
+    private fun InspirationCarouselDataView.Option.convertToInspirationKeywordDataView() =
         InspirationKeywordDataView.create(this)
 
-    private fun InspirationCarouselDataView.Option.getTopThreeOfInspirationProduct(externalReference : String): List<InspirationProductItemDataView> {
+    private fun InspirationCarouselDataView.Option.getProductAndConvertToInspirationProductDataView(
+        externalReference: String
+    ): List<InspirationProductItemDataView> {
         val listOfOptionProductItems = mutableListOf<InspirationProductItemDataView>()
-        val topThreeProducts = this.product.take(MAXIMUM_INSPIRATION_PRODUCT_ITEM)
-        topThreeProducts.mapIndexed { index, product ->
+        val products = this.product
+        products.mapIndexed { index, product ->
             listOfOptionProductItems.add(
                 product.convertToInspirationProduct(
                     option = this,
-                    index = index
+                    index = index,
+                    externalReference = externalReference
                 )
             )
         }

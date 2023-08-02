@@ -23,7 +23,7 @@ class InspirationKeywordsTypeFactoryImpl(
 ) :
     BaseAdapterTypeFactory(), InspirationKeywordsTypeFactory {
     override fun type(item: InspirationKeywordDataView): Int {
-        return when  {
+        return when {
             isNoImageCard -> NoImageInspirationKeywordItemViewHolder.LAYOUT
             isListView() || isBigGridView() ->
                 ListInspirationKeywordItemViewHolder.LAYOUT

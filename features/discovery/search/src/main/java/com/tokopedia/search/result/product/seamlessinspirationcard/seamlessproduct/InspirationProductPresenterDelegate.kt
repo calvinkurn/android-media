@@ -8,14 +8,13 @@ import javax.inject.Inject
 
 @SearchScope
 class InspirationProductPresenterDelegate @Inject constructor(
-    private val inspirationProductView: InspirationProductView,
-    private val inspirationProductTracker: InspirationProductItemTracker,
+    private val inspirationProductTracker: InspirationProductView,
     private val topAdsUrlHitter: TopAdsUrlHitter,
     private val classNameProvider: ClassNameProvider
 ) : InspirationProductPresenter {
     override fun onInspirationProductItemImpressed(inspirationProductData: InspirationProductItemDataView) {
         if (inspirationProductData.isOrganicAds)
-            sendTrackingImpressAsBroadMatchAds(inspirationProductData)
+            sendTrackingImpressInspirationCarouselAds(inspirationProductData)
 
         val seamlessInspirationProductType = inspirationProductData.seamlessInspirationProductType
         inspirationProductTracker.trackInspirationProductSeamlessImpression(
@@ -31,31 +30,31 @@ class InspirationProductPresenterDelegate @Inject constructor(
             seamlessInspirationProductType.inspirationCarouselProduct
         )
 
-        inspirationProductView.openLink(inspirationProductData.applink, inspirationProductData.url)
+        inspirationProductTracker.openLink(inspirationProductData.applink, inspirationProductData.url)
 
         if (inspirationProductData.isOrganicAds)
-            sendTrackingClickAsBroadMatchAds(inspirationProductData)
+            sendTrackingClickInspirationCarouselAds(inspirationProductData)
     }
 
-    private fun sendTrackingImpressAsBroadMatchAds(inspirationProductItemDataView: InspirationProductItemDataView) {
+    private fun sendTrackingImpressInspirationCarouselAds(product: InspirationProductItemDataView) {
         topAdsUrlHitter.hitImpressionUrl(
             classNameProvider.className,
-            inspirationProductItemDataView.topAdsViewUrl,
-            inspirationProductItemDataView.id,
-            inspirationProductItemDataView.name,
-            inspirationProductItemDataView.imageUrl,
-            SearchConstant.TopAdsComponent.BROAD_MATCH_ADS
+            product.topAdsViewUrl,
+            product.id,
+            product.name,
+            product.imageUrl,
+            SearchConstant.TopAdsComponent.ORGANIC_ADS
         )
     }
 
-    private fun sendTrackingClickAsBroadMatchAds(broadMatchItemDataView: InspirationProductItemDataView) {
+    private fun sendTrackingClickInspirationCarouselAds(product: InspirationProductItemDataView) {
         topAdsUrlHitter.hitClickUrl(
             classNameProvider.className,
-            broadMatchItemDataView.topAdsClickUrl,
-            broadMatchItemDataView.id,
-            broadMatchItemDataView.name,
-            broadMatchItemDataView.imageUrl,
-            SearchConstant.TopAdsComponent.BROAD_MATCH_ADS
+            product.topAdsClickUrl,
+            product.id,
+            product.name,
+            product.imageUrl,
+            SearchConstant.TopAdsComponent.ORGANIC_ADS
         )
     }
 }

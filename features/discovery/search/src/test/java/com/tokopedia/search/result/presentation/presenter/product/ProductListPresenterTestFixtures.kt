@@ -48,9 +48,8 @@ import com.tokopedia.search.result.product.samesessionrecommendation.SameSession
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordPresenterDelegate
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordView
-import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductItemTracker
-import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductPresenterDelegate
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductView
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductPresenterDelegate
 import com.tokopedia.search.result.product.similarsearch.SimilarSearchOnBoardingPresenterDelegate
 import com.tokopedia.search.result.product.similarsearch.SimilarSearchOnBoardingView
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
@@ -142,7 +141,7 @@ internal open class ProductListPresenterTestFixtures {
     protected val inspirationKeywordSeamlessView = mockk<InspirationKeywordView>(relaxed = true)
     protected val inspirationProductSeamlessView = mockk<InspirationProductView>(relaxed = true)
     protected val inspirationProductItemTracker =
-        mockk<InspirationProductItemTracker>(relaxed = true)
+        mockk<InspirationProductView>(relaxed = true)
 
     private val dynamicFilterModel = MutableDynamicFilterModelProviderDelegate()
     private val pagination = PaginationImpl()
@@ -238,7 +237,6 @@ internal open class ProductListPresenterTestFixtures {
         )
 
         val inspirationProductPresenterDelegate = InspirationProductPresenterDelegate(
-            inspirationProductSeamlessView,
             inspirationProductItemTracker,
             topAdsUrlHitter,
             classNameProvider

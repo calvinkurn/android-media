@@ -35,7 +35,6 @@ class InspirationKeywordViewHolder(
         val LAYOUT = R.layout.search_inspiration_semless_keyword
         private const val TWO_COLUMN = 2
         private const val ONE_COLUMN = 1
-        val QTY_EXAMPLE_DATA = 3
     }
 
     private var binding: SearchInspirationSemlessKeywordBinding? by viewBinding()
@@ -44,10 +43,9 @@ class InspirationKeywordViewHolder(
         if (binding == null || element == null) return
 
         initCardView()
-        val optionItem = element.optionsItems.take(QTY_EXAMPLE_DATA)
-        optionItem.getItemOptionsOn(INDEX_IMPRESSION_KEYWORD_TO_BE_TRACK).doImpressedTracker()
+        element.optionsItems.getItemOptionsOn(INDEX_IMPRESSION_KEYWORD_TO_BE_TRACK).doImpressedTracker()
         val viewType = changeViewListener.viewType
-        initRecyclerView(optionItem, viewType)
+        initRecyclerView(element, viewType)
     }
 
     private fun initCardView() {
@@ -64,12 +62,12 @@ class InspirationKeywordViewHolder(
     }
 
     private fun initRecyclerView(
-        inspirationKeywords: List<InspirationKeywordDataView>,
+        inspirationKeywords:  InspirationKeywordCardView,
         viewType: ViewType
     ) {
         binding?.inspirationKeywordOptionList?.let {
-            val isNeedToShowNoImageCard = inspirationKeywords.none { it.imageKeyword.isNotEmpty() }
-            val columnQty = generateColumnQty(inspirationKeywords.size, isNeedToShowNoImageCard)
+            val isNeedToShowNoImageCard = inspirationKeywords.isOneOrMoreIsEmptyImage
+            val columnQty = generateColumnQty(inspirationKeywords.optionsItems.size, isNeedToShowNoImageCard)
             it.layoutManager = createLayoutManager(
                 context = it.context,
                 columnQty = columnQty,
@@ -79,7 +77,7 @@ class InspirationKeywordViewHolder(
                 InspirationKeywordAdapter(
                     createInspirationKeywordTypeFactory(columnQty, isNeedToShowNoImageCard)
                 ).apply {
-                    setList(inspirationKeywords)
+                    setList(inspirationKeywords.optionsItems)
                 }
             it.setItemDecoration(
                 spacing = it.context.getSpacingResource(),

@@ -48,7 +48,7 @@ class NoImageInspirationKeywordItemViewHolder(
     }
 
     private fun Typography.adjustRatioImage() {
-        if(changeListener.isBigGridView()){
+        if(changeListener.isBigGridView()) {
             val spacingSize = this.context.getSpacingResource()
             val params: FrameLayout.LayoutParams =
                 FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)

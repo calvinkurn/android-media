@@ -28,13 +28,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:maxLines="2"
-            android:textColor="@color/Unify_NN950_96"
+            android:textColor="@color/Unify_NN950"
             android:text="@string/search_inspiration_keyword_match_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="heading_4" />
+            app:typographyType="body_3"
+            app:typographyWeight="bold"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/inspirationKeywordOptionList"
