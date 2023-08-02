@@ -113,7 +113,7 @@ ext {
     benchmarkTestVersion = '1.0.0'
     testCore = '1.4.0'
     fragmentTest = "1.4.1"
-    androidxFragment = '1.4.1'
+    androidxFragment = '1.5.7'
     debugToolsEnabled = true
 
     // Sort and categorize alphabetically by folder name
