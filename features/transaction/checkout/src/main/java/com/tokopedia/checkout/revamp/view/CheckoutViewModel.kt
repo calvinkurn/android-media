@@ -388,6 +388,14 @@ class CheckoutViewModel @Inject constructor(
                 logisticProcessor.editAddressPinpoint(latitude, longitude, recipientAddressModel)
             pageState.value = CheckoutPageState.Normal
             if (editAddressResult.isSuccess) {
+//                if (listData.value.indexOfFirst { it is CheckoutOrderModel && it.isDisableChangeCourier } != -1) {
+                loadSAF(
+                    isReloadData = true,
+                    skipUpdateOnboardingState = true,
+                    isReloadAfterPriceChangeHigher = false
+                )
+//                }
+            } else {
             }
         }
     }

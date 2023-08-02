@@ -69,12 +69,6 @@ class CheckoutLogisticProcessor @Inject constructor(
                     )
                 )
             }, { throwable: Throwable ->
-//                    var errorMessage = throwable.message
-//            if (errorMessage == null) {
-//                errorMessage =
-//                    view?.getStringResource(com.tokopedia.abstraction.R.string.default_request_error_unknown_short)
-//            }
-//            view?.showToastError(errorMessage)
                 callback(CheckoutPageState.Error(throwable))
             }, AddressConstant.ANA_REVAMP_FEATURE_ID)
     }
@@ -90,9 +84,6 @@ class CheckoutLogisticProcessor @Inject constructor(
                     generateEditAddressRequestParams(latitude, longitude, recipientAddressModel)
                 val stringResponse =
                     editAddressUseCase.createObservable(requestParams).toBlocking().single()
-//            if (view != null) {
-//                view!!.setHasRunningApiCall(false)
-//                view!!.hideLoading()
                 var response: JsonObject? = null
                 var messageError = ""
                 var statusSuccess: Boolean
@@ -113,7 +104,6 @@ class CheckoutLogisticProcessor @Inject constructor(
                     recipientAddressModel.latitude = latitude
                     recipientAddressModel.longitude = longitude
                     EditAddressResult(isSuccess = true)
-//                    view?.renderEditAddressSuccess(latitude, longitude)
                 } else {
 //                    if (messageError.isEmpty()) {
 //                        messageError =
@@ -121,7 +111,7 @@ class CheckoutLogisticProcessor @Inject constructor(
 //                                ?: ""
 //                    }
 //                    view?.navigateToSetPinpoint(messageError, locationPass)
-                    EditAddressResult(isSuccess = false, errorMessage = messageError)
+                    EditAddressResult(isSuccess = false, errorMessage = messageError.ifEmpty { "Terjadi Kesalahan" })
                 }
 //            }
             } catch (t: Throwable) {
