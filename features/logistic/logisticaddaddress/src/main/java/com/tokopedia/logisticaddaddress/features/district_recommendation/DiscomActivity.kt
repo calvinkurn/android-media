@@ -4,10 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.design.R
 import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking.onClickCloseKotaKecamatan
 import com.tokopedia.logisticCommon.data.entity.address.Token
@@ -20,7 +17,7 @@ import com.tokopedia.user.session.UserSessionInterface
  * Created by Irfan Khoirul on 17/11/18.
  * Deeplink: DISTRICT_RECOMMENDATION_SHOP_SETTINGS
  */
-class DiscomActivity : BaseSimpleActivity(), HasComponent<Any?>, DiscomFragment.ActionListener {
+class DiscomActivity : BaseSimpleActivity(), DiscomFragment.ActionListener {
     private var analytics: CheckoutAnalyticsChangeAddress? = null
     private var isLocalization = false
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,10 +37,6 @@ class DiscomActivity : BaseSimpleActivity(), HasComponent<Any?>, DiscomFragment.
         } else {
             newInstance(token, isLocalization)
         }
-    }
-
-    override fun getComponent(): BaseAppComponent {
-        return (application as BaseMainApplication).baseAppComponent
     }
 
     override fun onBackPressed() {

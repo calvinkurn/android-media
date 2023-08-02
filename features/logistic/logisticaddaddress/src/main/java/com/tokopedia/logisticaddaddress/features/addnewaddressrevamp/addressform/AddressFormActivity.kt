@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.logisticCommon.uimodel.AddressUiState
 import com.tokopedia.logisticCommon.uimodel.isAdd
 import com.tokopedia.logisticCommon.uimodel.toAddressUiState
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_ADDRESS_STATE
@@ -23,8 +24,7 @@ class AddressFormActivity : BaseSimpleActivity(), HasComponent<AddNewAddressReva
         val bundle = intent.extras
         var fragment: AddressFormFragment? = null
 
-        val addressUiState = Bundle().getString(EXTRA_ADDRESS_STATE).toAddressUiState()
-        if (addressUiState.isAdd() && bundle != null) {
+        if (getAddressUiState(bundle).isAdd() && bundle != null) {
             fragment = AddressFormFragment.newInstance(bundle)
         } else {
             if (intent.data?.lastPathSegment != null) {
@@ -36,5 +36,14 @@ class AddressFormActivity : BaseSimpleActivity(), HasComponent<AddNewAddressReva
         }
 
         return fragment
+    }
+
+    private fun getAddressUiState(bundle: Bundle?): AddressUiState? {
+        val addressUiStateBundle = bundle?.getString(EXTRA_ADDRESS_STATE)
+        return if (addressUiStateBundle?.isNotEmpty() == true) {
+            addressUiStateBundle.toAddressUiState()
+        } else {
+            null
+        }
     }
 }

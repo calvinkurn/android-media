@@ -78,20 +78,15 @@ class DiscomBottomSheetRevamp :
         private const val LOCATION_REQUEST_FASTEST_INTERVAL = 2000L
     }
 
-//    @Inject
-//    lateinit var viewModelFactory: ViewModelProvider.Factory
-//
-//    private val viewModel: DiscomViewModel by lazy {
-//        ViewModelProvider(
-//            requireParentFragment(),
-//            viewModelFactory
-//        )[DiscomViewModel::class.java]
-//    }
-//
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private var viewModel: DiscomViewModel? = null
+    private val viewModel: DiscomViewModel by lazy {
+        ViewModelProvider(
+            requireParentFragment(),
+            viewModelFactory
+        )[DiscomViewModel::class.java]
+    }
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -192,7 +187,6 @@ class DiscomBottomSheetRevamp :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
-        viewModel = ViewModelProvider(this, viewModelFactory)[DiscomViewModel::class.java]
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
