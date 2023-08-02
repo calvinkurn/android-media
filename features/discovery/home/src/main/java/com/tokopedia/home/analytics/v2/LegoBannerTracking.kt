@@ -39,31 +39,25 @@ object LegoBannerTracking : BaseTrackerConst() {
         userId: String
     ): HashMap<String, Any> {
         val trackerBuilder = BaseTrackerBuilder()
-        return trackerBuilder
-                .appendEvent(PROMO_VIEW)
-                .appendEventAction(IMPRESSION_HOME_BANNER)
-                .appendEventCategory(Category.HOMEPAGE)
-                .appendUserId(userId)
-                .appendCustomKeyValue(
-                    Ecommerce.KEY, DataLayer.mapOf(
-                        PROMO_VIEW, DataLayer.mapOf(
-                            Promotion.KEY, DataLayer.listOf(
-                                arrayListOf(getLegoPromotionList(channelModel))
-                            )
-                        )
-                    )
-                )
-                .build() as HashMap<String, Any>
+        return trackerBuilder.constructBasicPromotionView(
+            event = PROMO_VIEW,
+            eventAction = IMPRESSION_HOME_BANNER,
+            eventCategory = Category.HOMEPAGE,
+            eventLabel = "",
+            promotions = getLegoPromotionList(channelModel)
+        )
+            .appendUserId(userId)
+            .build() as HashMap<String, Any>
     }
 
-    private fun getLegoPromotionList(channelModel: ChannelModel): List<Map<String, Any>> {
+    private fun getLegoPromotionList(channelModel: ChannelModel): List<Promotion> {
         val tracking = channelModel.trackingAttributionModel
         return channelModel.channelGrids.mapIndexed { i, grid ->
-            DataLayer.mapOf(
-                "id", "%s_%s_%s_%s".format(channelModel.id, grid.id, tracking.persoType, tracking.categoryId),
-                "name", tracking.promoName,
-                "creative", grid.attribution,
-                "position", (i + 1).toString()
+            Promotion(
+                id = "%s_%s_%s_%s".format(channelModel.id, grid.id, tracking.persoType, tracking.categoryId),
+                name = tracking.promoName,
+                creative = grid.attribution,
+                position = (i + 1).toString()
             )
         }
     }
