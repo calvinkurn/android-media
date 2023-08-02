@@ -57,6 +57,7 @@ class PlayBroLiveToVodBottomSheet @Inject constructor(
         setChild(binding.root)
         overlayClickDismiss = false
         showCloseIcon = false
+        isCancelable = false
     }
 
     private fun initData(data: TickerBottomSheetUiModel) = with(binding) {
