@@ -19,9 +19,6 @@ import dagger.Provides
 import okhttp3.OkHttpClient
 import java.util.concurrent.TimeUnit
 
-/**
- * Created By : Jonathan Darwin on November 08, 2022
- */
 @Module
 class StoriesModule(private val activityContext: Context) {
 

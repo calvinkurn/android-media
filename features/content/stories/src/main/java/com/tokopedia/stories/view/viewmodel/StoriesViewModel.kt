@@ -1,12 +1,21 @@
 package com.tokopedia.stories.view.viewmodel
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.tokopedia.stories.data.StoriesRepository
-import javax.inject.Inject
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 
-class StoriesViewModel @Inject constructor(
+class StoriesViewModel @AssistedInject constructor(
+    @Assisted private val handle: SavedStateHandle,
     private val repository: StoriesRepository,
 ) : ViewModel() {
+
+    @AssistedFactory
+    interface Factory {
+        fun create(handle: SavedStateHandle): StoriesViewModel
+    }
 
     private var shopId = ""
     private var storiesId = ""
@@ -17,7 +26,7 @@ class StoriesViewModel @Inject constructor(
 
     fun saveInitialData(data: List<String>) {
         shopId = data[SHOP_ID_INDEX]
-        storiesId = data[STORIES_ID_INDEX]
+        storiesId = if (data.size > 2) data[STORIES_ID_INDEX] else ""
     }
 
     companion object {
