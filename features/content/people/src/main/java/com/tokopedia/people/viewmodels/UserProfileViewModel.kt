@@ -621,8 +621,6 @@ class UserProfileViewModel @AssistedInject constructor(
 
             _reviewContent.value.reviewList.firstOrNull { it.feedbackID == feedbackId } ?: return@launchCatchError
 
-            println("JOE LOG process $feedbackId $isLike")
-
             val response = repo.setLikeStatus(
                 feedbackID = feedbackId,
                 isLike = isLike,
