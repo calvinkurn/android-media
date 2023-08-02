@@ -417,6 +417,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             btnAction2?.text = data.buttonStr
             btnAction2?.setBackgroundResource(R.drawable.bg_button_buy_green_tokopoints)
             layout_coupon_code.hide()
+            btn_action_claim?.hide()
         } else {
             gift_section_main_layout.hide()
             tp_bottom_separator.hide()
