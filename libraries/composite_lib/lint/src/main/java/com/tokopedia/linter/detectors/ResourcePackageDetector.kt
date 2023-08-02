@@ -70,21 +70,24 @@ class ResourcePackageDetector : Detector(), SourceCodeScanner {
     override fun createUastHandler(context: JavaContext): UElementHandler {
         return object : UElementHandler() {
             override fun visitField(node: UField) {
-                val resource = node.text.substringAfter("= ")
+                try {
+                    val resource = node.text.substringAfter("= ")
 
-                if(shouldScanResource(resource)) {
-                    scanResource(
-                        context = context,
-                        node = node,
-                        value = resource
-                    )
+                    if (shouldScanResource(resource)) {
+                        scanResource(
+                            context = context,
+                            node = node,
+                            value = resource
+                        )
+                    }
+                } catch (ignore: Exception) {
                 }
             }
 
             override fun visitLocalVariable(node: ULocalVariable) {
                 val resource = node.text.substringAfter("= ")
 
-                if(shouldScanResource(resource)) {
+                if (shouldScanResource(resource)) {
                     scanResource(
                         context = context,
                         node = node,
@@ -110,7 +113,7 @@ class ResourcePackageDetector : Detector(), SourceCodeScanner {
                 val element = node.sourcePsi?.lastChild
                 val resource = element?.text.orEmpty()
 
-                if(shouldScanResource(resource)) {
+                if (shouldScanResource(resource)) {
                     scanResource(
                         context = context,
                         psi = element,
@@ -139,13 +142,13 @@ class ResourcePackageDetector : Detector(), SourceCodeScanner {
         value: String
     ) {
         val resourceName = value.substringAfterLast(".")
-        if(!resourceIds.contains(resourceName)) {
+        if (!resourceIds.contains(resourceName)) {
             reportError(context, node, psi)
         }
     }
 
     private fun reportError(context: JavaContext, node: UElement?, psi: PsiElement?) {
-        if(psi != null) {
+        if (psi != null) {
             context.report(
                 JAVA_ISSUE,
                 psi,

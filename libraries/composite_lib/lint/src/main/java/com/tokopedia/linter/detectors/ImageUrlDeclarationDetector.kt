@@ -26,7 +26,7 @@ class ImageUrlDeclarationDetector : Detector(), Detector.UastScanner {
             id = "ImageUrlDeclarationDetector",
             briefDescription = "Image URL declaration outside of `libraries/images_assets` module is not allowed",
             explanation = "In order to make a centralized remote resources. So, you have to create the constant variable " +
-                    "for this in `libraries/images_assets` module instead.",
+                "for this in `libraries/images_assets` module instead.",
             category = Category.CORRECTNESS,
             priority = 5,
             severity = Severity.WARNING,
@@ -38,7 +38,7 @@ class ImageUrlDeclarationDetector : Detector(), Detector.UastScanner {
 
         private const val ERROR_MESSAGE =
             "You are not allowed to create image url declaration here. " +
-                    "Should be moved to `libraries/images_assets` module."
+                "Should be moved to `libraries/images_assets` module."
         private const val EXCLUDED_DIR = "src/main/java/com/tokopedia/imageassets"
         private const val IMAGE_URL_PATTERN = "(http.*?(gif|jpeg|png|jpg|bmp))"
         private val VARIABLES_MODIFIER = arrayOf("constval", "val", "constvar", "var")
@@ -56,8 +56,11 @@ class ImageUrlDeclarationDetector : Detector(), Detector.UastScanner {
     inner class ElementHandler(private val context: JavaContext) : UElementHandler() {
 
         override fun visitField(node: UField) {
-            if (isVariable(node.text)) {
-                checkImageUrl(context, node)
+            try {
+                if (isVariable(node.text)) {
+                    checkImageUrl(context, node)
+                }
+            } catch (ignore: Exception) {
             }
         }
 

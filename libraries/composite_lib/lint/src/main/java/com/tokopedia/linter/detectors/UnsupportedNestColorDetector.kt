@@ -165,8 +165,11 @@ class UnsupportedNestColorDetector : Detector(), XmlScanner, SourceCodeScanner {
     override fun createUastHandler(context: JavaContext): UElementHandler {
         return object : UElementHandler() {
             override fun visitField(node: UField) {
-                val value = node.text
-                validate(node = node, value = value)
+                try {
+                    val value = node.text
+                    validate(node = node, value = value)
+                } catch (ignore: Exception) {
+                }
             }
 
             override fun visitLocalVariable(node: ULocalVariable) {
