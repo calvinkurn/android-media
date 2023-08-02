@@ -3,6 +3,8 @@
     package="com.tokopedia.minicart">
 
     <application>
-
+        <activity
+            android:name="com.tokopedia.minicart.bmgm.presentation.activity.BmgmCartActivity"
+            android:theme="@style/Theme.Transparent" />
     </application>
 </manifest>
