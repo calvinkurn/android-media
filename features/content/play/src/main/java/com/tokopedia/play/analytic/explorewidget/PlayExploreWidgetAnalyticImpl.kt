@@ -1,5 +1,10 @@
 package com.tokopedia.play.analytic.explorewidget
 
+import com.tokopedia.content.analytic.BusinessUnit
+import com.tokopedia.content.analytic.CurrentSite
+import com.tokopedia.content.analytic.Event
+import com.tokopedia.content.analytic.EventCategory
+import com.tokopedia.content.analytic.Key
 import com.tokopedia.play.analytic.*
 import com.tokopedia.play.view.uimodel.ChipWidgetUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayChannelInfoUiModel
@@ -52,14 +57,14 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
 
     override fun impressExploreIcon() {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_VIEW_CONTENT_IRIS)
+            .setEvent(Event.viewContentIris)
             .setEventAction("impression - explore widget")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventCategory(EventCategory.groupChatRoom)
             .setEventLabel("$channelId - $channelType")
-            .setCustomProperty(KEY_TRACK_TRACKER_ID, "39856")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.trackerId, "39856")
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -67,14 +72,14 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
 
     override fun clickExploreIcon() {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_CONTENT)
+            .setEvent(Event.clickContent)
             .setEventAction("click - explore widget")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventCategory(EventCategory.groupChatRoom)
             .setEventLabel("$channelId - $channelType")
-            .setCustomProperty(KEY_TRACK_TRACKER_ID, "39857")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.trackerId, "39857")
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -91,16 +96,16 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
         }
 
         val map = BaseTrackerBuilder().constructBasicPromotionView(
-            event = KEY_TRACK_PROMO_VIEW,
-            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
+            event = Event.promoView,
+            eventCategory = EventCategory.groupChatRoom,
             eventAction = "impression - category tab",
             eventLabel = "$categoryName - $channelId - $channelType",
             promotions = promotions
         )
             .appendUserId(userId)
-            .appendBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .appendCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .appendCustomKeyValue(KEY_TRACK_TRACKER_ID, "39858")
+            .appendBusinessUnit(BusinessUnit.play)
+            .appendCurrentSite(CurrentSite.tokopediaMarketplace)
+            .appendCustomKeyValue(Key.trackerId, "39858")
             .build()
 
         trackingQueue.putEETracking(map as? HashMap<String, Any>)
@@ -108,14 +113,14 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
 
     override fun clickExploreTab(categoryName: String) {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_CONTENT)
+            .setEvent(Event.clickContent)
             .setEventAction("click - category tab")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventCategory(EventCategory.groupChatRoom)
             .setEventLabel("$categoryName - $channelId - $channelType")
-            .setCustomProperty(KEY_TRACK_TRACKER_ID, "39859")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.trackerId, "39859")
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -132,14 +137,14 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
          * {is_autoplay} - {category name} - {promo/no promo} - {recommendation_type}
          */
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_CONTENT)
+            .setEvent(Event.clickContent)
             .setEventAction("click - channel card")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventCategory(EventCategory.groupChatRoom)
             .setEventLabel("$channelId - $channelType - ${selectedChannel.channelId} - ${selectedChannel.channelType.value} - ${position + 1} - $isAutoplay - $categoryName - ${selectedChannel.hasPromo.promoToString} - ${selectedChannel.recommendationType}")
-            .setCustomProperty(KEY_TRACK_TRACKER_ID, "39860")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.trackerId, "39860")
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -147,14 +152,14 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
 
     override fun clickCloseExplore() {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_CONTENT)
+            .setEvent(Event.clickContent)
             .setEventAction("click - close explore widget")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventCategory(EventCategory.groupChatRoom)
             .setEventLabel("$channelId - $channelType")
-            .setCustomProperty(KEY_TRACK_TRACKER_ID, "39861")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.trackerId, "39861")
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -162,14 +167,14 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
 
     override fun scrollExplore() {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_CONTENT)
+            .setEvent(Event.clickContent)
             .setEventAction("scroll - explore widget")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventCategory(EventCategory.groupChatRoom)
             .setEventLabel("$channelId - $channelType")
-            .setCustomProperty(KEY_TRACK_TRACKER_ID, "39862")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.trackerId, "39862")
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -180,14 +185,14 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
          * {channel_id live room} - {live/vod live room} - {channel_id remind}
          */
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_CONTENT)
+            .setEvent(Event.clickContent)
             .setEventAction("click - remind me explore widget")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventCategory(EventCategory.groupChatRoom)
             .setEventLabel("$channelId - $channelType - $selectedChannelId")
-            .setCustomProperty(KEY_TRACK_TRACKER_ID, "39863")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.trackerId, "39863")
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -195,14 +200,14 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
 
     override fun swipeRefresh() {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_CONTENT)
+            .setEvent(Event.clickContent)
             .setEventAction("scroll - refresh explore widget")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventCategory(EventCategory.groupChatRoom)
             .setEventLabel("$channelId - $channelType")
-            .setCustomProperty(KEY_TRACK_TRACKER_ID, "39864")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.trackerId, "39864")
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -210,14 +215,14 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
 
     override fun impressToasterGlobalError() {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_VIEW_CONTENT_IRIS)
+            .setEvent(Event.viewContentIris)
             .setEventAction("impression - toaster global error")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventCategory(EventCategory.groupChatRoom)
             .setEventLabel("$channelId - $channelType")
-            .setCustomProperty(KEY_TRACK_TRACKER_ID, "39875")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.trackerId, "39875")
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -225,14 +230,14 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
 
     override fun clickRetryToaster() {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_CONTENT)
+            .setEvent(Event.clickContent)
             .setEventAction("click - coba lagi toaster")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventCategory(EventCategory.groupChatRoom)
             .setEventLabel("$channelId - $channelType")
-            .setCustomProperty(KEY_TRACK_TRACKER_ID, "39876")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.trackerId, "39876")
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -245,8 +250,8 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
         categoryName: String
     ) {
         val map = BaseTrackerBuilder().constructBasicPromotionView(
-            event = KEY_TRACK_PROMO_VIEW,
-            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
+            event = Event.promoView,
+            eventCategory = EventCategory.groupChatRoom,
             eventAction = "impression - channel card",
             eventLabel = "$channelId - $channelType - ${item.channelType.value.lowercase()} - ${position + 1} - ${config.autoPlay} - $categoryName - ${item.hasPromo.promoToString} - ${item.recommendationType}",
             promotions = listOf(
@@ -259,9 +264,9 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
             )
         )
             .appendUserId(userId)
-            .appendBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .appendCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .appendCustomKeyValue(KEY_TRACK_TRACKER_ID, "40969")
+            .appendBusinessUnit(BusinessUnit.play)
+            .appendCurrentSite(CurrentSite.tokopediaMarketplace)
+            .appendCustomKeyValue(Key.trackerId, "40969")
             .build()
 
         trackingQueue.putEETracking(map as? HashMap<String, Any>)
