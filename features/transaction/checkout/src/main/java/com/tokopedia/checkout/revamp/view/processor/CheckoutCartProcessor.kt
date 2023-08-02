@@ -20,6 +20,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
+import com.tokopedia.checkout.view.CheckoutLogger
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
@@ -47,6 +48,7 @@ class CheckoutCartProcessor @Inject constructor(
     suspend fun hitSAF(
         isOneClickShipment: Boolean,
         isTradeIn: Boolean,
+        isTradeInDropOff: Boolean,
         skipUpdateOnboardingState: Boolean,
         cornerId: String?,
         deviceId: String?,
@@ -72,7 +74,9 @@ class CheckoutCartProcessor @Inject constructor(
                     cartShipmentAddressFormData,
                     isReloadData,
                     isReloadAfterPriceChangeHigher,
-                    isOneClickShipment
+                    isOneClickShipment,
+                    isTradeIn,
+                    isTradeInDropOff
                 )
             } catch (t: Throwable) {
                 Timber.d(t)
@@ -85,86 +89,68 @@ class CheckoutCartProcessor @Inject constructor(
         cartShipmentAddressFormData: CartShipmentAddressFormData,
         isReloadData: Boolean,
         isReloadAfterPriceChangeHigher: Boolean,
-        isOneClickShipment: Boolean
+        isOneClickShipment: Boolean,
+        isTradeIn: Boolean,
+        isTradeInDropOff: Boolean
     ): CheckoutPageState {
         if (cartShipmentAddressFormData.isError) {
             if (cartShipmentAddressFormData.isOpenPrerequisiteSite) {
                 return CheckoutPageState.CacheExpired(cartShipmentAddressFormData.errorMessage)
             } else {
+                CheckoutLogger.logOnErrorLoadCheckoutPage(
+                    MessageErrorException(
+                        cartShipmentAddressFormData.errorMessage
+                    ),
+                    isOneClickShipment,
+                    isTradeIn,
+                    isTradeInDropOff
+                )
                 return CheckoutPageState.Error(
                     MessageErrorException(
                         cartShipmentAddressFormData.errorMessage
                     ),
                     true
                 )
-//                view?.showToastError(cartShipmentAddressFormData.errorMessage)
-//                view?.logOnErrorLoadCheckoutPage(
-//                    MessageErrorException(
-//                        cartShipmentAddressFormData.errorMessage
-//                    )
-//                )
             }
         } else {
             val groupAddressList = cartShipmentAddressFormData.groupAddress
             val userAddress = groupAddressList.firstOrNull()?.userAddress
             return validateRenderCheckoutPage(
                 cartShipmentAddressFormData,
-                userAddress,
-                isReloadData,
-                isReloadAfterPriceChangeHigher,
-                isOneClickShipment
+                userAddress
             )
         }
     }
 
     private fun validateRenderCheckoutPage(
         cartShipmentAddressFormData: CartShipmentAddressFormData,
-        userAddress: UserAddress?,
-        isReloadData: Boolean,
-        isReloadAfterPriceChangeHigher: Boolean,
-        isOneClickShipment: Boolean
+        userAddress: UserAddress?
     ): CheckoutPageState {
-        if (cartShipmentAddressFormData.errorCode == CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADD_NEW_ADDRESS) {
-            return CheckoutPageState.CheckNoAddress(cartShipmentAddressFormData)
-//            checkIsUserEligibleForRevampAna(cartShipmentAddressFormData)
-        } else if (cartShipmentAddressFormData.errorCode == CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADDRESS_LIST) {
-            return CheckoutPageState.NoMatchedAddress(
-//            view?.renderCheckoutPageNoMatchedAddress(
-                userAddress?.state ?: 0
-            )
-        } else if (cartShipmentAddressFormData.errorCode == CartShipmentAddressFormData.NO_ERROR) {
-            if (userAddress == null) {
-                return CheckoutPageState.EmptyData
-//                view?.onShipmentAddressFormEmpty()
-            } else {
-//                view?.updateLocalCacheAddressData(userAddress)
-//                initializePresenterData(cartShipmentAddressFormData)
-//                setCurrentDynamicDataParamFromSAF(cartShipmentAddressFormData, isOneClickShipment)
-//                view?.renderCheckoutPage(
-//                    !isReloadData,
-//                    isReloadAfterPriceChangeHigher
-//                )
-                if (cartShipmentAddressFormData.popUpMessage.isNotEmpty()) {
-//                    view?.showToastNormal(cartShipmentAddressFormData.popUpMessage)
-                }
-                val popUpData = cartShipmentAddressFormData.popup
-                if (popUpData.title.isNotEmpty() && popUpData.description.isNotEmpty()) {
-//                    view?.showPopUp(popUpData)
-                }
-                return CheckoutPageState.Success(cartShipmentAddressFormData)
+        when (cartShipmentAddressFormData.errorCode) {
+            CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADD_NEW_ADDRESS -> {
+                return CheckoutPageState.CheckNoAddress(cartShipmentAddressFormData)
             }
-        } else {
-            return CheckoutPageState.Error(
-                MessageErrorException(
-                    cartShipmentAddressFormData.errorMessage
-                ),
-                true
-            )
+            CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADDRESS_LIST -> {
+                return CheckoutPageState.NoMatchedAddress(
+                    userAddress?.state ?: 0
+                )
+            }
+            CartShipmentAddressFormData.NO_ERROR -> {
+                return if (userAddress == null) {
+                    CheckoutPageState.EmptyData
+                } else {
+                    CheckoutPageState.Success(cartShipmentAddressFormData)
+                }
+            }
+            else -> {
+                return CheckoutPageState.Error(
+                    MessageErrorException(
+                        cartShipmentAddressFormData.errorMessage
+                    ),
+                    true
+                )
+            }
         }
-//        isUsingDdp = cartShipmentAddressFormData.isUsingDdp
-//        dynamicData = cartShipmentAddressFormData.dynamicData
-//        shipmentPlatformFeeData = cartShipmentAddressFormData.shipmentPlatformFee
-//        listSummaryAddOnModel = ShipmentAddOnProductServiceMapper.mapSummaryAddOns(cartShipmentAddressFormData)
     }
 
     suspend fun changeShippingAddress(
@@ -217,62 +203,20 @@ class CheckoutCartProcessor @Inject constructor(
                         isOneClickShipment
                     )
                 )
-//                if (view != null) {
-//                    view!!.hideLoading()
-//                    view!!.setHasRunningApiCall(false)
                 if (setShippingAddressData.isSuccess) {
-//                        if (setShippingAddressData.messages.isEmpty()) {
-//                            view!!.showToastNormal(view!!.getStringResource(R.string.label_change_address_success))
-//                        } else {
-//                            view!!.showToastNormal(setShippingAddressData.messages[0])
-//                        }
                     return@withContext ChangeAddressResult(
                         isSuccess = true,
                         toasterMessage = (setShippingAddressData.messages.firstOrNull() ?: "").ifEmpty { "Berhasil mengubah alamat" }
                     )
-//                        hitClearAllBo()
-//                        view!!.renderChangeAddressSuccess(reloadCheckoutPage)
                 } else {
                     return@withContext ChangeAddressResult(
                         isSuccess = false,
-                        toasterMessage = setShippingAddressData.messages.joinToString(" ")
+                        toasterMessage = if (setShippingAddressData.messages.isEmpty()) "Gagal mengubah alamat" else setShippingAddressData.messages.joinToString(" ")
                     )
-//                        if (setShippingAddressData.messages.isNotEmpty()) {
-//                            val stringBuilder = StringBuilder()
-//                            for (errorMessage in setShippingAddressData.messages) {
-//                                stringBuilder.append(errorMessage).append(" ")
-//                            }
-//                            view!!.showToastError(stringBuilder.toString())
-//                            if (isHandleFallback) {
-//                                view!!.renderChangeAddressFailed(reloadCheckoutPage)
-//                            }
-//                        } else {
-//                            view!!.showToastError(view!!.getStringResource(R.string.label_change_address_failed))
-//                            if (isHandleFallback) {
-//                                view!!.renderChangeAddressFailed(reloadCheckoutPage)
-//                            }
-//                        }
-//                    }
                 }
             } catch (t: Throwable) {
-//                if (view != null) {
-//                    view!!.hideLoading()
-//                    view!!.setHasRunningApiCall(false)
                 Timber.d(t)
-//                    val errorMessage: String? = if (t is AkamaiErrorException) {
-//                        t.message
-//                    } else {
-//                        ErrorHandler.getErrorMessage(
-//                            view!!.activity,
-//                            t
-//                        )
-//                    }
                 return@withContext ChangeAddressResult(isSuccess = false, throwable = t)
-//                    view!!.showToastError(errorMessage)
-//                    if (isHandleFallback) {
-//                        view!!.renderChangeAddressFailed(reloadCheckoutPage)
-//                    }
-//                }
             }
         }
     }
@@ -327,6 +271,7 @@ class CheckoutCartProcessor @Inject constructor(
         shipmentStateShopProductDataList: MutableList<ShipmentStateShopProductData>
     ) {
         var courierData: CourierItemData? = shipmentCartItemModel.shipment.courierItemData
+        // todo handle trade in
 //        if (shipmentCartItemModel.selectedShipmentDetailData != null) {
 //            courierData = if (view!!.isTradeInByDropOff) {
 //                shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff
@@ -359,14 +304,12 @@ class CheckoutCartProcessor @Inject constructor(
             val shipmentStateShopProductData = ShipmentStateShopProductData()
             shipmentStateShopProductData.cartStringGroup = shipmentCartItemModel.cartStringGroup
             shipmentStateShopProductData.shopId = shipmentCartItemModel.shopId
-//            shipmentStateShopProductData.finsurance =
-//                if (shipmentCartItemModel.selectedShipmentDetailData!!.useInsurance != null &&
-//                    shipmentCartItemModel.selectedShipmentDetailData!!.useInsurance!!
-//                ) {
-//                    1
-//                } else {
-//                    0
-//                }
+            shipmentStateShopProductData.finsurance =
+                if (shipmentCartItemModel.shipment.insurance.isCheckInsurance) {
+                    1
+                } else {
+                    0
+                }
             shipmentStateShopProductData.isPreorder =
                 if (shipmentCartItemModel.isProductIsPreorder) 1 else 0
             shipmentStateShopProductData.warehouseId = shipmentCartItemModel.fulfillmentId

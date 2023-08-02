@@ -198,6 +198,7 @@ class CheckoutViewModel @Inject constructor(
             val saf = cartProcessor.hitSAF(
                 isOneClickShipment,
                 isTradeIn,
+                isTradeInByDropOff,
                 skipUpdateOnboardingState,
                 cornerId,
                 deviceId,
@@ -218,9 +219,7 @@ class CheckoutViewModel @Inject constructor(
                             tickerData.message
                         )
                     )
-//                    analyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(
-//                        tickerData.id
-//                    )
+                    mTrackerShipment.eventViewInformationAndWarningTickerInCheckout(tickerData.id)
                 }
                 val address = CheckoutAddressModel(
                     recipientAddressModel = dataConverter.getRecipientAddressModel(saf.cartShipmentAddressFormData)
@@ -314,7 +313,6 @@ class CheckoutViewModel @Inject constructor(
                     pageState.value = saf
                 }
             }
-            Log.i("qwertyuiop", "saf $saf")
         }
     }
 
@@ -326,6 +324,7 @@ class CheckoutViewModel @Inject constructor(
         newRecipientAddressModel: RecipientAddressModel?,
         chosenAddressModel: ChosenAddressModel?,
         isHandleFallback: Boolean
+        // todo: can be true if trade in
     ) {
         viewModelScope.launch(dispatchers.immediate) {
             pageState.value = CheckoutPageState.Loading
@@ -344,7 +343,11 @@ class CheckoutViewModel @Inject constructor(
                     )
                 )
                 hitClearAllBo()
-                loadSAF(true, true, false)
+                loadSAF(
+                    isReloadData = true,
+                    skipUpdateOnboardingState = true,
+                    isReloadAfterPriceChangeHigher = false
+                )
             } else {
                 commonToaster.emit(
                     CheckoutPageToaster(
@@ -355,6 +358,7 @@ class CheckoutViewModel @Inject constructor(
                 )
                 pageState.value = CheckoutPageState.Normal
                 if (isHandleFallback) {
+                    // todo test this in trade in
                     val address = listData.value.address()?.recipientAddressModel
                     if (address != null) {
                         if (address.selectedTabIndex == RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT) {

@@ -80,6 +80,7 @@ import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
+import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.logisticCommon.util.PinpointRolloutHelper
@@ -439,6 +440,7 @@ class CheckoutFragment :
 
                 is CheckoutPageState.Success -> {
                     hideLoading()
+                    updateLocalCacheAddressData(it.cartShipmentAddressFormData.groupAddress.first().userAddress)
                     binding.rvCheckout.isVisible = true
                     if (it.cartShipmentAddressFormData.popUpMessage.isNotEmpty()) {
                         showToastNormal(it.cartShipmentAddressFormData.popUpMessage)
@@ -692,6 +694,48 @@ class CheckoutFragment :
                 saveAddressDataModel.serviceType,
                 ""
             )
+        }
+    }
+
+    @Suppress("ImplicitDefaultLocale")
+    fun updateLocalCacheAddressData(userAddress: UserAddress) {
+        val activity: Activity? = activity
+        if (activity != null) {
+            val lca = ChooseAddressUtils.getLocalizingAddressData(
+                activity
+            )
+            val tokonow = userAddress.tokoNow
+            if (userAddress.state == UserAddress.STATE_ADDRESS_ID_NOT_MATCH || lca.address_id.isEmpty() || lca.address_id == "0") {
+                ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                    activity,
+                    userAddress.addressId,
+                    userAddress.cityId,
+                    userAddress.districtId,
+                    userAddress.latitude,
+                    userAddress.longitude,
+                    String.format("%s %s", userAddress.addressName, userAddress.receiverName),
+                    userAddress.postalCode,
+                    if (tokonow.isModified) tokonow.shopId else lca.shop_id,
+                    if (tokonow.isModified) tokonow.warehouseId else lca.warehouse_id,
+                    if (tokonow.isModified) {
+                        TokonowWarehouseMapper.mapWarehousesAddAddressModelToLocal(
+                            tokonow.warehouses
+                        )
+                    } else {
+                        lca.warehouses
+                    },
+                    if (tokonow.isModified) tokonow.serviceType else lca.service_type,
+                    ""
+                )
+            } else if (tokonow.isModified) {
+                ChooseAddressUtils.updateTokoNowData(
+                    activity,
+                    tokonow.warehouseId,
+                    tokonow.shopId,
+                    TokonowWarehouseMapper.mapWarehousesAddAddressModelToLocal(tokonow.warehouses),
+                    tokonow.serviceType
+                )
+            }
         }
     }
 
