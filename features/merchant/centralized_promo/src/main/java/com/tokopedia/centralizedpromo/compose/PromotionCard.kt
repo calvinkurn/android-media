@@ -70,7 +70,7 @@ fun PromotionCard(
                     ),
                     maxLines = 2
                 )
-                ImageWithBackground(ImageSource.Painter(R.drawable.ic_voucher_waktu), labelNew)
+                ImageWithBackground(ImageSource.Remote(imageUrl), labelNew)
             }
 
             val context = LocalContext.current
@@ -196,6 +196,12 @@ private fun PromotionCardPreview() {
 
         }
     }
+}
+
+@Composable
+@Preview
+private fun ImageWithBackgroundPreview() {
+    ImageWithBackground(ImageSource.Painter(R.drawable.ic_voucher_waktu), "Baru")
 }
 
 @Composable
