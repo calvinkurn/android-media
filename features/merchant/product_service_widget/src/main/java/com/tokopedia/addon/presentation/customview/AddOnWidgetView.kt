@@ -164,10 +164,10 @@ class AddOnWidgetView : BaseCustomView {
         indexChild: Int,
         addOnGroupUIModels: List<AddOnGroupUIModel>
     ) {
-        listener?.onAddonComponentClick(index, indexChild, addOnGroupUIModels)
-        viewModel.setSelectedAddons(addOnGroupUIModels)
         val addonChild = addOnGroupUIModels.getOrNull(index)?.addon?.getOrNull(indexChild) ?: return
         viewModel.lastSelectedAddOn.addOrUpdate(index, addonChild)
+        listener?.onAddonComponentClick(index, indexChild, addOnGroupUIModels)
+        viewModel.setSelectedAddons(addOnGroupUIModels)
     }
 
     private fun <E> MutableList<E>.addOrUpdate(index: Int, addonChild: E) {

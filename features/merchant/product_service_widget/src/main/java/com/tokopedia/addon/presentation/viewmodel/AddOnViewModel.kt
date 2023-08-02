@@ -116,7 +116,8 @@ class AddOnViewModel @Inject constructor(
             AddOnMapper.mapToSaveAddOnStateRequest(
                 cartId,
                 source,
-                modifiedAddOnGroups.value
+                modifiedAddOnGroups.value,
+                lastSelectedAddOn
             ),
             false
         )
