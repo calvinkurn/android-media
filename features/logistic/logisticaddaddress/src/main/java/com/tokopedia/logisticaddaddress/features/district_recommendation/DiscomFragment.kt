@@ -259,7 +259,7 @@ class DiscomFragment :
     }
 
     private fun setBackAddressResult(address: Address) {
-        analytics?.gtmOnDistrictDropdownSelectionItemClicked(address.districtName)
+        address.districtName?.let { analytics?.gtmOnDistrictDropdownSelectionItemClicked(it) }
         activity?.let {
             val resultIntent = Intent().apply {
                 putExtra(
@@ -274,7 +274,7 @@ class DiscomFragment :
                 putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_NAME, address.provinceName)
                 putStringArrayListExtra(
                     INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES,
-                    address.zipCodes
+                    ArrayList(address.zipCodes)
                 )
                 putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_LATITUDE, "")
                 putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_LONGITUDE, "")

@@ -36,11 +36,17 @@ import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.LocationSettingsStatusCodes
 import com.google.android.gms.tasks.OnFailureListener
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.domain.model.Place
+import com.tokopedia.logisticCommon.uimodel.AddressUiState
+import com.tokopedia.logisticCommon.uimodel.isAdd
+import com.tokopedia.logisticCommon.uimodel.isEditOrPinpointOnly
+import com.tokopedia.logisticCommon.uimodel.toAddressUiState
 import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_ADDRESS_STATE
@@ -56,14 +62,9 @@ import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_SAVE_DATA_
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUndefinedBinding
 import com.tokopedia.logisticaddaddress.databinding.FragmentSearchAddressBinding
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.AddressUiState
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormActivity
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.EditAddressRevampAnalytics
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.isAdd
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.isEditOrPinpointOnly
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.PinpointNewPageActivity
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.toAddressUiState
+import com.tokopedia.logisticaddaddress.features.analytics.LogisticAddAddressAnalytics
+import com.tokopedia.logisticaddaddress.features.analytics.LogisticEditAddressAnalytics
+import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.PinpointNewPageActivity
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.LOCATION_NOT_FOUND
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_DENIED
@@ -236,7 +237,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         when (permissionState) {
             PERMISSION_GRANTED -> {
                 if (addressUiState.isAdd()) {
-                    AddNewAddressRevampAnalytics.onClickAllowLocationSearch(userSession.userId)
+                    LogisticAddAddressAnalytics.onClickAllowLocationSearch(userSession.userId)
                 }
                 if (AddNewAddressUtils.isGpsEnabled(context)) {
                     getLocation()
@@ -247,14 +248,14 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
 
             PERMISSION_DENIED -> {
                 if (addressUiState.isAdd()) {
-                    AddNewAddressRevampAnalytics.onClickDontAllowLocationSearch(userSession.userId)
+                    LogisticAddAddressAnalytics.onClickDontAllowLocationSearch(userSession.userId)
                 }
             }
 
             PERMISSION_DONT_ASK_AGAIN -> {
                 showBottomSheetLocUndefined(true)
                 if (addressUiState.isAdd()) {
-                    AddNewAddressRevampAnalytics.onClickDontAllowLocationSearch(userSession.userId)
+                    LogisticAddAddressAnalytics.onClickDontAllowLocationSearch(userSession.userId)
                 }
             }
         }
@@ -283,8 +284,8 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
 
     override fun onItemClicked(placeId: String) {
         when (addressUiState) {
-            AddressUiState.AddAddress -> AddNewAddressRevampAnalytics.onClickDropdownSuggestion(userSession.userId)
-            AddressUiState.EditAddress -> EditAddressRevampAnalytics.onClickDropdownSuggestionAlamat(userSession.userId)
+            AddressUiState.AddAddress -> LogisticAddAddressAnalytics.onClickDropdownSuggestion(userSession.userId)
+            AddressUiState.EditAddress -> LogisticEditAddressAnalytics.onClickDropdownSuggestionAlamat(userSession.userId)
             else -> {
                 // no op
             }
@@ -318,8 +319,8 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
 
     private fun hitAnalyticOnBackPress() {
         when (addressUiState) {
-            AddressUiState.AddAddress -> AddNewAddressRevampAnalytics.onClickBackArrowSearch(userSession.userId)
-            AddressUiState.EditAddress -> EditAddressRevampAnalytics.onClickBackArrowSearch(userSession.userId)
+            AddressUiState.AddAddress -> LogisticAddAddressAnalytics.onClickBackArrowSearch(userSession.userId)
+            AddressUiState.EditAddress -> LogisticEditAddressAnalytics.onClickBackArrowSearch(userSession.userId)
             else -> {
                 // no op
             }
@@ -339,7 +340,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                 saveAddressDataModel = this
             }
             getString(EXTRA_REF)?.takeIf { addressUiState.isAdd() }?.let { from ->
-                AddNewAddressRevampAnalytics.sendScreenName(from)
+                LogisticAddAddressAnalytics.sendScreenName(from)
             }
         }
     }
@@ -349,7 +350,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
             val gmsAvailable = MapsAvailabilityHelper.isMapsAvailable(it)
             isGmsAvailable = gmsAvailable
             if (!gmsAvailable) {
-                goToAddressForm()
+                goToAddAddressForm()
             }
         }
     }
@@ -420,13 +421,14 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         binding?.searchPageInput?.searchBarTextField?.setText("")
         binding?.tvMessageSearch?.text = getString(R.string.txt_message_initial_load)
         binding?.tvMessageSearch?.setOnClickListener {
-            AddNewAddressRevampAnalytics.onClickIsiAlamatManualSearch(userSession.userId)
-            goToAddressForm()
+            LogisticAddAddressAnalytics.onClickIsiAlamatManualSearch(userSession.userId)
+            goToAddAddressForm()
         }
     }
 
-    private fun goToAddressForm() {
-        val intent = Intent(context, AddressFormActivity::class.java).apply {
+    private fun goToAddAddressForm() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.EDIT_ADDRESS_REVAMP)
+        intent.apply {
             putExtra(EXTRA_IS_POSITIVE_FLOW, false)
             putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveAddressDataModel)
             putExtra(PARAM_SOURCE, source)
@@ -441,8 +443,8 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
             setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
                     when (addressUiState) {
-                        AddressUiState.AddAddress -> AddNewAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
-                        AddressUiState.EditAddress -> EditAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
+                        AddressUiState.AddAddress -> LogisticAddAddressAnalytics.onClickFieldCariLokasi(userSession.userId)
+                        AddressUiState.EditAddress -> LogisticEditAddressAnalytics.onClickFieldCariLokasi(userSession.userId)
                         else -> {
                             // no op
                         }
@@ -452,8 +454,8 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
 
             setOnClickListener {
                 when (addressUiState) {
-                    AddressUiState.AddAddress -> AddNewAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
-                    AddressUiState.EditAddress -> EditAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
+                    AddressUiState.AddAddress -> LogisticAddAddressAnalytics.onClickFieldCariLokasi(userSession.userId)
+                    AddressUiState.EditAddress -> LogisticEditAddressAnalytics.onClickFieldCariLokasi(userSession.userId)
                     else -> {
                         // no op
                     }
@@ -502,8 +504,8 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
 
     private fun doGetCurrentLocation() {
         when (addressUiState) {
-            AddressUiState.AddAddress -> AddNewAddressRevampAnalytics.onClickGunakanLokasiSaatIniSearch(userSession.userId)
-            AddressUiState.EditAddress -> EditAddressRevampAnalytics.onClickGunakanLokasiSaatIniSearch(userSession.userId)
+            AddressUiState.AddAddress -> LogisticAddAddressAnalytics.onClickGunakanLokasiSaatIniSearch(userSession.userId)
+            AddressUiState.EditAddress -> LogisticEditAddressAnalytics.onClickGunakanLokasiSaatIniSearch(userSession.userId)
             else -> {
                 // no op
             }
@@ -538,7 +540,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         bottomSheetLocUndefined?.apply {
             setCloseClickListener {
                 if (addressUiState.isAdd()) {
-                    AddNewAddressRevampAnalytics.onClickXOnBlockGpsSearch(userSession.userId)
+                    LogisticAddAddressAnalytics.onClickXOnBlockGpsSearch(userSession.userId)
                 }
                 dismiss()
             }
@@ -563,7 +565,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
             tvInfoLocUndefined.text = getString(R.string.txt_info_location_not_detected)
             btnActivateLocation.setOnClickListener {
                 if (addressUiState.isAdd()) {
-                    AddNewAddressRevampAnalytics.onClickAktifkanLayananLokasiSearch(userSession.userId)
+                    LogisticAddAddressAnalytics.onClickAktifkanLayananLokasiSearch(userSession.userId)
                 }
                 if (!isDontAskAgain) {
                     goToSettingLocationDevice()
@@ -617,8 +619,8 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                                     try {
                                         if (e is ResolvableApiException) {
                                             val intentSenderRequest =
-                                        IntentSenderRequest.Builder(e.resolution.intentSender)
-                                            .build()
+                                                IntentSenderRequest.Builder(e.resolution.intentSender)
+                                                    .build()
                                             gpsResultResolutionContract.launch(intentSenderRequest)
                                         }
                                     } catch (sie: IntentSender.SendIntentException) {
@@ -626,7 +628,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                                     }
                                 LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
                                     val errorMessage =
-                                    "Location settings are inadequate, and cannot be " + "fixed here. Fix in Settings."
+                                        "Location settings are inadequate, and cannot be " + "fixed here. Fix in Settings."
                                     Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
                                 }
                             }
@@ -775,5 +777,4 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
             }
         }
     }
-
 }

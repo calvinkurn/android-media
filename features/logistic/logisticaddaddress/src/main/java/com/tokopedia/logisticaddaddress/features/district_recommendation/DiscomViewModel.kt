@@ -12,8 +12,8 @@ import com.tokopedia.logisticaddaddress.domain.mapper.DistrictRecommendationMapp
 import com.tokopedia.logisticaddaddress.domain.model.AddressResponse
 import com.tokopedia.logisticaddaddress.domain.model.district_recommendation.GetDistrictRecomParam
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRecommendationCoroutineUseCase
-import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase.Companion.FOREIGN_COUNTRY_MESSAGE
-import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase.Companion.LOCATION_NOT_FOUND_MESSAGE
+import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRecommendationCoroutineUseCase.Companion.FOREIGN_COUNTRY_MESSAGE
+import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRecommendationCoroutineUseCase.Companion.LOCATION_NOT_FOUND_MESSAGE
 import com.tokopedia.logisticaddaddress.features.district_recommendation.uimodel.AutofillUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result

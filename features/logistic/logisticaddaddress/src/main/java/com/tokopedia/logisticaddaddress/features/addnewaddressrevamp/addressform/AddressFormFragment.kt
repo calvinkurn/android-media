@@ -25,6 +25,10 @@ import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_EDIT_ADD
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant.EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.uimodel.AddressUiState
+import com.tokopedia.logisticCommon.uimodel.isAdd
+import com.tokopedia.logisticCommon.uimodel.isEdit
+import com.tokopedia.logisticCommon.uimodel.toAddressUiState
 import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants
@@ -46,20 +50,14 @@ import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressReva
 import com.tokopedia.logisticaddaddress.domain.mapper.SaveAddressMapper
 import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.domain.model.add_address.ContactData
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.AddressUiState
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.analytics.AddNewAddressRevampAnalytics
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.analytics.EditAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.widget.BaseFormAddressWidget
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.EditAddressRevampAnalytics
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.isAdd
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.isEdit
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.PinpointNewPageActivity
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.toAddressUiState
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.FieldType
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomBottomSheetRevamp
+import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.PinpointNewPageActivity
 import com.tokopedia.logisticaddaddress.utils.AddEditAddressUtil
 import com.tokopedia.logisticaddaddress.utils.TextInputUtil.setWrapperError
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
@@ -1293,7 +1291,6 @@ class AddressFormFragment :
             consentJson = binding?.userConsentWidget?.generatePayloadData().orEmpty(),
             sourceValue = sourceValue
         )
-
     }
 
     private fun doSaveEditAddress() {
@@ -1433,27 +1430,27 @@ class AddressFormFragment :
     private fun setUserConsent() {
         binding?.userConsentWidget?.visible()
 
-            binding?.userConsentWidget?.apply {
-                setBtnSaveAddressEnable(addressUiState.isEdit())
-                setOnCheckedChangeListener { isChecked ->
-                    setBtnSaveAddressEnable(isChecked)
-                }
-                setOnFailedGetCollectionListener {
-                    setBtnSaveAddressEnable(true)
-                }
-            }?.load(
-                viewLifecycleOwner,
-                this,
-                ConsentCollectionParam(
-                    collectionId = collectionId
-                )
+        binding?.userConsentWidget?.apply {
+            setBtnSaveAddressEnable(addressUiState.isEdit())
+            setOnCheckedChangeListener { isChecked ->
+                setBtnSaveAddressEnable(isChecked)
+            }
+            setOnFailedGetCollectionListener {
+                setBtnSaveAddressEnable(true)
+            }
+        }?.load(
+            viewLifecycleOwner,
+            this,
+            ConsentCollectionParam(
+                collectionId = collectionId
             )
-        }
-
-        private fun setBtnSaveAddressEnable(isEnabled: Boolean) {
-            binding?.btnSaveAddressNew?.isEnabled = isEnabled
-        }
-
-        private val FragmentAddressFormBinding.addressForm: BaseFormAddressWidget
-        get() = if (isPositiveFlow) this.formAddressPositiveWidget else this.formAddressNegativeWidget
+        )
     }
+
+    private fun setBtnSaveAddressEnable(isEnabled: Boolean) {
+        binding?.btnSaveAddressNew?.isEnabled = isEnabled
+    }
+
+    private val FragmentAddressFormBinding.addressForm: BaseFormAddressWidget
+        get() = if (isPositiveFlow) this.formAddressPositiveWidget else this.formAddressNegativeWidget
+}
