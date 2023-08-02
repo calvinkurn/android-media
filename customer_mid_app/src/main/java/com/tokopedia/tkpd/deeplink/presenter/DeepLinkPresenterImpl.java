@@ -294,10 +294,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                      doTopAdsOperation(uriData);
                      screenName = "";
                      break;
-//                case DeepLinkChecker.STORIES:
-//                     openStories(linkSegment);
-//                     screenName = "";
-//                     break;
+                case DeepLinkChecker.STORIES:
+                     openStories(linkSegment);
+                     screenName = "";
+                     break;
                 case DeepLinkChecker.DEALS:
                 case DeepLinkChecker.OTHER:
                 default:
