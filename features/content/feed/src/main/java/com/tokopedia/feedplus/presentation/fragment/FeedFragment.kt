@@ -356,7 +356,11 @@ class FeedFragment :
                     Lifecycle.Event.ON_RESUME -> {
                         if (checkResume(isOnResume = true)) resumeCurrentVideo()
                     }
-                    Lifecycle.Event.ON_PAUSE -> pauseCurrentVideo()
+                    Lifecycle.Event.ON_PAUSE -> {
+                        pauseCurrentVideo()
+
+                        feedFollowRecommendationAnalytics.sendAll()
+                    }
                     else -> {}
                 }
             }
@@ -1131,6 +1135,8 @@ class FeedFragment :
                 resumeCurrentVideo()
             } else {
                 pauseCurrentVideo()
+
+                feedFollowRecommendationAnalytics.sendAll()
             }
         }
     }

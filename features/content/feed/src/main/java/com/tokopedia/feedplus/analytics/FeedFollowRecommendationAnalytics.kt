@@ -136,6 +136,11 @@ class FeedFollowRecommendationAnalytics @Inject constructor(
         )
     }
 
+    fun sendAll() {
+        trackingQueue.sendAll()
+        impressedAuthorId.clear()
+    }
+
     private fun getEventLabel(
         prefix: String,
         entryPoint: String,
