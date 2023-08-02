@@ -4313,26 +4313,23 @@ class ShipmentFragment :
             if (addOnProductDataResult.aggregatedData.isGetDataSuccess) {
                 val cartIdAddOn = addOnProductDataResult.cartId
                 val needUpdateAddOnItem = shipmentAdapter.getAddOnProductServicePosition(cartIdAddOn)
-
-                run loopAddOnProduct@{
-                    needUpdateAddOnItem.second?.addOnProduct?.listAddOnProductData?.forEach { addOnExisting ->
-                        for (addOnUiModel in addOnProductDataResult.aggregatedData.selectedAddons) {
-                            if (addOnUiModel.addOnType == addOnExisting.type) {
-                                addOnExisting.apply {
-                                    id = addOnUiModel.id.toLongOrZero()
-                                    uniqueId = addOnUiModel.uniqueId
-                                    price = addOnUiModel.price.toDouble()
-                                    infoLink = addOnUiModel.eduLink
-                                    name = addOnUiModel.name
-                                    status = addOnUiModel.getSaveAddonSelectedStatus().value
-                                    type = addOnUiModel.addOnType
-                                }
-                                onNeedUpdateViewItem(needUpdateAddOnItem.first)
-                                return@loopAddOnProduct
+                needUpdateAddOnItem.second?.addOnProduct?.listAddOnProductData?.forEach { addOnExisting ->
+                    for (addOnUiModel in addOnProductDataResult.aggregatedData.selectedAddons) {
+                        // value 0 from selectedAddons means no changes
+                        if (addOnUiModel.addOnType == addOnExisting.type && addOnUiModel.getSelectedStatus().value > 0) {
+                            addOnExisting.apply {
+                                id = addOnUiModel.id.toLongOrZero()
+                                uniqueId = addOnUiModel.uniqueId
+                                price = addOnUiModel.price.toDouble()
+                                infoLink = addOnUiModel.eduLink
+                                name = addOnUiModel.name
+                                status = addOnUiModel.getSaveAddonSelectedStatus().value
+                                type = addOnUiModel.addOnType
                             }
                         }
                     }
                 }
+                onNeedUpdateViewItem(needUpdateAddOnItem.first)
                 updateCost()
                 shipmentAdapter.updateSubtotal()
             } else {
