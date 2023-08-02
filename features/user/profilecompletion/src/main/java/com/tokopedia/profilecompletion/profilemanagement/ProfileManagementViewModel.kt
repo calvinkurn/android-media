@@ -32,7 +32,7 @@ class ProfileManagementViewModel @Inject constructor(
 
                 _getAuth.value = response
             }, onError = {
-                _getAuth.value = GetUrlProfileManagementResult.Failed
+                _getAuth.value = GetUrlProfileManagementResult.Failed(it)
             }
         )
     }

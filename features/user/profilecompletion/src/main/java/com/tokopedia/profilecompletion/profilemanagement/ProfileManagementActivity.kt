@@ -7,6 +7,8 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.getResColor
@@ -19,6 +21,9 @@ import com.tokopedia.profilecompletion.domain.GetUrlProfileManagementResult
 import com.tokopedia.utils.view.binding.internal.findRootView
 import com.tokopedia.webview.BaseSessionWebViewFragment
 import com.tokopedia.webview.BaseSimpleWebViewActivity
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class ProfileManagementActivity: BaseSimpleWebViewActivity(), HasComponent<ProfileCompletionSettingComponent> {
@@ -99,14 +104,15 @@ class ProfileManagementActivity: BaseSimpleWebViewActivity(), HasComponent<Profi
         viewModel.getAuth.observe(this) {
             when(it) {
                 is GetUrlProfileManagementResult.Loading -> {
-                    setUpLayout(it)
+                    setupLayout(it)
                 }
                 is GetUrlProfileManagementResult.Success -> {
-                    setUpLayout(it)
+                    setupLayout(it)
                     setupFragment(savedInstance = null)
                 }
                 is GetUrlProfileManagementResult.Failed -> {
-                    setUpLayout(it)
+                    setupErrorLayout(it.throwable)
+                    setupLayout(it)
                 }
             }
         }
@@ -114,15 +120,46 @@ class ProfileManagementActivity: BaseSimpleWebViewActivity(), HasComponent<Profi
 
     private fun initListener() {
         binding?.globalError?.setActionClickListener {
-            viewModel.getProfileManagementData()
+            if (binding?.globalError?.getErrorType() == GlobalError.PAGE_NOT_FOUND) {
+                finish()
+            } else {
+                viewModel.getProfileManagementData()
+            }
         }
     }
 
-    private fun setUpLayout(state: GetUrlProfileManagementResult) {
+    private fun setupLayout(state: GetUrlProfileManagementResult) {
         binding?.apply {
             globalError.showWithCondition(state is GetUrlProfileManagementResult.Failed)
             loader.showWithCondition(state is GetUrlProfileManagementResult.Loading)
             parentView.showWithCondition(state is GetUrlProfileManagementResult.Success)
+        }
+    }
+
+    private fun setupErrorLayout(throwable: Throwable) {
+        when (throwable) {
+            is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
+                binding?.globalError?.setType(GlobalError.NO_CONNECTION)
+            }
+            is RuntimeException -> {
+                when (throwable.localizedMessage?.toIntOrNull()) {
+                    ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> {
+                        binding?.globalError?.setType(GlobalError.NO_CONNECTION)
+                    }
+                    ReponseStatus.NOT_FOUND -> {
+                        binding?.globalError?.setType(GlobalError.PAGE_NOT_FOUND)
+                    }
+                    ReponseStatus.INTERNAL_SERVER_ERROR -> {
+                        binding?.globalError?.setType(GlobalError.SERVER_ERROR)
+                    }
+                    else -> {
+                        binding?.globalError?.setType(GlobalError.SERVER_ERROR)
+                    }
+                }
+            }
+            else -> {
+                binding?.globalError?.setType(GlobalError.SERVER_ERROR)
+            }
         }
     }
 

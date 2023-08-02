@@ -128,5 +128,5 @@ class GetUrlProfileManagementUseCase@Inject constructor(
 sealed class GetUrlProfileManagementResult {
     object Loading: GetUrlProfileManagementResult()
     class Success(val url: String): GetUrlProfileManagementResult()
-    object Failed: GetUrlProfileManagementResult()
+    class Failed(val throwable: Throwable): GetUrlProfileManagementResult()
 }
