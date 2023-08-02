@@ -112,7 +112,7 @@
 
     <fragment
         android:id="@+id/composeQuestionnaireFragment"
-        android:name="com.tokopedia.sellerpersona.view.fragment.PersonaQuestionnaireFragment"
+        android:name="com.tokopedia.sellerpersona.view.compose.fragment.ComposeQuestionnaireFragment"
         android:label="@string/sp_opening_page_type"
         tools:layout="@layout/fragment_persona_questionnaire">
         <action

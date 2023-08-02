@@ -171,8 +171,9 @@ class ComposeResultFragment : Fragment() {
 
     private fun retakeQuiz() {
         view?.let {
+            val action = ComposeResultFragmentDirections.actionResultFragmentToQuestionnaireFragment()
             Navigation.findNavController(it)
-                .navigate(R.id.actionResultFragmentToQuestionnaireFragment)
+                .navigate(action)
             SellerPersonaTracking.sendClickSellerPersonaResultRetakeQuizEvent()
         }
     }
