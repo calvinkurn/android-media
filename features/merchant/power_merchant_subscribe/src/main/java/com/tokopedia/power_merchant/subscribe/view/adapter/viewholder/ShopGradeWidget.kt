@@ -396,10 +396,10 @@ class ShopGradeWidget(
 
     private fun getLabelStringResId(element: WidgetShopGradeUiModel): Int {
         return if (element.isNewSeller) {
-            if (element.pmStatus == PMStatusConst.INACTIVE) {
-                R.string.pm_shop_performance_sum
-            } else {
+            if (element.pmStatus == PMStatusConst.ACTIVE) {
                 R.string.pm_shop_performance_sum_new_seller
+            } else {
+                R.string.pm_shop_performance_sum
             }
         } else {
             R.string.pm_shop_performance_sum
