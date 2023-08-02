@@ -120,7 +120,7 @@ class ChatItemListViewModelTest {
         viewModel.isWhitelistTopBot.observeForever(isWhitelistTopBotObserver)
         viewModel.isChatAdminEligible.observeForever(isChatAdminEligibleObserver)
 
-        mockkObject(ChatItemListViewModel.arrayFilterParam)
+        mockkObject(ChatItemListViewModel)
     }
 
     @Test fun `getChatListMessage should return chat list of messages`() {
