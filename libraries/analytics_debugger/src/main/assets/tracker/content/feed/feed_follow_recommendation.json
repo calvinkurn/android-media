@@ -44,7 +44,7 @@
       "event": "clickContent",
       "eventAction": "click - follow profile recommendations",
       "eventCategory": "unified feed",
-      "eventLabel": ".* - .* - (user|shop) - .*",
+      "eventLabel": ".* - .* - (user|shop) - .* - (follow|unfollow)",
       "trackerId": "45541",
       "businessUnit": "content",
       "currentSite": "tokopediamarketplace",

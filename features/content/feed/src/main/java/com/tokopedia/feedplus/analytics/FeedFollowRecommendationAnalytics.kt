@@ -102,7 +102,7 @@ class FeedFollowRecommendationAnalytics @Inject constructor(
     ) {
         sendGeneralTracker(
             eventAction = "click - follow profile recommendations",
-            eventLabel = getEventLabel(data.tabType, data.entryPoint, data.authorType, data.authorId),
+            eventLabel = getEventLabel(data.tabType, data.entryPoint, data.authorType, data.authorId, data.isFollowing),
             trackerId = "45541"
         )
     }
@@ -148,6 +148,22 @@ class FeedFollowRecommendationAnalytics @Inject constructor(
         }
 
         return "${getEventLabel(prefix, entryPoint)} - $authorTypeValue - $authorId"
+    }
+
+    private fun getEventLabel(
+        prefix: String,
+        entryPoint: String,
+        authorType: AuthorType,
+        authorId: String,
+        isFollowed: Boolean,
+    ): String {
+        val isFollowValue = if (isFollowed) {
+            Value.unfollow
+        } else {
+            Value.follow
+        }
+
+        return "${getEventLabel(prefix, entryPoint, authorType, authorId)} - $isFollowValue"
     }
 
     private fun sendGeneralTracker(
