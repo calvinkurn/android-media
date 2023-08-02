@@ -51,7 +51,7 @@ object RollenceKey {
     const val SEARCH_SIMILAR_SEARCH_COACHMARK_VARIANT = "experiment_variant"
 
     // Product Card Experiment
-    const val PRODUCT_CARD_EXPERIMENT = "newcard1"
+    const val PRODUCT_CARD_EXPERIMENT = "newcard2"
     const val PRODUCT_CARD_EXPERIMENT_GIMMICK = "gimmick"
     const val PRODUCT_CARD_EXPERIMENT_PORTRAIT = "portrait"
     const val PRODUCT_CARD_EXPERIMENT_ETA = "eta"
@@ -63,9 +63,6 @@ object RollenceKey {
 
     // Review
     const val CREATE_REVIEW_REVIEW_INSPIRATION_EXPERIMENT_NAME = "review_inspiration"
-
-    // Logistic
-    const val KEY_ADDRESS_IMPROVEMENTS = "address_improvements"
 
     // Fulfillment
     const val KEY_DISABLE_DILAYANI_TOKOPEDIA_HOMEPAGE = "disabledthomepage"
@@ -82,9 +79,6 @@ object RollenceKey {
 
     // Feed
     const val AB_TEST_IMMERSIVE_FEED = "immersive_feed"
-
-    // Tokochat Bubbles
-    const val TOKOCHAT_BUBBLES = "tokochat_bubble_chat"
 
     // FS Toko OOS Gradual Rollout
     const val FLASH_SALE_OUT_OF_STOCK_GRADUAL_ROLLOUT = "fst_oosimprovement"

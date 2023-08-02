@@ -118,6 +118,7 @@ object ProductTrackingConstant {
         const val KEY_DIMENSION_40 = "dimension40"
         const val KEY_DIMENSION_45 = "dimension45"
         const val KEY_DIMENSION_54 = "dimension54"
+        const val KEY_DIMENSION_56 = "dimension56"
         const val KEY_DIMENSION_79 = "dimension79"
         const val KEY_DIMENSION_80 = "dimension80"
         const val KEY_DIMENSION_81 = "dimension81"

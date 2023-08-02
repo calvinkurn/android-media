@@ -4225,8 +4225,9 @@ open class ShopPageHomeFragment :
         }
     }
 
-    override fun scrollToTop() {
-        isClickToScrollToTop = true
+    override fun scrollToTop(isUserClick: Boolean) {
+        if(isUserClick)
+            isClickToScrollToTop = true
         getRecyclerView(view)?.scrollToPosition(0)
     }
 
@@ -4858,9 +4859,9 @@ open class ShopPageHomeFragment :
         val tabValue = Uri.parse(appLink).getQueryParameter(QUERY_PARAM_TAB).orEmpty()
         if (tabValue == ShopPageHeaderTabName.CAMPAIGN) {
             if(ShopUtil.isEnableShopPageReImagined()){
-                (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.selectShopTab(ShopPageHeaderTabName.CAMPAIGN)
+                (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.selectShopTab(ShopPageHeaderTabName.CAMPAIGN, true)
             }else{
-                (getRealParentFragment() as? ShopPageHeaderFragment)?.selectShopTab(ShopPageHeaderTabName.CAMPAIGN)
+                (getRealParentFragment() as? ShopPageHeaderFragment)?.selectShopTab(ShopPageHeaderTabName.CAMPAIGN, true)
             }
         }
     }
@@ -4932,12 +4933,10 @@ open class ShopPageHomeFragment :
     protected fun refreshShopHeader(){
         if (ShopUtil.isEnableShopPageReImagined()) {
             (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.apply {
-                resetSelectedPosition()
                 refreshData()
             }
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.apply {
-                resetSelectedPosition()
                 refreshData()
             }
         }

@@ -24,6 +24,10 @@ import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED_CHANGED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloads
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
+import com.tokopedia.feedplus.presentation.adapter.util.animateAlpha
+import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedPostImageViewHolder.Companion.FULL_OPACITY
+import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedPostImageViewHolder.Companion.OPACITY_ANIMATE_DURATION
+import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedPostImageViewHolder.Companion.SCROLL_OPACITY
 import com.tokopedia.feedplus.presentation.customview.FeedPlayerControl
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedLikeModel
@@ -31,9 +35,11 @@ import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.feedplus.presentation.uiview.*
 import com.tokopedia.feedplus.presentation.util.animation.FeedLikeAnimationComponent
 import com.tokopedia.feedplus.presentation.util.animation.FeedSmallLikeIconAnimationComponent
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.play_common.util.extension.changeConstraint
 
 /**
  * Created By : Muhammad Furqan on 09/03/23
@@ -45,8 +51,23 @@ class FeedPostVideoViewHolder(
     private val trackerMapper: MapperFeedModelToTrackerDataModel
 ) : AbstractViewHolder<FeedCardVideoContentModel>(binding.root) {
 
+    private val captionViewListener = object : FeedCaptionView.Listener {
+        override fun onExpanded(view: FeedCaptionView) {
+            val screenHeight = getScreenHeight()
+            val maxHeight = screenHeight * 0.45f
+            binding.root.changeConstraint {
+                constrainMaxHeight(binding.layoutFeedCaption.id, maxHeight.toInt())
+            }
+        }
+    }
+
     private val authorView = FeedAuthorInfoView(binding.layoutAuthorInfo, listener)
-    private val captionView = FeedCaptionView(binding.tvFeedCaption, listener)
+    private val captionView = FeedCaptionView(
+        binding.tvFeedCaption,
+        binding.layoutFeedCaption,
+        listener,
+        captionViewListener
+    )
     private val productTagView = FeedProductTagView(binding.productTagView, listener)
     private val productButtonView = FeedProductButtonView(binding.productTagButton, listener)
     private val asgcTagsView = FeedAsgcTagsView(binding.rvFeedAsgcTags)
@@ -60,6 +81,25 @@ class FeedPostVideoViewHolder(
     private var mData: FeedCardVideoContentModel? = null
 
     private var trackerDataModel: FeedTrackerDataModel? = null
+
+    private val opacityViewList = listOf(
+        binding.layoutAuthorInfo.root,
+        binding.tvFeedCaption,
+        binding.postLikeButton.root,
+        binding.feedCommentButton.root,
+        binding.menuButton,
+        binding.shareButton,
+        binding.productTagButton.root,
+        binding.productTagView.root,
+        binding.overlayTop.root,
+        binding.overlayBottom.root,
+        binding.overlayRight.root,
+        binding.btnDisableClearMode,
+        binding.productTagView.root,
+        binding.productTagButton.root,
+        binding.rvFeedAsgcTags,
+        binding.feedCampaignRibbon.root,
+    )
 
     init {
         binding.root.addOnAttachStateChangeListener(object : OnAttachStateChangeListener {
@@ -203,12 +243,14 @@ class FeedPostVideoViewHolder(
 
     fun bind(item: FeedContentAdapter.Item, payloads: MutableList<Any>) {
         val selectedPayload = if (item.isSelected) FEED_POST_SELECTED else FEED_POST_NOT_SELECTED
-        val feedPayloads = payloads.firstOrNull { it is FeedViewHolderPayloads } as? FeedViewHolderPayloads
-        val newPayloads = if (feedPayloads != null && feedPayloads.payloads.contains(FEED_POST_SELECTED_CHANGED)) {
-            payloads.toMutableList().also { it.add(selectedPayload) }
-        } else {
-            payloads
-        }
+        val feedPayloads =
+            payloads.firstOrNull { it is FeedViewHolderPayloads } as? FeedViewHolderPayloads
+        val newPayloads =
+            if (feedPayloads != null && feedPayloads.payloads.contains(FEED_POST_SELECTED_CHANGED)) {
+                payloads.toMutableList().also { it.add(selectedPayload) }
+            } else {
+                payloads
+            }
         bind(item.data as FeedCardVideoContentModel, newPayloads)
     }
 
@@ -243,6 +285,14 @@ class FeedPostVideoViewHolder(
 
             if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_FOLLOW_CHANGED)) {
                 bindAuthor(element)
+            }
+
+            if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_SCROLLING)) {
+                onScrolling()
+            }
+
+            if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_DONE_SCROLL)) {
+                onDoneScroll()
             }
 
             payloads.forEach { payload ->
@@ -447,9 +497,22 @@ class FeedPostVideoViewHolder(
         productButtonView.showIfPossible()
     }
 
+    private fun onScrolling() {
+        opacityViewList.forEach {
+            it.animateAlpha(SCROLL_OPACITY, OPACITY_ANIMATE_DURATION)
+        }
+    }
+
+    private fun onDoneScroll() {
+        opacityViewList.forEach {
+            it.alpha = FULL_OPACITY
+        }
+    }
+
     private fun onSelected(element: FeedCardVideoContentModel) {
         mIsSelected = true
-        val trackerModel = trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(element)
+        val trackerModel =
+            trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(element)
         listener.onPostImpression(
             trackerModel,
             element.id,
