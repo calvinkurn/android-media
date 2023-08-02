@@ -2,4 +2,7 @@
 <resources>
     <!--New Add Phone-->
     <string name="new_add_phone_init_image">"https://images.tokopedia.net/img/android/user/register/img_redefine_register_input_phone.png</string>
+
+    <!--Profile Management-->
+    <string name="img_url_profile_management_entry_point">https://images.tokopedia.net/img/android/user/profile/img_profile_management_entry_point.png</string>
 </resources>

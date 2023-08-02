@@ -85,6 +85,9 @@ object ApplinkConstInternalUserPlatform {
     // ProfileInfoActivity
     const val SETTING_PROFILE = "$NEW_INTERNAL_USER/setting-profile"
 
+    // ProfileManagementActivity
+    const val PROFILE_MANAGEMENT = "$NEW_INTERNAL_USER/profile-management"
+
     /**
      * ExplicitProfileActivity
      * @Applink : tokopedia-android-internal://user/explicit-profile

@@ -14,6 +14,7 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 
 object DeeplinkMapperUser {
 
+    const val KEY_ROLLENCE_PROFILE_MANAGEMENT_M2 = "M2_Profile_Mgmt"
     const val ROLLENCE_GOTO_KYC = "goto_kyc_apps"
     const val ROLLENCE_PRIVACY_CENTER = "privacy_center_and_3"
 
@@ -26,7 +27,7 @@ object DeeplinkMapperUser {
             deeplink == ApplinkConst.ADD_PIN_ONBOARD -> ApplinkConstInternalUserPlatform.ADD_PIN_ONBOARDING
             deeplink.startsWith(ApplinkConstInternalGlobal.ADVANCED_SETTING) -> ApplinkConstInternalUserPlatform.NEW_HOME_ACCOUNT
             deeplink.startsWith(ApplinkConstInternalGlobal.GENERAL_SETTING) -> ApplinkConstInternalUserPlatform.NEW_HOME_ACCOUNT
-            deeplink == ApplinkConst.SETTING_PROFILE -> ApplinkConstInternalUserPlatform.SETTING_PROFILE
+            deeplink == ApplinkConst.SETTING_PROFILE || deeplink == ApplinkConstInternalUserPlatform.SETTING_PROFILE -> getProfileApplink()
             deeplink == ApplinkConst.INPUT_INACTIVE_NUMBER -> ApplinkConstInternalUserPlatform.INPUT_OLD_PHONE_NUMBER
             deeplink == ApplinkConst.ADD_PHONE -> ApplinkConstInternalUserPlatform.ADD_PHONE
             deeplink == ApplinkConst.PRIVACY_CENTER -> getApplinkPrivacyCenter()
@@ -34,6 +35,21 @@ object DeeplinkMapperUser {
             deeplink.startsWithPattern(ApplinkConst.GOTO_KYC) || deeplink.startsWithPattern(ApplinkConstInternalUserPlatform.GOTO_KYC) -> getApplinkGotoKyc(deeplink)
             else -> deeplink
         }
+    }
+
+    private fun getProfileApplink(): String {
+        return if (isProfileManagementM2Activated()) {
+            ApplinkConstInternalUserPlatform.PROFILE_MANAGEMENT
+        } else {
+            ApplinkConstInternalUserPlatform.SETTING_PROFILE
+        }
+    }
+
+    private fun isProfileManagementM2Activated(): Boolean {
+        return RemoteConfigInstance.getInstance()
+            .abTestPlatform
+            .getString(KEY_ROLLENCE_PROFILE_MANAGEMENT_M2)
+            .isNotEmpty()
     }
 
     private fun getApplinkGotoKyc(deeplink: String): String {
