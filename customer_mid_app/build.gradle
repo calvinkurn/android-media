@@ -237,6 +237,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.keys)
     implementation projectOrAar(rootProject.ext.libraries.encryption)
     implementation projectOrAar(rootProject.ext.features.agerestriction)
+    implementation projectOrAar(rootProject.ext.features.scpRewardsCommon)
+    implementation projectOrAar(rootProject.ext.features.scpRewardsWidgets)
     if (rootProject.ext.debugToolsEnabled) {
         implementation projectOrAar(rootProject.ext.features.developerOptions)
     } else {
