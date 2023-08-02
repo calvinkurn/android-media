@@ -1,4 +1,4 @@
-package com.tokopedia.minicart.bmgm.presentation.widget
+package com.tokopedia.minicart.bmgm.presentation.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,7 +13,13 @@ import com.tokopedia.minicart.databinding.FragmentBmgmMiniCartWidgetBinding
  * Created by @ilhamsuaib on 31/07/23.
  */
 
-class BmgmMiniCartWidgetView : Fragment() {
+class BmgmMiniCartWidgetFragment : Fragment() {
+
+    companion object {
+        fun newInstance(): BmgmMiniCartWidgetFragment {
+            return BmgmMiniCartWidgetFragment()
+        }
+    }
 
     private var binding: FragmentBmgmMiniCartWidgetBinding? = null
 
