@@ -39,12 +39,12 @@ import com.tokopedia.scp_rewards.celebration.analytics.CelebrationAnalytics
 import com.tokopedia.scp_rewards.celebration.di.CelebrationComponent
 import com.tokopedia.scp_rewards.celebration.domain.model.ScpRewardsCelebrationModel
 import com.tokopedia.scp_rewards.celebration.presentation.viewmodel.MedalCelebrationViewModel
-import com.tokopedia.scp_rewards.common.constants.EASE_IN
-import com.tokopedia.scp_rewards.common.constants.NON_WHITELISTED_USER_ERROR_CODE
+import com.tokopedia.scp_rewards.celebration.presentation.viewmodel.MedalCelebrationViewModel.ScpResult.AllMedaliCelebratedError
 import com.tokopedia.scp_rewards.celebration.presentation.viewmodel.MedalCelebrationViewModel.ScpResult.Error
 import com.tokopedia.scp_rewards.celebration.presentation.viewmodel.MedalCelebrationViewModel.ScpResult.Loading
 import com.tokopedia.scp_rewards.celebration.presentation.viewmodel.MedalCelebrationViewModel.ScpResult.Success
-import com.tokopedia.scp_rewards.celebration.presentation.viewmodel.MedalCelebrationViewModel.ScpResult.AllMedaliCelebratedError
+import com.tokopedia.scp_rewards.common.constants.EASE_IN
+import com.tokopedia.scp_rewards.common.constants.NON_WHITELISTED_USER_ERROR_CODE
 import com.tokopedia.scp_rewards.common.utils.AudioFactory
 import com.tokopedia.scp_rewards.common.utils.DeviceInfo
 import com.tokopedia.scp_rewards.common.utils.dpToPx
@@ -57,6 +57,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import com.tokopedia.scp_rewards_common.R as scp_rewards_commonR
 
 @Suppress("UNCHECKED_CAST")
 class MedalCelebrationFragment : BaseDaggerFragment() {
@@ -519,7 +520,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         val badgeDrawable = if (isFallbackCase) {
             CelebrationAnalytics.sendImpressionFallbackBadge(medaliSlug)
             changeBadgeSize()
-            ResourcesCompat.getDrawable(resources, R.drawable.fallback_badge, null)
+            ResourcesCompat.getDrawable(resources, scp_rewards_commonR.drawable.fallback_badge, null)
         } else {
             badgeImage
         }

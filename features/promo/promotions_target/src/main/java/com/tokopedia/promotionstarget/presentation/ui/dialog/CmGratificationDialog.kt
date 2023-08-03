@@ -48,6 +48,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import timber.log.Timber
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class CmGratificationDialog {
 
@@ -78,21 +79,22 @@ class CmGratificationDialog {
     private var screenName = ""
     private var closeCurrentActivity = false
     private var inAppId: Long? = null
-    private var iExternalInAppCallback : IExternalInAppCallback? = null
+    private var iExternalInAppCallback: IExternalInAppCallback? = null
 
     protected fun getLayout(): Int {
         return R.layout.dialog_gratification
     }
 
-    fun show(activityContext: Context,
-             gratifNotification: GratifNotification,
-             couponDetailResponse: TokopointsCouponDetailResponse,
-             @NotificationEntryType notificationEntryType: Int,
-             onShowListener: DialogInterface.OnShowListener,
-             screenName: String,
-             closeCurrentActivity: Boolean,
-             inAppId: Long?,
-             iExternalInAppCallback: IExternalInAppCallback?
+    fun show(
+        activityContext: Context,
+        gratifNotification: GratifNotification,
+        couponDetailResponse: TokopointsCouponDetailResponse,
+        @NotificationEntryType notificationEntryType: Int,
+        onShowListener: DialogInterface.OnShowListener,
+        screenName: String,
+        closeCurrentActivity: Boolean,
+        inAppId: Long?,
+        iExternalInAppCallback: IExternalInAppCallback?
     ): BottomSheetDialog? {
         this.gratifNotification = gratifNotification
         this.couponDetailResponse = couponDetailResponse
@@ -120,9 +122,12 @@ class CmGratificationDialog {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun initViews(root: View, activityContext: Context,
-                          gratifNotification: GratifNotification,
-                          couponDetailResponse: TokopointsCouponDetailResponse) {
+    private fun initViews(
+        root: View,
+        activityContext: Context,
+        gratifNotification: GratifNotification,
+        couponDetailResponse: TokopointsCouponDetailResponse
+    ) {
         tvTitle = root.findViewById(R.id.tvTitle)
         tvSubTitle = root.findViewById(R.id.tvSubTitle)
         btnAction = root.findViewById(R.id.btnAction)
@@ -144,7 +149,6 @@ class CmGratificationDialog {
                 else -> ""
             }
 
-
             val tvDialogTitle = (root.parent.parent as ConstraintLayout).findViewById<TextView>(com.tokopedia.design.R.id.title_closeable_rounded)
             if (tvDialogTitle.parent is RelativeLayout && !dialogTitleText.isNullOrEmpty()) {
                 val rlParent = tvDialogTitle.parent as RelativeLayout
@@ -153,7 +157,7 @@ class CmGratificationDialog {
                 lp.addRule(RelativeLayout.RIGHT_OF, tvDialogTitle.id)
                 lp.addRule(RelativeLayout.END_OF, tvDialogTitle.id)
                 lp.addRule(RelativeLayout.CENTER_VERTICAL)
-                typographyTitle.setTextColor(ContextCompat.getColor(tvDialogTitle.context, R.color.Unify_N700))
+                typographyTitle.setTextColor(ContextCompat.getColor(tvDialogTitle.context, unifyprinciplesR.color.Unify_N700))
                 typographyTitle.layoutParams = lp
                 typographyTitle.setType(Typography.HEADING_3)
                 rlParent.addView(typographyTitle)
@@ -181,15 +185,14 @@ class CmGratificationDialog {
         val activity = activityContext as AppCompatActivity
 
         val component = DaggerCmGratificationComponent.builder()
-                .appModule(AppModule(activity.application))
-                .build()
+            .appModule(AppModule(activity.application))
+            .build()
         component.inject(this)
         activity.run {
             val viewModelProvider = ViewModelProviders.of(activityContext, viewModelFactory)
             viewModel = viewModelProvider[CmGratificationViewModel::class.java]
         }
     }
-
 
     private fun setUiData(gratifNotification: GratifNotification, couponDetailResponse: TokopointsCouponDetailResponse) {
         val couponStatus = couponDetailResponse.coupon?.couponStatus
@@ -269,24 +272,27 @@ class CmGratificationDialog {
     private fun observerViewModel() {
         val activity = btnAction.context
         if (activity is AppCompatActivity) {
-            viewModel.autoApplyLiveData.observe(activity, Observer {
-                when (it.status) {
-                    LiveDataResult.STATUS.SUCCESS -> {
-                        handleAutoApplySuccess(it.data)
-                    }
-                    LiveDataResult.STATUS.ERROR -> {
-                        btnAction.text = buttonText
-                        toggleProgressBar(false)
+            viewModel.autoApplyLiveData.observe(
+                activity,
+                Observer {
+                    when (it.status) {
+                        LiveDataResult.STATUS.SUCCESS -> {
+                            handleAutoApplySuccess(it.data)
+                        }
+                        LiveDataResult.STATUS.ERROR -> {
+                            btnAction.text = buttonText
+                            toggleProgressBar(false)
 
-                        val userId = UserSession(btnAction.context).userId
-                        GratificationAnalyticsHelper.handleMainCtaClick(userId, notificationEntryType, gratifNotification, couponDetailResponse, screenName, "fail")
-                    }
-                    LiveDataResult.STATUS.LOADING -> {
-                        btnAction.text = ""
-                        toggleProgressBar(true)
+                            val userId = UserSession(btnAction.context).userId
+                            GratificationAnalyticsHelper.handleMainCtaClick(userId, notificationEntryType, gratifNotification, couponDetailResponse, screenName, "fail")
+                        }
+                        LiveDataResult.STATUS.LOADING -> {
+                            btnAction.text = ""
+                            toggleProgressBar(true)
+                        }
                     }
                 }
-            })
+            )
         }
     }
 
@@ -345,10 +351,13 @@ class CmGratificationDialog {
     private fun updateGratifNotification(gratifNotification: GratifNotification, view: View, @NotificationEntryType notificationEntryType: Int, inAppId: Long?) {
         view.post {
             if (view.context is AppCompatActivity && !(view.context as AppCompatActivity).isFinishing) {
-                viewModel.updateGratification(gratifNotification.notificationID,
-                        notificationEntryType,
-                        GratificationAnalyticsHelper.getPopupType(gratifNotification, couponDetailResponse),
-                        screenName, inAppId)
+                viewModel.updateGratification(
+                    gratifNotification.notificationID,
+                    notificationEntryType,
+                    GratificationAnalyticsHelper.getPopupType(gratifNotification, couponDetailResponse),
+                    screenName,
+                    inAppId
+                )
             }
         }
     }
@@ -379,9 +388,11 @@ class CmGratificationDialog {
             if (code == "200") {
                 CustomToast.show(btnAction.context.applicationContext, messageList[0].toString())
             } else {
-                CustomToast.show(activityContext = btnAction.context.applicationContext,
-                        text = messageList[0].toString(),
-                        bg = R.drawable.t_promo_custom_toast_bg_red)
+                CustomToast.show(
+                    activityContext = btnAction.context.applicationContext,
+                    text = messageList[0].toString(),
+                    bg = R.drawable.t_promo_custom_toast_bg_red
+                )
             }
         }
     }
@@ -415,9 +426,9 @@ class CmGratificationDialog {
             val intent = RouteManager.getIntent(context, applink, "")
             intent?.let {
                 TaskStackBuilder.create(context)
-                        .addNextIntent(homeIntent)
-                        .addNextIntent(intent)
-                        .startActivities()
+                    .addNextIntent(homeIntent)
+                    .addNextIntent(intent)
+                    .startActivities()
             }
         } else {
             RouteManager.route(context, applink)

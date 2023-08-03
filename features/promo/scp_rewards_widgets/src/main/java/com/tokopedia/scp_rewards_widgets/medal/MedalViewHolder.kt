@@ -10,6 +10,7 @@ import com.tokopedia.scp_rewards_common.loadImageOrFallback
 import com.tokopedia.scp_rewards_common.loadLottieFromUrl
 import com.tokopedia.scp_rewards_widgets.R
 import com.tokopedia.scp_rewards_widgets.databinding.ItemMedalLayoutBinding
+import com.tokopedia.scp_rewards_common.R as scp_rewards_commonR
 
 class MedalViewHolder(
     itemView: View,
@@ -38,7 +39,7 @@ class MedalViewHolder(
         tvMedalSubTitle.gone()
         tvMedalCaption.gone()
         progressMedal.gone()
-        ivMedal.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_empty_medal))
+        ivMedal.setImageDrawable(ContextCompat.getDrawable(itemView.context, scp_rewards_commonR.drawable.ic_empty_medal))
     }
 
     private fun ItemMedalLayoutBinding.showMedal(item: MedalItem) {
@@ -49,11 +50,11 @@ class MedalViewHolder(
         listener?.onMedalLoad(item)
         if (item.isDisabled == true) {
             ivMedal.grayscale()
-            ivMedal.loadImageOrFallback(item.imageUrl, R.drawable.ic_empty_medal) {
+            ivMedal.loadImageOrFallback(item.imageUrl, scp_rewards_commonR.drawable.ic_empty_medal) {
                 listener?.onMedalFailed(item)
             }
         } else {
-            ivMedal.loadImageOrFallback(item.imageUrl, R.drawable.ic_empty_medal)
+            ivMedal.loadImageOrFallback(item.imageUrl, scp_rewards_commonR.drawable.ic_empty_medal)
         }
         listener?.let {
             this.root.setOnClickListener { listener.onMedalClick(item) }

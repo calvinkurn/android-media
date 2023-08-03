@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.scp_rewards_widgets.R
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class CouponImageView @JvmOverloads constructor(
     context: Context,
@@ -26,7 +27,7 @@ class CouponImageView @JvmOverloads constructor(
     companion object {
         private const val EDGE_RADIUS_MULTIPLIER = 10f
     }
-    var circularEdgeColor = ContextCompat.getColor(context,R.color.Unify_NN0)
+    var circularEdgeColor = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN0)
         set(value) {
             field = value
             refresh()
