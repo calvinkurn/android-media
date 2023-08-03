@@ -22,12 +22,6 @@ class DynamicOwocInvoiceListViewHolder(itemView: View) : RecyclerView.ViewHolder
                 textProductDescription.text = productDescription
                 if (shopBadgeImageUrl?.isEmpty() == true) {
                     shopBadge.hide()
-//                    val params = LayoutParams(
-//                        LayoutParams.WRAP_CONTENT,
-//                        LayoutParams.WRAP_CONTENT
-//                    )
-//                    params.setMargins(8, 0, 0, 0)
-//                    textShopName.layoutParams = params
                 }
             }
         }
