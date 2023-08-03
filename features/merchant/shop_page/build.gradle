@@ -111,6 +111,7 @@ dependencies {
         exclude group: 'com.android.support'
     }
     implementation rootProject.ext.miscDependencies.dagger
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions

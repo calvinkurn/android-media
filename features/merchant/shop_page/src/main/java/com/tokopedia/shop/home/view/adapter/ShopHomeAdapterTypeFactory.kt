@@ -70,6 +70,7 @@ import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePersoProductCompa
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePersoProductComparisonPlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerTimerViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerTimerPlaceholderViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeV4TerlarisViewHolder
 import com.tokopedia.shop.home.view.listener.*
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
@@ -107,7 +108,8 @@ open class ShopHomeAdapterTypeFactory(
     private val shopHomeProductListSellerEmptyListener: ShopHomeProductListSellerEmptyListener,
     private val shopHomeListener: ShopHomeListener,
     private val shopPersoProductComparisonListener: ShopHomePersoProductComparisonViewHolder.ShopHomePersoProductComparisonViewHolderListener,
-    private val shopHomeDisplayBannerTimerWidgetListener: ShopHomeDisplayBannerTimerWidgetListener
+    private val shopHomeDisplayBannerTimerWidgetListener: ShopHomeDisplayBannerTimerWidgetListener,
+    private val shopHomeV4TerlarisViewHolderListener: ShopHomeV4TerlarisViewHolder.ShopHomeV4TerlarisViewHolderListener
 ) : BaseAdapterTypeFactory(), TypeFactoryShopHome, ThematicWidgetTypeFactory, ShopWidgetTypeFactory {
     var productCardType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
     private var showcaseWidgetLayoutType = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_LINEAR_HORIZONTAL
@@ -321,6 +323,9 @@ open class ShopHomeAdapterTypeFactory(
             }
             ShopHomeVoucherViewHolder.LAYOUT -> {
                 ShopHomeVoucherViewHolder(parent, onMerchantVoucherListWidgetListener)
+            }
+            ShopHomeV4TerlarisViewHolder.LAYOUT -> {
+                ShopHomeV4TerlarisViewHolder(parent, shopHomeV4TerlarisViewHolderListener)
             }
             ShopLayoutLoadingShimmerViewHolder.LAYOUT -> {
                 ShopLayoutLoadingShimmerViewHolder(parent)

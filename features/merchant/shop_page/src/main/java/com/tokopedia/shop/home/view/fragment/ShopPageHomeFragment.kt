@@ -160,6 +160,7 @@ import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductListSellerEmptyListener
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePersoProductComparisonViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeV4TerlarisViewHolder
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeFlashSaleTncBottomSheet
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeNplCampaignTncBottomSheet
 import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
@@ -242,6 +243,7 @@ open class ShopPageHomeFragment :
     ShopHomeProductListSellerEmptyListener,
     ShopHomeListener,
     ShopHomePersoProductComparisonViewHolder.ShopHomePersoProductComparisonViewHolderListener,
+    ShopHomeV4TerlarisViewHolder.ShopHomeV4TerlarisViewHolderListener,
     ShopHomeDisplayBannerTimerWidgetListener {
 
     companion object {
@@ -398,6 +400,7 @@ open class ShopPageHomeFragment :
             shopHomeListener = this,
             shopPersoProductComparisonListener = this,
             shopHomeDisplayBannerTimerWidgetListener = this,
+            shopHomeV4TerlarisViewHolderListener = this
         )
     }
 
@@ -4892,5 +4895,10 @@ open class ShopPageHomeFragment :
         (parentFragment as? ShopPageHeaderFragment)?.apply {
             refreshData()
         }
+    }
+
+    override fun onProductClick(productId: String) {
+        // TODO: Put tracker here
+        RouteManager.route(context, ApplinkConst.PRODUCT_INFO, productId)
     }
 }
