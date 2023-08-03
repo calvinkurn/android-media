@@ -382,7 +382,7 @@ open class ChatListInboxFragment :
     private fun markBroadcastNewLabel() {
         if (shouldShowBroadcastFabNewLabel()) {
             viewModel.saveBooleanCache(
-                cacheName = BROADCAST_FAB_LABEL_PREF_NAME,
+                cacheName = "${BROADCAST_FAB_LABEL_PREF_NAME}_${userSession.userId}",
                 value = false
             )
             broadCastButton?.toggleBroadcastLabel(
@@ -393,7 +393,7 @@ open class ChatListInboxFragment :
 
     private fun shouldShowBroadcastFabNewLabel(): Boolean {
         val labelCache = viewModel.getBooleanCache(
-            BROADCAST_FAB_LABEL_PREF_NAME
+            "${BROADCAST_FAB_LABEL_PREF_NAME}_${userSession.userId}",
         )
         val rollenceValue = getRollenceValue(BROADCAST_FAB_LABEL_ROLLENCE_KEY)
         return labelCache && rollenceValue

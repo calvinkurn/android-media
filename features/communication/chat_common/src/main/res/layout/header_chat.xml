@@ -61,15 +61,19 @@
         <ImageView
             android:id="@+id/ivBadge"
             android:layout_width="@dimen/chatcommon_26dp"
-            android:layout_height="@dimen/chatcommon_22dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginTop="@dimen/chatcommon_1dp"
             android:layout_marginEnd="@dimen/spacing_lvl2"
+            android:layout_marginBottom="2dp"
             android:contentDescription="badge"
             android:paddingEnd="@dimen/spacing_lvl2"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/subtitle_barrier"
+            app:layout_constraintEnd_toEndOf="@id/title"
+            app:layout_constraintHorizontal_bias="0"
             tools:ignore="RtlSymmetry"
             tools:src="@drawable/ic_badge_shop_official"
             tools:visibility="visible" />
@@ -109,6 +113,14 @@
             app:typographyType="small"
             tools:text="Penjual"
             tools:visibility="visible" />
+        
+        
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/subtitle_barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="top"
+            app:constraint_referenced_ids="subtitle,cl_typing "/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/subtitle"
