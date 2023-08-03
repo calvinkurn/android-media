@@ -1,5 +1,6 @@
 package com.tokopedia.linter.unify
 
+import com.android.AndroidXConstants
 import com.android.SdkConstants
 import com.tokopedia.linter.LinterConstants
 import com.tokopedia.linter.LinterConstants.Classes.BOTTOM_SHEET_DIALOG
@@ -30,8 +31,9 @@ object UnifyComponentsList {
 
     fun getUnifyMapping(): Map<String, UnifyMapping> {
         return mapOf(
+            AndroidXConstants.FLOATING_ACTION_BUTTON.defaultName() to UnifyMapping(LinterConstants.UnifyClasses.FLOATING_BUTTON),
             FLOATING_ACTION_BUTTON to UnifyMapping(LinterConstants.UnifyClasses.FLOATING_BUTTON),
-            LinterConstants.Classes.TAB_LAYOUT to UnifyMapping(TAB),
+            AndroidXConstants.TAB_LAYOUT.defaultName() to UnifyMapping(TAB),
             SEARCH_BAR_VIEW to UnifyMapping(SEARCH_BAR),
             BOTTOM_SHEET_DIALOG to UnifyMapping(BOTTOM_SHEET),
             LinterConstants.Classes.DATE_PICKER to UnifyMapping(LinterConstants.UnifyClasses.DATE_PICKER),

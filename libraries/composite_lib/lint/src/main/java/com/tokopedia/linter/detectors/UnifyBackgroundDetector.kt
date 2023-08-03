@@ -15,7 +15,6 @@ import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.android.tools.lint.detector.api.XmlContext
 import com.android.tools.lint.detector.api.XmlScanner
-import com.tokopedia.linter.LinterConstants
 import org.w3c.dom.Attr
 
 class UnifyBackgroundDetector : Detector(), XmlScanner {
@@ -43,8 +42,8 @@ class UnifyBackgroundDetector : Detector(), XmlScanner {
         FRAME_LAYOUT,
         LINEAR_LAYOUT,
         RELATIVE_LAYOUT,
-        LinterConstants.Classes.CONSTRAINT_LAYOUT,
-        LinterConstants.Classes.CONSTRAINT_LAYOUT_WITH_PACKAGE
+        CONSTRAINT_LAYOUT.oldName(),
+        CONSTRAINT_LAYOUT.newName()
     )
 
     override fun appliesTo(folderType: ResourceFolderType): Boolean {
