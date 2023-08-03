@@ -591,6 +591,7 @@ internal fun renderLabelOverlay(
     labelOverlayBackground: ImageView?,
     labelOverlay: Typography?,
     labelGroup: ProductCardModel.LabelGroup?,
+    isRotateBackground: Boolean = true,
 ) {
     if (isShow && labelGroup != null) {
         labelOverlay?.let {
@@ -599,7 +600,7 @@ internal fun renderLabelOverlay(
         }
         labelOverlayBackground?.let { background ->
             background.show()
-            background.rotationX = 180f
+            if (isRotateBackground) background.rotationX = 180f
             background.loadImageTopRightCrop(labelGroup.imageUrl)
         }
     } else {

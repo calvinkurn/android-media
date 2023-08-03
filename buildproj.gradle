@@ -6,6 +6,11 @@ if (rootProject.file("local.properties").exists()) {
 allprojects {
     project.apply from: rootProject.file('buildconfig/dependencies/dependencies.gradle')
     // https://github.com/robolectric/robolectric-gradle-plugin/issues/144
+    tasks.withType(Test).configureEach {
+        jvmArgs(["--add-opens=java.base/java.lang=ALL-UNNAMED",
+                 "--add-opens=java.base/java.util=ALL-UNNAMED",
+                 "--add-opens=java.base/java.lang.reflect=ALL-UNNAMED"])
+    }
     tasks.withType(Test) { jvmArgs += "-noverify" }
     repositories {
         maven {
@@ -98,10 +103,11 @@ subprojects {
             dependencySubstitution {
                 force "androidx.appcompat:appcompat:${supportLibraryVersion}"
                 force("org.objenesis:objenesis:2.6")
+                force("net.bytebuddy:byte-buddy:1.12.20")
                 substitute module('androidx.appcompat:appcompat-resources') with module(rootProject.ext.supportLibDependencies.appCompactResource)
                 substitute module('org.jetbrains.kotlin:kotlin-stdlib') with module(rootProject.ext.supportLibDependencies.kotlinSupport)
                 substitute module('org.jetbrains.kotlin:kotlin-stdlib-common') with module("org.jetbrains.kotlin:kotlin-stdlib-common:${kotlinVersion}")
-                substitute module('com.squareup.okio:okio') with module('com.squareup.okio:okio:3.4.0')
+                substitute module('com.squareup.okio:okio') with module('com.squareup.okio:okio:2.6.0')
                 substitute module('com.google.code.findbugs:jsr305') with module('com.google.code.findbugs:jsr305:1.3.9')
                 substitute module('androidx.annotation:annotation') with module("androidx.annotation:annotation:${supportLibraryVersion}")
                 substitute module('androidx.multidex:multidex') with module("androidx.multidex:multidex:${multiDexVersion}")

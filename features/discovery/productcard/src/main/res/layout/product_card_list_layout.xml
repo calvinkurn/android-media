@@ -160,6 +160,21 @@
                 tools:text="Preorder"
                 tools:visibility="visible"/>
 
+            <com.tokopedia.unifycomponents.Label
+                android:id="@+id/labelOverlayStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginBottom="4dp"
+                android:gravity="center"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/mediaAnchorProduct"
+                app:layout_constraintLeft_toLeftOf="@id/mediaAnchorProduct"
+                tools:text="Preorder"
+                tools:visibility="visible"/>
+
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/textTopAds"
                 android:layout_width="wrap_content"
@@ -181,16 +196,53 @@
                 app:typographyType="small"
                 app:typographyWeight="bold" />
 
+            <Space
+                android:id="@+id/spaceMediaAnchorToProductInfo"
+                android:layout_width="8dp"
+                android:layout_height="0dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/mediaAnchorProduct"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <ImageView
+                android:id="@+id/labelOverlayBackground"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/product_card_label_campaign_height"
+                android:layout_marginEnd="8dp"
+                android:visibility="gone"
+                android:contentDescription="null"
+                app:layout_constraintStart_toEndOf="@id/spaceMediaAnchorToProductInfo"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:visibility="visible" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/labelOverlay"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/product_card_label_campaign_height"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="16dp"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:textColor="@color/Unify_NN0"
+                android:visibility="gone"
+                app:typographyType="small"
+                app:typographyWeight="bold"
+                app:layout_constraintStart_toStartOf="@id/labelOverlayBackground"
+                app:layout_constraintTop_toTopOf="@id/labelOverlayBackground"
+                app:layout_constraintEnd_toEndOf="@id/labelOverlayBackground"
+                app:layout_constraintBottom_toBottomOf="@id/labelOverlayBackground"
+                tools:visibility="visible" />
+
             <ImageView
                 android:id="@+id/labelCampaignBackground"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/product_card_label_campaign_height"
-                android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:visibility="gone"
                 android:contentDescription="null"
-                app:layout_constraintStart_toEndOf="@+id/mediaAnchorProduct"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/spaceMediaAnchorToProductInfo"
+                app:layout_constraintTop_toBottomOf="@id/labelOverlayBackground"
                 app:layout_constraintEnd_toEndOf="parent"
                 tools:visibility="visible" />
 
@@ -219,10 +271,9 @@
                 android:background="@drawable/product_card_best_seller_background"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
-                android:layout_marginStart="8dp"
                 android:textColor="@color/Unify_Static_White"
                 android:gravity="center_vertical"
-                app:layout_constraintStart_toEndOf="@+id/mediaAnchorProduct"
+                app:layout_constraintStart_toEndOf="@+id/spaceMediaAnchorToProductInfo"
                 app:layout_constraintTop_toBottomOf="@id/labelCampaignBackground"
                 app:typographyType="small"
                 app:typographyWeight="bold"
@@ -261,11 +312,9 @@
                 android:id="@+id/productCardContentLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginEnd="8dp"
-                app:layout_constraintStart_toEndOf="@+id/mediaAnchorProduct"
+                app:layout_constraintStart_toEndOf="@+id/spaceMediaAnchorToProductInfo"
                 app:layout_constraintTop_toBottomOf="@id/spaceCampaignBestSeller"
                 app:layout_constraintEnd_toEndOf="parent"
                 layout="@layout/product_card_content_layout" />
