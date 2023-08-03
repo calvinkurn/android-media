@@ -16,6 +16,7 @@ import com.intellij.psi.PsiElement
 import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UField
+import org.jetbrains.uast.UFieldEx
 import org.jetbrains.uast.ULocalVariable
 import org.jetbrains.uast.UReturnExpression
 import java.io.File
@@ -60,7 +61,7 @@ class ResourcePackageDetector : Detector(), SourceCodeScanner {
 
     override fun getApplicableUastTypes(): List<Class<out UElement>> {
         return listOf(
-            UField::class.java,
+            UFieldEx::class.java,
             ULocalVariable::class.java,
             UCallExpression::class.java,
             UReturnExpression::class.java
@@ -70,17 +71,14 @@ class ResourcePackageDetector : Detector(), SourceCodeScanner {
     override fun createUastHandler(context: JavaContext): UElementHandler {
         return object : UElementHandler() {
             override fun visitField(node: UField) {
-                try {
-                    val resource = node.text.substringAfter("= ")
+                val resource = node.text.substringAfter("= ")
 
-                    if (shouldScanResource(resource)) {
-                        scanResource(
-                            context = context,
-                            node = node,
-                            value = resource
-                        )
-                    }
-                } catch (ignore: Exception) {
+                if (shouldScanResource(resource)) {
+                    scanResource(
+                        context = context,
+                        node = node,
+                        value = resource
+                    )
                 }
             }
 

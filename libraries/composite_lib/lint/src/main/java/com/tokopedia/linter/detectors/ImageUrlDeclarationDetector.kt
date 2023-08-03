@@ -12,6 +12,7 @@ import com.intellij.psi.PsiModifier
 import com.intellij.psi.PsiNamedElement
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UField
+import org.jetbrains.uast.UFieldEx
 import org.jetbrains.uast.ULocalVariable
 
 /**
@@ -45,7 +46,7 @@ class ImageUrlDeclarationDetector : Detector(), Detector.UastScanner {
     }
 
     override fun getApplicableUastTypes() = listOf<Class<out UElement>>(
-        UField::class.java,
+        UFieldEx::class.java,
         ULocalVariable::class.java
     )
 
@@ -56,11 +57,8 @@ class ImageUrlDeclarationDetector : Detector(), Detector.UastScanner {
     inner class ElementHandler(private val context: JavaContext) : UElementHandler() {
 
         override fun visitField(node: UField) {
-            try {
-                if (isVariable(node.text)) {
-                    checkImageUrl(context, node)
-                }
-            } catch (ignore: Exception) {
+            if (isVariable(node.text)) {
+                checkImageUrl(context, node)
             }
         }
 
