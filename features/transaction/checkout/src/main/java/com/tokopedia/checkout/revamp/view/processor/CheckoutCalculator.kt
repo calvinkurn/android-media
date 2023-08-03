@@ -22,13 +22,17 @@ import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.view.uimodel.EgoldTieringModel
 import com.tokopedia.checkout.view.uimodel.ShipmentAddOnSummaryModel
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import javax.inject.Inject
 
-class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineDispatchers) {
+class CheckoutCalculator @Inject constructor(
+    private val helper: CheckoutDataHelper,
+    private val dispatchers: CoroutineDispatchers
+) {
 
     private fun hasSetAllCourier(listData: List<CheckoutItem>): Boolean {
         for (itemData in listData) {
@@ -108,7 +112,6 @@ class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineD
         var totalAddOnGiftingPrice = 0.0
         var totalAddOnProductServicePrice = 0.0
         var qtyAddOn = 0
-        var totalPriceAddOn = 0.0
         val countMapSummaries = hashMapOf<Int, Pair<Double, Int>>()
         val listShipmentAddOnSummary: ArrayList<ShipmentAddOnSummaryModel> = arrayListOf()
         val checkoutCostModel = listData.cost()!!
@@ -116,7 +119,7 @@ class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineD
         var hasSelectAllShipping = true
         for (shipmentData in listData) {
             if (shipmentData is CheckoutOrderModel) {
-                val cartItemModels = shipmentData.products
+                val cartItemModels = helper.getOrderProducts(listData, shipmentData.cartStringGroup)
                 for (cartItem in cartItemModels) {
                     if (!cartItem.isError) {
                         totalWeight += cartItem.weight * cartItem.quantity
@@ -145,14 +148,14 @@ class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineD
                         }
                         if (cartItem.addOnProduct.listAddOnProductData.isNotEmpty()) {
                             for (addOnProductService in cartItem.addOnProduct.listAddOnProductData) {
-                                if (addOnProductService.status == 1) {
+                                if (addOnProductService.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK || addOnProductService.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY) {
                                     totalAddOnProductServicePrice += (addOnProductService.price * cartItem.quantity)
                                     if (countMapSummaries.containsKey(addOnProductService.type)) {
                                         qtyAddOn += cartItem.quantity
                                     } else {
                                         qtyAddOn = cartItem.quantity
                                     }
-                                    totalPriceAddOn = qtyAddOn * addOnProductService.price
+                                    val totalPriceAddOn = (qtyAddOn * addOnProductService.price) + (countMapSummaries[addOnProductService.type]?.first ?: 0.0)
                                     countMapSummaries[addOnProductService.type] = totalPriceAddOn to qtyAddOn
                                 }
                             }
@@ -353,7 +356,8 @@ class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineD
                 if (shipmentCartItemModel.isError) {
                     cartItemErrorCounter++
                 } else if (!shouldShowInsuranceTnc) {
-                    for (cartItemModel in shipmentCartItemModel.products) {
+                    val orderProducts = helper.getOrderProducts(listData, shipmentCartItemModel.cartStringGroup)
+                    for (cartItemModel in orderProducts) {
                         if (cartItemModel.isProtectionOptIn) {
                             shouldShowInsuranceTnc = true
                         }

@@ -71,7 +71,7 @@ class CheckoutCostViewHolder(
             binding.tvCheckoutCostShippingSlashedValue.isVisible = false
             binding.tvCheckoutCostShippingValue.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
             binding.tvCheckoutCostShippingValue.setTextAndContentDescription(
-                if (cost.originalShippingFee == 0.0) {
+                if (cost.originalShippingFee == 0.0 && !cost.hasSelectAllShipping) {
                     "-"
                 } else {
                     CurrencyFormatUtil.convertPriceValueToIdrFormat(

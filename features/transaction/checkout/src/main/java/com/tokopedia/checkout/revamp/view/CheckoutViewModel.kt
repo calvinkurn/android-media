@@ -1205,6 +1205,12 @@ class CheckoutViewModel @Inject constructor(
                 pageState.value = CheckoutPageState.ScrollTo(firstErrorIndex)
                 return@launch
             }
+            val errorToaster = addOnProcessor.saveAddOnsProductBeforeCheckout(listData.value, isOneClickShipment)
+            if (errorToaster != null) {
+                commonToaster.emit(errorToaster)
+                pageState.value = CheckoutPageState.Normal
+                return@launch
+            }
             val validateUsePromoRevampUiModel = promoProcessor.finalValidateUse(
                 promoProcessor.generateValidateUsePromoRequest(
                     listData.value,

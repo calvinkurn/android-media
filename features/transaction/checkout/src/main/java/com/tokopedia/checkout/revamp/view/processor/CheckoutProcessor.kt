@@ -407,6 +407,7 @@ class CheckoutProcessor @Inject constructor(
                     continue
                 }
                 newShipmentCartItemModelList.add(shipmentCartItemModel.copy(products = orderProducts))
+                orderProducts = arrayListOf()
             }
         }
         return shipmentDataRequestConverter.createCheckoutRequestData(

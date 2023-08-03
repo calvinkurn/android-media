@@ -294,8 +294,22 @@ class CheckoutProductViewHolder(
                         tvProductAddonPrice.text = " (${CurrencyFormatUtil
                             .convertPriceValueToIdrFormat(addon.price, false)
                             .removeDecimalSuffix()})"
-                        cbProductAddon.isChecked =
-                            (addon.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK)
+                        cbProductAddon.setOnCheckedChangeListener { _, _ -> }
+                        when (addon.status) {
+                            AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK -> {
+                                cbProductAddon.isChecked = true
+                                cbProductAddon.isEnabled = true
+                            }
+                            AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY -> {
+                                cbProductAddon.isChecked = true
+                                cbProductAddon.isEnabled = false
+                            }
+                            else -> {
+                                cbProductAddon.isChecked = false
+                                cbProductAddon.isEnabled = true
+                            }
+                        }
+                        cbProductAddon.skipAnimation()
                         cbProductAddon.setOnCheckedChangeListener { _, isChecked ->
                             delayChangeCheckboxAddOnState?.cancel()
                             delayChangeCheckboxAddOnState = GlobalScope.launch(Dispatchers.Main) {
@@ -356,8 +370,22 @@ class CheckoutProductViewHolder(
                         tvProductAddonPrice.text = " (${CurrencyFormatUtil
                             .convertPriceValueToIdrFormat(addon.price, false)
                             .removeDecimalSuffix()})"
-                        cbProductAddon.isChecked =
-                            (addon.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK)
+                        cbProductAddon.setOnCheckedChangeListener { _, _ -> }
+                        when (addon.status) {
+                            AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK -> {
+                                cbProductAddon.isChecked = true
+                                cbProductAddon.isEnabled = true
+                            }
+                            AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY -> {
+                                cbProductAddon.isChecked = true
+                                cbProductAddon.isEnabled = false
+                            }
+                            else -> {
+                                cbProductAddon.isChecked = false
+                                cbProductAddon.isEnabled = true
+                            }
+                        }
+                        cbProductAddon.skipAnimation()
                         cbProductAddon.setOnCheckedChangeListener { _, isChecked ->
                             delayChangeCheckboxAddOnState?.cancel()
                             delayChangeCheckboxAddOnState = GlobalScope.launch(Dispatchers.Main) {
