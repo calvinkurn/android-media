@@ -27,9 +27,9 @@ data class BMGMData(
         @SerializedName("iconUrl")
         @Expose
         val iconUrl: String = "",
-        @SerializedName("titles")
+        @SerializedName("title")
         @Expose
-        val titles: List<String> = emptyList(),
+        val title: String = "",
         @SerializedName("action")
         @Expose
         val action: Action = Action(),

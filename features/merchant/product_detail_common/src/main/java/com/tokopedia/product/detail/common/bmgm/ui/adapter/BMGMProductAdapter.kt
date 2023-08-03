@@ -13,7 +13,7 @@ import com.tokopedia.product.detail.common.bmgm.ui.model.BMGMUiModel
 class BMGMProductAdapter : ListAdapter<BMGMUiModel.Product, BMGMProductViewHolder>(DIFF_ITEMS) {
 
     companion object {
-        val DIFF_ITEMS = object : DiffUtil.ItemCallback<BMGMUiModel.Product>() {
+        private val DIFF_ITEMS = object : DiffUtil.ItemCallback<BMGMUiModel.Product>() {
             override fun areItemsTheSame(
                 oldItem: BMGMUiModel.Product,
                 newItem: BMGMUiModel.Product

@@ -28,7 +28,7 @@ fun BMGMData.Data.Action.asUiModel() = BMGMUiModel.Action(
 )
 
 fun BMGMData.Data.asUiModel(separator: String) = BMGMUiModel(
-    titles = titles,
+    title = title,
     iconUrl = iconUrl,
     products = contents.asUiModel(loadMoreText = loadMoreText),
     backgroundColor = backgroundColor,

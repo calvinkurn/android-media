@@ -35,7 +35,6 @@ class BMGMWidget @JvmOverloads constructor(
     companion object {
         private const val SPAN_COUNT = 3
 
-        private const val TEXT_SWITCH_INTERVAL = 3000L // millisecond
         private const val MIN_GRADIENT_COLOR = 2
     }
 
@@ -90,23 +89,29 @@ class BMGMWidget @JvmOverloads constructor(
     }
     // endregion
 
-    // region loaded state
+    // region show content
     private fun showContent(uiModel: BMGMUiModel, router: BMGMRouter) {
         binding.root.setLayoutHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
+
         binding.bmgmImageLeft.loadImage(url = uiModel.iconUrl)
-
-        binding.bmgmTitles.setTitle(
-            titles = uiModel.titles,
-            color = uiModel.titleColor,
-            interval = TEXT_SWITCH_INTERVAL
-        )
-
+        setTitle(title = uiModel.title, color = uiModel.titleColor)
         setEvent(action = uiModel.action, router = router)
         setBackgroundGradient(colors = uiModel.backgroundColor)
         setProductList(uiModel = uiModel, router = router)
     }
     // endregion
 
+    // region title
+    private fun setTitle(title: String, color: String) {
+        binding.bmgmTitle.text = title
+
+        val default = com.tokopedia.unifyprinciples.R.color.Unify_TN500
+        val unifyColor = getStringUnifyColor(color = color, default = default)
+        binding.bmgmTitle.setTextColor(unifyColor)
+    }
+    // endregion
+
+    // region set product list
     private fun setProductList(uiModel: BMGMUiModel, router: BMGMRouter) {
         if (uiModel.products.isNotEmpty()) {
             productListBinding.root.show()
@@ -118,6 +123,7 @@ class BMGMWidget @JvmOverloads constructor(
             productListBinding.root.gone()
         }
     }
+    // endregion
 
     // region background
     private fun setBackgroundGradient(colors: String) {

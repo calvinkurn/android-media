@@ -195,7 +195,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         get() = mapOfData[ProductDetailConstant.ONGOING_CAMPAIGN] as? OngoingCampaignDataModel
 
     val bmgmSneakPeak: ProductBMGMDataModel?
-        get() = mapOfData[ProductDetailConstant.BMGM_SNEAK_PEAK_NAME] as? ProductBMGMDataModel
+        get() = mapOfData[ProductDetailConstant.BMGM_SNEAK_PEEK_NAME] as? ProductBMGMDataModel
 
     fun updateDataP1(
         dataP1: DynamicProductInfoP1?,
@@ -1249,9 +1249,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             it.productIDs.contains(productId)
         }
 
-        updateData(ProductDetailConstant.BMGM_SNEAK_PEAK_NAME) {
+        updateData(ProductDetailConstant.BMGM_SNEAK_PEEK_NAME) {
             if (bmgm.data.isEmpty()) {
-                removeComponent(ProductDetailConstant.BMGM_SNEAK_PEAK_NAME)
+                removeComponent(ProductDetailConstant.BMGM_SNEAK_PEEK_NAME)
             } else if (bmgmSelected == null) {
                 bmgmSneakPeak?.state = BMGMUiState.Hide
             } else {

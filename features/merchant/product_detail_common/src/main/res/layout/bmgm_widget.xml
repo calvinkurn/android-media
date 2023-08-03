@@ -25,12 +25,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.product.detail.common.view.RollingTextSwitcher
-        android:id="@+id/bmgm_titles"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/bmgm_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:typographyType="paragraph_3"
+        app:typographyWeight="bold"
         android:inAnimation="@anim/slide_in_bottom"
         android:outAnimation="@anim/slide_out_top"
         app:layout_constraintBottom_toBottomOf="@+id/bmgm_icon_right"

@@ -3,6 +3,8 @@ package com.tokopedia.product.detail.common.bmgm.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.common.bmgm.ui.model.BMGMUiModel
@@ -27,7 +29,10 @@ class BMGMProductViewHolder(
         binding.bmgmProductImage.loadImage(product.imageUrl)
 
         if (product.loadMoreText.isNotBlank()) {
+            overlayBinding.root.show()
             overlayBinding.bmgmShowMoreText.text = product.loadMoreText
+        } else if (binding.bmgmProductShowMoreStub.parent == null) {
+            overlayBinding.root.hide()
         }
     }
 

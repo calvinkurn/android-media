@@ -6,7 +6,7 @@ package com.tokopedia.product.detail.common.bmgm.ui.model
  **/
 
 data class BMGMUiModel(
-    val titles: List<String> = emptyList(),
+    val title: String = "",
     val iconUrl: String = "",
     val products: List<Product> = emptyList(),
     val backgroundColor: String = "",

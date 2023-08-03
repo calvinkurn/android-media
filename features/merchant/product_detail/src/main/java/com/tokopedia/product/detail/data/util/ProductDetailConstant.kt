@@ -116,7 +116,7 @@ object ProductDetailConstant {
     // custom info title as component name
     const val OTHER_OFFERS = "other_offers"
     const val BMGM_TYPE = "bmgm"
-    const val BMGM_SNEAK_PEAK_NAME = "bmgm_sneak_peak"
+    const val BMGM_SNEAK_PEEK_NAME = "bmgm_sneak_peek"
 
     // Arguments
     const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"
