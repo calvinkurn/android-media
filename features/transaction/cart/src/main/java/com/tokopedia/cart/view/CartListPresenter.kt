@@ -214,7 +214,18 @@ class CartListPresenter @Inject constructor(
             CartUiModelMapper.mapPromoSummaryUiModel(cartListData.promoSummary)
     }
 
-    override fun getSummaryTransactionUiModel(): SummaryTransactionUiModel? {
+    override fun getSummaryTransactionUiModel(selectedCartItemData: List<CartItemHolderData>): SummaryTransactionUiModel? {
+        val updatedAddOnSummary = cartListData?.shoppingSummary?.summaryAddOnList?.let {
+            CartUiModelMapper.mapSummariesAddOnsFromSelectedItems(it, selectedCartItemData)
+        }
+        if (updatedAddOnSummary != null) {
+            var totalAddOnPrice = 0L
+            for (entry in updatedAddOnSummary) {
+                totalAddOnPrice += entry.priceValue.toLong()
+            }
+            summaryTransactionUiModel?.paymentTotal = summaryTransactionUiModel?.totalValue?.plus(totalAddOnPrice) ?: 0
+            summaryTransactionUiModel?.listSummaryAddOns = updatedAddOnSummary
+        }
         return summaryTransactionUiModel
     }
 
@@ -889,7 +900,7 @@ class CartListPresenter @Inject constructor(
             }
 
             if (cartItemHolderData.addOnsProduct.listData.isNotEmpty()) {
-                totalQtyWithAddon = totalItemQty
+                totalQtyWithAddon = itemQty
                 cartItemHolderData.addOnsProduct.listData.forEach {
                     subtotalPrice += (totalQtyWithAddon * it.price)
                 }

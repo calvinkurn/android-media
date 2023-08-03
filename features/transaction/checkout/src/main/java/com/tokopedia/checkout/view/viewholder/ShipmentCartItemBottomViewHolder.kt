@@ -33,6 +33,8 @@ import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.InsuranceBottomSheet
@@ -1211,7 +1213,7 @@ class ShipmentCartItemBottomViewHolder(
 
         shipmentCartItemModel.cartItemModels.forEach { cartItemModel ->
             cartItemModel.addOnProduct.listAddOnProductData.forEach { addOnProduct ->
-                if (addOnProduct.status == 1) {
+                if (addOnProduct.status == ADD_ON_PRODUCT_STATUS_CHECK || addOnProduct.status == ADD_ON_PRODUCT_STATUS_MANDATORY) {
                     val addOnPrice = cartItemModel.quantity * addOnProduct.price
                     qtyAddOn = if (countMapSubtotal.containsKey(addOnProduct.type)) {
                         countMapSubtotal[addOnProduct.type]?.second?.plus(cartItemModel.quantity) ?: cartItemModel.quantity

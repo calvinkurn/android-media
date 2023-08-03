@@ -13,6 +13,7 @@ data class AddOnUIModel(
     var isSelected: Boolean = false,
     var isPreselected: Boolean = false,
     var isMandatory: Boolean = false,
+    var isAutoselect: Boolean = false,
     var addOnType: Int = 0,
     var eduLink: String = "",
     var uniqueId: String = "",
@@ -25,6 +26,15 @@ data class AddOnUIModel(
             isMandatory -> AddOnSelectedStatus.MANDATORY
             isPreselected && !isSelected -> AddOnSelectedStatus.UNCHECKED
             !isPreselected && isSelected -> AddOnSelectedStatus.CHECKED
+            else -> AddOnSelectedStatus.DEFAULT
+        }
+    }
+
+    fun getSaveAddonSelectedStatus(): AddOnSelectedStatus {
+        return when {
+            isMandatory -> AddOnSelectedStatus.MANDATORY
+            isSelected -> AddOnSelectedStatus.CHECKED
+            !isSelected -> AddOnSelectedStatus.UNCHECKED
             else -> AddOnSelectedStatus.DEFAULT
         }
     }

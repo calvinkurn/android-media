@@ -10,6 +10,7 @@ import com.tokopedia.addon.presentation.uimodel.AddOnGroupUIModel
 import com.tokopedia.addon.presentation.uimodel.AddOnMapper
 import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.addon.presentation.uimodel.AddOnParam
+import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
 import com.tokopedia.gifting.domain.usecase.GetAddOnUseCase
 import com.tokopedia.gifting.presentation.uimodel.AddOnType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -78,7 +79,8 @@ class AddOnViewModel @Inject constructor(
     }
 
     var preselectedAddonIds: List<String> = emptyList()
-    var lastSelectedAddOn: List<AddOnGroupUIModel> = emptyList()
+    var lastSelectedAddOnGroups: List<AddOnGroupUIModel> = emptyList()
+    var lastSelectedAddOn: MutableList<AddOnUIModel> = mutableListOf()
     var isSimplified = false
 
     private fun generateEmptyAggregatedData(): AddOnPageResult.AggregatedData {
@@ -114,7 +116,8 @@ class AddOnViewModel @Inject constructor(
             AddOnMapper.mapToSaveAddOnStateRequest(
                 cartId,
                 source,
-                modifiedAddOnGroups.value
+                modifiedAddOnGroups.value,
+                lastSelectedAddOn
             ),
             false
         )
@@ -158,7 +161,7 @@ class AddOnViewModel @Inject constructor(
             mAggregatedData.value = AddOnPageResult.AggregatedData(
                 title = result.aggregatedData.title,
                 price = result.aggregatedData.price,
-                selectedAddons = AddOnMapper.getPPSelectedAddons(modifiedAddOnGroups.value),
+                selectedAddons = lastSelectedAddOn,
                 isGetDataSuccess = result.error.messages.isEmpty(),
                 getDataErrorMessage = result.error.messages
             )
@@ -178,8 +181,8 @@ class AddOnViewModel @Inject constructor(
     }
 
     fun restoreSelection() {
-        if (lastSelectedAddOn.isNotEmpty()) {
-            mGetAddOnResult.value = lastSelectedAddOn
+        if (lastSelectedAddOnGroups.isNotEmpty()) {
+            mGetAddOnResult.value = lastSelectedAddOnGroups
         }
     }
 
