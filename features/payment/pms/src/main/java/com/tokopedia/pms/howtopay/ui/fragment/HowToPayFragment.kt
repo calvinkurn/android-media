@@ -185,6 +185,8 @@ class HowToPayFragment : BaseDaggerFragment() {
                     copyToClipBoard(context, data.transactionCode, data.gatewayCode)
                     showToast(getString(R.string.pms_hwp_common_copy_success, paymentCodeHeading))
                 }
+
+                if (data.helpPageData?.isVA() == true) addVATicker()
             }
         }
     }
@@ -227,6 +229,11 @@ class HowToPayFragment : BaseDaggerFragment() {
             copyToClipBoard(context, data.transactionCode, data.gatewayCode)
             showToast(getString(R.string.pms_hwp_common_copy_success, getPaymentCodeHeading(data.paymentCodeHint)))
         }
+    }
+
+    private fun addVATicker() {
+        tickerAmountNote.visible()
+        tickerAmountNote.setTextDescription(getString(R.string.pms_va_ticker_description))
     }
 
     private fun addStoreTransferPayment(data: HowToPayData) {

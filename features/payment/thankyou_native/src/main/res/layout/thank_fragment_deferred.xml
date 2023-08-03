@@ -232,7 +232,7 @@
                 app:typographyWeight="bold" />
 
             <com.tokopedia.unifycomponents.ticker.Ticker
-                android:id="@+id/tickerAnnouncementExactDigits"
+                android:id="@+id/tickerAnnouncement"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl3"
