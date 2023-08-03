@@ -133,7 +133,7 @@ class CmGratificationDialog {
         progressBar = root.findViewById(R.id.targetProgressBar)
 
         try {
-            val imageClose = (root.parent.parent as ConstraintLayout).findViewById<ImageView>(R.id.close_button_rounded)
+            val imageClose = (root.parent.parent as ConstraintLayout).findViewById<ImageView>(com.tokopedia.design.R.id.close_button_rounded)
             imageClose.setImageResource(R.drawable.t_promo_close)
 
             val couponStatus = couponDetailResponse.coupon?.couponStatus ?: 0
@@ -145,7 +145,7 @@ class CmGratificationDialog {
             }
 
 
-            val tvDialogTitle = (root.parent.parent as ConstraintLayout).findViewById<TextView>(R.id.title_closeable_rounded)
+            val tvDialogTitle = (root.parent.parent as ConstraintLayout).findViewById<TextView>(com.tokopedia.design.R.id.title_closeable_rounded)
             if (tvDialogTitle.parent is RelativeLayout && !dialogTitleText.isNullOrEmpty()) {
                 val rlParent = tvDialogTitle.parent as RelativeLayout
                 val typographyTitle = Typography(tvTitle.context)

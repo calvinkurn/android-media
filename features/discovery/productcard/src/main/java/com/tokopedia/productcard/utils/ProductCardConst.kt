@@ -1,8 +1,8 @@
 package com.tokopedia.productcard.utils
 
 import androidx.annotation.DimenRes
-import com.tokopedia.productcard.R.dimen.dp_12
-import com.tokopedia.productcard.R.dimen.dp_13
+import com.tokopedia.abstraction.R.dimen.dp_12
+import com.tokopedia.design.R.dimen.dp_13
 
 internal const val LIGHT_GREY = "lightGrey"
 internal const val LIGHT_BLUE = "lightBlue"

@@ -236,7 +236,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                 if (budget < suggestion && txtDailyBudget?.isVisible == true) {
                     txtDailyBudget?.setMessage(
                         String.format(
-                            getString(R.string.topads_common_minimum_daily_budget),
+                            getString(com.tokopedia.topads.common.R.string.topads_common_minimum_daily_budget),
                             minBudget
                         )
                     )
@@ -451,7 +451,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                         daily_budget.setError(true)
                         daily_budget.setMessage(
                             String.format(
-                                getString(R.string.topads_common_error_multiple_50),
+                                getString(com.tokopedia.topads.common.R.string.topads_common_error_multiple_50),
                                 DAILYBUDGET_FACTOR
                             )
                         )
