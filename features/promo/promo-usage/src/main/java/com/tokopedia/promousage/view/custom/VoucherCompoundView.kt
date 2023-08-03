@@ -15,7 +15,7 @@ import com.tokopedia.kotlin.extensions.view.setTextColorCompat
 import com.tokopedia.kotlin.extensions.view.splitByThousand
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promousage.R
-import com.tokopedia.promousage.databinding.PromoUsageVoucherViewBinding
+import com.tokopedia.promousage.databinding.PromoUsageVoucherCompoundViewBinding
 import com.tokopedia.promousage.domain.entity.list.Voucher
 import com.tokopedia.promousage.domain.entity.VoucherSource
 import com.tokopedia.promousage.domain.entity.VoucherState
@@ -31,11 +31,11 @@ class VoucherCompoundView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
-    private var binding: PromoUsageVoucherViewBinding? = null
+    private var binding: PromoUsageVoucherCompoundViewBinding? = null
     private var onHyperlinkTextClick : (String) -> Unit = {}
 
     init {
-        binding = PromoUsageVoucherViewBinding.inflate(
+        binding = PromoUsageVoucherCompoundViewBinding.inflate(
             LayoutInflater.from(context),
             this,
             true
