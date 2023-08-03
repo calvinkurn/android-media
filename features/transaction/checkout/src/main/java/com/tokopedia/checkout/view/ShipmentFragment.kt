@@ -3917,8 +3917,8 @@ class ShipmentFragment :
             }
         }
 
-        var price: Double
-        var discountedPrice: Double
+        val price: Double
+        val discountedPrice: Double
         if (cartItemModel.campaignId == 0) {
             price = cartItemModel.price
             discountedPrice = cartItemModel.price
@@ -4300,10 +4300,6 @@ class ShipmentFragment :
 
     override fun addOnProductServiceImpression(addOnType: Int, productId: String) {
         checkoutAnalyticsCourierSelection.eventViewAddOnsProductServiceWidget(addOnType, productId)
-    }
-
-    override fun onClickLihatSemuaAddOnProductServiceWidget() {
-        checkoutAnalyticsCourierSelection.eventClickLihatSemuaAddOnsProductServiceWidget()
     }
 
     private fun onResultFromAddOnProductBottomSheet(resultCode: Int, data: Intent?) {

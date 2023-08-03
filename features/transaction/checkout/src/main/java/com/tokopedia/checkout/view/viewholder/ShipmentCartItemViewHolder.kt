@@ -443,7 +443,6 @@ class ShipmentCartItemViewHolder(
                     tvSeeAllAddonProduct.setOnClickListener {
                         listener?.onClickSeeAllAddOnProductService(cartItemModel)
                     }
-                    listener?.onClickLihatSemuaAddOnProductWidget()
                 } else {
                     tvSeeAllAddonProduct.gone()
                 }
@@ -539,6 +538,7 @@ class ShipmentCartItemViewHolder(
                         .convertPriceValueToIdrFormat(addon.price.toLong(), false)
                         .removeDecimalSuffix()
                     binding.itemShipmentAddonProductBundling.llAddonProductItems.addView(addOnView.root)
+                    listener?.onImpressionAddOnProductService(addon.type, cartItemModel.productId.toString())
                 }
             }
         }
@@ -565,7 +565,5 @@ class ShipmentCartItemViewHolder(
         fun onClickSeeAllAddOnProductService(cartItemModel: CartItemModel)
 
         fun onImpressionAddOnProductService(addonType: Int, productId: String)
-
-        fun onClickLihatSemuaAddOnProductWidget()
     }
 }
