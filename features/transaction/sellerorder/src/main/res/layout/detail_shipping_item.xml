@@ -91,7 +91,7 @@
         app:layout_constraintTop_toBottomOf="@+id/kurir_label"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
-        android:text="Di-pickup oleh AnterAja" />
+        tools:text="Di-pickup oleh AnterAja" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/booking_code_title"
