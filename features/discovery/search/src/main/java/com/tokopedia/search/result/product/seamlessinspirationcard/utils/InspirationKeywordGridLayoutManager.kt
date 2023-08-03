@@ -7,7 +7,7 @@ class InspirationKeywordGridLayoutManager(
     context: Context,
     sizeList: Int
 ) : GridLayoutManager(context, sizeList, VERTICAL, false) {
-    private val spanSizeLookup = ReviewMediaThumbnailSpanSizeLookup()
+    private val spanSizeLookup = InspirationSeamlessSpanSizeLookup()
 
     init {
         setSpanSizeLookup(getSpanSizeLookup())
@@ -21,7 +21,7 @@ class InspirationKeywordGridLayoutManager(
         return spanSizeLookup
     }
 
-    private inner class ReviewMediaThumbnailSpanSizeLookup : SpanSizeLookup() {
+    private inner class InspirationSeamlessSpanSizeLookup : SpanSizeLookup() {
         override fun getSpanSize(position: Int): Int {
             return 1
         }

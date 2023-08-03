@@ -324,7 +324,7 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
     private fun `Then verify view interaction for impressed inspiration product`(inspirationProduct: InspirationProductItemDataView) {
         verify {
             val seamlessInspirationProductType = inspirationProduct.seamlessInspirationProductType
-            inspirationProductItemTracker.trackInspirationProductSeamlessImpression(
+            inspirationProductSeamlessView.trackInspirationProductSeamlessImpression(
                 seamlessInspirationProductType.type,
                 seamlessInspirationProductType.inspirationCarouselProduct
             )
@@ -338,11 +338,11 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
     private fun `Then verify view interaction for click inspiration product`(inspirationProduct: InspirationProductItemDataView) {
         verify {
             val seamlessInspirationProductType = inspirationProduct.seamlessInspirationProductType
-            inspirationProductItemTracker.trackInspirationProductSeamlessClick(
+            inspirationProductSeamlessView.trackInspirationProductSeamlessClick(
                 seamlessInspirationProductType.type,
                 seamlessInspirationProductType.inspirationCarouselProduct
             )
-            inspirationProductItemTracker.openLink(
+            inspirationProductSeamlessView.openLink(
                 inspirationProduct.applink,
                 inspirationProduct.url
             )

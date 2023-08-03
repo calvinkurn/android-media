@@ -139,8 +139,7 @@ internal open class ProductListPresenterTestFixtures {
     protected val similarSearchCoachMarkLocalCache = mockk<SimilarSearchCoachMarkLocalCache>(relaxed = true)
     protected val similarSearchOnBoardingView = mockk<SimilarSearchOnBoardingView>(relaxed = true)
     protected val inspirationKeywordSeamlessView = mockk<InspirationKeywordView>(relaxed = true)
-    protected val inspirationProductSeamlessView = mockk<InspirationProductView>(relaxed = true)
-    protected val inspirationProductItemTracker =
+    protected val inspirationProductSeamlessView =
         mockk<InspirationProductView>(relaxed = true)
 
     private val dynamicFilterModel = MutableDynamicFilterModelProviderDelegate()
@@ -237,7 +236,7 @@ internal open class ProductListPresenterTestFixtures {
         )
 
         val inspirationProductPresenterDelegate = InspirationProductPresenterDelegate(
-            inspirationProductItemTracker,
+            inspirationProductSeamlessView,
             topAdsUrlHitter,
             classNameProvider
         )
