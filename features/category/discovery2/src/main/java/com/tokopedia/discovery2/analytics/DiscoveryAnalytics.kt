@@ -723,7 +723,7 @@ open class DiscoveryAnalytics(
         map[BUSINESS_UNIT] = HOME_BROWSE
         map[KEY_E_COMMERCE] = eCommerce
         map[WAREHOUSE_ID] = warehouseId
-        map[IS_FULFILLMENT] = isFulFillment
+        map[IS_FULFILLMENT] = isFulFillment.toString()
 
         trackingQueue.putEETracking(map as HashMap<String, Any>)
         productCardImpressionLabel = EMPTY_STRING
@@ -938,7 +938,7 @@ open class DiscoveryAnalytics(
             map[USER_ID] = (userSession.userId ?: "")
             map[BUSINESS_UNIT] = HOME_BROWSE
             map[KEY_E_COMMERCE] = eCommerce
-            map[IS_FULFILLMENT] = isFulFillment
+            map[IS_FULFILLMENT] = isFulFillment.toString()
             map[WAREHOUSE_ID] = warehouseId
             getTracker().sendEnhanceEcommerceEvent(map)
             productCardImpressionLabel = EMPTY_STRING
