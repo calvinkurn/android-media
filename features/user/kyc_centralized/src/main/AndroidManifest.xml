@@ -93,5 +93,22 @@
             android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait"
             android:exported="false"/>
+
+        <activity android:name=".ui.gotoKyc.WebviewWithGotoKycActivity"
+            android:theme="@style/Theme.WhiteUnify"
+            android:screenOrientation="portrait"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/path_webview_goto_kyc" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>
