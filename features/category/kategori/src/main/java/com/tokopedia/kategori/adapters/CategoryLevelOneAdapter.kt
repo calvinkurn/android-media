@@ -56,9 +56,9 @@ class CategoryLevelOneAdapter(private val categoryList: MutableList<CategoriesIt
 
     private fun initShimmerViewHolder(shimmerViewHolder: ShimmerViewHolder, position: Int) {
         if (position == 0) {
-            shimmerViewHolder.shimmerParent.setBackgroundColor(MethodChecker.getColor(shimmerViewHolder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            shimmerViewHolder.shimmerParent.setBackgroundColor(MethodChecker.getColor(shimmerViewHolder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
         } else {
-            shimmerViewHolder.shimmerParent.setBackgroundColor(MethodChecker.getColor(shimmerViewHolder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N50))
+            shimmerViewHolder.shimmerParent.setBackgroundColor(MethodChecker.getColor(shimmerViewHolder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN50))
         }
     }
 
@@ -74,10 +74,10 @@ class CategoryLevelOneAdapter(private val categoryList: MutableList<CategoriesIt
         }
         if (item.isSelected) {
             ImageHandler.loadImage(holder.itemView.context, holder.categoryImage, item.iconImageUrl, R.drawable.square_shimmer)
-            holder.parentLayout.setBackgroundColor(MethodChecker.getColor(holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            holder.parentLayout.setBackgroundColor(MethodChecker.getColor(holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
         } else {
             ImageHandler.loadImage(holder.itemView.context, holder.categoryImage, item.iconImageUrlGray, R.drawable.square_shimmer)
-            holder.parentLayout.setBackgroundColor(MethodChecker.getColor(holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N50_68))
+            holder.parentLayout.setBackgroundColor(MethodChecker.getColor(holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN50_68))
         }
 
         with(holder.categoryName) {setTextAndContentDescription(getEllipsizedMessage(item.name ?: ""), R.string.content_desc_category_name)}

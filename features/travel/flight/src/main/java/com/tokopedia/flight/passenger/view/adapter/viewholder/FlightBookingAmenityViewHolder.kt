@@ -24,10 +24,10 @@ class FlightBookingAmenityViewHolder(val binding: ItemFlightBookingAmenityBindin
         binding.tvTitle.text = String.format("%s - %s", flightBookingLuggageViewModel.title, flightBookingLuggageViewModel.price)
         if (isItemChecked) {
             binding.imageChecked.visibility = View.VISIBLE
-            binding.tvTitle.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_G500))
+            binding.tvTitle.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_GN500))
         } else {
             binding.imageChecked.visibility = View.INVISIBLE
-            binding.tvTitle.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N700_68))
+            binding.tvTitle.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_NN950_68))
         }
     }
 

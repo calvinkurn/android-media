@@ -75,7 +75,9 @@ import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -210,7 +212,7 @@ class AffiliatePromoFragment :
         }
 
         binding?.promoNavToolbar?.run {
-            val iconBuilder = IconBuilder()
+            val iconBuilder = IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.AFFILIATE))
             if (isAffiliateNCEnabled()) {
                 iconBuilder.addIcon(IconList.ID_NOTIFICATION, disableRouteManager = true) {
                     affiliatePromoViewModel?.resetNotificationCount()
@@ -606,7 +608,7 @@ class AffiliatePromoFragment :
                 setTextColor(
                     MethodChecker.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     )
                 )
             }
@@ -620,7 +622,7 @@ class AffiliatePromoFragment :
                 setTextColor(
                     MethodChecker.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700_44
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_44
                     )
                 )
             }

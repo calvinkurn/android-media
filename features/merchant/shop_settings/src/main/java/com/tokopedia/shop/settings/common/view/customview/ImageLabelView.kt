@@ -55,7 +55,7 @@ class ImageLabelView : FrameLayout {
         imageView = view.findViewById(R.id.imageView)
         tvContent = view.findViewById(R.id.tvContent)
         tvContent?.hint = contentHint
-        tvContent?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
+        tvContent?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
         setImage(drawableRes)
     }
 
@@ -65,7 +65,7 @@ class ImageLabelView : FrameLayout {
             titleText = styledAttributes.getString(R.styleable.ImageLabelView_ilv_title)
             titleColorValue = styledAttributes.getColor(
                 R.styleable.ImageLabelView_ilv_title_color,
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_44)
             )
             titleTextStyleValue = styledAttributes.getInt(R.styleable.ImageLabelView_ilv_title_text_style, Typeface.NORMAL)
             titleTextSize = styledAttributes.getDimension(R.styleable.ImageLabelView_ilv_title_text_size, resources.getDimension(R.dimen.sp_12))
@@ -90,11 +90,11 @@ class ImageLabelView : FrameLayout {
         super.setEnabled(enabled)
         isClickable = enabled
         if (enabled) {
-            tvContent?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
+            tvContent?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
             titleTextView?.setTextColor(titleColorValue)
         } else {
-            tvContent?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
-            titleTextView?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+            tvContent?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_32))
+            titleTextView?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_32))
         }
     }
 

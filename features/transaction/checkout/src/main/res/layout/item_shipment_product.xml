@@ -107,7 +107,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
                 android:gravity="center_vertical"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:typographyType="body_2"
                 app:typographyWeight="bold"
                 tools:text="Rp100.000" />
@@ -159,7 +159,7 @@
                 android:layout_width="69dp"
                 android:layout_height="69dp"
                 android:layout_toEndOf="@+id/v_bundling_product_separator"
-                android:src="@color/Unify_G400"
+                android:src="@color/Unify_GN500"
                 app:layout_constraintStart_toEndOf="@+id/v_bundling_product_separator"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="ContentDescription" />
@@ -264,7 +264,7 @@
                 android:layout_below="@+id/layout_product_info"
                 android:layout_marginTop="16dp"
                 android:layout_toEndOf="@+id/v_bundling_product_separator"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/v_bundling_product_separator"
                 app:layout_constraintTop_toBottomOf="@+id/layout_product_info"
@@ -314,7 +314,7 @@
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:maxLines="2"
-                        android:textColor="@color/Unify_N700_96"
+                        android:textColor="@color/Unify_NN950_96"
                         app:layout_constraintEnd_toStartOf="@id/icon_tooltip"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -342,7 +342,7 @@
                     android:layout_marginEnd="16dp"
                     android:ellipsize="end"
                     android:maxLines="2"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     app:typographyType="small"
                     app:typographyWeight="reguler"
                     tools:text="Rp 50.000 / barang" />
@@ -363,7 +363,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:text="@string/ppp_more"
-                    android:textColor="@color/Unify_N700_96"
+                    android:textColor="@color/Unify_NN950_96"
                     app:typographyType="heading_6"
                     app:typographyWeight="bold" />
 
@@ -374,7 +374,7 @@
                     android:layout_gravity="end"
                     android:layout_marginTop="2dp"
                     android:text="@string/checkout_label_per_insurance_price"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     app:typographyType="small" />
 
             </LinearLayout>

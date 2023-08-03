@@ -130,7 +130,7 @@ class BannerDotIndicator(private val radius: Int, private val indicatorItemPaddi
                 visibility = View.VISIBLE
                 text = getText(R.string.lihat_semua)
                 setType(6)
-                setTextColor(ContextCompat.getColor(this@run, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                setTextColor(ContextCompat.getColor(this@run, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
                 setOnClickListener {
                     handleAppLink(this@run, btnAppLink)
                 }

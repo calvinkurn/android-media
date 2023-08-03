@@ -13,10 +13,12 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.foldable'
+    testNamespace 'com.tokopedia.foldable.test'
+}
+
 dependencies {
-
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
-
     api rootProject.ext.miscDependencies.window
     implementation rootProject.ext.miscDependencies.viewModel
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions

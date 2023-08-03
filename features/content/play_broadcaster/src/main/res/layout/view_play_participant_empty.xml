@@ -32,7 +32,7 @@
         app:typographyType="heading_2"
         app:typographyWeight="bold"
         android:text="@string/play_bro_ongoing_bottomsheet_empty_participant_message"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"

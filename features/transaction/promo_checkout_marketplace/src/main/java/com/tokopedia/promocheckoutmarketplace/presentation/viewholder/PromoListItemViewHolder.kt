@@ -25,6 +25,7 @@ import com.tokopedia.promocheckoutmarketplace.presentation.listener.PromoCheckou
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListItemUiModel
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.LoaderUnify
 
 class PromoListItemViewHolder(
     private val viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
@@ -34,6 +35,7 @@ class PromoListItemViewHolder(
     companion object {
         val LAYOUT = R.layout.promo_checkout_marketplace_module_item_promo_card
 
+        const val STATE_LOADING = 0
         const val STATE_SELECTED = 1
         const val STATE_ENABLED = 2
         const val STATE_DISABLED = 3
@@ -41,15 +43,15 @@ class PromoListItemViewHolder(
 
     private val colorTextEnabledDefault = ContextCompat.getColor(
         itemView.context,
-        com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+        com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
     )
     private val colorTextEnabledLowEmphasis = ContextCompat.getColor(
         itemView.context,
-        com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+        com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
     )
     private val colorTextDisabled = ContextCompat.getColor(
         itemView.context,
-        com.tokopedia.unifyprinciples.R.color.Unify_N700_32
+        com.tokopedia.unifyprinciples.R.color.Unify_NN950_32
     )
     private var colorBackgroundSelected =
         ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN50)
@@ -99,7 +101,9 @@ class PromoListItemViewHolder(
     ) {
         viewBinding.cardPromoItem.setOnClickListener {
             adapterPosition.takeIf { it != RecyclerView.NO_POSITION }?.let {
-                if (element.uiData.currentClashingPromo.isNullOrEmpty() && element.uiState.isParentEnabled && !element.uiState.isDisabled) {
+                if (element.uiState.isParentEnabled && !element.uiData.hasClashingPromo &&
+                    !element.uiState.isDisabled && !element.uiState.isLoading
+                ) {
                     listener.onClickPromoListItem(element, adapterPosition)
                 }
             }
@@ -107,18 +111,22 @@ class PromoListItemViewHolder(
     }
 
     private fun getState(element: PromoListItemUiModel): Int {
-        return if (element.uiState.isParentEnabled && element.uiData.currentClashingPromo.isNullOrEmpty()) {
-            if (element.uiState.isDisabled) {
-                STATE_DISABLED
-            } else {
-                if (element.uiState.isSelected) {
-                    STATE_SELECTED
-                } else {
-                    STATE_ENABLED
-                }
-            }
+        return if (element.uiState.isLoading && !element.uiState.isSelected) {
+            STATE_LOADING
         } else {
-            STATE_DISABLED
+            if (element.uiState.isParentEnabled && !element.uiData.hasClashingPromo) {
+                if (element.uiState.isDisabled) {
+                    STATE_DISABLED
+                } else {
+                    if (element.uiState.isSelected) {
+                        STATE_SELECTED
+                    } else {
+                        STATE_ENABLED
+                    }
+                }
+            } else {
+                STATE_DISABLED
+            }
         }
     }
 
@@ -127,6 +135,9 @@ class PromoListItemViewHolder(
         element: PromoListItemUiModel
     ) {
         when {
+            getState(element) == STATE_LOADING -> {
+                renderPromoLoading(viewBinding)
+            }
             getState(element) == STATE_SELECTED -> {
                 renderPromoSelected(viewBinding, element)
             }
@@ -139,12 +150,31 @@ class PromoListItemViewHolder(
         }
     }
 
+    private fun renderPromoLoading(
+        viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding
+    ) {
+        with(viewBinding) {
+            containerPromoLoading.show()
+            containerConstraintPromoCheckout.gone()
+            promoLoader1.type = LoaderUnify.TYPE_LINE
+            promoLoader2.type = LoaderUnify.TYPE_LINE
+            cardPromoItem.cardType = CardUnify.TYPE_BORDER
+            cardPromoItem.setCardBackgroundColor(colorBackgroundEnabled)
+            cardPromoItem.setOnClickListener(null)
+            promoQuantityIdentifierTop.gone()
+            promoQuantityIdentifierBottom.gone()
+            textPromoQuantity.gone()
+        }
+    }
+
     private fun renderPromoSelected(
         viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
         element: PromoListItemUiModel
     ) {
         renderPromoEnabled(viewBinding, element)
         with(viewBinding) {
+            containerConstraintPromoCheckout.show()
+            containerPromoLoading.gone()
             promoHighlightIdentifier.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_highlighted_identifier_selected)
             containerUserValidity.setBackgroundColor(
                 ContextCompat.getColor(
@@ -182,6 +212,8 @@ class PromoListItemViewHolder(
         element: PromoListItemUiModel
     ) {
         with(viewBinding) {
+            containerConstraintPromoCheckout.show()
+            containerPromoLoading.gone()
             promoHighlightIdentifier.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_highlighted_identifier_enabled)
             promoQuantityIdentifierTop.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_quantity_identifier_top_enabled)
             promoQuantityIdentifierBottom.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_quantity_identifier_bottom_enabled)
@@ -215,6 +247,8 @@ class PromoListItemViewHolder(
         element: PromoListItemUiModel
     ) {
         with(viewBinding) {
+            containerConstraintPromoCheckout.show()
+            containerPromoLoading.gone()
             promoHighlightIdentifier.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_highlighted_identifier_disabled)
             promoQuantityIdentifierTop.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_quantity_identifier_top_disabled)
             promoQuantityIdentifierBottom.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_quantity_identifier_bottom_disabled)
@@ -350,9 +384,17 @@ class PromoListItemViewHolder(
         element: PromoListItemUiModel
     ) {
         with(viewBinding) {
-            if (element.uiState.isHighlighted) {
-                val topBanner =
+            val isHighlighted = if (element.uiData.useSecondaryPromo) {
+                element.uiData.secondaryCoupons.first().isHighlighted
+            } else {
+                element.uiState.isHighlighted
+            }
+            if (isHighlighted) {
+                val topBanner = if (element.uiData.useSecondaryPromo) {
+                    element.uiData.secondaryCoupons.first().promoInfos.firstOrNull { it.type == PromoInfo.TYPE_TOP_BANNER }
+                } else {
                     element.uiData.promoInfos.firstOrNull { it.type == PromoInfo.TYPE_TOP_BANNER }
+                }
                 if (topBanner != null) {
                     textPromoHighlightIdentifier.text = topBanner.title
                     textPromoHighlightIdentifier.show()
@@ -392,9 +434,17 @@ class PromoListItemViewHolder(
 
                 val promoQuantityIdentifierLayoutParam =
                     promoQuantityIdentifierTop.layoutParams as ViewGroup.MarginLayoutParams
-                val topBanner =
+                val isHighlighted = if (element.uiData.useSecondaryPromo) {
+                    element.uiData.secondaryCoupons.first().isHighlighted
+                } else {
+                    element.uiState.isHighlighted
+                }
+                val topBanner = if (element.uiData.useSecondaryPromo) {
+                    element.uiData.secondaryCoupons.first().promoInfos.firstOrNull { it.type == PromoInfo.TYPE_TOP_BANNER }
+                } else {
                     element.uiData.promoInfos.firstOrNull { it.type == PromoInfo.TYPE_TOP_BANNER }
-                if (element.uiState.isHighlighted && topBanner != null) {
+                }
+                if (isHighlighted && topBanner != null) {
                     promoQuantityIdentifierLayoutParam.topMargin =
                         itemView.context.resources.getDimension(R.dimen.dp_32).toInt()
                 } else {
@@ -416,12 +466,25 @@ class PromoListItemViewHolder(
         element: PromoListItemUiModel
     ) {
         with(viewBinding) {
-            textPromoItemTitle.text = element.uiData.title
+            val title = if (element.uiData.useSecondaryPromo) {
+                element.uiData.secondaryCoupons.first().title
+            } else {
+                element.uiData.title
+            }
+            textPromoItemTitle.text = title
             val textPromoItemTitleLayoutParam =
                 textPromoItemTitle.layoutParams as ViewGroup.MarginLayoutParams
-            val topBanner =
+            val isHighlighted = if (element.uiData.useSecondaryPromo) {
+                element.uiData.secondaryCoupons.first().isHighlighted
+            } else {
+                element.uiState.isHighlighted
+            }
+            val topBanner = if (element.uiData.useSecondaryPromo) {
+                element.uiData.secondaryCoupons.first().promoInfos.firstOrNull { it.type == PromoInfo.TYPE_TOP_BANNER }
+            } else {
                 element.uiData.promoInfos.firstOrNull { it.type == PromoInfo.TYPE_TOP_BANNER }
-            if (element.uiState.isHighlighted && topBanner != null) {
+            }
+            if (isHighlighted && topBanner != null) {
                 textPromoItemTitleLayoutParam.topMargin = 0
             } else {
                 textPromoItemTitleLayoutParam.topMargin =
@@ -438,9 +501,17 @@ class PromoListItemViewHolder(
         with(viewBinding) {
             val textPromoItemTitleInfoLayoutParam =
                 textPromoItemTitleInfo.layoutParams as ViewGroup.MarginLayoutParams
-            val topBanner =
+            val isHighlighted = if (element.uiData.useSecondaryPromo) {
+                element.uiData.secondaryCoupons.first().isHighlighted
+            } else {
+                element.uiState.isHighlighted
+            }
+            val topBanner = if (element.uiData.useSecondaryPromo) {
+                element.uiData.secondaryCoupons.first().promoInfos.firstOrNull { it.type == PromoInfo.TYPE_TOP_BANNER }
+            } else {
                 element.uiData.promoInfos.firstOrNull { it.type == PromoInfo.TYPE_TOP_BANNER }
-            if (element.uiState.isHighlighted && topBanner != null) {
+            }
+            if (isHighlighted && topBanner != null) {
                 textPromoItemTitleInfoLayoutParam.topMargin = 0
             } else {
                 textPromoItemTitleInfoLayoutParam.topMargin =
@@ -448,8 +519,13 @@ class PromoListItemViewHolder(
                         .toInt()
             }
 
-            if (element.uiData.currencyDetailStr.isNotBlank()) {
-                textPromoItemTitleInfo.text = element.uiData.currencyDetailStr
+            val currencyDetailStr = if (element.uiData.useSecondaryPromo) {
+                element.uiData.secondaryCoupons.first().currencyDetailStr
+            } else {
+                element.uiData.currencyDetailStr
+            }
+            if (currencyDetailStr.isNotBlank()) {
+                textPromoItemTitleInfo.text = currencyDetailStr
                 textPromoItemTitleInfo.show()
             } else {
                 textPromoItemTitleInfo.gone()
@@ -462,8 +538,18 @@ class PromoListItemViewHolder(
         element: PromoListItemUiModel
     ) {
         with(viewBinding) {
-            if (element.uiState.isAttempted) {
-                textPromoCode.text = element.uiData.promoCode
+            val isAttempted = if (element.uiData.useSecondaryPromo) {
+                element.uiData.secondaryCoupons.first().isAttempted
+            } else {
+                element.uiState.isAttempted
+            }
+            val promoCode = if (element.uiData.useSecondaryPromo) {
+                element.uiData.secondaryCoupons.first().code
+            } else {
+                element.uiData.promoCode
+            }
+            if (isAttempted) {
+                textPromoCode.text = promoCode
                 textPromoCode.show()
                 textPromoCodeInfo.show()
             } else {
@@ -478,8 +564,11 @@ class PromoListItemViewHolder(
         element: PromoListItemUiModel
     ) {
         with(viewBinding) {
-            val promoInfoList =
+            val promoInfoList = if (element.uiData.useSecondaryPromo) {
+                element.uiData.secondaryCoupons.first().promoInfos.filter { it.type == PromoInfo.TYPE_PROMO_INFO && it.title.isNotEmpty() }
+            } else {
                 element.uiData.promoInfos.filter { it.type == PromoInfo.TYPE_PROMO_INFO && it.title.isNotEmpty() }
+            }
             if (promoInfoList.isNotEmpty()) {
                 containerPromoInfoList.removeAllViews()
                 promoInfoList.forEach {
@@ -529,10 +618,11 @@ class PromoListItemViewHolder(
         element: PromoListItemUiModel
     ) {
         with(viewBinding) {
-            val timeValidityInfo = element.uiData.promoInfos.firstOrNull {
-                it.type == PromoInfo.TYPE_PROMO_VALIDITY
+            val timeValidityInfo = if (element.uiData.useSecondaryPromo) {
+                element.uiData.secondaryCoupons.first().promoInfos.firstOrNull { it.type == PromoInfo.TYPE_PROMO_VALIDITY }
+            } else {
+                element.uiData.promoInfos.firstOrNull { it.type == PromoInfo.TYPE_PROMO_VALIDITY }
             }
-
             if (timeValidityInfo != null) {
                 if (timeValidityInfo.title.isNotBlank() && timeValidityInfo.icon.isNotBlank()) {
                     renderIcon(
@@ -566,7 +656,12 @@ class PromoListItemViewHolder(
         timeValidityInfo: PromoInfo?
     ) {
         with(viewBinding) {
-            if (!element.uiState.isBebasOngkir && !element.uiState.isAttempted) {
+            val isAttempted = if (element.uiData.useSecondaryPromo) {
+                element.uiData.secondaryCoupons.first().isAttempted
+            } else {
+                element.uiState.isAttempted
+            }
+            if (!element.uiState.isBebasOngkir && !isAttempted) {
                 buttonPromoDetail.setOnClickListener {
                     listener.onClickPromoItemDetail(element)
                 }
@@ -593,15 +688,23 @@ class PromoListItemViewHolder(
         element: PromoListItemUiModel
     ) {
         with(viewBinding) {
-            val bottomBanner =
+            val bottomBanner = if (element.uiData.useSecondaryPromo) {
+                element.uiData.secondaryCoupons.first().promoInfos.firstOrNull { it.type == PromoInfo.TYPE_BOTTOM_BANNER }
+            } else {
                 element.uiData.promoInfos.firstOrNull { it.type == PromoInfo.TYPE_BOTTOM_BANNER }
+            }
             if (bottomBanner != null) {
                 textUserValidity.text =
                     HtmlLinkHelper(itemView.context, bottomBanner.title).spannedString
 
                 val containerUserValidityLayoutParam =
                     containerUserValidity.layoutParams as ViewGroup.MarginLayoutParams
-                if (element.uiState.isDisabled || element.uiData.currentClashingPromo.isNotEmpty()) {
+                val isClashing = if (element.uiData.useSecondaryPromo) {
+                    element.uiData.currentClashingPromo.isNotEmpty()
+                } else {
+                    element.uiData.currentClashingSecondaryPromo.isNotEmpty()
+                }
+                if (element.uiState.isDisabled || isClashing) {
                     dividerUserValidity.show()
                     containerUserValidityLayoutParam.topMargin = 0
                 } else {
@@ -623,8 +726,11 @@ class PromoListItemViewHolder(
         element: PromoListItemUiModel
     ) {
         with(viewBinding) {
-            val bottomBanner =
+            val bottomBanner = if (element.uiData.useSecondaryPromo) {
+                element.uiData.secondaryCoupons.first().promoInfos.firstOrNull { it.type == PromoInfo.TYPE_BOTTOM_BANNER }
+            } else {
                 element.uiData.promoInfos.firstOrNull { it.type == PromoInfo.TYPE_BOTTOM_BANNER }
+            }
             if (bottomBanner != null) {
                 renderIcon(
                     iconUserValidity,
@@ -683,9 +789,16 @@ class PromoListItemViewHolder(
         }
     }
 
-    private fun getPromoInformationDetailsCount(element: PromoListItemUiModel): Int {
+    private fun getPromoInformationDetailsCount(
+        element: PromoListItemUiModel
+    ): Int {
         var promoInformationDetailsCount = 0
-        element.uiData.promoInfos.forEach {
+        val promoInfos = if (element.uiData.useSecondaryPromo) {
+            element.uiData.secondaryCoupons.first().promoInfos
+        } else {
+            element.uiData.promoInfos
+        }
+        promoInfos.forEach {
             if (it.type == PromoInfo.TYPE_PROMO_INFO || it.type == PromoInfo.TYPE_BOTTOM_BANNER || it.type == PromoInfo.TYPE_PROMO_VALIDITY) {
                 promoInformationDetailsCount++
             }

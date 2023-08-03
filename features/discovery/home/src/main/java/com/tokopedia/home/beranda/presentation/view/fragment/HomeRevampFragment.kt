@@ -10,9 +10,7 @@ import android.content.SharedPreferences
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import android.os.Build
-import android.os.Bundle
-import android.os.Handler
+import android.os.*
 import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -24,7 +22,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -37,14 +34,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
-import com.tokopedia.analytics.performance.fpi.FpiPerformanceData
-import com.tokopedia.analytics.performance.fpi.FragmentFramePerformanceIndexMonitoring
-import com.tokopedia.analytics.performance.fpi.FragmentFramePerformanceIndexMonitoring.OnFrameListener
-import com.tokopedia.analytics.performance.perf.PerformanceTrace
+import com.tokopedia.analytics.performance.perf.*
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -68,6 +61,7 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBann
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerImpression
 import com.tokopedia.home.analytics.v2.BestSellerWidgetTracker
 import com.tokopedia.home.analytics.v2.LegoBannerTracking
+import com.tokopedia.home.analytics.v2.LoginWidgetTracking
 import com.tokopedia.home.analytics.v2.PopularKeywordTracking
 import com.tokopedia.home.analytics.v2.RecommendationListTracking
 import com.tokopedia.home.beranda.data.model.HomeChooseAddressData
@@ -111,6 +105,7 @@ import com.tokopedia.home.beranda.presentation.view.helper.isSubscriptionCoachma
 import com.tokopedia.home.beranda.presentation.view.helper.setHomeTokonowCoachmarkShown
 import com.tokopedia.home.beranda.presentation.view.helper.setSubscriptionCoachmarkShown
 import com.tokopedia.home.beranda.presentation.view.listener.BannerComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.BestSellerWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CMHomeWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CampaignWidgetComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CarouselPlayWidgetCallback
@@ -121,7 +116,6 @@ import com.tokopedia.home.beranda.presentation.view.listener.DynamicIconComponen
 import com.tokopedia.home.beranda.presentation.view.listener.DynamicLegoBannerComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.FeaturedShopComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.FlashSaleWidgetCallback
-import com.tokopedia.home.beranda.presentation.view.listener.FramePerformanceIndexInterface
 import com.tokopedia.home.beranda.presentation.view.listener.HomeComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.HomePayLaterWidgetListener
 import com.tokopedia.home.beranda.presentation.view.listener.HomeReminderWidgetCallback
@@ -196,6 +190,7 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -249,7 +244,6 @@ open class HomeRevampFragment :
     HomeFeedsListener,
     HomeReviewListener,
     PopularKeywordListener,
-    FramePerformanceIndexInterface,
     PlayWidgetListener,
     RecommendationWidgetListener,
     CMHomeWidgetCallback,
@@ -261,6 +255,7 @@ open class HomeRevampFragment :
         private const val DEFAULT_WALLET_APPLINK_REQUEST_CODE = 111
         private const val REQUEST_CODE_LOGIN_STICKY_LOGIN = 130
         private const val REQUEST_CODE_LOGIN = 131
+        private const val REQUEST_CODE_LOGIN_WIDGET_LOGIN = 133
         private const val REQUEST_CODE_REVIEW = 999
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
         private const val REVIEW_CLICK_AT = "rating"
@@ -290,7 +285,6 @@ open class HomeRevampFragment :
         private const val EMPTY_TIME_MILLIS = 0L
         private const val MONTH_DAY_COUNT = 30
         private const val TIME_MILLIS_MINUTE = 60000
-        private const val PAGE_NAME_FPI_HOME = "home"
         private const val COACHMARK_FIRST_INDEX = 0
         private const val HOME_HEADER_POSITION = 0
         private const val VIEW_DEFAULT_HEIGHT = 0f
@@ -312,7 +306,6 @@ open class HomeRevampFragment :
         private const val DEFAULT_MARGIN_VALUE = 0
         private const val POSITION_ARRAY_Y = 1
         private const val isPageRefresh = true
-        private const val PERFORMANCE_TRACE_HOME = "home"
 
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
@@ -388,7 +381,6 @@ open class HomeRevampFragment :
     private var isLightThemeStatusBar = false
     private val impressionScrollListeners: MutableMap<String, RecyclerView.OnScrollListener> = HashMap()
     private var mLastClickTime = System.currentTimeMillis()
-    private val fragmentFramePerformanceIndexMonitoring = FragmentFramePerformanceIndexMonitoring()
     private var pageLoadTimeCallback: PageLoadTimePerformanceInterface? = null
     private var isOnRecyclerViewLayoutAdded = false
     private var fragmentCreatedForFirstTime = false
@@ -416,7 +408,7 @@ open class HomeRevampFragment :
 
     private val navToolbarMicroInteraction: NavToolbarMicroInteraction? by navToolbarMicroInteraction()
 
-    private val performanceTrace = PerformanceTrace(PERFORMANCE_TRACE_HOME)
+    private var performanceTrace: BlocksPerformanceTrace? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -424,6 +416,7 @@ open class HomeRevampFragment :
         mainParentStatusBarListener = context as MainParentStatusBarListener
         homePerformanceMonitoringListener = castContextToHomePerformanceMonitoring(context)
         homeCoachmarkListener = castContextToHomeCoachmarkListener(context)
+        performanceTrace = homePerformanceMonitoringListener?.blocksPerformanceMonitoring
         requestStatusBarDark()
     }
 
@@ -555,6 +548,7 @@ open class HomeRevampFragment :
     private fun castContextToHomeCoachmarkListener(context: Context): HomeCoachmarkListener? =
         if (context is HomeCoachmarkListener) context else null
 
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         BenchmarkHelper.beginSystraceSection(TRACE_INFLATE_HOME_FRAGMENT)
         isUsingNewPullRefresh = isUseNewPullRefresh()
@@ -564,18 +558,8 @@ open class HomeRevampFragment :
             false
         )
         BenchmarkHelper.endSystraceSection()
-        fragmentFramePerformanceIndexMonitoring.init(
-            PAGE_NAME_FPI_HOME,
-            this,
-            object : OnFrameListener {
-                override fun onFrameRendered(fpiPerformanceData: FpiPerformanceData) {}
-            }
-        )
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            viewLifecycleOwner.lifecycle.addObserver(fragmentFramePerformanceIndexMonitoring)
-        }
         navToolbar = view.findViewById(R.id.navToolbar)
-
+        performanceTrace?.addViewPerformanceBlocks(navToolbar)
         statusBarBackground = view.findViewById(R.id.status_bar_bg)
         homeRecyclerView = view.findViewById(R.id.home_fragment_recycler_view)
         homeRecyclerView?.setHasFixedSize(true)
@@ -618,7 +602,7 @@ open class HomeRevampFragment :
                 )
             )
             val icons = IconBuilder(
-                IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME)
+                IconBuilderFlag(pageSource = NavSource.HOME)
             ).addIcon(getInboxIcon()) {}
             icons.addIcon(IconList.ID_NOTIFICATION) {}
             icons.apply {
@@ -637,7 +621,6 @@ open class HomeRevampFragment :
             refreshLayoutOld = view.findViewById(R.id.home_swipe_refresh_layout)
         }
 
-        stickyLoginView = view.findViewById(R.id.sticky_login_text)
         root = view.findViewById(R.id.root)
         if (arguments != null) {
             scrollToRecommendList = requireArguments().getBoolean(SCROLL_RECOMMEND_LIST)
@@ -867,7 +850,7 @@ open class HomeRevampFragment :
     private fun setupStatusBar() {
         activity?.let {
             statusBarBackground.background = ColorDrawable(
-                ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
             )
         }
         // status bar background compability, we show view background for android >= Kitkat
@@ -962,19 +945,27 @@ open class HomeRevampFragment :
         }
     }
 
-    override fun goToLogin() {
+    override fun onLoginWidgetClick() {
+        LoginWidgetTracking.sendLoginClick()
+        goToLogin(REQUEST_CODE_LOGIN_WIDGET_LOGIN)
+    }
+
+    fun goToLogin(requestCode: Int) {
         context?.let {
             val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
-            startActivityForResult(intent, REQUEST_CODE_LOGIN_STICKY_LOGIN)
+            startActivityForResult(intent, requestCode)
         }
     }
 
     private fun initStickyLogin() {
+        stickyLoginView = if(!HomeRollenceController.isUsingAtf2Variant())
+            view?.findViewById(R.id.sticky_login_text) else null
+        if(stickyLoginView == null) return
         stickyLoginView?.page = StickyLoginConstant.Page.HOME
         stickyLoginView?.lifecycleOwner = viewLifecycleOwner
         stickyLoginView?.setStickyAction(object : StickyLoginAction {
             override fun onClick() {
-                goToLogin()
+                goToLogin(REQUEST_CODE_LOGIN_STICKY_LOGIN)
             }
 
             override fun onDismiss() {
@@ -1072,6 +1063,7 @@ open class HomeRevampFragment :
         if (activityStateListener != null) {
             activityStateListener!!.onPause()
         }
+        performanceTrace?.finishOnPaused()
     }
 
     override fun onStop() {
@@ -1200,26 +1192,26 @@ open class HomeRevampFragment :
                         hideLoading()
                         showNetworkError(getErrorStringWithDefault(throwable))
                         onPageLoadTimeEnd()
-                        performanceTrace.setPageState(PerformanceTrace.STATE_PARTIALLY_ERROR)
+                        performanceTrace?.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_PARTIALLY_ERROR)
                     }
                     status === Result.Status.ERROR_PAGINATION -> {
                         hideLoading()
                         showNetworkError(getErrorStringWithDefault(throwable))
-                        performanceTrace.setPageState(PerformanceTrace.STATE_PARTIALLY_ERROR)
+                        performanceTrace?.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_PARTIALLY_ERROR)
                     }
                     status === Result.Status.ERROR_ATF -> {
                         hideLoading()
                         showNetworkError(getErrorStringWithDefault(throwable))
                         adapter?.resetChannelErrorState()
                         adapter?.resetAtfErrorState()
-                        performanceTrace.setPageState(PerformanceTrace.STATE_PARTIALLY_ERROR)
+                        performanceTrace?.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_PARTIALLY_ERROR)
                     }
                     status == Result.Status.ERROR_GENERAL -> {
                         val errorString = getErrorStringWithDefault(throwable)
                         showNetworkError(errorString)
                         NetworkErrorHelper.showEmptyState(activity, root, errorString) { onRefresh() }
                         onPageLoadTimeEnd()
-                        performanceTrace.cancelPerformanceTrace(PerformanceTrace.STATE_ERROR)
+                        performanceTrace?.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_ERROR)
                     }
                     else -> {
                         showLoading()
@@ -1320,11 +1312,6 @@ open class HomeRevampFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        performanceTrace.init(
-            v = view.rootView,
-            scope = this.lifecycleScope,
-            touchListenerActivity = activity as? TouchListenerActivity
-        )
         observeSearchHint()
     }
 
@@ -1343,7 +1330,7 @@ open class HomeRevampFragment :
                 visitableListCount = data.size,
                 scrollPosition = layoutManager?.findLastVisibleItemPosition()
             )
-            performanceTrace.setLoadableComponentList(data)
+            performanceTrace?.setBlock(data)
             adapter?.submitList(data)
         }
     }
@@ -1482,7 +1469,8 @@ open class HomeRevampFragment :
             LegoProductCallback(this),
             TodoWidgetComponentCallback(this, getHomeViewModel()),
             FlashSaleWidgetCallback(this),
-            CarouselPlayWidgetCallback(getTrackingQueueObj(), userSession, this)
+            CarouselPlayWidgetCallback(getTrackingQueueObj(), userSession, this),
+            BestSellerWidgetCallback(context, this, getHomeViewModel()),
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
             .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -1690,7 +1678,8 @@ open class HomeRevampFragment :
                     it.finish()
                 }
             }
-            REQUEST_CODE_LOGIN_STICKY_LOGIN -> {
+            REQUEST_CODE_LOGIN_STICKY_LOGIN,
+            REQUEST_CODE_LOGIN_WIDGET_LOGIN -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val isSuccessRegister = data.getBooleanExtra(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, false)
                     if (isSuccessRegister && getUserSession().isLoggedIn) {
@@ -2337,7 +2326,6 @@ open class HomeRevampFragment :
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         userVisibleHint = !hidden
-        fragmentFramePerformanceIndexMonitoring.onFragmentHidden(hidden)
     }
 
     override fun hideEggOnScroll() {
@@ -2502,10 +2490,6 @@ open class HomeRevampFragment :
             pageLoadTimeCallback = homePerformanceMonitoringListener?.pageLoadTimePerformanceInterface
         }
         return pageLoadTimeCallback
-    }
-
-    override fun getFramePerformanceIndexData(): FragmentFramePerformanceIndexMonitoring {
-        return fragmentFramePerformanceIndexMonitoring
     }
 
     override fun onDetach() {

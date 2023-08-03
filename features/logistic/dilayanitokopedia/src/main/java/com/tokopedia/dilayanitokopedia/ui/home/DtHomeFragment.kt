@@ -17,7 +17,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalDilayaniTokopedia.DILAYANI_TOKOPEDIA_DISCOVERY_PAGENAME
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -75,6 +74,7 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -308,7 +308,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     }
 
     private fun setIconNewTopNavigation() {
-        val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME)).addIcon(
+        val icons = IconBuilder(IconBuilderFlag(pageSource = NavSource.DT)).addIcon(
             IconList.ID_SHARE,
             onClick = ::onClickShareButton,
             disableDefaultGtmTracker = true

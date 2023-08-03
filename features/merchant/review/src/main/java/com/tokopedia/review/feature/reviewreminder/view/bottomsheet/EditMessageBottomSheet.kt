@@ -103,7 +103,7 @@ class EditMessageBottomSheet(
             private var currentTagIndex = -1
             private var haveSpan = true
 
-            private val greenSpan = ForegroundColorSpan(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
+            private val greenSpan = ForegroundColorSpan(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500))
             private val errorMessage = getString(R.string.review_reminder_bottom_sheet_edit_message_error_message)
 
             override fun afterTextChanged(p0: Editable?) {

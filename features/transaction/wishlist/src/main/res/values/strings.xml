@@ -3,8 +3,9 @@
     <string name="page_name_wishlist">Wishlist</string>
     <string name="page_name_wishlist_collection">Wishlist Collection</string>
     <string name="page_name_wishlist_collection_detail">Wishlist Collection Detail</string>
-    <string name="page_name_wishlist_edit">Ubah Wishlist</string>
+    <string name="page_name_wishlist_edit">Ubah Koleksi</string>
     <string name="page_name_wishlist_collection_host_bottomsheet">Wishlist Collection Host BottomSheet Activity</string>
+    <string name="page_name_wishlist_collection_create_host_bottomsheet">Wishlist Collection Create Host BottomSheet Activity</string>
     <string name="content_desc_wishlist_checkbox">checkbox pilih wishlist</string>
     <string name="hint_cari_wishlist">Cari di Wishlist</string>
     <string name="error_message_minimum_search_keyword">Masukkan min. 1 karakter di kolom pencarian.</string>

@@ -10,6 +10,7 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toAmountString
@@ -79,7 +80,6 @@ import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play_common.websocket.WebSocketClosedReason
 import com.tokopedia.play_common.websocket.WebSocketResponse
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
@@ -1011,9 +1011,7 @@ class PlayViewModel @AssistedInject constructor(
             ClickLikeAction -> handleClickLike(isFromLogin = false)
             RefreshLeaderboard -> handleRefreshLeaderboard()
             RetryGetTagItemsAction -> handleRetryGetTagItems()
-            CopyLinkAction -> handleCopyLink()
-            ClickShareAction -> handleClickShareIcon()
-            ShowShareExperienceAction -> handleOpenSharingOption(false)
+            ClickShareAction -> handleOpenSharingOption(false)
             ScreenshotTakenAction -> handleOpenSharingOption(true)
             is CloseSharingOptionAction -> handleCloseSharingOption(action.isScreenshotBottomSheet)
             is ClickSharingOptionAction -> handleSharingOption(action.shareModel, action.isScreenshotBottomSheet)
@@ -1070,7 +1068,7 @@ class PlayViewModel @AssistedInject constructor(
                 viewModelScope.launch {
                     _uiEvent.emit(CommentVisibilityEvent(action.isOpen))
                 }
-                if(!action.isOpen) return
+                if (!action.isOpen) return
                 updateCommentConfig()
             }
             is ShowVariantAction -> handleAtcVariant(action.product, action.forcePushTop)
@@ -2372,22 +2370,9 @@ class PlayViewModel @AssistedInject constructor(
         updateTagItems()
     }
 
-    private fun handleCopyLink() {
-        viewModelScope.launch { copyLink() }
-    }
-
-    private fun handleClickShareIcon() {
-        viewModelScope.launch {
-            playAnalytic.clickShareButton(channelId, partnerId, channelType.value)
-
-            _uiEvent.emit(
-                SaveTemporarySharingImage(imageUrl = _channelDetail.value.channelInfo.coverUrl)
-            )
-        }
-    }
-
     private fun handleOpenSharingOption(isScreenshot: Boolean) {
         viewModelScope.launch {
+            playAnalytic.clickShareButton(channelId, partnerId, channelType.value)
             if (playShareExperience.isCustomSharingAllow()) {
                 if (isScreenshot) {
                     playAnalytic.takeScreenshotForSharing(channelId, partnerId, channelType.value)
@@ -2876,7 +2861,7 @@ class PlayViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             val response = repo.getCountComment(channelId)
             _channelDetail.update { it.copy(commentConfig = response) }
-        }){}
+        }) {}
     }
     private fun handleEmptyExplore() {
         val position = _exploreWidget.value.chips.items.indexOfFirst { it.isSelected }
@@ -2946,7 +2931,6 @@ class PlayViewModel @AssistedInject constructor(
         private const val DURATION_DIVIDER = 1000
         private const val REMINDER_JOB_ID = "RJ"
         private const val SUBSCRIBE_AWAY_THRESHOLD = 5000L
-        private val defaultSharingStarted = SharingStarted.WhileSubscribed(SUBSCRIBE_AWAY_THRESHOLD)
 
         private const val FOLLOW_POP_UP_ID = "FOLLOW_POP_UP"
         private const val ONBOARDING_COACHMARK_ID = "ONBOARDING_COACHMARK"

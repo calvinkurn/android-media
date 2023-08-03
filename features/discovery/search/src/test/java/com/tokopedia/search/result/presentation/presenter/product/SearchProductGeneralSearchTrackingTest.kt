@@ -38,6 +38,9 @@ private const val withRedirection = "${generalSearchTrackingDirectory}with-redir
 private const val withGlobalNav = "${generalSearchTrackingDirectory}with-global-nav.json"
 private const val withGlobalNavEmptySource =
     "${generalSearchTrackingDirectory}with-global-nav-empty-source.json"
+private const val responseCode15RequestTimeoutProducts =
+    "${generalSearchTrackingDirectory}response-code-15-timeout-product.json"
+private const val REQUEST_TIMEOUT_RESPONSE_CODE = "15"
 
 internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTestFixtures() {
 
@@ -504,6 +507,38 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             isResultFound = true.toString(),
             categoryIdMapping = "1759,1758",
             categoryNameMapping = "Fashion Pria,Fashion Wanita",
+            relatedKeyword = "$NONE - $NONE",
+            pageSource = pageSource,
+            searchFilter = searchProductModel.backendFilters,
+            componentId = searchProductModel.searchProduct.header.componentId,
+            externalReference = "",
+        )
+
+        `Test General Search Tracking`(
+            searchProductModel,
+            expectedGeneralSearchTrackingModel,
+        )
+    }
+
+    @Test
+    fun `General search tracking with response code 15`() {
+        val searchProductModel = responseCode15RequestTimeoutProducts.jsonToObject<SearchProductModel>()
+        val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
+            eventCategory = SearchEventTracking.Category.EVENT_TOP_NAV,
+            eventLabel = String.format(
+                SearchEventTracking.Label.GENERAL_SEARCH_EVENT_LABEL,
+                keyword,
+                searchProductModel.searchProduct.header.keywordProcess,
+                REQUEST_TIMEOUT_RESPONSE_CODE,
+                NONE,
+                NONE,
+                NONE,
+                searchProductModel.searchProduct.header.totalData,
+            ),
+            userId = userId,
+            isResultFound = false.toString(),
+            categoryIdMapping = "",
+            categoryNameMapping = "",
             relatedKeyword = "$NONE - $NONE",
             pageSource = pageSource,
             searchFilter = searchProductModel.backendFilters,

@@ -12,28 +12,27 @@
         android:layout_width="match_parent"
         android:layout_height="32dp" />
 
-    <com.tokopedia.header.HeaderUnify
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/sahToolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/statusBarBackground"
-        android:minHeight="?attr/actionBarSize"
-        app:unify_header_is_show_back_button="false" />
+        android:layout_height="@dimen/sah_toolbar_height"
+        android:layout_below="@id/statusBarBackground"/>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <FrameLayout
         android:id="@+id/sahContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/sahBottomNav"
-        android:layout_below="@id/sahToolbar"
+        android:layout_below="@id/statusBarShadow"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/statusBarShadow"
         android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_below="@id/statusBarBackground"
-        android:background="@drawable/sah_shadow" />
+        android:layout_height="1.6dp"
+        android:layout_below="@id/sahToolbar"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
     <View
         android:id="@+id/navBarShadow"
@@ -48,7 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        app:buttonColor="@color/Unify_N500"
+        app:buttonColor="@color/Unify_NN600"
         app:buttonsHeight="56dp"
         app:offscreenPageLimit="4"
         app:setViewPagerSwipeable="false"

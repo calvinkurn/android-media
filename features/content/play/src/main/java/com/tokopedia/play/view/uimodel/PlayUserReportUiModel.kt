@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.uimodel
 
-import com.tokopedia.play.data.UserReportOptions
+import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
+import com.tokopedia.content.common.report_content.model.UserReportOptions
 import com.tokopedia.play_common.model.result.ResultState
 
 /**

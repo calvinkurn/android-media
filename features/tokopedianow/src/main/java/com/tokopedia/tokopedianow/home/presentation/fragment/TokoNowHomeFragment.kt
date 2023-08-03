@@ -21,7 +21,6 @@ import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.dialog.DialogUnify
@@ -64,6 +63,7 @@ import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -470,7 +470,10 @@ class TokoNowHomeFragment :
 
     override fun onShareBtnReferralSenderClicked(referral: HomeSharingReferralWidgetUiModel) {
         setupReferralData(referral)
-        showUniversalShareBottomSheet(shareHomeTokonow)
+        showUniversalShareBottomSheet(
+            shareHomeTokonow = shareHomeTokonow,
+            isEnableAffiliate = false
+        )
         trackClickShareSenderReferralWidget(referral)
     }
 
@@ -815,7 +818,7 @@ class TokoNowHomeFragment :
     }
 
     private fun setIconNewTopNavigation() {
-        val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
+        val icons = IconBuilder(IconBuilderFlag(pageSource = NavSource.TOKONOW))
             .addIcon(IconList.ID_SHARE, onClick = ::onClickShareButton, disableDefaultGtmTracker = true)
             .addIcon(IconList.ID_CART, onClick = ::onClickCartButton)
             .addIcon(IconList.ID_NAV_GLOBAL) {}
@@ -823,7 +826,7 @@ class TokoNowHomeFragment :
     }
 
     private fun setIconOldTopNavigation() {
-        val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
+        val icons = IconBuilder(IconBuilderFlag(pageSource = NavSource.TOKONOW))
             .addIcon(IconList.ID_SHARE, onClick = ::onClickShareButton, disableDefaultGtmTracker = true)
             .addIcon(IconList.ID_CART, onClick = ::onClickCartButton)
         navToolbar?.setIcon(icons)
@@ -1813,14 +1816,17 @@ class TokoNowHomeFragment :
             .isNotEmpty()
     }
 
-    private fun showUniversalShareBottomSheet(shareHomeTokonow: ShareTokonow?, path: String? = null) {
+    private fun showUniversalShareBottomSheet(
+        shareHomeTokonow: ShareTokonow?,
+        path: String? = null,
+        isEnableAffiliate: Boolean = isEnableAffiliate()
+    ) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             setFeatureFlagRemoteConfigKey()
             path?.let {
                 setImageOnlySharingOption(true)
                 setScreenShotImagePath(path)
             }
-            val shareInput = viewModelTokoNow.getAffiliateShareInput()
 
             init(this@TokoNowHomeFragment)
             setUtmCampaignData(
@@ -1836,7 +1842,8 @@ class TokoNowHomeFragment :
             // set the Image Url of the Image that represents page
             setOgImageUrl(imgUrl = shareHomeTokonow?.ogImageUrl.orEmpty())
 
-            if (isEnableAffiliate()) {
+            if (isEnableAffiliate) {
+                val shareInput = viewModelTokoNow.getAffiliateShareInput()
                 enableAffiliateCommission(shareInput)
             }
         }

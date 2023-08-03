@@ -56,7 +56,7 @@ class ContentPreviewBottomSheet: BottomSheetUnify() {
             val actionIconParam = getIconUnifyDrawable(ctx, IconUnify.COPY)
             setAction(actionIconParam) {
                 DbExplorerHelper.copyToClipBoard(ctx, tvCellContent.text?.toString() ?: "")
-                tvCellContent.setTextColor(MethodChecker.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                tvCellContent.setTextColor(MethodChecker.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
             }
         }
     }

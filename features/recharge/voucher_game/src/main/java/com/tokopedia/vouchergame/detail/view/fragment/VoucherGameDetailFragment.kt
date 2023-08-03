@@ -539,7 +539,7 @@ class VoucherGameDetailFragment :
         context?.run {
             if (value) {
                 binding?.inputFieldLabel?.text = getString(R.string.vg_input_field_error_message)
-                binding?.inputFieldLabel?.setTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_R600))
+                binding?.inputFieldLabel?.setTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_RN500))
             } else {
                 binding?.inputFieldLabel?.visibility = View.GONE
             }

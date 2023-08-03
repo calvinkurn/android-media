@@ -34,7 +34,7 @@
             android:layout_marginStart="5dp"
             android:layout_weight="0.9"
             android:gravity="center_vertical"
-            android:textColor="@color/Unify_N700"
+            android:textColor="@color/Unify_NN950"
             android:textSize="14sp"
             app:typographyType="paragraph_2"
             app:typographyWeight="bold"
@@ -85,7 +85,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="3dp"
                 android:text="@string/shop_shipping_additional_option"
-                android:textColor="@color/Unify_G700"
+                android:textColor="@color/Unify_GN700"
                 android:textSize="16dp" />
         </LinearLayout>
     </LinearLayout>

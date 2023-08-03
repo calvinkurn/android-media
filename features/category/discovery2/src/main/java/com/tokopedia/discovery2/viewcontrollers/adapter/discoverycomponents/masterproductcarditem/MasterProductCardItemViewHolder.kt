@@ -281,13 +281,13 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                 it.text = notifyText
                 if (notifyMeStatus == true) {
                     it.apply {
-                        setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                        setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
                         buttonVariant = UnifyButton.Variant.GHOST
                         buttonType = UnifyButton.Type.ALTERNATE
                     }
                 } else {
                     it.apply {
-                        setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                        setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500))
                         buttonVariant = UnifyButton.Variant.GHOST
                         buttonType = UnifyButton.Type.MAIN
                     }

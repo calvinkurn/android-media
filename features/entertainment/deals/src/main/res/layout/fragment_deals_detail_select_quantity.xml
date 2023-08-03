@@ -11,7 +11,7 @@
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Unify_N0">
+        android:background="@color/Unify_NN0">
 
         <com.tokopedia.header.HeaderUnify
             android:id="@+id/toolbar"
@@ -53,7 +53,7 @@
                 android:layout_marginRight="16dp"
                 android:includeFontPadding="false"
                 android:maxLines="3"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:layout_constraintLeft_toRightOf="@+id/iv_brand"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/iv_brand"
@@ -67,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:includeFontPadding="false"
-                android:textColor="@color/Unify_N700_44"
+                android:textColor="@color/Unify_NN950_44"
                 app:layout_constraintLeft_toLeftOf="@+id/tg_deal_details"
                 app:layout_constraintTop_toBottomOf="@+id/tg_deal_details"
                 app:typographyType="display_2"
@@ -79,7 +79,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="16dp"
-                android:background="@color/Unify_N75"
+                android:background="@color/Unify_NN50"
                 app:layout_constraintTop_toBottomOf="@+id/iv_brand" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -89,7 +89,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/deals_pdp_text_purchase_detail"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/divider1"
                 app:typographyType="heading_3"
@@ -102,7 +102,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/deals_pdp_deal_quantity"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tg_purchase_details"
                 app:typographyType="display_3" />
@@ -127,7 +127,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/deals_pdp_price"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tg_quantity"
                 app:typographyType="display_3" />
@@ -138,7 +138,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:gravity="end"
-                android:textColor="@color/Unify_N700_32"
+                android:textColor="@color/Unify_NN950_32"
                 app:layout_constraintBottom_toBottomOf="@id/tg_price"
                 app:layout_constraintRight_toLeftOf="@+id/tg_sales_price"
                 app:layout_constraintTop_toTopOf="@id/tg_price"
@@ -152,7 +152,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:includeFontPadding="false"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:layout_constraintBottom_toBottomOf="@id/tg_price"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tg_price"
@@ -164,7 +164,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="16dp"
-                android:background="@color/Unify_N75"
+                android:background="@color/Unify_NN50"
                 app:layout_constraintTop_toBottomOf="@+id/tg_sales_price" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -174,7 +174,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/deals_pdp_total_amount"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/divider5"
                 app:typographyType="heading_3"
@@ -187,7 +187,7 @@
                 android:layout_marginTop="2dp"
                 android:layout_marginEnd="16dp"
                 android:includeFontPadding="false"
-                android:textColor="@color/Unify_Y500"
+                android:textColor="@color/Unify_YN500"
                 app:layout_constraintBottom_toBottomOf="@id/tg_total_payment"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tg_total_payment"
@@ -213,7 +213,7 @@
         android:id="@+id/progress_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Unify_N700_20"
+        android:background="@color/Unify_NN950_20"
         android:clickable="true"
         android:focusable="true"
         android:visibility="gone">

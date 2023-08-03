@@ -3,6 +3,7 @@ package com.tokopedia.rechargeocr
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -132,28 +133,36 @@ class RechargeCameraFragment : BaseDaggerFragment() {
 
     private fun getPermissionCamera() {
         activity?.let {
-            permissionCheckerHelper.checkPermissions(
-                it,
-                arrayOf(
-                    PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
-                    PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE
-                ),
-                object : PermissionCheckerHelper.PermissionCheckListener {
-                    override fun onPermissionDenied(permissionText: String) {
-                        permissionCheckerHelper.onPermissionDenied(it, permissionText)
-                    }
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                permissionCheckerHelper.checkPermissions(
+                    it,
+                    arrayOf(
+                        PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
+                        PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE
+                    ),
+                    object : PermissionCheckerHelper.PermissionCheckListener {
+                        override fun onPermissionDenied(permissionText: String) {
+                            permissionCheckerHelper.onPermissionDenied(it, permissionText)
+                        }
 
-                    override fun onNeverAskAgain(permissionText: String) {
-                        permissionCheckerHelper.onNeverAskAgain(it, permissionText)
-                    }
+                        override fun onNeverAskAgain(permissionText: String) {
+                            permissionCheckerHelper.onNeverAskAgain(it, permissionText)
+                        }
 
-                    override fun onPermissionGranted() {
-                        binding?.fullCameraView?.takePicture()
-                    }
-                },
-                ""
-            )
+                        override fun onPermissionGranted() {
+                            takePicture()
+                        }
+                    },
+                    ""
+                )
+            } else {
+                takePicture()
+            }
         }
+    }
+
+    private fun takePicture() {
+        binding?.fullCameraView?.takePicture()
     }
 
     fun saveToFile(imageByte: ByteArray) {

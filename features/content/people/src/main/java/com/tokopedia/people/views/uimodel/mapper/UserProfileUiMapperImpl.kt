@@ -31,6 +31,7 @@ import com.tokopedia.people.model.ExtraStats
 import com.tokopedia.people.model.GetUserReviewListResponse
 import com.tokopedia.people.model.SetLikeStatusResponse
 import com.tokopedia.people.model.GetProfileSettingsResponse
+import com.tokopedia.people.utils.remoteconfig.UserProfileRemoteConfig
 import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -41,6 +42,7 @@ import javax.inject.Inject
 class UserProfileUiMapperImpl @Inject constructor(
     private val userSession: UserSessionInterface,
     private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
+    private val userProfileRemoteConfig: UserProfileRemoteConfig,
 ) : UserProfileUiMapper {
 
     override fun mapUserProfile(response: ProfileHeaderBase): ProfileUiModel {
@@ -125,7 +127,11 @@ class UserProfileUiMapperImpl @Inject constructor(
     override fun mapProfileTab(response: UserProfileTabModel): ProfileTabUiModel {
         return with(response.feedXProfileTabs) {
             val expectedTabs = tabs.filter {
-                it.isActive && ProfileTabUiModel.mapToKey(it.key) != ProfileTabUiModel.Key.Unknown
+                if (ProfileTabUiModel.mapToKey(it.key) == ProfileTabUiModel.Key.Review) {
+                    it.isActive && userProfileRemoteConfig.isEnableReviewTab()
+                } else {
+                    it.isActive && ProfileTabUiModel.mapToKey(it.key) != ProfileTabUiModel.Key.Unknown
+                }
             }
             ProfileTabUiModel(
                 showTabs = expectedTabs.size > 1,

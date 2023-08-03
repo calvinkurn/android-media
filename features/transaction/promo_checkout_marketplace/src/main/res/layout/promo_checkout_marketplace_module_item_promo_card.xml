@@ -21,6 +21,36 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container_promo_loading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:visibility="gone"
+            tools:visibility="gone">
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/promo_loader_1"
+                android:layout_width="0dp"
+                android:layout_height="12dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.8"
+                app:loader_type="line" />
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/promo_loader_2"
+                android:layout_width="0dp"
+                android:layout_height="12dp"
+                android:layout_marginTop="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/promo_loader_1"
+                app:layout_constraintWidth_percent="0.6"
+                app:loader_type="line" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/container_constraint_promo_checkout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -71,7 +101,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/spacing_lvl2"
                     android:gravity="center_vertical"
-                    android:textColor="@color/Unify_N700_96"
+                    android:textColor="@color/Unify_NN950_96"
                     app:typographyType="heading_5"
                     tools:text="Cashback Rp100.000" />
 
@@ -81,7 +111,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="12dp"
                     android:gravity="center_vertical"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     app:typographyType="body_3"
                     tools:text="(100.000 GoPay Coins)" />
 
@@ -94,7 +124,7 @@
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="4dp"
                 android:text="@string/label_prefix_attempted_promo_code"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/container_promo_title"
                 app:typographyType="body_3"
@@ -104,7 +134,7 @@
                 android:id="@+id/text_promo_code"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:layout_constraintBottom_toBottomOf="@+id/text_promo_code_info"
                 app:layout_constraintEnd_toStartOf="@+id/image_select_promo"
                 app:layout_constraintStart_toEndOf="@+id/text_promo_code_info"
@@ -147,7 +177,7 @@
                     android:id="@+id/text_time_validity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     app:typographyType="body_3"
                     tools:text="Berakhir 20 menit lagi!" />
 
@@ -167,7 +197,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="4dp"
-                android:background="@color/Unify_N75"
+                android:background="@color/Unify_NN50"
                 app:layout_constraintTop_toBottomOf="@+id/container_time_validity" />
 
             <LinearLayout
@@ -198,7 +228,7 @@
                     android:layout_marginTop="6dp"
                     android:layout_marginBottom="6dp"
                     android:gravity="center_vertical"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     app:typographyType="body_3"
                     tools:text="Khusus Pengguna Baru" />
 
@@ -233,7 +263,7 @@
                     android:layout_marginTop="6dp"
                     android:layout_marginBottom="6dp"
                     android:gravity="center_vertical"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     app:typographyType="body_3"
                     tools:text="Tidak Indonesia Indonesia Indonesia Indonesia Indonesia Indonesia yang dipilih." />
 

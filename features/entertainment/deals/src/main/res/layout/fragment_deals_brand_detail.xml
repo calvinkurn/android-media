@@ -19,9 +19,9 @@
                 android:id="@+id/collapsing_toolbar_brand_detail"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/Unify_N0"
+                android:background="@color/Unify_NN0"
                 android:fitsSystemWindows="true"
-                app:contentScrim="@color/Unify_N0"
+                app:contentScrim="@color/Unify_NN0"
                 app:expandedTitleGravity="center_horizontal|bottom"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
@@ -71,7 +71,7 @@
                             android:layout_marginLeft="@dimen/spacing_lvl4"
                             android:layout_marginTop="@dimen/spacing_lvl4"
                             android:layout_marginRight="@dimen/spacing_lvl4"
-                            android:textColor="@color/Unify_N700_96"
+                            android:textColor="@color/Unify_NN950_96"
                             app:typographyType="heading_2"
                             app:typographyWeight="bold" />
 
@@ -85,7 +85,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_margin="@dimen/spacing_lvl4"
                                 android:maxLines="3"
-                                android:textColor="@color/Unify_N700_68"
+                                android:textColor="@color/Unify_NN950_68"
                                 app:layout_constraintLeft_toLeftOf="parent"
                                 app:layout_constraintRight_toRightOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
@@ -98,7 +98,7 @@
                                 android:layout_marginLeft="@dimen/spacing_lvl4"
                                 android:layout_marginTop="@dimen/spacing_lvl3"
                                 android:text="@string/deals_brand_detail"
-                                android:textColor="@color/Unify_G500"
+                                android:textColor="@color/Unify_GN500"
                                 app:layout_constraintLeft_toLeftOf="parent"
                                 app:layout_constraintRight_toRightOf="parent"
                                 app:layout_constraintTop_toBottomOf="@+id/tg_desc_brand_detail"
@@ -111,7 +111,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="@dimen/spacing_lvl4"
                                 android:layout_marginTop="@dimen/unify_space_12"
-                                android:textColor="@color/Unify_N700_96"
+                                android:textColor="@color/Unify_NN950_96"
                                 app:layout_constraintLeft_toLeftOf="parent"
                                 app:layout_constraintRight_toRightOf="parent"
                                 app:layout_constraintTop_toBottomOf="@+id/tg_desc_brand_detail_more"
@@ -140,7 +140,7 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:background="@color/Unify_N0"
+            android:background="@color/Unify_NN0"
             android:id="@+id/rv_brand_detail"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

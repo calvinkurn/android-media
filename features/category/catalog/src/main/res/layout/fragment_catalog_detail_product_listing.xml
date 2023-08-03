@@ -33,7 +33,7 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         app:sort_filter_relationship="AND"
         app:sort_filter_type="advanced"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_NN0"
         android:visibility="gone" />
 
     <com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget

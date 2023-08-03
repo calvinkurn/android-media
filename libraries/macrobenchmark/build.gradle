@@ -4,6 +4,8 @@ plugins {
 }
 
 android {
+    namespace 'com.tkpd.macrobenchmark'
+    testNamespace 'com.tkpd.macrobenchmark.test'
     compileSdkVersion 33
     defaultConfig {
         minSdkVersion 29

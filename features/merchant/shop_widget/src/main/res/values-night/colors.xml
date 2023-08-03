@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="shop_widget_dms_mvc_locked_to_product_voucher_background_color">@color/Unify_N75</color>
+    <color name="shop_widget_dms_mvc_locked_to_product_voucher_background_color">@color/Unify_NN50</color>
 </resources>

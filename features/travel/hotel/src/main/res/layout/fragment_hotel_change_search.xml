@@ -37,7 +37,7 @@
                 android:layout_marginLeft="@dimen/hotel_3dp"
                 android:text="@string/hotel_homepage_destination"
                 app:typographyType="body_3"
-                android:textColor="@color/Unify_N700_44"/>
+                android:textColor="@color/Unify_NN950_44"/>
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/tv_hotel_homepage_destination"

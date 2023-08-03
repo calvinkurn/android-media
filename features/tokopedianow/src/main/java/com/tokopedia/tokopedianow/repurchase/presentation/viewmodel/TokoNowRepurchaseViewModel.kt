@@ -547,13 +547,12 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         }
     }
 
-    fun onScrollProductList(index: IntArray?, itemCount: Int) {
+    fun onScrollProductList(index: Int?, itemCount: Int) {
         val lastItemIndex = itemCount - 1
-        val containsLastItemIndex = index?.contains(lastItemIndex)
-        val scrolledToLastItem = containsLastItemIndex == true
+        val isLastItemIndex = index == lastItemIndex
         val hasNextPage = productListMeta?.hasNext == true
 
-        if (scrolledToLastItem && hasNextPage) {
+        if (isLastItemIndex && hasNextPage) {
             loadMoreProduct()
         }
     }

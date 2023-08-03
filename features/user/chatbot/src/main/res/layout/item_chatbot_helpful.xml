@@ -30,7 +30,7 @@
         android:paddingRight="24dp"
         android:ellipsize="end"
         android:maxLines="2"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintLeft_toRightOf="@id/chat_rating"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/corner_image"

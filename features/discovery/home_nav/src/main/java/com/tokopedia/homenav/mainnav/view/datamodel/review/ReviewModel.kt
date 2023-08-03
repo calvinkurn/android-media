@@ -11,7 +11,8 @@ import com.tokopedia.kotlin.model.ImpressHolder
 
 @MePage(MePage.Widget.REVIEW)
 data class ReviewModel(
-        val navReviewModel: NavReviewModel
+        val navReviewModel: NavReviewModel,
+        val position: Int
 ): ReviewNavVisitable, ImpressHolder() {
     override fun type(factory: ReviewTypeFactory): Int {
         return factory.type(this)

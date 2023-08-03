@@ -65,7 +65,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @FlowPreview
-class TokoFoodPurchaseViewModel @Inject constructor(
+open class TokoFoodPurchaseViewModel @Inject constructor(
     private val keroEditAddressUseCase: Lazy<KeroEditAddressUseCase>,
     private val keroGetAddressUseCase: Lazy<KeroGetAddressUseCase>,
     private val cartListTokofoodUseCase: Lazy<CheckoutTokoFoodUseCase>,

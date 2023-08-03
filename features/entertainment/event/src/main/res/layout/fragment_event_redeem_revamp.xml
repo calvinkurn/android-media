@@ -35,7 +35,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginBottom="16dp"
                 app:icon_name="CHECK_CIRCLE"
-                app:icon_color_light_enable="@color/Unify_G500"
+                app:icon_color_light_enable="@color/Unify_GN500"
                 />
 
             <com.tokopedia.unifyprinciples.Typography

@@ -52,7 +52,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/login_register_1dp"
                     android:layout_centerVertical="true"
-                    android:background="@color/Unify_N100" />
+                    android:background="@color/Unify_NN200" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/register_option_title"
@@ -63,7 +63,7 @@
                     android:gravity="center"
                     android:padding="@dimen/spacing_lvl4"
                     android:text="@string/register_now"
-                    android:textColor="@color/Unify_N700_32"
+                    android:textColor="@color/Unify_NN950_32"
                     app:typographyType="display_3"
                     app:typographyWeight="reguler" />
             </RelativeLayout>
@@ -87,11 +87,11 @@
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="@dimen/spacing_lvl3"
                 android:layout_marginBottom="@dimen/spacing_lvl3"
-                app:backgroundColor="@color/Unify_N700"
+                app:backgroundColor="@color/Unify_NN950"
                 app:customText="@string/register_with_email"
                 app:iconButton="@drawable/bg_transparent"
                 app:loginTextViewCornerSize="5"
-                app:textColor="@color/Unify_N700_68" />
+                app:textColor="@color/Unify_NN950_68" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/text_term_privacy"
@@ -103,7 +103,7 @@
                 android:gravity="center"
                 android:padding="@dimen/layout_lvl2"
                 app:typographyType="paragraph_3"
-                android:textColor="@color/Unify_N700_32"
+                android:textColor="@color/Unify_NN950_32"
                 android:textSize="@dimen/fontSize_lvl2" />
 
         </LinearLayout>

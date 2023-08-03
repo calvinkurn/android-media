@@ -18,6 +18,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.developer_options'
+    testNamespace 'com.tokopedia.developer_options.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.features.pushNotificationCommon)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
@@ -39,7 +44,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.dataExplorer)
     implementation projectOrAar(rootProject.ext.libraries.pushNotification)
     implementation projectOrAar(rootProject.ext.libraries.utils)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.loginHelper)
     implementation projectOrAar(rootProject.ext.libraries.network)
 

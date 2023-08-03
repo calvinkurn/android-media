@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:background="@color/Unify_N700_68">
+    tools:background="@color/Unify_NN950_68">
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_close_cover_form"

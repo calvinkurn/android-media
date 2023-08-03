@@ -38,9 +38,11 @@ class ShareAddressFromNotifTest {
             launchFrom(mActivityTestRule, "123")
             selectFirstAddress()
             clickShareAddressButton()
+            intendingIntent()
             clickDisagreeButton()
             repo.isValidAddressFromNotif = true
             selectFirstAddress()
+            intendingIntent()
             clickShareAddressButton()
             clickAgreeButton()
         } validateAnalytics {

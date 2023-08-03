@@ -35,6 +35,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/filter_name"
-        android:background="@color/Unify_N700_20"/>
+        android:background="@color/Unify_NN950_20"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
