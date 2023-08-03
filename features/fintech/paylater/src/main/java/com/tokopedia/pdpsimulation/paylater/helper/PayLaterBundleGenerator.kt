@@ -2,6 +2,7 @@ package com.tokopedia.pdpsimulation.paylater.helper
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.pdpsimulation.common.analytics.PayLaterAnalyticsBase
 import com.tokopedia.pdpsimulation.common.analytics.PayLaterBottomSheetImpression
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics
@@ -39,12 +40,17 @@ object PayLaterBundleGenerator {
             if (data.isNotEmpty()) PayLaterHelper.getProductNameList(simulationList) else ""
         val promoName = data.getOrNull(defaultSelectedSimulation)?.promoName.orEmpty()
 
+        val detailWithRate = data[defaultSelectedSimulation].simulationList
+            ?.filterIsInstance<Detail>()?.first { it.previousRate.isNotEmpty() }
+
         return PayLaterAnalyticsBase().apply {
             tenureOption = defaultSelectedSimulation
             action = PdpSimulationAnalytics.IMPRESSION_PAYLATER
             userStatus = userState
             payLaterPartnerName = partnerList
             linkingStatus = linkStatus
+            previousRate = detailWithRate?.previousRate ?: String.EMPTY
+            newRate = detailWithRate?.newRate ?: String.EMPTY
             this.promoName = promoName
         }
 

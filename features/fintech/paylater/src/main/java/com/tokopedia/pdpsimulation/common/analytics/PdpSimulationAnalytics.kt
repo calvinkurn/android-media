@@ -124,12 +124,14 @@ class PdpSimulationAnalytics @Inject constructor(
     @SuppressLint("PII Data Exposure")
     private fun sendPayLaterImpressionEvent(event: PayLaterAnalyticsBase) {
         val label = computeLabel(
+            event.promoName,
+            event.tenureOption.toString(),
+            event.previousRate,
+            event.newRate,
             event.productId,
             event.linkingStatus,
             event.userStatus,
-            event.tenureOption.toString(),
             event.payLaterPartnerName,
-            event.promoName
         )
         val map = TrackAppUtils.gtmData(
             IRIS_EVENT_NAME_FIN_TECH_V3,
@@ -144,15 +146,17 @@ class PdpSimulationAnalytics @Inject constructor(
     private fun sendClickCtaEvent(event: PayLaterCtaClick) {
         val label = computeLabel(
             event.productId,
-            event.linkingStatus,
             event.userStatus,
+            event.linkingStatus,
             event.tenureOption.toString(),
             event.emiAmount,
             event.limit,
             event.redirectLink,
             event.payLaterPartnerName,
             event.ctaWording,
-            event.promoName
+            event.promoName,
+            event.previousRate,
+            event.newRate
         )
         val map = TrackAppUtils.gtmData(
             EVENT_NAME_FIN_TECH,
@@ -229,7 +233,10 @@ class PdpSimulationAnalytics @Inject constructor(
                 pdpSimulationEvent.quantity,
                 pdpSimulationEvent.limit,
                 pdpSimulationEvent.variantName,
-                pdpSimulationEvent.promoName
+                pdpSimulationEvent.promoName,
+                pdpSimulationEvent.productPrice,
+                pdpSimulationEvent.prevRate,
+                pdpSimulationEvent.newRate
             )
             is PdpSimulationEvent.ClickTenureEvent -> sendTenureClickAnalytic(
                 pdpSimulationEvent.productId,
@@ -237,7 +244,9 @@ class PdpSimulationAnalytics @Inject constructor(
                 pdpSimulationEvent.productPrice,
                 pdpSimulationEvent.tenure,
                 pdpSimulationEvent.partnerName,
-                pdpSimulationEvent.promoName
+                pdpSimulationEvent.promoName,
+                pdpSimulationEvent.prevRate,
+                pdpSimulationEvent.newRate
             )
         }
     }
@@ -249,20 +258,23 @@ class PdpSimulationAnalytics @Inject constructor(
         productPrice: String,
         tenure: String,
         partnerName: String,
-        promoName: String
+        promoName: String,
+        prevRate: String,
+        newRate: String,
     ) {
         val map = TrackAppUtils.gtmData(
             CLICK_EVENT_NAME_FIN_TECH_V3,
             OCC_EVENT_CATEGORY,
             OCC_TENURE_OPTION_CLICK,
             computeLabel(
-                productId,
-                "LINKED",
-                userStatus,
-                productPrice,
+                promoName,
                 tenure,
-                partnerName,
-                promoName
+                prevRate,
+                newRate,
+                productId,
+                productPrice,
+                userStatus,
+                partnerName
             )
         )
         sendGeneralEvent(map)
@@ -278,23 +290,28 @@ class PdpSimulationAnalytics @Inject constructor(
         quantity: String,
         limit: String,
         variantName: String,
-        promoName: String
+        promoName: String,
+        productPrice: String,
+        prevRate: String,
+        newRate: String
     ) {
         val map = TrackAppUtils.gtmData(
             CLICK_EVENT_NAME_FIN_TECH_V3,
             CTA_CHECKOUT_EVENT_CATEGORY,
             CTA_CHECKOUT_CLICKED_ACTION,
             computeLabel(
-                productId,
-                userStatus,
-                "LINKED",
-                partnerName,
-                emiAmount,
+                promoName,
                 tenure,
+                prevRate,
+                newRate,
+                productId,
+                productPrice,
+                userStatus,
+                emiAmount,
                 quantity,
                 limit,
                 variantName,
-                promoName
+                partnerName
             )
         )
         sendGeneralEvent(map)

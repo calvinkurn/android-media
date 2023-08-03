@@ -115,6 +115,10 @@ object GetPromoListDataProvider {
         return GSON.fromJson(FILE_UTIL.getJsonFromAsset("assets/coupon_list_recommendation_with_multiple_order_mvc_secondary_promo_response.json"), CouponListRecommendationResponse::class.java)
     }
 
+    fun provideCouponListRecommendationWithSecondaryAndPrimaryRecommendedResponse(): CouponListRecommendationResponse {
+        return GSON.fromJson(FILE_UTIL.getJsonFromAsset("assets/coupon_list_recommendation_with_secondary_and_primary_recommended_response.json"), CouponListRecommendationResponse::class.java)
+    }
+
     fun provideNoCurrentSelectedExpandedGlobalPromoData(): ArrayList<Visitable<*>> {
         val promoListUiModelList = ArrayList<Visitable<*>>()
         val response = provideGetPromoListResponseSuccessAllExpanded()
