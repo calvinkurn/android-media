@@ -17,11 +17,20 @@ data class UniversalEditorParam(
     var proceedButtonText: String = "",
 
     // Editor tool list
-    val tools: @RawValue Map<MediaType, List<Int>> = defaultToolList()
+    val tools: @RawValue Map<MediaType, List<Int>> = defaultToolList(),
+
+    // page source
+    var pageSource: PageSource = PageSource.Unknown
 ) : Parcelable {
 
     @IgnoredOnParcel
     val firstFile = MediaFile(paths.firstOrNull())
+
+    /**
+     * Page source is a mandatory field to detect
+     * the page owner in editor (for tracker purpose).
+     */
+    fun setPageSource(source: PageSource) = apply { pageSource = source }
 
     /**
      * set the list of media files (image or video) to passing

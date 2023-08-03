@@ -442,8 +442,10 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         }
 
         if (param.get().isImmersiveEditorEnabled() && medias.isNotEmpty()) {
+            val files = medias.map { it.getSingleFilePath() }
+
             val intent = UniversalEditor.intent(this) {
-                val files = medias.map { it.file?.path ?: "" }
+                setPageSource(param.get().pageSource())
                 filePaths(files)
             }
 
