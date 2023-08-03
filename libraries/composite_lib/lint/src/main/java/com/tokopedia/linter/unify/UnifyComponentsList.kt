@@ -1,6 +1,5 @@
 package com.tokopedia.linter.unify
 
-
 import com.android.SdkConstants
 import com.tokopedia.linter.LinterConstants
 import com.tokopedia.linter.LinterConstants.Classes.BOTTOM_SHEET_DIALOG
@@ -21,28 +20,24 @@ import com.tokopedia.linter.LinterConstants.UnifyClasses.TYPOGRAPHY
 
 object UnifyComponentsList {
 
-
     val widgetViewMapping = mapOf(
-            SdkConstants.TEXT_VIEW to UnifyMapping(TYPOGRAPHY),
-            SdkConstants.IMAGE_BUTTON to UnifyMapping(IMAGE_BUTTON),
-            SdkConstants.BUTTON to UnifyMapping(BUTTON),
-            SdkConstants.SEARCH_VIEW to UnifyMapping(SEARCH_BAR),
-            SdkConstants.PROGRESS_BAR to UnifyMapping(PROGRESS_BAR)
+        SdkConstants.TEXT_VIEW to UnifyMapping(TYPOGRAPHY),
+        SdkConstants.IMAGE_BUTTON to UnifyMapping(IMAGE_BUTTON),
+        SdkConstants.BUTTON to UnifyMapping(BUTTON),
+        SdkConstants.SEARCH_VIEW to UnifyMapping(SEARCH_BAR),
+        SdkConstants.PROGRESS_BAR to UnifyMapping(PROGRESS_BAR)
     )
 
     fun getUnifyMapping(): Map<String, UnifyMapping> {
         return mapOf(
-                SdkConstants.FLOATING_ACTION_BUTTON.defaultName() to UnifyMapping(LinterConstants.UnifyClasses.FLOATING_BUTTON),
-                FLOATING_ACTION_BUTTON to UnifyMapping(LinterConstants.UnifyClasses.FLOATING_BUTTON),
-                SdkConstants.TAB_LAYOUT.defaultName() to UnifyMapping(TAB),
-                SEARCH_BAR_VIEW to UnifyMapping(SEARCH_BAR),
-                BOTTOM_SHEET_DIALOG to UnifyMapping(BOTTOM_SHEET),
-                LinterConstants.Classes.DATE_PICKER to UnifyMapping(LinterConstants.UnifyClasses.DATE_PICKER),
-                DATE_PICKER_UNIFY to UnifyMapping(LinterConstants.UnifyClasses.DATE_TIME_PICKER_UNIFY),
-                DIALOG_CLASS_NAME to UnifyMapping(DIALOG),
-                SNACK_BAR to UnifyMapping(TOASTER)
-
-
+            FLOATING_ACTION_BUTTON to UnifyMapping(LinterConstants.UnifyClasses.FLOATING_BUTTON),
+            LinterConstants.Classes.TAB_LAYOUT to UnifyMapping(TAB),
+            SEARCH_BAR_VIEW to UnifyMapping(SEARCH_BAR),
+            BOTTOM_SHEET_DIALOG to UnifyMapping(BOTTOM_SHEET),
+            LinterConstants.Classes.DATE_PICKER to UnifyMapping(LinterConstants.UnifyClasses.DATE_PICKER),
+            DATE_PICKER_UNIFY to UnifyMapping(LinterConstants.UnifyClasses.DATE_TIME_PICKER_UNIFY),
+            DIALOG_CLASS_NAME to UnifyMapping(DIALOG),
+            SNACK_BAR to UnifyMapping(TOASTER)
         )
     }
 
@@ -438,5 +433,4 @@ object UnifyComponentsList {
         "Unify_N700_96" to "Unify_NN950_96",
         "Unify_N700" to "Unify_NN950"
     )
-
 }

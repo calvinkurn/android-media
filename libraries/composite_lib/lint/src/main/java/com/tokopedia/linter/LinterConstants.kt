@@ -1,6 +1,5 @@
 package com.tokopedia.linter
 
-
 enum class Priority(var value: Int) {
     Low(1),
     Medium(5),
@@ -30,6 +29,9 @@ sealed class LinterConstants {
         const val SEARCH_BAR_VIEW = "com.tokopedia.autocomplete.searchbar.SearchBarView"
         const val SNACK_BAR = "com.google.android.material.snackbar.Snackbar"
         const val CORE_RESOURCES = "com.tokopedia.core.R"
+        const val CONSTRAINT_LAYOUT = "ConstraintLayout"
+        const val CONSTRAINT_LAYOUT_WITH_PACKAGE = "androidx.constraintlayout.widget.$CONSTRAINT_LAYOUT"
+        const val TAB_LAYOUT = "android.support.design.widget.TabLayout"
     }
 
     object UnifyClasses : LinterConstants() {
@@ -56,5 +58,3 @@ sealed class LinterConstants {
         const val TOP_LEFT_RADIUS = "topLeftRadius"
     }
 }
-
-
