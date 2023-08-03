@@ -64,7 +64,7 @@
                 "parentProductID": 0,
                 "discountPercentage": 0,
                 "recommendationType": "",
-                "categoryBreadcrumbs": "",
+                "categoryBreadcrumbs": "cat1 / cat2 / cat3",
                 "productViewCountFormatted": "",
                 "shop": {
                   "id": 0,
@@ -124,7 +124,7 @@
                 "parentProductID": 0,
                 "discountPercentage": 0,
                 "recommendationType": "",
-                "categoryBreadcrumbs": "",
+                "categoryBreadcrumbs": "cat1 / cat2 / cat3",
                 "productViewCountFormatted": "",
                 "shop": {
                   "id": 0,
@@ -255,7 +255,7 @@
                 "parentProductID": 0,
                 "discountPercentage": 12,
                 "recommendationType": "tokocabang",
-                "categoryBreadcrumbs": "Perawatan Tubuh/Perawatan Kulit/Body Lotion",
+                "categoryBreadcrumbs": "Perawatan_Tubuh",
                 "productViewCountFormatted": "",
                 "shop": {
                   "id": 5222533,
@@ -340,7 +340,7 @@
                 "parentProductID": 0,
                 "discountPercentage": 33,
                 "recommendationType": "tokocabang",
-                "categoryBreadcrumbs": "Perawatan Tubuh/Kesehatan Gigi & Mulut/Pasta Gigi",
+                "categoryBreadcrumbs": "Perawatan Tubuh / Kesehatan Gigi & Mulut / Pasta Gigi",
                 "productViewCountFormatted": "",
                 "shop": {
                   "id": 11871050,
@@ -2334,7 +2334,7 @@
                 "parentProductID": 0,
                 "discountPercentage": 31,
                 "recommendationType": "best_seller_v3",
-                "categoryBreadcrumbs": "Makanan & Minuman/Makanan Ringan/Cokelat",
+                "categoryBreadcrumbs": "Makanan & Minuman / Makanan Ringan / Cokelat",
                 "productViewCountFormatted": "",
                 "shop": {
                   "id": 2068287,

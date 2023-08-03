@@ -20,7 +20,7 @@ class DtHomepageRobot {
     }
 
     fun impressFirstWidget() {
-        Espresso.onView(RecyclerViewMatcher(R.id.rv_home).atPosition(0))
+        Espresso.onView(RecyclerViewMatcher(R.id.rv_home).atPositionOnView(1, R.id.rv_product))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
 
