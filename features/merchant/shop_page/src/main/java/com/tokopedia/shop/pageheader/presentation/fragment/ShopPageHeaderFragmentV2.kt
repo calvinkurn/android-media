@@ -2993,14 +2993,14 @@ class ShopPageHeaderFragmentV2 :
         }
     }
 
-    fun selectShopTab(tabName: String) {
+    fun selectShopTab(tabName: String, isScrollToTop: Boolean = false) {
         val selectedTabPosition = getTabPositionBasedOnTabName(tabName)
         viewPager?.setCurrentItem(selectedTabPosition, false)
         tabLayout?.getTabAt(selectedTabPosition)?.select()
-    }
-
-    fun resetSelectedPosition() {
-        viewPagerAdapterHeader?.clearTabData()
+        if(isScrollToTop) {
+            val selectedFragment = viewPagerAdapterHeader?.getRegisteredFragment(viewPager?.currentItem.orZero())
+            (selectedFragment as? ShopPageHeaderFragmentTabContentWrapper)?.scrollToTop()
+        }
     }
 
     override fun onTabFragmentWrapperFinishLoad() {
