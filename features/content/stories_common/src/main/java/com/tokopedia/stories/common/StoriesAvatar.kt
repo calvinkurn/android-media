@@ -12,21 +12,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.clipPath
-import androidx.compose.ui.graphics.drawscope.rotate
-import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,6 +30,7 @@ import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.principles.ui.NestTheme
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -47,45 +42,13 @@ internal fun StoriesAvatarContent(
     imageUrl: String,
     storiesStatus: StoriesStatus,
     modifier: Modifier = Modifier,
-    sizeConfig: StoriesAvatarView.SizeConfiguration = StoriesAvatarView.SizeConfiguration.Default,
+    sizeConfig: StoriesAvatarView.SizeConfiguration = StoriesAvatarView.SizeConfiguration.Default
 ) {
-    val scale = remember { Animatable(0.97f) }
-    val rotation = remember { Animatable(0f) }
-    val dashedAlpha = remember { Animatable(1f) }
+    val animationState = rememberAvatarAnimationState()
 
     LaunchedEffect(storiesStatus) {
         if (storiesStatus != StoriesStatus.HasUnseenStories) return@LaunchedEffect
-
-        scale.animateTo(
-            0.95f, tween(200)
-        )
-
-        val scaleUp = async {
-            scale.animateTo(0.97f, tween(200))
-        }
-        val alphaDashed = async {
-            dashedAlpha.animateTo(0f, tween(200))
-        }
-
-        awaitAll(scaleUp, alphaDashed)
-
-        val fullRotate = async {
-            rotation.animateTo(160f, tween(1200, easing = LinearEasing))
-            rotation.animateTo(360f, tween(600, easing = FastOutLinearInEasing))
-        }
-
-        val opaqueDashed = async {
-            delay(1200)
-            launch {
-                dashedAlpha.animateTo(1f, tween(durationMillis = 400))
-            }
-            launch {
-                scale.animateTo(1f, tween(400))
-                scale.animateTo(0.97f, tween(400))
-            }
-        }
-
-        awaitAll(fullRotate, opaqueDashed)
+        animationState.animate()
     }
 
     NestTheme {
@@ -98,7 +61,7 @@ internal fun StoriesAvatarContent(
                 Modifier
                     .fillMaxSize()
                     .clip(CircleShape)
-                    .storiesBorder(storiesStatus, rotation.value, scale.value, dashedAlpha.value)
+                    .storiesBorder(storiesStatus, animationState.rotation, animationState.scale, animationState.dashedAlpha)
             )
 
             NestImage(
@@ -116,7 +79,7 @@ private fun Modifier.storiesBorder(
     storiesStatus: StoriesStatus,
     rotation: Float,
     scale: Float,
-    dashedAlpha: Float,
+    dashedAlpha: Float
 ): Modifier = this.then(
     drawBehind {
         with(drawContext.canvas.nativeCanvas) {
@@ -130,7 +93,7 @@ private fun Modifier.storiesBorder(
             ) {
                 drawCircle(
                     brush = storiesStatus.brush,
-                    radius = size.width / 2,
+                    radius = size.width / 2
                 )
 
                 repeat(4) {
@@ -156,7 +119,7 @@ private fun Modifier.storiesBorder(
                 drawCircle(
                     color = Color.Gray,
                     radius = size.width / 2 - storiesStatus.borderDp.toPx(),
-                    blendMode = BlendMode.DstOut,
+                    blendMode = BlendMode.DstOut
                 )
             }
 
@@ -164,6 +127,56 @@ private fun Modifier.storiesBorder(
         }
     }
 )
+
+@Composable
+internal fun rememberAvatarAnimationState() = remember { StoriesAvatarAnimationState() }
+
+@Stable
+internal class StoriesAvatarAnimationState {
+
+    private val _scale = Animatable(0.97f)
+    val scale get() = _scale.value
+
+    private val _rotation = Animatable(0f)
+    val rotation get() = _rotation.value
+
+    private val _dashedAlpha = Animatable(1f)
+    val dashedAlpha get() = _dashedAlpha.value
+
+    suspend fun animate() = coroutineScope {
+        _scale.animateTo(
+            0.95f,
+            tween(200)
+        )
+
+        val scaleUp = async {
+            _scale.animateTo(0.97f, tween(200))
+        }
+        val alphaDashed = async {
+            _dashedAlpha.animateTo(0f, tween(200))
+        }
+
+        awaitAll(scaleUp, alphaDashed)
+
+        val fullRotate = async {
+            _rotation.animateTo(160f, tween(1200, easing = LinearEasing))
+            _rotation.animateTo(360f, tween(600, easing = FastOutLinearInEasing))
+        }
+
+        val opaqueDashed = async {
+            delay(1200)
+            launch {
+                _dashedAlpha.animateTo(1f, tween(durationMillis = 400))
+            }
+            launch {
+                _scale.animateTo(1f, tween(400))
+                _scale.animateTo(0.97f, tween(400))
+            }
+        }
+
+        awaitAll(fullRotate, opaqueDashed)
+    }
+}
 
 @Preview
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
