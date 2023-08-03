@@ -703,6 +703,8 @@ open class DiscoveryAnalytics(
                 "${if (it.campaignSoldCount.toIntOrZero() > 0) it.campaignSoldCount else 0} $SOLD - ${if (it.customStock.toIntOrZero() > 0) it.customStock else 0} $LEFT - - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName} - ${getLabelCampaign(it)} - $NOTIFY_ME ${getNotificationStatus(componentsItems)}"
             productMap[DIMENSION38] = ""
             productMap[DIMENSION84] = ""
+            productMap[DIMENSION56] = isFulFillment.toString()
+            productMap[DIMENSION58] = warehouseId
         }
         list.add(productMap)
 
@@ -722,8 +724,6 @@ open class DiscoveryAnalytics(
         map[USER_ID] = (userSession.userId ?: "")
         map[BUSINESS_UNIT] = HOME_BROWSE
         map[KEY_E_COMMERCE] = eCommerce
-        map[WAREHOUSE_ID] = warehouseId
-        map[IS_FULFILLMENT] = isFulFillment.toString()
 
         trackingQueue.putEETracking(map as HashMap<String, Any>)
         productCardImpressionLabel = EMPTY_STRING
@@ -913,6 +913,8 @@ open class DiscoveryAnalytics(
                     "${if (it.campaignSoldCount.toIntOrZero() > 0) it.campaignSoldCount else 0} $SOLD - ${if (it.customStock.toIntOrZero() > 0) it.customStock else 0} $LEFT - - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName} - ${getLabelCampaign(it)} - $NOTIFY_ME ${getNotificationStatus(componentsItems)}"
                 listMap[DIMENSION38] = ""
                 listMap[DIMENSION84] = ""
+                listMap[DIMENSION56] = isFulFillment.toString()
+                listMap[DIMENSION58] = warehouseId
             }
             list.add(listMap)
 
@@ -938,8 +940,6 @@ open class DiscoveryAnalytics(
             map[USER_ID] = (userSession.userId ?: "")
             map[BUSINESS_UNIT] = HOME_BROWSE
             map[KEY_E_COMMERCE] = eCommerce
-            map[IS_FULFILLMENT] = isFulFillment.toString()
-            map[WAREHOUSE_ID] = warehouseId
             getTracker().sendEnhanceEcommerceEvent(map)
             productCardImpressionLabel = EMPTY_STRING
         }
