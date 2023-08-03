@@ -75,6 +75,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
     implementation projectOrAar(rootProject.ext.features.carouselProductCard)
     implementation projectOrAar(rootProject.ext.features.wishlistCommonV2)
+    implementation projectOrAar(rootProject.ext.features.affiliateSDK)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig

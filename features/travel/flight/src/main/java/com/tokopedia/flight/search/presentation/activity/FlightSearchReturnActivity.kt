@@ -18,8 +18,9 @@ import com.tokopedia.utils.date.DateUtil
 /**
  * @author by furqan on 15/04/2020
  */
-class FlightSearchReturnActivity : FlightSearchActivity(),
-        FlightSearchFragment.OnFlightSearchFragmentListener {
+class FlightSearchReturnActivity :
+    FlightSearchActivity(),
+    FlightSearchFragment.OnFlightSearchFragmentListener {
 
     private var selectedDepartureId: String = ""
     private var selectedDepartureTerm: String = ""
@@ -33,11 +34,13 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
 
     override fun getNewFragment(): Fragment {
         val priceModel: FlightPriceModel = intent.getParcelableExtra(EXTRA_PRICE_MODEL) ?: FlightPriceModel()
-        return FlightSearchReturnFragment.newInstance(flightSearchPassDataModel,
-                selectedDepartureId,
-                intent.getBooleanExtra(EXTRA_IS_BEST_PAIRING, false),
-                priceModel,
-                intent.getBooleanExtra(EXTRA_IS_COMBINE_DONE, true))
+        return FlightSearchReturnFragment.newInstance(
+            flightSearchPassDataModel,
+            selectedDepartureId,
+            intent.getBooleanExtra(EXTRA_IS_BEST_PAIRING, false),
+            priceModel,
+            intent.getBooleanExtra(EXTRA_IS_COMBINE_DONE, true)
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -45,8 +48,11 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
         when (requestCode) {
             REQUEST_CODE_BOOKING -> {
                 if (data != null) {
-                    FlightFlowUtil.actionSetResultAndClose(this, intent,
-                            data.getIntExtra(FlightFlowExtraConstant.EXTRA_FLOW_DATA.value, 0))
+                    FlightFlowUtil.actionSetResultAndClose(
+                        this,
+                        intent,
+                        data.getIntExtra(FlightFlowExtraConstant.EXTRA_FLOW_DATA.value, 0)
+                    )
                 }
             }
         }
@@ -60,18 +66,28 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
 
     override fun selectFlight(selectedFlightID: String, selectedTerm: String, flightPriceModel: FlightPriceModel, isBestPairing: Boolean, isCombineDone: Boolean, requestId: String) {
         flightSearchPassDataModel.searchRequestId = requestId
-        startActivityForResult(FlightBookingActivity.getCallingIntent(this,
-                flightSearchPassDataModel, selectedDepartureId, selectedDepartureTerm,
-                flightPriceModel, selectedFlightID, selectedTerm), REQUEST_CODE_BOOKING)
+        startActivityForResult(
+            FlightBookingActivity.getCallingIntent(
+                this,
+                flightSearchPassDataModel,
+                selectedDepartureId,
+                selectedDepartureTerm,
+                flightPriceModel,
+                selectedFlightID,
+                selectedTerm
+            ),
+            REQUEST_CODE_BOOKING
+        )
     }
 
     override fun isReturnPage(): Boolean = true
 
     override fun initializeToolbarData() {
         dateString = DateUtil.formatDate(
-                DateUtil.YYYY_MM_DD,
-                DateUtil.EEE_DD_MMM_YY,
-                flightSearchPassDataModel.returnDate)
+            DateUtil.YYYY_MM_DD,
+            DateUtil.EEE_DD_MMM_YY,
+            flightSearchPassDataModel.returnDate
+        )
         passengerString = buildPassengerTextFormatted(flightSearchPassDataModel.flightPassengerModel)
         classString = flightSearchPassDataModel.flightClass.title
     }
@@ -85,19 +101,21 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
 
         private const val REQUEST_CODE_BOOKING = 13
 
-        fun getCallingIntent(context: Context,
-                             passDataModel: FlightSearchPassDataModel,
-                             selectedDepartureId: String,
-                             selectedDepartureTerm: String,
-                             isBestPairing: Boolean,
-                             priceModel: FlightPriceModel,
-                             isCombineDone: Boolean): Intent =
-                Intent(context, FlightSearchReturnActivity::class.java)
-                        .putExtra(EXTRA_PASS_DATA, passDataModel)
-                        .putExtra(EXTRA_DEPARTURE_ID, selectedDepartureId)
-                        .putExtra(EXTRA_DEPARTURE_TERM, selectedDepartureTerm)
-                        .putExtra(EXTRA_IS_BEST_PAIRING, isBestPairing)
-                        .putExtra(EXTRA_PRICE_MODEL, priceModel)
-                        .putExtra(EXTRA_IS_COMBINE_DONE, isCombineDone)
+        fun getCallingIntent(
+            context: Context,
+            passDataModel: FlightSearchPassDataModel,
+            selectedDepartureId: String,
+            selectedDepartureTerm: String,
+            isBestPairing: Boolean,
+            priceModel: FlightPriceModel,
+            isCombineDone: Boolean
+        ): Intent =
+            Intent(context, FlightSearchReturnActivity::class.java)
+                .putExtra(EXTRA_PASS_DATA, passDataModel)
+                .putExtra(EXTRA_DEPARTURE_ID, selectedDepartureId)
+                .putExtra(EXTRA_DEPARTURE_TERM, selectedDepartureTerm)
+                .putExtra(EXTRA_IS_BEST_PAIRING, isBestPairing)
+                .putExtra(EXTRA_PRICE_MODEL, priceModel)
+                .putExtra(EXTRA_IS_COMBINE_DONE, isCombineDone)
     }
 }
