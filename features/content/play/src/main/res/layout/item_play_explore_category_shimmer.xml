@@ -6,9 +6,9 @@
     android:padding="@dimen/unify_space_16">
 
     <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/cat_load_rank"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:id="@+id/play_cat_load_rank"
+        android:layout_width="@dimen/play_dp_20"
+        android:layout_height="@dimen/play_dp_20"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:loader_corner_radius="4dp"
@@ -19,8 +19,8 @@
         android:layout_width="48dp"
         android:layout_height="86dp"
         android:layout_marginStart="@dimen/play_dp_12"
-        app:layout_constraintStart_toEndOf="@+id/cat_load_rank"
-        app:layout_constraintTop_toTopOf="@+id/cat_load_rank"
+        app:layout_constraintStart_toEndOf="@+id/play_cat_load_rank"
+        app:layout_constraintTop_toTopOf="@+id/play_cat_load_rank"
         app:loader_corner_radius="4dp"
         app:loader_type="rect" />
 

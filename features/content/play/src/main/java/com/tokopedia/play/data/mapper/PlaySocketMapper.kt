@@ -73,10 +73,10 @@ class PlaySocketMapper(
             PlaySocketType.UserWinnerStatus.value -> {
                 return mapToUserWinnerStatus()
             }
-            PlaySocketType.ChannelInteractiveQuiz.value-> {
+            PlaySocketType.ChannelInteractiveQuiz.value -> {
                 return mapToChannelQuiz()
             }
-            PlaySocketType.WidgetDominantCategory.value-> {
+            PlaySocketType.WidgetDominantCategory.value -> {
                 return mapDominantCategory()
             }
         }

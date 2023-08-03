@@ -19,7 +19,7 @@ class ExploreWidgetViewComponent(
 
     private val impressHolder = ImpressHolder()
 
-    private val title = findViewById<Typography>(R.id.tv_explore)
+    private val title = findViewById<Typography>(R.id.tv_play_explore)
 
     init {
         rootView.setOnClickListener {

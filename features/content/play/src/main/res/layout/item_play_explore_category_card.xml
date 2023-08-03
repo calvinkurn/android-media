@@ -7,7 +7,7 @@
     android:paddingBottom="@dimen/unify_space_8">
 
     <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/iv_category_video"
+        android:id="@+id/iv_play_category_video"
         android:layout_width="@dimen/layout_lvl6"
         android:layout_height="@dimen/content_common_space_86"
         android:scaleType="centerCrop"
@@ -23,8 +23,8 @@
         android:layout_height="@dimen/play_dp_20"
         android:layout_marginTop="@dimen/unify_space_4"
         android:layout_marginStart="@dimen/unify_space_4"
-        app:layout_constraintTop_toTopOf="@id/iv_category_video"
-        app:layout_constraintStart_toStartOf="@id/iv_category_video"
+        app:layout_constraintTop_toTopOf="@id/iv_play_category_video"
+        app:layout_constraintStart_toStartOf="@id/iv_play_category_video"
         android:visibility="gone"
         tools:visibility="visible"
         />
@@ -36,7 +36,7 @@
         android:layout_marginStart="@dimen/unify_space_8"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/iv_category_video"
+        app:layout_constraintStart_toEndOf="@+id/iv_play_category_video"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="paragraph_3"
         tools:text="Diskon Gede- Gedean  Giveaway Bardi Camera! Diskon Gede- Gedean  Giveaway Bardi Camera!" />
@@ -101,10 +101,10 @@
         android:layout_height="wrap_content"
         android:paddingStart="0dp"
         android:paddingEnd="@dimen/unify_space_8"
-        app:layout_constraintEnd_toStartOf="@id/iv_category_video"
+        app:layout_constraintEnd_toStartOf="@id/iv_play_category_video"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/iv_category_video"
+        app:layout_constraintTop_toTopOf="@+id/iv_play_category_video"
         app:typographyType="display_1"
         app:typographyWeight="bold"
         tools:text="1." />

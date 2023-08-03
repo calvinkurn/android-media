@@ -25,7 +25,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_explore"
+        android:id="@+id/tv_play_explore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl2"
