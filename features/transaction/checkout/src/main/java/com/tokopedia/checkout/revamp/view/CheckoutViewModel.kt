@@ -396,6 +396,7 @@ class CheckoutViewModel @Inject constructor(
                 )
 //                }
             } else {
+                commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_ERROR, editAddressResult.errorMessage, editAddressResult.throwable))
             }
         }
     }
@@ -701,7 +702,10 @@ class CheckoutViewModel @Inject constructor(
             order.shopShipmentList,
             order.shippingId,
             order.spId,
-            order
+            order,
+            isOneClickShipment,
+            isTradeIn,
+            isTradeInByDropOff
         )
         val list = listData.value.toMutableList()
         val orderModel = list[cartPosition] as? CheckoutOrderModel
@@ -759,6 +763,21 @@ class CheckoutViewModel @Inject constructor(
                     )
                     return
                 }
+            }
+            if (orderModel.boCode.isNotEmpty()) {
+                promoProcessor.clearPromo(
+                    ClearPromoOrder(
+                        orderModel.boUniqueId,
+                        orderModel.boMetadata.boType,
+                        arrayListOf(orderModel.boCode),
+                        orderModel.shopId,
+                        orderModel.isProductIsPreorder,
+                        orderModel.products.first().preOrderDurationDay.toString(),
+                        orderModel.fulfillmentId,
+                        orderModel.cartStringGroup
+                    )
+                )
+                commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_NORMAL, "Bebas ongkir gagal diaplikasikan, silahkan coba lagi"))
             }
             val newOrderModel = orderModel.copy(
                 shipment = orderModel.shipment.copy(

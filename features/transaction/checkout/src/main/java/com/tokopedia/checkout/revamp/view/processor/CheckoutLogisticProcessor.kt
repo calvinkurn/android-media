@@ -7,6 +7,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressF
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderShipment
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
+import com.tokopedia.checkout.view.CheckoutLogger
 import com.tokopedia.checkout.view.converter.RatesDataConverter
 import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
@@ -176,10 +177,11 @@ class CheckoutLogisticProcessor @Inject constructor(
     }
 
     fun generateRatesMvcParam(cartStringGroup: String): String {
+        // todo ?
         return ""
     }
 
-    fun generateShippingBottomsheetParam(
+    private fun generateShippingBottomsheetParam(
         order: CheckoutOrderModel,
         recipientAddressModel: RecipientAddressModel,
         isTradeIn: Boolean
@@ -211,10 +213,6 @@ class CheckoutLogisticProcessor @Inject constructor(
                 productList.add(Product(it.productId, it.isFreeShipping, it.isFreeShippingExtra))
             }
         }
-//        if (orderShop.shouldValidateWeight() && totalWeight > orderShop.maximumWeight) {
-//            // overweight
-//            return null to productList
-//        }
         return ShipmentDetailData().apply {
             shopId = order.shopId.toString()
             preorder = preOrder
@@ -331,7 +329,10 @@ class CheckoutLogisticProcessor @Inject constructor(
         shopShipments: List<ShopShipment>,
         selectedServiceId: Int,
         selectedSpId: Int,
-        orderModel: CheckoutOrderModel
+        orderModel: CheckoutOrderModel,
+        isOneClickShipment: Boolean,
+        isTradeIn: Boolean,
+        isTradeInByDropOff: Boolean
     ): Triple<CourierItemData, InsuranceData, List<ShippingCourierUiModel>>? {
         return withContext(dispatchers.io) {
             try {
@@ -363,7 +364,17 @@ class CheckoutLogisticProcessor @Inject constructor(
                                     }
                                     for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
                                         if (shippingCourierUiModel.productData.shipperProductId == logisticPromo.shipperProductId && shippingCourierUiModel.productData.shipperId == logisticPromo.shipperId) {
-                                            if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
+                                            if (shippingCourierUiModel.productData.error.errorMessage.isNotEmpty()) {
+                                                CheckoutLogger.logOnErrorLoadCourierNew(
+                                                    MessageErrorException(
+                                                        shippingCourierUiModel.productData.error.errorMessage
+                                                    ),
+                                                    orderModel,
+                                                    isOneClickShipment,
+                                                    isTradeIn,
+                                                    isTradeInByDropOff,
+                                                    boPromoCode
+                                                )
 //                                                view?.renderCourierStateFailed(
 //                                                    shipmentGetCourierHolderData.itemPosition,
 //                                                    false,
@@ -379,6 +390,7 @@ class CheckoutLogisticProcessor @Inject constructor(
 //                                                ratesQueue.remove()
 //                                                itemToProcess = ratesQueue.peek()
 //                                                continue@loopProcess
+                                                return@withContext null
                                             } else {
                                                 val courierItemData =
                                                     generateCourierItemData(

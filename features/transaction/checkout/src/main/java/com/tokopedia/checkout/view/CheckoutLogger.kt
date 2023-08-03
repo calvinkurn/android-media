@@ -69,6 +69,39 @@ object CheckoutLogger {
         }
     }
 
+    fun logOnErrorLoadCourierNew(
+        throwable: Throwable,
+        shipmentCartItemModel: CheckoutOrderModel,
+        isOneClickShipment: Boolean,
+        isTradeIn: Boolean,
+        isTradeInByDropOff: Boolean,
+        promoCode: String
+    ) {
+        if (shouldTriggerLog(throwable)) {
+            val productIds = mutableListOf<String>()
+            for (cartItemModel in shipmentCartItemModel.products) {
+                productIds.add(cartItemModel.productId.toString())
+            }
+
+            val errorMessage = throwable.message ?: "unknown exception"
+            val mapData = mapOf(
+                LoggerConstant.Key.ERROR_TYPE to LoggerConstant.Type.LOAD_COURIER_ERROR,
+                LoggerConstant.Key.IS_OCS to isOneClickShipment.toString(),
+                LoggerConstant.Key.IS_TRADE_IN to isTradeIn.toString(),
+                LoggerConstant.Key.IS_TRADE_IN_INDOPAKET to isTradeInByDropOff.toString(),
+                LoggerConstant.Key.PRODUCT_ID_LIST to productIds.toString(),
+                LoggerConstant.Key.MESSAGE to errorMessage,
+                LoggerConstant.Key.PROMO_CODE to promoCode,
+                LoggerConstant.Key.STACK_TRACE to throwable.stackTraceToString()
+            )
+            ServerLogger.log(
+                Priority.P2,
+                LoggerConstant.Tag.P2_BUYER_FLOW_CART,
+                mapData
+            )
+        }
+    }
+
     fun logOnErrorApplyBo(
         throwable: Throwable,
         shipmentCartItemModel: ShipmentCartItemModel,
