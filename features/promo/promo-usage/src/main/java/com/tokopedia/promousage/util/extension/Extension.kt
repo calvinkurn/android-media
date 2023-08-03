@@ -12,7 +12,6 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.StyleSpan
 import android.view.View
-import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -23,19 +22,6 @@ import com.tokopedia.unifycomponents.toPx
 
 private const val SUBSTRING_INDEX_NOT_FOUND = -1
 private const val PADDING_BOTTOM_IN_DP = 16
-
-fun View.onDrawn(block: (Int) -> Unit) {
-    this.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-        override fun onGlobalLayout() {
-            val cardViewHeight = height
-
-            block(cardViewHeight)
-            // Remove the listener to avoid multiple callbacks
-            viewTreeObserver?.removeOnGlobalLayoutListener(this)
-        }
-    })
-
-}
 
 fun ImageView.grayscale() {
     val colorMatrix = ColorMatrix().apply {
