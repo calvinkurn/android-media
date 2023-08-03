@@ -40,7 +40,7 @@ class StoriesAvatarSampleAdapter(
 
         init {
             binding.root.updateSizeConfig {
-                it.copy(imageToBorderGap = 4.dp)
+                it.copy(imageToBorderGap = 8.dp)
             }
         }
 

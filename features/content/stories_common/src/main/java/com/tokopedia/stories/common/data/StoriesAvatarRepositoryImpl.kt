@@ -29,12 +29,12 @@ class StoriesAvatarRepositoryImpl @Inject constructor(
 
     override suspend fun getShopStoriesState(shopIds: List<String>): List<ShopStoriesState> =
         withContext(dispatchers.io) {
-            delay(2000)
+            delay(500)
             shopIds.map { shopId ->
                 val shopInt = shopId.toInt()
                 ShopStoriesState(
                     shopId,
-                    anyStoryExisted = shopInt % 2 == 1,
+                    anyStoryExisted = shopInt % 2 == 0,
                     hasUnseenStories = shopInt % 4 == 0,
                     "tokopedia://play/12669"
                 )

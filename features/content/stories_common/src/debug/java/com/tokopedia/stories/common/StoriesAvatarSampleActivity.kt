@@ -25,6 +25,8 @@ class StoriesAvatarSampleActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        delegate.localNightMode
+
 //        binding.btnToggle.setOnClickListener {
 //            binding.storiesAvatar.setImageUrl("https://4.img-dpreview.com/files/p/E~TS590x0~articles/3925134721/0266554465.jpeg")
 //        }
