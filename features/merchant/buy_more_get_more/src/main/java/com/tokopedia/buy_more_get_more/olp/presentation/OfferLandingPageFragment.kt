@@ -4,17 +4,21 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buy_more_get_more.R
 import com.tokopedia.buy_more_get_more.databinding.FragmentOfferLandingPageBinding
@@ -25,10 +29,12 @@ import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductSortingUiMo
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapter
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapterTypeFactoryImpl
 import com.tokopedia.buy_more_get_more.olp.utils.BundleConstant
+import com.tokopedia.buy_more_get_more.olp.utils.DataEndlessScrollListener
 import com.tokopedia.buy_more_get_more.sort.activity.ShopProductSortActivity
 import com.tokopedia.buy_more_get_more.sort.listener.ProductSortListener
 import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
@@ -101,6 +107,12 @@ class OfferLandingPageFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupObservables()
+        getRecyclerView(view)?.let {
+            it.layoutManager = StaggeredGridLayoutManager(
+                2,
+                StaggeredGridLayoutManager.VERTICAL
+            )
+        }
         viewModel.getOfferingIndo(listOf(0), shopId, localCacheModel)
     }
 
@@ -114,20 +126,20 @@ class OfferLandingPageFragment :
         }
     }
 
-    private fun setupContent(offerInfoForBuyer: OfferInfoForBuyerUiModel) {
-        olpAdapter?.submitList(
-            newList = listOf(
-                generateDummyOfferingData(),
-                OfferProductSortingUiModel(67),
-                generateDummyProductData()
-            )
-        )
-        setupHeader(offerInfoForBuyer)
-    }
-
     private fun setupHeader(offerInfoForBuyer: OfferInfoForBuyerUiModel) {
         setStatusBarColor()
         setupToolbar(offerInfoForBuyer)
+    }
+
+    private fun setupContent(offerInfoForBuyer: OfferInfoForBuyerUiModel) {
+        olpAdapter?.submitList(
+            newList = listOf(
+                generateDummyOfferingData(), // pass offering data
+                OfferProductSortingUiModel(67) // pass product count
+            )
+        )
+        olpAdapter?.setProductListData(generateDummyProductData()) // pass product list data
+        setupHeader(offerInfoForBuyer)
     }
 
     private fun setupToolbar(offerInfoForBuyer: OfferInfoForBuyerUiModel) {
@@ -136,14 +148,16 @@ class OfferLandingPageFragment :
                 context,
                 com.tokopedia.unifyprinciples.R.color.Unify_GN500
             )
-            header.headerSubTitle = offerInfoForBuyer.offerings.firstOrNull()?.offerName
-                ?: "Offering name" // update this with real data
-            header.addRightIcon(com.tokopedia.iconunify.R.drawable.iconunify_cart)
-                .apply { setOnClickListener { } }
-            header.addRightIcon(com.tokopedia.iconunify.R.drawable.iconunify_menu_hamburger)
-                .apply { setOnClickListener { } }
-            header.setNavigationOnClickListener { activity?.finish() }
-            header.setBackgroundColor(colorBackground)
+            header.apply {
+                headerSubTitle = offerInfoForBuyer.offerings.firstOrNull()?.offerName
+                    ?: "Offering name" // update this with real data
+                addRightIcon(com.tokopedia.iconunify.R.drawable.iconunify_cart)
+                    .apply { setOnClickListener { } }
+                addRightIcon(com.tokopedia.iconunify.R.drawable.iconunify_menu_hamburger)
+                    .apply { setOnClickListener { } }
+                setNavigationOnClickListener { activity?.finish() }
+                setBackgroundColor(colorBackground)
+            }
         }
     }
 
@@ -168,6 +182,27 @@ class OfferLandingPageFragment :
 
     private fun renderSortFilter(sortId: String, sortName: String) {
         olpAdapter?.changeSelectedSortFilter(sortId, sortName)
+        //update product list data
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            REQUEST_CODE_SORT -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    sortId = data?.getStringExtra(ShopProductSortActivity.SORT_VALUE) ?: ""
+                    sortName = data?.getStringExtra(ShopProductSortActivity.SORT_NAME) ?: ""
+                    renderSortFilter(sortId, sortName)
+                }
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun onSortChipClicked() {
+        context?.run {
+            val intent = ShopProductSortActivity.createIntent(activity, sortId)
+            startActivityForResult(intent, REQUEST_CODE_SORT)
+        }
     }
 
     override fun getRecyclerViewResourceId(): Int {
@@ -176,6 +211,15 @@ class OfferLandingPageFragment :
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, AdapterTypeFactory> {
         return OlpAdapter(olpAdapterTypeFactory)
+    }
+
+    override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
+        return object :
+            DataEndlessScrollListener(getRecyclerView(view)?.layoutManager, olpAdapter) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                Log.d("Masuk", "load more") //load more data
+            }
+        }
     }
 
     private fun generateDummyOfferingData(): OfferInfoForBuyerUiModel {
@@ -197,37 +241,24 @@ class OfferLandingPageFragment :
         )
     }
 
-    private fun generateDummyProductData(): OfferProductListUiModel {
+    private fun generateDummyProductData(): List<OfferProductListUiModel.Product> {
         val products: MutableList<OfferProductListUiModel.Product> = mutableListOf()
         for (product in 1..50) {
             products.add(
                 OfferProductListUiModel.Product(
-                name = "Product $product"
-            ))
+                    name = "Product $product",
+                    imageUrl = "https://images.tokopedia.net/img/cache/200-square/attachment/2018/8/9/3127195/3127195_e5b3e074-c897-4cf0-9ced-5572d0538e7c.jpg",
+                    price = "Rp.20.000",
+                    rating = "4.5",
+                    soldCount = 80,
+                    campaign = OfferProductListUiModel.Product.Campaign(
+                        discountedPrice = "Rp.10.000",
+                        originalPrice = "Rp.15.000",
+                        discountedPercentage = "50%"
+                    )
+                )
+            )
         }
-        return OfferProductListUiModel (
-            productList = products
-        )
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (requestCode) {
-            REQUEST_CODE_SORT -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    sortId = data?.getStringExtra(ShopProductSortActivity.SORT_VALUE) ?: ""
-                    sortName = data?.getStringExtra(ShopProductSortActivity.SORT_NAME) ?: ""
-                    renderSortFilter(sortId, sortName)
-                    // update product list
-                }
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data)
-    }
-
-    override fun onSortChipClicked() {
-        context?.run {
-            val intent = ShopProductSortActivity.createIntent(activity, sortId)
-            startActivityForResult(intent, REQUEST_CODE_SORT)
-        }
+        return products
     }
 }

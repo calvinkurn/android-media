@@ -7,5 +7,5 @@
         </shape>
     </item>
 <!--Bottom Shadow-->
-    <item android:drawable="@drawable/bottom_shadow_image"/>
+<!--    <item android:drawable="@drawable/bottom_shadow_image"/>-->
 </layer-list>

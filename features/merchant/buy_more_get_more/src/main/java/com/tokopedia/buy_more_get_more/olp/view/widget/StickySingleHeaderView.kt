@@ -3,8 +3,10 @@ package com.tokopedia.buy_more_get_more.olp.view.widget
 import android.content.Context
 import android.os.Handler
 import android.util.AttributeSet
+import android.util.Log
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -66,7 +68,7 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
                     if (adapter !is OnStickySingleHeaderAdapter) throw RuntimeException("Your RecyclerView.Adapter should be the type of StickyHeaderViewAdapter.")
                     this@StickySingleHeaderView.adapter = adapter
                     this@StickySingleHeaderView.adapter?.setListener(this@StickySingleHeaderView)
-                    staggeredGridLayoutManager = mRecyclerView?.layoutManager as StaggeredGridLayoutManager?
+                    staggeredGridLayoutManager = mRecyclerView?.layoutManager as StaggeredGridLayoutManager
                 }
                 stickyPosition = adapter?.stickyHeaderPosition.orZero()
             }
@@ -83,10 +85,9 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
     private fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
         if (mHeaderHeight == -1 || adapter == null || staggeredGridLayoutManager == null) return
         val firstCompletelyVisiblePosition = staggeredGridLayoutManager?.findFirstCompletelyVisibleItemPositions(null)?.getOrNull(0).orZero()
-        val firstVisiblePosition = staggeredGridLayoutManager?.findFirstVisibleItemPositions(null)?.getOrNull(0).orZero()
+        val firstVisiblePosition = staggeredGridLayoutManager?.findFirstCompletelyVisibleItemPositions(null)?.getOrNull(0).orZero()
         if (firstCompletelyVisiblePosition > -1 && stickyPosition != -1) {
             if (firstCompletelyVisiblePosition > stickyPosition && currentScroll >= recyclerViewPaddingTop) {
-                // make the etalase label always visible
                 if (!isStickyShowed || refreshSticky) {
                     showSticky()
                     mHeaderContainer?.visibility = VISIBLE

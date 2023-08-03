@@ -17,7 +17,7 @@ class OlpAdapterTypeFactoryImpl(
 ) : OlpAdapterTypeFactory, BaseAdapterTypeFactory() {
     override fun type(type: OfferInfoForBuyerUiModel) = OfferingInfoViewHolder.LAYOUT
     override fun type(type: OfferProductSortingUiModel) = OfferingProductSortingViewHolder.LAYOUT
-    override fun type(type: OfferProductListUiModel) = OfferingProductListViewHolder.LAYOUT
+    override fun type(type: OfferProductListUiModel.Product) = OfferingProductListViewHolder.LAYOUT
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         val viewHolder = when (type) {
