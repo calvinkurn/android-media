@@ -62,42 +62,30 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/fl_container"
             android:lineSpacingExtra="@dimen/sp_4"
-            android:textColor="@color/Unify_NN950_96"
+            android:textColor="@color/Unify_NN950"
             app:typographyType="body_2"
             app:typographyWeight="bold"
             tools:text="@string/tv_duration" />
 
         <com.tokopedia.unifycomponents.Label
-            android:id="@+id/lbl_cod_available"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@id/tv_duration_or_price"
-            android:layout_alignBottom="@id/tv_duration_or_price"
-            android:layout_marginStart="8dp"
-            android:layout_toEndOf="@+id/tv_duration_or_price"
-            android:text="@string/tersedia_bayar_di_tempat"
-            android:visibility="gone"
-            app:labelType="general_light_green" />
-
-
-        <com.tokopedia.unifycomponents.Label
             android:id="@+id/lbl_cod_available_eta"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_duration_or_price"
+            android:layout_below="@+id/tv_price_or_duration"
             android:layout_marginTop="4dp"
             android:text="@string/tersedia_bayar_di_tempat"
             android:visibility="gone"
-            app:labelType="general_light_green" />
+            app:labelType="general_light_grey"
+            tools:visibility="visible"/>
 
         <!--price in old view, duration in ETA-->
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_price_or_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/lbl_cod_available_eta"
+            android:layout_below="@+id/tv_duration_or_price"
             android:layout_marginTop="4dp"
-            android:textColor="@color/Unify_NN950_68"
+            android:textColor="@color/Unify_NN600"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="@string/tv_price" />
@@ -106,10 +94,11 @@
             android:id="@+id/lbl_ontime_delivery"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_price_or_duration"
+            android:layout_below="@+id/lbl_cod_available_eta"
             android:layout_marginTop="4dp"
             android:text="@string/jaminan_tepat_waktu"
             android:visibility="gone"
+            tools:visibility="visible"
             app:labelType="general_light_green" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -118,7 +107,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/lbl_ontime_delivery"
             android:layout_marginTop="4dp"
-            android:textColor="@color/Unify_NN950_68"
+            android:textColor="@color/Unify_NN600"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="@string/tv_text_desc" />
@@ -129,7 +118,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_text_desc"
             android:layout_marginTop="4dp"
-            android:textColor="@color/Unify_NN950_68"
+            android:textColor="@color/Unify_NN600"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="Tersedia layanan Order Prioritas" />
@@ -141,7 +130,7 @@
             android:layout_below="@+id/tv_order_prioritas"
             android:layout_marginTop="4dp"
             android:text="@string/label_shipping_information"
-            android:textColor="@color/Unify_NN950_68"
+            android:textColor="@color/Unify_NN600"
             app:typographyType="small"
             app:typographyWeight="reguler" />
 
@@ -152,7 +141,7 @@
             android:layout_below="@+id/tv_shipping_information"
             android:layout_marginTop="4dp"
             android:text="@string/label_shipping_information"
-            android:textColor="@color/Unify_NN950_68"
+            android:textColor="@color/Unify_NN600"
             app:typographyType="small"
             app:typographyWeight="reguler" />
 

@@ -17,5 +17,5 @@ class ShippingCourierUiModel(
     var additionalFee: Int = 0,
     var isAllowDropshipper: Boolean = false,
     var isSelected: Boolean = false,
-    var preOrderModel: PreOrderModel? = null
+    var productShipmentDetailModel: ProductShipmentDetailModel? = null
 ) : RatesViewModelType, Parcelable
