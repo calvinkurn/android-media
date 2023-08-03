@@ -9,5 +9,5 @@ interface OlpAdapterTypeFactory {
 
     fun type(type: OfferProductSortingUiModel): Int
 
-    fun type(type: OfferProductListUiModel): Int
+    fun type(type: OfferProductListUiModel.Product): Int
 }

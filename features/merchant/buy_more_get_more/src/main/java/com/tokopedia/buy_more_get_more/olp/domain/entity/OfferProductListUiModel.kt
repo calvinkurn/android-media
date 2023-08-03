@@ -6,7 +6,7 @@ import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapterTypeFa
 data class OfferProductListUiModel(
     val responseHeader: ResponseHeader = ResponseHeader(),
     val productList: List<Product> = emptyList()
-) : Visitable<OlpAdapterTypeFactory> {
+){
     data class ResponseHeader(
         val success: Boolean = true,
         val error_code: Long = 0,
@@ -28,7 +28,7 @@ data class OfferProductListUiModel(
         val stock: Int = 0,
         val isVbs: Boolean = false,
         val campaign: Campaign = Campaign()
-    ) {
+    ) : Visitable<OlpAdapterTypeFactory>  {
         data class Campaign(
             val name: String = "",
             val originalPrice: String = "",
@@ -38,9 +38,9 @@ data class OfferProductListUiModel(
             val maxOrder: Int = 0,
             val customStock: Int = 0
         )
-    }
 
-    override fun type(typeFactory: OlpAdapterTypeFactory): Int {
-        return typeFactory.type(this)
+        override fun type(typeFactory: OlpAdapterTypeFactory): Int {
+            return typeFactory.type(this)
+        }
     }
 }

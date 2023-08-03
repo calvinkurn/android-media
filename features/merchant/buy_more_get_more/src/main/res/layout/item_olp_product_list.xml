@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.productcard.ProductCardListView
+<com.tokopedia.productcard.ProductCardGridView
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/productCard"
     android:layout_width="match_parent"
