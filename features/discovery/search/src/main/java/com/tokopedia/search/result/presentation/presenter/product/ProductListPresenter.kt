@@ -1096,7 +1096,7 @@ class ProductListPresenter @Inject constructor(
         productDataView.productList.forEachIndexed { i, productItemDataView ->
             val productId = productItemDataView.productID
             val categoryIdString = productItemDataView.categoryID.toString()
-            val categoryName = productItemDataView.categoryName ?: ""
+            val categoryName = productItemDataView.categoryName
             allProdIdArray.add(productId)
 
             if (i < SearchConstant.GENERAL_SEARCH_TRACKING_PRODUCT_COUNT) {
@@ -1290,15 +1290,6 @@ class ProductListPresenter @Inject constructor(
                 view.showOnBoarding(firstProductPositionWithBOELabel)
     }
 
-    private fun checkShouldShowViewTypeOnBoarding(productListType: String) {
-        if (isViewAttached
-            && productListType == SearchConstant.ProductListType.LIST_VIEW
-            && shouldShowViewTypeCoachmark()
-        ) {
-            view.enableProductViewTypeOnBoarding()
-        }
-    }
-
     private fun checkProductWithBOELabel(position: Int): Boolean {
         return firstProductPositionWithBOELabel >= 0
                 && firstProductPositionWithBOELabel == position
@@ -1306,6 +1297,12 @@ class ProductListPresenter @Inject constructor(
 
     private fun shouldShowBoeCoachmark(): Boolean {
         return searchCoachMarkLocalCache.shouldShowBoeCoachmark()
+    }
+
+    private fun checkShouldShowViewTypeOnBoarding(productListType: String) {
+        if (productListType == SearchConstant.ProductListType.LIST_VIEW
+            && shouldShowViewTypeCoachmark())
+            view.enableProductViewTypeOnBoarding()
     }
 
     private fun shouldShowViewTypeCoachmark(): Boolean {
