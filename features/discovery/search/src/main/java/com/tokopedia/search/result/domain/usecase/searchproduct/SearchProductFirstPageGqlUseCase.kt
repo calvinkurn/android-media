@@ -161,7 +161,7 @@ class SearchProductFirstPageGqlUseCase(
     }
 
     @GqlQuery("GetLastFilter", GET_LAST_FILTER_GQL_QUERY)
-    private fun createGetLastFilterRequest(params: String: GraphqlRequest) =
+    private fun createGetLastFilterRequest(params: String): GraphqlRequest =
         GraphqlRequest(
             GetLastFilter(),
             LastFilterModel::class.java,
