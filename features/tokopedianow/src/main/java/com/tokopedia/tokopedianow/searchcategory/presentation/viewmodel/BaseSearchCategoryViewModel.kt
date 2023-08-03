@@ -996,10 +996,6 @@ abstract class BaseSearchCategoryViewModel(
     open fun onViewOpenFilterPage() {
         if (isFilterPageOpenLiveData.value == true) return
 
-        isFilterPageOpenMutableLiveData.value = true
-
-        if (dynamicFilterModelLiveData.value != null) return
-
         val getFilterRequestParams = RequestParams.create()
         getFilterRequestParams.putAll(createTokonowQueryParams())
 
@@ -1014,6 +1010,7 @@ abstract class BaseSearchCategoryViewModel(
     protected open fun onGetFilterSuccess(dynamicFilterModel: DynamicFilterModel) {
         filterController.appendFilterList(queryParam, dynamicFilterModel.data.filter)
         dynamicFilterModelMutableLiveData.value = dynamicFilterModel
+        isFilterPageOpenMutableLiveData.value = true
     }
 
     protected open fun onGetFilterFailed(throwable: Throwable) {
