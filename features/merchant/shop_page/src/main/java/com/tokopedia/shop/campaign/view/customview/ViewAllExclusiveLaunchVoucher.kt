@@ -33,7 +33,7 @@ class ViewAllExclusiveLaunchVoucher @JvmOverloads constructor(
     fun useDarkBackground() {
         binding?.run {
             imgBackground.setBackgroundResource(R.drawable.bg_view_all_voucher_dark)
-            tpgText.setTextColorCompat(R.color.Unify_Static_White)
+            tpgText.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
         }
     }
 

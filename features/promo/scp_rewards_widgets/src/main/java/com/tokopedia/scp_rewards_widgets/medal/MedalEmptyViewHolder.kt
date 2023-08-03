@@ -22,7 +22,7 @@ class MedalEmptyViewHolder(itemView: View) : AbstractViewHolder<MedalError>(item
     override fun bind(data: MedalError?) {
         binding?.let { safeBinding ->
             data?.let {
-                safeBinding.errorImage.loadImageOrFallback(it.imageUrl, R.drawable.ic_error_medal_list) {
+                safeBinding.errorImage.loadImageOrFallback(it.imageUrl, com.tokopedia.scp_rewards_common.R.drawable.ic_error_medal_list) {
                     val layoutParams = safeBinding.errorImage.layoutParams as ConstraintLayout.LayoutParams
                     layoutParams.dimensionRatio = "H, 0.4"
                     safeBinding.errorImage.layoutParams = layoutParams

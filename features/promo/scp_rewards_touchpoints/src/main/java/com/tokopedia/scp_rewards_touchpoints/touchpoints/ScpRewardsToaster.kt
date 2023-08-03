@@ -76,7 +76,7 @@ object ScpRewardsToaster {
         if (type == TYPE_NORMAL) {
             constraintLayoutToaster.setBackgroundResource(R.drawable.scp_rewards_toaster_bg_normal)
         } else {
-            constraintLayoutToaster.setBackgroundResource(R.drawable.toaster_bg_error)
+            constraintLayoutToaster.setBackgroundResource(com.tokopedia.unifycomponents.R.drawable.toaster_bg_error)
         }
 
         val actionTextButton = viewLayout.findViewById<Typography>(R.id.snackbar_btn)

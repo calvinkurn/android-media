@@ -28,7 +28,7 @@ class WidgetMedalTaskProgress(private val context: Context, attrs: AttributeSet?
     }
 
     init {
-        background = ContextCompat.getDrawable(context, R.drawable.card_border)
+        background = ContextCompat.getDrawable(context, com.tokopedia.unifycomponents.R.drawable.card_border)
         binding.progressBar.progressBarHeight = ProgressBarUnify.SIZE_MEDIUM
 
         binding.rvTasks.apply {

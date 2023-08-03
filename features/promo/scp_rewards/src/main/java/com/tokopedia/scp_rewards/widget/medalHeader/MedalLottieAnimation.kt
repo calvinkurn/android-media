@@ -53,7 +53,7 @@ class MedalLottieAnimation(private val context: Context, attrs: AttributeSet?) :
             downloadImages(data, {
                 loadMedalBadge(data, it)
             }, {
-                binding.lottieView.setImageResource(R.drawable.fallback_badge)
+                binding.lottieView.setImageResource(com.tokopedia.scp_rewards_common.R.drawable.fallback_badge)
             })
         } catch (ex: Throwable) {
             // For Out of memory exceptions

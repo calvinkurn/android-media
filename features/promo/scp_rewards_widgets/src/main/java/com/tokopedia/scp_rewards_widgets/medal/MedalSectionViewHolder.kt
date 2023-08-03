@@ -70,7 +70,7 @@ class MedalSectionViewHolder(
 
     private fun handleList(medalList: List<MedalItem>?, bannerData: BannerData?, position: Int?) {
         if (medalList.isNullOrEmpty()) {
-            binding.ivEmptyList.loadImageOrFallback(bannerData?.imageUrl, R.drawable.ic_error_medal_list) {
+            binding.ivEmptyList.loadImageOrFallback(bannerData?.imageUrl, com.tokopedia.scp_rewards_common.R.drawable.ic_error_medal_list) {
                 val layoutParams = binding.ivEmptyList.layoutParams as ConstraintLayout.LayoutParams
                 layoutParams.dimensionRatio = "H, 0.4"
                 binding.ivEmptyList.layoutParams = layoutParams

@@ -39,10 +39,10 @@ class RewardsViewHolder(itemView: View) : AbstractViewHolder<MedalRewardsModel>(
         binding?.rewardExpiryInfo?.apply {
             text = data.statusDescription
             val textColorToken = when (data.status) {
-                CouponState.ACTIVE -> R.color.Unify_NN950
-                CouponState.EXPIRED -> R.color.Unify_RN500
-                CouponState.INACTIVE -> R.color.Unify_NN600
-                else -> R.color.Unify_RN500
+                CouponState.ACTIVE -> com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                CouponState.EXPIRED -> com.tokopedia.unifyprinciples.R.color.Unify_RN500
+                CouponState.INACTIVE -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                else -> com.tokopedia.unifyprinciples.R.color.Unify_RN500
             }
             setTextColor(ContextCompat.getColor(context, textColorToken))
         }

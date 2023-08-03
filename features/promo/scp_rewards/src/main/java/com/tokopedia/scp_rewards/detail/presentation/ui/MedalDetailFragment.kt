@@ -424,7 +424,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
         (activity as? AppCompatActivity)?.apply {
             window?.statusBarColor = Color.WHITE
             binding.toolbar.setBackgroundColor(Color.WHITE)
-            setToolbarBackButtonTint(R.color.Unify_NN900)
+            setToolbarBackButtonTint(com.tokopedia.unifyprinciples.R.color.Unify_NN900)
 
             windowInsetsController?.isAppearanceLightStatusBars = true
             binding.tvTermsConditions.setTextColor(

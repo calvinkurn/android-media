@@ -38,7 +38,7 @@ class MedalViewHolder(
         tvMedalSubTitle.gone()
         tvMedalCaption.gone()
         progressMedal.gone()
-        ivMedal.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_empty_medal))
+        ivMedal.setImageDrawable(ContextCompat.getDrawable(itemView.context, com.tokopedia.scp_rewards_common.R.drawable.ic_empty_medal))
     }
 
     private fun ItemMedalLayoutBinding.showMedal(item: MedalItem) {
@@ -49,11 +49,11 @@ class MedalViewHolder(
         listener?.onMedalLoad(item)
         if (item.isDisabled == true) {
             ivMedal.grayscale()
-            ivMedal.loadImageOrFallback(item.imageUrl, R.drawable.ic_empty_medal) {
+            ivMedal.loadImageOrFallback(item.imageUrl, com.tokopedia.scp_rewards_common.R.drawable.ic_empty_medal) {
                 listener?.onMedalFailed(item)
             }
         } else {
-            ivMedal.loadImageOrFallback(item.imageUrl, R.drawable.ic_empty_medal)
+            ivMedal.loadImageOrFallback(item.imageUrl, com.tokopedia.scp_rewards_common.R.drawable.ic_empty_medal)
         }
         listener?.let {
             this.root.setOnClickListener { listener.onMedalClick(item) }

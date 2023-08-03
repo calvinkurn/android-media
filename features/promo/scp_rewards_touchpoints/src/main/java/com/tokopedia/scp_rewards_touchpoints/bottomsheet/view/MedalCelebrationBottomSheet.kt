@@ -215,9 +215,9 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
 
     private fun setCloseBtnColor(whiteBtn: Boolean = true) {
         val iconColor = if (whiteBtn) {
-            ResourcesCompat.getColor(resources, R.color.Unify_NN0, null)
+            ResourcesCompat.getColor(resources, com.tokopedia.unifyprinciples.R.color.Unify_NN0, null)
         } else {
-            ResourcesCompat.getColor(resources, R.color.Unify_NN900, null)
+            ResourcesCompat.getColor(resources, com.tokopedia.unifyprinciples.R.color.Unify_NN900, null)
         }
         binding?.btnClose?.setImage(
             newLightEnable = iconColor,
