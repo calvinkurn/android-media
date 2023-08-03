@@ -914,7 +914,9 @@ open class BuyerOrderDetailFragment :
 
     override fun onClickWidgetListener(appLink: String) {
         viewModel.hideScpRewardsMedalTouchPointWidget()
-        RouteManager.route(context, appLink)
+        context?.let {
+            RouteManager.route(it, appLink)
+        }
     }
 
     private fun isScpRewardTouchPointEnabled(): Boolean = remoteConfig.getBoolean(SCP_REWARDS_MEDALI_TOUCH_POINT, true)
