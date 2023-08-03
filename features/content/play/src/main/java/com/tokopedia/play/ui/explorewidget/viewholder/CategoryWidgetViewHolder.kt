@@ -31,7 +31,7 @@ internal class CategoryWidgetViewHolder {
                     listener.onImpressed(item, absoluteAdapterPosition)
                 }
 
-                ivCategoryVideo.loadImage(item.video.coverUrl)
+                ivPlayCategoryVideo.loadImage(item.video.coverUrl)
                 tvCategoryVideoTitle.text = item.title
                 tvCategoryVideoCreator.text = item.partner.name
                 ivCategoryCreator.loadImage(item.partner.avatarUrl)

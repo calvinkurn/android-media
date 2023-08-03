@@ -5,7 +5,7 @@ import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.fragment.FragmentKey
 import com.tokopedia.abstraction.base.view.fragment.TkpdFragmentFactory
 import com.tokopedia.play.ui.explorewidget.PlayCategoryWidgetFragment
-import com.tokopedia.play.ui.explorewidget.PlayExploreWidget
+import com.tokopedia.play.ui.explorewidget.PlayChannelRecommendationFragment
 import com.tokopedia.play.view.bottomsheet.PlayFollowBottomSheet
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.custom.dialog.InteractiveWinningDialogFragment
@@ -90,8 +90,8 @@ abstract class PlayViewerFragmentModule {
 
     @Binds
     @IntoMap
-    @FragmentKey(PlayExploreWidget::class)
-    abstract fun getNewExploreWidget(fragment: PlayExploreWidget): Fragment
+    @FragmentKey(PlayChannelRecommendationFragment::class)
+    abstract fun getNewExploreWidget(fragment: PlayChannelRecommendationFragment): Fragment
 
     @Binds
     @IntoMap

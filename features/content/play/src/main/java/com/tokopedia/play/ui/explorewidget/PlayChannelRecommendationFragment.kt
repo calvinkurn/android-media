@@ -39,7 +39,7 @@ import com.tokopedia.play.R as playR
 /**
  * @author by astidhiyaa on 22/05/23
  */
-class PlayExploreWidget @Inject constructor(
+class PlayChannelRecommendationFragment @Inject constructor(
     router: Router,
     private val trackingQueue: TrackingQueue,
     private val analyticFactory: PlayAnalytic2.Factory
@@ -203,19 +203,19 @@ class PlayExploreWidget @Inject constructor(
     }
 
     companion object {
-        private const val TAG = "PlayExploreWidget"
-        fun get(fragmentManager: FragmentManager): PlayExploreWidget? {
-            return fragmentManager.findFragmentByTag(TAG) as? PlayExploreWidget
+        private const val TAG = "PlayChannelRecommendationFragment"
+        fun get(fragmentManager: FragmentManager): PlayChannelRecommendationFragment? {
+            return fragmentManager.findFragmentByTag(TAG) as? PlayChannelRecommendationFragment
         }
 
         fun getOrCreate(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader
-        ): PlayExploreWidget {
+        ): PlayChannelRecommendationFragment {
             return get(fragmentManager) ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
-                PlayExploreWidget::class.java.name
-            ) as PlayExploreWidget
+                PlayChannelRecommendationFragment::class.java.name
+            ) as PlayChannelRecommendationFragment
         }
     }
 }

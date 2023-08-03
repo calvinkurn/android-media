@@ -58,8 +58,7 @@ import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.gesture.PlayClickTouchListener
 import com.tokopedia.play.ui.component.UiComponent
 import com.tokopedia.play.ui.engagement.model.EngagementUiModel
-import com.tokopedia.play.ui.explorewidget.PlayExploreWidget
-import com.tokopedia.play.util.*
+import com.tokopedia.play.ui.explorewidget.PlayChannelRecommendationFragment
 import com.tokopedia.play.util.CachedState
 import com.tokopedia.play.util.changeConstraint
 import com.tokopedia.play.util.isChanged
@@ -104,7 +103,6 @@ import com.tokopedia.play.view.uimodel.action.ClickShareAction
 import com.tokopedia.play.view.uimodel.action.ClickSharingOptionAction
 import com.tokopedia.play.view.uimodel.action.CloseSharingOptionAction
 import com.tokopedia.play.view.uimodel.action.CommentVisibilityAction
-import com.tokopedia.play.view.uimodel.action.FetchWidgets
 import com.tokopedia.play.view.uimodel.action.InteractiveGameResultBadgeClickedAction
 import com.tokopedia.play.view.uimodel.action.OpenFooterUserReport
 import com.tokopedia.play.view.uimodel.action.OpenKebabAction
@@ -2154,10 +2152,10 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onExploreClicked(viewComponent: ExploreWidgetViewComponent) {
         eventBus.emit(ExploreWidgetViewComponent.Event.OnClicked(playViewModel.widgetInfo))
-        PlayExploreWidget
+        PlayChannelRecommendationFragment
             .getOrCreate(childFragmentManager, requireActivity().classLoader)
             .apply {
-                setFactory(object : PlayExploreWidget.Factory {
+                setFactory(object : PlayChannelRecommendationFragment.Factory {
                     override fun getViewModelFactory(): ViewModelProvider = getPlayViewModelProvider()
                 })
             }

@@ -31,7 +31,7 @@ import org.junit.Test
 /**
  * @author by astidhiyaa on  31/10/22
  */
-class PlayExploreWidgetTest {
+class PlayChannelRecommendationFragmentTest {
     @get:Rule
     val coroutineTestRule = CoroutineTestRule()
     private val testDispatcher = coroutineTestRule.dispatchers

@@ -44,7 +44,7 @@ class ExploreWidgetViewComponent(
     }
 
     sealed interface Event {
-        data class OnClicked(val widgetInfo: ExploreWidgetConfig): Event
+        data class OnClicked(val widgetInfo: ExploreWidgetConfig) : Event
         data class OnImpressed(val widgetInfo: ExploreWidgetConfig): Event
     }
 }
