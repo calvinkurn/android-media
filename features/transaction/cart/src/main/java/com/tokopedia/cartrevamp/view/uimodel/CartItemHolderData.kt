@@ -88,6 +88,8 @@ data class CartItemHolderData(
     var shopBoMetadata: BoMetadata = BoMetadata(),
     var shopCartShopGroupTickerData: CartShopGroupTickerData = CartShopGroupTickerData(),
     var bundleIds: List<String> = emptyList(),
+    var showErrorBottomDivider: Boolean = false,
+    var shouldDivideHalfErrorBottomDivider: Boolean = false,
 
     // Will be set after calculation
     var wholesalePrice: Double = 0.0,

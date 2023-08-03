@@ -3,6 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider_checkout_cross_sell"
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
+
     <include
         android:id="@+id/item_checkout_cross_sell_item"
         layout="@layout/item_checkout_cross_sell_item" />
@@ -10,6 +15,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_checkout_cross_sell"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
+
+    </androidx.recyclerview.widget.RecyclerView>
 
 </FrameLayout>

@@ -3,6 +3,7 @@ package com.tokopedia.checkout.revamp.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.checkout.databinding.ItemCheckoupUpsellBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutAddressBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutButtonPaymentBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutCostBinding
@@ -10,7 +11,7 @@ import com.tokopedia.checkout.databinding.ItemCheckoutCrossSellBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutOrderBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutProductBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutPromoBinding
-import com.tokopedia.checkout.databinding.ItemUpsellNewImprovementBinding
+import com.tokopedia.checkout.revamp.view.address
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutAddressModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutButtonPaymentModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCostModel
@@ -84,7 +85,7 @@ class CheckoutAdapter(
 
             CheckoutUpsellViewHolder.VIEW_TYPE -> {
                 CheckoutUpsellViewHolder(
-                    ItemUpsellNewImprovementBinding.inflate(
+                    ItemCheckoupUpsellBinding.inflate(
                         inflater,
                         parent,
                         false
@@ -127,19 +128,19 @@ class CheckoutAdapter(
             }
 
             CheckoutPromoViewHolder.VIEW_TYPE -> {
-                CheckoutPromoViewHolder(ItemCheckoutPromoBinding.inflate(inflater, parent, false))
+                CheckoutPromoViewHolder(ItemCheckoutPromoBinding.inflate(inflater, parent, false), listener)
             }
 
             CheckoutCostViewHolder.VIEW_TYPE -> {
-                CheckoutCostViewHolder(ItemCheckoutCostBinding.inflate(inflater, parent, false), inflater)
+                CheckoutCostViewHolder(ItemCheckoutCostBinding.inflate(inflater, parent, false), inflater, listener)
             }
 
             CheckoutCrossSellViewHolder.VIEW_TYPE -> {
-                CheckoutCrossSellViewHolder(ItemCheckoutCrossSellBinding.inflate(inflater, parent, false))
+                CheckoutCrossSellViewHolder(ItemCheckoutCrossSellBinding.inflate(inflater, parent, false), listener)
             }
 
             else -> {
-                CheckoutButtonPaymentViewHolder(ItemCheckoutButtonPaymentBinding.inflate(inflater, parent, false))
+                CheckoutButtonPaymentViewHolder(ItemCheckoutButtonPaymentBinding.inflate(inflater, parent, false), listener)
             }
         }
     }
@@ -167,7 +168,7 @@ class CheckoutAdapter(
             }
 
             is CheckoutOrderModel -> {
-                (holder as CheckoutOrderViewHolder).bind(item)
+                (holder as CheckoutOrderViewHolder).bind(item, list.address())
             }
 
             is CheckoutEpharmacyModel -> {

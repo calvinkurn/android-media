@@ -8,6 +8,13 @@
     android:background="@color/Unify_Background"
     android:orientation="vertical">
 
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/header_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:visibility="gone"
+        android:background="@color/Unify_NN50" />
+
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/ticker_warning"
         android:layout_width="match_parent"

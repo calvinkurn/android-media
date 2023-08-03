@@ -1,9 +1,13 @@
 package com.tokopedia.checkout.revamp.view.adapter
 
+import androidx.fragment.app.FragmentManager
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
+import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
+import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 
 interface CheckoutAdapterListener {
 
@@ -42,5 +46,37 @@ interface CheckoutAdapterListener {
 
     fun addOnGiftingOrderLevelImpression(products: List<CheckoutProductModel>)
 
-    fun onChangeShippingDuration()
+    fun onLoadShippingState(order: CheckoutOrderModel, position: Int)
+
+    fun onChangeShippingDuration(order: CheckoutOrderModel, position: Int)
+
+    fun onChangeShippingCourier(order: CheckoutOrderModel, position: Int)
+
+    fun onChangeScheduleDelivery(scheduleDeliveryUiModel: ScheduleDeliveryUiModel, order: CheckoutOrderModel, position: Int)
+
+    fun onViewErrorInCourierSection(errorMessage: String)
+
+    fun onOntimeDeliveryClicked(url: String)
+
+    fun onClickSetPinpoint(position: Int)
+
+    fun onClickRefreshErrorLoadCourier()
+
+    fun getHostFragmentManager(): FragmentManager
+
+    fun onClickPromoCheckout(lastApplyUiModel: LastApplyUiModel)
+
+    fun onSendAnalyticsClickPromoCheckout(isApplied: Boolean, listAllPromoCodes: List<String>)
+
+    fun onSendAnalyticsViewPromoCheckoutApplied()
+
+    fun showPlatformFeeTooltipInfoBottomSheet(platformFeeModel: ShipmentPaymentFeeModel)
+
+    fun getParentWidth(): Int
+
+    fun onEgoldChecked(checked: Boolean)
+
+    fun onInsuranceTncClicked()
+
+    fun onProcessToPayment()
 }

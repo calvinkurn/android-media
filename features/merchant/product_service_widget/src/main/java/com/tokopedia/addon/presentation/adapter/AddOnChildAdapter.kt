@@ -7,7 +7,8 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 
 class AddOnChildAdapter(
     private val onClickListener: (index: Int, List<AddOnUIModel>) -> Unit,
-    private val onHelpClickListener: (index: Int, AddOnUIModel) -> Unit
+    private val onHelpClickListener: (index: Int, AddOnUIModel) -> Unit,
+    private val onItemImpressionListener: (index: Int, AddOnUIModel) -> Unit
 ): RecyclerView.Adapter<AddOnChildViewHolder>() {
 
     private var items: MutableList<AddOnUIModel> = mutableListOf()
@@ -15,7 +16,12 @@ class AddOnChildAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddOnChildViewHolder {
         val rootView = AddOnChildViewHolder.createRootView(parent)
-        return AddOnChildViewHolder(rootView, onClickListener = ::onItemClick, onHelpClickListener = ::onHelpClick)
+        return AddOnChildViewHolder(
+            rootView,
+            onClickListener = ::onItemClick,
+            onHelpClickListener = ::onHelpClick,
+            onItemImpression = ::onItemImpression
+        )
     }
 
     private fun onItemClick(position: Int, isChecked: Boolean) {
@@ -36,6 +42,10 @@ class AddOnChildAdapter(
         items.getOrNull(position)?.let {
             onHelpClickListener(position, it)
         }
+    }
+
+    private fun onItemImpression(index: Int, addOnUIModel: AddOnUIModel) {
+        onItemImpressionListener(index, addOnUIModel)
     }
 
     override fun onBindViewHolder(holder: AddOnChildViewHolder, position: Int) {

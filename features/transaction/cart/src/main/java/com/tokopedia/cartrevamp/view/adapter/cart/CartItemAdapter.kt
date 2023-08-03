@@ -16,6 +16,7 @@ class CartItemAdapter {
         fun onCartItemCheckChanged(position: Int, cartItemHolderData: CartItemHolderData)
         fun onBundleItemCheckChanged(cartItemHolderData: CartItemHolderData)
         fun onWishlistCheckChanged(cartItemHolderData: CartItemHolderData, wishlistIcon: IconUnify, animatedWishlistImage: ImageView, position: Int)
+        fun onNoteClicked(cartItemHolderData: CartItemHolderData)
         fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData, itemPosition: Int)
         fun onNeedToRefreshWeight(cartItemHolderData: CartItemHolderData)
         fun onNeedToRecalculate()
@@ -30,6 +31,6 @@ class CartItemAdapter {
         fun onFollowShopClicked(shopId: String, errorType: String)
         fun onVerificationClicked(applink: String)
         fun onCartShopNameClicked(shopId: String?, shopName: String?, isTokoNow: Boolean)
-        fun onProductAddOnClicked(addOnId: CartItemHolderData)
+        fun onProductAddOnClicked(cartItemData: CartItemHolderData)
     }
 }

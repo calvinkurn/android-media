@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/cl_note_bottomsheet_container"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingBottom="12dp">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iu_cart_item"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="ContentDescription" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/label_product_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="8dp"
+        android:ellipsize="end"
+        android:lines="1"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iu_cart_item"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_2"
+        tools:text="MagSafe Iphone Cases" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/label_product_variant"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iu_cart_item"
+        app:layout_constraintTop_toBottomOf="@id/label_product_name"
+        app:typographyType="display_3"
+        tools:text="Varian: 12 pro max" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_product_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="iu_cart_item,label_product_variant"
+        app:barrierDirection="bottom" />
+
+    <com.tokopedia.unifycomponents.TextAreaUnify2
+        android:id="@+id/text_area_note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        app:typographyType="display_3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/barrier_product_header" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="12dp"
+        android:contentDescription="@string/content_desc_note_save"
+        android:gravity="center_vertical"
+        android:text="@string/cart_action_save"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled"
+        app:layout_constraintTop_toBottomOf="@id/text_area_note"
+        tools:text="Simpan" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

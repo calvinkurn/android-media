@@ -9,8 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateFirstView="false"
-        android:inAnimation="@anim/anim_slide_up_in"
-        android:outAnimation="@anim/anim_slide_up_out"
+        android:inAnimation="@anim/anim_slide_down_in"
+        android:outAnimation="@anim/anim_slide_down_out"
         android:visibility="gone">
 
         <include layout="@layout/layout_widget_promo_checkout" />
@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/background_promo_checkout_teal"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

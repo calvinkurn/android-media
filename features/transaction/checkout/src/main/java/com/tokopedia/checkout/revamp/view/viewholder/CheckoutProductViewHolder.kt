@@ -1,6 +1,10 @@
 package com.tokopedia.checkout.revamp.view.viewholder
 
 import android.annotation.SuppressLint
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.DynamicDrawableSpan
+import android.text.style.ImageSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
@@ -16,6 +20,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.databinding.ItemAddOnProductBinding
 import com.tokopedia.purchase_platform.common.utils.getHtmlFormat
@@ -116,6 +121,17 @@ class CheckoutProductViewHolder(
 
         productBinding.ivProductImage.setImageUrl(product.imageUrl)
         productBinding.tvProductName.text = product.name
+        if (product.ethicalDrugDataModel.needPrescription && product.ethicalDrugDataModel.iconUrl.isNotEmpty()) {
+            product.ethicalDrugDataModel.iconUrl.getBitmapImageUrl(productBinding.root.context) {
+                try {
+                    productBinding.tvProductName.text = SpannableStringBuilder("  ${product.name}").apply {
+                        setSpan(ImageSpan(productBinding.root.context, it, DynamicDrawableSpan.ALIGN_CENTER), 0, 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+                    }
+                } catch (t: Throwable) {
+                    t.printStackTrace()
+                }
+            }
+        }
         if (product.variant.isNotBlank()) {
             productBinding.textVariant.text = product.variant
             productBinding.textVariant.isVisible = true
@@ -164,6 +180,7 @@ class CheckoutProductViewHolder(
                 product.orderNumber
             )
             binding.tvCheckoutOrderNumber.isVisible = true
+            binding.bgCheckoutSupergraphicOrder.isVisible = true
             if (product.groupInfoBadgeUrl.isNotEmpty()) {
                 binding.ivCheckoutOrderBadge.setImageUrl(product.groupInfoBadgeUrl)
                 if (product.uiGroupType == GroupShop.UI_GROUP_TYPE_NORMAL) {
@@ -200,6 +217,7 @@ class CheckoutProductViewHolder(
             }
         } else {
             binding.tvCheckoutOrderNumber.isVisible = false
+            binding.bgCheckoutSupergraphicOrder.isVisible = false
             binding.ivCheckoutOrderBadge.isVisible = false
             binding.tvCheckoutOrderName.isVisible = false
             binding.imgFreeShipping.isVisible = false
@@ -222,6 +240,7 @@ class CheckoutProductViewHolder(
             }
             binding.tvCheckoutShopName.text = product.shopName.getHtmlFormat()
             binding.tvCheckoutShopName.isVisible = true
+            binding.vDividerShop.isVisible = product.cartItemPosition > 0
         } else {
             binding.ivCheckoutShopBadge.isVisible = false
             binding.tvCheckoutShopName.isVisible = false
@@ -372,18 +391,20 @@ class CheckoutProductViewHolder(
             binding.buttonGiftingAddonProductLevel.visibility = View.GONE
         } else {
             if (addOns.status == 1) {
-                binding.buttonGiftingAddonProductLevel.state =
-                    com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView.State.ACTIVE
+                if (addOns.addOnsDataItemModelList.isNotEmpty()) {
+                    binding.buttonGiftingAddonProductLevel.showActive(
+                        addOns.addOnsButtonModel.title,
+                        addOns.addOnsButtonModel.description
+                    )
+                } else {
+                    binding.buttonGiftingAddonProductLevel.showEmptyState(
+                        addOns.addOnsButtonModel.title,
+                        addOns.addOnsButtonModel.description.ifEmpty { "(opsional)" }
+                    )
+                }
             } else if (addOns.status == 2) {
-                binding.buttonGiftingAddonProductLevel.state =
-                    com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView.State.INACTIVE
+                binding.buttonGiftingAddonProductLevel.showInactive(addOns.addOnsButtonModel.title, addOns.addOnsButtonModel.description)
             }
-            binding.buttonGiftingAddonProductLevel.title = addOns.addOnsButtonModel.title
-            binding.buttonGiftingAddonProductLevel.desc = addOns.addOnsButtonModel.description
-            binding.buttonGiftingAddonProductLevel.urlLeftIcon =
-                addOns.addOnsButtonModel.leftIconUrl
-            binding.buttonGiftingAddonProductLevel.urlRightIcon =
-                addOns.addOnsButtonModel.rightIconUrl
             binding.buttonGiftingAddonProductLevel.setOnClickListener {
                 listener.onClickAddOnGiftingProductLevel(
                     product

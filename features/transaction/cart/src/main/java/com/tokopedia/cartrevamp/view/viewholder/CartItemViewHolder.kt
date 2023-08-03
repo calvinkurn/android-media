@@ -94,6 +94,8 @@ class CartItemViewHolder constructor(
         this.dataSize = dataSize
 
         renderAlpha(data)
+        renderContainer(data)
+        renderDivider(data)
         renderShopInfo(data)
         renderLeftAnchor(data)
         renderProductInfo(data)
@@ -260,14 +262,13 @@ class CartItemViewHolder constructor(
 
     private fun renderCheckBoxBundle(data: CartItemHolderData) {
         val checkboxBundle = binding.checkboxBundle
-        val padding12 = IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
+//        val padding12 = IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
         val padding16 = PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
+        binding.productBundlingInfo.setPadding(0, 0, 0, padding16)
         if (data.isError) {
             checkboxBundle.gone()
-            binding.productBundlingInfo.setPadding(padding12, 0, 0, padding16)
             return
         }
-        binding.productBundlingInfo.setPadding(0, 0, 0, padding16)
         checkboxBundle.show()
         checkboxBundle.setOnCheckedChangeListener { compoundButton, b ->
             // disable listener before setting current selection state
@@ -930,6 +931,9 @@ class CartItemViewHolder constructor(
 //                renderProductNotesEditable(element)
 //            }
             binding.buttonChangeNote.show()
+            binding.buttonChangeNote.setOnClickListener {
+                actionListener?.onNoteClicked(element)
+            }
             if (element.notes.isNotBlank()) {
                 renderProductNotesFilled(element)
             } else {
@@ -1047,7 +1051,7 @@ class CartItemViewHolder constructor(
     private fun renderQuantity(data: CartItemHolderData, viewHolderListener: ViewHolderListener?) {
         val qtyEditorProduct = binding.qtyEditorProduct
         if (data.isError) {
-            binding.qtyEditorProduct.invisible()
+            binding.qtyEditorProduct.gone()
             return
         }
         qtyEditorProduct.autoHideKeyboard = true
@@ -1308,6 +1312,33 @@ class CartItemViewHolder constructor(
         }
     }
 
+    private fun renderContainer(cartItemHolderData: CartItemHolderData) {
+        val layoutParams = binding.containerProductInformation.layoutParams as ViewGroup.MarginLayoutParams
+        if (cartItemHolderData.isError) {
+            layoutParams.bottomMargin = IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
+        }
+        else {
+            layoutParams.bottomMargin = 0
+        }
+    }
+
+    private fun renderDivider(cartItemHolderData: CartItemHolderData) {
+        if (cartItemHolderData.showErrorBottomDivider) {
+            binding.bottomDivider.layoutParams.height =
+                DEFAULT_DIVIDER_HEIGHT.dpToPx(itemView.resources.displayMetrics)
+            val layoutParams = binding.bottomDivider.layoutParams as ViewGroup.MarginLayoutParams
+            if (cartItemHolderData.shouldDivideHalfErrorBottomDivider) {
+                layoutParams.marginStart = BOTTOM_DIVIDER_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
+            }
+            else {
+                layoutParams.marginStart = 0
+            }
+            binding.bottomDivider.visible()
+        } else {
+            binding.bottomDivider.gone()
+        }
+    }
+
     private fun validateErrorView(typography: Typography, isError: Boolean) {
         if (isError) {
             typography.setTextColor(
@@ -1360,6 +1391,7 @@ class CartItemViewHolder constructor(
         const val ALPHA_HALF = 0.5f
         const val ALPHA_FULL = 1.0f
 
+        private const val DEFAULT_DIVIDER_HEIGHT = 2
         private const val IMAGE_PRODUCT_MARGIN_START_6 = 6
         private const val MARGIN_VERTICAL_SEPARATOR = 8
         private const val WISHLIST_ANIMATED_MARGIN_TOP = 13
@@ -1368,5 +1400,6 @@ class CartItemViewHolder constructor(
         private const val TEXT_NOTES_CHANGE_WIDTH = 40
         private const val BUNDLING_SEPARATOR_MARGIN_START = 38
         private const val BUNDLING_SEPARATOR_WIDTH = 48
+        private const val BOTTOM_DIVIDER_MARGIN_START = 114
     }
 }

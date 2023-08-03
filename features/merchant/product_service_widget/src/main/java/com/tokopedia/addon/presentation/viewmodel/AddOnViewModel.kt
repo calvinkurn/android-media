@@ -10,9 +10,11 @@ import com.tokopedia.addon.presentation.uimodel.AddOnGroupUIModel
 import com.tokopedia.addon.presentation.uimodel.AddOnMapper
 import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.addon.presentation.uimodel.AddOnParam
+import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
 import com.tokopedia.gifting.domain.usecase.GetAddOnUseCase
 import com.tokopedia.gifting.presentation.uimodel.AddOnType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.purchase_platform.common.feature.addons.domain.SaveAddOnStateUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -60,6 +62,12 @@ class AddOnViewModel @Inject constructor(
         it.isEmpty()
     }
 
+    val shouldShowSeeAll = Transformations.map(mGetAddOnResult) { addonGroups ->
+        isSimplified && addonGroups.any {
+            it.addon.size > Int.ONE
+        }
+    }
+
     val totalPrice = Transformations.map(modifiedAddOnGroups) { modifiedAddOnGroups ->
         var total: Long = 0
         modifiedAddOnGroups.forEach { modifiedAddOnGroup ->
@@ -71,11 +79,15 @@ class AddOnViewModel @Inject constructor(
     }
 
     var preselectedAddonIds: List<String> = emptyList()
-    var lastSelectedAddOn: List<AddOnGroupUIModel> = emptyList()
+    var lastSelectedAddOnGroups: List<AddOnGroupUIModel> = emptyList()
+    var lastSelectedAddOn: MutableList<AddOnUIModel> = mutableListOf()
     var isSimplified = false
 
     private fun generateEmptyAggregatedData(): AddOnPageResult.AggregatedData {
-        return AddOnPageResult.AggregatedData(isGetDataSuccess = true)
+        return AddOnPageResult.AggregatedData(
+            isGetDataSuccess = true,
+            selectedAddons = AddOnMapper.getPPSelectedAddons(modifiedAddOnGroups.value)
+        )
     }
 
     fun getAddOn(param: AddOnParam, isSimplified: Boolean) {
@@ -98,12 +110,14 @@ class AddOnViewModel @Inject constructor(
     }
 
     fun saveAddOnState(cartId: Long, source: String) {
+        if (AddOnMapper.flatmapToChangedAddonSelection(modifiedAddOnGroups.value).isEmpty()) return
         mSaveSelectionResult.value = Success(emptyList())
         saveAddOnStateUseCase.setParams(
             AddOnMapper.mapToSaveAddOnStateRequest(
                 cartId,
                 source,
-                modifiedAddOnGroups.value
+                modifiedAddOnGroups.value,
+                lastSelectedAddOn
             ),
             false
         )
@@ -130,20 +144,24 @@ class AddOnViewModel @Inject constructor(
         }
     }
 
-    fun getAddOnAggregatedData(addOnIds: List<String>) {
+    fun getAddOnAggregatedData(
+        addOnIds: List<String>,
+        addOnTypes: List<String>,
+        addOnWidgetParam: AddOnParam
+    ) {
         if (addOnIds.isEmpty()) {
             mAggregatedData.value = generateEmptyAggregatedData()
             return
         }
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
-                getAddOnDetailUseCase.setParams(addOnIds)
+                getAddOnDetailUseCase.setParams(addOnIds, addOnTypes, addOnWidgetParam)
                 getAddOnDetailUseCase.executeOnBackground().getAddOnByID
             }
             mAggregatedData.value = AddOnPageResult.AggregatedData(
                 title = result.aggregatedData.title,
                 price = result.aggregatedData.price,
-                selectedAddons = AddOnMapper.getSelectedAddons(modifiedAddOnGroups.value),
+                selectedAddons = lastSelectedAddOn,
                 isGetDataSuccess = result.error.messages.isEmpty(),
                 getDataErrorMessage = result.error.messages
             )
@@ -163,8 +181,8 @@ class AddOnViewModel @Inject constructor(
     }
 
     fun restoreSelection() {
-        if (lastSelectedAddOn.isNotEmpty()) {
-            mGetAddOnResult.value = lastSelectedAddOn
+        if (lastSelectedAddOnGroups.isNotEmpty()) {
+            mGetAddOnResult.value = lastSelectedAddOnGroups
         }
     }
 

@@ -2,6 +2,8 @@ package com.tokopedia.gifting.domain.usecase
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.addon.domain.model.Additional
+import com.tokopedia.addon.presentation.uimodel.AddOnParam
 import com.tokopedia.common.ProductServiceWidgetConstant.SQUAD_VALUE
 import com.tokopedia.common.ProductServiceWidgetConstant.USECASE_GIFTING_VALUE
 import com.tokopedia.gifting.domain.model.*
@@ -70,10 +72,14 @@ class GetAddOnUseCase @Inject constructor(
         setTypeClass(GetAddOnResponse::class.java)
     }
 
-    fun setParams(addOnIds: List<String>) {
+    fun setParams(
+        addOnIds: List<String>,
+        addOnTypes: List<String> = emptyList(),
+        addOnWidgetParam: AddOnParam? = null
+    ) {
         val requestParams = RequestParams.create()
         requestParams.putObject(PARAM_INPUT, GetAddOnRequest(
-            addOnRequest = addOnIds.mapToAddonRequest(),
+            addOnRequest = addOnIds.mapToAddonRequest(addOnTypes, addOnWidgetParam),
             source = Source(usecase = USECASE_GIFTING_VALUE, squad = SQUAD_VALUE)
         ))
         setRequestParams(requestParams.parameters)
@@ -83,5 +89,22 @@ class GetAddOnUseCase @Inject constructor(
         return ErrorHandler.getErrorMessage(context, throwable)
     }
 
-    private fun List<String>.mapToAddonRequest() = map { AddOnRequest(it) }
+    private fun List<String>.mapToAddonRequest(
+        addOnTypes: List<String>,
+        addOnWidgetParam: AddOnParam?
+    ) = mapIndexed { index, addOnId ->
+        val param = addOnWidgetParam ?: AddOnParam()
+        AddOnRequest(
+            addOnID = addOnId,
+            addOnType = addOnTypes.getOrNull(index).orEmpty(),
+            additional = Additional(
+                categoryID = param.categoryID,
+                shopID = param.shopID,
+                quantity = param.quantity,
+                price = param.price,
+                discountedPrice = param.discountedPrice,
+                condition = param.condition
+            )
+        )
+    }
 }

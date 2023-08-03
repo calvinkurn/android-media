@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY
 import com.tokopedia.purchase_platform.common.databinding.ItemProductInfoAddOnBinding
 import com.tokopedia.purchase_platform.common.databinding.ItemShipmentAddonProductItemBinding
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
@@ -459,14 +460,26 @@ class ShipmentCartItemViewHolder(
                         tvShipmentAddOnPrice.text = CurrencyFormatUtil
                             .convertPriceValueToIdrFormat(addon.price.toLong(), false)
                             .removeDecimalSuffix()
-                        cbAddonItem.isChecked = (addon.status == ADD_ON_PRODUCT_STATUS_CHECK)
+                        when (addon.status) {
+                            ADD_ON_PRODUCT_STATUS_CHECK -> {
+                                cbAddonItem.isChecked = true
+                                cbAddonItem.isEnabled = true
+                            }
+                            ADD_ON_PRODUCT_STATUS_MANDATORY -> {
+                                cbAddonItem.isChecked = true
+                                cbAddonItem.isEnabled = false
+                            }
+                            else -> {
+                                cbAddonItem.isChecked = false
+                                cbAddonItem.isEnabled = true
+                            }
+                        }
                         cbAddonItem.setOnCheckedChangeListener { compoundButton, isChecked ->
                             delayChangeCheckboxAddOnState?.cancel()
                             delayChangeCheckboxAddOnState = GlobalScope.launch(Dispatchers.Main) {
                                 delay(DEBOUNCE_TIME_ADDON)
                                 if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
                                     listener?.onCheckboxAddonProductListener(isChecked, addon, cartItemModel, bindingAdapterPosition)
-                                    listener?.onClickAddOnsProductWidget(addon.type, cartItemModel.productId.toString(), isChecked)
                                 }
                             }
                         }
@@ -552,8 +565,6 @@ class ShipmentCartItemViewHolder(
         fun onClickSeeAllAddOnProductService(cartItemModel: CartItemModel)
 
         fun onImpressionAddOnProductService(addonType: Int, productId: String)
-
-        fun onClickAddOnsProductWidget(addonType: Int, productId: String, isChecked: Boolean)
 
         fun onClickLihatSemuaAddOnProductWidget()
     }

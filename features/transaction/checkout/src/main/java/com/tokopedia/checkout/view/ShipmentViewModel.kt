@@ -124,6 +124,8 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO
@@ -366,8 +368,8 @@ class ShipmentViewModel @Inject constructor(
         var hasAddOnSelected = false
         var totalAddOnGiftingPrice = 0.0
         var totalAddOnProductServicePrice = 0.0
-        var qtyAddOn = 0
-        var totalPriceAddOn = 0.0
+        var qtyAddOn: Int
+        var totalPriceAddOn: Double
         val countMapSummaries = hashMapOf<Int, Pair<Double, Int>>()
         val listShipmentAddOnSummary: ArrayList<ShipmentAddOnSummaryModel> = arrayListOf()
         for (shipmentData in shipmentCartItemModelList) {
@@ -401,14 +403,20 @@ class ShipmentViewModel @Inject constructor(
                         }
                         if (cartItem.addOnProduct.listAddOnProductData.isNotEmpty()) {
                             for (addOnProductService in cartItem.addOnProduct.listAddOnProductData) {
-                                if (addOnProductService.status == 1) {
+                                if (addOnProductService.status == ADD_ON_PRODUCT_STATUS_CHECK || addOnProductService.status == ADD_ON_PRODUCT_STATUS_MANDATORY) {
                                     totalAddOnProductServicePrice += (addOnProductService.price * cartItem.quantity)
-                                    if (countMapSummaries.containsKey(addOnProductService.type)) {
-                                        qtyAddOn += cartItem.quantity
+                                    qtyAddOn = if (countMapSummaries.containsKey(addOnProductService.type)) {
+                                        countMapSummaries[addOnProductService.type]?.second?.plus(cartItem.quantity) ?: cartItem.quantity
                                     } else {
-                                        qtyAddOn = cartItem.quantity
+                                        cartItem.quantity
                                     }
-                                    totalPriceAddOn = qtyAddOn * addOnProductService.price
+
+                                    val addOnPrice = cartItem.quantity * addOnProductService.price
+                                    totalPriceAddOn = if (countMapSummaries.containsKey(addOnProductService.type)) {
+                                        countMapSummaries[addOnProductService.type]?.first?.plus(addOnPrice) ?: addOnPrice
+                                    } else {
+                                        addOnPrice
+                                    }
                                     countMapSummaries[addOnProductService.type] = totalPriceAddOn to qtyAddOn
                                 }
                             }
@@ -5018,7 +5026,7 @@ class ShipmentViewModel @Inject constructor(
             listAddOnDataItem.add(addOnDataItemModel)
         }
         addOnsDataModel.addOnsDataItemModelList = listAddOnDataItem
-        view?.updateAddOnsData(identifier, cartString, cartId)
+        updateAddOnsData(identifier, cartString, cartId)
         if (isUsingDynamicDataPassing()) {
             view?.updateAddOnsDynamicDataPassing(
                 addOnResult,
@@ -5027,6 +5035,23 @@ class ShipmentViewModel @Inject constructor(
                 cartId
             )
         }
+    }
+
+    fun updateAddOnsData(
+        identifier: Int,
+        cartString: String,
+        cartId: Long
+    ) {
+        // identifier : 0 = product level, 1  = order level
+//        if (identifier == 0) {
+//            onNeedUpdateViewItem(
+//                shipmentAdapter.getAddOnProductLevelPosition(cartString, cartId)
+//            )
+//        } else {
+//            onNeedUpdateViewItem(shipmentAdapter.getAddOnOrderLevelPosition(cartString))
+//        }
+//        shipmentViewModel.updateShipmentCostModel()
+//        shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
     }
     // endregion
 
@@ -5638,10 +5663,14 @@ class ShipmentViewModel @Inject constructor(
 
     fun saveAddOnsProductBeforeCheckout() {
         if (shipmentCartItemModelList.isNotEmpty()) {
-            val cartItemModels =
-                (shipmentCartItemModelList.first { it is ShipmentCartItemModel } as ShipmentCartItemModel).cartItemModels
+            val allShipmentCartItemModel: ArrayList<CartItemModel> = arrayListOf()
+            shipmentCartItemModelList.filterIsInstance<ShipmentCartItemModel>().forEach { shipmentCartItem ->
+                shipmentCartItem.cartItemModels.forEach { cartItemModel ->
+                    allShipmentCartItemModel.add(cartItemModel)
+                }
+            }
 
-            val params = ShipmentAddOnProductServiceMapper.generateSaveAddOnProductRequestParams(cartItemModels, isOneClickShipment)
+            val params = ShipmentAddOnProductServiceMapper.generateSaveAddOnProductRequestParams(allShipmentCartItemModel, isOneClickShipment)
             saveAddOnProductUseCase.setParams(params, false)
             saveAddOnProductUseCase.execute(
                 onSuccess = {
@@ -5666,9 +5695,9 @@ class ShipmentViewModel @Inject constructor(
     companion object {
         private const val LAST_THREE_DIGIT_MODULUS: Long = 1000
 
-        private const val statusOK = "OK"
+        const val statusOK = "OK"
 
-        private const val statusCode200 = "200"
+        const val statusCode200 = "200"
 
         private const val WEIGHT_DIVIDER_TO_KG = 1000
     }

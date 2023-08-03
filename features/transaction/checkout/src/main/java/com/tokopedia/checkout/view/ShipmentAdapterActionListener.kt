@@ -143,7 +143,5 @@ interface ShipmentAdapterActionListener {
 
     fun addOnProductServiceImpression(addOnType: Int, productId: String)
 
-    fun onClickAddOnProductServiceWidgetItem(addOnType: Int, productId: String, isChecked: Boolean)
-
     fun onClickLihatSemuaAddOnProductServiceWidget()
 }

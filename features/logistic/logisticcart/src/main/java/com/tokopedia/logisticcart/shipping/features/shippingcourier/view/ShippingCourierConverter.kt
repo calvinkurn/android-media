@@ -133,6 +133,111 @@ class ShippingCourierConverter @Inject constructor() {
         return courierItemData
     }
 
+    fun convertToCourierItemDataNew(
+        shippingCourierUiModel: ShippingCourierUiModel?,
+        shippingRecommendationData: ShippingRecommendationData? = null,
+        validationMetadata: String = ""
+    ): CourierItemData {
+        val courierItemData = CourierItemData()
+        shippingCourierUiModel?.let {
+            courierItemData.shipperId = it.productData.shipperId
+            courierItemData.serviceId = it.serviceData.serviceId
+            courierItemData.shipperProductId = it.productData.shipperProductId
+            courierItemData.name = it.productData.shipperName
+            courierItemData.estimatedTimeDelivery = it.serviceData.serviceName
+            courierItemData.minEtd = it.productData.etd.minEtd
+            courierItemData.maxEtd = it.productData.etd.maxEtd
+            courierItemData.shipperPrice = it.productData.price.price
+            courierItemData.shipperFormattedPrice = it.productData.price.formattedPrice
+            courierItemData.insurancePrice = it.productData.insurance.insurancePrice.roundToInt()
+            courierItemData.insuranceType = it.productData.insurance.insuranceType
+            courierItemData.insuranceUsedType = it.productData.insurance.insuranceUsedType
+            courierItemData.insuranceUsedInfo = it.productData.insurance.insuranceUsedInfo
+            courierItemData.insuranceUsedDefault = it.productData.insurance.insuranceUsedDefault
+            courierItemData.isUsePinPoint = it.productData.isShowMap == 1
+            courierItemData.isHideChangeCourierCard = it.serviceData.selectedShipperProductId > 0
+            courierItemData.durationCardDescription = it.serviceData.texts.textEtaSummarize
+            if (!courierItemData.isUsePinPoint) {
+                if (it.productData.error != null && it.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
+                    courierItemData.isUsePinPoint = true
+                }
+            }
+            if (it.serviceData.orderPriority != null) {
+                courierItemData.now = it.serviceData.orderPriority.now
+                courierItemData.priorityPrice = it.serviceData.orderPriority.price
+                courierItemData.priorityFormattedPrice = it.serviceData.orderPriority.formattedPrice
+                courierItemData.priorityInnactiveMessage = it.serviceData.orderPriority.inactiveMessage
+                courierItemData.priorityDurationMessage = it.serviceData.orderPriority.staticMessage.durationMessage
+                courierItemData.priorityFeeMessage = it.serviceData.orderPriority.staticMessage.feeMessage
+                courierItemData.priorityWarningboxMessage = it.serviceData.orderPriority.staticMessage.warningBoxMessage
+                courierItemData.priorityCheckboxMessage = it.serviceData.orderPriority.staticMessage.checkboxMessage
+                courierItemData.priorityPdpMessage = it.serviceData.orderPriority.staticMessage.pdpMessage
+            }
+            courierItemData.isAllowDropshiper = it.isAllowDropshipper
+            courierItemData.additionalPrice = it.additionalFee
+            courierItemData.promoCode = it.productData.promoCode
+            courierItemData.checksum = it.productData.checkSum
+            courierItemData.ut = it.productData.unixTime
+            courierItemData.blackboxInfo = it.blackboxInfo
+            courierItemData.isSelected = true
+            courierItemData.preOrderModel = it.preOrderModel
+
+            /*on time delivery*/
+            if (shippingCourierUiModel.productData.features.ontimeDeliveryGuarantee != null) {
+                val otdPrev = shippingCourierUiModel.productData.features.ontimeDeliveryGuarantee
+                val otd = OntimeDelivery(
+                    otdPrev.available,
+                    otdPrev.textLabel,
+                    otdPrev.textDetail,
+                    otdPrev.urlDetail,
+                    otdPrev.value,
+                    otdPrev.iconUrl,
+                    otdPrev.urlText
+                )
+                courierItemData.ontimeDelivery = otd
+            }
+
+            /*merchant voucher*/
+            if (it.productData.features.merchantVoucherProductData != null) {
+                val merchantVoucherProductData = it.productData.features.merchantVoucherProductData
+                val mvc = MerchantVoucherProductModel(
+                    merchantVoucherProductData.isMvc,
+                    merchantVoucherProductData.mvcLogo,
+                    merchantVoucherProductData.mvcErrorMessage
+                )
+                courierItemData.merchantVoucherProductModel = mvc
+            }
+
+            /*cash on delivery*/
+            if (it.productData.codProductData != null) {
+                val codProductData = it.productData.codProductData
+                val codProduct = CashOnDeliveryProduct(
+                    codProductData.isCodAvailable,
+                    codProductData.codText,
+                    codProductData.codPrice.roundToInt(),
+                    codProductData.formattedPrice,
+                    codProductData.tncText,
+                    codProductData.tncLink
+                )
+                courierItemData.codProductData = codProduct
+            }
+
+            /*ETA*/
+            if (it.productData.estimatedTimeArrival != null) {
+                courierItemData.etaText = it.productData.estimatedTimeArrival.textEta
+                courierItemData.etaErrorCode = it.productData.estimatedTimeArrival.errorCode
+            }
+        }
+
+        /*Schedule Delivery*/
+        courierItemData.setScheduleDeliveryUiModel(
+            scheduleDeliveryData = shippingRecommendationData?.scheduleDeliveryData,
+            validationMetadata = validationMetadata
+        )
+
+        return courierItemData
+    }
+
     private fun CourierItemData.setScheduleDeliveryUiModel(
         scheduleDeliveryData: ScheduleDeliveryData?,
         validationMetadata: String?

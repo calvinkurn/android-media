@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.revamp.view.uimodel
 
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
+import com.tokopedia.checkout.domain.model.checkout.PriceValidationData
 
 sealed class CheckoutPageState {
     object Loading: CheckoutPageState()
@@ -12,6 +13,9 @@ sealed class CheckoutPageState {
     object EmptyData : CheckoutPageState()
     class Success(val cartShipmentAddressFormData: CartShipmentAddressFormData): CheckoutPageState()
     object Normal: CheckoutPageState()
+    class ScrollTo(val index: Int): CheckoutPageState()
+    class PriceValidation(val priceValidationData: PriceValidationData): CheckoutPageState()
+    class Prompt(val prompt: com.tokopedia.checkout.domain.model.checkout.Prompt): CheckoutPageState()
 }
 
 data class CheckoutPageToaster(

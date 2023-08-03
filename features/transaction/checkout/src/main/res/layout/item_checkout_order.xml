@@ -14,7 +14,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.logisticcart.shipping.features.shippingwidget.ShippingWidget
+    <com.tokopedia.logisticcart.shipping.features.shippingwidget.ShippingCheckoutRevampWidget
         android:id="@+id/shipping_widget"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

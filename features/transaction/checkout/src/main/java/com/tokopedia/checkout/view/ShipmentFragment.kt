@@ -3898,6 +3898,8 @@ class ShipmentFragment :
         shipmentViewModel.saveAddOnsProduct(cartItemModel)
         shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
         shipmentAdapter.updateSubtotal()
+
+        checkoutAnalyticsCourierSelection.eventClickAddOnsProductServiceWidget(addOnProductDataItemModel.type, cartItemModel.productId.toString(), isChecked)
     }
 
     override fun onClickAddonProductInfoIcon(addOnDataInfoLink: String) {
@@ -4300,10 +4302,6 @@ class ShipmentFragment :
         checkoutAnalyticsCourierSelection.eventViewAddOnsProductServiceWidget(addOnType, productId)
     }
 
-    override fun onClickAddOnProductServiceWidgetItem(addOnType: Int, productId: String, isChecked: Boolean) {
-        checkoutAnalyticsCourierSelection.eventClickAddOnsProductServiceWidget(addOnType, productId, isChecked)
-    }
-
     override fun onClickLihatSemuaAddOnProductServiceWidget() {
         checkoutAnalyticsCourierSelection.eventClickLihatSemuaAddOnsProductServiceWidget()
     }
@@ -4315,26 +4313,22 @@ class ShipmentFragment :
             if (addOnProductDataResult.aggregatedData.isGetDataSuccess) {
                 val cartIdAddOn = addOnProductDataResult.cartId
                 val needUpdateAddOnItem = shipmentAdapter.getAddOnProductServicePosition(cartIdAddOn)
-
-                run loopAddOnProduct@{
-                    needUpdateAddOnItem.second?.addOnProduct?.listAddOnProductData?.forEach { addOnExisting ->
-                        for (addOnUiModel in addOnProductDataResult.aggregatedData.selectedAddons) {
-                            if (addOnUiModel.addOnType == addOnExisting.type) {
-                                addOnExisting.apply {
-                                    id = addOnUiModel.id.toLongOrZero()
-                                    uniqueId = addOnUiModel.uniqueId
-                                    price = addOnUiModel.price.toDouble()
-                                    infoLink = addOnUiModel.eduLink
-                                    name = addOnUiModel.name
-                                    status = addOnUiModel.getSelectedStatus().value
-                                    type = addOnUiModel.addOnType
-                                }
-                                onNeedUpdateViewItem(needUpdateAddOnItem.first)
-                                return@loopAddOnProduct
+                needUpdateAddOnItem.second?.addOnProduct?.listAddOnProductData?.forEach { addOnExisting ->
+                    for (addOnUiModel in addOnProductDataResult.aggregatedData.selectedAddons) {
+                        if (addOnExisting.type == addOnUiModel.addOnType) {
+                            addOnExisting.apply {
+                                id = addOnUiModel.id.toLongOrZero()
+                                uniqueId = addOnUiModel.uniqueId
+                                price = addOnUiModel.price.toDouble()
+                                infoLink = addOnUiModel.eduLink
+                                name = addOnUiModel.name
+                                type = addOnUiModel.addOnType
+                                status = addOnUiModel.getSaveAddonSelectedStatus().value
                             }
                         }
                     }
                 }
+                onNeedUpdateViewItem(needUpdateAddOnItem.first)
                 updateCost()
                 shipmentAdapter.updateSubtotal()
             } else {
@@ -4354,8 +4348,8 @@ class ShipmentFragment :
         const val REQUEST_CODE_MINI_CONSULTATION = 10022
         const val REQUEST_CODE_ADD_ON_PRODUCT_SERVICE_BOTTOMSHEET = 10033
         private const val REQUEST_CODE_UPSELL = 777
-        private const val ADD_ON_STATUS_ACTIVE = 1
-        private const val ADD_ON_STATUS_DISABLE = 2
+        const val ADD_ON_STATUS_ACTIVE = 1
+        const val ADD_ON_STATUS_DISABLE = 2
         private const val SHIPMENT_TRACE = "mp_shipment"
         private const val PLATFORM_FEE_CODE = "platform_fee"
         private const val KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA = "epharmacy_prescription_ids"

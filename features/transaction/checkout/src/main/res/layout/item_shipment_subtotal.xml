@@ -120,7 +120,6 @@
             android:layout_below="@id/tv_shipping_fee"
             tools:itemCount="2"
             tools:listitem="@layout/item_shipment_add_on_summary"
-            android:layout_marginBottom="16dp"
             android:visibility="gone"/>
 
         <com.tokopedia.unifyprinciples.Typography

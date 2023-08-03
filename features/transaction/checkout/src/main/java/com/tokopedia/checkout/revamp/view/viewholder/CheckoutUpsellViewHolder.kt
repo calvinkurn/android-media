@@ -1,9 +1,8 @@
 package com.tokopedia.checkout.revamp.view.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.checkout.R
-import com.tokopedia.checkout.databinding.ItemUpsellNewImprovementBinding
+import com.tokopedia.checkout.databinding.ItemCheckoupUpsellBinding
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.iconunify.IconUnify
@@ -13,13 +12,12 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.unifycomponents.ContainerUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.toPx
 
 class CheckoutUpsellViewHolder(
-    private val binding: ItemUpsellNewImprovementBinding,
+    private val binding: ItemCheckoupUpsellBinding,
     private val actionListener: CheckoutAdapterListener
 ): RecyclerView.ViewHolder(binding.root) {
 
@@ -33,12 +31,12 @@ class CheckoutUpsellViewHolder(
 
     private fun renderLoading() {
         binding.run {
-            checkoutUpsellCard.setCardUnifyBackgroundColor(
-                MethodChecker.getColor(
-                    itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_Background
-                )
-            )
+//            checkoutUpsellCard.setCardUnifyBackgroundColor(
+//                MethodChecker.getColor(
+//                    itemView.context,
+//                    com.tokopedia.unifyprinciples.R.color.Unify_Background
+//                )
+//            )
             checkoutUpsellCardOverlay.setOnClickListener(null)
             checkoutUpsellContentGroup.gone()
             checkoutUpsellBackgroundImage.loadImage(R.drawable.checkout_module_upsell_new_background)
@@ -54,13 +52,12 @@ class CheckoutUpsellViewHolder(
 
     private fun renderContent(data: ShipmentNewUpsellModel) {
         binding.run {
-            checkoutUpsellCard.setCardUnifyBackgroundColor(
-                MethodChecker.getColor(
-                    itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_Background
-                )
-            )
-            checkoutUpsellOuterContainer.setContainerColor(ContainerUnify.GREEN)
+//            checkoutUpsellCard.setCardUnifyBackgroundColor(
+//                MethodChecker.getColor(
+//                    itemView.context,
+//                    com.tokopedia.unifyprinciples.R.color.Unify_Background
+//                )
+//            )
             checkoutUpsellBackgroundImage.cornerRadius = Int.ZERO
             checkoutUpsellBackgroundImage.visible()
             checkoutUpsellLogoContainer.radius = CARD_VIEW_MAX_RADIUS.toPx().toFloat()
