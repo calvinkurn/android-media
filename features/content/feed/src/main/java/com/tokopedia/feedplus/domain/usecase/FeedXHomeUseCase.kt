@@ -276,6 +276,7 @@ class FeedXHomeUseCase @Inject constructor(
               }
               hasVoucher
               cta {
+                subtitle
                 texts
                 color
                 colorGradient {
