@@ -226,7 +226,7 @@ class BannerIndicator : LinearLayout {
     private fun isAnimationTurnedOff(): Boolean {
         return try {
             Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE) == 0f
-        } catch (e: Settings.SettingNotFoundException) {
+        } catch (_: Settings.SettingNotFoundException) {
             true
         }
     }
