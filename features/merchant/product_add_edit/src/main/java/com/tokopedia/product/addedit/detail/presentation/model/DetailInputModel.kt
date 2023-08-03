@@ -19,8 +19,6 @@ data class DetailInputModel(
         var currentProductName: String = "", // product name, before do editing
         var categoryName: String = "",
         var categoryId: String = "",
-        var categoryPrecision: Double = 0f.toDouble(),
-        var categoryConfidence: Double = 0f.toDouble(),
         var price: BigInteger = 0.toBigInteger(),
         var stock: Int = DEFAULT_STOCK_VALUE,
         var minOrder: Int = DEFAULT_MIN_ORDER_VALUE,
@@ -32,7 +30,8 @@ data class DetailInputModel(
         var wholesaleList: List<WholeSaleInputModel> = emptyList(),
         var pictureList: List<PictureInputModel> = emptyList(),
         var productShowCases: List<ShowcaseItemPicker> = emptyList(),
-        var specifications: List<SpecificationInputModel>? = null
+        var specifications: List<SpecificationInputModel>? = null,
+        var categoryManifest: CategoryManifestInputModel = CategoryManifestInputModel()
 ) : Parcelable
 
 @Parcelize
@@ -41,3 +40,17 @@ data class PreorderInputModel(
         var timeUnit: Int = 0,
         var isActive: Boolean = false
 ) : Parcelable
+
+@Parcelize
+data class CategoryManifestInputModel(
+    var recommendationRank: Int = 0,
+    var isFromRecommendation: Boolean = false,
+    var recommendationList: List<Recommendation> = emptyList()
+) : Parcelable {
+    @Parcelize
+    data class Recommendation (
+        val categoryID: Long = 0,
+        val confidenceScore: Double = 0.0,
+        val precision: Double = 0.0
+    ) : Parcelable
+}
