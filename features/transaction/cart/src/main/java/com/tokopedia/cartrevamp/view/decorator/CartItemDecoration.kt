@@ -4,17 +4,11 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Rect
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.cartrevamp.view.viewholder.CartChooseAddressViewHolder
-import com.tokopedia.cartrevamp.view.viewholder.CartGroupViewHolder
-import com.tokopedia.cartrevamp.view.viewholder.CartItemViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.CartSectionHeaderViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.CartTickerErrorViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.DisabledAccordionViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.DisabledItemHeaderViewHolder
-import com.tokopedia.cartrevamp.view.viewholder.DisabledReasonViewHolder
-import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackViewHolder
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementViewHolder
 import javax.inject.Inject
@@ -50,20 +44,6 @@ class CartItemDecoration @Inject constructor() : RecyclerView.ItemDecoration() {
                 outRect.top =
                     context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_6)?.toInt()
                         ?: 0
-
-            is CartChooseAddressViewHolder -> {
-                try {
-                    if (parent.adapter?.getItemViewType(viewHolder.absoluteAdapterPosition - 1) == TickerAnnouncementViewHolder.LAYOUT) {
-                        outRect.top = verticalSpaceHeight
-                    } else {
-                        outRect.top =
-                            context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_6)
-                                ?.toInt() ?: 0
-                    }
-                } catch (e: Exception) {
-                    // No-op
-                }
-            }
 
             is CartTickerErrorViewHolder ->
                 outRect.top =

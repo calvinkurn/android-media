@@ -60,7 +60,6 @@ import com.tokopedia.oneclickcheckout.order.view.model.ProductTrackerData
 import com.tokopedia.oneclickcheckout.order.view.model.WholesalePrice
 import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.model.AddOnsProductDataModel
 import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.model.SummaryAddOnProductDataModel
-import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.response.AddOnsProductResponse
 import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.response.SummaryAddOnProductResponse
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.ImageUploadDataModel
@@ -259,7 +258,7 @@ class GetOccCartMapper @Inject constructor() {
             errorMessage = product.errors.firstOrNull() ?: ""
             isError = errorMessage.isNotEmpty() || shop.isError
             addOn = mapAddOns(product.addOns)
-            addOnsProductData = mapAddOnsProduct(product.addOnsProduct)
+            addOnsProductData = mapAddOnsProduct(product)
             ethicalDrug = mapEthicalDrug(product.ethicalDrug)
             isFulfillment = shop.isFulfillment
         }
@@ -570,14 +569,14 @@ class GetOccCartMapper @Inject constructor() {
         }
     }
 
-    private fun mapAddOnsProduct(addOnsProductResponse: AddOnsProductResponse): AddOnsProductDataModel = AddOnsProductDataModel(
-        title = addOnsProductResponse.title,
+    private fun mapAddOnsProduct(product: ProductDataResponse): AddOnsProductDataModel = AddOnsProductDataModel(
+        title = product.addOnsProduct.title,
         bottomsheet = AddOnsProductDataModel.Bottomsheet(
-            title = addOnsProductResponse.bottomsheet.title,
-            applink = addOnsProductResponse.bottomsheet.applink,
-            isShown = addOnsProductResponse.bottomsheet.isShown
+            title = product.addOnsProduct.bottomsheet.title,
+            applink = product.addOnsProduct.bottomsheet.applink,
+            isShown = product.addOnsProduct.bottomsheet.isShown
         ),
-        data = addOnsProductResponse.data.map { data ->
+        data = product.addOnsProduct.data.map { data ->
             AddOnsProductDataModel.Data(
                 id = data.id,
                 uniqueId = data.uniqueId,
@@ -585,7 +584,8 @@ class GetOccCartMapper @Inject constructor() {
                 infoLink = data.infoLink,
                 name = data.name,
                 status = data.status,
-                type = data.type
+                type = data.type,
+                productQuantity = product.productQuantity
             )
         }
     )
