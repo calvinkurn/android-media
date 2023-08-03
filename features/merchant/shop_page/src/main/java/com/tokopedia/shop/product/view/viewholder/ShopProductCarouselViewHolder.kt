@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
@@ -77,6 +78,7 @@ class ShopProductCarouselViewHolder(
     }
 
     private fun bindShopProductCarousel(shopProductUiModelList: List<ShopProductUiModel>) {
+        recyclerView?.findViewById<RecyclerView>(com.tokopedia.carouselproductcard.R.id.carouselProductCardRecyclerView)?.isNestedScrollingEnabled = false
         recyclerView?.bindCarouselProductCardViewGrid(
             productCardModelList = shopProductUiModelList.map {
                 ShopPageProductListMapper.mapToProductCardModel(it, isWideContent = false, isShowThreeDots = false)

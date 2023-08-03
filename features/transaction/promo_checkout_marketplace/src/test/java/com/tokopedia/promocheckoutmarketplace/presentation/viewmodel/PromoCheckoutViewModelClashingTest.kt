@@ -264,6 +264,42 @@ class PromoCheckoutViewModelClashingTest : BasePromoCheckoutViewModelTest() {
     }
 
     @Test
+    fun `WHEN recommended promo is secondary mvc promo and primary tokopedia voucher THEN should select secondary mvc promo and primary tokopedia voucher`() {
+        // Given
+        val response = GetPromoListDataProvider.provideCouponListRecommendationWithSecondaryAndPrimaryRecommendedResponse()
+        coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
+        coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
+            firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
+        }
+        viewModel.getPromoList(PromoRequest(), "")
+
+        every { analytics.eventClickSelectKupon(any(), any(), any()) } just Runs
+        every { analytics.eventClickSelectPromo(any(), any()) } just Runs
+        every { analytics.eventClickDeselectKupon(any(), any(), any()) } just Runs
+        every { analytics.eventClickDeselectPromo(any(), any()) } just Runs
+        every { analytics.eventClickPilihPromoRecommendation(any(), any()) } just Runs
+        every { analytics.eventClickPilihOnRecommendation(any(), any(), any()) } just Runs
+
+        // When
+        viewModel.applyRecommendedPromo()
+
+        // Then
+        val selectedMvcWithPrimaryPromo = viewModel.promoListUiModel.value?.count {
+            it is PromoListItemUiModel && it.uiData.shopId > 0 && it.uiData.currentClashingPromo.isEmpty() && it.uiState.isSelected
+        } ?: 0
+        val selectedMvcWithSecondaryPromo = viewModel.promoListUiModel.value?.count {
+            it is PromoListItemUiModel && it.uiData.shopId > 0 && it.uiData.useSecondaryPromo && it.uiData.currentClashingSecondaryPromo.isEmpty() && it.uiState.isSelected
+        } ?: 0
+        val selectedPrimaryTokopediaVoucher = viewModel.promoListUiModel.value?.count {
+            it is PromoListItemUiModel && !it.uiState.isBebasOngkir && it.uiData.shopId == 0 && it.uiData.currentClashingPromo.isEmpty() && it.uiState.isSelected
+        } ?: 0
+        assert(viewModel.promoListUiModel.value != null)
+        assert(selectedMvcWithPrimaryPromo == 0)
+        assert(selectedMvcWithSecondaryPromo == 1)
+        assert(selectedPrimaryTokopediaVoucher == 1)
+    }
+
+    @Test
     fun `WHEN benefit adjustment message is set to false THEN set flag to false`() {
         // Given
         val benefitAdjustmentMessage = "promo disesuaikan"
