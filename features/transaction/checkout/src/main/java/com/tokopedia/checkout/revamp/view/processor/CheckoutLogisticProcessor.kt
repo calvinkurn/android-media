@@ -7,6 +7,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressF
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderShipment
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.view.CheckoutLogger
 import com.tokopedia.checkout.view.converter.RatesDataConverter
 import com.tokopedia.logisticCommon.data.constant.AddressConstant
@@ -162,9 +163,9 @@ class CheckoutLogisticProcessor @Inject constructor(
 
     private fun getActualThrowableForRx(t: Throwable) = t.cause?.cause ?: t.cause ?: t
 
-    fun getProductForRatesRequest(order: CheckoutOrderModel): ArrayList<Product> {
+    fun getProductForRatesRequest(orderProducts: List<CheckoutProductModel>): ArrayList<Product> {
         val products = arrayListOf<Product>()
-        for (cartItemModel in order.products) {
+        for (cartItemModel in orderProducts) {
             if (!cartItemModel.isError) {
                 val product = Product()
                 product.productId = cartItemModel.productId
@@ -183,10 +184,10 @@ class CheckoutLogisticProcessor @Inject constructor(
 
     private fun generateShippingBottomsheetParam(
         order: CheckoutOrderModel,
+        orderProducts: List<CheckoutProductModel>,
         recipientAddressModel: RecipientAddressModel,
         isTradeIn: Boolean
     ): ShipmentDetailData {
-        val orderProducts = order.products
         var orderValue = 0L
         var totalWeight = 0.0
         var totalWeightActual = 0.0
@@ -299,10 +300,10 @@ class CheckoutLogisticProcessor @Inject constructor(
         return shippingParam
     }
 
-    fun getRatesParam(orderModel: CheckoutOrderModel, address: RecipientAddressModel, isTradeIn: Boolean, isTradeInDropOff: Boolean, codData: CodModel?, cartDataForRates: String): RatesParam {
+    fun getRatesParam(orderModel: CheckoutOrderModel, orderProducts: List<CheckoutProductModel>, address: RecipientAddressModel, isTradeIn: Boolean, isTradeInDropOff: Boolean, codData: CodModel?, cartDataForRates: String): RatesParam {
         val shippingParam = getShippingParam(
-            generateShippingBottomsheetParam(orderModel, address, isTradeIn),
-            getProductForRatesRequest(orderModel),
+            generateShippingBottomsheetParam(orderModel, orderProducts, address, isTradeIn),
+            getProductForRatesRequest(orderProducts),
             orderModel.cartStringGroup,
             isTradeInDropOff,
             address

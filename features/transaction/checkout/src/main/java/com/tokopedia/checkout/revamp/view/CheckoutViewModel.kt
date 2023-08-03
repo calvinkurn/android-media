@@ -554,7 +554,7 @@ class CheckoutViewModel @Inject constructor(
     }
 
     fun getProductForRatesRequest(order: CheckoutOrderModel): ArrayList<Product> {
-        return logisticProcessor.getProductForRatesRequest(order)
+        return logisticProcessor.getProductForRatesRequest(getOrderProducts(order.cartStringGroup))
     }
 
     fun generateRatesMvcParam(cartStringGroup: String): String {
@@ -588,6 +588,7 @@ class CheckoutViewModel @Inject constructor(
         val result = logisticProcessor.getRatesWithScheduleDelivery(
             logisticProcessor.getRatesParam(
                 order,
+                getOrderProducts(order.cartStringGroup),
                 listData.value.address()!!.recipientAddressModel,
                 isTradeIn,
                 isTradeInByDropOff,
@@ -709,6 +710,7 @@ class CheckoutViewModel @Inject constructor(
         val result = logisticProcessor.getRates(
             logisticProcessor.getRatesParam(
                 order,
+                getOrderProducts(order.cartStringGroup),
                 listData.value.address()!!.recipientAddressModel,
                 isTradeIn,
                 isTradeInByDropOff,
@@ -1492,6 +1494,7 @@ class CheckoutViewModel @Inject constructor(
                 val result = logisticProcessor.getRatesWithBoCode(
                     logisticProcessor.getRatesParam(
                         order,
+                        getOrderProducts(order.cartStringGroup),
                         checkoutItems.address()!!.recipientAddressModel,
                         isTradeIn,
                         isTradeInByDropOff,

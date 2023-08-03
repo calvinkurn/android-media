@@ -19,6 +19,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEgoldModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.revamp.view.upsell
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -32,16 +33,18 @@ class CheckoutProcessor @Inject constructor(
     private val shipmentDataRequestConverter: ShipmentDataRequestConverter,
     private val dispatchers: CoroutineDispatchers
 ) {
-    suspend fun doCheckout(listData: List<CheckoutItem>,
-                           recipientAddressModel: RecipientAddressModel,
-                           validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?,
-                           isOneClickShipment: Boolean,
-                           isTradeIn: Boolean,
-                           isTradeInDropOff: Boolean,
-                           deviceId: String,
-                           checkoutLeasingId: String,
-                           fingerprintPublicKey: String?,
-                           hasClearPromoBeforeCheckout: Boolean): CheckoutResult {
+    suspend fun doCheckout(
+        listData: List<CheckoutItem>,
+        recipientAddressModel: RecipientAddressModel,
+        validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?,
+        isOneClickShipment: Boolean,
+        isTradeIn: Boolean,
+        isTradeInDropOff: Boolean,
+        deviceId: String,
+        checkoutLeasingId: String,
+        fingerprintPublicKey: String?,
+        hasClearPromoBeforeCheckout: Boolean
+    ): CheckoutResult {
         val checkoutRequest = generateCheckoutRequest(listData, recipientAddressModel, validateUsePromoRevampUiModel, checkoutLeasingId, isTradeInDropOff)
         if (checkoutRequest.data.isNotEmpty() && checkoutRequest.data.first().groupOrders.isNotEmpty()) {
             // Get additional param for trade in analytics
@@ -68,13 +71,13 @@ class CheckoutProcessor @Inject constructor(
                 fingerprintPublicKey
             )
 //            viewModelScope.launch(dispatchers.immediate) {
-                try {
-                    val checkoutData = withContext(dispatchers.io) {
-                        checkoutGqlUseCase(params)
-                    }
+            try {
+                val checkoutData = withContext(dispatchers.io) {
+                    checkoutGqlUseCase(params)
+                }
 //                    view?.let { v ->
 //                        v.setHasRunningApiCall(false)
-                        if (!checkoutData.isError) {
+                if (!checkoutData.isError) {
 //                            v.triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(
 //                                checkoutData.transactionId,
 //                                deviceModel,
@@ -93,54 +96,54 @@ class CheckoutProcessor @Inject constructor(
 //                            }
 //                            if (isCrossSellChecked) triggerCrossSellClickPilihPembayaran()
 //                            v.renderCheckoutCartSuccess(checkoutData)
-                            return CheckoutResult(
-                                true,
-                                checkoutData,
-                                checkoutData.transactionId,
-                                deviceModel,
-                                devicePrice,
-                                diagnosticId,
-                                hasClearPromoBeforeCheckout,
-                                null
-                            )
-                        } else if (checkoutData.priceValidationData.isUpdated) {
+                    return CheckoutResult(
+                        true,
+                        checkoutData,
+                        checkoutData.transactionId,
+                        deviceModel,
+                        devicePrice,
+                        diagnosticId,
+                        hasClearPromoBeforeCheckout,
+                        null
+                    )
+                } else if (checkoutData.priceValidationData.isUpdated) {
 //                            v.hideLoading()
 //                            v.renderCheckoutPriceUpdated(checkoutData.priceValidationData)
-                            return CheckoutResult(
-                                false,
-                                checkoutData,
-                                checkoutData.transactionId,
-                                deviceModel,
-                                devicePrice,
-                                diagnosticId,
-                                hasClearPromoBeforeCheckout,
-                                null
-                            )
-                        } else if (checkoutData.prompt.eligible) {
+                    return CheckoutResult(
+                        false,
+                        checkoutData,
+                        checkoutData.transactionId,
+                        deviceModel,
+                        devicePrice,
+                        diagnosticId,
+                        hasClearPromoBeforeCheckout,
+                        null
+                    )
+                } else if (checkoutData.prompt.eligible) {
 //                            v.hideLoading()
 //                            v.renderPrompt(checkoutData.prompt)
-                            return CheckoutResult(
-                                false,
-                                checkoutData,
-                                checkoutData.transactionId,
-                                deviceModel,
-                                devicePrice,
-                                diagnosticId,
-                                hasClearPromoBeforeCheckout,
-                                null
-                            )
-                        } else {
+                    return CheckoutResult(
+                        false,
+                        checkoutData,
+                        checkoutData.transactionId,
+                        deviceModel,
+                        devicePrice,
+                        diagnosticId,
+                        hasClearPromoBeforeCheckout,
+                        null
+                    )
+                } else {
 //                            analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(
 //                                checkoutData.errorMessage
 //                            )
 //                            v.hideLoading()
-                            if (checkoutData.errorMessage.isNotEmpty()) {
+                    if (checkoutData.errorMessage.isNotEmpty()) {
 //                                v.renderCheckoutCartError(checkoutData.errorMessage)
 //                                v.logOnErrorCheckout(
 //                                    MessageErrorException(checkoutData.errorMessage),
 //                                    checkoutRequest.toString()
 //                                )
-                            } else {
+                    } else {
 //                                val defaultErrorMessage =
 //                                    v.getStringResource(com.tokopedia.abstraction.R.string.default_request_error_unknown)
 //                                v.renderCheckoutCartError(defaultErrorMessage)
@@ -148,24 +151,24 @@ class CheckoutProcessor @Inject constructor(
 //                                    MessageErrorException(defaultErrorMessage),
 //                                    checkoutRequest.toString()
 //                                )
-                            }
-                            return CheckoutResult(
-                                false,
-                                checkoutData,
-                                checkoutData.transactionId,
-                                deviceModel,
-                                devicePrice,
-                                diagnosticId,
-                                hasClearPromoBeforeCheckout,
-                                null
-                            )
+                    }
+                    return CheckoutResult(
+                        false,
+                        checkoutData,
+                        checkoutData.transactionId,
+                        deviceModel,
+                        devicePrice,
+                        diagnosticId,
+                        hasClearPromoBeforeCheckout,
+                        null
+                    )
 //                            processInitialLoadCheckoutPage(
 //                                isReloadData = true,
 //                                skipUpdateOnboardingState = true,
 //                                isReloadAfterPriceChangeHinger = false
 //                            )
-                        }
-                } catch (e: Throwable) {
+                }
+            } catch (e: Throwable) {
 //                    view?.hideLoading()
 //                    Timber.d(e)
 //                    var errorMessage = e.message
@@ -181,17 +184,17 @@ class CheckoutProcessor @Inject constructor(
 //                        isReloadAfterPriceChangeHinger = false
 //                    )
 //                    view?.logOnErrorCheckout(e, checkoutRequest.toString())
-                    return CheckoutResult(
-                        false,
-                        null,
-                        "",
-                        deviceModel,
-                        devicePrice,
-                        diagnosticId,
-                        hasClearPromoBeforeCheckout,
-                        e
-                    )
-                }
+                return CheckoutResult(
+                    false,
+                    null,
+                    "",
+                    deviceModel,
+                    devicePrice,
+                    diagnosticId,
+                    hasClearPromoBeforeCheckout,
+                    e
+                )
+            }
 //            }
         } else {
             return CheckoutResult(
@@ -389,17 +392,21 @@ class CheckoutProcessor @Inject constructor(
 
     private fun removeErrorShopProduct(listData: List<CheckoutItem>, recipientAddressModel: RecipientAddressModel, isTradeInDropOff: Boolean): List<Data> {
         val newShipmentCartItemModelList: MutableList<CheckoutOrderModel> = ArrayList()
+        var orderProducts = arrayListOf<CheckoutProductModel>()
         for (shipmentCartItemModel in listData) {
+            if (shipmentCartItemModel is CheckoutProductModel && !shipmentCartItemModel.isError) {
+                orderProducts.add(shipmentCartItemModel)
+            }
             if (shipmentCartItemModel is CheckoutOrderModel) {
                 if (shipmentCartItemModel.isAllItemError) {
+                    orderProducts = arrayListOf()
                     continue
                 }
-                val validCartItemModels =
-                    shipmentCartItemModel.products.filter { !it.isError }
-                if (validCartItemModels.isEmpty()) {
+                if (orderProducts.isEmpty()) {
+                    orderProducts = arrayListOf()
                     continue
                 }
-                newShipmentCartItemModelList.add(shipmentCartItemModel.copy(products = validCartItemModels))
+                newShipmentCartItemModelList.add(shipmentCartItemModel.copy(products = orderProducts))
             }
         }
         return shipmentDataRequestConverter.createCheckoutRequestData(
