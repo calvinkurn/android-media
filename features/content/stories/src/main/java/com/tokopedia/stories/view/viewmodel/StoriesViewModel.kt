@@ -1,37 +1,32 @@
 package com.tokopedia.stories.view.viewmodel
 
-import androidx.lifecycle.SavedStateHandle
+import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import com.tokopedia.stories.data.StoriesRepository
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import com.tokopedia.stories.view.viewmodel.action.StoriesAction
+import javax.inject.Inject
 
-class StoriesViewModel @AssistedInject constructor(
-    @Assisted private val handle: SavedStateHandle,
+class StoriesViewModel @Inject constructor(
     private val repository: StoriesRepository,
 ) : ViewModel() {
 
-    @AssistedFactory
-    interface Factory {
-        fun create(handle: SavedStateHandle): StoriesViewModel
+    private var shopId: String = ""
+    private var storiesId: String = ""
+
+    fun submitAction(event: StoriesAction) {
+        when (event) {
+           is StoriesAction.SetInitialData -> handleSetInitialData(event.data)
+        }
     }
 
-    private var shopId = ""
-    private var storiesId = ""
-
-    fun getData(): String {
-        return "$shopId - $storiesId"
-    }
-
-    fun saveInitialData(data: List<String>) {
-        shopId = data[SHOP_ID_INDEX]
-        storiesId = if (data.size > 2) data[STORIES_ID_INDEX] else ""
+    private fun handleSetInitialData(data: Bundle?) {
+        shopId = data?.getString(SHOP_ID, "").orEmpty()
+        storiesId = data?.getString(STORIES_ID, "").orEmpty()
     }
 
     companion object {
-        private const val SHOP_ID_INDEX = 1
-        private const val STORIES_ID_INDEX = 2
+        private const val SHOP_ID = "shop_id"
+        private const val STORIES_ID = "stories_id"
     }
 
 }

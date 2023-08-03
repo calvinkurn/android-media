@@ -1,35 +1,24 @@
 package com.tokopedia.stories.view.activity
 
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.stories.di.StoriesInjector
 import com.tokopedia.stories.view.fragment.StoriesFragment
-import com.tokopedia.stories.view.viewmodel.StoriesViewModel
-import com.tokopedia.stories.view.viewmodel.factory.StoriesViewModelFactory
 import javax.inject.Inject
 
-@Suppress("LateinitUsage")
 class StoriesActivity : BaseSimpleActivity() {
 
     @Inject
+    @Suppress("LateinitUsage")
     lateinit var fragmentFactory: FragmentFactory
-
-    @Inject
-    lateinit var viewModelFactory: StoriesViewModelFactory.Creator
-
-    private val viewModel by viewModels<StoriesViewModel> {
-        viewModelFactory.create(this)
-    }
+    private var bundle: Bundle? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
-
+        getData()
         super.onCreate(savedInstanceState)
-
-        getIntentData()
     }
 
     private fun inject() {
@@ -37,16 +26,33 @@ class StoriesActivity : BaseSimpleActivity() {
         supportFragmentManager.fragmentFactory = fragmentFactory
     }
 
-    private fun getIntentData() {
-        val data = intent.data ?: return
-        viewModel.saveInitialData(data.pathSegments)
+    private fun getData() {
+        val data = intent.data
+        if (data == null) {
+            finish()
+            return
+        }
+
+        val path = data.pathSegments
+        bundle = Bundle().apply {
+            putString(SHOP_ID, path[SHOP_ID_INDEX])
+            if (path.size > STORIES_ID_INDEX) putString(STORIES_ID, path[STORIES_ID_INDEX])
+        }
     }
 
     override fun getNewFragment(): Fragment {
         return StoriesFragment.getFragment(
-            supportFragmentManager,
-            classLoader,
+            fragmentManager = supportFragmentManager,
+            classLoader = classLoader,
+            bundle = bundle ?: Bundle(),
         )
+    }
+
+    companion object {
+        private const val SHOP_ID = "shop_id"
+        private const val STORIES_ID = "stories_id"
+        private const val SHOP_ID_INDEX = 1
+        private const val STORIES_ID_INDEX = 2
     }
 
 }
