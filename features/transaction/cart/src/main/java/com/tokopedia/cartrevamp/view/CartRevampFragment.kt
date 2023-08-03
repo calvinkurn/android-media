@@ -1008,7 +1008,7 @@ class CartRevampFragment :
     }
 
     override fun onCartItemQuantityInputFormClicked(qty: String) {
-        TODO("Not yet implemented")
+        cartPageAnalytics.eventClickAtcCartClickInputQuantity(qty)
     }
 
     override fun onCartItemLabelInputRemarkClicked() {

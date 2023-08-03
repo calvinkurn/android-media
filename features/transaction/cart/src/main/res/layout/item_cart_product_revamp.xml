@@ -58,6 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:paddingBottom="8dp"
         android:focusable="true"
         android:focusableInTouchMode="true">
 
@@ -289,6 +290,37 @@
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_product_information_separator"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            app:layout_constraintStart_toEndOf="@id/text_qty_left"
+            app:layout_constraintTop_toTopOf="@id/text_qty_left"
+            app:layout_constraintBottom_toBottomOf="@id/text_qty_left"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            android:textColor="@color/Unify_NN600"
+            android:text="•" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_product_information"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/text_product_name"
+            android:layout_marginStart="4dp"
+            android:gravity="center_vertical"
+            android:textColor="@color/Unify_YN500"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/text_product_information_separator"
+            app:layout_constraintTop_toTopOf="@id/text_qty_left"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            tools:text="Harga Turun"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_product_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -420,20 +452,28 @@
             app:layout_constraintTop_toBottomOf="@id/layout_product_info"
             tools:visibility="invisible" />
 
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iu_prescription"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_marginStart="12dp"
+            app:layout_constraintStart_toEndOf="@+id/iu_image_product"
+            app:layout_constraintTop_toBottomOf="@+id/barrier_unavailable_action"
+            />
+
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/text_incident"
+            android:id="@+id/text_prescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/layout_product_info"
-            android:layout_marginStart="12dp"
-            android:layout_toEndOf="@+id/iu_image_product"
-            android:paddingTop="2dp"
-            android:textColor="@color/Unify_N700_68"
+            android:layout_marginStart="4dp"
+            android:textColor="@color/Unify_NN600"
             android:visibility="gone"
-            app:layout_constraintStart_toEndOf="@+id/iu_image_product"
-            app:layout_constraintTop_toBottomOf="@+id/barrier_unavailable_action"
-            app:typographyType="body_3"
-            tools:text="Incident"
+            app:layout_constraintStart_toEndOf="@+id/iu_prescription"
+            app:layout_constraintTop_toTopOf="@+id/iu_prescription"
+            app:layout_constraintBottom_toBottomOf="@id/iu_prescription"
+            app:typographyType="small"
+            tools:text="Upload Resep di Pengiriman"
             tools:visibility="visible" />
 
         <View
@@ -446,7 +486,7 @@
             android:background="@color/Unify_NN50"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/iu_image_product"
-            app:layout_constraintTop_toBottomOf="@id/text_incident"
+            app:layout_constraintTop_toBottomOf="@id/text_prescription"
             tools:visibility="visible" />
 
         <include
@@ -511,6 +551,19 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/label_qty_min_quantity_error"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginTop="2dp"
+            android:textColor="@color/Unify_NN600"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="@id/qty_editor_product"
+            app:layout_constraintTop_toBottomOf="@id/qty_editor_product"
+            app:typographyType="display_3"
+            tools:text="Min. beli 2" />
 
 <!--        <androidx.constraintlayout.widget.Group-->
 <!--            android:id="@+id/container_product_action"-->
