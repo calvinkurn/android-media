@@ -208,6 +208,10 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                         errorIcon = tmpClashingIconUrl
                     }
                 }
+                if (tmpErrorMessage.isEmpty()) {
+                    tmpErrorMessage.append(couponItem.message)
+                    errorMessage = tmpErrorMessage.toString()
+                }
                 promoInfos = couponItem.promoInfos
                 remainingPromoCount = couponSubSection.couponGroups.firstOrNull {
                     it.id == couponItem.groupId
