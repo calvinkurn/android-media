@@ -16,7 +16,7 @@ class DtHomepageRobot {
 
     fun launch(mActivityTestRule: ActivityTestRule<DtHomeActivity>) {
         mActivityTestRule.launchActivity(Intent())
-        waitForData(5000)
+        waitForData(2000)
     }
 
     fun impressFirstWidget() {
@@ -28,8 +28,7 @@ class DtHomepageRobot {
         Espresso.onView(RecyclerViewMatcher(R.id.rv_home).atPositionOnView(1, R.id.rv_product))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
             .perform(ViewActions.click())
-
-        waitForData(3000)
+        waitForData(1000)
     }
 
     private fun waitForData(millis: Long = 500L) {
