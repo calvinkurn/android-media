@@ -159,7 +159,7 @@ class ShippingCourierConverter @Inject constructor() {
         validationMetadata: String
     ): ScheduleDeliveryUiModel {
         return ScheduleDeliveryUiModel(
-            isSelected = recommend,
+            isSelected = recommend && available,
             available = available,
             ratesId = ratesId,
             hidden = hidden,

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="16dp">
+
+    <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+        android:id="@+id/rb_shipment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_title_shipment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/rb_shipment"
+        app:typographyType="display_3"
+        android:layout_marginStart="12dp"
+        tools:text="NOW! - Terjadwal (Rp0 Rp20.000)" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_description_shipment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN600"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/tv_title_shipment"
+        app:layout_constraintStart_toStartOf="@id/tv_title_shipment"
+        app:layout_constraintEnd_toStartOf="@id/rb_shipment"
+        app:typographyType="display_3"
+        app:typographyWeight="reguler"
+        tools:text="Tiba hari ini, 10:00 - 12:00"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_other_schedule"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_GN500"
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@id/tv_description_shipment"
+        app:layout_constraintStart_toStartOf="@id/tv_title_shipment"
+        app:layout_constraintEnd_toStartOf="@id/rb_shipment"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        android:text="@string/other_option_title_widget_schedule_delivery" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
