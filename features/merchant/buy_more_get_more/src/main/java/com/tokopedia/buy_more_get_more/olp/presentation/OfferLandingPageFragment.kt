@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -34,7 +33,6 @@ import com.tokopedia.buy_more_get_more.sort.activity.ShopProductSortActivity
 import com.tokopedia.buy_more_get_more.sort.listener.ProductSortListener
 import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.bmgm.presentation.fragment.BmgmMiniCartWidgetFragment
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -146,14 +144,14 @@ class OfferLandingPageFragment :
     }
 
     private fun setupContent(offerInfoForBuyer: OfferInfoForBuyerUiModel) {
+        setupHeader(offerInfoForBuyer)
         olpAdapter?.submitList(
             newList = listOf(
                 generateDummyOfferingData(), // pass offering data
-                OfferProductSortingUiModel(67) // pass product count
+                OfferProductSortingUiModel() // pass product count
             )
         )
         olpAdapter?.setProductListData(generateDummyProductData()) // pass product list data
-        setupHeader(offerInfoForBuyer)
     }
 
     private fun setupToolbar(offerInfoForBuyer: OfferInfoForBuyerUiModel) {
@@ -196,7 +194,7 @@ class OfferLandingPageFragment :
 
     private fun renderSortFilter(sortId: String, sortName: String) {
         olpAdapter?.changeSelectedSortFilter(sortId, sortName)
-        //update product list data
+        // update product list data
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -231,7 +229,7 @@ class OfferLandingPageFragment :
         return object :
             DataEndlessScrollListener(getRecyclerView(view)?.layoutManager, olpAdapter) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                Log.d("Masuk", "load more") //load more data
+                Log.d("Masuk", "load more") // load more data
             }
         }
     }

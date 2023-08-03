@@ -1,7 +1,6 @@
 package com.tokopedia.buy_more_get_more.olp.presentation.adapter
 
 import android.os.Parcelable
-import android.util.Log
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -28,6 +27,7 @@ open class OlpAdapter(
 
     private var onStickySingleHeaderViewListener: OnStickySingleHeaderListener? = null
     private var recyclerView: RecyclerView? = null
+    private var productListUiModel: MutableList<OfferProductListUiModel.Product> = mutableListOf()
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
@@ -69,7 +69,7 @@ open class OlpAdapter(
     }
 
     override fun getEndlessDataSize(): Int {
-        return 50
+        return productListUiModel.size
     }
 
     override fun clearAllElements() {
@@ -145,9 +145,22 @@ open class OlpAdapter(
         refreshSticky()
     }
 
+    fun updateProductCount() {
+        val newList = getNewVisitableItems()
+        val sortFilter = newList
+            .filterIsInstance<OfferProductSortingUiModel>().firstOrNull()
+        sortFilter?.apply {
+            productCount = productListUiModel.size
+        }
+        submitList(newList)
+        refreshSticky()
+    }
+
     fun setProductListData(productList: List<OfferProductListUiModel.Product>) {
         val newList = getNewVisitableItems()
+        productListUiModel.addAll(productList)
         newList.addAll(productList)
         submitList(newList)
+        updateProductCount()
     }
 }
