@@ -188,6 +188,8 @@ import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.shop.home.view.model.ShopPageLayoutUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
+import com.tokopedia.shop.home.view.model.nav_banner.ShopHomeCategory
+import com.tokopedia.shop.home.view.model.nav_banner.ShopHomeCategoryAppearance
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
@@ -1259,6 +1261,7 @@ open class ShopPageHomeFragment :
                 when (it) {
                     is Success -> {
                         shopHomeAdapter?.setHomeMerchantVoucherData(it.data)
+                        shopHomeAdapter?.setHomeCategoryData(ShopHomeCategory("1", "","", ShopHomeCategoryAppearance.CAROUSEL))
                     }
                     is Fail -> {
                         shopHomeAdapter?.getMvcWidgetUiModel()?.let { uiModel ->

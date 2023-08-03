@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iconChevron"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="12dp"
+        app:icon_color_light_enable="@color/Unify_NN900"
+        app:icon_color_night_enable="@color/Unify_NN900"
+        app:icon_name="CHEVRON_RIGHT"
+        app:layout_constraintBottom_toBottomOf="@+id/tpgTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tpgTitle" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:typographyWeight="bold"
+        app:typographyType="display_1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Explore categories" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgFirstBanner"
+        android:layout_width="328dp"
+        android:layout_height="328dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tpgTitle"
+        app:unify_image_corner_radius="8" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgSecondBanner"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="@+id/imgFirstBanner"
+        app:layout_constraintTop_toBottomOf="@+id/imgFirstBanner"
+        app:unify_image_corner_radius="8" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgSecondBannerTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:typographyType="small"
+        android:layout_marginTop="4dp"
+        android:minLines="1"
+        android:gravity="center"
+        android:maxLines="1"
+        android:ellipsize="end"
+        app:layout_constraintEnd_toEndOf="@+id/imgSecondBanner"
+        app:layout_constraintStart_toStartOf="@+id/imgSecondBanner"
+        app:layout_constraintTop_toBottomOf="@+id/imgSecondBanner"
+        tools:text="Tablet" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgThirdBanner"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toEndOf="@+id/imgSecondBanner"
+        app:layout_constraintTop_toBottomOf="@+id/imgFirstBanner"
+        app:unify_image_corner_radius="8" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgThirdBannerTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:minLines="1"
+        app:layout_constraintEnd_toEndOf="@+id/imgThirdBanner"
+        app:layout_constraintStart_toStartOf="@+id/imgThirdBanner"
+        app:layout_constraintTop_toBottomOf="@+id/imgThirdBanner"
+        app:typographyType="small"
+        tools:text="Handphone" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgFourthBanner"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@+id/imgThirdBanner"
+        app:layout_constraintTop_toTopOf="@+id/imgSecondBanner"
+        app:unify_image_corner_radius="8" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgFourthBannerTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:minLines="1"
+        app:layout_constraintEnd_toEndOf="@+id/imgFourthBanner"
+        app:layout_constraintStart_toStartOf="@+id/imgFourthBanner"
+        app:layout_constraintTop_toBottomOf="@+id/imgSecondBanner"
+        app:typographyType="small"
+        tools:text="Accecories" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgFifthBanner"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintEnd_toEndOf="@+id/imgFirstBanner"
+        app:layout_constraintStart_toEndOf="@+id/imgFourthBanner"
+        app:layout_constraintTop_toTopOf="@+id/imgSecondBanner"
+        app:unify_image_corner_radius="8" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgFifthBannerTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:minLines="1"
+        app:layout_constraintEnd_toEndOf="@+id/imgFifthBanner"
+        app:layout_constraintStart_toStartOf="@+id/imgFifthBanner"
+        app:layout_constraintTop_toBottomOf="@+id/imgFifthBanner"
+        app:typographyType="small"
+        tools:text="Power Bank" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
