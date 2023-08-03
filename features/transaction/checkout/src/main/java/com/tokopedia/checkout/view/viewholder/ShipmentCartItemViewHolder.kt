@@ -460,15 +460,19 @@ class ShipmentCartItemViewHolder(
                         tvShipmentAddOnPrice.text = CurrencyFormatUtil
                             .convertPriceValueToIdrFormat(addon.price.toLong(), false)
                             .removeDecimalSuffix()
-                        if (addon.status == ADD_ON_PRODUCT_STATUS_CHECK) {
-                            cbAddonItem.isChecked = true
-                            cbAddonItem.isEnabled = true
-                        } else if (addon.status == ADD_ON_PRODUCT_STATUS_MANDATORY) {
-                            cbAddonItem.isChecked = true
-                            cbAddonItem.isEnabled = false
-                        } else {
-                            cbAddonItem.isChecked = false
-                            cbAddonItem.isEnabled = true
+                        when (addon.status) {
+                            ADD_ON_PRODUCT_STATUS_CHECK -> {
+                                cbAddonItem.isChecked = true
+                                cbAddonItem.isEnabled = true
+                            }
+                            ADD_ON_PRODUCT_STATUS_MANDATORY -> {
+                                cbAddonItem.isChecked = true
+                                cbAddonItem.isEnabled = false
+                            }
+                            else -> {
+                                cbAddonItem.isChecked = false
+                                cbAddonItem.isEnabled = true
+                            }
                         }
                         cbAddonItem.setOnCheckedChangeListener { compoundButton, isChecked ->
                             delayChangeCheckboxAddOnState?.cancel()

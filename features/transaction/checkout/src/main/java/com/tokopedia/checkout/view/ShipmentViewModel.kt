@@ -5646,10 +5646,14 @@ class ShipmentViewModel @Inject constructor(
 
     fun saveAddOnsProductBeforeCheckout() {
         if (shipmentCartItemModelList.isNotEmpty()) {
-            val cartItemModels =
-                (shipmentCartItemModelList.first { it is ShipmentCartItemModel } as ShipmentCartItemModel).cartItemModels
+            val allShipmentCartItemModel: ArrayList<CartItemModel> = arrayListOf()
+            shipmentCartItemModelList.filterIsInstance<ShipmentCartItemModel>().forEach { shipmentCartItem ->
+                shipmentCartItem.cartItemModels.forEach { cartItemModel ->
+                    allShipmentCartItemModel.add(cartItemModel)
+                }
+            }
 
-            val params = ShipmentAddOnProductServiceMapper.generateSaveAddOnProductRequestParams(cartItemModels, isOneClickShipment)
+            val params = ShipmentAddOnProductServiceMapper.generateSaveAddOnProductRequestParams(allShipmentCartItemModel, isOneClickShipment)
             saveAddOnProductUseCase.setParams(params, false)
             saveAddOnProductUseCase.execute(
                 onSuccess = {

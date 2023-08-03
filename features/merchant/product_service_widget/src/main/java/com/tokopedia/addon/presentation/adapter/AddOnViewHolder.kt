@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.addon.presentation.uimodel.AddOnGroupUIModel
 import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
@@ -49,6 +50,7 @@ class AddOnViewHolder(
                 setItems(item.addon)
             }
             tfHint.isVisible = item.addonCount > Int.ONE
+            topSpacer.isVisible = bindingAdapterPosition.isMoreThanZero()
         }
     }
 

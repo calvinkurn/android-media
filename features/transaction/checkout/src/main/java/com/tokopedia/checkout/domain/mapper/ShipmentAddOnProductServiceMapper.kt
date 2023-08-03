@@ -57,7 +57,7 @@ object ShipmentAddOnProductServiceMapper {
                 cartItem.addOnProduct.listAddOnProductData.forEach { addOnProduct ->
                     val addOnDataRequest = AddOnDataRequest(
                         addOnId = addOnProduct.id,
-                        addOnQty = 1,
+                        addOnQty = cartItem.quantity,
                         addOnUniqueId = addOnProduct.uniqueId,
                         addOnType = addOnProduct.type,
                         addOnStatus = addOnProduct.status

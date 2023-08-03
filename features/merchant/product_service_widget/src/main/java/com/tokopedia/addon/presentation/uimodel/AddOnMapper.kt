@@ -85,6 +85,14 @@ object AddOnMapper {
         return resultValue
     }
 
+    fun getGroupSelectedAddons(addOnGroupUIModels: List<AddOnGroupUIModel>): List<AddOnUIModel> {
+        return addOnGroupUIModels.map { addonGroups ->
+            addonGroups.addon.firstOrNull {
+                it.isSelected
+            } ?: AddOnUIModel()
+        }
+    }
+
     fun getPPSelectedAddons(addOnGroupUIModels: List<AddOnGroupUIModel>?): List<AddOnUIModel> {
         val resultValue: MutableList<AddOnUIModel> = mutableListOf()
         addOnGroupUIModels.orEmpty().forEach { addOnGroupUIModel ->
@@ -108,9 +116,9 @@ object AddOnMapper {
     fun mapToSaveAddOnStateRequest(
         cartId: Long,
         source: String,
-        addonGroups: List<AddOnGroupUIModel>?
+        addonGroups: List<AddOnGroupUIModel>?,
+        addonsSelected: List<AddOnUIModel>
     ): SaveAddOnStateRequest {
-        val addons = flatmapToChangedAddonSelection(addonGroups)
         val request = AddOnRequest(
             addOnKey = cartId.toString(),
             addOnLevel = addonGroups?.firstOrNull()?.addOnLevel.orEmpty(),
@@ -120,13 +128,13 @@ object AddOnMapper {
                     productId = addonGroups?.firstOrNull()?.productId.orZero()
                 )
             ),
-            addOnData = addons.map {
+            addOnData = addonsSelected.map {
                 AddOnDataRequest(
                     addOnId = it.id.toLongOrZero(),
                     addOnQty = ATC_ADDON_DEFAULT_QTY,
                     addOnUniqueId = it.uniqueId,
                     addOnType = it.addOnType,
-                    addOnStatus = it.getSelectedStatus().value
+                    addOnStatus = it.getSaveAddonSelectedStatus().value
                 )
             }
         )

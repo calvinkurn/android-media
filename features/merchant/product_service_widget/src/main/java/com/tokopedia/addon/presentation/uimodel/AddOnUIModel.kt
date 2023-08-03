@@ -30,6 +30,15 @@ data class AddOnUIModel(
         }
     }
 
+    fun getSaveAddonSelectedStatus(): AddOnSelectedStatus {
+        return when {
+            isMandatory -> AddOnSelectedStatus.MANDATORY
+            isSelected -> AddOnSelectedStatus.CHECKED
+            !isSelected -> AddOnSelectedStatus.UNCHECKED
+            else -> AddOnSelectedStatus.DEFAULT
+        }
+    }
+
     fun isDiscounted(): Boolean = price != discountedPrice
 }
 

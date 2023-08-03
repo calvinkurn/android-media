@@ -40,6 +40,7 @@ class AddOnWidgetView : BaseCustomView {
     private var llSeeAll: LinearLayoutCompat? = null
     private var divSeeAll: View? = null
     private var listener: AddOnComponentListener? = null
+    private var isObserverSetupDone: Boolean = false
 
     constructor(context: Context) : super(context) {
         setup(context, null)
@@ -58,11 +59,14 @@ class AddOnWidgetView : BaseCustomView {
         val lifecycleOwner = context as? LifecycleOwner ?:
             (context as? ContextThemeWrapper)?.baseContext as? LifecycleOwner
         lifecycleOwner?.run {
+            if (isObserverSetupDone) return@run
+            isObserverSetupDone = true
             viewModel.errorThrowable.observe(this) {
                 listener?.onAddonComponentError(ErrorHandler.getErrorMessage(context, it))
             }
             viewModel.getAddOnResult.observe(this) {
                 addonAdapter.setItems(it)
+                viewModel.lastSelectedAddOn = AddOnMapper.getGroupSelectedAddons(it).toMutableList()
                 viewModel.setSelectedAddons(it)
             }
             viewModel.isAddonDataEmpty.observe(this) {
@@ -95,7 +99,7 @@ class AddOnWidgetView : BaseCustomView {
                                 AddOnMapper.flatmapToChangedAddonSelection(addonGroups),
                                 addonGroups
                             )
-                            viewModel.lastSelectedAddOn = addonGroups
+                            viewModel.lastSelectedAddOnGroups = addonGroups
                         } else {
                             listener?.onSaveAddonLoading()
                         }
@@ -163,13 +167,17 @@ class AddOnWidgetView : BaseCustomView {
         indexChild: Int,
         addOnGroupUIModels: List<AddOnGroupUIModel>
     ) {
+        val addonChild = addOnGroupUIModels.getOrNull(index)?.addon?.getOrNull(indexChild) ?: return
+        viewModel.lastSelectedAddOn.addOrUpdate(index, addonChild)
         listener?.onAddonComponentClick(index, indexChild, addOnGroupUIModels)
         viewModel.setSelectedAddons(addOnGroupUIModels)
-        try {
-            var aaa = addOnGroupUIModels[index].addon[indexChild]
-            viewModel.tempAddon[index] = aaa
-        } catch (e: Exception) {
-            println(e.message)
+    }
+
+    private fun <E> MutableList<E>.addOrUpdate(index: Int, addonChild: E) {
+        if (getOrNull(index) == null) {
+            add(index, addonChild)
+        } else {
+            set(index, addonChild)
         }
     }
 
