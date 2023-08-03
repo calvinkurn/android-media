@@ -59,8 +59,8 @@ class SomDetailShippingViewHolder(
                         }
                         tvChevron.setTextColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
 
-                        val courierInfo= item.dataObject.courierInfo
-                        if(courierInfo.isNotEmpty()){
+                        val courierInfo = item.dataObject.courierInfo
+                        if (courierInfo.isNotEmpty()) {
                             tvCourierInfo.text = courierInfo
                             tvCourierInfo.visible()
                         }
