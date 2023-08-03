@@ -367,7 +367,7 @@ class PlayExploreWidgetFragment @Inject constructor(
         analytic?.clickContentCard(
             selectedChannel = item,
             position = channelPositionInList,
-            widgetInfo = viewModel.widgetInfo.copy(categoryName = viewModel.selectedChips),
+            widgetInfo = viewModel.widgetInfo,
             config = viewModel.exploreWidgetConfig,
             type = ExploreWidgetType.Default
         )
@@ -383,7 +383,7 @@ class PlayExploreWidgetFragment @Inject constructor(
         analytic?.impressChannelCard(
             item = item,
             position = channelPositionInList,
-            widgetInfo = viewModel.widgetInfo.copy(categoryName = viewModel.selectedChips),
+            widgetInfo = viewModel.widgetInfo,
             config = viewModel.exploreWidgetConfig,
             type = ExploreWidgetType.Default
         )

@@ -8,8 +8,10 @@ import com.tokopedia.content.analytic.Key
 import com.tokopedia.play.analytic.*
 import com.tokopedia.play.view.uimodel.ChipWidgetUiModel
 import com.tokopedia.play.view.uimodel.ExploreWidgetType
+import com.tokopedia.play.view.uimodel.recom.CategoryWidgetConfig
 import com.tokopedia.play.view.uimodel.recom.ExploreWidgetConfig
 import com.tokopedia.play.view.uimodel.recom.PlayChannelInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayChannelRecommendationConfig
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.track.TrackApp
@@ -57,12 +59,12 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
             return if (this) "promo" else "no promo"
         }
 
-    private fun getCategoryLabel(widgetInfo: ExploreWidgetConfig, type: ExploreWidgetType) : Triple<String, String, String> {
-        return if (type == ExploreWidgetType.Category) Triple(widgetInfo.categoryName, widgetInfo.categoryLevel.toString(), widgetInfo.categoryId)
-        else Triple(widgetInfo.categoryName, "0", "0")
+    private fun getCategoryLabel(widgetInfo: PlayChannelRecommendationConfig, type: ExploreWidgetType) : Triple<String, String, String> {
+        return if (type == ExploreWidgetType.Category) Triple((widgetInfo as CategoryWidgetConfig).categoryName, widgetInfo.categoryLevel.toString(), widgetInfo.categoryId)
+        else Triple((widgetInfo as ExploreWidgetConfig).group, "0", "0")
     }
 
-    override fun impressExploreIcon(widgetInfo: ExploreWidgetConfig, type: ExploreWidgetType) {
+    override fun impressExploreIcon(widgetInfo: PlayChannelRecommendationConfig, type: ExploreWidgetType) {
         val label = getCategoryLabel(widgetInfo, type)
         Tracker.Builder()
             .setEvent(Event.viewContentIris)
@@ -78,7 +80,7 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
             .send()
     }
 
-    override fun clickExploreIcon(widgetInfo: ExploreWidgetConfig, type: ExploreWidgetType) {
+    override fun clickExploreIcon(widgetInfo: PlayChannelRecommendationConfig, type: ExploreWidgetType) {
         val label = getCategoryLabel(widgetInfo, type)
 
         Tracker.Builder()
@@ -139,7 +141,7 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
     override fun clickContentCard(
         selectedChannel: PlayWidgetChannelUiModel,
         position: Int,
-        widgetInfo: ExploreWidgetConfig,
+        widgetInfo: PlayChannelRecommendationConfig,
         config: PlayWidgetConfigUiModel,
         type: ExploreWidgetType,
     ) {
@@ -152,7 +154,7 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
             .setEvent(Event.clickContent)
             .setEventAction("click - channel card")
             .setEventCategory(EventCategory.groupChatRoom)
-            .setEventLabel("$channelId - $channelType - ${selectedChannel.channelId} - ${selectedChannel.channelType.value} - ${position + 1} - ${config.autoPlay} - ${widgetInfo.categoryName} - ${selectedChannel.hasPromo.promoToString} - ${selectedChannel.recommendationType} - ${label.second} - ${label.third}")
+            .setEventLabel("$channelId - $channelType - ${selectedChannel.channelId} - ${selectedChannel.channelType.value} - ${position + 1} - ${config.autoPlay} - ${widgetInfo} - ${selectedChannel.hasPromo.promoToString} - ${selectedChannel.recommendationType} - ${label.second} - ${label.third}")
             .setCustomProperty(Key.trackerId, "39860")
             .setBusinessUnit(BusinessUnit.play)
             .setCurrentSite(CurrentSite.tokopediaMarketplace)
@@ -177,7 +179,7 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
             .send()
     }
 
-    override fun scrollExplore(widgetInfo: ExploreWidgetConfig, type: ExploreWidgetType) {
+    override fun scrollExplore(widgetInfo: PlayChannelRecommendationConfig, type: ExploreWidgetType) {
         val label = getCategoryLabel(widgetInfo, type)
         Tracker.Builder()
             .setEvent(Event.clickContent)
@@ -259,7 +261,7 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
     override fun impressChannelCard(
         item: PlayWidgetChannelUiModel,
         config: PlayWidgetConfigUiModel,
-        widgetInfo: ExploreWidgetConfig,
+        widgetInfo: PlayChannelRecommendationConfig,
         position: Int,
         type: ExploreWidgetType
     ) {
@@ -268,12 +270,12 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
             event = Event.promoView,
             eventCategory = EventCategory.groupChatRoom,
             eventAction = "impression - channel card",
-            eventLabel = "$channelId - $channelType - ${item.channelType.value.lowercase()} - ${position + 1} - ${config.autoPlay} - ${widgetInfo.categoryName} - ${item.hasPromo.promoToString} - ${item.recommendationType} - ${label.second} - ${label.third}",
+            eventLabel = "$channelId - $channelType - ${item.channelType.value.lowercase()} - ${position + 1} - ${config.autoPlay} - ${label.first} - ${item.hasPromo.promoToString} - ${item.recommendationType} - ${label.second} - ${label.third}",
             promotions = listOf(
                 BaseTrackerConst.Promotion(
                     id = item.channelId,
                     name = PLAY_EXPLORE_WIDGET_PATH,
-                    creative = "${item.channelId} - ${item.channelType.value.lowercase()} - ${position + 1} - ${config.autoPlay} - ${widgetInfo.categoryName} - ${item.hasPromo.promoToString} - ${item.recommendationType}",
+                    creative = "${item.channelId} - ${item.channelType.value.lowercase()} - ${position + 1} - ${config.autoPlay} - ${label.first} - ${item.hasPromo.promoToString} - ${item.recommendationType}",
                     position = (position + 1).toString()
                 )
             )

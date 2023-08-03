@@ -561,7 +561,7 @@ class PlayViewModel @AssistedInject constructor(
 
     val exploreWidgetTabs: List<String>
         get() {
-            val config = _channelDetail.value.exploreWidgetConfig
+            val config = _channelDetail.value.categoryWidgetConfig
             return buildList {
                 if (config.hasCategory) add(config.categoryName)
                 add(DEFAULT_TAB)
@@ -1088,7 +1088,7 @@ class PlayViewModel @AssistedInject constructor(
             is UpdateReminder -> updateReminderWidget(action.channelId, action.reminderType)
             DismissExploreWidget -> {
                 // Resetting
-                setExploreWidgetParam(_channelDetail.value.exploreWidgetConfig)
+                setExploreWidgetParam(_channelDetail.value.exploreWidgetConfig, _channelDetail.value.categoryWidgetConfig)
                 _categoryWidget.update { it.copy(data = emptyList()) }
                 _exploreWidget.update { it.copy(widgets = emptyList(), chips = TabMenuUiModel.Empty) }
                 _isBottomSheetsShown.update { false }
@@ -1153,7 +1153,7 @@ class PlayViewModel @AssistedInject constructor(
         _tagItems.value = channelData.tagItems
         _quickReply.value = channelData.quickReplyInfo
 
-        setExploreWidgetParam(channelData.channelDetail.exploreWidgetConfig)
+        setExploreWidgetParam(channelData.channelDetail.exploreWidgetConfig, channelData.channelDetail.categoryWidgetConfig)
     }
 
     fun focusPage(channelData: PlayChannelData) {
@@ -1916,7 +1916,7 @@ class PlayViewModel @AssistedInject constructor(
             }
             is ChannelDetailsWithRecomResponse.ExploreWidgetConfig -> {
                 _channelDetail.update { channel ->
-                    channel.copy(exploreWidgetConfig = channel.exploreWidgetConfig.copy(categoryName = result.categoryName.ifBlank { DEFAULT_TAB }, categoryGroup = result.group, hasCategory = result.hasCategory, categoryLevel = result.categoryLvl, categoryId = result.categoryId))
+                    channel.copy(categoryWidgetConfig = channel.categoryWidgetConfig.copy(categoryName = result.categoryName.ifBlank { DEFAULT_TAB }, categoryGroup = result.group, hasCategory = result.hasCategory, categoryLevel = result.categoryLvl, categoryId = result.categoryId))
                 }
                 _categoryWidget.update { w -> w.copy(data = emptyList()) }
                 widgetQuery.value = widgetQuery.value.mapValues {
@@ -2768,10 +2768,10 @@ class PlayViewModel @AssistedInject constructor(
     /**
      * Explore Widget
      */
-    private fun setExploreWidgetParam(config: ExploreWidgetConfig) {
+    private fun setExploreWidgetParam(exploreConfig: ExploreWidgetConfig, categoryConfig: CategoryWidgetConfig) {
         widgetQuery.value = mapOf(
-            ExploreWidgetType.Category to WidgetParamUiModel(group = config.categoryGroup, sourceId = config.categorySourceId, sourceType = config.categorySourceType),
-            ExploreWidgetType.Default to WidgetParamUiModel(group = config.group, sourceId = config.sourceId, sourceType = config.sourceType)
+            ExploreWidgetType.Category to WidgetParamUiModel(group = categoryConfig.categoryGroup, sourceId = categoryConfig.categorySourceId, sourceType = categoryConfig.categorySourceType),
+            ExploreWidgetType.Default to WidgetParamUiModel(group = exploreConfig.group, sourceId = exploreConfig.sourceId, sourceType = exploreConfig.sourceType)
         )
     }
 

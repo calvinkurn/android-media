@@ -12,7 +12,7 @@ import com.tokopedia.play_common.model.result.ResultState
  */
 data class ExploreWidgetUiModel(
     val chips: TabMenuUiModel,
-    val widgets: List<WidgetItemUiModel>,
+    val widgets: List<ExploreWidgetItemUiModel>,
     val state: ExploreWidgetState
 ) {
     companion object {
@@ -70,13 +70,13 @@ data class TabMenuUiModel(
     }
 }
 
-data class WidgetItemUiModel(
+data class ExploreWidgetItemUiModel(
     val id: Long,
     val item: PlayWidgetUiModel
 ) : WidgetUiModel() {
     companion object {
-        val Empty: WidgetItemUiModel
-            get() = WidgetItemUiModel(item = PlayWidgetUiModel.Empty, id = 0L)
+        val Empty: ExploreWidgetItemUiModel
+            get() = ExploreWidgetItemUiModel(item = PlayWidgetUiModel.Empty, id = 0L)
     }
 }
 
@@ -103,12 +103,12 @@ val WidgetParamUiModel.hasNextPage: Boolean
         return this.cursor.isNotEmpty()
     }
 
-val List<WidgetUiModel>.getChannelBlocks: List<WidgetItemUiModel>
+val List<WidgetUiModel>.getChannelBlocks: List<ExploreWidgetItemUiModel>
     get() {
-        return this.filterIsInstance<WidgetItemUiModel>().distinctBy { it.item.items }
+        return this.filterIsInstance<ExploreWidgetItemUiModel>().distinctBy { it.item.items }
     }
 
-val List<WidgetItemUiModel>.getChannelCards: List<PlayWidgetItemUiModel>
+val List<ExploreWidgetItemUiModel>.getChannelCards: List<PlayWidgetItemUiModel>
     get() {
         val list = this
         return list.flatMap { it.item.items }

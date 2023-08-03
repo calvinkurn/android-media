@@ -10,6 +10,7 @@ import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.PlayUpcomingUiModel
 import com.tokopedia.play.view.uimodel.recom.BannedUiModel
+import com.tokopedia.play.view.uimodel.recom.CategoryWidgetConfig
 import com.tokopedia.play.view.uimodel.recom.ExploreWidgetConfig
 import com.tokopedia.play.view.uimodel.recom.FreezeUiModel
 import com.tokopedia.play.view.uimodel.recom.LikeSource
@@ -80,7 +81,8 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                     videoInfo = mapVideoInfo(it.video),
                     emptyBottomSheetInfo = mapEmptyBottomSheet(it),
                     popupConfig = mapPopUp(it),
-                    exploreWidgetConfig = mapExploreWidgetConfig(it.config.exploreWidgetConfig, it.config.categoryWidgetConfig),
+                    exploreWidgetConfig = mapExploreWidgetConfig(it.config.exploreWidgetConfig),
+                    categoryWidgetConfig = mapCategoryWidgetConfig(it.config.categoryWidgetConfig),
                     showCart = it.config.showCart,
                 ),
                 partnerInfo = partnerInfo,
@@ -328,11 +330,15 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
 
     private fun mapExploreWidgetConfig(
         config: ChannelDetailsWithRecomResponse.ExploreWidgetConfig,
-        categoryConfig: ChannelDetailsWithRecomResponse.ExploreWidgetConfig
     ) = ExploreWidgetConfig(
        group = config.group,
         sourceType = config.sourceType,
         sourceId = config.sourceId,
+    )
+
+    private fun mapCategoryWidgetConfig(
+        categoryConfig: ChannelDetailsWithRecomResponse.ExploreWidgetConfig
+    ) = CategoryWidgetConfig(
         categoryGroup = categoryConfig.group,
         hasCategory = categoryConfig.hasCategory,
         categoryName = categoryConfig.categoryName.ifBlank { "Eksplor" },

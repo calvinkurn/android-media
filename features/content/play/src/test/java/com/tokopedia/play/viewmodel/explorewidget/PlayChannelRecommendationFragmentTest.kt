@@ -6,7 +6,6 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.model.PlayChannelInfoModelBuilder
-import com.tokopedia.play.model.UiModelBuilder
 import com.tokopedia.play.robot.play.createPlayViewModelRobot
 import com.tokopedia.play.util.assertEmpty
 import com.tokopedia.play.util.assertEqualTo
@@ -16,9 +15,7 @@ import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.recom.ExploreWidgetConfig
-import com.tokopedia.play.view.viewcomponent.ExploreWidgetViewComponent
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMock
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -79,7 +76,7 @@ class PlayChannelRecommendationFragmentTest {
             state = ResultState.Loading
         ),
         SubSlotUiModel,
-        WidgetItemUiModel(item = PlayWidgetUiMock.getSamplePlayWidget(), id = 1)
+        ExploreWidgetItemUiModel(item = PlayWidgetUiMock.getSamplePlayWidget(), id = 1)
     )
 
     init {
