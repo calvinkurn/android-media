@@ -12,6 +12,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 object AddTypography {
 
+    // TODO: Will remove it in the next branch
     fun create(context: Context, content: String): Pair<Typography, LayoutParams> {
         val text = Typography(context)
 

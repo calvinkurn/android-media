@@ -126,11 +126,10 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
     private fun onToolClicked(@ToolType type: Int) {
         when (type) {
             ToolType.TEXT -> {
+                // TODO: Will remove it in the next branch
                 val content = getRandomString(10)
                 val (view, lp) = AddTypography.create(this, content)
-
-                findViewById<FrameLayout>(R.id.canvas)
-                    .addView(view, lp)
+                findViewById<FrameLayout>(R.id.canvas).addView(view, lp)
             }
             ToolType.PLACEMENT -> {}
             ToolType.AUDIO_MUTE -> {}
