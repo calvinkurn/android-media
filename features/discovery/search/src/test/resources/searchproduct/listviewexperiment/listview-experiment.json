@@ -7,7 +7,11 @@
       "totalDataText": "4.3jt+",
       "additionalParams": "",
       "errorMessage": "",
-      "defaultView": 1
+      "defaultView": 1,
+      "component_id": "01.02.02.01",
+      "meta": {
+        "productListType": "listview"
+      }
     },
     "data": {
       "isQuerySafe": true,
@@ -40,15 +44,21 @@
           "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
           "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
           "imageUrl700": "https://images.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
           "price": "Rp 4.155.000",
-          "priceRange": "",
+          "priceRange": "Rp10.000 - Rp15jt",
           "wishlist": false,
-          "categoryId": 62,
-          "categoryName": "Olahraga",
+          "categoryId": 65,
+          "categoryName": "Handphone & Tablet",
           "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
           "freeOngkir": {
-            "isActive": false,
-            "imgUrl": ""
+            "isActive": true,
+            "imgUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
           },
           "labels": [
             {
@@ -61,6 +71,12 @@
               "position": "offers",
               "type": "lightGrey",
               "title": "Bisa Tukar Tambah"
+            },
+            {
+              "title": "TokoCabang",
+              "position": "fulfillment",
+              "type": "textDarkGrey",
+              "url": "https://images.tokopedia.net/img/jbZAUJ/2021/2/18/6d2cc121-91b9-49bc-99c3-d57437ad64b7.png"
             }
           ],
           "badges": [
@@ -89,11 +105,17 @@
           "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
           "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
           "imageUrl700": "https://images.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
           "price": "Rp 4.155.000",
           "priceRange": "",
           "wishlist": false,
-          "categoryId": 63,
-          "categoryName": "Otomotif",
+          "categoryId": 65,
+          "categoryName": "Handphone & Tablet",
           "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
           "freeOngkir": {
             "isActive": false,
@@ -138,11 +160,17 @@
           "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
           "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
           "imageUrl700": "https://images.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
           "price": "Rp 4.155.000",
           "priceRange": "",
           "wishlist": false,
-          "categoryId": 62,
-          "categoryName": "Olahraga",
+          "categoryId": 65,
+          "categoryName": "Handphone & Tablet",
           "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
           "freeOngkir": {
             "isActive": false,
@@ -187,6 +215,12 @@
           "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
           "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
           "imageUrl700": "https://images.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
           "price": "Rp 4.155.000",
           "priceRange": "",
           "wishlist": false,
@@ -236,11 +270,17 @@
           "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
           "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
           "imageUrl700": "https://images.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
           "price": "Rp 4.155.000",
           "priceRange": "",
           "wishlist": false,
-          "categoryId": 1759,
-          "categoryName": "Fashion Pria",
+          "categoryId": 65,
+          "categoryName": "Handphone & Tablet",
           "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
           "freeOngkir": {
             "isActive": false,
@@ -285,6 +325,12 @@
           "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
           "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
           "imageUrl700": "https://images.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
           "price": "Rp 4.155.000",
           "priceRange": "",
           "wishlist": false,
@@ -334,6 +380,12 @@
           "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
           "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
           "imageUrl700": "https://images.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
           "price": "Rp 4.155.000",
           "priceRange": "",
           "wishlist": false,
@@ -383,6 +435,12 @@
           "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
           "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
           "imageUrl700": "https://images.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
           "price": "Rp 4.155.000",
           "priceRange": "",
           "wishlist": false,
