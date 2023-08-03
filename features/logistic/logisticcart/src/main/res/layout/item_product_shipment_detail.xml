@@ -32,7 +32,7 @@
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:visibility="gone"
-            app:icon_color_light_enable="@color/Unify_NN500"
+            app:icon_color_light_enable="@color/Unify_NN900"
             app:icon_name="PRODUCT_INFO"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -55,7 +55,7 @@
             android:layout_height="16dp"
             android:layout_marginTop="8dp"
             android:visibility="gone"
-            app:icon_color_light_enable="@color/Unify_NN500"
+            app:icon_color_light_enable="@color/Unify_NN900"
             app:icon_name="CALENDAR_TIME"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/icon_product_shipment_info" />
