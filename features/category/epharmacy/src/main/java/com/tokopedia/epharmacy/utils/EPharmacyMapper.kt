@@ -27,7 +27,8 @@ object EPharmacyMapper {
             group.consultationData?.consultationString,
             group.consultationSource?.price,
             group.consultationSource?.operatingSchedule?.duration,
-            getQuantityChangedModel(group),
+            getTickerData(group,shopIndex),
+            getQuantityChangedModel(info),
             group.consultationData?.prescription,
             group.consultationData?.partnerConsultationId,
             group.consultationData?.tokoConsultationId,
@@ -51,10 +52,24 @@ object EPharmacyMapper {
 
     private fun getQuantityChangedModel(group: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup): EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.QuantityChangedModel? {
         if(group.consultationData?.medicalRecommendation.isNullOrEmpty()){
+    private fun getTickerData(group: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup, shopIndex: Int): EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.Ticker? {
+        return if(shopIndex == 0 && group.ticker?.title?.isNotBlank() == true){
+            group.ticker
+        } else null
+    }
+
+    private fun getQuantityChangedModel(info: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo?): EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.QuantityChangedModel? {
+        return getQuantityChangedModelProduct(info?.products?.firstOrNull())
+    }
+
+    private fun getQuantityChangedModelProduct(product: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product?) : EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.QuantityChangedModel?{
+        if(product?.qtyComparison == null){
             return null
         }
         return EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.QuantityChangedModel(
-            10,100.0,1000,10000,"barang",100000,1000000
+            product.qtyComparison?.initialQty,100.0,
+            product.qtyComparison?.recommendedQty,
+            product.qtyComparison?.initialQty
         )
     }
 

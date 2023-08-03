@@ -33,6 +33,7 @@ import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.QuantityEditorUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 
@@ -101,19 +102,52 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
         renderButton()
         renderDivider()
         renderObstruction()
+        renderTicker()
+    }
+
+    private fun renderTicker() {
+        if(!dataModel?.ticker?.title.isNullOrBlank()){
+            ticker.show()
+            if(dataModel?.ticker?.tickerType == "INFO"){
+                ticker.tickerType = Ticker.TYPE_INFORMATION
+            }else {
+                ticker.tickerType = Ticker.TYPE_WARNING
+            }
+            ticker.setHtmlDescription(dataModel?.ticker?.title ?: "")
+        }else {
+            ticker.hide()
+        }
     }
 
     private fun renderQuantityChangedLayout() {
         if(dataModel?.quantityChangedModel != null){
             quantityChangedLayout?.show()
             medicalProductQuantity.text = dataModel?.quantityChangedModel?.productQuantity.toString()
-            productQuantityType.text = dataModel?.quantityChangedModel?.type.toString()
+            productQuantityType.text = "Barang"
             quantityChangedEditor.setValue(dataModel?.quantityChangedModel?.medicalQuantity ?: 0)
-            totalAmount.displayTextOrHide(dataModel?.quantityChangedModel?.subTotalAmount.toString())
-            totalQuantity.displayTextOrHide(dataModel?.quantityChangedModel?.subTotalQuantity.toString())
+            totalAmount.displayTextOrHide(getTotalAmount(dataModel?.quantityChangedModel))
+            totalQuantity.displayTextOrHide("Subtotal (${dataModel?.quantityChangedModel?.currentQuantity.toString()} barang)")
+            quantityChangedEditor.setValueChangedListener { newValue, oldValue, isOver ->
+                if(newValue == 1){
+                    ePharmacyListener?.onToast(Toaster.TYPE_ERROR,"Jumlah barang tidak boleh melebihi yang sudah diresepkan atau kurang dari 1.")
+                    quantityChangedEditor.subtractButton.isEnabled = false
+                }else if(newValue == dataModel?.quantityChangedModel?.medicalQuantity) {
+                    quantityChangedEditor.addButton.isEnabled = false
+                } else {
+                    quantityChangedEditor.subtractButton.isEnabled = true
+                    quantityChangedEditor.addButton.isEnabled = true
+                    dataModel?.quantityChangedModel?.currentQuantity = newValue
+                }
+                renderQuantityChangedLayout()
+            }
         }else {
             quantityChangedLayout?.hide()
         }
+    }
+
+    // TODO Format
+    private fun getTotalAmount(quantityChangedModel: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.QuantityChangedModel?): String {
+        return "Rp${quantityChangedModel?.currentQuantity ?: 0.0 * (dataModel?.quantityChangedModel?.productPrice ?: 0.0)}"
     }
 
     private fun renderOrderTitle() {

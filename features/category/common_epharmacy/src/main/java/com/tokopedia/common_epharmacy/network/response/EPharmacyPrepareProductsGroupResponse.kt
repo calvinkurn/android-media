@@ -47,8 +47,19 @@ data class EPharmacyPrepareProductsGroupResponse(
                 @SerializedName("products_info")
                 val shopInfo: List<ProductsInfo?>?,
                 @SerializedName("prescription_cta")
-                val prescriptionCTA: PrescriptionCTA?
+                val prescriptionCTA: PrescriptionCTA?,
+                @SerializedName("ticker")
+                val ticker: Ticker?,
             ) : Parcelable {
+
+                @Parcelize
+                data class Ticker(
+                    @SerializedName("ticker_type")
+                    var tickerType: String?,
+                    @SerializedName("title")
+                    val title: String?
+                ) : Parcelable
+
                 @Parcelize
                 data class ConsultationData(
                     @SerializedName("consultation_status")
@@ -186,13 +197,25 @@ data class EPharmacyPrepareProductsGroupResponse(
                         val name: String?,
                         @SerializedName("product_id")
                         val productId: Long?,
+                        @SerializedName("cart_id")
+                        val cartId: String?,
                         @SerializedName("product_image")
                         val productImage: String?,
                         @SerializedName("product_total_weight_fmt")
                         val productTotalWeightFmt: String?,
                         @SerializedName("quantity")
-                        val quantity: String?
-                    ) : Parcelable
+                        val quantity: String?,
+                        @SerializedName("qty_comparison")
+                        val qtyComparison: QtyComparison?
+                    ) : Parcelable {
+                        @Parcelize
+                        data class QtyComparison(
+                            @SerializedName("initial_qty")
+                            var initialQty: Int?,
+                            @SerializedName("recommended_qty")
+                            val recommendedQty: Int?
+                        ) : Parcelable
+                    }
                 }
 
                 data class QuantityChangedModel (
@@ -200,9 +223,6 @@ data class EPharmacyPrepareProductsGroupResponse(
                     var productPrice: Double? = 0.0,
                     var medicalQuantity: Int? = 0,
                     var currentQuantity: Int? = 0,
-                    var type : String? = "",
-                    var subTotalQuantity: Int? = 0,
-                    var subTotalAmount: Int? = 0
                 )
             }
         }
@@ -225,6 +245,19 @@ data class EPharmacyPrepareProductsGroupResponse(
         @SerializedName("redirect_link_apps")
         val redirectLinkApps: String?,
         @SerializedName("state")
-        val state: String?
-    ) : Parcelable
+        val state: String?,
+        @SerializedName("pap_secondary_cta")
+        val papSecondaryCTA: PapPrimaryCTA.PapSecondaryCTA?
+    ) : Parcelable {
+        @Parcelize
+        data class PapSecondaryCTA(
+            @SerializedName("title")
+            val title: String?,
+            @SerializedName("redirect_link_apps")
+            val redirectLinkApps: String?,
+            @SerializedName("state")
+            val state: String?,
+
+            ) : Parcelable
+    }
 }
