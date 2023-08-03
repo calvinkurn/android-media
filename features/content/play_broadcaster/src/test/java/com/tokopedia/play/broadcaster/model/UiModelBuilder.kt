@@ -29,6 +29,8 @@ import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConf
 import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
+import com.tokopedia.play.broadcaster.ui.model.shortsaffiliate.BroadcasterCheckAffiliateResponseUiModel
+import com.tokopedia.play.broadcaster.ui.model.shortsaffiliate.OnboardAffiliateUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
@@ -319,5 +321,17 @@ class UiModelBuilder {
         maxTaggedProduct = maxTaggedProduct,
         shortsVideoSourceId = shortsVideoSourceId,
         hasContent = hasContent,
+    )
+
+    fun buildSubmitOnboardAffiliate(
+        errorMessage: String = ""
+    ) = OnboardAffiliateUiModel(errorMessage)
+
+    fun buildBroadcasterCheckAffiliate(
+        affiliateName: String = "jonathan",
+        isAffiliate: Boolean = true,
+    ) = BroadcasterCheckAffiliateResponseUiModel(
+        affiliateName = affiliateName,
+        isAffiliate = isAffiliate,
     )
 }

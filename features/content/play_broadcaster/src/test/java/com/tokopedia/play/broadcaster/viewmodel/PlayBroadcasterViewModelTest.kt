@@ -802,13 +802,16 @@ class PlayBroadcasterViewModelTest {
 
     @Test
     fun `when user as shop setup channel and success`() {
+
         val configMock = uiModelBuilder.buildConfigurationUiModel(channelId = "123")
         val accountMock = uiModelBuilder.buildAccountListModel()
         val mockCover = PlayCoverUiModel(croppedCover = CoverSetupState.Blank, state = SetupDataState.Draft)
+        val mockMaxProduct = 17
 
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockHydraConfigStore.getChannelId() } returns "123"
+        coEvery { mockHydraConfigStore.getMaxProduct() } returns mockMaxProduct
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
@@ -825,6 +828,7 @@ class PlayBroadcasterViewModelTest {
                 getAccountConfiguration(TYPE_SHOP)
             }
             it.getViewModel().channelId.assertEqualTo("123")
+            it.getViewModel().maxProduct.assertEqualTo(mockMaxProduct)
             it.getViewModel().remainingDurationInMillis.assertEqualTo(0L)
             it.getViewModel().productSectionList.assertEqualTo(mockProductTagSectionList)
 
@@ -856,6 +860,7 @@ class PlayBroadcasterViewModelTest {
         robot.use {
             it.recordState { getAccountConfiguration(TYPE_SHOP) }
             it.getViewModel().channelId.assertEqualTo("")
+            it.getViewModel().maxProduct.assertEqualTo(0)
             it.getViewModel().remainingDurationInMillis.assertEqualTo(0L)
             it.getViewModel().productSectionList.assertEqualTo(mockProductTagSectionList)
 
