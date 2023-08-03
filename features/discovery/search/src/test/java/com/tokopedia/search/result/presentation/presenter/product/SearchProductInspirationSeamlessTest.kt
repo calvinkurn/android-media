@@ -6,7 +6,9 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.domain.model.SearchProductModel.*
+import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspirationCarousel
+import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationCarouselData
+import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationCarouselProduct
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordCardView
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordDataView
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductItemDataView
@@ -31,7 +33,6 @@ private const val inspirationProductWithAllKeywordNoImage =
     "searchproduct/seamlessinspiration/seamless-inspiration-product_no_image_all.json"
 private const val LAYOUT_INSPIRATION_KEYWORD_SEAMLESS = "carousel_seamless"
 private const val TARGET_CLICK = 0
-private const val CONDITION_WHEN_NO_IMAGE = true
 
 internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFixtures() {
     private val visitableListSlot = slot<List<Visitable<*>>>()
@@ -62,8 +63,7 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
 
         `Then verify view set product list`()
         `Then verify visitable list has correct inspiration seamless keyword product and product sequence`(
-            searchProductModel,
-            CONDITION_WHEN_NO_IMAGE
+            searchProductModel
         )
     }
 
@@ -75,8 +75,7 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
 
         `Then verify view set product list`()
         `Then verify visitable list has correct inspiration seamless keyword product and product sequence`(
-            searchProductModel,
-            CONDITION_WHEN_NO_IMAGE
+            searchProductModel
         )
     }
 
@@ -158,8 +157,7 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
     }
 
     private fun `Then verify visitable list has correct inspiration seamless keyword product and product sequence`(
-        searchProductModel: SearchProductModel,
-        isNoImageKeyword: Boolean = false
+        searchProductModel: SearchProductModel
     ) {
         val visitableList = visitableListSlot.captured
         visitableList.size shouldBe 19
@@ -172,6 +170,7 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
         val positionOfInspirationSeamlessProduct =
             dataInspirationKeywordsAndProducts.getStartAndEndPositionOfSeamlessInspirationProduct()
 
+        var inspirationCarouselIndex = 0
         var keywordIndex = 0
         var productIndex = 0
         visitableList.forEachIndexed { index, visitable ->
@@ -184,9 +183,9 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
                     )
                     (visitable as InspirationKeywordCardView)
                         .assertInspirationKeywordDataView(
-                            inspirationSeamlessCardData,
-                            isNoImageKeyword
+                            inspirationSeamlessCardData[inspirationCarouselIndex]
                         )
+                    inspirationCarouselIndex += 1
                     keywordIndex = index
                     productIndex = 0
                 }
@@ -274,12 +273,13 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
     }
 
     private fun InspirationKeywordCardView.assertInspirationKeywordDataView(
-        inspirationCarouselData: List<InspirationCarouselData>,
-        isNoImageKeyword: Boolean = false
+        inspirationCarouselData: InspirationCarouselData,
     ) {
-        this.isOneOrMoreIsEmptyImage shouldBe isNoImageKeyword
-        inspirationCarouselData.forEachIndexed { index, inspirationCarouselOption ->
-            this.optionsItems[index].keyword shouldBe inspirationCarouselOption.inspirationCarouselOptions[index].title
+        val isNoImage = !inspirationCarouselData.inspirationCarouselOptions.none { it.bannerImageUrl.isEmpty() }
+        this.title shouldBe inspirationCarouselData.title
+        this.isOneOrMoreIsEmptyImage shouldBe isNoImage
+        this.optionsItems.forEachIndexed { index, seamlessInspirationKeyword ->
+            seamlessInspirationKeyword.keyword shouldBe inspirationCarouselData.inspirationCarouselOptions[index].title
         }
     }
 

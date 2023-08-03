@@ -24,7 +24,7 @@
         android:layout_margin="12dp">
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/searchInspirationTitle"
+            android:id="@+id/searchSeamlessInspirationTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:maxLines="2"
@@ -43,8 +43,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/searchInspirationTitle"
-            app:layout_constraintTop_toBottomOf="@+id/searchInspirationTitle"
+            app:layout_constraintStart_toStartOf="@+id/searchSeamlessInspirationTitle"
+            app:layout_constraintTop_toBottomOf="@+id/searchSeamlessInspirationTitle"
             tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -16,7 +16,8 @@ data class InspirationKeywordDataView(
     val dimension90: String = "",
     val componentId: String = "",
     val trackingOption: Int = 0,
-    val actualKeyword: String = ""
+    val actualKeyword: String = "",
+    val carouselTitle: String = ""
 ) : ImpressHolder(),
     Visitable<InspirationKeywordsTypeFactory>,
     SearchComponentTracking by searchComponentTracking(
@@ -35,7 +36,8 @@ data class InspirationKeywordDataView(
             keyword = option.title,
             imageKeyword = option.bannerImageUrl,
             applink = option.applink,
-            trackingOption = option.trackingOption
+            trackingOption = option.trackingOption,
+            carouselTitle = option.carouselTitle
         )
     }
 

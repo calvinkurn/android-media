@@ -43,6 +43,7 @@ class InspirationKeywordViewHolder(
         if (binding == null || element == null) return
 
         initCardView()
+        binding?.searchSeamlessInspirationTitle?.text = element.title
         element.optionsItems.getItemOptionsOn(INDEX_IMPRESSION_KEYWORD_TO_BE_TRACK).doImpressedTracker()
         val viewType = changeViewListener.viewType
         initRecyclerView(element, viewType)
