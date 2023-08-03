@@ -1,7 +1,6 @@
 package com.tokopedia.checkout.revamp.view.uimodel
 
 import android.os.Parcelable
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
@@ -247,6 +246,5 @@ data class CheckoutOrderShipment(
 }
 
 data class CheckoutOrderInsurance(
-    val insuranceData: InsuranceData? = null,
     var isCheckInsurance: Boolean = false
 )

@@ -52,74 +52,74 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
 //                    shipmentDetailData.selectedCourierTradeInDropOff != null
 //                )
 //            ) {
-                var courierItemData: CourierItemData? = null
+            var courierItemData: CourierItemData? = null
                 /*if (isTradeInPickup && shipmentDetailData.selectedCourierTradeInDropOff != null) {
                     courierItemData = shipmentDetailData.selectedCourierTradeInDropOff
                 } else*/ if (!isTradeInPickup && shipmentDetailData.courierItemData != null) {
-                    courierItemData = shipmentDetailData.courierItemData
-                }
-                if (courierItemData != null) {
-                    val ratesFeature = generateRatesFeatureNew(courierItemData)
-                    val selectedShipper = courierItemData.selectedShipper
+                courierItemData = shipmentDetailData.courierItemData
+            }
+            if (courierItemData != null) {
+                val ratesFeature = generateRatesFeatureNew(courierItemData)
+                val selectedShipper = courierItemData.selectedShipper
 
-                    // Create shop product model for shipment
-                    val shippingInfoCheckoutRequest = ShippingInfo()
-                    shippingInfoCheckoutRequest.shippingId = selectedShipper.shipperId.toLong()
-                    shippingInfoCheckoutRequest.spId = selectedShipper.shipperProductId.toLong()
-                    val scheduleDeliveryUiModel = courierItemData.scheduleDeliveryUiModel
-                    if (scheduleDeliveryUiModel?.isSelected == true) {
-                        shippingInfoCheckoutRequest.ratesId =
-                            if (scheduleDeliveryUiModel.ratesId != 0L) {
-                                scheduleDeliveryUiModel.ratesId.toString()
-                            } else {
-                                ""
-                            }
-                    } else {
-                        shippingInfoCheckoutRequest.ratesId =
-                            shipmentDetailData.shippingCourierUiModels.firstOrNull()?.ratesId ?: ""
-                    }
-                    shippingInfoCheckoutRequest.checksum = selectedShipper.checksum ?: ""
-                    shippingInfoCheckoutRequest.ut = selectedShipper.ut ?: ""
-                    shippingInfoCheckoutRequest.ratesFeature = ratesFeature
-//                    shippingInfoCheckoutRequest.finsurance = if (shipmentDetailData.useInsurance == true) 1 else 0
-                    val promoCodes = ArrayList<String>()
-                    val promoRequests: ArrayList<Promo> = ArrayList()
-                    val voucherLogisticItemUiModel = shipmentCartItemModel.voucherLogisticItemUiModel
-                    if (voucherLogisticItemUiModel != null) {
-                        promoCodes.add(voucherLogisticItemUiModel.code)
-                        val promoRequest = Promo()
-                        promoRequest.code = voucherLogisticItemUiModel.code
-                        promoRequest.type = Promo.TYPE_LOGISTIC
-                        promoRequests.add(promoRequest)
-                    }
-                    val shopOrders = shipmentCartItemModel.cartItemModelsGroupByOrder.map {
-                        ShopOrder(
-                            bundle = mapBundleNew(it.value),
-                            cartStringOrder = it.key,
-                            isPreorder = if (shipmentCartItemModel.isProductIsPreorder) 1 else 0,
-                            orderFeature = OrderFeature(
-                                isOrderPriority = 0
-                            ),
-                            promos = promoRequests,
-                            shopId = shipmentCartItemModel.shopId,
-                            warehouseId = shipmentCartItemModel.fulfillmentId,
-                            isTokoNow = shipmentCartItemModel.isTokoNow
-                        )
-                    }
-                    groupOrder = GroupOrder(
-                        groupType = shipmentCartItemModel.groupType,
-                        cartStringGroup = shipmentCartItemModel.cartStringGroup,
-                        shippingInfo = shippingInfoCheckoutRequest,
-                        dropship = Dropship(
-                            isDropship = 0,
-                            name = "",
-                            telpNo = ""
+                // Create shop product model for shipment
+                val shippingInfoCheckoutRequest = ShippingInfo()
+                shippingInfoCheckoutRequest.shippingId = selectedShipper.shipperId.toLong()
+                shippingInfoCheckoutRequest.spId = selectedShipper.shipperProductId.toLong()
+                val scheduleDeliveryUiModel = courierItemData.scheduleDeliveryUiModel
+                if (scheduleDeliveryUiModel?.isSelected == true) {
+                    shippingInfoCheckoutRequest.ratesId =
+                        if (scheduleDeliveryUiModel.ratesId != 0L) {
+                            scheduleDeliveryUiModel.ratesId.toString()
+                        } else {
+                            ""
+                        }
+                } else {
+                    shippingInfoCheckoutRequest.ratesId =
+                        shipmentDetailData.shippingCourierUiModels.firstOrNull()?.ratesId ?: ""
+                }
+                shippingInfoCheckoutRequest.checksum = selectedShipper.checksum ?: ""
+                shippingInfoCheckoutRequest.ut = selectedShipper.ut ?: ""
+                shippingInfoCheckoutRequest.ratesFeature = ratesFeature
+                shippingInfoCheckoutRequest.finsurance = if (shipmentDetailData.insurance.isCheckInsurance) 1 else 0
+                val promoCodes = ArrayList<String>()
+                val promoRequests: ArrayList<Promo> = ArrayList()
+                val voucherLogisticItemUiModel = shipmentCartItemModel.voucherLogisticItemUiModel
+                if (voucherLogisticItemUiModel != null) {
+                    promoCodes.add(voucherLogisticItemUiModel.code)
+                    val promoRequest = Promo()
+                    promoRequest.code = voucherLogisticItemUiModel.code
+                    promoRequest.type = Promo.TYPE_LOGISTIC
+                    promoRequests.add(promoRequest)
+                }
+                val shopOrders = shipmentCartItemModel.cartItemModelsGroupByOrder.map {
+                    ShopOrder(
+                        bundle = mapBundleNew(it.value),
+                        cartStringOrder = it.key,
+                        isPreorder = if (shipmentCartItemModel.isProductIsPreorder) 1 else 0,
+                        orderFeature = OrderFeature(
+                            isOrderPriority = 0
                         ),
-                        checkoutGiftingOrderLevel = mapAddOnsProduct(shipmentCartItemModel.addOnsOrderLevelModel, AddOnProductDataModel()),
-                        orderMetadata = mapOrderMetadata(shipmentCartItemModel, selectedShipper, promoRequests),
-                        shopOrders = shopOrders
+                        promos = promoRequests,
+                        shopId = shipmentCartItemModel.shopId,
+                        warehouseId = shipmentCartItemModel.fulfillmentId,
+                        isTokoNow = shipmentCartItemModel.isTokoNow
                     )
                 }
+                groupOrder = GroupOrder(
+                    groupType = shipmentCartItemModel.groupType,
+                    cartStringGroup = shipmentCartItemModel.cartStringGroup,
+                    shippingInfo = shippingInfoCheckoutRequest,
+                    dropship = Dropship(
+                        isDropship = 0,
+                        name = "",
+                        telpNo = ""
+                    ),
+                    checkoutGiftingOrderLevel = mapAddOnsProduct(shipmentCartItemModel.addOnsOrderLevelModel, AddOnProductDataModel()),
+                    orderMetadata = mapOrderMetadata(shipmentCartItemModel, selectedShipper, promoRequests),
+                    shopOrders = shopOrders
+                )
+            }
 //            }
             groupOrder
         }

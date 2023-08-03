@@ -678,7 +678,6 @@ class CheckoutViewModel @Inject constructor(
                     shippingCourierUiModels = result?.third ?: emptyList(),
                     insurance = result?.second?.let {
                         CheckoutOrderInsurance(
-                            result.second,
                             when (result.second.insuranceType) {
                                 InsuranceConstant.INSURANCE_TYPE_MUST -> {
                                     true
@@ -817,7 +816,6 @@ class CheckoutViewModel @Inject constructor(
                     shippingCourierUiModels = result?.third ?: emptyList(),
                     insurance = result?.second?.let {
                         CheckoutOrderInsurance(
-                            result.second,
                             when (result.second.insuranceType) {
                                 InsuranceConstant.INSURANCE_TYPE_MUST -> {
                                     true
@@ -867,7 +865,6 @@ class CheckoutViewModel @Inject constructor(
                     courierItemData = courierItemData,
                     shippingCourierUiModels = shippingCourierUiModels,
                     insurance = CheckoutOrderInsurance(
-                        insurance,
                         when (insurance.insuranceType) {
                             InsuranceConstant.INSURANCE_TYPE_MUST -> {
                                 true
@@ -1598,7 +1595,6 @@ class CheckoutViewModel @Inject constructor(
                             shippingCourierUiModels = result?.third ?: emptyList(),
                             insurance = result?.second?.let {
                                 CheckoutOrderInsurance(
-                                    result.second,
                                     when (result.second.insuranceType) {
                                         InsuranceConstant.INSURANCE_TYPE_MUST -> {
                                             true
