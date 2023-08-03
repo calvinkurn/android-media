@@ -19,9 +19,8 @@ import com.tokopedia.unifyprinciples.Typography
 class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     private var tvTitle: Typography = itemView.findViewById(R.id.tv_title)
-    private var tvTitleExtra: Typography = itemView.findViewById(R.id.tv_title_extra)
+    private var tvKuota: Typography = itemView.findViewById(R.id.tv_kuota_info)
     private var tvInfo: Typography = itemView.findViewById(R.id.tv_info)
-    private var tvEta: Typography = itemView.findViewById(R.id.tv_eta)
     private var lblCodAvailableEta: Label = itemView.findViewById(R.id.lbl_cod_available_eta)
     private var imgLogo: ImageView = itemView.findViewById(R.id.img_logo)
     private var flImageContainer: FrameLayout = itemView.findViewById(R.id.fl_image_container)
@@ -43,8 +42,13 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             tvTitle.gone()
         }
 
-        tvTitleExtra.gone()
-        tvEta.gone()
+        if (data.bebasOngkirKuota != 0L) {
+            val kuotaTextTemplate = itemView.context.getString(R.string.checkout_bebas_ongkir_view_holder_description_template, data.bebasOngkirKuota)
+            tvKuota.text = HtmlLinkHelper(itemView.context, kuotaTextTemplate).spannedString
+            tvKuota.visible()
+        } else {
+            tvKuota.gone()
+        }
 
         if (data.codData.isCodAvailable == 1) {
             lblCodAvailableEta.apply {
@@ -78,14 +82,9 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         } else {
             ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68)
         }
-        val boldFontColor = if (data.disabled) {
-            ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_44)
-        } else {
-            ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)
-        }
 
         tvInfo.setTextColor(fontColor)
-        tvEta.setTextColor(fontColor)
+        tvKuota.setTextColor(fontColor)
 
         if (!data.disabled) {
             itemView.setOnClickListener {
@@ -93,7 +92,8 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             }
             flImageContainer.foreground = ContextCompat.getDrawable(itemView.context, R.drawable.fg_enabled_item)
         } else {
-            tvTitle.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
+            tvTitle.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
+            tvInfo.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
             flImageContainer.foreground = ContextCompat.getDrawable(itemView.context, R.drawable.fg_disabled_item)
             itemView.setOnClickListener(null)
         }

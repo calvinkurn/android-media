@@ -21,7 +21,7 @@ data class ShippingWidgetUiModel(
     // Bebas ongkir & NOW Shipment
     val hideShipperName: Boolean = false,
     val freeShippingTitle: String = "",
-    // promo_stackings.img_url_choosen
+    // LogisticPromoUiModel.imageChosenFreeShipping
     val freeShippingLogo: String = "",
     // label
     val logPromoDesc: String = "",
