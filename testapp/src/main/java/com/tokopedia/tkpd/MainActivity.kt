@@ -15,7 +15,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.nest.principles.ui.NestTheme
-import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -146,12 +145,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun goTo() {
-        val picker = MediaPicker.intent(this) {
-            withImmersiveEditor()
-            singleSelectionMode()
+        /* @example: open groupchat module;
+         * startActivity(PlayActivity.getCallingIntent(this, "668", true))
+         * or, you can use route like this:
+         * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
+         * LEAVE THIS EMPTY AS DEFAULT!!
+         * */
+        if (model.value.applink.isNotBlank()) {
+            RouteManager.route(this, model.value.applink)
+        } else {
+            Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
         }
-
-        startActivity(picker)
     }
 
     private fun getDefaultAppLink(): String {
