@@ -64,7 +64,9 @@ data class CheckoutOrderModel(
     val isProductFcancelPartial: Boolean = false,
     val isProductIsPreorder: Boolean = false,
 
+    // todo check this usage
     var products: List<CheckoutProductModel> = ArrayList(),
+    var preOrderDurationDay: Int = 0,
 
     // View state
     var isStateDetailSubtotalViewExpanded: Boolean = false,

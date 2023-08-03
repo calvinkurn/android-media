@@ -267,8 +267,7 @@ class CheckoutPromoProcessor @Inject constructor(
                     ordersItem.shopId = cartItemList.first().shopId.toLongOrZero()
                     ordersItem.boType = shipmentCartItemModel.boMetadata.boType
                     ordersItem.isPo = shipmentCartItemModel.isProductIsPreorder
-                    ordersItem.poDuration =
-                        shipmentCartItemModel.products[0].preOrderDurationDay
+                    ordersItem.poDuration = shipmentCartItemModel.preOrderDurationDay
                     ordersItem.warehouseId = shipmentCartItemModel.fulfillmentId
                     ordersItem.cartStringGroup = shipmentCartItemModel.cartStringGroup
                     setValidateUseSpIdParam(shipmentCartItemModel, ordersItem)
@@ -537,7 +536,7 @@ class CheckoutPromoProcessor @Inject constructor(
                                 arrayListOf(checkoutItem.boCode),
                                 checkoutItem.shopId,
                                 checkoutItem.isProductIsPreorder,
-                                checkoutItem.products[0].preOrderDurationDay.toString(),
+                                checkoutItem.preOrderDurationDay.toString(),
                                 checkoutItem.fulfillmentId,
                                 checkoutItem.cartStringGroup
                             )
@@ -710,7 +709,7 @@ class CheckoutPromoProcessor @Inject constructor(
                         boCodes,
                         shipmentCartItemModel.shopId,
                         shipmentCartItemModel.isProductIsPreorder,
-                        shipmentCartItemModel.products[0].preOrderDurationDay.toString(),
+                        shipmentCartItemModel.preOrderDurationDay.toString(),
                         shipmentCartItemModel.fulfillmentId,
                         shipmentCartItemModel.cartStringGroup
                     )
@@ -1030,7 +1029,7 @@ class CheckoutPromoProcessor @Inject constructor(
                                     codes,
                                     shipmentCartItemModel.shopId,
                                     shipmentCartItemModel.isProductIsPreorder,
-                                    shipmentCartItemModel.products[0].preOrderDurationDay.toString(),
+                                    shipmentCartItemModel.preOrderDurationDay.toString(),
                                     shipmentCartItemModel.fulfillmentId,
                                     shipmentCartItemModel.cartStringGroup
                                 )

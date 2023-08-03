@@ -3,14 +3,17 @@ package com.tokopedia.checkout.revamp.view.viewholder
 import android.content.Context
 import android.graphics.Paint
 import android.view.LayoutInflater
+import android.view.ViewGroup.MarginLayoutParams
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.databinding.ItemCheckoutCostBinding
+import com.tokopedia.checkout.databinding.ItemCheckoutCostDynamicBinding
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCostModel
 import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
 import com.tokopedia.kotlin.extensions.view.setTextColorCompat
@@ -228,12 +231,36 @@ class CheckoutCostViewHolder(
     }
 
     private fun renderOtherFee(cost: CheckoutCostModel) {
-        binding.tvCheckoutCostOthersTitle.isVisible = false
-        binding.icCheckoutCostOthersToggle.isVisible = false
-        binding.tvCheckoutCostOthersValue.isVisible = false
-        binding.llCheckoutCostOthers.isVisible = false
-        binding.llCheckoutCostOthersExpanded.isVisible = false
-        binding.vCheckoutCostOthersExpandedSeparator.isVisible = false
+        if ((cost.listAddOnSummary.size + cost.listCrossSell.size) > 2) {
+            // render in collapsable group
+            binding.tvCheckoutCostOthersTitle.isVisible = false
+            binding.icCheckoutCostOthersToggle.isVisible = false
+            binding.tvCheckoutCostOthersValue.isVisible = false
+            binding.llCheckoutCostOthers.isVisible = false
+            binding.llCheckoutCostOthersExpanded.isVisible = false
+            binding.vCheckoutCostOthersExpandedSeparator.isVisible = false
+        } else {
+            // render outside
+            binding.tvCheckoutCostOthersTitle.isVisible = false
+            binding.icCheckoutCostOthersToggle.isVisible = false
+            binding.tvCheckoutCostOthersValue.isVisible = false
+            binding.llCheckoutCostOthersExpanded.isVisible = false
+            binding.vCheckoutCostOthersExpandedSeparator.isVisible = false
+
+            binding.llCheckoutCostOthers.removeAllViews()
+            cost.listAddOnSummary.forEach {
+                val itemBinding = ItemCheckoutCostDynamicBinding.inflate(
+                    layoutInflater,
+                    binding.llCheckoutCostOthers,
+                    false
+                )
+                itemBinding.tvCheckoutCostItemTitle.text = it.wording
+                itemBinding.tvCheckoutCostItemValue.text = it.priceLabel
+                (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(binding.root.context.resources.displayMetrics)
+                binding.llCheckoutCostOthers.addView(itemBinding.root)
+            }
+            binding.llCheckoutCostOthers.isVisible = true
+        }
     }
 
     companion object {

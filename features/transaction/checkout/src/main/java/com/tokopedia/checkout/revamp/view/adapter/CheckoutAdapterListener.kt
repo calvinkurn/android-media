@@ -34,17 +34,13 @@ interface CheckoutAdapterListener {
 
     fun onImpressionAddOnProductService(addonType: Int, productId: String)
 
-    fun onClickAddOnsProductWidget(addonType: Int, productId: String, isChecked: Boolean)
-
-    fun onClickLihatSemuaAddOnProductWidget()
-
     fun onClickAddOnGiftingProductLevel(product: CheckoutProductModel)
 
     fun onImpressionAddOnGiftingProductLevel(productId: String)
 
     fun openAddOnGiftingOrderLevelBottomSheet(order: CheckoutOrderModel)
 
-    fun addOnGiftingOrderLevelImpression(products: List<CheckoutProductModel>)
+    fun addOnGiftingOrderLevelImpression(order: CheckoutOrderModel)
 
     fun onLoadShippingState(order: CheckoutOrderModel, position: Int)
 

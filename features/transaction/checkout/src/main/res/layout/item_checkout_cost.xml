@@ -242,7 +242,7 @@
         android:layout_marginTop="8dp"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_checkout_cost_platform_fee_value"
+        app:layout_constraintTop_toBottomOf="@id/ll_checkout_cost_others"
         app:typographyType="display_3"
         app:typographyWeight="reguler"
         tools:text="Total Lainnya" />
@@ -269,7 +269,7 @@
         android:textColor="@color/Unify_NN950"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/ic_checkout_cost_others_toggle"
-        app:layout_constraintTop_toBottomOf="@id/tv_checkout_cost_platform_fee_value"
+        app:layout_constraintTop_toBottomOf="@id/ll_checkout_cost_others"
         app:typographyType="display_3"
         app:typographyWeight="reguler"
         tools:text="Rp2.905.000,00" />

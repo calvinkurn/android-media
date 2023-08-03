@@ -2,9 +2,11 @@ package com.tokopedia.checkout.revamp.view.viewholder
 
 import android.annotation.SuppressLint
 import android.text.Spannable
+import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.style.DynamicDrawableSpan
 import android.text.style.ImageSpan
+import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
@@ -62,6 +64,17 @@ class CheckoutProductViewHolder(
 
         bundleBinding.ivProductBundleImage.setImageUrl(product.imageUrl)
         bundleBinding.tvProductBundleName.text = "${product.quantity} x ${product.name}"
+        if (product.ethicalDrugDataModel.needPrescription && product.ethicalDrugDataModel.iconUrl.isNotEmpty()) {
+            product.ethicalDrugDataModel.iconUrl.getBitmapImageUrl(bundleBinding.root.context) {
+                try {
+                    bundleBinding.tvProductBundleName.text = SpannableStringBuilder("  ${product.quantity} x ${product.name}").apply {
+                        setSpan(ImageSpan(bundleBinding.root.context, it, DynamicDrawableSpan.ALIGN_CENTER), 0, 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+                    }
+                } catch (t: Throwable) {
+                    t.printStackTrace()
+                }
+            }
+        }
         if (product.variant.isNotBlank()) {
             bundleBinding.textVariantBundle.text = product.variant
             bundleBinding.textVariantBundle.isVisible = true
@@ -264,7 +277,6 @@ class CheckoutProductViewHolder(
                         listener.onClickSeeAllAddOnProductService(product)
                     }
                 }
-                listener.onClickLihatSemuaAddOnProductWidget()
             } else {
                 productBinding.tvCheckoutAddons.gone()
                 productBinding.tvCheckoutAddonsSeeAll.gone()
@@ -275,7 +287,10 @@ class CheckoutProductViewHolder(
                     val addOnView =
                         ItemAddOnProductBinding.inflate(layoutInflater, productBinding.llAddonProductItems, false)
                     addOnView.apply {
-                        tvProductAddonName.text = addon.name
+//                        icProductAddon.setImageUrl(addon)
+                        tvProductAddonName.text = SpannableString(addon.name).apply {
+                            setSpan(UnderlineSpan(), 0, addon.name.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+                        }
                         tvProductAddonPrice.text = " (${CurrencyFormatUtil
                             .convertPriceValueToIdrFormat(addon.price, false)
                             .removeDecimalSuffix()})"
@@ -291,11 +306,6 @@ class CheckoutProductViewHolder(
                                         addon,
                                         product,
                                         bindingAdapterPosition
-                                    )
-                                    listener.onClickAddOnsProductWidget(
-                                        addon.type,
-                                        product.productId.toString(),
-                                        isChecked
                                     )
                                 }
                             }
@@ -332,7 +342,6 @@ class CheckoutProductViewHolder(
                         listener.onClickSeeAllAddOnProductService(product)
                     }
                 }
-                listener.onClickLihatSemuaAddOnProductWidget()
             } else {
                 bundleBinding.tvCheckoutBundleAddons.gone()
                 bundleBinding.tvCheckoutBundleAddonsSeeAll.gone()
@@ -359,11 +368,6 @@ class CheckoutProductViewHolder(
                                         addon,
                                         product,
                                         bindingAdapterPosition
-                                    )
-                                    listener.onClickAddOnsProductWidget(
-                                        addon.type,
-                                        product.productId.toString(),
-                                        isChecked
                                     )
                                 }
                             }

@@ -21,9 +21,12 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.checkout.R
@@ -139,6 +142,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.utils.animateGone
 import com.tokopedia.purchase_platform.common.utils.animateShow
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.purchase_platform.common.utils.removeSingleDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -943,27 +947,76 @@ class CheckoutFragment :
         product: CheckoutProductModel,
         bindingAdapterPosition: Int
     ) {
-        TODO("Not yet implemented")
+        viewModel.setAddon(isChecked, addOnProductDataItemModel, product, bindingAdapterPosition)
+//        if (isChecked) {
+//            addOnProductDataItemModel.status = AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
+//        } else {
+//            addOnProductDataItemModel.status = AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK
+//        }
+//        cartItemModel.addOnProduct.listAddOnProductData.forEach {
+//            if (it.uniqueId == addOnProductDataItemModel.uniqueId) {
+//                it.status = addOnProductDataItemModel.status
+//            }
+//        }
+//        shipmentViewModel.saveAddOnsProduct(cartItemModel)
+//        shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
+//        shipmentAdapter.updateSubtotal()
+//
+        checkoutAnalyticsCourierSelection.eventClickAddOnsProductServiceWidget(addOnProductDataItemModel.type, product.productId.toString(), isChecked)
     }
 
     override fun onClickAddonProductInfoIcon(addOnDataInfoLink: String) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onClickAddOnsProductWidget(addonType: Int, productId: String, isChecked: Boolean) {
-        TODO("Not yet implemented")
+        RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=$addOnDataInfoLink")
     }
 
     override fun onClickSeeAllAddOnProductService(product: CheckoutProductModel) {
-        TODO("Not yet implemented")
+        val productId = product.productId
+        val cartId = product.cartId
+        val addOnIds = arrayListOf<Long>()
+        product.addOnProduct.listAddOnProductData.forEach { addOnItem ->
+            if (addOnItem.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK) {
+                addOnIds.add(addOnItem.id)
+            }
+        }
+
+        val price: Double
+        val discountedPrice: Double
+        if (product.campaignId == 0) {
+            price = product.price
+            discountedPrice = product.price
+        } else {
+            price = product.originalPrice
+            discountedPrice = product.price
+        }
+
+        val applinkAddon = ApplinkConst.ADDON.replace(AddOnConstant.QUERY_PARAM_ADDON_PRODUCT, productId.toString())
+        val applink = UriUtil.buildUriAppendParams(
+            applinkAddon,
+            mapOf(
+                AddOnConstant.QUERY_PARAM_CART_ID to cartId,
+                AddOnConstant.QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds.toString().replace("[", "").replace("]", ""),
+                AddOnConstant.QUERY_PARAM_PAGE_ATC_SOURCE to AddOnConstant.SOURCE_NORMAL_CHECKOUT,
+                ApplinkConstInternalMechant.QUERY_PARAM_WAREHOUSE_ID to product.warehouseId,
+                AddOnConstant.QUERY_PARAM_IS_TOKOCABANG to product.isTokoCabang,
+                AddOnConstant.QUERY_PARAM_CATEGORY_ID to product.productCatId,
+                AddOnConstant.QUERY_PARAM_SHOP_ID to product.shopId,
+                AddOnConstant.QUERY_PARAM_QUANTITY to product.quantity,
+                AddOnConstant.QUERY_PARAM_PRICE to price.toString().removeSingleDecimalSuffix(),
+                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toString().removeSingleDecimalSuffix()
+            )
+        )
+
+        activity?.let {
+            val intent = RouteManager.getIntent(it, applink)
+            startActivityForResult(intent,
+                ShipmentFragment.REQUEST_CODE_ADD_ON_PRODUCT_SERVICE_BOTTOMSHEET
+            )
+        }
+        checkoutAnalyticsCourierSelection.eventClickLihatSemuaAddOnsProductServiceWidget()
     }
 
     override fun onImpressionAddOnProductService(addonType: Int, productId: String) {
-        // todo
-    }
-
-    override fun onClickLihatSemuaAddOnProductWidget() {
-        TODO("Not yet implemented")
+        checkoutAnalyticsCourierSelection.eventViewAddOnsProductServiceWidget(addonType, productId)
     }
 
     override fun onClickAddOnGiftingProductLevel(
@@ -1102,19 +1155,14 @@ class CheckoutFragment :
             if (addOnsDataModel.addOnsButtonModel.action == 0) return
             var availableBottomSheetData = AvailableBottomSheetData()
             var unavailableBottomSheetData = UnavailableBottomSheetData()
+            val orderProducts = viewModel.getOrderProducts(order.cartStringGroup)
             if (addOnsDataModel.status == ShipmentFragment.ADD_ON_STATUS_DISABLE) {
-//                unavailableBottomSheetData =
-//                    ShipmentAddOnMapper.mapUnavailableBottomSheetOrderLevelData(
-//                        addOnBottomSheetModel,
-//                        order
-//                    )
-                val listUnavailableProduct: MutableList<com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product> =
+                val listUnavailableProduct: MutableList<GiftingProduct> =
                     arrayListOf()
                 for ((_, productName) in addOnBottomSheetModel.products) {
-                    for (item in order.products) {
+                    for (item in orderProducts) {
                         if (productName.equals(item.name, ignoreCase = true)) {
-                            val product =
-                                com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product()
+                            val product = GiftingProduct()
                             product.cartId = item.cartId.toString()
                             product.productId = item.productId.toString()
                             product.productPrice = item.price.toLong()
@@ -1151,10 +1199,9 @@ class CheckoutFragment :
                     addOnWordingModel.invoiceNotSendToRecipient
 
                 val listProduct =
-                    arrayListOf<com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product>()
-                for (cartItemModel in order.products) {
-                    val product =
-                        com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product()
+                    arrayListOf<GiftingProduct>()
+                for (cartItemModel in orderProducts) {
+                    val product = GiftingProduct()
                     product.cartId = cartItemModel.cartId.toString()
                     product.productId = cartItemModel.productId.toString()
                     product.productName = cartItemModel.name
@@ -1211,8 +1258,9 @@ class CheckoutFragment :
         }
     }
 
-    override fun addOnGiftingOrderLevelImpression(products: List<CheckoutProductModel>) {
-        val listCartString = java.util.ArrayList<String>()
+    override fun addOnGiftingOrderLevelImpression(order: CheckoutOrderModel) {
+        val listCartString = ArrayList<String>()
+        val products = viewModel.getOrderProducts(order.cartStringGroup)
         for (cartItemModel in products) {
             listCartString.add(cartItemModel.cartStringGroup)
         }
@@ -1282,7 +1330,7 @@ class CheckoutFragment :
                     isDisableOrderPrioritas = true,
                     isTradeInDropOff = viewModel.isTradeInByDropOff,
                     isFulFillment = order.isFulfillment,
-                    preOrderTime = order.products.first { !it.isError }.preOrderDurationDay,
+                    preOrderTime = order.preOrderDurationDay,
                     mvc = viewModel.generateRatesMvcParam(
                         order.cartStringGroup
                     ),
@@ -1298,7 +1346,7 @@ class CheckoutFragment :
         order: CheckoutOrderModel,
         recipientAddressModel: RecipientAddressModel
     ): ShipmentDetailData {
-        val orderProducts = order.products
+        val orderProducts = viewModel.getOrderProducts(order.cartStringGroup)
         var orderValue = 0L
         var totalWeight = 0.0
         var totalWeightActual = 0.0

@@ -56,7 +56,7 @@ class CheckoutOrderViewHolder(
                     order
                 )
             }
-            listener.addOnGiftingOrderLevelImpression(order.products)
+            listener.addOnGiftingOrderLevelImpression(order)
         }
     }
 

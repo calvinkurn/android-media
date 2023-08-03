@@ -53,6 +53,8 @@ import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingBottomSheetModel
@@ -237,6 +239,7 @@ class CheckoutViewModel @Inject constructor(
                 campaignTimer = saf.cartShipmentAddressFormData.campaignTimerUi
                 logisticProcessor.isBoUnstackEnabled =
                     saf.cartShipmentAddressFormData.lastApplyData.additionalInfo.bebasOngkirInfo.isBoUnstackEnabled
+                summariesAddOnUiModel = ShipmentAddOnProductServiceMapper.getShoppingSummaryAddOns(saf.cartShipmentAddressFormData.listSummaryAddons)
 
                 val items = dataConverter.getCheckoutItems(
                     saf.cartShipmentAddressFormData,
@@ -401,6 +404,19 @@ class CheckoutViewModel @Inject constructor(
         }
     }
 
+    fun getOrderProducts(cartStringGroup: String): List<CheckoutProductModel> {
+        val products = arrayListOf<CheckoutProductModel>()
+        for (checkoutItem in listData.value) {
+            if (checkoutItem is CheckoutProductModel && checkoutItem.cartStringGroup == cartStringGroup) {
+                products.add(checkoutItem)
+            }
+            if (checkoutItem is CheckoutOrderModel && checkoutItem.cartStringGroup == cartStringGroup) {
+                break
+            }
+        }
+        return products
+    }
+
     fun fetchEpharmacyData() {
         viewModelScope.launch(dispatchers.immediate) {
             addOnProcessor.fetchEpharmacyData(listData.value)
@@ -417,7 +433,7 @@ class CheckoutViewModel @Inject constructor(
 
     internal fun calculateTotal() {
         viewModelScope.launch(dispatchers.immediate) {
-            listData.value = calculator.calculateWithoutPayment(listData.value, isTradeInByDropOff)
+            listData.value = calculator.calculateWithoutPayment(listData.value, isTradeInByDropOff, summariesAddOnUiModel)
             var cost = listData.value.cost()!!
             val paymentFeeCheckoutRequest = PaymentFeeCheckoutRequest(
                 gatewayCode = "",
@@ -431,7 +447,7 @@ class CheckoutViewModel @Inject constructor(
                 paymentFeeCheckoutRequest
             )
             listData.value =
-                calculator.updateShipmentCostModel(listData.value, cost, isTradeInByDropOff)
+                calculator.updateShipmentCostModel(listData.value, cost, isTradeInByDropOff, summariesAddOnUiModel)
         }
     }
 
@@ -772,7 +788,7 @@ class CheckoutViewModel @Inject constructor(
                         arrayListOf(orderModel.boCode),
                         orderModel.shopId,
                         orderModel.isProductIsPreorder,
-                        orderModel.products.first().preOrderDurationDay.toString(),
+                        orderModel.preOrderDurationDay.toString(),
                         orderModel.fulfillmentId,
                         orderModel.cartStringGroup
                     )
@@ -864,7 +880,7 @@ class CheckoutViewModel @Inject constructor(
                         arrayListOf(shipment.courierItemData.logPromoCode!!),
                         checkoutOrderModel.shopId,
                         checkoutOrderModel.isProductIsPreorder,
-                        checkoutOrderModel.products.first().preOrderDurationDay.toString(),
+                        checkoutOrderModel.preOrderDurationDay.toString(),
                         checkoutOrderModel.fulfillmentId,
                         checkoutOrderModel.cartStringGroup
                     )
@@ -1028,7 +1044,7 @@ class CheckoutViewModel @Inject constructor(
                         arrayListOf(courierItemData.logPromoCode!!),
                         checkoutOrderModel.shopId,
                         checkoutOrderModel.isProductIsPreorder,
-                        checkoutOrderModel.products.first().preOrderDurationDay.toString(),
+                        checkoutOrderModel.preOrderDurationDay.toString(),
                         checkoutOrderModel.fulfillmentId,
                         checkoutOrderModel.cartStringGroup
                     )
@@ -1065,7 +1081,7 @@ class CheckoutViewModel @Inject constructor(
                             arrayListOf(courierItemData.logPromoCode!!),
                             order.shopId,
                             order.isProductIsPreorder,
-                            order.products.first().preOrderDurationDay.toString(),
+                            order.preOrderDurationDay.toString(),
                             order.fulfillmentId,
                             order.cartStringGroup
                         )
@@ -1388,7 +1404,7 @@ class CheckoutViewModel @Inject constructor(
                                         arrayListOf(logPromoCode),
                                         checkoutItem.shopId,
                                         checkoutItem.isProductIsPreorder,
-                                        checkoutItem.products.first().preOrderDurationDay.toString(),
+                                        checkoutItem.preOrderDurationDay.toString(),
                                         checkoutItem.fulfillmentId,
                                         checkoutItem.cartStringGroup
                                     )
@@ -1446,7 +1462,7 @@ class CheckoutViewModel @Inject constructor(
                                 arrayListOf(logPromoCode),
                                 shipmentCartItemModel.shopId,
                                 shipmentCartItemModel.isProductIsPreorder,
-                                shipmentCartItemModel.products.first().preOrderDurationDay.toString(),
+                                shipmentCartItemModel.preOrderDurationDay.toString(),
                                 shipmentCartItemModel.fulfillmentId,
                                 shipmentCartItemModel.cartStringGroup
                             )
@@ -1609,6 +1625,43 @@ class CheckoutViewModel @Inject constructor(
 
     private suspend fun hitClearAllBo() {
         promoProcessor.clearAllBo(listData.value)
+    }
+
+    fun setAddon(
+        checked: Boolean,
+        addOnProductDataItemModel: AddOnProductDataItemModel,
+        product: CheckoutProductModel,
+        position: Int
+    ) {
+        val checkoutItems = listData.value.toMutableList()
+        val checkoutProductModel = checkoutItems[position] as CheckoutProductModel
+        val oldList = checkoutProductModel.addOnProduct.listAddOnProductData
+        val newProduct = checkoutProductModel.copy(
+            addOnProduct = checkoutProductModel.addOnProduct.copy(
+                listAddOnProductData = oldList.map {
+                    it.copy(
+                        status = if (it.uniqueId == addOnProductDataItemModel.uniqueId) {
+                            if (checked) {
+                                AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
+                            } else {
+                                AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK
+                            }
+                        } else {
+                            it.status
+                        }
+                    )
+                }
+            )
+        )
+        checkoutItems[position] = newProduct
+        viewModelScope.launch {
+            addOnProcessor.saveAddonsProduct(newProduct, isOneClickShipment)
+        }
+        listData.value = checkoutItems
+        calculateTotal()
+//        shipmentViewModel.saveAddOnsProduct(cartItemModel)
+//        shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
+//        shipmentAdapter.updateSubtotal()
     }
 
     companion object {

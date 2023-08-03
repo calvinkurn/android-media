@@ -1,11 +1,13 @@
 package com.tokopedia.checkout.revamp.view.processor
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.checkout.domain.mapper.ShipmentAddOnProductServiceMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.EpharmacyData
 import com.tokopedia.checkout.revamp.view.firstOrNullInstanceOf
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_STATUS_APPROVED
 import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_STATUS_REJECTED
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
@@ -112,6 +114,7 @@ class CheckoutAddOnProcessor @Inject constructor(
                                                 }
                                                 if (product?.productId != null) {
                                                     for (i in shipmentCartItemModel.products.indices.reversed()) {
+                                                        // todo check this
                                                         val cartItemModel =
                                                             shipmentCartItemModel.products[i]
                                                         if (product.productId == cartItemModel.productId && !cartItemModel.isError) {
@@ -245,6 +248,7 @@ class CheckoutAddOnProcessor @Inject constructor(
     }
 
     fun setMiniConsultationResult(results: ArrayList<EPharmacyMiniConsultationResult>, listData: List<CheckoutItem>) {
+        // todo check this
         val uploadPrescriptionUiModel = listData.firstOrNullInstanceOf(CheckoutEpharmacyModel::class.java)?.epharmacy ?: return
 //        if (view != null) {
         val epharmacyGroupIds = HashSet<String>()
@@ -418,5 +422,20 @@ class CheckoutAddOnProcessor @Inject constructor(
             }
         }
         return true
+    }
+
+    suspend fun saveAddonsProduct(product: CheckoutProductModel, isOneClickShipment: Boolean) {
+        withContext(dispatchers.io) {
+            try {
+                val params = ShipmentAddOnProductServiceMapper.generateSaveAddOnProductRequestParamsNew(
+                    product,
+                    isOneClickShipment
+                )
+                saveAddOnProductUseCase.setParams(params, true)
+                saveAddOnProductUseCase.executeOnBackground()
+            } catch (t: Throwable) {
+                Timber.d(t)
+            }
+        }
     }
 }

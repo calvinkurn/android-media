@@ -22,6 +22,7 @@ import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.view.uimodel.EgoldTieringModel
 import com.tokopedia.checkout.view.uimodel.ShipmentAddOnSummaryModel
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
+import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -87,7 +88,11 @@ class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineD
         return cost
     }
 
-    fun calculateWithoutPayment(listData: List<CheckoutItem>, isTradeInByDropOff: Boolean): List<CheckoutItem> {
+    fun calculateWithoutPayment(
+        listData: List<CheckoutItem>,
+        isTradeInByDropOff: Boolean,
+        summariesAddOnUiModel: HashMap<Int, String>
+    ): List<CheckoutItem> {
         var totalWeight = 0.0
         var totalPrice: Double
         var additionalFee = 0.0
@@ -296,21 +301,20 @@ class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineD
 //        }
         shipmentCost.bookingFee = totalBookingFee
 
-//        for (entry in countMapSummaries) {
-//            val addOnWording = summariesAddOnUiModel[entry.key]?.replace(CartConstant.QTY_ADDON_REPLACE, entry.value.second.toString())
-//            val addOnPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(entry.value.first, false).removeDecimalSuffix()
-//            val summaryAddOn = ShipmentAddOnSummaryModel(
-//                wording = addOnWording ?: "",
-//                type = entry.key,
-//                qty = entry.value.second,
-//                priceLabel = addOnPrice,
-//                priceValue = entry.value.first
-//            )
-//            listShipmentAddOnSummary.add(summaryAddOn)
-//        }
+        for (entry in countMapSummaries) {
+            val addOnWording = summariesAddOnUiModel[entry.key]?.replace(CartConstant.QTY_ADDON_REPLACE, entry.value.second.toString())
+            val addOnPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(entry.value.first, false).removeDecimalSuffix()
+            val summaryAddOn = ShipmentAddOnSummaryModel(
+                wording = addOnWording ?: "",
+                type = entry.key,
+                qty = entry.value.second,
+                priceLabel = addOnPrice,
+                priceValue = entry.value.first.toLong()
+            )
+            listShipmentAddOnSummary.add(summaryAddOn)
+        }
 
-//        listSummaryAddOnModel = listShipmentAddOnSummary
-//        shipmentCost.listAddOnSummary = listSummaryAddOnModel
+        shipmentCost.listAddOnSummary = listShipmentAddOnSummary
 //        checkoutCostModel.value = shipmentCost
         shipmentCost = shipmentCost.copy(dynamicPlatformFee = shipmentCost.dynamicPlatformFee.copy(isLoading = true))
 
@@ -323,8 +327,13 @@ class CheckoutCalculator @Inject constructor(private val dispatchers: CoroutineD
         }
     }
 
-    fun updateShipmentCostModel(listData: List<CheckoutItem>, newCost: CheckoutCostModel, isTradeInByDropOff: Boolean): List<CheckoutItem> {
-        val newList = calculateWithoutPayment(listData, isTradeInByDropOff)
+    fun updateShipmentCostModel(
+        listData: List<CheckoutItem>,
+        newCost: CheckoutCostModel,
+        isTradeInByDropOff: Boolean,
+        summariesAddOnUiModel: HashMap<Int, String>
+    ): List<CheckoutItem> {
+        val newList = calculateWithoutPayment(listData, isTradeInByDropOff, summariesAddOnUiModel)
         var shipmentCost = newList.cost()!!.copy(dynamicPlatformFee = newCost.dynamicPlatformFee)
         var buttonPaymentModel = newList.buttonPayment()!!
         var cartItemCounter = 0

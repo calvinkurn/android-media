@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.revamp.view.uimodel
 
+import com.tokopedia.checkout.view.uimodel.ShipmentAddOnSummaryModel
 import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
 
 data class CheckoutCostModel(
@@ -37,6 +38,6 @@ data class CheckoutCostModel(
     var cashbackAmount: Int = 0,
     var totalAddOnPrice: Double = 0.0,
     var hasAddOn: Boolean = false,
-    var dynamicPlatformFee: ShipmentPaymentFeeModel = ShipmentPaymentFeeModel()
-//    var listAddOnSummary: List<ShipmentAddOnSummaryModel> = emptyList()
+    var dynamicPlatformFee: ShipmentPaymentFeeModel = ShipmentPaymentFeeModel(),
+    var listAddOnSummary: List<ShipmentAddOnSummaryModel> = emptyList()
 ) : CheckoutItem
