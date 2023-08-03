@@ -188,8 +188,8 @@
             android:layout_marginEnd="8dp"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
-            android:textColor="@color/Unify_NN0"
-            android:text="Sisa 20" />
+            android:textColor="@color/promo_dms_white"
+            tools:text="Sisa 20" />
 
     </FrameLayout>
 
