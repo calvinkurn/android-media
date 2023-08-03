@@ -31,17 +31,17 @@ import com.tokopedia.buy_more_get_more.olp.utils.BundleConstant
 import com.tokopedia.buy_more_get_more.olp.utils.DataEndlessScrollListener
 import com.tokopedia.buy_more_get_more.sort.activity.ShopProductSortActivity
 import com.tokopedia.buy_more_get_more.sort.listener.ProductSortListener
-import com.tokopedia.campaign.delegates.HasPaginatedList
-import com.tokopedia.campaign.delegates.HasPaginatedListImpl
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
 
 class OfferLandingPageFragment :
     BaseListFragment<Visitable<*>, AdapterTypeFactory>(),
-    ProductSortListener,
-    HasPaginatedList by HasPaginatedListImpl() {
+    ProductSortListener{
 
     companion object {
         @JvmStatic
@@ -52,6 +52,9 @@ class OfferLandingPageFragment :
         }
 
         private const val REQUEST_CODE_SORT = 308
+        private const val VIEW_CONTENT = 1
+        private const val VIEW_LOADING = 2
+        private const val VIEW_ERROR = 3
     }
 
     private var binding by autoClearedNullable<FragmentOfferLandingPageBinding>()
@@ -111,16 +114,23 @@ class OfferLandingPageFragment :
                 StaggeredGridLayoutManager.VERTICAL
             )
         }
-        viewModel.getOfferingIndo(listOf(0), shopId, localCacheModel)
     }
 
     private fun setupObservables() {
         viewModel.offeringInfo.observe(viewLifecycleOwner) { offerInfoForBuyer ->
-            hideLoading()
-            setupContent(offerInfoForBuyer)
+            when(offerInfoForBuyer) {
+                is Success -> {
+                    setupContent(offerInfoForBuyer.data)
+                }
+                else -> {
+                    setViewState(VIEW_ERROR)
+                }
+            }
+            setViewState(VIEW_CONTENT)
         }
 
         viewModel.error.observe(viewLifecycleOwner) { throwable ->
+            setViewState(VIEW_ERROR)
         }
     }
 
@@ -129,8 +139,8 @@ class OfferLandingPageFragment :
         setupToolbar(offerInfoForBuyer)
     }
 
-    private fun setupContent(offerInfoForBuyer: OfferInfoForBuyerUiModel) {
-        setupHeader(offerInfoForBuyer)
+    private fun setupContent(offerInfoForBuyer: OfferInfoForBuyerUiModel?) {
+        offerInfoForBuyer?.let { setupHeader(it) }
         olpAdapter?.submitList(
             newList = listOf(
                 generateDummyOfferingData(), // pass offering data
@@ -183,6 +193,11 @@ class OfferLandingPageFragment :
         // update product list data
     }
 
+    override fun loadInitialData() {
+        setViewState(VIEW_LOADING)
+        viewModel.getOfferingIndo(listOf(0), shopId, localCacheModel)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             REQUEST_CODE_SORT -> {
@@ -216,6 +231,32 @@ class OfferLandingPageFragment :
             DataEndlessScrollListener(getRecyclerView(view)?.layoutManager, olpAdapter) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 Log.d("Masuk", "load more") // load more data
+            }
+        }
+    }
+
+    private fun setViewState(viewState: Int) {
+        when (viewState) {
+            VIEW_LOADING -> {
+                binding?.apply {
+                    loadingStateOlp.root.visible()
+                    stickyContent.gone()
+                    errorPageLarge.gone()
+                }
+            }
+            VIEW_ERROR -> {
+                binding?.apply {
+                    loadingStateOlp.root.gone()
+                    stickyContent.gone()
+                    errorPageLarge.visible()
+                }
+            }
+            else -> {
+                binding?.apply {
+                    loadingStateOlp.root.gone()
+                    stickyContent.visible()
+                    errorPageLarge.gone()
+                }
             }
         }
     }

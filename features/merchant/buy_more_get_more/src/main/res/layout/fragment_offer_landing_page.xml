@@ -16,7 +16,13 @@
         app:unify_header_title="@string/bmgm_title"
         app:unify_header_transparent_mode="true" />
 
+    <include
+        android:id="@+id/loading_state_olp"
+        layout="@layout/loading_state_olp"
+        android:visibility="gone" />
+
     <com.tokopedia.buy_more_get_more.olp.view.widget.StickySingleHeaderView
+        android:id="@+id/sticky_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
@@ -32,5 +38,20 @@
             android:focusableInTouchMode="false" />
 
     </com.tokopedia.buy_more_get_more.olp.view.widget.StickySingleHeaderView>
+
+    <com.tokopedia.empty_state.EmptyStateUnify
+        android:id="@+id/errorPageLarge"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unifyEmptyStateDescription="test"
+        app:unifyEmptyStateImageUrl="https://images.tokopedia.net/android/merchant_voucher/il_mvc_no_result.webp"
+        app:unifyEmptyStatePrimaryCTAText="test"
+        app:unifyEmptyStateTitle="" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
