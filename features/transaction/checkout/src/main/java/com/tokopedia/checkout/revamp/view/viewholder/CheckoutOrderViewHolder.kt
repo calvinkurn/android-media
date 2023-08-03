@@ -85,10 +85,16 @@ class CheckoutOrderViewHolder(
                 binding.shippingWidget.hideShippingStateLoading()
                 if (order.isDisableChangeCourier && order.hasGeolocation) {
                     binding.shippingWidget.showLayoutStateFailedShipping(
-                        RecipientAddressModel()
+                        ShippingWidgetUiModel(
+                            currentAddress = RecipientAddressModel()
+                        )
                     )
                 } else {
-                    binding.shippingWidget.showLayoutNoSelectedShipping(RecipientAddressModel())
+                    binding.shippingWidget.showLayoutNoSelectedShipping(
+                        ShippingWidgetUiModel(
+                            currentAddress = RecipientAddressModel()
+                        )
+                    )
                     // todo coachmark
 
                     //                showMultiplePlusOrderCoachmark(
@@ -161,7 +167,11 @@ class CheckoutOrderViewHolder(
                 binding.shippingWidget.prepareLoadCourierState()
                 binding.shippingWidget.hideShippingStateLoading()
                 binding.shippingWidget.showContainerShippingExperience()
-                binding.shippingWidget.showLayoutFreeShippingCourier(RecipientAddressModel())
+                binding.shippingWidget.showLayoutFreeShippingCourier(
+                    ShippingWidgetUiModel(
+                        currentAddress = RecipientAddressModel()
+                    )
+                )
                 binding.shippingWidget.renderFreeShippingCourier(
                     ShippingWidgetUiModel(
                         courierErrorTitle = order.courierSelectionErrorTitle,
@@ -256,8 +266,7 @@ class CheckoutOrderViewHolder(
 
                         scheduleDeliveryUiModel = null,
                         insuranceData = InsuranceWidgetUiModel()
-                    ),
-                    RecipientAddressModel()
+                    )
                 )
             } else {
                 binding.shippingWidget.prepareLoadCourierState()
@@ -309,8 +318,7 @@ class CheckoutOrderViewHolder(
                         insuranceData = InsuranceWidgetUiModel(
                             show = insurance.insuranceData != null && !(insurance.insuranceData.insuranceType == InsuranceConstant.INSURANCE_TYPE_NO || insurance.insuranceData.insuranceType == InsuranceConstant.INSURANCE_TYPE_NONE)
                         )
-                    ),
-                    RecipientAddressModel()
+                    )
                 )
             }
         }
@@ -458,5 +466,21 @@ class CheckoutOrderViewHolder(
 
     override fun getHostFragmentManager(): FragmentManager {
         return listener.getHostFragmentManager()
+    }
+
+    override fun onInsuranceCheckedForTrackingAnalytics() {
+        // todo
+    }
+
+    override fun onInsuranceChecked(shippingWidgetUiModel: ShippingWidgetUiModel) {
+        // todo
+    }
+
+    override fun onInsuranceInfoTooltipClickedTrackingAnalytics() {
+        // todo
+    }
+
+    override fun showInsuranceBottomSheet(description: String) {
+        // todo
     }
 }

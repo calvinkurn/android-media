@@ -50,6 +50,7 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Insur
 import com.tokopedia.logisticcart.shipping.model.CodModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.Product
+import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
@@ -559,6 +560,18 @@ class CheckoutViewModel @Inject constructor(
 
     fun generateRatesMvcParam(cartStringGroup: String): String {
         return logisticProcessor.generateRatesMvcParam(cartStringGroup)
+    }
+
+    fun generateRatesParam(order: CheckoutOrderModel): RatesParam {
+        return logisticProcessor.getRatesParam(
+            order,
+            getOrderProducts(order.cartStringGroup),
+            listData.value.address()!!.recipientAddressModel,
+            isTradeIn,
+            isTradeInByDropOff,
+            codData,
+            cartDataForRates
+        )
     }
 
     fun loadShipping(order: CheckoutOrderModel, cartPosition: Int) {

@@ -1008,7 +1008,8 @@ class CheckoutFragment :
 
         activity?.let {
             val intent = RouteManager.getIntent(it, applink)
-            startActivityForResult(intent,
+            startActivityForResult(
+                intent,
                 ShipmentFragment.REQUEST_CODE_ADD_ON_PRODUCT_SERVICE_BOTTOMSHEET
             )
         }
@@ -1301,42 +1302,45 @@ class CheckoutFragment :
         } else {
 //            val shipmentDetailData =
 //                getShipmentDetailData(order, recipientAddressModel)
-            var codHistory = -1
-            if (viewModel.codData != null) {
-                codHistory = viewModel.codData!!.counterCod
-            }
+//            var codHistory = -1
+//            if (viewModel.codData != null) {
+//                codHistory = viewModel.codData!!.counterCod
+//            }
             val activity: Activity? = activity
             if (activity != null) {
 //                val pslCode = RatesDataConverter.getLogisticPromoCode(order)
-                val products = viewModel.getProductForRatesRequest(order)
-                val shippingDurationBottomsheet = ShippingDurationBottomsheet()
-                shippingDurationBottomsheet.show(
-                    activity = activity,
+//                val products = viewModel.getProductForRatesRequest(order)
+                ShippingDurationBottomsheet.show(
                     fragmentManager = parentFragmentManager,
                     shippingDurationBottomsheetListener = this,
-                    shipmentDetailData = generateShippingBottomsheetParam(
-                        order,
-                        recipientAddressModel
-                    ),
-                    selectedServiceId = order.shipment.courierItemData?.serviceId ?: -1,
-                    shopShipmentList = order.shopShipmentList,
+                    ratesParam = viewModel.generateRatesParam(order),
+                    selectedSpId = order.shipment.courierItemData?.selectedShipper?.shipperProductId ?: -1,
+//                    shipmentDetailData = generateShippingBottomsheetParam(
+//                        order,
+//                        recipientAddressModel
+//                    ),
+                    selectedServiceId = order.shipment.courierItemData?.selectedShipper?.serviceId ?: -1,
+//                    shopShipmentList = order.shopShipmentList,
+//                    recipientAddressModel = recipientAddressModel,
+//                    cartPosition = cartPosition,
+//                    codHistory = codHistory,
+//                    isLeasing = order.isLeasingProduct,
+//                    pslCode = order.shipment.courierItemData?.logPromoCode ?: "",
+//                    products = products,
+//                    cartString = order.cartStringGroup,
+//                    isDisableOrderPrioritas = true,
+                    isRatesTradeInApi = viewModel.isTradeInByDropOff,
+                    isDisableOrderPrioritas = true,
                     recipientAddressModel = recipientAddressModel,
                     cartPosition = cartPosition,
-                    codHistory = codHistory,
-                    isLeasing = order.isLeasingProduct,
-                    pslCode = order.shipment.courierItemData?.logPromoCode ?: "",
-                    products = products,
-                    cartString = order.cartStringGroup,
-                    isDisableOrderPrioritas = true,
-                    isTradeInDropOff = viewModel.isTradeInByDropOff,
-                    isFulFillment = order.isFulfillment,
-                    preOrderTime = order.preOrderDurationDay,
-                    mvc = viewModel.generateRatesMvcParam(
-                        order.cartStringGroup
-                    ),
-                    cartData = viewModel.cartDataForRates,
-                    isOcc = false,
-                    warehouseId = order.fulfillmentId.toString()
+//                    isFulFillment = order.isFulfillment,
+//                    preOrderTime = order.preOrderDurationDay,
+//                    mvc = viewModel.generateRatesMvcParam(
+//                        order.cartStringGroup
+//                    ),
+//                    cartData = viewModel.cartDataForRates,
+                    isOcc = false
+//                    warehouseId = order.fulfillmentId.toString()
                 )
             }
         }
@@ -1672,9 +1676,7 @@ class CheckoutFragment :
         if (!viewModel.isLoading()) {
             val activity: Activity? = activity
             if (activity != null) {
-                val shippingCourierBottomsheet = ShippingCourierBottomsheet()
-                shippingCourierBottomsheet.show(
-                    activity,
+                ShippingCourierBottomsheet.show(
                     fragmentManager!!,
                     this,
                     order.shipment.shippingCourierUiModels,
