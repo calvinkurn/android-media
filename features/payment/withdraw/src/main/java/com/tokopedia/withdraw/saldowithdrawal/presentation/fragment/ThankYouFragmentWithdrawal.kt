@@ -29,6 +29,8 @@ import com.tokopedia.withdraw.saldowithdrawal.domain.model.SubmitWithdrawalRespo
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.WithdrawalRequest
 import com.tokopedia.withdraw.saldowithdrawal.util.WithdrawConstant
 import kotlinx.android.synthetic.main.swd_success_page.*
+import java.text.NumberFormat
+import java.util.Locale
 import javax.inject.Inject
 
 class ThankYouFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
@@ -104,7 +106,11 @@ class ThankYouFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
                 else if (bankAccount.accountNo?.isNotEmpty() == true) bankAccount.accountNo
                 else bankAccount.accountName
 
-            tvTotalWithdrawalAmount.text = CurrencyFormatHelper.convertToRupiah(withdrawalRequest.withdrawal.toString())
+            val localeID = Locale("in", "ID")
+            tvTotalWithdrawalAmount.text = getString(
+                R.string.swd_rp,
+                NumberFormat.getNumberInstance(localeID).format(withdrawalRequest.withdrawal)
+            )
             showRekeningWidgets(activity)
         }
         btnCta.setOnClickListener { onCtaClick() }

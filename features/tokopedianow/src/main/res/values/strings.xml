@@ -31,6 +31,7 @@
     <string name="tokopedianow_search_title">Hasil pencarian di Tokopedia NOW!</string>
     <string name="tokopedianow_all_category">Semua Kategori</string>
     <string name="tokopedianow_category_title_another_category">Kategori Lain</string>
+    <string name="tokopedianow_category_l1_category_menu_title">Sekalian cek kebutuhan yang lain</string>
     <string name="tokopedianow_search_category_product_count_template">%s Produk</string>
     <string name="tokopedianow_2h_category_aisle_header">Lihat kategori lainnya di 2 jam tiba</string>
     <string name="tokopedianow_20m_category_aisle_header">Kategori 20 menit tiba lainnya</string>

@@ -470,7 +470,10 @@ class TokoNowHomeFragment :
 
     override fun onShareBtnReferralSenderClicked(referral: HomeSharingReferralWidgetUiModel) {
         setupReferralData(referral)
-        showUniversalShareBottomSheet(shareHomeTokonow)
+        showUniversalShareBottomSheet(
+            shareHomeTokonow = shareHomeTokonow,
+            isEnableAffiliate = false
+        )
         trackClickShareSenderReferralWidget(referral)
     }
 
@@ -1813,14 +1816,17 @@ class TokoNowHomeFragment :
             .isNotEmpty()
     }
 
-    private fun showUniversalShareBottomSheet(shareHomeTokonow: ShareTokonow?, path: String? = null) {
+    private fun showUniversalShareBottomSheet(
+        shareHomeTokonow: ShareTokonow?,
+        path: String? = null,
+        isEnableAffiliate: Boolean = isEnableAffiliate()
+    ) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             setFeatureFlagRemoteConfigKey()
             path?.let {
                 setImageOnlySharingOption(true)
                 setScreenShotImagePath(path)
             }
-            val shareInput = viewModelTokoNow.getAffiliateShareInput()
 
             init(this@TokoNowHomeFragment)
             setUtmCampaignData(
@@ -1836,7 +1842,8 @@ class TokoNowHomeFragment :
             // set the Image Url of the Image that represents page
             setOgImageUrl(imgUrl = shareHomeTokonow?.ogImageUrl.orEmpty())
 
-            if (isEnableAffiliate()) {
+            if (isEnableAffiliate) {
+                val shareInput = viewModelTokoNow.getAffiliateShareInput()
                 enableAffiliateCommission(shareInput)
             }
         }
