@@ -50,7 +50,6 @@ data class ShippingWidgetUiModel(
 )
 
 data class InsuranceWidgetUiModel(
-    var show: Boolean = false,
     var useInsurance: Boolean? = null,
     var insuranceType: Int = 0,
     var insuranceUsedDefault: Int = 0,

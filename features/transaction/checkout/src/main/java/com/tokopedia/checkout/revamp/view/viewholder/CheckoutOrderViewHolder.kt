@@ -10,12 +10,12 @@ import com.tokopedia.checkout.databinding.ItemCheckoutOrderBinding
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutAddressModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
-import com.tokopedia.logisticCommon.data.constant.InsuranceConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.shipping.features.shippingwidget.ShippingCheckoutRevampWidget
 import com.tokopedia.logisticcart.shipping.model.InsuranceWidgetUiModel
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingWidgetUiModel
+import com.tokopedia.purchase_platform.common.feature.bottomsheet.InsuranceBottomSheet
 
 class CheckoutOrderViewHolder(
     private val binding: ItemCheckoutOrderBinding,
@@ -316,7 +316,12 @@ class CheckoutOrderViewHolder(
 
                         scheduleDeliveryUiModel = null,
                         insuranceData = InsuranceWidgetUiModel(
-                            show = insurance.insuranceData != null && !(insurance.insuranceData.insuranceType == InsuranceConstant.INSURANCE_TYPE_NO || insurance.insuranceData.insuranceType == InsuranceConstant.INSURANCE_TYPE_NONE)
+                            useInsurance = insurance.isCheckInsurance,
+                            insuranceType = courierItemData.insuranceType,
+                            insuranceUsedDefault = courierItemData.insuranceUsedDefault,
+                            insuranceUsedInfo = courierItemData.insuranceUsedInfo,
+                            insurancePrice = courierItemData.insurancePrice.toDouble(),
+                            isInsurance = order.isInsurance
                         )
                     )
                 )
@@ -469,18 +474,26 @@ class CheckoutOrderViewHolder(
     }
 
     override fun onInsuranceCheckedForTrackingAnalytics() {
-        // todo
+        listener.onInsuranceCheckedForTrackingAnalytics()
     }
 
     override fun onInsuranceChecked(shippingWidgetUiModel: ShippingWidgetUiModel) {
-        // todo
+        listener.onInsuranceChecked(shippingWidgetUiModel.insuranceData!!.useInsurance!!, order, bindingAdapterPosition)
     }
 
     override fun onInsuranceInfoTooltipClickedTrackingAnalytics() {
-        // todo
+        listener.onInsuranceInfoTooltipClickedTrackingAnalytics()
     }
 
     override fun showInsuranceBottomSheet(description: String) {
-        // todo
+        if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
+            val insuranceBottomSheet = InsuranceBottomSheet()
+            insuranceBottomSheet.setDesc(description)
+            insuranceBottomSheet.show(
+                binding.root.context.getString(com.tokopedia.purchase_platform.common.R.string.title_bottomsheet_insurance),
+                binding.root.context,
+                listener.getHostFragmentManager()
+            )
+        }
     }
 }

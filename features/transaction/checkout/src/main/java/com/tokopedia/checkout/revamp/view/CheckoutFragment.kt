@@ -1909,6 +1909,20 @@ class CheckoutFragment :
         return parentFragmentManager
     }
 
+    override fun onInsuranceCheckedForTrackingAnalytics() {
+        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickAsuransiPengiriman()
+    }
+
+    override fun onInsuranceChecked(isChecked: Boolean, order: CheckoutOrderModel, position: Int) {
+        viewModel.setSelectedCourierInsurance(isChecked, order, position)
+    }
+
+    override fun onInsuranceInfoTooltipClickedTrackingAnalytics() {
+        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionInsuranceInfoTooltip(
+            userSessionInterface.userId
+        )
+    }
+
     override fun onClickPromoCheckout(lastApplyUiModel: LastApplyUiModel) {
 //        if (shipmentLoadingIndex == -1 && !shipmentViewModel.shipmentButtonPayment.value.loading) {
 //            if (lastApplyUiModel == null) return

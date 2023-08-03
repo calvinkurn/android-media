@@ -60,6 +60,12 @@ interface CheckoutAdapterListener {
 
     fun getHostFragmentManager(): FragmentManager
 
+    fun onInsuranceCheckedForTrackingAnalytics()
+
+    fun onInsuranceChecked(isChecked: Boolean, order: CheckoutOrderModel, position: Int)
+
+    fun onInsuranceInfoTooltipClickedTrackingAnalytics()
+
     fun onClickPromoCheckout(lastApplyUiModel: LastApplyUiModel)
 
     fun onSendAnalyticsClickPromoCheckout(isApplied: Boolean, listAllPromoCodes: List<String>)

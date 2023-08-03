@@ -1686,6 +1686,16 @@ class CheckoutViewModel @Inject constructor(
 //        shipmentAdapter.updateSubtotal()
     }
 
+    fun setSelectedCourierInsurance(checked: Boolean, order: CheckoutOrderModel, position: Int) {
+        if (order.shipment.insurance.isCheckInsurance == checked) return
+        val checkoutItems = listData.value.toMutableList()
+        val checkoutOrderModel = checkoutItems[position] as CheckoutOrderModel
+        val newOrder = checkoutOrderModel.copy(shipment = checkoutOrderModel.shipment.copy(insurance = checkoutOrderModel.shipment.insurance.copy(isCheckInsurance = checked)))
+        checkoutItems[position] = newOrder
+        listData.value = checkoutItems
+        calculateTotal()
+    }
+
     companion object {
         const val PLATFORM_FEE_CODE = "platform_fee"
     }

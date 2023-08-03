@@ -183,10 +183,10 @@ class CheckoutCalculator @Inject constructor(
                     } else if (shipmentData.selectedShipmentDetailData!!.selectedCourier != null) {*/
                     shippingFee += shipmentData.shipment
                         .courierItemData.selectedShipper.shipperPrice.toDouble()
-//                        if (useInsurance != null && useInsurance) {
-//                            insuranceFee += shipmentData.selectedShipmentDetailData!!
-//                                .selectedCourier!!.selectedShipper.insurancePrice.toDouble()
-//                        }
+                        if (shipmentData.shipment.insurance.isCheckInsurance) {
+                            insuranceFee += shipmentData.shipment
+                                .courierItemData.selectedShipper.insurancePrice.toDouble()
+                        }
                     additionalFee += shipmentData.shipment.courierItemData.additionalPrice.toDouble()
 //                    }
                 } else if (!shipmentData.isError) {

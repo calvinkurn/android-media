@@ -231,7 +231,8 @@ class CheckoutCostViewHolder(
     }
 
     private fun renderOtherFee(cost: CheckoutCostModel) {
-        if ((cost.listAddOnSummary.size + cost.listCrossSell.size) > 2) {
+        val insuranceCourierList = if (cost.shippingInsuranceFee > 0.0) listOf(cost.shippingInsuranceFee) else emptyList()
+        if ((insuranceCourierList.size + cost.listAddOnSummary.size + cost.listCrossSell.size) > 2) {
             // render in collapsable group
             binding.tvCheckoutCostOthersTitle.isVisible = false
             binding.icCheckoutCostOthersToggle.isVisible = false
@@ -248,6 +249,20 @@ class CheckoutCostViewHolder(
             binding.vCheckoutCostOthersExpandedSeparator.isVisible = false
 
             binding.llCheckoutCostOthers.removeAllViews()
+            insuranceCourierList.forEach {
+                val itemBinding = ItemCheckoutCostDynamicBinding.inflate(
+                    layoutInflater,
+                    binding.llCheckoutCostOthers,
+                    false
+                )
+                itemBinding.tvCheckoutCostItemTitle.text = "Total Asuransi Pengiriman"
+                itemBinding.tvCheckoutCostItemValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    it,
+                    false
+                ).removeDecimalSuffix()
+                (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(binding.root.context.resources.displayMetrics)
+                binding.llCheckoutCostOthers.addView(itemBinding.root)
+            }
             cost.listAddOnSummary.forEach {
                 val itemBinding = ItemCheckoutCostDynamicBinding.inflate(
                     layoutInflater,
