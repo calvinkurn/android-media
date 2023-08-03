@@ -53,21 +53,19 @@ class ShippingCourierConverter @Inject constructor() {
             courierItemData.isHideChangeCourierCard = it.serviceData.selectedShipperProductId > 0
             courierItemData.durationCardDescription = it.serviceData.texts.textEtaSummarize
             if (!courierItemData.isUsePinPoint) {
-                if (it.productData.error != null && it.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
+                if (it.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
                     courierItemData.isUsePinPoint = true
                 }
             }
-            if (it.serviceData.orderPriority != null) {
-                courierItemData.now = it.serviceData.orderPriority.now
-                courierItemData.priorityPrice = it.serviceData.orderPriority.price
-                courierItemData.priorityFormattedPrice = it.serviceData.orderPriority.formattedPrice
-                courierItemData.priorityInnactiveMessage = it.serviceData.orderPriority.inactiveMessage
-                courierItemData.priorityDurationMessage = it.serviceData.orderPriority.staticMessage.durationMessage
-                courierItemData.priorityFeeMessage = it.serviceData.orderPriority.staticMessage.feeMessage
-                courierItemData.priorityWarningboxMessage = it.serviceData.orderPriority.staticMessage.warningBoxMessage
-                courierItemData.priorityCheckboxMessage = it.serviceData.orderPriority.staticMessage.checkboxMessage
-                courierItemData.priorityPdpMessage = it.serviceData.orderPriority.staticMessage.pdpMessage
-            }
+            courierItemData.now = it.serviceData.orderPriority.now
+            courierItemData.priorityPrice = it.serviceData.orderPriority.price
+            courierItemData.priorityFormattedPrice = it.serviceData.orderPriority.formattedPrice
+            courierItemData.priorityInnactiveMessage = it.serviceData.orderPriority.inactiveMessage
+            courierItemData.priorityDurationMessage = it.serviceData.orderPriority.staticMessage.durationMessage
+            courierItemData.priorityFeeMessage = it.serviceData.orderPriority.staticMessage.feeMessage
+            courierItemData.priorityWarningboxMessage = it.serviceData.orderPriority.staticMessage.warningBoxMessage
+            courierItemData.priorityCheckboxMessage = it.serviceData.orderPriority.staticMessage.checkboxMessage
+            courierItemData.priorityPdpMessage = it.serviceData.orderPriority.staticMessage.pdpMessage
             courierItemData.isAllowDropshiper = it.isAllowDropshipper
             courierItemData.additionalPrice = it.additionalFee
             courierItemData.promoCode = it.productData.promoCode
@@ -78,50 +76,42 @@ class ShippingCourierConverter @Inject constructor() {
             courierItemData.preOrderModel = it.productShipmentDetailModel?.preOrderModel
 
             /*on time delivery*/
-            if (shippingCourierUiModel.productData.features.ontimeDeliveryGuarantee != null) {
-                val otdPrev = shippingCourierUiModel.productData.features.ontimeDeliveryGuarantee
-                val otd = OntimeDelivery(
-                    otdPrev.available,
-                    otdPrev.textLabel,
-                    otdPrev.textDetail,
-                    otdPrev.urlDetail,
-                    otdPrev.value,
-                    otdPrev.iconUrl,
-                    otdPrev.urlText
-                )
-                courierItemData.ontimeDelivery = otd
-            }
+            val otdPrev = shippingCourierUiModel.productData.features.ontimeDeliveryGuarantee
+            val otd = OntimeDelivery(
+                otdPrev.available,
+                otdPrev.textLabel,
+                otdPrev.textDetail,
+                otdPrev.urlDetail,
+                otdPrev.value,
+                otdPrev.iconUrl,
+                otdPrev.urlText
+            )
+            courierItemData.ontimeDelivery = otd
 
             /*merchant voucher*/
-            if (it.productData.features.merchantVoucherProductData != null) {
-                val merchantVoucherProductData = it.productData.features.merchantVoucherProductData
-                val mvc = MerchantVoucherProductModel(
-                    merchantVoucherProductData.isMvc,
-                    merchantVoucherProductData.mvcLogo,
-                    merchantVoucherProductData.mvcErrorMessage
-                )
-                courierItemData.merchantVoucherProductModel = mvc
-            }
+            val merchantVoucherProductData = it.productData.features.merchantVoucherProductData
+            val mvc = MerchantVoucherProductModel(
+                merchantVoucherProductData.isMvc,
+                merchantVoucherProductData.mvcLogo,
+                merchantVoucherProductData.mvcErrorMessage
+            )
+            courierItemData.merchantVoucherProductModel = mvc
 
             /*cash on delivery*/
-            if (it.productData.codProductData != null) {
-                val codProductData = it.productData.codProductData
-                val codProduct = CashOnDeliveryProduct(
-                    codProductData.isCodAvailable,
-                    codProductData.codText,
-                    codProductData.codPrice.roundToInt(),
-                    codProductData.formattedPrice,
-                    codProductData.tncText,
-                    codProductData.tncLink
-                )
-                courierItemData.codProductData = codProduct
-            }
+            val codProductData = it.productData.codProductData
+            val codProduct = CashOnDeliveryProduct(
+                codProductData.isCodAvailable,
+                codProductData.codText,
+                codProductData.codPrice.roundToInt(),
+                codProductData.formattedPrice,
+                codProductData.tncText,
+                codProductData.tncLink
+            )
+            courierItemData.codProductData = codProduct
 
             /*ETA*/
-            if (it.productData.estimatedTimeArrival != null) {
-                courierItemData.etaText = it.productData.estimatedTimeArrival.textEta
-                courierItemData.etaErrorCode = it.productData.estimatedTimeArrival.errorCode
-            }
+            courierItemData.etaText = it.productData.estimatedTimeArrival.textEta
+            courierItemData.etaErrorCode = it.productData.estimatedTimeArrival.errorCode
         }
 
         /*Schedule Delivery*/

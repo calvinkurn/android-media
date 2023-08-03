@@ -94,19 +94,19 @@ class ShippingDurationViewHolder(itemView: View, private val cartPosition: Int) 
         }
 
         /*MVC*/
-        if (shippingDurationUiModel.merchantVoucherModel != null && shippingDurationUiModel.merchantVoucherModel!!.isMvc == 1) {
+        if (shippingDurationUiModel.merchantVoucherModel.isMvc == 1) {
             layoutMvc.visibility = View.VISIBLE
             flDisableContainer.foreground = ContextCompat.getDrawable(flDisableContainer.context, R.drawable.fg_enabled_item)
-            ImageHandler.LoadImage(imgMvc, shippingDurationUiModel.merchantVoucherModel!!.mvcLogo)
-            tvMvc.text = shippingDurationUiModel.merchantVoucherModel!!.mvcTitle
+            ImageHandler.LoadImage(imgMvc, shippingDurationUiModel.merchantVoucherModel.mvcLogo)
+            tvMvc.text = shippingDurationUiModel.merchantVoucherModel.mvcTitle
             tvMvcError.visibility = View.GONE
-        } else if (shippingDurationUiModel.merchantVoucherModel != null && shippingDurationUiModel.merchantVoucherModel!!.isMvc == -1) {
+        } else if (shippingDurationUiModel.merchantVoucherModel.isMvc == -1) {
             layoutMvc.visibility = View.VISIBLE
             flDisableContainer.foreground = ContextCompat.getDrawable(flDisableContainer.context, R.drawable.fg_disabled_item)
-            ImageHandler.LoadImage(imgMvc, shippingDurationUiModel.merchantVoucherModel!!.mvcLogo)
-            tvMvc.text = shippingDurationUiModel.merchantVoucherModel!!.mvcTitle
+            ImageHandler.LoadImage(imgMvc, shippingDurationUiModel.merchantVoucherModel.mvcLogo)
+            tvMvc.text = shippingDurationUiModel.merchantVoucherModel.mvcTitle
             tvMvcError.visibility = View.VISIBLE
-            tvMvcError.text = shippingDurationUiModel.merchantVoucherModel!!.mvcErrorMessage
+            tvMvcError.text = shippingDurationUiModel.merchantVoucherModel.mvcErrorMessage
         } else {
             layoutMvc.visibility = View.GONE
             tvMvcError.visibility = View.GONE
@@ -138,11 +138,11 @@ class ShippingDurationViewHolder(itemView: View, private val cartPosition: Int) 
         }
 
         /*Dynamic Price*/
-        if (shippingDurationUiModel.dynamicPriceModel == null || shippingDurationUiModel.dynamicPriceModel!!.textLabel.isEmpty()) {
+        if (shippingDurationUiModel.dynamicPriceModel.textLabel.isEmpty()) {
             labelDynamicPricing.visibility = View.GONE
         } else {
             labelDynamicPricing.visibility = View.VISIBLE
-            labelDynamicPricing.text = shippingDurationUiModel.dynamicPriceModel!!.textLabel
+            labelDynamicPricing.text = shippingDurationUiModel.dynamicPriceModel.textLabel
         }
         imgCheck.visibility = if (shippingDurationUiModel.isSelected) View.VISIBLE else View.GONE
         if (shippingDurationUiModel.isShowShowCase) setShowCase()

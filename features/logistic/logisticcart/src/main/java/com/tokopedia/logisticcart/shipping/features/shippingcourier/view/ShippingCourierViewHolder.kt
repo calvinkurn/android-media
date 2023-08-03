@@ -28,7 +28,6 @@ class ShippingCourierViewHolder(itemView: View, private val cartPosition: Int) :
     private val separator: View = itemView.findViewById(R.id.separator)
     private val codLabel: Label = itemView.findViewById(R.id.lbl_cod_available)
     private val otdLabel: Label = itemView.findViewById(R.id.lbl_otd_available)
-    private val codLabelEta: Label = itemView.findViewById(R.id.lbl_cod_available_eta)
     private val imgMvc: ImageView = itemView.findViewById(R.id.img_mvc)
     private val tvMvc: Typography = itemView.findViewById(R.id.tv_mvc_text)
     private val tvMvcError: Typography = itemView.findViewById(R.id.tv_mvc_error)
@@ -47,23 +46,16 @@ class ShippingCourierViewHolder(itemView: View, private val cartPosition: Int) :
             separator.visibility = View.VISIBLE
         }
 
-        if (shippingCourierUiModel.productData.codProductData != null) {
-            /*cod label*/
-            codLabel.text = shippingCourierUiModel.productData.codProductData.codText
-            codLabel.visibility =
-                if (shippingCourierUiModel.productData.codProductData.isCodAvailable == COD_ENABLE_VALUE) View.VISIBLE else View.GONE
-        }
+        /*cod label*/
+        codLabel.text = shippingCourierUiModel.productData.codProductData.codText
+        codLabel.visibility =
+            if (shippingCourierUiModel.productData.codProductData.isCodAvailable == COD_ENABLE_VALUE) View.VISIBLE else View.GONE
 
-        if (shippingCourierUiModel.productData.features != null &&
-            shippingCourierUiModel.productData.features.ontimeDeliveryGuarantee != null
-        ) {
-            val otd = shippingCourierUiModel
-                .productData.features.ontimeDeliveryGuarantee
-            otdLabel.visibility = if (otd.available) View.VISIBLE else View.GONE
-        }
+        val otd = shippingCourierUiModel
+            .productData.features.ontimeDeliveryGuarantee
+        otdLabel.visibility = if (otd.available) View.VISIBLE else View.GONE
 
-        if (shippingCourierUiModel.productData.features.dynamicPriceData == null ||
-            shippingCourierUiModel.productData.features.dynamicPriceData.textLabel.isEmpty()
+        if (shippingCourierUiModel.productData.features.dynamicPriceData.textLabel.isEmpty()
         ) {
             dynamicPriceLabel.visibility = View.GONE
         } else {
@@ -72,7 +64,7 @@ class ShippingCourierViewHolder(itemView: View, private val cartPosition: Int) :
                 shippingCourierUiModel.productData.features.dynamicPriceData.textLabel
         }
 
-        if (shippingCourierUiModel.productData.features.merchantVoucherProductData != null && shippingCourierUiModel.productData.features.merchantVoucherProductData.isMvc == 1) {
+        if (shippingCourierUiModel.productData.features.merchantVoucherProductData.isMvc == 1) {
             layoutMvc.visibility = View.VISIBLE
             flDisableContainer.foreground = ContextCompat.getDrawable(
                 flDisableContainer.context,
@@ -81,7 +73,7 @@ class ShippingCourierViewHolder(itemView: View, private val cartPosition: Int) :
             imgMvc.loadImage(shippingCourierUiModel.productData.features.merchantVoucherProductData.mvcLogo)
             tvMvc.setText(R.string.tv_mvc_text)
             tvMvcError.visibility = View.GONE
-        } else if (shippingCourierUiModel.productData.features.merchantVoucherProductData != null && shippingCourierUiModel.productData.features.merchantVoucherProductData.isMvc == -1) {
+        } else if (shippingCourierUiModel.productData.features.merchantVoucherProductData.isMvc == -1) {
             layoutMvc.visibility = View.VISIBLE
             flDisableContainer.foreground = ContextCompat.getDrawable(
                 flDisableContainer.context,
@@ -105,9 +97,7 @@ class ShippingCourierViewHolder(itemView: View, private val cartPosition: Int) :
             tvCourier.context.getString(R.string.content_desc_tv_courier)
         )
 
-        if (shippingCourierUiModel.productData.error != null &&
-            shippingCourierUiModel.productData.error.errorMessage.isNotEmpty()
-        ) {
+        if (shippingCourierUiModel.productData.error.errorMessage.isNotEmpty()) {
             setTextAndContentDescription(
                 tvCourier,
                 shippingCourierUiModel.productData.shipperName,
@@ -152,7 +142,7 @@ class ShippingCourierViewHolder(itemView: View, private val cartPosition: Int) :
             }
         } else {
             /*ETA*/
-            if (shippingCourierUiModel.productData.estimatedTimeArrival != null && shippingCourierUiModel.productData.estimatedTimeArrival.errorCode == 0) {
+            if (shippingCourierUiModel.productData.estimatedTimeArrival.errorCode == 0) {
                 if (shippingCourierUiModel.productData.estimatedTimeArrival.textEta.isNotEmpty()) {
                     tvPriceOrDuration.text =
                         shippingCourierUiModel.productData.estimatedTimeArrival.textEta
@@ -166,9 +156,8 @@ class ShippingCourierViewHolder(itemView: View, private val cartPosition: Int) :
                     shipperNameEta,
                     tvCourier.context.getString(R.string.content_desc_tv_courier)
                 )
-                codLabel.visibility = View.GONE
-                codLabelEta.text = shippingCourierUiModel.productData.codProductData.codText
-                codLabelEta.visibility =
+                codLabel.text = shippingCourierUiModel.productData.codProductData.codText
+                codLabel.visibility =
                     if (shippingCourierUiModel.productData.codProductData.isCodAvailable == COD_ENABLE_VALUE) View.VISIBLE else View.GONE
             } else {
                 setTextAndContentDescription(
@@ -177,7 +166,6 @@ class ShippingCourierViewHolder(itemView: View, private val cartPosition: Int) :
                     tvCourier.context.getString(R.string.content_desc_tv_courier)
                 )
                 tvPriceOrDuration.text = shippingCourierUiModel.productData.price.formattedPrice
-                codLabelEta.visibility = View.GONE
                 codLabel.text = shippingCourierUiModel.productData.codProductData.codText
                 codLabel.visibility =
                     if (shippingCourierUiModel.productData.codProductData.isCodAvailable == COD_ENABLE_VALUE) View.VISIBLE else View.GONE

@@ -717,7 +717,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
     private fun openShippingDurationBottomsheet(data: OrderShippingDuration) {
         activity?.let {
-            ShippingDurationBottomsheet().show(
+            ShippingDurationBottomsheet.show(
                 activity = it,
                 fragmentManager = parentFragmentManager,
                 shipmentDetailData = data.shipmentDetailData,
@@ -1671,8 +1671,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
                 orderSummaryAnalytics.eventChangeCourierOSP(shipment.getRealShipperId().toString())
                 activity?.let {
-                    ShippingCourierBottomsheet().show(
-                        it,
+                    ShippingCourierBottomsheet.show(
                         parentFragmentManager,
                         object : ShippingCourierBottomsheetListener {
                             override fun onCourierChoosen(

@@ -48,6 +48,8 @@
         android:text="@string/tersedia_bayar_di_tempat"
         android:visibility="visible"
         app:labelType="general_light_grey"
+        android:layout_marginStart="4dp"
+        app:layout_goneMarginStart="0dp"
         app:layout_constraintStart_toEndOf="@id/fl_image_container"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
@@ -56,21 +58,21 @@
         android:id="@+id/tv_kuota_info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginStart="4dp"
+        app:layout_goneMarginStart="0dp"
         android:layout_weight="1"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintStart_toEndOf="@id/lbl_cod_available_eta"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="display_2"
+        app:typographyType="display_3"
         tools:text="Kuota: 5x" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier_top_container"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="fl_image_container,lbl_cod_available_eta,tv_kuota_info"
-        tools:visibility="gone" />
+        app:constraint_referenced_ids="fl_image_container,lbl_cod_available_eta,tv_kuota_info" />
 
 
     <com.tokopedia.unifyprinciples.Typography
@@ -79,6 +81,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="12dp"
+        app:layout_goneMarginTop="16dp"
         android:layout_marginEnd="12dp"
         android:lineSpacingExtra="4sp"
         android:textColor="@color/Unify_NN950_96"
@@ -86,9 +89,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/barrier_top_container"
         app:layout_goneMarginEnd="0dp"
-        app:layout_goneMarginTop="0dp"
         app:typographyType="display_2"
-        tools:layout_constraintTop_toBottomOf="@id/fl_image_container"
         tools:text="Estimasi tiba 3 - 4 Jan" />
 
     <com.tokopedia.unifyprinciples.Typography
