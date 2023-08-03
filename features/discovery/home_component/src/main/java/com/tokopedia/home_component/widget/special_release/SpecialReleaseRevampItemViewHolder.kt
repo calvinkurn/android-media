@@ -4,7 +4,6 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.utils.view.binding.viewBinding
-import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.HomeComponentSpecialReleaseRevampItemBinding
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelShop
@@ -22,7 +21,7 @@ class SpecialReleaseRevampItemViewHolder(itemView: View) : AbstractViewHolder<Sp
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.home_component_special_release_revamp_item
+        val LAYOUT = com.tokopedia.home_component.R.layout.home_component_special_release_revamp_item
         private const val className = "com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampItemViewHolder"
     }
 

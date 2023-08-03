@@ -3,7 +3,6 @@ package com.tokopedia.home_component.widget.special_release
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.HomeComponentSpecialReleaseRevampBinding
 import com.tokopedia.home_component.mapper.ChannelModelMapper
@@ -27,7 +26,7 @@ class SpecialReleaseRevampViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.home_component_special_release_revamp
+        val LAYOUT = com.tokopedia.home_component.R.layout.home_component_special_release_revamp
     }
 
     private val binding: HomeComponentSpecialReleaseRevampBinding? by viewBinding()

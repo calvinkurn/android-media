@@ -1,8 +1,6 @@
 package com.tokopedia.home.analytics.v2
 
-import android.os.Bundle
 import com.tokopedia.home_component.model.ChannelGrid
-import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.TrackingAttributionModel
 import com.tokopedia.home_component.util.getTopadsString
 import com.tokopedia.homenav.common.TrackingConst
@@ -15,6 +13,19 @@ internal object SpecialReleaseRevampTracking : BaseTrackerConst() {
     private const val LIST_FORMAT = "/ - p%s - dynamic channel rilisan spesial home - product - %s - carousel - %s - %s - %s - %s"
     private const val SHOP_ITEM_ID_FORMAT = "%s_%s_%s_%s_%s"
     private const val SHOP_ITEM_NAME_FORMAT = "/ - p%s - dynamic channel rilisan spesial home - banner - %s"
+    private const val EVENT_ACTION_PRODUCT_IMPRESSION = "impression on product dynamic channel rilisan spesial home"
+    private const val EVENT_ACTION_PRODUCT_CLICK = "click on product dynamic channel rilisan spesial home"
+    private const val EVENT_ACTION_BANNER_IMPRESSION = "impression on banner shop dynamic channel rilisan spesial home"
+    private const val EVENT_ACTION_BANNER_CLICK = "click on banner shop dynamic channel rilisan spesial home"
+    private const val EVENT_ACTION_CLICK_VIEW_ALL = "click view all on dynamic channel rilisan spesial home"
+
+    private const val EVENT_LABEL_FORMAT = "%s - %s"
+
+    private const val TRACKER_ID_PRODUCT_IMPRESSION = "45499"
+    private const val TRACKER_ID_PRODUCT_CLICK = "45500"
+    private const val TRACKER_ID_CLICK_VIEW_ALL = "45501"
+    private const val TRACKER_ID_BANNER_CLICK = "45502"
+    private const val TRACKER_ID_BANNER_IMPRESSION = "45503"
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4096
     // Tracker ID: 45499
@@ -24,8 +35,8 @@ internal object SpecialReleaseRevampTracking : BaseTrackerConst() {
         return trackingBuilder.constructBasicProductView(
             event = Event.PRODUCT_VIEW,
             eventCategory = Category.HOMEPAGE,
-            eventAction = "impression on product dynamic channel rilisan spesial home",
-            eventLabel = "",
+            eventAction = EVENT_ACTION_PRODUCT_IMPRESSION,
+            eventLabel = Value.EMPTY,
             products = listOf(
                 Product(
                     name = grid.name,
@@ -60,7 +71,7 @@ internal object SpecialReleaseRevampTracking : BaseTrackerConst() {
             .appendCurrentSite(CurrentSite.DEFAULT)
             .appendBusinessUnit(BusinessUnit.DEFAULT)
             .appendUserId(userId)
-            .appendCustomKeyValue(TrackerId.KEY, "45499")
+            .appendCustomKeyValue(TrackerId.KEY, TRACKER_ID_PRODUCT_IMPRESSION)
             .build() as HashMap<String, Any>
     }
 
@@ -71,8 +82,8 @@ internal object SpecialReleaseRevampTracking : BaseTrackerConst() {
         val trackingBuilder = BaseTrackerBuilder().constructBasicProductClick(
             event = Event.PRODUCT_CLICK,
             eventCategory = Category.HOMEPAGE,
-            eventAction = "click on product dynamic channel rilisan spesial home",
-            eventLabel = "%s - %s".format(trackingAttributionModel.channelId, trackingAttributionModel.headerName),
+            eventAction = EVENT_ACTION_PRODUCT_CLICK,
+            eventLabel = EVENT_LABEL_FORMAT.format(trackingAttributionModel.channelId, trackingAttributionModel.headerName),
             products = listOf(
                 Product(
                     name = grid.name,
@@ -107,7 +118,7 @@ internal object SpecialReleaseRevampTracking : BaseTrackerConst() {
             .appendCurrentSite(CurrentSite.DEFAULT)
             .appendBusinessUnit(BusinessUnit.DEFAULT)
             .appendUserId(userId)
-            .appendCustomKeyValue(TrackerId.KEY, "45500")
+            .appendCustomKeyValue(TrackerId.KEY, TRACKER_ID_PRODUCT_CLICK)
             .build()
         getTracker().sendEnhanceEcommerceEvent(trackingBuilder)
     }
@@ -116,14 +127,14 @@ internal object SpecialReleaseRevampTracking : BaseTrackerConst() {
     // Tracker ID: 45501
     fun sendClickViewAll(trackingAttributionModel: TrackingAttributionModel) {
         Tracker.Builder()
-            .setEvent("clickHomepage")
-            .setEventAction("click view all on dynamic channel rilisan spesial home")
-            .setEventCategory("homepage")
-            .setEventLabel("%s - %s".format(trackingAttributionModel.channelId, trackingAttributionModel.headerName))
-            .setCustomProperty("trackerId", "45501")
-            .setBusinessUnit("home & browse")
-            .setCustomProperty("channelId", trackingAttributionModel.channelId)
-            .setCurrentSite("tokopediamarketplace")
+            .setEvent(Event.CLICK_HOMEPAGE)
+            .setEventAction(EVENT_ACTION_CLICK_VIEW_ALL)
+            .setEventCategory(Category.HOMEPAGE)
+            .setEventLabel(EVENT_LABEL_FORMAT.format(trackingAttributionModel.channelId, trackingAttributionModel.headerName))
+            .setCustomProperty(TrackerId.KEY, TRACKER_ID_CLICK_VIEW_ALL)
+            .setBusinessUnit(BusinessUnit.DEFAULT)
+            .setCustomProperty(ChannelId.KEY, trackingAttributionModel.channelId)
+            .setCurrentSite(CurrentSite.DEFAULT)
             .build()
             .send()
     }
@@ -135,8 +146,8 @@ internal object SpecialReleaseRevampTracking : BaseTrackerConst() {
         val trackerBuilder = BaseTrackerBuilder().constructBasicPromotionClick(
             event = Event.PROMO_CLICK,
             eventCategory = Category.HOMEPAGE,
-            eventAction = "click on banner shop dynamic channel rilisan spesial home",
-            eventLabel = "%s - %s".format(trackingAttributionModel.channelId, trackingAttributionModel.headerName),
+            eventAction = EVENT_ACTION_BANNER_CLICK,
+            eventLabel = EVENT_LABEL_FORMAT.format(trackingAttributionModel.channelId, trackingAttributionModel.headerName),
             promotions = arrayListOf(
                 Promotion(
                     id = SHOP_ITEM_ID_FORMAT.format(
@@ -156,7 +167,7 @@ internal object SpecialReleaseRevampTracking : BaseTrackerConst() {
             .appendCurrentSite(TrackingConst.DEFAULT_CURRENT_SITE)
             .appendUserId(userId)
             .appendChannelId(trackingAttributionModel.channelId)
-            .appendCustomKeyValue(TrackerId.KEY, "45502")
+            .appendCustomKeyValue(TrackerId.KEY, TRACKER_ID_BANNER_CLICK)
             .build() as HashMap<String, Any>
         getTracker().sendEnhanceEcommerceEvent(trackerBuilder)
     }
@@ -169,8 +180,8 @@ internal object SpecialReleaseRevampTracking : BaseTrackerConst() {
         return trackerBuilder.constructBasicPromotionView(
             event = Event.PROMO_VIEW,
             eventCategory = Category.HOMEPAGE,
-            eventAction = "impression on banner shop dynamic channel rilisan spesial home",
-            eventLabel = "",
+            eventAction = EVENT_ACTION_BANNER_IMPRESSION,
+            eventLabel = Value.EMPTY,
             promotions = arrayListOf(
                 Promotion(
                     id = SHOP_ITEM_ID_FORMAT.format(
@@ -190,7 +201,7 @@ internal object SpecialReleaseRevampTracking : BaseTrackerConst() {
             .appendCurrentSite(TrackingConst.DEFAULT_CURRENT_SITE)
             .appendUserId(userId)
             .appendChannelId(trackingAttributionModel.channelId)
-            .appendCustomKeyValue(TrackerId.KEY, "45503")
+            .appendCustomKeyValue(TrackerId.KEY, TRACKER_ID_BANNER_IMPRESSION)
             .build() as HashMap<String, Any>
     }
 }

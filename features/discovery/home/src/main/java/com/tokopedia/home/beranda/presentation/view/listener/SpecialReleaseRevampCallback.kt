@@ -3,7 +3,6 @@ package com.tokopedia.home.beranda.presentation.view.listener
 import com.tokopedia.home.analytics.v2.SpecialReleaseRevampTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home_component.model.ChannelGrid
-import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.TrackingAttributionModel
 import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampListener
 

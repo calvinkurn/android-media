@@ -14,7 +14,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
  */
 internal class CarouselListAdapter<T: Visitable<F>, F: AdapterTypeFactory>(
     private val typeFactory: F,
-    diffUtil: DiffUtil.ItemCallback<T>
+    diffUtil: DiffUtil.ItemCallback<T>,
 ): ListAdapter<T, AbstractViewHolder<in T>>(diffUtil) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<in T> {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)

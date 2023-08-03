@@ -323,7 +323,7 @@ fun clickOnEachItemRecyclerViewSpecialRelease(view: View, recyclerViewId: Int, f
                 actionOnItemAtPosition<RecyclerView.ViewHolder>(i, clickOnViewChild(R.id.product_card))
             )
         } catch (e: PerformException) {
-            e.printStackTrace()
+            Log.e(TAG, "clickOnEachItemRecyclerViewSpecialRelease: ", e)
         }
     }
     Espresso.onView(

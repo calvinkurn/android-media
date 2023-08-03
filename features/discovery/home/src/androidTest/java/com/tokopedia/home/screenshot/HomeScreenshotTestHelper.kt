@@ -62,7 +62,7 @@ object HomeScreenshotTestHelper {
             ScreenshotModel(name = "TodoWidget"),
             ScreenshotModel(name = "DealsWidget"),
             ScreenshotModel(name = "FlashSaleWidget"),
-            ScreenshotModel(name = "SpecialReleaseRevampWidget")
+            ScreenshotModel(name = "SpecialReleaseRevampWidget"),
         )
     }
 

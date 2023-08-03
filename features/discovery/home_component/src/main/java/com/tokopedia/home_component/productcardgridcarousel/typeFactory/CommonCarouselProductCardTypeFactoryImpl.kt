@@ -16,7 +16,7 @@ import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampI
 class CommonCarouselProductCardTypeFactoryImpl(
     @Deprecated("Please ignore passing this field to avoid re-instantiating everytime data changes. Only pass the necessary data on the respective models instead.")
     private val channels: ChannelModel = ChannelModel(id = "0", groupId = "0"),
-    private val cardInteraction: Boolean = false
+    private val cardInteraction: Boolean = false,
 ) : BaseAdapterTypeFactory(), CommonCarouselProductCardTypeFactory {
 
     override fun type(cardDataModelCarousel: CarouselEmptyCardDataModel): Int {

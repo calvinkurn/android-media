@@ -14,7 +14,7 @@ object ChannelModelMapper {
         isTopStockbar: Boolean = false,
         cardType: Int = CardUnify2.TYPE_SHADOW,
         productCardListType: ProductCardModel.ProductListType = ProductCardModel.ProductListType.CONTROL,
-        excludeShop: Boolean = false
+        excludeShop: Boolean = false,
     ): ProductCardModel {
         val productCardAnimate = if(cardInteration == true) ANIMATE_OVERLAY_BOUNCE else animateOnPress
         return ProductCardModel(
