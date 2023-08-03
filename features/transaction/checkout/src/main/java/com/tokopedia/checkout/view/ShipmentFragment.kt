@@ -239,7 +239,6 @@ class ShipmentFragment :
 
     private var binding by autoClearedNullable<FragmentShipmentBinding>()
     private var progressDialogNormal: AlertDialog? = null
-    private var shippingCourierBottomsheet: ShippingCourierBottomsheet? = null
     private var shipmentTracePerformance: PerformanceMonitoring? = null
     private var isShipmentTraceStopped = false
 
@@ -367,7 +366,6 @@ class ShipmentFragment :
     override fun onDestroyView() {
         super.onDestroyView()
         toasterThrottleSubscription?.unsubscribe()
-        shippingCourierBottomsheet = null
         val countDownTimer = binding?.partialCountdown?.countDown?.timer
         countDownTimer?.cancel()
         shipmentViewModel.detachView()
@@ -981,7 +979,6 @@ class ShipmentFragment :
         } else {
             val shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(position)
             if (shipmentCartItemModel != null) {
-                shippingCourierBottomsheet = null
                 val recipientAddressModel = shipmentViewModel.recipientAddressModel
                 onChangeShippingDuration(shipmentCartItemModel, recipientAddressModel, position)
             }
@@ -2864,8 +2861,7 @@ class ShipmentFragment :
             if (activity != null) {
                 val pslCode = getLogisticPromoCode(shipmentCartItemModel)
                 val products = shipmentViewModel.getProductForRatesRequest(shipmentCartItemModel)
-                val shippingDurationBottomsheet = ShippingDurationBottomsheet()
-                shippingDurationBottomsheet.show(
+                ShippingDurationBottomsheet.show(
                     activity,
                     parentFragmentManager,
                     this,
@@ -2914,9 +2910,7 @@ class ShipmentFragment :
             }
             val activity: Activity? = activity
             if (activity != null) {
-                shippingCourierBottomsheet = ShippingCourierBottomsheet()
-                shippingCourierBottomsheet!!.show(
-                    activity,
+                ShippingCourierBottomsheet.show(
                     fragmentManager!!,
                     this,
                     shippingCourierUiModels,

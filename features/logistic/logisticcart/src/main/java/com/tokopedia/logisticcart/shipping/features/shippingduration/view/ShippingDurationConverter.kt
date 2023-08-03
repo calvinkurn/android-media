@@ -30,20 +30,16 @@ class ShippingDurationConverter @Inject constructor() {
         val shippingRecommendationData = ShippingRecommendationData()
 
         // Check response not null
-        if (ratesData != null && ratesData.ratesDetailData != null) {
+        if (ratesData?.ratesDetailData != null) {
             // Check if has error
-            if (ratesData.ratesDetailData.error != null &&
-                !ratesData.ratesDetailData.error.errorMessage.isNullOrEmpty()
-            ) {
+            if (ratesData.ratesDetailData.error.errorMessage.isNotEmpty()) {
                 shippingRecommendationData.errorMessage =
                     ratesData.ratesDetailData.error.errorMessage
                 shippingRecommendationData.errorId = ratesData.ratesDetailData.error.errorId
             }
 
             // Check has service / duration list
-            if (ratesData.ratesDetailData.services != null &&
-                ratesData.ratesDetailData.services.isNotEmpty()
-            ) {
+            if (ratesData.ratesDetailData.services.isNotEmpty()) {
                 // Setting up for Logistic Promo
                 shippingRecommendationData.logisticPromo = convertToPromoModel(
                     ratesData.ratesDetailData.listPromoStacking.firstOrNull()
@@ -82,9 +78,7 @@ class ShippingDurationConverter @Inject constructor() {
         val ratesId = ratesDetailData.ratesId
         // Check if has blackbox info
         var blackboxInfo = ""
-        if (ratesDetailData.info != null && ratesDetailData.info.blackboxInfo != null &&
-            !ratesDetailData.info.blackboxInfo.textInfo.isNullOrEmpty()
-        ) {
+        if (ratesDetailData.info.blackboxInfo.textInfo.isNotEmpty()) {
             blackboxInfo = ratesDetailData.info.blackboxInfo.textInfo
         }
         val shippingDurationUiModels: MutableList<ShippingDurationUiModel> = ArrayList()
@@ -107,34 +101,28 @@ class ShippingDurationConverter @Inject constructor() {
             if (shippingCourierUiModels.isNotEmpty()) {
                 shippingDurationUiModels.add(shippingDurationUiModel)
             }
-            if (serviceData.error != null && !serviceData.error.errorMessage.isNullOrEmpty()) {
+            if (serviceData.error.errorMessage.isNotEmpty()) {
                 if (serviceData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
                     serviceData.texts.textRangePrice = serviceData.error.errorMessage
                 } else {
                     shippingDurationUiModel.errorMessage = serviceData.error.errorMessage
                 }
             }
-            if (serviceData.codData != null) {
-                shippingDurationUiModel.isCodAvailable = serviceData.codData.isCod == COD_TRUE_VAL
-                shippingDurationUiModel.codText = serviceData.codData.codText
-            }
-            if (serviceData.merchantVoucherData != null) {
-                val merchantVoucherData = serviceData.merchantVoucherData
-                val merchantVoucherModel = MerchantVoucherModel(
-                    merchantVoucherData.isMvc,
-                    merchantVoucherData.mvcTitle,
-                    merchantVoucherData.mvcLogo,
-                    merchantVoucherData.mvcErrorMessage
-                )
-                shippingDurationUiModel.merchantVoucherModel = merchantVoucherModel
-            }
-            if (serviceData.features != null) {
-                val featuresData = serviceData.features
-                val dynamicPriceModel = DynamicPriceModel(
-                    featuresData.dynamicPricing.textLabel
-                )
-                shippingDurationUiModel.dynamicPriceModel = dynamicPriceModel
-            }
+            shippingDurationUiModel.isCodAvailable = serviceData.codData.isCod == COD_TRUE_VAL
+            shippingDurationUiModel.codText = serviceData.codData.codText
+            val merchantVoucherData = serviceData.merchantVoucherData
+            val merchantVoucherModel = MerchantVoucherModel(
+                merchantVoucherData.isMvc,
+                merchantVoucherData.mvcTitle,
+                merchantVoucherData.mvcLogo,
+                merchantVoucherData.mvcErrorMessage
+            )
+            shippingDurationUiModel.merchantVoucherModel = merchantVoucherModel
+            val featuresData = serviceData.features
+            val dynamicPriceModel = DynamicPriceModel(
+                featuresData.dynamicPricing.textLabel
+            )
+            shippingDurationUiModel.dynamicPriceModel = dynamicPriceModel
         }
         return shippingDurationUiModels
     }
@@ -224,7 +212,8 @@ class ShippingDurationConverter @Inject constructor() {
             promo.freeShippingMetadata.benefitClass,
             promo.freeShippingMetadata.shippingSubsidy,
             promo.boCampaignId,
-            promo.quota
+            promo.quota,
+            promo.imageUrlChosen
         )
     }
 

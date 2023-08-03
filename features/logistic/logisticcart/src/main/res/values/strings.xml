@@ -61,6 +61,7 @@
     <string name="label_choose_delivery_time">Pilih Waktu Pengiriman</string>
     <string name="title_coachmark_option_schedule_delivery">Bisa atur kapan pesanan tiba sesuai kebutuhan 😄</string>
     <string name="description_coachmark_option_schedule_delivery">Tersedia khusus pesanan Tokopedia NOW!</string>
+    <string name="other_option_title_widget_schedule_delivery">Pilih Jadwal Lain</string>
     <string name="bottomsheet_schedule_slot_title">Pilih jadwal pengiriman</string>
 
     <string name="checkout_whitelabel_otdg_url"><![CDATA[<a href="%1$s">%2$s</a>]]></string>
@@ -70,6 +71,11 @@
     <string name="checkout_error_shipping_description">Atur ulang pesananmu di keranjang, ya.</string>
 
 <!--    cart checkout revamp-->
-    <string name="checkout_bebas_ongkir_view_holder_description_template">  •  Kuota: %1$dx</string>
+    <string name="checkout_bebas_ongkir_view_holder_description_template"><![CDATA[  •  <u>Kuota: %1$dx</u>]]></string>
     <string name="checkout_product_shipment_detail_view_holder_description_template">Dikirim dari %1$s  •  Berat %2$s</string>
+
+<!--    shipping insurance-->
+    <string name="shipping_insurance_tnc_label">Asuransi Pengiriman</string>
+    <string name="shipping_insurance_title_mandatory">Dilindungi %1$s (%2$s)</string>
+    <string name="shipping_insurance_title_optional">Pakai %1$s (%2$s)</string>
 </resources>

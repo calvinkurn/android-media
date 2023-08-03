@@ -44,7 +44,7 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         if (data.bebasOngkirKuota != 0L) {
             val kuotaTextTemplate = itemView.context.getString(R.string.checkout_bebas_ongkir_view_holder_description_template, data.bebasOngkirKuota)
-            tvKuota.text = HtmlLinkHelper(itemView.context, "<u>$kuotaTextTemplate</u>").spannedString
+            tvKuota.text = HtmlLinkHelper(itemView.context, kuotaTextTemplate).spannedString
             tvKuota.visible()
         } else {
             tvKuota.gone()
