@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.moveTo
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatAdminNoAccessUiModel
@@ -84,13 +85,20 @@ class ChatListAdapter constructor(
     fun pinChatItem(element: ItemChatListPojo, position: Int) {
         val chatItemPosition = getItemPosition(element, position)
         if (chatItemPosition != RecyclerView.NO_POSITION) {
-            val bubbleCount = visitables
-                .filterIsInstance<ChatListTickerUiModel>()
-                .size
+            var offset = Int.ZERO
+            run loop@{
+                visitables.forEach {
+                    if (it !is ItemChatListPojo) {
+                        offset++
+                    } else {
+                        return@loop
+                    }
+                }
+            }
 
-            visitables.moveTo(chatItemPosition, bubbleCount)
-            notifyItemMoved(chatItemPosition, bubbleCount)
-            notifyItemChanged(bubbleCount, PAYLOAD_UPDATE_PIN_STATUS)
+            visitables.moveTo(chatItemPosition, offset)
+            notifyItemMoved(chatItemPosition, offset)
+            notifyItemChanged(offset, PAYLOAD_UPDATE_PIN_STATUS)
         }
     }
 
