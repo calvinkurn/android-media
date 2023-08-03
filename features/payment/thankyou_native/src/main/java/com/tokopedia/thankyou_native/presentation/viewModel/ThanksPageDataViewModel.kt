@@ -160,8 +160,8 @@ class ThanksPageDataViewModel @Inject constructor(
             arrayListOf(
                 TopAdsRequestParams.TAG,
                 GyroRecommendationWidgetModel.TAG,
-                HeadlineAdsWidgetModel.TAG,
                 MarketplaceRecommendationWidgetModel.TAG,
+                HeadlineAdsWidgetModel.TAG,
                 DigitalRecommendationWidgetModel.TAG,
                 BannerWidgetModel.TAG
             )
