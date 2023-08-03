@@ -76,7 +76,7 @@ class FeedFollowRecommendationAnalytics @Inject constructor(
             EventModel(
                 event = Event.promoClick,
                 category = EventCategory.unifiedFeed,
-                action = "click - follow recommendations",
+                action = "click - follow profile recommendations",
                 label = getEventLabel(data.tabType, data.entryPoint, data.authorType, data.authorId),
             ),
             hashMapOf(
@@ -107,7 +107,7 @@ class FeedFollowRecommendationAnalytics @Inject constructor(
         data: FeedTrackerDataModel
     ) {
         sendGeneralTracker(
-            eventAction = "click - follow profile recommendations",
+            eventAction = "click - follow recommendations",
             eventLabel = getEventLabel(data.tabType, data.entryPoint, data.authorType, data.authorId, data.isFollowing),
             trackerId = "45541"
         )
