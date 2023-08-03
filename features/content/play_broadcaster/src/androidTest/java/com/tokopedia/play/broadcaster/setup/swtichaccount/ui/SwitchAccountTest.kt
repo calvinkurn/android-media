@@ -5,18 +5,15 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
-import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
+import com.tokopedia.play.broadcaster.data.datastore.*
 import com.tokopedia.play.broadcaster.domain.model.GetAddedChannelTagsResponse
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.domain.usecase.GetAddedChannelTagsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
-import com.tokopedia.play.broadcaster.setup.accountListResponse
-import com.tokopedia.play.broadcaster.setup.buildBroadcastingConfigUiModel
-import com.tokopedia.play.broadcaster.setup.buildConfigurationUiModel
-import com.tokopedia.play.broadcaster.setup.channelResponse
+import com.tokopedia.play.broadcaster.setup.*
 import com.tokopedia.play.broadcaster.setup.swtichaccount.SwitchAccountRobot
 import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
-import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.test.application.annotations.UiTest
 import io.mockk.coEvery
@@ -32,7 +29,16 @@ import org.junit.runner.RunWith
 class SwitchAccountTest {
 
     private val mockDispatcher: CoroutineDispatchers = CoroutineDispatchersProvider
-    private val mockDataStore: PlayBroadcastDataStore = mockk(relaxed = true)
+    private val mockDataStore = PlayBroadcastDataStoreImpl(
+        mSetupDataStore = PlayBroadcastSetupDataStoreImpl(
+            coverDataStore = CoverDataStoreImpl(mockDispatcher, mockk(relaxed = true)),
+            titleDataStore = TitleDataStoreImpl(dispatcher = mockDispatcher, mockk(relaxed = true)),
+            tagsDataStore = TagsDataStoreImpl(dispatcher = mockDispatcher, mockk(relaxed = true)),
+            scheduleDataStore = BroadcastScheduleDataStoreImpl(mockDispatcher, mockk(relaxed = true)),
+            interactiveDataStore = InteractiveDataStoreImpl(),
+            productTagDataStore = ProductTagDataStoreImpl()
+        ),
+    )
     private val mockConfigStore: HydraConfigStore = mockk(relaxed = true)
     private val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
     private val mockGetChannelUseCase: GetChannelUseCase = mockk(relaxed = true)
@@ -58,7 +64,9 @@ class SwitchAccountTest {
         coEvery { mockRepo.getAccountList() } returns accountListResponse()
         coEvery {
             mockRepo.getChannelConfiguration(any(), any())
-        } returns buildConfigurationUiModel()
+        } returns buildConfigurationUiModel(
+            beautificationConfig = BeautificationConfigUiModel.Empty
+        )
         coEvery { mockGetChannelUseCase.executeOnBackground() } returns channelResponse
         coEvery { mockGetAddedTagUseCase.executeOnBackground() } returns mockAddedTag
         coEvery { mockRepo.getProductTagSummarySection(any()) } returns emptyList()
@@ -68,7 +76,10 @@ class SwitchAccountTest {
     fun test_entryPointWhenBothAccountLive() {
         coEvery {
             mockRepo.getChannelConfiguration(any(), any())
-        } returns buildConfigurationUiModel(channelStatus = ChannelStatus.Live)
+        } returns buildConfigurationUiModel(
+            channelStatus = ChannelStatus.Live,
+            beautificationConfig = BeautificationConfigUiModel.Empty
+        )
 
         createRobot().entryPointWhenBothAccountLive()
     }
@@ -104,8 +115,8 @@ class SwitchAccountTest {
     @Test
     fun test_switchAccountSellerHaveDraft() {
         coEvery {
-            mockDataStore.getSetupDataStore().getTitle()
-        } returns PlayTitleUiModel.HasTitle("Title")
+            mockGetChannelUseCase.executeOnBackground()
+        } returns channelWithTitleResponse
 
         createRobot().switchAccountSellerHaveDraft()
     }
@@ -113,12 +124,14 @@ class SwitchAccountTest {
     @Test
     fun test_switchAccountBuyerHaveDraft() {
         coEvery { mockRepo.getAccountList() } returns accountListResponse().reversed()
+
         coEvery {
             mockHydraSharedPreferences.getLastSelectedAccountType()
         } returns ContentCommonUserType.TYPE_USER
+
         coEvery {
-            mockDataStore.getSetupDataStore().getTitle()
-        } returns PlayTitleUiModel.HasTitle("Title")
+            mockGetChannelUseCase.executeOnBackground()
+        } returns channelWithTitleResponse
 
         createRobot().switchAccountBuyerHaveDraft()
     }

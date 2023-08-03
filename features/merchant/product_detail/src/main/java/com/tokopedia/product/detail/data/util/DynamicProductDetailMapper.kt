@@ -83,10 +83,12 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.GLOBAL_BUNDL
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PRODUCT_BUNDLING
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.RECOM_VERTICAL
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOPADS_CAROUSEL
 import com.tokopedia.product.detail.view.util.checkIfNumber
 import com.tokopedia.product.detail.view.widget.CampaignRibbon
 import com.tokopedia.product.share.ProductData
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
@@ -99,7 +101,7 @@ import com.tokopedia.universal_sharing.model.BoTypeImageGeneratorParam
 import com.tokopedia.universal_sharing.model.PdpParamModel
 import com.tokopedia.universal_sharing.model.PersonalizedCampaignModel
 import com.tokopedia.universal_sharing.tracker.PageType
-import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.Product
 import com.tokopedia.universal_sharing.view.model.Shop
 
@@ -149,6 +151,9 @@ object DynamicProductDetailMapper {
                         SHOPADS_CAROUSEL -> {
                             listOfComponent.add(TopadsHeadlineUiModel(type = component.type, name = component.componentName))
                         }
+                        RECOM_VERTICAL -> {
+                            listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, recomWidgetData = RecommendationWidget()))
+                        }
                         else ->
                             listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, position = index))
                     }
@@ -183,7 +188,7 @@ object DynamicProductDetailMapper {
                         name = component.componentName,
                         data = component.componentData.firstOrNull()
                     )
-                    if(dataModel != null){
+                    if (dataModel != null) {
                         listOfComponent.add(dataModel)
                     }
                 }
@@ -429,7 +434,8 @@ object DynamicProductDetailMapper {
             variants = networkData.variants,
             children = networkData.children,
             maxFinalPrice = networkData.maxFinalPrice,
-            postAtcLayout = networkData.postAtcLayout
+            postAtcLayout = networkData.postAtcLayout,
+            landingSubText = networkData.landingSubText
         )
     }
 
@@ -697,8 +703,8 @@ object DynamicProductDetailMapper {
         productInfo: DynamicProductInfoP1,
         shopInfo: ShopInfo?,
         variantData: ProductVariant?
-    ): AffiliatePDPInput {
-        return AffiliatePDPInput(
+    ): AffiliateInput {
+        return AffiliateInput(
             pageType = PageType.PDP.value,
             product = Product(
                 productID = productInfo.basic.productID,
@@ -869,7 +875,6 @@ object DynamicProductDetailMapper {
         name: String,
         data: ComponentData?
     ): OngoingCampaignDataModel? {
-
         if (data == null) return null
 
         val mainData = ProductContentMainData(

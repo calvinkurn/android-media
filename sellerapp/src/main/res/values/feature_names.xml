@@ -86,4 +86,13 @@
 
     <string name="title_module_seller_front_funnel">Seller Front Funnel</string>
 
+    <!--Kyc-->
+    <string name="title_module_kyc_sellerapp">KYC</string>
+    <string name="title_kyc_info_simple">Dokumen Data Diri</string>
+    <string name="title_kyc_form_upload">Kirim Dokumen</string>
+    <string name="title_kyc_info">Verifikasi Data Diri</string>
+
+    <!-- Content -->
+    <string name="title_play_broadcaster_df">Play Broadcaster</string>
+
 </resources>

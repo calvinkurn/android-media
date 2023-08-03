@@ -20,7 +20,6 @@ const val RESULT_INTENT_EDITOR = "result-intent-preview"
 
 // picker editor rollence
 const val PICKER_TO_EDITOR_ROLLENCE = "android_editor"
-const val EDITOR_ADD_LOGO_TOOL = "android_addlogo"
 
 // picker new relic tag
 const val PICKER_SAVE_GALLERY = "PICKER_SAVE_GALLERY"

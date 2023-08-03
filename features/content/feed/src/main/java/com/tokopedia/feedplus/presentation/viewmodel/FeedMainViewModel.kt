@@ -22,7 +22,6 @@ import com.tokopedia.feedplus.presentation.model.MetaModel
 import com.tokopedia.feedplus.presentation.model.SwipeOnboardingStateModel
 import com.tokopedia.feedplus.presentation.onboarding.OnboardingPreferences
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -44,7 +43,6 @@ import javax.inject.Inject
  */
 class FeedMainViewModel @Inject constructor(
     private val feedXHeaderUseCase: FeedXHeaderUseCase,
-    private val submitReportUseCase: FeedComplaintSubmitReportUseCase,
     private val deletePostCacheUseCase: DeleteMediaPostCacheUseCase,
     private val dispatchers: CoroutineDispatchers,
     private val onboardingPreferences: OnboardingPreferences,
@@ -60,10 +58,6 @@ class FeedMainViewModel @Inject constructor(
 
     private val _isPageResumed = MutableLiveData<Boolean>(null)
     val isPageResumed get() = _isPageResumed
-
-    private val _reportResponse = MutableLiveData<Result<FeedComplaintSubmitReportResponse>>()
-    val reportResponse: LiveData<Result<FeedComplaintSubmitReportResponse>>
-        get() = _reportResponse
 
     private val _feedCreateContentBottomSheetData =
         MutableLiveData<Result<List<ContentCreationTypeItem>>>()
@@ -89,6 +83,16 @@ class FeedMainViewModel @Inject constructor(
     private val _isLoggedIn = AtomicBoolean(userSession.isLoggedIn)
     val isLoggedIn: Boolean
         get() = _isLoggedIn.get()
+
+    val isShortEntryPointShowed: Boolean
+        get() {
+            val feedCreateContentData = _feedCreateContentBottomSheetData.value
+
+            return feedCreateContentData is Success &&
+                feedCreateContentData.data.find {
+                it.type == CreateContentType.CREATE_SHORT_VIDEO
+            } != null
+        }
 
     init {
         viewModelScope.launch {
@@ -145,11 +149,13 @@ class FeedMainViewModel @Inject constructor(
     fun getCurrentTabType() =
         feedTabs.value?.let {
             if (it is Success) {
-                it.data[currentTabIndex.value ?: 0].type
+                currentTabIndex.value?.let { idx ->
+                    it.data.getOrNull(idx)?.type.orEmpty()
+                }.orEmpty()
             } else {
                 ""
             }
-        } ?: ""
+        }.orEmpty()
 
     fun consumeEvent(event: FeedMainEvent) {
         viewModelScope.launch {
@@ -237,21 +243,6 @@ class FeedMainViewModel @Inject constructor(
                 ""
             }
         } ?: ""
-
-    fun reportContent(feedReportRequestParamModel: FeedComplaintSubmitReportUseCase.Param) {
-        viewModelScope.launchCatchError(block = {
-            val response = withContext(dispatchers.io) {
-                submitReportUseCase(feedReportRequestParamModel)
-            }
-            if (response.data.success.not()) {
-                throw MessageErrorException("Error in Reporting")
-            } else {
-                _reportResponse.value = Success(response)
-            }
-        }) {
-            _reportResponse.value = Fail(it)
-        }
-    }
 
     /**
      * Creation Button Position is Static :

@@ -13,8 +13,6 @@ import com.tokopedia.review.databinding.WidgetCreateReviewRatingBinding
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewRatingUiState
 import com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.review_animated_rating.WidgetReviewAnimatedRating
 import com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.review_animated_rating.WidgetReviewAnimatedRatingConfig
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.resume
 
 class CreateReviewRating @JvmOverloads constructor(
     context: Context,
@@ -45,19 +43,15 @@ class CreateReviewRating @JvmOverloads constructor(
         }
     }
 
-    fun updateUi(uiState: CreateReviewRatingUiState, continuation: Continuation<Unit>) {
+    fun updateUi(uiState: CreateReviewRatingUiState) {
         when (uiState) {
             is CreateReviewRatingUiState.Loading -> {
                 showLoading()
-                animateShow(onAnimationEnd = {
-                    continuation.resume(Unit)
-                })
+                animateShow()
             }
             is CreateReviewRatingUiState.Showing -> {
                 binding.showData(uiState)
-                animateShow(onAnimationEnd = {
-                    continuation.resume(Unit)
-                })
+                animateShow()
             }
         }
     }

@@ -159,7 +159,7 @@ class MixTopComponentViewHolder(
     private fun mappingHeader(channel: ChannelModel){
         val bannerItem = channel.channelBanner
         val ctaData = channel.channelBanner.cta
-        var textColor = ContextCompat.getColor(bannerTitle.context, com.tokopedia.unifyprinciples.R.color.Unify_N50)
+        var textColor = ContextCompat.getColor(bannerTitle.context, com.tokopedia.unifyprinciples.R.color.Unify_NN50)
         if(bannerItem.textColor.isNotEmpty()){
             try {
                 textColor = Color.parseColor(bannerItem.textColor)

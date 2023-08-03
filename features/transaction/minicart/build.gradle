@@ -18,6 +18,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.minicart'
+    testNamespace 'com.tokopedia.minicart.test'
     defaultConfig {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
@@ -62,7 +64,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.utils)

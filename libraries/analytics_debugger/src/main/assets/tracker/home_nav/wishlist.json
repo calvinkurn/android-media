@@ -17,6 +17,7 @@
           "item_name": "/global_menu - wishlist_card"
         }
       ],
+      "pageSource": ".*",
       "userId": ".*",
       "sessionIris": ".*",
       "trackerId": "30836"
@@ -36,6 +37,7 @@
           "item_name": "/global_menu - wishlist_card"
         }
       ],
+      "pageSource": ".*",
       "userId": ".*",
       "sessionIris": ".*",
       "clientId": ".*",
@@ -46,11 +48,12 @@
       "eventAction": "click view all wishlist",
       "eventCategory": "global menu",
       "eventLabel": "",
+      "pageSource": ".*",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
       "sessionIris": ".*",
       "clientId": ".*",
-      "userId": ".*"
+      "trackerId": "30859"
     }
   ]
 }

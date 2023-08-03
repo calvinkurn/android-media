@@ -5,7 +5,7 @@
     android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/contact_us_dms_detail_background_dark"
+    android:background="@color/Unify_NN0"
     tools:context=".inboxtickets.view.inboxdetail.TicketFragment">
 
     <androidx.appcompat.widget.Toolbar
@@ -42,7 +42,7 @@
                 android:background="@color/transparent"
                 android:gravity="center_vertical"
                 android:hint="@string/contact_search_hint"
-                android:textColorHint="@color/contact_us_dms_detail_hint_bg"
+                android:textColorHint="@color/Unify_NN500"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/tv_count_current"

@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.category.presentation.adapter.differ
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseUiModel
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer
+import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
 
 class CategoryDiffer : BaseTokopediaNowDiffer() {
     private var oldList: List<Visitable<*>> = emptyList()
@@ -14,6 +15,8 @@ class CategoryDiffer : BaseTokopediaNowDiffer() {
 
         return if (oldItem is CategoryShowcaseUiModel && newItem is CategoryShowcaseUiModel) {
             oldItem.id == newItem.id
+        } else if (oldItem is TokoNowAdsCarouselUiModel && newItem is TokoNowAdsCarouselUiModel) {
+            oldItem.id == newItem.id && oldItem.state == newItem.state
         } else {
             oldItem == newItem
         }
@@ -29,7 +32,9 @@ class CategoryDiffer : BaseTokopediaNowDiffer() {
 
         return if (oldItem is CategoryShowcaseUiModel && newItem is CategoryShowcaseUiModel) {
             oldItem.getChangePayload(newItem)
-        }  else {
+        } else if (oldItem is TokoNowAdsCarouselUiModel && newItem is TokoNowAdsCarouselUiModel) {
+            oldItem.getChangePayload(newItem)
+        } else {
             super.getChangePayload(oldItemPosition, newItemPosition)
         }
     }

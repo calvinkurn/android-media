@@ -18,8 +18,10 @@ import com.tokopedia.homenav.category.view.adapter.typefactory.CategoryListTypeF
 import com.tokopedia.homenav.category.view.di.DaggerCategoryListComponent
 import com.tokopedia.homenav.databinding.FragmentNavCategoryBinding
 import com.tokopedia.homenav.di.DaggerBaseNavComponent
+import com.tokopedia.homenav.mainnav.view.analytics.TrackingProfileSection
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSessionInterface
@@ -92,6 +94,11 @@ class CategoryListFragment: BaseDaggerFragment(), HomeNavListener {
     override fun getReviewCounterAbIsUnify(): Boolean {
         // default red notif unify
         return true
+    }
+
+    override fun onTickerDescClicked(applink: String) {
+        TrackingProfileSection.onClickProfileSection(TrackingProfileSection.CLICK_OPEN_SHOP, NavSource.DEFAULT)
+        RouteManager.route(context, applink)
     }
 
     private fun initRecyclerView(view: View) {

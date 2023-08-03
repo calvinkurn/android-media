@@ -21,7 +21,7 @@ open class TokoChatChannelUseCase @Inject constructor(
         groupBookingListener: ConversationsGroupBookingListener,
         orderChatType: OrderChatType
     ) {
-        repository.getConversationRepository().initGroupBookingChat(
+        repository.getConversationRepository()?.initGroupBookingChat(
             orderId,
             serviceType,
             groupBookingListener,
@@ -30,7 +30,7 @@ open class TokoChatChannelUseCase @Inject constructor(
     }
 
     open fun isChatConnected(): Boolean {
-        return repository.getConversationRepository().isChatConnected()
+        return repository.getConversationRepository()?.isChatConnected() ?: false
     }
 
     fun getRemoteGroupBookingChannel(
@@ -38,30 +38,30 @@ open class TokoChatChannelUseCase @Inject constructor(
         onSuccess: (channel: GroupBookingChannelDetails) -> Unit,
         onError: (error: ConversationsNetworkError) -> Unit
     ) {
-        repository.getConversationRepository().getRemoteGroupBookingChannelDetails(
+        repository.getConversationRepository()?.getRemoteGroupBookingChannelDetails(
             channelId = channelId,
             onSuccess = onSuccess,
             onError = onError
         )
     }
 
-    fun getMemberLeftLiveData(): MutableLiveData<String> {
-        return repository.getConversationRepository().getMemberLeftLiveDataCallback()
+    fun getMemberLeftLiveData(): MutableLiveData<String>? {
+        return repository.getConversationRepository()?.getMemberLeftLiveDataCallback()
     }
 
     fun resetMemberLeftLiveData() {
-        repository.getConversationRepository().resetMemberLeftLiveDataCallback()
+        repository.getConversationRepository()?.resetMemberLeftLiveDataCallback()
     }
 
-    fun getLiveChannel(channelId: String): LiveData<ConversationsChannel?> {
-        return repository.getConversationRepository().getLiveChannel(channelId)
+    fun getLiveChannel(channelId: String): LiveData<ConversationsChannel?>? {
+        return repository.getConversationRepository()?.getLiveChannel(channelId)
     }
 
     fun registerExtensionProvider(extensionProvider: ConversationsExtensionProvider) {
-        repository.getConversationRepository().registerExtensionProvider(extensionProvider)
+        repository.getConversationRepository()?.registerExtensionProvider(extensionProvider)
     }
 
     fun unRegisterExtensionProvider(extensionProvider: ConversationsExtensionProvider) {
-        repository.getConversationRepository().unRegisterExtensionProvider(extensionProvider)
+        repository.getConversationRepository()?.unRegisterExtensionProvider(extensionProvider)
     }
 }

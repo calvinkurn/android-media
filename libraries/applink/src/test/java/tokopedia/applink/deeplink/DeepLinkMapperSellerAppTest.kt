@@ -23,11 +23,6 @@ class DeepLinkMapperSellerAppTest : DeepLinkMapperTestFixture() {
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
     }
 
-    override fun finish() {
-        super.finish()
-        GlobalConfig.APPLICATION_TYPE = GlobalConfig.CONSUMER_APPLICATION
-    }
-
     @Test
     fun `check home appLink login then return seller home in sellerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/sellerhome"

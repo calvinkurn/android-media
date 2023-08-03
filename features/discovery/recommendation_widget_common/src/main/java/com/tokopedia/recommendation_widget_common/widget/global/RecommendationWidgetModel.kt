@@ -5,8 +5,9 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 data class RecommendationWidgetModel(
     val metadata: RecommendationWidgetMetadata = RecommendationWidgetMetadata(),
     val trackingModel: RecommendationWidgetTrackingModel = RecommendationWidgetTrackingModel(),
+    val miniCart: RecommendationWidgetMiniCart = RecommendationWidgetMiniCart(),
 
-    // TEMPORARY
+    // TEMPORARY, Ignore this for non-PDP
     val widget: RecommendationWidget? = null,
 ) {
 

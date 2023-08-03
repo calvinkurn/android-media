@@ -92,6 +92,5 @@
     <string name="card_empty_text_lc">Saatnya berburu promo paling oke!</string>
     <string name="card_empty_toast_lc">Promonya bisa dicek lewat halaman ini, yaa</string>
     <string name="card_empty_text_nlc">Lanjut intip promo kece di bawah, yuk~</string>
-    <string name="card_empty_toast_nlc">Mau cek promo lainnya, ya? Geser ke bawah aja~</string>
     <string name="terjual_habis_camel">Terjual Habis</string>
 </resources>

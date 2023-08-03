@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">scp_rewards_widgets</string>
+    <string name="progress_percent">%1$d\%%</string>
+</resources>

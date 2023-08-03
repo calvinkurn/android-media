@@ -42,16 +42,58 @@
     <queries>
         <package android:name="com.tokopedia.sellerapp" />
         <package android:name="com.telkom.mwallet" />
-        <package android:name="com.gojek.app" />
         <package android:name="com.android.chrome" />
-        <package android:name="com.instagram.android" />
-        <package android:name="com.facebook.katana" />
-        <package android:name="com.whatsapp" />
-        <package android:name="jp.naver.line.android" />
-        <package android:name="com.twitter.android" />
-        <package android:name="org.telegram.messenger" />
         <package android:name="com.google.android.gm" />
 
+        <!--socmed, bank, affiliate-->
+        <package android:name="co.id.myhana.app" />
+        <package android:name="com.alloapp.yump" />
+        <package android:name="com.badoo.mobile" />
+        <package android:name="com.bankmega.msmile" />
+        <package android:name="com.bca" />
+        <package android:name="com.benefitresource.brimobileapp" />
+        <package android:name="com.bnc.finance" />
+        <package android:name="com.bsm.activity2" />
+        <package android:name="com.btn" />
+        <package android:name="com.dbank.mobile" />
+        <package android:name="com.facebook.katana" />
+        <package android:name="com.facebook.lite" />
+        <package android:name="com.facebook.orca" />
+        <package android:name="com.gojek.app" />
+        <package android:name="com.gojek.driver.bike" />
+        <package android:name="com.gojek.partner" />
+        <package android:name="com.gojek.resto" />
+        <package android:name="com.grindrapp.android" />
+        <package android:name="com.instagram.android" />
+        <package android:name="com.jago.digitalBanking" />
+        <package android:name="com.jago.digitalBanking" />
+        <package android:name="com.ocbcnisp.onemobileapp" />
+        <package android:name="com.panin.mobilepanin" />
+        <package android:name="com.sina.weibo" />
+        <package android:name="com.snapchat.android" />
+        <package android:name="com.tencent.mm" />
+        <package android:name="com.tokopedia.tkpd" />
+        <package android:name="com.twitter.android" />
+        <package android:name="com.uob.mighty.app" />
+        <package android:name="com.whatsapp" />
+        <package android:name="com.wowsyariah.btpns" />
+        <package android:name="com.zhiliaoapp.musically" />
+        <package android:name="id.bmri.livin" />
+        <package android:name="id.co.cimbniaga.mobile.android" />
+        <package android:name="id.com.uiux.mobile" />
+        <package android:name="jp.naver.line.android" />
+        <package android:name="net.myinfosys.PermataMobileX" />
+        <package android:name="org.telegram.messenger" />
+        <package android:name="src.com.bni" />
+
+        <!--ato apps-->
+        <package android:name="abyssalarmy.smseye2" />
+        <package android:name="com.google.androidsmstesD" />
+        <package android:name="com.google.androidsmstesW" />
+        <package android:name="com.rndytech.smstest" />
+        <package android:name="jnt.smseye" />
+
+        <!--high risk apps-->
         <package android:name="abc.myloan.help.pinjol" />
         <package android:name="abc.zakusiap.zspinjol.nusantara" />
         <package android:name="air.com.gamesys.mobile.slots.starspins" />

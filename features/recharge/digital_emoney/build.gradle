@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-kapt'
 
 repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
@@ -18,22 +19,40 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.emoney'
+    testNamespace 'com.tokopedia.emoney.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.features.commonDigital)
     implementation projectOrAar(rootProject.ext.features.commonElectronicMoney)
 
+    implementation projectOrAar(rootProject.ext.libraries.encryption)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
-    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.logger)
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
+    implementation rootProject.ext.miscDependencies.fragmentKtx
+    implementation rootProject.ext.miscDependencies.viewModelKtx
+    implementation rootProject.ext.miscDependencies.liveDataKtx
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation projectOrAar(rootProject.ext.libraries.keys)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.usersession)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler

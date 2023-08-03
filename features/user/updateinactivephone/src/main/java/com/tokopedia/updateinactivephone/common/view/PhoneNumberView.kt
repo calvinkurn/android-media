@@ -40,16 +40,16 @@ class PhoneNumberView @JvmOverloads constructor(
         get() = textMessage.text.toString()
         set(value) {
             textMessage.text = value
-            textMessage.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N300))
-            line.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N300))
+            textMessage.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN500))
+            line.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN500))
         }
 
     var error: String
         get() = textMessage.text.toString()
         set(value) {
             textMessage.text = value
-            textMessage.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500))
-            line.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500))
+            textMessage.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_RN500))
+            line.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_RN500))
         }
 
     var label: String
@@ -91,7 +91,7 @@ class PhoneNumberView @JvmOverloads constructor(
     private fun focusListener(): OnFocusChangeListener {
         return OnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
-                line.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                line.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
             } else {
                 line.setBackgroundColor(MethodChecker.getColor(context, R.color.updateinactivephone_dms_dark_n500))
             }
@@ -104,7 +104,7 @@ class PhoneNumberView @JvmOverloads constructor(
 
     fun clearErrorMessage() {
         textMessage.text = ""
-        textMessage.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N300))
-        line.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N300))
+        textMessage.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN500))
+        line.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN500))
     }
 }

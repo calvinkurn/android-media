@@ -69,6 +69,11 @@ class UserDetailsUseCase @Inject constructor(
                     totalFollowerFmt
                     totalFollowing
                     totalFollowingFmt
+                    ExtraStats {
+                      field
+                      count
+                      countFmt
+                    }
                   }
                   hasAcceptTnC
                   shouldSeoIndex

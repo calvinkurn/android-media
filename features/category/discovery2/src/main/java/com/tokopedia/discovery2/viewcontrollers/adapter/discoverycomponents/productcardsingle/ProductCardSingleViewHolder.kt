@@ -2,7 +2,6 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.pro
 
 import android.app.Application
 import android.graphics.Color
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -26,7 +25,7 @@ import com.tokopedia.unifycomponents.LocalLoad
 class ProductCardSingleViewHolder(itemView: View, val fragment: Fragment) :
     AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
-    lateinit var viewModel: ProductCardSingleViewModel
+    var viewModel: ProductCardSingleViewModel? = null
     private val masterProdFrameLayout: FrameLayout = itemView.findViewById(R.id.master_prod)
     private val backgroundImage: ImageView = itemView.findViewById(R.id.master_prod_bg)
     private val shimmer: CardView = itemView.findViewById(R.id.shimmer_card)
@@ -42,11 +41,13 @@ class ProductCardSingleViewHolder(itemView: View, val fragment: Fragment) :
             ComponentsList.ProductCardSingleItem.ordinal,
             fragment
         ) as AbstractViewHolder
-    lateinit var productViewModel: DiscoveryBaseViewModel
+    private var productViewModel: DiscoveryBaseViewModel? = null
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         viewModel = discoveryBaseViewModel as ProductCardSingleViewModel
-        getSubComponent().inject(viewModel)
+        viewModel?.let {
+            getSubComponent().inject(it)
+        }
         shimmer.show()
         masterProdFrameLayout.hide()
     }
@@ -54,24 +55,25 @@ class ProductCardSingleViewHolder(itemView: View, val fragment: Fragment) :
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let { lifecycle ->
-            viewModel.getProductData().observe(lifecycle, {
+            viewModel?.getProductData()?.observe(lifecycle) {
                 handleProductData(it)
-            })
+            }
 
-            viewModel.getMixLeftData().observe(lifecycle, { mixLeft ->
+            viewModel?.getMixLeftData()?.observe(lifecycle) { mixLeft ->
                 setupBackgroundData(mixLeft)
-            })
+            }
 
-            viewModel.showErrorState.observe(lifecycle, { showError ->
+            viewModel?.showErrorState?.observe(lifecycle) { showError ->
                 if (showError) {
                     handleError()
                 }
-            })
-            viewModel.hideView.observe(lifecycle, { hideView ->
+            }
+            viewModel?.hideView?.observe(lifecycle) { hideView ->
+
                 if (hideView) {
                     hideViewAndShimmer()
                 }
-            })
+            }
         }
     }
 
@@ -84,8 +86,9 @@ class ProductCardSingleViewHolder(itemView: View, val fragment: Fragment) :
         if (mixLeft != null && !(mixLeft.backgroundImageUrl.isNullOrEmpty())) {
             try {
                 backgroundImage.loadImageWithoutPlaceholder(mixLeft.backgroundImageUrl)
-                if (!mixLeft.backgroundColor.isNullOrEmpty())
+                if (!mixLeft.backgroundColor.isNullOrEmpty()) {
                     backgroundImage.setColorFilter(Color.parseColor(mixLeft.backgroundColor))
+                }
                 backgroundImage.show()
             } catch (e: Exception) {
                 backgroundImage.hide()
@@ -109,8 +112,10 @@ class ProductCardSingleViewHolder(itemView: View, val fragment: Fragment) :
                         productData,
                         0
                     )
-                productViewHolder.bindView(productViewModel)
-                productViewModel.onAttachToViewHolder()
+                productViewModel?.let {
+                    productViewHolder.bindView(it)
+                }
+                productViewModel?.onAttachToViewHolder()
                 productViewHolder.onViewAttachedToWindow()
                 productViewHolder.setUpObservers(fragment.viewLifecycleOwner)
             }
@@ -126,7 +131,7 @@ class ProductCardSingleViewHolder(itemView: View, val fragment: Fragment) :
             refreshBtn?.setOnClickListener {
                 carouselEmptyState.hide()
                 shimmer.show()
-                viewModel.reload()
+                viewModel?.reload()
             }
         }
         carouselEmptyState.visible()
@@ -135,14 +140,13 @@ class ProductCardSingleViewHolder(itemView: View, val fragment: Fragment) :
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            viewModel.getProductData().removeObservers(it)
-            viewModel.getMixLeftData().removeObservers(it)
-            viewModel.showErrorState.removeObservers(it)
-            viewModel.hideView.removeObservers(it)
-            if (::productViewModel.isInitialized)
+            viewModel?.getProductData()?.removeObservers(it)
+            viewModel?.getMixLeftData()?.removeObservers(it)
+            viewModel?.showErrorState?.removeObservers(it)
+            viewModel?.hideView?.removeObservers(it)
+            if (productViewModel != null) {
                 productViewHolder.removeObservers(it)
+            }
         }
     }
-
-
 }

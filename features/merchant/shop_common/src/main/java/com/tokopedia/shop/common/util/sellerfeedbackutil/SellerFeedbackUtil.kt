@@ -1,6 +1,8 @@
 package com.tokopedia.shop.common.util.sellerfeedbackutil
 
 import android.content.Context
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 /**
  * Created By @ilhamsuaib on 14/10/21
@@ -27,9 +29,11 @@ class SellerFeedbackUtil(
         context.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE)
     }
 
-    fun setSelectedPage(page: String) {
-        val spe = sharedPref.edit()
-        spe.putString(SELECTED_PAGE, page)
-        spe.apply()
+    suspend fun setSelectedPage(page: String) {
+        withContext(Dispatchers.IO) {
+            val spe = sharedPref.edit()
+            spe.putString(SELECTED_PAGE, page)
+            spe.apply()
+        }
     }
 }

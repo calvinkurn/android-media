@@ -3,7 +3,10 @@ package com.tokopedia.play.broadcaster.robot
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
-import com.tokopedia.play.broadcaster.domain.usecase.*
+import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.GetLiveStatisticsUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.GetRecommendedChannelTagsUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.SetChannelTagsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveSummaryLivestreamUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetSellerLeaderboardUseCase
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
@@ -16,11 +19,16 @@ import com.tokopedia.play.broadcaster.util.TestHtmlTextTransformer
 import com.tokopedia.play.broadcaster.util.TestUriParser
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
 import com.tokopedia.play_common.domain.usecase.broadcaster.PlayBroadcastUpdateChannelUseCase
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.yield
 import java.io.Closeable
 
 /**
@@ -29,25 +37,24 @@ import java.io.Closeable
 class PlayBroadcastSummaryViewModelRobot(
     channelId: String = "123",
     channelTitle: String = "Test 123",
-    productSectionList: List<ProductTagSectionUiModel> = emptyList(),
     private val dispatcher: CoroutineTestDispatchers = CoroutineTestDispatchers,
     getLiveStatisticsUseCase: GetLiveStatisticsUseCase = mockk(relaxed = true),
     getSellerLeaderboardUseCase: GetSellerLeaderboardUseCase = mockk(relaxed = true),
     updateChannelUseCase: PlayBroadcastUpdateChannelUseCase = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
-    playBroadcastMapper: PlayBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer(), TestUriParser()),
+    playBroadcastMapper: PlayBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer(), TestUriParser(), mockk(relaxed = true)),
     getRecommendedChannelTagsUseCase: GetRecommendedChannelTagsUseCase = mockk(relaxed = true),
     setChannelTagsUseCase: SetChannelTagsUseCase = mockk(relaxed = true),
     getChannelUseCase: GetChannelUseCase = mockk(relaxed = true),
     getInteractiveSummaryLivestreamUseCase: GetInteractiveSummaryLivestreamUseCase = mockk(relaxed = true),
     hydraConfigStore: HydraConfigStore = mockk(relaxed = true),
     account: ContentAccountUiModel = ContentAccountUiModel.Empty,
+    remoteConfig: RemoteConfig = mockk(relaxed = true),
 ) : Closeable {
 
     private val viewModel = PlayBroadcastSummaryViewModel(
         channelId = channelId,
         channelTitle = channelTitle,
-        productSectionList = productSectionList,
         getSellerLeaderboardUseCase = getSellerLeaderboardUseCase,
         dispatcher = dispatcher,
         getLiveStatisticsUseCase = getLiveStatisticsUseCase,

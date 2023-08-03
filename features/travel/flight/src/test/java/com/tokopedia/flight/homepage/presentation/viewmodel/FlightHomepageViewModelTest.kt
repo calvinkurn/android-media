@@ -6,6 +6,10 @@ import com.tokopedia.common.travel.domain.GetTravelCollectiveBannerUseCase
 import com.tokopedia.common.travel.presentation.model.TravelVideoBannerModel
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
+import com.tokopedia.common_digital.common.presentation.model.DigiPersoRecommendationData
+import com.tokopedia.common_digital.common.presentation.model.DigiPersoRecommendationItem
+import com.tokopedia.common_digital.common.presentation.model.DigitalDppoConsent
+import com.tokopedia.common_digital.common.usecase.GetDppoConsentUseCase
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
@@ -20,6 +24,7 @@ import com.tokopedia.flight.search.domain.FlightSearchDeleteAllDataUseCase
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search_universal.presentation.viewmodel.FlightSearchUniversalViewModel
 import com.tokopedia.flight.shouldBe
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -29,6 +34,7 @@ import com.tokopedia.utils.date.addTimeToSpesificDate
 import com.tokopedia.utils.date.trimDate
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -56,16 +62,21 @@ class FlightHomepageViewModelTest {
     @RelaxedMockK
     private lateinit var deleteAllFlightSearch: FlightSearchDeleteAllDataUseCase
 
+    @RelaxedMockK
+    private lateinit var getDppoConsentUseCase: GetDppoConsentUseCase
+
     private val passengerValidator = FlightSelectPassengerValidator()
     private lateinit var flightHomepageViewModel: FlightHomepageViewModel
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        flightHomepageViewModel = FlightHomepageViewModel(flightAnalytics,
-                travelTickerUseCase, travelCollectiveBannerUseCase, dashboardCache,
-                deleteAllFlightSearch, passengerValidator, userSessionInterface,
-                testDispatcherProvider)
+        flightHomepageViewModel = FlightHomepageViewModel(
+            flightAnalytics,
+            travelTickerUseCase, travelCollectiveBannerUseCase, getDppoConsentUseCase,
+            dashboardCache, deleteAllFlightSearch, passengerValidator,
+            userSessionInterface, testDispatcherProvider
+        )
         flightHomepageViewModel.init()
     }
 
@@ -235,8 +246,13 @@ class FlightHomepageViewModelTest {
 
         // when
         val errorStringResourceId = flightHomepageViewModel.setupApplinkParams(
-                extrasTrip, extrasAdult, extrasChild,
-                extrasInfant, extrasClass, extrasAutoSearch)
+            extrasTrip,
+            extrasAdult,
+            extrasChild,
+            extrasInfant,
+            extrasClass,
+            extrasAutoSearch
+        )
 
         // then
         verifySequence {
@@ -268,8 +284,13 @@ class FlightHomepageViewModelTest {
 
         // when
         val errorStringResourceId = flightHomepageViewModel.setupApplinkParams(
-                extrasTrip, extrasAdult, extrasChild,
-                extrasInfant, extrasClass, extrasAutoSearch)
+            extrasTrip,
+            extrasAdult,
+            extrasChild,
+            extrasInfant,
+            extrasClass,
+            extrasAutoSearch
+        )
 
         // then
         verifySequence {
@@ -301,8 +322,13 @@ class FlightHomepageViewModelTest {
 
         // when
         val errorStringResourceId = flightHomepageViewModel.setupApplinkParams(
-                extrasTrip, extrasAdult, extrasChild,
-                extrasInfant, extrasClass, extrasAutoSearch)
+            extrasTrip,
+            extrasAdult,
+            extrasChild,
+            extrasInfant,
+            extrasClass,
+            extrasAutoSearch
+        )
 
         // then
         verifySequence {
@@ -336,8 +362,13 @@ class FlightHomepageViewModelTest {
 
         // when
         val errorStringResourceId = flightHomepageViewModel.setupApplinkParams(
-                extrasTrip, extrasAdult, extrasChild,
-                extrasInfant, extrasClass, extrasAutoSearch)
+            extrasTrip,
+            extrasAdult,
+            extrasChild,
+            extrasInfant,
+            extrasClass,
+            extrasAutoSearch
+        )
 
         // then
         verifySequence {
@@ -371,8 +402,13 @@ class FlightHomepageViewModelTest {
 
         // when
         val errorStringResourceId = flightHomepageViewModel.setupApplinkParams(
-                extrasTrip, extrasAdult, extrasChild,
-                extrasInfant, extrasClass, extrasAutoSearch)
+            extrasTrip,
+            extrasAdult,
+            extrasChild,
+            extrasInfant,
+            extrasClass,
+            extrasAutoSearch
+        )
 
         // then
         verifySequence {
@@ -404,8 +440,13 @@ class FlightHomepageViewModelTest {
 
         // when
         val errorStringResourceId = flightHomepageViewModel.setupApplinkParams(
-                extrasTrip, extrasAdult, extrasChild,
-                extrasInfant, extrasClass, extrasAutoSearch)
+            extrasTrip,
+            extrasAdult,
+            extrasChild,
+            extrasInfant,
+            extrasClass,
+            extrasAutoSearch
+        )
 
         // then
         verifySequence {
@@ -438,8 +479,13 @@ class FlightHomepageViewModelTest {
 
         // when
         val errorStringResourceId = flightHomepageViewModel.setupApplinkParams(
-                extrasTrip, extrasAdult, extrasChild,
-                extrasInfant, extrasClass, extrasAutoSearch)
+            extrasTrip,
+            extrasAdult,
+            extrasChild,
+            extrasInfant,
+            extrasClass,
+            extrasAutoSearch
+        )
 
         // then
         verifySequence {
@@ -473,10 +519,14 @@ class FlightHomepageViewModelTest {
         // when
         try {
             flightHomepageViewModel.setupApplinkParams(
-                    extrasTrip, extrasAdult, extrasChild,
-                    extrasInfant, extrasClass, extrasAutoSearch)
+                extrasTrip,
+                extrasAdult,
+                extrasChild,
+                extrasInfant,
+                extrasClass,
+                extrasAutoSearch
+            )
         } catch (t: Throwable) {
-
         }
     }
 
@@ -531,10 +581,12 @@ class FlightHomepageViewModelTest {
 
         // then
         verify {
-            flightAnalytics.eventPromotionClick(position + 1,
-                    bannerData,
-                    FlightAnalyticsScreenName.HOMEPAGE,
-                    any())
+            flightAnalytics.eventPromotionClick(
+                position + 1,
+                bannerData,
+                FlightAnalyticsScreenName.HOMEPAGE,
+                any()
+            )
         }
     }
 
@@ -550,10 +602,12 @@ class FlightHomepageViewModelTest {
 
         // then
         verify {
-            flightAnalytics.eventPromotionClick(position + 1,
-                    bannerData,
-                    FlightAnalyticsScreenName.HOMEPAGE,
-                    any())
+            flightAnalytics.eventPromotionClick(
+                position + 1,
+                bannerData,
+                FlightAnalyticsScreenName.HOMEPAGE,
+                any()
+            )
         }
     }
 
@@ -567,9 +621,11 @@ class FlightHomepageViewModelTest {
         departureAirport.cityCode = ""
         departureAirport.cityId = ""
         departureAirport.cityAirports = arrayListOf()
-        val newViewModel = FlightHomepageViewModel(flightAnalytics, travelTickerUseCase, travelCollectiveBannerUseCase,
-                dashboardCache, deleteAllFlightSearch, passengerValidator, userSessionInterface,
-                testDispatcherProvider)
+        val newViewModel = FlightHomepageViewModel(
+            flightAnalytics, travelTickerUseCase, travelCollectiveBannerUseCase,
+            getDppoConsentUseCase, dashboardCache, deleteAllFlightSearch,
+            passengerValidator, userSessionInterface, testDispatcherProvider
+        )
 
         // when
         newViewModel.onDepartureAirportChanged(departureAirport)
@@ -631,9 +687,11 @@ class FlightHomepageViewModelTest {
         arrivalAirport.cityCode = ""
         arrivalAirport.cityId = ""
         arrivalAirport.cityAirports = arrayListOf()
-        val newViewModel = FlightHomepageViewModel(flightAnalytics, travelTickerUseCase, travelCollectiveBannerUseCase,
-                dashboardCache, deleteAllFlightSearch, passengerValidator, userSessionInterface,
-                testDispatcherProvider)
+        val newViewModel = FlightHomepageViewModel(
+            flightAnalytics, travelTickerUseCase, travelCollectiveBannerUseCase,
+            getDppoConsentUseCase, dashboardCache, deleteAllFlightSearch,
+            passengerValidator, userSessionInterface, testDispatcherProvider
+        )
 
         // when
         newViewModel.onArrivalAirportChanged(arrivalAirport)
@@ -727,9 +785,11 @@ class FlightHomepageViewModelTest {
     fun onClassChanged_withNullDashboardData_shouldDoNothing() {
         // given
         val flightClassModel = FlightClassModel(1, "Ekonomi")
-        val newViewModel = FlightHomepageViewModel(flightAnalytics, travelTickerUseCase, travelCollectiveBannerUseCase,
-                dashboardCache, deleteAllFlightSearch, passengerValidator, userSessionInterface,
-                testDispatcherProvider)
+        val newViewModel = FlightHomepageViewModel(
+            flightAnalytics, travelTickerUseCase, travelCollectiveBannerUseCase,
+            getDppoConsentUseCase, dashboardCache, deleteAllFlightSearch,
+            passengerValidator, userSessionInterface, testDispatcherProvider
+        )
 
         // when
         newViewModel.onClassChanged(flightClassModel)
@@ -772,9 +832,11 @@ class FlightHomepageViewModelTest {
         passengerModel.adult = 3
         passengerModel.children = 2
         passengerModel.infant = 1
-        val newViewModel = FlightHomepageViewModel(flightAnalytics, travelTickerUseCase, travelCollectiveBannerUseCase,
-                dashboardCache, deleteAllFlightSearch, passengerValidator, userSessionInterface,
-                testDispatcherProvider)
+        val newViewModel = FlightHomepageViewModel(
+            flightAnalytics, travelTickerUseCase, travelCollectiveBannerUseCase,
+            getDppoConsentUseCase, dashboardCache, deleteAllFlightSearch,
+            passengerValidator, userSessionInterface, testDispatcherProvider
+        )
 
         // when
         newViewModel.onPassengerChanged(passengerModel)
@@ -796,9 +858,11 @@ class FlightHomepageViewModelTest {
 
         // then
         verify {
-            flightAnalytics.eventPassengerClick(passengerModel.adult,
-                    passengerModel.children,
-                    passengerModel.infant)
+            flightAnalytics.eventPassengerClick(
+                passengerModel.adult,
+                passengerModel.children,
+                passengerModel.infant
+            )
         }
     }
 
@@ -824,9 +888,9 @@ class FlightHomepageViewModelTest {
         // given
         val maxDateCalendar = DateUtil.getCurrentCalendar()
         maxDateCalendar.time = DateUtil.getCurrentDate()
-                .addTimeToSpesificDate(Calendar.YEAR, FlightSearchUniversalViewModel.MAX_YEAR_FOR_FLIGHT)
-                .addTimeToSpesificDate(Calendar.DATE, FlightSearchUniversalViewModel.MINUS_ONE_DAY)
-                .trimDate()
+            .addTimeToSpesificDate(Calendar.YEAR, FlightSearchUniversalViewModel.MAX_YEAR_FOR_FLIGHT)
+            .addTimeToSpesificDate(Calendar.DATE, FlightSearchUniversalViewModel.MINUS_ONE_DAY)
+            .trimDate()
 
         // when
         val pair = flightHomepageViewModel.generatePairOfMinAndMaxDateForDeparture()
@@ -851,7 +915,7 @@ class FlightHomepageViewModelTest {
     fun validateDepartureDate_validDate() {
         // given
         val departureDate = DateUtil.getCurrentDate()
-                .addTimeToSpesificDate(Calendar.MONTH, 1)
+            .addTimeToSpesificDate(Calendar.MONTH, 1)
 
         // when
         val result = flightHomepageViewModel.validateDepartureDate(departureDate)
@@ -864,7 +928,7 @@ class FlightHomepageViewModelTest {
     fun validateDepartureDate_dateMoreThanOneYear() {
         // given
         val departureDate = DateUtil.getCurrentDate()
-                .addTimeToSpesificDate(Calendar.YEAR, 2)
+            .addTimeToSpesificDate(Calendar.YEAR, 2)
 
         // when
         val result = flightHomepageViewModel.validateDepartureDate(departureDate)
@@ -877,7 +941,7 @@ class FlightHomepageViewModelTest {
     fun validateDepartureDate_dateBeforeToday() {
         // given
         val departureDate = DateUtil.getCurrentDate()
-                .addTimeToSpesificDate(Calendar.MONTH, -1)
+            .addTimeToSpesificDate(Calendar.MONTH, -1)
 
         // when
         val result = flightHomepageViewModel.validateDepartureDate(departureDate)
@@ -890,9 +954,9 @@ class FlightHomepageViewModelTest {
     fun validateReturnDate_validDate() {
         // given
         val departureDate = DateUtil.getCurrentDate()
-                .addTimeToSpesificDate(Calendar.MONTH, 1)
+            .addTimeToSpesificDate(Calendar.MONTH, 1)
         val returnDate = DateUtil.getCurrentDate()
-                .addTimeToSpesificDate(Calendar.MONTH, 2)
+            .addTimeToSpesificDate(Calendar.MONTH, 2)
 
         // when
         val result = flightHomepageViewModel.validateReturnDate(departureDate, returnDate)
@@ -905,9 +969,9 @@ class FlightHomepageViewModelTest {
     fun validateReturnDate_returnDateMoreThanOneYear() {
         // given
         val departureDate = DateUtil.getCurrentDate()
-                .addTimeToSpesificDate(Calendar.MONTH, 1)
+            .addTimeToSpesificDate(Calendar.MONTH, 1)
         val returnDate = DateUtil.getCurrentDate()
-                .addTimeToSpesificDate(Calendar.YEAR, 2)
+            .addTimeToSpesificDate(Calendar.YEAR, 2)
 
         // when
         val result = flightHomepageViewModel.validateReturnDate(departureDate, returnDate)
@@ -920,9 +984,9 @@ class FlightHomepageViewModelTest {
     fun validateDepartureDate_returnDateBeforeDepartureDate() {
         // given
         val departureDate = DateUtil.getCurrentDate()
-                .addTimeToSpesificDate(Calendar.MONTH, 3)
+            .addTimeToSpesificDate(Calendar.MONTH, 3)
         val returnDate = DateUtil.getCurrentDate()
-                .addTimeToSpesificDate(Calendar.MONTH, 2)
+            .addTimeToSpesificDate(Calendar.MONTH, 2)
 
         // when
         val result = flightHomepageViewModel.validateReturnDate(departureDate, returnDate)
@@ -935,26 +999,26 @@ class FlightHomepageViewModelTest {
     fun onSearchTicket_whenLoggedIn_shouldSendAnalyticsAndDeleteSearchData() {
         // given
         val flightSearchData = FlightSearchPassDataModel(
-                "2020-02-01", "2020-03-01", false,
-                FlightPassengerModel(3, 2, 1),
-                FlightAirportModel().apply {
-                    cityCode = ""
-                    cityName = "Banda Aceh"
-                    cityId = ""
-                    cityAirports = arrayListOf()
-                    airportCode = "BTJ"
-                    airportName = "Bandara International Sultan Iskandar Muda"
-                },
-                FlightAirportModel().apply {
-                    cityCode = "JKTA"
-                    cityName = "Jakarta"
-                    cityId = ""
-                    cityAirports = arrayListOf("CGK", "HLP")
-                    airportCode = ""
-                    airportName = ""
-                },
-                FlightClassModel(1, "Ekonomi"),
-                "", ""
+            "2020-02-01", "2020-03-01", false,
+            FlightPassengerModel(3, 2, 1),
+            FlightAirportModel().apply {
+                cityCode = ""
+                cityName = "Banda Aceh"
+                cityId = ""
+                cityAirports = arrayListOf()
+                airportCode = "BTJ"
+                airportName = "Bandara International Sultan Iskandar Muda"
+            },
+            FlightAirportModel().apply {
+                cityCode = "JKTA"
+                cityName = "Jakarta"
+                cityId = ""
+                cityAirports = arrayListOf("CGK", "HLP")
+                airportCode = ""
+                airportName = ""
+            },
+            FlightClassModel(1, "Ekonomi"),
+            "", ""
         )
         coEvery { userSessionInterface.isLoggedIn } returns true
         coEvery { userSessionInterface.userId } returns "dummy user id"
@@ -973,26 +1037,26 @@ class FlightHomepageViewModelTest {
     fun onSearchTicket_whenNotLoggedIn_shouldSendAnalyticsAndDeleteSearchData() {
         // given
         val flightSearchData = FlightSearchPassDataModel(
-                "2020-02-01", "2020-03-01", false,
-                FlightPassengerModel(3, 2, 1),
-                FlightAirportModel().apply {
-                    cityCode = ""
-                    cityName = "Banda Aceh"
-                    cityId = ""
-                    cityAirports = arrayListOf()
-                    airportCode = "BTJ"
-                    airportName = "Bandara International Sultan Iskandar Muda"
-                },
-                FlightAirportModel().apply {
-                    cityCode = "JKTA"
-                    cityName = "Jakarta"
-                    cityId = ""
-                    cityAirports = arrayListOf("CGK", "HLP")
-                    airportCode = ""
-                    airportName = ""
-                },
-                FlightClassModel(1, "Ekonomi"),
-                "", ""
+            "2020-02-01", "2020-03-01", false,
+            FlightPassengerModel(3, 2, 1),
+            FlightAirportModel().apply {
+                cityCode = ""
+                cityName = "Banda Aceh"
+                cityId = ""
+                cityAirports = arrayListOf()
+                airportCode = "BTJ"
+                airportName = "Bandara International Sultan Iskandar Muda"
+            },
+            FlightAirportModel().apply {
+                cityCode = "JKTA"
+                cityName = "Jakarta"
+                cityId = ""
+                cityAirports = arrayListOf("CGK", "HLP")
+                airportCode = ""
+                airportName = ""
+            },
+            FlightClassModel(1, "Ekonomi"),
+            "", ""
         )
         coEvery { userSessionInterface.isLoggedIn } returns false
 
@@ -1051,10 +1115,12 @@ class FlightHomepageViewModelTest {
 
         // then
         verify {
-            flightAnalytics.eventPromoImpression(selectedBannerData,
-                    BANNER_DATA.banners[selectedBannerData],
-                    FlightAnalyticsScreenName.HOMEPAGE,
-                    any())
+            flightAnalytics.eventPromoImpression(
+                selectedBannerData,
+                BANNER_DATA.banners[selectedBannerData],
+                FlightAnalyticsScreenName.HOMEPAGE,
+                any()
+            )
         }
     }
 
@@ -1073,10 +1139,12 @@ class FlightHomepageViewModelTest {
 
         // then
         verify {
-            flightAnalytics.eventPromoImpression(selectedBannerData,
-                    BANNER_DATA.banners[selectedBannerData],
-                    FlightAnalyticsScreenName.HOMEPAGE,
-                    any())
+            flightAnalytics.eventPromoImpression(
+                selectedBannerData,
+                BANNER_DATA.banners[selectedBannerData],
+                FlightAnalyticsScreenName.HOMEPAGE,
+                any()
+            )
         }
     }
 
@@ -1104,9 +1172,11 @@ class FlightHomepageViewModelTest {
         flightHomepageViewModel.sendTrackingVideoBannerImpression(travelVideoBannerModel)
 
         verify {
-            flightAnalytics.eventVideoBannerImpression(travelVideoBannerModel,
-                    FlightAnalyticsScreenName.HOMEPAGE,
-                    any())
+            flightAnalytics.eventVideoBannerImpression(
+                travelVideoBannerModel,
+                FlightAnalyticsScreenName.HOMEPAGE,
+                any()
+            )
         }
     }
 
@@ -1118,9 +1188,11 @@ class FlightHomepageViewModelTest {
         flightHomepageViewModel.sendTrackingVideoBannerImpression(travelVideoBannerModel)
 
         verify {
-            flightAnalytics.eventVideoBannerImpression(travelVideoBannerModel,
-                    FlightAnalyticsScreenName.HOMEPAGE,
-                    any())
+            flightAnalytics.eventVideoBannerImpression(
+                travelVideoBannerModel,
+                FlightAnalyticsScreenName.HOMEPAGE,
+                any()
+            )
         }
     }
 
@@ -1133,9 +1205,11 @@ class FlightHomepageViewModelTest {
         flightHomepageViewModel.sendTrackingVideoBannerClick(travelVideoBannerModel)
 
         verify {
-            flightAnalytics.eventVideoBannerClick(travelVideoBannerModel,
-                    FlightAnalyticsScreenName.HOMEPAGE,
-                    any())
+            flightAnalytics.eventVideoBannerClick(
+                travelVideoBannerModel,
+                FlightAnalyticsScreenName.HOMEPAGE,
+                any()
+            )
         }
     }
 
@@ -1147,9 +1221,64 @@ class FlightHomepageViewModelTest {
         flightHomepageViewModel.sendTrackingVideoBannerClick(travelVideoBannerModel)
 
         verify {
-            flightAnalytics.eventVideoBannerClick(travelVideoBannerModel,
-                    FlightAnalyticsScreenName.HOMEPAGE,
-                    any())
+            flightAnalytics.eventVideoBannerClick(
+                travelVideoBannerModel,
+                FlightAnalyticsScreenName.HOMEPAGE,
+                any()
+            )
         }
+    }
+
+    @Test
+    fun validateSendTrackingEventClickTransaction() {
+        val screenName = "tokopedia"
+        flightHomepageViewModel.sendTrackingClickTransaction(screenName)
+
+        verify {
+            flightAnalytics.eventClickTransactions(screenName)
+        }
+    }
+
+    @Test
+    fun getDppoConsentRecharge_Success() {
+        // given
+        val consentDesc = "Tokopedia"
+        val digitalDPPOConsent = DigitalDppoConsent(
+            DigiPersoRecommendationData(
+                items = listOf(
+                    DigiPersoRecommendationItem(
+                        id = "1",
+                        title = consentDesc
+                    )
+                )
+            )
+        )
+
+        coEvery { getDppoConsentUseCase.execute(any()) } returns digitalDPPOConsent
+
+        // when
+        flightHomepageViewModel.getDppoConsent()
+
+        // then
+        val actualData = flightHomepageViewModel.dppoConsent.value
+        Assert.assertNotNull(actualData)
+        Assert.assertTrue(actualData is Success)
+        Assert.assertTrue((actualData as Success).data.description == consentDesc)
+    }
+
+    @Test
+    fun getDppoConsentRecharge_Fail() {
+        // given
+        val errorMessage = "Tokopedia"
+        coEvery { getDppoConsentUseCase.execute(any()) } throws MessageErrorException(errorMessage)
+
+        // when
+        flightHomepageViewModel.getDppoConsent()
+
+        // then
+        val actualData = flightHomepageViewModel.dppoConsent.value
+        Assert.assertNotNull(actualData)
+        Assert.assertTrue(actualData is Fail)
+        Assert.assertTrue((actualData as Fail).throwable.message == errorMessage)
     }
 }

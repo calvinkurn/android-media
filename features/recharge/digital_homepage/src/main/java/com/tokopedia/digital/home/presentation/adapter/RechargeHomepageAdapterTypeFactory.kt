@@ -65,21 +65,8 @@ import com.tokopedia.digital.home.presentation.listener.RechargeHomepageDynamicL
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageReminderWidgetCallback
 import com.tokopedia.home_component.HomeComponentTypeFactory
-import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
 import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
-import com.tokopedia.home_component.visitable.BannerDataModel
-import com.tokopedia.home_component.visitable.CategoryNavigationDataModel
-import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
-import com.tokopedia.home_component.visitable.DynamicLegoBannerSixAutoDataModel
-import com.tokopedia.home_component.visitable.FeaturedBrandDataModel
-import com.tokopedia.home_component.visitable.FeaturedShopDataModel
-import com.tokopedia.home_component.visitable.Lego4AutoDataModel
-import com.tokopedia.home_component.visitable.MixLeftDataModel
-import com.tokopedia.home_component.visitable.MixTopDataModel
-import com.tokopedia.home_component.visitable.ProductHighlightDataModel
-import com.tokopedia.home_component.visitable.QuestWidgetModel
-import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 
 class RechargeHomepageAdapterTypeFactory(
@@ -175,60 +162,12 @@ class RechargeHomepageAdapterTypeFactory(
         return RechargeHomepageLegoBannerViewHolder.LAYOUT
     }
 
-    override fun type(lego4AutoDataModel: Lego4AutoDataModel): Int {
-        return 0
-    }
-
-    override fun type(recommendationListCarouselDataModel: RecommendationListCarouselDataModel): Int {
-        return 0
-    }
-
     override fun type(reminderWidgetModel: ReminderWidgetModel): Int {
         return ReminderWidgetViewHolder.LAYOUT
     }
 
-    override fun type(featuredShopDataModel: FeaturedShopDataModel): Int {
-        return 0
-    }
-
-    override fun type(mixLeftDataModel: MixLeftDataModel): Int {
-        return 0
-    }
-
-    override fun type(mixTopDataModel: MixTopDataModel): Int {
-        return 0
-    }
-
-    override fun type(productHighlightDataModel: ProductHighlightDataModel): Int {
-        return 0
-    }
-
-    override fun type(categoryNavigationDataModel: CategoryNavigationDataModel): Int {
-        return 0
-    }
-
-    override fun type(bannerDataModel: BannerDataModel): Int {
-        return BannerComponentViewHolder.LAYOUT
-    }
-
     override fun type(viewModel: LoadingModel): Int {
         return RechargeHomepageLoadingViewholder.LAYOUT
-    }
-
-    override fun type(dynamicLegoBannerSixAutoDataModel: DynamicLegoBannerSixAutoDataModel): Int {
-        return -1
-    }
-
-    override fun type(dynamicIconComponentDataModel: DynamicIconComponentDataModel): Int {
-        return -1
-    }
-
-    override fun type(featuredBrandDataModel: FeaturedBrandDataModel): Int {
-        return 0
-    }
-
-    override fun type(questWidgetModel: QuestWidgetModel): Int {
-        return -1
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {

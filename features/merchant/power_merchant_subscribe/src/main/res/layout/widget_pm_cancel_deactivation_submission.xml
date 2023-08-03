@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N50"
+    android:background="@color/Unify_NN50"
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -12,7 +12,7 @@
         android:id="@+id/tvPmQuitPmMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         app:typographyType="body_2"
         tools:text="@string/pm_deactivate_power_merchant_pro_message_info" />
 

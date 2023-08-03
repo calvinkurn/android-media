@@ -40,5 +40,5 @@
         android:layout_below="@+id/shimmerSawOrder3"
         android:layout_marginStart="@dimen/unify_space_12"
         android:layout_marginTop="@dimen/layout_lvl1"
-        android:background="@color/Unify_N75" />
+        android:background="@color/Unify_NN50" />
 </RelativeLayout>

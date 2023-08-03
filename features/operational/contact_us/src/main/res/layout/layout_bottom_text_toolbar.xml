@@ -4,14 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/contact_us_dms_detail_background_dark">
+    android:background="@color/Unify_NN0">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_selected_images"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="10dp"
-        android:background="@color/contact_us_dms_detail_edit_text_bg"
         android:orientation="horizontal"
         android:scrollbars="horizontal"
         android:visibility="gone"
@@ -45,7 +44,8 @@
         android:layout_marginTop="12dp"
         android:background="@drawable/rounded_grey_rectangle_border"
         android:hint="@string/contact_us_type_here"
-        android:textColorHint="@color/contact_us_dms_detail_hint_bg"
+        android:textColorHint="@color/Unify_NN500"
+        android:textColor="@color/Unify_NN950"
         android:includeFontPadding="false"
         android:lineSpacingExtra="6sp"
         android:maxLines="4"

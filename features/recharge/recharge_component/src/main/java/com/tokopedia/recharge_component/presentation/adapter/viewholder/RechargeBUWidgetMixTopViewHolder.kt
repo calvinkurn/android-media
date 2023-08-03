@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_component.R
+import com.tokopedia.recharge_component.databinding.HomeRechargeBuWidgetMixTopBinding
 import com.tokopedia.recharge_component.listener.RechargeBUWidgetListener
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.recharge_component.model.RechargeBUWidgetProductCardModel
@@ -29,15 +30,14 @@ import com.tokopedia.recharge_component.model.WidgetSource
 import com.tokopedia.recharge_component.presentation.adapter.RechargeBUWidgetProductCardTypeFactoryImpl
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.home_recharge_bu_widget_mix_top.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import java.util.*
 
 class RechargeBUWidgetMixTopViewHolder(
-        itemView: View,
-        val listener: RechargeBUWidgetListener
+    itemView: View,
+    val listener: RechargeBUWidgetListener
 ) : AbstractViewHolder<RechargeBUWidgetDataModel>(itemView), CoroutineScope, CommonProductCardCarouselListener {
     private val bannerTitle = itemView.findViewById<Typography>(R.id.recharge_bu_widget_banner_title)
     private val bannerDescription = itemView.findViewById<Typography>(R.id.recharge_bu_widget_banner_description)
@@ -54,6 +54,8 @@ class RechargeBUWidgetMixTopViewHolder(
         const val BU_WIDGET_TYPE_TOP = "mix-top"
     }
 
+    private val binding = HomeRechargeBuWidgetMixTopBinding.bind(itemView)
+
     lateinit var dataModel: RechargeBUWidgetDataModel
 
     private val masterJob = SupervisorJob()
@@ -63,7 +65,7 @@ class RechargeBUWidgetMixTopViewHolder(
     override fun bind(element: RechargeBUWidgetDataModel) {
         dataModel = element
         if (dataModel.data.items.isNotEmpty()) {
-            itemView.recharge_bu_content_shimmering.hide()
+            binding.rechargeBuContentShimmering.root.hide()
             isCacheData = element.isDataCache
             mappingView(element)
             setHeaderComponent(element)
@@ -74,7 +76,7 @@ class RechargeBUWidgetMixTopViewHolder(
                 }
             }
         } else {
-            itemView.recharge_bu_content_shimmering.show()
+            binding.rechargeBuContentShimmering.root.show()
             val source = element.channel.widgetParam.removePrefix("?section=")
             listener.getRechargeBUWidget(WidgetSource.findSourceByString(source))
         }
@@ -117,8 +119,9 @@ class RechargeBUWidgetMixTopViewHolder(
 
             background.setGradientBackground(arrayListOf(option2))
             background.addOnImpressionListener(element.channel) {
-                if (!isCacheData)
+                if (!isCacheData) {
                     listener.onRechargeBUWidgetBannerImpression(element)
+                }
             }
 
             if (textlink.isNotEmpty()) bannerUnifyButton.text = textlink
@@ -140,9 +143,9 @@ class RechargeBUWidgetMixTopViewHolder(
     private fun valuateRecyclerViewDecoration() {
         if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(SimpleHorizontalLinearLayoutDecoration())
         recyclerView.layoutManager = LinearLayoutManager(
-                itemView.context,
-                LinearLayoutManager.HORIZONTAL,
-                false
+            itemView.context,
+            LinearLayoutManager.HORIZONTAL,
+            false
         )
         /**
          * Attach startSnapHelper to recyclerView
@@ -163,7 +166,8 @@ class RechargeBUWidgetMixTopViewHolder(
     private fun convertDataToProductData(data: RechargePerso): List<RechargeBUWidgetProductCardModel> {
         val list: MutableList<RechargeBUWidgetProductCardModel> = mutableListOf()
         for (element in data.items) {
-            list.add(RechargeBUWidgetProductCardModel(
+            list.add(
+                RechargeBUWidgetProductCardModel(
                     element.mediaUrl,
                     element.backgroundColor,
                     element.mediaUrlType,
@@ -179,21 +183,23 @@ class RechargeBUWidgetMixTopViewHolder(
                     element.soldPercentageLabel,
                     element.soldPercentageLabelColor,
                     element.showSoldPercentage
-            ))
+                )
+            )
         }
         return list
     }
 
     private fun setHeaderComponent(element: RechargeBUWidgetDataModel) {
         val headerView = itemView.findViewById<DynamicChannelHeaderView>(R.id.recharge_bu_widget_header_view)
-        headerView.setChannel(element.channel, object : HeaderListener {
-            override fun onSeeAllClick(link: String) {
+        headerView.setChannel(
+            element.channel,
+            object : HeaderListener {
+                override fun onSeeAllClick(link: String) {
+                }
 
+                override fun onChannelExpired(channelModel: ChannelModel) {
+                }
             }
-
-            override fun onChannelExpired(channelModel: ChannelModel) {
-
-            }
-        })
+        )
     }
 }

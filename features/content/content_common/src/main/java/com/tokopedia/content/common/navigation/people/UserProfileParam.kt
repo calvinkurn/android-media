@@ -23,8 +23,9 @@ class UserProfileParam {
     }
 
     enum class SelectedTab(val key: String) {
-        Feed("feed"),
+        Feeds("feeds"),
         Video("video"),
+        Review("review"),
         Unknown("");
 
         companion object {

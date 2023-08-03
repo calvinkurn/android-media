@@ -1,6 +1,19 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+
+android {
+    defaultConfig {
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+    }
+
+    sourceSets {
+        androidTest {
+            java.srcDirs = ['src/androidTest/java']
+            res.srcDirs = ['src/androidTest/res']
+        }
+    }
+}
 
 buildscript {
     repositories {
@@ -11,6 +24,16 @@ buildscript {
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
     }
+}
+
+android {
+    namespace 'com.tokopedia.universal_sharing'
+    testNamespace 'com.tokopedia.universal_sharing.test'
+}
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
 }
 
 dependencies {
@@ -24,7 +47,6 @@ dependencies {
     } else {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebuggerNoop)
     }
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation rootProject.ext.networkDependencies.glide
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.linker)
@@ -36,6 +58,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.miscDependencies.lifeCycleCommon
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
@@ -59,7 +83,21 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.features.medialoader)
 
+    // Android Test
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.androidxTest
+    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation rootProject.ext.miscDependencies.dagger
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
+    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
 }
 
 project.ext {
@@ -70,3 +108,4 @@ project.ext {
 }
 
 apply from: '../../publish_local.gradle'
+apply plugin: 'org.jetbrains.kotlin.android'

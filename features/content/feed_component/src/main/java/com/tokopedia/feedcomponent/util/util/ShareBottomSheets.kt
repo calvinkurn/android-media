@@ -10,12 +10,14 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.annotation.DrawableRes
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -169,7 +171,7 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
                 override val key: String,
                 override val displayName: String,
                 override val mimeType: MimeType,
-                @DrawableRes val imageResource: Int,
+                val imageResource: Drawable?,
                 val handler: () -> Unit
         ) : ShareType()
     }
@@ -324,8 +326,8 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
         return Intent(ACTION_INSTAGRAM_STORY)
                 .setType(MimeType.IMAGE.typeString)
                 .putExtra(IG_STORY_EXTRA_STICKER_URI, mediaUri)
-                .putExtra(IG_STORY_EXTRA_TOP_BG, getString(com.tokopedia.unifyprinciples.R.color.Unify_N75))
-                .putExtra(IG_STORY_EXTRA_BOTTOM_BG, getString(com.tokopedia.unifyprinciples.R.color.Unify_T400))
+                .putExtra(IG_STORY_EXTRA_TOP_BG, getString(com.tokopedia.unifyprinciples.R.color.Unify_NN50))
+                .putExtra(IG_STORY_EXTRA_BOTTOM_BG, getString(com.tokopedia.unifyprinciples.R.color.Unify_TN400))
                 .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     }
 
@@ -419,8 +421,31 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
                 add(ShareType.ActivityShare(KEY_INSTAGRAM_STORY, getString(com.tokopedia.content.common.R.string.share_instagram_story), MimeType.IMAGE, getInstagramStoryIntent(Uri.parse(mediaUrl))))
             }
 
-            add(ShareType.ActionShare(KEY_COPY, getString(com.tokopedia.content.common.R.string.copy), MimeType.TEXT, R.drawable.ic_copy_clipboard, ::actionCopy))
-            add(ShareType.ActionShare(KEY_OTHER, getString(com.tokopedia.content.common.R.string.other), MimeType.TEXT, R.drawable.ic_btn_more, ::actionMore))
+            add(
+                ShareType.ActionShare(
+                    KEY_COPY,
+                    getString(com.tokopedia.content.common.R.string.copy),
+                    MimeType.TEXT,
+                    MethodChecker.getDrawable(context, R.drawable.ic_copy_clipboard),
+                    ::actionCopy
+                )
+            )
+            add(
+                ShareType.ActionShare(
+                    KEY_OTHER,
+                    getString(com.tokopedia.content.common.R.string.other),
+                    MimeType.TEXT,
+                    getIconUnifyDrawable(
+                        requireContext(),
+                        IconUnify.MENU_KEBAB_HORIZONTAL,
+                        MethodChecker.getColor(
+                            context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN900
+                        )
+                    ),
+                    ::actionMore
+                )
+            )
         }
                 .filterNot { shareType -> shareType is ShareType.ActivityShare && shareType.getResolveActivity(context as Context) == null }
                 .distinctBy(ShareType::key)

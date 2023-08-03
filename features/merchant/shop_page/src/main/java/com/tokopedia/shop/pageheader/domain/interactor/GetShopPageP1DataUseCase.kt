@@ -14,11 +14,7 @@ import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.common.data.model.ShopPageGetDynamicTabResponse
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_PAGE_SOURCE
-import com.tokopedia.shop.common.domain.interactor.GqlGetIsShopOsUseCase
-import com.tokopedia.shop.common.domain.interactor.GqlGetIsShopPmUseCase
 import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetDynamicTabUseCase
-import com.tokopedia.shop.common.graphql.data.isshopofficial.GetIsShopOfficialStore
-import com.tokopedia.shop.common.graphql.data.isshoppowermerchant.GetIsShopPowerMerchant
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.pageheader.ShopPageHeaderConstant
 import com.tokopedia.shop.pageheader.data.model.NewShopPageHeaderP1
@@ -41,13 +37,15 @@ class GetShopPageP1DataUseCase @Inject constructor(
         private const val KEY_CITY_ID = "cityId"
         private const val KEY_LATITUDE = "latitude"
         private const val KEY_LONGITUDE = "longitude"
+        private const val KEY_TAB_NAME = "tabName"
 
         @JvmStatic
         fun createParams(
             shopId: String,
             shopDomain: String,
             extParam: String,
-            widgetUserAddressLocalData: LocalCacheModel
+            widgetUserAddressLocalData: LocalCacheModel,
+            tabName: String
         ): RequestParams = RequestParams.create().apply {
             putObject(PARAM_SHOP_ID, shopId)
             putObject(PARAM_SHOP_DOMAIN, shopDomain)
@@ -56,6 +54,7 @@ class GetShopPageP1DataUseCase @Inject constructor(
             putObject(KEY_CITY_ID, widgetUserAddressLocalData.city_id)
             putObject(KEY_LATITUDE, widgetUserAddressLocalData.lat)
             putObject(KEY_LONGITUDE, widgetUserAddressLocalData.long)
+            putObject(KEY_TAB_NAME, tabName)
         }
     }
 
@@ -70,6 +69,8 @@ class GetShopPageP1DataUseCase @Inject constructor(
         val cityId: String = params.getString(KEY_CITY_ID, "")
         val latitude: String = params.getString(KEY_LATITUDE, "")
         val longitude: String = params.getString(KEY_LONGITUDE, "")
+        val tabName: String = params.getString(KEY_TAB_NAME, "")
+
         val listRequest = mutableListOf<GraphqlRequest>().apply {
             add(
                 getShopDynamicTabDataRequest(
@@ -78,7 +79,8 @@ class GetShopPageP1DataUseCase @Inject constructor(
                     districtId,
                     cityId,
                     latitude,
-                    longitude
+                    longitude,
+                    tabName
                 )
             )
             add(getShopInfoCoreAndAssetsDataRequest(shopId, shopDomain))
@@ -112,7 +114,8 @@ class GetShopPageP1DataUseCase @Inject constructor(
         districtId: String,
         cityId: String,
         latitude: String,
-        longitude: String
+        longitude: String,
+        tabName: String
     ): GraphqlRequest {
         val params = GqlShopPageGetDynamicTabUseCase.createParams(
             shopId = shopId.toIntOrZero(),
@@ -120,7 +123,8 @@ class GetShopPageP1DataUseCase @Inject constructor(
             districtId = districtId,
             cityId = cityId,
             latitude = latitude,
-            longitude = longitude
+            longitude = longitude,
+            tabName = tabName
         )
         return createGraphqlRequest<ShopPageGetDynamicTabResponse>(
             query = GqlShopPageGetDynamicTabUseCase.QUERY,

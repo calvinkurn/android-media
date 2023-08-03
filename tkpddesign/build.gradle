@@ -13,6 +13,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.design'
+    testNamespace 'com.tokopedia.design.test'
+}
+
 dependencies {
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components

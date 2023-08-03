@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.media.editor.di.key.FragmentKey
 import com.tokopedia.media.editor.ui.EditorFragmentFactory
+import com.tokopedia.media.editor.ui.fragment.AddTextFragment
 import com.tokopedia.media.editor.ui.fragment.DetailEditorFragment
 import com.tokopedia.media.editor.ui.fragment.EditorFragment
 import dagger.Binds
@@ -25,5 +26,10 @@ abstract class EditorFragmentModule {
     @IntoMap
     @FragmentKey(DetailEditorFragment::class)
     internal abstract fun bindDetailEditorFragment(editorFragment: DetailEditorFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(AddTextFragment::class)
+    internal abstract fun bindAddTextFragment(fragment: AddTextFragment): Fragment
 
 }

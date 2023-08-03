@@ -356,7 +356,6 @@ object ConstantTransactionAnalytics {
         const val VIEW_ERROR_PAGE_WHEN_LOAD_CART = "view error page when load cart"
         const val CLICK_WISHLIST_ICON_IN_CART_PAGE = "click wishlist icon in cart page"
         const val CLICK_FOLLOW_SHOP_ON_UNAVAILABLE_SECTION = "click follow shop on unavailable section"
-        const val CLICK_BACK_BUTTON_NAV = "click back button nav"
         const val CLICK_GLOBAL_MENU_NAV = "click global menu nav"
 
         // Checkout TokoNow

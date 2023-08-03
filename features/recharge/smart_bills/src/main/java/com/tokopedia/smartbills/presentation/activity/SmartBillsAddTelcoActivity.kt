@@ -26,7 +26,7 @@ class SmartBillsAddTelcoActivity: BaseSimpleActivity(), HasComponent<SmartBillsC
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.setBackgroundDrawableResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        window.setBackgroundDrawableResource(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         val uri = intent.dataString
         templateTelco = parseQuery(TEMPLATE, uri, intent.extras)
         categoryID = parseQuery(CATEGORY_ID, uri, intent.extras)

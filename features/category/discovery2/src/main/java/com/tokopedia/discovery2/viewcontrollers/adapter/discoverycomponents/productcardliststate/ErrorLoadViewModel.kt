@@ -18,22 +18,30 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class ErrorLoadViewModel(val application: Application,
-                         val components: ComponentsItem, val position: Int) :
-        DiscoveryBaseViewModel(), CoroutineScope {
+class ErrorLoadViewModel(
+    val application: Application,
+    val components: ComponentsItem,
+    val position: Int
+) :
+    DiscoveryBaseViewModel(), CoroutineScope {
 
     private val showLoader: MutableLiveData<Boolean> = MutableLiveData()
-    @Inject
-    lateinit var productCardUseCase: ProductCardsUseCase
 
+    @JvmField
     @Inject
-    lateinit var merchantVoucherUseCase: MerchantVoucherUseCase
+    var productCardUseCase: ProductCardsUseCase? = null
 
+    @JvmField
     @Inject
-    lateinit var bannerInfiniteUseCase: BannerInfiniteUseCase
+    var merchantVoucherUseCase: MerchantVoucherUseCase? = null
 
+    @JvmField
     @Inject
-    lateinit var shopCardInfiniteUseCase: ShopCardUseCase
+    var bannerInfiniteUseCase: BannerInfiniteUseCase? = null
+
+    @JvmField
+    @Inject
+    var shopCardInfiniteUseCase: ShopCardUseCase? = null
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
@@ -49,17 +57,17 @@ class ErrorLoadViewModel(val application: Application,
                         ComponentNames.MerchantVoucherList.componentName ->
                             hitMerchantVoucherFirstPageCall(it)
                         ComponentNames.BannerInfinite.componentName ->
-                            bannerInfiniteUseCase.loadFirstPageComponents(
-                                    components.parentComponentId,
-                                    components.pageEndPoint
+                            bannerInfiniteUseCase?.loadFirstPageComponents(
+                                components.parentComponentId,
+                                components.pageEndPoint
                             )
                         ComponentNames.ShopCardInfinite.componentName ->
-                            shopCardInfiniteUseCase.loadFirstPageComponents(
-                                    components.parentComponentId,
-                                    components.pageEndPoint
+                            shopCardInfiniteUseCase?.loadFirstPageComponents(
+                                components.parentComponentId,
+                                components.pageEndPoint
                             )
                         else ->
-                            productCardUseCase.loadFirstPageComponents(
+                            productCardUseCase?.loadFirstPageComponents(
                                 components.parentComponentId,
                                 components.pageEndPoint
                             )
@@ -67,53 +75,54 @@ class ErrorLoadViewModel(val application: Application,
                 } else {
                     syncData.value =
                         when (components.parentComponentName) {
-                            ComponentNames.MerchantVoucherList.componentName ->{
+                            ComponentNames.MerchantVoucherList.componentName -> {
                                 if (it.getComponentsItem().isNullOrEmpty()) {
                                     hitMerchantVoucherFirstPageCall(it)
-                                } else
-                                    merchantVoucherUseCase.getVoucherUseCase(
+                                } else {
+                                    merchantVoucherUseCase?.getVoucherUseCase(
                                         components.id,
                                         components.pageEndPoint
                                     )
+                                }
                             }
 
                             ComponentNames.BannerInfinite.componentName ->
-                                bannerInfiniteUseCase.getBannerUseCase(
-                                        components.id,
-                                        components.pageEndPoint
+                                bannerInfiniteUseCase?.getBannerUseCase(
+                                    components.id,
+                                    components.pageEndPoint
                                 )
 
                             ComponentNames.ShopCardInfinite.componentName ->
-                                shopCardInfiniteUseCase.getShopCardUseCase(
-                                        components.id,
-                                        components.pageEndPoint
+                                shopCardInfiniteUseCase?.getShopCardUseCase(
+                                    components.id,
+                                    components.pageEndPoint
                                 )
 
                             else ->
-                                productCardUseCase.getProductCardsUseCase(
+                                productCardUseCase?.getProductCardsUseCase(
                                     components.id,
                                     components.pageEndPoint
                                 )
                         }
                 }
-
             }
         }, onError = {
-            showLoader.value = false
-        })
+                showLoader.value = false
+            })
     }
 
-    private suspend fun hitMerchantVoucherFirstPageCall(components: ComponentsItem):Boolean{
+    private suspend fun hitMerchantVoucherFirstPageCall(components: ComponentsItem): Boolean {
         components.noOfPagesLoaded = 0
         val shouldSync =
-            merchantVoucherUseCase.loadFirstPageComponents(
+            merchantVoucherUseCase?.loadFirstPageComponents(
                 components.id,
                 components.pageEndPoint
             )
         return if (components.getComponentsItem().isNullOrEmpty()) {
             showLoader.value = false
             false
-        } else
-            shouldSync
+        } else {
+            shouldSync == true
+        }
     }
 }

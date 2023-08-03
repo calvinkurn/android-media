@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_background"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="H, 15:8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_corner_radius="0"
+        tools:src="@drawable/ic_cabinet_header_background"
+        app:unify_image_type="rect" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_vertical_title"
+        android:layout_width="@dimen/dp_1"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_vertical_subtitle"
+        android:layout_width="@dimen/dp_1"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.45" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_title"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_8"
+        app:layout_constraintBottom_toTopOf="@id/tv_sub_title"
+        app:layout_constraintEnd_toStartOf="@id/guideline_vertical_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:typographyType="heading_3"
+        tools:text="Saatnya ngoleksi Medali-mu"
+        tools:textColor="@color/white" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_sub_title"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        app:layout_constraintBottom_toTopOf="@id/view_curve"
+        app:layout_constraintEnd_toStartOf="@id/guideline_vertical_subtitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:typographyType="display_3"
+        tools:text="Cus, kumpulin &amp; ambil bonusnya!"
+        tools:textColor="@color/white" />
+
+    <View
+        android:id="@+id/view_curve"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_10"
+        android:background="@drawable/scp_medal_detail_rounded_bg"
+        app:layout_constraintBottom_toBottomOf="@id/iv_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</merge>

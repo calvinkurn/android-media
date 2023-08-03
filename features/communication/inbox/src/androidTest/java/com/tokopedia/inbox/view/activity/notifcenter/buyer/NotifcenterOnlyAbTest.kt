@@ -18,7 +18,7 @@ class NotifcenterOnlyAbTest : InboxNotifcenterTest() {
         }
 
         // Then
-        InboxAssertion.assertTotalGlobalNavIcon(1)
+        InboxAssertion.assertTotalGlobalNavIcon(2) // Cart & Nav Global Icon
         InboxAssertion.assertBottomNavShadowVisibility(not(isDisplayed()))
         InboxAssertion.assertBottomNavVisibility(not(isDisplayed()))
     }

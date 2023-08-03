@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="28dp"
-    android:alpha="0.7"
+    android:alpha="0.8"
     android:background="@drawable/feed_tag_product_background"
     android:elevation="@dimen/unify_space_16">
 
@@ -38,6 +38,5 @@
         app:typographyType="display_3"
         tools:text="Xiaomi Redmi 32 GB Black"
         tools:visibility="visible" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

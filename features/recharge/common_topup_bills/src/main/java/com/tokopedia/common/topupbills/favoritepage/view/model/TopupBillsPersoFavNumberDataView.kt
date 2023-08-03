@@ -1,8 +1,11 @@
 package com.tokopedia.common.topupbills.favoritepage.view.model
 
+import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.common.topupbills.favoritepage.view.typefactory.PersoFavoriteNumberTypeFactory
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 class TopupBillsPersoFavNumberDataView(
     val title: String,
     val subtitle: String,
@@ -13,7 +16,7 @@ class TopupBillsPersoFavNumberDataView(
     val operatorName: String,
     val token: String,
     val clientNumberHash: String,
-): Visitable<PersoFavoriteNumberTypeFactory> {
+): Visitable<PersoFavoriteNumberTypeFactory>, Parcelable {
 
     override fun type(typeFactory: PersoFavoriteNumberTypeFactory): Int {
         return typeFactory.type(this)

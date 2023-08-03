@@ -20,6 +20,11 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.rechargeocr'
+    testNamespace 'com.tokopedia.rechargeocr.test'
+    buildFeatures {
+        viewBinding true
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -30,8 +35,8 @@ android {
 }
 
 dependencies {
+	implementation rootProject.ext.unifyDependencies.principles
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.imagePickerCommon)
     implementation projectOrAar(rootProject.ext.libraries.imageuploader)

@@ -4,8 +4,8 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
-import com.tokopedia.affiliate.ui.activity.AffiliateDiscoPromoListActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateComponentActivity
+import com.tokopedia.affiliate.ui.activity.AffiliateDiscoPromoListActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateEducationSearchActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateEducationSeeAllActivity
 import com.tokopedia.affiliate.ui.activity.AffiliatePromoSearchActivity
@@ -19,13 +19,14 @@ import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomSheetPromoCopyPaste
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePortfolioSocialMediaBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateRecylerBottomSheet
+import com.tokopedia.affiliate.ui.fragment.AffiliateDiscoPromoListFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateEducationSearchArticleFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateEducationSearchFragment
-import com.tokopedia.affiliate.ui.fragment.AffiliateDiscoPromoListFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateHelpFragment
-import com.tokopedia.affiliate.ui.fragment.AffiliateHomeFragment
+import com.tokopedia.affiliate.ui.fragment.AffiliateAdpFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliatePromoFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliatePromoSearchFragment
+import com.tokopedia.affiliate.ui.fragment.AffiliatePromoWebViewFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliatePromotionHistoryFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateRecommendedProductFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateSSAShopListFragment
@@ -36,11 +37,11 @@ import com.tokopedia.affiliate.ui.fragment.registration.AffiliateLoginFragment
 import com.tokopedia.affiliate.ui.fragment.registration.AffiliatePortfolioFragment
 import com.tokopedia.affiliate.ui.fragment.registration.AffiliateTermsAndConditionFragment
 import com.tokopedia.affiliate.ui.fragment.withdrawal.AffiliateSaldoWithdrawalDetailFragment
-import com.tokopedia.universal_sharing.di.UniversalShareModule
+import com.tokopedia.universal_sharing.di.UniversalShareUseCaseModule
 import dagger.Component
 
 @AffiliateScope
-@Component(modules = [AffiliateModule::class, AffiliateVMModule::class, UniversalShareModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [AffiliateModule::class, AffiliateVMModule::class, UniversalShareUseCaseModule::class], dependencies = [BaseAppComponent::class])
 interface AffiliateComponent {
 
     @get:ApplicationContext
@@ -56,7 +57,7 @@ interface AffiliateComponent {
 
     fun injectRegistrationActivity(affiliateRegistrationActivity: AffiliateRegistrationActivity)
 
-    fun injectHomeFragment(affiliateHomeFragment: AffiliateHomeFragment)
+    fun injectAdpFragment(affiliateAdpFragment: AffiliateAdpFragment)
 
     fun injectPromoFragment(affiliatePromoFragment: AffiliatePromoFragment)
 
@@ -96,7 +97,7 @@ interface AffiliateComponent {
 
     fun injectEducationSearchActivity(affiliateEducationSearchActivity: AffiliateEducationSearchActivity)
 
-    fun injectEducationSearchArticleFragment(affiliateEducationSearchArticleFragment : AffiliateEducationSearchArticleFragment)
+    fun injectEducationSearchArticleFragment(affiliateEducationSearchArticleFragment: AffiliateEducationSearchArticleFragment)
 
     fun injectPromoSearchFragment(affiliatePromoSearchFragment: AffiliatePromoSearchFragment)
 
@@ -113,4 +114,7 @@ interface AffiliateComponent {
     fun injectCommissionEventActivity(commissionEventActivity: AffiliateDiscoPromoListActivity)
 
     fun injectCommissionEventFragment(commissionEventFragment: AffiliateDiscoPromoListFragment)
+
+    fun injectPromoWebViewFragment(affiliatePromoFragment: AffiliatePromoWebViewFragment)
+
 }

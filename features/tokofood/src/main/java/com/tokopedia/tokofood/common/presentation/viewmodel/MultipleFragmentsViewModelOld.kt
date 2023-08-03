@@ -26,7 +26,6 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
@@ -266,7 +265,7 @@ class MultipleFragmentsViewModelOld @Inject constructor(
                 cartDataValidationState.emit(
                     UiEvent(
                         state = UiEvent.EVENT_HIDE_LOADING_UPDATE_TO_CART,
-                        data = null
+                        data = it.message
                     )
                 )
                 loadCartList(source)
@@ -313,7 +312,7 @@ class MultipleFragmentsViewModelOld @Inject constructor(
                     cartDataValidationState.emit(
                         UiEvent(
                             state = UiEvent.EVENT_HIDE_LOADING_ADD_TO_CART,
-                            data = null
+                            data = it.message
                         )
                     )
                     loadCartList(source)

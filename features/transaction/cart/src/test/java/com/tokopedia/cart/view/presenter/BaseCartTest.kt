@@ -2,25 +2,24 @@ package com.tokopedia.cart.view.presenter
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
-import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cart.domain.usecase.AddCartToWishlistUseCase
 import com.tokopedia.cart.domain.usecase.CartShopGroupTickerAggregatorUseCase
 import com.tokopedia.cart.domain.usecase.FollowShopUseCase
-import com.tokopedia.cart.domain.usecase.GetCartRevampV3UseCase
+import com.tokopedia.cart.domain.usecase.GetCartRevampV4UseCase
 import com.tokopedia.cart.domain.usecase.SetCartlistCheckboxStateUseCase
 import com.tokopedia.cart.domain.usecase.UpdateAndReloadCartUseCase
-import com.tokopedia.cart.domain.usecase.UpdateCartAndValidateUseUseCase
+import com.tokopedia.cart.domain.usecase.UpdateCartAndGetLastApplyUseCase
 import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.ICartListPresenter
 import com.tokopedia.cart.view.ICartListView
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
-import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
@@ -38,19 +37,18 @@ import rx.subscriptions.CompositeSubscription
 
 abstract class BaseCartTest {
 
-    var getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
+    var getCartRevampV4UseCase: GetCartRevampV4UseCase = mockk()
     var deleteCartUseCase: DeleteCartUseCase = mockk()
     var undoDeleteCartUseCase: UndoDeleteCartUseCase = mockk()
     var addCartToWishlistUseCase: AddCartToWishlistUseCase = mockk()
     var updateCartUseCase: UpdateCartUseCase = mockk()
-    var updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase = mockk()
-    var validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase = mockk()
+    var updateCartAndGetLastApplyUseCase: UpdateCartAndGetLastApplyUseCase = mockk()
     var compositeSubscription: CompositeSubscription = mockk(relaxed = true)
     var addToWishListV2UseCase: AddToWishlistV2UseCase = mockk(relaxed = true)
     var deleteWishlistV2UseCase: DeleteWishlistV2UseCase = mockk(relaxed = true)
     var updateAndReloadCartUseCase: UpdateAndReloadCartUseCase = mockk()
     var userSessionInterface: UserSessionInterface = mockk()
-    var clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase = mockk()
+    var clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase = mockk()
     var getRecentViewUseCase: GetRecommendationUseCase = mockk()
     var getWishlistV2UseCase: GetWishlistV2UseCase = mockk()
     var getRecommendationUseCase: GetRecommendationUseCase = mockk()
@@ -71,13 +69,13 @@ abstract class BaseCartTest {
     @Before
     fun setUp() {
         cartListPresenter = CartListPresenter(
-            getCartRevampV3UseCase, deleteCartUseCase,
+            getCartRevampV4UseCase, deleteCartUseCase,
             undoDeleteCartUseCase, updateCartUseCase, compositeSubscription,
             addToWishListV2UseCase, addCartToWishlistUseCase, deleteWishlistV2UseCase,
             updateAndReloadCartUseCase, userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
             getWishlistV2UseCase, getRecommendationUseCase, addToCartUseCase, addToCartExternalUseCase,
-            seamlessLoginUsecase, updateCartCounterUseCase, updateCartAndValidateUseUseCase,
-            validateUsePromoRevampUseCase, setCartlistCheckboxStateUseCase, followShopUseCase,
+            seamlessLoginUsecase, updateCartCounterUseCase, updateCartAndGetLastApplyUseCase,
+            setCartlistCheckboxStateUseCase, followShopUseCase,
             cartShopGroupTickerAggregatorUseCase, TestSchedulers, coroutineTestDispatchers
         )
         every { addToWishListV2UseCase.cancelJobs() } just Runs

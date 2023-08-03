@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:lineSpacingExtra="7sp"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 android:maxLines="1"
                 android:text="@string/by"
                 app:typographyType="body_3"
@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:lineSpacingExtra="7sp"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 android:maxLines="1"
                 tools:text="Sarah Elizabeth"
                 android:layout_marginLeft="@dimen/dp_3"
@@ -67,7 +67,7 @@
             android:layout_below="@id/reviewer_name_layout"
             android:layout_marginTop="@dimen/dp_5"
             android:lineSpacingExtra="4sp"
-            android:textColor="@color/Unify_N700_32"
+            android:textColor="@color/Unify_NN950_32"
             tools:text="31 Jul 2016, pukul 11:48"
             app:typographyType="body_3"
             />
@@ -80,7 +80,7 @@
             android:layout_alignParentTop="true"
             android:contentDescription="@null"
             app:icon_name="MENU_KEBAB_VERTICAL"
-            app:icon_color_light_enable="@color/Unify_N700_96"/>
+            app:icon_color_light_enable="@color/Unify_NN950_96"/>
 
     </RelativeLayout>
 
@@ -95,7 +95,7 @@
         android:textIsSelectable="true"
         android:paddingLeft="@dimen/dp_10"
         android:paddingRight="@dimen/dp_10"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         app:typographyType="body_3"
         tools:text="One morning, when Gregor Samsa woke from troubled dreams, he found himself…Selengkapnya"
         />
@@ -112,7 +112,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_half"
         android:layout_marginTop="@dimen/dp_10"
-        android:background="@color/Unify_N100"/>
+        android:background="@color/Unify_NN200"/>
 
     <LinearLayout
         android:id="@+id/helpful_layout"
@@ -140,7 +140,7 @@
             android:lineSpacingExtra="6sp"
             android:maxLines="1"
             app:typographyType="body_3"
-            android:textColor="@color/Unify_N700_44"
+            android:textColor="@color/Unify_NN950_44"
             tools:text="Anda dan 2 orang lainnya"
             />
 
@@ -150,7 +150,7 @@
             android:layout_height="wrap_content"
             android:gravity="end"
             android:lineSpacingExtra="6sp"
-            android:textColor="@color/Unify_N700_44"
+            android:textColor="@color/Unify_NN950_44"
             tools:text="Lihat Balasan"
             app:typographyType="body_3"
             />

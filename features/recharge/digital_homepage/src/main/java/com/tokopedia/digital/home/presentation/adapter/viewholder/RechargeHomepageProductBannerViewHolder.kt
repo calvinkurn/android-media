@@ -13,7 +13,11 @@ import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemList
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.displayTextOrHide
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 
 /**
  * @author by resakemal on 15/06/20.
@@ -37,7 +41,6 @@ class RechargeHomepageProductBannerViewHolder(
             setHeader(bind, element.channelModel, element.visitableId())
             setProduct(bind, section)
 
-
             bind.viewRechargeHomeProductBannerShimmering.root.hide()
             bind.viewRechargeHomeProductBannerLayout.show()
         } else {
@@ -54,10 +57,10 @@ class RechargeHomepageProductBannerViewHolder(
         sectionId: String
     ) {
         RechargeHomepageSectionMapper.setDynamicHeaderViewChannel(
-            bind.viewRechargeHomeProductBannerHeader, channel,
+            bind.viewRechargeHomeProductBannerHeader,
+            channel,
             object : HeaderListener {
                 override fun onSeeAllClick(link: String) {
-
                 }
 
                 override fun onChannelExpired(channelModel: ChannelModel) {
@@ -72,19 +75,20 @@ class RechargeHomepageProductBannerViewHolder(
         section: RechargeHomepageSections.Section
     ) {
         try {
-            if (section.label1.isNotEmpty())
+            if (section.label1.isNotEmpty()) {
                 bind.viewRechargeHomeProductBannerBackground.setBackgroundColor(
                     Color.parseColor(
                         section.label1
                     )
                 )
-            else
+            } else {
                 bind.viewRechargeHomeProductBannerBackground.setBackgroundColor(
                     MethodChecker.getColor(
                         bind.root.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N0
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN0
                     )
                 )
+            }
         } catch (e: Throwable) {
             /* do nothing */
         }

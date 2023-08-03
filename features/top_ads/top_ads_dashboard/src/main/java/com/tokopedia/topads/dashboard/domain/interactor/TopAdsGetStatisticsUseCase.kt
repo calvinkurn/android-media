@@ -1,13 +1,8 @@
 package com.tokopedia.topads.dashboard.domain.interactor
 
-import com.google.gson.reflect.TypeToken
-import com.tokopedia.common.network.coroutines.RestRequestInteractor
-import com.tokopedia.common.network.coroutines.repository.RestRepository
-import com.tokopedia.common.network.data.model.RequestType
-import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.network.data.model.response.DataResponse
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUP
@@ -25,39 +20,47 @@ import javax.inject.Inject
  */
 
 @GqlQuery("StatsList", STATS_URL)
-class TopAdsGetStatisticsUseCase @Inject constructor() {
+class TopAdsGetStatisticsUseCase @Inject constructor(graphqlRepository: GraphqlRepository) {
 
-    private val restRepository: RestRepository by lazy { RestRequestInteractor.getInstance().restRepository }
+    private val graphql by lazy { GraphqlUseCase<StatsData>(graphqlRepository) }
 
-    suspend fun execute(requestParams: RequestParams?): StatsData {
-        val token = object : TypeToken<DataResponse<StatsData>>() {}.type
-        val request =
-            GraphqlRequest(StatsList.GQL_QUERY, StatsData::class.java, requestParams?.parameters)
-        val restRequest = RestRequest.Builder(TopAdsCommonConstant.TOPADS_GRAPHQL_TA_URL, token)
-            .setBody(request)
-            .setRequestType(RequestType.POST)
-            .build()
+    suspend fun execute(requestParams: RequestParams): StatsData {
+        graphql.apply {
+            setGraphqlQuery(StatsList.GQL_QUERY)
+            setTypeClass(StatsData::class.java)
+        }
 
-        return restRepository.getResponse(restRequest)
-            .getData<DataResponse<StatsData>>().data
+        return graphql.run {
+            setRequestParams(requestParams.parameters)
+            executeOnBackground()
+        }
     }
 
     fun createRequestParams(
-        startDate: Date, endDate: Date,
-        @TopAdsStatisticsType type: Int, shopId: String, groupId: String?, goalId: Int = 0,
+        startDate: Date,
+        endDate: Date,
+        @TopAdsStatisticsType type: Int,
+        shopId: String,
+        groupId: String?,
+        goalId: Int = 0
     ): RequestParams {
         val requestParams = RequestParams.create()
         requestParams.putString("shopID", shopId)
         requestParams.putString(GROUP, groupId)
         requestParams.putInt(ParamObject.GOAL_ID, goalId)
         requestParams.putInt(TopAdsDashboardConstant.PARAM_TYPE, type)
-        requestParams.putObject(TopAdsDashboardConstant.PARAM_START_DATE,
+        requestParams.putObject(
+            TopAdsDashboardConstant.PARAM_START_DATE,
             SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(
-                startDate))
-        requestParams.putObject(TopAdsDashboardConstant.PARAM_END_DATE,
+                startDate
+            )
+        )
+        requestParams.putObject(
+            TopAdsDashboardConstant.PARAM_END_DATE,
             SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(
-                endDate))
+                endDate
+            )
+        )
         return requestParams
     }
-
 }

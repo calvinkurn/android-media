@@ -13,6 +13,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.top_ads_on_boarding'
+    testNamespace 'com.tokopedia.top_ads_on_boarding.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)

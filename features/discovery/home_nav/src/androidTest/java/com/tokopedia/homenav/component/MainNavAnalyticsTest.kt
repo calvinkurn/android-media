@@ -14,18 +14,15 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.homenav.R
-import com.tokopedia.homenav.base.diffutil.holder.HomeNavTitleViewHolder
+import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
+import com.tokopedia.homenav.base.diffutil.holder.HomeNavMenuViewHolder
+import com.tokopedia.homenav.mainnav.MainNavConst
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.MainNavListAdapter
 import com.tokopedia.homenav.mainnav.view.datamodel.TransactionListItemDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopListDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.review.ReviewListDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistDataModel
 import com.tokopedia.homenav.mock.MainNavMockResponseConfig
 import com.tokopedia.homenav.util.MainNavRecyclerViewIdlingResource
 import com.tokopedia.homenav.view.activity.HomeNavActivity
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -53,7 +50,6 @@ class MainNavAnalyticsTest {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             setupGraphqlMockResponse(MainNavMockResponseConfig())
-            setupAbTestRemoteConfig()
         }
     }
 
@@ -85,11 +81,9 @@ class MainNavAnalyticsTest {
     }
 
     @Test
-    fun testClickAllSectionTitle() {
+    fun testClickAllMenu() {
         mainNavCassavaTest {
             login()
-            waitForData()
-
             val recyclerView =
                 activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
             val itemCount = recyclerView.adapter?.itemCount ?: 0
@@ -100,13 +94,13 @@ class MainNavAnalyticsTest {
                         i
                     )
                 )
-                checkViewHolderOnRecyclerView(recyclerView, i)
+                checkMenuViewHolderOnRecyclerView(recyclerView, i)
             }
         } validateAnalytics {
             addDebugEnd()
             hasPassedAnalytics(
                 cassavaTestRule,
-                ANALYTIC_VALIDATOR_QUERY_FILE_NAME_VIEW_ALL
+                ANALYTIC_VALIDATOR_QUERY_FILE_NAME_USER_MENU
             )
         }
     }
@@ -115,7 +109,6 @@ class MainNavAnalyticsTest {
     fun testComponentOrderHistory() {
         mainNavCassavaTest {
             login()
-            waitForData()
             doActivityTestByModelClass(
                 delayBeforeRender = 2000,
                 dataModelClass = TransactionListItemDataModel::class
@@ -132,70 +125,9 @@ class MainNavAnalyticsTest {
     }
 
     @Test
-    fun testComponentWishlist() {
-        mainNavCassavaTest {
-            login()
-            waitForData()
-            doActivityTestByModelClass(
-                delayBeforeRender = 2000,
-                dataModelClass = WishlistDataModel::class
-            ) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                clickOnWishlist(viewHolder)
-            }
-        } validateAnalytics {
-            addDebugEnd()
-            hasPassedAnalytics(
-                cassavaTestRule,
-                ANALYTIC_VALIDATOR_QUERY_FILE_NAME_WISHLIST
-            )
-        }
-    }
-
-    @Test
-    fun testComponentShopFavorite() {
-        mainNavCassavaTest {
-            login()
-            waitForData()
-            doActivityTestByModelClass(
-                delayBeforeRender = 2000,
-                dataModelClass = FavoriteShopListDataModel::class
-            ) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                clickOnEachShop(viewHolder)
-            }
-        } validateAnalytics {
-            addDebugEnd()
-            hasPassedAnalytics(
-                cassavaTestRule,
-                ANALYTIC_VALIDATOR_QUERY_FILE_NAME_FAVORITE_SHOP
-            )
-        }
-    }
-
-    @Test
-    fun testComponentReview() {
-        mainNavCassavaTest {
-            login()
-            waitForData()
-            doActivityTestByModelClass(
-                delayBeforeRender = 2000,
-                dataModelClass = ReviewListDataModel::class
-            ) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                clickOnReview(viewHolder)
-            }
-        } validateAnalytics {
-            addDebugEnd()
-            hasPassedAnalytics(
-                cassavaTestRule,
-                ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REVIEW
-            )
-        }
-    }
-
-    @Test
     fun testComponentShopAndAffiliate() {
         mainNavCassavaTest {
             login()
-            waitForData()
             doActivityTestByModelClass(
                 delayBeforeRender = 2000,
                 dataModelClass = AccountHeaderDataModel::class
@@ -215,7 +147,6 @@ class MainNavAnalyticsTest {
     fun testComponentTokopediaPlus() {
         mainNavCassavaTest {
             login()
-            waitForData()
             doActivityTestByModelClass(
                 delayBeforeRender = 2000,
                 dataModelClass = AccountHeaderDataModel::class
@@ -231,11 +162,18 @@ class MainNavAnalyticsTest {
         }
     }
 
-    private fun checkViewHolderOnRecyclerView(recyclerView: RecyclerView, position: Int) {
-        when (recyclerView.findViewHolderForAdapterPosition(position)) {
-            is HomeNavTitleViewHolder -> {
-                clickSectionTitle(recyclerView.id, position)
-            }
+    private fun checkMenuViewHolderOnRecyclerView(recyclerView: RecyclerView, position: Int) {
+        val list = (recyclerView.adapter as? MainNavListAdapter)?.currentList
+        val dataModel = list?.get(position)
+        val viewHolder = recyclerView.findViewHolderForAdapterPosition(position)
+        if (viewHolder is HomeNavMenuViewHolder &&
+            dataModel is HomeNavMenuDataModel &&
+            (
+                dataModel.sectionId == MainNavConst.Section.ORDER ||
+                    dataModel.sectionId == MainNavConst.Section.USER_MENU
+                )
+        ) {
+            clickUserMenu(recyclerView.id, position)
         }
     }
 
@@ -289,12 +227,5 @@ class MainNavAnalyticsTest {
             }
         }
         endActivityTest()
-    }
-
-    private fun setupAbTestRemoteConfig() {
-        RemoteConfigInstance.getInstance().abTestPlatform.setString(
-            RollenceKey.ME_PAGE_EXP,
-            RollenceKey.ME_PAGE_VARIANT_2
-        )
     }
 }

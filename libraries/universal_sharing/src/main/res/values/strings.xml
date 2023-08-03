@@ -5,7 +5,6 @@
     <string name="label_chat">Chat</string>
 
 
-
     <string name="shop_page_product_action_no_upload_product">Oke</string>
     <!-- support -->
     <string name="shop_string_ok">OK</string>
@@ -42,6 +41,7 @@
     <string name="desc_img_email">E-mail</string>
     <string name="desc_img_others">Lainnya</string>
     <string name="img_options_heading">Mau kasih lihat foto yang mana?</string>
+    <string name="chip_options_heading">Mau bagi halaman yang mana?</string>
     <string name="tn_title">Title</string>
     <string name="tokopedia_link">tokopedia.link</string>
     <string name="permission_dialog_title">Boleh minta akses ke galeri kamu?</string>
@@ -56,13 +56,14 @@
     <string name="title_broadcast">Lewat Broadcast</string>
     <string name="description_broadcast">Sebar promo langsung ke tepat sasaran</string>
     <string name="content_icon_broadcast">icon broadcast</string>
-    <string name="personalized_campaign_message_ongoing_discount">Ada diskon %1$s nih jadi %2$s cuma sampe %3$s di Tokopedia. Buruan cek, biar nggak kehabisan</string>
+    <string name="personalized_campaign_message_ongoing_discount">Ada diskon %1$s nih jadi %2$s. Cek di Tokopedia, deh</string>
     <string name="personalized_campaign_message_endsoon_discount">Tinggal %1$s menit lagi, nih. Diskon %2$s harganya jadi %3$s, lho. Buruan cek Tokopedia, biar nggak kehabisan.</string>
     <string name="personalized_campaign_message_upcoming_discount">Bakalan ada promo menarik, lho. Mulai %1$s, Sekarang diskonnya %2$s jadi %3$s. Cek Tokopedia, deh.</string>
     <string name="personalized_campaign_message_upcoming_without_discount">Bakalan ada penawaran spesial buat produk ini, lho. Harganya bisa lebih murah, mulai %1$s. Cek Tokopedia, deh.</string>
-    <string name="personalized_campaign_message_ongoing_without_disc">Liat deh, ada penawaran spesial di Tokopedia. Harganya %1$s cuma sampai %2$s.</string>
+    <string name="personalized_campaign_message_ongoing_without_disc">Liat, deh! Ada penawaran spesial di Tokopedia, harganya %1$s. Bentar lagi berakhir, nih.</string>
     <string name="personalized_campaign_message_endsoon_without_disc">Penawaran spesial di Tokopedia tinggal %1$s menit lagi. Harganya %2$s, lho. Buruan cek, biar nggak kehabisan.</string>
     <string name="start_personalized_campaign_info">Mulai %1$s</string>
     <string name="ongoing_personalized_campaign_info">Berakhir %1$s</string>
-
+    <string name="screenshoot_success_title">Yay, screenshot &amp; link tersimpan!</string>
+    <string name="personalized_campaign_message_endweek_discount">Ada diskon %1$s nih jadi %2$s. Cek di Tokopedia, deh. Bentar lagi diskonnya berakhir, lho!</string>
 </resources>

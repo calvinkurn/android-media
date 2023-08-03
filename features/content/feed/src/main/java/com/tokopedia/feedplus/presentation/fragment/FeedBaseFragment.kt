@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
@@ -22,6 +23,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.common.util.reduceDragSensitivity
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.analytics.FeedAnalytics
@@ -33,11 +35,7 @@ import com.tokopedia.feedplus.presentation.activityresultcontract.RouteContract
 import com.tokopedia.feedplus.presentation.adapter.FeedPagerAdapter
 import com.tokopedia.feedplus.presentation.adapter.bottomsheet.FeedContentCreationTypeBottomSheet
 import com.tokopedia.feedplus.presentation.customview.UploadInfoView
-import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
-import com.tokopedia.feedplus.presentation.model.CreateContentType
-import com.tokopedia.feedplus.presentation.model.FeedDataModel
-import com.tokopedia.feedplus.presentation.model.FeedMainEvent
-import com.tokopedia.feedplus.presentation.model.MetaModel
+import com.tokopedia.feedplus.presentation.model.*
 import com.tokopedia.feedplus.presentation.onboarding.ImmersiveFeedOnboarding
 import com.tokopedia.feedplus.presentation.receiver.FeedMultipleSourceUploadReceiver
 import com.tokopedia.feedplus.presentation.receiver.UploadStatus
@@ -95,6 +93,10 @@ class FeedBaseFragment :
 
     private var mCoachMarkJob: Job? = null
 
+    private val toasterBottomMargin by lazy {
+        resources.getDimensionPixelOffset(R.dimen.feed_toaster_bottom_margin)
+    }
+
     private val adapter by lazy {
         FeedPagerAdapter(
             childFragmentManager,
@@ -147,15 +149,13 @@ class FeedBaseFragment :
     private val onNonLoginGoToFollowingTab =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (userSession.isLoggedIn) {
-                Toaster.build(
-                    binding.root,
-                    getString(
+                showNormalToaster(
+                    text = getString(
                         R.string.feed_report_login_success_toaster_text,
                         userSession.name
                     ),
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL
-                ).show()
+                    duration = Toaster.LENGTH_LONG
+                )
 
                 feedMainViewModel.changeCurrentTabByType(TAB_TYPE_FOLLOWING)
             } else {
@@ -278,7 +278,7 @@ class FeedBaseFragment :
 
     @OptIn(ExperimentalTime::class)
     fun showSwipeOnboarding() {
-        lifecycleScope.launchWhenResumed {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             delay(COACHMARK_START_DELAY_IN_SEC.toDuration(DurationUnit.SECONDS))
             binding.viewVerticalSwipeOnboarding.showAnimated()
         }
@@ -293,6 +293,7 @@ class FeedBaseFragment :
         }
         isJustLoggedIn = false
 
+        binding.vpFeedTabItemsContainer.reduceDragSensitivity(3)
         binding.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
                 OnPageChangeCallback() {
 
@@ -351,6 +352,8 @@ class FeedBaseFragment :
 
         feedMainViewModel.updateUserInfo()
         feedMainViewModel.fetchFeedMetaData()
+
+        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     private fun onPauseInternal() {
@@ -358,6 +361,10 @@ class FeedBaseFragment :
 
         mOnboarding?.dismiss()
         mOnboarding = null
+
+        Toaster.toasterCustomBottomHeight = 0
+
+        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     private fun observeFeedTabData() {
@@ -438,68 +445,67 @@ class FeedBaseFragment :
     }
 
     private fun observeUpload() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                val uploadReceiver = uploadReceiverFactory.create(this@FeedBaseFragment)
-                uploadReceiver
-                    .observe()
-                    .collect { info ->
-                        when (val status = info.status) {
-                            is UploadStatus.Progress -> {
-                                binding.uploadView.show()
-                                binding.uploadView.setProgress(status.progress)
-                                binding.uploadView.setThumbnail(status.thumbnailUrl)
-                            }
-                            is UploadStatus.Finished -> {
-                                binding.uploadView.hide()
+        // we don't use repeatOnLifecycle here as we want to listen to upload receivers even when the page is not fully resumed
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            val uploadReceiver = uploadReceiverFactory.create(this@FeedBaseFragment)
+            uploadReceiver
+                .observe()
+                .collect { info ->
+                    when (val status = info.status) {
+                        is UploadStatus.Progress -> {
+                            binding.uploadView.show()
+                            binding.uploadView.setProgress(status.progress)
+                            binding.uploadView.setThumbnail(status.thumbnailUrl)
+                        }
+                        is UploadStatus.Finished -> {
+                            binding.uploadView.hide()
 
-                                if (info.type == UploadType.Shorts) {
-                                    showNormalToaster(
-                                        getString(R.string.feed_upload_content_success),
-                                        duration = Toaster.LENGTH_LONG,
-                                        actionText = getString(R.string.feed_upload_shorts_see_video),
-                                        actionListener = {
-                                            playShortsUploadAnalytic.clickRedirectToChannelRoom(
-                                                status.authorId,
-                                                status.authorType,
-                                                status.contentId
-                                            )
-                                            router.route(
-                                                requireContext(),
-                                                ApplinkConst.PLAY_DETAIL,
-                                                status.contentId
-                                            )
-                                        }
-                                    )
-                                } else {
-                                    showNormalToaster(
-                                        getString(R.string.feed_upload_content_success),
-                                        duration = Toaster.LENGTH_LONG
-                                    )
-                                }
-                            }
-                            is UploadStatus.Failed -> {
-                                binding.uploadView.setFailed()
-                                binding.uploadView.setListener(object : UploadInfoView.Listener {
-                                    override fun onRetryClicked(view: UploadInfoView) {
-                                        status.onRetry()
+                            if (info.type == UploadType.Shorts) {
+                                showNormalToaster(
+                                    getString(R.string.feed_upload_content_success),
+                                    duration = Toaster.LENGTH_LONG,
+                                    actionText = getString(R.string.feed_upload_shorts_see_video),
+                                    actionListener = {
+                                        playShortsUploadAnalytic.clickRedirectToChannelRoom(
+                                            status.authorId,
+                                            status.authorType,
+                                            status.contentId
+                                        )
+                                        router.route(
+                                            requireContext(),
+                                            ApplinkConst.PLAY_DETAIL,
+                                            status.contentId
+                                        )
                                     }
-
-                                    override fun onCloseWhenFailedClicked(view: UploadInfoView) {
-                                        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-                                            uploadReceiver.releaseCurrent()
-                                            binding.uploadView.hide()
-                                        }
-
-                                        if (info.type == UploadType.Post) {
-                                            feedMainViewModel.deletePostCache()
-                                        }
-                                    }
-                                })
+                                )
+                            } else {
+                                showNormalToaster(
+                                    getString(R.string.feed_upload_content_success),
+                                    duration = Toaster.LENGTH_LONG
+                                )
                             }
                         }
+                        is UploadStatus.Failed -> {
+                            binding.uploadView.setFailed()
+                            binding.uploadView.setListener(object : UploadInfoView.Listener {
+                                override fun onRetryClicked(view: UploadInfoView) {
+                                    status.onRetry()
+                                }
+
+                                override fun onCloseWhenFailedClicked(view: UploadInfoView) {
+                                    launch {
+                                        uploadReceiver.releaseCurrent()
+                                        binding.uploadView.hide()
+                                    }
+
+                                    if (info.type == UploadType.Post) {
+                                        feedMainViewModel.deletePostCache()
+                                    }
+                                }
+                            })
+                        }
                     }
-            }
+                }
         }
     }
 
@@ -543,7 +549,7 @@ class FeedBaseFragment :
             }
         }
 
-        if (meta.isCreationActive) {
+        if (meta.isCreationActive && userSession.isLoggedIn) {
             binding.btnFeedCreatePost.show()
         } else {
             binding.btnFeedCreatePost.hide()
@@ -604,7 +610,10 @@ class FeedBaseFragment :
 
             mOnboarding = ImmersiveFeedOnboarding.Builder(requireContext())
                 .setCreateContentView(
-                    if (meta.isCreationActive && !feedMainViewModel.hasShownCreateContent()) {
+                    if (meta.isCreationActive &&
+                        !feedMainViewModel.hasShownCreateContent() &&
+                        feedMainViewModel.isShortEntryPointShowed
+                    ) {
                         binding.btnFeedCreatePost
                     } else {
                         null
@@ -682,8 +691,10 @@ class FeedBaseFragment :
         actionText: String = "",
         actionListener: View.OnClickListener = View.OnClickListener {}
     ) {
+        Toaster.toasterCustomBottomHeight = toasterBottomMargin
+
         Toaster.build(
-            binding.layoutToaster,
+            binding.root,
             text,
             duration,
             Toaster.TYPE_NORMAL,
@@ -712,6 +723,7 @@ class FeedBaseFragment :
 
         const val TAB_TYPE_FOR_YOU = "foryou"
         const val TAB_TYPE_FOLLOWING = "following"
+        const val CDP = "cdp"
 
         private const val EXTRAS_UTM_MEDIUM = "utm_medium"
         private const val PARAM_PUSH_NOTIFICATION = "push"

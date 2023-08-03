@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="coupon_image_default_width">328dp</dimen>
+    <dimen name="coupon_image_default_height">120dp</dimen>
+    <dimen name="coupon_image_corner_radius">9dp</dimen>
+</resources>

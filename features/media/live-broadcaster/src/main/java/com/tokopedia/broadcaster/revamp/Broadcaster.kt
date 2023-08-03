@@ -18,9 +18,18 @@ interface Broadcaster {
 
     fun removeListener(listener: Listener)
 
-    fun init(activityContext: Context, handler: Handler?)
+    fun init(
+        activityContext: Context,
+        handler: Handler?,
+    )
 
-    fun create(holder: SurfaceHolder, surfaceSize: Size)
+    fun setupThread(withByteplus: Boolean)
+
+    fun create(
+        holder: SurfaceHolder,
+        surfaceSize: Size,
+        withByteplus: Boolean,
+    )
 
     fun updateSurfaceSize(surfaceSize: Size)
 
@@ -39,6 +48,14 @@ interface Broadcaster {
     fun snapShot()
 
     fun enableStatistic(interval: Long)
+
+    fun setFaceFilter(faceFilterId: String, value: Float): Boolean
+
+    fun removeFaceFilter()
+
+    fun setPreset(presetId: String, value: Float): Boolean
+
+    fun removePreset()
 
     val broadcastState: BroadcastState
 

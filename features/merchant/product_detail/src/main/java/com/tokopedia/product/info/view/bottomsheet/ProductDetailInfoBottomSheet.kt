@@ -11,6 +11,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.youtube.player.YouTubeApiServiceUtil
+import com.google.android.youtube.player.YouTubeInitializationResult
+import android.content.Intent
+import android.net.Uri
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -314,18 +318,27 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     override fun goToVideoPlayer(url: List<String>, index: Int) {
         context?.let {
-            try {
-                val webviewUrl = String.format(
-                    Locale.getDefault(),
-                    "%s?url=%s",
-                    ApplinkConst.WEBVIEW,
-                    "https://www.youtube.com/watch?v=" + url[index]
-                )
-                RouteManager.route(it, webviewUrl)
-            } catch (e: Throwable) {
-                Timber.d(e)
+            if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
+                == YouTubeInitializationResult.SUCCESS
+            ) {
+                redirectToYoutubePlayerPage(url[index])
+            } else {
+                try {
+                    startActivity(
+                        Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("https://www.youtube.com/watch?v=" + url[index])
+                        )
+                    )
+                } catch (e: Throwable) {
+                    Timber.d(e)
+                }
             }
         }
+    }
+
+    private fun redirectToYoutubePlayerPage(youTubeVideoId: String) {
+        RouteManager.route(context, ApplinkConst.YOUTUBE_PLAYER, youTubeVideoId)
     }
 
     override fun goToShopNotes(shopNotesData: ShopNotesData) {

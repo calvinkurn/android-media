@@ -2,11 +2,12 @@ package com.tokopedia.network.interceptor;
 
 import android.content.Context;
 
+import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.network.authentication.AuthKey;
-import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.refreshtoken.AccessTokenRefresh;
 import com.tokopedia.network.utils.CommonUtils;
+import com.tokopedia.network.utils.ThemeUtils;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -222,8 +223,9 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
     protected Map<String, String> getHeaderMap(
             String path, String strParam, String method, String authKey, String contentTypeHeader) {
-        return AuthHelper.generateHeaders(path, strParam, method, authKey, contentTypeHeader,
-                userSession.getUserId(), userSession);
+        return AuthHelper.generateHeaders(
+                path, strParam, method, authKey, contentTypeHeader, userSession.getUserId(), userSession, getHeaderTheme()
+        );
     }
 
     protected void generateHeader(Map<String, String> authHeaders, Request originRequest, Request.Builder newRequest) {
@@ -486,5 +488,9 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
 
         return result;
+    }
+
+    protected String getHeaderTheme() {
+        return ThemeUtils.getHeader(context);
     }
 }

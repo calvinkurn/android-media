@@ -14,6 +14,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.play.broadcaster'
+    testNamespace 'com.tokopedia.play.broadcaster.test'
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
@@ -52,7 +54,15 @@ android {
 }
 
 dependencies {
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.features.mediauploader)
+    implementation projectOrAar(rootProject.ext.features.contentCommon)
+    implementation projectOrAar(rootProject.ext.features.contentAnalytic)
+    implementation projectOrAar(rootProject.ext.features.playCommon)
+    implementation projectOrAar(rootProject.ext.features.resourcesCommon)
+    implementation projectOrAar(rootProject.ext.features.shopCommon)
+    implementation projectOrAar(rootProject.ext.features.liveBroadcaster)
+    implementation project(rootProject.ext.features.mediapickerCommon)
+
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.adapterDelegate)
@@ -62,26 +72,19 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.imagePickerCommon)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
-    implementation projectOrAar(rootProject.ext.features.mediauploader)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
-
-    implementation projectOrAar(rootProject.ext.features.contentCommon)
-    implementation projectOrAar(rootProject.ext.features.playCommon)
-    implementation projectOrAar(rootProject.ext.features.resourcesCommon)
-    implementation projectOrAar(rootProject.ext.features.shopCommon)
-    implementation projectOrAar(rootProject.ext.features.liveBroadcaster)
-    implementation project(rootProject.ext.features.mediapickerCommon)
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
+    implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation projectOrAar(rootProject.ext.libraries.byteplusEffect)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation projectOrAar(rootProject.ext.libraries.usersession)
-    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
-    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    implementation rootProject.ext.tkpdInternalLibDependencies.larixBroadcaster
 
     implementation rootProject.ext.playServicesDependencies.core
 
@@ -90,9 +93,6 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.cameraView
-    implementation (rootProject.ext.tkpdLibDependencies.ucrop){
-        exclude group: 'com.android.support'
-    }
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
@@ -112,6 +112,10 @@ dependencies {
     implementation rootProject.ext.miscDependencies.exoPlayerUi
     implementation rootProject.ext.miscDependencies.workManager
 
+    implementation (rootProject.ext.tkpdLibDependencies.ucrop){
+        exclude group: 'com.android.support'
+    }
+
     implementation rootProject.ext.networkDependencies.glide
 
     implementation rootProject.ext.unifyDependencies.principles
@@ -123,9 +127,11 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.datepicker
 
-    implementation rootProject.ext.tkpdInternalLibDependencies.larixBroadcaster
-
     implementation rootProject.ext.testDependencies.espressoIdlingResource
+
+    implementation rootProject.ext.debugToolsDependencies.chuck
+
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     androidTestImplementation rootProject.ext.testDependencies.fragmentTest
 
