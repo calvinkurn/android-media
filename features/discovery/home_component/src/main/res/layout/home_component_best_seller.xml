@@ -15,7 +15,7 @@
         app:layout_constraintBottom_toTopOf="@id/home_component_header_best_seller_view"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        tools:background="@color/Unify_B500"
+        tools:background="@color/Unify_BN500"
         tools:layout_height="8dp"
         tools:visibility="visible"/>
 
@@ -62,7 +62,7 @@
         app:layout_constraintTop_toBottomOf="@id/home_component_best_seller_carousel_paging"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        tools:background="@color/Unify_B500"
+        tools:background="@color/Unify_BN500"
         tools:layout_height="8dp"
         tools:visibility="visible" />
 
