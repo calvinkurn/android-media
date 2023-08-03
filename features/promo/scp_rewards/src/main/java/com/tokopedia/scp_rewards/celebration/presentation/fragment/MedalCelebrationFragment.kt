@@ -41,9 +41,10 @@ import com.tokopedia.scp_rewards.celebration.domain.model.ScpRewardsCelebrationM
 import com.tokopedia.scp_rewards.celebration.presentation.viewmodel.MedalCelebrationViewModel
 import com.tokopedia.scp_rewards.common.constants.EASE_IN
 import com.tokopedia.scp_rewards.common.constants.NON_WHITELISTED_USER_ERROR_CODE
-import com.tokopedia.scp_rewards.common.data.Error
-import com.tokopedia.scp_rewards.common.data.Loading
-import com.tokopedia.scp_rewards.common.data.Success
+import com.tokopedia.scp_rewards.celebration.presentation.viewmodel.MedalCelebrationViewModel.ScpResult.Error
+import com.tokopedia.scp_rewards.celebration.presentation.viewmodel.MedalCelebrationViewModel.ScpResult.Loading
+import com.tokopedia.scp_rewards.celebration.presentation.viewmodel.MedalCelebrationViewModel.ScpResult.Success
+import com.tokopedia.scp_rewards.celebration.presentation.viewmodel.MedalCelebrationViewModel.ScpResult.AllMedaliCelebratedError
 import com.tokopedia.scp_rewards.common.utils.AudioFactory
 import com.tokopedia.scp_rewards.common.utils.DeviceInfo
 import com.tokopedia.scp_rewards.common.utils.dpToPx
@@ -149,6 +150,12 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
                     changeStatusBarIconsToLight()
                     showMainView()
                     downloadAssets()
+                }
+                is AllMedaliCelebratedError -> {
+                    redirectToAppLink(
+                        it.data.scpRewardsCelebrationPage?.celebrationPage?.redirectAppLink,
+                        it.data.scpRewardsCelebrationPage?.celebrationPage?.redirectSourceName ?: ""
+                    )
                 }
                 is Error -> {
                     CelebrationAnalytics.sendImpressionCelebrationError(medaliSlug)
@@ -739,14 +746,16 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
 
     private fun redirectToMedaliDetail() {
         (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.apply {
-            val args = Bundle().apply {
-                putString(
-                    ApplinkConstInternalPromo.SOURCE_PARAM,
-                    scpRewardsCelebrationPage?.celebrationPage?.redirectSourceName ?: ""
-                )
-            }
-            RouteManager.route(context, args, scpRewardsCelebrationPage?.celebrationPage?.redirectAppLink)
+            redirectToAppLink(
+                scpRewardsCelebrationPage?.celebrationPage?.redirectAppLink,
+                scpRewardsCelebrationPage?.celebrationPage?.redirectSourceName ?: ""
+            )
         }
+    }
+
+    private fun redirectToAppLink(appLink: String?, sourceName: String = "") {
+        val args = Bundle().apply { putString(ApplinkConstInternalPromo.SOURCE_PARAM, sourceName) }
+        RouteManager.route(context, args, appLink)
         activity?.finish()
     }
 

@@ -5,6 +5,7 @@ import com.tokopedia.tokopedianow.category.domain.response.CategoryDetailRespons
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuItemUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
+import com.tokopedia.tokopedianow.oldcategory.utils.TOKONOW_CATEGORY_L1
 
 object CategoryRecommendationMapper {
     fun CategoryDetailResponse.mapToCategoryRecommendation(): TokoNowCategoryMenuUiModel = TokoNowCategoryMenuUiModel(
@@ -14,10 +15,11 @@ object CategoryRecommendationMapper {
                 title = it.name,
                 imageUrl = it.imageUrl,
                 appLink = it.applinks,
-                color = it.color,
-                headerName = String.EMPTY
+                color = it.colorObj.hexLight,
+                headerName = String.EMPTY,
             )
         },
-        state = TokoNowLayoutState.SHOW
+        state = TokoNowLayoutState.SHOW,
+        source = TOKONOW_CATEGORY_L1
     )
 }

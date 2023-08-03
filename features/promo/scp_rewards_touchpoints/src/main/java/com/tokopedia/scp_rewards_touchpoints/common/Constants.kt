@@ -16,5 +16,9 @@ const val EVENT_CATEGORY_MEDALI_CELEBRATION_TOASTER = "medali celebration toaste
 const val TRACKER_ID_VIEW_TOASTER = "44704"
 const val TRACKER_ID_CLICK_TOASTER = "44705"
 
-//Coupon Status
+// Coupon Status
 const val HIDDEN = "hidden"
+
+// Coupon CTA
+const val PRIMARY_STYLE = "primary"
+const val SECONDARY_STYLE = "secondary"

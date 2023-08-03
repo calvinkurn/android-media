@@ -207,7 +207,7 @@ public interface ApplinkConst {
     String REGISTER_INIT = "tokopedia://register-init";
     String PROFILE = "tokopedia://people/{user_id}";
 
-    String PROFILE_SETTINGS = "tokopedia://people-settings/{user_id}";
+    String PROFILE_SETTINGS = "tokopedia://people/settings/{user_id}";
     String PROFILE_AFTER_POST = "tokopedia://people/{user_id}?after_post=true";
     String PROFILE_AFTER_EDIT = "tokopedia://people/{user_id}?after_edit=true";
     String PROFILE_SUCCESS_POST = "tokopedia://people/{user_id}?success_post=true";

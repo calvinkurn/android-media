@@ -1,3 +1,4 @@
+/features/content/analytic/                             @tokopedia/android-minionlance-dev
 /features/content/content_common/                       @tokopedia/android-minionlance-dev
 /features/content/createpost/           				@tokopedia/android-minionlance-dev
 /features/content/createpost_common/           			@tokopedia/android-minionlance-dev
@@ -111,6 +112,7 @@
 /features/merchant/product_manage_list/                 @tokopedia/android-minionken-dev
 /features/merchant/seller_mvc_creation                  @tokopedia/android-minionken-dev
 /features/merchant/seller_shop_nib                      @tokopedia/android-minionken-dev
+/features/promo/merchant_voucher                        @tokopedia/android-minionken-dev
 
 /features/top_ads/top_ads_dashboard/                    @tokopedia/android-minionsolo-dev
 /features/top_ads/top_ads_management/                   @tokopedia/android-minionsolo-dev
@@ -278,7 +280,7 @@
 /features/promo/scp_rewards_touchpoints 				@tokopedia/android-minionsolo-dev
 /features/promo/gamification            				@tokopedia/android-minionsolo-dev
 /features/kyc                           				@tokopedia/android-minionyoda-dev
-/features/promo/merchant_voucher                        @tokopedia/android-minionsolo-dev
+
 /features/tokopedianow/                                 @tokopedia/android-minionsolo-dev
 /features/promo/promo_gamification_common               @tokopedia/android-minionsolo-dev
 /features/promo/loyalty                                 @tokopedia/android-minionsolo-dev
@@ -286,9 +288,11 @@
 /features/promo/promotions_target					    @tokopedia/android-minionsolo-dev
 /features/promo/promo_ui_common					        @tokopedia/android-minionsolo-dev
 /features/promo/quest_widget  					        @tokopedia/android-minionsolo-dev
+/features/promo/tokomember                              @tokopedia/android-minionsolo-dev
 /features/promo/tokomember_seller_dashboard  	        @tokopedia/android-minionsolo-dev
 /features/promo/tokomember_common_widget 		        @tokopedia/android-minionsolo-dev
 /features/promo/tokomember               		        @tokopedia/android-minionsolo-dev
+
 
 
 /features/im/install_referral                           @tokopedia/android-core-dev
@@ -357,6 +361,8 @@
 /libraries/mapviewer/								    @tokopedia/android-core-dev
 /libraries/network/                                     @tokopedia/android-core-dev
 /libraries/oms/											@tokopedia/android-core-dev
+/libraries/page_info_pusher/                            @tokopedia/android-core-dev
+/libraries/poc_new_relic/                               @tokopedia/android-core-dev
 /libraries/pre_release_inspector/			            @tokopedia/android-core-dev
 /libraries/pre_release_inspector_no_op/					@tokopedia/android-core-dev
 /libraries/journey_debugger/			                @tokopedia/android-core-dev

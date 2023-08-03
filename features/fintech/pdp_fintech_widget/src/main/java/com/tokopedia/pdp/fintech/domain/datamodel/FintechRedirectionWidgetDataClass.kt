@@ -17,4 +17,5 @@ data class FintechRedirectionWidgetDataClass(
     var widgetBottomSheet: WidgetBottomsheet? = null,
     var installmentAmout: String? = null,
     var promoName: String? = null,
+    var subtitle: String = "",
 ) : Parcelable

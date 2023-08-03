@@ -63,6 +63,7 @@ class MvcDetailView @JvmOverloads constructor(
     private val CONTAINER_ERROR = 2
     private var shopId = ""
     private var productId = ""
+    private var additionalParamJson: String = ""
 
     override fun getProductId(): String {
         return this.productId
@@ -161,7 +162,12 @@ class MvcDetailView @JvmOverloads constructor(
 
 
         globalError.setActionClickListener {
-            viewModel.getListData(shopId, productId = productId, source = mvcSource)
+            viewModel.getListData(
+                shopId = shopId,
+                productId = productId,
+                source = mvcSource,
+                additionalParamJson = additionalParamJson
+            )
         }
     }
 
@@ -228,13 +234,26 @@ class MvcDetailView @JvmOverloads constructor(
         }
     }
 
-    fun show(shopId: String, addBottomMarginOnToast: Boolean, @MvcSource mvcSource: Int, mvcTracker: MvcTracker?, productId: String) {
+    fun show(
+        shopId: String,
+        addBottomMarginOnToast: Boolean,
+        @MvcSource mvcSource: Int,
+        mvcTracker: MvcTracker?,
+        productId: String,
+        additionalParamJson: String
+    ) {
         this.addBottomMarginOnToast = addBottomMarginOnToast
         this.mvcTracker = mvcTracker
         this.shopId = shopId
         this.productId = productId
         this.mvcSource = mvcSource
-        viewModel.getListData(shopId, productId, source = mvcSource)
+        this.additionalParamJson = additionalParamJson
+        viewModel.getListData(
+            shopId = shopId,
+            productId = productId,
+            source = mvcSource,
+            additionalParamJson = additionalParamJson
+        )
         this.adapter.setTracker(mvcTracker)
     }
 

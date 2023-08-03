@@ -9,8 +9,8 @@ import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductChooseAddressLayoutBinding
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
-import com.tokopedia.search.result.product.chooseaddress.ChooseAddressListener
 import com.tokopedia.search.result.product.changeview.ChangeViewListener
+import com.tokopedia.search.result.product.chooseaddress.ChooseAddressListener
 import com.tokopedia.search.utils.FragmentProvider
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -79,9 +79,15 @@ internal class ChooseAddressViewHolder(
             changeViewListener.onChangeViewClicked()
             setChangeViewIcon(changeViewListener.viewType.icon)
         }
+
+        changeViewListener.checkShouldShowViewTypeOnBoarding()
     }
 
     private fun setChangeViewIcon(id: Int) {
         binding?.searchProductChooseAddressChangeViewButton?.setImage(newIconId = id)
+    }
+
+    fun getChangeViewButton(): View? {
+        return binding?.searchProductChooseAddressChangeViewButton
     }
 }

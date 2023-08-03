@@ -8,15 +8,28 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tfVoucherProgramDetail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tfVoucherName"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="small"
+        tool:text="Terdaftar di campaign [Nama Campaign]" />
+
     <View
         android:id="@+id/viewVoucherType"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/ic_voucher_shop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/tfVoucherName"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/tfVoucherProgramDetail" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tfVoucherName"
@@ -25,7 +38,7 @@
         android:textColor="@color/Unify_NN950"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/viewVoucherType"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/viewVoucherType"
         app:typographyType="display_3"
         app:typographyWeight="bold"
         tool:text="Nama Kupon Maks. 30 character" />
@@ -43,6 +56,19 @@
         app:typographyType="small"
         tool:text="Nama Kupon Maks. 30 character" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tfVoucherSubsidyInfo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/viewVoucherType"
+        app:layout_constraintStart_toStartOf="@+id/tfVoucherDesc"
+        app:layout_constraintTop_toBottomOf="@+id/tfVoucherDesc"
+        app:typographyType="small"
+        tool:text="Disubsidi sebagian" />
+
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnCodeBackground"
         android:layout_width="0dp"
@@ -51,8 +77,8 @@
         android:enabled="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/viewVoucherType"
-        app:layout_constraintStart_toStartOf="@+id/tfVoucherDesc"
-        app:layout_constraintTop_toBottomOf="@+id/tfVoucherDesc"
+        app:layout_constraintStart_toStartOf="@+id/tfVoucherSubsidyInfo"
+        app:layout_constraintTop_toBottomOf="@+id/tfVoucherSubsidyInfo"
         app:unifyButtonSize="micro"
         app:unifyButtonType="alternate" />
 

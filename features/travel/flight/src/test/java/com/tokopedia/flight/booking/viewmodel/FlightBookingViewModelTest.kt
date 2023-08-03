@@ -14,24 +14,7 @@ import com.tokopedia.flight.booking.data.FlightVoucher
 import com.tokopedia.flight.booking.data.mapper.FlightBookingMapper
 import com.tokopedia.flight.common.data.model.FlightError
 import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
-import com.tokopedia.flight.dummy.DUMMY_AMENITY_PRICE
-import com.tokopedia.flight.dummy.DUMMY_ATC
-import com.tokopedia.flight.dummy.DUMMY_BOOKING_FLIGHT_DETAIL
-import com.tokopedia.flight.dummy.DUMMY_BOOKING_INTERNATIONAL_MODEL
-import com.tokopedia.flight.dummy.DUMMY_BOOKING_MODEL
-import com.tokopedia.flight.dummy.DUMMY_BOOKING_NEW_PRICE
-import com.tokopedia.flight.dummy.DUMMY_BOOKING_PASSENGER
-import com.tokopedia.flight.dummy.DUMMY_CANCEL_VOUCHER_FAILED
-import com.tokopedia.flight.dummy.DUMMY_CANCEL_VOUCHER_SUCCESS
-import com.tokopedia.flight.dummy.DUMMY_CART_PRICE
-import com.tokopedia.flight.dummy.DUMMY_CHECKOUT
-import com.tokopedia.flight.dummy.DUMMY_INSURANCE
-import com.tokopedia.flight.dummy.DUMMY_LUGGAGE_AMENITIES
-import com.tokopedia.flight.dummy.DUMMY_MEALS_AMENITIES
-import com.tokopedia.flight.dummy.DUMMY_OTHER_PRICE
-import com.tokopedia.flight.dummy.DUMMY_PROFILE
-import com.tokopedia.flight.dummy.FlightDummyGqlInterfaceImpl
-import com.tokopedia.flight.dummy.TICKER_DATA
+import com.tokopedia.flight.dummy.*
 import com.tokopedia.flight.passenger.constant.FlightBookingPassenger
 import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityMetaModel
 import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityModel
@@ -235,6 +218,17 @@ class FlightBookingViewModelTest {
     }
 
     @Test
+    fun getAdminFeePriceData_defaultShouldReturnEmptyList() {
+        // given
+
+        // when
+        val adminFeePriceData = viewModel.getAdminFeePriceData()
+
+        // then
+        adminFeePriceData.size shouldBe 0
+    }
+
+    @Test
     fun getProfile_failedToFetch_profileShouldFail() {
         // given
         coEvery { graphqlRepository.response(any(), any()) } coAnswers { throw Throwable("Failed to Fetch") }
@@ -254,11 +248,12 @@ class FlightBookingViewModelTest {
         val profile = DUMMY_PROFILE
         profile.profileInfo.phone = "6281111111111"
         val gqlResponse = GraphqlResponse(
-                mapOf<Type, Any>(
-                        ProfilePojo::class.java to DUMMY_PROFILE
-                ),
-                mapOf(),
-                false)
+            mapOf<Type, Any>(
+                ProfilePojo::class.java to DUMMY_PROFILE
+            ),
+            mapOf(),
+            false
+        )
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // when
@@ -290,11 +285,12 @@ class FlightBookingViewModelTest {
         val profile = DUMMY_PROFILE
         profile.profileInfo.phone = "+6281111111111"
         val gqlResponse = GraphqlResponse(
-                mapOf<Type, Any>(
-                        ProfilePojo::class.java to DUMMY_PROFILE
-                ),
-                mapOf(),
-                false)
+            mapOf<Type, Any>(
+                ProfilePojo::class.java to DUMMY_PROFILE
+            ),
+            mapOf(),
+            false
+        )
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // when
@@ -324,11 +320,12 @@ class FlightBookingViewModelTest {
         val profile = DUMMY_PROFILE
         profile.profileInfo.phone = "081111111111"
         val gqlResponse = GraphqlResponse(
-                mapOf<Type, Any>(
-                        ProfilePojo::class.java to DUMMY_PROFILE
-                ),
-                mapOf(),
-                false)
+            mapOf<Type, Any>(
+                ProfilePojo::class.java to DUMMY_PROFILE
+            ),
+            mapOf(),
+            false
+        )
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // when
@@ -359,11 +356,12 @@ class FlightBookingViewModelTest {
         profile.profileInfo.phone = "081111111111"
         profile.profileInfo.birthday = "2020-11-11T10:10:10Z"
         val gqlResponse = GraphqlResponse(
-                mapOf<Type, Any>(
-                        ProfilePojo::class.java to DUMMY_PROFILE
-                ),
-                mapOf(),
-                false)
+            mapOf<Type, Any>(
+                ProfilePojo::class.java to DUMMY_PROFILE
+            ),
+            mapOf(),
+            false
+        )
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
         viewModel.getProfile(FlightDummyGqlInterfaceImpl())
         val userName = "Dummy User Name"
@@ -431,17 +429,17 @@ class FlightBookingViewModelTest {
         // given
 
         // when
-        viewModel.setPriceData(DUMMY_CART_PRICE)
+        viewModel.setPriceData(DUMMY_CART_PRICE_ENTITY)
 
         // then
-        viewModel.flightPriceData.value!!.size shouldBe DUMMY_CART_PRICE.size
+        viewModel.flightPriceData.value!!.size shouldBe DUMMY_CART_PRICE_ENTITY.size
         val flightCart = viewModel.flightPriceData.value!!
 
         for ((index, item) in flightCart.withIndex()) {
-            item.label shouldBe DUMMY_CART_PRICE[index].label
-            item.price shouldBe DUMMY_CART_PRICE[index].price
-            item.priceDetailId shouldBe DUMMY_CART_PRICE[index].priceDetailId
-            item.priceNumeric shouldBe DUMMY_CART_PRICE[index].priceNumeric
+            item.label shouldBe DUMMY_CART_PRICE_ENTITY[index].label
+            item.price shouldBe DUMMY_CART_PRICE_ENTITY[index].price
+            item.priceDetailId shouldBe DUMMY_CART_PRICE_ENTITY[index].priceDetailId
+            item.priceNumeric shouldBe DUMMY_CART_PRICE_ENTITY[index].priceNumeric
         }
     }
 
@@ -450,17 +448,17 @@ class FlightBookingViewModelTest {
         // given
 
         // when
-        viewModel.setOtherPriceData(DUMMY_OTHER_PRICE)
+        viewModel.setOtherPriceData(DUMMY_OTHER_PRICE_ENTITY)
 
         // then
-        viewModel.flightOtherPriceData.value!!.size shouldBe DUMMY_OTHER_PRICE.size
+        viewModel.flightOtherPriceData.value!!.size shouldBe DUMMY_OTHER_PRICE_ENTITY.size
         val flightCart = viewModel.flightOtherPriceData.value!!
 
         for ((index, item) in flightCart.withIndex()) {
-            item.label shouldBe DUMMY_OTHER_PRICE[index].label
-            item.price shouldBe DUMMY_OTHER_PRICE[index].price
-            item.priceDetailId shouldBe DUMMY_OTHER_PRICE[index].priceDetailId
-            item.priceNumeric shouldBe DUMMY_OTHER_PRICE[index].priceNumeric
+            item.label shouldBe DUMMY_OTHER_PRICE_ENTITY[index].label
+            item.price shouldBe DUMMY_OTHER_PRICE_ENTITY[index].price
+            item.priceDetailId shouldBe DUMMY_OTHER_PRICE_ENTITY[index].priceDetailId
+            item.priceNumeric shouldBe DUMMY_OTHER_PRICE_ENTITY[index].priceNumeric
         }
     }
 
@@ -469,17 +467,36 @@ class FlightBookingViewModelTest {
         // given
 
         // when
-        viewModel.setAmenityPriceData(DUMMY_AMENITY_PRICE)
+        viewModel.setAmenityPriceData(DUMMY_AMENITY_PRICE_ENTITY)
 
         // then
-        viewModel.flightAmenityPriceData.value!!.size shouldBe DUMMY_AMENITY_PRICE.size
+        viewModel.flightAmenityPriceData.value!!.size shouldBe DUMMY_AMENITY_PRICE_ENTITY.size
         val flightCart = viewModel.flightAmenityPriceData.value!!
 
         for ((index, item) in flightCart.withIndex()) {
-            item.label shouldBe DUMMY_AMENITY_PRICE[index].label
-            item.price shouldBe DUMMY_AMENITY_PRICE[index].price
-            item.priceDetailId shouldBe DUMMY_AMENITY_PRICE[index].priceDetailId
-            item.priceNumeric shouldBe DUMMY_AMENITY_PRICE[index].priceNumeric
+            item.label shouldBe DUMMY_AMENITY_PRICE_ENTITY[index].label
+            item.price shouldBe DUMMY_AMENITY_PRICE_ENTITY[index].price
+            item.priceDetailId shouldBe DUMMY_AMENITY_PRICE_ENTITY[index].priceDetailId
+            item.priceNumeric shouldBe DUMMY_AMENITY_PRICE_ENTITY[index].priceNumeric
+        }
+    }
+
+    @Test
+    fun setAdminFeesData() {
+        // given
+
+        // when
+        viewModel.setAdminFeePriceData(DUMMY_ADMIN_FEE_PRICE_ENTITY)
+
+        // then
+        viewModel.flightAdminFeePriceData.value!!.size shouldBe DUMMY_ADMIN_FEE_PRICE_ENTITY.size
+        val flightCart = viewModel.flightAdminFeePriceData.value!!
+
+        for ((index, item) in flightCart.withIndex()) {
+            item.label shouldBe DUMMY_ADMIN_FEE_PRICE_ENTITY[index].label
+            item.price shouldBe DUMMY_ADMIN_FEE_PRICE_ENTITY[index].price
+            item.priceDetailId shouldBe DUMMY_ADMIN_FEE_PRICE_ENTITY[index].priceDetailId
+            item.priceNumeric shouldBe DUMMY_ADMIN_FEE_PRICE_ENTITY[index].priceNumeric
         }
     }
 
@@ -645,12 +662,12 @@ class FlightBookingViewModelTest {
         // when
         viewModel.setFlightBookingParam(flightBookingModel)
         viewModel.setSearchParam(
-                flightBookingModel.departureId,
-                flightBookingModel.returnId,
-                flightBookingModel.departureTerm,
-                flightBookingModel.returnTerm,
-                flightBookingModel.searchParam,
-                flightBookingModel.flightPriceModel
+            flightBookingModel.departureId,
+            flightBookingModel.returnId,
+            flightBookingModel.departureTerm,
+            flightBookingModel.returnTerm,
+            flightBookingModel.searchParam,
+            flightBookingModel.flightPriceModel
         )
         val searchParam = viewModel.getSearchParam()
 
@@ -671,7 +688,6 @@ class FlightBookingViewModelTest {
         searchParam.flightPassengerModel.adult shouldBe flightBookingModel.searchParam.flightPassengerModel.adult
         searchParam.flightPassengerModel.children shouldBe flightBookingModel.searchParam.flightPassengerModel.children
         searchParam.flightPassengerModel.infant shouldBe flightBookingModel.searchParam.flightPassengerModel.infant
-
     }
 
     @Test
@@ -743,9 +759,11 @@ class FlightBookingViewModelTest {
         val idempotencyKey = ""
 
         // when
-        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, fakeGqlInterface,
-            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
+        viewModel.validateDataAndVerifyCart(
+            fakeGqlInterface, totalPrice, contactName, contactEmail,
+            contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface
+        )
 
         // then
         viewModel.errorToastMessageData.value shouldBe R.string.flight_booking_contact_name_empty_error
@@ -763,9 +781,11 @@ class FlightBookingViewModelTest {
         val idempotencyKey = ""
 
         // when
-        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, fakeGqlInterface,
-            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
+        viewModel.validateDataAndVerifyCart(
+            fakeGqlInterface, totalPrice, contactName, contactEmail,
+            contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface
+        )
 
         // then
         viewModel.errorToastMessageData.value shouldBe R.string.flight_booking_contact_name_alpha_space_error
@@ -783,9 +803,11 @@ class FlightBookingViewModelTest {
         val idempotencyKey = ""
 
         // when
-        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, fakeGqlInterface,
-            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
+        viewModel.validateDataAndVerifyCart(
+            fakeGqlInterface, totalPrice, contactName, contactEmail,
+            contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface
+        )
 
         // then
         viewModel.errorToastMessageData.value shouldBe R.string.flight_booking_contact_email_empty_error
@@ -805,9 +827,11 @@ class FlightBookingViewModelTest {
         mockkObject(PatternsCompat.EMAIL_ADDRESS)
 
         // when
-        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, fakeGqlInterface,
-            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
+        viewModel.validateDataAndVerifyCart(
+            fakeGqlInterface, totalPrice, contactName, contactEmail,
+            contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface
+        )
 
         // then
         viewModel.errorToastMessageData.value shouldBe R.string.flight_booking_contact_email_invalid_error
@@ -827,9 +851,11 @@ class FlightBookingViewModelTest {
         mockkObject(PatternsCompat.EMAIL_ADDRESS)
 
         // when
-        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
+        viewModel.validateDataAndVerifyCart(
+            fakeGqlInterface, totalPrice, contactName, contactEmail,
             contactPhone, contactCountry, fakeGqlInterface,
-            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface
+        )
 
         // then
         viewModel.errorToastMessageData.value shouldBe R.string.flight_booking_contact_email_invalid_error
@@ -849,9 +875,11 @@ class FlightBookingViewModelTest {
         mockkObject(PatternsCompat.EMAIL_ADDRESS)
 
         // when
-        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
+        viewModel.validateDataAndVerifyCart(
+            fakeGqlInterface, totalPrice, contactName, contactEmail,
             contactPhone, contactCountry, fakeGqlInterface,
-            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface
+        )
 
         // then
         viewModel.errorToastMessageData.value shouldBe R.string.flight_booking_contact_email_invalid_error
@@ -869,9 +897,11 @@ class FlightBookingViewModelTest {
         val idempotencyKey = ""
 
         // when
-        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, fakeGqlInterface,
-            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
+        viewModel.validateDataAndVerifyCart(
+            fakeGqlInterface, totalPrice, contactName, contactEmail,
+            contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface
+        )
 
         // then
         viewModel.errorToastMessageData.value shouldBe R.string.flight_booking_contact_email_invalid_error
@@ -889,9 +919,11 @@ class FlightBookingViewModelTest {
         val idempotencyKey = ""
 
         // when
-        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, fakeGqlInterface,
-            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
+        viewModel.validateDataAndVerifyCart(
+            fakeGqlInterface, totalPrice, contactName, contactEmail,
+            contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface
+        )
 
         // then
         viewModel.errorToastMessageData.value shouldBe R.string.flight_booking_contact_phone_empty_error
@@ -909,9 +941,11 @@ class FlightBookingViewModelTest {
         val idempotencyKey = ""
 
         // when
-        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, fakeGqlInterface,
-            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
+        viewModel.validateDataAndVerifyCart(
+            fakeGqlInterface, totalPrice, contactName, contactEmail,
+            contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface
+        )
 
         // then
         viewModel.errorToastMessageData.value shouldBe R.string.flight_booking_contact_phone_invalid_error
@@ -929,9 +963,11 @@ class FlightBookingViewModelTest {
         val idempotencyKey = ""
 
         // when
-        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, fakeGqlInterface,
-            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
+        viewModel.validateDataAndVerifyCart(
+            fakeGqlInterface, totalPrice, contactName, contactEmail,
+            contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface
+        )
 
         // then
         viewModel.errorToastMessageData.value shouldBe R.string.flight_booking_contact_phone_max_length_error
@@ -949,9 +985,11 @@ class FlightBookingViewModelTest {
         val idempotencyKey = ""
 
         // when
-        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, fakeGqlInterface,
-            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
+        viewModel.validateDataAndVerifyCart(
+            fakeGqlInterface, totalPrice, contactName, contactEmail,
+            contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface
+        )
 
         // then
         viewModel.errorToastMessageData.value shouldBe R.string.flight_booking_contact_phone_min_length_error
@@ -971,9 +1009,11 @@ class FlightBookingViewModelTest {
 
         // when
         viewModel.setPassengerModels(arrayListOf(passenger))
-        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, fakeGqlInterface,
-            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
+        viewModel.validateDataAndVerifyCart(
+            fakeGqlInterface, totalPrice, contactName, contactEmail,
+            contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface
+        )
 
         // then
         viewModel.errorToastMessageData.value shouldBe R.string.flight_booking_passenger_not_fullfilled_error
@@ -995,9 +1035,11 @@ class FlightBookingViewModelTest {
 
         // when
         viewModel.setPassengerModels(arrayListOf(passenger))
-        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, fakeGqlInterface,
-            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
+        viewModel.validateDataAndVerifyCart(
+            fakeGqlInterface, totalPrice, contactName, contactEmail,
+            contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface
+        )
 
         // then
         viewModel.errorToastMessageData.value shouldBe R.string.flight_booking_passenger_not_fullfilled_error
@@ -1020,9 +1062,11 @@ class FlightBookingViewModelTest {
 
         // when
         viewModel.setPassengerModels(arrayListOf(passenger))
-        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, fakeGqlInterface,
-            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
+        viewModel.validateDataAndVerifyCart(
+            fakeGqlInterface, totalPrice, contactName, contactEmail,
+            contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface
+        )
 
         // then
         viewModel.errorToastMessageData.value shouldBe 0
@@ -1044,24 +1088,30 @@ class FlightBookingViewModelTest {
             flightBookingMealMetaViewModels = arrayListOf()
             flightBookingLuggageMetaViewModels = arrayListOf()
         }
-        val cartMeta = FlightVerifyParam.MetaData("dummy",
-                contactName, contactEmail, contactPhone, contactCountry,
-                "127.0.0.1", "Android",
-                arrayListOf(FlightVerifyParam.Passenger(
-                        type = passenger.type,
-                        title = passenger.passengerTitleId,
-                        firstName = passenger.passengerFirstName,
-                        lastName = passenger.passengerLastName
-                )),
-                arrayListOf())
+        val cartMeta = FlightVerifyParam.MetaData(
+            "dummy",
+            contactName, contactEmail, contactPhone, contactCountry,
+            "127.0.0.1", "Android",
+            arrayListOf(
+                FlightVerifyParam.Passenger(
+                    type = passenger.type,
+                    title = passenger.passengerTitleId,
+                    firstName = passenger.passengerFirstName,
+                    lastName = passenger.passengerLastName
+                )
+            ),
+            arrayListOf()
+        )
 
         // when
         viewModel.pastVerifyParam = Gson().toJson(cartMeta)
         viewModel.setPassengerModels(arrayListOf(passenger))
         viewModel.setCartId("dummy")
-        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, fakeGqlInterface,
-            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
+        viewModel.validateDataAndVerifyCart(
+            fakeGqlInterface, totalPrice, contactName, contactEmail,
+            contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface
+        )
 
         // then
         viewModel.errorToastMessageData.value shouldBe 0
@@ -1082,71 +1132,77 @@ class FlightBookingViewModelTest {
             passengerLastName = "Last"
             passengerBirthdate = "2020-11-11T10:10:10Z"
             flightBookingMealMetaViewModels = arrayListOf(
-                    FlightBookingAmenityMetaModel().apply {
-                        arrivalId = "BTJ"
-                        departureId = "CGK"
-                        journeyId = "dummyJourneyId"
-                        key = ""
-                        description = ""
-                        amenities = arrayListOf(
-                                FlightBookingAmenityModel().apply {
-                                    id = "1"
-                                    title = "makanan"
-                                    price = "Rp100.000"
-                                    priceNumeric = 100000
-                                    departureId = "dummy"
-                                    arrivalId = "dummy"
-                                    amenityType = FlightBookingMapper.AMENITY_MEAL
-                                }
-                        )
-                    }
+                FlightBookingAmenityMetaModel().apply {
+                    arrivalId = "BTJ"
+                    departureId = "CGK"
+                    journeyId = "dummyJourneyId"
+                    key = ""
+                    description = ""
+                    amenities = arrayListOf(
+                        FlightBookingAmenityModel().apply {
+                            id = "1"
+                            title = "makanan"
+                            price = "Rp100.000"
+                            priceNumeric = 100000
+                            departureId = "dummy"
+                            arrivalId = "dummy"
+                            amenityType = FlightBookingMapper.AMENITY_MEAL
+                        }
+                    )
+                }
             )
             flightBookingLuggageMetaViewModels = arrayListOf(
-                    FlightBookingAmenityMetaModel().apply {
-                        arrivalId = "BTJ"
-                        departureId = "CGK"
-                        journeyId = "dummyJourneyId"
-                        key = ""
-                        description = ""
-                        amenities = arrayListOf(
-                                FlightBookingAmenityModel().apply {
-                                    id = "1"
-                                    title = "bagasi"
-                                    price = "Rp100.000"
-                                    priceNumeric = 100000
-                                    departureId = "dummy"
-                                    arrivalId = "dummy"
-                                    amenityType = FlightBookingMapper.AMENITY_LUGGAGE
-                                }
-                        )
-                    }
+                FlightBookingAmenityMetaModel().apply {
+                    arrivalId = "BTJ"
+                    departureId = "CGK"
+                    journeyId = "dummyJourneyId"
+                    key = ""
+                    description = ""
+                    amenities = arrayListOf(
+                        FlightBookingAmenityModel().apply {
+                            id = "1"
+                            title = "bagasi"
+                            price = "Rp100.000"
+                            priceNumeric = 100000
+                            departureId = "dummy"
+                            arrivalId = "dummy"
+                            amenityType = FlightBookingMapper.AMENITY_LUGGAGE
+                        }
+                    )
+                }
             )
             passportNationality = TravelCountryPhoneCode("ID", "Indonesia", 62)
             passportNumber = "A123456"
             passportIssuerCountry = TravelCountryPhoneCode("ID", "Indonesia", 62)
             passportExpiredDate = "2020-11-11T01:01:01Z"
         }
-        val cartMeta = FlightVerifyParam.MetaData("dummy",
-                contactName, contactEmail, contactPhone, contactCountry,
-                "127.0.0.1", "Android",
-                arrayListOf(FlightVerifyParam.Passenger(
-                        type = passenger.type,
-                        title = passenger.passengerTitleId,
-                        firstName = passenger.passengerFirstName,
-                        lastName = passenger.passengerLastName
-                )),
-                arrayListOf())
+        val cartMeta = FlightVerifyParam.MetaData(
+            "dummy",
+            contactName, contactEmail, contactPhone, contactCountry,
+            "127.0.0.1", "Android",
+            arrayListOf(
+                FlightVerifyParam.Passenger(
+                    type = passenger.type,
+                    title = passenger.passengerTitleId,
+                    firstName = passenger.passengerFirstName,
+                    lastName = passenger.passengerLastName
+                )
+            ),
+            arrayListOf()
+        )
         val bookingModel = DUMMY_BOOKING_INTERNATIONAL_MODEL
 
         // when
         viewModel.setFlightBookingParam(bookingModel)
-        viewModel.setOtherPriceData(DUMMY_OTHER_PRICE)
+        viewModel.setOtherPriceData(DUMMY_OTHER_PRICE_ENTITY)
         viewModel.pastVerifyParam = Gson().toJson(cartMeta)
         viewModel.setPassengerModels(arrayListOf(passenger))
         viewModel.setCartId("dummy")
-        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, fakeGqlInterface,
-            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
+        viewModel.validateDataAndVerifyCart(
+            fakeGqlInterface, totalPrice, contactName, contactEmail,
+            contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface
+        )
 
         // then
         viewModel.errorToastMessageData.value shouldBe 0
@@ -1166,71 +1222,77 @@ class FlightBookingViewModelTest {
             passengerFirstName = "Dummy First"
             passengerLastName = "Last"
             flightBookingMealMetaViewModels = arrayListOf(
-                    FlightBookingAmenityMetaModel().apply {
-                        arrivalId = "BTJ"
-                        departureId = "CGK"
-                        journeyId = "dummyJourneyId"
-                        key = ""
-                        description = ""
-                        amenities = arrayListOf(
-                                FlightBookingAmenityModel().apply {
-                                    id = "1"
-                                    title = "makanan"
-                                    price = "Rp100.000"
-                                    priceNumeric = 100000
-                                    departureId = "dummy"
-                                    arrivalId = "dummy"
-                                    amenityType = FlightBookingMapper.AMENITY_MEAL
-                                }
-                        )
-                    }
+                FlightBookingAmenityMetaModel().apply {
+                    arrivalId = "BTJ"
+                    departureId = "CGK"
+                    journeyId = "dummyJourneyId"
+                    key = ""
+                    description = ""
+                    amenities = arrayListOf(
+                        FlightBookingAmenityModel().apply {
+                            id = "1"
+                            title = "makanan"
+                            price = "Rp100.000"
+                            priceNumeric = 100000
+                            departureId = "dummy"
+                            arrivalId = "dummy"
+                            amenityType = FlightBookingMapper.AMENITY_MEAL
+                        }
+                    )
+                }
             )
             flightBookingLuggageMetaViewModels = arrayListOf(
-                    FlightBookingAmenityMetaModel().apply {
-                        arrivalId = "BTJ"
-                        departureId = "CGK"
-                        journeyId = "dummyJourneyId"
-                        key = ""
-                        description = ""
-                        amenities = arrayListOf(
-                                FlightBookingAmenityModel().apply {
-                                    id = "1"
-                                    title = "bagasi"
-                                    price = "Rp100.000"
-                                    priceNumeric = 100000
-                                    departureId = "dummy"
-                                    arrivalId = "dummy"
-                                    amenityType = FlightBookingMapper.AMENITY_LUGGAGE
-                                }
-                        )
-                    }
+                FlightBookingAmenityMetaModel().apply {
+                    arrivalId = "BTJ"
+                    departureId = "CGK"
+                    journeyId = "dummyJourneyId"
+                    key = ""
+                    description = ""
+                    amenities = arrayListOf(
+                        FlightBookingAmenityModel().apply {
+                            id = "1"
+                            title = "bagasi"
+                            price = "Rp100.000"
+                            priceNumeric = 100000
+                            departureId = "dummy"
+                            arrivalId = "dummy"
+                            amenityType = FlightBookingMapper.AMENITY_LUGGAGE
+                        }
+                    )
+                }
             )
             passportNationality = null
             passportNumber = null
             passportIssuerCountry = null
             passportExpiredDate = null
         }
-        val cartMeta = FlightVerifyParam.MetaData("dummy",
-                contactName, contactEmail, contactPhone, contactCountry,
-                "127.0.0.1", "Android",
-                arrayListOf(FlightVerifyParam.Passenger(
-                        type = passenger.type,
-                        title = passenger.passengerTitleId,
-                        firstName = passenger.passengerFirstName,
-                        lastName = passenger.passengerLastName
-                )),
-                arrayListOf())
+        val cartMeta = FlightVerifyParam.MetaData(
+            "dummy",
+            contactName, contactEmail, contactPhone, contactCountry,
+            "127.0.0.1", "Android",
+            arrayListOf(
+                FlightVerifyParam.Passenger(
+                    type = passenger.type,
+                    title = passenger.passengerTitleId,
+                    firstName = passenger.passengerFirstName,
+                    lastName = passenger.passengerLastName
+                )
+            ),
+            arrayListOf()
+        )
         val bookingModel = DUMMY_BOOKING_INTERNATIONAL_MODEL
 
         // when
         viewModel.setFlightBookingParam(bookingModel)
-        viewModel.setOtherPriceData(DUMMY_OTHER_PRICE)
+        viewModel.setOtherPriceData(DUMMY_OTHER_PRICE_ENTITY)
         viewModel.pastVerifyParam = Gson().toJson(cartMeta)
         viewModel.setPassengerModels(arrayListOf(passenger))
         viewModel.setCartId("dummy")
-        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, fakeGqlInterface,
-            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
+        viewModel.validateDataAndVerifyCart(
+            fakeGqlInterface, totalPrice, contactName, contactEmail,
+            contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface
+        )
 
         // then
         viewModel.errorToastMessageData.value shouldBe 0
@@ -1240,7 +1302,7 @@ class FlightBookingViewModelTest {
     fun onCancelAppliedVoucher() {
         // given
         val result = hashMapOf<Type, Any>(
-                FlightCancelVoucher.Response::class.java to FlightCancelVoucher.Response()
+            FlightCancelVoucher.Response::class.java to FlightCancelVoucher.Response()
         )
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
         coEvery { graphqlRepository.response(any()) } returns gqlResponse
@@ -1273,9 +1335,11 @@ class FlightBookingViewModelTest {
         // when
         viewModel.setPassengerModels(arrayListOf(passenger))
         viewModel.setCartId("dummy")
-        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, fakeGqlInterface,
-            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
+        viewModel.validateDataAndVerifyCart(
+            fakeGqlInterface, totalPrice, contactName, contactEmail,
+            contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface
+        )
 
         // then
         viewModel.isStillLoading shouldBe false
@@ -1299,31 +1363,32 @@ class FlightBookingViewModelTest {
             flightBookingLuggageMetaViewModels = arrayListOf()
         }
         val responseVerify = hashMapOf<Type, Any>(
-                FlightVerify.Response::class.java to FlightVerify.Response(
-                        FlightVerify.FlightVerifyMetaAndData(
-                                data = FlightVerify(
-                                        arrayListOf(
-                                                FlightVerify.FlightVerifyCart(
-                                                        metaData = FlightVerify.CartMetaData(
-                                                                "",
-                                                                "dummyInvoiceId"
-                                                        )
-                                                )
-                                        ),
-                                        promo = FlightVerify.Promo(
-                                                code = "DUMMY"
-                                        )
-                                ),
-                                meta = FlightVerify.Meta(
-                                        needRefresh = false
+            FlightVerify.Response::class.java to FlightVerify.Response(
+                FlightVerify.FlightVerifyMetaAndData(
+                    data = FlightVerify(
+                        arrayListOf(
+                            FlightVerify.FlightVerifyCart(
+                                metaData = FlightVerify.CartMetaData(
+                                    "",
+                                    "dummyInvoiceId"
                                 )
+                            )
+                        ),
+                        promo = FlightVerify.Promo(
+                            code = "DUMMY"
                         )
-                ))
+                    ),
+                    meta = FlightVerify.Meta(
+                        needRefresh = false
+                    )
+                )
+            )
+        )
         val gqlResponseVerify = GraphqlResponse(responseVerify, mapOf<Type, List<GraphqlError>>(), false)
         val responseCheckVoucher = hashMapOf<Type, Any>(
-                FlightVoucher.Response::class.java to FlightVoucher.Response(
-                        flightVoucher = FlightVoucher(message = "Promo")
-                )
+            FlightVoucher.Response::class.java to FlightVoucher.Response(
+                flightVoucher = FlightVoucher(message = "Promo")
+            )
         )
         val gqlReponseVoucher = GraphqlResponse(responseCheckVoucher, mapOf(), false)
         coEvery { graphqlRepository.response(any(), any()) } returnsMany listOf(gqlResponseVerify, gqlReponseVoucher)
@@ -1332,9 +1397,11 @@ class FlightBookingViewModelTest {
         viewModel.setPassengerModels(arrayListOf(passenger))
         viewModel.updatePromoData(PromoData(1, "Testing"))
         viewModel.setCartId("dummy")
-        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, fakeGqlInterface,
-            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
+        viewModel.validateDataAndVerifyCart(
+            fakeGqlInterface, totalPrice, contactName, contactEmail,
+            contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface
+        )
 
         // then
         viewModel.isStillLoading shouldBe false
@@ -1362,38 +1429,45 @@ class FlightBookingViewModelTest {
             flightBookingLuggageMetaViewModels = arrayListOf()
         }
         val responseVerify = hashMapOf<Type, Any>(
-                FlightVerify.Response::class.java to FlightVerify.Response(
-                        FlightVerify.FlightVerifyMetaAndData(
-                                data = FlightVerify(
-                                        arrayListOf(
-                                                FlightVerify.FlightVerifyCart()
-                                        ),
-                                        promo = FlightVerify.Promo(
-                                                code = "DUMMY"
-                                        )
-                                ),
-                                meta = FlightVerify.Meta(
-                                        needRefresh = false
-                                )
+            FlightVerify.Response::class.java to FlightVerify.Response(
+                FlightVerify.FlightVerifyMetaAndData(
+                    data = FlightVerify(
+                        arrayListOf(
+                            FlightVerify.FlightVerifyCart()
+                        ),
+                        promo = FlightVerify.Promo(
+                            code = "DUMMY"
                         )
-                ))
+                    ),
+                    meta = FlightVerify.Meta(
+                        needRefresh = false
+                    )
+                )
+            )
+        )
         val gqlResponseVerify = GraphqlResponse(responseVerify, mapOf<Type, List<GraphqlError>>(), false)
-        val gqlVoucherException = Exception(Gson().toJson(
-                listOf(FlightError("4").apply {
-                    status = "Failed"
-                    message = "Error to fetch"
-                    title = "title"
-                })
-        ))
+        val gqlVoucherException = Exception(
+            Gson().toJson(
+                listOf(
+                    FlightError("4").apply {
+                        status = "Failed"
+                        message = "Error to fetch"
+                        title = "title"
+                    }
+                )
+            )
+        )
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseVerify andThenThrows gqlVoucherException
 
         // when
         viewModel.setPassengerModels(arrayListOf(passenger))
         viewModel.updatePromoData(PromoData(1, "Testing"))
         viewModel.setCartId("dummy")
-        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, fakeGqlInterface,
-            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
+        viewModel.validateDataAndVerifyCart(
+            fakeGqlInterface, totalPrice, contactName, contactEmail,
+            contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface
+        )
 
         // then
         viewModel.isStillLoading shouldBe false
@@ -1425,9 +1499,11 @@ class FlightBookingViewModelTest {
         viewModel.pastVerifyParam = "nothing"
         viewModel.setPassengerModels(arrayListOf(passenger))
         viewModel.setCartId("dummy")
-        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, fakeGqlInterface,
-            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
+        viewModel.validateDataAndVerifyCart(
+            fakeGqlInterface, totalPrice, contactName, contactEmail,
+            contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface
+        )
 
         // then
         assert(viewModel.flightCartResult.value is Fail)
@@ -1450,9 +1526,9 @@ class FlightBookingViewModelTest {
             flightBookingLuggageMetaViewModels = arrayListOf()
         }
         val atcResponse = hashMapOf<Type, Any>(
-                FlightAddToCartData.Response::class.java to FlightAddToCartData.Response(
-                        FlightAddToCartData("new cart id")
-                )
+            FlightAddToCartData.Response::class.java to FlightAddToCartData.Response(
+                FlightAddToCartData("new cart id")
+            )
         )
         val gqlResponse = GraphqlResponse(atcResponse, mapOf(), false)
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
@@ -1461,9 +1537,11 @@ class FlightBookingViewModelTest {
         viewModel.pastVerifyParam = "nothing"
         viewModel.setPassengerModels(arrayListOf(passenger))
         viewModel.setCartId("dummy")
-        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, fakeGqlInterface,
-            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
+        viewModel.validateDataAndVerifyCart(
+            fakeGqlInterface, totalPrice, contactName, contactEmail,
+            contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface
+        )
 
         // then
         viewModel.getFlightBookingParam().cartId shouldBe "new cart id"
@@ -1475,9 +1553,15 @@ class FlightBookingViewModelTest {
         val fakeGqlQueryInterface = FlightDummyGqlInterfaceImpl()
 
         // when
-        viewModel.proceedCheckoutWithoutLuggage(fakeGqlQueryInterface, fakeGqlQueryInterface, 10000,
-                "dummy contact name", "dummy@email.com", "628111111111",
-                "Indonesia")
+        viewModel.proceedCheckoutWithoutLuggage(
+            fakeGqlQueryInterface,
+            fakeGqlQueryInterface,
+            10000,
+            "dummy contact name",
+            "dummy@email.com",
+            "628111111111",
+            "Indonesia"
+        )
 
         // then
         viewModel.flightPassengersData.value!!.size shouldBe 0
@@ -1493,9 +1577,15 @@ class FlightBookingViewModelTest {
 
         // when
         viewModel.setPassengerModels(passengerModels)
-        viewModel.proceedCheckoutWithoutLuggage(fakeGqlInterface, fakeGqlInterface, 10000,
-                "dummy contact name", "dummy@email.com", "628111111111",
-                "Indonesia")
+        viewModel.proceedCheckoutWithoutLuggage(
+            fakeGqlInterface,
+            fakeGqlInterface,
+            10000,
+            "dummy contact name",
+            "dummy@email.com",
+            "628111111111",
+            "Indonesia"
+        )
 
         // then
         viewModel.flightPassengersData.value!!.size shouldBe 1
@@ -1519,26 +1609,27 @@ class FlightBookingViewModelTest {
             flightBookingLuggageMetaViewModels = arrayListOf()
         }
         val responseVerify = hashMapOf<Type, Any>(
-                FlightVerify.Response::class.java to FlightVerify.Response(
-                        FlightVerify.FlightVerifyMetaAndData(
-                                data = FlightVerify(
-                                        arrayListOf(
-                                                FlightVerify.FlightVerifyCart()
-                                        ),
-                                        promo = FlightVerify.Promo(
-                                                code = "DUMMY"
-                                        )
-                                ),
-                                meta = FlightVerify.Meta(
-                                        needRefresh = false
-                                )
+            FlightVerify.Response::class.java to FlightVerify.Response(
+                FlightVerify.FlightVerifyMetaAndData(
+                    data = FlightVerify(
+                        arrayListOf(
+                            FlightVerify.FlightVerifyCart()
+                        ),
+                        promo = FlightVerify.Promo(
+                            code = "DUMMY"
                         )
-                ))
+                    ),
+                    meta = FlightVerify.Meta(
+                        needRefresh = false
+                    )
+                )
+            )
+        )
         val gqlResponseVerify = GraphqlResponse(responseVerify, mapOf<Type, List<GraphqlError>>(), false)
         val responseCheckVoucher = hashMapOf<Type, Any>(
-                FlightVoucher.Response::class.java to FlightVoucher.Response(
-                        flightVoucher = FlightVoucher(message = "Promo")
-                )
+            FlightVoucher.Response::class.java to FlightVoucher.Response(
+                flightVoucher = FlightVoucher(message = "Promo")
+            )
         )
         val gqlReponseVoucher = GraphqlResponse(responseCheckVoucher, mapOf(), false)
         coEvery { graphqlRepository.response(any(), any()) } returnsMany listOf(gqlResponseVerify, gqlReponseVoucher) andThenThrows Throwable("Failed to Fetch")
@@ -1547,9 +1638,11 @@ class FlightBookingViewModelTest {
         viewModel.setPassengerModels(arrayListOf(passenger))
         viewModel.updatePromoData(PromoData(1, "Testing"))
         viewModel.setCartId("dummy")
-        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, fakeGqlInterface,
-            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
+        viewModel.validateDataAndVerifyCart(
+            fakeGqlInterface, totalPrice, contactName, contactEmail,
+            contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface
+        )
 
         viewModel.checkOutCart(fakeGqlInterface, 10000)
 
@@ -1575,30 +1668,31 @@ class FlightBookingViewModelTest {
             flightBookingLuggageMetaViewModels = arrayListOf()
         }
         val responseVerify = hashMapOf<Type, Any>(
-                FlightVerify.Response::class.java to FlightVerify.Response(
-                        FlightVerify.FlightVerifyMetaAndData(
-                                data = FlightVerify(
-                                        arrayListOf(
-                                                FlightVerify.FlightVerifyCart()
-                                        ),
-                                        promo = FlightVerify.Promo(
-                                                code = "DUMMY"
-                                        )
-                                ),
-                                meta = FlightVerify.Meta(
-                                        needRefresh = false
-                                )
+            FlightVerify.Response::class.java to FlightVerify.Response(
+                FlightVerify.FlightVerifyMetaAndData(
+                    data = FlightVerify(
+                        arrayListOf(
+                            FlightVerify.FlightVerifyCart()
+                        ),
+                        promo = FlightVerify.Promo(
+                            code = "DUMMY"
                         )
-                ))
+                    ),
+                    meta = FlightVerify.Meta(
+                        needRefresh = false
+                    )
+                )
+            )
+        )
         val gqlResponseVerify = GraphqlResponse(responseVerify, mapOf<Type, List<GraphqlError>>(), false)
         val responseCheckVoucher = hashMapOf<Type, Any>(
-                FlightVoucher.Response::class.java to FlightVoucher.Response(
-                        flightVoucher = FlightVoucher(message = "Promo")
-                )
+            FlightVoucher.Response::class.java to FlightVoucher.Response(
+                flightVoucher = FlightVoucher(message = "Promo")
+            )
         )
         val gqlReponseVoucher = GraphqlResponse(responseCheckVoucher, mapOf(), false)
         val responseCheckout = hashMapOf<Type, Any>(
-                FlightCheckoutData.Response::class.java to FlightCheckoutData.Response(DUMMY_CHECKOUT)
+            FlightCheckoutData.Response::class.java to FlightCheckoutData.Response(DUMMY_CHECKOUT)
         )
         val gqlResponseCheckout = GraphqlResponse(responseCheckout, mapOf(), false)
         coEvery { graphqlRepository.response(any(), any()) } returnsMany listOf(gqlResponseVerify, gqlReponseVoucher, gqlResponseCheckout)
@@ -1607,9 +1701,11 @@ class FlightBookingViewModelTest {
         viewModel.setPassengerModels(arrayListOf(passenger))
         viewModel.updatePromoData(PromoData(1, "Testing"))
         viewModel.setCartId("dummy")
-        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, fakeGqlInterface,
-            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
+        viewModel.validateDataAndVerifyCart(
+            fakeGqlInterface, totalPrice, contactName, contactEmail,
+            contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface
+        )
 
         viewModel.checkOutCart(fakeGqlInterface, 10000)
 
@@ -1641,11 +1737,11 @@ class FlightBookingViewModelTest {
     fun addToCart_successAddToCart() {
         // given
         val gqlResponse = GraphqlResponse(
-                mapOf<Type, Any>(
-                        FlightAddToCartData.Response::class.java to DUMMY_ATC
-                ),
-                mapOf(),
-                false
+            mapOf<Type, Any>(
+                FlightAddToCartData.Response::class.java to DUMMY_ATC
+            ),
+            mapOf(),
+            false
         )
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
@@ -1820,19 +1916,19 @@ class FlightBookingViewModelTest {
         assert(viewModel.tickerData.value is Fail)
     }
 
-
     @Test
-    fun cancelVoucher_returnSucces(){
+    fun cancelVoucher_returnSucces() {
         // given
         val gqlResponse = GraphqlResponse(
             mapOf<Type, Any>(
                 FlightCancelVoucher.Response::class.java to DUMMY_CANCEL_VOUCHER_SUCCESS
             ),
             mapOf(),
-            false)
+            false
+        )
         coEvery { graphqlRepository.response(any(), any()) } coAnswers { gqlResponse }
 
-        //when
+        // when
         viewModel.onCancelAppliedVoucher(FlightDummyGqlInterfaceImpl())
 
         // then
@@ -1841,17 +1937,18 @@ class FlightBookingViewModelTest {
     }
 
     @Test
-    fun cancelVoucher_returnSuccesbutFailedFromBE(){
+    fun cancelVoucher_returnSuccesbutFailedFromBE() {
         // given
         val gqlResponse = GraphqlResponse(
             mapOf<Type, Any>(
                 FlightCancelVoucher.Response::class.java to DUMMY_CANCEL_VOUCHER_FAILED
             ),
             mapOf(),
-            false)
+            false
+        )
         coEvery { graphqlRepository.response(any(), any()) } coAnswers { gqlResponse }
 
-        //when
+        // when
         viewModel.onCancelAppliedVoucher(FlightDummyGqlInterfaceImpl())
 
         // then
@@ -1859,16 +1956,15 @@ class FlightBookingViewModelTest {
         viewModel.errorCancelVoucher.value shouldBe R.string.flight_error_cancel_voucher
     }
 
-
     @Test
-    fun cancelVoucher_returnFailed(){
+    fun cancelVoucher_returnFailed() {
         // given
         coEvery { graphqlRepository.response(any(), any()) } coAnswers { throw Throwable() }
 
-        //when
+        // when
         viewModel.onCancelAppliedVoucher(FlightDummyGqlInterfaceImpl())
 
-        //then
+        // then
         assert(viewModel.errorCancelVoucher.value is Int)
         viewModel.errorCancelVoucher.value shouldBe R.string.flight_error_cancel_voucher
     }

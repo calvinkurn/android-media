@@ -76,6 +76,7 @@ import com.tokopedia.people.views.fragment.bottomsheet.UserProfileReviewOnboardi
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.uimodel.profile.ProfileCreationInfoUiModel
+import com.tokopedia.people.views.uimodel.profile.ProfileTabState
 import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileType
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
@@ -411,14 +412,6 @@ class UserProfileFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
                 when (event) {
-                    is UserProfileUiEvent.ErrorGetProfileTab -> {
-                        if (binding.swipeRefreshLayout.isRefreshing) {
-                            binding.swipeRefreshLayout.isRefreshing = false
-                        }
-                        showErrorContent {
-                            refreshLandingPageData(true)
-                        }
-                    }
                     is UserProfileUiEvent.ErrorFollowUnfollow -> {
                         val message = if (event.throwable.message.isNullOrEmpty()) getDefaultErrorMessage() else event.throwable.message
                         message?.let { view?.showErrorToast(it) }
@@ -723,24 +716,37 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
-    private fun renderProfileTab(prev: ProfileTabUiModel?, value: ProfileTabUiModel) {
-        if ((prev == null || prev == value) && value == ProfileTabUiModel()) return
+    private fun renderProfileTab(prev: ProfileTabState?, value: ProfileTabState) {
+        if (prev == value) return
 
-        if (value.tabs == pagerAdapter.getTabs()) return
+        when (value) {
+            is ProfileTabState.Success -> {
+                if (value.profileTab == ProfileTabUiModel()) {
+                    if (viewModel.isSelfProfile) emptyPostSelf() else emptyPostVisitor()
+                    mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
+                } else {
+                    mainBinding.shopRecommendation.hide()
+                    mainBinding.profileTabs.viewPager.currentItem = viewPagerSelectedPage
+                    mainBinding.userPostContainer.displayedChild = PAGE_CONTENT
+                }
 
-        pagerAdapter.insertFragment(value.tabs)
-        mainBinding.profileTabs.tabLayout.showWithCondition(value.showTabs)
+                if (value.profileTab.tabs == pagerAdapter.getTabs()) return
 
-        val selectedTabKey = UserProfileParam.getSelectedTab(activity?.intent, isRemoveAfterGet = true).key
-        setupAutoSelectTabIfAny(selectedTabKey)
+                pagerAdapter.updateFragment(value.profileTab.tabs)
+                mainBinding.profileTabs.tabLayout.showWithCondition(value.profileTab.showTabs)
 
-        if (value == ProfileTabUiModel()) {
-            if (viewModel.isSelfProfile) emptyPostSelf() else emptyPostVisitor()
-            mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
-        } else {
-            mainBinding.shopRecommendation.hide()
-            mainBinding.profileTabs.viewPager.currentItem = viewPagerSelectedPage
-            mainBinding.userPostContainer.displayedChild = PAGE_CONTENT
+                val selectedTabKey = UserProfileParam.getSelectedTab(activity?.intent, isRemoveAfterGet = true).key
+                setupAutoSelectTabIfAny(selectedTabKey)
+            }
+            is ProfileTabState.Error -> {
+                if (binding.swipeRefreshLayout.isRefreshing) {
+                    binding.swipeRefreshLayout.isRefreshing = false
+                }
+                showErrorContent {
+                    refreshLandingPageData(true)
+                }
+            }
+            else -> {}
         }
     }
 
