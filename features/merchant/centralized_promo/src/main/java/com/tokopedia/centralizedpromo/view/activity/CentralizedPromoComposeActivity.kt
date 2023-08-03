@@ -7,6 +7,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.centralizedpromo.compose.CentralizedPromoScreen
+import com.tokopedia.centralizedpromo.compose.showToaster
 import com.tokopedia.centralizedpromo.di.component.DaggerCentralizedPromoComponent
 import com.tokopedia.centralizedpromo.view.viewmodel.CentralizedPromoComposeViewModel
 import com.tokopedia.nest.principles.ui.NestTheme
@@ -35,6 +36,10 @@ class CentralizedPromoComposeActivity : AppCompatActivity() {
         setContent {
             NestTheme {
                 val uiState = viewModel.layoutList.collectAsState().value
+                val showToaster = viewModel.toasterState.collectAsState().value
+
+                showToaster(showToaster, viewModel::sendEvent)
+
                 CentralizedPromoScreen(
                     uiState = uiState,
                     onEvent = viewModel::sendEvent,

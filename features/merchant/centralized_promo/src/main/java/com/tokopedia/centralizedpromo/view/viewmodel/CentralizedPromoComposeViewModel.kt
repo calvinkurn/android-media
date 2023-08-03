@@ -16,8 +16,8 @@ import com.tokopedia.centralizedpromo.view.PromoCreationMapper
 import com.tokopedia.centralizedpromo.view.model.BaseUiModel
 import com.tokopedia.centralizedpromo.view.model.CentralizedPromoEvent
 import com.tokopedia.centralizedpromo.view.model.CentralizedPromoEvent.FilterUpdate
-import com.tokopedia.centralizedpromo.view.model.CentralizedPromoEvent.SwipeRefresh
 import com.tokopedia.centralizedpromo.view.model.CentralizedPromoEvent.UpdateRbacBottomSheet
+import com.tokopedia.centralizedpromo.view.model.CentralizedPromoEvent.UpdateToasterState
 import com.tokopedia.centralizedpromo.view.model.CentralizedPromoUiState
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -32,6 +32,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
 
+data class Toasters(
+    val shouldShow: Boolean = false
+)
+
 class CentralizedPromoComposeViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
     private val getOnGoingPromotionUseCase: GetOnGoingPromotionUseCase,
@@ -44,27 +48,31 @@ class CentralizedPromoComposeViewModel @Inject constructor(
     private val _layoutList = MutableStateFlow(CentralizedPromoUiState(isLoading = LoadingType.ALL))
     val layoutList = _layoutList.asStateFlow()
 
+    private val _toasterState = MutableStateFlow(false)
+    val toasterState = _toasterState.asStateFlow()
+
     init {
         // Initial load tabId = "", means no filter is selected
-        viewModelScope.launch {
-            getOnGoingOrPromoCreation(
-                ON_GOING_PROMO,
-                PROMO_CREATION,
-                tabId = ""
-            )
-        }
+        getOnGoingOrPromoCreation(
+            PROMO_CREATION,
+            ON_GOING_PROMO,
+            tabId = ""
+        )
     }
 
-    fun sendEvent(event: CentralizedPromoEvent) = viewModelScope.launch {
+    fun sendEvent(event: CentralizedPromoEvent) {
         when (event) {
+            is UpdateRbacBottomSheet -> {
+                setKeyRBAC(event.key)
+            }
             is FilterUpdate -> {
                 updateFilter(event.selectedTabFilterData)
             }
-            is SwipeRefresh -> {
-                swipeToRefresh()
+            is UpdateToasterState -> {
+                updateToasterState(event.showToaster)
             }
-            is UpdateRbacBottomSheet -> {
-                setKeyRBAC(event.key)
+            else -> {
+                swipeToRefresh()
             }
         }
     }
@@ -108,7 +116,7 @@ class CentralizedPromoComposeViewModel @Inject constructor(
 
     private fun getOnGoingOrPromoCreation(
         vararg layoutTypes: LayoutType,
-        tabId: String = ""
+        tabId: String
     ) {
         viewModelScope.launch(dispatcher.io) {
             val results = layoutTypes.map { type ->
@@ -122,8 +130,19 @@ class CentralizedPromoComposeViewModel @Inject constructor(
                         PROMO_CREATION -> state.copy(promoCreationData = result)
                     }
                 }
+
+                if (updatedState.onGoingData is Fail || updatedState.promoCreationData is Fail) {
+                    updateToasterState(true)
+                }
+
                 updatedState.copy(isLoading = LoadingType.NONE, isSwipeRefresh = false)
             }
+        }
+    }
+
+    private fun updateToasterState(showToaster: Boolean) {
+        _toasterState.update {
+            showToaster
         }
     }
 
