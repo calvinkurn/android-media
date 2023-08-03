@@ -53,6 +53,7 @@ class DynamicOwocInvoiceViewHolder(
             messageParent.setContainerBackground(bindBackground())
             invoiceAdapter = ChatbotDynamicOwocInvoiceAdapter()
             setUpReadMoreButtonClickListener(uiModel)
+            listener.onReceiveOwocInvoiceList()
             if ((uiModel.invoiceList?.size ?: 0) > INVOICE_LIST_SIZE) {
                 showSeeAll = true
                 setupReadMoreButton()
