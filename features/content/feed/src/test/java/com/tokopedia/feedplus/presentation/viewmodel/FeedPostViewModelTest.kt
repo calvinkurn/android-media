@@ -18,9 +18,15 @@ import com.tokopedia.content.common.usecase.PostUserReportUseCase
 import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.feed.component.product.FeedTaggedProductUiModel
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXGQLResponse
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXGetActivityProductsResponse
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.data.pojo.UpcomingCampaignResponse
 import com.tokopedia.feedcomponent.data.pojo.shopmutation.FollowShop
 import com.tokopedia.feedcomponent.data.pojo.shopmutation.ShopFollowModel
+import com.tokopedia.feedcomponent.domain.mapper.ProductMapper
+import com.tokopedia.feedcomponent.domain.usecase.FeedXGetActivityProductsUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
 import com.tokopedia.feedcomponent.people.model.ProfileDoFollowModelBase
 import com.tokopedia.feedcomponent.people.model.ProfileDoFollowedData
@@ -110,6 +116,7 @@ class FeedPostViewModelTest {
     private val affiliateCookieHelper: AffiliateCookieHelper = mockk()
     private val submitReportUseCase: FeedComplaintSubmitReportUseCase = mockk()
     private val uiEventManager = UiEventManager<FeedPostEvent>()
+    private val feedXGetActivityProductsUseCase: FeedXGetActivityProductsUseCase = mockk()
 
     private lateinit var viewModel: FeedPostViewModel
 
@@ -136,6 +143,7 @@ class FeedPostViewModelTest {
             getReportUseCase = getReportListUseCase,
             postReportUseCase = postReportUseCase,
             uiEventManager = uiEventManager,
+            feedXGetActivityProductsUseCase = feedXGetActivityProductsUseCase,
             dispatchers = testDispatcher
         )
     }
@@ -1102,6 +1110,106 @@ class FeedPostViewModelTest {
         assert(response is Success)
         assert((response as Success).data == dummyResponse)
     }
+
+    @Test
+    fun fetchFeedProduct_whenFailed_shouldBeFail() {
+        // given
+        val activityId = "123456"
+        coEvery {
+            feedXGetActivityProductsUseCase.getFeedDetailParam(
+                activityId,
+                ""
+            )
+        } returns mapOf()
+        coEvery { feedXGetActivityProductsUseCase(any()) } throws Throwable("Failed")
+
+        // when
+        viewModel.fetchFeedProduct(
+            activityId,
+            emptyList(),
+            FeedTaggedProductUiModel.SourceType.Organic
+        )
+
+        // then
+        assert(viewModel.feedTagProductList.value is Fail)
+        val response = viewModel.feedTagProductList.value as Fail
+        assert(response.throwable.message == "Failed")
+    }
+
+    @Test
+    fun fetchFeedProduct_whenSuccess_shouldBeSuccess() {
+        // given
+        val activityId = "123456"
+        val dummyData = getDummyData()
+        val productList = dummyData.data.products.map {
+            ProductMapper.transform(
+                it,
+                dummyData.data.campaign,
+                FeedTaggedProductUiModel.SourceType.Organic
+            )
+        }
+        coEvery {
+            feedXGetActivityProductsUseCase.getFeedDetailParam(
+                activityId,
+                ""
+            )
+        } returns mapOf()
+        coEvery { feedXGetActivityProductsUseCase(any()) } returns getDummyData()
+
+        // when
+        viewModel.fetchFeedProduct(
+            activityId,
+            productList,
+            FeedTaggedProductUiModel.SourceType.Organic
+        )
+
+        // then
+        assert(viewModel.feedTagProductList.value is Success)
+        val response = viewModel.feedTagProductList.value as Success
+        assert(response.data.size == getDummyData().data.products.size)
+    }
+
+    @Test
+    fun fetchFeedProduct_whenSuccessWithoutDefault_shouldBeSuccess() {
+        // given
+        val activityId = "123456"
+        coEvery {
+            feedXGetActivityProductsUseCase.getFeedDetailParam(
+                activityId,
+                ""
+            )
+        } returns mapOf()
+        coEvery { feedXGetActivityProductsUseCase(any()) } returns getDummyData()
+
+        // when
+        viewModel.fetchFeedProduct(
+            activityId,
+            emptyList(),
+            FeedTaggedProductUiModel.SourceType.Organic
+        )
+
+        // then
+        assert(viewModel.feedTagProductList.value is Success)
+        val response = viewModel.feedTagProductList.value as Success
+        assert(response.data.size == getDummyData().data.products.size)
+    }
+
+    private fun getDummyData(): FeedXGQLResponse = FeedXGQLResponse(
+        data = FeedXGetActivityProductsResponse(
+            products = listOf(
+                FeedXProduct(shopID = "09876"),
+                FeedXProduct(),
+                FeedXProduct(),
+                FeedXProduct(),
+                FeedXProduct()
+            ),
+            isFollowed = true,
+            contentType = "content type",
+            campaign = FeedXCampaign(),
+            nextCursor = "",
+            hasVoucher = false
+        )
+    )
 
     private fun provideDefaultFeedPostMockData() {
         coEvery { feedXHomeUseCase.createParams(any(), any(), any(), any()) } returns emptyMap()
