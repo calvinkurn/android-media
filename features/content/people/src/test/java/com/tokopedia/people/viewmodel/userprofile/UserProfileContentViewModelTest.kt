@@ -148,6 +148,7 @@ class UserProfileContentViewModelTest {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
             } andThen {
                 assert(profileTab is ProfileTabState.Error)
+                it.viewModel.profileTab equalTo mockProfileTabNotShown
             }
         }
     }
