@@ -30,6 +30,7 @@ import com.tokopedia.buy_more_get_more.sort.listener.ProductSortListener
 import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.minicart.bmgm.presentation.fragment.BmgmMiniCartWidgetFragment
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
@@ -101,7 +102,20 @@ class OfferLandingPageFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupObservables()
+        showMiniCart()
         viewModel.getOfferingIndo(listOf(0), shopId, localCacheModel)
+    }
+
+    private fun showMiniCart() {
+        val fm = childFragmentManager
+
+        //don't commit transaction if state already saved or will be crashed
+        if (!fm.isStateSaved) {
+            val miniCartFragment = BmgmMiniCartWidgetFragment.getInstance(fm = fm)
+            fm.beginTransaction()
+                .replace(R.id.miniCartPlaceholder, miniCartFragment, BmgmMiniCartWidgetFragment.TAG)
+                .commitNowAllowingStateLoss()
+        }
     }
 
     private fun setupObservables() {
