@@ -2,6 +2,7 @@ package com.tokopedia.people.viewmodels
 
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.util.combine
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
@@ -40,7 +41,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -54,8 +54,9 @@ class UserProfileViewModel @AssistedInject constructor(
     private val repo: UserProfileRepository,
     private val followRepo: UserFollowRepository,
     private val userSession: UserSessionInterface,
-    private val userProfileSharedPref: UserProfileSharedPref
-) : BaseViewModel(Dispatchers.Main) {
+    private val userProfileSharedPref: UserProfileSharedPref,
+    dispatchers: CoroutineDispatchers,
+) : BaseViewModel(dispatchers.main) {
 
     @AssistedFactory
     interface Factory {
