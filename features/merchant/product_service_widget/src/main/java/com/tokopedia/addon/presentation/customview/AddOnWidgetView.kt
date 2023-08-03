@@ -40,6 +40,7 @@ class AddOnWidgetView : BaseCustomView {
     private var llSeeAll: LinearLayoutCompat? = null
     private var divSeeAll: View? = null
     private var listener: AddOnComponentListener? = null
+    private var isObserverSetupDone: Boolean = false
 
     constructor(context: Context) : super(context) {
         setup(context, null)
@@ -58,13 +59,15 @@ class AddOnWidgetView : BaseCustomView {
         val lifecycleOwner = context as? LifecycleOwner ?:
             (context as? ContextThemeWrapper)?.baseContext as? LifecycleOwner
         lifecycleOwner?.run {
+            if (isObserverSetupDone) return@run
+            isObserverSetupDone = true
             viewModel.errorThrowable.observe(this) {
                 listener?.onAddonComponentError(ErrorHandler.getErrorMessage(context, it))
             }
             viewModel.getAddOnResult.observe(this) {
                 addonAdapter.setItems(it)
-                viewModel.setSelectedAddons(it)
                 viewModel.lastSelectedAddOn = AddOnMapper.getGroupSelectedAddons(it).toMutableList()
+                viewModel.setSelectedAddons(it)
             }
             viewModel.isAddonDataEmpty.observe(this) {
                 if (it) listener?.onDataEmpty()
