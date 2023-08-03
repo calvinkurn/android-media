@@ -8,4 +8,6 @@ import android.net.Uri
 interface ImageTransformer {
 
     fun transformImageFromUri(uri: Uri): Uri
+
+    fun parseToUri(id: String): Uri
 }
