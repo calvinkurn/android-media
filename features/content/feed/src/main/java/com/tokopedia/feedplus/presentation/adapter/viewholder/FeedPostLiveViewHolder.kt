@@ -19,8 +19,10 @@ import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.feedplus.presentation.uiview.FeedAuthorInfoView
 import com.tokopedia.feedplus.presentation.uiview.FeedCaptionView
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.play_common.util.extension.changeConstraint
 
 /**
  * Created By : Muhammad Furqan on 09/03/23
@@ -31,8 +33,18 @@ class FeedPostLiveViewHolder(
     private val trackerMapper: MapperFeedModelToTrackerDataModel
 ) : AbstractViewHolder<FeedCardLivePreviewContentModel>(binding.root) {
 
+    private val captionViewListener = object : FeedCaptionView.Listener {
+        override fun onExpanded(view: FeedCaptionView) {
+            val screenHeight = getScreenHeight()
+            val maxHeight = screenHeight * 0.45f
+            binding.root.changeConstraint {
+                constrainMaxHeight(binding.layoutFeedCaption.id, maxHeight.toInt())
+            }
+        }
+    }
+
     private val authorView = FeedAuthorInfoView(binding.layoutAuthorInfo, listener)
-    private val captionView = FeedCaptionView(binding.tvFeedCaption, listener)
+    private val captionView = FeedCaptionView(binding.tvFeedCaption, binding.layoutFeedCaption, listener, captionViewListener)
 
     private var trackerDataModel: FeedTrackerDataModel? = null
 

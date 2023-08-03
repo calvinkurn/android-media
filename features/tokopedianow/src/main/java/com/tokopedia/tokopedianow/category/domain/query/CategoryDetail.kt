@@ -25,7 +25,10 @@ internal object CategoryDetail: GqlQueryInterface {
                   url
                   applinks
                   imageUrl
-                  color
+                  colorObj {
+                    hexLight
+                    hexDark
+                  }
                   child {
                     id
                     name
@@ -35,7 +38,10 @@ internal object CategoryDetail: GqlQueryInterface {
                     isKyc
                     isAdult
                     minAge
-                    color
+                    colorObj {
+                      hexLight
+                      hexDark
+                    }
                   }
                   recommendation {
                     id
@@ -43,7 +49,10 @@ internal object CategoryDetail: GqlQueryInterface {
                     url
                     applinks
                     imageUrl
-                    color
+                    colorObj {
+                      hexLight
+                      hexDark
+                    }
                   }
                   navigation {
                     prev {

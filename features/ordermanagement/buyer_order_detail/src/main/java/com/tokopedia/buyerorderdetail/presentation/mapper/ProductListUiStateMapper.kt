@@ -615,11 +615,17 @@ object ProductListUiStateMapper {
         return if (mappedAddOn?.addonsItemList.isNullOrEmpty()) {
             Int.ZERO to null
         } else {
-            if (collapseProductList && remainingSlot.isZero()) {
-                Int.ONE to mappedAddOn
-            } else {
-                Int.ZERO to mappedAddOn
-            }
+            mappedAddOn?.run {
+                if (collapseProductList) {
+                    if (remainingSlot.isZero()) {
+                        Int.ONE to null
+                    } else {
+                        (Int.ONE - remainingSlot).coerceAtLeast(Int.ZERO) to this
+                    }
+                } else {
+                    Int.ZERO to this
+                }
+            } ?: (Int.ZERO to null)
         }
     }
 

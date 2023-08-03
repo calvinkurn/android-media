@@ -242,6 +242,7 @@ class ShipmentCartItemViewHolder(
             binding.textItemPerProduct.text = CurrencyFormatUtil
                 .convertPriceValueToIdrFormat(cartItem.protectionPricePerProduct.toLong(), false)
                 .removeDecimalSuffix()
+            binding.checkboxPpp.setOnCheckedChangeListener { _, _ -> }
             if (cartItem.isProtectionCheckboxDisabled) {
                 binding.checkboxPpp.isEnabled = false
                 binding.checkboxPpp.isChecked = true
