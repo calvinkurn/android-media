@@ -9,7 +9,7 @@ import com.tokopedia.webview.BaseSimpleWebViewActivity
 class WebviewWithGotoKycActivity : BaseSimpleWebViewActivity(), HasComponent<GoToKycComponent> {
 
     override fun createFragmentInstance(): Fragment {
-        return GotoKycWebWrapperFragment().newInstance(url, needLogin, allowOverride, pullToRefresh)
+        return GotoKycWebWrapperFragment().newInstance(url)
     }
 
     override fun getComponent(): GoToKycComponent {
