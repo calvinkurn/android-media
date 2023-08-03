@@ -3,6 +3,8 @@ package com.tokopedia.tokopedianow.home.presentation.viewmodel
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
@@ -11,8 +13,6 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationSt
 import com.tokopedia.tokopedianow.common.model.TokoNowChipUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
-import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
-import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
 import com.tokopedia.tokopedianow.home.domain.model.Grid
 import com.tokopedia.tokopedianow.home.domain.model.Header
@@ -69,17 +69,17 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                         Grid(
                             id = "1",
                             name = "Sayur-sayuran",
-                            param = "?pagename=page_name1"
+                            param = "?pageName=page_name1"
                         ),
                         Grid(
                             id = "2",
                             name = "Buah-buahan",
-                            param = "?pagename=page_name2"
+                            param = "?pageName=page_name2"
                         ),
                         Grid(
                             id = "3",
                             name = "Bumbu Dapur",
-                            param = "?pagename=page_name3"
+                            param = "?pageName=page_name3"
                         )
                     )
                 )
@@ -99,19 +99,19 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                 TokoNowChipUiModel(
                     id = "1",
                     text = "Sayur-sayuran",
-                    param = "page_name1",
+                    param = "?pageName=page_name1",
                     selected = true
                 ),
                 TokoNowChipUiModel(
                     id = "2",
                     text = "Buah-buahan",
-                    param = "page_name2",
+                    param = "?pageName=page_name2",
                     selected = false
                 ),
                 TokoNowChipUiModel(
                     id = "3",
                     text = "Bumbu Dapur",
-                    param = "page_name3",
+                    param = "?pageName=page_name3",
                     selected = false
                 )
             )
@@ -226,17 +226,17 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                         Grid(
                             id = "1",
                             name = "Sayur-sayuran",
-                            param = "?pagename=page_name1"
+                            param = "?pageName=page_name1"
                         ),
                         Grid(
                             id = "2",
                             name = "Buah-buahan",
-                            param = "?pagename=page_name2"
+                            param = "?pageName=page_name2"
                         ),
                         Grid(
                             id = "3",
                             name = "Bumbu Dapur",
-                            param = "?pagename=page_name3"
+                            param = "?pageName=page_name3&categoryIDs=541"
                         )
                     )
                 )
@@ -261,19 +261,19 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                 TokoNowChipUiModel(
                     id = "1",
                     text = "Sayur-sayuran",
-                    param = "page_name1",
+                    param = "?pageName=page_name1",
                     selected = false
                 ),
                 TokoNowChipUiModel(
                     id = "2",
                     text = "Buah-buahan",
-                    param = "page_name2",
+                    param = "?pageName=page_name2",
                     selected = false
                 ),
                 TokoNowChipUiModel(
                     id = "3",
                     text = "Bumbu Dapur",
-                    param = "page_name3",
+                    param = "?pageName=page_name3&categoryIDs=541",
                     selected = true
                 )
             )
@@ -330,7 +330,8 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
 
             verifyGetHomeLayoutDataUseCaseCalled()
             verifyGetCarouselChipsRecomCalled(
-                pageName = "page_name3"
+                pageName = "page_name3",
+                categoryIDs = listOf("541")
             )
 
             viewModel.homeLayoutList
@@ -357,17 +358,17 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                         Grid(
                             id = "1",
                             name = "Sayur-sayuran",
-                            param = "?pagename=page_name1"
+                            param = "?pageName=page_name1"
                         ),
                         Grid(
                             id = "2",
                             name = "Buah-buahan",
-                            param = "?pagename=page_name2"
+                            param = "?pageName=page_name2"
                         ),
                         Grid(
                             id = "3",
                             name = "Bumbu Dapur",
-                            param = "?pagename=page_name3"
+                            param = "?pageName=page_name3"
                         )
                     )
                 )
@@ -432,17 +433,17 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                         Grid(
                             id = "1",
                             name = "Sayur-sayuran",
-                            param = "?pagename=page_name1"
+                            param = "?pageName=page_name1"
                         ),
                         Grid(
                             id = "2",
                             name = "Buah-buahan",
-                            param = "?pagename=page_name2"
+                            param = "?pageName=page_name2"
                         ),
                         Grid(
                             id = "3",
                             name = "Bumbu Dapur",
-                            param = "?pagename=page_name3"
+                            param = "?pageName=page_name3"
                         )
                     )
                 )
@@ -467,19 +468,19 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                 TokoNowChipUiModel(
                     id = "1",
                     text = "Sayur-sayuran",
-                    param = "page_name1",
+                    param = "?pageName=page_name1",
                     selected = false
                 ),
                 TokoNowChipUiModel(
                     id = "2",
                     text = "Buah-buahan",
-                    param = "page_name2",
+                    param = "?pageName=page_name2",
                     selected = false
                 ),
                 TokoNowChipUiModel(
                     id = "3",
                     text = "Bumbu Dapur",
-                    param = "page_name3",
+                    param = "?pageName=page_name3",
                     selected = true
                 )
             )
@@ -565,17 +566,17 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                         Grid(
                             id = "1",
                             name = "Sayur-sayuran",
-                            param = "?pagename=page_name1"
+                            param = "?pageName=page_name1"
                         ),
                         Grid(
                             id = "2",
                             name = "Buah-buahan",
-                            param = "?pagename=page_name2"
+                            param = "?pageName=page_name2"
                         ),
                         Grid(
                             id = "3",
                             name = "Bumbu Dapur",
-                            param = "?pagename=page_name3"
+                            param = "?pageName=page_name3"
                         )
                     )
                 )
@@ -642,17 +643,17 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                         Grid(
                             id = "1",
                             name = "Sayur-sayuran",
-                            param = "?pagename=page_name1"
+                            param = "?pageName=page_name1"
                         ),
                         Grid(
                             id = "2",
                             name = "Buah-buahan",
-                            param = "?pagename=page_name2"
+                            param = "?pageName=page_name2"
                         ),
                         Grid(
                             id = "3",
                             name = "Bumbu Dapur",
-                            param = "?pagename=page_name3"
+                            param = "?pageName=page_name3"
                         )
                     )
                 )
@@ -688,19 +689,19 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                 TokoNowChipUiModel(
                     id = "1",
                     text = "Sayur-sayuran",
-                    param = "page_name1",
+                    param = "?pageName=page_name1",
                     selected = true
                 ),
                 TokoNowChipUiModel(
                     id = "2",
                     text = "Buah-buahan",
-                    param = "page_name2",
+                    param = "?pageName=page_name2",
                     selected = false
                 ),
                 TokoNowChipUiModel(
                     id = "3",
                     text = "Bumbu Dapur",
-                    param = "page_name3",
+                    param = "?pageName=page_name3",
                     selected = false
                 )
             )
@@ -816,17 +817,17 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                         Grid(
                             id = "1",
                             name = "Sayur-sayuran",
-                            param = "?pagename=page_name1"
+                            param = "?pageName=page_name1"
                         ),
                         Grid(
                             id = "2",
                             name = "Buah-buahan",
-                            param = "?pagename=page_name2"
+                            param = "?pageName=page_name2"
                         ),
                         Grid(
                             id = "3",
                             name = "Bumbu Dapur",
-                            param = "?pagename=page_name3"
+                            param = "?pageName=page_name3"
                         )
                     )
                 )
@@ -897,17 +898,17 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                         Grid(
                             id = currentSelectedChipId,
                             name = "Sayur-sayuran",
-                            param = "?pagename=page_name1"
+                            param = "?pageName=page_name1"
                         ),
                         Grid(
                             id = "2",
                             name = "Buah-buahan",
-                            param = "?pagename=page_name2"
+                            param = "?pageName=page_name2"
                         ),
                         Grid(
                             id = "3",
                             name = "Bumbu Dapur",
-                            param = "?pagename=page_name3"
+                            param = "?pageName=page_name3"
                         )
                     )
                 )

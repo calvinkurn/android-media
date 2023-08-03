@@ -306,6 +306,18 @@ open class PowerMerchantSubscriptionFragment :
         (activity as? SubscriptionActivityInterface)?.showErrorState(throwable)
     }
 
+    protected fun showRegistrationFragment() {
+        (activity as? SubscriptionActivityInterface)?.setViewForRegistrationPage()
+    }
+
+    protected fun reSetupFooterView() {
+        (activity as? SubscriptionActivityInterface)?.renderFooterView()
+    }
+
+    protected fun hideFooterView() {
+        (activity as? SubscriptionActivityInterface)?.hideFooterView()
+    }
+
     protected fun startCustomMetricPerformanceMonitoring(tag: String) {
         (activity as? SubscriptionActivityInterface)?.startCustomMetricPerformanceMonitoring(tag)
     }

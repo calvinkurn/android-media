@@ -16,6 +16,8 @@ buildscript {
 
 // For instrumentation test
 android {
+    namespace 'com.tokopedia.officialstore'
+    testNamespace 'com.tokopedia.officialstore.test'
     buildFeatures {
         viewBinding true
     }
@@ -38,7 +40,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.searchbar)
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
     implementation projectOrAar(rootProject.ext.libraries.applink)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)

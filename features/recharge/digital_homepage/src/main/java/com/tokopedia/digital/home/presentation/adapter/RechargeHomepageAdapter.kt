@@ -40,7 +40,7 @@ class RechargeHomepageAdapter(val context: Context,
         var pair = ErrorHandler.getErrorMessagePair(context, e, ErrorHandler.Builder())
         errorNetworkModel.errorMessage = pair.first
         errorNetworkModel.subErrorMessage =
-            "${context.getString(com.tokopedia.kotlin.extensions.R.string.title_try_again)}. " +
+            "${context.getString(com.tokopedia.utils.R.string.title_try_again)}. " +
                     "Kode Error: (${pair.second})"
         errorNetworkModel.onRetryListener = ErrorNetworkModel.OnRetryListener {
             showLoading()

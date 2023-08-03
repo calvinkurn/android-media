@@ -5,6 +5,8 @@ apply plugin: 'androidx.navigation.safeargs.kotlin'
 apply from: "../../../compile-instrument-test.gradle"
 
 android{
+    namespace 'com.tokopedia.homenav'
+    testNamespace 'com.tokopedia.homenav.test'
     buildFeatures {
         viewBinding true
     }
@@ -40,6 +42,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.homenav'
+    testNamespace 'com.tokopedia.homenav.test'
+}
+
 dependencies {
 
     implementation projectOrAar(rootProject.ext.features.atc_common)
@@ -55,7 +62,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.linker)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
@@ -63,7 +70,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.features.searchbar)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
-    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.icons

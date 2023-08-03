@@ -1,6 +1,11 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 
+android {
+    namespace 'com.tokopedia.unit.test'
+    testNamespace 'com.tokopedia.unit.test.test'
+}
+
 dependencies {
 	implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase

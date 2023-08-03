@@ -260,7 +260,7 @@ class UnificationViewHolder(
                     com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
                 )
                 val iconColor = root.context.getResColor(
-                    com.tokopedia.unifyprinciples.R.color.Unify_G400
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 )
                 btnShcUnificationCta.setUnifyDrawableEnd(
                     IconUnify.CHEVRON_RIGHT,

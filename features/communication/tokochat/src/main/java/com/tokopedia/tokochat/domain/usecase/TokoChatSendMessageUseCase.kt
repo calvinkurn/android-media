@@ -14,7 +14,7 @@ open class TokoChatSendMessageUseCase @Inject constructor(
         text: String,
         sendMessageMetaData: SendMessageMetaData
     ) {
-        repository.getConversationRepository().sendTextMessage(
+        repository.getConversationRepository()?.sendTextMessage(
             channelUrl,
             text,
             sendMessageMetaData
@@ -25,7 +25,7 @@ open class TokoChatSendMessageUseCase @Inject constructor(
         channel: String,
         extensionMessage: ExtensionMessage
     ) {
-        repository.getConversationRepository().addTransientMessage(
+        repository.getConversationRepository()?.addTransientMessage(
             channel,
             extensionMessage
         )
@@ -35,14 +35,14 @@ open class TokoChatSendMessageUseCase @Inject constructor(
         channel: String,
         extensionMessage: ExtensionMessage
     ) {
-        repository.getConversationRepository().sendTransientMessage(
+        repository.getConversationRepository()?.sendTransientMessage(
             channel,
             extensionMessage
         )
     }
 
     open fun setTransientMessageFailed(messageId: String) {
-        repository.getConversationRepository().setTransientMessageFailed(
+        repository.getConversationRepository()?.setTransientMessageFailed(
             messageId = messageId
         )
     }

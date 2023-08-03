@@ -84,4 +84,6 @@
     <string name="chatbot_remaining_words">Minimal %1$d kata</string>
     <string name="chatbot_remaining_words_while_typing">Butuh minimal %1$d kata lagi</string>
     <string name="chatbot_big_reply_word_error">Ceritakan lebih detail lagi, ya</string>
+    <string name="chatbot_reject_reasons_min">"Min. "</string>
+    <string name="chatbot_reject_reasons_character">" karakter "</string>
 </resources>

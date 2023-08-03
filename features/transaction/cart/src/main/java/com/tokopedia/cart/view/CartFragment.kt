@@ -9,7 +9,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.DisplayMetrics
@@ -68,7 +67,6 @@ import com.tokopedia.cart.view.bottomsheet.showGlobalErrorBottomsheet
 import com.tokopedia.cart.view.bottomsheet.showSummaryTransactionBottomsheet
 import com.tokopedia.cart.view.compoundview.CartToolbar
 import com.tokopedia.cart.view.compoundview.CartToolbarListener
-import com.tokopedia.cart.view.compoundview.CartToolbarView
 import com.tokopedia.cart.view.compoundview.CartToolbarWithBackView
 import com.tokopedia.cart.view.decorator.CartItemDecoration
 import com.tokopedia.cart.view.di.DaggerCartComponent
@@ -78,6 +76,7 @@ import com.tokopedia.cart.view.mapper.RecentViewMapper
 import com.tokopedia.cart.view.mapper.WishlistMapper
 import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.cart.view.uimodel.CartChooseAddressHolderData
+import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartItemTickerErrorHolderData
 import com.tokopedia.cart.view.uimodel.CartRecentViewHolderData
@@ -85,9 +84,9 @@ import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.cart.view.uimodel.CartSectionHeaderHolderData
 import com.tokopedia.cart.view.uimodel.CartSelectAllHolderData
+import com.tokopedia.cart.view.uimodel.CartShopBottomHolderData
 import com.tokopedia.cart.view.uimodel.CartShopGroupTickerData
 import com.tokopedia.cart.view.uimodel.CartShopGroupTickerState
-import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
 import com.tokopedia.cart.view.viewholder.CartRecommendationViewHolder
@@ -159,6 +158,7 @@ import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.rxCompoundButtonCheckDebounce
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -261,7 +261,7 @@ class CartFragment :
     private var hasTriedToLoadRecentViewList: Boolean = false
     private var shouldReloadRecentViewList: Boolean = false
     private var hasTriedToLoadRecommendation: Boolean = false
-    private var isToolbarWithBackButton = true
+    private val isToolbarWithBackButton = true
     private var delayShowPromoButtonJob: Job? = null
     private var TRANSLATION_LENGTH = 0f
     private var isKeyboardOpened = false
@@ -550,7 +550,7 @@ class CartFragment :
             if (validateUseUiModel != null) {
                 dPresenter.validateBoPromo(validateUseUiModel)
                 dPresenter.setValidateUseLastResponse(validateUseUiModel)
-                dPresenter.setUpdateCartAndValidateUseLastResponse(null)
+                dPresenter.setUpdateCartAndGetLastApplyLastResponse(null)
                 dPresenter.setLastApplyNotValid()
                 updatePromoCheckoutStickyButton(validateUseUiModel.promoUiModel)
             }
@@ -561,7 +561,7 @@ class CartFragment :
                 if (validateUseUiModel == null) {
                     dPresenter.setLastApplyNotValid()
                     dPresenter.setValidateUseLastResponse(null)
-                    dPresenter.setUpdateCartAndValidateUseLastResponse(null)
+                    dPresenter.setUpdateCartAndGetLastApplyLastResponse(null)
                 }
                 updatePromoCheckoutStickyButton(PromoUiModel(titleDescription = clearPromoUiModel.successDataModel.defaultEmptyPromoMessage))
             }
@@ -698,13 +698,6 @@ class CartFragment :
         }
     }
 
-    private fun routeToShopProductPage(shopId: String?) {
-        activity?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConst.SHOP_PRODUCT, shopId)
-            startActivityForResult(intent, NAVIGATION_SHOP_PAGE)
-        }
-    }
-
     private fun routeToTokoNowHomePage() {
         activity?.let {
             val intent = RouteManager.getIntent(it, ApplinkConstInternalTokopediaNow.HOME)
@@ -728,7 +721,7 @@ class CartFragment :
             val intent =
                 RouteManager.getIntent(it, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
             val promoRequest = generateParamsCouponList()
-            val validateUseRequest = generateParamValidateUsePromoRevamp()
+            val validateUseRequest = generateParamGetLastApplyPromo()
             intent.putExtra(ARGS_PAGE_SOURCE, PAGE_CART)
             intent.putExtra(ARGS_PROMO_REQUEST, promoRequest)
             intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequest)
@@ -883,8 +876,16 @@ class CartFragment :
         if (topItemPosition >= adapterData.size) return
 
         val firstVisibleItemData = adapterData[topItemPosition]
-        if (firstVisibleItemData is CartSelectAllHolderData || firstVisibleItemData is TickerAnnouncementHolderData || firstVisibleItemData is CartChooseAddressHolderData || firstVisibleItemData is CartItemTickerErrorHolderData || firstVisibleItemData is CartShopHolderData || firstVisibleItemData is ShipmentSellerCashbackModel) {
-            if (!cartAdapter.allAvailableCartItemData.isEmpty()) {
+        if (firstVisibleItemData is CartSelectAllHolderData ||
+            firstVisibleItemData is TickerAnnouncementHolderData ||
+            firstVisibleItemData is CartChooseAddressHolderData ||
+            firstVisibleItemData is CartItemTickerErrorHolderData ||
+            firstVisibleItemData is CartGroupHolderData ||
+            firstVisibleItemData is CartItemHolderData ||
+            firstVisibleItemData is CartShopBottomHolderData ||
+            firstVisibleItemData is ShipmentSellerCashbackModel
+        ) {
+            if (cartAdapter.allAvailableCartItemData.isNotEmpty()) {
                 if (binding?.topLayout?.root?.visibility == View.GONE) setTopLayoutVisibility(true)
             }
         } else {
@@ -996,23 +997,8 @@ class CartFragment :
         activity?.let {
             val statusBarBackground = binding?.statusBarBg
 
-            val args = arguments?.getString(CartFragment::class.java.simpleName)
-            if (args?.isNotEmpty() == true) {
-                isToolbarWithBackButton = false
-            }
-
             if (isToolbarWithBackButton) {
                 statusBarBackground?.hide()
-            } else {
-                when {
-                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
-                        statusBarBackground?.visibility = View.INVISIBLE
-                    }
-
-                    else -> {
-                        statusBarBackground?.show()
-                    }
-                }
             }
 
             binding?.navToolbar?.apply {
@@ -1022,7 +1008,7 @@ class CartFragment :
                     backButtonClickListener = ::onBackPressed
                 )
                 setIcon(
-                    IconBuilder(IconBuilderFlag(pageSource = CART_PAGE)).addIcon(
+                    IconBuilder(IconBuilderFlag(pageSource = NavSource.CART)).addIcon(
                         iconId = IconList.ID_NAV_ANIMATED_WISHLIST,
                         disableDefaultGtmTracker = true,
                         onClick = ::onNavigationToolbarWishlistClicked
@@ -1035,8 +1021,6 @@ class CartFragment :
 
                 if (isToolbarWithBackButton) {
                     setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
-                } else {
-                    setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
                 }
             }
         }
@@ -1054,11 +1038,6 @@ class CartFragment :
     @SuppressLint("ObsoleteSdkInt")
     private fun initBasicToolbar(view: View) {
         activity?.let {
-            val args = arguments?.getString(CartFragment::class.java.simpleName)
-            if (args?.isNotEmpty() == true) {
-                isToolbarWithBackButton = false
-            }
-
             val appbar = binding?.toolbarCart
             val statusBarBackground = binding?.statusBarBg
             statusBarBackground?.layoutParams?.height = DisplayMetricUtils.getStatusBarHeight(it)
@@ -1066,17 +1045,6 @@ class CartFragment :
             if (isToolbarWithBackButton) {
                 toolbar = toolbarRemoveWithBackView() as CartToolbar
                 statusBarBackground?.hide()
-            } else {
-                toolbar = toolbarRemoveView() as CartToolbar
-                when {
-                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
-                        statusBarBackground?.visibility = View.INVISIBLE
-                    }
-
-                    else -> {
-                        statusBarBackground?.show()
-                    }
-                }
             }
             toolbar.let {
                 appbar?.addView(toolbar as View)
@@ -1088,16 +1056,6 @@ class CartFragment :
     private fun toolbarRemoveWithBackView(): CartToolbarWithBackView? {
         activity?.let {
             return CartToolbarWithBackView(it).apply {
-                listener = this@CartFragment
-            }
-        }
-
-        return null
-    }
-
-    private fun toolbarRemoveView(): CartToolbarView? {
-        activity?.let {
-            return CartToolbarView(it).apply {
                 listener = this@CartFragment
             }
         }
@@ -1145,10 +1103,10 @@ class CartFragment :
     }
 
     private fun reloadAppliedPromoFromGlobalCheck() {
-        val params = generateParamValidateUsePromoRevamp()
+        val params = generateParamGetLastApplyPromo()
         if (isNeedHitUpdateCartAndValidateUse(params)) {
             renderPromoCheckoutLoading()
-            dPresenter.doUpdateCartAndValidateUse(params)
+            dPresenter.doUpdateCartAndGetLastApply(params)
         } else {
             updatePromoCheckoutManualIfNoSelected(getAllAppliedPromoCodes(params))
         }
@@ -1216,21 +1174,26 @@ class CartFragment :
                         val clearOrder =
                             clearOrders.find { order -> order.uniqueId == voucher.uniqueId }
                         if (clearOrder == null) {
-                            val availableGroup =
-                                cartListData.availableSection.availableGroupGroups.find { group -> group.cartString == voucher.uniqueId }
-                            availableGroup?.let { availableGroup ->
+                            val availableGroup = cartListData.availableSection.availableGroupGroups.find { group ->
+                                group.cartString == voucher.cartStringGroup
+                            }
+                            val availableShop = availableGroup?.groupShopCartData?.find { shopOrder ->
+                                shopOrder.cartStringOrder == voucher.uniqueId
+                            }
+                            availableShop?.let {
                                 clearOrders.add(
                                     ClearPromoOrder(
                                         uniqueId = voucher.uniqueId,
                                         boType = availableGroup.boMetadata.boType,
                                         codes = arrayListOf(voucher.code),
-                                        shopId = availableGroup.shop.shopId.toLongOrZero(),
+                                        shopId = availableShop.shop.shopId.toLongOrZero(),
                                         warehouseId = availableGroup.warehouse.warehouseId.toLongOrZero(),
                                         isPo = availableGroup.shipmentInformation.preorder.isPreorder,
-                                        poDuration = availableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(
+                                        poDuration = availableShop.cartDetails.getOrNull(0)?.products?.getOrNull(
                                             0
                                         )?.productPreorder?.durationDay?.let { poDuration -> poDuration.toString() }
-                                            ?: "0"
+                                            ?: "0",
+                                        cartStringGroup = availableGroup.cartString
                                     )
                                 )
                                 hasRedStatePromo = true
@@ -1259,21 +1222,26 @@ class CartFragment :
                         val clearOrder =
                             clearOrders.find { order -> order.uniqueId == voucher.uniqueId }
                         if (clearOrder == null) {
-                            val availableGroup =
-                                cartListData.availableSection.availableGroupGroups.find { group -> group.cartString == voucher.uniqueId }
-                            availableGroup?.let { availableGroup ->
+                            val availableGroup = cartListData.availableSection.availableGroupGroups.find { group ->
+                                group.cartString == voucher.cartStringGroup
+                            }
+                            val availableShop = availableGroup?.groupShopCartData?.find { shopOrder ->
+                                shopOrder.cartStringOrder == voucher.uniqueId
+                            }
+                            availableShop?.let {
                                 clearOrders.add(
                                     ClearPromoOrder(
                                         uniqueId = voucher.uniqueId,
                                         boType = availableGroup.boMetadata.boType,
                                         codes = arrayListOf(voucher.code),
-                                        shopId = availableGroup.shop.shopId.toLongOrZero(),
+                                        shopId = availableShop.shop.shopId.toLongOrZero(),
                                         warehouseId = availableGroup.warehouse.warehouseId.toLongOrZero(),
                                         isPo = availableGroup.shipmentInformation.preorder.isPreorder,
-                                        poDuration = availableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(
+                                        poDuration = availableShop.cartDetails.getOrNull(0)?.products?.getOrNull(
                                             0
                                         )?.productPreorder?.durationDay?.let { poDuration -> poDuration.toString() }
-                                            ?: "0"
+                                            ?: "0",
+                                        cartStringGroup = availableGroup.cartString
                                     )
                                 )
                                 hasRedStatePromo = true
@@ -1289,7 +1257,7 @@ class CartFragment :
 
         if (cartListData != null) {
             val lastUpdateCartAndValidateUseResponse =
-                dPresenter.getUpdateCartAndValidateUseLastResponse()
+                dPresenter.getUpdateCartAndGetLastApplyLastResponse()
             lastUpdateCartAndValidateUseResponse?.promoUiModel?.let {
                 if (it.messageUiModel.state == "red") {
                     it.codes.forEach { code ->
@@ -1305,21 +1273,26 @@ class CartFragment :
                         val clearOrder =
                             clearOrders.find { order -> order.uniqueId == voucher.uniqueId }
                         if (clearOrder == null) {
-                            val availableGroup =
-                                cartListData.availableSection.availableGroupGroups.find { group -> group.cartString == voucher.uniqueId }
-                            availableGroup?.let { availableGroup ->
+                            val availableGroup = cartListData.availableSection.availableGroupGroups.find { group ->
+                                group.cartString == voucher.cartStringGroup
+                            }
+                            val availableShop = availableGroup?.groupShopCartData?.find { shopOrder ->
+                                shopOrder.cartStringOrder == voucher.uniqueId
+                            }
+                            availableShop?.let {
                                 clearOrders.add(
                                     ClearPromoOrder(
                                         uniqueId = voucher.uniqueId,
                                         boType = availableGroup.boMetadata.boType,
                                         codes = arrayListOf(voucher.code),
-                                        shopId = availableGroup.shop.shopId.toLongOrZero(),
+                                        shopId = availableShop.shop.shopId.toLongOrZero(),
                                         warehouseId = availableGroup.warehouse.warehouseId.toLongOrZero(),
                                         isPo = availableGroup.shipmentInformation.preorder.isPreorder,
-                                        poDuration = availableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(
+                                        poDuration = availableShop.cartDetails.getOrNull(0)?.products?.getOrNull(
                                             0
                                         )?.productPreorder?.durationDay?.let { poDuration -> poDuration.toString() }
-                                            ?: "0"
+                                            ?: "0",
+                                        cartStringGroup = availableGroup.cartString
                                     )
                                 )
                                 hasRedStatePromo = true
@@ -1379,9 +1352,9 @@ class CartFragment :
         val allCartItemDataList = cartAdapter.allCartItemData
         val toBeDeletedProducts = mutableListOf<CartItemHolderData>()
         if (cartItemHolderData.isBundlingItem) {
-            val cartShopHolderData =
-                cartAdapter.getCartShopHolderDataByCartItemHolderData(cartItemHolderData)
-            cartShopHolderData?.let {
+            val cartGroupHolderData =
+                cartAdapter.getCartGroupHolderDataByCartItemHolderData(cartItemHolderData)
+            cartGroupHolderData?.let {
                 it.productUiModelList.forEach { product ->
                     if (product.isBundlingItem && product.bundleId == cartItemHolderData.bundleId && product.bundleGroupId == cartItemHolderData.bundleGroupId) {
                         toBeDeletedProducts.add(product)
@@ -1418,10 +1391,6 @@ class CartFragment :
 
     override fun onCartItemQuantityMinusButtonClicked() {
         cartPageAnalytics.eventClickAtcCartClickButtonMinus()
-    }
-
-    override fun onCartItemQuantityReseted(position: Int, cartItemHolderData: CartItemHolderData) {
-        cartAdapter.resetQuantity(position, cartItemHolderData)
     }
 
     override fun onCartItemProductClicked(cartItemHolderData: CartItemHolderData) {
@@ -1599,13 +1568,6 @@ class CartFragment :
         cartAdapter.notifyRecentView(productId, false)
     }
 
-    private fun onSuccessAddWishlist(productId: String) {
-        showToastMessageGreen(getString(R.string.toast_message_add_wishlist_success))
-        cartAdapter.notifyByProductId(productId, true)
-        cartAdapter.notifyWishlist(productId, true)
-        cartAdapter.notifyRecentView(productId, true)
-    }
-
     private fun onSuccessAddWishlistV2(
         result: AddToWishlistV2Response.Data.WishlistAddV2,
         productId: String
@@ -1625,13 +1587,6 @@ class CartFragment :
         cartAdapter.notifyByProductId(productId, true)
         cartAdapter.notifyWishlist(productId, true)
         cartAdapter.notifyRecentView(productId, true)
-    }
-
-    private fun onSuccessRemoveWishlist(productId: String) {
-        showToastMessageGreen(getString(R.string.toast_message_remove_wishlist_success))
-        cartAdapter.notifyByProductId(productId, false)
-        cartAdapter.removeWishlist(productId)
-        cartAdapter.notifyRecentView(productId, false)
     }
 
     private fun onSuccessRemoveWishlistV2(
@@ -2177,6 +2132,10 @@ class CartFragment :
         }
     }
 
+    override fun onCartGroupNameClicked(appLink: String) {
+        routeToApplink(appLink)
+    }
+
     override fun onCartShopNameClicked(shopId: String?, shopName: String?, isTokoNow: Boolean) {
         if (shopId != null && shopName != null) {
             cartPageAnalytics.eventClickAtcCartClickShop(shopId, shopName)
@@ -2192,20 +2151,29 @@ class CartFragment :
         dPresenter.setHasPerformChecklistChange(true)
         cartAdapter.setShopSelected(index, checked)
         dPresenter.reCalculateSubTotal(cartAdapter.allAvailableShopGroupDataList)
-        if (checked) {
-            val data = cartAdapter.getData()[index]
-            if (data is CartShopHolderData) {
+        val data = cartAdapter.getData()[index]
+        var isCollapsed = false
+        var productSize = 1
+        if (data is CartGroupHolderData) {
+            isCollapsed = data.isCollapsed
+            productSize += data.productUiModelList.size
+            if (checked) {
                 checkCartShopGroupTicker(data)
             }
         }
-        onNeedToUpdateViewItem(index)
+        if (isCollapsed) {
+            onNeedToUpdateViewItem(index)
+            onNeedToUpdateViewItem(index + 1)
+        } else {
+            onNeedToUpdateMultipleViewItem(index, productSize + 1)
+        }
         validateGoToCheckout()
         dPresenter.saveCheckboxState(cartAdapter.allAvailableCartItemHolderData)
 
-        val params = generateParamValidateUsePromoRevamp()
+        val params = generateGeneralParamGetLastApply()
         if (isNeedHitUpdateCartAndValidateUse(params)) {
             renderPromoCheckoutLoading()
-            dPresenter.doUpdateCartAndValidateUse(params)
+            dPresenter.doUpdateCartAndGetLastApply(params)
         } else {
             updatePromoCheckoutManualIfNoSelected(getAllAppliedPromoCodes(params))
         }
@@ -2214,18 +2182,18 @@ class CartFragment :
         setGlobalDeleteVisibility()
     }
 
-    override fun onCartShopGroupTickerClicked(cartShopHolderData: CartShopHolderData) {
-        when (cartShopHolderData.cartShopGroupTicker.action) {
+    override fun onCartShopGroupTickerClicked(cartGroupHolderData: CartGroupHolderData) {
+        when (cartGroupHolderData.cartShopGroupTicker.action) {
             CartShopGroupTickerData.ACTION_REDIRECT_PAGE -> {
-                if (cartShopHolderData.cartShopGroupTicker.applink.isNotBlank()) {
-                    routeToApplinkWithResult(cartShopHolderData.cartShopGroupTicker.applink)
+                if (cartGroupHolderData.cartShopGroupTicker.applink.isNotBlank()) {
+                    routeToApplinkWithResult(cartGroupHolderData.cartShopGroupTicker.applink)
                 }
             }
 
             CartShopGroupTickerData.ACTION_OPEN_BOTTOM_SHEET_BUNDLING -> {
-                showCartBundlingBottomSheet(cartShopHolderData.cartShopGroupTicker.cartBundlingBottomSheetData)
+                showCartBundlingBottomSheet(cartGroupHolderData.cartShopGroupTicker.cartBundlingBottomSheetData)
                 cartPageAnalytics.eventClickCartShopGroupTickerForBundleCrossSell(
-                    cartShopHolderData.cartShopGroupTicker.tickerText
+                    cartGroupHolderData.cartShopGroupTicker.tickerText
                 )
             }
 
@@ -2233,29 +2201,28 @@ class CartFragment :
                 // no-op
             }
         }
-        if (cartShopHolderData.cartShopGroupTicker.enableBoAffordability) {
+        if (cartGroupHolderData.cartShopGroupTicker.enableBoAffordability) {
             cartPageAnalytics.eventClickArrowInBoTickerToReachShopPage(
-                cartShopHolderData.cartShopGroupTicker.cartIds,
-                cartShopHolderData.shopId
+                cartGroupHolderData.cartShopGroupTicker.cartIds,
+                cartGroupHolderData.shop.shopId
             )
         }
     }
 
     override fun onCartShopGroupTickerRefreshClicked(
         index: Int,
-        cartShopHolderData: CartShopHolderData
+        cartShopBottomHolderData: CartShopBottomHolderData
     ) {
-        cartShopHolderData.cartShopGroupTicker.state = CartShopGroupTickerState.LOADING
-        cartShopHolderData.isNeedToRefreshWeight = true
+        cartShopBottomHolderData.shopData.cartShopGroupTicker.state = CartShopGroupTickerState.LOADING
         onNeedToUpdateViewItem(index)
-        dPresenter.checkCartShopGroupTicker(cartShopHolderData)
+        dPresenter.checkCartShopGroupTicker(cartShopBottomHolderData.shopData)
     }
 
-    override fun onViewCartShopGroupTicker(cartShopHolderData: CartShopHolderData) {
+    override fun onViewCartShopGroupTicker(cartGroupHolderData: CartGroupHolderData) {
         cartPageAnalytics.eventViewBoTickerWording(
-            cartShopHolderData.cartShopGroupTicker.state == CartShopGroupTickerState.SUCCESS_AFFORD,
-            cartShopHolderData.cartShopGroupTicker.cartIds,
-            cartShopHolderData.shopId
+            cartGroupHolderData.cartShopGroupTicker.state == CartShopGroupTickerState.SUCCESS_AFFORD,
+            cartGroupHolderData.cartShopGroupTicker.cartIds,
+            cartGroupHolderData.shop.shopId
         )
     }
 
@@ -2291,7 +2258,7 @@ class CartFragment :
     }
 
     override fun onCartItemCheckChanged(position: Int, cartItemHolderData: CartItemHolderData) {
-        cartAdapter.setItemSelected(position, cartItemHolderData)
+        cartAdapter.setItemSelected(position, cartItemHolderData, !cartItemHolderData.isSelected)
         updateStateAfterCheckChanged()
     }
 
@@ -2301,10 +2268,10 @@ class CartFragment :
         setCheckboxGlobalState()
         setGlobalDeleteVisibility()
         validateGoToCheckout()
-        val params = generateParamValidateUsePromoRevamp()
+        val params = generateParamGetLastApplyPromo()
         if (isNeedHitUpdateCartAndValidateUse(params)) {
             renderPromoCheckoutLoading()
-            dPresenter.doUpdateCartAndValidateUse(params)
+            dPresenter.doUpdateCartAndGetLastApply(params)
         } else {
             updatePromoCheckoutManualIfNoSelected(getAllAppliedPromoCodes(params))
         }
@@ -2312,12 +2279,12 @@ class CartFragment :
     }
 
     override fun onBundleItemCheckChanged(cartItemHolderData: CartItemHolderData) {
-        val cartShopHolderData =
-            cartAdapter.getCartShopHolderDataByCartItemHolderData(cartItemHolderData)
-        cartShopHolderData?.let {
-            it.productUiModelList.forEachIndexed { index, data ->
-                if (data.isBundlingItem && data.bundleId == cartItemHolderData.bundleId && data.bundleGroupId == cartItemHolderData.bundleGroupId) {
-                    cartAdapter.setItemSelected(index, cartItemHolderData)
+        val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(cartItemHolderData.cartString, false)
+        if (index > 0) {
+            val selected = !cartItemHolderData.isSelected
+            groupData.forEachIndexed { position, data ->
+                if (data is CartItemHolderData && data.isBundlingItem && data.bundleId == cartItemHolderData.bundleId && data.bundleGroupId == cartItemHolderData.bundleGroupId) {
+                    cartAdapter.setItemSelected(index + position, cartItemHolderData, selected)
                 }
             }
             updateStateAfterCheckChanged()
@@ -2342,7 +2309,7 @@ class CartFragment :
     }
 
     private fun updatePromoCheckoutManualIfNoSelected(listPromoApplied: List<String>) {
-        if (cartAdapter.selectedCartShopHolderData.isEmpty()) {
+        if (cartAdapter.selectedCartGroupHolderData.isEmpty()) {
             renderPromoCheckoutButtonNoItemIsSelected()
         } else {
             renderPromoCheckoutButtonActiveDefault(listPromoApplied)
@@ -2415,28 +2382,35 @@ class CartFragment :
         }
     }
 
-    override fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData) {
-        val (data, index) = cartAdapter.getCartShopHolderDataAndIndexByCartString(cartItemHolderData.cartString)
-        if (data != null) {
-            checkCartShopGroupTicker(data)
-            onNeedToUpdateViewItem(index)
+    override fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData, itemPosition: Int) {
+        val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(cartItemHolderData.cartString, false)
+        if (index >= 0) {
+            val shopHeaderData = groupData.first()
+            if (shopHeaderData is CartGroupHolderData) {
+                onNeedToUpdateViewItem(index)
+            }
+            onNeedToUpdateViewItem(itemPosition)
+            val shopBottomData = groupData.last()
+            if (shopBottomData is CartShopBottomHolderData) {
+                checkCartShopGroupTicker(shopBottomData.shopData)
+                onNeedToUpdateViewItem(index + groupData.lastIndex)
+            }
         }
     }
 
     override fun onNeedToRefreshWeight(cartItemHolderData: CartItemHolderData) {
-        val (data, index) = cartAdapter.getCartShopHolderDataAndIndexByCartString(cartItemHolderData.cartString)
-        if (data != null) {
-            data.isNeedToRefreshWeight = true
-            checkCartShopGroupTicker(data)
-            onNeedToUpdateViewItem(index)
+        val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(cartItemHolderData.cartString, false)
+        if (index >= 0) {
+            val shopHeaderData = groupData.first()
+            if (shopHeaderData is CartGroupHolderData) {
+                onNeedToUpdateViewItem(index)
+            }
+            val shopBottomData = groupData.last()
+            if (shopBottomData is CartShopBottomHolderData) {
+                checkCartShopGroupTicker(shopBottomData.shopData)
+                onNeedToUpdateViewItem(index + groupData.lastIndex)
+            }
         }
-    }
-
-    override fun onNeedToRefreshMultipleShop() {
-        val firstShopIndexAndCount = cartAdapter.getFirstShopAndShopCountWithIterateFunction {
-            checkCartShopGroupTicker(it)
-        }
-        onNeedToUpdateMultipleViewItem(firstShopIndexAndCount.first, firstShopIndexAndCount.second)
     }
 
     override fun onNeedToRecalculate() {
@@ -2460,7 +2434,7 @@ class CartFragment :
                 binding?.llCartContainer?.setBackgroundColor(
                     ContextCompat.getColor(
                         it,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N50
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN50
                     )
                 )
             }
@@ -2468,7 +2442,7 @@ class CartFragment :
             it.window.decorView.setBackgroundColor(
                 ContextCompat.getColor(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N50
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN50
                 )
             )
         }
@@ -2506,13 +2480,13 @@ class CartFragment :
     private fun scrollToLastAddedProductShop() {
         val cartId: String = getCartId()
         if (cartId.isNotBlank()) {
-            var hasTokoNowProduct = false
+            var hasProducts = false
             loop@ for (shop in cartAdapter.allShopGroupDataList) {
-                hasTokoNowProduct = true
+                hasProducts = true
                 break@loop
             }
 
-            if (hasTokoNowProduct) {
+            if (hasProducts) {
                 val shopIndex = cartAdapter.getCartShopHolderIndexByCartId(cartId)
                 if (shopIndex != RecyclerView.NO_POSITION) {
                     val offset =
@@ -2569,6 +2543,7 @@ class CartFragment :
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun validateRenderCart(cartData: CartData) {
         if (cartData.availableSection.availableGroupGroups.isEmpty() && cartData.unavailableSections.isEmpty()) {
             renderCartEmpty(cartData)
@@ -2607,7 +2582,7 @@ class CartFragment :
     }
 
     private fun validateRenderPromoFromValidateUseCartPage() {
-        dPresenter.getUpdateCartAndValidateUseLastResponse()?.promoUiModel?.let {
+        dPresenter.getUpdateCartAndGetLastApplyLastResponse()?.promoUiModel?.let {
             val lastApplyUiModel =
                 LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(it)
             renderPromoCheckout(lastApplyUiModel)
@@ -2985,14 +2960,14 @@ class CartFragment :
         return allPromoApplied
     }
 
-    private fun generateParamValidateUsePromoRevamp(): ValidateUsePromoRequest {
+    private fun generateParamGetLastApplyPromo(): ValidateUsePromoRequest {
         return when {
             dPresenter.isLastApplyValid() -> {
                 val lastApplyPromo =
                     dPresenter.getCartListData()?.promo?.lastApplyPromo ?: LastApplyPromo()
-                PromoRequestMapper.generateValidateUseRequestParams(
+                PromoRequestMapper.generateGetLastApplyRequestParams(
                     lastApplyPromo,
-                    cartAdapter.selectedCartShopHolderData,
+                    cartAdapter.selectedCartGroupHolderData,
                     null
                 )
             }
@@ -3000,17 +2975,17 @@ class CartFragment :
             dPresenter.getValidateUseLastResponse() != null -> {
                 val promoUiModel =
                     dPresenter.getValidateUseLastResponse()?.promoUiModel ?: PromoUiModel()
-                PromoRequestMapper.generateValidateUseRequestParams(
+                PromoRequestMapper.generateGetLastApplyRequestParams(
                     promoUiModel,
-                    cartAdapter.selectedCartShopHolderData,
+                    cartAdapter.selectedCartGroupHolderData,
                     dPresenter.getLastValidateUseRequest()
                 )
             }
 
             else -> {
-                PromoRequestMapper.generateValidateUseRequestParams(
+                PromoRequestMapper.generateGetLastApplyRequestParams(
                     null,
-                    cartAdapter.selectedCartShopHolderData,
+                    cartAdapter.selectedCartGroupHolderData,
                     null
                 )
             }
@@ -3024,7 +2999,8 @@ class CartFragment :
                     dPresenter.getCartListData()?.promo?.lastApplyPromo ?: LastApplyPromo()
                 PromoRequestMapper.generateCouponListRequestParams(
                     lastApplyPromo,
-                    cartAdapter.allAvailableShopGroupDataList
+                    cartAdapter.allAvailableShopGroupDataList,
+                    null
                 )
             }
 
@@ -3033,14 +3009,16 @@ class CartFragment :
                     dPresenter.getValidateUseLastResponse()?.promoUiModel ?: PromoUiModel()
                 PromoRequestMapper.generateCouponListRequestParams(
                     promoUiModel,
-                    cartAdapter.allAvailableShopGroupDataList
+                    cartAdapter.allAvailableShopGroupDataList,
+                    dPresenter.getLastValidateUseRequest()
                 )
             }
 
             else -> {
                 PromoRequestMapper.generateCouponListRequestParams(
                     null,
-                    cartAdapter.allAvailableShopGroupDataList
+                    cartAdapter.allAvailableShopGroupDataList,
+                    null
                 )
             }
         }
@@ -3086,7 +3064,7 @@ class CartFragment :
 
     private fun renderCartAvailableItems(cartData: CartData) {
         if (cartData.availableSection.availableGroupGroups.isNotEmpty()) {
-            val availableShopList = CartUiModelMapper.mapAvailableShopUiModel(cartData)
+            val availableShopList = CartUiModelMapper.mapAvailableGroupUiModel(cartData)
             cartAdapter.addItems(availableShopList)
         }
     }
@@ -3340,7 +3318,7 @@ class CartFragment :
         return cartAdapter.allAvailableCartItemData
     }
 
-    override fun getAllShopDataList(): List<CartShopHolderData> {
+    override fun getAllGroupDataList(): List<CartGroupHolderData> {
         return cartAdapter.allShopGroupDataList
     }
 
@@ -3551,9 +3529,8 @@ class CartFragment :
         } else {
             showToastMessageGreen(
                 message,
-                getString(R.string.toaster_cta_cancel),
-                View.OnClickListener { onUndoDeleteClicked(deletedCartIds) }
-            )
+                getString(R.string.toaster_cta_cancel)
+            ) { onUndoDeleteClicked(deletedCartIds) }
         }
 
         val needRefresh = removeAllItems || isFromEditBundle
@@ -3851,23 +3828,24 @@ class CartFragment :
         dPresenter.processGetWishlistV2Data()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun removeLocalCartItem(
         updateListResult: Pair<List<Int>, List<Int>>,
         forceExpandCollapsedUnavailableItems: Boolean
     ) {
         val updateIndices = updateListResult.second
         val removeIndices = updateListResult.first
-        if (removeIndices.size > 1) {
-            // on multiple deletion, notify data set changed to prevent indices race condition
-            cartAdapter.notifyDataSetChanged()
-        } else {
-            updateIndices.forEach {
-                onNeedToUpdateViewItem(it)
-            }
-            removeIndices.forEach {
-                onNeedToRemoveViewItem(it)
-            }
-        }
+//        if (removeIndices.size > 1) {
+//            // on multiple deletion, notify data set changed to prevent indices race condition
+//            cartAdapter.notifyDataSetChanged()
+//        } else {
+//            updateIndices.forEach {
+//                onNeedToUpdateViewItem(it)
+//            }
+//            removeIndices.forEach {
+//                onNeedToRemoveViewItem(it)
+//            }
+//        }
 
         // If action is on unavailable item, do collapse unavailable items if previously forced to expand (without user tap expand)
         if (cartAdapter.allDisabledCartItemData.size > 1) {
@@ -3880,38 +3858,57 @@ class CartFragment :
 
         val allShopGroupDataList = cartAdapter.allShopGroupDataList
 
-        // Check if cart list has more than 1 shop, and it's a toko now
-        if (allShopGroupDataList.size == 1 && allShopGroupDataList[0].isTokoNow == true) {
+        // Check if cart list has exactly 1 shop, and it's a toko now
+        if (allShopGroupDataList.size == 1 && allShopGroupDataList[0].isTokoNow) {
             allShopGroupDataList[0].let {
-                it.isCollapsible = false
-                it.isCollapsed = false
-                it.isShowPin = false
-                val index = cartAdapter.getCartShopHolderIndexByCartString(it.cartString)
+                val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(it.cartString, it.isError)
                 if (index != RecyclerView.NO_POSITION) {
-                    onNeedToUpdateViewItem(index)
+                    if (it.isCollapsed) {
+                        cartAdapter.addItems(index + 1, it.productUiModelList)
+                    }
+                    it.isCollapsible = false
+                    it.isCollapsed = false
+                    it.isShowPin = false
+//                    onNeedToUpdateViewItem(index)
+//                    if (groupData.last() is CartShopBottomHolderData) {
+//                        val bottomIndex = index + groupData.lastIndex
+//                        cartAdapter.getData()[bottomIndex] = CartShopBottomHolderData(it)
+//                        onNeedToUpdateViewItem(bottomIndex)
+//                    }
                 }
             }
         }
 
         // Check if cart list has more than 1 shop, and first shop is toko now
-        if (allShopGroupDataList.size > 1 && allShopGroupDataList[0].isTokoNow == true) {
+        if (allShopGroupDataList.size > 1 && allShopGroupDataList[0].isTokoNow) {
             allShopGroupDataList[0].let {
                 if (it.productUiModelList.size == 1) {
-                    it.isCollapsible = false
-                    it.isCollapsed = false
-                    val index = cartAdapter.getCartShopHolderIndexByCartString(it.cartString)
+                    val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(it.cartString, it.isError)
                     if (index != RecyclerView.NO_POSITION) {
-                        onNeedToUpdateViewItem(index)
+                        if (it.isCollapsed) {
+                            cartAdapter.addItems(index + 1, it.productUiModelList)
+                        }
+                        it.isCollapsible = false
+                        it.isCollapsed = false
+//                        onNeedToUpdateViewItem(index)
+//                        if (groupData.last() is CartShopBottomHolderData) {
+//                            val bottomIndex = index + groupData.lastIndex
+//                            cartAdapter.getData()[bottomIndex] = CartShopBottomHolderData(it)
+//                            onNeedToUpdateViewItem(bottomIndex)
+//                        }
                     }
                 }
             }
         }
 
+        // use notify data set changed due to massive update
+        cartAdapter.notifyDataSetChanged()
+
         dPresenter.reCalculateSubTotal(cartAdapter.allAvailableShopGroupDataList)
         notifyBottomCartParent()
     }
 
-    private fun onNeedToInserViewItem(position: Int) {
+    private fun onNeedToInsertViewItem(position: Int) {
         if (position == RecyclerView.NO_POSITION) return
         if (binding?.rvCart?.isComputingLayout == true) {
             binding?.rvCart?.post { cartAdapter.notifyItemInserted(position) }
@@ -4228,7 +4225,7 @@ class CartFragment :
         cartPageAnalytics.eventViewTickerProductContainTobacco()
     }
 
-    override fun getAdsId(): String? {
+    override fun getAdsId(): String {
         return DeviceInfo.getAdsId(requireContext())
     }
 
@@ -4241,21 +4238,6 @@ class CartFragment :
         cache.putInt(CartConstant.IS_HAS_CART, if (counter > 0) 1 else 0)
         cache.putInt(CartConstant.CACHE_TOTAL_CART, counter)
         cache.applyEditor()
-    }
-
-    override fun showPromoCheckoutStickyButtonInactive() {
-        binding?.apply {
-            promoCheckoutBtnCart.state = ButtonPromoCheckoutView.State.INACTIVE
-            promoCheckoutBtnCart.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
-            promoCheckoutBtnCart.title =
-                getString(com.tokopedia.purchase_platform.common.R.string.promo_checkout_inactive_label)
-            promoCheckoutBtnCart.desc =
-                getString(com.tokopedia.purchase_platform.common.R.string.promo_checkout_inactive_desc)
-            promoCheckoutBtnCart.setOnClickListener {
-                renderPromoCheckoutLoading()
-                dPresenter.doValidateUse(generateParamValidateUsePromoRevamp())
-            }
-        }
     }
 
     override fun showPromoCheckoutStickyButtonLoading() {
@@ -4277,9 +4259,9 @@ class CartFragment :
         newQuantity: Int
     ) {
         if (cartItemHolderData.isBundlingItem) {
-            val cartShopHolderData =
-                cartAdapter.getCartShopHolderDataByCartItemHolderData(cartItemHolderData)
-            cartShopHolderData?.let {
+            val cartGroupHolderData =
+                cartAdapter.getCartGroupHolderDataByCartItemHolderData(cartItemHolderData)
+            cartGroupHolderData?.let {
                 it.productUiModelList.forEach {
                     if (it.isBundlingItem && it.bundleId == cartItemHolderData.bundleId && it.bundleGroupId == cartItemHolderData.bundleGroupId) {
                         it.bundleQuantity = newQuantity
@@ -4291,10 +4273,10 @@ class CartFragment :
         }
 
         validateGoToCheckout()
-        val params = generateParamValidateUsePromoRevamp()
+        val params = generateParamGetLastApplyPromo()
         if (isNeedHitUpdateCartAndValidateUse(params)) {
             renderPromoCheckoutLoading()
-            dPresenter.doUpdateCartAndValidateUse(params)
+            dPresenter.doUpdateCartAndGetLastApply(params)
         } else if (cartItemHolderData.isTokoNow) {
             if (tokoNowProductUpdater == null) {
                 compositeSubscription.add(
@@ -4322,8 +4304,8 @@ class CartFragment :
         routeToPromoCheckoutMarketplacePage()
     }
 
-    override fun generateGeneralParamValidateUse(): ValidateUsePromoRequest {
-        return generateParamValidateUsePromoRevamp()
+    override fun generateGeneralParamGetLastApply(): ValidateUsePromoRequest {
+        return generateParamGetLastApplyPromo()
     }
 
     override fun checkHitValidateUseIsNeeded(params: ValidateUsePromoRequest): Boolean {
@@ -4385,48 +4367,74 @@ class CartFragment :
     }
 
     override fun onCollapseAvailableItem(index: Int) {
-        val cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(index)
-        if (cartShopHolderData != null) {
-            cartShopHolderData.isCollapsed = true
+        val cartShopBottomHolderData = cartAdapter.getCartShopBottomHolderDataFromIndex(index)
+        if (cartShopBottomHolderData != null) {
+            cartShopBottomHolderData.shopData.isCollapsed = true
+            cartAdapter.getData().removeAll(cartShopBottomHolderData.shopData.productUiModelList.toSet())
             onNeedToUpdateViewItem(index)
+            onNeedToRemoveMultipleViewItem(index - cartShopBottomHolderData.shopData.productUiModelList.size, cartShopBottomHolderData.shopData.productUiModelList.size)
+            onNeedToUpdateViewItem(index - 1 - cartShopBottomHolderData.shopData.productUiModelList.size)
             val layoutManager: RecyclerView.LayoutManager? = binding?.rvCart?.layoutManager
             if (layoutManager != null) {
                 val offset = resources.getDimensionPixelOffset(R.dimen.dp_40)
-                (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(index, offset)
+                (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(index - 1 - cartShopBottomHolderData.shopData.productUiModelList.size, offset)
             }
         }
     }
 
     override fun onExpandAvailableItem(index: Int) {
-        val cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(index)
-        if (cartShopHolderData != null) {
-            if (cartShopHolderData.productUiModelList.size > TOKONOW_SEE_OTHERS_OR_ALL_LIMIT) {
-                cartPageAnalytics.eventClickLihatOnPlusLainnyaOnNowProduct(cartShopHolderData.shopId)
+        val cartShopBottomHolderData = cartAdapter.getCartShopBottomHolderDataFromIndex(index)
+        if (cartShopBottomHolderData != null) {
+            if (cartShopBottomHolderData.shopData.productUiModelList.size > TOKONOW_SEE_OTHERS_OR_ALL_LIMIT) {
+                cartPageAnalytics.eventClickLihatOnPlusLainnyaOnNowProduct(cartShopBottomHolderData.shopData.shop.shopId)
             } else {
-                cartPageAnalytics.eventClickLihatSelengkapnyaOnNowProduct(cartShopHolderData.shopId)
+                cartPageAnalytics.eventClickLihatSelengkapnyaOnNowProduct(cartShopBottomHolderData.shopData.shop.shopId)
             }
-            cartShopHolderData.isCollapsed = false
-            onNeedToUpdateViewItem(index)
+            cartShopBottomHolderData.shopData.isCollapsed = false
+            cartAdapter.addItems(index, cartShopBottomHolderData.shopData.productUiModelList)
+            onNeedToInsertMultipleViewItem(index, cartShopBottomHolderData.shopData.productUiModelList.size)
+            onNeedToUpdateViewItem(index - 1)
+            onNeedToUpdateViewItem(index + cartShopBottomHolderData.shopData.productUiModelList.size)
         }
     }
 
     override fun onCollapsedProductClicked(index: Int, cartItemHolderData: CartItemHolderData) {
-        val (cartShopHolderData, shopIndex) = cartAdapter.getCartShopHolderDataAndIndexByCartString(
-            cartItemHolderData.cartString
+        val (shopIndex, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(
+            cartItemHolderData.cartString,
+            false
         )
-        if (cartShopHolderData != null) {
-            cartPageAnalytics.eventClickCollapsedProductImage(cartShopHolderData.shopId)
-            cartShopHolderData.isCollapsed = false
-            cartShopHolderData.clickedCollapsedProductIndex = index
-            onNeedToUpdateViewItem(shopIndex)
+        if (shopIndex >= 0) {
+            val cartGroupHolderData = groupData.first()
+            val cartShopBottomHolderData = groupData.last()
+            if (cartGroupHolderData is CartGroupHolderData && cartShopBottomHolderData is CartShopBottomHolderData) {
+                cartPageAnalytics.eventClickCollapsedProductImage(cartGroupHolderData.shop.shopId)
+                cartGroupHolderData.isCollapsed = false
+                cartGroupHolderData.clickedCollapsedProductIndex = index
+                cartAdapter.addItems(shopIndex + 1, cartGroupHolderData.productUiModelList)
+                onNeedToUpdateViewItem(shopIndex)
+                onNeedToInsertMultipleViewItem(
+                    shopIndex + 1,
+                    cartGroupHolderData.productUiModelList.size
+                )
+                val bottomIndex = shopIndex + 1 + cartGroupHolderData.productUiModelList.size
+                cartAdapter.getData()[bottomIndex] = CartShopBottomHolderData(cartGroupHolderData)
+                onNeedToUpdateViewItem(bottomIndex)
+                val layoutManager: RecyclerView.LayoutManager? = binding?.rvCart?.layoutManager
+                if (layoutManager is LinearLayoutManager) {
+                    layoutManager.scrollToPositionWithOffset(
+                        shopIndex + 1 + index,
+                        60.dpToPx(resources.displayMetrics)
+                    )
+                }
+            }
         }
     }
 
     override fun scrollToClickedExpandedProduct(index: Int, offset: Int) {
         binding?.rvCart?.post {
             val layoutManager: RecyclerView.LayoutManager? = binding?.rvCart?.layoutManager
-            if (layoutManager != null) {
-                (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(index, offset)
+            if (layoutManager is LinearLayoutManager) {
+                layoutManager.scrollToPositionWithOffset(index, offset)
             }
         }
     }
@@ -4524,18 +4532,17 @@ class CartFragment :
         }
     }
 
-    override fun updateCartShopGroupTicker(cartShopHolderData: CartShopHolderData) {
-        val (data, index) = cartAdapter.getCartShopHolderDataAndIndexByCartString(cartShopHolderData.cartString)
-        if (data != null) {
-            data.isNeedToRefreshWeight = true
-            onNeedToUpdateViewItem(index)
+    override fun updateCartShopGroupTicker(cartGroupHolderData: CartGroupHolderData) {
+        val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(cartGroupHolderData.cartString, cartGroupHolderData.isError)
+        if (index >= 0) {
+            onNeedToUpdateViewItem(index + groupData.lastIndex)
         }
     }
 
-    override fun checkCartShopGroupTicker(cartShopHolderData: CartShopHolderData) {
-        if (cartShopHolderData.cartShopGroupTicker.enableCartAggregator && !cartShopHolderData.isError && cartShopHolderData.hasSelectedProduct) {
-            cartShopHolderData.cartShopGroupTicker.state = CartShopGroupTickerState.LOADING
-            dPresenter.checkCartShopGroupTicker(cartShopHolderData)
+    override fun checkCartShopGroupTicker(cartGroupHolderData: CartGroupHolderData) {
+        if (cartGroupHolderData.cartShopGroupTicker.enableCartAggregator && !cartGroupHolderData.isError && cartGroupHolderData.hasSelectedProduct) {
+            cartGroupHolderData.cartShopGroupTicker.state = CartShopGroupTickerState.LOADING
+            dPresenter.checkCartShopGroupTicker(cartGroupHolderData)
         }
     }
 }

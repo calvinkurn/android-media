@@ -3,9 +3,11 @@ package com.tokopedia.productcard.options
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.discovery.common.utils.SimilarSearchCoachMarkLocalCache
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import io.mockk.mockk
@@ -21,6 +23,8 @@ internal open class ProductCardOptionsViewModelTestFixtures {
     protected val addToCartUseCase = mockk<UseCase<AddToCartDataModel>>(relaxed = true)
     protected val userSession = mockk<UserSessionInterface>(relaxed = true)
     protected lateinit var productCardOptionsViewModel: ProductCardOptionsViewModel
+    protected val similarSearchCoachMarkLocalCache= mockk<SimilarSearchCoachMarkLocalCache>(relaxed = true)
+    protected val abTestRemoteConfig = mockk<RemoteConfig>(relaxed = true)
 
     protected open fun createProductCardOptionsViewModel(productCardOptionsModel: ProductCardOptionsModel?) {
         productCardOptionsViewModel =  ProductCardOptionsViewModel(
@@ -29,7 +33,9 @@ internal open class ProductCardOptionsViewModelTestFixtures {
                 addToWishlistV2UseCase,
                 deleteWishlistV2UseCase,
                 addToCartUseCase,
-                userSession
+                userSession,
+                similarSearchCoachMarkLocalCache,
+                { abTestRemoteConfig },
         )
     }
 }

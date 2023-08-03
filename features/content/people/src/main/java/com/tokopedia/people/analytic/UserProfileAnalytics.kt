@@ -3,6 +3,8 @@ package com.tokopedia.people.analytic
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.LIVE
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.NOT_LIVE
+import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.OFF
+import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.ON
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.SELF
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.VISITOR
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.VOD
@@ -30,6 +32,7 @@ class UserProfileAnalytics {
         fun isLiveOrNotLive(isLive: Boolean) = if (isLive) LIVE else NOT_LIVE
         fun isSelfOrVisitor(isSelf: Boolean) = if (isSelf) SELF else VISITOR
         fun isLiveOrVod(isLive: Boolean) = if (isLive) LIVE else VOD
+        fun isOnOrOff(isOn: Boolean) = if (isOn) ON else OFF
     }
 
     object Constants {
@@ -56,6 +59,7 @@ class UserProfileAnalytics {
         const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
         const val PROMO_CLICK = "promoClick"
         const val PROMO_VIEW = "promoView"
+        const val PRODUCT_CLICK = "productClick"
         const val ALLOW = "Allow"
         const val DENY = "Deny"
         const val IZINKAN_AKSES = "Izinkan Akses"
@@ -66,6 +70,20 @@ class UserProfileAnalytics {
         const val VOD = "vod"
         const val LAIN_KALI = "Lain Kali"
         const val PLAY = "play"
+        const val ON = "on"
+        const val OFF = "off"
+        const val CREATIVE_NAME = "creative_name"
+        const val CREATIVE_SLOT = "creative_slot"
+        const val ITEM_ID = "item_id"
+        const val ITEM_NAME = "item_name"
+        const val ITEM_BRAND = "item_brand"
+        const val ITEM_CATEOGRY = "item_category"
+        const val ITEM_VARIANT = "item_variant"
+        const val ITEM_PRICE = "price"
+        const val INDEX = "index"
+        const val ITEM_LIST = "item_list"
+        const val CLICK = "click"
+        const val PRODUCTS = "products"
     }
 
     object Event {

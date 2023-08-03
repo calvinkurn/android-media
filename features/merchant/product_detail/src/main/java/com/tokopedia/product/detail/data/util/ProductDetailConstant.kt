@@ -43,7 +43,6 @@ object ProductDetailConstant {
     const val REQUEST_CODE_REPORT = 570
     const val REQUEST_CODE_TOP_CHAT = 997
     const val REQUEST_CODE_SHOP_INFO = 998
-    const val REQUEST_CODE_IMAGE_PREVIEW = 999
 
     // Result
     const val SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE"
@@ -109,6 +108,7 @@ object ProductDetailConstant {
     const val FINTECH_WIDGET_NAME = "paylater_cicilan"
     const val DILAYANI_TOKOPEDIA = "dt_info"
     const val AR_BUTTON = "button_ar"
+    const val RECOM_VERTICAL = "pdp_vertical"
 
     // custom info title as component type
     const val CUSTOM_INFO_TITLE = "custom_info_title"

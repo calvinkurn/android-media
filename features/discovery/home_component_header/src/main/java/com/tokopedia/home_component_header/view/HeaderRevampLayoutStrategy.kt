@@ -12,9 +12,9 @@ import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import com.tokopedia.home_component_header.R
 import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.home_component_header.util.getLink
-import com.tokopedia.home_component_header.R
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -29,6 +29,10 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
         private const val ROTATE_FROM_DEGREES = 0f
         private const val ROTATE_DURATION = 500L
     }
+
+    var ctaButtonRevamp: IconUnify? = null
+    var ctaBorder: ImageView? = null
+    var ctaButtonRevampContainer: ConstraintLayout? = null
 
     private val rotateAnimation by lazy {
         RotateAnimation(ROTATE_FROM_DEGREES, ROTATE_TO_DEGREES, Animation.RELATIVE_TO_SELF, PIVOT_X_VALUE, Animation.RELATIVE_TO_SELF, PIVOT_Y_VALUE)
@@ -53,9 +57,6 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
         ctaMode: Int?,
         colorMode: Int?
     ) {
-        var ctaButtonRevamp: IconUnify? = null
-        var ctaBorder: ImageView? = null
-        var ctaButtonRevampContainer: ConstraintLayout? = null
         if (hasSeeMoreApplink || ctaMode != HomeChannelHeaderView.CTA_MODE_SEE_ALL) {
             if (stubCtaButton is ViewStub &&
                 !isViewStubHasBeenInflated(stubCtaButton)

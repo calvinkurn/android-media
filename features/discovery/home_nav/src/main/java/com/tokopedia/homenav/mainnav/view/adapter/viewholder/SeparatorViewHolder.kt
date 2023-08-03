@@ -25,10 +25,6 @@ class SeparatorViewHolder(itemView: View,
     @SuppressLint("ResourcePackage")
     override fun bind(element: SeparatorDataModel) {
         val context = itemView.context
-        if(element.isUsingRollence){
-            binding?.dividerUnify?.setBackgroundColor(ContextCompat.getColor(context, R.color.Unify_NN50))
-        } else {
-            binding?.dividerUnify?.setBackgroundColor(ContextCompat.getColor(context, R.color.Unify_NN200))
-        }
+        binding?.dividerUnify?.setBackgroundColor(ContextCompat.getColor(context, R.color.Unify_NN200))
     }
 }

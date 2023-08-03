@@ -16,23 +16,27 @@ import com.tokopedia.unifyprinciples.Typography
 
 class NavigationChipsItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
     private val childCategory: Typography = itemView.findViewById(R.id.child_category)
-    private lateinit var childCategoriesItemViewModel: DefaultComponentViewModel
+    private var childCategoriesItemViewModel: DefaultComponentViewModel? = null
     private var positionForParentAdapter: Int = -1
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         childCategoriesItemViewModel = discoveryBaseViewModel as DefaultComponentViewModel
-        childCategoriesItemViewModel.getComponentLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
-            val itemData = item.data?.firstOrNull()
-            positionForParentAdapter = itemData?.positionForParentItem ?: -1
-            itemData?.let {
-                it.title?.let { title ->
-                    childCategory.text = title
-                    setClick(item)
+        childCategoriesItemViewModel?.getComponentLiveData()?.observe(
+            fragment.viewLifecycleOwner,
+            Observer { item ->
+                val itemData = item.data?.firstOrNull()
+                positionForParentAdapter = itemData?.positionForParentItem ?: -1
+                itemData?.let {
+                    it.title?.let { title ->
+                        childCategory.text = title
+                        setClick(item)
+                    }
+                }
+                if (adapterPosition == 0) {
+                    itemView.setMargin(itemView.context.resources.getDimensionPixelSize(R.dimen.dp_12), 0, 0, 0)
                 }
             }
-            if(adapterPosition == 0)
-                itemView.setMargin(itemView.context.resources.getDimensionPixelSize(R.dimen.dp_12),0,0,0)
-        })
+        )
     }
 
     private fun setClick(componentsItem: ComponentsItem) {

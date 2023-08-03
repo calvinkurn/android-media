@@ -3,6 +3,7 @@ package com.tokopedia.homenav.mainnav.view.adapter.typefactory
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.homenav.MePage
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.wishlist.EmptyWishlistViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.wishlist.OtherWishlistViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.wishlist.WishlistItemViewHolder
@@ -12,6 +13,7 @@ import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.OtherWishlistModel
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistModel
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistNavVisitable
 
+@MePage(MePage.Widget.WISHLIST)
 class WishlistTypeFactoryImpl(val mainNavListener: MainNavListener) : BaseAdapterTypeFactory(), WishlistTypeFactory {
 
     override fun type(wishlistModel: WishlistModel): Int {

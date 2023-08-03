@@ -1,5 +1,6 @@
 package com.tokopedia.media.editor.ui.activity
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.tokopedia.media.editor.data.repository.SaveImageRepository
 import com.tokopedia.media.editor.ui.activity.main.EditorViewModel
@@ -14,6 +15,7 @@ import com.tokopedia.media.editor.data.repository.AddLogoFilterRepository
 import com.tokopedia.media.editor.data.repository.BitmapCreationRepository
 import com.tokopedia.media.editor.ui.uimodel.EditorAddLogoUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
+import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.getTokopediaCacheDir
 import com.tokopedia.picker.common.PICKER_URL_FILE_CODE
@@ -351,6 +353,26 @@ class EditorViewModelTest {
 
         // Then
         assertEquals(false, isMemoryOverflow)
+    }
+
+    @Test
+    fun `check crop is success`() {
+        // Given
+        val source = ShadowBitmapFactory.create("", BitmapFactory.Options())
+        var resultSource: Bitmap? = null
+        val cropRotateData = EditorCropRotateUiModel(
+            offsetX = 10,
+            offsetY = 20,
+            imageWidth = 100,
+            imageHeight = 100
+        )
+
+        // When
+        every { bitmapCreationRepository.createBitmap(any()) } returns source
+        resultSource = viewModel.cropImage(source, cropRotateData)
+
+        // Then
+        assertNotNull(resultSource)
     }
 
     private fun createUiModelState(excludeIndex: Int, cameraIndex: Int): List<EditorUiModel> {

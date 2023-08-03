@@ -273,7 +273,10 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback, 
 
     private fun redirectToThankYouFragment(submitWithdrawalResponse: SubmitWithdrawalResponse) {
         loadingLayout.gone()
-        (activity as WithdrawActivity).openThankYouFragment(withdrawalRequest, submitWithdrawalResponse)
+        (activity as WithdrawActivity).openThankYouFragment(
+            withdrawalRequest,
+            submitWithdrawalResponse
+        )
     }
 
     private fun showUIComponent() {

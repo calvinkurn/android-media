@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="25dp"
         android:layout_gravity="top"
-        android:background="@color/Unify_G500"
+        android:background="@color/Unify_GN500"
         android:visibility="gone" />
 
     <com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -85,6 +85,15 @@
                 android:clipToPadding="false" />
 
         </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+
+        <View
+            android:id="@+id/mini_cart_widget_shadow"
+            android:layout_width="0dp"
+            android:layout_height="8dp"
+            android:background="@drawable/tokopedianow_bg_top_shadow_minicart"
+            app:layout_constraintBottom_toTopOf="@id/mini_cart_widget"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <com.tokopedia.minicart.common.widget.MiniCartWidget
             android:id="@+id/mini_cart_widget"

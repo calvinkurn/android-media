@@ -26,7 +26,7 @@
         android:text="@string/buyer_reputation_given_by_seller"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:textColor="@color/Unify_N700_32"
+        android:textColor="@color/Unify_NN950_32"
         app:typographyType="body_3"
         />
 
@@ -62,7 +62,7 @@
             android:layout_toRightOf="@id/smiley_good"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="6sp"
-            android:textColor="@color/Unify_N700_44"
+            android:textColor="@color/Unify_NN950_44"
             tools:text="248"
             app:typographyType="body_3" />
 
@@ -87,7 +87,7 @@
             android:layout_toRightOf="@id/smiley_neutral"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="6sp"
-            android:textColor="@color/Unify_N700_44"
+            android:textColor="@color/Unify_NN950_44"
             tools:text="2"
             app:typographyType="body_3" />
 
@@ -112,7 +112,7 @@
             android:layout_toRightOf="@id/smiley_bad"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="6sp"
-            android:textColor="@color/Unify_N700_44"
+            android:textColor="@color/Unify_NN950_44"
             tools:text="0"
             app:typographyType="body_3"
             />

@@ -115,6 +115,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
         !it.variantInputModel.hasVariant()
     }
 
+    val hasDTStock = Transformations.map(productInputModel) {
+        it.hasDTStock
+    }
+
     val priceRangeFormatted = Transformations.map(productInputModel) {
         val highestPrice = it.variantInputModel.getHighestPrice().orZero()
         val lowestPrice = it.variantInputModel.getLowestPrice().orZero()
@@ -661,22 +665,26 @@ class AddEditProductPreviewViewModel @Inject constructor(
      * */
     fun clearProductPhotoUrl(
         imagePickerResult: ArrayList<String>,
-        originalImageUrl: ArrayList<String>
+        originalImageUrls: ArrayList<String>
     ): Pair<ArrayList<String>, ArrayList<Boolean>> {
         val resultCleaner = arrayListOf<String>()
         val isEdited = arrayListOf<Boolean>()
         imagePickerResult.forEachIndexed { index, uriEditImage ->
+            val originalImageUrl = originalImageUrls.getOrNull(index)
             when {
                 uriEditImage.isNotEmpty() -> {
                     resultCleaner.add(uriEditImage)
                     isEdited.add(true)
                 }
-                isPictureFromInternet(originalImageUrl[index]) -> {
-                    resultCleaner.add(originalImageUrl[index])
+                originalImageUrl.isNullOrEmpty() -> {
+                    return@forEachIndexed
+                }
+                isPictureFromInternet(originalImageUrl) -> {
+                    resultCleaner.add(originalImageUrl)
                     isEdited.add(false)
                 }
                 else -> {
-                    resultCleaner.add(originalImageUrl[index])
+                    resultCleaner.add(originalImageUrl)
                     isEdited.add(true)
                 }
             }

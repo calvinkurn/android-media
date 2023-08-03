@@ -290,6 +290,13 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 }
                 unavailable_buttons
                 hide_floating_button
+                override_buttons {
+                  text
+                  color
+                  cart_type
+                  onboarding_message
+                  show_recommendation
+                }
               }
             }
             upcomingCampaigns {
@@ -415,6 +422,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                     iconURL
                 }
                 isShown
+                additionalData
             }
             reviewImage{
               list{

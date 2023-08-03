@@ -15,6 +15,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_MVC_LIST
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToasterError
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.orFalse
@@ -119,6 +121,12 @@ class SummaryFragment :
     @Inject
     lateinit var sharedPreferencesUtil: SharedPreferencesUtil
 
+    private val coachMark by lazy {
+        context?.let {
+            CoachMark2(it)
+        }
+    }
+
     override fun getScreenName() = ""
 
     override fun initInjector() {
@@ -146,6 +154,7 @@ class SummaryFragment :
         setupPageMode()
         setupLoadingDialog()
         redirectionHelper.onViewCreated(view, savedInstanceState)
+        if (!viewModel.coachMarkIsShown()) showCoachmark()
     }
 
     private fun setupLoadingDialog() {
@@ -627,5 +636,20 @@ class SummaryFragment :
     private fun onSuccessBottomsheetAdsClick(voucherConfiguration: VoucherConfiguration) {
         RouteManager.route(context, TOPADS_HEADLINE_CREATE)
         tracker.sendClickTopadsPopUpEvent()
+    }
+
+    private fun showCoachmark() {
+        binding?.run {
+            val coachMarkItem = ArrayList<CoachMark2Item>()
+            coachMarkItem.add(
+                CoachMark2Item(
+                    layoutSubmission.tfTnc,
+                    getString(R.string.smvc_summary_coachmark_title),
+                    getString(R.string.smvc_summary_coachmark_description)
+                )
+            )
+            coachMark?.showCoachMark(coachMarkItem)
+            coachMark?.onDismissListener = { viewModel.setSharedPrefCoachMarkAlreadyShown() }
+        }
     }
 }

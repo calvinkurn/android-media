@@ -52,7 +52,9 @@ class GetProductMapper @Inject constructor() {
         mapDescriptionInputModel(product),
         mapShipmentInputModel(product),
         mapVariantInputModel(product.variant),
-        itemSold = product.txStats.itemSold
+        itemSold = product.txStats.itemSold,
+        hasDTStock = product.hasDTStock,
+        isCampaignActive = product.campaign.isActive
     )
 
     fun convertToGram(weight: Int, unit: String): Int {
@@ -100,7 +102,9 @@ class GetProductMapper @Inject constructor() {
                 it.stock,
                 it.isPrimary,
                 convertToGram(it.weight, it.weightUnit),
-                UNIT_GRAM_STRING
+                UNIT_GRAM_STRING,
+                it.hasDTStock,
+                it.isCampaign
             )
         }
         return ArrayList(variantCombination)

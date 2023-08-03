@@ -26,6 +26,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home.util.HomeServerLogger
+import com.tokopedia.home.util.QueryParamUtils.convertToLocationParams
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.usecase.featuredshop.DisplayHeadlineAdsEntity
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
@@ -38,11 +39,11 @@ import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -52,10 +53,13 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
+import com.tokopedia.home.beranda.data.mapper.BestSellerMapper as BestSellerRevampMapper
+import com.tokopedia.home_component.visitable.BestSellerDataModel as BestSellerRevampDataModel
 
 class HomeDynamicChannelUseCase @Inject constructor(
     private val homeBalanceWidgetUseCase: HomeBalanceWidgetUseCase,
     private val homeDataMapper: HomeDataMapper,
+    private val bestSellerRevampMapper: BestSellerRevampMapper,
     private val homeDynamicChannelsRepository: HomeDynamicChannelsRepository,
     private val atfDataRepository: HomeAtfRepository,
     private val homeUserStatusRepository: HomeUserStatusRepository,
@@ -68,7 +72,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
     private val remoteConfig: RemoteConfig,
     private val homePlayRepository: HomePlayRepository,
     private val homeReviewSuggestedRepository: HomeReviewSuggestedRepository,
-    private val homePlayLiveDynamicRepository: HomePlayLiveDynamicRepository,
     private val homePopularKeywordRepository: HomePopularKeywordRepository,
     private val homeHeadlineAdsRepository: HomeHeadlineAdsRepository,
     private val homeRecommendationRepository: HomeRecommendationRepository,
@@ -231,12 +234,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
                     }
 
                     dynamicChannelPlainResponse.getWidgetDataIfExist<
-                        PlayCardDataModel,
-                        PlayData>(widgetRepository = homePlayLiveDynamicRepository) { visitableFound, data, position ->
-                        visitableFound.copy(playCardHome = data.playChannels.first())
-                    }
-
-                    dynamicChannelPlainResponse.getWidgetDataIfExist<
                         PopularKeywordListDataModel,
                         HomeWidget.PopularKeywordQuery>(widgetRepository = homePopularKeywordRepository) { visitableFound, data, position ->
                         val resultList = convertPopularKeywordDataList(data.data)
@@ -329,6 +326,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
                     }
 
                     getRecommendationWidget(dynamicChannelPlainResponse)
+
+                    getBestSellerData(dynamicChannelPlainResponse)
 
                     dynamicChannelPlainResponse.getWidgetDataIfExist<
                         HomeTopAdsBannerDataModel,
@@ -547,56 +546,26 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
     suspend fun getRecommendationWidget(homeDataModel: HomeDynamicChannelModel) {
         findWidget<BestSellerDataModel>(homeDataModel) { bestSellerDataModel, index ->
-            val recomFilterList =
-                mutableListOf<RecommendationFilterChipsEntity.RecommendationFilterChip>()
-
-            val recommendationChip = homeRecommendationChipRepository.getRemoteData(
-                Bundle().apply {
-                    putString(
-                        HomeRecommendationChipRepository.PAGE_NAME,
-                        bestSellerDataModel.pageName
-                    )
-                    putString(
-                        HomeRecommendationChipRepository.QUERY_PARAM,
-                        bestSellerDataModel.widgetParam
-                    )
-                }
+            val recomFilterList = getRecommendationFilterChips(
+                bestSellerDataModel.pageName,
+                bestSellerDataModel.widgetParam
             )
-            recomFilterList.addAll(recommendationChip)
             val activatedChip = recomFilterList.find { it.isActivated }
-            val recomData = if (activatedChip == null) {
-                homeRecommendationRepository.getRemoteData(
-                    Bundle().apply {
-                        putString(
-                            HomeRecommendationChipRepository.PAGE_NAME,
-                            bestSellerDataModel.pageName
-                        )
-                        putString(
-                            HomeRecommendationChipRepository.QUERY_PARAM,
-                            bestSellerDataModel.widgetParam
-                        )
-                    }
-                )
-            } else {
-                homeRecommendationRepository.getRemoteData(
-                    Bundle().apply {
-                        putString(
-                            HomeRecommendationChipRepository.PAGE_NAME,
-                            bestSellerDataModel.pageName
-                        )
-                        putString(
-                            HomeRecommendationChipRepository.QUERY_PARAM,
-                            if (activatedChip.isActivated) activatedChip.value else ""
-                        )
-                    }
-                )
-            }
+            val recomData = getRecommendationData(
+                activatedChip,
+                bestSellerDataModel.pageName,
+                bestSellerDataModel.widgetParam,
+            )
 
             if (recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()) {
                 val recomWidget = recomData.first().copy(
                     recommendationFilterChips = recomFilterList
                 )
-                val dataModel = bestSellerMapper.mappingRecommendationWidget(recomWidget, cardInteraction = true, bestSellerDataModel)
+                val dataModel = bestSellerMapper.mappingRecommendationWidget(
+                    recomWidget,
+                    cardInteraction = true,
+                    bestSellerDataModel,
+                )
 
                 homeDataModel.updateWidgetModel(
                     visitable = dataModel.copy(
@@ -613,6 +582,96 @@ class HomeDynamicChannelUseCase @Inject constructor(
             }
         }
     }
+
+    private suspend fun getBestSellerData(homeDataModel: HomeDynamicChannelModel) {
+        findWidget<BestSellerRevampDataModel>(homeDataModel) { bestSellerDataModel, index ->
+            val recommendationFilterList = getRecommendationFilterChips(
+                bestSellerDataModel.pageName,
+                bestSellerDataModel.widgetParam,
+            )
+            val recommendationFilterIterator = recommendationFilterList.iterator()
+
+            var recommendationData: List<RecommendationWidget>
+
+            while (recommendationFilterIterator.hasNext()) {
+                val activatedChip = recommendationFilterIterator.next()
+
+                recommendationData = getRecommendationData(
+                    activatedChip,
+                    bestSellerDataModel.pageName,
+                    bestSellerDataModel.widgetParam,
+                )
+
+                if (!recommendationListIsEmpty(recommendationData)) {
+                    val updatedBestSellerDataModel =
+                        bestSellerRevampMapper.mapChipProductDataModelList(
+                            recommendationData,
+                            recommendationFilterList,
+                            bestSellerDataModel,
+                            activatedChip,
+                        )
+
+                    homeDataModel.updateWidgetModel(
+                        visitable = updatedBestSellerDataModel,
+                        visitableToChange = bestSellerDataModel,
+                        position = index
+                    ) {}
+
+                    break
+                }
+            }
+        }
+    }
+
+    private fun recommendationListIsEmpty(recommendationData: List<RecommendationWidget>): Boolean =
+        recommendationData.isEmpty()
+            || recommendationData.first().recommendationItemList.isEmpty()
+
+    private suspend fun getRecommendationFilterChips(
+        pageName: String,
+        widgetParam: String
+    ): List<RecommendationFilterChipsEntity.RecommendationFilterChip> {
+        val recomFilterList =
+            mutableListOf<RecommendationFilterChipsEntity.RecommendationFilterChip>()
+
+        val recommendationChip = homeRecommendationChipRepository.getRemoteData(
+            Bundle().apply {
+                putString(HomeRecommendationChipRepository.PAGE_NAME, pageName)
+                putString(HomeRecommendationChipRepository.QUERY_PARAM, widgetParam)
+            }
+        )
+        recomFilterList.addAll(recommendationChip)
+        return recomFilterList
+    }
+
+    private suspend fun getRecommendationData(
+        activatedChip: RecommendationFilterChipsEntity.RecommendationFilterChip?,
+        pageName: String,
+        widgetParam: String,
+    ) = if (activatedChip == null) {
+            homeRecommendationRepository.getRemoteData(
+                Bundle().apply {
+                    putString(
+                        HomeRecommendationChipRepository.PAGE_NAME,
+                        pageName
+                    )
+                    putString(
+                        HomeRecommendationChipRepository.QUERY_PARAM,
+                        widgetParam
+                    )
+                }
+            )
+        } else {
+            homeRecommendationRepository.getRemoteData(
+                Bundle().apply {
+                    putString(HomeRecommendationChipRepository.PAGE_NAME, pageName)
+                    putString(
+                        HomeRecommendationChipRepository.QUERY_PARAM,
+                        if (activatedChip.isActivated) activatedChip.value else ""
+                    )
+                }
+            )
+        }
 
     private fun convertPopularKeywordDataList(popularKeywordList: HomeWidget.PopularKeywordList): MutableList<PopularKeywordDataModel> {
         val keywordList = popularKeywordList.keywords
@@ -1248,9 +1307,10 @@ class HomeDynamicChannelUseCase @Inject constructor(
         if (saveAtf) {
             homeData?.atfData?.let {
                 getHomeRoomDataSource.saveCachedAtf(
-                    it.dataList.map { atfData ->
+                    it.dataList.mapIndexed { idx, atfData ->
                         AtfCacheEntity(
                             id = atfData.id,
+                            position = idx,
                             name = atfData.name,
                             component = atfData.component,
                             param = atfData.param,

@@ -17,14 +17,8 @@ class GetUohOrdersNavUseCase(
     private val graphqlUseCase: GraphqlUseCase<UohData>
 ) : UseCase<List<NavProductOrder>>() {
 
-    private var isMePageUsingRollenceVariant = false
-
-    fun setIsMePageUsingRollenceVariant(isMePageUsingRollenceVariant: Boolean) {
-        this.isMePageUsingRollenceVariant = isMePageUsingRollenceVariant
-    }
-
     private fun prepareGql() {
-        graphqlUseCase.setGraphqlQuery(if (isMePageUsingRollenceVariant) GetOrderHistoryMePageQuery() else GetOrderHistoryQuery())
+        graphqlUseCase.setGraphqlQuery(GetOrderHistoryQuery())
         graphqlUseCase.setRequestParams(generateParam(NavUohListParam(verticalCategory = VERTICAL_CATEGORY)))
         graphqlUseCase.setTypeClass(UohData::class.java)
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())

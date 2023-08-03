@@ -17,7 +17,7 @@
         android:layout_toStartOf="@+id/tvSawChatItemTime"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         android:textSize="@dimen/unify_font_14"
         android:textStyle="bold"
         tools:text="Ilham Suaib" />
@@ -32,7 +32,7 @@
         android:layout_toStartOf="@+id/tvSawChatItemTime"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/Unify_N700_44"
+        android:textColor="@color/Unify_NN950_44"
         android:textSize="@dimen/unify_font_12"
         tools:text="Ready gk kak?"
         tools:visibility="visible" />
@@ -46,7 +46,7 @@
         android:layout_marginEnd="@dimen/saw_dimen_12dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/Unify_N700_44"
+        android:textColor="@color/Unify_NN950_44"
         android:textSize="@dimen/unify_font_12"
         tools:text="Kemarin" />
 
@@ -56,6 +56,6 @@
         android:layout_height="1dp"
         android:layout_below="@+id/tvSawChatItemMessage"
         android:layout_marginTop="@dimen/layout_lvl1"
-        android:background="@color/Unify_N50"
+        android:background="@color/Unify_NN50"
         android:visibility="invisible" />
 </RelativeLayout>

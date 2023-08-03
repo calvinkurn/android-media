@@ -12,7 +12,6 @@ import com.tokopedia.managepassword.addpassword.domain.usecase.AddPasswordParam
 import com.tokopedia.managepassword.addpassword.domain.usecase.AddPasswordUseCase
 import com.tokopedia.managepassword.addpassword.domain.usecase.AddPasswordV2Params
 import com.tokopedia.managepassword.addpassword.domain.usecase.AddPasswordV2UseCase
-import com.tokopedia.managepassword.common.ManagePasswordConstant
 import com.tokopedia.managepassword.haspassword.domain.data.ProfileDataModel
 import com.tokopedia.managepassword.haspassword.domain.usecase.GetProfileCompletionUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
@@ -56,10 +55,12 @@ class AddPasswordViewModel @Inject constructor(
 
     fun createPassword(password: String, confirmationPassword: String) {
         launchCatchError(coroutineContext, {
-            val response = addPasswordUseCase(AddPasswordParam(
-                password = password,
-                passwordConfirmation = confirmationPassword
-            ))
+            val response = addPasswordUseCase(
+                AddPasswordParam(
+                    password = password,
+                    passwordConfirmation = confirmationPassword
+                )
+            )
 
             if (response.addPassword.isSuccess) {
                 _response.value = Success(response.addPassword)
@@ -73,17 +74,19 @@ class AddPasswordViewModel @Inject constructor(
 
     fun createPasswordV2(password: String, confirmationPassword: String) {
         launchCatchError(coroutineContext, {
-            val key = generatePublicKeyUseCase.executeOnBackground().keyData
-            if(key.hash.isNotEmpty()) {
+            val key = generatePublicKeyUseCase().keyData
+            if (key.hash.isNotEmpty()) {
                 val decodedKey = key.key.decodeBase64()
                 val encryptedPassword = RsaUtils.encrypt(password, decodedKey, true)
                 val encryptedConfirmPassword = RsaUtils.encrypt(confirmationPassword, decodedKey, true)
 
-                val response = addPasswordV2UseCase(AddPasswordV2Params(
-                    password = encryptedPassword,
-                    passwordConfirmation = encryptedConfirmPassword,
-                    hash = key.hash
-                ))
+                val response = addPasswordV2UseCase(
+                    AddPasswordV2Params(
+                        password = encryptedPassword,
+                        passwordConfirmation = encryptedConfirmPassword,
+                        hash = key.hash
+                    )
+                )
 
                 if (response.addPassword.isSuccess) {
                     _response.value = Success(response.addPassword)

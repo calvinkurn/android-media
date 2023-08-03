@@ -11,6 +11,6 @@
         android:layout_height="24dp"
         android:background="?android:attr/selectableItemBackgroundBorderless"
         android:clickable="false"
-        app:icon_color_light_enable="@color/Unify_N500"
+        app:icon_color_light_enable="@color/Unify_NN600"
         app:icon_name="MENU_KEBAB_VERTICAL" />
 </LinearLayout>

@@ -13,10 +13,13 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.image_assets'
+    testNamespace 'com.tokopedia.image_assets.test'
+}
+
 dependencies {
-    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
-    implementation rootProject.ext.unifyDependencies.components
-    implementation rootProject.ext.unifyDependencies.principles
+    implementation projectOrAar(rootProject.ext.features.medialoader)
 }
 
 project.ext {

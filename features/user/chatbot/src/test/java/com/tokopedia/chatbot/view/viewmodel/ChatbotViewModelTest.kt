@@ -24,6 +24,7 @@ import com.tokopedia.chatbot.chatbot2.data.quickreply.QuickReplyAttachmentAttrib
 import com.tokopedia.chatbot.chatbot2.data.quickreply.QuickReplyPojo
 import com.tokopedia.chatbot.chatbot2.data.ratinglist.ChipGetChatRatingListInput
 import com.tokopedia.chatbot.chatbot2.data.ratinglist.ChipGetChatRatingListResponse
+import com.tokopedia.chatbot.chatbot2.data.rejectreasons.DynamicAttachmentRejectReasons
 import com.tokopedia.chatbot.chatbot2.data.resolink.ResoLinkResponse
 import com.tokopedia.chatbot.chatbot2.data.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.chatbot2.data.submitchatcsat.ChipSubmitChatCsatResponse
@@ -59,8 +60,10 @@ import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatDataState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatRatingListState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotArticleEntryState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotChatSeparatorState
+import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotDynamicAttachmentMediaButtonState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotImageUploadFailureState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotOpenCsatState
+import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotRejectReasonsState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotSendChatRatingState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotSocketErrorState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotSocketReceiveEvent
@@ -441,6 +444,97 @@ class ChatbotViewModelTest {
         viewModel.validateHistoryForAttachment34(replyBoxAttribute)
 
         assertEquals(replyBoxAttribute?.contentCode, 100)
+    }
+
+    @Test
+    fun `validateHistoryForAttachment34 if render=android, content_code = 104`() {
+        val fullResponse =
+            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_104_MEDIA_BUTTON_ENABLED)
+        chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
+
+        val dynamicAttachmentContents =
+            Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
+
+        val replyBoxAttribute =
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes
+
+        viewModel.validateHistoryForAttachment34(replyBoxAttribute)
+
+        assertEquals(replyBoxAttribute?.contentCode, 104)
+    }
+
+    @Test
+    fun `handleDynamicAttachment34 if render=all, content_code=107`() {
+        val fullResponse =
+            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_107)
+        chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
+
+        val dynamicAttachmentContents =
+            Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
+
+        val replyBoxAttribute =
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes
+
+        viewModel.handleDynamicAttachment34(chatResponse)
+
+        assertEquals(replyBoxAttribute?.contentCode, 107)
+        assertTrue(viewModel.dynamicAttachmentRejectReasonState.value is ChatbotRejectReasonsState.ChatbotRejectReasonData)
+    }
+
+    @Test
+    fun `handleDynamicAttachment34 if render=all, content_code=104 with media button disabled `() {
+        val fullResponse =
+            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_104_MEDIA_BUTTON_DISABLED)
+        chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
+
+        val dynamicAttachmentContents =
+            Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
+
+        val replyBoxAttribute =
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes
+
+        viewModel.handleDynamicAttachment34(chatResponse)
+
+        assertEquals(replyBoxAttribute?.contentCode, 104)
+        assertTrue(viewModel.dynamicAttachmentMediaUploadState.value is ChatbotDynamicAttachmentMediaButtonState.OnReceiveMediaButtonAttachment)
+    }
+
+    @Test
+    fun `handleDynamicAttachment34 if render=all, content_code=104 with media button enabled `() {
+        val fullResponse =
+            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_104_MEDIA_BUTTON_ENABLED)
+        chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
+
+        val dynamicAttachmentContents =
+            Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
+
+        val replyBoxAttribute =
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes
+
+        viewModel.handleDynamicAttachment34(chatResponse)
+
+        assertEquals(replyBoxAttribute?.contentCode, 104)
+        assertTrue(viewModel.dynamicAttachmentMediaUploadState.value is ChatbotDynamicAttachmentMediaButtonState.OnReceiveMediaButtonAttachment)
+    }
+
+    @Test
+    fun `handleDynamicAttachment34 if render=all, content_code=wrong content code `() {
+        val fullResponse =
+            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_UNAVAILABLE)
+        chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
+
+        val dynamicAttachmentContents =
+            Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
+
+        val replyBoxAttribute =
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes
+
+        viewModel.handleDynamicAttachment34(chatResponse)
+
+        assertEquals(replyBoxAttribute?.contentCode, 1000)
+        verify {
+            viewModel.mapToVisitable(any())
+        }
     }
 
     @Test
@@ -1662,6 +1756,44 @@ class ChatbotViewModelTest {
     }
 
     @Test
+    fun `handleAttachment When receiving attachment type 22 send new relic log `() {
+        val fullResponse = SocketResponse.getResponse(SocketResponse.ATTACHMENT_22)
+
+        val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
+            ChatbotWebSocketAction.NewMessage(
+                SocketResponse.getResponse(SocketResponse.ATTACHMENT_22)
+            )
+        )
+        coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
+
+        viewModel.handleAttachmentTypes(fullResponse, "4058088")
+
+        assertNotNull(socketJob)
+    }
+
+    @Test
+    fun `handleAttachment When receiving attachment type 23 send new relic log `() {
+        val fullResponse = SocketResponse.getResponse(SocketResponse.ATTACHMENT_23)
+
+        val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
+            ChatbotWebSocketAction.NewMessage(
+                SocketResponse.getResponse(SocketResponse.ATTACHMENT_23)
+            )
+        )
+        coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
+
+        viewModel.handleAttachmentTypes(fullResponse, "4058088")
+
+        assertNotNull(socketJob)
+    }
+
+    @Test
+    fun `set page source value`() {
+        viewModel.setPageSourceValue("Contact Us ")
+        assertEquals(viewModel.pageSourceAccess, "Contact Us ")
+    }
+
+    @Test
     fun `cancelImageUpload success`() {
         viewModel.cancelImageUpload()
 
@@ -2108,6 +2240,98 @@ class ChatbotViewModelTest {
         verify {
             chatbotWebSocket.send(
                 ChatbotSendableWebSocketParam.generateParamSendMessage(
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                ),
+                any()
+            )
+        }
+    }
+
+    @Test
+    fun `sendDynamicAttachmentText success`() {
+        mockkObject(ChatbotSendableWebSocketParam)
+
+        every {
+            ChatbotSendableWebSocketParam.generateParamDynamicAttachmentText(
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns mockk(relaxed = true)
+
+        every {
+            chatbotWebSocket.send(
+                ChatbotSendableWebSocketParam.generateParamDynamicAttachmentText(
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                ),
+                any()
+            )
+        } just runs
+
+        viewModel.sendDynamicAttachmentText("", ChatActionBubbleUiModel(), "", "")
+
+        verify {
+            chatbotWebSocket.send(
+                ChatbotSendableWebSocketParam.generateParamDynamicAttachmentText(
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                ),
+                any()
+            )
+        }
+    }
+
+    @Test
+    fun `sendDynamicAttachment108 success`() {
+        mockkObject(ChatbotSendableWebSocketParam)
+
+        every {
+            ChatbotSendableWebSocketParam.generateParamDynamicAttachment108(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns mockk(relaxed = true)
+
+        every {
+            chatbotWebSocket.send(
+                ChatbotSendableWebSocketParam.generateParamDynamicAttachment108(
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                ),
+                any()
+            )
+        } just runs
+
+        viewModel.sendDynamicAttachment108(emptyList(), "", "", "", "", DynamicAttachmentRejectReasons.RejectReasonHelpfulQuestion(), 0, true)
+
+        verify {
+            chatbotWebSocket.send(
+                ChatbotSendableWebSocketParam.generateParamDynamicAttachment108(
+                    any(),
+                    any(),
+                    any(),
+                    any(),
                     any(),
                     any(),
                     any(),

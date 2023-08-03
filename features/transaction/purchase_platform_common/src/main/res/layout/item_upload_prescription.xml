@@ -12,7 +12,7 @@
         android:id="@+id/occ_divider"
         android:layout_width="match_parent"
         android:layout_height="8dp"
-        android:background="@color/Unify_N50" />
+        android:background="@color/Unify_NN50" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_upload_prescription"

@@ -23,9 +23,11 @@ object ShopScoreConstant {
 
     const val SHOP_AGE_SIXTY = 60L
     const val FOUR_WEEKS = 28
+    const val TWELVE_WEEKS = 84
 
     const val COUNT_DAYS_NEW_SELLER = 90L
-    const val PATTERN_DATE_NEW_SELLER = "dd MMMM yyyy"
+    const val PATTER_DATE_EDT = "dd MMMM yyyy"
+    const val PATTERN_DATE_PARAM = "yyyy-MM-dd"
     const val ONE_HUNDRED_PERCENT = 100
 
     const val CHAT_DISCUSSION_REPLY_SPEED_KEY = "chat_and_discussion_reply_speed"
@@ -97,8 +99,11 @@ object ShopScoreConstant {
     const val TITLE_TYPE_PENALTY = "Jenis Pelanggaran"
 
     const val POINTS_NOT_YET_DEDUCTED = "Poin belum terpotong"
+    const val NOT_YET_ONGOING = "Belum Berlangsung"
     const val ON_GOING = "Sedang berlangsung"
+    const val CAPITALIZED_ON_GOING = "Sedang Berlangsung"
     const val PENALTY_DONE = "Penalti selesai"
+    const val CAPITALIZED_PENALTY_DONE = "Penalti Selesai"
 
     const val START_ACTIVE_PENALTY_DETAIL = "Mulai aktif pada"
     const val ACTIVE_PENALTY_DETAIL = "Aktif hingga"
@@ -114,6 +119,7 @@ object ShopScoreConstant {
     const val SYSTEM_PENALTY_HELP_URL = "https://seller.tokopedia.com/edu/penalti-toko"
     const val HELP_URL = "https://www.tokopedia.com/help"
     const val PRODUCT_PENALTY_URL = "https://seller.tokopedia.com/edu/penalti-produk-terlarang/"
+    const val PRODUCT_PENALTY_CALCULATION_URL = "https://seller.tokopedia.com/edu/mekanisme-perhitungan-rasio-poin-penalti"
 
     const val PATTERN_DATE_TEXT = "dd MMMM yyyy"
     const val PATTERN_PENALTY_DATE_TEXT = "dd MMM yyyy"
@@ -127,6 +133,10 @@ object ShopScoreConstant {
 
     const val AND_SYMBOL = "&"
     const val AND_TEXT = "dan"
+
+    const val STATUS_NOT_YET_DEDUCTED = 1
+    const val STATUS_ONGOING = 2
+    const val STATUS_DONE = 3
 
     const val NULL_NUMBER = -1L
 

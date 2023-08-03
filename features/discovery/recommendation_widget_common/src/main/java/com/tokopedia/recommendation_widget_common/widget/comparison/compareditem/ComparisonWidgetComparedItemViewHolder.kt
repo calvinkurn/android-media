@@ -39,7 +39,7 @@ class ComparisonWidgetComparedItemViewHolder(val view: View): RecyclerView.ViewH
 
         binding?.specsView?.setSpecsInfo(comparisonModel.specsModel)
         binding?.productCardView?.setProductModel(comparisonModel.productCardModel)
-        if (!comparisonModel.isCurrentItem) {
+        if (comparisonModel.isClickable) {
             binding?.productCardView?.setOnClickListener {
                 if (comparisonModel.recommendationItem.isTopAds) {
                     val product = comparisonModel.recommendationItem

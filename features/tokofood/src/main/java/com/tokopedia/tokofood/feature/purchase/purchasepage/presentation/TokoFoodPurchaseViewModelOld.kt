@@ -55,7 +55,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
@@ -64,7 +63,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @FlowPreview
-class TokoFoodPurchaseViewModelOld @Inject constructor(
+open class TokoFoodPurchaseViewModelOld @Inject constructor(
     private val keroEditAddressUseCase: Lazy<KeroEditAddressUseCase>,
     private val keroGetAddressUseCase: Lazy<KeroGetAddressUseCase>,
     private val checkoutTokoFoodUseCase: Lazy<CheckoutTokoFoodUseCaseOld>,

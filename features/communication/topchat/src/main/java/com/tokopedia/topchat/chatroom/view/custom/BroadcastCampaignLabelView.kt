@@ -92,8 +92,8 @@ class BroadcastCampaignLabelView : LinearLayout {
 
     private fun bindDescColor(banner: ImageAnnouncementUiModel) {
         val colorRes = when (banner.statusCampaign) {
-            CampaignStatus.ENDED -> com.tokopedia.unifyprinciples.R.color.Unify_N700_96
-            else -> com.tokopedia.unifyprinciples.R.color.Unify_N0
+            CampaignStatus.ENDED -> com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
+            else -> com.tokopedia.unifyprinciples.R.color.Unify_NN0
         }
         val color = MethodChecker.getColor(context, colorRes)
         desc?.setTextColor(color)
@@ -101,9 +101,9 @@ class BroadcastCampaignLabelView : LinearLayout {
 
     private fun bindLabelBackgroundColor(banner: ImageAnnouncementUiModel) {
         val colorRes = when {
-            banner.hasEndedCampaign() -> com.tokopedia.unifyprinciples.R.color.Unify_T200
+            banner.hasEndedCampaign() -> com.tokopedia.unifyprinciples.R.color.Unify_TN100
             banner.isHideBanner -> R.drawable.bg_chat_broadcast_campaign_label_without_banner
-            else -> com.tokopedia.unifyprinciples.R.color.Unify_R500
+            else -> com.tokopedia.unifyprinciples.R.color.Unify_RN500
         }
         setBackgroundResource(colorRes)
     }

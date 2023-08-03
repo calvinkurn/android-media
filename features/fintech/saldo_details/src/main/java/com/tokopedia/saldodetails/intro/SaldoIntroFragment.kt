@@ -50,7 +50,7 @@ class SaldoIntroFragment : TkpdBaseV4Fragment() {
             val startIndexOfLink = text.indexOf(indexOfString)
             val color = ContextCompat.getColor(
                 it,
-                com.tokopedia.unifyprinciples.R.color.Unify_G500
+                com.tokopedia.unifyprinciples.R.color.Unify_GN500
             )
             if (startIndexOfLink != -1) {
                 spannableString.setSpan(

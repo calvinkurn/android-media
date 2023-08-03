@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/performanceWidgetContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/performanceWidgetTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="@string/topads_insight_performance_appears"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="display_3"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/performanceWidgetInfoBtn"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="2dp"
+            app:srcCompat="@drawable/iconunify_information"
+            app:layout_constraintBottom_toBottomOf="@id/performanceWidgetTitle"
+            app:layout_constraintStart_toEndOf="@id/performanceWidgetTitle"
+            app:layout_constraintTop_toTopOf="@id/performanceWidgetTitle"
+            app:tint="@color/Unify_NN500"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/performanceWidgetStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Jarang Teratas"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintStart_toStartOf="@id/performanceWidgetTitle"
+            app:layout_constraintTop_toBottomOf="@id/performanceWidgetTitle"
+            app:typographyType="heading_2" />
+
+        <include
+            android:id="@+id/adsPerformanceIndicator"
+            layout="@layout/top_ads_performance_widget_indicator"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/performanceWidgetStatus"
+            app:layout_constraintBottom_toBottomOf="@id/performanceWidgetStatus"
+            app:layout_constraintStart_toEndOf="@id/performanceWidgetStatus"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/performanceWidgetDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            tools:text="19.683x teratas dari 53.000 total tampil"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/performanceWidgetStatus"
+            app:layout_constraintTop_toBottomOf="@id/performanceWidgetStatus"
+            app:typographyType="paragraph_3" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify2>

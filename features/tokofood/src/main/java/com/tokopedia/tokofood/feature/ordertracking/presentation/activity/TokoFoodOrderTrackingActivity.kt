@@ -1,8 +1,10 @@
 package com.tokopedia.tokofood.feature.ordertracking.presentation.activity
 
+import android.content.Context
 import android.os.Bundle
 import android.os.PersistableBundle
 import androidx.fragment.app.Fragment
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokochat.tokochat_config_common.util.TokoChatConnection
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -16,7 +18,7 @@ import com.tokopedia.tokofood.feature.ordertracking.di.component.TokoFoodOrderTr
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewmodel.TokoFoodOrderTrackingViewModel
 import javax.inject.Inject
 
-class TokoFoodOrderTrackingActivity :
+open class TokoFoodOrderTrackingActivity :
     BaseSimpleActivity(),
     HasComponent<TokoFoodOrderTrackingComponent> {
 
@@ -62,7 +64,7 @@ class TokoFoodOrderTrackingActivity :
             .build()
     }
 
-    private fun initInjector() {
+    protected open fun initInjector() {
         DaggerTokoFoodOrderTrackingComponent
             .builder()
             .baseAppComponent((this.applicationContext as BaseMainApplication).baseAppComponent)

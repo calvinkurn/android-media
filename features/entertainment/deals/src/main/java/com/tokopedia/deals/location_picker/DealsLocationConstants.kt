@@ -22,6 +22,7 @@ object DealsLocationConstants {
 
     var SELECTED_LOCATION = "selectedLocation"
     var LOCATION_OBJECT = "loc_obj"
+    val IS_LANDMARK_PAGE_EXTRA = "IS_LANDMARK_PAGE_EXTRA"
 
     const val DELAY: Long = 1000
 }

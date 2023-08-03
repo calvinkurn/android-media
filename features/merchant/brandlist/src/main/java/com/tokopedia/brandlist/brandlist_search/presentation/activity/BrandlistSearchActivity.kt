@@ -38,7 +38,7 @@ class BrandlistSearchActivity: BaseSimpleActivity() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            getWindow().statusBarColor = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            getWindow().statusBarColor = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

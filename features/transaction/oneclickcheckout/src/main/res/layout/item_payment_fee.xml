@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         tools:text="Biaya Jasa Aplikasi"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3" />
@@ -49,7 +49,7 @@
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         android:gravity="end"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tv_payment_fee_slash_price_value"
         app:layout_constraintTop_toTopOf="parent"

@@ -845,7 +845,7 @@ open class TalkInboxFragment :
                             IconUnify.SETTING,
                             ContextCompat.getColor(
                                 context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_N700
+                                com.tokopedia.unifyprinciples.R.color.Unify_NN950
                             )
                         )
                     )

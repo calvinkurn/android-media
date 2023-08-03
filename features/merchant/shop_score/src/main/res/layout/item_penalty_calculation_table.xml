@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="18dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:card_type="border">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_penalty_calculation_table_percentage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/Unify_NN50"
+            android:gravity="center"
+            android:paddingVertical="8dp"
+            android:text="@string/title_penalty_calculation_percentage"
+            android:textAlignment="center"
+            android:textColor="@color/Unify_NN950"
+            android:layout_marginEnd="0.5dp"
+            app:layout_constraintEnd_toStartOf="@id/tv_penalty_calculation_table_deduction"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.5"
+            app:typographyType="paragraph_3" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_penalty_calculation_table_deduction"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/Unify_NN50"
+            android:gravity="center"
+            android:paddingVertical="8dp"
+            android:text="@string/title_penalty_calculation_score_deduction"
+            android:textAlignment="center"
+            android:textColor="@color/Unify_NN950"
+            android:layout_marginStart="0.5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_penalty_calculation_table_percentage"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.5"
+            app:typographyType="paragraph_3" />
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/divider_penalty_calculation_table_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/Unify_NN200"
+            app:layout_constraintTop_toBottomOf="@id/tv_penalty_calculation_table_percentage" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_penalty_calculation_table_percentage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="4dp"
+            app:layout_constraintStart_toStartOf="@id/tv_penalty_calculation_table_percentage"
+            app:layout_constraintEnd_toStartOf="@id/divider_penalty_calculation_table_vertical"
+            app:layout_constraintTop_toBottomOf="@id/divider_penalty_calculation_table_horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:listitem="@layout/item_penalty_calculation_table_detail"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_penalty_calculation_table_deduction"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="4dp"
+            app:layout_constraintStart_toEndOf="@id/divider_penalty_calculation_table_vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider_penalty_calculation_table_horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:listitem="@layout/item_penalty_calculation_table_detail"/>
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/divider_penalty_calculation_table_vertical"
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:background="@color/Unify_NN200"
+            app:layout_constraintEnd_toStartOf="@id/tv_penalty_calculation_table_deduction"
+            app:layout_constraintStart_toEndOf="@id/tv_penalty_calculation_table_percentage"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify2>

@@ -117,7 +117,6 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
     private var binding by autoClearedNullable<FragmentOmsListDetailBinding>()
 
     private var isSingleButton = false
-    private var isDownloadable = false
     private var upstream: String? = null
     private var listItems: List<Items>? = null
 
@@ -695,13 +694,13 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         if (item.category.equals(VisitableMapper.CATEGORY_DEALS, true)
             || item.categoryID == VisitableMapper.DEALS_CATEGORY_ID ) {
             activity?.let {
-                val bottomSheet = QrDealsBottomSheet(actionButton)
-                bottomSheet.show(it.supportFragmentManager, TAG_DEALS_QR)
+                val bottomSheet = QrDealsBottomSheet.newInstance(actionButton)
+                bottomSheet.show(childFragmentManager, TAG_DEALS_QR)
             }
         } else {
             activity?.let {
-                val bottomSheet = QrEventBottomSheet(actionButton)
-                bottomSheet.show(it.supportFragmentManager, TAG_EVENTS_QR)
+                val bottomSheet = QrEventBottomSheet.newInstance(actionButton)
+                bottomSheet.show(childFragmentManager, TAG_EVENTS_QR)
             }
         }
     }
@@ -868,40 +867,6 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         }
     }
 
-    override fun askPermission(uri: String, isDownloadable: Boolean, downloadFileName: String) {
-        val permissions = arrayOf(
-            PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
-            PermissionCheckerHelper.Companion.PERMISSION_READ_EXTERNAL_STORAGE,
-        )
-        permissionChecker.checkPermissions(this, permissions, object : PermissionCheckerHelper.PermissionCheckListener{
-            override fun onPermissionDenied(permissionText: String) {}
-
-            override fun onNeverAskAgain(permissionText: String) {}
-
-            override fun onPermissionGranted() {
-                if (isDownloadable && uri.isNotEmpty() && downloadFileName.isNotEmpty()){
-                    permissionGrantedContinueDownload(uri, downloadFileName, isDownloadable)
-                }
-            }
-        })
-    }
-
-    private fun permissionGrantedContinueDownload(
-        uri: String,
-        fileName: String,
-        isDownloadable: Boolean
-    ){
-        this.isDownloadable = isDownloadable
-        val downloadHelper = DownloadHelper(requireContext(), uri, fileName, null)
-        downloadHelper.downloadFile { isUriDownloadable(uri) }
-    }
-
-    private fun isUriDownloadable(url: String): Boolean{
-        val pattern = Pattern.compile(URI_DOWNLOADABLE_PATTERN)
-        val matcher = pattern.matcher(url)
-        return matcher.find() || isDownloadable
-    }
-
     override fun sendThankYouEvent(
         metadata: MetaDataInfo,
         categoryType: Int,
@@ -1010,7 +975,6 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         private const val KEY_UPSTREAM = "upstream"
         private const val KEY_CUSTOMER_NOTIFICATION = "customer_notification"
         private const val KEY_DEAL = "Deal"
-        private const val URI_DOWNLOADABLE_PATTERN = "^.+\\.([pP][dD][fF])\$"
         private const val SHAPE_STROKE_2 = 2
         private const val SHAPE_CORNER_RADIUS_4 = 4f
         private const val SHAPE_CORNER_RADIUS_9 = 9f

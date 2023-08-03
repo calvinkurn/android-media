@@ -18,6 +18,8 @@ data class RecommendationCarouselModel(
     }
 
     val isTokonow: Boolean = this.metadata.pageName == PAGE_NAME_TOKONOW
+    val hasData: Boolean
+        get() = widget.recommendationItemList.isNotEmpty()
 
     companion object {
         private const val PAGE_NAME_TOKONOW = "pdp_9_tokonow"

@@ -32,8 +32,10 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.track.TrackApp
+import com.tokopedia.unit.test.TestUtils
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
@@ -46,8 +48,6 @@ import io.mockk.unmockkAll
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
-import java.lang.reflect.Field
-import java.lang.reflect.Modifier
 
 /**
  * Created by Yehezkiel on 08/06/21
@@ -138,6 +138,9 @@ abstract class BasePdpViewModelTest {
     @RelaxedMockK
     lateinit var playWidgetSubViewModel: PlayWidgetSubViewModel
 
+    @RelaxedMockK
+    lateinit var affiliateEligibilityCheckUseCase: AffiliateEligibilityCheckUseCase
+
     lateinit var spykViewModel: DynamicProductDetailViewModel
 
     @get:Rule
@@ -163,11 +166,7 @@ abstract class BasePdpViewModelTest {
 
     fun setOS(newValue: Any?) {
         val field = Build.VERSION::class.java.getField("SDK_INT")
-        field.isAccessible = true
-        val modifiersField: Field = Field::class.java.getDeclaredField("modifiers")
-        modifiersField.isAccessible = true
-        modifiersField.setInt(field, field.modifiers and Modifier.FINAL.inv())
-        field.set(null, newValue)
+        TestUtils.setFinalStatic(field, newValue)
     }
 
     @After
@@ -207,7 +206,8 @@ abstract class BasePdpViewModelTest {
             userSessionInterface = userSessionInterface,
             affiliateCookieHelper = { affiliateCookieHelper },
             productRecommSubViewModel = productRecommSubViewModel,
-            playWidgetSubViewModel = playWidgetSubViewModel
+            playWidgetSubViewModel = playWidgetSubViewModel,
+            affiliateEligibilityUseCase = { affiliateEligibilityCheckUseCase }
         )
     }
 }

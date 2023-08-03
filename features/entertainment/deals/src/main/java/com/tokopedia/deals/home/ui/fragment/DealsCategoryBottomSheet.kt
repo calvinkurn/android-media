@@ -15,7 +15,7 @@ import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 
-class DealsCategoryBottomSheet(dealsCategoryListener: DealsCategoryListener) : BottomSheetUnify() {
+class DealsCategoryBottomSheet : BottomSheetUnify() {
 
     init {
         isFullpage = false
@@ -23,9 +23,16 @@ class DealsCategoryBottomSheet(dealsCategoryListener: DealsCategoryListener) : B
         showCloseIcon = true
     }
 
-    private val dealsCategoryAdapter = DealsCategoryAdapter(dealsCategoryListener)
     private lateinit var dealsCategoryList: RecyclerView
+    private var dealsCategories: ArrayList<DealsCategoryDataView>? = null
+    private var dealsCategoryListener: DealsCategoryListener? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            dealsCategories = it.getParcelableArrayList(DEALS_CATEGORIES_EXTRA) ?: arrayListOf()
+        }
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -45,19 +52,36 @@ class DealsCategoryBottomSheet(dealsCategoryListener: DealsCategoryListener) : B
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dealsCategoryList.apply {
-            adapter = dealsCategoryAdapter
-            layoutManager = GridLayoutManager(context, DEALS_CATEGORY_SPAN_COUNT)
-            addItemDecoration(
-                SpacingItemDecoration(getDimens(R.dimen.deals_dp_20),getDimens(R.dimen.deals_dp_30))
-            )
+            dealsCategoryListener?.let { dealsCategoryListener ->
+                dealsCategories?.let { dealsCategories ->
+                    val dealsCategoryAdapter = DealsCategoryAdapter(dealsCategoryListener)
+                    dealsCategoryAdapter.dealsCategories = dealsCategories.toMutableList()
+                    adapter = dealsCategoryAdapter
+                    layoutManager = GridLayoutManager(context, DEALS_CATEGORY_SPAN_COUNT)
+                    addItemDecoration(
+                        SpacingItemDecoration(
+                            getDimens(R.dimen.deals_dp_20),
+                            getDimens(R.dimen.deals_dp_30)
+                        )
+                    )
+                }
+            }
         }
     }
 
-    fun showDealsCategories(dealsCategories: List<DealsCategoryDataView>) {
-        dealsCategoryAdapter.dealsCategories = dealsCategories.toMutableList()
+    fun setListener(dealsCategoryListener: DealsCategoryListener) {
+        this.dealsCategoryListener = dealsCategoryListener
     }
 
     companion object {
         private const val DEALS_CATEGORY_SPAN_COUNT = 5
+        private const val DEALS_CATEGORIES_EXTRA = "DEALS_CATEGORIES_EXTRA"
+        fun newInstance(dealsCategories: ArrayList<DealsCategoryDataView>): DealsCategoryBottomSheet {
+            val bottomSheet = DealsCategoryBottomSheet()
+            val bundle = Bundle()
+            bundle.putParcelableArrayList(DEALS_CATEGORIES_EXTRA, dealsCategories)
+            bottomSheet.arguments = bundle
+            return bottomSheet
+        }
     }
 }

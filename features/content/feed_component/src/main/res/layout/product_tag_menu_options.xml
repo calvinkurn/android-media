@@ -12,7 +12,7 @@
         android:focusable="true"
         android:gravity="center_vertical"
         android:text="@string/feed_product_info_sheet_add_to_wishlist"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
         app:typographyWeight="bold" />
@@ -31,7 +31,7 @@
         android:focusable="true"
         android:gravity="center_vertical"
         android:text="@string/feed_product_info_sheet_add_to_cart"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintTop_toTopOf="@id/div1"
         app:typographyType="body_2"
         app:typographyWeight="bold" />
@@ -50,7 +50,7 @@
         android:focusable="true"
         android:gravity="center_vertical"
         android:text="@string/feed_product_info_sheet_share_product"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintTop_toTopOf="@id/div2"
         app:typographyType="body_2"
         app:typographyWeight="bold" />

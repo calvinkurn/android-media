@@ -6,15 +6,15 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.homenav.MePage
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HolderTransactionProductRevampBinding
-import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderProductRevampModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.utils.view.binding.viewBinding
 
+@MePage(MePage.Widget.TRANSACTION)
 class OrderProductRevampViewHolder(itemView: View, val mainNavListener: MainNavListener): AbstractViewHolder<OrderProductRevampModel>(itemView) {
     private var binding: HolderTransactionProductRevampBinding? by viewBinding()
     companion object {
@@ -41,12 +41,10 @@ class OrderProductRevampViewHolder(itemView: View, val mainNavListener: MainNavL
         val context = itemView.context
         setLayoutFullWidth(productRevampModel)
         itemView.addOnImpressionListener(productRevampModel)  {
-            mainNavListener.putEEToTrackingQueue(
-                    TrackingTransactionSection.getImpressionOnOrderStatus(
-                        userId = mainNavListener.getUserId(),
-                        orderLabel = productRevampModel.navProductModel.statusText,
-                        position = adapterPosition,
-                        orderId = productRevampModel.navProductModel.id)
+            mainNavListener.onOrderCardImpressed(
+                productRevampModel.navProductModel.statusText,
+                productRevampModel.navProductModel.id,
+                productRevampModel.position
             )
         }
         //title
@@ -89,10 +87,10 @@ class OrderProductRevampViewHolder(itemView: View, val mainNavListener: MainNavL
         }
 
         binding?.orderProductContainer?.setOnClickListener {
-            TrackingTransactionSection.clickOnOrderStatus(
-                    mainNavListener.getUserId(),
-                    productRevampModel.navProductModel.statusText)
-            RouteManager.route(context, productRevampModel.navProductModel.applink)
+            mainNavListener.onOrderCardClicked(
+                productRevampModel.navProductModel.applink,
+                productRevampModel.navProductModel.statusText
+            )
         }
     }
 }
