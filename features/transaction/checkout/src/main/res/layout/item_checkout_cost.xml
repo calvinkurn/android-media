@@ -120,6 +120,17 @@
         app:typographyWeight="reguler"
         tools:text="Rp2.905.000,00" />
 
+    <LinearLayout
+        android:id="@+id/ll_checkout_cost_others"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/flow_checkout_cost_shipping" />
+
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_platform_fee_label"
         android:layout_width="140dp"
@@ -127,7 +138,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_checkout_cost_shipping_value"
+        app:layout_constraintTop_toBottomOf="@id/ll_checkout_cost_others"
         app:loader_type="rect" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
@@ -142,7 +153,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1"
         app:layout_constraintStart_toEndOf="@id/loader_platform_fee_label"
-        app:layout_constraintTop_toBottomOf="@id/tv_checkout_cost_shipping_value"
+        app:layout_constraintTop_toBottomOf="@id/ll_checkout_cost_others"
         app:loader_type="rect" />
 
     <com.tokopedia.unifycomponents.ticker.Ticker
@@ -223,17 +234,6 @@
         app:typographyWeight="reguler"
         tools:text="Rp2.905.000,00" />
 
-    <LinearLayout
-        android:id="@+id/ll_checkout_cost_others"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/flow_checkout_cost_platform_fee" />
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_checkout_cost_others_title"
         android:layout_width="wrap_content"
@@ -242,7 +242,7 @@
         android:layout_marginTop="8dp"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll_checkout_cost_others"
+        app:layout_constraintTop_toBottomOf="@id/flow_checkout_cost_platform_fee"
         app:typographyType="display_3"
         app:typographyWeight="reguler"
         tools:text="Total Lainnya" />
