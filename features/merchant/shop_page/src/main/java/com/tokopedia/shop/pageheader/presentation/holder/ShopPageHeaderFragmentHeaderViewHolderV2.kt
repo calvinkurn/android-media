@@ -275,7 +275,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     }
 
     private fun getShopPerformanceShopRatingComponent(shopPerformanceData: ShopPageHeaderWidgetUiModel?): ShopPageHeaderBadgeTextValueComponentUiModel? {
-        return (shopPerformanceData?.componentPages?.first { it.name == SHOP_RATING } as? ShopPageHeaderBadgeTextValueComponentUiModel)
+        return (shopPerformanceData?.componentPages?.firstOrNull { it.name == SHOP_RATING } as? ShopPageHeaderBadgeTextValueComponentUiModel)
     }
 
     private fun setShopPerformanceSection(listWidgetShopData: List<ShopPageHeaderWidgetUiModel>) {
@@ -331,11 +331,11 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     }
 
     private fun getShopBasicDataShopLogoComponent(shopBasicData: ShopPageHeaderWidgetUiModel?): ShopPageHeaderImageOnlyComponentUiModel? {
-        return (shopBasicData?.componentPages?.first { it.name == SHOP_LOGO } as? ShopPageHeaderImageOnlyComponentUiModel)
+        return (shopBasicData?.componentPages?.firstOrNull { it.name == SHOP_LOGO } as? ShopPageHeaderImageOnlyComponentUiModel)
     }
 
     private fun getShopBasicDataShopNameComponent(shopBasicData: ShopPageHeaderWidgetUiModel?): ShopPageHeaderBadgeTextValueComponentUiModel? {
-        return (shopBasicData?.componentPages?.first { it.name == SHOP_NAME } as? ShopPageHeaderBadgeTextValueComponentUiModel)
+        return (shopBasicData?.componentPages?.firstOrNull { it.name == SHOP_NAME } as? ShopPageHeaderBadgeTextValueComponentUiModel)
     }
 
     private fun setHeaderBackground() {
