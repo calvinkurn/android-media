@@ -197,5 +197,7 @@ public interface SearchConstant {
         String GIMMICK = "gimmick";
         String PORTRAIT = "portrait";
         String ETA = "eta";
+        String LIST_VIEW = "listview";
+        String FIXED_GRID = "fixedgrid";
     }
 }
