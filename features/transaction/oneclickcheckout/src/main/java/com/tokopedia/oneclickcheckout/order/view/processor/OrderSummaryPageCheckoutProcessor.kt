@@ -36,6 +36,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.PriceChangeMessage
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import kotlinx.coroutines.withContext
@@ -117,15 +118,15 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(
                     }
 
                     it.addOnsProductData.data.forEach { addOnsProduct ->
-                        if (addOnsProduct.status == ADD_ON_PRODUCT_STATUS_CHECK) {
+                        if (addOnsProduct.status == ADD_ON_PRODUCT_STATUS_CHECK || addOnsProduct.status == ADD_ON_PRODUCT_STATUS_MANDATORY) {
                             addOnProductLevelItems.add(
-                                    AddOnItem(
-                                            itemType = AddOnConstant.ADD_ONS_PRODUCT_SERVICE,
-                                            itemId = addOnsProduct.id,
-                                            itemQty = addOnsProduct.productQuantity.toLong(),
-                                            itemMetadata = "",
-                                            itemUniqueId = addOnsProduct.uniqueId
-                                    )
+                                AddOnItem(
+                                    itemType = AddOnConstant.ADD_ONS_PRODUCT_SERVICE,
+                                    itemId = addOnsProduct.id,
+                                    itemQty = addOnsProduct.productQuantity.toLong(),
+                                    itemMetadata = "",
+                                    itemUniqueId = addOnsProduct.uniqueId
+                                )
                             )
                         }
                     }

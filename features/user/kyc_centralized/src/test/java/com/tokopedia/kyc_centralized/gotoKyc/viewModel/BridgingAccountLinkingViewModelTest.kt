@@ -7,7 +7,7 @@ import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.CheckEligibilityResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.CheckEligibilityUseCase
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveUseCase
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.BridgingAccountLinkingViewModel
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.bridging.BridgingAccountLinkingViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -152,6 +152,22 @@ class BridgingAccountLinkingViewModelTest {
         assertTrue(result is RegisterProgressiveResult.NotRiskyUser)
         assertEquals(rejectionReason, result.rejectionReason)
         assertEquals(status, result.status)
+    }
+
+    @Test
+    fun `when register progressive then return exhausted`() {
+        val projectId = "7"
+        val cooldownTimeInSeconds = "3600"
+        val maximumAttemptsAllowed = "3"
+        val expected = RegisterProgressiveResult.Exhausted(cooldownTimeInSeconds, maximumAttemptsAllowed)
+
+        coEvery { registerProgressiveUseCase(any()) } returns expected
+        viewModel.registerProgressive(projectId)
+
+        val result = viewModel.registerProgressive.getOrAwaitValue()
+        assertTrue(result is RegisterProgressiveResult.Exhausted)
+        assertEquals(cooldownTimeInSeconds, result.cooldownTimeInSeconds)
+        assertEquals(maximumAttemptsAllowed, result.maximumAttemptsAllowed)
     }
 
     @Test

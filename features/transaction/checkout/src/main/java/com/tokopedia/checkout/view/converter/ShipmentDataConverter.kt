@@ -21,8 +21,12 @@ import com.tokopedia.logisticcart.shipping.model.CoachmarkPlusData
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItem
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemTopModel
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.PRODUCT_PROTECTION_INSURANCE_TYPE
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
+import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import javax.inject.Inject
 
@@ -468,7 +472,7 @@ class ShipmentDataConverter @Inject constructor() {
             protectionSubTitle = if (ppp.isProtectionAvailable) ppp.protectionSubtitle else "",
             protectionLinkText = if (ppp.isProtectionAvailable) ppp.protectionLinkText else "",
             protectionLinkUrl = if (ppp.isProtectionAvailable) ppp.protectionLinkUrl else "",
-            isProtectionOptIn = if (ppp.isProtectionAvailable) ppp.isProtectionOptIn else false,
+            isProtectionOptIn = convertPppAndAddons(ppp, product),
             isProtectionCheckboxDisabled = if (ppp.isProtectionAvailable) ppp.isProtectionCheckboxDisabled else false,
             isBundlingItem = product.isBundlingItem,
             bundlingItemPosition = product.bundlingItemPosition,
@@ -493,6 +497,18 @@ class ShipmentDataConverter @Inject constructor() {
             addOnProduct = product.addOnProduct,
             campaignId = product.campaignId
         )
+    }
+
+    private fun convertPppAndAddons(ppp: PurchaseProtectionPlanData, product: Product): Boolean {
+        var isProteksiProductSelected = false
+        product.addOnProduct.listAddOnProductData.forEach { addon ->
+            if (addon.type == PRODUCT_PROTECTION_INSURANCE_TYPE &&
+                (addon.status == ADD_ON_PRODUCT_STATUS_CHECK || addon.status == ADD_ON_PRODUCT_STATUS_MANDATORY)
+            ) {
+                isProteksiProductSelected = true
+            }
+        }
+        return if (ppp.isProtectionAvailable) { ppp.isProtectionOptIn } else isProteksiProductSelected
     }
 
     private fun convertFromAddOnWordingData(addOnWordingData: AddOnWordingData): AddOnGiftingWordingModel {

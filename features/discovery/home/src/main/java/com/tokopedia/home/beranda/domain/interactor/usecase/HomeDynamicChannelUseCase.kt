@@ -1307,9 +1307,10 @@ class HomeDynamicChannelUseCase @Inject constructor(
         if (saveAtf) {
             homeData?.atfData?.let {
                 getHomeRoomDataSource.saveCachedAtf(
-                    it.dataList.map { atfData ->
+                    it.dataList.mapIndexed { idx, atfData ->
                         AtfCacheEntity(
                             id = atfData.id,
+                            position = idx,
                             name = atfData.name,
                             component = atfData.component,
                             param = atfData.param,

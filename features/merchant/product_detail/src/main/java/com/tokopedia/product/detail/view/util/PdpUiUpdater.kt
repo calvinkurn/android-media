@@ -491,10 +491,13 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
             updateData(ProductDetailConstant.MVC) {
                 mvcSummaryData?.run {
-                    animatedInfos = it.merchantVoucherSummary.animatedInfos
-                    isShown = it.merchantVoucherSummary.isShown
-                    shopId = it.shopInfo.shopCore.shopID
-                    productIdMVC = productId
+                    uiModel = uiModel.copy(
+                        animatedInfo = it.merchantVoucherSummary.animatedInfos,
+                        isShown = it.merchantVoucherSummary.isShown,
+                        shopId = it.shopInfo.shopCore.shopID,
+                        productIdMVC = productId,
+                        additionalData = it.merchantVoucherSummary.additionalData
+                    )
                 }
             }
 

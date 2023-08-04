@@ -37,4 +37,6 @@ object AddOnConstant {
     const val QUERY_PARAM_PRICE = "price"
     const val QUERY_PARAM_DISCOUNTED_PRICE = "discountedPrice"
     const val CONDITIONS = "conditions"
+
+    const val PRODUCT_PROTECTION_INSURANCE_TYPE = 4
 }

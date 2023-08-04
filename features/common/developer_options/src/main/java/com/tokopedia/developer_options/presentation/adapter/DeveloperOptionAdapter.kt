@@ -95,6 +95,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_DEV_OPTS_AUTHORIZE = "Authorize"
         const val KEYWORD_DEPRECATED_API_SWITCHER_TOASTER = "Depcreated API Switcher Toaster"
         const val KEYWORD_EXTRACT_BRANCH_LINK = "Extract Branchlink"
+        const val FPI_MONITORING = "FPI Monitoring"
     }
 
     /**
@@ -211,7 +212,8 @@ class DeveloperOptionAdapter(
                 KEYWORD_VIEW_SSE_LOGGING
             )
         ),
-        TopchatWebSocketLoggingUiModel(listOf(KEYWORD_TOPCHAT_WEB_SOCKET_LOGGING))
+        TopchatWebSocketLoggingUiModel(listOf(KEYWORD_TOPCHAT_WEB_SOCKET_LOGGING)),
+        FpiMonitoringUiModel(listOf(FPI_MONITORING))
     )
 
     /**
