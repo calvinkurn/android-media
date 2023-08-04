@@ -1,11 +1,10 @@
-package com.tokopedia.shop.home.view.model.nav_banner
+package com.tokopedia.shop.home.view.model
 
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.WidgetType
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
-import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 
 data class ShopHomeShowcaseUiModel(
     val mainBannerPosition: ShopHomeShowcaseMainBannerPosition,
