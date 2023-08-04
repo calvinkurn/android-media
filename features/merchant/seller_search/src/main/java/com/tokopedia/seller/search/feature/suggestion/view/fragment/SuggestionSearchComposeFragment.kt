@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -20,6 +21,8 @@ import com.tokopedia.seller.search.common.util.addWWWPrefix
 import com.tokopedia.seller.search.feature.analytics.SellerSearchTracking
 import com.tokopedia.seller.search.feature.initialsearch.di.component.InitialSearchComponent
 import com.tokopedia.seller.search.feature.initialsearch.view.activity.InitialSellerSearchComposeActivity
+import com.tokopedia.seller.search.feature.suggestion.view.compose.SuggestionSearchScreen
+import com.tokopedia.seller.search.feature.suggestion.view.model.compose.SuggestionSearchUiEvent
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.ArticleSellerSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.FaqSellerSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.NavigationSellerSearchUiModel
@@ -64,7 +67,7 @@ class SuggestionSearchComposeFragment : BaseDaggerFragment() {
                 val softwareKeyboardController = LocalSoftwareKeyboardController.current
 
                 val getActivity = LocalContext.current as? InitialSellerSearchComposeActivity
-                val sellerSearchResult = viewModel.uiState.collectAsState()
+                val sellerSearchResult by viewModel.uiState.collectAsState(null)
 
                 LaunchedEffect(sellerSearchResult) {
                     if (!isMonitoringStarted.value) {
@@ -72,24 +75,91 @@ class SuggestionSearchComposeFragment : BaseDaggerFragment() {
                         isMonitoringStarted.value = true
                     }
 
-                    sellerSearchResult.let { result ->
+                    sellerSearchResult?.let { result ->
                         if (!isMonitoringFinished.value) {
                             (getActivity as? GlobalSearchSellerPerformanceMonitoringListener)?.finishMonitoring()
                             isMonitoringFinished.value = true
                         }
                     }
 
-                    if (sellerSearchResult.value.isInsertSuccessSearch) {
+                    if (sellerSearchResult?.isInsertSuccessSearch == true) {
                         softwareKeyboardController?.hide()
                     }
                 }
+
+                SuggestionSearchScreen(sellerSearchResult, ::onUiEvent)
             }
         }
     }
 
     fun suggestionSearch(keyword: String) {
         this.searchKeyword = keyword
+        viewModel.showLoading()
         viewModel.fetchSellerSearch(keyword = searchKeyword, shopId = userSession.shopId)
+    }
+
+    private fun onUiEvent(uiEvent: SuggestionSearchUiEvent) {
+        when (uiEvent) {
+            is SuggestionSearchUiEvent.OnSellerSearchNoResult -> {
+                SellerSearchTracking.impressionEmptyResultEvent(userSession.userId)
+            }
+
+            is SuggestionSearchUiEvent.OnArticleItemClicked -> {
+                onArticleItemClicked(uiEvent.articleSellerSearchUiModel, uiEvent.position)
+            }
+
+            is SuggestionSearchUiEvent.OnFaqItemClicked -> {
+                onFaqItemClicked(uiEvent.faqSearchUiModel, uiEvent.position)
+            }
+
+            is SuggestionSearchUiEvent.OnHighlightItemClicked -> {
+                onHighlightItemClicked(
+                    uiEvent.itemHighlightSuggestionSearchUiModel,
+                    uiEvent.position
+                )
+            }
+
+            is SuggestionSearchUiEvent.OnNavigationItemClicked -> {
+                onNavigationItemClicked(uiEvent.navigationSellerSearchUiModel, uiEvent.position)
+            }
+
+            is SuggestionSearchUiEvent.OnNavigationSellerSearchSubItemClicked -> {
+                context?.let {
+                    RouteManager.route(
+                        it,
+                        uiEvent.navigationSellerSearchSubItemUiModel.appLink
+                    )
+                }
+            }
+
+            is SuggestionSearchUiEvent.OnOrderItemClicked -> {
+                onOrderItemClicked(uiEvent.orderSellerSearchUiModel, uiEvent.position)
+            }
+
+            is SuggestionSearchUiEvent.OnProductItemClicked -> {
+                onProductItemClicked(uiEvent.productSellerSearchUiModel, uiEvent.position)
+            }
+
+            is SuggestionSearchUiEvent.OnOrderMoreClicked -> {
+                onOrderMoreClicked(uiEvent.item)
+            }
+
+            is SuggestionSearchUiEvent.OnProductMoreClicked -> {
+                onProductMoreClicked(uiEvent.item)
+            }
+
+            is SuggestionSearchUiEvent.OnFaqMoreClicked -> {
+                onFaqMoreClicked(uiEvent.item)
+            }
+
+            is SuggestionSearchUiEvent.OnArticleMoreClicked -> {
+                onArticleMoreClicked(uiEvent.item)
+            }
+
+            else -> {
+                // no op
+            }
+        }
     }
 
     private fun startActivityFromAutoComplete(appLink: String) {
@@ -106,9 +176,12 @@ class SuggestionSearchComposeFragment : BaseDaggerFragment() {
             data.title.orEmpty(),
             position
         )
-        SellerSearchTracking.clickOnSearchResult(userSession.userId, data.section.orEmpty(), searchKeyword)
+        SellerSearchTracking.clickOnSearchResult(
+            userSession.userId,
+            data.section.orEmpty(),
+            searchKeyword
+        )
         startActivityFromAutoComplete(data.appUrl.orEmpty())
-//        dropKeyBoard()
     }
 
     private fun onOrderItemClicked(data: OrderSellerSearchUiModel, position: Int) {
@@ -118,15 +191,17 @@ class SuggestionSearchComposeFragment : BaseDaggerFragment() {
             data.title.orEmpty(),
             position
         )
-        SellerSearchTracking.clickOnSearchResult(userSession.userId, data.section.orEmpty(), searchKeyword)
+        SellerSearchTracking.clickOnSearchResult(
+            userSession.userId,
+            data.section.orEmpty(),
+            searchKeyword
+        )
         startActivityFromAutoComplete(data.appUrl.orEmpty())
-//        dropKeyBoard()
     }
 
     private fun onOrderMoreClicked(element: TitleHasMoreSellerSearchUiModel) {
         SellerSearchTracking.clickOtherResult(userSession.userId, element.title, searchKeyword)
         startActivityFromAutoComplete(element.appActionLink)
-//        dropKeyBoard()
     }
 
     private fun onProductItemClicked(data: ProductSellerSearchUiModel, position: Int) {
@@ -136,15 +211,17 @@ class SuggestionSearchComposeFragment : BaseDaggerFragment() {
             data.title.orEmpty(),
             position
         )
-        SellerSearchTracking.clickOnSearchResult(userSession.userId, data.section.orEmpty(), searchKeyword)
+        SellerSearchTracking.clickOnSearchResult(
+            userSession.userId,
+            data.section.orEmpty(),
+            searchKeyword
+        )
         startActivityFromAutoComplete(data.appUrl.orEmpty())
-//        dropKeyBoard()
     }
 
     private fun onProductMoreClicked(element: TitleHasMoreSellerSearchUiModel) {
         SellerSearchTracking.clickOtherResult(userSession.userId, element.title, searchKeyword)
         startActivityFromAutoComplete(element.appActionLink)
-//        dropKeyBoard()
     }
 
     private fun onFaqItemClicked(data: FaqSellerSearchUiModel, position: Int) {
@@ -193,7 +270,6 @@ class SuggestionSearchComposeFragment : BaseDaggerFragment() {
         SellerSearchTracking.clickOtherResult(userSession.userId, title, searchKeyword)
         val appUrlFormatted = appUrl.addWWWPrefix
         RouteManager.route(activity, appUrlFormatted)
-//        dropKeyBoard()
     }
 
     private fun itemRedirectToWebView(
@@ -212,6 +288,5 @@ class SuggestionSearchComposeFragment : BaseDaggerFragment() {
         )
         val appUrlFormatted = appUrl.addWWWPrefix
         RouteManager.route(activity, appUrlFormatted)
-//        dropKeyBoard()
     }
 }

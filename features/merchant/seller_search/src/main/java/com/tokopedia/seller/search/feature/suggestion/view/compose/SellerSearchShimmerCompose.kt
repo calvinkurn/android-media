@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -33,8 +32,7 @@ fun SellerSearchItemShimmer() {
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(start = 16.dp, end = 16.dp)
+            .padding(bottom = 8.dp, start = 16.dp, end = 16.dp)
     ) {
         val (loadImageView, loadTvTitle, loadTvDesc) = createRefs()
 

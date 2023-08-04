@@ -1,0 +1,3 @@
+package com.tokopedia.seller.search.feature.initialsearch.view.viewmodel
+
+class InitialSearchActivityViewModelComposeTest

@@ -27,7 +27,7 @@ import com.tokopedia.seller.search.feature.initialsearch.view.fragment.InitialSe
 import com.tokopedia.seller.search.feature.initialsearch.view.model.compose.GlobalSearchUiEvent
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.HistoryViewUpdateComposeListener
 import com.tokopedia.seller.search.feature.initialsearch.view.viewmodel.InitialSearchActivityComposeViewModel
-import com.tokopedia.seller.search.feature.suggestion.view.fragment.SuggestionSearchFragment
+import com.tokopedia.seller.search.feature.suggestion.view.fragment.SuggestionSearchComposeFragment
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -71,7 +71,7 @@ class InitialSellerSearchComposeActivity :
                 val fragmentManager = remember { supportFragmentManager }
 
                 val suggestionSearchFragment =
-                    remember { fragmentManager.findFragmentById(suggestionSearchContainerId) as? SuggestionSearchFragment }
+                    remember { fragmentManager.findFragmentById(suggestionSearchContainerId) as? SuggestionSearchComposeFragment }
                 val initialSearchFragment = remember {
                     fragmentManager.findFragmentById(initialStateContainerId) as? InitialSearchComposeFragment
                 }
@@ -127,7 +127,7 @@ class InitialSellerSearchComposeActivity :
     private suspend fun collectUiState(
         showSearchSuggestions: Boolean,
         fragmentManager: FragmentManager?,
-        suggestionSearchFragment: SuggestionSearchFragment?,
+        suggestionSearchFragment: SuggestionSearchComposeFragment?,
         initialSearchFragment: InitialSearchComposeFragment?,
         suggestionSearchContainerId: Int,
         initialStateContainerId: Int
@@ -172,7 +172,7 @@ class InitialSellerSearchComposeActivity :
     private fun onSearchResultKeywordFetch(
         showSearchSuggestions: Boolean,
         fragmentManager: FragmentManager?,
-        suggestionSearchFragment: SuggestionSearchFragment?,
+        suggestionSearchFragment: SuggestionSearchComposeFragment?,
         initialSearchFragment: InitialSearchComposeFragment?,
         suggestionSearchContainerId: Int,
         initialStateContainerId: Int,
@@ -180,7 +180,7 @@ class InitialSellerSearchComposeActivity :
     ) {
         if (showSearchSuggestions) {
             suggestionSearchFragment?.suggestionSearch(searchBarKeyword)
-                ?: (fragmentManager?.findFragmentById(suggestionSearchContainerId) as? SuggestionSearchFragment)?.apply {
+                ?: (fragmentManager?.findFragmentById(suggestionSearchContainerId) as? SuggestionSearchComposeFragment)?.apply {
                     suggestionSearch(searchBarKeyword)
                 }
         } else {
@@ -209,7 +209,7 @@ class InitialSellerSearchComposeActivity :
     private fun showSearchFragment(
         fragmentManager: FragmentManager?,
         initialSearchFragment: InitialSearchComposeFragment?,
-        suggestionSearchFragment: SuggestionSearchFragment?,
+        suggestionSearchFragment: SuggestionSearchComposeFragment?,
         initialStateContainerId: Int,
         suggestionSearchContainerId: Int,
         showSearchSuggestions: Boolean
@@ -218,7 +218,7 @@ class InitialSellerSearchComposeActivity :
             if (showSearchSuggestions) {
                 initialSearchFragment?.let { hide(it) }
                 if (suggestionSearchFragment == null) {
-                    add(suggestionSearchContainerId, SuggestionSearchFragment())
+                    add(suggestionSearchContainerId, SuggestionSearchComposeFragment())
                 } else {
                     show(suggestionSearchFragment)
                 }

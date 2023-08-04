@@ -11,6 +11,8 @@ import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.hi
 
 sealed class SuggestionSearchUiEvent {
 
+    object OnSellerSearchNoResult : SuggestionSearchUiEvent()
+
     data class OnArticleItemClicked(
         val articleSellerSearchUiModel: ArticleSellerSearchUiModel,
         val position: Int

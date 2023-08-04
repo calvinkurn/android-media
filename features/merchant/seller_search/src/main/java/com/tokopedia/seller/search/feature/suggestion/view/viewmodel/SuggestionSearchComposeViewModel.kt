@@ -23,19 +23,24 @@ class SuggestionSearchComposeViewModel @Inject constructor(
     val uiState: StateFlow<SuggestionSearchUiState>
         get() = _uiState
 
+    fun showLoading() {
+        _uiState.update {
+            it.copy(isLoadingState = true)
+        }
+    }
+
     fun fetchSellerSearch(keyword: String, section: String = "", shopId: String) {
         launchCatchError(block = {
-            _uiState.update {
-                it.copy(isLoadingState = true)
-            }
             val responseGetSellerSearch = withContext(dispatcherProvider.io) {
                 getSellerSearchUseCase.params =
                     GetSellerSearchUseCase.createParams(keyword, shopId, section)
-                GlobalSearchSellerMapper.mapToSellerSearchVisitable(
+                val sellerSearchVisitableList = GlobalSearchSellerMapper.mapToSellerSearchVisitable(
                     getSellerSearchUseCase.executeOnBackground(),
                     keyword
                 )
+                GlobalSearchSellerMapper.mapToSuggestionSellerSearchVisitable(sellerSearchVisitableList)
             }
+
             _uiState.update {
                 it.copy(
                     suggestionSellerSearchList = responseGetSellerSearch,
