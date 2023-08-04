@@ -54,6 +54,7 @@ import com.tokopedia.logisticcart.shipping.model.CodModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
@@ -809,7 +810,9 @@ class CheckoutViewModel @Inject constructor(
             isTradeInByDropOff,
             codData,
             cartDataForRates,
-            mvcPromoCode
+            mvcPromoCode,
+            true,
+            listData.value.promo()!!
         )
     }
 
@@ -846,7 +849,9 @@ class CheckoutViewModel @Inject constructor(
                 isTradeInByDropOff,
                 codData,
                 cartDataForRates,
-                ""
+                "",
+                false,
+                listData.value.promo()!!
             ),
             order.shopShipmentList,
             order.shippingId,
@@ -895,10 +900,11 @@ class CheckoutViewModel @Inject constructor(
                                 orderModel.validationMetadata
                         }
                     }
-                    //                        removeInvalidBoCodeFromPromoRequest(
-                    //                            shipmentGetCourierHolderData,
-                    //                            validateUsePromoRequest
-                    //                        )
+                    removeInvalidBoCodeFromPromoRequest(
+                        orderModel,
+                        list,
+                        validateUsePromoRequest
+                    )
                     doValidateUseLogisticPromoNew(
                         cartPosition,
                         orderModel.cartStringGroup,
@@ -969,7 +975,9 @@ class CheckoutViewModel @Inject constructor(
                 isTradeInByDropOff,
                 codData,
                 cartDataForRates,
-                ""
+                "",
+                false,
+                listData.value.promo()!!
             ),
             order.shopShipmentList,
             order.shippingId,
@@ -1020,10 +1028,11 @@ class CheckoutViewModel @Inject constructor(
                                 orderModel.validationMetadata
                         }
                     }
-                    //                        removeInvalidBoCodeFromPromoRequest(
-                    //                            shipmentGetCourierHolderData,
-                    //                            validateUsePromoRequest
-                    //                        )
+                    removeInvalidBoCodeFromPromoRequest(
+                        order,
+                        list,
+                        validateUsePromoRequest
+                    )
                     doValidateUseLogisticPromoNew(
                         cartPosition,
                         orderModel.cartStringGroup,
@@ -1188,6 +1197,31 @@ class CheckoutViewModel @Inject constructor(
 
     fun getBboPromoCodes(): ArrayList<String> {
         return ArrayList(promoProcessor.bboPromoCodes)
+    }
+
+    private fun removeInvalidBoCodeFromPromoRequest(
+        order: CheckoutOrderModel,
+        list: List<CheckoutItem>,
+        validateUsePromoRequest: ValidateUsePromoRequest
+    ) {
+        if (!order.isFreeShippingPlus) {
+            val shipmentCartItemModelLists =
+                list.filterIsInstance(
+                    ShipmentCartItemModel::class.java
+                )
+            for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
+                for (promoOrder in validateUsePromoRequest.orders) {
+                    if (order.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == promoOrder.cartStringGroup && tmpShipmentCartItemModel.selectedShipmentDetailData != null && tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null &&
+                        !tmpShipmentCartItemModel.isFreeShippingPlus
+                    ) {
+                        promoOrder.codes.remove(
+                            tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.logPromoCode
+                        )
+                        promoOrder.boCode = ""
+                    }
+                }
+            }
+        }
     }
 
     private suspend fun validatePromo() {
@@ -1803,7 +1837,9 @@ class CheckoutViewModel @Inject constructor(
                         isTradeInByDropOff,
                         codData,
                         cartDataForRates,
-                        ""
+                        "",
+                        false,
+                        checkoutItems.promo()!!
                     ),
                     order.shopShipmentList,
                     voucher.shippingId,
@@ -1850,10 +1886,11 @@ class CheckoutViewModel @Inject constructor(
                                     order.validationMetadata
                             }
                         }
-                        //                        removeInvalidBoCodeFromPromoRequest(
-                        //                            shipmentGetCourierHolderData,
-                        //                            validateUsePromoRequest
-                        //                        )
+                        removeInvalidBoCodeFromPromoRequest(
+                            order,
+                            checkoutItems,
+                            validateUsePromoRequest
+                        )
                         checkoutItems = promoProcessor.validateUseLogisticPromo(
                             validateUsePromoRequest,
                             order.cartStringGroup,
@@ -1864,16 +1901,6 @@ class CheckoutViewModel @Inject constructor(
                             isTradeIn,
                             isTradeInByDropOff
                         ).toMutableList()
-//                        doValidateUseLogisticPromoNew(
-//                            cartPosition,
-//                            order.cartStringGroup,
-//                            validateUsePromoRequest,
-//                            result.first.logPromoCode!!,
-//                            false,
-//                            result.first,
-//                            result.second
-//                        )
-//                        return
                     }
                 } else {
                     val newOrderModel = order.copy(
@@ -1904,16 +1931,7 @@ class CheckoutViewModel @Inject constructor(
                     )
                     checkoutItems[cartPosition] = newOrderModel
                 }
-//                listData.value = list
-//                cartProcessor.processSaveShipmentState(
-//                    newOrderModel,
-//                    listData.value.address()!!.recipientAddressModel
-//                )
-//                calculateTotal()
             }
-//            for (voucherOrders in toBeAppliedVoucherOrders) {
-//                reloadedUniqueIds.add(voucherOrders.cartStringGroup)
-//            }
             listData.value = checkoutItems
             if (firstScrollIndex != -1) {
                 pageState.value = CheckoutPageState.ScrollTo(firstScrollIndex)

@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.revamp.view.processor
 
+import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -8,8 +9,8 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderShipment
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
 import com.tokopedia.checkout.view.CheckoutLogger
-import com.tokopedia.checkout.view.converter.RatesDataConverter
 import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
@@ -37,6 +38,7 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesCoroutineUseCase
 import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.TKPDMapParam
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MvcShippingBenefitUiModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
@@ -177,9 +179,21 @@ class CheckoutLogisticProcessor @Inject constructor(
         return products
     }
 
-    fun generateRatesMvcParam(orderModel: CheckoutOrderModel): String {
-        // todo ?
-        return orderModel.shipment.courierItemData?.selectedShipper?.logPromoCode ?: ""
+    fun generateRatesMvcParam(cartString: String, promo: CheckoutPromoModel): String {
+        var mvc = ""
+        val tmpMvcShippingBenefitUiModel: MutableList<MvcShippingBenefitUiModel> = arrayListOf()
+        val promoSpIdUiModels = promo.promo.additionalInfo.promoSpIds
+        if (promoSpIdUiModels.isNotEmpty()) {
+            for ((uniqueId, mvcShippingBenefits) in promoSpIdUiModels) {
+                if (cartString == uniqueId) {
+                    tmpMvcShippingBenefitUiModel.addAll(mvcShippingBenefits)
+                }
+            }
+        }
+        if (tmpMvcShippingBenefitUiModel.size > 0) {
+            mvc = Gson().toJson(tmpMvcShippingBenefitUiModel)
+        }
+        return mvc.replace("\n", "").replace(" ", "")
     }
 
     private fun generateShippingBottomsheetParam(
@@ -300,7 +314,7 @@ class CheckoutLogisticProcessor @Inject constructor(
         return shippingParam
     }
 
-    fun getRatesParam(orderModel: CheckoutOrderModel, orderProducts: List<CheckoutProductModel>, address: RecipientAddressModel, isTradeIn: Boolean, isTradeInDropOff: Boolean, codData: CodModel?, cartDataForRates: String, mvcPromoCode: String): RatesParam {
+    fun getRatesParam(orderModel: CheckoutOrderModel, orderProducts: List<CheckoutProductModel>, address: RecipientAddressModel, isTradeIn: Boolean, isTradeInDropOff: Boolean, codData: CodModel?, cartDataForRates: String, pslCode: String, useMvc: Boolean, promo: CheckoutPromoModel): RatesParam {
         val shippingParam = getShippingParam(
             generateShippingBottomsheetParam(orderModel, orderProducts, address, isTradeIn),
             getProductForRatesRequest(orderProducts),
@@ -310,9 +324,7 @@ class CheckoutLogisticProcessor @Inject constructor(
         )
         val counter = codData?.counterCod ?: -1
         val cornerId = address.isCornerAddress
-        val pslCode = RatesDataConverter.getLogisticPromoCode(orderModel)
         val isLeasing = orderModel.isLeasingProduct
-//        val mvc = mvcPromoCode
         val ratesParamBuilder = RatesParam.Builder(orderModel.shopShipmentList, shippingParam)
             .isCorner(cornerId)
             .codHistory(counter)
@@ -320,8 +332,9 @@ class CheckoutLogisticProcessor @Inject constructor(
             .promoCode(pslCode)
             .cartData(cartDataForRates)
             .warehouseId(orderModel.fulfillmentId.toString())
-//            .mvc(mvc)
-            .promoCode(mvcPromoCode)
+        if (useMvc) {
+            ratesParamBuilder.mvc(generateRatesMvcParam(orderModel.cartStringGroup, promo))
+        }
         return ratesParamBuilder.build()
     }
 

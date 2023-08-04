@@ -1949,6 +1949,10 @@ class CheckoutFragment :
         }
     }
 
+    override fun checkPlatformFee() {
+        viewModel.calculateTotal()
+    }
+
     override fun onInsuranceTncClicked() {
         context?.let {
             val intent = CheckoutWebViewActivity.newInstance(

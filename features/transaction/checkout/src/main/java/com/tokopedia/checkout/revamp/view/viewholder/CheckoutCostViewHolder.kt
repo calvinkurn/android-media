@@ -160,8 +160,7 @@ class CheckoutCostViewHolder(
             binding.tickerPlatformFeeInfo.setHtmlDescription(platformFeeModel.ticker)
             binding.tickerPlatformFeeInfo.setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    // todo
-//                    shipmentAdapterActionListener.checkPlatformFee()
+                    listener.checkPlatformFee()
                 }
 
                 override fun onDismiss() {}

@@ -78,6 +78,8 @@ interface CheckoutAdapterListener {
 
     fun onEgoldChecked(checked: Boolean)
 
+    fun checkPlatformFee()
+
     fun onInsuranceTncClicked()
 
     fun onProcessToPayment()

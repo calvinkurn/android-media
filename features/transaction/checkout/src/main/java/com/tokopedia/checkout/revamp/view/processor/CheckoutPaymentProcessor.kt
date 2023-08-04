@@ -57,6 +57,8 @@ class CheckoutPaymentProcessor @Inject constructor(
                         ).removeDecimalSuffix()
                     )
                     return cost.copy(dynamicPlatformFee = platformFee)
+                } else {
+                    return cost.copy(dynamicPlatformFee = cost.dynamicPlatformFee.copy(isLoading = false, isShowTicker = true, ticker = shipmentPlatformFeeData.errorWording))
                 }
             }
         }
