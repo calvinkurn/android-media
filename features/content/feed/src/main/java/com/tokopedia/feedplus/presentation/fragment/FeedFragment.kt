@@ -327,6 +327,13 @@ class FeedFragment :
         override fun onClickViewOtherContent() {
             feedMainViewModel.changeCurrentTabByType(FeedBaseFragment.TAB_TYPE_FOR_YOU)
         }
+
+        override fun onErrorPlayingVideo() {
+            showToast(
+                getString(feedR.string.feed_load_follow_recommendation_failed),
+                Toaster.TYPE_ERROR
+            )
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
