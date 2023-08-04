@@ -61,14 +61,14 @@ open class BaseDiscoveryAnalytics(
     open fun viewProductsList(
         componentsItems: ComponentsItem,
         isLogin: Boolean,
-        isFulFillment: Boolean,
+        isFulFillment: Boolean = false,
         warehouseId: Long = 0
     ) {}
     open fun clearProductViewIds(isRefresh: Boolean) {}
     open fun trackProductCardClick(
         componentsItems: ComponentsItem,
         isLogin: Boolean,
-        isFulFillment: Boolean,
+        isFulFillment: Boolean = false,
         warehouseId: Long = 0
     ) {}
     open fun trackEventImpressionCoupon(componentsItems: ArrayList<ComponentsItem>) {}
