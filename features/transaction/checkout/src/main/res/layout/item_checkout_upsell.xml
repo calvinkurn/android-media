@@ -6,13 +6,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <!--    <com.tokopedia.unifycomponents.ContainerUnify-->
-    <!--        android:id="@+id/checkout_upsell_outer_container"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:padding="12dp"-->
-    <!--        app:container_color="GREEN">-->
-
     <com.tokopedia.unifycomponents.CardUnify2
         android:id="@+id/checkout_upsell_card"
         android:layout_width="match_parent"
@@ -184,7 +177,5 @@
         android:layout_width="match_parent"
         android:layout_height="8dp"
         android:layout_marginTop="12dp" />
-
-    <!--    </com.tokopedia.unifycomponents.ContainerUnify>-->
 
 </LinearLayout>

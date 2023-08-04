@@ -3,7 +3,7 @@ package com.tokopedia.checkout.revamp.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.checkout.databinding.ItemCheckoupUpsellBinding
+import com.tokopedia.checkout.databinding.ItemCheckoutUpsellBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutAddressBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutButtonPaymentBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutCostBinding
@@ -85,7 +85,7 @@ class CheckoutAdapter(
 
             CheckoutUpsellViewHolder.VIEW_TYPE -> {
                 CheckoutUpsellViewHolder(
-                    ItemCheckoupUpsellBinding.inflate(
+                    ItemCheckoutUpsellBinding.inflate(
                         inflater,
                         parent,
                         false

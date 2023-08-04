@@ -2,7 +2,7 @@ package com.tokopedia.checkout.revamp.view.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
-import com.tokopedia.checkout.databinding.ItemCheckoupUpsellBinding
+import com.tokopedia.checkout.databinding.ItemCheckoutUpsellBinding
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.iconunify.IconUnify
@@ -17,7 +17,7 @@ import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.toPx
 
 class CheckoutUpsellViewHolder(
-    private val binding: ItemCheckoupUpsellBinding,
+    private val binding: ItemCheckoutUpsellBinding,
     private val actionListener: CheckoutAdapterListener
 ): RecyclerView.ViewHolder(binding.root) {
 
