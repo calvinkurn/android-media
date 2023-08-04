@@ -60,7 +60,6 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerImpre
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerClick
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerImpression
 import com.tokopedia.home.analytics.v2.BestSellerWidgetTracker
-import com.tokopedia.home.analytics.v2.LegoBannerTracking
 import com.tokopedia.home.analytics.v2.LoginWidgetTracking
 import com.tokopedia.home.analytics.v2.PopularKeywordTracking
 import com.tokopedia.home.analytics.v2.RecommendationListTracking
@@ -1934,11 +1933,7 @@ open class HomeRevampFragment :
         val combinedTracking: MutableList<Any> = ArrayList()
         for (visitable in visitables) {
             if (visitable is HomeVisitable) {
-                if (visitable.isTrackingCombined && visitable.trackingDataForCombination != null) {
-                    getTrackingQueueObj()?.putEETracking(
-                        LegoBannerTracking.getHomeBannerImpression(visitable.trackingDataForCombination) as HashMap<String, Any>
-                    )
-                } else if (!visitable.isTrackingCombined && visitable.trackingData != null) {
+                if (!visitable.isTrackingCombined && visitable.trackingData != null) {
                     HomePageTracking.eventEnhancedImpressionWidgetHomePage(getTrackingQueueObj(), visitable.trackingData)
                 }
             }
