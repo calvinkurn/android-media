@@ -1436,12 +1436,22 @@ class CheckoutViewModel @Inject constructor(
     fun validateBoPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel) {
         viewModelScope.launch(dispatchers.immediate) {
             pageState.value = CheckoutPageState.Loading
-            val unappliedBoPromoUniqueIds = java.util.ArrayList<String>()
-            val reloadedUniqueIds = java.util.ArrayList<String>()
-            val unprocessedUniqueIds = java.util.ArrayList<String>()
+            val list = listData.value.toMutableList()
+            val newPromo = list.promo()!!.copy(
+                promo = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(
+                    validateUsePromoRevampUiModel.promoUiModel
+                )
+            )
+            list[list.size - 4] = newPromo
+            listData.value = list
+            val unappliedBoPromoUniqueIds = ArrayList<String>()
+            val reloadedUniqueIds = ArrayList<String>()
+            val unprocessedUniqueIds = ArrayList<String>()
             var checkoutItems = listData.value.toMutableList()
             for (shipmentCartItemModel in checkoutItems) {
-                unprocessedUniqueIds.add(shipmentCartItemModel.cartStringGroup)
+                if (shipmentCartItemModel is CheckoutOrderModel) {
+                    unprocessedUniqueIds.add(shipmentCartItemModel.cartStringGroup)
+                }
             }
             // loop to list voucher orders to be applied this will be used later
             val toBeAppliedVoucherOrders: MutableList<PromoCheckoutVoucherOrdersItemUiModel> =
