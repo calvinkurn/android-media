@@ -45,7 +45,7 @@ class FeedFollowProfileAdapter(
         return if (oldItem is Model.Profile && newItem is Model.Profile) {
             oldItem.data.id == newItem.data.id
         } else if (oldItem is Model.Loading && newItem is Model.Loading) {
-            oldItem == newItem
+            false
         } else oldItem == newItem
     }
 
