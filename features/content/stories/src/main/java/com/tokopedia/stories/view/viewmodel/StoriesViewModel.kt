@@ -12,6 +12,7 @@ class StoriesViewModel @Inject constructor(
 
     private var shopId: String = ""
     private var storiesId: String = ""
+    var mCounter: Int = 1
 
     fun submitAction(event: StoriesAction) {
         when (event) {

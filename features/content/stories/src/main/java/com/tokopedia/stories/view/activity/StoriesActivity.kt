@@ -1,24 +1,29 @@
 package com.tokopedia.stories.view.activity
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.stories.databinding.ActivityStoriesBinding
 import com.tokopedia.stories.di.StoriesInjector
 import com.tokopedia.stories.view.fragment.StoriesFragment
 import javax.inject.Inject
 
-class StoriesActivity : BaseSimpleActivity() {
+class StoriesActivity : BaseActivity() {
 
     @Inject
-    @Suppress("LateinitUsage")
     lateinit var fragmentFactory: FragmentFactory
+
+    private var _binding: ActivityStoriesBinding? = null
+    private val binding: ActivityStoriesBinding
+        get() = _binding!!
+
     private var bundle: Bundle? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         getData()
         super.onCreate(savedInstanceState)
+        setupViews()
     }
 
     private fun inject() {
@@ -40,12 +45,33 @@ class StoriesActivity : BaseSimpleActivity() {
         }
     }
 
-    override fun getNewFragment(): Fragment {
-        return StoriesFragment.getFragment(
-            fragmentManager = supportFragmentManager,
-            classLoader = classLoader,
-            bundle = bundle ?: Bundle(),
-        )
+    private fun setupViews() {
+        _binding = ActivityStoriesBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        openFragment()
+    }
+
+    private fun openFragment() {
+        supportFragmentManager.executePendingTransactions()
+        val existingFragment = supportFragmentManager.findFragmentByTag(StoriesFragment.TAG)
+        if (existingFragment is StoriesFragment && existingFragment.isVisible) return
+
+        supportFragmentManager.beginTransaction().apply {
+            add(
+                binding.fragmentContainer.id,
+                StoriesFragment.getFragment(
+                    fragmentManager = supportFragmentManager,
+                    classLoader = classLoader,
+                    bundle = bundle ?: Bundle(),
+                ),
+                StoriesFragment.TAG,
+            )
+        }.commit()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
     companion object {

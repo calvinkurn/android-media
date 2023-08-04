@@ -5,10 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.stories.databinding.FragmentStoriesBinding
+import com.tokopedia.stories.view.adapter.StoriesPagerAdapter
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.action.StoriesAction
 import javax.inject.Inject
@@ -21,7 +22,18 @@ class StoriesFragment @Inject constructor(
     private val binding: FragmentStoriesBinding
         get() = _binding!!
 
-    private val viewModel by viewModels<StoriesViewModel> { viewModelFactory }
+    private val viewModel by activityViewModels<StoriesViewModel> { viewModelFactory }
+
+    private val pagerAdapter: StoriesPagerAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        StoriesPagerAdapter(
+            childFragmentManager,
+            requireActivity(),
+            lifecycle,
+            binding.storiesViewPager,
+        ) { tabPosition ->
+            viewModel.mCounter = tabPosition
+        }
+    }
 
     override fun getScreenName(): String {
         return TAG
@@ -41,14 +53,19 @@ class StoriesFragment @Inject constructor(
         viewModelAction(StoriesAction.SetInitialData(arguments))
 
         setupViewPager()
-    }
-
-    private fun setupViewPager() = with(binding.storiesMainViewPager) {
-
+        setupObserver()
     }
 
     private fun viewModelAction(event: StoriesAction) {
         viewModel.submitAction(event)
+    }
+
+    private fun setupViewPager() = with(binding.storiesViewPager) {
+        adapter = pagerAdapter
+    }
+
+    private fun setupObserver() {
+        pagerAdapter.setCategorySize(10)
     }
 
     override fun onDestroyView() {
@@ -57,7 +74,7 @@ class StoriesFragment @Inject constructor(
     }
 
     companion object {
-        private const val TAG = "StoriesBaseFragment"
+        const val TAG = "StoriesFragment"
 
         fun getFragment(
             fragmentManager: FragmentManager,
