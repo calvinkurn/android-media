@@ -224,12 +224,15 @@ class CheckoutPromoProcessor @Inject constructor(
         // First param data generation / initialization
         validateUsePromoRequest = ValidateUsePromoRequest()
         val listOrderItem = ArrayList<OrdersItem>()
-        val list = shipmentCartItemModelList
-        val lastApplyUiModel = list.promo()!!.promo
-        for (shipmentCartItemModel in list) {
+        val lastApplyUiModel = shipmentCartItemModelList.promo()!!.promo
+        val voucherOrders = lastApplyUiModel.voucherOrders.filter { !it.isTypeLogistic() }
+        for (shipmentCartItemModel in shipmentCartItemModelList) {
             if (shipmentCartItemModel is CheckoutOrderModel) {
                 val cartItemModelsGroupByOrder =
-                    helper.getOrderProducts(list, shipmentCartItemModel.cartStringGroup)
+                    helper.getOrderProducts(
+                        shipmentCartItemModelList,
+                        shipmentCartItemModel.cartStringGroup
+                    )
                         .filter { !it.isError }
                         .groupBy { it.cartStringOrder }
                 for ((cartStringOrder, cartItemList) in cartItemModelsGroupByOrder) {
@@ -244,7 +247,7 @@ class CheckoutPromoProcessor @Inject constructor(
                     }
                     ordersItem.productDetails = productDetailsItems
                     val listOrderCodes = ArrayList<String>()
-                    for (lastApplyVoucherOrdersItemUiModel in lastApplyUiModel.voucherOrders) {
+                    for (lastApplyVoucherOrdersItemUiModel in voucherOrders) {
                         if (cartStringOrder.equals(
                                 lastApplyVoucherOrdersItemUiModel.uniqueId,
                                 ignoreCase = true
