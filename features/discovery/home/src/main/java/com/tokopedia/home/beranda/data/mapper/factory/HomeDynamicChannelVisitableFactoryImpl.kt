@@ -15,6 +15,7 @@ import com.tokopedia.home_component.util.ChannelStyleUtil.BORDER_STYLE_PADDING
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseBorderStyle
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseDividerSize
 import com.tokopedia.home_component.visitable.*
+import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampDataModel
 import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
@@ -202,6 +203,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 }
                 DynamicHomeChannel.Channels.LAYOUT_FLASH_SALE_WIDGET -> {
                     createFlashSaleWidget(channel, position)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_SPECIAL_RELEASE_REVAMP -> {
+                    createSpecialReleaseRevamp(channel, position)
                 }
             }
         }
@@ -744,6 +748,21 @@ class HomeDynamicChannelVisitableFactoryImpl(
         )
     }
 
+    private fun mappingSpecialReleaseRevampComponent(
+        channel: DynamicHomeChannel.Channels,
+        isCache: Boolean,
+        verticalPosition: Int
+    ): Visitable<*> {
+        return SpecialReleaseRevampDataModel(
+            channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
+                channel,
+                verticalPosition
+            ),
+            isCache = isCache,
+            cardInteraction = false
+        )
+    }
+
     private fun createMissionWidgetChannel(
         channel: DynamicHomeChannel.Channels,
         verticalPosition: Int
@@ -909,6 +928,16 @@ class HomeDynamicChannelVisitableFactoryImpl(
     private fun createFlashSaleWidget(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
         visitableList.add(
             mappingFlashSaleWidgetComponent(
+                channel,
+                isCache,
+                verticalPosition
+            )
+        )
+    }
+
+    private fun createSpecialReleaseRevamp(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
+        visitableList.add(
+            mappingSpecialReleaseRevampComponent(
                 channel,
                 isCache,
                 verticalPosition
