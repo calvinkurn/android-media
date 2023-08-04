@@ -7,9 +7,8 @@ import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
 
 data class ShopHomeShowcaseUiModel(
-    val mainBannerPosition: ShopHomeShowcaseMainBannerPosition,
     val categoryHeader: CategoryHeader,
-    val showcases: List<ShopHomeShowcase>,
+    val tabs: List<ShopHomeShowCaseTab>,
     override val widgetId: String = "",
     override val layoutOrder: Int = -1,
     override val name: String = WidgetName.SHOWCASE_NAVIGATION_BANNER,
@@ -36,14 +35,21 @@ data class ShopHomeShowcaseUiModel(
         CAROUSEL
     }
 
-    data class ShopHomeShowcase(
-        val id: String,
-        val name: String,
+    data class ShopHomeShowCaseTab(
+        val text: String,
         val imageUrl: String,
-        val ctaLink: String,
-        val isMainBanner: Boolean
-    )
+        val mainBannerPosition: ShopHomeShowcaseMainBannerPosition,
+        val showcases: List<ShopHomeShowcase>,
+    ) {
+        data class ShopHomeShowcase(
+            val id: String,
+            val name: String,
+            val imageUrl: String,
+            val ctaLink: String,
+            val isMainBanner: Boolean
+        )
 
+    }
 
     override fun type(typeFactory: ShopWidgetTypeFactory): Int {
         return if (typeFactory is ShopHomeAdapterTypeFactory) {

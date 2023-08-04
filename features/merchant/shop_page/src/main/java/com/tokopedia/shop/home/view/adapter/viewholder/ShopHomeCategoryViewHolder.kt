@@ -23,9 +23,9 @@ class ShopHomeCategoryViewHolder(itemView: View) : AbstractViewHolder<ShopHomeSh
 
     override fun bind(model: ShopHomeShowcaseUiModel) {
         viewBinding?.tpgTitle?.text = model.categoryHeader.title
-        viewBinding?.iconChevron?.isVisible = model.showcases.size > SHOW_VIEW_ALL_SHOWCASE_THRESHOLD
+        viewBinding?.iconChevron?.isVisible = model.tabs.size > SHOW_VIEW_ALL_SHOWCASE_THRESHOLD
 
-        val showcases = model.showcases
+        val showcases = model.tabs.get(0).showcases
         val firstShowcase = showcases.getOrNull(0)
         val secondShowcase = showcases.getOrNull(1)
         val thirdShowcase = showcases.getOrNull(2)

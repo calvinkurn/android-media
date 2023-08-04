@@ -108,7 +108,6 @@ import com.tokopedia.shop.common.constant.DEFAULT_SORT_ID
 import com.tokopedia.shop.common.constant.ShopCommonExtraConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.analytic.model.ShopHomePersoProductComparisonWidgetImpressionTrackerModel
-import com.tokopedia.shop.common.constant.ShopPageConstant.EMPTY_PRODUCT_SEARCH_IMAGE_URL
 import com.tokopedia.shop.common.constant.ShopPageConstant.VALUE_INT_ONE
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
@@ -1264,47 +1263,53 @@ open class ShopPageHomeFragment :
                         shopHomeAdapter?.setHomeCategoryData(
                             ShopHomeShowcaseUiModel(
                                 widgetId = "5432",
-                                mainBannerPosition = ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.LEFT,
                                 categoryHeader = ShopHomeShowcaseUiModel.CategoryHeader(
                                     "Explore Categories",
                                     "tokopedia://shop/6553224?tab=EtalaseTab",
                                     ShopHomeShowcaseUiModel.ShopHomeShowcaseWidgetStyle.ROUNDED_CORNER
                                 ),
-                                showcases = listOf(
-                                    ShopHomeShowcaseUiModel.ShopHomeShowcase(
-                                        id = "121",
-                                        name = "Wearable Device",
-                                        imageUrl = "https://images.tokopedia.net/img/android/shop/ic_showcase_sample.png",
-                                        ctaLink = "tokopedia://shop/123/etalase/etalase-tablet",
-                                        isMainBanner = true
-                                    ),
-                                    ShopHomeShowcaseUiModel.ShopHomeShowcase(
-                                        id = "122",
-                                        name = "Tablet",
-                                        imageUrl = "https://images.tokopedia.net/img/android/shop/ic_showcase_sample.png",
-                                        ctaLink = "tokopedia://shop/123/etalase/etalase-tablet",
-                                        isMainBanner = false
-                                    ),
-                                    ShopHomeShowcaseUiModel.ShopHomeShowcase(
-                                        id = "123",
-                                        name = "Accessories",
-                                        imageUrl = "https://images.tokopedia.net/img/android/shop/ic_showcase_sample.png",
-                                        ctaLink = "tokopedia://shop/123/etalase/etalase-tablet",
-                                        isMainBanner = false
-                                    ),
-                                    ShopHomeShowcaseUiModel.ShopHomeShowcase(
-                                        id = "124",
-                                        name = "Handphone",
-                                        imageUrl = "https://images.tokopedia.net/img/android/shop/ic_showcase_sample.png",
-                                        ctaLink = "tokopedia://shop/123/etalase/etalase-tablet",
-                                        isMainBanner = false
-                                    ),
-                                    ShopHomeShowcaseUiModel.ShopHomeShowcase(
-                                        id = "125",
-                                        name = "Power Bank",
-                                        imageUrl = "https://images.tokopedia.net/img/android/shop/ic_showcase_sample.png",
-                                        ctaLink = "tokopedia://shop/123/etalase/etalase-tablet",
-                                        isMainBanner = false
+                                tabs = listOf(
+                                    ShopHomeShowcaseUiModel.ShopHomeShowCaseTab(
+                                        text = "",
+                                        imageUrl = "",
+                                        mainBannerPosition = ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.LEFT,
+                                        showcases = listOf(
+                                            ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase(
+                                                id = "121",
+                                                name = "Wearable Device",
+                                                imageUrl = "https://images.tokopedia.net/img/android/shop/ic_showcase_sample.png",
+                                                ctaLink = "tokopedia://shop/123/etalase/etalase-tablet",
+                                                isMainBanner = true
+                                            ),
+                                            ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase(
+                                                id = "122",
+                                                name = "Tablet",
+                                                imageUrl = "https://images.tokopedia.net/img/android/shop/ic_showcase_sample.png",
+                                                ctaLink = "tokopedia://shop/123/etalase/etalase-tablet",
+                                                isMainBanner = false
+                                            ),
+                                            ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase(
+                                                id = "123",
+                                                name = "Accessories",
+                                                imageUrl = "https://images.tokopedia.net/img/android/shop/ic_showcase_sample.png",
+                                                ctaLink = "tokopedia://shop/123/etalase/etalase-tablet",
+                                                isMainBanner = false
+                                            ),
+                                            ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase(
+                                                id = "124",
+                                                name = "Handphone",
+                                                imageUrl = "https://images.tokopedia.net/img/android/shop/ic_showcase_sample.png",
+                                                ctaLink = "tokopedia://shop/123/etalase/etalase-tablet",
+                                                isMainBanner = false
+                                            ),
+                                            ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase(
+                                                id = "125",
+                                                name = "Power Bank",
+                                                imageUrl = "https://images.tokopedia.net/img/android/shop/ic_showcase_sample.png",
+                                                ctaLink = "tokopedia://shop/123/etalase/etalase-tablet",
+                                                isMainBanner = false
+                                            )
+                                        )
                                     )
                                 )
                             )

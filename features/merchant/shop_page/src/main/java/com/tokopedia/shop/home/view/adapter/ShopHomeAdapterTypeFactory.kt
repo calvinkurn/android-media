@@ -81,6 +81,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductListEmptyUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeCategoryViewHolder
+import com.tokopedia.shop.home.view.model.ShopHomeShowcaseUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
 import com.tokopedia.shop_widget.common.util.WidgetState
@@ -123,7 +124,7 @@ open class ShopHomeAdapterTypeFactory(
             VIDEO -> ShopHomeVideoViewHolder.LAYOUT_RES
             PRODUCT -> getShopHomeCarousellProductViewHolder(baseShopHomeWidgetUiModel)
             VOUCHER_STATIC -> ShopHomeVoucherViewHolder.LAYOUT
-            SHOWCASE_NAVIGATION_BANNER -> ShopHomeCategoryViewHolder.LAYOUT
+            SHOWCASE_NAVIGATION_BANNER -> determineShowcaseNavigationBannerWidget(baseShopHomeWidgetUiModel)
             RECENT_ACTIVITY, BUY_AGAIN, REMINDER, ADD_ONS, TRENDING -> getShopHomeCarouselProductPersonalizationViewHolder(baseShopHomeWidgetUiModel)
             NEW_PRODUCT_LAUNCH_CAMPAIGN -> getShopHomeNplCampaignViewHolder(baseShopHomeWidgetUiModel)
             FLASH_SALE_TOKO -> getShopFlashSaleViewHolder(baseShopHomeWidgetUiModel)
@@ -221,6 +222,39 @@ open class ShopHomeAdapterTypeFactory(
 
     fun isShowHomeWidgetPlaceHolder(model: BaseShopHomeWidgetUiModel): Boolean {
         return model.widgetState == WidgetState.PLACEHOLDER || model.widgetState == WidgetState.LOADING
+    }
+
+    private fun determineShowcaseNavigationBannerWidget(model : BaseShopHomeWidgetUiModel) : Int {
+        val uiModel = model as? ShopHomeShowcaseUiModel
+
+        val firstShowcase = uiModel?.tabs?.getOrNull(0)
+
+        val firstShowCaseTabName = firstShowcase?.text.orEmpty()
+        val showShowcaseTab = firstShowCaseTabName.isNotEmpty() //"text" will be empty string if we don't need to display tab
+
+        val showcaseMainBannerPosition = firstShowcase?.mainBannerPosition ?: ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.CAROUSEL
+
+        return when {
+            //Left Main Banner + Tab
+            showShowcaseTab && showcaseMainBannerPosition == ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.LEFT -> ShopHomeCategoryViewHolder.LAYOUT
+
+            //Top Main Banner + Tab
+            showShowcaseTab && showcaseMainBannerPosition == ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.TOP -> ShopHomeCategoryViewHolder.LAYOUT
+
+            //Carousel + Tab
+            showShowcaseTab && showcaseMainBannerPosition == ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.CAROUSEL -> ShopHomeCategoryViewHolder.LAYOUT
+
+            //Left Main Banner
+            !showShowcaseTab && showcaseMainBannerPosition == ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.LEFT -> ShopHomeCategoryViewHolder.LAYOUT
+
+            //Top Main Banner
+            !showShowcaseTab && showcaseMainBannerPosition == ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.TOP -> ShopHomeCategoryViewHolder.LAYOUT
+
+            //Carousel
+            !showShowcaseTab && showcaseMainBannerPosition == ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.CAROUSEL -> ShopHomeCategoryViewHolder.LAYOUT
+
+            else -> ShopHomeCategoryViewHolder.LAYOUT
+        }
     }
 
     fun isShowThematicWidgetPlaceHolder(model: ThematicWidgetUiModel): Boolean {
