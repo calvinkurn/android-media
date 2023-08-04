@@ -1274,35 +1274,35 @@ open class ShopPageHomeFragment :
                                     ShopHomeShowcaseUiModel.ShopHomeShowcase(
                                         id = "121",
                                         name = "Wearable Device",
-                                        imageUrl = EMPTY_PRODUCT_SEARCH_IMAGE_URL,
+                                        imageUrl = "https://images.tokopedia.net/img/android/shop/ic_showcase_sample.png",
                                         ctaLink = "tokopedia://shop/123/etalase/etalase-tablet",
                                         isMainBanner = true
                                     ),
                                     ShopHomeShowcaseUiModel.ShopHomeShowcase(
                                         id = "122",
                                         name = "Tablet",
-                                        imageUrl = EMPTY_PRODUCT_SEARCH_IMAGE_URL,
+                                        imageUrl = "https://images.tokopedia.net/img/android/shop/ic_showcase_sample.png",
                                         ctaLink = "tokopedia://shop/123/etalase/etalase-tablet",
                                         isMainBanner = false
                                     ),
                                     ShopHomeShowcaseUiModel.ShopHomeShowcase(
                                         id = "123",
                                         name = "Accessories",
-                                        imageUrl = EMPTY_PRODUCT_SEARCH_IMAGE_URL,
+                                        imageUrl = "https://images.tokopedia.net/img/android/shop/ic_showcase_sample.png",
                                         ctaLink = "tokopedia://shop/123/etalase/etalase-tablet",
                                         isMainBanner = false
                                     ),
                                     ShopHomeShowcaseUiModel.ShopHomeShowcase(
                                         id = "124",
                                         name = "Handphone",
-                                        imageUrl = EMPTY_PRODUCT_SEARCH_IMAGE_URL,
+                                        imageUrl = "https://images.tokopedia.net/img/android/shop/ic_showcase_sample.png",
                                         ctaLink = "tokopedia://shop/123/etalase/etalase-tablet",
                                         isMainBanner = false
                                     ),
                                     ShopHomeShowcaseUiModel.ShopHomeShowcase(
                                         id = "125",
                                         name = "Power Bank",
-                                        imageUrl = EMPTY_PRODUCT_SEARCH_IMAGE_URL,
+                                        imageUrl = "https://images.tokopedia.net/img/android/shop/ic_showcase_sample.png",
                                         ctaLink = "tokopedia://shop/123/etalase/etalase-tablet",
                                         isMainBanner = false
                                     )
