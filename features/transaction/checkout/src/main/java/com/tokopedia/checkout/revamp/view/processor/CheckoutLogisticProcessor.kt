@@ -177,9 +177,9 @@ class CheckoutLogisticProcessor @Inject constructor(
         return products
     }
 
-    fun generateRatesMvcParam(cartStringGroup: String): String {
+    fun generateRatesMvcParam(orderModel: CheckoutOrderModel): String {
         // todo ?
-        return ""
+        return orderModel.shipment.courierItemData?.selectedShipper?.logPromoCode ?: ""
     }
 
     private fun generateShippingBottomsheetParam(
@@ -300,7 +300,7 @@ class CheckoutLogisticProcessor @Inject constructor(
         return shippingParam
     }
 
-    fun getRatesParam(orderModel: CheckoutOrderModel, orderProducts: List<CheckoutProductModel>, address: RecipientAddressModel, isTradeIn: Boolean, isTradeInDropOff: Boolean, codData: CodModel?, cartDataForRates: String): RatesParam {
+    fun getRatesParam(orderModel: CheckoutOrderModel, orderProducts: List<CheckoutProductModel>, address: RecipientAddressModel, isTradeIn: Boolean, isTradeInDropOff: Boolean, codData: CodModel?, cartDataForRates: String, mvcPromoCode: String): RatesParam {
         val shippingParam = getShippingParam(
             generateShippingBottomsheetParam(orderModel, orderProducts, address, isTradeIn),
             getProductForRatesRequest(orderProducts),
@@ -312,7 +312,7 @@ class CheckoutLogisticProcessor @Inject constructor(
         val cornerId = address.isCornerAddress
         val pslCode = RatesDataConverter.getLogisticPromoCode(orderModel)
         val isLeasing = orderModel.isLeasingProduct
-        val mvc = generateRatesMvcParam(orderModel.cartStringGroup)
+//        val mvc = mvcPromoCode
         val ratesParamBuilder = RatesParam.Builder(orderModel.shopShipmentList, shippingParam)
             .isCorner(cornerId)
             .codHistory(counter)
@@ -320,8 +320,8 @@ class CheckoutLogisticProcessor @Inject constructor(
             .promoCode(pslCode)
             .cartData(cartDataForRates)
             .warehouseId(orderModel.fulfillmentId.toString())
-            .mvc("")
-        ratesParamBuilder.mvc(mvc)
+//            .mvc(mvc)
+            .promoCode(mvcPromoCode)
         return ratesParamBuilder.build()
     }
 

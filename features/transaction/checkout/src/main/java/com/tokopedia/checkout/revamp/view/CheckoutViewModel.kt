@@ -50,7 +50,6 @@ import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.Locatio
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.logisticcart.shipping.model.CodModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
-import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
@@ -543,15 +542,7 @@ class CheckoutViewModel @Inject constructor(
         return addOnsDataModel
     }
 
-    fun getProductForRatesRequest(order: CheckoutOrderModel): ArrayList<Product> {
-        return logisticProcessor.getProductForRatesRequest(helper.getOrderProducts(listData.value, order.cartStringGroup))
-    }
-
-    fun generateRatesMvcParam(cartStringGroup: String): String {
-        return logisticProcessor.generateRatesMvcParam(cartStringGroup)
-    }
-
-    fun generateRatesParam(order: CheckoutOrderModel): RatesParam {
+    fun generateRatesParam(order: CheckoutOrderModel, mvcPromoCode: String): RatesParam {
         return logisticProcessor.getRatesParam(
             order,
             helper.getOrderProducts(listData.value, order.cartStringGroup),
@@ -559,7 +550,8 @@ class CheckoutViewModel @Inject constructor(
             isTradeIn,
             isTradeInByDropOff,
             codData,
-            cartDataForRates
+            cartDataForRates,
+            mvcPromoCode
         )
     }
 
@@ -595,7 +587,8 @@ class CheckoutViewModel @Inject constructor(
                 isTradeIn,
                 isTradeInByDropOff,
                 codData,
-                cartDataForRates
+                cartDataForRates,
+                ""
             ),
             order.shopShipmentList,
             order.shippingId,
@@ -716,7 +709,8 @@ class CheckoutViewModel @Inject constructor(
                 isTradeIn,
                 isTradeInByDropOff,
                 codData,
-                cartDataForRates
+                cartDataForRates,
+                ""
             ),
             order.shopShipmentList,
             order.shippingId,
@@ -1436,14 +1430,6 @@ class CheckoutViewModel @Inject constructor(
     fun validateBoPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel) {
         viewModelScope.launch(dispatchers.immediate) {
             pageState.value = CheckoutPageState.Loading
-            val list = listData.value.toMutableList()
-            val newPromo = list.promo()!!.copy(
-                promo = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(
-                    validateUsePromoRevampUiModel.promoUiModel
-                )
-            )
-            list[list.size - 4] = newPromo
-            listData.value = list
             val unappliedBoPromoUniqueIds = ArrayList<String>()
             val reloadedUniqueIds = ArrayList<String>()
             val unprocessedUniqueIds = ArrayList<String>()
@@ -1465,6 +1451,17 @@ class CheckoutViewModel @Inject constructor(
                     }
                 }
             }
+
+            val list = listData.value.toMutableList()
+            val promoUiModel = validateUsePromoRevampUiModel.promoUiModel.copy(voucherOrderUiModels = validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels.filter { !it.isTypeLogistic() })
+            val newPromo = list.promo()!!.copy(
+                promo = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(
+                    promoUiModel
+                )
+            )
+            list[list.size - 4] = newPromo
+            listData.value = list
+
             var firstScrollIndex = -1
             for ((index, shipmentCartItemModel) in checkoutItems.withIndex()) {
                 if (shipmentCartItemModel is CheckoutOrderModel) {
@@ -1514,7 +1511,8 @@ class CheckoutViewModel @Inject constructor(
                         isTradeIn,
                         isTradeInByDropOff,
                         codData,
-                        cartDataForRates
+                        cartDataForRates,
+                        ""
                     ),
                     order.shopShipmentList,
                     voucher.shippingId,
@@ -1689,6 +1687,10 @@ class CheckoutViewModel @Inject constructor(
         checkoutItems[position] = newOrder
         listData.value = checkoutItems
         calculateTotal()
+    }
+
+    fun getOrderProducts(cartStringGroup: String): List<CheckoutProductModel> {
+        return helper.getOrderProducts(listData.value, cartStringGroup)
     }
 
     companion object {

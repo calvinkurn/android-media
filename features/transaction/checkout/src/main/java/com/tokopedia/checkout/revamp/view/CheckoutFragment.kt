@@ -94,10 +94,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.view.Shippi
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheetListener
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
-import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartData
-import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
@@ -1313,7 +1310,7 @@ class CheckoutFragment :
                 ShippingDurationBottomsheet.show(
                     fragmentManager = parentFragmentManager,
                     shippingDurationBottomsheetListener = this,
-                    ratesParam = viewModel.generateRatesParam(order),
+                    ratesParam = viewModel.generateRatesParam(order, order.shipment.courierItemData?.selectedShipper?.logPromoCode ?: ""),
                     selectedSpId = order.shipment.courierItemData?.selectedShipper?.shipperProductId ?: -1,
 //                    shipmentDetailData = generateShippingBottomsheetParam(
 //                        order,
@@ -1343,75 +1340,6 @@ class CheckoutFragment :
 //                    warehouseId = order.fulfillmentId.toString()
                 )
             }
-        }
-    }
-
-    fun generateShippingBottomsheetParam(
-        order: CheckoutOrderModel,
-        recipientAddressModel: RecipientAddressModel
-    ): ShipmentDetailData {
-        val orderProducts = viewModel.getOrderProducts(order.cartStringGroup)
-        var orderValue = 0L
-        var totalWeight = 0.0
-        var totalWeightActual = 0.0
-        var productFInsurance = 0
-        var preOrder = false
-        var productPreOrderDuration = 0
-        val productList: ArrayList<Product> = ArrayList()
-        val categoryList: HashSet<String> = hashSetOf()
-        orderProducts.forEach {
-            if (!it.isError) {
-                orderValue += (it.quantity * it.price).toLong()
-                totalWeight += it.quantity * it.weight
-                totalWeightActual += if (it.weightActual > 0) {
-                    it.quantity * it.weightActual
-                } else {
-                    it.quantity * it.weight
-                }
-                if (it.fInsurance) {
-                    productFInsurance = 1
-                }
-                preOrder = it.isPreOrder
-                productPreOrderDuration = it.preOrderDurationDay
-                categoryList.add(it.productCatId.toString())
-                productList.add(Product(it.productId, it.isFreeShipping, it.isFreeShippingExtra))
-            }
-        }
-//        if (orderShop.shouldValidateWeight() && totalWeight > orderShop.maximumWeight) {
-//            // overweight
-//            return null to productList
-//        }
-        return ShipmentDetailData().apply {
-            shopId = order.shopId.toString()
-            preorder = preOrder
-            isBlackbox = order.isBlackbox
-            this.isTradein = viewModel.isTradeIn
-            addressId =
-                if (recipientAddressModel.selectedTabIndex == 1 && recipientAddressModel.locationDataModel != null) recipientAddressModel.locationDataModel.addrId else order.addressId
-            shipmentCartData = ShipmentCartData(
-                originDistrictId = order.districtId,
-                originPostalCode = order.postalCode,
-                originLatitude = order.latitude,
-                originLongitude = order.longitude,
-                weight = totalWeight,
-                weightActual = totalWeightActual,
-                shopTier = order.shopTypeInfoData.shopTier,
-                groupType = order.groupType,
-                token = order.keroToken,
-                ut = order.keroUnixTime,
-                insurance = 1,
-                productInsurance = productFInsurance,
-                orderValue = orderValue,
-                categoryIds = categoryList.joinToString(","),
-                preOrderDuration = productPreOrderDuration,
-                isFulfillment = order.isFulfillment,
-                boMetadata = order.boMetadata,
-                destinationAddress = recipientAddressModel.addressName,
-                destinationDistrictId = recipientAddressModel.destinationDistrictId,
-                destinationPostalCode = recipientAddressModel.postalCode,
-                destinationLatitude = recipientAddressModel.latitude,
-                destinationLongitude = recipientAddressModel.longitude
-            )
         }
     }
 
