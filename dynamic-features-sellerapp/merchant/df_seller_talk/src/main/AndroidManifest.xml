@@ -3,7 +3,7 @@
     xmlns:dist="http://schemas.android.com/apk/distribution"
     package="com.tokopedia.talk">
 
-    <dist:module dist:title="@string/title_df_seller_talk">
+    <dist:module dist:title="@string/title_seller_talk">
         <dist:delivery>
             <dist:on-demand />
             <dist:install-time>
