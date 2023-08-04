@@ -166,9 +166,11 @@ class FeedFragment :
     private val feedMainViewModel: FeedMainViewModel by viewModels(
         ownerProducer = {
             parentFragment ?: this
-        }, factoryProducer = {
+        },
+        factoryProducer = {
             viewModelFactory
-        })
+        }
+    )
     private val feedPostViewModel: FeedPostViewModel by viewModels { viewModelFactory }
 
     private val feedMvcAnalytics = FeedMVCAnalytics()
@@ -557,7 +559,7 @@ class FeedFragment :
     }
 
     override fun changeTab() {
-        feedMainViewModel.changeCurrentTabByType(FeedBaseFragment.TAB_TYPE_FOR_YOU)
+        feedMainViewModel.setActiveTab(FeedBaseFragment.TAB_TYPE_FOR_YOU)
     }
 
     override fun reload() {
@@ -1733,8 +1735,11 @@ class FeedFragment :
     private fun updateBottomActionView(position: Int) {
         with(binding) {
             val currentItem =
-                if (position != RecyclerView.NO_POSITION && adapter.currentList.size > position)
-                    adapter.currentList[position] else null
+                if (position != RecyclerView.NO_POSITION && adapter.currentList.size > position) {
+                    adapter.currentList[position]
+                } else {
+                    null
+                }
 
             if (currentItem == null || !isCdp) {
                 containerBottomAction.hide()

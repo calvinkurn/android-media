@@ -1,11 +1,13 @@
 package com.tokopedia.feedplus.domain.mapper
 
 import com.tokopedia.content.common.model.FeedXHeader
+import com.tokopedia.feedplus.presentation.model.ActiveTabSource
 import com.tokopedia.feedplus.presentation.model.ContentCreationItem
 import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
 import com.tokopedia.feedplus.presentation.model.CreateContentType
 import com.tokopedia.feedplus.presentation.model.CreatorType
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
+import com.tokopedia.feedplus.presentation.model.FeedTabModel
 import com.tokopedia.feedplus.presentation.model.FeedTabsModel
 import com.tokopedia.feedplus.presentation.model.MetaModel
 import com.tokopedia.iconunify.IconUnify
@@ -15,11 +17,11 @@ import com.tokopedia.iconunify.IconUnify
  */
 object MapperFeedTabs {
     fun transform(
-        header: FeedXHeader
+        header: FeedXHeader,
+        activeTabSource: ActiveTabSource
     ): FeedTabsModel =
         FeedTabsModel(
             meta = MetaModel(
-                selectedIndex = header.data.tab.meta?.selectedIndex ?: 0,
                 profileApplink = header.data.userProfile.applink,
                 profilePhotoUrl = header.data.userProfile.image,
                 showMyProfile = header.data.userProfile.isShown,
@@ -27,16 +29,21 @@ object MapperFeedTabs {
                 showLive = header.data.live.isActive,
                 liveApplink = header.data.live.applink
             ),
-            data = header.data.tab.items.sortedBy { it.position }
-                .filter { it.isActive }.map {
-                    FeedDataModel(
-                        title = it.title,
-                        key = it.key,
-                        type = it.type,
-                        position = it.position,
-                        isActive = it.isActive
-                    )
-                }
+            tab = FeedTabModel(
+                data = header.data.tab.items.sortedBy { it.position }
+                    .filter { it.isActive }.map {
+                        FeedDataModel(
+                            title = it.title,
+                            key = it.key,
+                            type = it.type,
+                            position = it.position,
+                            isActive = it.isActive
+                        )
+                    },
+                activeTabSource = activeTabSource.copy(
+                    index = header.data.tab.meta?.selectedIndex ?: 0
+                )
+            )
         )
 
     fun getCreationBottomSheetData(header: FeedXHeader): List<ContentCreationItem> =

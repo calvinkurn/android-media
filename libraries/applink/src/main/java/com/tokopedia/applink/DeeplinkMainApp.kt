@@ -196,10 +196,11 @@ object DeeplinkMainApp {
         "content" to mutableListOf(
             DLP.matchPattern(
                 "explore/{tab_name}/{category_id}",
-                DeeplinkMapperHome::getRegisteredNavigationHomeContentExplore
+                DeeplinkMapperContent::getAppLinkFeedHomeInternal
             ),
-            DLP.matchPattern("detail/{source_id}", DeepLinkMapperFeed::getRegisteredFeed),
-            DLP.matchPattern("{source_id}", DeeplinkMapperContent::getContentFeedDeeplink)
+            DLP.matchPattern("", DeeplinkMapperContent::getAppLinkFeedHomeInternal),
+            DLP.matchPattern("{source_id}", DeeplinkMapperContent::getAppLinkFeedHomeInternal),
+            DLP.matchPattern("detail/{source_id}", DeeplinkMapperContent::getAppLinkFeedDetailInternal)
         ),
         "customercare" to mutableListOf(
             DLP.matchPattern("", ApplinkConstInternalOperational.INTERNAL_INBOX_LIST)
@@ -229,18 +230,20 @@ object DeeplinkMainApp {
             DLP.matchPattern("", ApplinkConstInternalUserPlatform.EXPLICIT_PROFILE)
         ),
         "feed" to mutableListOf(
-            DLP.matchPattern("", DeeplinkMapperHome::getRegisteredNavigationHomeFeed),
+            DLP.matchPattern("", DeeplinkMapperContent::getAppLinkFeedHomeInternal),
+            DLP.matchPattern("{source_id}", DeeplinkMapperContent::getAppLinkFeedHomeInternal),
+            DLP.matchPattern("detail/{source_id}", DeeplinkMapperContent::getAppLinkFeedDetailInternal),
             DLP.matchPattern(
                 "explore",
-                DeeplinkMapperContent::getRegisteredNavigationHomeFeedExplore
+                DeeplinkMapperContent::getAppLinkFeedHomeInternal
             ),
             DLP.matchPattern(
                 "video",
-                DeeplinkMapperContent::getRegisteredNavigationHomeFeedVideo
+                DeeplinkMapperContent::getAppLinkFeedHomeInternal
             ),
             DLP.startsWith(
                 "following",
-                DeeplinkMapperContent::getRegisteredNavigationHomeFeedFollowing
+                DeeplinkMapperContent::getAppLinkFeedHomeInternal
             ),
             DLP.startsWith(
                 "creation-product-search",
