@@ -51,7 +51,7 @@ import com.tokopedia.promousage.util.extension.foregroundDrawable
 import com.tokopedia.promousage.view.adapter.PromoAccordionHeaderDelegateAdapter
 import com.tokopedia.promousage.view.adapter.PromoAccordionItemDelegateAdapter
 import com.tokopedia.promousage.view.adapter.PromoAccordionViewAllDelegateAdapter
-import com.tokopedia.promousage.view.adapter.PromoInputCodeDelegateAdapter
+import com.tokopedia.promousage.view.adapter.PromoAttemptCodeDelegateAdapter
 import com.tokopedia.promousage.view.adapter.PromoRecommendationDelegateAdapter
 import com.tokopedia.promousage.view.adapter.PromoTncDelegateAdapter
 import com.tokopedia.promousage.view.viewmodel.PromoUsageViewModel
@@ -108,12 +108,10 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             .add(PromoAccordionItemDelegateAdapter(onClickPromoItem))
             .add(PromoAccordionViewAllDelegateAdapter(onClickPromoAccordionViewAll))
             .add(PromoTncDelegateAdapter(onClickPromoTnc))
-            .add(PromoInputCodeDelegateAdapter(onAttemptPromoCode))
+            .add(PromoAttemptCodeDelegateAdapter(onAttemptPromoCode))
             .build()
     }
-    private val loaderDialog by lazy {
-        LoaderDialog(requireContext())
-    }
+    private var loaderDialog: LoaderDialog? = null
 
     @Suppress("DEPRECATION")
     private val registerGopayLaterCicilLauncher =
@@ -124,7 +122,11 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     arguments?.getParcelable(BUNDLE_KEY_PROMO_REQUEST) ?: PromoRequest()
                 val chosenAddress =
                     arguments?.getParcelable<ChosenAddress>(BUNDLE_KEY_CHOSEN_ADDRESS)
-                viewModel.loadPromoListWithPreSelectedPromo(promoRequest, chosenAddress, promoCode)
+                viewModel.loadPromoListWithPreSelectedPromo(
+                    promoRequest = promoRequest,
+                    chosenAddress = chosenAddress,
+                    preSelectPromoCode = promoCode
+                )
             }
         }
 
@@ -190,8 +192,8 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         setupView(entryPoint, totalAmount)
         setupObservers()
 
-        val promoRequest = arguments?.getParcelable(BUNDLE_KEY_PROMO_REQUEST) ?: PromoRequest()
-        val chosenAddress = arguments?.getParcelable(BUNDLE_KEY_CHOSEN_ADDRESS) ?: ChosenAddress()
+        val promoRequest: PromoRequest? = arguments?.getParcelable(BUNDLE_KEY_PROMO_REQUEST)
+        val chosenAddress: ChosenAddress? = arguments?.getParcelable(BUNDLE_KEY_CHOSEN_ADDRESS)
         viewModel.loadPromoList(
             promoRequest = promoRequest,
             chosenAddress = chosenAddress
@@ -361,7 +363,6 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         observePromoRecommendation()
         observePromoPageState()
         observeCtaAction()
-        observeTncAction()
     }
 
     private fun observePromoRecommendation() {
@@ -481,12 +482,6 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
-    private fun observeTncAction() {
-        viewModel.promoTncAction.observe(viewLifecycleOwner) { item ->
-            showPromoTncBottomSheet(item)
-        }
-    }
-
     private fun showPromoTncBottomSheet(item: PromoTncItem) {
         PromoUsageTncBottomSheet.newInstance(item.selectedPromoCodes).also {
             it.show(childFragmentManager)
@@ -547,23 +542,37 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
-    private val onClickPromoTnc: () -> Unit = {
-        viewModel.onClickTnc()
+    private val onClickPromoTnc: (PromoTncItem) -> Unit = { item ->
+        showPromoTncBottomSheet(item)
     }
 
     private val onAttemptPromoCode: (String) -> Unit = { attemptedPromoCode ->
-        viewModel.onAttemptPromoCode(attemptedPromoCode)
+        val promoRequest: PromoRequest? = arguments?.getParcelable(BUNDLE_KEY_PROMO_REQUEST)
+        val chosenAddress: ChosenAddress? = arguments?.getParcelable(BUNDLE_KEY_CHOSEN_ADDRESS)
+        viewModel.onAttemptPromoCode(
+            promoRequest = promoRequest,
+            chosenAddress = chosenAddress,
+            attemptedPromoCode = attemptedPromoCode,
+            onSuccess = {
+                val itemCount = binding.rvPromo.adapter?.itemCount ?: 0
+                if (itemCount > 0) {
+                    binding.rvPromo.scrollToPosition(itemCount - 1)
+                }
+            }
+        )
     }
 
     private fun showLoading() {
-        if (!loaderDialog.dialog.isShowing) {
-            loaderDialog.show()
+        if (loaderDialog == null) {
+            loaderDialog = LoaderDialog(requireContext())
+            loaderDialog?.show()
         }
     }
 
     private fun hideLoading() {
-        if (loaderDialog.dialog.isShowing) {
-            loaderDialog.dismiss()
+        if (loaderDialog != null) {
+            loaderDialog?.dismiss()
+            loaderDialog = null
         }
     }
 }

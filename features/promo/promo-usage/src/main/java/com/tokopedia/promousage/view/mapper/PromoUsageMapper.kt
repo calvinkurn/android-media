@@ -42,6 +42,11 @@ class PromoUsageMapper @Inject constructor() {
         )
     }
 
+    // TODO: Remove after BE ready
+    fun mapCouponListRecommendationResponseToPromoSectionsWithAttemptedCode() : List<DelegateAdapterItem> {
+        return DummyData.dummySectionWithAttemptedCode()
+    }
+
     fun mapCouponListRecommendationResponseToPromoSections(
         response: GetCouponListRecommendationResponse
     ): List<DelegateAdapterItem> {
@@ -155,26 +160,11 @@ class PromoUsageMapper @Inject constructor() {
             coupon.clashingInfos.filter { selectedPromoCodes.contains(it.code) }
         val secondaryClashingInfos =
             secondaryCoupon.clashingInfos.filter { selectedPromoCodes.contains(it.code) }
-        val hasSecondaryPromo =
-            secondaryCoupon.id.isNotBlankOrZero() && secondaryCoupon.code.isNotBlank()
-        val useSecondaryPromo =
-            primaryClashingInfos.isNotEmpty() && hasSecondaryPromo && secondaryClashingInfos.isEmpty()
 
-        val cardDetails = if (useSecondaryPromo) {
-            mapCardDetails(secondaryCoupon.couponCardDetails)
-        } else {
-            mapCardDetails(coupon.couponCardDetails)
-        }
         var state: PromoItemState = if (isSelected) {
-            val selectedCardDetail =
-                cardDetails.firstOrNull { it.state == PromoItemCardDetail.TYPE_INITIAL }
-                    ?: PromoItemCardDetail()
-            PromoItemState.Selected(selectedCardDetail)
+            PromoItemState.Selected
         } else {
-            val normalCardDetail =
-                cardDetails.firstOrNull { it.state == PromoItemCardDetail.TYPE_SELECTED }
-                    ?: PromoItemCardDetail()
-            PromoItemState.Normal(normalCardDetail)
+            PromoItemState.Normal
         }
         if (primaryClashingInfos.isNotEmpty()) {
             state = PromoItemState.Disabled(primaryClashingInfos.first().message)

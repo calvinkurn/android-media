@@ -25,11 +25,25 @@ object DummyData {
             backgroundUrl = ""
         )
 
+    val promoAttemptItemError: PromoAttemptItem
+        get() = PromoAttemptItem(
+            label = "Punya kode promo? Masukin di sini ✨",
+            attemptedPromoCode = attemptedPromo.code,
+            errorMessage = "Promo hanya berlaku di versi terbaru aplikasi Tokopedia. Update dulu, yuk!"
+        )
+
+    val promoAttemptItemSuccess: PromoAttemptItem
+        get() = PromoAttemptItem(
+            label = "Punya kode promo? Masukin di sini ✨",
+            attemptedPromoCode = attemptedPromo.code,
+            promo = attemptedPromo
+        )
+
     val attemptedPromo: PromoItem
         get() = PromoItem(
             id = "1",
             index = 1,
-            code = "ATTEMPTED01",
+            code = "ATTEMPT",
             shopId = 0,
             uniqueId = "",
             benefitAmount = 30000.0,
@@ -67,14 +81,7 @@ object DummyData {
             ),
             expiryInfo = "Berakhir dalam <a>3 jam</a>",
             expiryTimestamp = 1693451440,
-            state = PromoItemState.Normal(
-                PromoItemCardDetail(
-                    state = PromoItemCardDetail.TYPE_INITIAL,
-                    color = "",
-                    iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
-                    backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
-                )
-            ),
+            state = PromoItemState.Selected,
             isAttempted = true
         )
 
@@ -121,14 +128,7 @@ object DummyData {
                 ),
                 expiryInfo = "Berakhir dalam <a>3 jam</a>",
                 expiryTimestamp = 1693451440,
-                state = PromoItemState.Normal(
-                    PromoItemCardDetail(
-                        state = PromoItemCardDetail.TYPE_INITIAL,
-                        color = "",
-                        iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
-                        backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
-                    )
-                ),
+                state = PromoItemState.Normal,
                 isAttempted = false,
                 isExpanded = false,
                 isVisible = true,
@@ -175,14 +175,7 @@ object DummyData {
                 ),
                 expiryInfo = "Berakhir dalam <a>3 jam</a>",
                 expiryTimestamp = 1693451440,
-                state = PromoItemState.Normal(
-                    PromoItemCardDetail(
-                        state = PromoItemCardDetail.TYPE_INITIAL,
-                        color = "",
-                        iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
-                        backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
-                    )
-                ),
+                state = PromoItemState.Normal,
                 isAttempted = false,
                 isExpanded = true,
                 isVisible = false
@@ -365,14 +358,7 @@ object DummyData {
                 ),
                 expiryInfo = "Berakhir dalam <a>3 jam</a>",
                 expiryTimestamp = 1693451440,
-                state = PromoItemState.Normal(
-                    PromoItemCardDetail(
-                        state = PromoItemCardDetail.TYPE_INITIAL,
-                        color = "",
-                        iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
-                        backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
-                    )
-                ),
+                state = PromoItemState.Normal,
                 isAttempted = false,
                 isExpanded = false,
                 isVisible = true
@@ -418,14 +404,7 @@ object DummyData {
                 ),
                 expiryInfo = "Berakhir dalam <a>3 jam</a>",
                 expiryTimestamp = 1693451440,
-                state = PromoItemState.Selected(
-                    PromoItemCardDetail(
-                        state = PromoItemCardDetail.TYPE_SELECTED,
-                        color = "",
-                        iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
-                        backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
-                    )
-                ),
+                state = PromoItemState.Selected,
                 isAttempted = false,
                 isExpanded = false,
                 isVisible = false,
@@ -615,14 +594,7 @@ object DummyData {
                 ),
                 expiryInfo = "Berakhir dalam <a>3 jam</a>",
                 expiryTimestamp = 1693451440,
-                state = PromoItemState.Normal(
-                    PromoItemCardDetail(
-                        state = PromoItemCardDetail.TYPE_INITIAL,
-                        color = "",
-                        iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
-                        backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
-                    )
-                ),
+                state = PromoItemState.Normal,
                 isAttempted = false,
                 isExpanded = false,
                 isVisible = true
@@ -668,14 +640,7 @@ object DummyData {
                 ),
                 expiryInfo = "Berakhir dalam <a>3 jam</a>",
                 expiryTimestamp = 1693451440,
-                state = PromoItemState.Selected(
-                    PromoItemCardDetail(
-                        state = PromoItemCardDetail.TYPE_SELECTED,
-                        color = "",
-                        iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
-                        backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
-                    )
-                ),
+                state = PromoItemState.Selected,
                 isAttempted = false,
                 isExpanded = false,
                 isVisible = false
@@ -866,14 +831,7 @@ object DummyData {
                 expiryInfo = "Berakhir dalam <a>3 jam</a>",
                 expiryTimestamp = 1693451440,
                 secondaryPromo = SecondaryPromoItem(),
-                state = PromoItemState.Normal(
-                    PromoItemCardDetail(
-                        state = PromoItemCardDetail.TYPE_INITIAL,
-                        color = "",
-                        iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
-                        backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
-                    )
-                ),
+                state = PromoItemState.Normal,
                 isAttempted = false,
                 isExpanded = true,
                 isVisible = true
@@ -921,19 +879,111 @@ object DummyData {
                 expiryInfo = "Berakhir dalam <a>3 jam</a>",
                 expiryTimestamp = 1693451440,
                 secondaryPromo = SecondaryPromoItem(),
-                state = PromoItemState.Normal(
-                    PromoItemCardDetail(
-                        state = PromoItemCardDetail.TYPE_INITIAL,
-                        color = "",
-                        iconUrl = "https://images.tokopedia.net/img/android/promo/ic_voucher_cashback/ic_voucher_cashback.png",
-                        backgroundUrl = "https://images.tokopedia.net/img/android/promo/bg_supergraphic_cashback/bg_supergraphic_cashback.png"
-                    )
-                ),
+                state = PromoItemState.Normal,
                 isAttempted = false,
                 isExpanded = true,
                 isVisible = true
             )
         )
+
+    fun dummySectionWithAttemptedCode(): List<DelegateAdapterItem> {
+        val items = mutableListOf<DelegateAdapterItem>()
+        items.add(
+            PromoRecommendationItem(
+                id = "recommendation_coupons",
+                title = "Kamu bisa hemat Rp30.000 dari 2 promo!",
+                codes = listOf(recommendedPromos[0].code, recommendedPromos[1].code),
+                message = "Kamu bisa hemat Rp30.000 dari 2 promo!",
+                messageSelected = "Kamu hemat Rp30.000 dari 2 promo!",
+                backgroundUrl = "",
+                animationUrl = "https://assets.tokopedia.net/asts/android/shop_page/shop_campaign_tab_confetti.json",
+                promos = recommendedPromos
+            )
+        )
+        items.add(
+            PromoAccordionHeaderItem(
+                id = "payment_coupons",
+                title = "1 promo buat pembayaran tertentu",
+            )
+        )
+        items.addAll(
+            discountPromos.map {
+                it.copy(
+                    headerId = "payment_coupons",
+                    secondaryPromo = it.secondaryPromo.copy(headerId = "payment_coupons")
+                )
+            }
+        )
+        items.add(
+            PromoAccordionViewAllItem(
+                headerId = "payment_coupons",
+                hiddenPromoCount = discountPromos.size - discountPromos.count { it.isVisible },
+                isExpanded = false,
+                isVisible = true
+            )
+        )
+        items.add(
+            PromoAccordionHeaderItem(
+                id = "shipping_coupons",
+                title = "5 promo buat pengiriman tertentu",
+            )
+        )
+        items.addAll(
+            freeShippingPromos.map {
+                it.copy(
+                    headerId = "shipping_coupons",
+                    secondaryPromo = it.secondaryPromo.copy(headerId = "shipping_coupons")
+                )
+            }
+        )
+        items.add(
+            PromoAccordionViewAllItem(
+                headerId = "shipping_coupons",
+                hiddenPromoCount = freeShippingPromos.size - freeShippingPromos.count { it.isVisible },
+                isExpanded = false,
+                isVisible = true
+            )
+        )
+        items.add(
+            PromoAccordionHeaderItem(
+                id = "other_coupons",
+                title = "5 promo lainnya buat kamu",
+            )
+        )
+        items.addAll(
+            cashbackPromos.map {
+                it.copy(
+                    headerId = "other_coupons",
+                    secondaryPromo = it.secondaryPromo.copy(headerId = "other_coupons")
+                )
+            }
+        )
+        items.add(
+            PromoAccordionViewAllItem(
+                headerId = "other_coupons",
+                hiddenPromoCount = cashbackPromos.size - cashbackPromos.count { it.isVisible },
+                isExpanded = false,
+                isVisible = true
+            )
+        )
+
+        // attempt section
+        // for normal attempt UI
+//        items.add(PromoAttemptItem(label = "Punya kode promo? Masukin di sini ✨"))
+        // success attempt UI
+        items.add(promoAttemptItemSuccess)
+        // failed attempt UI
+//        items.add(promoAttemptItemError)
+
+        // tnc section
+        val selectedPromoCodes = items.filterIsInstance<PromoItem>()
+            .filter { it.state is PromoItemState.Selected }
+            .map { it.code }
+        if (selectedPromoCodes.isNotEmpty()) {
+            items.add(PromoTncItem(selectedPromoCodes = selectedPromoCodes))
+        }
+        return items
+    }
 
     fun dummySections(): List<DelegateAdapterItem> {
         val items = mutableListOf<DelegateAdapterItem>()
@@ -1015,7 +1065,16 @@ object DummyData {
                 isVisible = true
             )
         )
-        items.add(PromoAttemptItem())
+
+        // attempt section
+        // for normal attempt UI
+        items.add(PromoAttemptItem(label = "Punya kode promo? Masukin di sini ✨"))
+        // success attempt UI
+//        items.add(promoAttemptItemSuccess)
+        // failed attempt UI
+//        items.add(promoAttemptItemError)
+
+        // tnc section
         val selectedPromoCodes = items.filterIsInstance<PromoItem>()
             .filter { it.state is PromoItemState.Selected }
             .map { it.code }

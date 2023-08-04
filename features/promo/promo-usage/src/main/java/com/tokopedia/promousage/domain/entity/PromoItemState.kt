@@ -6,9 +6,9 @@ sealed class PromoItemState {
 
     object Loading : PromoItemState()
 
-    data class Normal(val cardDetail: PromoItemCardDetail) : PromoItemState()
+    object Normal : PromoItemState()
 
-    data class Selected(val cardDetail: PromoItemCardDetail) : PromoItemState()
+    object Selected : PromoItemState()
 
     data class Disabled(val message: String) : PromoItemState()
 

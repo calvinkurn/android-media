@@ -18,9 +18,9 @@ import com.tokopedia.promousage.domain.entity.list.PromoAttemptItem
 import com.tokopedia.promousage.util.TextDrawable
 import com.tokopedia.promousage.util.composite.DelegateAdapter
 
-class PromoInputCodeDelegateAdapter(
+internal class PromoAttemptCodeDelegateAdapter(
     private val onAttemptPromoCode: (String) -> Unit
-) : DelegateAdapter<PromoAttemptItem, PromoInputCodeDelegateAdapter.ViewHolder>(
+) : DelegateAdapter<PromoAttemptItem, PromoAttemptCodeDelegateAdapter.ViewHolder>(
     PromoAttemptItem::class.java
 ) {
 
@@ -40,7 +40,7 @@ class PromoInputCodeDelegateAdapter(
         viewHolder.bind(item)
     }
 
-    inner class ViewHolder(
+    internal inner class ViewHolder(
         private val binding: PromoUsageItemVoucherCodeBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -49,8 +49,11 @@ class PromoInputCodeDelegateAdapter(
         }
 
         fun bind(item: PromoAttemptItem) {
-            if (item.promoCode.isNotBlank()) {
-                binding.tauVoucherCode.editText.setText(item.promoCode)
+            if (item.label.isNotBlank()) {
+                binding.tauVoucherCode.setLabel(item.label)
+            }
+            if (item.attemptedPromoCode.isNotBlank()) {
+                binding.tauVoucherCode.editText.setText(item.attemptedPromoCode)
             }
             if (item.promo != null && item.errorMessage.isBlank()) {
                 binding.userInputVoucherView.bind(item.promo)
@@ -61,6 +64,7 @@ class PromoInputCodeDelegateAdapter(
             if (item.errorMessage.isNotBlank()) {
                 binding.tauVoucherCode.isInputError = true
                 binding.tauVoucherCode.setMessage(item.errorMessage)
+                showClearIcon()
             }
             hideUsePromoCodeCta()
         }
