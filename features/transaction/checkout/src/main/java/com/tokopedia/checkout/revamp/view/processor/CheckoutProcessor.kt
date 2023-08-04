@@ -16,11 +16,13 @@ import com.tokopedia.checkout.domain.usecase.CheckoutUseCase
 import com.tokopedia.checkout.revamp.view.crossSellGroup
 import com.tokopedia.checkout.revamp.view.firstOrNullInstanceOf
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutDonationModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEgoldModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.revamp.view.upsell
+import com.tokopedia.checkout.view.CheckoutLogger
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
@@ -70,13 +72,10 @@ class CheckoutProcessor @Inject constructor(
                 "",
                 fingerprintPublicKey
             )
-//            viewModelScope.launch(dispatchers.immediate) {
             try {
                 val checkoutData = withContext(dispatchers.io) {
                     checkoutGqlUseCase(params)
                 }
-//                    view?.let { v ->
-//                        v.setHasRunningApiCall(false)
                 if (!checkoutData.isError) {
 //                            v.triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(
 //                                checkoutData.transactionId,
@@ -104,11 +103,10 @@ class CheckoutProcessor @Inject constructor(
                         devicePrice,
                         diagnosticId,
                         hasClearPromoBeforeCheckout,
-                        null
+                        null,
+                        checkoutRequest.toString()
                     )
                 } else if (checkoutData.priceValidationData.isUpdated) {
-//                            v.hideLoading()
-//                            v.renderCheckoutPriceUpdated(checkoutData.priceValidationData)
                     return CheckoutResult(
                         false,
                         checkoutData,
@@ -117,11 +115,9 @@ class CheckoutProcessor @Inject constructor(
                         devicePrice,
                         diagnosticId,
                         hasClearPromoBeforeCheckout,
-                        null
+                        null, checkoutRequest.toString()
                     )
                 } else if (checkoutData.prompt.eligible) {
-//                            v.hideLoading()
-//                            v.renderPrompt(checkoutData.prompt)
                     return CheckoutResult(
                         false,
                         checkoutData,
@@ -130,28 +126,9 @@ class CheckoutProcessor @Inject constructor(
                         devicePrice,
                         diagnosticId,
                         hasClearPromoBeforeCheckout,
-                        null
+                        null, checkoutRequest.toString()
                     )
                 } else {
-//                            analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(
-//                                checkoutData.errorMessage
-//                            )
-//                            v.hideLoading()
-                    if (checkoutData.errorMessage.isNotEmpty()) {
-//                                v.renderCheckoutCartError(checkoutData.errorMessage)
-//                                v.logOnErrorCheckout(
-//                                    MessageErrorException(checkoutData.errorMessage),
-//                                    checkoutRequest.toString()
-//                                )
-                    } else {
-//                                val defaultErrorMessage =
-//                                    v.getStringResource(com.tokopedia.abstraction.R.string.default_request_error_unknown)
-//                                v.renderCheckoutCartError(defaultErrorMessage)
-//                                v.logOnErrorCheckout(
-//                                    MessageErrorException(defaultErrorMessage),
-//                                    checkoutRequest.toString()
-//                                )
-                    }
                     return CheckoutResult(
                         false,
                         checkoutData,
@@ -160,30 +137,11 @@ class CheckoutProcessor @Inject constructor(
                         devicePrice,
                         diagnosticId,
                         hasClearPromoBeforeCheckout,
-                        null
+                        null, checkoutRequest.toString()
                     )
-//                            processInitialLoadCheckoutPage(
-//                                isReloadData = true,
-//                                skipUpdateOnboardingState = true,
-//                                isReloadAfterPriceChangeHinger = false
-//                            )
                 }
             } catch (e: Throwable) {
-//                    view?.hideLoading()
-//                    Timber.d(e)
-//                    var errorMessage = e.message
-//                    if (!(e is CartResponseErrorException || e is AkamaiErrorException)) {
-//                        errorMessage = ErrorHandler.getErrorMessage(view?.activity, e)
-//                    }
-//                    analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(errorMessage)
-//                    view?.setHasRunningApiCall(false)
-//                    view?.showToastError(errorMessage)
-//                    processInitialLoadCheckoutPage(
-//                        isReloadData = true,
-//                        skipUpdateOnboardingState = true,
-//                        isReloadAfterPriceChangeHinger = false
-//                    )
-//                    view?.logOnErrorCheckout(e, checkoutRequest.toString())
+                CheckoutLogger.logOnErrorCheckout(e, checkoutRequest.toString(), isOneClickShipment, isTradeIn, isTradeInDropOff)
                 return CheckoutResult(
                     false,
                     null,
@@ -192,10 +150,10 @@ class CheckoutProcessor @Inject constructor(
                     devicePrice,
                     diagnosticId,
                     hasClearPromoBeforeCheckout,
-                    e
+                    e,
+                    checkoutRequest.toString()
                 )
             }
-//            }
         } else {
             return CheckoutResult(
                 false,
@@ -205,13 +163,9 @@ class CheckoutProcessor @Inject constructor(
                 0,
                 "",
                 hasClearPromoBeforeCheckout,
-                null
+                null,
+                checkoutRequest.toString()
             )
-//            view?.let { v ->
-//                v.hideLoading()
-//                v.setHasRunningApiCall(false)
-//                v.showToastError(v.getStringResource(R.string.message_error_checkout_empty))
-//            }
         }
     }
 
@@ -293,7 +247,7 @@ class CheckoutProcessor @Inject constructor(
         }
         return Carts().apply {
             promos = globalPromos
-//            isDonation = if (shipmentDonationModel?.isChecked == true) 1 else 0
+            isDonation = if (crossSellGroup?.crossSellList?.firstOrNullInstanceOf(CheckoutDonationModel::class.java)?.donation?.isChecked == true) 1 else 0
             egold = egoldData
             this.data = data
             tokopediaCorner = cornerData
@@ -415,5 +369,6 @@ data class CheckoutResult(
     val devicePrice: Long,
     val diagnosticId: String,
     val hasClearPromoBeforeCheckout: Boolean,
-    val throwable: Throwable?
+    val throwable: Throwable?,
+    val checkoutRequest: String
 )

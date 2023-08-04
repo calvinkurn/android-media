@@ -502,7 +502,7 @@ class CheckoutDataConverter @Inject constructor() {
             bundleOriginalPrice = product.bundleOriginalPrice,
             bundleQuantity = product.bundleQuantity,
             bundleIconUrl = product.bundleIconUrl,
-//            analyticsProductCheckoutData = product.analyticsProductCheckoutData,
+            analyticsProductCheckoutData = product.analyticsProductCheckoutData,
             addOnGiftingProductLevelModel = product.addOnGiftingProduct,
             addOnGiftingWording = addOnWordingModel,
             ethicalDrugDataModel = product.ethicalDrugs,

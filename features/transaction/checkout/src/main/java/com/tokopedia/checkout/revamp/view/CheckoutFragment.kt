@@ -330,6 +330,7 @@ class CheckoutFragment :
         viewModel.deviceId = deviceId
         viewModel.checkoutLeasingId = checkoutLeasingId
         viewModel.isPlusSelected = isPlusSelected
+        viewModel.checkoutPageSource = checkoutPageSource
         observeData()
 
         viewModel.loadSAF(
@@ -831,6 +832,17 @@ class CheckoutFragment :
                 bundle.putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
                 intent.putExtras(bundle)
                 startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT)
+            }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val activity: Activity? = activity
+        if (activity != null) {
+            checkoutAnalyticsCourierSelection.sendScreenName(activity, screenName)
+            if (isTradeIn) {
+                checkoutTradeInAnalytics.sendOpenScreenName(viewModel.isTradeInByDropOff, activity)
             }
         }
     }

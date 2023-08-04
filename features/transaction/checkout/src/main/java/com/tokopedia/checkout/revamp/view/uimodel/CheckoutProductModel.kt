@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.revamp.view.uimodel
 
+import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData
 import com.tokopedia.logisticcart.shipping.model.ShopTypeInfoData
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
@@ -53,7 +54,7 @@ data class CheckoutProductModel(
     val isShowTicker: Boolean = false,
     val tickerMessage: String = "",
     val isWholesalePrice: Boolean = false,
-//    val analyticsProductCheckoutData: AnalyticsProductCheckoutData = AnalyticsProductCheckoutData(),
+    val analyticsProductCheckoutData: AnalyticsProductCheckoutData = AnalyticsProductCheckoutData(),
     val isValidTradeIn: Boolean = false,
     val newDevicePrice: Long = 0,
     val oldDevicePrice: Long = 0,

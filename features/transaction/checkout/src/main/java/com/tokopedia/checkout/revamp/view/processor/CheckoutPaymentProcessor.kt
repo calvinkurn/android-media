@@ -8,12 +8,18 @@ import com.tokopedia.checkout.domain.usecase.GetPaymentFeeCheckoutUseCase
 import com.tokopedia.checkout.revamp.view.CheckoutViewModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCostModel
 import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
 class CheckoutPaymentProcessor @Inject constructor(
     private val getPaymentFeeCheckoutUseCase: GetPaymentFeeCheckoutUseCase,
+    private val checkoutAnalyticsCourierSelection: CheckoutAnalyticsCourierSelection,
+    private val userSessionInterface: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers
 ) {
 
@@ -43,6 +49,13 @@ class CheckoutPaymentProcessor @Inject constructor(
                             platformFee.slashedFee = fee.slashedFee.toDouble()
                         }
                     }
+                    checkoutAnalyticsCourierSelection.eventViewPlatformFeeInCheckoutPage(
+                        userSessionInterface.userId,
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                            platformFeeModel.fee.toLong(),
+                            false
+                        ).removeDecimalSuffix()
+                    )
                     return cost.copy(dynamicPlatformFee = platformFee)
                 }
             }
