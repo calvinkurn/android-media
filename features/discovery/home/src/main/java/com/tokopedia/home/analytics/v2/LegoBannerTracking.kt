@@ -8,6 +8,7 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home_component.model.ChannelBanner
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 import com.tokopedia.track.builder.util.BaseTrackerConst.Event.PROMO_VIEW
@@ -33,18 +34,32 @@ object LegoBannerTracking : BaseTrackerConst() {
     private const val LEGO_BANNER_6_IMAGE_NAME = "lego banner"
     private const val LEGO_BANNER_6_AUTO_IMAGE_NAME = "lego banner 6 auto"
 
-
-    fun getHomeBannerImpression(promotionObjects: List<Any>) : Map<String, Any> {
+    fun getLegoImpression(
+        channelModel: ChannelModel,
+        userId: String
+    ): HashMap<String, Any> {
         val trackerBuilder = BaseTrackerBuilder()
-        return trackerBuilder
-                .appendEvent(PROMO_VIEW)
-                .appendEventAction(IMPRESSION_HOME_BANNER)
-                .appendEventCategory(Category.HOMEPAGE)
-                .appendEventLabel("")
-                .appendChannelId("")
-                .appendUserId("")
-                .appendCustomKeyValue(Ecommerce.KEY, Ecommerce.getEcommerceObjectPromoView(promotionObjects))
-                .build()
+        return trackerBuilder.constructBasicPromotionView(
+            event = PROMO_VIEW,
+            eventAction = IMPRESSION_HOME_BANNER,
+            eventCategory = Category.HOMEPAGE,
+            eventLabel = "",
+            promotions = getLegoPromotionList(channelModel)
+        )
+            .appendUserId(userId)
+            .build() as HashMap<String, Any>
+    }
+
+    private fun getLegoPromotionList(channelModel: ChannelModel): List<Promotion> {
+        val tracking = channelModel.trackingAttributionModel
+        return channelModel.channelGrids.mapIndexed { i, grid ->
+            Promotion(
+                id = "%s_%s_%s_%s".format(channelModel.id, grid.id, tracking.persoType, tracking.categoryId),
+                name = tracking.promoName,
+                creative = grid.attribution,
+                position = (i + 1).toString()
+            )
+        }
     }
 
     fun sendLegoBannerTwoClick(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, userId: String) {

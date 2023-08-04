@@ -22,6 +22,7 @@
             android:orientation="vertical">
 
             <include
+                android:id="@+id/partial_event_checkout_desc"
                 layout="@layout/partial_event_checkout_desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -58,6 +59,7 @@
                 />
 
             <include
+                android:id="@+id/partial_event_checkout_summary"
                 layout="@layout/partial_event_checkout_summary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -66,6 +68,7 @@
                 android:visibility="visible" />
 
             <include
+                android:id="@+id/partial_event_checkout_footer"
                 layout="@layout/partial_event_checkout_footer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

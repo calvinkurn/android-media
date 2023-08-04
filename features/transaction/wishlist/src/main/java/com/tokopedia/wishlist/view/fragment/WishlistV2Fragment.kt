@@ -1298,12 +1298,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         }
     }
 
-    override fun onViewProductCard(wishlistItem: WishlistV2UiModel.Item, position: Int) {
-        userSession.userId?.let { userId ->
-            WishlistV2Analytics.viewProductCard(trackingQueue, wishlistItem, userId, position.toString())
-        }
-    }
-
     override fun onBannerTopAdsImpression(topAdsImageViewModel: TopAdsImageViewModel, position: Int) {
         TopAdsUrlHitter(context).hitImpressionUrl(
             this::class.java.simpleName,

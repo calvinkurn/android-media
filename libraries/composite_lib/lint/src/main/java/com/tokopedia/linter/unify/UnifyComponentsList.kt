@@ -1,6 +1,6 @@
 package com.tokopedia.linter.unify
 
-import com.android.AndroidXConstants
+
 import com.android.SdkConstants
 import com.tokopedia.linter.LinterConstants
 import com.tokopedia.linter.LinterConstants.Classes.BOTTOM_SHEET_DIALOG
