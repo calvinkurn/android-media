@@ -13,7 +13,7 @@ data class ShopHomeShowcaseUiModel(
     val showcases: List<ShopHomeShowcase>,
     override val widgetId: String = "",
     override val layoutOrder: Int = -1,
-    override val name: String = WidgetName.CATEGORY,
+    override val name: String = WidgetName.SHOWCASE_NAVIGATION_BANNER,
     override val type: String = WidgetType.DISPLAY,
     override val header: Header = Header(),
     override val isFestivity: Boolean = false,
