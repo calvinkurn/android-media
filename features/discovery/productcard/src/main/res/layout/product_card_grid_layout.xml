@@ -27,8 +27,6 @@
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
         app:cardPreventCornerOverlap="false"
-        app:cardBackgroundColor="@color/product_card_dms_card_background"
-        android:foreground="?attr/selectableItemBackground"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/Unify_NN0"
