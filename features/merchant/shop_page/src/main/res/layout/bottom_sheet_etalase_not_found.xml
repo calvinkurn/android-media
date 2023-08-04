@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/ivEtalaseNotFound"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="14dp"
+        android:layout_marginLeft="14dp"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold"
+        android:textColor="@color/Unify_NN950"
+        android:gravity="center"
+        android:text="@string/text_title_etalase_not_found"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:gravity="center"
+        android:minLines="2"
+        android:layout_marginTop="8dp"
+        android:text="@string/text_desc_etalase_not_found"
+        app:typographyType="paragraph_2"
+        android:layout_marginBottom="24dp"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnGotoShop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/text_back_to_shop_page"
+        android:layout_marginBottom="16dp"/>
+
+</LinearLayout>

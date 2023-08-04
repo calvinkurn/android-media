@@ -1,6 +1,8 @@
 package com.tokopedia.shop.product.view.viewmodel
 
+import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -25,6 +27,7 @@ import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
@@ -33,17 +36,20 @@ import com.tokopedia.shop.common.constant.ShopPageConstant.SHARED_PREF_AFFILIATE
 import com.tokopedia.shop.common.data.model.*
 import com.tokopedia.shop.common.data.response.RestrictValidateRestriction
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
+import com.tokopedia.shop.common.di.GqlGetShopInfoForHeaderUseCaseQualifier
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
 import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
 import com.tokopedia.shop.common.domain.RestrictionEngineNplUseCase
 import com.tokopedia.shop.common.domain.interactor.*
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_PRODUCT_LIST_RESULT_SOURCE
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopsort.GqlGetShopSortUseCase
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtil.setElement
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
+import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderTickerData
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
@@ -56,6 +62,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.image.ImageProcessingUtil
 import dagger.Lazy
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.withContext
@@ -79,9 +86,10 @@ class ShopPageProductListResultViewModel @Inject constructor(
     private val addToCartUseCase: AddToCartUseCase,
     private val updateCartUseCase: UpdateCartUseCase,
     private val deleteCartUseCase: DeleteCartUseCase,
-    private val sharedPreferences: SharedPreferences
-
-) : BaseViewModel(dispatcherProvider.main) {
+    private val sharedPreferences: SharedPreferences,
+    @GqlGetShopInfoForHeaderUseCaseQualifier
+    private val gqlGetShopInfoForHeaderUseCase: Lazy<GQLGetShopInfoUseCase>,
+    ) : BaseViewModel(dispatcherProvider.main) {
 
     fun isMyShop(shopId: String) = userSession.shopId == shopId
 
@@ -136,6 +144,11 @@ class ShopPageProductListResultViewModel @Inject constructor(
     val shopAffiliateChannel: LiveData<String>
         get() = _shopAffiliateChannel
     private val _shopAffiliateChannel = MutableLiveData<String>()
+    val shopImagePath = MutableLiveData<String>()
+
+    private val _shopPageShopShareData = MutableLiveData<Result<ShopInfo>>()
+    val shopPageShopShareData: LiveData<Result<ShopInfo>>
+        get() = _shopPageShopShareData
 
     fun getShop(shopId: String, shopDomain: String = "", isRefresh: Boolean = false) {
         if (shopId.toIntOrZero() == 0 && shopDomain == "") return
@@ -780,4 +793,48 @@ class ShopPageProductListResultViewModel @Inject constructor(
             _shopAffiliateChannel.postValue(shopAffiliateChannel)
         }) {}
     }
+
+    fun getShopShareData(shopId: String, shopDomain: String) {
+        launchCatchError(dispatcherProvider.io, block = {
+            val shopInfoData = asyncCatchError(
+                dispatcherProvider.io,
+                block = {
+                    getShopInfoHeader(
+                        shopId.toIntOrZero(),
+                        shopDomain
+                    )
+                },
+                onError = {
+                    null
+                }
+            )
+            shopInfoData.await()?.let { shopInfo ->
+                _shopPageShopShareData.postValue(Success(shopInfo))
+            }
+        }) {}
+    }
+
+    private suspend fun getShopInfoHeader(shopId: Int, shopDomain: String): ShopInfo {
+        gqlGetShopInfoForHeaderUseCase.get().params = GQLGetShopInfoUseCase.createParams(
+            if (shopId == 0) listOf() else listOf(shopId),
+            shopDomain,
+            source = GQLGetShopInfoUseCase.SHOP_PAGE_SOURCE,
+            fields = listOf(
+                GQLGetShopInfoUseCase.FIELD_CORE,
+                GQLGetShopInfoUseCase.FIELD_ASSETS,
+                GQLGetShopInfoUseCase.FIELD_LAST_ACTIVE,
+                GQLGetShopInfoUseCase.FIELD_LOCATION,
+                GQLGetShopInfoUseCase.FIELD_ALLOW_MANAGE,
+                GQLGetShopInfoUseCase.FIELD_IS_OWNER,
+                GQLGetShopInfoUseCase.FIELD_STATUS,
+                GQLGetShopInfoUseCase.FIELD_IS_OPEN,
+                GQLGetShopInfoUseCase.FIELD_CLOSED_INFO,
+                GQLGetShopInfoUseCase.FIELD_CREATE_INFO,
+                GQLGetShopInfoUseCase.FIELD_SHOP_SNIPPET,
+                GQLGetShopInfoUseCase.FIELD_BRANCH_LINK
+            )
+        )
+        return gqlGetShopInfoForHeaderUseCase.get().executeOnBackground()
+    }
+
 }

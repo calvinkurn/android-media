@@ -107,6 +107,9 @@ abstract class ShopPageProductListViewModelTestFixture {
     lateinit var context: Context
 
     @RelaxedMockK
+    lateinit var gqlGetShopInfoForHeaderUseCase: Lazy<GQLGetShopInfoUseCase>
+
+    @RelaxedMockK
     lateinit var affiliateCookieHelper: AffiliateCookieHelper
 
     protected lateinit var viewModelShopPageProductListViewModel: ShopPageProductListViewModel
@@ -145,7 +148,7 @@ abstract class ShopPageProductListViewModelTestFixture {
             shopProductSortMapper,
             addToCartUseCase,
             updateCartUseCase,
-            deleteCartUseCase
+            deleteCartUseCase,
         )
 
         shopPageProductListResultViewModel = ShopPageProductListResultViewModel(
@@ -165,7 +168,8 @@ abstract class ShopPageProductListViewModelTestFixture {
             addToCartUseCase,
             updateCartUseCase,
             deleteCartUseCase,
-            sharedPreferences
+            sharedPreferences,
+            gqlGetShopInfoForHeaderUseCase
         )
     }
 }
