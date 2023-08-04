@@ -42,7 +42,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory>, 
     var originalPrice = ""
     var discountPercentage = 0
     var categoryID = 0
-    var categoryName: String? = ""
+    var categoryName: String = ""
     var categoryBreadcrumb: String? = ""
     var isTopAds = false
     var isOrganicAds = false
