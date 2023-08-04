@@ -1168,9 +1168,9 @@ class CheckoutViewModel @Inject constructor(
         }
     }
 
-    fun generateValidateUsePromoRequest(): ValidateUsePromoRequest {
+    fun generateValidateUsePromoRequest(list: List<CheckoutItem>? = null): ValidateUsePromoRequest {
         return promoProcessor.generateValidateUsePromoRequest(
-            listData.value,
+            list ?: listData.value,
             isTradeIn,
             isTradeInByDropOff,
             isOneClickShipment
@@ -1817,7 +1817,7 @@ class CheckoutViewModel @Inject constructor(
                     val shouldValidatePromo =
                         !result.first.selectedShipper.logPromoCode.isNullOrEmpty()
                     if (shouldValidatePromo) {
-                        val validateUsePromoRequest = generateValidateUsePromoRequest()
+                        val validateUsePromoRequest = generateValidateUsePromoRequest(checkoutItems)
                         for (ordersItem in validateUsePromoRequest.orders) {
                             if (ordersItem.cartStringGroup == order.cartStringGroup) {
                                 if (!ordersItem.codes.contains(
