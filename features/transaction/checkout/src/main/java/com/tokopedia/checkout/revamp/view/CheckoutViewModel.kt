@@ -88,6 +88,7 @@ import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligib
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -720,6 +721,31 @@ class CheckoutViewModel @Inject constructor(
         listData.value = checkoutItems
     }
 
+    fun updateAddOnGiftingOrderLevelDataBottomSheet(saveAddOnStateResult: SaveAddOnStateResult) {
+        val checkoutItems = listData.value.toMutableList()
+        for (addOnResult in saveAddOnStateResult.addOns) {
+            for (item in checkoutItems.withIndex()) {
+                val order = item.value
+                if (order is CheckoutOrderModel && (order.cartStringGroup + "-0").equals(
+                        addOnResult.addOnKey,
+                        ignoreCase = true
+                    )
+                ) {
+                    checkoutItems[item.index] = order.copy(
+                        addOnsOrderLevelModel = setAddOnsGiftingData(
+                            order.addOnsOrderLevelModel.copy(),
+                            addOnResult,
+                            0,
+                            order.cartStringGroup,
+                            0L
+                        )
+                    )
+                }
+            }
+        }
+        listData.value = checkoutItems
+    }
+
     private fun setAddOnsGiftingData(
         addOnsDataModel: AddOnGiftingDataModel,
         addOnResult: AddOnResult,
@@ -743,7 +769,7 @@ class CheckoutViewModel @Inject constructor(
         val addOnTickerModel = AddOnGiftingTickerModel()
         addOnTickerModel.text = addOnBottomSheet.ticker.text
         addOnBottomSheetModel.ticker = addOnTickerModel
-        val listProductAddOn = java.util.ArrayList<AddOnGiftingProductItemModel>()
+        val listProductAddOn = ArrayList<AddOnGiftingProductItemModel>()
         for (product in addOnBottomSheet.products) {
             val addOnProductItemModel = AddOnGiftingProductItemModel()
             addOnProductItemModel.productName = product.productName
@@ -771,15 +797,6 @@ class CheckoutViewModel @Inject constructor(
             listAddOnDataItem.add(addOnDataItemModel)
         }
         addOnsDataModel.addOnsDataItemModelList = listAddOnDataItem
-//        view?.updateAddOnsData(identifier, cartString, cartId)
-//        if (isUsingDynamicDataPassing()) {
-//            view?.updateAddOnsDynamicDataPassing(
-//                addOnResult,
-//                identifier,
-//                cartString,
-//                cartId
-//            )
-//        }
         return addOnsDataModel
     }
 
@@ -1731,6 +1748,7 @@ class CheckoutViewModel @Inject constructor(
             )
             list[list.size - 4] = newPromo
             listData.value = list
+            checkoutItems = list
 
             var firstScrollIndex = -1
             for ((index, shipmentCartItemModel) in checkoutItems.withIndex()) {
@@ -1767,9 +1785,12 @@ class CheckoutViewModel @Inject constructor(
                     }
                 }
             }
-//            if (unappliedBoPromoUniqueIds.size > 0) {
-//                view?.renderUnapplyBoIncompleteShipment(unappliedBoPromoUniqueIds)
-//            }
+            if (validateUsePromoRevampUiModel.promoUiModel.additionalInfoUiModel.errorDetailUiModel.message.isNotEmpty()) {
+                commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_NORMAL, validateUsePromoRevampUiModel.promoUiModel.additionalInfoUiModel.errorDetailUiModel.message))
+            } else if (unappliedBoPromoUniqueIds.size > 0) {
+                // when messageInfo is empty and has unapplied BO show hard coded toast
+                commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_NORMAL, "Pengiriman disesuaikan karena ada perubahan di promo yang kamu pilih."))
+            }
             toBeAppliedVoucherOrders.forEach { voucher ->
                 val cartPosition = checkoutItems.indexOfFirst { it is CheckoutOrderModel && it.cartStringGroup == voucher.cartStringGroup }
                 val order = checkoutItems[cartPosition] as CheckoutOrderModel
@@ -1961,6 +1982,31 @@ class CheckoutViewModel @Inject constructor(
 
     fun getOrderProducts(cartStringGroup: String): List<CheckoutProductModel> {
         return helper.getOrderProducts(listData.value, cartStringGroup)
+    }
+
+    fun cancelUpsell(
+        isReloadData: Boolean,
+        skipUpdateOnboardingState: Boolean,
+        isReloadAfterPriceChangeHigher: Boolean
+    ) {
+        viewModelScope.launch {
+            pageState.value = CheckoutPageState.Loading
+            hitClearAllBo()
+            loadSAF(
+                isReloadData = isReloadData,
+                skipUpdateOnboardingState = skipUpdateOnboardingState,
+                isReloadAfterPriceChangeHigher = isReloadAfterPriceChangeHigher
+            )
+        }
+    }
+
+    fun clearAllBoOnTemporaryUpsell() {
+        val upsell = listData.value.upsell()
+        if (upsell != null && upsell.upsell.isShow && upsell.upsell.isSelected) {
+            GlobalScope.launch {
+                hitClearAllBo()
+            }
+        }
     }
 
     companion object {
