@@ -909,7 +909,7 @@ class FeedPostViewModelTest {
         )
 
         // when
-        viewModel.fetchPlaceholderData()
+        viewModel.fetchTopAdsData()
 
         // then
         val data = (viewModel.feedHome.value as Success).data
@@ -934,7 +934,7 @@ class FeedPostViewModelTest {
         )
 
         // when
-        viewModel.fetchPlaceholderData()
+        viewModel.fetchTopAdsData()
 
         // then
         val data = (viewModel.feedHome.value as Success).data

@@ -169,6 +169,7 @@ class FeedFollowRecommendationViewHolder(
                 binding.clMain.showWithCondition(false)
                 binding.feedNoContent.root.showWithCondition(true)
             }
+            else -> {}
         }
     }
 
