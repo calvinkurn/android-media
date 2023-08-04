@@ -57,8 +57,6 @@ class ShipmentCartItemViewHolder(
 
     private val binding: ItemShipmentProductBinding = ItemShipmentProductBinding.bind(itemView)
 
-    private val listSelectedAddOnId: ArrayList<Long> = arrayListOf()
-
     private var delayChangeCheckboxAddOnState: Job? = null
 
     fun bind(

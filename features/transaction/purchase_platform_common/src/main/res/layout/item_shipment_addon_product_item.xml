@@ -23,7 +23,6 @@
         app:layout_constraintStart_toEndOf="@id/cb_addon_item"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="6dp"
-        android:text="Jasa Pasang Standard"
         app:typographyType="display_3"
         app:typographyWeight="reguler"/>
 
@@ -44,7 +43,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/cb_addon_item"
         app:layout_constraintBottom_toBottomOf="@id/cb_addon_item"
-        android:text="Rp100.000"
         app:typographyWeight="bold"
         app:typographyType="display_3"/>
 

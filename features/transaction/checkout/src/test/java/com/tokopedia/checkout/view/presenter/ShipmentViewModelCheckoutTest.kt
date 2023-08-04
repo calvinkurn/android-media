@@ -914,11 +914,6 @@ class ShipmentViewModelCheckoutTest : BaseShipmentViewModelTest() {
                 productName = "testProductName"
             }
         )
-        val addOnsDataModel = AddOnGiftingDataModel().apply {
-            addOnsBottomSheetModel = AddOnGiftingBottomSheetModel().apply {
-                products = productList
-            }
-        }
 
         // Then
         verify {
@@ -969,14 +964,6 @@ class ShipmentViewModelCheckoutTest : BaseShipmentViewModelTest() {
                 productName = "testProductName"
             }
         )
-        val addOnsDataModel = AddOnGiftingDataModel().apply {
-            addOnsBottomSheetModel = AddOnGiftingBottomSheetModel().apply {
-                products = productList
-            }
-            addOnsDataItemModelList = listOf(
-                AddOnGiftingDataItemModel()
-            )
-        }
 
         // Then
         verify {
