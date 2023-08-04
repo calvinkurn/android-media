@@ -56,7 +56,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     private val getRecommendedChannelTagsUseCase: GetRecommendedChannelTagsUseCase,
     private val setChannelTagsUseCase: SetChannelTagsUseCase,
     private val getChannelUseCase: GetChannelUseCase,
-    private val hydraConfigStore: HydraConfigStore
+    private val hydraConfigStore: HydraConfigStore,
 ) : ViewModel() {
 
     @AssistedFactory
