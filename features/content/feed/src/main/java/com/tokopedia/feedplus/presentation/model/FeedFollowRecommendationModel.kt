@@ -15,7 +15,6 @@ data class FeedFollowRecommendationModel(
     val data: List<Profile>,
     val cursor: String,
     val status: Status,
-    val isFetch: Boolean,
 ) : Visitable<FeedAdapterTypeFactory> {
 
     val hasNext: Boolean
@@ -30,6 +29,7 @@ data class FeedFollowRecommendationModel(
     override fun type(typeFactory: FeedAdapterTypeFactory): Int = typeFactory.type(this)
 
     enum class Status {
+        Unknown,
         Loading,
         Success,
         Error,
@@ -84,8 +84,7 @@ data class FeedFollowRecommendationModel(
                 description = "",
                 data = emptyList(),
                 cursor = "",
-                status = Status.Loading,
-                isFetch = false,
+                status = Status.Unknown,
             )
     }
 }

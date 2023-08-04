@@ -7,6 +7,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.Player
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedplus.databinding.ItemFeedFollowProfileBinding
@@ -54,6 +55,11 @@ class FeedFollowProfileViewHolder private constructor() {
                         }
                         else -> binding.playerView.hide()
                     }
+                }
+
+                override fun onPlayerError(error: ExoPlaybackException) {
+                    super.onPlayerError(error)
+                    followRecommendationListener.onErrorPlayingVideo()
                 }
             })
 

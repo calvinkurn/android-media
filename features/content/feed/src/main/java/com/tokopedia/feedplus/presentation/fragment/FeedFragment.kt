@@ -352,6 +352,13 @@ class FeedFragment :
                 entryPoint = trackerModelMapper.entryPoint,
             )
         }
+
+        override fun onErrorPlayingVideo() {
+            showToast(
+                getString(feedR.string.feed_load_follow_recommendation_failed),
+                Toaster.TYPE_ERROR
+            )
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -1069,7 +1076,7 @@ class FeedFragment :
                                 adapter.addElement(FeedNoContentModel.getNoMoreContentInstance(ctx))
                             }
                         }
-                        feedPostViewModel.fetchPlaceholderData()
+                        feedPostViewModel.fetchTopAdsData()
                     }
                     feedMainViewModel.onPostDataLoaded(it.data.items.isNotEmpty())
                 }

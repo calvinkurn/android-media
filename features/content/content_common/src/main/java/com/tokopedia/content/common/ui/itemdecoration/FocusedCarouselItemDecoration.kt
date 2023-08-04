@@ -22,7 +22,7 @@ abstract class FocusedCarouselItemDecoration(
 ) : RecyclerView.ItemDecoration() {
 
     protected val offset6 = context.resources.getDimensionPixelOffset(R.dimen.content_common_space_6)
-    private val offset12 = context.resources.getDimensionPixelOffset(R.dimen.content_common_space_12)
+    protected open val roundedOffset = context.resources.getDimensionPixelOffset(R.dimen.content_common_space_12)
 
     private val distanceBeforeScale = context.resources.getDimension(
         R.dimen.content_common_dp_200
@@ -30,11 +30,11 @@ abstract class FocusedCarouselItemDecoration(
     protected open val maxShrink = 0.96f
     private val maxAlphaOverlay = 0.5f
 
-    private val whiteColor = MethodChecker.getColor(context, unifyR.color.Unify_Static_White)
+    protected open val overlayColor = MethodChecker.getColor(context, unifyR.color.Unify_Static_White)
 
     private val rect = Rect()
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = whiteColor
+        color = overlayColor
     }
 
     fun getHorizontalOffset(): Int {
@@ -78,8 +78,8 @@ abstract class FocusedCarouselItemDecoration(
 
             c.drawRoundRect(
                 finalRect,
-                offset12.toFloat(),
-                offset12.toFloat(),
+                roundedOffset.toFloat(),
+                roundedOffset.toFloat(),
                 paint.apply {
                     alpha = ((1f - alphaOverlay) * 255).toInt()
                 }

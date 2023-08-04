@@ -910,7 +910,7 @@ class FeedPostViewModelTest {
         )
 
         // when
-        viewModel.fetchPlaceholderData()
+        viewModel.fetchTopAdsData()
 
         // then
         val data = (viewModel.feedHome.value as Success).data
@@ -935,7 +935,7 @@ class FeedPostViewModelTest {
         )
 
         // when
-        viewModel.fetchPlaceholderData()
+        viewModel.fetchTopAdsData()
 
         // then
         val data = (viewModel.feedHome.value as Success).data
@@ -1118,7 +1118,7 @@ class FeedPostViewModelTest {
 
         val mockFollowRecommendationData = getDummyProfileRecommendationList()
 
-        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any(), any()) } returns mapOf()
         coEvery { feedXRecomWidgetUseCase(any()) } returns mockFollowRecommendationData
 
         // test
@@ -1140,7 +1140,7 @@ class FeedPostViewModelTest {
 
         val mockFollowRecommendationData = Exception("Network Error")
 
-        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any(), any()) } returns mapOf()
         coEvery { feedXRecomWidgetUseCase(any()) } throws mockFollowRecommendationData
 
         // test
@@ -1164,7 +1164,7 @@ class FeedPostViewModelTest {
         val mock5FollowRecommendationData = getDummyProfileRecommendationList(profileSize = 5)
         val mock10FollowRecommendationData = getDummyProfileRecommendationList(profileSize = 10)
 
-        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any(), any()) } returns mapOf()
         coEvery { feedXRecomWidgetUseCase(any()) } returns mock5FollowRecommendationData
 
         // test
@@ -1198,7 +1198,7 @@ class FeedPostViewModelTest {
 
         val mockFollowRecommendationData = getDummyProfileRecommendationList()
 
-        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any(), any()) } returns mapOf()
         coEvery { feedXRecomWidgetUseCase(any()) } returns mockFollowRecommendationData
 
         viewModel.fetchPlaceholderData()
@@ -1224,7 +1224,7 @@ class FeedPostViewModelTest {
         val mockFollowRecommendationData = getDummyProfileRecommendationList()
         val mockInitialFollowRecommendationData = Exception()
 
-        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any(), any()) } returns mapOf()
         coEvery { feedXRecomWidgetUseCase(any()) } throws mockInitialFollowRecommendationData
 
         viewModel.fetchPlaceholderData()
@@ -1249,7 +1249,7 @@ class FeedPostViewModelTest {
 
         val mockInitialFollowRecommendationData = Exception()
 
-        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any(), any()) } returns mapOf()
         coEvery { feedXRecomWidgetUseCase(any()) } throws mockInitialFollowRecommendationData
 
         viewModel.fetchPlaceholderData()
@@ -1275,7 +1275,7 @@ class FeedPostViewModelTest {
         val mockFollowRecommendationData = getDummyProfileRecommendationList()
         val mockErrorFollowRecommendationData = Exception()
 
-        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any(), any()) } returns mapOf()
         coEvery { feedXRecomWidgetUseCase(any()) } returns mockFollowRecommendationData
 
         viewModel.fetchPlaceholderData()
@@ -1301,7 +1301,7 @@ class FeedPostViewModelTest {
 
         val mockFollowRecommendationDataWithoutCursor = getDummyProfileRecommendationList(cursor = "")
 
-        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any(), any()) } returns mapOf()
         coEvery { feedXRecomWidgetUseCase(any()) } returns mockFollowRecommendationDataWithoutCursor
 
         viewModel.fetchPlaceholderData()
@@ -1333,7 +1333,7 @@ class FeedPostViewModelTest {
         val mockFollowed = getDummyShopFollowResponseData(isFollowing = true)
         val mockNotFollowed = getDummyShopFollowResponseData(isFollowing = false)
 
-        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any(), any()) } returns mapOf()
         coEvery { feedXRecomWidgetUseCase(any()) } returns mockFollowRecommendationData
         coEvery { shopFollowUseCase.createParams(any()) } returns mapOf()
         coEvery { shopFollowUseCase.createParams(any(), any()) } returns mapOf()
@@ -1378,7 +1378,7 @@ class FeedPostViewModelTest {
 
         val mockShopFollowNotSuccess = getDummyShopFollowResponseData(success = false)
 
-        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any(), any()) } returns mapOf()
         coEvery { feedXRecomWidgetUseCase(any()) } returns mockFollowRecommendationData
         coEvery { shopFollowUseCase.createParams(any()) } returns mapOf()
         coEvery { shopFollowUseCase.createParams(any(), any()) } returns mapOf()
@@ -1413,7 +1413,7 @@ class FeedPostViewModelTest {
         val mockShopFollowSuccess = getDummyShopFollowResponseData()
         val mockShopUnfollowNotSuccess = getDummyShopFollowResponseData(success = false)
 
-        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any(), any()) } returns mapOf()
         coEvery { feedXRecomWidgetUseCase(any()) } returns mockFollowRecommendationData
         coEvery { shopFollowUseCase.createParams(any()) } returns mapOf()
         coEvery { shopFollowUseCase.createParams(any(), any()) } returns mapOf()
@@ -1456,7 +1456,7 @@ class FeedPostViewModelTest {
 
         val mockException = Exception()
 
-        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any(), any()) } returns mapOf()
         coEvery { feedXRecomWidgetUseCase(any()) } returns mockFollowRecommendationData
         coEvery { shopFollowUseCase.createParams(any()) } returns mapOf()
         coEvery { shopFollowUseCase.createParams(any(), any()) } returns mapOf()
@@ -1488,7 +1488,7 @@ class FeedPostViewModelTest {
         val selectedProfileIndex = 1
         val selectedProfile = mockFollowRecommendationData.data[selectedProfileIndex]
 
-        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any(), any()) } returns mapOf()
         coEvery { feedXRecomWidgetUseCase(any()) } returns mockFollowRecommendationData
 
         coEvery { userFollowUseCase.executeOnBackground(any()) } returns getDummyUserFollowResponseData()
@@ -1530,7 +1530,7 @@ class FeedPostViewModelTest {
         val selectedProfileIndex = 1
         val selectedProfile = mockFollowRecommendationData.data[selectedProfileIndex]
 
-        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any(), any()) } returns mapOf()
         coEvery { feedXRecomWidgetUseCase(any()) } returns mockFollowRecommendationData
 
         coEvery { userFollowUseCase.executeOnBackground(any()) } returns getDummyUserFollowResponseData()
@@ -1573,7 +1573,7 @@ class FeedPostViewModelTest {
 
         val mockException = Exception()
 
-        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any(), any()) } returns mapOf()
         coEvery { feedXRecomWidgetUseCase(any()) } returns mockFollowRecommendationData
 
         coEvery { userFollowUseCase.executeOnBackground(any()) } returns getDummyUserFollowResponseData()
@@ -1614,7 +1614,7 @@ class FeedPostViewModelTest {
         val mockFollowRecommendationData = getDummyProfileRecommendationList()
         val selectedRemovedProfile = mockFollowRecommendationData.data[2]
 
-        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any(), any()) } returns mapOf()
         coEvery { feedXRecomWidgetUseCase(any()) } returns mockFollowRecommendationData
 
         viewModel.fetchPlaceholderData()
@@ -1643,7 +1643,7 @@ class FeedPostViewModelTest {
             encryptedId = "asdfasdf",
         )
 
-        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any()) } returns mapOf()
+        coEvery { feedXRecomWidgetUseCase.createFeedFollowRecomParams(any(), any()) } returns mapOf()
         coEvery { feedXRecomWidgetUseCase(any()) } returns mockFollowRecommendationData
 
         viewModel.fetchPlaceholderData()

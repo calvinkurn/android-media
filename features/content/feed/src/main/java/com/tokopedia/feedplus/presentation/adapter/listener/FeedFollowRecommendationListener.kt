@@ -30,4 +30,6 @@ interface FeedFollowRecommendationListener {
     fun onLoadNextProfileRecommendation()
 
     fun onClickViewOtherContent()
+
+    fun onErrorPlayingVideo()
 }
