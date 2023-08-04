@@ -43,7 +43,11 @@ class CheckoutCalculator @Inject constructor(
         return true
     }
 
-    fun setPromoBenefit(cost: CheckoutCostModel, summariesUiModels: List<SummariesItemUiModel>, listData: List<CheckoutItem>): CheckoutCostModel {
+    fun setPromoBenefit(
+        cost: CheckoutCostModel,
+        summariesUiModels: List<SummariesItemUiModel>,
+        listData: List<CheckoutItem>
+    ): CheckoutCostModel {
         cost.isHasDiscountDetails = false
         cost.discountAmount = 0
         cost.discountLabel = ""
@@ -155,15 +159,19 @@ class CheckoutCalculator @Inject constructor(
                                     } else {
                                         qtyAddOn = cartItem.quantity
                                     }
-                                    val totalPriceAddOn = (qtyAddOn * addOnProductService.price) + (countMapSummaries[addOnProductService.type]?.first ?: 0.0)
-                                    countMapSummaries[addOnProductService.type] = totalPriceAddOn to qtyAddOn
+                                    val totalPriceAddOn =
+                                        (qtyAddOn * addOnProductService.price) + (
+                                            countMapSummaries[addOnProductService.type]?.first
+                                                ?: 0.0
+                                            )
+                                    countMapSummaries[addOnProductService.type] =
+                                        totalPriceAddOn to qtyAddOn
                                 }
                             }
                         }
                     }
                 }
                 if (shipmentData.shipment.courierItemData != null && !shipmentData.isError) {
-//                    val useInsurance = shipmentData.selectedShipmentDetailData!!.useInsurance
                     /*val isTradeInPickup = isTradeInByDropOff
                     if (isTradeInPickup) {
                         if (shipmentData.selectedShipmentDetailData!!.selectedCourierTradeInDropOff != null) {
@@ -183,12 +191,11 @@ class CheckoutCalculator @Inject constructor(
                     } else if (shipmentData.selectedShipmentDetailData!!.selectedCourier != null) {*/
                     shippingFee += shipmentData.shipment
                         .courierItemData.selectedShipper.shipperPrice.toDouble()
-                        if (shipmentData.shipment.insurance.isCheckInsurance) {
-                            insuranceFee += shipmentData.shipment
-                                .courierItemData.selectedShipper.insurancePrice.toDouble()
-                        }
+                    if (shipmentData.shipment.insurance.isCheckInsurance) {
+                        insuranceFee += shipmentData.shipment
+                            .courierItemData.selectedShipper.insurancePrice.toDouble()
+                    }
                     additionalFee += shipmentData.shipment.courierItemData.additionalPrice.toDouble()
-//                    }
                 } else if (!shipmentData.isError) {
                     hasSelectAllShipping = false
                 }
@@ -216,7 +223,8 @@ class CheckoutCalculator @Inject constructor(
         shipmentCost = shipmentCost.copy(totalWeight = totalWeight)
         shipmentCost = shipmentCost.copy(additionalFee = additionalFee)
         shipmentCost = shipmentCost.copy(originalItemPrice = totalItemPrice)
-        shipmentCost = shipmentCost.copy(finalItemPrice = totalItemPrice - shipmentCost.productDiscountAmount)
+        shipmentCost =
+            shipmentCost.copy(finalItemPrice = totalItemPrice - shipmentCost.productDiscountAmount)
         shipmentCost = shipmentCost.copy(totalItem = totalItem)
         shipmentCost = shipmentCost.copy(originalShippingFee = shippingFee)
         shipmentCost = shipmentCost.copy(finalShippingFee = finalShippingFee)
@@ -258,9 +266,11 @@ class CheckoutCalculator @Inject constructor(
                     }
                     listCrossSellItem.add(0, crossSellModel)
                 }
+
                 is CheckoutDonationModel -> {
                     if (crossSellModel.donation.isChecked) {
-                        shipmentCost = shipmentCost.copy(donation = crossSellModel.donation.nominal.toDouble())
+                        shipmentCost =
+                            shipmentCost.copy(donation = crossSellModel.donation.nominal.toDouble())
                     } else {
                         if (shipmentCost.donation > 0) {
                             shipmentCost = shipmentCost.copy(donation = 0.0)
@@ -269,6 +279,7 @@ class CheckoutCalculator @Inject constructor(
                     totalPrice += shipmentCost.donation
                     listCrossSellItem.add(0, crossSellModel)
                 }
+
                 is CheckoutEgoldModel -> {
                     var egoldAttribute = crossSellModel.egoldAttributeModel
                     if (egoldAttribute.isEligible) {
@@ -281,7 +292,13 @@ class CheckoutCalculator @Inject constructor(
                             shipmentCost.emasPrice = 0.0
                         }
                     }
-                    listCrossSellItem.add(0, crossSellModel.copy(egoldAttributeModel = egoldAttribute, buyEgoldValue = egoldAttribute.buyEgoldValue))
+                    listCrossSellItem.add(
+                        0,
+                        crossSellModel.copy(
+                            egoldAttributeModel = egoldAttribute,
+                            buyEgoldValue = egoldAttribute.buyEgoldValue
+                        )
+                    )
                 }
             }
         }
@@ -305,8 +322,13 @@ class CheckoutCalculator @Inject constructor(
         shipmentCost.bookingFee = totalBookingFee
 
         for (entry in countMapSummaries) {
-            val addOnWording = summariesAddOnUiModel[entry.key]?.replace(CartConstant.QTY_ADDON_REPLACE, entry.value.second.toString())
-            val addOnPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(entry.value.first, false).removeDecimalSuffix()
+            val addOnWording = summariesAddOnUiModel[entry.key]?.replace(
+                CartConstant.QTY_ADDON_REPLACE,
+                entry.value.second.toString()
+            )
+            val addOnPrice =
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(entry.value.first, false)
+                    .removeDecimalSuffix()
             val summaryAddOn = ShipmentAddOnSummaryModel(
                 wording = addOnWording ?: "",
                 type = entry.key,
@@ -319,9 +341,11 @@ class CheckoutCalculator @Inject constructor(
 
         shipmentCost.listAddOnSummary = listShipmentAddOnSummary
 //        checkoutCostModel.value = shipmentCost
-        shipmentCost = shipmentCost.copy(dynamicPlatformFee = shipmentCost.dynamicPlatformFee.copy(isLoading = true))
+        shipmentCost =
+            shipmentCost.copy(dynamicPlatformFee = shipmentCost.dynamicPlatformFee.copy(isLoading = true))
 
-        val buttonPaymentModel = updateCheckoutButtonData(listData, shipmentCost, isTradeInByDropOff)
+        val buttonPaymentModel =
+            updateCheckoutButtonData(listData, shipmentCost, isTradeInByDropOff)
 
         return listData.toMutableList().apply {
             set(size - 3, shipmentCost)
@@ -356,7 +380,8 @@ class CheckoutCalculator @Inject constructor(
                 if (shipmentCartItemModel.isError) {
                     cartItemErrorCounter++
                 } else if (!shouldShowInsuranceTnc) {
-                    val orderProducts = helper.getOrderProducts(listData, shipmentCartItemModel.cartStringGroup)
+                    val orderProducts =
+                        helper.getOrderProducts(listData, shipmentCartItemModel.cartStringGroup)
                     for (cartItemModel in orderProducts) {
                         if (cartItemModel.isProtectionOptIn) {
                             shouldShowInsuranceTnc = true
@@ -369,7 +394,8 @@ class CheckoutCalculator @Inject constructor(
         if (cartItemCounter > 0 && cartItemCounter <= checkoutOrderModels.size) {
             val priceTotal: Double =
                 if (shipmentCost.totalPrice <= 0) 0.0 else shipmentCost.totalPrice
-            val platformFee: Double = if (shipmentCost.dynamicPlatformFee.fee <= 0) 0.0 else shipmentCost.dynamicPlatformFee.fee
+            val platformFee: Double =
+                if (shipmentCost.dynamicPlatformFee.fee <= 0) 0.0 else shipmentCost.dynamicPlatformFee.fee
             val finalPrice = priceTotal + platformFee
             val priceTotalFormatted =
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(
@@ -379,8 +405,8 @@ class CheckoutCalculator @Inject constructor(
             shipmentCost = shipmentCost.copy(totalPriceString = priceTotalFormatted)
             buttonPaymentModel = buttonPaymentModel.copy(
                 useInsurance = shouldShowInsuranceTnc,
-                enable = !hasLoadingItem ?: buttonPaymentModel.enable,
-                totalPrice = priceTotalFormatted ?: buttonPaymentModel.totalPrice
+                enable = !hasLoadingItem,
+                totalPrice = priceTotalFormatted
                 /*loading = if (isValidatingFinalPromo) {
                 true
             } else {*/
@@ -464,7 +490,11 @@ class CheckoutCalculator @Inject constructor(
         return buyEgoldValue
     }
 
-    private fun updateCheckoutButtonData(listData: List<CheckoutItem>, shipmentCost: CheckoutCostModel, isTradeInByDropOff: Boolean): CheckoutButtonPaymentModel {
+    private fun updateCheckoutButtonData(
+        listData: List<CheckoutItem>,
+        shipmentCost: CheckoutCostModel,
+        isTradeInByDropOff: Boolean
+    ): CheckoutButtonPaymentModel {
         var cartItemCounter = 0
         var cartItemErrorCounter = 0
         var hasLoadingItem = false
@@ -487,14 +517,19 @@ class CheckoutCalculator @Inject constructor(
         if (cartItemCounter > 0 && cartItemCounter <= checkoutOrderModels.size) {
             val priceTotal: Double =
                 if (shipmentCost.totalPrice <= 0) 0.0 else shipmentCost.totalPrice
-            val platformFee: Double = if (shipmentCost.dynamicPlatformFee.fee <= 0) 0.0 else shipmentCost.dynamicPlatformFee.fee
+            val platformFee: Double =
+                if (shipmentCost.dynamicPlatformFee.fee <= 0) 0.0 else shipmentCost.dynamicPlatformFee.fee
             val finalPrice = priceTotal + platformFee
             val priceTotalFormatted =
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(
                     finalPrice,
                     false
                 ).removeDecimalSuffix()
-            return updateShipmentButtonPaymentModel(listData.buttonPayment()!!, enable = !hasLoadingItem, totalPrice = priceTotalFormatted)
+            return updateShipmentButtonPaymentModel(
+                listData.buttonPayment()!!,
+                enable = !hasLoadingItem,
+                totalPrice = priceTotalFormatted
+            )
         } else {
             return updateShipmentButtonPaymentModel(
                 listData.buttonPayment()!!,

@@ -16,7 +16,6 @@ import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
@@ -289,7 +288,7 @@ class CheckoutDataConverter @Inject constructor() {
             if (groupShop.isFulfillment) {
                 order.shopLocation = groupShop.fulfillmentName
             }
-//            setCartItemModelError(shipmentCartItemModel)
+            setCartItemModelError(order)
             if (order.isFreeShippingPlus && !isFirstPlusProductHasPassed) {
                 val coachmarkPlusData = CoachmarkPlusData(
                     cartShipmentAddressFormData.coachmarkPlus.isShown,
@@ -363,9 +362,9 @@ class CheckoutDataConverter @Inject constructor() {
         return mapSubtotal
     }
 
-    private fun setCartItemModelError(shipmentCartItemModel: ShipmentCartItemModel) {
-        if (shipmentCartItemModel.isAllItemError) {
-            for (cartItemModel in shipmentCartItemModel.cartItemModels) {
+    private fun setCartItemModelError(order: CheckoutOrderModel) {
+        if (order.isAllItemError) {
+            for (cartItemModel in order.products) {
                 cartItemModel.isError = true
                 cartItemModel.isShopError = true
             }

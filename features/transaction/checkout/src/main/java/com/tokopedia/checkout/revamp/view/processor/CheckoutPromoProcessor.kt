@@ -37,10 +37,10 @@ import javax.inject.Inject
 class CheckoutPromoProcessor @Inject constructor(
     private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
     private val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
+    private val helper: CheckoutDataHelper,
     private val dispatchers: CoroutineDispatchers
 ) {
 
-    var lastApplyData: LastApplyUiModel = LastApplyUiModel()
     private var lastValidateUseRequest: ValidateUsePromoRequest? = null
     var bboPromoCodes: List<String> = emptyList()
     internal var validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel? = null
@@ -55,7 +55,11 @@ class CheckoutPromoProcessor @Inject constructor(
         val listOrderItem = ArrayList<Order>()
         for (shipmentCartItemModel in listData) {
             if (shipmentCartItemModel is CheckoutOrderModel) {
-                for ((cartStringOrder, cartItemList) in shipmentCartItemModel.cartItemModelsGroupByOrder) {
+                val cartItemModelsGroupByOrder =
+                    helper.getOrderProducts(listData, shipmentCartItemModel.cartStringGroup)
+                        .filter { !it.isError }
+                        .groupBy { it.cartStringOrder }
+                for ((cartStringOrder, cartItemList) in cartItemModelsGroupByOrder) {
                     val ordersItem = Order()
                     val productDetailsItems = ArrayList<ProductDetail>()
                     for (cartItemModel in cartItemList) {
@@ -145,7 +149,7 @@ class CheckoutPromoProcessor @Inject constructor(
             promoRequest.isTradeIn = 1
             promoRequest.isTradeInDropOff = if (isTradeInByDropOff) 1 else 0
         }
-        val lastApplyUiModel = lastApplyData
+        val lastApplyUiModel = listData.promo()!!.promo
         val globalPromoCodes = ArrayList<String>()
         if (lastApplyUiModel.codes.isNotEmpty()) {
             globalPromoCodes.addAll(lastApplyUiModel.codes)
@@ -221,10 +225,14 @@ class CheckoutPromoProcessor @Inject constructor(
         validateUsePromoRequest = ValidateUsePromoRequest()
         val listOrderItem = ArrayList<OrdersItem>()
         val list = shipmentCartItemModelList
-        val lastApplyUiModel = lastApplyData
+        val lastApplyUiModel = list.promo()!!.promo
         for (shipmentCartItemModel in list) {
             if (shipmentCartItemModel is CheckoutOrderModel) {
-                for ((cartStringOrder, cartItemList) in shipmentCartItemModel.cartItemModelsGroupByOrder) {
+                val cartItemModelsGroupByOrder =
+                    helper.getOrderProducts(list, shipmentCartItemModel.cartStringGroup)
+                        .filter { !it.isError }
+                        .groupBy { it.cartStringOrder }
+                for ((cartStringOrder, cartItemList) in cartItemModelsGroupByOrder) {
                     val ordersItem = OrdersItem()
                     val productDetailsItems = ArrayList<ProductDetailsItem>()
                     for (cartItemModel in cartItemList) {
@@ -670,6 +678,7 @@ class CheckoutPromoProcessor @Inject constructor(
 //            mTrackerShipment.eventClickLanjutkanTerapkanPromoError(t.message)
         if (t is AkamaiErrorException) {
             clearAllPromo(validateUsePromoRequest)
+            checkoutItems[checkoutItems.size - 4] = checkoutItems.promo()!!.copy(promo = LastApplyUiModel())
 //                view!!.showToastError(t.message)
 //                view!!.resetAllCourier()
 //                view!!.doResetButtonPromoCheckout()
@@ -1130,7 +1139,6 @@ class CheckoutPromoProcessor @Inject constructor(
         }
         lastValidateUseRequest = validateUsePromoRequest
         validateUsePromoRevampUiModel = null
-        lastApplyData = LastApplyUiModel()
     }
 
     companion object {

@@ -15,6 +15,7 @@ import com.tokopedia.checkout.revamp.view.converter.CheckoutDataConverter
 import com.tokopedia.checkout.revamp.view.processor.CheckoutAddOnProcessor
 import com.tokopedia.checkout.revamp.view.processor.CheckoutCalculator
 import com.tokopedia.checkout.revamp.view.processor.CheckoutCartProcessor
+import com.tokopedia.checkout.revamp.view.processor.CheckoutDataHelper
 import com.tokopedia.checkout.revamp.view.processor.CheckoutLogisticProcessor
 import com.tokopedia.checkout.revamp.view.processor.CheckoutPaymentProcessor
 import com.tokopedia.checkout.revamp.view.processor.CheckoutProcessor
@@ -103,6 +104,7 @@ class CheckoutViewModel @Inject constructor(
     private val dataConverter: CheckoutDataConverter,
     private val mTrackerShipment: CheckoutAnalyticsCourierSelection,
     private val mTrackerPurchaseProtection: CheckoutAnalyticsPurchaseProtection,
+    private val helper: CheckoutDataHelper,
     private val userSessionInterface: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
@@ -405,19 +407,6 @@ class CheckoutViewModel @Inject constructor(
         }
     }
 
-    fun getOrderProducts(cartStringGroup: String): List<CheckoutProductModel> {
-        val products = arrayListOf<CheckoutProductModel>()
-        for (checkoutItem in listData.value) {
-            if (checkoutItem is CheckoutProductModel && checkoutItem.cartStringGroup == cartStringGroup) {
-                products.add(checkoutItem)
-            }
-            if (checkoutItem is CheckoutOrderModel && checkoutItem.cartStringGroup == cartStringGroup) {
-                break
-            }
-        }
-        return products
-    }
-
     fun fetchEpharmacyData() {
         viewModelScope.launch(dispatchers.immediate) {
             addOnProcessor.fetchEpharmacyData(listData.value)
@@ -555,7 +544,7 @@ class CheckoutViewModel @Inject constructor(
     }
 
     fun getProductForRatesRequest(order: CheckoutOrderModel): ArrayList<Product> {
-        return logisticProcessor.getProductForRatesRequest(getOrderProducts(order.cartStringGroup))
+        return logisticProcessor.getProductForRatesRequest(helper.getOrderProducts(listData.value, order.cartStringGroup))
     }
 
     fun generateRatesMvcParam(cartStringGroup: String): String {
@@ -565,7 +554,7 @@ class CheckoutViewModel @Inject constructor(
     fun generateRatesParam(order: CheckoutOrderModel): RatesParam {
         return logisticProcessor.getRatesParam(
             order,
-            getOrderProducts(order.cartStringGroup),
+            helper.getOrderProducts(listData.value, order.cartStringGroup),
             listData.value.address()!!.recipientAddressModel,
             isTradeIn,
             isTradeInByDropOff,
@@ -601,7 +590,7 @@ class CheckoutViewModel @Inject constructor(
         val result = logisticProcessor.getRatesWithScheduleDelivery(
             logisticProcessor.getRatesParam(
                 order,
-                getOrderProducts(order.cartStringGroup),
+                helper.getOrderProducts(checkoutItems, order.cartStringGroup),
                 listData.value.address()!!.recipientAddressModel,
                 isTradeIn,
                 isTradeInByDropOff,
@@ -722,7 +711,7 @@ class CheckoutViewModel @Inject constructor(
         val result = logisticProcessor.getRates(
             logisticProcessor.getRatesParam(
                 order,
-                getOrderProducts(order.cartStringGroup),
+                helper.getOrderProducts(checkoutItems, order.cartStringGroup),
                 listData.value.address()!!.recipientAddressModel,
                 isTradeIn,
                 isTradeInByDropOff,
@@ -1510,7 +1499,7 @@ class CheckoutViewModel @Inject constructor(
                 val result = logisticProcessor.getRatesWithBoCode(
                     logisticProcessor.getRatesParam(
                         order,
-                        getOrderProducts(order.cartStringGroup),
+                        helper.getOrderProducts(checkoutItems, order.cartStringGroup),
                         checkoutItems.address()!!.recipientAddressModel,
                         isTradeIn,
                         isTradeInByDropOff,

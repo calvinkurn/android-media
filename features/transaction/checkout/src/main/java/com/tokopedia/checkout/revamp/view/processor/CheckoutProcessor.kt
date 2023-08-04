@@ -363,17 +363,6 @@ class CheckoutProcessor @Inject constructor(
         dynamicData: String,
         fingerprintPublicKey: String?
     ): CheckoutRequest {
-//        var publicKey = ""
-//        var fingerprintSupport = false
-//        if (CheckoutFingerprintUtil.getEnableFingerprintPayment(view?.activity)) {
-//            val fpk = CheckoutFingerprintUtil.getFingerprintPublicKey(
-//                view?.activity
-//            )
-//            if (fpk != null) {
-//                publicKey = FingerPrintUtil.getPublicKey(fpk)!!
-//                fingerprintSupport = true
-//            }
-//        }
         return CheckoutRequest(
             carts,
             isOneClickShipment.toString(),
