@@ -22,7 +22,9 @@ open class ShopShowcaseFragment : BaseDaggerFragment() {
         private const val BUNDLE_KEY_SHOWCASES = "showcases"
 
         @JvmStatic
-        fun newInstance(showcases : List<ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase>): ShopShowcaseFragment {
+        fun newInstance(
+            showcases: List<ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase>
+        ): ShopShowcaseFragment {
             return ShopShowcaseFragment().apply {
                 arguments = Bundle().apply {
                     putParcelableArrayList(BUNDLE_KEY_SHOWCASES, ArrayList(showcases))
@@ -32,7 +34,11 @@ open class ShopShowcaseFragment : BaseDaggerFragment() {
 
     }
 
-    private val showcases by lazy { arguments?.getParcelableArrayList<ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase>(BUNDLE_KEY_SHOWCASES)?.toList().orEmpty() }
+    private val showcases by lazy {
+        arguments?.getParcelableArrayList<ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase>(
+            BUNDLE_KEY_SHOWCASES
+        )?.toList().orEmpty()
+    }
 
 
     private var binding by autoClearedNullable<FragmentShopShowcaseBinding>()

@@ -1,7 +1,9 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
+import android.graphics.Color
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
@@ -56,6 +58,12 @@ class ShopHomeShowCaseLeftMainBannerViewHolder(
         viewBinding?.run {
             viewPager.adapter = pagerAdapter
             tabsUnify.customTabMode = TabLayout.MODE_SCROLLABLE
+            tabsUnify.tabLayout.isTabIndicatorFullWidth = false
+            tabsUnify.tabLayout.setBackgroundColor(Color.TRANSPARENT)
+
+            val mTabIndicator = ContextCompat.getDrawable(tabsUnify.tabLayout.context, R.drawable.shape_showcase_tab_indicator_color)
+            tabsUnify.tabLayout.setSelectedTabIndicator(mTabIndicator)
+
 
             TabsUnifyMediator(tabsUnify, viewPager) { tab, currentPosition ->
                 tab.setCustomText(fragments[currentPosition].first)
