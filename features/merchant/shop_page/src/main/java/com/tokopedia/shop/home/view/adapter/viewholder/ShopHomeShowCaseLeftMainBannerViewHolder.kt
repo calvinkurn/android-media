@@ -36,15 +36,6 @@ class ShopHomeShowCaseLeftMainBannerViewHolder(
         setupTabs(model.tabs)
     }
 
-    class TabPagerAdapter(
-        fragment: Fragment,
-        private val fragments: List<Pair<String, Fragment>>
-    ) : FragmentStateAdapter(fragment) {
-
-        override fun getItemCount(): Int = fragments.size
-        override fun createFragment(position: Int) = fragments[position].second
-    }
-
     private fun setupShowcaseHeader(model: ShopHomeShowcaseUiModel) {
         viewBinding?.tpgTitle?.text = model.showcaseHeader.title
         val showcases = model.tabs.getOrNull(0)?.showcases ?: emptyList()
@@ -57,12 +48,13 @@ class ShopHomeShowCaseLeftMainBannerViewHolder(
 
         viewBinding?.run {
             viewPager.adapter = pagerAdapter
+            tabsUnify.isVisible = tabs.size > 1
             tabsUnify.customTabMode = TabLayout.MODE_SCROLLABLE
             tabsUnify.tabLayout.isTabIndicatorFullWidth = false
             tabsUnify.tabLayout.setBackgroundColor(Color.TRANSPARENT)
 
-            val mTabIndicator = ContextCompat.getDrawable(tabsUnify.tabLayout.context, R.drawable.shape_showcase_tab_indicator_color)
-            tabsUnify.tabLayout.setSelectedTabIndicator(mTabIndicator)
+            val centeredTabIndicator = ContextCompat.getDrawable(tabsUnify.tabLayout.context, R.drawable.shape_showcase_tab_indicator_color)
+            tabsUnify.tabLayout.setSelectedTabIndicator(centeredTabIndicator)
 
 
             TabsUnifyMediator(tabsUnify, viewPager) { tab, currentPosition ->
@@ -70,6 +62,17 @@ class ShopHomeShowCaseLeftMainBannerViewHolder(
             }
         }
 
+
+
+    }
+
+    private class TabPagerAdapter(
+        fragment: Fragment,
+        private val fragments: List<Pair<String, Fragment>>
+    ) : FragmentStateAdapter(fragment) {
+
+        override fun getItemCount(): Int = fragments.size
+        override fun createFragment(position: Int) = fragments[position].second
     }
 
     private fun createFragments(
