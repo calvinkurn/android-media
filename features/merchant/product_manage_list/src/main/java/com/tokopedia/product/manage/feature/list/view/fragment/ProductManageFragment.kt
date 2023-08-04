@@ -2054,6 +2054,9 @@ open class ProductManageFragment :
 
     override fun onClickContactCsButton(product: ProductUiModel) {
         when {
+            product.isArchived || product.isInGracePeriod  -> {
+                showProductArchivalBottomSheet(product.id, product.isInGracePeriod, product.isArchived)
+            }
             product.isViolation() -> {
                 goToProductViolationHelpPage()
             }
@@ -2062,9 +2065,6 @@ open class ProductManageFragment :
             }
             product.isSuspend() -> {
                 showSuspendReasonBottomSheet(product.id)
-            }
-            product.isArchived || product.isInGracePeriod  -> {
-                showProductArchivalBottomSheet(product.id, product.isInGracePeriod, product.isArchived)
             }
         }
         ProductManageTracking.eventContactCs(product.id)
