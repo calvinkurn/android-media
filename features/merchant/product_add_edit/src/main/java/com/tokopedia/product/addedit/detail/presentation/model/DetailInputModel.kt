@@ -31,7 +31,7 @@ data class DetailInputModel(
         var pictureList: List<PictureInputModel> = emptyList(),
         var productShowCases: List<ShowcaseItemPicker> = emptyList(),
         var specifications: List<SpecificationInputModel>? = null,
-        var categoryManifest: CategoryManifestInputModel = CategoryManifestInputModel()
+        var categoryMetadata: CategoryMetadataInputModel = CategoryMetadataInputModel()
 ) : Parcelable
 
 @Parcelize
@@ -42,7 +42,7 @@ data class PreorderInputModel(
 ) : Parcelable
 
 @Parcelize
-data class CategoryManifestInputModel(
+data class CategoryMetadataInputModel(
     var recommendationRank: Int = 0,
     var isFromRecommendation: Boolean = false,
     var recommendationList: List<Recommendation> = emptyList()

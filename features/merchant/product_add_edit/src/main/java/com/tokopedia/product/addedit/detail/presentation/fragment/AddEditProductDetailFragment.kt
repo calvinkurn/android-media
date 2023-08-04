@@ -92,7 +92,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.USED_PRODUCT_INDEX
 import com.tokopedia.product.addedit.detail.presentation.customview.TypoCorrectionView
 import com.tokopedia.product.addedit.detail.presentation.dialog.*
-import com.tokopedia.product.addedit.detail.presentation.model.CategoryManifestInputModel
+import com.tokopedia.product.addedit.detail.presentation.model.CategoryMetadataInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PriceSuggestion
@@ -194,7 +194,7 @@ class AddEditProductDetailFragment :
     // product category
     private var productCategoryId: String = ""
     private var productCategoryName: String = ""
-    private var productCategoryManifestInputModel: CategoryManifestInputModel? = null
+    private var productCategoryManifestInputModel: CategoryMetadataInputModel? = null
     private var productCategoryLayout: ViewGroup? = null
     private var productCategoryRecListView: ListUnify? = null
     private var productCategoryPickerButton: AppCompatTextView? = null
@@ -622,7 +622,7 @@ class AddEditProductDetailFragment :
 
                     productCategoryId = categoryId.toString()
                     productCategoryName = categoryName ?: ""
-                    productCategoryManifestInputModel = CategoryManifestInputModel()
+                    productCategoryManifestInputModel = CategoryMetadataInputModel()
 
                     val categoryRecommendationResult = viewModel.productCategoryRecommendationLiveData.value
                     val categoryList = if (categoryRecommendationResult != null && categoryRecommendationResult is Success) {
@@ -832,7 +832,7 @@ class AddEditProductDetailFragment :
             if (!productPictureList.isNullOrEmpty()) pictureList = productPictureList ?: listOf()
             if (productCategoryId.isNotBlank()) categoryId = productCategoryId
             if (productCategoryName.isNotBlank()) categoryName = productCategoryName
-            productCategoryManifestInputModel?.let { categoryManifest = it }
+            productCategoryManifestInputModel?.let { categoryMetadata = it }
             preorder.apply {
                 duration = preOrderDurationField.getTextIntOrZero()
                 timeUnit = selectedDurationPosition
@@ -2349,11 +2349,11 @@ class AddEditProductDetailFragment :
                 true
             }
         }
-        productCategoryManifestInputModel = CategoryManifestInputModel(
+        productCategoryManifestInputModel = CategoryMetadataInputModel(
             recommendationRank = position.inc(),
             isFromRecommendation = true,
             recommendationList = items.map {
-                CategoryManifestInputModel.Recommendation(
+                CategoryMetadataInputModel.Recommendation(
                     categoryID = it.getCategoryId(),
                     confidenceScore = it.getConfidence(),
                     precision = it.getPrecision()
