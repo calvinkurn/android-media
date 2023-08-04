@@ -62,7 +62,7 @@ class UserFollowMapper @Inject constructor() {
         return PeopleUiModel.ShopUiModel(
             id = data.profile.userID,
             logoUrl = data.profile.imageCover,
-            badgeUrl = getShopBadgeUrl(data.profile.badges),
+            badgeUrl = getShopBadgeUrl(data.profile.badges).orEmpty(),
             name = MethodChecker.fromHtml(data.profile.name).toString(),
             isFollowed = data.isFollow,
             appLink = data.profile.sharelink.applink
@@ -75,13 +75,7 @@ class UserFollowMapper @Inject constructor() {
      *   "https://images.tokopedia.net/img/official_store/badge_os.png"
      *  ]
      */
-    private fun getShopBadgeUrl(badgesData: List<String>): String {
-        if (badgesData.isEmpty()) return ""
-        val badgeUrl = if (badgesData.size > 1) {
-            badgesData[1]
-        } else {
-            badgesData[0]
-        }
-        return if (URLUtil.isNetworkUrl(badgeUrl)) badgeUrl else ""
+    private fun getShopBadgeUrl(badgesData: List<String>): String? {
+        return badgesData.firstOrNull { URLUtil.isNetworkUrl(it) }
     }
 }
