@@ -400,6 +400,7 @@ open class ShopPageHomeFragment :
             shopHomeListener = this,
             shopPersoProductComparisonListener = this,
             shopHomeDisplayBannerTimerWidgetListener = this,
+            fragment = this
         )
     }
 
@@ -1270,9 +1271,9 @@ open class ShopPageHomeFragment :
                                 ),
                                 tabs = listOf(
                                     ShopHomeShowcaseUiModel.ShopHomeShowCaseTab(
-                                        text = "",
+                                        text = "Handphone",
                                         imageUrl = "",
-                                        mainBannerPosition = ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.TOP,
+                                        mainBannerPosition = ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.LEFT,
                                         showcases = listOf(
                                             ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase(
                                                 id = "121",

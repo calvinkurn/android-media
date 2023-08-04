@@ -1,10 +1,12 @@
 package com.tokopedia.shop.home.view.model
 
+import android.os.Parcelable
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.WidgetType
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
+import kotlinx.parcelize.Parcelize
 
 data class ShopHomeShowcaseUiModel(
     val showcaseHeader: ShowcaseHeader,
@@ -40,13 +42,14 @@ data class ShopHomeShowcaseUiModel(
         val mainBannerPosition: ShopHomeShowcaseMainBannerPosition,
         val showcases: List<ShopHomeShowcase>,
     ) {
+        @Parcelize
         data class ShopHomeShowcase(
             val id: String,
             val name: String,
             val imageUrl: String,
             val ctaLink: String,
             val isMainBanner: Boolean
-        )
+        ) : Parcelable
 
     }
 

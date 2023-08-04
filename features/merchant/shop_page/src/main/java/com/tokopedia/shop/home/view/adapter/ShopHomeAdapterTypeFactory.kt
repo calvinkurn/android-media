@@ -1,6 +1,7 @@
 package com.tokopedia.shop.home.view.adapter
 
 import android.view.View
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -112,7 +113,8 @@ open class ShopHomeAdapterTypeFactory(
     private val shopHomeProductListSellerEmptyListener: ShopHomeProductListSellerEmptyListener,
     private val shopHomeListener: ShopHomeListener,
     private val shopPersoProductComparisonListener: ShopHomePersoProductComparisonViewHolder.ShopHomePersoProductComparisonViewHolderListener,
-    private val shopHomeDisplayBannerTimerWidgetListener: ShopHomeDisplayBannerTimerWidgetListener
+    private val shopHomeDisplayBannerTimerWidgetListener: ShopHomeDisplayBannerTimerWidgetListener,
+    private val fragment: Fragment
 ) : BaseAdapterTypeFactory(), TypeFactoryShopHome, ThematicWidgetTypeFactory, ShopWidgetTypeFactory {
     var productCardType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
     private var showcaseWidgetLayoutType = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_LINEAR_HORIZONTAL
@@ -374,7 +376,7 @@ open class ShopHomeAdapterTypeFactory(
                 ShopHomeVoucherViewHolder(parent, onMerchantVoucherListWidgetListener)
             }
             ShopHomeShowCaseLeftMainBannerViewHolder.LAYOUT -> {
-                ShopHomeShowCaseLeftMainBannerViewHolder(parent)
+                ShopHomeShowCaseLeftMainBannerViewHolder(parent, fragment)
             }
             ShopHomeShowCaseTopMainBannerViewHolder.LAYOUT -> {
                 ShopHomeShowCaseTopMainBannerViewHolder(parent)
