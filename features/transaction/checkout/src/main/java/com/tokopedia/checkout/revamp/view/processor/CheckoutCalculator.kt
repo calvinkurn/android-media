@@ -230,6 +230,7 @@ class CheckoutCalculator @Inject constructor(
         shipmentCost = shipmentCost.copy(finalShippingFee = finalShippingFee)
         shipmentCost = shipmentCost.copy(hasSelectAllShipping = hasSelectAllShipping)
         shipmentCost = shipmentCost.copy(shippingInsuranceFee = insuranceFee)
+        shipmentCost = shipmentCost.copy(totalOtherFee = insuranceFee + totalAddOnGiftingPrice + totalAddOnProductServicePrice)
         shipmentCost.totalPurchaseProtectionItem = totalPurchaseProtectionItem
         shipmentCost.purchaseProtectionFee = totalPurchaseProtectionPrice
         shipmentCost.tradeInPrice = tradeInPrice

@@ -39,5 +39,7 @@ data class CheckoutCostModel(
     var totalAddOnPrice: Double = 0.0,
     var hasAddOn: Boolean = false,
     var dynamicPlatformFee: ShipmentPaymentFeeModel = ShipmentPaymentFeeModel(),
-    var listAddOnSummary: List<ShipmentAddOnSummaryModel> = emptyList()
+    var listAddOnSummary: List<ShipmentAddOnSummaryModel> = emptyList(),
+    val totalOtherFee: Double = 0.0,
+    var isExpandOtherFee: Boolean = false
 ) : CheckoutItem

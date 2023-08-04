@@ -240,12 +240,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:text="Total Lainnya"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/flow_checkout_cost_platform_fee"
         app:typographyType="display_3"
-        app:typographyWeight="reguler"
-        tools:text="Total Lainnya" />
+        app:typographyWeight="reguler" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_checkout_cost_others_toggle"
@@ -269,7 +269,7 @@
         android:textColor="@color/Unify_NN950"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/ic_checkout_cost_others_toggle"
-        app:layout_constraintTop_toBottomOf="@id/ll_checkout_cost_others"
+        app:layout_constraintTop_toBottomOf="@id/flow_checkout_cost_platform_fee"
         app:typographyType="display_3"
         app:typographyWeight="reguler"
         tools:text="Rp2.905.000,00" />
@@ -290,7 +290,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="-2dp"
         android:layout_marginEnd="16dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"

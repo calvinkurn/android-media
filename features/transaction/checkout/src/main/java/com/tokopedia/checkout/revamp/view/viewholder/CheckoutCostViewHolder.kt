@@ -13,6 +13,7 @@ import com.tokopedia.checkout.databinding.ItemCheckoutCostDynamicBinding
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCostModel
 import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
@@ -234,25 +235,22 @@ class CheckoutCostViewHolder(
         val insuranceCourierList = if (cost.shippingInsuranceFee > 0.0) listOf(cost.shippingInsuranceFee) else emptyList()
         if ((insuranceCourierList.size + cost.listAddOnSummary.size + cost.listCrossSell.size) > 2) {
             // render in collapsable group
-            binding.tvCheckoutCostOthersTitle.isVisible = true
-            binding.icCheckoutCostOthersToggle.isVisible = true
-            binding.tvCheckoutCostOthersValue.isVisible = true
-
+            binding.tvCheckoutCostOthersValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(cost.totalOtherFee, false).removeDecimalSuffix()
             binding.icCheckoutCostOthersToggle.setOnClickListener {
                 if (binding.llCheckoutCostOthersExpanded.isVisible) {
+                    cost.isExpandOtherFee = false
                     binding.llCheckoutCostOthersExpanded.isVisible = false
                     binding.vCheckoutCostOthersExpandedSeparator.isVisible = false
                     binding.tvCheckoutCostOthersValue.isVisible = true
+                    binding.icCheckoutCostOthersToggle.setImage(IconUnify.CHEVRON_DOWN)
                 } else {
+                    cost.isExpandOtherFee = true
                     binding.llCheckoutCostOthersExpanded.isVisible = true
                     binding.vCheckoutCostOthersExpandedSeparator.isVisible = true
                     binding.tvCheckoutCostOthersValue.isVisible = false
+                    binding.icCheckoutCostOthersToggle.setImage(IconUnify.CHEVRON_UP)
                 }
             }
-            binding.llCheckoutCostOthers.isVisible = false
-            binding.llCheckoutCostOthersExpanded.isVisible = false
-            binding.vCheckoutCostOthersExpandedSeparator.isVisible = false
-
             binding.llCheckoutCostOthersExpanded.removeAllViews()
             insuranceCourierList.forEach {
                 val itemBinding = ItemCheckoutCostDynamicBinding.inflate(
@@ -278,6 +276,21 @@ class CheckoutCostViewHolder(
                 itemBinding.tvCheckoutCostItemValue.text = it.priceLabel
                 (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(binding.root.context.resources.displayMetrics)
                 binding.llCheckoutCostOthersExpanded.addView(itemBinding.root)
+            }
+
+            binding.llCheckoutCostOthers.isVisible = false
+            binding.tvCheckoutCostOthersTitle.isVisible = true
+            binding.icCheckoutCostOthersToggle.isVisible = true
+            if (cost.isExpandOtherFee) {
+                binding.tvCheckoutCostOthersValue.isVisible = false
+                binding.llCheckoutCostOthersExpanded.isVisible = true
+                binding.vCheckoutCostOthersExpandedSeparator.isVisible = true
+                binding.icCheckoutCostOthersToggle.setImage(IconUnify.CHEVRON_DOWN)
+            } else {
+                binding.tvCheckoutCostOthersValue.isVisible = true
+                binding.llCheckoutCostOthersExpanded.isVisible = false
+                binding.vCheckoutCostOthersExpandedSeparator.isVisible = false
+                binding.icCheckoutCostOthersToggle.setImage(IconUnify.CHEVRON_DOWN)
             }
         } else {
             // render outside
