@@ -9,7 +9,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHomeCategoryViewHolder(
     itemView: View
-) : AbstractViewHolder<ShopHomeCategory>(itemView) {
+) : AbstractViewHolder<ShopHomeShowcaseUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -19,8 +19,8 @@ class ShopHomeCategoryViewHolder(
     private val viewBinding: ItemShopHomeCategoryBannerLeftBinding? by viewBinding()
 
 
-    override fun bind(model: ShopHomeCategory) {
-        viewBinding?.tpgTitle?.text = "Banner"
+    override fun bind(model: ShopHomeShowcaseUiModel) {
+        viewBinding?.tpgTitle?.text = model.categoryHeader.title
     }
 
 }

@@ -108,6 +108,7 @@ import com.tokopedia.shop.common.constant.DEFAULT_SORT_ID
 import com.tokopedia.shop.common.constant.ShopCommonExtraConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.analytic.model.ShopHomePersoProductComparisonWidgetImpressionTrackerModel
+import com.tokopedia.shop.common.constant.ShopPageConstant.EMPTY_PRODUCT_SEARCH_IMAGE_URL
 import com.tokopedia.shop.common.constant.ShopPageConstant.VALUE_INT_ONE
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
@@ -188,8 +189,9 @@ import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.shop.home.view.model.ShopPageLayoutUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
-import com.tokopedia.shop.home.view.model.nav_banner.ShopHomeCategory
-import com.tokopedia.shop.home.view.model.nav_banner.ShopHomeCategoryAppearance
+import com.tokopedia.shop.home.view.model.nav_banner.ShopHomeShowcase
+import com.tokopedia.shop.home.view.model.nav_banner.ShopHomeShowcaseUiModel
+import com.tokopedia.shop.home.view.model.nav_banner.ShopHomeShowcaseMainBannerPosition
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
@@ -1261,7 +1263,50 @@ open class ShopPageHomeFragment :
                 when (it) {
                     is Success -> {
                         shopHomeAdapter?.setHomeMerchantVoucherData(it.data)
-                        shopHomeAdapter?.setHomeCategoryData(ShopHomeCategory("1", "","", ShopHomeCategoryAppearance.CAROUSEL))
+                        shopHomeAdapter?.setHomeCategoryData(
+                            ShopHomeShowcaseUiModel(
+                                widgetId = "5432",
+                                mainBannerPosition = ShopHomeShowcaseMainBannerPosition.LEFT,
+                                categoryHeader = ShopHomeShowcaseUiModel.CategoryHeader("Explore Categories", "tokopedia://shop/6553224?tab=EtalaseTab", "rounded-corner"),
+                                showcases = listOf(
+                                    ShopHomeShowcase(
+                                        id = "121",
+                                        name = "Wearable Device",
+                                        imageUrl = EMPTY_PRODUCT_SEARCH_IMAGE_URL,
+                                        ctaLink = "tokopedia://shop/123/etalase/etalase-tablet",
+                                        isMainBanner = true
+                                    ),
+                                    ShopHomeShowcase(
+                                        id = "122",
+                                        name = "Tablet",
+                                        imageUrl = EMPTY_PRODUCT_SEARCH_IMAGE_URL,
+                                        ctaLink = "tokopedia://shop/123/etalase/etalase-tablet",
+                                        isMainBanner = false
+                                    ),
+                                    ShopHomeShowcase(
+                                        id = "123",
+                                        name = "Accessories",
+                                        imageUrl = EMPTY_PRODUCT_SEARCH_IMAGE_URL,
+                                        ctaLink = "tokopedia://shop/123/etalase/etalase-tablet",
+                                        isMainBanner = false
+                                    ),
+                                    ShopHomeShowcase(
+                                        id = "124",
+                                        name = "Handphone",
+                                        imageUrl = EMPTY_PRODUCT_SEARCH_IMAGE_URL,
+                                        ctaLink = "tokopedia://shop/123/etalase/etalase-tablet",
+                                        isMainBanner = false
+                                    ),
+                                    ShopHomeShowcase(
+                                        id = "125",
+                                        name = "Power Bank",
+                                        imageUrl = EMPTY_PRODUCT_SEARCH_IMAGE_URL,
+                                        ctaLink = "tokopedia://shop/123/etalase/etalase-tablet",
+                                        isMainBanner = false
+                                    )
+                                )
+                            )
+                        )
                     }
                     is Fail -> {
                         shopHomeAdapter?.getMvcWidgetUiModel()?.let { uiModel ->
