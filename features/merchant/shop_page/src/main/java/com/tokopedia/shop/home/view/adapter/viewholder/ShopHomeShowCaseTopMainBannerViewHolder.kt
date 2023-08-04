@@ -18,7 +18,8 @@ class ShopHomeShowCaseTopMainBannerViewHolder(itemView: View) : AbstractViewHold
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_showcase_top_main_banner
         private const val SHOW_VIEW_ALL_SHOWCASE_THRESHOLD = 5
-        private const val SECOND_BANNER_INDEX = 1
+        private const val SECOND_SHOWCASE_INDEX = 1
+        private const val TWELVE_SHOWCASE_INDEX = 12
     }
 
     private val viewBinding: ItemShopHomeShowcaseTopMainBannerBinding? by viewBinding()
@@ -30,9 +31,7 @@ class ShopHomeShowCaseTopMainBannerViewHolder(itemView: View) : AbstractViewHold
 
         setupViewAllIcon(showcases)
         setupMainBanner(showcases)
-        if (showcases.size > 1) {
-            setupShowCaseRecyclerView(showcases.subList(SECOND_BANNER_INDEX, showcases.size))
-        }
+        setupShowCaseRecyclerView(showcases)
     }
 
     private fun setupViewAllIcon(showcases: List<ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase>) {
@@ -53,6 +52,8 @@ class ShopHomeShowCaseTopMainBannerViewHolder(itemView: View) : AbstractViewHold
     private fun setupShowCaseRecyclerView(
         showcases: List<ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase>
     ) {
+        val filteredShowcases = showcases.filterIndexed { index, _ -> index in SECOND_SHOWCASE_INDEX..TWELVE_SHOWCASE_INDEX}
+
         val showCaseAdapter = ShopHomeShowCaseAdapter()
 
         val recyclerView = viewBinding?.recyclerView
@@ -61,7 +62,7 @@ class ShopHomeShowCaseTopMainBannerViewHolder(itemView: View) : AbstractViewHold
             adapter = showCaseAdapter
         }
 
-        showCaseAdapter.submit(showcases)
+        showCaseAdapter.submit(filteredShowcases)
     }
 
 }
