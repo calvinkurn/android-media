@@ -19,6 +19,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_celebration_placeholder"
+        android:layout_width="75dp"
+        android:layout_height="84dp"
+        android:layout_marginHorizontal="@dimen/dp_14"
+        android:layout_marginTop="@dimen/dp_6"
+        android:scaleType="fitCenter"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_placeholder="@drawable/ic_empty_medal"
+        tools:srcCompat="@drawable/ic_empty_medal" />
+
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_medal"
         android:layout_width="75dp"

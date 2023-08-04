@@ -618,7 +618,6 @@ class UserProfileFragment @Inject constructor(
         when (value.profileType) {
             ProfileType.NotLoggedIn -> {
                 buttonActionUIUnFollow()
-                mainBinding.btnAction.show()
             }
             ProfileType.OtherUser -> {
                 if (value.profileInfo.isBlocking) {
@@ -628,16 +627,17 @@ class UserProfileFragment @Inject constructor(
                 } else {
                     buttonActionUIUnFollow()
                 }
-                mainBinding.btnAction.show()
             }
             ProfileType.Self -> {
                 buttonActionUIEditProfile()
-                mainBinding.btnAction.show()
             }
-            ProfileType.Unknown -> {
-                mainBinding.btnAction.hide()
-            }
+            else -> {}
         }
+
+        mainBinding.btnAction.showWithCondition(
+            value.profileType != ProfileType.Unknown &&
+            !isShowProfileReminder(value)
+        )
     }
 
     private fun renderButtonOption(
@@ -655,6 +655,11 @@ class UserProfileFragment @Inject constructor(
                     IconUnify.MENU_KEBAB_HORIZONTAL
                 }
             )
+        )
+
+        mainBinding.btnOption.showWithCondition(
+            value.profileType != ProfileType.Unknown &&
+            !isShowProfileReminder(value)
         )
 
         mainBinding.btnOption.setOnClickListener {
@@ -703,14 +708,8 @@ class UserProfileFragment @Inject constructor(
             return
         }
 
-        val usernameEmpty = value.profileInfo.username.isBlank()
-        val biographyEmpty = value.profileInfo.biography.isBlank()
-
-        val isShowProfileReminder = viewModel.isSelfProfile && usernameEmpty && biographyEmpty
-
-        mainBinding.cardUserReminder.root.shouldShowWithAction(isShowProfileReminder) {
+        mainBinding.cardUserReminder.root.shouldShowWithAction(isShowProfileReminder(value)) {
             userProfileTracker.impressionProfileCompletionPrompt(viewModel.profileUserID)
-            mainBinding.btnAction.hide()
         }
     }
 
@@ -935,6 +934,13 @@ class UserProfileFragment @Inject constructor(
 
             if (!GlobalConfig.isSellerApp()) addNavigationMainMenu(this)
         }
+    }
+
+    private fun isShowProfileReminder(state: UserProfileUiState): Boolean {
+        val usernameEmpty = state.profileInfo.username.isBlank()
+        val biographyEmpty = state.profileInfo.biography.isBlank()
+
+        return viewModel.isSelfProfile && usernameEmpty && biographyEmpty
     }
 
     private fun addNavigationMainMenu(parent: HeaderUnify) {
