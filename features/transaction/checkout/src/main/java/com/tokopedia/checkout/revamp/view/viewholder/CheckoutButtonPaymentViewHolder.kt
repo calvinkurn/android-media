@@ -20,18 +20,24 @@ class CheckoutButtonPaymentViewHolder(private val binding: ItemCheckoutButtonPay
             val text = "Dengan melanjutkan, saya menyetujui S&K Asuransi & Proteksi."
             val span = SpannableString(text)
             span.apply {
-                setSpan(object : ClickableSpan() {
-                    override fun onClick(p0: View) {
-                        listener.onInsuranceTncClicked()
-                    }
+                setSpan(
+                    object : ClickableSpan() {
+                        override fun onClick(p0: View) {
+                            listener.onInsuranceTncClicked()
+                        }
 
-                    override fun updateDrawState(ds: TextPaint) {
-                        ds.isUnderlineText = true
-                    }
-                }, text.indexOf("S&K"), text.lastIndex, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+                        override fun updateDrawState(ds: TextPaint) {
+                            ds.isUnderlineText = true
+                        }
+                    },
+                    text.indexOf("S&K"), text.lastIndex, Spanned.SPAN_INCLUSIVE_INCLUSIVE
+                )
             }
             binding.tvCheckoutTerms.text = span
             binding.tvCheckoutTerms.isVisible = true
+            binding.tvCheckoutTerms.setOnClickListener {
+                listener.onInsuranceTncClicked()
+            }
         } else {
             binding.tvCheckoutTerms.isVisible = false
         }

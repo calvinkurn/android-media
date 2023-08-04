@@ -388,6 +388,9 @@ class CheckoutCalculator @Inject constructor(
                             shouldShowInsuranceTnc = true
                         }
                     }
+                    if (shipmentCartItemModel.shipment.insurance.isCheckInsurance) {
+                        shouldShowInsuranceTnc = true
+                    }
                 }
             }
         }

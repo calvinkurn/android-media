@@ -36,6 +36,8 @@ class ShipmentActivity :
         val bundle = intent.extras
         checkoutFragment = CheckoutFragment.newInstance(isOneClickShipment, leasingId, pageSource, isPlusSelected, bundle)
         return checkoutFragment
+//        shipmentFragment = ShipmentFragment.newInstance(isOneClickShipment, leasingId, pageSource, isPlusSelected, bundle)
+//        return shipmentFragment
     }
 
     override fun onBackPressed() {

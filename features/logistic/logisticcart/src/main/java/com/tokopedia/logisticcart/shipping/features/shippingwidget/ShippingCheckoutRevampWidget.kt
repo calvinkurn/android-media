@@ -416,6 +416,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             layoutStateHasSelectedFreeShipping.gone()
             layoutStateHasSelectedNormalShipping.gone()
             layoutStateHasSelectedSingleShipping.gone()
+            layoutStateNoSelectedShipping.gone()
             layoutStateHasSelectedWhitelabelShipping.gone()
             layoutStateFailedShipping.gone()
             layoutStateHasErrorShipping.gone()
