@@ -6,17 +6,26 @@
     android:layout_height="match_parent"
     android:background="@color/stories_background_dms">
 
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/cv_stories_indicator"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_counter"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:gravity="center"
+        android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_1"
-        android:textColor="@color/Unify_Static_White"
         tools:text="1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
