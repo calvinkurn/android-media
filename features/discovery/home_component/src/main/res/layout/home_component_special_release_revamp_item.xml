@@ -109,7 +109,6 @@
             app:icon_name="LOCATION_FILLED"
             android:clickable="false"
             android:focusable="false"
-            app:icon_color_light_enable="@color/Unify_N200"
             app:layout_constraintLeft_toLeftOf="@id/space_label_location"
             app:layout_constraintTop_toTopOf="@id/space_label_location"
             app:layout_constraintBottom_toBottomOf="@id/space_label_location" />
