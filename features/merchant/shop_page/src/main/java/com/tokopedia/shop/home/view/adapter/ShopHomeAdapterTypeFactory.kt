@@ -71,6 +71,7 @@ import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePersoProductCompa
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePersoProductComparisonPlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerTimerViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerTimerPlaceholderViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowCaseCarouselViewHolder
 import com.tokopedia.shop.home.view.listener.*
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
@@ -80,7 +81,8 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductChangeGridSectionUiMode
 import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductListEmptyUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeCategoryViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowCaseLeftMainBannerViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowCaseTopMainBannerViewHolder
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
@@ -236,24 +238,36 @@ open class ShopHomeAdapterTypeFactory(
 
         return when {
             //Left Main Banner + Tab
-            showShowcaseTab && showcaseMainBannerPosition == ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.LEFT -> ShopHomeCategoryViewHolder.LAYOUT
+            showShowcaseTab && showcaseMainBannerPosition == ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.LEFT -> {
+                ShopHomeShowCaseLeftMainBannerViewHolder.LAYOUT
+            }
 
             //Top Main Banner + Tab
-            showShowcaseTab && showcaseMainBannerPosition == ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.TOP -> ShopHomeCategoryViewHolder.LAYOUT
+            showShowcaseTab && showcaseMainBannerPosition == ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.TOP -> {
+                ShopHomeShowCaseTopMainBannerViewHolder.LAYOUT
+            }
 
             //Carousel + Tab
-            showShowcaseTab && showcaseMainBannerPosition == ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.CAROUSEL -> ShopHomeCategoryViewHolder.LAYOUT
+            showShowcaseTab && showcaseMainBannerPosition == ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.CAROUSEL -> {
+                ShopHomeShowCaseCarouselViewHolder.LAYOUT
+            }
 
             //Left Main Banner
-            !showShowcaseTab && showcaseMainBannerPosition == ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.LEFT -> ShopHomeCategoryViewHolder.LAYOUT
+            !showShowcaseTab && showcaseMainBannerPosition == ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.LEFT -> {
+                ShopHomeShowCaseLeftMainBannerViewHolder.LAYOUT
+            }
 
             //Top Main Banner
-            !showShowcaseTab && showcaseMainBannerPosition == ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.TOP -> ShopHomeCategoryViewHolder.LAYOUT
+            !showShowcaseTab && showcaseMainBannerPosition == ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.TOP -> {
+                ShopHomeShowCaseTopMainBannerViewHolder.LAYOUT
+            }
 
             //Carousel
-            !showShowcaseTab && showcaseMainBannerPosition == ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.CAROUSEL -> ShopHomeCategoryViewHolder.LAYOUT
+            !showShowcaseTab && showcaseMainBannerPosition == ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.CAROUSEL -> {
+                ShopHomeShowCaseCarouselViewHolder.LAYOUT
+            }
 
-            else -> ShopHomeCategoryViewHolder.LAYOUT
+            else -> ShopHomeShowCaseCarouselViewHolder.LAYOUT
         }
     }
 
@@ -359,8 +373,14 @@ open class ShopHomeAdapterTypeFactory(
             ShopHomeVoucherViewHolder.LAYOUT -> {
                 ShopHomeVoucherViewHolder(parent, onMerchantVoucherListWidgetListener)
             }
-            ShopHomeCategoryViewHolder.LAYOUT -> {
-                ShopHomeCategoryViewHolder(parent)
+            ShopHomeShowCaseLeftMainBannerViewHolder.LAYOUT -> {
+                ShopHomeShowCaseLeftMainBannerViewHolder(parent)
+            }
+            ShopHomeShowCaseTopMainBannerViewHolder.LAYOUT -> {
+                ShopHomeShowCaseTopMainBannerViewHolder(parent)
+            }
+            ShopHomeShowCaseCarouselViewHolder.LAYOUT -> {
+                ShopHomeShowCaseCarouselViewHolder(parent)
             }
             ShopLayoutLoadingShimmerViewHolder.LAYOUT -> {
                 ShopLayoutLoadingShimmerViewHolder(parent)

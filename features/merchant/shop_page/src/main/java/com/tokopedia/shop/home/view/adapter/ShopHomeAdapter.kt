@@ -172,7 +172,7 @@ open class ShopHomeAdapter(
         submitList(newList)
     }
 
-    fun setHomeCategoryData(shopHomeShowcaseUiModel: ShopHomeShowcaseUiModel) {
+    fun setShopShowcaseBanner(shopHomeShowcaseUiModel: ShopHomeShowcaseUiModel) {
         val newList = getNewVisitableItems()
         newList.setElement(1, shopHomeShowcaseUiModel)
         submitList(newList)

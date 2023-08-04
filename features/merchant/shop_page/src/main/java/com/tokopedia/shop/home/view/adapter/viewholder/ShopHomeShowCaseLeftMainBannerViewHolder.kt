@@ -5,27 +5,28 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.shop.databinding.ItemShopHomeCategoryBannerLeftBinding
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.ItemShopHomeShowcaseLeftMainBannerBinding
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-class ShopHomeCategoryViewHolder(itemView: View) : AbstractViewHolder<ShopHomeShowcaseUiModel>(itemView) {
+class ShopHomeShowCaseLeftMainBannerViewHolder(itemView: View) : AbstractViewHolder<ShopHomeShowcaseUiModel>(itemView) {
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_shop_home_category_banner_left
+        val LAYOUT = R.layout.item_shop_home_showcase_left_main_banner
         private const val SHOW_VIEW_ALL_SHOWCASE_THRESHOLD = 5
     }
 
-    private val viewBinding: ItemShopHomeCategoryBannerLeftBinding? by viewBinding()
+    private val viewBinding: ItemShopHomeShowcaseLeftMainBannerBinding? by viewBinding()
 
 
     override fun bind(model: ShopHomeShowcaseUiModel) {
         viewBinding?.tpgTitle?.text = model.categoryHeader.title
-        viewBinding?.iconChevron?.isVisible = model.tabs.size > SHOW_VIEW_ALL_SHOWCASE_THRESHOLD
+        val showcases = model.tabs.getOrNull(0)?.showcases ?: emptyList()
+        viewBinding?.iconChevron?.isVisible = showcases.size > SHOW_VIEW_ALL_SHOWCASE_THRESHOLD
 
-        val showcases = model.tabs.get(0).showcases
+
         val firstShowcase = showcases.getOrNull(0)
         val secondShowcase = showcases.getOrNull(1)
         val thirdShowcase = showcases.getOrNull(2)

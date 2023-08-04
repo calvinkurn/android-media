@@ -1260,7 +1260,7 @@ open class ShopPageHomeFragment :
                 when (it) {
                     is Success -> {
                         shopHomeAdapter?.setHomeMerchantVoucherData(it.data)
-                        shopHomeAdapter?.setHomeCategoryData(
+                        shopHomeAdapter?.setShopShowcaseBanner(
                             ShopHomeShowcaseUiModel(
                                 widgetId = "5432",
                                 categoryHeader = ShopHomeShowcaseUiModel.CategoryHeader(
@@ -1272,7 +1272,7 @@ open class ShopPageHomeFragment :
                                     ShopHomeShowcaseUiModel.ShopHomeShowCaseTab(
                                         text = "",
                                         imageUrl = "",
-                                        mainBannerPosition = ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.LEFT,
+                                        mainBannerPosition = ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.TOP,
                                         showcases = listOf(
                                             ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase(
                                                 id = "121",
