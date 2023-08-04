@@ -77,7 +77,7 @@ class CartAdapter constructor(
     private val cartDataList = ArrayList<Any>()
     private var compositeSubscription = CompositeSubscription()
 
-    private var cartWishlistAdapter: CartWishlistAdapter? = null
+    var cartWishlistAdapter: CartWishlistAdapter? = null
     private var cartRecentViewAdapter: CartRecentViewAdapter? = null
     private var tmpAllUnavailableShop: MutableList<Any>? = null
 

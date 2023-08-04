@@ -42,6 +42,7 @@ import com.tokopedia.cartrevamp.view.mapper.CartUiModelMapper
 import com.tokopedia.cartrevamp.view.mapper.PromoRequestMapper
 import com.tokopedia.cartrevamp.view.uimodel.AddCartToWishlistV2Event
 import com.tokopedia.cartrevamp.view.uimodel.AddToCartEvent
+import com.tokopedia.cartrevamp.view.uimodel.AddToCartExternalEvent
 import com.tokopedia.cartrevamp.view.uimodel.CartAddOnProductData
 import com.tokopedia.cartrevamp.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.cartrevamp.view.uimodel.CartCheckoutButtonState
@@ -228,6 +229,9 @@ class CartViewModel @Inject constructor(
 
     private val _seamlessLoginEvent: MutableLiveData<SeamlessLoginEvent> = MutableLiveData()
     val seamlessLoginEvent: LiveData<SeamlessLoginEvent> = _seamlessLoginEvent
+
+    private val _addToCartExternalEvent: MutableLiveData<AddToCartExternalEvent> = MutableLiveData()
+    val addToCartExternalEvent: LiveData<AddToCartExternalEvent> = _addToCartExternalEvent
 
     private val _tokoNowProductUpdater =
         MutableSharedFlow<Boolean>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
@@ -930,27 +934,6 @@ class CartViewModel @Inject constructor(
             cartDataList.value.removeAll(tmpAllUnavailableShop)
             cartDataList.value.add(startIdxDisabledReason, disabledCollapsedData)
             cartDataList.notifyObserver()
-//            val firstUnavailableShop = tmpAllUnavailableShop.firstOrNull()
-//            firstUnavailableShop?.let { shop ->
-//                if (shop is CartGroupHolderData) {
-//                    val tmpProducts = getNonCollapsibleUnavailableProduct(shop)
-//                    val cartShopHolderData = shop.deepCopy()
-//                    cartShopHolderData.productUiModelList.clear()
-//                    cartShopHolderData.productUiModelList.addAll(tmpProducts)
-//
-//                    tmpCollapsedUnavailableShop.addAll(tmpProducts)
-//                    cartModel.tmpCollapsedUnavailableShop = tmpCollapsedUnavailableShop
-//
-//                    cartDataList.value.removeAll(tmpAllUnavailableShop)
-//                    cartDataList.value.addAll(firstIndex, tmpCollapsedUnavailableShop)
-//                    cartDataList.notifyObserver()
-//                    notifyItemRangeChanged(firstIndex, tmpCollapsedUnavailableShop.size)
-//                    notifyItemRangeRemoved(
-//                        firstIndex + tmpCollapsedUnavailableShop.size,
-//                        tmpAllUnavailableShop.size - tmpCollapsedUnavailableShop.size
-//                    )
-//                }
-//            }
         }
     }
 
@@ -965,8 +948,6 @@ class CartViewModel @Inject constructor(
                     cartDataList.value.addAll(firstIndex, unavailableItems)
                     unavailableItems.clear()
                     cartDataList.notifyObserver()
-//                        notifyItemRangeChanged(firstIndex, existingSize)
-//                        notifyItemRangeInserted(firstIndex + existingSize, newSize - existingSize)
                 }
             }
         }
@@ -1697,8 +1678,6 @@ class CartViewModel @Inject constructor(
         }
         cartDataList.value.add(++recentViewIndex, cartRecentViewHolderData)
         cartDataList.notifyObserver()
-        // TODO: notify
-//        notifyDataSetChanged()
     }
 
     fun processGetWishlistV2Data() {
@@ -1802,8 +1781,6 @@ class CartViewModel @Inject constructor(
         }
         cartDataList.value.addAll(++recommendationIndex, cartRecommendationItemHolderDataList)
         cartDataList.notifyObserver()
-//            notifyItemRangeInserted(recommendationIndex, cartRecommendationItemHolderDataList.size)
-        // TODO: notify
     }
 
     private fun addCartTopAdsHeadlineData(index: Int) {
@@ -1858,7 +1835,6 @@ class CartViewModel @Inject constructor(
 
             addCartTopAdsHeadlineData(++recommendationIndex)
             cartDataList.notifyObserver()
-            // TODO: notify
         }
     }
 
@@ -1866,7 +1842,6 @@ class CartViewModel @Inject constructor(
         cartModel = cartModel.copy(firstCartSectionHeaderPosition = -1)
         cartDataList.value = arrayListOf()
         cartDataList.notifyObserver()
-        // TODO: notify
         checkForShipmentForm()
     }
 
@@ -1877,8 +1852,6 @@ class CartViewModel @Inject constructor(
         cartModel.cartLoadingHolderData?.let {
             cartDataList.value.add(it)
             cartDataList.notifyObserver()
-//            notifyItemInserted(cartDataList.indexOf(it))
-            // TODO: notify
         }
     }
 
@@ -1888,8 +1861,6 @@ class CartViewModel @Inject constructor(
             if (index != -1) {
                 cartDataList.value.remove(it)
                 cartDataList.notifyObserver()
-//                notifyItemRemoved(index)
-                // TODO: notify
             }
         }
     }
@@ -3211,8 +3182,7 @@ class CartViewModel @Inject constructor(
                             )
                         )
                     }
-                    // TODO: notify
-//                    notifyItemChanged(position)
+                    _globalEvent.value = CartGlobalEvent.AdapterItemChanged(position)
                     break@loop
                 }
             }
@@ -3228,8 +3198,7 @@ class CartViewModel @Inject constructor(
                     if (cartItemHolderData.productId == productId) {
                         cartItemHolderData.isWishlisted = isWishlisted
                         if (cartGroupHolderData.isCollapsed) {
-                            // todo notify
-//                            notifyItemChanged(i)
+                            _globalEvent.value = CartGlobalEvent.AdapterItemChanged(i)
                             break@outerloop
                         }
                         break@innerloop
@@ -3237,8 +3206,7 @@ class CartViewModel @Inject constructor(
                 }
             } else if (obj is CartItemHolderData && obj.productId == productId) {
                 obj.isWishlisted = isWishlisted
-                // todo notify
-//                notifyItemChanged(i)
+                _globalEvent.value = CartGlobalEvent.AdapterItemChanged(i)
                 break@outerloop
             }
         }
@@ -3251,10 +3219,9 @@ class CartViewModel @Inject constructor(
                 for (data in wishlist) {
                     if (data.id == productId) {
                         data.isWishlist = isWishlist
-                        // TODO notify
-//                        cartWishlistAdapter?.let {
-//                            cartWishlistAdapter?.notifyItemChanged(wishlist.indexOf(data))
-//                        }
+                        _globalEvent.value = CartGlobalEvent.AdapterItemChanged(
+                            wishlist.indexOf(data)
+                        )
                         break@outerloop
                     }
                 }
@@ -3270,10 +3237,9 @@ class CartViewModel @Inject constructor(
                 for (data in recentViews) {
                     if (data.id == productId) {
                         data.isWishlist = isWishlist
-                        // todo notify
-//                        cartRecentViewAdapter?.let {
-//                            cartRecentViewAdapter?.notifyItemChanged(recentViews.indexOf(data))
-//                        }
+                        _globalEvent.value = CartGlobalEvent.AdapterItemChanged(
+                            recentViews.indexOf(data)
+                        )
                         break@outerloop
                     }
                 }
@@ -3304,10 +3270,10 @@ class CartViewModel @Inject constructor(
         if (cartWishlistHolderData != null) {
             if (cartWishlistHolderData.wishList.size > 1) {
                 // TODO notify
-//                cartWishlistAdapter?.let {
-//                    cartWishlistHolderData.wishList.removeAt(wishlistItemIndex)
-//                    cartWishlistAdapter?.updateWishlistItems(cartWishlistHolderData.wishList)
-//                }
+                _globalEvent.value = CartGlobalEvent.OnNeedUpdateWishlistAdapterData(
+                    cartWishlistHolderData,
+                    wishlistItemIndex
+                )
             } else {
                 // todo notify
 //                // Remove wishlist holder & wishlist header
@@ -3317,6 +3283,25 @@ class CartViewModel @Inject constructor(
 //                    cartDataList.removeAt(headerIndex)
 //                    notifyItemRangeRemoved(headerIndex, 2)
 //                }
+                cartDataList.notifyObserver()
+            }
+        }
+    }
+
+    fun processAddToCartExternal(productId: Long) {
+        _globalEvent.value = CartGlobalEvent.ProgressLoading(true)
+
+        launch(dispatchers.io) {
+            try {
+                val model = addToCartExternalUseCase(Pair(productId.toString(), userSessionInterface.userId))
+                withContext(dispatchers.main) {
+                    _addToCartExternalEvent.value = AddToCartExternalEvent.Success(model)
+                }
+            } catch (t: Throwable) {
+                Timber.d(t)
+                withContext(dispatchers.main) {
+                    _addToCartExternalEvent.value = AddToCartExternalEvent.Failed(t)
+                }
             }
         }
     }
