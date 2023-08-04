@@ -19,7 +19,7 @@ ext {
             analyticGTMUtil         : "com.tokopedia.analytic:gtmutil:0.0.2",
             gqlquery_annotation     : "com.tokopedia.gql_query_annotation:gqlquery_annotation:0.0.24",
             gqlquery_annotation_processor       : "com.tokopedia.gqlquery_annotation_processor:gqlquery_annotation_processor:0.0.24",
-            lint                    : "com.tokopedia.library:lint:0.0.65",
+            lint                    : "com.tokopedia.library:lint:0.0.64",
             dataVisor               : "com.tokopedia.sec:vangogh:0.0.4@aar",
             applink_annotation      : "com.tokopedia.tokopedia_applink_annotation:tokopedia_applink_annotation:0.0.29",
             applink_annotation_processor      : "com.tokopedia.tokopedia_applink_annotation_processor:tokopedia_applink_annotation_processor:0.0.27",
