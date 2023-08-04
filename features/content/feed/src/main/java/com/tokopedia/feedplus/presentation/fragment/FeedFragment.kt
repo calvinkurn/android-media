@@ -1586,7 +1586,7 @@ class FeedFragment :
     override val mvcLiveData: LiveData<Result<TokopointsCatalogMVCSummary>>
         get() = feedPostViewModel.merchantVoucherLiveData
 
-    override val productListLiveData: LiveData<Result<List<FeedTaggedProductUiModel>>>
+    override val productListLiveData: LiveData<Result<List<FeedTaggedProductUiModel>>?>
         get() = feedPostViewModel.feedTagProductList
 
     override fun sendMvcImpressionTracker(mvcList: List<AnimatedInfos?>) {

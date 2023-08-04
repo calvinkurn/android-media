@@ -70,10 +70,11 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
     var listener: Listener? = null
     var tracker: MvcTrackerImpl = DefaultMvcTrackerImpl()
 
-    private val productListObserver = Observer<Result<List<FeedTaggedProductUiModel>>> {
-        hideLoading()
+    private val productListObserver = Observer<Result<List<FeedTaggedProductUiModel>>?> {
         when (it) {
             is Success -> {
+                hideLoading()
+
                 val productShopId =
                     it.data.firstOrNull { product -> product.shop.id.isNotEmpty() }?.shop?.id.orEmpty()
                 if (productShopId.isNotEmpty()) {
@@ -99,7 +100,9 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
                         })
                 }
             }
-            is Fail -> {}
+            is Fail -> {
+                hideLoading()
+            }
         }
     }
     private val mvcObserver = Observer<Result<TokopointsCatalogMVCSummary>> { result ->
@@ -130,6 +133,9 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
 
         showLoading()
 
+        binding.root.layoutParams = binding.root.layoutParams.apply {
+            height = ViewGroup.LayoutParams.WRAP_CONTENT
+        }
         binding.rvTaggedProduct.apply {
             setHasFixedSize(true)
             isNestedScrollingEnabled = false
@@ -223,7 +229,7 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         fun sendMvcImpressionTracker(mvcList: List<AnimatedInfos?>)
 
         val mvcLiveData: LiveData<Result<TokopointsCatalogMVCSummary>>
-        val productListLiveData: LiveData<Result<List<FeedTaggedProductUiModel>>>
+        val productListLiveData: LiveData<Result<List<FeedTaggedProductUiModel>>?>
     }
 
     companion object {

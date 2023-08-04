@@ -138,8 +138,8 @@ class FeedPostViewModel @Inject constructor(
     val reminderResult: LiveData<Result<FeedReminderResultModel>>
         get() = _reminderResult
 
-    private val _feedTagProductList = MutableLiveData<Result<List<FeedTaggedProductUiModel>>>()
-    val feedTagProductList: LiveData<Result<List<FeedTaggedProductUiModel>>>
+    private val _feedTagProductList = MutableLiveData<Result<List<FeedTaggedProductUiModel>>?>()
+    val feedTagProductList: LiveData<Result<List<FeedTaggedProductUiModel>>?>
         get() = _feedTagProductList
 
     private val _suspendedFollowData = MutableLiveData<FollowShopModel>()
@@ -977,9 +977,15 @@ class FeedPostViewModel @Inject constructor(
         }
     }
 
-    fun fetchFeedProduct(activityId: String, products: List<FeedTaggedProductUiModel>, sourceType: FeedTaggedProductUiModel.SourceType) {
+    fun fetchFeedProduct(
+        activityId: String,
+        products: List<FeedTaggedProductUiModel>,
+        sourceType: FeedTaggedProductUiModel.SourceType
+    ) {
         viewModelScope.launch {
             try {
+                _feedTagProductList.value = null
+
                 val currentList: List<FeedTaggedProductUiModel> = when {
                     products.isNotEmpty() -> products
                     else -> emptyList()
