@@ -2790,6 +2790,7 @@ class PlayViewModel @AssistedInject constructor(
                 _exploreWidget.value.widgets.isEmpty() -> {
                     _exploreWidget.update { widget -> widget.copy(state = ExploreWidgetState.Loading) }
                 }
+                !_exploreWidget.value.state.hasNextPage -> return@launchCatchError
             }
 
             val response = repo.getWidgets(
@@ -2811,7 +2812,7 @@ class PlayViewModel @AssistedInject constructor(
                     onChipAction(chips.items.first())
                 }
                 widgets.isNotEmpty() -> {
-                    _exploreWidget.update { widget -> widget.copy(widgets = widget.widgets + widgets, state = ExploreWidgetState.Success) }
+                    _exploreWidget.update { widget -> widget.copy(widgets = widget.widgets + widgets, state = ExploreWidgetState.Success(response.getConfig.cursor.isNotBlank())) }
                     widgetQuery.update { query ->
                         query.mapValues {
                             if (it.key == ExploreWidgetType.Default) {
@@ -2839,8 +2840,9 @@ class PlayViewModel @AssistedInject constructor(
         if (!param.isRefresh) return
 
         viewModelScope.launchCatchError(block = {
-            if (_categoryWidget.value.data.isEmpty()) {
-                _categoryWidget.update { widget -> widget.copy(state = ExploreWidgetState.Loading) }
+            when {
+                _categoryWidget.value.data.isEmpty() -> _categoryWidget.update { widget -> widget.copy(state = ExploreWidgetState.Loading) }
+                !_categoryWidget.value.state.hasNextPage -> return@launchCatchError
             }
 
             val cursor = when {
@@ -2855,7 +2857,7 @@ class PlayViewModel @AssistedInject constructor(
                 cursor = cursor
             )
             val widgets = response.getChannelBlocks.getChannelCards
-            _categoryWidget.update { widget -> widget.copy(data = widget.data + widgets, state = ExploreWidgetState.Success) }
+            _categoryWidget.update { widget -> widget.copy(data = widget.data + widgets, state = ExploreWidgetState.Success(response.getConfig.cursor.isNotBlank())) }
             widgetQuery.update { query ->
                 query.mapValues {
                     if (it.key == ExploreWidgetType.Category) {

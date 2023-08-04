@@ -144,13 +144,13 @@ internal val getCategoryShimmering: List<PlayWidgetShimmerUiModel>
     }
 
 sealed class ExploreWidgetState {
-    object Success : ExploreWidgetState()
+    data class Success(val withNextPage: Boolean): ExploreWidgetState()
     object Loading : ExploreWidgetState()
     object Empty : ExploreWidgetState()
     data class Fail(val error: Throwable, val onRetry: () -> Unit = {}) : ExploreWidgetState()
 
     val isSuccess: Boolean
-        get() = this == Success
+        get() = this is Success
 
     val isLoading: Boolean
         get() = this == Loading
@@ -160,6 +160,9 @@ sealed class ExploreWidgetState {
 
     val isEmpty: Boolean
         get() = this is Empty
+
+    val hasNextPage: Boolean
+        get() = this is Success && this.withNextPage
 }
 
 enum class ExploreWidgetType {

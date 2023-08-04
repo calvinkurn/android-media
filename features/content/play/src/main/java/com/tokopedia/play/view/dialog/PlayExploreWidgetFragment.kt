@@ -302,7 +302,7 @@ class PlayExploreWidgetFragment @Inject constructor(
         showEmpty(state is ExploreWidgetState.Empty)
 
         when (state) {
-            ExploreWidgetState.Success -> {
+            is ExploreWidgetState.Success -> {
                 widgetAdapter.setItemsAndAnimateChanges(widget)
                 scrollListener.updateStateAfterGetData()
             }
