@@ -127,9 +127,12 @@ class FeedFollowRecommendationViewHolder(
         selectedPosition: Int,
         isViewHolderSelected: Boolean
     ) {
+        println("JOE LOG setupLayout ${model.id} ${model.status}")
+
         when (model.status) {
             FeedFollowRecommendationModel.Status.Loading -> {
                 if (model.data.isEmpty()) {
+                    binding.rvFollowRecommendation.suppressLayout(true)
                     profileAdapter.setItemsAndAnimateChanges(List(5) { FeedFollowProfileAdapter.Model.Loading })
                 }
 
@@ -137,6 +140,7 @@ class FeedFollowRecommendationViewHolder(
                 binding.feedNoContent.root.showWithCondition(false)
             }
             FeedFollowRecommendationModel.Status.Success -> {
+                binding.rvFollowRecommendation.suppressLayout(false)
                 setupProfileList(model, selectedPosition, isViewHolderSelected)
             }
             FeedFollowRecommendationModel.Status.Error -> {
