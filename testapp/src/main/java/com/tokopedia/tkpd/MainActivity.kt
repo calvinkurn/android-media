@@ -162,7 +162,7 @@ class MainActivity : AppCompatActivity() {
         /*
          * Put your default applink here
          */
-        return "sellerapp://seller-mvc/list"
+        return ""
     }
 
     data class Model(
