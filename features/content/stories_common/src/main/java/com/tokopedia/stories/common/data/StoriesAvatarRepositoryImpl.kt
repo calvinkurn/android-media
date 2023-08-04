@@ -34,8 +34,10 @@ class StoriesAvatarRepositoryImpl @Inject constructor(
                 val shopInt = shopId.toInt()
                 ShopStoriesState(
                     shopId,
-                    anyStoryExisted = shopInt % 2 == 0,
-                    hasUnseenStories = shopInt % 4 == 0,
+//                    anyStoryExisted = shopInt % 2 == 0,
+//                    anyStoryExisted = shopInt % 2 == 0,
+                    anyStoryExisted = true,
+                    hasUnseenStories = true,
                     "tokopedia://play/12669"
                 )
             }

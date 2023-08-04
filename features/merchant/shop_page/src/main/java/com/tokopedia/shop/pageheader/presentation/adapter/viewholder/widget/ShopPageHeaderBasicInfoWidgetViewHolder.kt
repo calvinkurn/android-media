@@ -2,6 +2,7 @@ package com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget
 
 import android.view.View
 import android.widget.ImageView
+import androidx.compose.ui.unit.dp
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
@@ -16,12 +17,15 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopPage
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderBadgeTextValueComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderImageOnlyComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel
+import com.tokopedia.stories.common.StoriesAvatarManager
+import com.tokopedia.stories.common.StoriesAvatarView
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopPageHeaderBasicInfoWidgetViewHolder(
     itemView: View,
-    private val shopHeaderBasicInfoWidgetListener: Listener
+    private val shopHeaderBasicInfoWidgetListener: Listener,
+    private val storiesAvatarManager: StoriesAvatarManager,
 ) : AbstractViewHolder<ShopPageHeaderWidgetUiModel>(itemView) {
 
     companion object {
@@ -41,13 +45,19 @@ class ShopPageHeaderBasicInfoWidgetViewHolder(
     }
 
     private val viewBinding: LayoutShopHeaderBasicInfoWidgetBinding? by viewBinding()
-    private val shopLogoImageView: ImageView? = viewBinding?.imageShopLogo
+    private val shopLogoImageView: StoriesAvatarView? = viewBinding?.imageShopLogo
     private val shopBadgeImageView: ImageView? = viewBinding?.imageShopBadge
     private val shopChevronImageView: ImageView? = viewBinding?.shopPageChevronShopInfo
     private val shopNameTextView: Typography? = viewBinding?.textShopName
     private val shopOnlineImageView: ImageView? = viewBinding?.ivOnlineIcon
     private val shopBasicInfoAdditionalInfoTextView: Typography? = viewBinding?.textShopBasicInfoAdditionalInfo
     private var shopPageHeaderWidgetUiModel: ShopPageHeaderWidgetUiModel? = null
+
+    init {
+        shopLogoImageView?.updateSizeConfig {
+            it.copy(imageToBorderGap = 6.dp)
+        }
+    }
 
     override fun bind(modelPage: ShopPageHeaderWidgetUiModel) {
         shopPageHeaderWidgetUiModel = modelPage
@@ -69,7 +79,12 @@ class ShopPageHeaderBasicInfoWidgetViewHolder(
 
     private fun setShopLogo(component: ShopPageHeaderImageOnlyComponentUiModel?) {
         val shopLogoUrl = component?.image.orEmpty()
-        shopLogoImageView?.loadImageCircle(shopLogoUrl)
+        val shopId = component?.shopId.orEmpty()
+//        shopLogoImageView?.loadImageCircle(shopLogoUrl)
+        shopLogoImageView?.run {
+            storiesAvatarManager.manage(this, shopId)
+        }
+        shopLogoImageView?.setImageUrl(shopLogoUrl)
     }
 
     private fun setShopNameAndInfoSection(component: ShopPageHeaderBadgeTextValueComponentUiModel?) {

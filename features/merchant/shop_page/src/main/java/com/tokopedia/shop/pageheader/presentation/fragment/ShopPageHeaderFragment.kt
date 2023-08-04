@@ -201,6 +201,7 @@ import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
 import com.tokopedia.shop_widget.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop_widget.mvc_locked_to_product.util.MvcLockedToProductUtil
 import com.tokopedia.shop_widget.note.view.bottomsheet.ShopNoteBottomSheet
+import com.tokopedia.stories.common.storiesAvatarManager
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper
@@ -452,6 +453,8 @@ class ShopPageHeaderFragment :
     }
     private var queryParamTab: String = ""
 
+    private val storiesManager by storiesAvatarManager()
+
     override fun getComponent() = activity?.run {
         DaggerShopPageHeaderComponent.builder().shopPageHeaderModule(ShopPageHeaderModule())
             .shopComponent(ShopComponentHelper().getComponent(application, this)).build()
@@ -575,7 +578,8 @@ class ShopPageHeaderFragment :
             this,
             this,
             this,
-            this
+            this,
+            storiesManager,
         )
         initToolbar()
         initAdapter()
@@ -1336,6 +1340,7 @@ class ShopPageHeaderFragment :
     }
 
     private fun getInitialData() {
+        storiesManager.updateStories(listOf(shopId))
         hideMiniCartWidget()
         updateCurrentPageLocalCacheModelData()
         startMonitoringPltNetworkRequest()
@@ -2307,6 +2312,7 @@ class ShopPageHeaderFragment :
     }
 
     override fun refreshData() {
+        storiesManager.updateStories(listOf(shopId))
         hideShopPageFab()
         val shopProductListFragment: Fragment? = viewPagerAdapterHeader?.getRegisteredFragment(if (shopPageHeaderDataModel?.isOfficial == true) TAB_POSITION_HOME + 1 else TAB_POSITION_HOME)
         if (shopProductListFragment is ShopPageProductListFragment) {

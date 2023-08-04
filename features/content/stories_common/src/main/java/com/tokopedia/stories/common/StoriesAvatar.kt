@@ -68,7 +68,7 @@ internal fun StoriesAvatarContent(
                 imageUrl = imageUrl,
                 Modifier
                     .matchParentSize()
-                    .padding(sizeConfig.imageToBorderGap)
+                    .padding(if (storiesStatus == StoriesStatus.NoStories) 0.dp else sizeConfig.imageToBorderGap)
                     .clip(CircleShape)
             )
         }

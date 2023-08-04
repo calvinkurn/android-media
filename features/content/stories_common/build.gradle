@@ -45,6 +45,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.utils)
 
     implementation projectOrAar(rootProject.ext.features.contentCommon)
+    //to use viewlifecyclebound, will move it to content common in the next improvement
+    implementation projectOrAar(rootProject.ext.features.playCommon)
 
     implementation rootProject.ext.composeDependencies.composeUi
 

@@ -71,7 +71,7 @@ internal class StoriesAvatarViewModel @Inject constructor(
 
             runCatching {
                 _storiesMap.value.firstNotNullOf {
-                    if (it.value.status != StoriesStatus.NoStories) {
+                    if (it.value.status == StoriesStatus.HasUnseenStories) {
                         it.key
                     } else {
                         null

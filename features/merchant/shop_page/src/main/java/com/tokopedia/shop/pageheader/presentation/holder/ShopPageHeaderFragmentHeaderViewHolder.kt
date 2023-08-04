@@ -32,6 +32,7 @@ import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.Shop
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopPageHeaderRequestUnmoderateBottomSheet
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderTickerData
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel
+import com.tokopedia.stories.common.StoriesAvatarManager
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -50,7 +51,8 @@ class ShopPageHeaderFragmentHeaderViewHolder(
     private val shopPageHeaderActionButtonWidgetNoteButtonComponentListener: ShopPageHeaderActionButtonWidgetNoteButtonComponentViewHolder.Listener,
     private val shopPagePlayWidgetListener: ShopPageHeaderPlayWidgetViewHolder.Listener,
     private val chooseAddressWidgetListener: ChooseAddressWidget.ChooseAddressWidgetListener,
-    private val shopPageHeaderPerformanceWidgetImageTextListener: ShopPageHeaderPerformanceWidgetImageTextComponentViewHolder.Listener
+    private val shopPageHeaderPerformanceWidgetImageTextListener: ShopPageHeaderPerformanceWidgetImageTextComponentViewHolder.Listener,
+    private val storiesAvatarManager: StoriesAvatarManager,
 ) {
     private var isShopFavorite = false
     private var isUserNeverFollow = false
@@ -96,7 +98,8 @@ class ShopPageHeaderFragmentHeaderViewHolder(
                 shopPageHeaderActionButtonWidgetNoteButtonComponentListener,
                 shopPageTrackingSGCPlayWidget,
                 shopPagePlayWidgetListener,
-                shopPageHeaderPerformanceWidgetImageTextListener
+                shopPageHeaderPerformanceWidgetImageTextListener,
+                storiesAvatarManager,
             )
         )
         rvShopPageHeaderWidget?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)

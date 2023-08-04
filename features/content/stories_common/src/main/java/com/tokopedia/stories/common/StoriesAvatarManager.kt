@@ -46,7 +46,7 @@ class StoriesAvatarManager(
     init {
         lifecycleOwner.lifecycle.addObserver(object : LifecycleEventObserver {
             override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-                if (event == Lifecycle.Event.ON_PAUSE) coachMark.hide()
+                if (event == Lifecycle.Event.ON_PAUSE) hideCoachMark()
             }
         })
 
@@ -101,6 +101,10 @@ class StoriesAvatarManager(
         getViewModel().onIntent(
             StoriesAvatarIntent.GetStoriesStatus(shopIds)
         )
+    }
+
+    fun hideCoachMark() {
+        coachMark.hide()
     }
 
     private fun getViewModel(): StoriesAvatarViewModel {

@@ -17,6 +17,7 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderW
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel.WidgetType.SHOP_BASIC_INFO
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel.WidgetType.SHOP_PERFORMANCE
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel.WidgetType.SHOP_PLAY
+import com.tokopedia.stories.common.StoriesAvatarManager
 
 class ShopPageHeaderAdapterTypeFactory(
     private val shopPageHeaderBasicInfoWidgetListener: ShopPageHeaderBasicInfoWidgetViewHolder.Listener,
@@ -27,7 +28,8 @@ class ShopPageHeaderAdapterTypeFactory(
     private val shopPageHeaderActionButtonWidgetNoteButtonComponentListener: ShopPageHeaderActionButtonWidgetNoteButtonComponentViewHolder.Listener,
     private val sgcPlayWidget: ShopPageTrackingSGCPlayWidget?,
     private val shopPagePlayWidgetListener: ShopPageHeaderPlayWidgetViewHolder.Listener,
-    private val shopPageHeaderPerformanceWidgetImageTextListener: ShopPageHeaderPerformanceWidgetImageTextComponentViewHolder.Listener
+    private val shopPageHeaderPerformanceWidgetImageTextListener: ShopPageHeaderPerformanceWidgetImageTextComponentViewHolder.Listener,
+    private val storiesAvatarManager: StoriesAvatarManager,
 ) : BaseAdapterTypeFactory() {
 
     private var adapterShopHeader: ShopPageHeaderAdapter? = null
@@ -48,7 +50,11 @@ class ShopPageHeaderAdapterTypeFactory(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            ShopPageHeaderBasicInfoWidgetViewHolder.LAYOUT -> ShopPageHeaderBasicInfoWidgetViewHolder(parent, shopPageHeaderBasicInfoWidgetListener)
+            ShopPageHeaderBasicInfoWidgetViewHolder.LAYOUT -> ShopPageHeaderBasicInfoWidgetViewHolder(
+                parent,
+                shopPageHeaderBasicInfoWidgetListener,
+                storiesAvatarManager
+            )
             ShopHeaderPerformanceWidgetViewHolder.LAYOUT -> ShopHeaderPerformanceWidgetViewHolder(
                 parent,
                 shopPageHeaderPerformanceWidgetBadgeTextValueListener,
