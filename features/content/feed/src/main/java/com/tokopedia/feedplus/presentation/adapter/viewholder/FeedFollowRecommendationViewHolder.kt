@@ -127,8 +127,6 @@ class FeedFollowRecommendationViewHolder(
         selectedPosition: Int,
         isViewHolderSelected: Boolean
     ) {
-        println("JOE LOG setupLayout ${model.id} ${model.status}")
-
         when (model.status) {
             FeedFollowRecommendationModel.Status.Loading -> {
                 if (model.data.isEmpty()) {
