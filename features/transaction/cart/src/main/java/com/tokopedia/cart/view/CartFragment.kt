@@ -4588,8 +4588,6 @@ class CartFragment :
             )
         )
 
-        println("++ applink = $applink")
-
         activity?.let {
             val intent = RouteManager.getIntent(it, applink)
             startActivityForResult(intent, NAVIGATION_ADDON)

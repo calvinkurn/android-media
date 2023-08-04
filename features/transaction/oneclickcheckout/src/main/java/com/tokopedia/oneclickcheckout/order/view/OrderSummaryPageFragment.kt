@@ -380,7 +380,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 for (index in listProducts.indices) {
                     if (listProducts[index].cartId == cartId) {
                         listProducts[index].addOnsProductData.data.forEach { addOnExisting ->
-                            println("++ existing addon = ${addOnExisting.name}, status = ${addOnExisting.status}, type = ${addOnExisting.type}")
                             for (addOnUiModel in addOnProductDataResult.aggregatedData.selectedAddons) {
                                 // value 0 from selectedAddons means no changes
                                 if (addOnUiModel.addOnType == addOnExisting.type) {
@@ -1618,7 +1617,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toString().removeSingleDecimalSuffix()
                 )
             )
-            println("++ applink = " + applink)
 
             activity?.let {
                 val intent = RouteManager.getIntent(it, applink)

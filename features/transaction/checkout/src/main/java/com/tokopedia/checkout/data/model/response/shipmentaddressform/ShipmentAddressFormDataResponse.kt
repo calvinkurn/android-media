@@ -78,22 +78,4 @@ data class ShipmentAddressFormDataResponse(
     val shipmentPlatformFee: ShipmentPlatformFee = ShipmentPlatformFee(),
     @SerializedName("add_ons_summary")
     val listSummaryAddOns: List<ShipmentSummaryAddOn> = emptyList()
-) {
-
-    fun a() {
-        val map = hashMapOf<Int, String>()
-        for (listSummaryAddOn in listSummaryAddOns) {
-            map[listSummaryAddOn.type] = listSummaryAddOn.wording
-        }
-
-        // calculate - hashMapOf<typeAddon, Pair<priceAddOn, qtyAddOn>>
-        val countMap = hashMapOf<Int, Pair<Double, Int>>()
-        countMap[1] = 200000.0 to 1 // jasa pasang
-        countMap[2] = 300000.0 to 3 // proteksi
-
-        for (entry in countMap) {
-            val text = map[entry.key]!!.replace("qty", entry.value.second.toString()) // Total Jasa Pasang ({{qty}} Jasa)
-            val valuetext = map[entry.key]!!.replace("qty", entry.value.first.toString()) // Total Jasa Pasang ({{qty}} Jasa)
-        }
-    }
-}
+)
