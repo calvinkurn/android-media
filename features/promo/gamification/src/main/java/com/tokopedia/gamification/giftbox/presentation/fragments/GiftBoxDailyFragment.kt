@@ -961,6 +961,10 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment(), RewardContainerListener {
     }
 
     override fun onTrigger(position: Int) {
+        val benefitType = giftBoxRewardEntity?.gamiCrack?.benefits?.get(position)?.benefitType
+        if(benefitType == BenefitType.GO_PAY_COINS) {
+            return
+        }
         applyCoupon(position)
         routeBasedOnActionButton()
     }
