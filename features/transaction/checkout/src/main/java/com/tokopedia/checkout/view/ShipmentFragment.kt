@@ -877,6 +877,7 @@ class ShipmentFragment :
             isInitialRender,
             isReloadAfterPriceChangeHigher
         )
+        shipmentAdapter.updateInsuranceTncVisibility()
     }
 
     fun stopTrace() {
@@ -3947,6 +3948,7 @@ class ShipmentFragment :
             )
         )
 
+        checkoutAnalyticsCourierSelection.eventClickLihatSemuaAddOnsProductServiceWidget()
         activity?.let {
             val intent = RouteManager.getIntent(it, applink)
             startActivityForResult(intent, REQUEST_CODE_ADD_ON_PRODUCT_SERVICE_BOTTOMSHEET)

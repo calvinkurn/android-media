@@ -131,8 +131,6 @@ import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
-import com.tokopedia.purchase_platform.common.feature.addons.data.request.AddOnDataRequest
-import com.tokopedia.purchase_platform.common.feature.addons.data.request.CartProduct
 import com.tokopedia.purchase_platform.common.feature.addons.domain.SaveAddOnStateUseCase
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.model.UpdateDynamicDataPassingUiModel
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest
@@ -1045,7 +1043,6 @@ class ShipmentViewModel @Inject constructor(
         fetchPrescriptionIds(cartShipmentAddressFormData.epharmacyData)
         cartDataForRates = cartShipmentAddressFormData.cartData
         shippingCourierViewModelsState = hashMapOf()
-        mapRequestSaveAddonProductService(cartShipmentAddressFormData)
         summariesAddOnUiModel = ShipmentAddOnProductServiceMapper.getShoppingSummaryAddOns(cartShipmentAddressFormData.listSummaryAddons)
     }
 
@@ -5610,36 +5607,6 @@ class ShipmentViewModel @Inject constructor(
     // endregion
 
     // region addons product service
-    private fun mapRequestSaveAddonProductService(cartShipmentAddressFormData: CartShipmentAddressFormData) {
-        val listCartProduct: ArrayList<CartProduct> = arrayListOf()
-        val listAddOnDataRequest: ArrayList<AddOnDataRequest> = arrayListOf()
-        cartShipmentAddressFormData.groupAddress.forEach { groupAddress ->
-            groupAddress.groupShop.forEach { groupShop ->
-                groupShop.groupShopData.forEach { groupShopV2 ->
-                    groupShopV2.products.forEach { product ->
-                        val cartProduct = CartProduct(
-                            cartId = product.cartId,
-                            productId = product.productId,
-                            productName = product.productName,
-                            productParentId = product.variantParentId
-                        )
-                        listCartProduct.add(cartProduct)
-                        product.addOnProduct.listAddOnProductData.forEach { addonProduct ->
-                            val addOnDataRequest = AddOnDataRequest(
-                                addOnId = addonProduct.id,
-                                addOnQty = 1,
-                                addOnUniqueId = addonProduct.uniqueId,
-                                addOnType = addonProduct.type,
-                                addOnStatus = addonProduct.status
-                            )
-                            listAddOnDataRequest.add(addOnDataRequest)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     fun saveAddOnsProduct(cartItemModel: CartItemModel) {
         val params = ShipmentAddOnProductServiceMapper.generateSaveAddOnProductRequestParams(cartItemModel, isOneClickShipment)
         saveAddOnProductUseCase.setParams(params, true)
