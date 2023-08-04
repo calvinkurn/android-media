@@ -145,7 +145,7 @@ internal class StoriesAvatarAnimationState {
 
     suspend fun animate() = coroutineScope {
         _scale.animateTo(
-            0.95f,
+            0.94f,
             tween(200)
         )
 
