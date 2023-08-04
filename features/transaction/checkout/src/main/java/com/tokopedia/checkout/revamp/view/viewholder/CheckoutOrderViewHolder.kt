@@ -10,12 +10,15 @@ import com.tokopedia.checkout.databinding.ItemCheckoutOrderBinding
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutAddressModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.shipping.features.shippingwidget.ShippingCheckoutRevampWidget
 import com.tokopedia.logisticcart.shipping.model.InsuranceWidgetUiModel
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingWidgetUiModel
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.InsuranceBottomSheet
+import com.tokopedia.purchase_platform.common.prefs.PlusCoachmarkPrefs
 
 class CheckoutOrderViewHolder(
     private val binding: ItemCheckoutOrderBinding,
@@ -24,6 +27,10 @@ class CheckoutOrderViewHolder(
     ShippingCheckoutRevampWidget.ShippingWidgetListener {
 
     private lateinit var order: CheckoutOrderModel
+
+    private val plusCoachmarkPrefs: PlusCoachmarkPrefs by lazy {
+        PlusCoachmarkPrefs(itemView.context)
+    }
 
     fun bind(order: CheckoutOrderModel, addressModel: CheckoutAddressModel?) {
         this.order = order
@@ -95,12 +102,10 @@ class CheckoutOrderViewHolder(
                             currentAddress = RecipientAddressModel()
                         )
                     )
-                    // todo coachmark
-
-                    //                showMultiplePlusOrderCoachmark(
-//                    shipmentCartItemModel,
-//                    shippingWidget.layoutStateNoSelectedShipping
-//                )
+                    showMultiplePlusOrderCoachmark(
+                        order,
+                        binding.shippingWidget.layoutStateNoSelectedShipping
+                    )
                 }
                 loadCourierState(order, addressModel?.recipientAddressModel)
             } else if (courierItemData.scheduleDeliveryUiModel != null) {
@@ -464,6 +469,26 @@ class CheckoutOrderViewHolder(
             )
         )
         order.isTriggerShippingVibrationAnimation = false
+    }
+
+    private fun showMultiplePlusOrderCoachmark(
+        order: CheckoutOrderModel,
+        anchorView: View?
+    ) {
+        if (order.coachmarkPlus.isShown && !plusCoachmarkPrefs.getPlusCoachMarkHasShown() && anchorView != null) {
+            val coachMarkItem = ArrayList<CoachMark2Item>()
+            val coachMark = CoachMark2(itemView.context)
+            coachMarkItem.add(
+                CoachMark2Item(
+                    anchorView,
+                    order.coachmarkPlus.title,
+                    order.coachmarkPlus.content,
+                    CoachMark2.POSITION_BOTTOM
+                )
+            )
+            coachMark.showCoachMark(coachMarkItem, null, 0)
+            plusCoachmarkPrefs.setPlusCoachmarkHasShown(true)
+        }
     }
 
     companion object {

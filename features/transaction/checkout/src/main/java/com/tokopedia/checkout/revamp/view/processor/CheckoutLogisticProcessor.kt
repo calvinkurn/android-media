@@ -489,7 +489,18 @@ class CheckoutLogisticProcessor @Inject constructor(
                                 )
                                 for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
                                     if (shippingCourierUiModel.productData.shipperProductId == newSelectedSpId && !shippingCourierUiModel.serviceData.isUiRatesHidden) {
-                                        if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
+                                        if (shippingCourierUiModel.productData.error.errorMessage.isNotEmpty()) {
+                                            CheckoutLogger.logOnErrorLoadCourierNew(
+                                                MessageErrorException(
+                                                    shippingCourierUiModel.productData.error.errorMessage
+                                                ),
+                                                orderModel,
+                                                isOneClickShipment,
+                                                isTradeIn,
+                                                isTradeInByDropOff,
+                                                boPromoCode
+                                            )
+                                            return@withContext null
 //                                            view?.renderCourierStateFailed(
 //                                                shipmentGetCourierHolderData.itemPosition,
 //                                                false,
@@ -517,6 +528,15 @@ class CheckoutLogisticProcessor @Inject constructor(
 //                                            return@withContext courierItemData
                                             if (shippingCourierUiModel.productData.isUiRatesHidden && shippingCourierUiModel.serviceData.selectedShipperProductId == 0 && courierItemData.logPromoCode.isNullOrEmpty()) {
                                                 // courier should only be used with BO, but no BO code found
+                                                CheckoutLogger.logOnErrorLoadCourierNew(
+                                                    MessageErrorException("rates ui hidden but no promo"),
+                                                    orderModel,
+                                                    isOneClickShipment,
+                                                    isTradeIn,
+                                                    isTradeInByDropOff,
+                                                    boPromoCode
+                                                )
+                                                return@withContext null
 //                                                view?.renderCourierStateFailed(
 //                                                    shipmentGetCourierHolderData.itemPosition,
 //                                                    false,
@@ -614,7 +634,7 @@ class CheckoutLogisticProcessor @Inject constructor(
                             if (shippingDuration != null) {
                                 val shippingCourier =
                                     shippingDuration.shippingCourierViewModelList.firstOrNull {
-                                        it.productData.error?.errorMessage.isNullOrEmpty()
+                                        it.productData.error.errorMessage.isEmpty()
                                     }
                                 if (shippingCourier != null) {
                                     val courierItemData = generateCourierItemData(
@@ -696,6 +716,16 @@ class CheckoutLogisticProcessor @Inject constructor(
                 } else {
                     errorReason = "rates empty data"
                 }
+                CheckoutLogger.logOnErrorLoadCourierNew(
+                    MessageErrorException(
+                        errorReason
+                    ),
+                    orderModel,
+                    isOneClickShipment,
+                    isTradeIn,
+                    isTradeInByDropOff,
+                    boPromoCode
+                )
 //                view?.renderCourierStateFailed(
 //                    shipmentGetCourierHolderData.itemPosition,
 //                    false,
@@ -841,7 +871,10 @@ class CheckoutLogisticProcessor @Inject constructor(
         selectedServiceId: Int,
         selectedSpId: Int,
         fullfilmentId: String,
-        orderModel: CheckoutOrderModel
+        orderModel: CheckoutOrderModel,
+        isOneClickShipment: Boolean,
+        isTradeIn: Boolean,
+        isTradeInByDropOff: Boolean
     ): Triple<CourierItemData, InsuranceData, List<ShippingCourierUiModel>>? {
         return withContext(dispatchers.io) {
             try {
@@ -868,7 +901,18 @@ class CheckoutLogisticProcessor @Inject constructor(
                                     }
                                     for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
                                         if (shippingCourierUiModel.productData.shipperProductId == logisticPromo.shipperProductId && shippingCourierUiModel.productData.shipperId == logisticPromo.shipperId) {
-                                            if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
+                                            if (shippingCourierUiModel.productData.error.errorMessage.isNotEmpty()) {
+                                                CheckoutLogger.logOnErrorLoadCourierNew(
+                                                    MessageErrorException(
+                                                        shippingCourierUiModel.productData.error.errorMessage
+                                                    ),
+                                                    orderModel,
+                                                    isOneClickShipment,
+                                                    isTradeIn,
+                                                    isTradeInByDropOff,
+                                                    boPromoCode
+                                                )
+                                                return@withContext null
 //                                                view?.renderCourierStateFailed(
 //                                                    shipmentGetCourierHolderData.itemPosition,
 //                                                    false,
@@ -969,7 +1013,18 @@ class CheckoutLogisticProcessor @Inject constructor(
                                     }
                                 for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
                                     if (shippingCourierUiModel.productData.shipperProductId == currentSelectedSpId && !shippingCourierUiModel.serviceData.isUiRatesHidden) {
-                                        if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
+                                        if (shippingCourierUiModel.productData.error.errorMessage.isNotEmpty()) {
+                                            CheckoutLogger.logOnErrorLoadCourierNew(
+                                                MessageErrorException(
+                                                    shippingCourierUiModel.productData.error.errorMessage
+                                                ),
+                                                orderModel,
+                                                isOneClickShipment,
+                                                isTradeIn,
+                                                isTradeInByDropOff,
+                                                boPromoCode
+                                            )
+                                            return@withContext null
 //                                            view?.renderCourierStateFailed(
 //                                                shipmentGetCourierHolderData.itemPosition,
 //                                                false,
@@ -997,6 +1052,15 @@ class CheckoutLogisticProcessor @Inject constructor(
                                                 )
                                             if (shippingCourierUiModel.productData.isUiRatesHidden && shippingCourierUiModel.serviceData.selectedShipperProductId == 0 && courierItemData.logPromoCode.isNullOrEmpty()) {
                                                 // courier should only be used with BO, but no BO code found
+                                                CheckoutLogger.logOnErrorLoadCourierNew(
+                                                    MessageErrorException("rates ui hidden but no promo"),
+                                                    orderModel,
+                                                    isOneClickShipment,
+                                                    isTradeIn,
+                                                    isTradeInByDropOff,
+                                                    boPromoCode
+                                                )
+                                                return@withContext null
 //                                                view?.renderCourierStateFailed(
 //                                                    shipmentGetCourierHolderData.itemPosition,
 //                                                    false,
@@ -1095,7 +1159,7 @@ class CheckoutLogisticProcessor @Inject constructor(
                             if (shippingDuration != null) {
                                 val shippingCourier =
                                     shippingDuration.shippingCourierViewModelList.firstOrNull {
-                                        it.productData.error?.errorMessage.isNullOrEmpty()
+                                        it.productData.error.errorMessage.isEmpty()
                                     }
                                 if (shippingCourier != null) {
                                     val courierItemData =
@@ -1179,6 +1243,16 @@ class CheckoutLogisticProcessor @Inject constructor(
                 } else {
                     errorReason = "rates empty data"
                 }
+                CheckoutLogger.logOnErrorLoadCourierNew(
+                    MessageErrorException(
+                        errorReason
+                    ),
+                    orderModel,
+                    isOneClickShipment,
+                    isTradeIn,
+                    isTradeInByDropOff,
+                    boPromoCode
+                )
 //                view?.renderCourierStateFailed(
 //                    shipmentGetCourierHolderData.itemPosition,
 //                    false,
@@ -1302,7 +1376,9 @@ class CheckoutLogisticProcessor @Inject constructor(
         selectedSpId: Int,
         orderModel: CheckoutOrderModel,
         isTradeInDropOff: Boolean,
-        promoCode: String
+        promoCode: String,
+        isOneClickShipment: Boolean,
+        isTradeIn: Boolean
     ): Triple<CourierItemData, InsuranceData, List<ShippingCourierUiModel>>? {
         return withContext(dispatchers.io) {
             try {
@@ -1330,6 +1406,16 @@ class CheckoutLogisticProcessor @Inject constructor(
                                 for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
                                     if (isTradeInDropOff || shippingCourierUiModel.productData.shipperProductId == selectedSpId && shippingCourierUiModel.productData.shipperId == selectedServiceId) {
                                         if (shippingCourierUiModel.productData.error.errorMessage.isNotEmpty()) {
+                                            CheckoutLogger.logOnErrorLoadCourierNew(
+                                                MessageErrorException(
+                                                    shippingCourierUiModel.productData.error.errorMessage
+                                                ),
+                                                orderModel,
+                                                isOneClickShipment,
+                                                isTradeIn,
+                                                isTradeInDropOff,
+                                                promoCode
+                                            )
                                             return@withContext null
 //                                            cancelAutoApplyPromoStackLogistic(
 //                                                itemPosition,
@@ -1446,6 +1532,14 @@ class CheckoutLogisticProcessor @Inject constructor(
                 throw MessageErrorException(errorReason)
             } catch (t: Throwable) {
                 Timber.d(t)
+                CheckoutLogger.logOnErrorLoadCourierNew(
+                    t,
+                    orderModel,
+                    isOneClickShipment,
+                    isTradeIn,
+                    isTradeInDropOff,
+                    promoCode
+                )
                 return@withContext null
             }
         }

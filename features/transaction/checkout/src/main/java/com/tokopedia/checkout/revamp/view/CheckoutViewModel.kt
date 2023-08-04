@@ -857,7 +857,8 @@ class CheckoutViewModel @Inject constructor(
             order.shippingId,
             order.spId,
             order.fulfillmentId.toString(),
-            order
+            order,
+            isOneClickShipment, isTradeIn, isTradeInByDropOff
         )
         val list = listData.value.toMutableList()
         val orderModel = list[cartPosition] as? CheckoutOrderModel
@@ -1825,9 +1826,12 @@ class CheckoutViewModel @Inject constructor(
                 // when messageInfo is empty and has unapplied BO show hard coded toast
                 commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_NORMAL, "Pengiriman disesuaikan karena ada perubahan di promo yang kamu pilih."))
             }
-            toBeAppliedVoucherOrders.forEach { voucher ->
+            for (voucher in toBeAppliedVoucherOrders) {
                 val cartPosition = checkoutItems.indexOfFirst { it is CheckoutOrderModel && it.cartStringGroup == voucher.cartStringGroup }
                 val order = checkoutItems[cartPosition] as CheckoutOrderModel
+                if (voucher.code == order.shipment.courierItemData?.logPromoCode) {
+                    continue
+                }
                 val result = logisticProcessor.getRatesWithBoCode(
                     logisticProcessor.getRatesParam(
                         order,
@@ -1846,7 +1850,9 @@ class CheckoutViewModel @Inject constructor(
                     voucher.spId,
                     order,
                     isTradeInByDropOff,
-                    voucher.code
+                    voucher.code,
+                    isOneClickShipment,
+                    isTradeIn
                 )
                 if (result?.first != null) {
                     val courierItemData = result.first
@@ -1903,6 +1909,18 @@ class CheckoutViewModel @Inject constructor(
                         ).toMutableList()
                     }
                 } else {
+                    promoProcessor.clearPromo(
+                        ClearPromoOrder(
+                            order.boUniqueId,
+                            order.boMetadata.boType,
+                            arrayListOf(voucher.code),
+                            order.shopId,
+                            order.isProductIsPreorder,
+                            order.preOrderDurationDay.toString(),
+                            order.fulfillmentId,
+                            order.cartStringGroup
+                        )
+                    )
                     val newOrderModel = order.copy(
                         shipment = order.shipment.copy(
                             isLoading = false,
@@ -1936,6 +1954,7 @@ class CheckoutViewModel @Inject constructor(
             if (firstScrollIndex != -1) {
                 pageState.value = CheckoutPageState.ScrollTo(firstScrollIndex)
             }
+            validatePromo()
             pageState.value = CheckoutPageState.Normal
             launch {
                 cartProcessor.processSaveShipmentState(
@@ -1943,7 +1962,6 @@ class CheckoutViewModel @Inject constructor(
                     listData.value.address()!!.recipientAddressModel
                 )
             }
-            calculateTotal()
         }
     }
 
