@@ -52,9 +52,9 @@
         app:icon_color_night_disabled="@color/Unify_Static_White"
         app:icon_color_night_enable="@color/Unify_Static_White"
         app:icon_name="CHEVRON_RIGHT"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_explore"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_play_explore"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tv_explore"
-        app:layout_constraintTop_toTopOf="@+id/tv_explore" />
+        app:layout_constraintTop_toTopOf="@+id/tv_play_explore" />
 
 </com.tokopedia.play_common.view.RoundedConstraintLayout>
