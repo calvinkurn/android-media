@@ -84,7 +84,9 @@ object MixLeftComponentTracking : BaseTrackerConst() {
                     recommendationType = grid.recommendationType,
                     headerName = channel.channelHeader.name,
                     pageName = channel.pageName,
-                    isCarousel = true
+                    isCarousel = true,
+                    warehouseId = grid.warehouseId,
+                    isFulfillment = grid.labelGroup.hasLabelGroupFulfillment()
                 )
             ),
             list = LIST_CAROUSEL_PRODUCT.format(
@@ -130,7 +132,9 @@ object MixLeftComponentTracking : BaseTrackerConst() {
                     recommendationType = grid.recommendationType,
                     headerName = channel.channelHeader.name,
                     pageName = channel.pageName,
-                    isCarousel = true
+                    isCarousel = true,
+                    warehouseId = grid.warehouseId,
+                    isFulfillment = grid.labelGroup.hasLabelGroupFulfillment()
                 )
             ),
             list = LIST_CAROUSEL_PRODUCT.format(
@@ -176,7 +180,9 @@ object MixLeftComponentTracking : BaseTrackerConst() {
                     recommendationType = grid.recommendationType,
                     headerName = channel.channelHeader.name,
                     pageName = channel.pageName,
-                    isCarousel = true
+                    isCarousel = true,
+                    warehouseId = grid.warehouseId,
+                    isFulfillment = grid.labelGroup.hasLabelGroupFulfillment()
                 )
             ),
             list = LIST_CAROUSEL_PRODUCT.format(

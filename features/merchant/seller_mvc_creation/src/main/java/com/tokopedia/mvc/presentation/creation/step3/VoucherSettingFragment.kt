@@ -262,7 +262,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 renderFreeShippingQuotaInputValidation(state.isQuotaError, state.quotaErrorMsg)
             }
             else -> {
-                //no-op
+                // no-op
             }
         }
     }
@@ -310,7 +310,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 renderCashbackQuotaInputValidation(state.isQuotaError, state.quotaErrorMsg)
             }
             else -> {
-                //no-op
+                // no-op
             }
         }
     }
@@ -359,7 +359,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 renderDiscountQuotaInputValidation(state.isQuotaError, state.quotaErrorMsg)
             }
             else -> {
-                //no-op
+                // no-op
             }
         }
     }
@@ -579,7 +579,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 getString(R.string.smvc_creation_step_three_out_of_three_sub_title_label)
             }
             setNavigationOnClickListener {
-                viewModel.processEvent(VoucherCreationStepThreeEvent.TapBackButton)
+                onFragmentBackPressed()
                 tracker.sendClickKembaliArrowEvent(voucherConfiguration.voucherId)
             }
         }
@@ -1281,6 +1281,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         } else {
             navigateToVoucherSummaryPage(voucherConfiguration)
         }
+        activity?.finish()
     }
 
     private fun continueToNextStep(voucherConfiguration: VoucherConfiguration) {

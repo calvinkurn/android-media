@@ -26,8 +26,8 @@ import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getRegistered
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getShopPageInternalAppLink
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.model.Always
-import com.tokopedia.applink.model.DLPLogic
 import com.tokopedia.applink.model.DLP
+import com.tokopedia.applink.model.DLPLogic
 import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
@@ -88,7 +88,8 @@ object DeeplinkMapper {
 
             DeeplinkConstant.SCHEME_TOKOPEDIA -> {
                 val query = getQuery(deeplink, uri)
-                val tempDeeplink = getRegisteredNavigation(context, getTokopediaSchemeList(), uri, deeplink)
+                val tempDeeplink =
+                    getRegisteredNavigation(context, getTokopediaSchemeList(), uri, deeplink)
                 UriUtil.appendDiffDeeplinkWithQuery(tempDeeplink, query)
             }
 
@@ -194,9 +195,9 @@ object DeeplinkMapper {
     fun getRegisteredNavigationFromHttp(context: Context, uri: Uri, deeplink: String): String {
         val pathSize = uri.pathSegments.size
         if (pathSize == 1 && (
-                    uri.pathSegments[0] == TOKOPOINTS ||
-                            uri.pathSegments[0] == ApplinkConst.RewardFallback.Reward.REWARDS
-                    )
+                uri.pathSegments[0] == TOKOPOINTS ||
+                    uri.pathSegments[0] == ApplinkConst.RewardFallback.Reward.REWARDS
+                )
         ) {
             return ApplinkConstInternalPromo.TOKOPOINTS_HOME
         }
@@ -324,7 +325,7 @@ object DeeplinkMapper {
         return ""
     }
 
-    fun getList(sourceMap: Map<String, MutableList<DLP>>, uri:Uri):MutableList<DLP>?{
+    fun getList(sourceMap: Map<String, MutableList<DLP>>, uri: Uri): MutableList<DLP>? {
         return sourceMap[uri.host ?: ""]
     }
 
@@ -397,7 +398,9 @@ object DeeplinkMapper {
                 deeplink
             )
 
-            deeplink.startsWithPattern(ApplinkConstInternalUserPlatform.GOTO_KYC) -> DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
+            deeplink.startsWithPattern(ApplinkConstInternalUserPlatform.GOTO_KYC) -> DeeplinkMapperUser.getRegisteredNavigationUser(
+                deeplink
+            )
 
             else -> return ""
         }

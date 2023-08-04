@@ -22,6 +22,7 @@ import com.tokopedia.linter.unify.UnifyComponentsList
 import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UField
+import org.jetbrains.uast.UFieldEx
 import org.jetbrains.uast.ULocalVariable
 import org.jetbrains.uast.UMethod
 import org.jetbrains.uast.UReturnExpression
@@ -154,7 +155,7 @@ class UnsupportedNestColorDetector : Detector(), XmlScanner, SourceCodeScanner {
     // region JAVA detector
     override fun getApplicableUastTypes(): List<Class<out UElement>> {
         return listOf(
-            UField::class.java,
+            UFieldEx::class.java,
             ULocalVariable::class.java,
             UCallExpression::class.java,
             UReturnExpression::class.java,
@@ -164,6 +165,7 @@ class UnsupportedNestColorDetector : Detector(), XmlScanner, SourceCodeScanner {
 
     override fun createUastHandler(context: JavaContext): UElementHandler {
         return object : UElementHandler() {
+
             override fun visitField(node: UField) {
                 val value = node.text
                 validate(node = node, value = value)
@@ -211,7 +213,7 @@ class UnsupportedNestColorDetector : Detector(), XmlScanner, SourceCodeScanner {
                 }
             }
 
-            private fun validate(node: UVariable, value: String) {
+            private fun validate(node: UVariable?, value: String) {
                 if (shouldScanResource(value = value)) {
                     reportJavaError(context = context, node = node)
                 }
