@@ -34,6 +34,8 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        tools:itemCount="5"
+        tools:listitem="@layout/item_shop_home_showcase"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
