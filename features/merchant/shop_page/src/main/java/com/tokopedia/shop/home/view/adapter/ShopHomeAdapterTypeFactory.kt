@@ -228,48 +228,25 @@ open class ShopHomeAdapterTypeFactory(
         return model.widgetState == WidgetState.PLACEHOLDER || model.widgetState == WidgetState.LOADING
     }
 
-    private fun determineShowcaseNavigationBannerWidget(model : BaseShopHomeWidgetUiModel) : Int {
+    private fun determineShowcaseNavigationBannerWidget(model: BaseShopHomeWidgetUiModel): Int {
         val uiModel = model as? ShopHomeShowcaseUiModel
 
         val firstShowcase = uiModel?.tabs?.getOrNull(0)
+        val showcaseMainBannerPosition = firstShowcase?.mainBannerPosition
+            ?: ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.CAROUSEL
 
-        val firstShowCaseTabName = firstShowcase?.text.orEmpty()
-        val showShowcaseTab = firstShowCaseTabName.isNotEmpty() //"text" will be empty string if we don't need to display tab
-
-        val showcaseMainBannerPosition = firstShowcase?.mainBannerPosition ?: ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.CAROUSEL
-
-        return when {
-            //Left Main Banner + Tab
-            showShowcaseTab && showcaseMainBannerPosition == ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.LEFT -> {
+        return when (showcaseMainBannerPosition) {
+            ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.LEFT -> {
                 ShopHomeShowCaseLeftMainBannerViewHolder.LAYOUT
             }
 
-            //Top Main Banner + Tab
-            showShowcaseTab && showcaseMainBannerPosition == ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.TOP -> {
+            ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.TOP -> {
                 ShopHomeShowCaseTopMainBannerViewHolder.LAYOUT
             }
 
-            //Carousel + Tab
-            showShowcaseTab && showcaseMainBannerPosition == ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.CAROUSEL -> {
+            ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.CAROUSEL -> {
                 ShopHomeShowCaseCarouselViewHolder.LAYOUT
             }
-
-            //Left Main Banner
-            !showShowcaseTab && showcaseMainBannerPosition == ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.LEFT -> {
-                ShopHomeShowCaseLeftMainBannerViewHolder.LAYOUT
-            }
-
-            //Top Main Banner
-            !showShowcaseTab && showcaseMainBannerPosition == ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.TOP -> {
-                ShopHomeShowCaseTopMainBannerViewHolder.LAYOUT
-            }
-
-            //Carousel
-            !showShowcaseTab && showcaseMainBannerPosition == ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.CAROUSEL -> {
-                ShopHomeShowCaseCarouselViewHolder.LAYOUT
-            }
-
-            else -> ShopHomeShowCaseCarouselViewHolder.LAYOUT
         }
     }
 
