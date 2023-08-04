@@ -155,6 +155,7 @@ class FeedPostViewModel @Inject constructor(
     private var fetchPostJob: Job? = null
 
     private var cursor = ""
+    private var hasNext = true
     private var currentTopAdsPage = 0
     private var shouldFetchTopAds = true
 
@@ -181,6 +182,7 @@ class FeedPostViewModel @Inject constructor(
         postSource: PostSourceModel? = null
     ) {
         if (fetchPostJob?.isActive == true) return
+        if (!isNewData && !hasNext) return
 
         _shouldShowNoMoreContent = false
         if (isNewData) _feedHome.value = null
@@ -280,6 +282,8 @@ class FeedPostViewModel @Inject constructor(
 
                         _shouldShowNoMoreContent = items.isEmpty() &&
                             source == FeedBaseFragment.TAB_TYPE_FOLLOWING
+
+                        hasNext = feedPosts.pagination.hasNext
 
                         Success(
                             data = feedPosts.data.copy(
