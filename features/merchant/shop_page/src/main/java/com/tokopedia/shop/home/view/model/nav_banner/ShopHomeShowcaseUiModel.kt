@@ -19,7 +19,32 @@ data class ShopHomeShowcaseUiModel(
     override val isFestivity: Boolean = false,
 ): BaseShopHomeWidgetUiModel() {
 
-    data class CategoryHeader(val title: String, val ctaLink: String, val widgetStyle: String)
+    data class CategoryHeader(
+        val title: String,
+        val ctaLink: String,
+        val widgetStyle: ShopHomeShowcaseWidgetStyle
+    )
+
+
+    enum class ShopHomeShowcaseWidgetStyle {
+        ROUNDED_CORNER,
+        CIRCLE
+    }
+
+    enum class ShopHomeShowcaseMainBannerPosition {
+        LEFT,
+        TOP,
+        CAROUSEL
+    }
+
+    data class ShopHomeShowcase(
+        val id: String,
+        val name: String,
+        val imageUrl: String,
+        val ctaLink: String,
+        val isMainBanner: Boolean
+    )
+
 
     override fun type(typeFactory: ShopWidgetTypeFactory): Int {
         return if (typeFactory is ShopHomeAdapterTypeFactory) {

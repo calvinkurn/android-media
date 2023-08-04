@@ -189,9 +189,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.shop.home.view.model.ShopPageLayoutUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
-import com.tokopedia.shop.home.view.model.nav_banner.ShopHomeShowcase
 import com.tokopedia.shop.home.view.model.nav_banner.ShopHomeShowcaseUiModel
-import com.tokopedia.shop.home.view.model.nav_banner.ShopHomeShowcaseMainBannerPosition
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
@@ -1266,38 +1264,42 @@ open class ShopPageHomeFragment :
                         shopHomeAdapter?.setHomeCategoryData(
                             ShopHomeShowcaseUiModel(
                                 widgetId = "5432",
-                                mainBannerPosition = ShopHomeShowcaseMainBannerPosition.LEFT,
-                                categoryHeader = ShopHomeShowcaseUiModel.CategoryHeader("Explore Categories", "tokopedia://shop/6553224?tab=EtalaseTab", "rounded-corner"),
+                                mainBannerPosition = ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.LEFT,
+                                categoryHeader = ShopHomeShowcaseUiModel.CategoryHeader(
+                                    "Explore Categories",
+                                    "tokopedia://shop/6553224?tab=EtalaseTab",
+                                    ShopHomeShowcaseUiModel.ShopHomeShowcaseWidgetStyle.ROUNDED_CORNER
+                                ),
                                 showcases = listOf(
-                                    ShopHomeShowcase(
+                                    ShopHomeShowcaseUiModel.ShopHomeShowcase(
                                         id = "121",
                                         name = "Wearable Device",
                                         imageUrl = EMPTY_PRODUCT_SEARCH_IMAGE_URL,
                                         ctaLink = "tokopedia://shop/123/etalase/etalase-tablet",
                                         isMainBanner = true
                                     ),
-                                    ShopHomeShowcase(
+                                    ShopHomeShowcaseUiModel.ShopHomeShowcase(
                                         id = "122",
                                         name = "Tablet",
                                         imageUrl = EMPTY_PRODUCT_SEARCH_IMAGE_URL,
                                         ctaLink = "tokopedia://shop/123/etalase/etalase-tablet",
                                         isMainBanner = false
                                     ),
-                                    ShopHomeShowcase(
+                                    ShopHomeShowcaseUiModel.ShopHomeShowcase(
                                         id = "123",
                                         name = "Accessories",
                                         imageUrl = EMPTY_PRODUCT_SEARCH_IMAGE_URL,
                                         ctaLink = "tokopedia://shop/123/etalase/etalase-tablet",
                                         isMainBanner = false
                                     ),
-                                    ShopHomeShowcase(
+                                    ShopHomeShowcaseUiModel.ShopHomeShowcase(
                                         id = "124",
                                         name = "Handphone",
                                         imageUrl = EMPTY_PRODUCT_SEARCH_IMAGE_URL,
                                         ctaLink = "tokopedia://shop/123/etalase/etalase-tablet",
                                         isMainBanner = false
                                     ),
-                                    ShopHomeShowcase(
+                                    ShopHomeShowcaseUiModel.ShopHomeShowcase(
                                         id = "125",
                                         name = "Power Bank",
                                         imageUrl = EMPTY_PRODUCT_SEARCH_IMAGE_URL,
