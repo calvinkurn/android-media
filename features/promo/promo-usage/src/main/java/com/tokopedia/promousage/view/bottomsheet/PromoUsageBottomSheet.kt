@@ -294,6 +294,7 @@ class PromoUsageBottomSheet: BottomSheetDialogFragment() {
         binding?.recyclerView?.apply {
             layoutManager = LinearLayoutManager(context ?: return)
             adapter = recyclerViewAdapter
+            itemAnimator = null
         }
     }
 

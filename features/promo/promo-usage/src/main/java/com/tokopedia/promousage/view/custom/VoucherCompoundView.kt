@@ -1,19 +1,12 @@
 package com.tokopedia.promousage.view.custom
 
 import android.content.Context
-import android.content.res.ColorStateList
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
-import com.google.android.material.bottomappbar.BottomAppBarTopEdgeTreatment
-import com.google.android.material.shape.MaterialShapeDrawable
-import com.google.android.material.shape.OffsetEdgeTreatment
-import com.google.android.material.shape.ShapeAppearanceModel
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -22,38 +15,31 @@ import com.tokopedia.kotlin.extensions.view.setTextColorCompat
 import com.tokopedia.kotlin.extensions.view.splitByThousand
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promousage.R
-import com.tokopedia.promousage.databinding.PromoUsageVoucherViewBinding
+import com.tokopedia.promousage.databinding.PromoUsageVoucherCompoundViewBinding
 import com.tokopedia.promousage.domain.entity.list.Voucher
 import com.tokopedia.promousage.domain.entity.VoucherSource
 import com.tokopedia.promousage.domain.entity.VoucherState
 import com.tokopedia.promousage.domain.entity.VoucherType
 import com.tokopedia.promousage.util.extension.grayscale
-import com.tokopedia.promousage.util.extension.onDrawn
 import com.tokopedia.promousage.util.extension.removeGrayscale
 import com.tokopedia.promousage.util.extension.setHyperlinkText
 import com.tokopedia.unifycomponents.toPx
 
-class VoucherView @JvmOverloads constructor(
+class VoucherCompoundView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
-    companion object {
-        private const val CIRCLE_COT_OUT_MARGIN_BOTTOM_DP = 58
-    }
-
-    private var binding: PromoUsageVoucherViewBinding? = null
+    private var binding: PromoUsageVoucherCompoundViewBinding? = null
     private var onHyperlinkTextClick : (String) -> Unit = {}
 
     init {
-        binding = PromoUsageVoucherViewBinding.inflate(
+        binding = PromoUsageVoucherCompoundViewBinding.inflate(
             LayoutInflater.from(context),
             this,
             true
         )
-        binding?.cardView?.cardElevation = 4f
-        binding?.cardView?.elevation = 4f
     }
 
     fun bind(voucher: Voucher) {
@@ -78,16 +64,6 @@ class VoucherView @JvmOverloads constructor(
 
             imgSupergraphic.loadImage(voucher.superGraphicImageUrl)
             imgVoucherIcon.loadImage(voucher.iconImageUrl)
-
-
-            cardView.onDrawn { cardViewHeightPx ->
-                cardView.background = createVoucherShape(
-                    cardViewHeightPx = cardViewHeightPx,
-                    isVoucherSelected = voucher.voucherState.isSelected()
-                )
-            }
-
-
         }
     }
 
@@ -99,7 +75,7 @@ class VoucherView @JvmOverloads constructor(
                 remainingQuota
             )
 
-            updateVoucherTypeMarginTop(16.toPx())
+           updateVoucherTypeMarginTop(16.toPx())
             updateCardViewMargin(4.toPx(), 8.toPx())
         } else {
             binding?.layoutRemainingQuotaRibbon?.gone()
@@ -138,10 +114,7 @@ class VoucherView @JvmOverloads constructor(
 
                     showLoadingAppearance()
 
-                    tpgVoucherExpiredDate.background = ContextCompat.getDrawable(
-                        tpgVoucherExpiredDate.context,
-                        R.drawable.promo_usage_shape_voucher_expired_date
-                    )
+                    cardView.updateToNormalState()
                 }
 
                 VoucherState.Normal -> {
@@ -154,10 +127,7 @@ class VoucherView @JvmOverloads constructor(
 
                     hideLoadingAppearance()
 
-                    tpgVoucherExpiredDate.background = ContextCompat.getDrawable(
-                        tpgVoucherExpiredDate.context,
-                        R.drawable.promo_usage_shape_voucher_expired_date
-                    )
+                    cardView.updateToNormalState()
                 }
                 is VoucherState.Ineligible -> {
                     imgCheckmark.gone()
@@ -170,10 +140,7 @@ class VoucherView @JvmOverloads constructor(
 
                     hideLoadingAppearance()
 
-                    tpgVoucherExpiredDate.background = ContextCompat.getDrawable(
-                        tpgVoucherExpiredDate.context,
-                        R.drawable.promo_usage_shape_voucher_expired_date
-                    )
+                    cardView.updateToNormalState()
                 }
                 is VoucherState.Actionable -> {
                     imgCheckmark.gone()
@@ -191,10 +158,7 @@ class VoucherView @JvmOverloads constructor(
 
                     hideLoadingAppearance()
 
-                    tpgVoucherExpiredDate.background = ContextCompat.getDrawable(
-                        tpgVoucherExpiredDate.context,
-                        R.drawable.promo_usage_shape_voucher_expired_date
-                    )
+                    cardView.updateToNormalState()
                 }
                 is VoucherState.Disabled -> {
                     imgCheckmark.gone()
@@ -206,10 +170,7 @@ class VoucherView @JvmOverloads constructor(
 
                     hideLoadingAppearance()
 
-                    tpgVoucherExpiredDate.background = ContextCompat.getDrawable(
-                        tpgVoucherExpiredDate.context,
-                        R.drawable.promo_usage_shape_voucher_expired_date
-                    )
+                    cardView.updateToNormalState()
                 }
                 is VoucherState.Selected -> {
                     imgCheckmark.visible()
@@ -221,10 +182,7 @@ class VoucherView @JvmOverloads constructor(
 
                     hideLoadingAppearance()
 
-                    tpgVoucherExpiredDate.background = ContextCompat.getDrawable(
-                        tpgVoucherExpiredDate.context,
-                        R.drawable.promo_usage_shape_voucher_selected
-                    )
+                    cardView.updateToSelectedState()
                 }
 
             }
@@ -343,67 +301,6 @@ class VoucherView @JvmOverloads constructor(
 
     private fun VoucherState.isIneligible(): Boolean {
         return this is VoucherState.Ineligible
-    }
-
-
-    private fun createVoucherShape(cardViewHeightPx: Int, isVoucherSelected: Boolean): Drawable {
-        val cardCornerRadius = 8.toPx().toFloat()
-        val notchRadius = 18
-        val stokeWidth = 1
-
-
-        val distanceFromBottom = cardViewHeightPx - CIRCLE_COT_OUT_MARGIN_BOTTOM_DP.toPx()
-        val offsetY = distanceFromBottom / 4
-
-
-        val roundTreatment = BottomAppBarTopEdgeTreatment(0f, 0f, 0f)
-        try {
-            roundTreatment.fabDiameter = notchRadius * 2f
-        } catch (_: Exception) {
-
-        }
-
-        val voucherShapeAppearanceModel = ShapeAppearanceModel.Builder()
-            .setLeftEdge(OffsetEdgeTreatment(roundTreatment, offsetY.toFloat()))
-            .setRightEdge(OffsetEdgeTreatment(roundTreatment, -1 * offsetY.toFloat()))
-            .setAllCornerSizes(cardCornerRadius)
-            .build()
-
-
-        val materialShapeDrawable = MaterialShapeDrawable(voucherShapeAppearanceModel).apply {
-            shapeAppearanceModel = voucherShapeAppearanceModel
-
-            strokeWidth = stokeWidth.toPx().toFloat()
-
-            val backgroundColor = if (isVoucherSelected) {
-                ContextCompat.getColor(
-                    context ?: return@apply,
-                    com.tokopedia.unifyprinciples.R.color.Unify_GN50
-                )
-            } else {
-                ContextCompat.getColor(
-                    context ?: return@apply,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN0
-                )
-            }
-            setTint(backgroundColor)
-
-
-            val shapeStrokeColor = if (isVoucherSelected) {
-                ContextCompat.getColor(
-                    context ?: return@apply,
-                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
-                )
-            } else {
-                ContextCompat.getColor(
-                    context ?: return@apply,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN200
-                )
-            }
-            strokeColor = ColorStateList.valueOf(shapeStrokeColor)
-        }
-
-        return materialShapeDrawable
     }
 
     fun setOnHyperlinkTextClick(onHyperlinkTextClick : (String) -> Unit) {
