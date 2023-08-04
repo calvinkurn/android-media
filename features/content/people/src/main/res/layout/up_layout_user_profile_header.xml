@@ -115,6 +115,7 @@
                         tools:text="john.doe" />
 
                     <ImageView
+         android:contentDescription="@null"
                         android:id="@+id/icon_badge"
                         android:layout_width="26dp"
                         android:layout_height="20dp"
