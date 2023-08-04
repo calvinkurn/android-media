@@ -291,13 +291,14 @@ class DiscoveryPageDataMapper(
         } else if (!component.getComponentsItem().isNullOrEmpty() && queryParameterMap[FORCED_NAVIGATION] == "true") {
             val activeTabIndex = queryParameterMapWithoutRpc[ACTIVE_TAB]?.toIntOrNull()
             if (activeTabIndex != null) {
-                component.getComponentsItem()?.forEachIndexed { index, it ->
-                    if (activeTabIndex == index + 1) {
-                        Utils.setTabSelectedBasedOnDataItem(it, true)
-                    } else {
-                        Utils.setTabSelectedBasedOnDataItem(it, false)
-                    }
-                }
+//                component.getComponentsItem()?.forEachIndexed { index, it ->
+//                    if (activeTabIndex == index + 1) {
+//                        Utils.setTabSelectedBasedOnDataItem(it, true)
+//                    } else {
+//                        Utils.setTabSelectedBasedOnDataItem(it, false)
+//                    }
+//                }
+                component.setComponentsItem(DiscoveryDataMapper.mapTabsListToComponentList(component, ComponentNames.TabsItem.componentName), component.tabName)
             }
             queryParameterMap.remove(FORCED_NAVIGATION)
             component.shouldRefreshComponent = true

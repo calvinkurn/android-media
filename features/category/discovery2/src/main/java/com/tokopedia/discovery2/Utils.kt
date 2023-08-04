@@ -550,19 +550,19 @@ class Utils {
         }
 
         fun routingBasedOnMoveAction(moveAction : MoveAction, fragment : Fragment){
-            when (moveAction.type) {
-                Constant.REDIRECTION -> {
-                    if (!moveAction.value.isNullOrEmpty()) {
-                        RouteManager.route(fragment.activity, moveAction.value)
-                    }
-                }
-
-                Constant.NAVIGATION -> {
-                    if (!moveAction.value.isNullOrEmpty()) {
-                        (fragment as? DiscoveryFragment)?.redirectToOtherTab(moveAction.value)
-                    }
-                }
-            }
+//            when (moveAction.type) {
+//                Constant.REDIRECTION -> {
+//                    if (!moveAction.value.isNullOrEmpty()) {
+//                        RouteManager.route(fragment.activity, moveAction.value)
+//                    }
+//                }
+//
+//                Constant.NAVIGATION -> {
+//                    if (!moveAction.value.isNullOrEmpty()) {
+                        (fragment as? DiscoveryFragment)?.redirectToOtherTab("activeTab=2&componentID=24")
+//                    }
+//                }
+//            }
         }
 
         fun setTabSelectedBasedOnDataItem(componentItem: ComponentsItem, isSelected: Boolean){

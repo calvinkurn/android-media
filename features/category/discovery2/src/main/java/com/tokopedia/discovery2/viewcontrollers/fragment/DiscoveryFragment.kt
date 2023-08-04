@@ -272,6 +272,7 @@ open class DiscoveryFragment :
     var currentTabPosition: Int? = null
     var isAffiliateInitialized = false
         private set
+    private var isFromForcedNavigation = false
 
     private var isManualScroll = true
     private var stickyHeaderShowing = false
@@ -1414,6 +1415,22 @@ open class DiscoveryFragment :
                     userPressed = false
                     if (position > 0 && isTabPresent) {
                         handleAutoScrollUI()
+                        if(isFromForcedNavigation){
+                            recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object :
+                                ViewTreeObserver.OnGlobalLayoutListener {
+                                override fun onGlobalLayout() {
+                                    var pos = -1
+                                    discoveryAdapter.currentList.forEachIndexed { index, componentsItem ->
+                                        if (componentsItem.id == pinnedComponentId) {
+                                            pos = index
+                                        }
+                                    }
+                                    recyclerView.smoothScrollToPosition(position)
+                                    recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                                }
+                            })
+                            isFromForcedNavigation = false
+                        }
                     }
                     if (this.isResumed) {
                         recyclerView.smoothScrollToPosition(position)
@@ -2292,6 +2309,7 @@ open class DiscoveryFragment :
             this.arguments?.putString(FORCED_NAVIGATION, "true")
             if (componentId != null) {
                 this.arguments?.putString(COMPONENT_ID, componentId.toString())
+                isFromForcedNavigation = true
             }
             discoveryViewModel.getDiscoveryData(discoveryViewModel.getQueryParameterMapFromBundle(arguments), userAddressData, true)
         } else if (componentId != null) {
