@@ -234,12 +234,51 @@ class CheckoutCostViewHolder(
         val insuranceCourierList = if (cost.shippingInsuranceFee > 0.0) listOf(cost.shippingInsuranceFee) else emptyList()
         if ((insuranceCourierList.size + cost.listAddOnSummary.size + cost.listCrossSell.size) > 2) {
             // render in collapsable group
-            binding.tvCheckoutCostOthersTitle.isVisible = false
-            binding.icCheckoutCostOthersToggle.isVisible = false
-            binding.tvCheckoutCostOthersValue.isVisible = false
+            binding.tvCheckoutCostOthersTitle.isVisible = true
+            binding.icCheckoutCostOthersToggle.isVisible = true
+            binding.tvCheckoutCostOthersValue.isVisible = true
+
+            binding.icCheckoutCostOthersToggle.setOnClickListener {
+                if (binding.llCheckoutCostOthersExpanded.isVisible) {
+                    binding.llCheckoutCostOthersExpanded.isVisible = false
+                    binding.vCheckoutCostOthersExpandedSeparator.isVisible = false
+                    binding.tvCheckoutCostOthersValue.isVisible = true
+                } else {
+                    binding.llCheckoutCostOthersExpanded.isVisible = true
+                    binding.vCheckoutCostOthersExpandedSeparator.isVisible = true
+                    binding.tvCheckoutCostOthersValue.isVisible = false
+                }
+            }
             binding.llCheckoutCostOthers.isVisible = false
             binding.llCheckoutCostOthersExpanded.isVisible = false
             binding.vCheckoutCostOthersExpandedSeparator.isVisible = false
+
+            binding.llCheckoutCostOthersExpanded.removeAllViews()
+            insuranceCourierList.forEach {
+                val itemBinding = ItemCheckoutCostDynamicBinding.inflate(
+                    layoutInflater,
+                    binding.llCheckoutCostOthersExpanded,
+                    false
+                )
+                itemBinding.tvCheckoutCostItemTitle.text = "Total Asuransi Pengiriman"
+                itemBinding.tvCheckoutCostItemValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    it,
+                    false
+                ).removeDecimalSuffix()
+                (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(binding.root.context.resources.displayMetrics)
+                binding.llCheckoutCostOthersExpanded.addView(itemBinding.root)
+            }
+            cost.listAddOnSummary.forEach {
+                val itemBinding = ItemCheckoutCostDynamicBinding.inflate(
+                    layoutInflater,
+                    binding.llCheckoutCostOthersExpanded,
+                    false
+                )
+                itemBinding.tvCheckoutCostItemTitle.text = it.wording
+                itemBinding.tvCheckoutCostItemValue.text = it.priceLabel
+                (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(binding.root.context.resources.displayMetrics)
+                binding.llCheckoutCostOthersExpanded.addView(itemBinding.root)
+            }
         } else {
             // render outside
             binding.tvCheckoutCostOthersTitle.isVisible = false
