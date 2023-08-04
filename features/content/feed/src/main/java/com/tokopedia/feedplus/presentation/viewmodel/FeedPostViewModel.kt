@@ -436,54 +436,53 @@ class FeedPostViewModel @Inject constructor(
                 val followRecomData = it.data.items.getOrNull(position)
 
                 if (followRecomData is FeedFollowRecommendationModel)
-                    fetchFollowRecommendation(followRecomData.id)
+                    viewModelScope.launch {
+                        fetchFollowRecommendation(followRecomData.id)
+                    }
             }
         }
     }
 
-    private fun fetchFollowRecommendation(widgetId: String) {
-        viewModelScope.launch {
+    private suspend fun fetchFollowRecommendation(widgetId: String) {
+        val followRecomData = getFollowRecomModel(widgetId)
 
-            val followRecomData = getFollowRecomModel(widgetId)
-
-            try {
-                feedHome.value?.let {
-                    if (
-                        it is Success &&
-                        (
-                            // reload
-                            followRecomData.isError ||
+        try {
+            feedHome.value?.let {
+                if (
+                    it is Success &&
+                    (
+                        // reload
+                        followRecomData.isError ||
                             // load for the first time
                             (followRecomData.data.isEmpty() && !followRecomData.hasNext && !followRecomData.isLoading) ||
                             // load next page
                             (followRecomData.hasNext && !followRecomData.isLoading)
                         )
-                    ) {
-                        updateFollowRecom(followRecomData.id) { followRecom ->
-                            followRecom.copy(status = FeedFollowRecommendationModel.Status.Loading)
-                        }
+                ) {
+                    updateFollowRecom(followRecomData.id) { followRecom ->
+                        followRecom.copy(status = FeedFollowRecommendationModel.Status.Loading)
+                    }
 
-                        val request = feedXRecomWidgetUseCase.createFeedFollowRecomParams(followRecomData.cursor, followRecomData.id)
-                        val response = feedXRecomWidgetUseCase(request)
+                    val request = feedXRecomWidgetUseCase.createFeedFollowRecomParams(followRecomData.cursor, followRecomData.id)
+                    val response = feedXRecomWidgetUseCase(request)
 
-                        updateFollowRecom(followRecomData.id) { followRecom ->
-                            response.copy(
-                                data = followRecom.data + response.data
-                            )
-                        }
+                    updateFollowRecom(followRecomData.id) { followRecom ->
+                        response.copy(
+                            data = followRecom.data + response.data
+                        )
                     }
                 }
-            } catch (throwable: Throwable) {
-                updateFollowRecom(followRecomData.id) { followRecom ->
-                    followRecom.copy(
-                        status = if (followRecom.data.isEmpty()) {
-                            FeedFollowRecommendationModel.Status.getErrorStatus(throwable)
-                        } else {
-                            _followRecommendationResult.value = Fail(throwable)
-                            FeedFollowRecommendationModel.Status.Success
-                        }
-                    )
-                }
+            }
+        } catch (throwable: Throwable) {
+            updateFollowRecom(followRecomData.id) { followRecom ->
+                followRecom.copy(
+                    status = if (followRecom.data.isEmpty()) {
+                        FeedFollowRecommendationModel.Status.getErrorStatus(throwable)
+                    } else {
+                        _followRecommendationResult.value = Fail(throwable)
+                        FeedFollowRecommendationModel.Status.Success
+                    }
+                )
             }
         }
     }
