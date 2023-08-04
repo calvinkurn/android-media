@@ -1272,7 +1272,7 @@ open class ShopPageHomeFragment :
                                     ShopHomeShowcaseUiModel.ShopHomeShowCaseTab(
                                         text = "",
                                         imageUrl = "",
-                                        mainBannerPosition = ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.CAROUSEL,
+                                        mainBannerPosition = ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.TOP,
                                         showcases = listOf(
                                             ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase(
                                                 id = "121",
@@ -1305,6 +1305,20 @@ open class ShopPageHomeFragment :
                                             ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase(
                                                 id = "125",
                                                 name = "Power Bank",
+                                                imageUrl = "https://images.tokopedia.net/img/android/shop/ic_showcase_sample.png",
+                                                ctaLink = "tokopedia://shop/123/etalase/etalase-tablet",
+                                                isMainBanner = false
+                                            ),
+                                            ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase(
+                                                id = "126",
+                                                name = "Elektronik",
+                                                imageUrl = "https://images.tokopedia.net/img/android/shop/ic_showcase_sample.png",
+                                                ctaLink = "tokopedia://shop/123/etalase/etalase-tablet",
+                                                isMainBanner = false
+                                            ),
+                                            ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase(
+                                                id = "127",
+                                                name = "Car",
                                                 imageUrl = "https://images.tokopedia.net/img/android/shop/ic_showcase_sample.png",
                                                 ctaLink = "tokopedia://shop/123/etalase/etalase-tablet",
                                                 isMainBanner = false
