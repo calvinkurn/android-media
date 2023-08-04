@@ -111,7 +111,7 @@
                         android:textColor="@color/Unify_NN600"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/text_display_name"
-                        app:typographyType="body_2"
+                        app:typographyType="display_2"
                         tools:text="john.doe" />
 
                     <ImageView
