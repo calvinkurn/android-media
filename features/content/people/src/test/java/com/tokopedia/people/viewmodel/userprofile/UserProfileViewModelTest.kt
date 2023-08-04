@@ -102,7 +102,7 @@ class UserProfileViewModelTest {
                 creationInfo equalTo ProfileCreationInfoUiModel()
                 shopRecom equalTo mockEmptyShopRecom
                 it.viewModel.profileUserEncryptedID equalTo mockOwnProfile.encryptedUserID
-                it.viewModel.badge equalTo mockOwnProfile.badge
+                it.viewModel.badges equalTo mockOwnProfile.badges
             }
         }
     }

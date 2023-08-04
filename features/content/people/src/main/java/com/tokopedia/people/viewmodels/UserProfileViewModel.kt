@@ -23,14 +23,14 @@ import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
+import com.tokopedia.people.views.uimodel.getReviewSettings
+import com.tokopedia.people.views.uimodel.mapper.UserProfileLikeStatusMapper
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileCreationInfoUiModel
+import com.tokopedia.people.views.uimodel.profile.ProfileTabState
 import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileType
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
-import com.tokopedia.people.views.uimodel.getReviewSettings
-import com.tokopedia.people.views.uimodel.mapper.UserProfileLikeStatusMapper
-import com.tokopedia.people.views.uimodel.profile.ProfileTabState
 import com.tokopedia.people.views.uimodel.saved.SavedReminderData
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -55,7 +55,7 @@ class UserProfileViewModel @AssistedInject constructor(
     private val followRepo: UserFollowRepository,
     private val userSession: UserSessionInterface,
     private val userProfileSharedPref: UserProfileSharedPref,
-    dispatchers: CoroutineDispatchers,
+    dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
     @AssistedFactory
@@ -113,8 +113,8 @@ class UserProfileViewModel @AssistedInject constructor(
             else -> ProfileTabUiModel()
         }
 
-    val badge: ProfileUiModel.Badge
-        get() = _profileInfo.value.badge
+    val badges: List<ProfileUiModel.Badge>
+        get() = _profileInfo.value.badges
 
     private val isFirstTimeSeeReviewTab: Boolean
         get() = isSelfProfile &&
@@ -153,7 +153,7 @@ class UserProfileViewModel @AssistedInject constructor(
         _reviewContent,
         _isLoading,
         _error,
-        _reviewSettings,
+        _reviewSettings
     ) { profileInfo,
         followInfo,
         profileType,
@@ -190,7 +190,7 @@ class UserProfileViewModel @AssistedInject constructor(
 
                     if (likePool.entries.isEmpty()) return@collect
 
-                    likePool.entries.forEach {  map ->
+                    likePool.entries.forEach { map ->
                         submitAction(UserProfileAction.ProcessLikeRequest(map.key, map.value))
                     }
 
@@ -348,7 +348,7 @@ class UserProfileViewModel @AssistedInject constructor(
                     reviewList = it.reviewList + response.reviewList,
                     page = response.page,
                     hasNext = response.hasNext,
-                    status = response.status,
+                    status = response.status
                 )
             }
         }) {
@@ -611,10 +611,11 @@ class UserProfileViewModel @AssistedInject constructor(
 
             _likePool.update { likePool ->
                 HashMap(likePool).apply {
-                    if (this.contains(review.feedbackID))
+                    if (this.contains(review.feedbackID)) {
                         remove(review.feedbackID)
-                    else
+                    } else {
                         put(review.feedbackID, likeDislikeAfterToggle.isLike)
+                    }
                 }
             }
         }
@@ -622,12 +623,11 @@ class UserProfileViewModel @AssistedInject constructor(
 
     private fun handleProcessLikeRequest(feedbackId: String, isLike: Boolean) {
         viewModelScope.launchCatchError(block = {
-
             _reviewContent.value.reviewList.firstOrNull { it.feedbackID == feedbackId } ?: return@launchCatchError
 
             val response = repo.setLikeStatus(
                 feedbackID = feedbackId,
-                isLike = isLike,
+                isLike = isLike
             )
 
             /** Sync follow / unfollow status from BE */
@@ -679,7 +679,7 @@ class UserProfileViewModel @AssistedInject constructor(
             _uiEvent.emit(
                 UserProfileUiEvent.OpenReviewMediaGalleryPage(
                     review = review,
-                    mediaPosition = mediaPosition,
+                    mediaPosition = mediaPosition
                 )
             )
         }

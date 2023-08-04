@@ -22,7 +22,7 @@ class ProfileUiModelBuilder {
         liveInfo: LivePlayChannelUiModel = LivePlayChannelUiModel.Empty,
         isBlocking: Boolean = false,
         isBlockedBy: Boolean = false,
-        badge: ProfileUiModel.Badge = ProfileUiModel.Badge.Empty
+        badges: List<ProfileUiModel.Badge> = emptyList()
     ) = ProfileUiModel(
         userID = userID,
         encryptedUserID = encryptedUserID,
@@ -35,6 +35,6 @@ class ProfileUiModelBuilder {
         liveInfo = liveInfo,
         isBlocking = isBlocking,
         isBlockedBy = isBlockedBy,
-        badge = badge
+        badges = badges
     )
 }

@@ -38,14 +38,13 @@ class UserProfileBadgeBottomSheet : BottomSheetUnify() {
     private fun setupView() {
         showCloseIcon = true
 
-        val badge = mDataSource?.badge() ?: return
+        val badges = mDataSource?.badges() ?: return
+        val badge = badges.first()
 
-        if (badge is ProfileUiModel.Badge.Verified) {
-            binding.userProfileBadgeIcon.loadImage(badge.url)
-            if (badge.detail != null) {
-                setTitle(badge.detail.title)
-                binding.userProfileBadgeTextDescription.text = badge.detail.desc
-            }
+        binding.userProfileBadgeIcon.loadImage(badge.url)
+        if (badge.detail != null) {
+            setTitle(badge.detail.title)
+            binding.userProfileBadgeTextDescription.text = badge.detail.desc
         }
     }
 
@@ -54,6 +53,7 @@ class UserProfileBadgeBottomSheet : BottomSheetUnify() {
     }
 
     fun show(manager: FragmentManager) {
+        if (isVisible) return
         show(manager, TAG)
     }
 
@@ -75,6 +75,6 @@ class UserProfileBadgeBottomSheet : BottomSheetUnify() {
     }
 
     interface DataSource {
-        fun badge(): ProfileUiModel.Badge
+        fun badges(): List<ProfileUiModel.Badge>
     }
 }

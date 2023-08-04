@@ -15,22 +15,17 @@ data class ProfileUiModel(
     val liveInfo: LivePlayChannelUiModel,
     val isBlocking: Boolean,
     val isBlockedBy: Boolean,
-    val badge: Badge = Badge.Empty
+    val badges: List<Badge> = emptyList()
 ) {
-    sealed class Badge {
-
-        object Empty: Badge()
-
-        data class Verified(
-            val url: String,
-            val detail: Detail?
-        ): Badge() {
-
-            data class Detail(
-                val title: String,
-                val desc: String
-            )
-        }
+    data class Badge(
+        val url: String,
+        val clickable: Boolean,
+        val detail: Detail?
+    ) {
+        data class Detail(
+            val title: String,
+            val desc: String
+        )
     }
 
     companion object {

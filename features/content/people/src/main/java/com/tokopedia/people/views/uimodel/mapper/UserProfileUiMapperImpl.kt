@@ -74,18 +74,22 @@ class UserProfileUiMapperImpl @Inject constructor(
             ),
             isBlocking = response.profileHeader.isBlocking,
             isBlockedBy = response.profileHeader.isBlockedBy,
-            badge = badge(response.profileHeader.profile.profileBadges)
+            badges = response.profileHeader.profile.profileBadges.map(::mapBadge)
         )
     }
 
-    private fun badge(badgeList: List<Profile.Badge>): ProfileUiModel.Badge {
-        val badge = badgeList.firstOrNull() ?: return ProfileUiModel.Badge.Empty
-        return ProfileUiModel.Badge.Verified(
+    private fun mapBadge(badge: Profile.Badge): ProfileUiModel.Badge {
+        return ProfileUiModel.Badge(
             badge.badgeUrl,
-            if (badge.isClickable) ProfileUiModel.Badge.Verified.Detail(
-                badge.bottomSheetTitle,
-                badge.bottomSheetDesc
-            ) else null
+            badge.isClickable,
+            if (badge.isClickable) {
+                ProfileUiModel.Badge.Detail(
+                    badge.bottomSheetTitle,
+                    badge.bottomSheetDesc
+                )
+            } else {
+                null
+            }
         )
     }
 
