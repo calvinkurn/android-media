@@ -132,18 +132,18 @@ class FeedFollowRecommendationViewHolder(
         isViewHolderSelected: Boolean
     ) {
         when (model.status) {
-            FeedFollowRecommendationModel.Status.Loading -> {
+            FeedFollowRecommendationModel.Status.Loading,
+            FeedFollowRecommendationModel.Status.Success -> {
                 if (model.data.isEmpty()) {
-                    binding.rvFollowRecommendation.suppressLayout(true)
                     profileAdapter.setItemsAndAnimateChanges(List(5) { FeedFollowProfileAdapter.Model.Loading })
+                    binding.rvFollowRecommendation.suppressLayout(true)
+                }
+                else {
+                    setupProfileList(model, selectedPosition, isViewHolderSelected)
                 }
 
                 binding.clMain.showWithCondition(true)
                 binding.feedNoContent.root.showWithCondition(false)
-            }
-            FeedFollowRecommendationModel.Status.Success -> {
-                binding.rvFollowRecommendation.suppressLayout(false)
-                setupProfileList(model, selectedPosition, isViewHolderSelected)
             }
             FeedFollowRecommendationModel.Status.Error -> {
                 binding.feedNoContent.iconFeedNoContent.setImage(IconUnify.RELOAD)
@@ -185,6 +185,8 @@ class FeedFollowRecommendationViewHolder(
         isViewHolderSelected: Boolean,
     ) {
         if (model == null) return
+
+        binding.rvFollowRecommendation.suppressLayout(false)
 
         var isNeedForceScroll = false
         val finalSelectedPosition = if (selectedPosition >= model.data.size) {
