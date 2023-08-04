@@ -10,6 +10,7 @@ import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
 import com.tokopedia.play.view.uimodel.WarehouseInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.ExploreWidgetConfig
 import com.tokopedia.play.view.uimodel.recom.PlayChannelDetailUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayChannelRecommendationConfig
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.uimodel.recom.PlayQuickReplyInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
@@ -158,7 +159,7 @@ data class ExploreWidgetUiState(
     val shouldShow: Boolean,
     val data: ExploreWidgetUiModel,
     val category: CategoryWidgetUiModel,
-    val config: ExploreWidgetConfig,
+    val config: PlayChannelRecommendationConfig,
 ) {
     companion object {
         val Empty: ExploreWidgetUiState
@@ -166,7 +167,7 @@ data class ExploreWidgetUiState(
                 shouldShow = false,
                 data = ExploreWidgetUiModel.Empty,
                 category = CategoryWidgetUiModel.Empty,
-                config = ExploreWidgetConfig(),
+                config = PlayChannelRecommendationConfig(),
             )
     }
 }

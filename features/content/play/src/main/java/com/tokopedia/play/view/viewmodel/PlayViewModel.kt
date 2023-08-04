@@ -346,7 +346,7 @@ class PlayViewModel @AssistedInject constructor(
                 !videoPlayer.isYouTube && isExploreWidget,
             data = widgets,
             category = category,
-            config = channel.exploreWidgetConfig
+            config = channel.channelRecomConfig
         )
     }.flowOn(dispatchers.computation)
 
@@ -554,14 +554,14 @@ class PlayViewModel @AssistedInject constructor(
     val exploreWidgetConfig: PlayWidgetConfigUiModel
         get() = _exploreWidget.value.widgets.firstOrNull()?.item?.config ?: PlayWidgetConfigUiModel.Empty
 
-    val widgetInfo: ExploreWidgetConfig
-        get() = _channelDetail.value.exploreWidgetConfig
+    val widgetInfo: PlayChannelRecommendationConfig
+        get() = _channelDetail.value.channelRecomConfig
 
     private val widgetQuery = MutableStateFlow(emptyMap<ExploreWidgetType, WidgetParamUiModel>())
 
     val exploreWidgetTabs: List<String>
         get() {
-            val config = _channelDetail.value.categoryWidgetConfig
+            val config = _channelDetail.value.channelRecomConfig.categoryWidgetConfig
             return buildList {
                 if (config.hasCategory) add(config.categoryName)
                 add(DEFAULT_TAB)
@@ -1077,7 +1077,7 @@ class PlayViewModel @AssistedInject constructor(
             is ClickChipWidget -> onChipAction(action.item)
             RefreshWidget -> {
                 widgetQuery.value = widgetQuery.value.mapValues {
-                    val config = _channelDetail.value.exploreWidgetConfig
+                    val config = _channelDetail.value.channelRecomConfig.exploreWidgetConfig
                     if (ExploreWidgetType.Default == it.key) {
                         it.value.copy(isRefresh = true, group = config.group, cursor = "", sourceId = config.sourceId, sourceType = config.sourceType)
                     } else {
@@ -1088,7 +1088,7 @@ class PlayViewModel @AssistedInject constructor(
             is UpdateReminder -> updateReminderWidget(action.channelId, action.reminderType)
             DismissExploreWidget -> {
                 // Resetting
-                setExploreWidgetParam(_channelDetail.value.exploreWidgetConfig, _channelDetail.value.categoryWidgetConfig)
+                setExploreWidgetParam(_channelDetail.value.channelRecomConfig)
                 _categoryWidget.update { it.copy(data = emptyList()) }
                 _exploreWidget.update { it.copy(widgets = emptyList(), chips = TabMenuUiModel.Empty) }
                 _isBottomSheetsShown.update { false }
@@ -1153,7 +1153,7 @@ class PlayViewModel @AssistedInject constructor(
         _tagItems.value = channelData.tagItems
         _quickReply.value = channelData.quickReplyInfo
 
-        setExploreWidgetParam(channelData.channelDetail.exploreWidgetConfig, channelData.channelDetail.categoryWidgetConfig)
+        setExploreWidgetParam(channelData.channelDetail.channelRecomConfig)
     }
 
     fun focusPage(channelData: PlayChannelData) {
@@ -1916,7 +1916,7 @@ class PlayViewModel @AssistedInject constructor(
             }
             is ChannelDetailsWithRecomResponse.ExploreWidgetConfig -> {
                 _channelDetail.update { channel ->
-                    channel.copy(categoryWidgetConfig = channel.categoryWidgetConfig.copy(categoryName = result.categoryName.ifBlank { DEFAULT_TAB }, categoryGroup = result.group, hasCategory = result.hasCategory, categoryLevel = result.categoryLvl, categoryId = result.categoryId))
+                    channel.copy(channelRecomConfig = channel.channelRecomConfig.copy(categoryWidgetConfig = channel.channelRecomConfig.categoryWidgetConfig.copy(categoryName = result.categoryName.ifBlank { DEFAULT_TAB }, categoryGroup = result.group, hasCategory = result.hasCategory, categoryLevel = result.categoryLvl, categoryId = result.categoryId)))
                 }
                 _categoryWidget.update { w -> w.copy(data = emptyList()) }
                 widgetQuery.value = widgetQuery.value.mapValues {
@@ -2768,10 +2768,10 @@ class PlayViewModel @AssistedInject constructor(
     /**
      * Explore Widget
      */
-    private fun setExploreWidgetParam(exploreConfig: ExploreWidgetConfig, categoryConfig: CategoryWidgetConfig) {
+    private fun setExploreWidgetParam(config: PlayChannelRecommendationConfig) {
         widgetQuery.value = mapOf(
-            ExploreWidgetType.Category to WidgetParamUiModel(group = categoryConfig.categoryGroup, sourceId = categoryConfig.categorySourceId, sourceType = categoryConfig.categorySourceType),
-            ExploreWidgetType.Default to WidgetParamUiModel(group = exploreConfig.group, sourceId = exploreConfig.sourceId, sourceType = exploreConfig.sourceType)
+            ExploreWidgetType.Category to WidgetParamUiModel(group = config.categoryWidgetConfig.categoryGroup, sourceId = config.categoryWidgetConfig.categorySourceId, sourceType = config.categoryWidgetConfig.categorySourceType),
+            ExploreWidgetType.Default to WidgetParamUiModel(group = config.exploreWidgetConfig.group, sourceId = config.exploreWidgetConfig.sourceId, sourceType = config.exploreWidgetConfig.sourceType)
         )
     }
 
@@ -2784,7 +2784,7 @@ class PlayViewModel @AssistedInject constructor(
             }
 
             when {
-                param.group == _channelDetail.value.exploreWidgetConfig.group -> {
+                param.group == _channelDetail.value.channelRecomConfig.exploreWidgetConfig.group -> {
                     _exploreWidget.update { widget -> widget.copy(chips = widget.chips.copy(state = ResultState.Loading)) }
                 }
                 _exploreWidget.value.widgets.isEmpty() -> {

@@ -120,7 +120,7 @@ class PlayChannelRecommendationFragment @Inject constructor(
     private fun observeState() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.uiState.withCache().collectLatest { cachedState ->
-                if (cachedState.isChanged { it.channel.exploreWidgetConfig } && cachedState.value.channel.exploreWidgetConfig.hasCategory) {
+                if (cachedState.isChanged { it.channel.channelRecomConfig } && cachedState.value.channel.channelRecomConfig.categoryWidgetConfig.hasCategory) {
                     binding.tabPlayExploreWidget.getUnifyTabLayout().getTabAt(0)
                         ?.setCustomText(viewModel.exploreWidgetTabs.first())
                     binding.tabPlayExploreWidget.getUnifyTabLayout().getTabAt(1)

@@ -18,6 +18,7 @@ import com.tokopedia.play.view.uimodel.recom.PartnerFollowableStatus
 import com.tokopedia.play.view.uimodel.recom.PinnedMessageUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayChannelDetailUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayChannelInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayChannelRecommendationConfig
 import com.tokopedia.play.view.uimodel.recom.PlayChannelReportUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayChannelStatus
 import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUiModel
@@ -81,8 +82,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                     videoInfo = mapVideoInfo(it.video),
                     emptyBottomSheetInfo = mapEmptyBottomSheet(it),
                     popupConfig = mapPopUp(it),
-                    exploreWidgetConfig = mapExploreWidgetConfig(it.config.exploreWidgetConfig),
-                    categoryWidgetConfig = mapCategoryWidgetConfig(it.config.categoryWidgetConfig),
+                    channelRecomConfig = mapChannelRecomConfig(it.config.categoryWidgetConfig, it.config.exploreWidgetConfig),
                     showCart = it.config.showCart,
                 ),
                 partnerInfo = partnerInfo,
@@ -346,6 +346,14 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         categorySourceId = categoryConfig.sourceId,
         categoryLevel = categoryConfig.categoryLvl,
         categoryId = categoryConfig.categoryId,
+    )
+
+    private fun mapChannelRecomConfig(
+        categoryConfig: ChannelDetailsWithRecomResponse.ExploreWidgetConfig,
+        exploreConfig: ChannelDetailsWithRecomResponse.ExploreWidgetConfig,
+    ) = PlayChannelRecommendationConfig(
+        categoryWidgetConfig = mapCategoryWidgetConfig(categoryConfig),
+        exploreWidgetConfig = mapExploreWidgetConfig(exploreConfig)
     )
 
     private fun mapArchived(archiveData: ChannelDetailsWithRecomResponse.ArchivedData) = with(archiveData) {

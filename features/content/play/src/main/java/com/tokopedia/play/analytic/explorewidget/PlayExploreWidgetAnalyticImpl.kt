@@ -7,8 +7,6 @@ import com.tokopedia.content.analytic.EventCategory
 import com.tokopedia.content.analytic.Key
 import com.tokopedia.play.view.uimodel.ChipWidgetUiModel
 import com.tokopedia.play.view.uimodel.ExploreWidgetType
-import com.tokopedia.play.view.uimodel.recom.CategoryWidgetConfig
-import com.tokopedia.play.view.uimodel.recom.ExploreWidgetConfig
 import com.tokopedia.play.view.uimodel.recom.PlayChannelInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayChannelRecommendationConfig
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -59,8 +57,8 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
         }
 
     private fun getCategoryLabel(widgetInfo: PlayChannelRecommendationConfig, type: ExploreWidgetType) : Triple<String, String, String> {
-        return if (type == ExploreWidgetType.Category) Triple((widgetInfo as CategoryWidgetConfig).categoryName, widgetInfo.categoryLevel.toString(), widgetInfo.categoryId)
-        else Triple((widgetInfo as? ExploreWidgetConfig)?.categoryName.orEmpty(), "0", "0")
+        return if (type == ExploreWidgetType.Category) Triple(widgetInfo.categoryWidgetConfig.categoryName, widgetInfo.categoryWidgetConfig.categoryLevel.toString(), widgetInfo.categoryWidgetConfig.categoryId)
+        else Triple(widgetInfo.exploreWidgetConfig.categoryName, "0", "0")
     }
 
     override fun impressExploreIcon(widgetInfo: PlayChannelRecommendationConfig, type: ExploreWidgetType) {
@@ -153,7 +151,7 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
             .setEvent(Event.clickContent)
             .setEventAction("click - channel card")
             .setEventCategory(EventCategory.groupChatRoom)
-            .setEventLabel("$channelId - $channelType - ${selectedChannel.channelId} - ${selectedChannel.channelType.value} - ${position + 1} - ${config.autoPlay} - ${widgetInfo} - ${selectedChannel.hasPromo.promoToString} - ${selectedChannel.recommendationType} - ${label.second} - ${label.third}")
+            .setEventLabel("$channelId - $channelType - ${selectedChannel.channelId} - ${selectedChannel.channelType.value} - ${position + 1} - ${config.autoPlay} - ${label.first} - ${selectedChannel.hasPromo.promoToString} - ${selectedChannel.recommendationType} - ${label.second} - ${label.third}")
             .setCustomProperty(Key.trackerId, "39860")
             .setBusinessUnit(BusinessUnit.play)
             .setCurrentSite(CurrentSite.tokopediaMarketplace)

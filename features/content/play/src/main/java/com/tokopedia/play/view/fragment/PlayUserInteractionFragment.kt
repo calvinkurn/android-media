@@ -2146,7 +2146,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun renderExploreView(state: CachedState<PlayViewerNewUiState>) {
         if (state.isChanged { it.exploreWidget }) {
             exploreView?.setupVisibility(state.value.exploreWidget.shouldShow)
-            exploreView?.setText(state.value.exploreWidget.config.categoryName)
+            exploreView?.setText(state.value.exploreWidget.config.categoryWidgetConfig.categoryName)
         }
     }
 
