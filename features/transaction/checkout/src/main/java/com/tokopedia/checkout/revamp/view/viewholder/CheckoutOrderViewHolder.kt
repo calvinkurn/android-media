@@ -111,13 +111,13 @@ class CheckoutOrderViewHolder(
                 binding.shippingWidget.renderScheduleDeliveryWidget(
                     ShippingWidgetUiModel(
                         // CourierItemData.etaErrorCode
-                        etaErrorCode = courierItemData.etaErrorCode,
+                        etaErrorCode = courierItemData.selectedShipper.etaErrorCode,
                         // CourierItemData.etaText
-                        estimatedTimeArrival = courierItemData.etaText ?: "",
+                        estimatedTimeArrival = courierItemData.selectedShipper.etaText ?: "",
 
                         // Bebas ongkir & NOW Shipment
-                        hideShipperName = courierItemData.isHideShipperName,
-                        freeShippingTitle = courierItemData.freeShippingChosenCourierTitle,
+                        hideShipperName = courierItemData.selectedShipper.isHideShipperName,
+                        freeShippingTitle = courierItemData.selectedShipper.freeShippingChosenCourierTitle,
                         // Now Shipment
                         // label
                         logPromoDesc = courierItemData.logPromoDesc ?: "",
@@ -127,11 +127,19 @@ class CheckoutOrderViewHolder(
                         // CourierItemData.name
                         courierName = courierItemData.name ?: "",
                         // CourierItemData.shipperPrice
-                        courierShipperPrice = courierItemData.shipperPrice,
+                        courierShipperPrice = courierItemData.selectedShipper.shipperPrice,
 
                         currentAddress = RecipientAddressModel(),
 
-                        scheduleDeliveryUiModel = courierItemData.scheduleDeliveryUiModel
+                        scheduleDeliveryUiModel = courierItemData.scheduleDeliveryUiModel,
+                        insuranceData = InsuranceWidgetUiModel(
+                            useInsurance = insurance.isCheckInsurance,
+                            insuranceType = courierItemData.selectedShipper.insuranceType,
+                            insuranceUsedDefault = courierItemData.selectedShipper.insuranceUsedDefault,
+                            insuranceUsedInfo = courierItemData.selectedShipper.insuranceUsedInfo,
+                            insurancePrice = courierItemData.selectedShipper.insurancePrice.toDouble(),
+                            isInsurance = order.isInsurance
+                        )
                     )
                 )
             } else if (order.isDisableChangeCourier) {
@@ -160,7 +168,15 @@ class CheckoutOrderViewHolder(
                         // CourierItemData.shipperPrice
                         courierShipperPrice = courierItemData.shipperPrice,
 
-                        currentAddress = RecipientAddressModel()
+                        currentAddress = RecipientAddressModel(),
+                        insuranceData = InsuranceWidgetUiModel(
+                            useInsurance = insurance.isCheckInsurance,
+                            insuranceType = courierItemData.selectedShipper.insuranceType,
+                            insuranceUsedDefault = courierItemData.selectedShipper.insuranceUsedDefault,
+                            insuranceUsedInfo = courierItemData.selectedShipper.insuranceUsedInfo,
+                            insurancePrice = courierItemData.selectedShipper.insurancePrice.toDouble(),
+                            isInsurance = order.isInsurance
+                        )
                     )
                 )
             } else if (courierItemData.logPromoCode?.isNotEmpty() == true) {
@@ -215,7 +231,14 @@ class CheckoutOrderViewHolder(
                         whitelabelEtaText = courierItemData.durationCardDescription,
 
                         scheduleDeliveryUiModel = null,
-                        insuranceData = InsuranceWidgetUiModel()
+                        insuranceData = InsuranceWidgetUiModel(
+                            useInsurance = insurance.isCheckInsurance,
+                            insuranceType = courierItemData.selectedShipper.insuranceType,
+                            insuranceUsedDefault = courierItemData.selectedShipper.insuranceUsedDefault,
+                            insuranceUsedInfo = courierItemData.selectedShipper.insuranceUsedInfo,
+                            insurancePrice = courierItemData.selectedShipper.insurancePrice.toDouble(),
+                            isInsurance = order.isInsurance
+                        )
                     )
                 )
             } else if (courierItemData.isHideChangeCourierCard) {
@@ -265,7 +288,14 @@ class CheckoutOrderViewHolder(
                         whitelabelEtaText = courierItemData.durationCardDescription,
 
                         scheduleDeliveryUiModel = null,
-                        insuranceData = InsuranceWidgetUiModel()
+                        insuranceData = InsuranceWidgetUiModel(
+                            useInsurance = insurance.isCheckInsurance,
+                            insuranceType = courierItemData.selectedShipper.insuranceType,
+                            insuranceUsedDefault = courierItemData.selectedShipper.insuranceUsedDefault,
+                            insuranceUsedInfo = courierItemData.selectedShipper.insuranceUsedInfo,
+                            insurancePrice = courierItemData.selectedShipper.insurancePrice.toDouble(),
+                            isInsurance = order.isInsurance
+                        )
                     )
                 )
             } else {
@@ -317,10 +347,10 @@ class CheckoutOrderViewHolder(
                         scheduleDeliveryUiModel = null,
                         insuranceData = InsuranceWidgetUiModel(
                             useInsurance = insurance.isCheckInsurance,
-                            insuranceType = courierItemData.insuranceType,
-                            insuranceUsedDefault = courierItemData.insuranceUsedDefault,
-                            insuranceUsedInfo = courierItemData.insuranceUsedInfo,
-                            insurancePrice = courierItemData.insurancePrice.toDouble(),
+                            insuranceType = courierItemData.selectedShipper.insuranceType,
+                            insuranceUsedDefault = courierItemData.selectedShipper.insuranceUsedDefault,
+                            insuranceUsedInfo = courierItemData.selectedShipper.insuranceUsedInfo,
+                            insurancePrice = courierItemData.selectedShipper.insurancePrice.toDouble(),
                             isInsurance = order.isInsurance
                         )
                     )

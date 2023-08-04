@@ -1426,10 +1426,10 @@ class CheckoutFragment :
         isDurationClick: Boolean,
         isClearPromo: Boolean
     ) {
-        var courierItemData: CourierItemData? = null
+        val courierItemData: CourierItemData?
         if (selectedCourier != null) {
             courierItemData =
-                shippingCourierConverter.convertToCourierItemData(selectedCourier, null)
+                shippingCourierConverter.convertToCourierItemDataNew(selectedCourier)
             if (isTradeIn) {
                 checkoutTradeInAnalytics.eventClickKurirTradeIn(serviceData.serviceName)
             }

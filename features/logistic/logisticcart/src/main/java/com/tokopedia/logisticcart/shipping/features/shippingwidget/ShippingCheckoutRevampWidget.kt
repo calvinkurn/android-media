@@ -808,15 +808,18 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
                     layoutShipmentInsurance.visible()
                     tvInsuranceTitle.setInsuranceWording(insuranceData)
                     checkboxInsurance.gone()
-                    if (insuranceData.useInsurance == null) {
+                    if (insuranceData.useInsurance != true) {
                         onChangeInsuranceState(shippingWidgetUiModel, true)
                     }
                 } else if (insuranceData.insuranceType == InsuranceConstant.INSURANCE_TYPE_NO || insuranceData.insuranceType == InsuranceConstant.INSURANCE_TYPE_NONE) {
                     layoutShipmentInsurance.gone()
-                    onChangeInsuranceState(shippingWidgetUiModel, false)
+                    if (insuranceData.useInsurance != false) {
+                        onChangeInsuranceState(shippingWidgetUiModel, false)
+                    }
                 } else if (insuranceData.insuranceType == InsuranceConstant.INSURANCE_TYPE_OPTIONAL) {
                     layoutShipmentInsurance.visible()
                     tvInsuranceTitle.setInsuranceWording(insuranceData)
+                    checkboxInsurance.visible()
                     checkboxInsurance.setOnCheckedChangeListener { _: CompoundButton?, checked: Boolean ->
                         delayChangeCheckboxInsurance?.cancel()
                         delayChangeCheckboxInsurance = GlobalScope.launch(Dispatchers.Main) {

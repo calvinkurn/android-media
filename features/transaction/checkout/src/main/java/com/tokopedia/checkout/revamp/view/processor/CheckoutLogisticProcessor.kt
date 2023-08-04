@@ -714,9 +714,10 @@ class CheckoutLogisticProcessor @Inject constructor(
         logisticPromo: LogisticPromoUiModel? = null
     ): CourierItemData {
         var courierItemData =
-            shippingCourierConverter.convertToCourierItemData(
+            shippingCourierConverter.convertToCourierItemDataNew(
                 shippingCourierUiModel,
-                shippingRecommendationData
+                shippingRecommendationData,
+                orderModel.validationMetadata
             )
 
         // Auto apply Promo Stacking Logistic
@@ -746,9 +747,10 @@ class CheckoutLogisticProcessor @Inject constructor(
             }.shippingCourierViewModelList.first {
                 it.productData.shipperProductId == logisticPromoChosen.shipperProductId
             }
-            courierItemData = shippingCourierConverter.convertToCourierItemData(
+            courierItemData = shippingCourierConverter.convertToCourierItemDataNew(
                 courierUiModel,
-                shippingRecommendationData
+                shippingRecommendationData,
+                orderModel.validationMetadata
             )
         }
         logisticPromoChosen?.let {
@@ -1442,7 +1444,7 @@ class CheckoutLogisticProcessor @Inject constructor(
         logisticPromoUiModel: LogisticPromoUiModel
     ): CourierItemData {
         val courierItemData =
-            shippingCourierConverter.convertToCourierItemData(
+            shippingCourierConverter.convertToCourierItemDataNew(
                 shippingCourierUiModel,
                 shippingRecommendationData
             )
