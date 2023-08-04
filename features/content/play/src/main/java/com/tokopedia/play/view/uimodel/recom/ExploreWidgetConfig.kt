@@ -9,6 +9,7 @@ data class ExploreWidgetConfig(
     val group: String = "",
     val sourceType: String = "",
     val sourceId: String = "",
+    val categoryName: String = "",
 ) : PlayChannelRecommendationConfig()
 
 data class CategoryWidgetConfig(

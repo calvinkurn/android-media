@@ -5,7 +5,6 @@ import com.tokopedia.content.analytic.CurrentSite
 import com.tokopedia.content.analytic.Event
 import com.tokopedia.content.analytic.EventCategory
 import com.tokopedia.content.analytic.Key
-import com.tokopedia.play.analytic.*
 import com.tokopedia.play.view.uimodel.ChipWidgetUiModel
 import com.tokopedia.play.view.uimodel.ExploreWidgetType
 import com.tokopedia.play.view.uimodel.recom.CategoryWidgetConfig
@@ -61,7 +60,7 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
 
     private fun getCategoryLabel(widgetInfo: PlayChannelRecommendationConfig, type: ExploreWidgetType) : Triple<String, String, String> {
         return if (type == ExploreWidgetType.Category) Triple((widgetInfo as CategoryWidgetConfig).categoryName, widgetInfo.categoryLevel.toString(), widgetInfo.categoryId)
-        else Triple((widgetInfo as ExploreWidgetConfig).group, "0", "0")
+        else Triple((widgetInfo as? ExploreWidgetConfig)?.categoryName.orEmpty(), "0", "0")
     }
 
     override fun impressExploreIcon(widgetInfo: PlayChannelRecommendationConfig, type: ExploreWidgetType) {
