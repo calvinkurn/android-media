@@ -4,6 +4,8 @@ import com.tokopedia.withdraw.saldowithdrawal.domain.model.SubmitWithdrawalRespo
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.WithdrawalRequest
 
 interface WithdrawalFragmentCallback {
-    fun openThankYouFragment(withdrawalRequest: WithdrawalRequest,
-                            submitWithdrawalResponse: SubmitWithdrawalResponse)
+    fun openThankYouFragment(
+        withdrawalRequest: WithdrawalRequest,
+        submitWithdrawalResponse: SubmitWithdrawalResponse
+    )
 }

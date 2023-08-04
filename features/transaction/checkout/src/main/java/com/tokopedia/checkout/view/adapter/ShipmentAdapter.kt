@@ -1263,24 +1263,25 @@ class ShipmentAdapter @Inject constructor(
     override fun onCheckPurchaseProtection(position: Int, cartItem: CartItemModel) {
         val (shipmentCartItemPosition, shipmentCartItem) =
             getShipmentCartItemByCartString(cartItem.cartStringGroup)
+        val index = shipmentCartItem.cartItemModels.indexOfFirst { it.productId == cartItem.productId }
         if (cartItem.isProtectionOptIn && shipmentCartItem.selectedShipmentDetailData?.useDropshipper == true) {
             shipmentCartItem.selectedShipmentDetailData?.useDropshipper = false
             shipmentCartItem.cartItemModels =
                 shipmentCartItem.cartItemModels.toMutableList().apply {
-                    set(position + shipmentCartItem.cartItemModels.size - shipmentCartItemPosition, cartItem)
+                    set(index, cartItem)
                 }
             shipmentDataList[shipmentCartItemPosition] = shipmentCartItem
-            notifyItemChanged(shipmentCartItemPosition)
+            shipmentAdapterActionListener.onNeedUpdateViewItem(shipmentCartItemPosition)
             shipmentDataList[position] = cartItem
-            notifyItemChanged(position)
+            shipmentAdapterActionListener.onNeedUpdateViewItem(position)
             shipmentAdapterActionListener.onPurchaseProtectionLogicError()
         } else {
             shipmentCartItem.cartItemModels =
                 shipmentCartItem.cartItemModels.toMutableList().apply {
-                    set(position + shipmentCartItem.cartItemModels.size - shipmentCartItemPosition, cartItem)
+                    set(index, cartItem)
                 }
             shipmentDataList[shipmentCartItemPosition] = shipmentCartItem
-            notifyItemChanged(shipmentCartItemPosition)
+            shipmentAdapterActionListener.onNeedUpdateViewItem(shipmentCartItemPosition)
             shipmentDataList[position] = cartItem
         }
         shipmentAdapterActionListener.onPurchaseProtectionChangeListener(position)
@@ -1304,10 +1305,6 @@ class ShipmentAdapter @Inject constructor(
 
     override fun onImpressionAddOnProductService(addonType: Int, productId: String) {
         shipmentAdapterActionListener.addOnProductServiceImpression(addonType, productId)
-    }
-
-    override fun onClickLihatSemuaAddOnProductWidget() {
-        shipmentAdapterActionListener.onClickLihatSemuaAddOnProductServiceWidget()
     }
 
     override fun onClickCollapseGroupProduct(

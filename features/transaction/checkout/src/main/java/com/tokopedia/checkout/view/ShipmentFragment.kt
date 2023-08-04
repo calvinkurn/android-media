@@ -875,6 +875,7 @@ class ShipmentFragment :
             isInitialRender,
             isReloadAfterPriceChangeHigher
         )
+        shipmentAdapter.updateInsuranceTncVisibility()
     }
 
     fun stopTrace() {
@@ -3133,6 +3134,9 @@ class ShipmentFragment :
                                 if (shipmentCartItemModel.voucherLogisticItemUiModel != null) {
                                     // remove previous logistic promo code
                                     order.codes.remove(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)
+                                } else if (courierItemData.selectedShipper.logPromoCode != null) {
+                                    // remove previous logistic promo code
+                                    order.codes.remove(courierItemData.selectedShipper.logPromoCode)
                                 }
                                 order.codes.add(selectedShipper.logPromoCode!!)
                                 order.boCode = selectedShipper.logPromoCode!!
@@ -3911,8 +3915,8 @@ class ShipmentFragment :
             }
         }
 
-        var price: Double
-        var discountedPrice: Double
+        val price: Double
+        val discountedPrice: Double
         if (cartItemModel.campaignId == 0) {
             price = cartItemModel.price
             discountedPrice = cartItemModel.price
@@ -3938,6 +3942,7 @@ class ShipmentFragment :
             )
         )
 
+        checkoutAnalyticsCourierSelection.eventClickLihatSemuaAddOnsProductServiceWidget()
         activity?.let {
             val intent = RouteManager.getIntent(it, applink)
             startActivityForResult(intent, REQUEST_CODE_ADD_ON_PRODUCT_SERVICE_BOTTOMSHEET)
@@ -4294,10 +4299,6 @@ class ShipmentFragment :
 
     override fun addOnProductServiceImpression(addOnType: Int, productId: String) {
         checkoutAnalyticsCourierSelection.eventViewAddOnsProductServiceWidget(addOnType, productId)
-    }
-
-    override fun onClickLihatSemuaAddOnProductServiceWidget() {
-        checkoutAnalyticsCourierSelection.eventClickLihatSemuaAddOnsProductServiceWidget()
     }
 
     private fun onResultFromAddOnProductBottomSheet(resultCode: Int, data: Intent?) {

@@ -22,6 +22,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.PRODUCT_PROTECTION_INSURANCE_TYPE
 import com.tokopedia.purchase_platform.common.databinding.ItemProductInfoAddOnBinding
 import com.tokopedia.purchase_platform.common.databinding.ItemShipmentAddonProductItemBinding
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
@@ -242,6 +243,7 @@ class ShipmentCartItemViewHolder(
             binding.textItemPerProduct.text = CurrencyFormatUtil
                 .convertPriceValueToIdrFormat(cartItem.protectionPricePerProduct.toLong(), false)
                 .removeDecimalSuffix()
+            binding.checkboxPpp.setOnCheckedChangeListener { _, _ -> }
             if (cartItem.isProtectionCheckboxDisabled) {
                 binding.checkboxPpp.isEnabled = false
                 binding.checkboxPpp.isChecked = true
@@ -443,7 +445,6 @@ class ShipmentCartItemViewHolder(
                     tvSeeAllAddonProduct.setOnClickListener {
                         listener?.onClickSeeAllAddOnProductService(cartItemModel)
                     }
-                    listener?.onClickLihatSemuaAddOnProductWidget()
                 } else {
                     tvSeeAllAddonProduct.gone()
                 }
@@ -474,12 +475,24 @@ class ShipmentCartItemViewHolder(
                                 cbAddonItem.isEnabled = true
                             }
                         }
+                        if (addon.type == PRODUCT_PROTECTION_INSURANCE_TYPE) {
+                            cbAddonItem.isChecked = cartItemModel.isProtectionOptIn
+                        }
                         cbAddonItem.setOnCheckedChangeListener { compoundButton, isChecked ->
-                            delayChangeCheckboxAddOnState?.cancel()
-                            delayChangeCheckboxAddOnState = GlobalScope.launch(Dispatchers.Main) {
-                                delay(DEBOUNCE_TIME_ADDON)
-                                if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
-                                    listener?.onCheckboxAddonProductListener(isChecked, addon, cartItemModel, bindingAdapterPosition)
+                            if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
+                                delayChangeCheckboxAddOnState?.cancel()
+                                delayChangeCheckboxAddOnState = GlobalScope.launch(Dispatchers.Main) {
+                                    delay(DEBOUNCE_TIME_ADDON)
+                                    if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
+                                        listener?.onCheckboxAddonProductListener(isChecked, addon, cartItemModel, bindingAdapterPosition)
+                                    }
+                                }
+
+                                if (addon.type == PRODUCT_PROTECTION_INSURANCE_TYPE) {
+                                    val updatedCartItemModel = cartItemModel.copy(
+                                        isProtectionOptIn = isChecked
+                                    )
+                                    listener?.onCheckPurchaseProtection(bindingAdapterPosition, updatedCartItemModel)
                                 }
                             }
                         }
@@ -539,6 +552,7 @@ class ShipmentCartItemViewHolder(
                         .convertPriceValueToIdrFormat(addon.price.toLong(), false)
                         .removeDecimalSuffix()
                     binding.itemShipmentAddonProductBundling.llAddonProductItems.addView(addOnView.root)
+                    listener?.onImpressionAddOnProductService(addon.type, cartItemModel.productId.toString())
                 }
             }
         }
@@ -565,7 +579,5 @@ class ShipmentCartItemViewHolder(
         fun onClickSeeAllAddOnProductService(cartItemModel: CartItemModel)
 
         fun onImpressionAddOnProductService(addonType: Int, productId: String)
-
-        fun onClickLihatSemuaAddOnProductWidget()
     }
 }

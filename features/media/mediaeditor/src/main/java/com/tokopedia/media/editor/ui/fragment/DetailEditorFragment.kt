@@ -593,6 +593,13 @@ class DetailEditorFragment @Inject constructor(
                         }
                     )
                 )
+            } ?: run {
+                viewBinding?.editorFragmentDetailRoot?.let { view ->
+                    showErrorLoadToaster(
+                        view,
+                        null
+                    )
+                }
             }
         }
     }
@@ -1331,7 +1338,7 @@ class DetailEditorFragment @Inject constructor(
     }
 
     private fun rotateAddLogoOverlay(previewWidget: EditorDetailPreviewWidget) {
-        getLatestImageSize(previewWidget).let { (width, height) ->
+        getLatestImageSize(previewWidget)?.let { (width, height) ->
             // set size to provide new ratio if image is rotated, compare state rotate number with view model temp value
             val rotateSize = when(checkLatestOrientation()) {
                 ORIENTATION_ROTATED -> Pair(height, width)
@@ -1347,7 +1354,7 @@ class DetailEditorFragment @Inject constructor(
     }
 
     private fun rotateAddTextOverlay(previewWidget: EditorDetailPreviewWidget) {
-        getLatestImageSize(previewWidget).let { (width, height) ->
+        getLatestImageSize(previewWidget)?.let { (width, height) ->
             // set size to provide new ratio if image is rotated, compare state rotate number with view model temp value
             val rotateSize = when(checkLatestOrientation()) {
                 ORIENTATION_ROTATED -> Pair(height, width)
@@ -1364,22 +1371,29 @@ class DetailEditorFragment @Inject constructor(
      * used for manual rotate overlay image
      * return Pair<Width, Height>
      */
-    private fun getLatestImageSize(previewWidget: EditorDetailPreviewWidget): Pair<Int, Int> {
+    private fun getLatestImageSize(previewWidget: EditorDetailPreviewWidget): Pair<Int, Int>? {
         // get image width between edited (if any crop / rotate state) or original
         val realImageWidth = if (data.cropRotateValue.imageWidth != 0) {
             data.cropRotateValue.imageWidth
         } else {
-            previewWidget.cropImageView.drawable.intrinsicWidth
+            previewWidget.cropImageView.drawable?.intrinsicWidth ?: 0
         }
 
         // get image height between edited (if any crop / rotate state) or original
         val realImageHeight = if (data.cropRotateValue.imageHeight != 0) {
             data.cropRotateValue.imageHeight
         } else {
-            previewWidget.cropImageView.drawable.intrinsicHeight
+            previewWidget.cropImageView.drawable?.intrinsicHeight ?: 0
         }
 
-        return Pair(realImageWidth, realImageHeight)
+        // validation if u-crop failed to return drawable via cropImageView
+        return if (realImageWidth == 0 || realImageHeight == 0) {
+            showErrorGeneralToaster(context)
+            finishPage()
+            null
+        } else {
+            Pair(realImageWidth, realImageHeight)
+        }
     }
 
     private fun checkLatestOrientation(): Int {

@@ -29,7 +29,6 @@ import java.io.Closeable
 class PlayBroadcastSummaryViewModelRobot(
     channelId: String = "123",
     channelTitle: String = "Test 123",
-    productSectionList: List<ProductTagSectionUiModel> = emptyList(),
     private val dispatcher: CoroutineTestDispatchers = CoroutineTestDispatchers,
     getLiveStatisticsUseCase: GetLiveStatisticsUseCase = mockk(relaxed = true),
     getSellerLeaderboardUseCase: GetSellerLeaderboardUseCase = mockk(relaxed = true),
@@ -47,7 +46,6 @@ class PlayBroadcastSummaryViewModelRobot(
     private val viewModel = PlayBroadcastSummaryViewModel(
         channelId = channelId,
         channelTitle = channelTitle,
-        productSectionList = productSectionList,
         getSellerLeaderboardUseCase = getSellerLeaderboardUseCase,
         dispatcher = dispatcher,
         getLiveStatisticsUseCase = getLiveStatisticsUseCase,

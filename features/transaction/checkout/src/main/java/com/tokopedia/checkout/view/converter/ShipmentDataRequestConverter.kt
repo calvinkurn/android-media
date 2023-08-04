@@ -323,7 +323,7 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
             }
         }
         addOnProduct.listAddOnProductData.forEach { addOnProductItem ->
-            if (addOnProductItem.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK) {
+            if (addOnProductItem.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK || addOnProductItem.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY) {
                 val addOnGiftingRequest = CheckoutGiftingAddOn()
                 addOnGiftingRequest.itemId = addOnProductItem.id.toString()
                 addOnGiftingRequest.itemUniqueId = addOnProductItem.uniqueId
