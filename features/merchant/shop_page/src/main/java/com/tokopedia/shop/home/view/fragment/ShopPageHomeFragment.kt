@@ -1263,7 +1263,7 @@ open class ShopPageHomeFragment :
                         shopHomeAdapter?.setShopShowcaseBanner(
                             ShopHomeShowcaseUiModel(
                                 widgetId = "5432",
-                                categoryHeader = ShopHomeShowcaseUiModel.CategoryHeader(
+                                showcaseHeader = ShopHomeShowcaseUiModel.ShowcaseHeader(
                                     "Explore Categories",
                                     "tokopedia://shop/6553224?tab=EtalaseTab",
                                     ShopHomeShowcaseUiModel.ShopHomeShowcaseWidgetStyle.ROUNDED_CORNER
@@ -1272,7 +1272,7 @@ open class ShopPageHomeFragment :
                                     ShopHomeShowcaseUiModel.ShopHomeShowCaseTab(
                                         text = "",
                                         imageUrl = "",
-                                        mainBannerPosition = ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.TOP,
+                                        mainBannerPosition = ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.CAROUSEL,
                                         showcases = listOf(
                                             ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase(
                                                 id = "121",

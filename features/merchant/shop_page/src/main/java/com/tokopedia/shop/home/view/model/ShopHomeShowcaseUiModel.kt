@@ -7,7 +7,7 @@ import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
 
 data class ShopHomeShowcaseUiModel(
-    val categoryHeader: CategoryHeader,
+    val showcaseHeader: ShowcaseHeader,
     val tabs: List<ShopHomeShowCaseTab>,
     override val widgetId: String = "",
     override val layoutOrder: Int = -1,
@@ -17,12 +17,11 @@ data class ShopHomeShowcaseUiModel(
     override val isFestivity: Boolean = false,
 ): BaseShopHomeWidgetUiModel() {
 
-    data class CategoryHeader(
+    data class ShowcaseHeader(
         val title: String,
         val ctaLink: String,
         val widgetStyle: ShopHomeShowcaseWidgetStyle
     )
-
 
     enum class ShopHomeShowcaseWidgetStyle {
         ROUNDED_CORNER,

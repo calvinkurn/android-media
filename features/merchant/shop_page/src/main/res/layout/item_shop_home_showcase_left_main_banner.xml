@@ -21,27 +21,27 @@
         android:id="@+id/tpgTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        app:typographyWeight="bold"
-        app:typographyType="display_1"
+        android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
         tools:text="Explore categories" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgFirstBanner"
         android:layout_width="0dp"
         android:layout_height="176dp"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="16dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/imgSecondBanner"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tpgTitle"
-        app:unify_image_corner_radius="8" />
+        app:unify_image_corner_radius="8"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgFirstBannerTitle"
@@ -54,6 +54,7 @@
         android:gravity="center"
         android:maxLines="1"
         android:minLines="1"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/imgFirstBanner"
         app:layout_constraintEnd_toEndOf="@+id/imgFirstBanner"
         app:layout_constraintStart_toStartOf="@+id/imgFirstBanner"
@@ -61,31 +62,36 @@
         app:layout_constraintVertical_bias="1.0"
         app:typographyType="display_2"
         app:typographyWeight="bold"
-        tools:text="Power Bank" />
+        tools:text="Power Bank"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgSecondBanner"
         android:layout_width="68dp"
         android:layout_height="68dp"
         android:layout_marginEnd="8dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/imgFourthBanner"
         app:layout_constraintTop_toTopOf="@+id/imgFirstBanner"
-        app:unify_image_corner_radius="8" />
+        app:unify_image_corner_radius="8"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgSecondBannerTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:typographyType="small"
         android:layout_marginTop="4dp"
-        android:minLines="1"
+        android:ellipsize="end"
         android:gravity="center"
         android:maxLines="1"
-        android:ellipsize="end"
+        android:minLines="1"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/imgSecondBanner"
         app:layout_constraintStart_toStartOf="@+id/imgSecondBanner"
         app:layout_constraintTop_toBottomOf="@+id/imgSecondBanner"
-        tools:text="Tablet" />
+        app:typographyType="small"
+        tools:text="Tablet"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgThirdBanner"
@@ -93,9 +99,11 @@
         android:layout_height="68dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/imgFifthBanner"
         app:layout_constraintTop_toBottomOf="@+id/tpgSecondBannerTitle"
-        app:unify_image_corner_radius="8" />
+        app:unify_image_corner_radius="8"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgThirdBannerTitle"
@@ -106,20 +114,23 @@
         android:gravity="center"
         android:maxLines="1"
         android:minLines="1"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/imgSecondBanner"
         app:layout_constraintStart_toStartOf="@+id/imgSecondBanner"
         app:layout_constraintTop_toBottomOf="@+id/imgThirdBanner"
         app:typographyType="small"
-        tools:text="Handphone" />
+        tools:text="Handphone"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgFourthBanner"
         android:layout_width="68dp"
         android:layout_height="68dp"
-        android:layout_marginEnd="16dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/imgFirstBanner"
-        app:unify_image_corner_radius="8" />
+        app:unify_image_corner_radius="8"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgFourthBannerTitle"
@@ -130,20 +141,23 @@
         android:gravity="center"
         android:maxLines="1"
         android:minLines="1"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/imgFourthBanner"
         app:layout_constraintStart_toStartOf="@+id/imgFourthBanner"
         app:layout_constraintTop_toBottomOf="@+id/imgSecondBanner"
         app:typographyType="small"
-        tools:text="Accecories" />
+        tools:text="Accecories"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgFifthBanner"
         android:layout_width="68dp"
         android:layout_height="68dp"
-        android:layout_marginEnd="16dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/imgThirdBanner"
-        app:unify_image_corner_radius="8" />
+        app:unify_image_corner_radius="8"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgFifthBannerTitle"
@@ -154,10 +168,12 @@
         android:gravity="center"
         android:maxLines="1"
         android:minLines="1"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/imgFifthBanner"
         app:layout_constraintStart_toStartOf="@+id/imgFifthBanner"
         app:layout_constraintTop_toBottomOf="@+id/imgFifthBanner"
         app:typographyType="small"
-        tools:text="Power Bank" />
+        tools:text="Power Bank"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
