@@ -34,6 +34,7 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
         recommendationItemList = recommendation.mapIndexed { index, recommendation ->
             RecommendationItem(
                 productId = recommendation.id,
+                warehouseId = recommendation.warehouseID,
                 name = recommendation.name,
                 categoryBreadcrumbs = recommendation.categoryBreadcrumbs,
                 url = recommendation.url,

@@ -18,6 +18,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CATEGORY_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_40
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_56
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_98
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_INDEX
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_ITEMS
@@ -57,10 +58,12 @@ class CategoryProductRecommendationAnalytic(
         index: Int,
         id: String,
         name: String,
-        price: Long
+        price: Long,
+        productWarehouseId: String
     ): Bundle {
         val items = Bundle()
         items.putString(KEY_DIMENSION_40, String.EMPTY)
+        items.putString(KEY_DIMENSION_56, productWarehouseId)
         items.putString(KEY_DIMENSION_98, (!isOos).toString())
         items.putInt(KEY_INDEX, index)
         items.putString(KEY_ITEM_BRAND, String.EMPTY)
@@ -78,10 +81,12 @@ class CategoryProductRecommendationAnalytic(
         id: String,
         name: String,
         price: Int,
-        quantity: String
+        quantity: String,
+        productWarehouseId: String
     ): Bundle {
         val items = Bundle()
         items.putString(KEY_CATEGORY_ID, categoryId)
+        items.putString(KEY_DIMENSION_56, productWarehouseId)
         items.putString(KEY_DIMENSION_98, (!isOos).toString())
         items.putString(KEY_ITEM_BRAND, String.EMPTY)
         items.putString(KEY_ITEM_CATEGORY, String.EMPTY)
@@ -102,16 +107,17 @@ class CategoryProductRecommendationAnalytic(
         headerName: String,
         index: Int,
         productId: String,
-        warehouseId: String,
+        localWarehouseId: String,
         isOos: Boolean,
         name: String,
-        price: Long
+        price: Long,
+        productWarehouseId: String
     ) {
         val bundle = Bundle().apply {
             putString(EVENT, EVENT_VIEW_ITEM_LIST)
             putString(EVENT_ACTION, EVENT_ACTION_IMPRESS_PRODUCT_CAROUSEL)
             putString(EVENT_CATEGORY, EVENT_CATEGORY_PAGE_L1)
-            putString(EVENT_LABEL, joinDash(categoryIdL1, headerName, index.toString(), productId, warehouseId))
+            putString(EVENT_LABEL, joinDash(categoryIdL1, headerName, index.toString(), productId, localWarehouseId))
             putString(KEY_TRACKER_ID, ID_IMPRESS_PRODUCT_CAROUSEL)
             putString(KEY_BUSINESS_UNIT, BUSINESS_UNIT_GROCERIES)
             putString(KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
@@ -121,7 +127,8 @@ class CategoryProductRecommendationAnalytic(
                     index = index,
                     id = productId,
                     name = name,
-                    price = price
+                    price = price,
+                    productWarehouseId = productWarehouseId
                 )
             )
             putString(KEY_USER_ID, userId)
@@ -135,16 +142,17 @@ class CategoryProductRecommendationAnalytic(
         headerName: String,
         index: Int,
         productId: String,
-        warehouseId: String,
+        localWarehouseId: String,
         isOos: Boolean,
         name: String,
-        price: Long
+        price: Long,
+        productWarehouseId: String
     ) {
         val bundle = Bundle().apply {
             putString(EVENT, EVENT_SELECT_CONTENT)
             putString(EVENT_ACTION, EVENT_ACTION_CLICK_PRODUCT_CAROUSEL)
             putString(EVENT_CATEGORY, EVENT_CATEGORY_PAGE_L1)
-            putString(EVENT_LABEL, joinDash(categoryIdL1, headerName, index.toString(), productId, warehouseId))
+            putString(EVENT_LABEL, joinDash(categoryIdL1, headerName, index.toString(), productId, localWarehouseId))
             putString(KEY_TRACKER_ID, ID_CLICK_PRODUCT_CAROUSEL)
             putString(KEY_BUSINESS_UNIT, BUSINESS_UNIT_GROCERIES)
             putString(KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
@@ -154,7 +162,8 @@ class CategoryProductRecommendationAnalytic(
                     index = index,
                     id = productId,
                     name = name,
-                    price = price
+                    price = price,
+                    productWarehouseId = productWarehouseId
                 )
             )
             putString(KEY_USER_ID, userId)
@@ -167,18 +176,19 @@ class CategoryProductRecommendationAnalytic(
         categoryIdL1: String,
         index: Int,
         productId: String,
-        warehouseId: String,
+        localWarehouseId: String,
         isOos: Boolean,
         name: String,
         price: Int,
         headerName: String,
-        quantity: Int
+        quantity: Int,
+        productWarehouseId: String
     ) {
         val bundle = Bundle().apply {
             putString(EVENT, EVENT_ADD_TO_CART)
             putString(EVENT_ACTION, EVENT_ACTION_CLICK_ATC_ON_PRODUCT_RECOM_WIDGET)
             putString(EVENT_CATEGORY, EVENT_CATEGORY_PAGE_L1)
-            putString(EVENT_LABEL, joinDash(categoryIdL1, index.toString(), productId, warehouseId))
+            putString(EVENT_LABEL, joinDash(categoryIdL1, index.toString(), productId, localWarehouseId))
             putString(KEY_TRACKER_ID, ID_CLICK_ATC_ON_PRODUCT_RECOM_WIDGET)
             putString(KEY_BUSINESS_UNIT, BUSINESS_UNIT_GROCERIES)
             putString(KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
@@ -189,7 +199,8 @@ class CategoryProductRecommendationAnalytic(
                     id = productId,
                     name = name,
                     price = price,
-                    quantity = quantity.toString()
+                    quantity = quantity.toString(),
+                    productWarehouseId = productWarehouseId
                 )
             )
             putString(KEY_USER_ID, userId)

@@ -88,7 +88,6 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
                 CategoryAtcTrackerModel(
                     categoryIdL1 = categoryIdL1,
                     index = productPosition,
-                    warehouseId = warehouseId,
                     headerName = categoryShowcaseItemUiModel.headerName,
                     quantity = newProductOrderQuantity,
                     product = categoryShowcaseItemUiModel.productCardModel,

@@ -19,6 +19,7 @@ internal object CategoryPageMapper {
         hasBlockedAddToCart: Boolean
     ): ProductCardCompactUiModel = ProductCardCompactUiModel(
         productId = product.id,
+        warehouseId = product.warehouseIdDefault,
         imageUrl = product.imageUrl300,
         minOrder = product.minOrder,
         maxOrder = product.maxOrder,

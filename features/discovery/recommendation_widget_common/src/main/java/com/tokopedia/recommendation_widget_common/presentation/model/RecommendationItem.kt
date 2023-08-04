@@ -5,6 +5,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 
 data class RecommendationItem(
     val productId: Long = 0L,
+    val warehouseId: String = "",
     val name: String = "",
     val categoryBreadcrumbs: String = "",
     val url: String = "",

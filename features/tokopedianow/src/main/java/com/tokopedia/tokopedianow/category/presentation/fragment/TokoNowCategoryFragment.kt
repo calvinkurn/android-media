@@ -915,12 +915,13 @@ class TokoNowCategoryFragment :
                 categoryIdL1 = categoryIdL1,
                 index = model.position,
                 productId = model.productRecommendation.getProductId(),
-                warehouseId = viewModel.getWarehouseId(),
+                localWarehouseId = viewModel.getWarehouseId(),
                 isOos = model.productRecommendation.productCardModel.isOos(),
                 name = model.productRecommendation.getProductName(),
                 price = model.productRecommendation.getProductPrice().toIntSafely(),
                 headerName = model.productRecommendation.headerName,
-                quantity = model.quantity
+                quantity = model.quantity,
+                productWarehouseId = model.productRecommendation.productCardModel.warehouseId
             )
         }
     }
@@ -943,7 +944,8 @@ class TokoNowCategoryFragment :
         productId: String,
         productName: String,
         productPrice: String,
-        isOos: Boolean
+        isOos: Boolean,
+        productWarehouseId: String
     ) {
         clickProductCard(appLink)
 
@@ -952,10 +954,11 @@ class TokoNowCategoryFragment :
             headerName = headerName,
             index = index.getTrackerPosition(),
             productId = productId,
-            warehouseId = viewModel.getWarehouseId(),
+            localWarehouseId = viewModel.getWarehouseId(),
             isOos = isOos,
             name = productName,
-            price = productPrice.getDigits()?.toLong().orZero()
+            price = productPrice.getDigits()?.toLong().orZero(),
+            productWarehouseId = productWarehouseId
         )
     }
 
@@ -966,7 +969,8 @@ class TokoNowCategoryFragment :
         productId: String,
         productName: String,
         productPrice: String,
-        isOos: Boolean
+        isOos: Boolean,
+        productWarehouseId: String
     ) {
         clickProductCard(appLink)
 
@@ -975,10 +979,11 @@ class TokoNowCategoryFragment :
             headerName = headerName,
             index = index.getTrackerPosition(),
             productId = productId,
-            warehouseId = viewModel.getWarehouseId(),
+            localWarehouseId = viewModel.getWarehouseId(),
             isOos = isOos,
             name = productName,
-            price = productPrice.getDigits()?.toLong().orZero()
+            price = productPrice.getDigits()?.toLong().orZero(),
+            productWarehouseId = productWarehouseId
         )
     }
 
@@ -988,17 +993,19 @@ class TokoNowCategoryFragment :
         productId: String,
         productName: String,
         productPrice: String,
-        isOos: Boolean
+        isOos: Boolean,
+        productWarehouseId: String
     ) {
         analytic.categoryShowcaseAnalytic.sendImpressionProductInShowcaseLEvent(
             categoryIdL1 = categoryIdL1,
             headerName = headerName,
             index = index.getTrackerPosition(),
             productId = productId,
-            warehouseId = viewModel.getWarehouseId(),
+            localWarehouseId = viewModel.getWarehouseId(),
             isOos = isOos,
             name = productName,
-            price = productPrice.getDigits()?.toLong().orZero()
+            price = productPrice.getDigits()?.toLong().orZero(),
+            productWarehouseId = productWarehouseId
         )
     }
 
@@ -1008,17 +1015,19 @@ class TokoNowCategoryFragment :
         productId: String,
         productName: String,
         productPrice: String,
-        isOos: Boolean
+        isOos: Boolean,
+        productWarehouseId: String
     ) {
         analytic.categoryProductRecommendationAnalytic.sendImpressionProductCarouselEvent(
             categoryIdL1 = categoryIdL1,
             headerName = headerName,
             index = index.getTrackerPosition(),
             productId = productId,
-            warehouseId = viewModel.getWarehouseId(),
+            localWarehouseId = viewModel.getWarehouseId(),
             isOos = isOos,
             name = productName,
-            price = productPrice.getDigits()?.toLong().orZero()
+            price = productPrice.getDigits()?.toLong().orZero(),
+            productWarehouseId = productWarehouseId
         )
     }
 
@@ -1084,12 +1093,13 @@ class TokoNowCategoryFragment :
             categoryIdL1 = categoryIdL1,
             index = model.index,
             productId = model.product.productId,
-            warehouseId = model.warehouseId,
+            localWarehouseId = viewModel.getWarehouseId(),
             isOos = model.product.isOos(),
             name = model.product.name,
             price = model.product.getPriceLong(),
             headerName = model.headerName,
-            quantity = model.quantity
+            quantity = model.quantity,
+            productWarehouseId = model.product.warehouseId
         )
     }
 
