@@ -29,10 +29,10 @@ object DeeplinkMapperContent {
      */
     fun getNavContentFromHttp(uri: Uri, deepLink: String): String {
         val pathSegments = uri.pathSegments.joinToString("/")
-        return if (pathSegments.startsWith("play/", false)) {
+        return if (pathSegments.startsWith("play", false)) {
             goToAppLinkPlayInternal(uri)
-        } else if (pathSegments.startsWith("feed/", false) ||
-            pathSegments.startsWith("content/", false)
+        } else if (pathSegments.startsWith("feed", false) ||
+            pathSegments.startsWith("content", false)
         ) {
             if (pathSegments.startsWith("feed/detail/", false) ||
                 pathSegments.startsWith("content/detail/", false)
