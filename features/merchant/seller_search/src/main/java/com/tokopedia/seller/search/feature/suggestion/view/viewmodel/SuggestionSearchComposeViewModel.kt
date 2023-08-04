@@ -38,7 +38,9 @@ class SuggestionSearchComposeViewModel @Inject constructor(
                     getSellerSearchUseCase.executeOnBackground(),
                     keyword
                 )
-                GlobalSearchSellerMapper.mapToSuggestionSellerSearchVisitable(sellerSearchVisitableList)
+                GlobalSearchSellerMapper.mapToSuggestionSellerSearchVisitable(
+                    sellerSearchVisitableList
+                )
             }
 
             _uiState.update {
@@ -66,11 +68,11 @@ class SuggestionSearchComposeViewModel @Inject constructor(
                 insertSellerSearchUseCase.executeOnBackground()
             }
             _uiState.update {
-                it.copy(isInsertSuccessSearch = true)
+                it.copy(isDismissedKeyboard = true)
             }
         }, onError = { throwable ->
                 _uiState.update {
-                    it.copy(throwable = throwable, isInsertSuccessSearch = false)
+                    it.copy(throwable = throwable, isDismissedKeyboard = true)
                 }
             })
     }

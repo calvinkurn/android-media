@@ -36,10 +36,17 @@ class InitialSearchActivityComposeViewModel @Inject constructor(
     private val _uiEffect = MutableSharedFlow<GlobalSearchUiEvent>(replay = Int.ONE)
     val uiEffect get() = _uiEffect.asSharedFlow()
 
-    val searchTypingStateFlow = MutableStateFlow(String.EMPTY)
+    private val searchTypingStateFlow = MutableStateFlow(String.EMPTY)
 
     init {
-        getSearchKeyword()
+        viewModelScope.launch {
+            searchTypingStateFlow
+                .debounce(DEBOUNCE_DELAY_MILLIS)
+                .distinctUntilChanged()
+                .collectLatest { keyword ->
+                    _uiEffect.emit(GlobalSearchUiEvent.OnSearchResultKeyword(keyword))
+                }
+        }
     }
 
     fun onUiEffect(event: GlobalSearchUiEvent) {
@@ -77,17 +84,6 @@ class InitialSearchActivityComposeViewModel @Inject constructor(
             it.copy(searchBarKeyword = keyword)
         }
         searchTypingStateFlow.tryEmit(keyword)
-    }
-
-    private fun getSearchKeyword() {
-        viewModelScope.launch {
-            searchTypingStateFlow
-                .debounce(DEBOUNCE_DELAY_MILLIS)
-                .distinctUntilChanged()
-                .collectLatest { keyword ->
-                    _uiEffect.emit(GlobalSearchUiEvent.OnSearchResultKeyword(keyword))
-                }
-        }
     }
 
     companion object {

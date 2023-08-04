@@ -82,7 +82,7 @@ class SuggestionSearchComposeFragment : BaseDaggerFragment() {
                         }
                     }
 
-                    if (sellerSearchResult?.isInsertSuccessSearch == true) {
+                    if (sellerSearchResult?.isDismissedKeyboard == true) {
                         softwareKeyboardController?.hide()
                     }
                 }

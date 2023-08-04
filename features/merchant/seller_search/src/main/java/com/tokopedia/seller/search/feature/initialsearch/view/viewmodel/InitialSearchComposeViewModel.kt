@@ -91,11 +91,11 @@ class InitialSearchComposeViewModel @Inject constructor(
             }
 
             _uiState.update {
-                it.copy(isInsertSearchSuccess = true)
+                it.copy(isDismissKeyboard = true)
             }
         }, onError = { throwable ->
                 _uiState.update {
-                    it.copy(isInsertSearchSuccess = true, throwable = throwable)
+                    it.copy(isDismissKeyboard = true, throwable = throwable)
                 }
             })
     }

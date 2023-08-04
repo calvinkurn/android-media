@@ -70,7 +70,7 @@ class InitialSearchComposeFragment : BaseDaggerFragment() {
                         }
                     }
 
-                    if (sellerSearchResult.value.isInsertSearchSuccess) {
+                    if (sellerSearchResult.value.isDismissKeyboard) {
                         softwareKeyboardController?.hide()
                     }
                 }

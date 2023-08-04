@@ -11,11 +11,13 @@ import com.tokopedia.seller.search.common.domain.GetSellerSearchPlaceholderUseCa
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+@OptIn(FlowPreview::class)
 class InitialSearchActivityViewModel @Inject constructor(
     private val getPlaceholderUseCase: GetSellerSearchPlaceholderUseCase,
     private val dispatchers: CoroutineDispatchers
@@ -33,7 +35,14 @@ class InitialSearchActivityViewModel @Inject constructor(
     val queryChannel = MutableStateFlow(String.EMPTY)
 
     init {
-        getSearchKeyword()
+        viewModelScope.launch {
+            queryChannel
+                .debounce(DEBOUNCE_DELAY_MILLIS)
+                .distinctUntilChanged()
+                .collectLatest {
+                    _searchKeyword.value = it
+                }
+        }
     }
 
     fun getSearchPlaceholder() {
@@ -51,17 +60,6 @@ class InitialSearchActivityViewModel @Inject constructor(
 
     fun getTypingSearch(keyword: String) {
         queryChannel.tryEmit(keyword)
-    }
-
-    private fun getSearchKeyword() {
-        viewModelScope.launch {
-            queryChannel
-                .debounce(DEBOUNCE_DELAY_MILLIS)
-                .distinctUntilChanged()
-                .collectLatest {
-                    _searchKeyword.value = it
-                }
-        }
     }
 
     companion object {

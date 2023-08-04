@@ -421,7 +421,7 @@ object GlobalSearchSellerMapper {
             addAll(initialSearchSellerList)
         }
 
-        if (itemPosition > -Int.ONE) {
+        if (initialSearchSellerMutableList.isNotEmpty() && itemPosition > -Int.ONE) {
             initialSearchSellerMutableList.removeAt(itemPosition)
         }
 
