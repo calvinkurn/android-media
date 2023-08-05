@@ -2,10 +2,10 @@ package com.tokopedia.tokochat.test.chatroom
 
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokochat.base.TokoChatViewModelTestFixture
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil
 import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
 import com.tokopedia.tokochat.domain.response.orderprogress.param.TokoChatOrderProgressParam
 import com.tokopedia.tokochat.utils.JsonResourcesUtil
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -14,6 +14,7 @@ import junit.framework.TestCase
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -187,6 +188,44 @@ class TokoChatOrderProgressViewModelTest : TokoChatViewModelTestFixture() {
             coVerify(exactly = 0) {
                 getTokoChatOrderProgressUseCase(TokoChatOrderProgressParam("", ""))
             }
+        }
+    }
+
+    @Test
+    fun `when translate order id gojek, should give tokopedia order id`() {
+        runBlocking {
+            // Given
+            coEvery {
+                getTokopediaOrderIdUseCase(any())
+            } returns flowOf(TKPD_ORDER_ID_DUMMY)
+
+            // When
+            viewModel.translateGojekOrderId(GOJEK_ORDER_ID_DUMMY)
+
+            // Then
+            Assert.assertEquals(
+                TKPD_ORDER_ID_DUMMY,
+                (viewModel.tkpdOrderIdLiveData.value as Success).data
+            )
+        }
+    }
+
+    @Test
+    fun `when fail to translate order id gojek, should give error`() {
+        runBlocking {
+            // Given
+            coEvery {
+                getTokopediaOrderIdUseCase(any())
+            } throws throwableDummy
+
+            // When
+            viewModel.translateGojekOrderId(GOJEK_ORDER_ID_DUMMY)
+
+            // Then
+            Assert.assertEquals(
+                throwableDummy.message,
+                (viewModel.tkpdOrderIdLiveData.value as Fail).throwable.message
+            )
         }
     }
 }
