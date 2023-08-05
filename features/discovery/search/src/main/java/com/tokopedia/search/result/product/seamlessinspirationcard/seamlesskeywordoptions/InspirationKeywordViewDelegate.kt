@@ -7,7 +7,6 @@ import com.tokopedia.iris.Iris
 import com.tokopedia.search.di.qualifier.SearchContext
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.product.QueryKeyProvider
-import com.tokopedia.search.result.product.broadmatch.BroadMatchTracking
 import com.tokopedia.search.utils.applinkopener.ApplinkOpener
 import com.tokopedia.search.utils.applinkopener.ApplinkOpenerDelegate
 import com.tokopedia.search.utils.contextprovider.ContextProvider
@@ -27,10 +26,7 @@ class InspirationKeywordViewDelegate @Inject constructor(
     ContextProvider by WeakReferenceContextProvider(context),
     QueryKeyProvider by queryKeyProvider {
     override fun trackEventImpressionInspirationKeyword(inspirationKeywordData: InspirationKeywordDataView) {
-        BroadMatchTracking.trackEventImpressionBroadMatch(
-            iris,
-            inspirationKeywordData
-        )
+        inspirationKeywordData.asSearchComponentTracking(queryKey).impress(iris)
     }
 
     override fun trackEventClickItemInspirationKeyword(inspirationKeywordData: InspirationKeywordDataView) {
