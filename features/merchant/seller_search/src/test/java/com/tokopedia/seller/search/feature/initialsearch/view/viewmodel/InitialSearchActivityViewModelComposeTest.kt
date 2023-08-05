@@ -45,10 +45,10 @@ class InitialSearchActivityViewModelComposeTest :
 
     @Test
     fun `given OnKeywordTextChanged when onUiEffect success should return success`() {
-        runTest {
-            val resultKeyword = "baju baru"
-            val expectedKeywordList = listOf("ba", "baju", "baju ba", "baju baru")
+        val resultKeyword = "baju baru"
+        val expectedKeywordList = listOf("ba", "baju", "baju ba", "baju baru")
 
+        runTest {
             for (keyword in expectedKeywordList) {
                 viewModel.onUiEffect(GlobalSearchUiEvent.OnKeywordTextChanged(keyword))
             }

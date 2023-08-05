@@ -39,16 +39,10 @@ class InitialSearchActivityViewModelTest : InitialSearchActivityViewModelTestFix
     @Test
     fun `when get typing search success should set live data success`() {
         val expectedKeyword = "baju baru"
-        val expectedKeywordList = listOf("", "ba", "baju", "baju ba", "baju baru")
+        val expectedKeywordList = listOf("ba", "baju", "baju ba", "baju baru")
         var actualKeyword = ""
 
         runTest {
-            for (keyword in expectedKeywordList) {
-                viewModel.getTypingSearch(keyword)
-            }
-
-            advanceUntilIdle()
-
             val scope = CoroutineScope(coroutineTestRule.dispatchers.coroutineDispatcher)
             val collectorJob = scope.launch {
                 viewModel.queryChannel.collectLatest {
@@ -56,10 +50,16 @@ class InitialSearchActivityViewModelTest : InitialSearchActivityViewModelTestFix
                 }
             }
 
-            verifyGetTypingSearchSuccess(expectedKeyword)
-            Assert.assertEquals(expectedKeyword, actualKeyword)
+            for (keyword in expectedKeywordList) {
+                viewModel.getTypingSearch(keyword)
+            }
+
+            advanceUntilIdle()
 
             collectorJob.cancel()
         }
+
+        verifyGetTypingSearchSuccess(expectedKeyword)
+        Assert.assertEquals(expectedKeyword, actualKeyword)
     }
 }
