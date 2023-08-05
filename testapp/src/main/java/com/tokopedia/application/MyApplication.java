@@ -17,6 +17,7 @@ import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokopedia.tokochat.config.util.TokoChatConnection;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.analytics.performance.fpi.FrameMetricsMonitoring;
 import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.analyticsdebugger.cassava.data.RemoteSpec;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
@@ -35,6 +36,7 @@ import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.developer_options.notification.DevOptNotificationManager;
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.graphql.util.GqlActivityCallback;
 import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql;
 import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql;
 import com.tokopedia.iris.IrisAnalytics;
@@ -42,8 +44,6 @@ import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
-import com.tokopedia.tkpd.ActivityFrameMetrics;
-import com.tokopedia.graphql.util.GqlActivityCallback;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.track.TrackApp;
@@ -98,8 +98,8 @@ public class MyApplication extends BaseMainApplication
         GraphqlClient.setContextData(getApplicationContext());
 
         NetworkClient.init(this);
-        registerActivityLifecycleCallbacks(new ActivityFrameMetrics.Builder().build());
         registerActivityLifecycleCallbacks(new GqlActivityCallback());
+        registerActivityLifecycleCallbacks(new FrameMetricsMonitoring(this, true));
 
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());

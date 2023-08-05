@@ -66,7 +66,6 @@ class PlayBroadcastSummaryFragment @Inject constructor(
                         parentViewModel.selectedAccount,
                         parentViewModel.channelId,
                         parentViewModel.channelTitle,
-                        parentViewModel.productSectionList,
                     ) as T
                 }
             }
