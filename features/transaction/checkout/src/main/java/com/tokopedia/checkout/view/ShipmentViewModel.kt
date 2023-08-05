@@ -302,6 +302,8 @@ class ShipmentViewModel @Inject constructor(
 
     var isTradeIn: Boolean = false
 
+    var isAnyProductHasAddOnsProduct: Boolean = false
+
     // add ons product
     // list summary add on - ready to render
     var listSummaryAddOnModel: List<ShipmentAddOnSummaryModel> = emptyList()
@@ -963,6 +965,23 @@ class ShipmentViewModel @Inject constructor(
         dynamicData = cartShipmentAddressFormData.dynamicData
         shipmentPlatformFeeData = cartShipmentAddressFormData.shipmentPlatformFee
         listSummaryAddOnModel = ShipmentAddOnProductServiceMapper.mapSummaryAddOns(cartShipmentAddressFormData)
+        isAnyProductHasAddOnsProduct = validateNeedSaveAddons(cartShipmentAddressFormData)
+    }
+
+    private fun validateNeedSaveAddons(cartShipmentAddressFormData: CartShipmentAddressFormData): Boolean {
+        var isAnyProductHasAddonsProduct = false
+        cartShipmentAddressFormData.groupAddress.forEach { groupAddress ->
+            groupAddress.groupShop.forEach { groupShop ->
+                groupShop.groupShopData.forEach { groupShopV2 ->
+                    groupShopV2.products.forEach { product ->
+                        if (product.addOnProduct.listAddOnProductData.isNotEmpty()) {
+                            isAnyProductHasAddonsProduct = true
+                        }
+                    }
+                }
+            }
+        }
+        return isAnyProductHasAddonsProduct
     }
 
     internal fun initializePresenterData(cartShipmentAddressFormData: CartShipmentAddressFormData) {

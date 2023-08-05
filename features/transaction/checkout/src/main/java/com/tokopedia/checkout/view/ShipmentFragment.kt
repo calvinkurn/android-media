@@ -2242,7 +2242,11 @@ class ShipmentFragment :
 
     override fun onProcessToPayment() {
         showLoading()
-        shipmentViewModel.saveAddOnsProductBeforeCheckout()
+        if (shipmentViewModel.isAnyProductHasAddOnsProduct) {
+            shipmentViewModel.saveAddOnsProductBeforeCheckout()
+        } else {
+            shipmentAdapter.checkDropshipperValidation()
+        }
     }
 
     private fun onResultFromPayment(resultCode: Int, data: Intent?) {
