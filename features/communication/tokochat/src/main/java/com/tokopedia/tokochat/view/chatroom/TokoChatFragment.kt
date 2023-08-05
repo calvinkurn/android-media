@@ -275,6 +275,12 @@ open class TokoChatFragment @Inject constructor(
         }
     }
 
+    private fun observeTkpdOrderId() {
+        observe(viewModel.tkpdOrderIdLiveData) {
+            viewModel.loadOrderCompletedStatus(viewModel.tkpdOrderId, viewModel.source)
+        }
+    }
+
     override fun onStart() {
         super.onStart()
         if (viewModel.channelId.isNotEmpty() && viewModel.channelId.isNotBlank()) {
@@ -297,6 +303,7 @@ open class TokoChatFragment @Inject constructor(
         removeObservers(viewModel.isChatConnected)
         removeObservers(viewModel.channelDetail)
         removeObservers(viewModel.error)
+        removeObservers(viewModel.tkpdOrderIdLiveData)
         viewModel.cancelCheckConnection()
         super.onDestroy()
     }
@@ -711,7 +718,12 @@ open class TokoChatFragment @Inject constructor(
 
     private fun loadTransactionWidget() {
         baseBinding?.tokochatTransactionOrder?.showShimmeringWidget()
-        viewModel.loadOrderCompletedStatus(viewModel.tkpdOrderId, viewModel.source)
+        if (viewModel.tkpdOrderId.isNotBlank()) {
+            viewModel.loadOrderCompletedStatus(viewModel.tkpdOrderId, viewModel.source)
+        } else {
+            observeTkpdOrderId() // Only need to observe this if tkpdOrderId is empty
+            viewModel.translateGojekOrderId(viewModel.gojekOrderId)
+        }
     }
 
     private fun updateShowTransactionWidget(tokoChatOrderProgress: TokoChatOrderProgressResponse.TokoChatOrderProgress) {
