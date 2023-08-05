@@ -185,6 +185,7 @@ open class TokoChatFragment @Inject constructor(
         setDataFromArguments(savedInstanceState)
         askTokoChatConsent()
         setupLifeCycleObserver()
+        setupListeners()
     }
 
     override fun onResume() {
@@ -239,6 +240,10 @@ open class TokoChatFragment @Inject constructor(
         this.lifecycle.addObserver(viewModel)
     }
 
+    private fun setupListeners() {
+        baseBinding?.tokochatTransactionOrder?.assignListener(this)
+    }
+
     protected open fun initializeChatRoom(savedInstanceState: Bundle?) {
         setDataFromArguments(savedInstanceState)
         loadChatRoomData()
@@ -277,7 +282,15 @@ open class TokoChatFragment @Inject constructor(
 
     private fun observeTkpdOrderId() {
         observe(viewModel.tkpdOrderIdLiveData) {
-            viewModel.loadOrderCompletedStatus(viewModel.tkpdOrderId, viewModel.source)
+            when (it) {
+                is Success -> {
+                    viewModel.loadOrderCompletedStatus(viewModel.tkpdOrderId, viewModel.source)
+                }
+                is Fail -> {
+                    hideTransactionLocalLoad()
+                    setShowTransactionLocalLoad()
+                }
+            }
         }
     }
 
@@ -716,12 +729,14 @@ open class TokoChatFragment @Inject constructor(
         }
     }
 
-    private fun loadTransactionWidget() {
+    private fun loadTransactionWidget(isFromLocalLoad: Boolean = false) {
         baseBinding?.tokochatTransactionOrder?.showShimmeringWidget()
         if (viewModel.tkpdOrderId.isNotBlank()) {
             viewModel.loadOrderCompletedStatus(viewModel.tkpdOrderId, viewModel.source)
         } else {
-            observeTkpdOrderId() // Only need to observe this if tkpdOrderId is empty
+            if (!isFromLocalLoad) {
+                observeTkpdOrderId() // Only need to observe this if tkpdOrderId is empty
+            }
             viewModel.translateGojekOrderId(viewModel.gojekOrderId)
         }
     }
@@ -759,7 +774,6 @@ open class TokoChatFragment @Inject constructor(
         )
 
         baseBinding?.tokochatTransactionOrder?.showTransactionWidget(
-            this,
             orderProgressUiModel
         )
 
@@ -1072,7 +1086,7 @@ open class TokoChatFragment @Inject constructor(
     }
 
     override fun onLocalLoadRetryClicked() {
-        loadTransactionWidget()
+        loadTransactionWidget(isFromLocalLoad = true)
     }
 
     override fun onTransactionWidgetClicked(appLink: String) {

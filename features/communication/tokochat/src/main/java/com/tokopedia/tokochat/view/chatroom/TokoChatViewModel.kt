@@ -125,8 +125,8 @@ class TokoChatViewModel @Inject constructor(
     val imageUploadError: LiveData<Pair<String, Throwable>>
         get() = _imageUploadError
 
-    private val _tkpdOrderId = MutableLiveData<String>()
-    val tkpdOrderIdLiveData: LiveData<String>
+    private val _tkpdOrderId = MutableLiveData<Result<String>>()
+    val tkpdOrderIdLiveData: LiveData<Result<String>>
         get() = _tkpdOrderId
 
     private val _error = MutableLiveData<Pair<Throwable, String>>()
@@ -646,10 +646,11 @@ class TokoChatViewModel @Inject constructor(
             try {
                 getTkpdOrderIdUseCase(gojekOrderId).collect {
                     tkpdOrderId = it
-                    _tkpdOrderId.value = it
+                    _tkpdOrderId.value = Success(it)
                 }
             } catch (throwable: Throwable) {
-                _error.value
+                _tkpdOrderId.value = Fail(throwable)
+                _error.value = Pair(throwable, ::translateGojekOrderId.name)
             }
         }
     }
