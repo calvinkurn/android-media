@@ -8,7 +8,7 @@
     android:padding="4dp">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvBmgmUpsellingGroup"
+        android:id="@+id/rvBmgmBundledProduct"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -18,7 +18,7 @@
         app:layout_constraintVertical_bias="0"
         tools:itemCount="3"
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_bmgm_mini_cart_upselling_product"
+        tools:listitem="@layout/item_bmgm_mini_cart_item_product_bundle"
         tools:orientation="horizontal" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -28,9 +28,9 @@
         android:gravity="center"
         android:textAllCaps="true"
         android:textColor="@color/Unify_NN0"
-        app:layout_constraintEnd_toEndOf="@+id/rvBmgmUpsellingGroup"
-        app:layout_constraintStart_toStartOf="@+id/rvBmgmUpsellingGroup"
-        app:layout_constraintTop_toBottomOf="@+id/rvBmgmUpsellingGroup"
+        app:layout_constraintEnd_toEndOf="@+id/rvBmgmBundledProduct"
+        app:layout_constraintStart_toStartOf="@+id/rvBmgmBundledProduct"
+        app:layout_constraintTop_toBottomOf="@+id/rvBmgmBundledProduct"
         app:typographyType="small"
         app:typographyWeight="bold"
         tools:text="diskon 25%" />

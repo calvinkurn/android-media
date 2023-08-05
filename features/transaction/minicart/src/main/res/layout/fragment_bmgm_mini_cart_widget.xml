@@ -14,11 +14,13 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:textColor="@color/Unify_NN950"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="display_3"
-        tools:text="Yay, kamu dapat potongan 550 rb!" />
+        tools:text="Yay, kamu dapat potongan 550 rb!"
+        tools:visibility="visible" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvBmgmMiniCart"
@@ -28,13 +30,15 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="4dp"
         android:orientation="horizontal"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/containerSubTotal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvBmgmCartDiscount"
         tools:itemCount="2"
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_bmgm_mini_cart_upselling_group" />
+        tools:listitem="@layout/item_bmgm_mini_cart_bundled_product"
+        tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/containerSubTotal"
