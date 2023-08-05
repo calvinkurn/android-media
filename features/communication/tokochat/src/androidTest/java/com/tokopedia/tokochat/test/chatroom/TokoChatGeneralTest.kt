@@ -1,8 +1,12 @@
 package com.tokopedia.tokochat.test.chatroom
 
+import android.net.Uri
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.tokochat.common.util.OrderStatusType
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.MAX_DISPLAYED_STRING
+import com.tokopedia.tokochat.stub.domain.response.GqlResponseStub
 import com.tokopedia.tokochat.stub.domain.response.GqlResponseStub.chatOrderHistoryResponse
 import com.tokopedia.tokochat.stub.domain.response.GqlResponseStub.getNeedConsentResponse
 import com.tokopedia.tokochat.test.base.BaseTokoChatRoomTest
@@ -164,5 +168,37 @@ class TokoChatGeneralTest : BaseTokoChatRoomTest() {
 
         // Then
         ConsentResult.assertConsentChatBottomSheet(isDisplayed = false)
+    }
+
+    @Test
+    fun should_show_order_progress_even_when_param_tkpd_order_id_is_empty() {
+        // Given
+        val dummyApplink = "tokopedia://tokochat?${ApplinkConst.TokoChat.PARAM_SOURCE}=${TokoChatValueUtil.TOKOFOOD}&${ApplinkConst.TokoChat.ORDER_ID_GOJEK}=$GOJEK_ORDER_ID_DUMMY"
+
+        // When
+        launchChatRoomActivity {
+            it.data = Uri.parse(dummyApplink)
+        }
+
+        // Then
+        HeaderResult.assertOrderHistory(
+            merchantName = "TokoFood Outlet Test 1",
+            timeDelivery = "17:35 - 17:38"
+        )
+    }
+
+    @Test
+    fun should_show_local_load_order_progress_even_when_fail_to_translate_gojek_order_id() {
+        // Given
+        val dummyApplink = "tokopedia://tokochat?${ApplinkConst.TokoChat.PARAM_SOURCE}=${TokoChatValueUtil.TOKOFOOD}&${ApplinkConst.TokoChat.ORDER_ID_GOJEK}=$GOJEK_ORDER_ID_DUMMY"
+        GqlResponseStub.getTkpdOrderIdResponse.isError = true
+
+        // When
+        launchChatRoomActivity {
+            it.data = Uri.parse(dummyApplink)
+        }
+
+        // Then
+        HeaderResult.assertOrderHistoryLocalLoad()
     }
 }
