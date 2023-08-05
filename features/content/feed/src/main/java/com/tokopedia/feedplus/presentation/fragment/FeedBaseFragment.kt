@@ -310,7 +310,9 @@ class FeedBaseFragment :
                     positionOffset: Float,
                     positionOffsetPixels: Int
                 ) {
-                    if (!userSession.isLoggedIn) {
+                    if (!userSession.isLoggedIn &&
+                        activeTabSource.tabName == null // not coming from appLink
+                    ) {
                         val activeTab = feedMainViewModel.activeTab ?: return
                         if (activeTab.isFollowingTab) {
                             onNonLoginGoToFollowingTab.launch(
