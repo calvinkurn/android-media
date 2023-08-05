@@ -52,6 +52,7 @@
             android:layout_height="wrap_content"
             tools:text="Jagoan Rumah Tangga Unilever"
             android:textColor="@color/toaster_text_color"
+            android:layout_marginTop="2dp"
             app:typographyType="display_3" />
 
     </LinearLayout>

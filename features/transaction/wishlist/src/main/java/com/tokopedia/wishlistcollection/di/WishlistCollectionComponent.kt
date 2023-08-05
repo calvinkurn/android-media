@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetAddCollectionWishlist
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetCreateNewCollectionWishlist
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetUpdateWishlistCollectionName
+import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetWishlistAffiliateOnBoarding
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionDetailFragment
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionEditFragment
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionFragment
@@ -22,4 +23,5 @@ interface WishlistCollectionComponent {
     fun inject(bottomsheet: BottomSheetAddCollectionWishlist)
     fun inject(bottomsheet: BottomSheetUpdateWishlistCollectionName)
     fun inject(bottomsheet: BottomSheetCreateNewCollectionWishlist)
+    fun inject(bottomsheet: BottomSheetWishlistAffiliateOnBoarding)
 }

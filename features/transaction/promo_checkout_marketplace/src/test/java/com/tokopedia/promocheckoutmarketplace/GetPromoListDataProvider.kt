@@ -115,6 +115,10 @@ object GetPromoListDataProvider {
         return GSON.fromJson(FILE_UTIL.getJsonFromAsset("assets/coupon_list_recommendation_with_multiple_order_mvc_secondary_promo_response.json"), CouponListRecommendationResponse::class.java)
     }
 
+    fun provideCouponListRecommendationWithSecondaryAndPrimaryRecommendedResponse(): CouponListRecommendationResponse {
+        return GSON.fromJson(FILE_UTIL.getJsonFromAsset("assets/coupon_list_recommendation_with_secondary_and_primary_recommended_response.json"), CouponListRecommendationResponse::class.java)
+    }
+
     fun provideNoCurrentSelectedExpandedGlobalPromoData(): ArrayList<Visitable<*>> {
         val promoListUiModelList = ArrayList<Visitable<*>>()
         val response = provideGetPromoListResponseSuccessAllExpanded()
@@ -321,13 +325,14 @@ object GetPromoListDataProvider {
     }
 
     fun provideCurrentSelectedPromoListResponseWithClashingData(): ArrayList<Visitable<*>> {
+        val potentialClashingPromo = "NPNVTU0Z"
         val promoListUiModelList = ArrayList<Visitable<*>>()
         val response = provideGetPromoListResponseSuccessWithClashingData()
         val selectedPromo = response.couponListRecommendation.data.couponSections[0].subSections[0].coupons[0]
         val recommendedPromo = response.couponListRecommendation.data.promoRecommendation.codes
         val selectedPromoSubSection = response.couponListRecommendation.data.couponSections[0].subSections[0]
         val selectedPromoSection = response.couponListRecommendation.data.couponSections[0]
-        val selectedPromoUiModel = UI_MODEL_MAPPER.mapPromoListItemUiModel(selectedPromo, selectedPromoSubSection, selectedPromoSection, 0, emptyList(), recommendedPromo)
+        val selectedPromoUiModel = UI_MODEL_MAPPER.mapPromoListItemUiModel(selectedPromo, selectedPromoSubSection, selectedPromoSection, 0, listOf(potentialClashingPromo), recommendedPromo)
         selectedPromoUiModel.uiState.isSelected = true
         promoListUiModelList.add(selectedPromoUiModel)
 
