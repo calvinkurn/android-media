@@ -235,7 +235,7 @@ fun ItemHighlightChips(
 fun NoHistoryState() {
     ConstraintLayout(
         modifier = Modifier
-            .padding(16.dp)
+            .padding(end = 16.dp, start = 16.dp, top = 16.dp)
             .fillMaxWidth()
     ) {
         val (ivNoHistory, tvTitleNoHistory, tvDescNoHistory) = createRefs()
@@ -255,15 +255,11 @@ fun NoHistoryState() {
         NestTypography(
             modifier = Modifier
                 .constrainAs(tvTitleNoHistory) {
-                    top.linkTo(parent.top)
-                    start.linkTo(ivNoHistory.end)
+                    top.linkTo(parent.top, margin = 8.dp)
+                    start.linkTo(ivNoHistory.end, margin = 4.dp)
                     end.linkTo(parent.end)
                     width = Dimension.fillToConstraints
-                }
-                .padding(
-                    start = 4.dp,
-                    top = 8.dp
-                ),
+                },
             textStyle = NestTheme.typography.display3.copy(fontWeight = FontWeight.Bold),
             text = stringResource(id = R.string.title_no_history_label)
         )
@@ -271,15 +267,11 @@ fun NoHistoryState() {
         NestTypography(
             modifier = Modifier
                 .constrainAs(tvDescNoHistory) {
-                    top.linkTo(tvTitleNoHistory.bottom)
-                    start.linkTo(ivNoHistory.end)
+                    top.linkTo(tvTitleNoHistory.bottom, margin = 4.dp)
+                    start.linkTo(ivNoHistory.end, margin = 4.dp)
                     end.linkTo(parent.end)
                     width = Dimension.fillToConstraints
-                }
-                .padding(
-                    start = 4.dp,
-                    top = 4.dp
-                ),
+                },
             textStyle = NestTheme.typography.display3,
             text = stringResource(id = com.tokopedia.seller.search.R.string.desc_no_history_label)
         )
