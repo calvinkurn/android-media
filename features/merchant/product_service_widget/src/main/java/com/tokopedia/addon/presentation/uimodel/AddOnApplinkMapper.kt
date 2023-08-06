@@ -30,7 +30,9 @@ object AddOnApplinkMapper {
             uri.getQueryParameter(SELECTED_ADDON_IDS)?.filterNot { it.isWhitespace() }?.let {
                 if (it.isNotEmpty()) selectedProductIds = it.split(APPLINK_ARRAY_DELIMITER)
             }
-        } catch (e: Exception) { }
+        } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
+        }
         return selectedProductIds
     }
 
