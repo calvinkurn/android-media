@@ -209,6 +209,10 @@ class AddOnWidgetView : BaseCustomView {
         viewModel.setPreselectedAddOn(selectedAddonIds)
     }
 
+    fun setDeselectedAddons(deselectedAddonIds: List<String>) {
+        viewModel.setPredeselectedAddOn(deselectedAddonIds)
+    }
+
     fun saveAddOnState(cartId: Long, source: String) {
         viewModel.saveAddOnState(cartId, source)
     }
