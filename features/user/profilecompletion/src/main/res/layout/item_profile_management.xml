@@ -12,19 +12,9 @@
         android:layout_marginTop="8dp"
         app:unify_image_corner_radius="0"
         app:layout_constraintCircleRadius="0dp"
-        app:layout_constraintDimensionRatio="145:60"
-        app:layout_constraintTop_toTopOf="@id/txt_title"
-        app:layout_constraintBottom_toBottomOf="@id/txt_title"
+        app:layout_constraintDimensionRatio="303:48"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/txt_title"
-        android:layout_width="wrap_content"
-        android:layout_height="17dp"
-        android:text="@string/title_profile_management_entry_point"
-        android:layout_marginStart="4dp"
-        app:layout_constraintStart_toEndOf="@+id/img_title"
-        app:layout_constraintTop_toTopOf="parent"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_subtitle"
