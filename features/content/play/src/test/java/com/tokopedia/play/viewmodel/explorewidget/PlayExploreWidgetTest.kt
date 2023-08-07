@@ -1,7 +1,6 @@
 package com.tokopedia.play.viewmodel.explorewidget
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.content.common.model.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
@@ -11,10 +10,12 @@ import com.tokopedia.play.util.assertEmpty
 import com.tokopedia.play.util.assertEqualTo
 import com.tokopedia.play.util.assertFalse
 import com.tokopedia.play.util.assertTrue
+import com.tokopedia.play.util.assertType
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.recom.ExploreWidgetConfig
+import com.tokopedia.play.view.uimodel.recom.PlayChannelRecommendationConfig
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMock
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -28,7 +29,7 @@ import org.junit.Test
 /**
  * @author by astidhiyaa on  31/10/22
  */
-class PlayChannelRecommendationFragmentTest {
+class PlayExploreWidgetTest {
     @get:Rule
     val coroutineTestRule = CoroutineTestRule()
     private val testDispatcher = coroutineTestRule.dispatchers
@@ -40,7 +41,13 @@ class PlayChannelRecommendationFragmentTest {
     private val channelInfoBuilder = PlayChannelInfoModelBuilder()
 
     private val config =
-        ExploreWidgetConfig(group = "explore", sourceType = "Suneo", sourceId = "25490")
+        PlayChannelRecommendationConfig(
+            exploreWidgetConfig = ExploreWidgetConfig(
+                group = "explore",
+                sourceType = "Suneo",
+                sourceId = "25490"
+            )
+        )
 
     private val mockChannelData = channelDataBuilder.buildChannelData(
         channelDetail = channelInfoBuilder.buildChannelDetail(
@@ -94,7 +101,12 @@ class PlayChannelRecommendationFragmentTest {
             it.focusPage(mockChannelData)
 
             val state = it.recordState {}
-            state.channel.exploreWidgetConfig.assertEqualTo(config)
+            state.channel.channelRecomConfig.exploreWidgetConfig.assertType<ExploreWidgetConfig> {
+                c -> c.sourceId.assertEqualTo(config.exploreWidgetConfig.sourceId)
+                c.group.assertEqualTo(config.exploreWidgetConfig.group)
+                c.sourceType.assertEqualTo(config.exploreWidgetConfig.sourceType)
+                c.categoryName.assertEqualTo(config.exploreWidgetConfig.categoryName)
+            }
         }
     }
 
@@ -111,7 +123,12 @@ class PlayChannelRecommendationFragmentTest {
             val state = it.recordState {
                 it.submitAction(DismissExploreWidget)
             }
-            state.channel.exploreWidgetConfig.assertEqualTo(config)
+            state.channel.channelRecomConfig.exploreWidgetConfig.assertType<ExploreWidgetConfig> {
+                    c -> c.sourceId.assertEqualTo(config.exploreWidgetConfig.sourceId)
+                c.group.assertEqualTo(config.exploreWidgetConfig.group)
+                c.sourceType.assertEqualTo(config.exploreWidgetConfig.sourceType)
+                c.categoryName.assertEqualTo(config.exploreWidgetConfig.categoryName)
+            }
             state.exploreWidget.data.widgets.assertEmpty()
             state.exploreWidget.data.chips.assertEqualTo(TabMenuUiModel.Empty)
             it.viewModel.isAnyBottomSheetsShown.assertFalse()
@@ -146,7 +163,7 @@ class PlayChannelRecommendationFragmentTest {
             it.focusPage(mockChannelData)
 
             val stateAndEvent = it.recordStateAndEvent {
-                it.submitAction(FetchWidgets)
+                it.submitAction(FetchWidgets(ExploreWidgetType.Default))
             }
             stateAndEvent.second.any { it is ExploreWidgetState }
         }
@@ -164,12 +181,10 @@ class PlayChannelRecommendationFragmentTest {
             it.focusPage(mockChannelData)
 
             val stateAndEvent = it.recordStateAndEvent {
-                it.submitAction(FetchWidgets)
+                it.submitAction(FetchWidgets(ExploreWidgetType.Default))
             }
             it.viewModel.isAnyBottomSheetsShown.assertTrue()
             stateAndEvent.first.exploreWidget.data.state.isFail.assertTrue()
-            stateAndEvent.first.exploreWidget.data.param.sourceId.assertEqualTo(config.sourceId)
-            stateAndEvent.first.exploreWidget.data.param.sourceType.assertEqualTo(config.sourceType)
         }
     }
 
@@ -185,8 +200,8 @@ class PlayChannelRecommendationFragmentTest {
             it.focusPage(mockChannelData)
 
             val stateAndEvent = it.recordStateAndEvent {
-                it.submitAction(FetchWidgets)
-                it.submitAction(EmptyPageWidget)
+                it.submitAction(FetchWidgets(ExploreWidgetType.Default))
+                it.submitAction(EmptyPageWidget(ExploreWidgetType.Default))
             }
             it.viewModel.isAnyBottomSheetsShown.assertTrue()
         }
@@ -204,7 +219,7 @@ class PlayChannelRecommendationFragmentTest {
             it.focusPage(mockChannelData)
 
             val stateAndEvent = it.recordStateAndEvent {
-                it.submitAction(FetchWidgets)
+                it.submitAction(FetchWidgets(ExploreWidgetType.Default))
                 it.submitAction(RefreshWidget)
             }
             it.viewModel.isAnyBottomSheetsShown.assertTrue()
@@ -224,7 +239,7 @@ class PlayChannelRecommendationFragmentTest {
             it.focusPage(mockChannelData)
 
             val stateAndEvent = it.recordStateAndEvent {
-                it.submitAction(FetchWidgets)
+                it.submitAction(FetchWidgets(ExploreWidgetType.Default))
                 it.submitAction(RefreshWidget)
             }
             it.viewModel.isAnyBottomSheetsShown.assertTrue()
@@ -244,8 +259,8 @@ class PlayChannelRecommendationFragmentTest {
             it.focusPage(mockChannelData)
 
             val stateAndEvent = it.recordStateAndEvent {
-                it.submitAction(FetchWidgets)
-                it.submitAction(NextPageWidgets)
+                it.submitAction(FetchWidgets(ExploreWidgetType.Default))
+                it.submitAction(NextPageWidgets(ExploreWidgetType.Default))
             }
             it.viewModel.isAnyBottomSheetsShown.assertTrue()
             stateAndEvent.second.any { it !is ExploreWidgetState }
@@ -264,8 +279,8 @@ class PlayChannelRecommendationFragmentTest {
             it.focusPage(mockChannelData)
 
             val stateAndEvent = it.recordStateAndEvent {
-                it.submitAction(FetchWidgets)
-                it.submitAction(NextPageWidgets)
+                it.submitAction(FetchWidgets(ExploreWidgetType.Default))
+                it.submitAction(NextPageWidgets(ExploreWidgetType.Default))
             }
             it.viewModel.isAnyBottomSheetsShown.assertTrue()
             stateAndEvent.first.exploreWidget.data.state.isFail.assertTrue()
