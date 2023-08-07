@@ -1,219 +1,205 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/terlaris_container_item_product"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<androidx.constraintlayout.widget.ConstraintLayout-->
+<!--    android:id="@+id/terlaris_container_item_product"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    xmlns:tools="http://schemas.android.com/tools">-->
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/terlaris_product_detail_1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="@+id/terlaris_container_item_product"
-        app:layout_constraintTop_toTopOf="@+id/terlaris_container_item_product"
-        android:paddingLeft="16dp"
-        android:paddingBottom="8dp"
-        android:layout_marginRight="12dp">
+<!--    &lt;!&ndash;    Product 1&ndash;&gt;-->
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--        android:id="@+id/terlaris_product_detail_1"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintLeft_toLeftOf="@+id/terlaris_container_item_product"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/terlaris_container_item_product"-->
+<!--        android:paddingBottom="8dp"-->
+<!--        android:paddingRight="16dp"-->
+<!--        android:paddingLeft="16dp">-->
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/terlaris_img_product"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_width="88dp"
-            android:layout_height="88dp" />
+<!--        <com.tokopedia.unifycomponents.ImageUnify-->
+<!--            android:id="@+id/terlaris_img_product_1"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintLeft_toLeftOf="parent"-->
+<!--            android:layout_width="88dp"-->
+<!--            android:layout_height="88dp" />-->
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toRightOf="@+id/terlaris_img_product"
-            android:id="@+id/terlaris_product_info_1"
-            android:layout_marginTop="8dp"
-            android:paddingBottom="17dp"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"
-            android:layout_gravity="start|center_vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+<!--        <com.tokopedia.unifyprinciples.Typography-->
+<!--            android:id="@+id/terlaris_product_name_1"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/terlaris_product_detail_1"-->
+<!--            app:layout_constraintLeft_toRightOf="@+id/terlaris_img_product_1"-->
+<!--            android:layout_width="130dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:lineSpacingExtra="1sp"-->
+<!--            android:textSize="16sp"-->
+<!--            android:layout_marginLeft="12dp"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            app:typographyWeight="reguler"-->
+<!--            app:typographyType="body_1"-->
+<!--            tools:text="Samsung Galaxy Fold 3 - Green" />-->
 
-            <com.tokopedia.unifyprinciples.Typography
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                android:id="@+id/terlaris_product_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                app:typographyWeight="reguler"
-                tools:text="Samsung Galaxy Fold 3 - Green" />
+<!--        <com.tokopedia.unifyprinciples.Typography-->
+<!--            android:id="@+id/terlaris_product_price_1"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/terlaris_product_name_1"-->
+<!--            app:layout_constraintLeft_toRightOf="@+id/terlaris_img_product_1"-->
+<!--            android:layout_width="130dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_below="@+id/terlaris_product_name_1"-->
+<!--            android:textSize="18sp"-->
+<!--            android:layout_marginLeft="12dp"-->
+<!--            app:typographyWeight="bold"-->
+<!--            tools:text="Rp29.000.000" />-->
 
-            <com.tokopedia.unifyprinciples.Typography
-                app:layout_constraintTop_toBottomOf="@+id/terlaris_product_name"
-                app:layout_constraintLeft_toLeftOf="parent"
-                android:id="@+id/terlaris_product_title"
-                android:layout_width="wrap_content"
-                android:layout_height="32dp"
-                android:textSize="18sp"
-                app:typographyWeight="bold"
-                tools:text="Rp25.900.000" />
+<!--        <View-->
+<!--            android:id="@+id/terlaris_divider_view_1"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="1dp"-->
+<!--            android:layout_marginLeft="12dp"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:background="@color/Unify_NN50"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/terlaris_product_price_1"-->
+<!--            app:layout_constraintLeft_toRightOf="@+id/terlaris_img_product_1" />-->
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+<!--        <com.tokopedia.unifyprinciples.Typography-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/terlaris_divider_view_1"-->
+<!--            app:layout_constraintRight_toRightOf="@+id/terlaris_product_detail_1"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:id="@+id/terlaris_product_rank_number_1"-->
+<!--            android:textSize="64sp"-->
+<!--            android:textColor="#AAB4C8"-->
+<!--            tools:text="1" />-->
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
 
-        <View
-            android:id="@+id/terlaris_divider_view"
-            app:layout_constraintLeft_toRightOf="@+id/terlaris_img_product"
-            app:layout_constraintTop_toBottomOf="@+id/terlaris_product_info_1"
-            android:layout_width="wrap_content"
-            android:layout_height="1dp"
-            android:background="@color/Unify_NN50"
-            android:layout_marginLeft="12dp"
-            tools:visibility="visible" />
+<!--    &lt;!&ndash; Product 2 &ndash;&gt;-->
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--        android:id="@+id/terlaris_product_detail_2"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintLeft_toLeftOf="@+id/terlaris_container_item_product"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/terlaris_product_detail_1"-->
+<!--        android:paddingBottom="8dp"-->
+<!--        android:paddingRight="16dp"-->
+<!--        android:paddingLeft="16dp">-->
 
-        <com.tokopedia.unifyprinciples.Typography
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toRightOf="@+id/terlaris_product_info_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/terlaris_product_rank_number"
-            android:textSize="64sp"
-            android:textColor="#AAB4C8"
-            android:gravity=""
-            tools:text="1" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+<!--        <com.tokopedia.unifycomponents.ImageUnify-->
+<!--            android:id="@+id/terlaris_img_product_2"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintLeft_toLeftOf="parent"-->
+<!--            android:layout_width="88dp"-->
+<!--            android:layout_height="88dp" />-->
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/terlaris_product_detail_2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="@+id/terlaris_container_item_product"
-        app:layout_constraintTop_toBottomOf="@+id/terlaris_product_detail_1"
-        android:paddingLeft="16dp"
-        android:paddingBottom="8dp"
-        android:layout_marginRight="12dp">
+<!--        <com.tokopedia.unifyprinciples.Typography-->
+<!--            android:id="@+id/terlaris_product_name_2"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/terlaris_product_detail_2"-->
+<!--            app:layout_constraintLeft_toRightOf="@+id/terlaris_img_product_2"-->
+<!--            android:layout_width="130dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:lineSpacingExtra="1sp"-->
+<!--            android:textSize="16sp"-->
+<!--            android:layout_marginLeft="12dp"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            app:typographyWeight="reguler"-->
+<!--            app:typographyType="body_1"-->
+<!--            tools:text="Samsung Galaxy Flip 4 - Purple" />-->
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/terlaris_img_product_2"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_width="88dp"
-            android:layout_height="88dp" />
+<!--        <com.tokopedia.unifyprinciples.Typography-->
+<!--            android:id="@+id/terlaris_product_price_2"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/terlaris_product_name_2"-->
+<!--            app:layout_constraintLeft_toRightOf="@+id/terlaris_img_product_2"-->
+<!--            android:layout_width="130dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_below="@+id/terlaris_product_name_2"-->
+<!--            android:textSize="18sp"-->
+<!--            android:layout_marginLeft="12dp"-->
+<!--            app:typographyWeight="bold"-->
+<!--            tools:text="Rp25.000.000" />-->
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toRightOf="@+id/terlaris_img_product_2"
-            android:id="@+id/terlaris_product_info_2"
-            android:layout_marginTop="8dp"
-            android:paddingBottom="17dp"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"
-            android:layout_gravity="start|center_vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+<!--        <View-->
+<!--            android:id="@+id/terlaris_divider_view_2"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="1dp"-->
+<!--            android:layout_marginLeft="12dp"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:background="@color/Unify_NN50"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/terlaris_product_price_2"-->
+<!--            app:layout_constraintLeft_toRightOf="@+id/terlaris_img_product_2" />-->
 
-            <com.tokopedia.unifyprinciples.Typography
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                android:id="@+id/terlaris_product_name_2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                app:typographyWeight="reguler"
-                tools:text="Samsung Galaxy Flip 4 - Purple" />
+<!--        <com.tokopedia.unifyprinciples.Typography-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/terlaris_divider_view_2"-->
+<!--            app:layout_constraintRight_toRightOf="@+id/terlaris_product_detail_2"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:id="@+id/terlaris_product_rank_number_2"-->
+<!--            android:textSize="64sp"-->
+<!--            android:textColor="#AAB4C8"-->
+<!--            tools:text="2" />-->
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
 
-            <com.tokopedia.unifyprinciples.Typography
-                app:layout_constraintTop_toBottomOf="@+id/terlaris_product_name_2"
-                app:layout_constraintLeft_toLeftOf="parent"
-                android:id="@+id/terlaris_product_title_2"
-                android:layout_width="wrap_content"
-                android:layout_height="32dp"
-                android:textSize="18sp"
-                app:typographyWeight="bold"
-                tools:text="Rp29.000.000" />
+<!--    &lt;!&ndash; Product 2 &ndash;&gt;-->
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--        android:id="@+id/terlaris_product_detail_3"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintLeft_toLeftOf="@+id/terlaris_container_item_product"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/terlaris_product_detail_2"-->
+<!--        android:paddingBottom="8dp"-->
+<!--        android:paddingRight="16dp"-->
+<!--        android:paddingLeft="16dp">-->
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+<!--        <com.tokopedia.unifycomponents.ImageUnify-->
+<!--            android:id="@+id/terlaris_img_product_3"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintLeft_toLeftOf="parent"-->
+<!--            android:layout_width="88dp"-->
+<!--            android:layout_height="88dp" />-->
 
-        <View
-            android:id="@+id/terlaris_divider_view_2"
-            app:layout_constraintLeft_toRightOf="@+id/terlaris_img_product_2"
-            app:layout_constraintTop_toBottomOf="@+id/terlaris_product_info_2"
-            android:layout_width="wrap_content"
-            android:layout_height="1dp"
-            android:background="@color/Unify_NN50"
-            android:layout_marginLeft="12dp"
-            tools:visibility="visible" />
+<!--        <com.tokopedia.unifyprinciples.Typography-->
+<!--            android:id="@+id/terlaris_product_name_3"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/terlaris_product_detail_3"-->
+<!--            app:layout_constraintLeft_toRightOf="@+id/terlaris_img_product_3"-->
+<!--            android:layout_width="130dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:lineSpacingExtra="1sp"-->
+<!--            android:textSize="16sp"-->
+<!--            android:layout_marginLeft="12dp"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            app:typographyWeight="reguler"-->
+<!--            app:typographyType="body_1"-->
+<!--            tools:text="Samsung Galaxy A8" />-->
 
-        <com.tokopedia.unifyprinciples.Typography
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toRightOf="@+id/terlaris_product_info_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/terlaris_product_rank_number_2"
-            android:textSize="64sp"
-            android:textColor="#AAB4C8"
-            tools:text="2" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+<!--        <com.tokopedia.unifyprinciples.Typography-->
+<!--            android:id="@+id/terlaris_product_price_3"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/terlaris_product_name_3"-->
+<!--            app:layout_constraintLeft_toRightOf="@+id/terlaris_img_product_3"-->
+<!--            android:layout_width="130dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_below="@+id/terlaris_product_name_3"-->
+<!--            android:textSize="18sp"-->
+<!--            android:layout_marginLeft="12dp"-->
+<!--            app:typographyWeight="bold"-->
+<!--            tools:text="Rp8.400.000" />-->
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/terlaris_product_detail_3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="@+id/terlaris_container_item_product"
-        app:layout_constraintTop_toBottomOf="@+id/terlaris_product_detail_2"
-        android:paddingRight="16dp"
-        android:paddingLeft="16dp">
+<!--        <View-->
+<!--            android:id="@+id/terlaris_divider_view_3"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="1dp"-->
+<!--            android:layout_marginLeft="12dp"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:background="@color/Unify_NN50"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/terlaris_product_price_3"-->
+<!--            app:layout_constraintLeft_toRightOf="@+id/terlaris_img_product_3" />-->
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/terlaris_img_product_3"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_width="88dp"
-            android:layout_height="88dp" />
+<!--        <com.tokopedia.unifyprinciples.Typography-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/terlaris_divider_view_3"-->
+<!--            app:layout_constraintRight_toRightOf="@+id/terlaris_product_detail_3"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:id="@+id/terlaris_product_rank_number_3"-->
+<!--            android:textSize="64sp"-->
+<!--            android:textColor="#AAB4C8"-->
+<!--            tools:text="3" />-->
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
 
-        <RelativeLayout
-            app:layout_constraintTop_toTopOf="@+id/terlaris_product_detail_3"
-            app:layout_constraintLeft_toRightOf="@+id/terlaris_img_product_3"
-            android:paddingLeft="12dp"
-            android:paddingTop="12dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/terlaris_product_name_3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:paddingBottom="4dp"
-                android:textSize="16sp"
-                app:typographyWeight="reguler"
-                tools:text="Samsung Galaxy A8" />
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/terlaris_product_title_3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/terlaris_product_name_3"
-                android:textSize="18sp"
-                app:typographyWeight="bold"
-                tools:text="Rp5.000.000" />
-        </RelativeLayout>
-
-        <View
-            android:id="@+id/terlaris_divider_view_3"
-            android:layout_width="wrap_content"
-            android:layout_height="1dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginBottom="4dp"
-            android:background="@color/Unify_NN50"
-            app:layout_constraintBottom_toBottomOf="@+id/terlaris_product_detail_3"
-            app:layout_constraintLeft_toRightOf="@+id/terlaris_img_product_3"
-            tools:visibility="visible" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            app:layout_constraintBottom_toBottomOf="@+id/terlaris_divider_view_3"
-            app:layout_constraintRight_toRightOf="@+id/terlaris_product_detail_3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/terlaris_product_rank_number_3"
-            android:textSize="64sp"
-            android:textColor="#AAB4C8"
-            tools:text="3" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+<!--</androidx.constraintlayout.widget.ConstraintLayout>-->

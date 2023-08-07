@@ -447,6 +447,18 @@ open class ShopHomeAdapter(
         submitList(newList)
     }
 
+    // ========== Shop Home Revamp V4 ============== //
+    fun getTerlarisWidgetUiModel(): ShopHomeV4TerlarisUiModel? {
+        return visitables.filterIsInstance<ShopHomeV4TerlarisUiModel>().firstOrNull()
+    }
+
+    fun setTerlarisWidgetData(uiModel: ShopHomeV4TerlarisUiModel) {
+        val newList = getNewVisitableItems()
+        submitList(newList)
+    }
+
+    // ========== Shop Home Revamp V4 ============== //
+
     fun getNplCampaignUiModel(campaignId: String): ShopHomeNewProductLaunchCampaignUiModel? {
         return visitables.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>().firstOrNull {
             it.data?.firstOrNull()?.campaignId == campaignId
