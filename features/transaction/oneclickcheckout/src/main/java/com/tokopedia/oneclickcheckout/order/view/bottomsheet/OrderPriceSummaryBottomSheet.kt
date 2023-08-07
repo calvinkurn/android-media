@@ -5,9 +5,11 @@ import android.graphics.Paint
 import android.view.LayoutInflater
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.databinding.BottomSheetOrderPriceSummaryBinding
+import com.tokopedia.oneclickcheckout.databinding.ItemAddOnProductSummaryBinding
 import com.tokopedia.oneclickcheckout.databinding.ItemCashbackDetailBinding
 import com.tokopedia.oneclickcheckout.databinding.ItemPaymentFeeBinding
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
@@ -27,11 +29,12 @@ class OrderPriceSummaryBottomSheet {
                 showKnob = true
                 showHeader = false
                 showCloseIcon = false
-                val binding = BottomSheetOrderPriceSummaryBinding.inflate(LayoutInflater.from(view.context))
+                val inflater = LayoutInflater.from(view.context)
+                val binding = BottomSheetOrderPriceSummaryBinding.inflate(inflater)
                 view.view?.height?.div(2)?.let { height ->
                     customPeekHeight = height
                 }
-                setupView(binding, orderCost, view)
+                setupView(binding, orderCost, view, inflater)
                 setChild(binding.root)
                 show(it, null)
             }
@@ -39,7 +42,7 @@ class OrderPriceSummaryBottomSheet {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun setupView(binding: BottomSheetOrderPriceSummaryBinding, orderCost: OrderCost, view: OrderSummaryPageFragment) {
+    private fun setupView(binding: BottomSheetOrderPriceSummaryBinding, orderCost: OrderCost, view: OrderSummaryPageFragment, inflater: LayoutInflater) {
         binding.tvTotalProductPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.totalItemPrice, false).removeDecimalSuffix()
 
         if (orderCost.hasAddOn) {
@@ -101,6 +104,46 @@ class OrderPriceSummaryBottomSheet {
         renderPaymentFee(view, binding, orderCost)
 
         renderInstallment(binding, orderCost)
+
+        renderAddonsProduct(
+            binding = binding,
+            orderCost = orderCost,
+            inflater = inflater
+        )
+    }
+
+    private fun renderAddonsProduct(
+        binding: BottomSheetOrderPriceSummaryBinding,
+        orderCost: OrderCost,
+        inflater: LayoutInflater
+    ) {
+        // will show addons product layout at least one of the addons is selected
+        binding.llAddonsProduct.showIfWithBlock(orderCost.addOnsProductSelectedList.isNotEmpty()) {
+            // traverse list of summary add ons
+            orderCost.summaryAddOnsProduct.forEach { summaryAddOnProduct ->
+                // addons product selected are filtered based on summary type to know how many total quantities and price
+                val addOnsProductSelectedFiltered = orderCost.addOnsProductSelectedList.filter { it.type == summaryAddOnProduct.type }
+                if (addOnsProductSelectedFiltered.isNotEmpty()) {
+                    ItemAddOnProductSummaryBinding.inflate(
+                        inflater,
+                        null,
+                        false
+                    ).apply {
+                        tvLabel.text = summaryAddOnProduct.wording.replace(
+                            oldValue = SUMMARY_WORD_TO_BE_REPLACED,
+                            newValue = (addOnsProductSelectedFiltered.sumOf { it.productQuantity }).toString()
+                        )
+
+                        tvValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                            price = addOnsProductSelectedFiltered.sumOf { it.price * it.productQuantity },
+                            hasSpace = false
+                        ).removeDecimalSuffix()
+
+                        binding.llAddonsProduct.addView(root)
+                    }
+                }
+            }
+        }
     }
 
     private fun renderCashbacks(orderCost: OrderCost, binding: BottomSheetOrderPriceSummaryBinding) {
@@ -243,5 +286,9 @@ class OrderPriceSummaryBottomSheet {
             binding.llPaymentFee.gone()
             binding.tvTransactionFee.gone()
         }
+    }
+
+    internal companion object {
+        private const val SUMMARY_WORD_TO_BE_REPLACED = "{{qty}}"
     }
 }
