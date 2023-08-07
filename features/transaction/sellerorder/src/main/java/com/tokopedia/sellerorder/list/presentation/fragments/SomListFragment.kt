@@ -204,6 +204,7 @@ open class SomListFragment :
                     putString(TAB_STATUS, bundle.getString(TAB_STATUS))
                     putString(QUERY_PARAM_SEARCH, bundle.getString(QUERY_PARAM_SEARCH))
                     putString(FILTER_ORDER_TYPE, bundle.getString(FILTER_ORDER_TYPE))
+                    putString(SomConsts.COACHMARK_KEY, bundle.getString(SomConsts.COACHMARK_KEY))
                 }
             }
         }
@@ -264,6 +265,10 @@ open class SomListFragment :
     protected var selectedOrderId: String = ""
     protected val viewModel: SomListViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(SomListViewModel::class.java)
+    }
+
+    private val isEnabledCoachmark: Boolean by lazy {
+        arguments?.getString(SomConsts.COACHMARK_KEY).orEmpty() != SomConsts.COACHMARK_DISABLED
     }
 
     private val autoTabbingCoachMark: CoachMark2? by lazy {
@@ -367,17 +372,21 @@ open class SomListFragment :
                 resultCode,
                 data
             )
+
             SomNavigator.REQUEST_CONFIRM_REQUEST_PICKUP -> handleSomRequestPickUpActivityResult(
                 resultCode,
                 data
             )
+
             SomNavigator.REQUEST_CHANGE_COURIER -> handleSomChangeCourierActivityResult(
                 resultCode,
                 data
             )
+
             SomNavigator.REQUEST_RETURN_TO_SHIPPER -> handleSomReturnToShipperActivityResult(
                 resultCode
             )
+
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
     }
@@ -389,7 +398,9 @@ open class SomListFragment :
 
     override fun onResume() {
         super.onResume()
-        if (!isHidden) coachMarkManager?.showCoachMark()
+        if (!isHidden) {
+            coachMarkManager?.showCoachMark()
+        }
         updateShopActive()
     }
 
@@ -516,8 +527,10 @@ open class SomListFragment :
         if (viewModel.isMultiSelectEnabled) {
             context.let { context ->
                 if (context == null || !DeviceScreenInfo.isTablet(context)) {
-                    val firstVisibleItemIndex = somListLayoutManager?.findFirstVisibleItemPosition().orZero()
-                    val lastVisibleItemIndex = somListLayoutManager?.findLastVisibleItemPosition().orZero()
+                    val firstVisibleItemIndex =
+                        somListLayoutManager?.findFirstVisibleItemPosition().orZero()
+                    val lastVisibleItemIndex =
+                        somListLayoutManager?.findLastVisibleItemPosition().orZero()
                     val rangeVisibleItemIndex = firstVisibleItemIndex..lastVisibleItemIndex
                     for (i in rangeVisibleItemIndex) {
                         val viewHolderView = somListLayoutManager?.findViewByPosition(i)
@@ -603,7 +616,8 @@ open class SomListFragment :
             SomListMultiSelectSectionUiModel(
                 isEnabled = viewModel.isMultiSelectEnabled,
                 totalOrder = somListOrderStatusFilterTab?.getSelectedFilterOrderCount().orZero(),
-                totalSelected = adapter.data.filterIsInstance<SomListOrderUiModel>().count { it.isChecked },
+                totalSelected = adapter.data.filterIsInstance<SomListOrderUiModel>()
+                    .count { it.isChecked },
                 totalSelectable = adapter.data.count { it is SomListOrderUiModel && !it.isOrderWithCancellationRequest() }
             )
         )
@@ -751,7 +765,11 @@ open class SomListFragment :
 
     override fun onBulkProcessOrderButtonClicked() {
         viewModel.bulkAcceptOrder(getSelectedOrderIds())
-        SomAnalytics.eventClickBulkAcceptOrder(userSession.userId, userSession.shopId, getSelectedOrderIds())
+        SomAnalytics.eventClickBulkAcceptOrder(
+            userSession.userId,
+            userSession.shopId,
+            getSelectedOrderIds()
+        )
     }
 
     override fun onMenuItemClicked(keyAction: String) {
@@ -771,6 +789,7 @@ open class SomListFragment :
                     SomAnalytics.eventClickBulkPrintAwb(userSession.userId)
                 }
             }
+
             KEY_REQUEST_PICKUP -> {
                 showProgressBulkRequestPickupDialog(getSelectedOrderIds().size.toLong().orZero())
                 viewModel.bulkRequestPickup(getSelectedOrderIds())
@@ -951,7 +970,7 @@ open class SomListFragment :
         setupSearchBar()
         setupListeners()
         setupMasks()
-        coachMarkManager = SomListCoachMarkManager(somListBinding, userSession.userId)
+        coachMarkManager = SomListCoachMarkManager(somListBinding, userSession.userId, isEnabledCoachmark)
     }
 
     private fun setupMasks() {
@@ -983,6 +1002,7 @@ open class SomListFragment :
                         somListBinding?.rvSomList?.show()
                     }
                 }
+
                 is Fail -> {
                     showToasterError(view)
                     SomErrorHandler.logExceptionToServer(
@@ -1022,6 +1042,7 @@ open class SomListFragment :
                 is Success -> {
                     onSuccessGetFilter(result)
                 }
+
                 is Fail -> {
                     showGlobalError(result.throwable)
                     SomErrorHandler.logExceptionToServer(
@@ -1032,6 +1053,7 @@ open class SomListFragment :
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }
+
                 else -> showGlobalError(Throwable())
             }
             somListBinding?.shimmerViews?.gone()
@@ -1051,6 +1073,7 @@ open class SomListFragment :
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }
+
                 else -> {
                     // no op
                 }
@@ -1098,7 +1121,8 @@ open class SomListFragment :
                 is Fail -> {
                     showToasterError(
                         view,
-                        context?.resources?.getString(R.string.som_list_failed_accept_order).orEmpty(),
+                        context?.resources?.getString(R.string.som_list_failed_accept_order)
+                            .orEmpty(),
                         canRetry = false
                     )
                     SomErrorHandler.logExceptionToServer(
@@ -1128,6 +1152,7 @@ open class SomListFragment :
                         )
                     }
                 }
+
                 is Fail -> {
                     it.throwable.showErrorToaster()
                     SomErrorHandler.logExceptionToServer(
@@ -1154,9 +1179,14 @@ open class SomListFragment :
                         )
                         onActionCompleted(false, selectedOrderId)
                     } else {
-                        showToasterError(view, context?.resources?.getString(R.string.global_error).orEmpty(), canRetry = false)
+                        showToasterError(
+                            view,
+                            context?.resources?.getString(R.string.global_error).orEmpty(),
+                            canRetry = false
+                        )
                     }
                 }
+
                 is Fail -> {
                     val message = context?.run {
                         SomErrorHandler.getErrorMessage(it.throwable, this)
@@ -1218,6 +1248,7 @@ open class SomListFragment :
                     }
                     showBulkAcceptOrderDialog(result.data.data.totalOrder)
                 }
+
                 is Fail -> {
                     if (somListBulkProcessOrderBottomSheet?.isShowing() == true) {
                         somListBulkProcessOrderBottomSheet?.onBulkAcceptOrderFailed()
@@ -1270,21 +1301,40 @@ open class SomListFragment :
                         successCount == orderCount -> { // case 1
                             newShowSuccessAcceptAllOrderDialog(successCount)
                         }
+
                         failedCount == orderCount -> {
                             newShowFailedAcceptAllOrderDialog(failedCount, orderCount)
                         }
+
                         successCount > Int.ZERO && failedCount == Int.ZERO && processed < orderCount -> {
                             newShowPartialSuccessAcceptOrderDialog(successCount, unprocessed)
                         }
+
                         successCount > Int.ZERO && failedCount > Int.ZERO && processed < orderCount -> {
-                            newShowPartialMixedAcceptOrderDialog(successCount, failedCount, unprocessed, orderCount)
+                            newShowPartialMixedAcceptOrderDialog(
+                                successCount,
+                                failedCount,
+                                unprocessed,
+                                orderCount
+                            )
                         }
+
                         successCount > Int.ZERO && failedCount > Int.ZERO && processed == orderCount -> {
-                            newShowSuccessMixedAcceptOrderDialog(successCount, failedCount, orderCount)
+                            newShowSuccessMixedAcceptOrderDialog(
+                                successCount,
+                                failedCount,
+                                orderCount
+                            )
                         }
+
                         successCount == Int.ZERO && failedCount > Int.ZERO && processed < orderCount -> {
-                            newShowPartialFailedAcceptOrderDialog(failedCount, unprocessed, orderCount)
+                            newShowPartialFailedAcceptOrderDialog(
+                                failedCount,
+                                unprocessed,
+                                orderCount
+                            )
                         }
+
                         successCount == Int.ZERO && failedCount == Int.ZERO -> {
                             newShowUnprocessedAcceptOrderDialog(orderCount)
                         }
@@ -1297,6 +1347,7 @@ open class SomListFragment :
                         userSession.shopId
                     )
                 }
+
                 is Fail -> {
                     newShowFailedAcceptAllOrderDialog(
                         getSelectedOrderIds().size,
@@ -1318,18 +1369,37 @@ open class SomListFragment :
         bulkAcceptOrderDialog?.run {
             hidePrimaryButton()
             hideSecondaryButton()
-            setTitle(context?.resources?.getString(R.string.som_list_bulk_accept_dialog_title_on_progress, orderCount).orEmpty())
-            setDescription(context?.resources?.getString(R.string.som_list_bulk_accept_dialog_description_on_progress).orEmpty())
+            setTitle(
+                context?.resources?.getString(
+                    R.string.som_list_bulk_accept_dialog_title_on_progress,
+                    orderCount
+                ).orEmpty()
+            )
+            setDescription(
+                context?.resources?.getString(R.string.som_list_bulk_accept_dialog_description_on_progress)
+                    .orEmpty()
+            )
             showOnProgress()
         }
     }
 
     private fun newShowSuccessAcceptAllOrderDialog(successCount: Int) {
         bulkAcceptOrderDialog?.run {
-            setTitle(context?.resources?.getString(R.string.som_list_bulk_accept_dialog_title_success, successCount).orEmpty())
-            setDescription(context?.resources?.getString(R.string.som_list_bulk_accept_dialog_description_success_accept_all_orders).orEmpty())
+            setTitle(
+                context?.resources?.getString(
+                    R.string.som_list_bulk_accept_dialog_title_success,
+                    successCount
+                ).orEmpty()
+            )
+            setDescription(
+                context?.resources?.getString(R.string.som_list_bulk_accept_dialog_description_success_accept_all_orders)
+                    .orEmpty()
+            )
             showSuccess()
-            setPrimaryButton(context?.resources?.getString(R.string.som_list_bulk_accept_dialog_primary_button_success_accept_all_orders).orEmpty()) {
+            setPrimaryButton(
+                context?.resources?.getString(R.string.som_list_bulk_accept_dialog_primary_button_success_accept_all_orders)
+                    .orEmpty()
+            ) {
                 dismissAndRunAction()
             }
             hideSecondaryButton()
@@ -1338,27 +1408,57 @@ open class SomListFragment :
 
     private fun newShowFailedAcceptAllOrderDialog(failedCount: Int, orderCount: Int) {
         bulkAcceptOrderDialog?.run {
-            setTitle(context?.resources?.getString(R.string.som_list_bulk_accept_dialog_title_failed, failedCount).orEmpty())
-            setDescription(context?.resources?.getString(R.string.som_list_bulk_accept_dialog_description_failed).orEmpty())
+            setTitle(
+                context?.resources?.getString(
+                    R.string.som_list_bulk_accept_dialog_title_failed,
+                    failedCount
+                ).orEmpty()
+            )
+            setDescription(
+                context?.resources?.getString(R.string.som_list_bulk_accept_dialog_description_failed)
+                    .orEmpty()
+            )
             showFailed()
-            setPrimaryButton(context?.resources?.getString(R.string.som_list_bulk_accept_dialog_primary_button_failed).orEmpty()) {
+            setPrimaryButton(
+                context?.resources?.getString(R.string.som_list_bulk_accept_dialog_primary_button_failed)
+                    .orEmpty()
+            ) {
                 showOnProgressAcceptAllOrderDialog(orderCount)
                 viewModel.bulkAcceptOrder(getSelectedOrderIds())
             }
-            setSecondaryButton(context?.resources?.getString(R.string.som_list_bulk_accept_dialog_secondary_button_failed).orEmpty()) { dismiss() }
+            setSecondaryButton(
+                context?.resources?.getString(R.string.som_list_bulk_accept_dialog_secondary_button_failed)
+                    .orEmpty()
+            ) { dismiss() }
         }
     }
 
     private fun newShowPartialSuccessAcceptOrderDialog(successCount: Int, unprocessedCount: Int) {
         bulkAcceptOrderDialog?.run {
-            setTitle(context?.resources?.getString(R.string.som_list_bulk_accept_dialog_title_partial_success, successCount).orEmpty())
-            setDescription(context?.resources?.getString(R.string.som_list_bulk_accept_dialog_description_partial_success, unprocessedCount).orEmpty())
+            setTitle(
+                context?.resources?.getString(
+                    R.string.som_list_bulk_accept_dialog_title_partial_success,
+                    successCount
+                ).orEmpty()
+            )
+            setDescription(
+                context?.resources?.getString(
+                    R.string.som_list_bulk_accept_dialog_description_partial_success,
+                    unprocessedCount
+                ).orEmpty()
+            )
             showSuccess()
-            setPrimaryButton(context?.resources?.getString(R.string.som_list_bulk_accept_dialog_primary_button_partial_success).orEmpty()) {
+            setPrimaryButton(
+                context?.resources?.getString(R.string.som_list_bulk_accept_dialog_primary_button_partial_success)
+                    .orEmpty()
+            ) {
                 showOnProgressAcceptAllOrderDialog(unprocessedCount)
                 viewModel.retryGetBulkAcceptOrderStatus()
             }
-            setSecondaryButton(context?.resources?.getString(R.string.som_list_bulk_accept_dialog_secondary_button_partial_success).orEmpty()) { dismiss() }
+            setSecondaryButton(
+                context?.resources?.getString(R.string.som_list_bulk_accept_dialog_secondary_button_partial_success)
+                    .orEmpty()
+            ) { dismiss() }
         }
     }
 
@@ -1369,14 +1469,31 @@ open class SomListFragment :
         orderCount: Int
     ) {
         bulkAcceptOrderDialog?.run {
-            setTitle(context?.resources?.getString(R.string.som_list_bulk_accept_dialog_title_partial_mixed, successCount).orEmpty())
-            setDescription(context?.resources?.getString(R.string.som_list_bulk_accept_dialog_description_partial_mixed, failedCount, unprocessed).orEmpty())
+            setTitle(
+                context?.resources?.getString(
+                    R.string.som_list_bulk_accept_dialog_title_partial_mixed,
+                    successCount
+                ).orEmpty()
+            )
+            setDescription(
+                context?.resources?.getString(
+                    R.string.som_list_bulk_accept_dialog_description_partial_mixed,
+                    failedCount,
+                    unprocessed
+                ).orEmpty()
+            )
             showSuccess()
-            setPrimaryButton(context?.resources?.getString(R.string.som_list_bulk_accept_dialog_primary_button_partial_mixed).orEmpty()) {
+            setPrimaryButton(
+                context?.resources?.getString(R.string.som_list_bulk_accept_dialog_primary_button_partial_mixed)
+                    .orEmpty()
+            ) {
                 showOnProgressAcceptAllOrderDialog(orderCount)
                 viewModel.bulkAcceptOrder(getSelectedOrderIds())
             }
-            setSecondaryButton(context?.resources?.getString(R.string.som_list_bulk_accept_dialog_secondary_button_partial_mixed).orEmpty()) { dismiss() }
+            setSecondaryButton(
+                context?.resources?.getString(R.string.som_list_bulk_accept_dialog_secondary_button_partial_mixed)
+                    .orEmpty()
+            ) { dismiss() }
         }
     }
 
@@ -1386,40 +1503,91 @@ open class SomListFragment :
         orderCount: Int
     ) {
         bulkAcceptOrderDialog?.run {
-            setTitle(context?.resources?.getString(R.string.som_list_bulk_accept_dialog_title_success_mixed, successCount).orEmpty())
-            setDescription(context?.resources?.getString(R.string.som_list_bulk_accept_dialog_description_success_mixed, failedCount).orEmpty())
+            setTitle(
+                context?.resources?.getString(
+                    R.string.som_list_bulk_accept_dialog_title_success_mixed,
+                    successCount
+                ).orEmpty()
+            )
+            setDescription(
+                context?.resources?.getString(
+                    R.string.som_list_bulk_accept_dialog_description_success_mixed,
+                    failedCount
+                ).orEmpty()
+            )
             showSuccess()
-            setPrimaryButton(context?.resources?.getString(R.string.som_list_bulk_accept_dialog_primary_button_success_mixed).orEmpty()) {
+            setPrimaryButton(
+                context?.resources?.getString(R.string.som_list_bulk_accept_dialog_primary_button_success_mixed)
+                    .orEmpty()
+            ) {
                 showOnProgressAcceptAllOrderDialog(orderCount)
                 viewModel.bulkAcceptOrder(getSelectedOrderIds())
             }
-            setSecondaryButton(context?.resources?.getString(R.string.som_list_bulk_accept_dialog_secondary_button_success_mixed).orEmpty()) { dismiss() }
+            setSecondaryButton(
+                context?.resources?.getString(R.string.som_list_bulk_accept_dialog_secondary_button_success_mixed)
+                    .orEmpty()
+            ) { dismiss() }
         }
     }
 
-    private fun newShowPartialFailedAcceptOrderDialog(failedCount: Int, unprocessed: Int, orderCount: Int) {
+    private fun newShowPartialFailedAcceptOrderDialog(
+        failedCount: Int,
+        unprocessed: Int,
+        orderCount: Int
+    ) {
         bulkAcceptOrderDialog?.run {
-            setTitle(context?.resources?.getString(R.string.som_list_bulk_accept_dialog_title_partial_failed, failedCount).orEmpty())
-            setDescription(context?.resources?.getString(R.string.som_list_bulk_accept_dialog_description_partial_failed, failedCount, unprocessed).orEmpty())
+            setTitle(
+                context?.resources?.getString(
+                    R.string.som_list_bulk_accept_dialog_title_partial_failed,
+                    failedCount
+                ).orEmpty()
+            )
+            setDescription(
+                context?.resources?.getString(
+                    R.string.som_list_bulk_accept_dialog_description_partial_failed,
+                    failedCount,
+                    unprocessed
+                ).orEmpty()
+            )
             showFailed()
-            setPrimaryButton(context?.resources?.getString(R.string.som_list_bulk_accept_dialog_primary_button_partial_failed).orEmpty()) {
+            setPrimaryButton(
+                context?.resources?.getString(R.string.som_list_bulk_accept_dialog_primary_button_partial_failed)
+                    .orEmpty()
+            ) {
                 showOnProgressAcceptAllOrderDialog(orderCount)
                 viewModel.retryGetBulkAcceptOrderStatus()
             }
-            setSecondaryButton(context?.resources?.getString(R.string.som_list_bulk_accept_dialog_secondary_button_partial_failed).orEmpty()) { dismiss() }
+            setSecondaryButton(
+                context?.resources?.getString(R.string.som_list_bulk_accept_dialog_secondary_button_partial_failed)
+                    .orEmpty()
+            ) { dismiss() }
         }
     }
 
     private fun newShowUnprocessedAcceptOrderDialog(orderCount: Int) {
         bulkAcceptOrderDialog?.run {
-            setTitle(context?.resources?.getString(R.string.som_list_bulk_accept_dialog_title_unprocessed).orEmpty())
-            setDescription(context?.resources?.getString(R.string.som_list_bulk_accept_dialog_description_unprocessed, orderCount).orEmpty())
+            setTitle(
+                context?.resources?.getString(R.string.som_list_bulk_accept_dialog_title_unprocessed)
+                    .orEmpty()
+            )
+            setDescription(
+                context?.resources?.getString(
+                    R.string.som_list_bulk_accept_dialog_description_unprocessed,
+                    orderCount
+                ).orEmpty()
+            )
             showFailed()
-            setPrimaryButton(context?.resources?.getString(R.string.som_list_bulk_accept_dialog_primary_button_unprocessed).orEmpty()) {
+            setPrimaryButton(
+                context?.resources?.getString(R.string.som_list_bulk_accept_dialog_primary_button_unprocessed)
+                    .orEmpty()
+            ) {
                 showOnProgressAcceptAllOrderDialog(orderCount)
                 viewModel.retryGetBulkAcceptOrderStatus()
             }
-            setSecondaryButton(context?.resources?.getString(R.string.som_list_bulk_accept_dialog_secondary_button_unprocessed).orEmpty()) { dismiss() }
+            setSecondaryButton(
+                context?.resources?.getString(R.string.som_list_bulk_accept_dialog_secondary_button_unprocessed)
+                    .orEmpty()
+            ) { dismiss() }
         }
     }
 
@@ -1429,9 +1597,11 @@ open class SomListFragment :
                 is AllSuccess -> {
                     showAllSuccessBulkRequestPickupDialog(it.totalSuccess)
                 }
+
                 is PartialSuccess -> {
                     showPartialSuccessRequestPickup(it.totalSuccess, it.orderIdListFail)
                 }
+
                 is PartialSuccessNotEligibleFail -> {
                     showPartialSuccessNotEligibleFailRequestPickup(
                         it.totalSuccess,
@@ -1439,25 +1609,32 @@ open class SomListFragment :
                         it.orderIdListFail
                     )
                 }
+
                 is NotEligibleAndFail -> {
                     showNotEligibleAndFailRequestPickup(it.totalNotEligible, it.orderIdListFail)
                 }
+
                 is FailRetry -> {
                     showErrorBulkRequestPickupStatus()
                 }
+
                 is AllValidationFail -> {
                     showErrorBulkRequestPickupStatus()
                 }
+
                 is AllFailEligible -> {
                     showAllFailEligibleBulkRequestPickup(it.orderIdListFail)
                 }
+
                 is AllNotEligible -> {
                     showErrorBulkRequestPickupStatus()
                 }
+
                 is ServerFail -> {
                     bulkRequestPickupDialog?.dismiss()
                     showGlobalError(it.throwable)
                 }
+
                 is PartialSuccessNotEligible -> {
                     showPartialSuccessNotEligibleRequestPickup(it.totalSuccess, it.totalNotEligible)
                 }
@@ -1473,6 +1650,7 @@ open class SomListFragment :
                         somListBulkProcessOrderBottomSheet?.dismiss()
                     }
                 }
+
                 is Fail -> {
                     showErrorBulkRequestPickup()
                     SomErrorHandler.logExceptionToServer(
@@ -1511,7 +1689,10 @@ open class SomListFragment :
                 showProgressBulkRequestPickupDialog(orderIdsFail.size.toLong().orZero())
                 viewModel.bulkRequestPickup(orderIdsFail)
             }
-            setSecondaryButton(context?.resources?.getString(R.string.som_list_bulk_request_pickup_dialog_secondary_button_partial_success_can_retry).orEmpty()) {
+            setSecondaryButton(
+                context?.resources?.getString(R.string.som_list_bulk_request_pickup_dialog_secondary_button_partial_success_can_retry)
+                    .orEmpty()
+            ) {
                 dismissAndRunAction()
             }
             showSuccess()
@@ -1572,7 +1753,10 @@ open class SomListFragment :
                 showProgressBulkRequestPickupDialog(orderIdsFail.size.toLong().orZero())
                 viewModel.bulkRequestPickup(orderIdsFail)
             }
-            setSecondaryButton(context?.resources?.getString(R.string.som_list_bulk_request_pickup_dialog_secondary_button_partial_success_can_retry).orEmpty()) {
+            setSecondaryButton(
+                context?.resources?.getString(R.string.som_list_bulk_request_pickup_dialog_secondary_button_partial_success_can_retry)
+                    .orEmpty()
+            ) {
                 dismissAndRunAction()
             }
             showSuccess()
@@ -1605,7 +1789,10 @@ open class SomListFragment :
                 showProgressBulkRequestPickupDialog(orderIdsFail.size.toLong().orZero())
                 viewModel.bulkRequestPickup(orderIdsFail)
             }
-            setSecondaryButton(context?.resources?.getString(R.string.som_list_bulk_request_pickup_dialog_secondary_button_partial_success_can_retry).orEmpty()) {
+            setSecondaryButton(
+                context?.resources?.getString(R.string.som_list_bulk_request_pickup_dialog_secondary_button_partial_success_can_retry)
+                    .orEmpty()
+            ) {
                 dismissAndRunAction()
             }
             showFailed()
@@ -1614,13 +1801,25 @@ open class SomListFragment :
 
     private fun showErrorBulkRequestPickup() {
         bulkRequestPickupDialog?.run {
-            setTitle(context?.resources?.getString(R.string.som_list_bulk_request_pickup_title_fail).orEmpty())
-            setDescription(context?.resources?.getString(R.string.som_list_bulk_request_pickup_desc_fail_error).orEmpty())
-            setPrimaryButton(context?.resources?.getString(R.string.som_list_bulk_request_pickup_dialog_primary_button_partial_success_can_retry).orEmpty()) {
+            setTitle(
+                context?.resources?.getString(R.string.som_list_bulk_request_pickup_title_fail)
+                    .orEmpty()
+            )
+            setDescription(
+                context?.resources?.getString(R.string.som_list_bulk_request_pickup_desc_fail_error)
+                    .orEmpty()
+            )
+            setPrimaryButton(
+                context?.resources?.getString(R.string.som_list_bulk_request_pickup_dialog_primary_button_partial_success_can_retry)
+                    .orEmpty()
+            ) {
                 showProgressBulkRequestPickupDialog(getSelectedOrderIds().size.toLong().orZero())
                 viewModel.bulkRequestPickup(getSelectedOrderIds())
             }
-            setSecondaryButton(context?.resources?.getString(R.string.som_list_bulk_request_pickup_dialog_secondary_button_partial_success_can_retry).orEmpty()) {
+            setSecondaryButton(
+                context?.resources?.getString(R.string.som_list_bulk_request_pickup_dialog_secondary_button_partial_success_can_retry)
+                    .orEmpty()
+            ) {
                 dismiss()
             }
             showFailed()
@@ -1629,8 +1828,14 @@ open class SomListFragment :
 
     private fun showErrorBulkRequestPickupStatus() {
         bulkRequestPickupDialog?.run {
-            setTitle(context?.resources?.getString(R.string.som_list_bulk_request_pickup_title_fail).orEmpty())
-            setDescription(context?.resources?.getString(R.string.som_list_bulk_request_pickup_desc_fail_all_validation).orEmpty())
+            setTitle(
+                context?.resources?.getString(R.string.som_list_bulk_request_pickup_title_fail)
+                    .orEmpty()
+            )
+            setDescription(
+                context?.resources?.getString(R.string.som_list_bulk_request_pickup_desc_fail_all_validation)
+                    .orEmpty()
+            )
             setPrimaryButton(context?.resources?.getString(R.string.understand).orEmpty()) {
                 dismissAndRunAction()
             }
@@ -1642,7 +1847,10 @@ open class SomListFragment :
     private fun showAllFailEligibleBulkRequestPickup(orderIdsFail: List<String>) {
         val totalFail = orderIdsFail.size.toLong().toString()
         bulkRequestPickupDialog?.run {
-            setTitle(context?.resources?.getString(R.string.som_list_bulk_request_pickup_title_fail).orEmpty())
+            setTitle(
+                context?.resources?.getString(R.string.som_list_bulk_request_pickup_title_fail)
+                    .orEmpty()
+            )
             setDescription(
                 context?.resources?.getString(
                     R.string.som_list_bulk_request_pickup_partial_partial_fail_success,
@@ -1658,7 +1866,10 @@ open class SomListFragment :
                 showProgressBulkRequestPickupDialog(totalFail.toLongOrZero())
                 viewModel.bulkRequestPickup(orderIdsFail)
             }
-            setSecondaryButton(context?.resources?.getString(R.string.som_list_bulk_request_pickup_dialog_secondary_button_partial_success_can_retry).orEmpty()) {
+            setSecondaryButton(
+                context?.resources?.getString(R.string.som_list_bulk_request_pickup_dialog_secondary_button_partial_success_can_retry)
+                    .orEmpty()
+            ) {
                 dismissAndRunAction()
             }
             showFailed()
@@ -1676,7 +1887,10 @@ open class SomListFragment :
                     orderCount.toString()
                 ).orEmpty()
             )
-            setDescription(context?.resources?.getString(R.string.som_list_bulk_request_pickup_desc_loading).orEmpty())
+            setDescription(
+                context?.resources?.getString(R.string.som_list_bulk_request_pickup_desc_loading)
+                    .orEmpty()
+            )
             showOnProgress()
             show()
         }
@@ -1694,7 +1908,10 @@ open class SomListFragment :
                     orderCount.toString()
                 ).orEmpty()
             )
-            setDescription(context?.resources?.getString(R.string.som_list_bulk_request_pickup_desc_success).orEmpty())
+            setDescription(
+                context?.resources?.getString(R.string.som_list_bulk_request_pickup_desc_success)
+                    .orEmpty()
+            )
             showSuccess()
         }
     }
@@ -1753,6 +1970,7 @@ open class SomListFragment :
                         }
                     }
                 }
+
                 is Fail -> {
                     showGlobalError(result.throwable)
                     SomErrorHandler.logExceptionToServer(
@@ -1810,7 +2028,8 @@ open class SomListFragment :
     }
 
     private fun showEmptyState(emptyStateUiModel: SomListEmptyStateUiModel? = null) {
-        val newItems = arrayListOf(createSomListEmptyStateModel(emptyStateUiModel, viewModel.isTopAdsActive()))
+        val newItems =
+            arrayListOf(createSomListEmptyStateModel(emptyStateUiModel, viewModel.isTopAdsActive()))
         (adapter as? SomListOrderAdapter)?.updateOrders(newItems)
     }
 
@@ -1896,8 +2115,11 @@ open class SomListFragment :
 
             btnBulkAction.setOnClickListener {
                 when (btnBulkAction.text.toString()) {
-                    context?.resources?.getString(R.string.som_list_bulk_accept_order_button).orEmpty() -> showBulkAcceptOrderBottomSheet()
-                    context?.resources?.getString(R.string.som_list_bulk_confirm_shipping_order_button).orEmpty() -> showBulkProcessOrderBottomSheet()
+                    context?.resources?.getString(R.string.som_list_bulk_accept_order_button)
+                        .orEmpty() -> showBulkAcceptOrderBottomSheet()
+
+                    context?.resources?.getString(R.string.som_list_bulk_confirm_shipping_order_button)
+                        .orEmpty() -> showBulkProcessOrderBottomSheet()
                 }
             }
         }
@@ -1918,12 +2140,14 @@ open class SomListFragment :
                         RESULT_CONFIRM_SHIPPING
                     )
                 )
+
                 data.hasExtra(SomConsts.RESULT_ACCEPT_ORDER) -> {
                     data.getParcelableExtra<SomAcceptOrderResponse.Data.AcceptOrder>(SomConsts.RESULT_ACCEPT_ORDER)
                         ?.let { resultAcceptOrder ->
                             onAcceptOrderSuccess(resultAcceptOrder, true)
                         }
                 }
+
                 data.hasExtra(SomConsts.RESULT_PROCESS_REQ_PICKUP) -> {
                     data.getParcelableExtra<SomProcessReqPickup.Data.MpLogisticRequestPickup>(
                         SomConsts.RESULT_PROCESS_REQ_PICKUP
@@ -1931,18 +2155,21 @@ open class SomListFragment :
                         handleRequestPickUpResult(resultProcessReqPickup.listMessage.firstOrNull())
                     }
                 }
+
                 data.hasExtra(SomConsts.RESULT_REJECT_ORDER) -> {
                     data.getParcelableExtra<SomRejectOrderResponse.Data.RejectOrder>(SomConsts.RESULT_REJECT_ORDER)
                         ?.let { resultRejectOrder ->
                             handleRejectOrderResult(resultRejectOrder, true)
                         }
                 }
+
                 data.hasExtra(SomConsts.RESULT_SET_DELIVERED) -> {
                     data.getStringExtra(SomConsts.RESULT_SET_DELIVERED)?.let { message ->
                         onActionCompleted(true, selectedOrderId)
                         showCommonToaster(view, message)
                     }
                 }
+
                 data.hasExtra(SomConsts.RESULT_REFRESH_ORDER) -> {
                     if (data.getBooleanExtra(SomConsts.RESULT_REFRESH_ORDER, false)) {
                         onActionCompleted(true, selectedOrderId)
@@ -2172,7 +2399,9 @@ open class SomListFragment :
         if (isLoadingInitialData && data.somListOrders.isEmpty()) {
             showEmptyState(data.somListEmptyStateUiModel)
             toggleBulkActionButtonVisibility()
-        } else if (data.somListOrders.firstOrNull()?.searchParam == somListHeaderBinding?.searchBarSomList?.searchBarTextField?.text?.toString().orEmpty()) {
+        } else if (data.somListOrders.firstOrNull()?.searchParam == somListHeaderBinding?.searchBarSomList?.searchBarTextField?.text?.toString()
+            .orEmpty()
+        ) {
             if (isLoadingInitialData) {
                 val shouldShowMultiSelectSection = somListOrderStatusFilterTab
                     ?.shouldShowBulkAction()
@@ -2185,7 +2414,8 @@ open class SomListFragment :
                             Int.ZERO,
                             SomListMultiSelectSectionUiModel(
                                 isEnabled = viewModel.isMultiSelectEnabled,
-                                totalOrder = somListOrderStatusFilterTab?.getSelectedFilterOrderCount().orZero(),
+                                totalOrder = somListOrderStatusFilterTab?.getSelectedFilterOrderCount()
+                                    .orZero(),
                                 totalSelected = Int.ZERO,
                                 totalSelectable = data.somListOrders.count { !it.isOrderWithCancellationRequest() }
                             )
@@ -2204,16 +2434,20 @@ open class SomListFragment :
                 }
             } else {
                 val newItems = ArrayList(adapter.data)
-                val multiSelectSectionIndex = newItems.indexOfFirst { it is SomListMultiSelectSectionUiModel }
+                val multiSelectSectionIndex =
+                    newItems.indexOfFirst { it is SomListMultiSelectSectionUiModel }
                 val emptyStateIndex = newItems.size.dec()
-                val updatedData = data.somListOrders.map { it.copy(multiSelectEnabled = viewModel.isMultiSelectEnabled) }
+                val updatedData =
+                    data.somListOrders.map { it.copy(multiSelectEnabled = viewModel.isMultiSelectEnabled) }
                 newItems.addAll(updatedData)
                 newItems.getOrNull(multiSelectSectionIndex)?.let {
                     if (it is SomListMultiSelectSectionUiModel) {
                         newItems[multiSelectSectionIndex] = SomListMultiSelectSectionUiModel(
                             isEnabled = viewModel.isMultiSelectEnabled,
-                            totalOrder = somListOrderStatusFilterTab?.getSelectedFilterOrderCount().orZero(),
-                            totalSelected = newItems.filterIsInstance<SomListOrderUiModel>().count { it.isChecked },
+                            totalOrder = somListOrderStatusFilterTab?.getSelectedFilterOrderCount()
+                                .orZero(),
+                            totalSelected = newItems.filterIsInstance<SomListOrderUiModel>()
+                                .count { it.isChecked },
                             totalSelectable = newItems.count { it is SomListOrderUiModel && !it.isOrderWithCancellationRequest() }
                         )
                     }
@@ -2920,7 +3154,8 @@ open class SomListFragment :
             highLightStatusKey.isNotBlank() && viewModel.getTabActiveFromAppLink().isBlank()
 
         if (shouldRefreshOrderAutoTabbing) {
-            val statusIds = somFilterUiModel.statusList.find { it.key == highLightStatusKey }?.id.orEmpty()
+            val statusIds =
+                somFilterUiModel.statusList.find { it.key == highLightStatusKey }?.id.orEmpty()
             if (statusIds.isNotEmpty()) {
                 viewModel.setStatusOrderFilter(statusIds, highLightStatusKey)
             }
@@ -2937,7 +3172,11 @@ open class SomListFragment :
     }
 
     private fun showCoachMarkAutoTabbing(highLightStatusKey: String) {
-        if (highLightStatusKey in listOf(STATUS_NEW_ORDER, KEY_CONFIRM_SHIPPING)) {
+        if (isEnabledCoachmark && highLightStatusKey in listOf(
+                STATUS_NEW_ORDER,
+                KEY_CONFIRM_SHIPPING
+            )
+        ) {
             context?.let {
                 if (!CoachMarkPreference.hasShown(it, SHARED_PREF_SOM_LIST_TAB_COACH_MARK)) {
                     val coachMarkMessage = getCoachMarkMessageAutoTabbing(it, highLightStatusKey)
@@ -2945,9 +3184,10 @@ open class SomListFragment :
                         val tabPosition =
                             somListOrderStatusFilterTab?.somListFilterUiModel?.statusList?.indexOfFirst { status -> status.key == highLightStatusKey }
                         if (tabPosition == -Int.ONE || tabPosition == null) return
-                        val tabLayoutViewPosition = somListBinding?.somListTabFilter?.tabLayout?.getTabAt(
-                            tabPosition
-                        )?.customView ?: return
+                        val tabLayoutViewPosition =
+                            somListBinding?.somListTabFilter?.tabLayout?.getTabAt(
+                                tabPosition
+                            )?.customView ?: return
 
                         val coachMarkItem = CoachMark2Item(
                             anchorView = tabLayoutViewPosition,
@@ -2975,16 +3215,21 @@ open class SomListFragment :
         }
     }
 
-    private fun getCoachMarkMessageAutoTabbing(context: Context, highLightStatusKey: String): String {
+    private fun getCoachMarkMessageAutoTabbing(
+        context: Context,
+        highLightStatusKey: String
+    ): String {
         return when (highLightStatusKey) {
             STATUS_NEW_ORDER -> {
                 context.getString(com.tokopedia.sellerorder.R.string.som_operational_guideline_new_order_tooltip_text)
                     .orEmpty()
             }
+
             KEY_CONFIRM_SHIPPING -> {
                 context.getString(com.tokopedia.sellerorder.R.string.som_operational_guideline_confirm_shipping_tooltip_text)
                     .orEmpty()
             }
+
             else -> String.EMPTY
         }
     }
