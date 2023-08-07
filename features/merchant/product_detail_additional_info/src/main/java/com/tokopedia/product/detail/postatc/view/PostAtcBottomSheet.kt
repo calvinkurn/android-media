@@ -93,8 +93,8 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
     private val component by getComponent()
     override val viewModel by getViewModel()
 
-    private val callback = PostAtcCallback(this)
-    override val adapter = PostAtcAdapter(callback)
+    private val callback by lazy { PostAtcCallback(this) }
+    override val adapter by lazy { PostAtcAdapter(callback) }
 
     private val argProductId: String by getStringArg(ARG_PRODUCT_ID)
     private val argCartId: String by getStringArg(ARG_CART_ID)
@@ -141,8 +141,8 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
         trackingQueue.sendAll()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         adapter.stop()
     }
 
@@ -188,8 +188,8 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
             adapter.replaceComponents(it.data)
             updateFooter()
         }, fail = {
-            showError(it)
-        })
+                showError(it)
+            })
         PostAtcTracking.impressionPostAtcBottomSheet(
             trackingQueue,
             userSession.userId,
@@ -206,8 +206,8 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
                     widget = data
                 }
             }, fail = {
-                adapter.removeComponent(uiModelId)
-            })
+                    adapter.removeComponent(uiModelId)
+                })
         }
 
     /**

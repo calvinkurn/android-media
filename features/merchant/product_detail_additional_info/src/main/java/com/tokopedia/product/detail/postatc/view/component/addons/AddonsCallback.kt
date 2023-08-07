@@ -26,9 +26,13 @@ class AddonsCallbackImpl(
     fragment: PostAtcBottomSheet
 ) : AddonsCallback, PostAtcBottomSheetDelegate by fragment {
 
+    companion object {
+        private const val TRANSITION_DURATION = 150L
+    }
+
     private val transition: AutoTransition by lazy {
         AutoTransition().apply {
-            duration = 150
+            duration = TRANSITION_DURATION
             interpolator = AccelerateDecelerateInterpolator()
         }
     }
