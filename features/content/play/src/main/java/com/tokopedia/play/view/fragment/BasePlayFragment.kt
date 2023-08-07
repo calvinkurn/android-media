@@ -11,6 +11,7 @@ import java.net.UnknownHostException
 /**
  * @author by astidhiyaa on 22/05/23
  */
+@Suppress("LateinitUsage")
 open class BasePlayFragment : Fragment() {
 
     protected lateinit var viewModel: PlayViewModel
@@ -29,7 +30,7 @@ open class BasePlayFragment : Fragment() {
             viewModel = ViewModelProvider(
                 child, fg.viewModelProviderFactory
             )[PlayViewModel::class.java]
-        } catch (e: Exception){}
+        } catch (e: Exception){ false }
         super.onCreate(savedInstanceState)
     }
 

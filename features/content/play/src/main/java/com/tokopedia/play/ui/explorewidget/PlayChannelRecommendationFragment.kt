@@ -39,6 +39,7 @@ import com.tokopedia.play.R as playR
 /**
  * @author by astidhiyaa on 22/05/23
  */
+@Suppress("LateinitUsage")
 class PlayChannelRecommendationFragment @Inject constructor(
     router: Router,
     private val trackingQueue: TrackingQueue,
