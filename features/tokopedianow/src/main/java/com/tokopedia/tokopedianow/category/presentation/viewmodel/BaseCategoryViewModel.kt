@@ -93,7 +93,9 @@ abstract class BaseCategoryViewModel(
     var currentCategoryId = String.EMPTY
     var queryParamMap: HashMap<String, String>? = hashMapOf()
 
-    protected abstract fun loadFirstPage(tickerList: List<TickerData>)
+    protected abstract suspend fun loadFirstPage(
+        tickerList: List<TickerData>
+    )
 
     protected abstract suspend fun loadNextPage()
 
@@ -203,7 +205,7 @@ abstract class BaseCategoryViewModel(
         getMiniCart()
         updateAddressData()
         loadMoreJob = null
-        _refreshState.value = Unit
+        _refreshState.postValue(Unit)
     }
 
     private fun createRequestQueryParams(): Map<String?, Any?> {
@@ -234,7 +236,7 @@ abstract class BaseCategoryViewModel(
                 _outOfCoverageState.postValue(Unit)
             }
         }) {
-
+            _onPageError.postValue(it)
         }
     }
 

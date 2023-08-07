@@ -120,6 +120,56 @@ class TokoNowCategoryViewModel @Inject constructor(
      * -- override function section --
      */
 
+    override suspend fun loadFirstPage(tickerList: List<TickerData>) {
+        val addressData = addressData.getAddressData()
+        val detailResponse = getCategoryDetailUseCase.execute(
+            warehouseId = getWarehouseId(),
+            categoryIdL1 = categoryIdL1
+        )
+
+        val categoryNavigationUiModel = detailResponse.mapToCategoryNavigation()
+        categoryRecommendation = detailResponse.mapToCategoryRecommendation()
+
+        visitableList.clear()
+
+        visitableList.addHeaderSpace(
+            space = navToolbarHeight,
+            detailResponse = detailResponse
+        )
+        visitableList.addChooseAddress(
+            detailResponse = detailResponse,
+            addressData = addressData
+        )
+        visitableList.addTicker(
+            detailResponse = detailResponse,
+            tickerList = tickerList
+        )
+        visitableList.addCategoryTitle(
+            detailResponse = detailResponse
+        )
+        visitableList.addCategoryNavigation(
+            categoryNavigationUiModel = categoryNavigationUiModel
+        )
+        visitableList.addProductRecommendation(
+            categoryId = listOf(categoryIdL1)
+        )
+        visitableList.addProductAdsCarousel()
+
+        addCategoryShowcases(
+            categoryNavigationUiModel = categoryNavigationUiModel
+        )
+
+        updateVisitableListLiveData()
+        hidePageLoading()
+        getFirstPage()
+
+        sendOpenScreenL1Tracker(detailResponse)
+    }
+
+    override suspend fun loadNextPage() {
+        getBatchShowcase()
+    }
+
     override fun onSuccessGetMiniCartData(miniCartData: MiniCartSimplifiedData) {
         super.onSuccessGetMiniCartData(miniCartData)
         visitableList.updateProductQuantity(miniCartData)
@@ -159,16 +209,6 @@ class TokoNowCategoryViewModel @Inject constructor(
     ) {
         categoryL2Models.remove(categoryL2Model)
         removeVisitableItem(categoryL2Model.id)
-    }
-
-    override suspend fun loadNextPage() {
-        getBatchShowcase()
-    }
-
-    override fun loadFirstPage(
-        tickerList: List<TickerData>
-    ) {
-        loadCategoryPage(tickerList)
     }
 
     /**
@@ -244,59 +284,6 @@ class TokoNowCategoryViewModel @Inject constructor(
     /**
      * -- public function section --
      */
-
-    private fun loadCategoryPage(tickerList: List<TickerData>) {
-        launchCatchError(
-            block = {
-                val addressData = addressData.getAddressData()
-                val detailResponse = getCategoryDetailUseCase.execute(
-                    warehouseId = getWarehouseId(),
-                    categoryIdL1 = categoryIdL1
-                )
-
-                val categoryNavigationUiModel = detailResponse.mapToCategoryNavigation()
-                categoryRecommendation = detailResponse.mapToCategoryRecommendation()
-
-                visitableList.clear()
-
-                visitableList.addHeaderSpace(
-                    space = navToolbarHeight,
-                    detailResponse = detailResponse
-                )
-                visitableList.addChooseAddress(
-                    detailResponse = detailResponse,
-                    addressData = addressData
-                )
-                visitableList.addTicker(
-                    detailResponse = detailResponse,
-                    tickerList = tickerList
-                )
-                visitableList.addCategoryTitle(
-                    detailResponse = detailResponse
-                )
-                visitableList.addCategoryNavigation(
-                    categoryNavigationUiModel = categoryNavigationUiModel
-                )
-                visitableList.addProductRecommendation(
-                    categoryId = listOf(categoryIdL1)
-                )
-                visitableList.addProductAdsCarousel()
-
-                addCategoryShowcases(
-                    categoryNavigationUiModel = categoryNavigationUiModel
-                )
-
-                updateVisitableListLiveData()
-                hidePageLoading()
-                getFirstPage()
-
-                sendOpenScreenL1Tracker(detailResponse)
-            },
-            onError = {
-                _onPageError.postValue(it)
-            }
-        )
-    }
 
     fun getFirstPage() {
         launchCatchError(

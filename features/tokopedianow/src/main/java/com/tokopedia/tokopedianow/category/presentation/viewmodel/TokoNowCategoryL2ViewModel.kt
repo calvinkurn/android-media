@@ -69,37 +69,31 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
     val tab: LiveData<CategoryL2TabUiModel> = _tab
     val loadMore: LiveData<Unit> = _loadMore
 
-    override fun loadFirstPage(tickerList: List<TickerData>) {
-        launchCatchError(
-            block = {
-                val addressData = addressData.getAddressData()
-                val getCategoryLayout = getCategoryLayoutAsync().await()
-                val getCategoryDetail = getCategoryDetailAsync().await()
+    override suspend fun loadFirstPage(tickerList: List<TickerData>) {
+        val addressData = addressData.getAddressData()
+        val getCategoryLayout = getCategoryLayoutAsync().await()
+        val getCategoryDetail = getCategoryDetailAsync().await()
 
-                visitableList.clear()
-                visitableList.addChooseAddress(addressData)
-                visitableList.mapToCategoryUiModel(
-                    categoryIdL1,
-                    categoryIdL2,
-                    getCategoryLayout,
-                    getCategoryDetail
-                )
-
-                val tab = visitableList.filterIsInstance<CategoryL2TabUiModel>().first()
-                val index = visitableList.indexOf(tab)
-
-                _tab.postValue(tab)
-
-                visitableList.removeAt(index)
-
-                hidePageLoading()
-                updateCategoryTab()
-                updateVisitableListLiveData()
-                sendOpenScreenTracker(id = "", name = "", url = "")
-            },
-            onError = {
-            }
+        visitableList.clear()
+        visitableList.addChooseAddress(addressData)
+        visitableList.mapToCategoryUiModel(
+            categoryIdL1,
+            categoryIdL2,
+            getCategoryLayout,
+            getCategoryDetail
         )
+
+        val tab = visitableList.filterIsInstance<CategoryL2TabUiModel>().first()
+        val index = visitableList.indexOf(tab)
+
+        _tab.postValue(tab)
+
+        visitableList.removeAt(index)
+
+        hidePageLoading()
+        updateCategoryTab()
+        updateVisitableListLiveData()
+        sendOpenScreenTracker(id = "", name = "", url = "")
     }
 
     override suspend fun loadNextPage() {
