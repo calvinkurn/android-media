@@ -17,7 +17,6 @@ import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -27,6 +26,7 @@ import com.tokopedia.media.loader.utils.MediaTarget
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.utils.*
+import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
@@ -179,8 +179,8 @@ abstract class ProductCardView: BaseCustomView {
     }
 
     protected open fun getTitleMarginTop(): Int {
-        return if (textViewShopName.isNotNullAndVisible) com.tokopedia.design.R.dimen.dp_2
-        else com.tokopedia.design.R.dimen.dp_8
+        return if (textViewShopName.isNotNullAndVisible) com.tokopedia.abstraction.R.dimen.dp_2
+        else com.tokopedia.abstraction.R.dimen.dp_8
     }
 
     protected open fun setPriceMarginTop() {
@@ -191,8 +191,8 @@ abstract class ProductCardView: BaseCustomView {
     }
 
     protected open fun getPriceMarginTop(): Int {
-        return if (labelDiscount.isNotNullAndVisible) com.tokopedia.design.R.dimen.dp_2
-        else com.tokopedia.design.R.dimen.dp_4
+        return if (labelDiscount.isNotNullAndVisible) com.tokopedia.abstraction.R.dimen.dp_2
+        else com.tokopedia.abstraction.R.dimen.dp_4
     }
 
     protected open fun setLocationMarginLeft() {
@@ -203,8 +203,8 @@ abstract class ProductCardView: BaseCustomView {
     }
 
     protected open fun getLocationMarginLeft(): Int {
-        return if (linearLayoutShopBadges.isNotNullAndVisible) com.tokopedia.design.R.dimen.dp_4
-        else com.tokopedia.design.R.dimen.dp_8
+        return if (linearLayoutShopBadges.isNotNullAndVisible) com.tokopedia.abstraction.R.dimen.dp_4
+        else com.tokopedia.abstraction.R.dimen.dp_8
     }
 
     protected open fun setLocationConstraintEnd() {
@@ -241,8 +241,8 @@ abstract class ProductCardView: BaseCustomView {
     }
 
     protected open fun getReviewCountMarginLeft(): Int {
-        return if(linearLayoutImageRating.isNotNullAndVisible) com.tokopedia.design.R.dimen.dp_4
-        else com.tokopedia.design.R.dimen.dp_8
+        return if(linearLayoutImageRating.isNotNullAndVisible) com.tokopedia.abstraction.R.dimen.dp_4
+        else com.tokopedia.abstraction.R.dimen.dp_8
     }
 
     protected open fun setImageFreeOngkirPromoConstraint() {
@@ -251,7 +251,7 @@ abstract class ProductCardView: BaseCustomView {
 
             imageFreeOngkirPromoTopConstraintView?.let {
                 setViewConstraint(
-                        imageFreeOngkirPromo.id, ConstraintSet.TOP, it.id, ConstraintSet.BOTTOM, com.tokopedia.design.R.dimen.dp_8
+                        imageFreeOngkirPromo.id, ConstraintSet.TOP, it.id, ConstraintSet.BOTTOM, com.tokopedia.abstraction.R.dimen.dp_8
                 )
             }
         }
@@ -273,7 +273,7 @@ abstract class ProductCardView: BaseCustomView {
 
             labelOffersTopConstraintView?.let {
                 setViewConstraint(
-                        labelOffers.id, ConstraintSet.TOP, it.id, ConstraintSet.BOTTOM, com.tokopedia.design.R.dimen.dp_8
+                        labelOffers.id, ConstraintSet.TOP, it.id, ConstraintSet.BOTTOM, com.tokopedia.abstraction.R.dimen.dp_8
                 )
             }
         }
@@ -292,7 +292,7 @@ abstract class ProductCardView: BaseCustomView {
 
             imageTopAdsTopConstraintView?.let {
                 setViewConstraint(
-                        imageTopAds.id, ConstraintSet.TOP, it.id, ConstraintSet.TOP, com.tokopedia.design.R.dimen.dp_0
+                        imageTopAds.id, ConstraintSet.TOP, it.id, ConstraintSet.TOP, com.tokopedia.abstraction.R.dimen.dp_0
                 )
             }
         }

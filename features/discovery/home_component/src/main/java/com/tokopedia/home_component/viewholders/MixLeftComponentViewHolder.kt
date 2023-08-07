@@ -157,7 +157,7 @@ class MixLeftComponentViewHolder (itemView: View,
                     mixLeftComponentListener?.onImageBannerImpressed(channel, channel.verticalPosition)
             }
             parallaxBackground.setBackgroundColor(
-                    ContextCompat.getColor(itemView.context, com.tokopedia.design.R.color.transparent)
+                    ContextCompat.getColor(itemView.context, android.R.color.transparent)
             )
             image.loadImageWithoutPlaceholder(channel.channelBanner.imageUrl, FPM_MIX_LEFT, object : ImageHandler.ImageLoaderStateListener{
                 override fun successLoad() {
