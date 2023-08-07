@@ -221,6 +221,8 @@ data class ComponentData(
             )
         }
     }
+
+    fun requiredForContentMediaToggle() = ctaText.isNotBlank()
 }
 
 data class CategoryCarousel(

@@ -308,13 +308,18 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.A_PLUS_IMAGE -> {
                     val aPlusData = component.componentData.firstOrNull()
                     val aPlusMediaData = aPlusData?.contentMedia?.firstOrNull()
-                    if (aPlusMediaData != null && aPlusMediaData.valid()) {
+                    // only add to component list if the media url is not blank and media ratio is valid
+                    // or it is used to show toggle button (CTA text is not blank)
+                    if (
+                        (aPlusData != null && aPlusData.requiredForContentMediaToggle()) ||
+                        (aPlusMediaData != null && aPlusMediaData.valid())
+                    ) {
                         listOfComponent.add(
                             ProductAPlusImageDataModel(
                                 type = component.type,
                                 name = component.componentName,
-                                url = aPlusMediaData.url,
-                                ratio = aPlusMediaData.ratio,
+                                url = aPlusMediaData?.url.orEmpty(),
+                                ratio = aPlusMediaData?.ratio.orEmpty(),
                                 title = aPlusData.title,
                                 description = aPlusData.description,
                                 showOnCollapsed = aPlusData.show,
