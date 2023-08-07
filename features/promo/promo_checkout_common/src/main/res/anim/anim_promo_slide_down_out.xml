@@ -3,6 +3,6 @@
     <translate
         android:duration="@integer/Unify_T3"
         android:interpolator="@android:anim/accelerate_decelerate_interpolator"
-        android:toYDelta="100%p"
-        android:toXDelta="0" />
+        android:toXDelta="0"
+        android:toYDelta="100%p" />
 </set>
