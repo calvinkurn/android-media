@@ -20,6 +20,8 @@ import com.tokopedia.feedplus.presentation.adapter.listener.FeedFollowRecommenda
 import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 
 /**
@@ -103,6 +105,9 @@ class FeedFollowProfileViewHolder private constructor() {
             }
 
             binding.imgProfile.setImageUrl(model.data.imageUrl)
+            binding.imgBadge.shouldShowWithAction(model.data.badge.isNotEmpty()) {
+                binding.imgBadge.setImageUrl(model.data.badge)
+            }
             binding.imgThumbnail.setImageUrl(model.data.thumbnailUrl)
             binding.tvProfileName.text = model.data.name
             binding.btnFollow.apply {
