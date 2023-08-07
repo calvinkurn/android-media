@@ -3405,7 +3405,7 @@ class ShopPageHeaderFragment :
                             id = shopPageHeaderDataModel?.shopId ?: "",
                             deeplink = Uri.parse(UriUtil.buildUri(ApplinkConst.SHOP, shopId))
                                 .buildUpon()
-                                .appendPath(shopPageHeaderTabModel.tabTitle).toString()
+                                .appendPath(QUERY_TAB+"="+shopPageHeaderTabModel.tabTitle).toString()
                         ),
                         index
                     )
