@@ -521,5 +521,11 @@ object ConstantTransactionAnalytics {
         // Platform Fee
         const val CLICK_INFO_BUTTON_IN_PLATFORM_FEE = "43346"
         const val VIEW_PLATFORM_FEE_IN_CHECKOUT_PAGE = "43710"
+
+        // Gopay Cicil
+        const val IMPRESSION_PROMO_ACTIVATED_GOPAY_CICIL = "45451"
+        const val CLICK_ACTIVATED_GOPAY_CICIL = "45453"
+        const val IMPRESSION_ELIGIBLE_PROMO_SECTION_GOPAY_CICIL = "45454"
+        const val IMPRESSION_INELIGIBLE_PROMO_SECTION_GOPAY_CICIL_PROMO_VALIDATION = "45456"
     }
 }
