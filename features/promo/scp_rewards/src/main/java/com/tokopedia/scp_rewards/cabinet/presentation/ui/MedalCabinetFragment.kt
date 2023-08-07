@@ -233,7 +233,7 @@ class MedalCabinetFragment : BaseDaggerFragment() {
         (activity as AppCompatActivity?)?.apply {
             window?.statusBarColor = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN0)
             binding.toolbar.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN0))
-            setToolbarBackButtonTint(unifyprinciplesR.R.color.Unify_NN900)
+            setToolbarBackButtonTint(unifyprinciplesR.color.Unify_NN900)
 
             windowInsetsController?.isAppearanceLightStatusBars = true
         }
