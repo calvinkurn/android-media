@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:typographyType="heading_5"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         android:gravity="center"
         android:text="@string/msg_under_maintenance" />
 

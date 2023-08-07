@@ -29,7 +29,7 @@ class ShopInfoActivity : BaseSimpleActivity(), HasComponent<ShopComponent> {
 
     private fun setupToolbar() {
         setSupportActionBar(toolbar)
-        toolbar?.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+        toolbar?.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 

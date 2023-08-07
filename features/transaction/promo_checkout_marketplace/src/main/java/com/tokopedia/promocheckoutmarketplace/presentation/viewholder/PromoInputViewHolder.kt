@@ -83,7 +83,7 @@ class PromoInputViewHolder(
                     } else {
                         element.uiState.isButtonSelectEnabled = false
                         buttonApplyPromo.gone()
-                        textFieldInputPromo.setFirstIcon(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                        textFieldInputPromo.setFirstIcon(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
                     }
                     setTextFieldInputPromoMargin(viewBinding, element)
                 }
@@ -112,7 +112,7 @@ class PromoInputViewHolder(
             if (element.uiData.promoCode.isNotBlank()) {
                 textFieldInputPromo.setFirstIcon(com.tokopedia.unifycomponents.R.drawable.unify_chips_ic_close)
             } else {
-                textFieldInputPromo.setFirstIcon(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                textFieldInputPromo.setFirstIcon(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
             }
         }
     }

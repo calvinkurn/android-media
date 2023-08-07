@@ -75,13 +75,13 @@ internal class ProductNotification(
     }
 
     override fun rightCarouselButton(remoteView: RemoteViews) {
-        val intent = getBaseBroadcastIntent(context, baseNotificationModel)
+        val intent = getBaseBroadcastIntent(context, baseNotificationModel, true)
         intent.action = CMConstant.ReceiverAction.ACTION_PRODUCT_CAROUSEL_RIGHT_CLICK
         remoteView.setOnClickPendingIntent(R.id.ivArrowRight, getPendingIntent(context, intent, requestCode))
     }
 
     override fun leftCarouselButton(remoteView: RemoteViews) {
-        val intent = getBaseBroadcastIntent(context, baseNotificationModel)
+        val intent = getBaseBroadcastIntent(context, baseNotificationModel, true)
         intent.action = CMConstant.ReceiverAction.ACTION_PRODUCT_CAROUSEL_LEFT_CLICK
         remoteView.setOnClickPendingIntent(R.id.ivArrowLeft, getPendingIntent(context, intent, requestCode))
     }

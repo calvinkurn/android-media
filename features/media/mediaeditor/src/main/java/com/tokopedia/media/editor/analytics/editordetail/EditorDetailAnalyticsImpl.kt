@@ -4,6 +4,9 @@ import com.tokopedia.kotlin.extensions.view.toZeroStringIfNullOrBlank
 import com.tokopedia.media.editor.analytics.ACTION_CLICK_LOGO_LOAD_RETRY
 import com.tokopedia.media.editor.analytics.ACTION_CLICK_LOGO_UPLOAD
 import com.tokopedia.media.editor.analytics.ACTION_CLICK_SAVE
+import com.tokopedia.media.editor.analytics.ACTION_CLICK_TEXT_BACKGROUND
+import com.tokopedia.media.editor.analytics.ACTION_CLICK_TEXT_FREE
+import com.tokopedia.media.editor.analytics.ACTION_CLICK_TEXT_TEMPLATE
 import com.tokopedia.media.editor.analytics.ACTION_ROTATION_FLIP
 import com.tokopedia.media.editor.analytics.ACTION_ROTATION_ROTATE
 import com.tokopedia.media.editor.analytics.BUSINESS_UNIT
@@ -21,6 +24,9 @@ import com.tokopedia.media.editor.analytics.KEY_USER_ID
 import com.tokopedia.media.editor.analytics.TRACKER_ID_CLICK_LOGO_LOAD_RETRY
 import com.tokopedia.media.editor.analytics.TRACKER_ID_CLICK_LOGO_UPLOAD
 import com.tokopedia.media.editor.analytics.TRACKER_ID_CLICK_SAVE
+import com.tokopedia.media.editor.analytics.TRACKER_ID_CLICK_TEXT_BACKGROUND
+import com.tokopedia.media.editor.analytics.TRACKER_ID_CLICK_TEXT_FREE
+import com.tokopedia.media.editor.analytics.TRACKER_ID_CLICK_TEXT_TEMPLATE
 import com.tokopedia.media.editor.analytics.TRACKER_ID_ROTATION_FLIP
 import com.tokopedia.media.editor.analytics.TRACKER_ID_ROTATION_ROTATE
 import com.tokopedia.picker.common.cache.PickerCacheManager
@@ -73,6 +79,30 @@ class EditorDetailAnalyticsImpl @Inject constructor(
         )
     }
 
+    override fun clickAddTextFreeText() {
+        sendGeneralEvent(
+            ACTION_CLICK_TEXT_FREE,
+            "$pageSource - $userId - $shopId",
+            TRACKER_ID_CLICK_TEXT_FREE
+        )
+    }
+
+    override fun clickAddTextBackgroundText() {
+        sendGeneralEvent(
+            ACTION_CLICK_TEXT_BACKGROUND,
+            "$pageSource - $userId - $shopId",
+            TRACKER_ID_CLICK_TEXT_BACKGROUND
+        )
+    }
+
+    override fun clickAddTextTemplate() {
+        sendGeneralEvent(
+            ACTION_CLICK_TEXT_TEMPLATE,
+            "$pageSource - $userId - $shopId",
+            TRACKER_ID_CLICK_TEXT_TEMPLATE
+        )
+    }
+
     override fun clickSave(
         editorText: String,
         brightnessValue: Int,
@@ -81,7 +111,8 @@ class EditorDetailAnalyticsImpl @Inject constructor(
         rotateValue: Int,
         watermarkText: String,
         removeBackgroundText: String,
-        addLogoValue: String
+        addLogoValue: String,
+        addTextValue: String
     ) {
 
         val historyList = "{$brightnessValue}, " +
@@ -90,7 +121,8 @@ class EditorDetailAnalyticsImpl @Inject constructor(
                 "{$cropText}, " +
                 "{$removeBackgroundText}, " +
                 "{$watermarkText}, " +
-                "{$addLogoValue}"
+                "{$addLogoValue}" +
+                "{$addTextValue}"
 
         sendGeneralEvent(
             ACTION_CLICK_SAVE,

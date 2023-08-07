@@ -1,14 +1,9 @@
 package com.tokopedia.autocompletecomponent.searchbar
 
-import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
-import android.graphics.drawable.Animatable2
-import android.graphics.drawable.AnimatedVectorDrawable
-import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
 import android.speech.RecognizerIntent
@@ -17,7 +12,6 @@ import android.text.TextUtils
 import android.text.TextWatcher
 import android.text.style.UnderlineSpan
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
@@ -25,25 +19,27 @@ import android.view.View.OnFocusChangeListener
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.vectordrawable.graphics.drawable.Animatable2Compat
-import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.AutocompleteSearchBarViewBinding
+import com.tokopedia.autocompletecomponent.util.animation.AnimatedDrawableLoopUtil
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.microinteraction.autocomplete.AutoCompleteMicroInteraction
 import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 class SearchBarView constructor(
@@ -57,6 +53,8 @@ class SearchBarView constructor(
         private const val LOCALE_INDONESIA = "in_ID"
         const val SEARCH_BAR_DELAY_MS: Long = 200
         private const val AUTO_COMPLETE_ERROR = "AUTO_COMPLETE_ERROR"
+        private const val TEXT_EDIT_PADDING_LEFT_MPS_ENABLED = 60
+        private const val TEXT_EDIT_PADDING_LEFT_MPS_DISABLED = 32
     }
 
     private var mClearingFocus: Boolean = false
@@ -79,15 +77,20 @@ class SearchBarView constructor(
     private var isTyping = false
     private var binding: AutocompleteSearchBarViewBinding? = null
 
-    private var isMPSEnabled: Boolean = false
-    private var isMPSAnimationEnabled: Boolean = false
+    private var isMpsEnabled: Boolean = false
+    private var isMpsAnimationEnabled: Boolean = false
+
+    private var viewListener: SearchBarViewListener? = null
+    private val animatedDrawableLoopUtil = AnimatedDrawableLoopUtil.getInstance()
+
+    val addButton : ImageUnify?
+        get() = binding?.autocompleteAddButton
 
     private val searchNavigationOnClickListener = OnClickListener { v ->
         val binding = binding ?: return@OnClickListener
         when {
             v === binding.autocompleteActionUpButton -> {
-                KeyboardHandler.DropKeyboard(activity, binding.searchTextView)
-                activity?.onBackPressed()
+                viewListener?.onUpButtonClicked(binding.searchTextView)
             }
             v === binding.autocompleteVoiceButton -> {
                 onVoiceClicked()
@@ -96,8 +99,7 @@ class SearchBarView constructor(
                 binding.searchTextView.text?.clear()
             }
             v === binding.autocompleteAddButton -> {
-                // TODO(*): handle the add new keyword
-                binding.searchTextView.text?.clear()
+                viewListener?.onAddButtonClicked(binding.searchTextView.text)
             }
         }
     }
@@ -152,8 +154,8 @@ class SearchBarView constructor(
             0, 0
         ).apply {
             try {
-                isMPSEnabled = getBoolean(R.styleable.SearchBarView_enable_mps, false)
-                isMPSAnimationEnabled = getBoolean(R.styleable.SearchBarView_enable_mps_animation, false)
+                isMpsEnabled = getBoolean(R.styleable.SearchBarView_enable_mps, false)
+                isMpsAnimationEnabled = getBoolean(R.styleable.SearchBarView_enable_mps_animation, false)
             } finally {
                 recycle()
             }
@@ -163,7 +165,7 @@ class SearchBarView constructor(
     private fun configureSearchNavigationButtonVisibility() {
         val binding = binding ?: return
         binding.autocompleteSearchIcon.visibility = View.VISIBLE
-        if(isMPSEnabled) binding.autocompleteAddButtonGroup.visibility = View.VISIBLE
+        showAddButton()
     }
 
     private fun setSearchNavigationListener() {
@@ -171,7 +173,7 @@ class SearchBarView constructor(
         binding.autocompleteActionUpButton.setOnClickListener(searchNavigationOnClickListener)
         binding.autocompleteVoiceButton.setOnClickListener(searchNavigationOnClickListener)
         binding.autocompleteClearButton.setOnClickListener(searchNavigationOnClickListener)
-        if(isMPSEnabled) binding.autocompleteAddButton.setOnClickListener(searchNavigationOnClickListener)
+        binding.autocompleteAddButton.setOnClickListener(searchNavigationOnClickListener)
     }
 
     private fun showVoiceButton(show: Boolean) {
@@ -203,6 +205,8 @@ class SearchBarView constructor(
                     }
                     mUserQuery = keyword
 
+                    mOnQueryChangeListener.onQueryTextChanged(keyword)
+
                     searchParameter.setSearchQuery(keyword)
 
                     if (queryListener != null) {
@@ -232,9 +236,7 @@ class SearchBarView constructor(
 
     private fun onSubmitQuery() {
         val searchTextView = binding?.searchTextView ?: return
-        searchTextView.text?.let { modifyQueryInSearchParameter(it) }
-
-        if (!mOnQueryChangeListener.onQueryTextSubmit(searchParameter)) {
+        if (!mOnQueryChangeListener.onQueryTextSubmit()) {
             searchTextView.text = null
         }
     }
@@ -245,37 +247,40 @@ class SearchBarView constructor(
         imm.showSoftInput(view, 0)
     }
 
-    private fun setTextViewHint(hint: CharSequence?) {
+    fun setTextViewHint(hint: CharSequence?) {
         binding?.searchTextView?.hint = hint
     }
 
     private fun initCompositeSubscriber() {
         compositeSubscription = getNewCompositeSubIfUnsubscribed(compositeSubscription)
-        compositeSubscription?.add(Observable.unsafeCreate(Observable.OnSubscribe<String> { subscriber ->
-            queryListener = object : QueryListener {
-                override fun onQueryChanged(query: String) {
-                    subscriber.onNext(query)
-                }
-            }
-        })
-                .debounce(SEARCH_BAR_DELAY_MS, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Subscriber<String>() {
-                    override fun onCompleted() {}
-
-                    override fun onError(e: Throwable) {
-                        Log.d(TAG, e.localizedMessage)
-                    }
-
-                    override fun onNext(s: String?) {
-                        if (s != null) {
-                            Log.d(TAG, "Sending the text $s")
-                            this@SearchBarView.onTextChanged(s)
+        compositeSubscription?.add(
+            Observable.unsafeCreate(
+                Observable.OnSubscribe<String> { subscriber ->
+                    queryListener = object : QueryListener {
+                        override fun onQueryChanged(query: String) {
+                            subscriber.onNext(query)
                         }
                     }
-                }))
+                }
+            )
+            .debounce(SEARCH_BAR_DELAY_MS, TimeUnit.MILLISECONDS)
+            .subscribeOn(Schedulers.io())
+            .unsubscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Subscriber<String>() {
+                override fun onCompleted() {}
+
+                override fun onError(e: Throwable) {
+                    Timber.e(e)
+                }
+
+                override fun onNext(s: String?) {
+                    if (s != null) {
+                        onTextChanged(s)
+                    }
+                }
+            })
+        )
     }
 
     private fun getNewCompositeSubIfUnsubscribed(subscription: CompositeSubscription?): CompositeSubscription {
@@ -291,78 +296,95 @@ class SearchBarView constructor(
         mUserQuery = text
         val hasText = !TextUtils.isEmpty(text)
         if (hasText) {
-            binding.autocompleteClearButton.visibility = View.VISIBLE
-            if(isMPSEnabled) {
-                binding.autocompleteAddButtonGroup.visibility = View.VISIBLE
-                binding.autocompleteAddButton.startAnimationDrawable()
-            }
-
+            binding.autocompleteClearButton.visible()
             showVoiceButton(false)
         } else {
-            binding.autocompleteClearButton.visibility = View.GONE
-            if(isMPSEnabled) {
-                binding.autocompleteAddButtonGroup.visibility = View.GONE
-                binding.autocompleteAddButton.stopAnimationDrawable()
-            }
-
+            binding.autocompleteClearButton.hide()
             showVoiceButton(true)
         }
-
-        if (!TextUtils.equals(newText, mOldQueryText)) {
-            mOnQueryChangeListener.onQueryTextChange(searchParameter)
-        }
-
-        mOldQueryText = newText.toString()
     }
 
     private fun ImageUnify.startAnimationDrawable() {
-        if(!isMPSAnimationEnabled) return
-        when(val drawable = drawable) {
-            is AnimatedVectorDrawable -> drawable.startLoopAnimation()
-            is AnimatedVectorDrawableCompat -> drawable.startLoopAnimation()
-        }
+        if (!isMpsAnimationEnabled) return
+        animatedDrawableLoopUtil.startLoopAnimation(drawable)
     }
 
     private fun ImageUnify.stopAnimationDrawable() {
-        when(val drawable = drawable) {
-            is AnimatedVectorDrawable -> drawable.stop()
-            is AnimatedVectorDrawableCompat -> drawable.stop()
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.M)
-    private fun AnimatedVectorDrawable.startLoopAnimation() {
-        registerAnimationCallback(object: Animatable2.AnimationCallback() {
-            override fun onAnimationEnd(drawable: Drawable?) {
-                start()
-            }
-        })
-        start()
-    }
-
-    private fun AnimatedVectorDrawableCompat.startLoopAnimation() {
-        registerAnimationCallback(object: Animatable2Compat.AnimationCallback() {
-            override fun onAnimationEnd(drawable: Drawable?) {
-                start()
-            }
-        })
-        start()
+        animatedDrawableLoopUtil.stopLoopAnimation(drawable)
     }
 
     fun setMPSEnabled(isMPSEnabled: Boolean) {
-        this.isMPSEnabled = isMPSEnabled
+        this.isMpsEnabled = isMPSEnabled
+    }
+
+    fun showAddButton() {
+        if (isMpsEnabled) showAddButtonGroup()
+    }
+
+    private fun showAddButtonGroup() {
+        val binding = binding ?: return
+        binding.autocompleteAddButtonGroup.visibility = View.VISIBLE
+        with(binding.searchTextView) {
+            setPadding(
+                paddingLeft,
+                paddingTop,
+                TEXT_EDIT_PADDING_LEFT_MPS_ENABLED.toPx(),
+                paddingBottom,
+            )
+        }
+    }
+
+    fun hideAddButton() {
+        val binding = binding ?: return
+        binding.autocompleteAddButtonGroup.visibility = View.GONE
+        with(binding.searchTextView) {
+            setPadding(
+                paddingLeft,
+                paddingTop,
+                TEXT_EDIT_PADDING_LEFT_MPS_DISABLED.toPx(),
+                paddingBottom,
+            )
+        }
+    }
+
+    fun enableAddButton() {
+        if(isMpsEnabled) binding?.autocompleteAddButton?.isEnabled = true
+    }
+
+    fun disableAddButton() {
+        if(isMpsEnabled) binding?.autocompleteAddButton?.isEnabled = false
+    }
+
+    fun setActiveKeyword(searchBarKeyword: SearchBarKeyword) {
+        mOldQueryText = searchBarKeyword.keyword
+        binding?.searchTextView?.apply {
+            setText(searchBarKeyword.keyword)
+            setSelection(searchBarKeyword.keyword.length)
+        }
     }
 
     fun setMPSAnimationEnabled(isMPSAnimationEnabled: Boolean) {
-        this.isMPSAnimationEnabled = isMPSAnimationEnabled
+        this.isMpsAnimationEnabled = isMPSAnimationEnabled
+    }
+
+    fun startMpsAnimation() {
+        val binding = binding ?: return
+        if(isMpsEnabled) {
+            binding.autocompleteAddButton.startAnimationDrawable()
+        }
+    }
+
+    fun stopMpsAnimation() {
+        val binding = binding ?: return
+        binding.autocompleteAddButton.stopAnimationDrawable()
+    }
+
+    fun setViewListener(listener: SearchBarViewListener?) {
+        this.viewListener = listener
     }
 
     fun setActivity(activity: AppCompatActivity) {
         this.activity = activity
-    }
-
-    private fun modifyQueryInSearchParameter(query: CharSequence) {
-        searchParameter.setSearchQuery(query.toString().trim())
     }
 
     private fun hideKeyboard(view: View) {
@@ -391,10 +413,6 @@ class SearchBarView constructor(
         val param = this.searchParameter
         this.searchParameter = searchParameter
 
-        val hint = searchParameter.get(SearchApiConst.HINT)
-        val placeholder = searchParameter.get(SearchApiConst.PLACEHOLDER)
-
-        setHintIfExists(hint, placeholder)
         lastQuery = searchParameter.getSearchQuery()
         showSearch()
         return param
@@ -426,7 +444,7 @@ class SearchBarView constructor(
 
     private fun textViewRequestFocus() {
         try {
-            if (lastQuery == null) return
+            val lastQuery = lastQuery ?: return
             binding?.searchTextView?.setText(lastQuery)
             onTextChanged(lastQuery)
 
@@ -440,13 +458,15 @@ class SearchBarView constructor(
         }
     }
 
-    @Suppress("MagicNumber")
     private fun searchTextViewShowKeyboard() {
         val searchTextView = binding?.searchTextView ?: return
-        searchTextView.postDelayed({
-            showKeyboard(searchTextView)
-            searchTextView.text?.length?.let { searchTextView.setSelection(it) }
-        }, 200)
+        searchTextView.postDelayed(
+            {
+                showKeyboard(searchTextView)
+                searchTextView.text?.length?.let { searchTextView.setSelection(it) }
+            },
+            SEARCH_BAR_DELAY_MS
+        )
     }
 
     fun setOnQueryTextListener(listener: OnQueryTextListener) {
@@ -464,6 +484,16 @@ class SearchBarView constructor(
         super.clearFocus()
         binding?.searchTextView?.clearFocus()
         mClearingFocus = false
+    }
+
+    fun preventKeyboardDismiss() {
+        val binding = binding ?: return
+        binding.searchTextView.setPreventDismissKeyboard(true)
+    }
+
+    fun allowKeyboardDismiss() {
+        val binding = binding ?: return
+        binding.searchTextView.setPreventDismissKeyboard(false)
     }
 
     fun setupMicroInteraction(autoCompleteMicroInteraction: AutoCompleteMicroInteraction?) {
@@ -544,8 +574,14 @@ class SearchBarView constructor(
     }
 
     interface OnQueryTextListener {
-        fun onQueryTextSubmit(searchParameter: SearchParameter): Boolean
-        fun onQueryTextChange(searchParameter: SearchParameter)
+        fun onQueryTextSubmit(): Boolean
+        fun onQueryTextChanged(query: String)
         fun setIsTyping(isTyping: Boolean)
+    }
+
+    interface SearchBarViewListener {
+        fun onUpButtonClicked(view: View)
+
+        fun onAddButtonClicked(editable: Editable?)
     }
 }

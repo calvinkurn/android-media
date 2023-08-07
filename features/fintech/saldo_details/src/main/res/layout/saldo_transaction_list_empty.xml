@@ -23,7 +23,7 @@
         android:layout_margin="@dimen/sd_dp_3"
         android:gravity="center"
         android:text="@string/saldo_empty_list_heading"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyType="heading_3" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -34,7 +34,7 @@
         android:gravity="center"
         android:maxLines="4"
         android:text="@string/saldo_empty_list_desc"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:typographyType="body_2" />
 
 

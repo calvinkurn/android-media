@@ -164,6 +164,10 @@ class TokoChatReplyMessageView : ConstraintLayout, LifecycleObserver {
         attachmentButton?.setOnClickListener {
             replyAreaListener?.onClickAttachmentButton()
         }
+        composeArea?.clearFocus()
+        composeArea?.setOnFocusChangeListener { _, _ ->
+            replyAreaListener?.trackClickComposeArea()
+        }
     }
 
     private fun getFormattedOffset(offset: Int): String {

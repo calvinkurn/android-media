@@ -6,12 +6,12 @@ import com.tokopedia.play.broadcaster.domain.model.campaign.GetCampaignListRespo
 import com.tokopedia.play.broadcaster.domain.model.campaign.GetCampaignProductResponse
 import com.tokopedia.play.broadcaster.domain.model.campaign.GetProductTagSummarySectionResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.SectionedProductTagSocketResponse
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.type.DiscountedPrice
 import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatusUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinProductUiModel
@@ -81,7 +81,13 @@ class PlayBroProductUiMapper @Inject constructor() {
                     price = OriginalPrice(
                         priceFormat.format(BigDecimal(data.price.min.orZero())),
                         data.price.min.orZero()
-                    ), //No discounted price because it is not supported in the current gql
+                    ),
+                    hasCommission = false,
+                    commissionFmt = "",
+                    commission = 0L,
+                    extraCommission = false,
+                    pinStatus = PinProductUiModel.Empty,
+                    number = "",
                 )
             },
             hasNextPage = response.wrapper.pagerCursor.hasNext,
@@ -109,6 +115,12 @@ class PlayBroProductUiMapper @Inject constructor() {
                         price = data.campaign.originalPrice,
                         priceNumber = data.campaign.originalPriceFmt.toDoubleOrNull() ?: 0.0,
                     ),
+                    hasCommission = false,
+                    commissionFmt = "",
+                    commission = 0L,
+                    extraCommission = false,
+                    pinStatus = PinProductUiModel.Empty,
+                    number = "",
                 )
             },
             hasNextPage = response.getCampaignProduct.products.isNotEmpty(),
@@ -141,6 +153,10 @@ class PlayBroProductUiMapper @Inject constructor() {
                         },
                         pinStatus = getPinStatus(isPinned = product.isPinned, canPin = product.isPinnable),
                         number = product.productNumber.toString(),
+                        hasCommission = false,
+                        commissionFmt = "",
+                        commission = 0L,
+                        extraCommission = false,
                     )
                 }
             )
@@ -158,6 +174,10 @@ class PlayBroProductUiMapper @Inject constructor() {
                     ProductUiModel(
                         id = product.productID,
                         name = product.productName,
+                        hasCommission = product.hasCommission,
+                        commissionFmt = product.commissionFmt,
+                        commission = product.commission,
+                        extraCommission = product.extraCommission,
                         imageUrl = product.imageURL,
                         stock = product.quantity.toLong(),
                         price = if(product.discount == "0") {

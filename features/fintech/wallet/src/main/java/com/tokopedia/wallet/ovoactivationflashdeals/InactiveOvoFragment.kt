@@ -16,9 +16,10 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wallet.R
+import com.tokopedia.wallet.databinding.FragmentInactiveOvoBinding
 import com.tokopedia.wallet.di.WalletComponentInstance
-import kotlinx.android.synthetic.main.fragment_inactive_ovo.*
 import javax.inject.Inject
 
 class InactiveOvoFragment : BaseDaggerFragment() {
@@ -29,6 +30,8 @@ class InactiveOvoFragment : BaseDaggerFragment() {
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    private var binding by autoClearedNullable<FragmentInactiveOvoBinding>()
+
     override fun getScreenName(): String {
         return ""
     }
@@ -38,8 +41,13 @@ class InactiveOvoFragment : BaseDaggerFragment() {
         walletComponent.inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_inactive_ovo, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentInactiveOvoBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -52,13 +60,13 @@ class InactiveOvoFragment : BaseDaggerFragment() {
             val productId = it.getString(PRODUCT_ID, "")
 
             activity?.run {
-                btn_topup_activation.setOnClickListener {
+                binding?.btnTopupActivation?.setOnClickListener {
                     tracking.eventClickActivationOvoNow(productId, userSession.userId)
                     RouteManager.route(this, registerApplink)
                     this.finish()
                 }
 
-                btn_learn_more.setOnClickListener {
+                binding?.btnLearnMore?.setOnClickListener {
                     tracking.eventClickOvoLearnMore(productId, userSession.userId)
                     RouteManager.route(this, helpApplink)
                 }
@@ -81,14 +89,14 @@ class InactiveOvoFragment : BaseDaggerFragment() {
                 override fun updateDrawState(ds: TextPaint) {
                     super.updateDrawState(ds)
                     ds.isUnderlineText = false
-                    ds.color = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                    ds.color = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                 }
             }
             ss.setSpan(ForegroundColorSpan(ContextCompat.getColor(it,
-                com.tokopedia.unifyprinciples.R.color.Unify_G500)), 6, 26, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                com.tokopedia.unifyprinciples.R.color.Unify_GN500)), 6, 26, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             ss.setSpan(clickableSpan, 6, 26, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            tnc_ovo.movementMethod = LinkMovementMethod.getInstance()
-            tnc_ovo.text = ss
+            binding?.tncOvo?.movementMethod = LinkMovementMethod.getInstance()
+            binding?.tncOvo?.text = ss
         }
     }
 

@@ -41,6 +41,7 @@ class ProductSummaryRobot(
             when (it) {
                 LoadingDialogFragment::class.java.name -> LoadingDialogFragment()
                 else -> ProductSummaryBottomSheet(
+                    coachMarkSharedPref = mockk(relaxed = true),
                     analytic = PlayBroadcastAnalytic(
                         analyticUserSession,
                         setupProductAnalytic = PlayBroSetupProductAnalyticImpl(
@@ -56,6 +57,7 @@ class ProductSummaryRobot(
                         accountAnalytic = mockk(relaxed = true),
                         shortsEntryPointAnalytic = mockk(relaxed = true),
                         playPerformanceDashboardEntryPointAnalytic = mockk(relaxed = true),
+                        beautificationAnalytic = mockk(relaxed = true),
                     )
                 )
             }

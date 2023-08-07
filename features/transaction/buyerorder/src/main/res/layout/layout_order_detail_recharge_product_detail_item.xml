@@ -19,7 +19,7 @@
             android:id="@+id/tg_recharge_order_detail_product_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:typographyType="body_3"
             tools:text="Jenis Layanan" />
 
@@ -42,7 +42,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="Telkomsel - Simpati 100.000" />

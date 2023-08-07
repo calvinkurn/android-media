@@ -88,8 +88,6 @@ class HomeFragmentDynamicChannelErrorUiTest {
         /**
          * Assert home content to match given mock value with dynamic channel content error
          */
-        Thread.sleep(5000)
-
         onView(withId(R.id.home_fragment_recycler_view)).check(matches(isDisplayed()))
         onView(withId(R.id.home_fragment_recycler_view)).check(
             CommonAssertion.RecyclerViewItemCountAssertion(

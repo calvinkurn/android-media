@@ -11,7 +11,7 @@ import com.tokopedia.accordion.AccordionUnify
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.adapter.CatalogLibraryAdapter
 import com.tokopedia.catalog_library.adapter.CatalogLibraryDiffUtil
-import com.tokopedia.common_category.decoration.GridSpacingItemDecoration
+import com.tokopedia.catalog_library.adapter.CatalogLibraryGridSpacingItemDecoration
 import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFactoryImpl
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDM
@@ -80,7 +80,7 @@ class CatalogLihatVH(
             layoutManager = if (isTypeList) {
                 LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             } else {
-                addItemDecoration(GridSpacingItemDecoration(COLUMN_COUNT, 0, false))
+                addItemDecoration(CatalogLibraryGridSpacingItemDecoration(COLUMN_COUNT, 0, false))
                 GridLayoutManager(view.context, COLUMN_COUNT)
             }
         }

@@ -8,19 +8,23 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
+import android.widget.LinearLayout
 import androidx.annotation.Nullable
 import androidx.core.view.ViewCompat
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tkpd.atcvariant.util.roundToIntOrZero
+import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
+import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
@@ -42,6 +46,7 @@ import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.action.SetChannelActiveAction
+import com.tokopedia.play.view.uimodel.event.ShowVariantSheet
 import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.isYouTube
@@ -52,10 +57,15 @@ import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.awaitResume
 import com.tokopedia.play_common.util.extension.dismissToaster
 import com.tokopedia.content.common.view.addKeyboardInsetsListener
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.play.view.uimodel.action.HideBottomSheet
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
+import com.tokopedia.product.detail.common.VariantPageSource
+import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
+import com.tokopedia.product.detail.common.showImmediately
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -64,6 +74,7 @@ import javax.inject.Inject
 /**
  * Created by jegul on 29/11/19
  */
+@Suppress("LateinitUsage")
 class PlayFragment @Inject constructor(
     viewModelFactory: PlayViewModel.Factory,
     private val pageMonitoring: PlayPltPerformanceCallback,
@@ -94,6 +105,9 @@ class PlayFragment @Inject constructor(
     private val channelId: String
         get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
 
+    private val sheetMaxHeight: Int
+        get() = (view?.height?.times(SHEET_MAX_PERCENTAGE))?.roundToIntOrZero().orZero()
+
     val viewModelProviderFactory = object : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return viewModelFactory.create(channelId) as T
@@ -114,6 +128,58 @@ class PlayFragment @Inject constructor(
     private val boundsMap = BoundsKey.values.associate { Pair(it, 0) }.toMutableMap()
 
     private var isFirstTopBoundsCalculated = false
+
+    private val offset24 by lazyThreadSafetyNone { context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5) ?: 0 }
+
+    /**
+     * Global Variant Bottom Sheet
+     */
+
+    private lateinit var variantSheet : AtcVariantBottomSheet
+
+    private val atcVariantViewModel by lazyThreadSafetyNone {
+        ViewModelProvider(requireActivity())[AtcVariantSharedViewModel::class.java]
+    }
+
+    private val variantSheetObserver by lazyThreadSafetyNone {
+        object : LifecycleObserver {
+            @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+            fun onResume() {
+                if (::variantSheet.isInitialized.not()) return
+
+                //Need to override
+                variantSheet.setShowListener {
+                    variantSheet.bottomSheet.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                        override fun onSlide(p0: View, p1: Float) {}
+
+                        override fun onStateChanged(p0: View, p1: Int) {
+                            when (p1) {
+                                BottomSheetBehavior.STATE_HIDDEN -> variantSheet.dismiss()
+                                BottomSheetBehavior.STATE_DRAGGING -> variantSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+                            }
+                        }
+                    })
+                }
+
+                variantSheet.bottomSheetClose.setOnClickListener {
+                    playViewModel.submitAction(HideBottomSheet)
+                    variantSheet.dismiss()
+                }
+
+                variantSheet.dialog?.window?.setDimAmount(0f)
+                val bottomSheetWrapper = variantSheet.view?.findViewById<LinearLayout>(com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper)
+                val rootView = variantSheet.view?.findViewById<View>(com.tkpd.atcvariant.R.id.cl_atc_variant)
+
+                bottomSheetWrapper?.layoutParams = bottomSheetWrapper?.layoutParams?.apply {
+                    height = sheetMaxHeight - offset24 //adjust bottom sheet wrapper height
+                }
+
+                rootView?.layoutParams = rootView?.layoutParams?.apply {
+                    height = ViewGroup.LayoutParams.MATCH_PARENT // fit to parent
+                }
+            }
+        }
+    }
 
     override fun getScreenName(): String = "Play"
 
@@ -170,6 +236,7 @@ class PlayFragment @Inject constructor(
         videoScalingManager = null
 
         destroyInsets(requireView())
+        if (::variantSheet.isInitialized) variantSheet.lifecycle.removeObserver(variantSheetObserver)
         super.onDestroyView()
     }
 
@@ -240,13 +307,51 @@ class PlayFragment @Inject constructor(
     }
 
     fun getCloseIconView(): View? {
-        return if (::ivClose.isInitialized) ivClose
-        else null
+        return if (::ivClose.isInitialized) {
+            ivClose
+        } else {
+            null
+        }
     }
 
-    fun openVariantBottomSheet(action: ProductAction, product: PlayProductUiModel.Product) {
-        val selectedProduct = product.buttons.firstOrNull { it.type.toAction == action }.orDefault()
-        fragmentBottomSheetView.openVariantBottomSheet(selectedProduct)
+    private fun openVariantBottomSheet(product: PlayProductUiModel.Product, forceTop: Boolean) {
+        atcVariantViewModel.setAtcBottomSheetParams(
+            ProductVariantBottomSheetParams(
+                isTokoNow = product.isTokoNow,
+                pageSource = VariantPageSource.PLAY_PAGESOURCE.source,
+                productId = product.id,
+                shopId = product.shopId,
+                dismissAfterTransaction = false,
+                showQtyEditor = product.isTokoNow,
+                trackerCdListName = channelId,
+            )
+        )
+
+        showImmediately(childFragmentManager, VARIANT_BOTTOM_SHEET_TAG) {
+            variantSheet = AtcVariantBottomSheet()
+            variantSheet.lifecycle.addObserver(variantSheetObserver)
+            if (forceTop) {
+                variantSheet.setOnDismissListener {
+                    playViewModel.submitAction(HideBottomSheet)
+                    onBottomInsetsViewHidden()
+                }
+            }
+            variantSheet
+        }
+
+        if (!forceTop) return
+
+        val orientation = playViewModel.videoOrientation
+        val height = if (orientation is VideoOrientation.Horizontal) {
+            val dstStart = ivClose.right + offset24
+            val dstEnd = requireView().right - dstStart
+            val dstWidth = dstEnd - dstStart
+            (1 / (orientation.widthRatio / orientation.heightRatio.toFloat()) * dstWidth)
+        } else {
+            requireView().height - sheetMaxHeight - offset24 - ivClose.top
+        }.toInt()
+
+        onBottomInsetsViewShown(height)
     }
 
     fun onFirstTopBoundsCalculated() {
@@ -418,6 +523,7 @@ class PlayFragment @Inject constructor(
         observePiPEvent()
 
         observeUiState()
+        observeUiEvent()
     }
 
     //region observe
@@ -494,6 +600,17 @@ class PlayFragment @Inject constructor(
                 val state = cachedState.value
 
                 if (cachedState.isChanged { it.status.channelStatus.statusType }) handleStatus(state.status)
+            }
+        }
+    }
+
+    private fun observeUiEvent() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            playViewModel.uiEvent.collect {
+                when (val event = it) {
+                    is ShowVariantSheet -> openVariantBottomSheet(event.product, event.forcePushTop)
+                    else -> {}
+                }
             }
         }
     }
@@ -649,8 +766,11 @@ class PlayFragment @Inject constructor(
     companion object {
         private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
         private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
+        private const val VARIANT_BOTTOM_SHEET_TAG = "atc variant bs"
 
         const val KEYBOARD_REGISTER_DELAY = 200L
         private const val FIRST_FRAGMENT_ACTIVE_DELAY = 500L
+
+        private const val SHEET_MAX_PERCENTAGE = 0.6
     }
 }

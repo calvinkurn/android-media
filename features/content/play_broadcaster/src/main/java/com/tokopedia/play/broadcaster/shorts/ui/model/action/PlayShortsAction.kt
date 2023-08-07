@@ -47,6 +47,9 @@ sealed interface PlayShortsAction {
 
     object ClickUploadVideo : PlayShortsAction
 
+    /** Shorts x Affiliate */
+    object SubmitOnboardAffiliateTnc : PlayShortsAction
+
     /** Others */
     object SetShowSetupCoverCoachMark : PlayShortsAction
     data class SetCoverUploadedSource(

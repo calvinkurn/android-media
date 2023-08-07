@@ -22,11 +22,12 @@ const val TAB_DEFAULT_BACKGROUND = "plain"
 class TabsViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
     private val setColorTabs: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     private val setUnifyTabs: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
+
+    @JvmField
     @Inject
-    lateinit var dynamicTabsUseCase: DynamicTabsUseCase
+    var dynamicTabsUseCase: DynamicTabsUseCase? = null
 
-
-   override fun onAttachToViewHolder() {
+    override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
         fetchDynamicTabData()
         updateTabItems()
@@ -46,19 +47,18 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
     fun fetchDynamicTabData() {
         components.properties?.let {
             val items = components.getComponentsItem()
-            if ((items == null || items.isEmpty()) && it.dynamic) {
+            if (items.isNullOrEmpty() && it.dynamic) {
                 launchCatchError(block = {
-                    dynamicTabsUseCase.getTabData(components.id, components.pageEndPoint).run {
+                    dynamicTabsUseCase?.getTabData(components.id, components.pageEndPoint).run {
                         updateTabItems()
                         this@TabsViewModel.syncData.value = this
                     }
                 }, onError = {
-                    it.printStackTrace()
-                })
+                        it.printStackTrace()
+                    })
             }
         }
     }
-
 
     fun getColorTabComponentLiveData(): LiveData<ArrayList<ComponentsItem>> {
         return setColorTabs
@@ -70,7 +70,6 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
-
 
     fun setSelectedState(position: Int, selection: Boolean): Boolean {
         if (components.getComponentsItem()?.isNotEmpty() == true) {
@@ -89,12 +88,12 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
 
     override fun initDaggerInject() {
         DaggerDiscoveryComponent.builder()
-                .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+            .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
+            .inject(this)
     }
 
-    fun getTabItemData(position : Int): DataItem? {
+    fun getTabItemData(position: Int): DataItem? {
         components.data?.let {
             if (it.isNotEmpty() && position >= 0 && position < it.size) {
                 return it[position]
@@ -112,12 +111,12 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
     }
 
     fun reInitTabTargetComponents() {
-        dynamicTabsUseCase.updateTargetProductComponent(components.id, components.pageEndPoint)
+        dynamicTabsUseCase?.updateTargetProductComponent(components.id, components.pageEndPoint)
     }
 
     fun getArrowVisibilityStatus() = components.properties?.categoryDetail ?: false
 
-    fun isFromCategory():Boolean {
+    fun isFromCategory(): Boolean {
         return components.isFromCategory
     }
 }

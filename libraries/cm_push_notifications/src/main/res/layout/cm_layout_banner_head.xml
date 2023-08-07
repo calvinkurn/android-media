@@ -48,7 +48,7 @@
                 android:id="@+id/push_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Unify_N700_44"
+                android:textColor="@color/Unify_NN950_44"
                 android:singleLine="true"
                 android:ellipsize="end"
                 android:textSize="12sp"
@@ -65,7 +65,7 @@
             android:ellipsize="end"
             android:singleLine="true"
             tool:text="Title"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             android:textSize="13sp" />
 
         <TextView
@@ -76,7 +76,7 @@
             android:layout_marginTop="2dp"
             android:ellipsize="end"
             android:singleLine="true"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             android:textSize="13sp" />
 
     </RelativeLayout>

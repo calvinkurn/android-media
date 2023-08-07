@@ -23,6 +23,7 @@ import com.tokopedia.network.authentication.AuthConstant;
 import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.network.authentication.AuthKey;
 import com.tokopedia.network.data.model.FingerprintModel;
+import com.tokopedia.network.utils.ThemeUtils;
 import com.tokopedia.network.utils.URLGenerator;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -130,7 +131,8 @@ public class TkpdWebView extends WebView {
                     AuthKey.KEY_WSV4,
                     AuthConstant.DATE_FORMAT,
                     userSession.getUserId(),
-                    userSession);
+                    userSession,
+                    ThemeUtils.getHeader(getContext()));
             String deviceId = userSession.getDeviceId();
             header.put(HEADER_TKPD_SESSION_ID, deviceId);
             header.put(HEADER_TKPD_SESSION_ID2, deviceId);

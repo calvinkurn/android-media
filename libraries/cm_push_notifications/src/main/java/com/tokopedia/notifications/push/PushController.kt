@@ -15,7 +15,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import com.tokopedia.notifications.common.*
+import com.tokopedia.notifications.common.CMConstant
+import com.tokopedia.notifications.common.CMRemoteConfigUtils
+import com.tokopedia.notifications.common.IrisAnalyticsEvents
+import com.tokopedia.notifications.common.launchCatchError
 import com.tokopedia.notifications.database.pushRuleEngine.PushRepository
 import com.tokopedia.notifications.di.DaggerCMNotificationComponent
 import com.tokopedia.notifications.di.module.NotificationModule
@@ -37,6 +40,7 @@ import org.json.JSONObject
 import java.util.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
+import kotlin.jvm.internal.Intrinsics.Kotlin
 
 class PushController(val context: Context) : CoroutineScope {
 
@@ -86,9 +90,23 @@ class PushController(val context: Context) : CoroutineScope {
     }
 
     private fun notificationDeliveryValidation(model: BaseNotificationModel) {
-        if (userSession.isLoggedIn) {
-            if (userSession.userId == model.userId) {
+        model.pushPayloadExtra?.userType?.let {
+            if (it == DEVICE) {
                 handleNotificationBundle(model)
+            } else {
+                validateUserId(model)
+            }
+        } ?: kotlin.run {
+            validateUserId(model)
+        }
+    }
+
+    private fun validateUserId(model: BaseNotificationModel) {
+        if (userSession.isLoggedIn) {
+            model.userId?.let {
+                if (userSession.userId == it) {
+                    handleNotificationBundle(model)
+                }
             }
         } else {
             handleNotificationBundle(model)
@@ -212,7 +230,7 @@ class PushController(val context: Context) : CoroutineScope {
                 PushRepository.getInstance(context).getNotification()
             }.getOrDefault(arrayListOf())
             val baseNotification = CMNotificationFactory
-                    .getNotification(context.applicationContext, baseNotificationModel, pushNotificationList)
+                .getNotification(context.applicationContext, baseNotificationModel, pushNotificationList)
             if (checkOtpPushNotif(baseNotificationModel.appLink)) {
                 goToOtpPushNotifReceiver(baseNotificationModel.appLink)
             } else if (null != baseNotification) {
@@ -345,6 +363,7 @@ class PushController(val context: Context) : CoroutineScope {
     }
 
     companion object {
+        private const val DEVICE = "device"
         const val ANDROID_12_SDK_VERSION = 31
         const val AUTO_REDIRECTION_REMOTE_CONFIG_KEY = "android_user_otp_push_notif_auto_redirection"
         private const val formatTimeStamp = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"

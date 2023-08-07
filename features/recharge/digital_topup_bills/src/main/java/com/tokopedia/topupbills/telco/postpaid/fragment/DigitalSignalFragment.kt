@@ -403,14 +403,6 @@ class DigitalSignalFragment : DigitalBaseTelcoFragment() {
         // do nothing
     }
 
-    override fun onCollapseAppBar() {
-        // do nothing
-    }
-
-    override fun onExpandAppBar() {
-        // do nothing
-    }
-
     override fun setInputNumberFromContact(contactNumber: String) {
         // do nothing
     }

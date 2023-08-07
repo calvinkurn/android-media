@@ -15,14 +15,6 @@
     <dimen name="home_padding_vertical_use_compat_padding_product_card">-5.0dp</dimen>
     <dimen name="home_category_widget_v2_title_container_height">46dp</dimen>
 
-    <dimen name="component_featured_brand_image_size">76dp</dimen>
-    <dimen name="component_featured_brand_logo_circle_size">56dp</dimen>
-    <dimen name="component_featured_brand_logo_image_size_mobile">48dp</dimen>
-    <dimen name="component_featured_brand_logo_image_size_tablet">42dp</dimen>
-    <dimen name="component_featured_brand_content_max_widht">75dp</dimen>
-
-    <dimen name="component_featured_brand_logo_shimmer_size">40dp</dimen>
-
     <dimen name="campaign_widget_card_height">243.5dp</dimen>
     <dimen name="campaign_widget_card_width">141dp</dimen>
 
@@ -75,4 +67,9 @@
 
     <dimen name="home_product_highlight_content_top_padding">9dp</dimen>
     <dimen name="home_product_highlight_content_horizontal_padding">12dp</dimen>
+
+    <dimen name="home_flash_sale_left_margin">11dp</dimen>
+    <dimen name="home_flash_sale_right_margin">12dp</dimen>
+    <dimen name="home_flash_sale_top_margin">-4dp</dimen>
+    <dimen name="home_flash_sale_bottom_margin">12dp</dimen>
 </resources>

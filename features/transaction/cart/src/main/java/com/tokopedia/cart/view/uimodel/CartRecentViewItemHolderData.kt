@@ -15,7 +15,7 @@ data class CartRecentViewItemHolderData(
     var isWishlist: Boolean = false,
     var rating: Int = 0,
     var reviewCount: Int = 0,
-    var badgesUrl: List<String?> = listOf(),
+    var badgesUrl: List<String> = listOf(),
     var shopLocation: String = "",
     var shopId: String = "",
     var shopName: String = "",

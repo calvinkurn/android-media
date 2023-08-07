@@ -61,11 +61,10 @@ class HomeFragmentRefreshTest {
         private const val TOTAL_PARTIAL_HEADER_REFRESH_COUNT = 2
         private const val TOTAL_PARTIAL_HEADER_RESUME_COUNT = 1
 
-        private const val BELOW_THREE_MINUTES_ELAPSED_TIME = 5000L
+        private const val BELOW_THREE_MINUTES_ELAPSED_TIME = 1000L
 
-        // Should be 3 mins rule, but mocked to 10 secs
-        private const val ABOVE_THREE_MINUTES_ELAPSED_TIME = 11000L
-        private const val DELAY_PROCESS = 2000L
+        // Should be 3 mins rule, but mocked to 3 secs
+        private const val ABOVE_THREE_MINUTES_ELAPSED_TIME = 5000L
 
         private const val ADDRESS_1_ID = "0"
         private const val ADDRESS_1_CITY_ID = "228"
@@ -136,7 +135,6 @@ class HomeFragmentRefreshTest {
          */
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
         recyclerView.adapter?.registerAdapterDataObserver(changeCountDetector())
-        Thread.sleep(DELAY_PROCESS)
 
         goToOtherPage()
         Thread.sleep(BELOW_THREE_MINUTES_ELAPSED_TIME)
@@ -148,9 +146,8 @@ class HomeFragmentRefreshTest {
          * Partial refresh will only trigger 1 data changes
          * - Dynamic channel
          */
-        Thread.sleep(DELAY_PROCESS)
+        waitForAssertion()
         Assert.assertTrue(dataChangedCount >= TOTAL_PARTIAL_HEADER_RESUME_COUNT)
-        Thread.sleep(DELAY_PROCESS)
     }
 
     @Test
@@ -174,9 +171,8 @@ class HomeFragmentRefreshTest {
          * - Get Home Balance Widget
          * - Other data changes (from dynamic channel i.e Best seller widget, Play carousel widget, etc)
          */
-        Thread.sleep(DELAY_PROCESS)
+        waitForAssertion()
         Assert.assertTrue(dataChangedCount > TOTAL_PARTIAL_HEADER_REFRESH_COUNT)
-        Thread.sleep(DELAY_PROCESS)
     }
 
     @Test
@@ -195,7 +191,6 @@ class HomeFragmentRefreshTest {
          */
         setToLocation2()
 
-        Thread.sleep(DELAY_PROCESS)
         Thread.sleep(BELOW_THREE_MINUTES_ELAPSED_TIME)
 
         mDevice?.pressBack()
@@ -209,10 +204,9 @@ class HomeFragmentRefreshTest {
          *
          * Address data changed in other page will change home page choose address in onResume
          */
-        Thread.sleep(DELAY_PROCESS)
+        waitForAssertion()
         Assert.assertTrue(dataChangedCount > TOTAL_PARTIAL_HEADER_REFRESH_COUNT)
         onView(withText(containsString(ADDRESS_2_LABEL))).check(matches(isDisplayed()))
-        Thread.sleep(DELAY_PROCESS)
     }
 
     private fun goToOtherPage() {
@@ -221,7 +215,6 @@ class HomeFragmentRefreshTest {
                 addFlags(FLAG_ACTIVITY_NEW_TASK)
             }
         )
-        Thread.sleep(DELAY_PROCESS)
     }
 
     private fun setToLocation1() {
@@ -268,5 +261,9 @@ class HomeFragmentRefreshTest {
             }
         }
         return adapterDataObserver
+    }
+
+    private fun waitForAssertion() {
+        Thread.sleep(2000)
     }
 }

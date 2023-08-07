@@ -180,6 +180,12 @@ class RechargeOrderDetailGQL {
                   urlDetail
                   urlText
                 }
+                digitalPaymentInfoMessage {
+                  message
+                  urlText
+                  appLink
+                  webLink
+                }
               }
             }
         """.trimIndent()

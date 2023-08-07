@@ -23,6 +23,7 @@
     <string name="path_image_picker">/image-picker</string>
     <string name="path_video_picker">/video-picker</string>
     <string name="path_image_editor">/image-editor</string>
+    <string name="path_youtube_player">/youtube-player/.*\\/</string>
     <string name="path_webview" translatable="false">/webview</string>
     <string name="path_webview_download" translatable="false">/webviewdownload</string>
     <string name="path_webview_back_home" translatable="false">/webviewbackhome</string>
@@ -39,9 +40,6 @@
     <string name="path_advanced_setting" translatable="false">/advanced-setting</string>
     <string name="path_home_account_old" translatable="false">/account-home-old</string>
     <string name="path_youtube_video" translatable="false">/youtube-video</string>
-
-    <string name="path_ovo_pay_with_qr">/ovo-pay-with-qr</string>
-    <string name="path_oqr_pin_url_response">/ovoqrthanks/.*\\/</string>
 
     <string name="path_chat">/topchat</string>
     <string name="path_chat_room" translatable="false">/topchat/.*\</string>

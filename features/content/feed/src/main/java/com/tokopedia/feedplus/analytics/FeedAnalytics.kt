@@ -47,7 +47,6 @@ class FeedAnalytics @Inject constructor(
         const val CLICK_ACTIVE_REMIND_ME_BUTTON = "click - pengingat aktif button"
         const val CLICK_LIKE_BUTTON = "click - like button"
         const val CLICK_DOUBLE_LIKE_BUTTON = "click - double click like"
-        const val CLICK_OKE_SHARE = "click - oke share toaster"
         const val CLICK_THREE_DOTS_BUTTON = "click - three dots button"
         const val CLICK_WATCH_MODE = "click - mode nonton"
         const val CLICK_REPORT_CONTENT = "click - laporkan content"
@@ -66,6 +65,7 @@ class FeedAnalytics @Inject constructor(
         const val CLICK_CREATOR_PROFILE_PICTURE = "click - creator profile picture"
         const val CLICK_CONTENT_CAPTION = "click - content caption"
         const val CLICK_CONTENT_PRODUCT_LABEL = "click - product label bottomsheet"
+        const val CLICK_BUTTON_COMMENT = "click - comment button"
         const val CLICK_LIVE_PREVIEW = "click - live preview"
     }
 
@@ -109,18 +109,18 @@ class FeedAnalytics @Inject constructor(
                 CATEGORY_UNIFIED_FEED,
                 Action.VIEW_POST,
                 "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-                getPostType(
-                    trackerData.typename,
-                    trackerData.type,
-                    trackerData.authorType.value,
-                    trackerData.isFollowing
-                )
+                    getPostType(
+                        trackerData.typename,
+                        trackerData.type,
+                        trackerData.authorType.value,
+                        trackerData.isFollowing
+                    )
                 } - ${
-                getContentType(
-                    trackerData.typename,
-                    trackerData.type,
-                    trackerData.mediaType
-                )
+                    getContentType(
+                        trackerData.typename,
+                        trackerData.type,
+                        trackerData.mediaType
+                    )
                 } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
                 "41567"
             ).also {
@@ -679,6 +679,18 @@ class FeedAnalytics @Inject constructor(
         )
     }
 
+    fun eventClickComment(trackerData: FeedTrackerDataModel) {
+        sendEventTracker(
+            generateGeneralTrackerData(
+                Event.CLICK_CONTENT,
+                CATEGORY_UNIFIED_FEED,
+                Action.CLICK_BUTTON_COMMENT,
+                getEventLabel(trackerData),
+                "41579"
+            )
+        )
+    }
+
     fun eventClickLivePreview(
         trackerData: FeedTrackerDataModel,
         productId: String,
@@ -732,18 +744,18 @@ class FeedAnalytics @Inject constructor(
 
     fun getEventLabel(trackerData: FeedTrackerDataModel) =
         "${trackerData.activityId} - ${trackerData.authorId} - ${getPrefix(trackerData.tabType)} - ${
-        getPostType(
-            trackerData.typename,
-            trackerData.type,
-            trackerData.authorType.value,
-            trackerData.isFollowing
-        )
+            getPostType(
+                trackerData.typename,
+                trackerData.type,
+                trackerData.authorType.value,
+                trackerData.isFollowing
+            )
         } - ${
-        getContentType(
-            trackerData.typename,
-            trackerData.type,
-            trackerData.mediaType
-        )
+            getContentType(
+                trackerData.typename,
+                trackerData.type,
+                trackerData.mediaType
+            )
         } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}"
 
     private fun getProductTrackerBundle(
@@ -900,10 +912,15 @@ class FeedAnalytics @Inject constructor(
 
         const val UNIFIED_FEED_WATCH_VIDEO_POST = "/unified feed - watch video post"
 
+        private const val TAB_TYPE_FOR_YOU = "foryou"
+        private const val TAB_TYPE_FOLLOWING = "following"
+        private const val TAB_TYPE_CDP = "cdp"
+
         fun getPrefix(tabType: String) =
             when (tabType) {
-                FeedBaseFragment.TAB_TYPE_FOR_YOU -> "foryou"
-                FeedBaseFragment.TAB_TYPE_FOLLOWING -> "following"
+                FeedBaseFragment.TAB_TYPE_FOR_YOU -> TAB_TYPE_FOR_YOU
+                FeedBaseFragment.TAB_TYPE_FOLLOWING -> TAB_TYPE_FOLLOWING
+                FeedBaseFragment.CDP -> TAB_TYPE_CDP
                 else -> ""
             }
 

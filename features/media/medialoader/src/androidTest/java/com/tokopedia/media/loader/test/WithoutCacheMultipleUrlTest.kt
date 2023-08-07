@@ -17,7 +17,7 @@ class WithoutCacheMultipleUrlTest : BaseMeasurementTest() {
     fun load_time_measurement_without_cache_multi_url() {
         val urls = AssetReader.get(
             applicationContext,
-            "imageurl.txt"
+            "image-url.txt"
         )
 
         // v1

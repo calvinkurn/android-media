@@ -22,6 +22,7 @@ import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageT
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_SOURCE
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
+import com.tokopedia.product.manage.common.util.ProductManageConfig
 import com.tokopedia.product.manage.databinding.FragmentCampaignStockBinding
 import com.tokopedia.product.manage.feature.campaignstock.di.DaggerCampaignStockComponent
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationSummary
@@ -92,7 +93,7 @@ class CampaignStockFragment : BaseDaggerFragment(), CampaignStockListener {
 
             override fun onTabSelected(tab: TabLayout.Tab) {
                 val isMainStockTab = tab.position == MAIN_TAB_POSITION
-                if (!GlobalConfig.isSellerApp()) {
+                if (!ProductManageConfig.IS_SELLER_APP) {
                     toggleSaveButton()
                 }
                 isVariant?.run {

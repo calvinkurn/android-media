@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
@@ -71,6 +72,11 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
 import com.tokopedia.usercomponents.userconsent.ui.UserConsentWidget
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -93,6 +99,7 @@ class MainAddressFragment :
             "https://images.tokopedia.net/android/others/address_not_found3x.png"
         private const val IS_SUCCESS = "success"
         private const val IS_NOT_SUCCESS = "not success"
+        private const val TOAST_SHOWING_TIME = 3000L
 
         fun newInstance(bundle: Bundle): MainAddressFragment {
             return MainAddressFragment().apply {
@@ -130,6 +137,7 @@ class MainAddressFragment :
     private var localChosenAddr: LocalCacheModel? = null
     private var isStayOnPageState: Boolean? = false
     private var mainAddressListener: MainAddressListener? = null
+    private var leavePageJob: Job? = null
 
     override fun getScreenName(): String = ""
 
@@ -188,7 +196,6 @@ class MainAddressFragment :
     private fun initAdapter() {
         adapter.apply {
             setMainAddressListener(
-                isEligibleShareAddress = viewModel.isEligibleShareAddress,
                 isNeedToShareAddress = viewModel.isNeedToShareAddress,
                 listener = this@MainAddressFragment
             )
@@ -203,7 +210,7 @@ class MainAddressFragment :
     private fun initView() {
         setButtonEnabled(false)
         updateButton(
-            if (viewModel.isEligibleShareAddress && viewModel.isNeedToShareAddress) {
+            if (viewModel.isNeedToShareAddress) {
                 getString(R.string.btn_share_adddress)
             } else {
                 getString(R.string.pilih_alamat)
@@ -790,7 +797,7 @@ class MainAddressFragment :
                     it.setResult(Activity.RESULT_OK, resultIntent)
                     it.finish()
                 }
-            } else if (viewModel.isEligibleShareAddress && viewModel.isNeedToShareAddress) {
+            } else if (viewModel.isNeedToShareAddress) {
                 addressData?.apply {
                     ShareAddressAnalytics.onClickShareAddress()
                     showShareAddressConfirmationBottomSheet(
@@ -1000,6 +1007,23 @@ class MainAddressFragment :
     override fun showToast(isError: Boolean, msg: String) {
         val type = if (isError) Toaster.TYPE_ERROR else Toaster.TYPE_NORMAL
         showToaster(msg, type)
+    }
+
+    override fun leavePage() {
+        leavePageJob?.cancel()
+        leavePageJob = CoroutineScope(Dispatchers.Main).launch {
+            delay(TOAST_SHOWING_TIME)
+            gotoHome()
+        }
+    }
+
+    private fun gotoHome() {
+        activity?.let {
+            val intentHome = RouteManager.getIntent(activity, ApplinkConst.HOME)
+            intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            it.startActivity(intentHome)
+            it.finish()
+        }
     }
 
     private fun showToaster(message: String, toastType: Int = Toaster.TYPE_NORMAL) {

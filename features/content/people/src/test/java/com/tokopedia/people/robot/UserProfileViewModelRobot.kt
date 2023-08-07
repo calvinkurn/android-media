@@ -3,6 +3,7 @@ package com.tokopedia.people.robot
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.people.data.UserFollowRepository
 import com.tokopedia.people.data.UserProfileRepository
+import com.tokopedia.people.utils.UserProfileSharedPref
 import com.tokopedia.people.viewmodels.UserProfileViewModel
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
@@ -10,9 +11,13 @@ import com.tokopedia.people.views.uimodel.state.UserProfileUiState
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.yield
 import java.io.Closeable
 
 /**
@@ -24,6 +29,8 @@ class UserProfileViewModelRobot(
     private val followRepo: UserFollowRepository = mockk(relaxed = true),
     private val userSession: UserSessionInterface = mockk(relaxed = true),
     private val dispatcher: CoroutineTestDispatchers = CoroutineTestDispatchers,
+    private val userProfileSharedPref: UserProfileSharedPref = mockk(relaxed = true),
+    private val dispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers,
 ) : Closeable {
 
     val viewModel = UserProfileViewModel(
@@ -31,6 +38,8 @@ class UserProfileViewModelRobot(
         repo = repo,
         followRepo = followRepo,
         userSession = userSession,
+        userProfileSharedPref = userProfileSharedPref,
+        dispatchers = dispatchers,
     )
 
     fun setup(fn: suspend UserProfileViewModelRobot.() -> Unit): UserProfileViewModelRobot {

@@ -10,16 +10,18 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.content.test.espresso.delay
+import com.tokopedia.content.test.factory.TestFragmentFactory
+import com.tokopedia.content.test.factory.TestViewModelFactory
+import com.tokopedia.content.test.util.isSiblingWith
+import com.tokopedia.play.BuildConfig
 import com.tokopedia.play.R
 import com.tokopedia.play.di.DaggerPlayTestComponent
 import com.tokopedia.play.di.PlayInjector
 import com.tokopedia.play.di.PlayTestModule
 import com.tokopedia.play.di.PlayTestRepositoryModule
 import com.tokopedia.play.domain.repository.PlayViewerRepository
-import com.tokopedia.content.test.espresso.delay
-import com.tokopedia.content.test.factory.TestFragmentFactory
-import com.tokopedia.content.test.factory.TestViewModelFactory
-import com.tokopedia.content.test.util.isSiblingWith
+import com.tokopedia.play.model.UiModelBuilder
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.play.view.fragment.PlayBottomSheetFragment
 import com.tokopedia.play.view.fragment.PlayFragment
@@ -27,7 +29,6 @@ import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.fragment.PlayVideoFragment
 import com.tokopedia.play.view.storage.PagingChannel
 import com.tokopedia.play.view.storage.PlayChannelData
-import com.tokopedia.play.view.storage.PlayChannelStateStorage
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.PlayUpcomingUiModel
 import com.tokopedia.play.view.uimodel.mapper.*
@@ -38,7 +39,6 @@ import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.model.PlayBufferControl
-import com.tokopedia.play.BuildConfig
 import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
@@ -57,7 +57,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.*
-import com.tokopedia.play.model.UiModelBuilder
 
 /**
  * Created by kenny.hadisaputra on 17/03/22
@@ -88,7 +87,7 @@ class PlayViewerIdGenerator {
         interactiveLeaderboardMapper = PlayInteractiveLeaderboardMapper(decodeHtml),
         cartMapper = PlayCartMapper(),
         playUserReportMapper = PlayUserReportReasoningMapper(),
-        interactiveMapper = PlayInteractiveMapper(decodeHtml),
+        interactiveMapper = PlayInteractiveMapper(decodeHtml)
     )
 
     private val mockViewModelFactory = TestViewModelFactory(
@@ -98,7 +97,7 @@ class PlayViewerIdGenerator {
             },
             PlayBottomSheetViewModel::class.java to {
                 PlayBottomSheetViewModel(
-                    userSession,
+                    userSession
                 )
             }
         )
@@ -129,7 +128,7 @@ class PlayViewerIdGenerator {
                 playLog = mockk(relaxed = true),
                 chatManagerFactory = mockk(relaxed = true),
                 chatStreamsFactory = mockk(relaxed = true),
-                liveRoomMetricsCommon = mockk(relaxed = true),
+                liveRoomMetricsCommon = mockk(relaxed = true)
             )
         }
     }
@@ -142,7 +141,7 @@ class PlayViewerIdGenerator {
                     mockk(relaxed = true),
                     mockk(relaxed = true),
                     mockk(relaxed = true),
-                    mockk(relaxed = true),
+                    mockk(relaxed = true)
                 )
             },
             PlayUserInteractionFragment::class.java to {
@@ -156,7 +155,7 @@ class PlayViewerIdGenerator {
                     newAnalytic = mockk(relaxed = true),
                     analyticManager = mockk(relaxed = true),
                     router = mockk(relaxed = true),
-                    commentAnalytics = mockk(relaxed = true),
+                    commentAnalytics = mockk(relaxed = true)
                 )
             },
             PlayBottomSheetFragment::class.java to {
@@ -165,7 +164,7 @@ class PlayViewerIdGenerator {
                     analytic = mockk(relaxed = true),
                     newAnalytic = mockk(relaxed = true),
                     router = mockk(relaxed = true),
-                    resultRegistry = mockk(relaxed = true),
+                    resultRegistry = mockk(relaxed = true)
                 )
             },
             PlayVideoFragment::class.java to {
@@ -175,7 +174,7 @@ class PlayViewerIdGenerator {
                     analytic = mockk(relaxed = true),
                     pipSessionStorage = mockk(relaxed = true),
                     playLog = mockk(relaxed = true),
-                    router = mockk(relaxed = true),
+                    router = mockk(relaxed = true)
                 )
             }
         )
@@ -208,10 +207,13 @@ class PlayViewerIdGenerator {
     ) + printConditions
 
     private val parentViewPrinter = ViewHierarchyPrinter(
-        parentPrintCondition, customIdPrefix = "P", packageName = BuildConfig.APPLICATION_ID
+        parentPrintCondition,
+        customIdPrefix = "P",
+        packageName = BuildConfig.LIBRARY_PACKAGE_NAME
     )
     private val viewPrinter = ViewHierarchyPrinter(
-        printConditions, packageName = BuildConfig.APPLICATION_ID
+        printConditions,
+        packageName = BuildConfig.LIBRARY_PACKAGE_NAME
     )
     private val fileWriter = FileWriter()
 
@@ -226,17 +228,17 @@ class PlayViewerIdGenerator {
                                 id = "1",
                                 shopId = "2",
                                 title = "Barang 1",
-                                stock = StockAvailable(1),
-                            ),
+                                stock = StockAvailable(1)
+                            )
                         ),
                         config = uiModelBuilder.buildSectionConfig(
                             type = ProductSectionType.Other,
-                            title = "Section 1",
+                            title = "Section 1"
                         ),
                         id = "1"
                     )
                 ),
-                canShow = true,
+                canShow = true
             ),
             voucher = uiModelBuilder.buildVoucherModel(
                 voucherList = listOf(
@@ -245,7 +247,7 @@ class PlayViewerIdGenerator {
             ),
             maxFeatured = 1,
             bottomSheetTitle = "Product List",
-            resultState = ResultState.Success,
+            resultState = ResultState.Success
         )
 
         coEvery { repo.getTagItem(any(), any(), any(), any()) } returns tagItem
@@ -256,24 +258,26 @@ class PlayViewerIdGenerator {
                     partnerInfo = PlayPartnerInfo(name = "test"),
                     channelReportInfo = PlayChannelReportUiModel(totalViewFmt = "1200"),
                     pinnedInfo = PlayPinnedInfoUiModel(
-                        PinnedMessageUiModel("1", appLink = "", title = "Test pinned"),
+                        PinnedMessageUiModel("1", appLink = "", title = "Test pinned")
                     ),
                     videoMetaInfo = PlayVideoMetaInfoUiModel(
                         videoPlayer = PlayVideoPlayerUiModel.General.Incomplete(
                             params = PlayGeneralVideoPlayerParams(
                                 videoUrl = "https://vod.tokopedia.com/view/adaptive.m3u8?id=4d30328d17e948b4b1c4c34c5bb9f372",
                                 buffer = PlayBufferControl(),
-                                lastMillis = null,
+                                lastMillis = null
                             )
                         ),
                         videoStream = PlayVideoStreamUiModel(
-                            "", VideoOrientation.Vertical, "Video Keren"
-                        ),
+                            "",
+                            VideoOrientation.Vertical,
+                            "Video Keren"
+                        )
                     ),
-                    tagItems = tagItem,
+                    tagItems = tagItem
                 )
             ),
-            cursor = "",
+            cursor = ""
         )
 
         PlayInjector.set(
@@ -339,22 +343,24 @@ class PlayViewerIdGenerator {
                     likeInfo = PlayLikeInfoUiModel(),
                     channelReportInfo = PlayChannelReportUiModel(totalViewFmt = "1200"),
                     pinnedInfo = PlayPinnedInfoUiModel(
-                        PinnedMessageUiModel("1", appLink = "", title = "Test pinned"),
+                        PinnedMessageUiModel("1", appLink = "", title = "Test pinned")
                     ),
                     quickReplyInfo = PlayQuickReplyInfoUiModel(emptyList()),
                     videoMetaInfo = PlayVideoMetaInfoUiModel(
                         videoPlayer = PlayVideoPlayerUiModel.YouTube("E4qo_PkR7WE"),
                         videoStream = PlayVideoStreamUiModel(
-                            "", VideoOrientation.Horizontal(16, 9), "Video Keren"
-                        ),
+                            "",
+                            VideoOrientation.Horizontal(16, 9),
+                            "Video Keren"
+                        )
                     ),
                     upcomingInfo = PlayUpcomingUiModel(),
                     tagItems = TagItemUiModel.Empty,
                     status = PlayStatusUiModel.Empty,
                     leaderboard = LeaderboardUiModel.Empty
-                ),
+                )
             ),
-            cursor = "",
+            cursor = ""
         )
 
         PlayInjector.set(

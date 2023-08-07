@@ -15,7 +15,6 @@
     <string name="label_show_other_item_new">Tampilkan Semua</string>
     <string name="label_show_other_item_count">+ %d Barang lainnya</string>
     <string name="label_other_item_count_format" formatted="false">+%s Produk Lainnya</string>
-    <string name="label_hardcoded_courier_ticker">Pembelian dengan Instan dan Same Day diatas pk 14:00 berpotensi dikirim hari berikutnya.</string>
     <string name="label_item_count_with_format">Harga (%d Barang)</string>
     <string name="title_dropshipper_army">Dropshipper tidak tersedia</string>
     <string name="desc_dropshipper_army">Pengiriman secara dropshipping tidak bisa dipilih karena kamu menggunakan Bebas Ongkir</string>
@@ -133,6 +132,7 @@
     <string name="checkout_epharmacy_coachmark_description">Yuk, upload resepmu. Kalau belum punya, chat dokter buat dapetin resep digital juga bisa~</string>
     <string name="checkout_error_unblocking_message">Yaah, ada %1d barang tidak bisa diproses. Kamu tetap bisa lanjut bayar yang lain.</string>
     <string name="checkout_ticker_lihat_cta_suffix" formatted="false">&lt;a href=\"scroll\"&gt;Lihat&lt;\/a&gt;</string>
+    <string name="label_protection_product_with_format">Proteksi Produk (%d Barang)</string>
     <string name="checkout_label_upsell_description">%s/%s</string>
 
     <!--PLATFORM FEE-->

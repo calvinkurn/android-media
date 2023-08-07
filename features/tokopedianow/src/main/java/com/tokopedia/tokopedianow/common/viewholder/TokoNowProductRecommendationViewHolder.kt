@@ -24,7 +24,8 @@ class TokoNowProductRecommendationViewHolder(
     override fun bind(element: TokoNowProductRecommendationUiModel) {
         binding?.apply {
             productRecommendation.setRequestParam(
-                getRecommendationRequestParam = element.requestParam
+                getRecommendationRequestParam = element.requestParam,
+                tickerPageSource = element.tickerPageSource
             )
             productRecommendation.setListener(
                 productRecommendationListener = listener

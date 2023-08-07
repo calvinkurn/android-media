@@ -36,8 +36,10 @@ import com.tokopedia.minicart.common.simplified.MiniCartSimplifiedWidgetListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.shop_widget.R
 import com.tokopedia.shop_widget.databinding.FragmentMvcLockedToProductBinding
@@ -581,7 +583,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
         navigationToolbar?.apply {
             viewLifecycleOwner.lifecycle.addObserver(this)
             if (!MvcLockedToProductUtil.isSellerApp()) {
-                val iconBuilder = IconBuilder()
+                val iconBuilder = IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.MVC))
                 iconBuilder.addIcon(IconList.ID_CART) {}
                 iconBuilder.addIcon(IconList.ID_NAV_GLOBAL) {}
                 setIcon(iconBuilder)

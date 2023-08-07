@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.contactus.R
+import com.tokopedia.contactus.inboxtickets.view.utils.LoggingOnNewRelic.sendToNewRelicLog
 import com.tokopedia.dialog.DialogUnify
 
 class ClearCacheActivity : BaseSimpleActivity() {
@@ -16,6 +17,7 @@ class ClearCacheActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        sendToNewRelicLog()
         showDialogClearCache()
     }
 

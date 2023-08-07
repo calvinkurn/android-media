@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:textColor="@color/Unify_Y500"
+            android:textColor="@color/Unify_YN500"
             tools:text="BRIG6P" />
 
         <ImageView
@@ -47,7 +47,7 @@
             android:layout_width="@dimen/icon_sequence_circle_diameter"
             android:layout_height="@dimen/icon_sequence_circle_diameter"
             android:gravity="center"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             tools:text="1" />
     </LinearLayout>
 

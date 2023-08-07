@@ -306,7 +306,7 @@ class HowToPayFragment : BaseDaggerFragment() {
                     ForegroundColorSpan(
                         ContextCompat.getColor(
                             it,
-                            com.tokopedia.unifycomponents.R.color.Unify_G500
+                            com.tokopedia.unifyprinciples.R.color.Unify_GN500
                         )
                     ),
                     startIndex, spannable.length,
@@ -324,7 +324,7 @@ class HowToPayFragment : BaseDaggerFragment() {
         val startIndex = 0
         val endIndex = spannableString.length
         val color =
-            ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_G500)
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         spannableString.setSpan(color, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannableString.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {

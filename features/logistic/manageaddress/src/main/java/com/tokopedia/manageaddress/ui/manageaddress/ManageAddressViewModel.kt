@@ -38,8 +38,6 @@ import com.tokopedia.manageaddress.ui.uimodel.ValidateShareAddressState
 import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RollenceKey.KEY_SHARE_ADDRESS_LOGI
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
@@ -59,8 +57,7 @@ class ManageAddressViewModel @Inject constructor(
     private val eligibleForAddressUseCase: EligibleForAddressUseCase,
     private val validateShareAddressAsReceiverUseCase: ValidateShareAddressAsReceiverUseCase,
     private val validateShareAddressAsSenderUseCase: ValidateShareAddressAsSenderUseCase,
-    private val getTargetedTickerUseCase: GetTargetedTickerUseCase,
-    private val remoteConfig: RemoteConfig
+    private val getTargetedTickerUseCase: GetTargetedTickerUseCase
 ) : ViewModel() {
 
     companion object {
@@ -86,9 +83,6 @@ class ManageAddressViewModel @Inject constructor(
         get() = source == ManageAddressSource.TOKONOW.source
     val isFromMoneyIn: Boolean
         get() = source == ManageAddressSource.MONEY_IN.source
-
-    val isEligibleShareAddress: Boolean
-        get() = remoteConfig.getString(KEY_SHARE_ADDRESS_LOGI, "") == KEY_SHARE_ADDRESS_LOGI
 
     private val _addressList = MutableLiveData<ManageAddressState<AddressListModel>>()
     val addressList: LiveData<ManageAddressState<AddressListModel>>
@@ -133,10 +127,8 @@ class ManageAddressViewModel @Inject constructor(
     private val compositeSubscription = CompositeSubscription()
 
     fun setupDataFromArgument(bundle: Bundle?) {
-        if (isEligibleShareAddress) {
-            receiverUserId = bundle?.getString(ManageAddressConstant.QUERY_PARAM_RUID)
-            senderUserId = bundle?.getString(ManageAddressConstant.QUERY_PARAM_SUID)
-        }
+        receiverUserId = bundle?.getString(ManageAddressConstant.QUERY_PARAM_RUID)
+        senderUserId = bundle?.getString(ManageAddressConstant.QUERY_PARAM_SUID)
         source = bundle?.getString(ApplinkConstInternalLogistic.PARAM_SOURCE) ?: ""
     }
 

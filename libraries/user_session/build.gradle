@@ -16,6 +16,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.user.session'
+    testNamespace 'com.tokopedia.user.session.test'
     defaultConfig {
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
         testInstrumentationRunnerArguments clearPackageData: 'true'

@@ -4,11 +4,11 @@ import com.google.gson.annotations.SerializedName
 
 data class EgoldMessage(
     @SerializedName("title_text")
-    var titleText: String? = null,
+    val titleText: String = "",
     @SerializedName("sub_text")
-    var subText: String? = null,
+    val subText: String = "",
     @SerializedName("ticker_text")
-    var tickerText: String? = null,
+    val tickerText: String = "",
     @SerializedName("tooltip_text")
-    var tooltipText: String? = null
+    val tooltipText: String = ""
 )

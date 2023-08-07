@@ -43,7 +43,6 @@ import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
 import com.tokopedia.play_common.util.PlayLiveRoomMetricsCommon
 import com.tokopedia.play_common.util.PlayVideoPlayerObserver
 import com.tokopedia.play_common.websocket.KEY_GROUP_CHAT_PREFERENCES
-import com.tokopedia.product.detail.common.VariantConstant.QUERY_VARIANT
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -100,16 +99,6 @@ class PlayModule {
         return GraphqlHelper.loadRawString(
             activity.resources,
             com.tokopedia.atc_common.R.raw.gql_update_cart_counter
-        )
-    }
-
-    @Provides
-    @PlayScope
-    @Named(QUERY_VARIANT)
-    internal fun provideQueryVariant(activity: AppCompatActivity): String {
-        return GraphqlHelper.loadRawString(
-            activity.resources,
-            com.tokopedia.variant_common.R.raw.gql_product_variant
         )
     }
 

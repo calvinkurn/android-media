@@ -15,6 +15,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.seller.menu'
+    testNamespace 'com.tokopedia.seller.menu.test'
     buildFeatures{
         viewBinding true
     }
@@ -33,13 +35,13 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.imagePickerInstaCommon)
+    implementation projectOrAar(rootProject.ext.libraries.webview)
 
     implementation project(rootProject.ext.features.contentCommon)
 

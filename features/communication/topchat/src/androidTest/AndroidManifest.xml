@@ -1,6 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.tokopedia.topchat"
     android:versionCode="1"
     android:versionName="1.0.0">
 
@@ -12,25 +11,25 @@
         tools:replace="android:debuggable,android:label">
 
         <activity
-            android:name=".stub.chatroom.view.activity.TopChatRoomActivityStub"
+            android:name="com.tokopedia.topchat.stub.chatroom.view.activity.TopChatRoomActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
-            android:name=".stub.chatsearch.view.activity.ChatSearchActivityStub"
+            android:name="com.tokopedia.topchat.stub.chatsearch.view.activity.ChatSearchActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <service
-            android:name=".stub.chatroom.view.service.UploadImageChatServiceStub"
+            android:name="com.tokopedia.topchat.stub.chatroom.view.service.UploadImageChatServiceStub"
             android:permission="android.permission.BIND_JOB_SERVICE"
             android:exported="false"/>
 
         <activity
-            android:name=".stub.chattemplate.view.activity.TemplateChatActivityStub"
+            android:name="com.tokopedia.topchat.stub.chattemplate.view.activity.TemplateChatActivityStub"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.ChatSetting" />
 
         <activity
-            android:name=".stub.chattemplate.view.activity.EditTemplateChatActivityStub"
+            android:name="com.tokopedia.topchat.stub.chattemplate.view.activity.EditTemplateChatActivityStub"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.ChatSetting" />
 

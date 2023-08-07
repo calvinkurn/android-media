@@ -11,6 +11,8 @@ import com.tokopedia.product.detail.common.ProductCartHelper
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Action.CLICK_ANNOTATION_RECOM_CHIP
+import com.tokopedia.product.detail.common.ProductTrackingConstant.Action.CLICK_SHARE_AFFILIATE_ICON
+import com.tokopedia.product.detail.common.ProductTrackingConstant.Action.CLICK_SHARE_REGULER
 import com.tokopedia.product.detail.common.ProductTrackingConstant.TrackerId.TRACKER_ID_CLICK_THUMBNAIL
 import com.tokopedia.product.detail.common.ProductTrackingConstant.TrackerId.TRACKER_ID_IMPRESS_THUMBNAIL
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
@@ -566,6 +568,7 @@ object DynamicProductDetailTracking {
                                 ProductTrackingConstant.Tracking.KEY_CATEGORY_ID, "",
                                 ProductTrackingConstant.Tracking.KEY_DIMENSION_40, String.format(ProductTrackingConstant.RecomTokonow.PARAM_ATC_DIMENS_40, recomItem.pageName, recomItem.recommendationType),
                                 ProductTrackingConstant.Tracking.KEY_DIMENSION_45, recomItem.cartId,
+                                ProductTrackingConstant.Tracking.KEY_DIMENSION_56, recomItem.warehouseId.toString(),
                                 ProductTrackingConstant.Tracking.ID, recomItem.productId,
                                 ProductTrackingConstant.Tracking.NAME, recomItem.name,
                                 ProductTrackingConstant.Tracking.PRICE, recomItem.priceInt,
@@ -693,12 +696,13 @@ object DynamicProductDetailTracking {
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_READ_MORE)
         }
 
-        fun eventClickPdpShare(productId: String, userId: String, campaignId: String, bundleId: String) {
+        fun eventClickPdpShare(productId: String, userId: String, campaignId: String, bundleId: String, isAffiliateShareIcon: Boolean) {
+            val shareType = if (isAffiliateShareIcon) CLICK_SHARE_AFFILIATE_ICON else CLICK_SHARE_REGULER
             val mapEvent = TrackAppUtils.gtmData(
                 ProductTrackingConstant.PDP.EVENT_CLICK_COMMUNICATION,
                 ProductTrackingConstant.Category.TOP_NAV_SHARE_PDP,
                 ProductTrackingConstant.Action.CLICK_SHARE_PDP,
-                "$productId - $campaignId - $bundleId"
+                "$shareType - $productId - $campaignId - $bundleId"
             )
             mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.VALUE_BUSINESS_UNIT_SHARING
             mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
@@ -856,6 +860,7 @@ object DynamicProductDetailTracking {
                                     ProductTrackingConstant.Tracking.CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
                                     ProductTrackingConstant.Tracking.PROMO_POSITION, position + 1,
                                     ProductTrackingConstant.Tracking.KEY_DIMENSION_83, bebasOngkirValue,
+                                    ProductTrackingConstant.Tracking.KEY_DIMENSION_56, product.warehouseId.toString(),
                                     ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, product.productId.toString()
                                 )
                             )
@@ -1995,6 +2000,7 @@ object DynamicProductDetailTracking {
                             ProductTrackingConstant.Tracking.CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
                             ProductTrackingConstant.Tracking.PROMO_POSITION, position + 1,
                             ProductTrackingConstant.Tracking.LIST, listValue,
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_56, product.warehouseId.toString(),
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_83, bebasOngkirValue,
                             ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, product.productId.toString()
                         )

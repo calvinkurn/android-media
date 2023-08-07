@@ -2,6 +2,9 @@ package com.tokopedia.discovery.common.utils
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant.CustomDimension.DEFAULT_VALUE_CUSTOM_DIMENSION_90_GLOBAL
+import com.tokopedia.discovery.common.constants.SearchConstant.CustomDimension.DEFAULT_VALUE_CUSTOM_DIMENSION_90_GLOBAL_MPS
+import com.tokopedia.discovery.common.constants.SearchConstant.CustomDimension.DEFAULT_VALUE_CUSTOM_DIMENSION_90_GLOBAL_SHOP
+import com.tokopedia.discovery.common.constants.SearchConstant.CustomDimension.DIMENSION_90_GLOBAL_MPS
 import com.tokopedia.discovery.common.utils.Dimension90Utils.LOCAL_SEARCH
 import com.tokopedia.discovery.common.utils.Dimension90Utils.NONE
 import org.junit.Test
@@ -38,6 +41,40 @@ internal class Dimension90Test {
         )
 
         inputMap.getDimension90AndValidate("$pageTitle.$navSource.$LOCAL_SEARCH.$pageId")
+    }
+
+    @Test
+    fun `Get dimension90 with for mps search`() {
+        val inputMap = mapOf<String, Any>(
+            SearchApiConst.Q1 to "samsung",
+            SearchApiConst.Q2 to "apple",
+            SearchApiConst.ACTIVE_TAB to SearchApiConst.ACTIVE_TAB_MPS,
+        )
+
+        inputMap.getDimension90AndValidate(DEFAULT_VALUE_CUSTOM_DIMENSION_90_GLOBAL_MPS)
+    }
+
+    @Test
+    fun `Get dimension90 with for mps search with navsource`() {
+        val navSource = "home"
+        val inputMap = mapOf<String, Any>(
+            SearchApiConst.Q1 to "samsung",
+            SearchApiConst.Q2 to "apple",
+            SearchApiConst.ACTIVE_TAB to SearchApiConst.ACTIVE_TAB_MPS,
+            SearchApiConst.NAVSOURCE to navSource,
+        )
+
+        inputMap.getDimension90AndValidate("none.$navSource.$DIMENSION_90_GLOBAL_MPS.none")
+    }
+
+    @Test
+    fun `Get dimension90 with for shop search`() {
+        val inputMap = mapOf<String, Any>(
+            SearchApiConst.Q to "samsung",
+            SearchApiConst.ACTIVE_TAB to SearchApiConst.ACTIVE_TAB_SHOP,
+        )
+
+        inputMap.getDimension90AndValidate(DEFAULT_VALUE_CUSTOM_DIMENSION_90_GLOBAL_SHOP)
     }
 
     @Test

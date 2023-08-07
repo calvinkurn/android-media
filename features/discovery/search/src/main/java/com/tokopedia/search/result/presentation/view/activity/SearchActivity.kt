@@ -4,10 +4,11 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.WindowManager
+import androidx.activity.viewModels
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
@@ -19,8 +20,10 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
-import com.tokopedia.discovery.common.EventObserver
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.ACTIVE_TAB
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.MPS
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.PREVIOUS_KEYWORD
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition
 import com.tokopedia.discovery.common.model.SearchParameter
@@ -28,30 +31,43 @@ import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.SearchTracking
+import com.tokopedia.search.di.module.SearchContextModule
+import com.tokopedia.search.result.SearchParameterModule
+import com.tokopedia.search.result.SearchState
+import com.tokopedia.search.result.SearchViewModel
+import com.tokopedia.search.result.presentation.view.adapter.MPSPagerAdapter
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionPagerAdapter
+import com.tokopedia.search.result.presentation.view.adapter.SearchViewPagerAdapter
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
-import com.tokopedia.search.result.presentation.viewmodel.SearchViewModel
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_TRACE
 import com.tokopedia.search.result.product.performancemonitoring.searchProductPerformanceMonitoring
-import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModel
-import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModelFactoryModule
+import com.tokopedia.search.utils.BackToTopView
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
+import com.tokopedia.search.utils.mvvm.SearchView
 import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.telemetry.ITelemetryActivity
-import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import java.net.URLEncoder
 import javax.inject.Inject
 import javax.inject.Named
+import kotlin.collections.List
+import kotlin.collections.Map
+import kotlin.collections.MutableList
+import kotlin.collections.listOf
+import kotlin.collections.mutableListOf
+import kotlin.collections.set
 
 class SearchActivity : BaseActivity(),
+    SearchView,
     RedirectionListener,
     SearchNavigationListener,
     PageLoadTimePerformanceInterface by searchProductPerformanceMonitoring(),
@@ -60,12 +76,11 @@ class SearchActivity : BaseActivity(),
 
     private var searchNavigationToolbar: NavToolbar? = null
     private var container: MotionLayout? = null
-    private var loadingView: LoaderUnify? = null
     private var tabLayout: TabLayout? = null
     private var viewPager: ViewPager? = null
     private var tabShadow: View? = null
     private var quickFilterTopPadding: View? = null
-    private var searchSectionPagerAdapter: SearchSectionPagerAdapter? = null
+    private var viewPagerAdapter: SearchViewPagerAdapter? = null
 
     private var productTabTitle = ""
     private var shopTabTitle = ""
@@ -79,27 +94,29 @@ class SearchActivity : BaseActivity(),
     lateinit var localCacheHandler: LocalCacheHandler
 
     @Inject
-    @Named(SearchConstant.SearchShop.SEARCH_SHOP_VIEW_MODEL_FACTORY)
-    lateinit var searchShopViewModelFactory: ViewModelProvider.Factory
+    @Suppress("LateinitUsage")
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
-    @Named(SearchConstant.SEARCH_VIEW_MODEL_FACTORY)
-    lateinit var searchViewModelFactory: ViewModelProvider.Factory
+    @Suppress("LateinitUsage")
+    lateinit var fragmentFactory: FragmentFactory
 
-    private lateinit var searchViewModel: SearchViewModel // initialized in initViewModel
-    private lateinit var searchShopViewModel: SearchShopViewModel // initialized in initViewModel
+    private val searchViewModel: SearchViewModel? by viewModels { viewModelFactory }
+    private var searchComponent: SearchComponent? = null
     private lateinit var searchParameter: SearchParameter // initialized in getExtrasFromIntent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         startMonitoring(SEARCH_RESULT_TRACE)
         startPreparePagePerformanceMonitoring()
 
+        getExtrasFromIntent(intent)
+        initActivityOnCreate()
+        supportFragmentManager.fragmentFactory = fragmentFactory
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.search_activity_search)
 
         setStatusBarColor()
-        getExtrasFromIntent(intent)
-        initActivityOnCreate()
         proceed()
         handleIntent()
     }
@@ -114,7 +131,7 @@ class SearchActivity : BaseActivity(),
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            window.statusBarColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            window.statusBarColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         }
     }
 
@@ -141,12 +158,14 @@ class SearchActivity : BaseActivity(),
     }
 
     private fun initInjector() {
-        DaggerSearchViewComponent
+        searchComponent = DaggerSearchComponent
             .builder()
             .baseAppComponent(component)
-            .searchShopViewModelFactoryModule(SearchShopViewModelFactoryModule(searchParameter.getSearchParameterMap()))
+            .searchContextModule(SearchContextModule(this))
+            .searchParameterModule(SearchParameterModule(searchParameter))
             .build()
-            .inject(this)
+
+        searchComponent?.inject(this)
     }
 
     private fun proceed() {
@@ -157,7 +176,6 @@ class SearchActivity : BaseActivity(),
     private fun findViews() {
         searchNavigationToolbar = findViewById(R.id.searchNavigationToolbar)
         container = findViewById(R.id.container)
-        loadingView = findViewById(R.id.progressBar)
         tabLayout = findViewById(R.id.tabs)
         viewPager = findViewById(R.id.pager)
         tabShadow = findViewById(R.id.search_top_bar_shadow)
@@ -185,35 +203,43 @@ class SearchActivity : BaseActivity(),
             it.bringToFront()
             it.setToolbarPageName(SearchConstant.SEARCH_RESULT_PAGE)
             it.setIcon(
-                    IconBuilder()
-                            .addIcon(IconList.ID_CART, disableRouteManager = false, disableDefaultGtmTracker = false) { }
-                            .addIcon(IconList.ID_NAV_GLOBAL, disableRouteManager = false, disableDefaultGtmTracker = false) { }
+                IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.SRP))
+                    .addIcon(IconList.ID_CART, disableRouteManager = false, disableDefaultGtmTracker = false) { }
+                    .addIcon(IconList.ID_NAV_GLOBAL, disableRouteManager = false, disableDefaultGtmTracker = false) { }
             )
         }
     }
 
     private fun moveToAutoCompleteActivity() {
-        val query = URLEncoder.encode(searchParameter.getSearchQuery()).replace("+", " ")
-        val currentAutoCompleteApplink = getAutoCompleteApplink(query)
+        val applink = ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?" + autoCompleteParamsString()
 
-        val autoCompleteParams = URLParser(currentAutoCompleteApplink).paramKeyValueMap
-        autoCompleteParams[SearchApiConst.PREVIOUS_KEYWORD] = query
-
-        startActivityWithApplink(
-                ApplinkConstInternalDiscovery.AUTOCOMPLETE
-                        + "?"
-                        + UrlParamUtils.generateUrlParamString(autoCompleteParams)
-        )
+        RouteManager.route(this, applink)
     }
+
+    private fun autoCompleteParamsString() =
+        UrlParamUtils.generateUrlParamString(autoCompleteParams())
+
+    private fun autoCompleteParams() =
+        if (searchParameter.isMps()) {
+            searchParameter.getSearchQueryMap() + mapOf(ACTIVE_TAB to MPS)
+        } else {
+            val query = encodedQuery()
+            val currentAutoCompleteApplink = currentAutoCompleteApplink(query)
+            val currentAutoCompleteParams = URLParser(currentAutoCompleteApplink).paramKeyValueMap
+
+            currentAutoCompleteParams + mapOf(PREVIOUS_KEYWORD to query)
+        }
+
+    private fun encodedQuery() = URLEncoder
+        .encode(searchParameter.getSearchQuery())
+        .replace("+", " ")
+
+    private fun currentAutoCompleteApplink(query: String) =
+        autocompleteApplink.ifEmpty { ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?q=" + query }
 
     override fun startActivityWithApplink(applink: String?, vararg parameter: String?) {
         RouteManager.route(this, applink, *parameter)
     }
-
-    private fun getAutoCompleteApplink(query: String) =
-            if (autocompleteApplink.isNotEmpty()) autocompleteApplink
-            else ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?q=" + query
-
 
     private fun configureToolbarVisibility() {
         if (!isLandingPage()) return
@@ -231,6 +257,7 @@ class SearchActivity : BaseActivity(),
         viewPager?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
             override fun onPageSelected(position: Int) {
+                searchViewModel?.setActiveTab(position)
                 this@SearchActivity.onPageSelected(position)
             }
 
@@ -271,7 +298,7 @@ class SearchActivity : BaseActivity(),
 
     private fun onContainerTransitionCompleted(id: Int) {
         val viewPager = viewPager ?: return
-        val fragmentItem = searchSectionPagerAdapter?.getRegisteredFragmentAtPosition(viewPager.currentItem)
+        val fragmentItem = viewPagerAdapter?.getRegisteredFragmentAtPosition(viewPager.currentItem)
 
         if (fragmentItem !is QuickFilterElevation) return
 
@@ -283,8 +310,9 @@ class SearchActivity : BaseActivity(),
 
     private fun handleIntent() {
         initResources()
-        initViewModel()
+
         observeViewModel()
+
         performProductSearch()
         setToolbarTitle()
     }
@@ -294,81 +322,74 @@ class SearchActivity : BaseActivity(),
         shopTabTitle = getString(R.string.shop_tab_title)
     }
 
-    private fun initViewModel() {
-        searchViewModel = ViewModelProvider(this, searchViewModelFactory).get(SearchViewModel::class.java)
-        searchShopViewModel = ViewModelProvider(this, searchShopViewModelFactory).get(SearchShopViewModel::class.java)
-    }
-
     private fun observeViewModel() {
-        observeAutoCompleteEvent()
-        observeHideLoadingEvent()
+        searchViewModel?.apply{
+            observeState()
+
+            onEach(SearchState::activeTabPosition, ::setViewPagerCurrentItem)
+        }
     }
 
-    private fun observeAutoCompleteEvent() {
-        searchViewModel.getShowAutoCompleteViewEventLiveData().observe(this, EventObserver {
-            showSearchInputView()
-        })
-    }
-
-    private fun observeHideLoadingEvent() {
-        searchViewModel.getHideLoadingEventLiveData().observe(this, EventObserver {
-            removeSearchPageLoading()
-        })
+    private fun setViewPagerCurrentItem(position: Int) {
+        viewPager?.post {
+            viewPager?.currentItem = position
+        }
     }
 
     private fun performProductSearch() {
         setSearchParameterDefaultActiveTab()
-        onSearchingStart()
         loadSection()
     }
 
     private fun setSearchParameterDefaultActiveTab() {
-        val activeTab = searchParameter.get(SearchApiConst.ACTIVE_TAB)
+        val activeTab = searchParameter.get(ACTIVE_TAB)
         if (shouldSetActiveTabToDefault(activeTab)) {
-            searchParameter.set(SearchApiConst.ACTIVE_TAB, SearchConstant.ActiveTab.PRODUCT)
+            searchParameter.set(ACTIVE_TAB, SearchConstant.ActiveTab.PRODUCT)
         }
     }
 
     private fun shouldSetActiveTabToDefault(activeTab: String): Boolean {
         return activeTab !in listOf(
-                SearchConstant.ActiveTab.PRODUCT,
-                SearchConstant.ActiveTab.SHOP,
+            SearchConstant.ActiveTab.PRODUCT,
+            SearchConstant.ActiveTab.SHOP,
+            SearchConstant.ActiveTab.MPS,
         )
     }
-
-    private fun onSearchingStart() {
-        showLoadingView(true)
-        showContainer(false)
-    }
-
-    private fun showLoadingView(visible: Boolean) {
-        loadingView?.visibility = if (visible) View.VISIBLE else View.GONE
-    }
-
-    private fun showContainer(visible: Boolean) {
-        container?.visibility = if (visible) View.VISIBLE else View.INVISIBLE
-    }
-
 
     private fun loadSection() {
         val searchFragmentTitles = mutableListOf<String>()
         addFragmentTitlesToList(searchFragmentTitles)
         initTabLayout()
 
-        searchSectionPagerAdapter = SearchSectionPagerAdapter(supportFragmentManager, searchParameter)
-        searchSectionPagerAdapter?.updateData(searchFragmentTitles)
-        viewPager?.adapter = searchSectionPagerAdapter
-        tabLayout?.setupWithViewPager(viewPager)
+        viewPagerAdapter = createPagerAdapter(searchFragmentTitles).also {
+            viewPager?.adapter = it.asViewPagerAdapter()
+        }
 
-        setActiveTab()
+        tabLayout?.setupWithViewPager(viewPager)
     }
+
+    private fun createPagerAdapter(searchFragmentTitles: List<String>): SearchViewPagerAdapter =
+        if (searchParameter.isMps())
+            MPSPagerAdapter(
+                supportFragmentManager,
+                searchFragmentTitles,
+                classLoader,
+                supportFragmentManager.fragmentFactory,
+            )
+        else
+            SearchSectionPagerAdapter(
+                supportFragmentManager,
+                searchFragmentTitles,
+                searchParameter,
+                classLoader,
+                supportFragmentManager.fragmentFactory,
+            )
 
     private fun addFragmentTitlesToList(searchSectionItemList: MutableList<String>) {
         searchSectionItemList.add(productTabTitle)
 
         if (!isLandingPage()) searchSectionItemList.add(shopTabTitle)
     }
-
 
     private fun initTabLayout() {
         tabLayout?.clearOnTabSelectedListeners()
@@ -381,33 +402,22 @@ class SearchActivity : BaseActivity(),
 
     private fun onTabReselected(tabPosition: Int) {
         when (tabPosition) {
-            SearchTabPosition.TAB_FIRST_POSITION -> productListFragmentExecuteBackToTop()
-            SearchTabPosition.TAB_SECOND_POSITION -> shopListFragmentExecuteBackToTop()
+            SearchTabPosition.TAB_FIRST_POSITION -> firstPositionFragmentReselected()
+            SearchTabPosition.TAB_SECOND_POSITION -> secondPositionFragmentReselected()
         }
     }
 
-    private fun productListFragmentExecuteBackToTop() {
-        searchSectionPagerAdapter?.getProductListFragment()?.backToTop()
+    private fun firstPositionFragmentReselected() {
+        val firstPageFragment = viewPagerAdapter?.getFirstPageFragment()
+        if (firstPageFragment is BackToTopView)
+            firstPageFragment.backToTop()
     }
 
-    private fun shopListFragmentExecuteBackToTop() {
-        searchSectionPagerAdapter?.getShopListFragment()?.backToTop()
+    private fun secondPositionFragmentReselected() {
+        val secondPageFragment = viewPagerAdapter?.getSecondPageFragment()
+        if (secondPageFragment is BackToTopView)
+            secondPageFragment.backToTop()
     }
-
-    private fun setActiveTab() {
-        viewPager?.viewTreeObserver?.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                viewPager?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-                viewPager?.currentItem = getViewPagerCurrentItem()
-            }
-        })
-    }
-
-    private fun getViewPagerCurrentItem() =
-            when (searchParameter.get(SearchApiConst.ACTIVE_TAB)) {
-                SearchConstant.ActiveTab.SHOP -> SearchTabPosition.TAB_SECOND_POSITION
-                else -> SearchTabPosition.TAB_FIRST_POSITION
-            }
 
     private fun setToolbarTitle() {
         configureSearchNavigationSearchBar()
@@ -456,11 +466,6 @@ class SearchActivity : BaseActivity(),
         outState.putParcelable(SearchConstant.EXTRA_SEARCH_PARAMETER_MODEL, searchParameter)
     }
 
-    override fun removeSearchPageLoading() {
-        showLoadingView(false)
-        showContainer(true)
-    }
-
     override fun showSearchInputView() {
         moveToAutoCompleteActivity()
     }
@@ -494,4 +499,11 @@ class SearchActivity : BaseActivity(),
     }
 
     override fun getTelemetrySectionName() = "search"
+
+    override fun refresh() = withState(searchViewModel) {
+        if (it.isOpeningAutoComplete) {
+            showSearchInputView()
+            searchViewModel?.showAutoCompleteHandled()
+        }
+    }
 }

@@ -19,7 +19,11 @@ import com.tokopedia.digital.home.model.RechargeProductCardCustomBannerModel
 import com.tokopedia.digital.home.presentation.adapter.RechargeCustomBannerProductCardAdapter
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.home_component.util.GravitySnapHelper
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageRounded
 import kotlin.math.abs
 
 /**
@@ -27,8 +31,8 @@ import kotlin.math.abs
  */
 
 class RechargeHomepageProductCardCustomBannerViewHolder(
-        val view: View,
-        val listener: RechargeHomepageItemListener
+    val view: View,
+    val listener: RechargeHomepageItemListener
 ) : AbstractViewHolder<RechargeProductCardCustomBannerModel>(view) {
 
     private lateinit var layoutManager: LinearLayoutManager
@@ -71,7 +75,7 @@ class RechargeHomepageProductCardCustomBannerViewHolder(
         item?.let { element ->
             with(bind) {
                 rvRechargeProduct.hide()
-                
+
                 layoutSingleItem.root.show()
 
                 layoutSingleItem.run {
@@ -106,10 +110,9 @@ class RechargeHomepageProductCardCustomBannerViewHolder(
     }
 
     private fun hideItemView(bind: ViewRechargeHomeProductCardCustomBannerBinding) {
-        
         bind.parallaxView.visibility = View.INVISIBLE
         bind.backgroundLoader.visibility = View.VISIBLE
-        
+
         bind.rvRechargeProduct.hide()
         bind.layoutSingleItem.root.hide()
     }
@@ -123,15 +126,14 @@ class RechargeHomepageProductCardCustomBannerViewHolder(
         bind: ViewRechargeHomeProductCardCustomBannerBinding,
         section: RechargeHomepageSections.Section
     ) {
-        with(bind){
+        with(bind) {
             parallaxImage.loadImage(section.mediaUrl)
             try {
                 if (section.label1.isNotEmpty()) parallaxBackground.setBackgroundColor(Color.parseColor(section.label1))
             } catch (e: IllegalArgumentException) {
-                parallaxBackground.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                parallaxBackground.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
             }
         }
-        
     }
 
     private fun setUpList(
@@ -181,5 +183,4 @@ class RechargeHomepageProductCardCustomBannerViewHolder(
         carouselLayoutParams?.height = RecyclerView.LayoutParams.WRAP_CONTENT
         this.layoutParams = carouselLayoutParams
     }
-
 }

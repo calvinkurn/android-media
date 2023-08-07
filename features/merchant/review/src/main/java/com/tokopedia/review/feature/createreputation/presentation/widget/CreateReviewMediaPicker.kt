@@ -25,8 +25,6 @@ import com.tokopedia.review.feature.createreputation.presentation.viewholder.Cre
 import com.tokopedia.review.feature.createreputation.presentation.viewholder.CreateReviewMediaPreviewVideoViewHolder
 import com.tokopedia.reviewcommon.uimodel.StringRes
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.resume
 
 class CreateReviewMediaPicker @JvmOverloads constructor(
     context: Context,
@@ -122,38 +120,27 @@ class CreateReviewMediaPicker @JvmOverloads constructor(
 
     fun updateUi(
         uiState: CreateReviewMediaPickerUiState,
-        continuation: Continuation<Unit>? = null,
         animate: Boolean = true
     ) {
         when (uiState) {
             is CreateReviewMediaPickerUiState.Loading -> {
                 showLoading()
-                animateShow(animate = animate, onAnimationEnd = {
-                    continuation?.resume(Unit)
-                })
+                animateShow(animate = animate)
             }
             is CreateReviewMediaPickerUiState.Uploading -> {
                 showMediaPickerUploadingState(uiState, animate)
-                animateShow(animate = animate, onAnimationEnd = {
-                    continuation?.resume(Unit)
-                })
+                animateShow(animate = animate)
             }
             is CreateReviewMediaPickerUiState.SuccessUpload -> {
                 showMediaPickerSuccessUploadState(uiState, animate)
-                animateShow(animate = animate, onAnimationEnd = {
-                    continuation?.resume(Unit)
-                })
+                animateShow(animate = animate)
             }
             is CreateReviewMediaPickerUiState.FailedUpload -> {
                 showMediaPickerFailedUploadState(uiState, animate)
-                animateShow(animate = animate, onAnimationEnd = {
-                    continuation?.resume(Unit)
-                })
+                animateShow(animate = animate)
             }
             CreateReviewMediaPickerUiState.Hidden -> {
-                animateHide(animate = animate, onAnimationEnd = {
-                    continuation?.resume(Unit)
-                })
+                animateHide(animate = animate)
             }
         }
     }

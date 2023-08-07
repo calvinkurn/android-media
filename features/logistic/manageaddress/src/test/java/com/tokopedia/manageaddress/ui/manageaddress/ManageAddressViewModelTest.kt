@@ -40,7 +40,6 @@ import com.tokopedia.manageaddress.ui.uimodel.ValidateShareAddressState
 import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey.KEY_SHARE_ADDRESS_LOGI
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
@@ -80,7 +79,6 @@ class ManageAddressViewModelTest {
     private val chooseAddressRepo: ChooseAddressRepository = mockk(relaxed = true)
     private val chooseAddressMapper: ChooseAddressMapper = mockk(relaxed = true)
     private val chosenAddressObserver: Observer<Result<ChosenAddressModel>> = mockk(relaxed = true)
-    private val remoteConfigInstance: RemoteConfig = mockk()
     private val eligibleForAddressFeatureObserver: Observer<Result<EligibleForAddressFeatureModel>> =
         mockk(relaxed = true)
     private val validateShareAddressAsReceiverUseCase: ValidateShareAddressAsReceiverUseCase =
@@ -117,8 +115,7 @@ class ManageAddressViewModelTest {
             eligibleForAddressUseCase,
             validateShareAddressAsReceiverUseCase,
             validateShareAddressAsSenderUseCase,
-            tickerUseCase,
-            remoteConfigInstance
+            tickerUseCase
         )
         manageAddressViewModel.getChosenAddress.observeForever(chosenAddressObserver)
         manageAddressViewModel.setChosenAddress.observeForever(chosenAddressObserver)
@@ -572,9 +569,6 @@ class ManageAddressViewModelTest {
         mockkStatic(RemoteConfigInstance::class)
 
         val bundle = mockk<Bundle>()
-        every {
-            remoteConfigInstance.getString(KEY_SHARE_ADDRESS_LOGI, "")
-        } returns KEY_SHARE_ADDRESS_LOGI
         every { bundle.getString(ManageAddressConstant.QUERY_PARAM_RUID) } returns ruid
         every { bundle.getString(ManageAddressConstant.QUERY_PARAM_SUID) } returns suid
         every { bundle.getString(PARAM_SOURCE) } returns source

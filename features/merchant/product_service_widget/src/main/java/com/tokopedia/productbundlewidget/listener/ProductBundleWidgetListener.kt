@@ -9,7 +9,15 @@ interface ProductBundleWidgetListener {
     fun onBundleProductClicked(
         bundle: BundleUiModel,
         selectedMultipleBundle: BundleDetailUiModel,
-        selectedProduct: BundleProductUiModel
+        selectedProduct: BundleProductUiModel,
+        itemPosition: Int
+    ) {
+    }
+
+    fun onMultipleBundleActionButtonClicked(
+        selectedBundle: BundleDetailUiModel,
+        productDetails: List<BundleProductUiModel>,
+        bundlePosition: Int
     ) {
     }
 
@@ -21,7 +29,8 @@ interface ProductBundleWidgetListener {
 
     fun onSingleBundleActionButtonClicked(
         selectedBundle: BundleDetailUiModel,
-        bundleProducts: BundleProductUiModel
+        bundleProducts: BundleProductUiModel,
+        bundlePosition: Int
     ) {
     }
 
@@ -35,7 +44,8 @@ interface ProductBundleWidgetListener {
     fun impressionSingleBundle(
         selectedBundle: BundleDetailUiModel,
         selectedProduct: BundleProductUiModel,
-        bundleName: String
+        bundleName: String,
+        bundlePosition: Int
     ) {
     }
 

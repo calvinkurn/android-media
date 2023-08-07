@@ -1,11 +1,16 @@
 package com.tokopedia.broadcaster.revamp
 
 import android.content.Context
+import android.graphics.SurfaceTexture
 import android.net.Uri
+import android.opengl.GLES20
 import android.os.Handler
+import android.os.Looper
 import android.util.Pair
 import android.view.Surface
 import android.view.SurfaceHolder
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.ktx.Firebase
 import com.tokopedia.broadcaster.revamp.state.BroadcastInitState
 import com.tokopedia.broadcaster.revamp.state.BroadcastState
 import com.tokopedia.broadcaster.revamp.util.BroadcasterUtil
@@ -17,17 +22,26 @@ import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterStatistic
+import com.tokopedia.broadcaster.revamp.util.streamer.StreamerWithByteplus
+import com.tokopedia.broadcaster.revamp.util.streamer.StreamerWithoutByteplus
+import com.tokopedia.broadcaster.revamp.util.streamer.StreamerWrapper
 import com.tokopedia.device.info.DeviceConnectionInfo
+import com.tokopedia.byteplus.effect.EffectManager
 import com.wmspanel.libstream.*
 import com.wmspanel.libstream.Streamer.VERSION_NAME
+import com.wmspanel.libstream.gles.EglCore
+import com.wmspanel.libstream.gles.WindowSurface
 import org.json.JSONObject
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
+import javax.inject.Inject
 
 /**
  * Created by meyta.taliti on 01/03/22.
  */
-class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitrate.Listener, BroadcasterStatistic.Listener {
+class BroadcastManager @Inject constructor(
+    private val effectManager: EffectManager,
+): Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitrate.Listener, BroadcasterStatistic.Listener {
 
     override val broadcastState: BroadcastState
         get() = mState
@@ -36,12 +50,19 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         get() = mInitState
 
     override val activeCameraVideoSize: Broadcaster.Size?
-        get() = mStreamerGL?.activeCameraVideoSize?.let {
+        get() = mStreamerWrapper?.activeCameraVideoSize()?.let {
             Broadcaster.Size(it.width, it.height)
         }
 
-    private var mStreamer: Streamer? = null
-    private var mStreamerGL: StreamerGL? = null
+    private var mStreamerWrapper: StreamerWrapper? = null
+
+    /** Joe : mDisplaySurface works with mStreamerGL for display camera */
+    private var mDisplaySurface: WindowSurface? = null
+
+    /** Joe : mCodecSurface works with mStreamerSurface for pushing */
+    private var mCodecSurface: WindowSurface? = null
+
+    private var mEglCore: EglCore? = null
 
     private var mConnectionId: Pair<Int, ConnectionConfig>? = null
     private var mConnectionState: Streamer.CONNECTION_STATE? = null
@@ -62,6 +83,7 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
 
     private var mContext: Context? = null
     private var mHandler: Handler? = null
+    private var mWithByteplus: Boolean? = null
     private val mListeners: ConcurrentLinkedQueue<Broadcaster.Listener> = ConcurrentLinkedQueue()
 
     private var mInitState: BroadcastInitState = BroadcastInitState.Uninitialized
@@ -75,7 +97,6 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
 
     private val mAudioCallback =
         Streamer.AudioCallback { audioFormat, data, audioInputLength, channelCount, sampleRate, samplesPerFrame ->
-
             /**
              * @param audioFormat [android.media.AudioFormat.ENCODING_PCM_16BIT]
              * @param data
@@ -104,14 +125,42 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         mListeners.remove(listener)
     }
 
-    override fun init(activityContext: Context, handler: Handler?) {
+    override fun init(
+        activityContext: Context,
+        handler: Handler?,
+    ) {
         mContext = activityContext
         mHandler = handler
     }
 
-    override fun create(holder: SurfaceHolder, surfaceSize: Broadcaster.Size) {
+    override fun setupThread(withByteplus: Boolean) {
+        if (withByteplus) effectManager.startRenderThread()
+        else effectManager.stopRenderThread()
+    }
+
+    override fun create(
+        holder: SurfaceHolder,
+        surfaceSize: Broadcaster.Size,
+        withByteplus: Boolean,
+    ) {
         if (mAudioRate.isNullOrEmpty() && mVideoRate.isNullOrEmpty() && mVideoFps.isNullOrEmpty()) return
-        if (mStreamer != null) return
+
+        if(mWithByteplus == withByteplus) {
+            if(mWithByteplus == true && mStreamerWrapper?.pusherStreamer != null) return
+            if(mWithByteplus == false && mStreamerWrapper?.displayStreamer != null) return
+        }
+
+        if(mStreamerWrapper?.displayStreamer != null) {
+            release()
+        }
+
+        mWithByteplus = withByteplus
+
+        mStreamerWrapper = if (withByteplus) {
+            StreamerWithByteplus()
+        } else {
+            StreamerWithoutByteplus()
+        }
 
         val context = mContext
         if (context == null) {
@@ -257,8 +306,56 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
             }
         }
 
-        mStreamerGL = builder.build()
-        if (mStreamerGL == null) {
+        if (mWithByteplus == true) {
+            try {
+                effectManager.init()
+                effectManager.setupTexture(surfaceSize.width, surfaceSize.height).also {
+                    builder.setSurface(Surface(effectManager.getSurfaceTexture()))
+                }
+
+                effectManager.setRenderListener(surfaceSize.width, surfaceSize.height, object : EffectManager.Listener {
+                    override fun onRenderFrame(
+                        destinationTexture: Int,
+                        textureWidth: Int,
+                        textureHeight: Int
+                    ) {
+                        renderDisplayFrame(surfaceSize, textureWidth, textureHeight, destinationTexture)
+                        renderCodecFrame(surfaceSize,textureWidth, textureHeight, destinationTexture)
+                    }
+                })
+
+                effectManager.getHandler()?.post {
+                    try {
+                        initializeSurfaceWithByteplusSDK(context, holder, audioConfig, videoConfig)
+                    } catch (e: Throwable) {
+                        Firebase.crashlytics.recordException(e)
+                    }
+                }
+            }
+            catch (e: ExceptionInInitializerError) {
+                Firebase.crashlytics.recordException(e)
+
+                broadcastInitStateChanged(
+                    BroadcastInitState.ByteplusInitializationError(
+                        BroadcasterException(BroadcasterErrorType.ServiceUnrecoverable)
+                    )
+                )
+                return
+            }
+            catch (throwable: Throwable) {
+                Firebase.crashlytics.recordException(throwable)
+
+                broadcastInitStateChanged(
+                    BroadcastInitState.ByteplusInitializationError(
+                        BroadcasterException(BroadcasterErrorType.ServiceUnrecoverable)
+                    )
+                )
+                return
+            }
+        }
+
+        val displayStreamer = builder.build()
+        if (displayStreamer == null) {
             broadcastInitStateChanged(
                 BroadcastInitState.Error(
                     BroadcasterException(BroadcasterErrorType.ServiceUnrecoverable)
@@ -267,13 +364,11 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
             return
         }
 
-        mStreamer = mStreamerGL
-
-        // Streamer build succeeded, can start Video/Audio capture
-        // call startVideoCapture, wait for onVideoCaptureStateChanged callback
-        startVideoCapture()
-        // call startAudioCapture, wait for onAudioCaptureStateChanged callback
-        startAudioCapture()
+        mStreamerWrapper?.displayStreamer = displayStreamer
+        mStreamerWrapper?.displayStreamer?.apply {
+            startVideoCapture()
+            startAudioCapture(mAudioCallback)
+        }
 
         mAdaptiveBitrate = BroadcasterAdaptiveBitrateImpl(
             BroadcasterAdaptiveBitrate.Builder(
@@ -296,6 +391,85 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         broadcastInitStateChanged(BroadcastInitState.Initialized)
     }
 
+    private fun initializeSurfaceWithByteplusSDK(
+        context: Context,
+        holder: SurfaceHolder,
+        audioConfig: AudioConfig,
+        videoConfig: VideoConfig,
+    ) {
+        mEglCore = EglCore(null, EglCore.FLAG_RECORDABLE)
+        mDisplaySurface = WindowSurface(mEglCore, holder.surface, false)
+        mDisplaySurface?.makeCurrent()
+        mStreamerWrapper?.pusherStreamer = createCodecStreamer(
+            context,
+            audioConfig,
+            videoConfig
+        )?.apply {
+            startVideoCapture()
+            startAudioCapture(mAudioCallback)
+        }
+
+        mCodecSurface = WindowSurface(mEglCore, mStreamerWrapper?.pusherStreamer?.encoderSurface, false)
+    }
+
+    private fun createCodecStreamer(
+        context: Context,
+        audioConfig: AudioConfig,
+        videoConfig: VideoConfig
+    ): StreamerSurface? {
+        val builder = StreamerSurfaceBuilder()
+
+        builder.setContext(context)
+        builder.setListener(this)
+        builder.setUserAgent("Larix/$VERSION_NAME")
+
+        builder.setAudioConfig(audioConfig)
+
+        builder.setVideoConfig(videoConfig)
+
+        return builder.build()
+    }
+
+    private fun renderDisplayFrame(
+        surfaceSize: Broadcaster.Size,
+        textureWidth: Int,
+        textureHeight: Int,
+        destinationTexture: Int
+    ) {
+        if (mDisplaySurface != null) {
+            mDisplaySurface?.makeCurrent()
+            effectManager.drawFrameBase(
+                textureWidth = textureWidth,
+                textureHeight = textureHeight,
+                surfaceWidth = surfaceSize.width,
+                surfaceHeight = surfaceSize.height,
+                dstTexture = destinationTexture,
+            )
+            mDisplaySurface?.swapBuffers()
+        }
+    }
+
+    private fun renderCodecFrame(
+        surfaceSize: Broadcaster.Size,
+        textureWidth: Int,
+        textureHeight: Int,
+        destinationTexture: Int
+    ) {
+        if (mCodecSurface != null) {
+            mStreamerWrapper?.pusherStreamer?.drainEncoder()
+            mCodecSurface?.makeCurrent()
+            effectManager.drawFrameBase(
+                textureWidth = textureWidth,
+                textureHeight = textureHeight,
+                surfaceWidth = surfaceSize.width,
+                surfaceHeight = surfaceSize.height,
+                dstTexture = destinationTexture,
+            )
+            mCodecSurface?.setPresentationTime(System.nanoTime())
+            mCodecSurface?.swapBuffers()
+        }
+    }
+
     // To get vertical video just swap width and height
     // do not modify videoSize itself because Android camera is always landscape
     private fun getAndroidVideoSize(videoSize: Streamer.Size): Streamer.Size {
@@ -308,11 +482,12 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
     }
 
     override fun updateSurfaceSize(surfaceSize: Broadcaster.Size) {
-        mStreamerGL?.setSurfaceSize(Streamer.Size(surfaceSize.width, surfaceSize.height))
+        mStreamerWrapper?.setSurfaceSize(Streamer.Size(surfaceSize.width, surfaceSize.height))
+        GLES20.glViewport(0, 0, surfaceSize.width, surfaceSize.height)
     }
 
     override fun start(rtmpUrl: String) {
-        if (mStreamer == null) return
+        if (mStreamerWrapper?.displayStreamer == null) return
 
         if (rtmpUrl.isEmpty()) {
             broadcastStateChanged(
@@ -355,7 +530,8 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
             return false
         }
 
-        val connectionId = mStreamer?.createConnection(connectionConfig) ?: -1
+        val connectionId = mStreamerWrapper?.createConnection(connectionConfig) ?: -1
+
         if (connectionId == -1) {
             broadcastStateChanged(
                 BroadcastState.Error(
@@ -378,7 +554,7 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         stopTracking()
 
         mConnectionId?.let {
-            mStreamer?.releaseConnection(it.first)
+            mStreamerWrapper?.releaseConnection(it.first)
         }
 
         mAdaptiveBitrate?.stop()
@@ -400,22 +576,26 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
     }
 
     override fun release() {
-        if (mStreamer == null) return
+        if (mStreamerWrapper?.displayStreamer == null) return
         // stop broadcast
         stop()
         // cancel audio and video capture
-        mStreamer?.stopAudioCapture()
-        mStreamer?.stopVideoCapture()
+        mStreamerWrapper?.stopVideoCapture()
+        mStreamerWrapper?.stopAudioCapture()
+
         // finally release streamer, after release(), the object is no longer available
         // if a Streamer is in released state, all methods will throw an IllegalStateException
-        mStreamer?.release()
+        mStreamerWrapper?.release()
+        mDisplaySurface?.release()
+        mCodecSurface?.release()
+        effectManager.release()
+
         // sanitize Streamer object holder
-        mStreamer = null
+        mDisplaySurface = null
+        mCodecSurface = null
 
         // discard adaptive bitrate calculator
         mAdaptiveBitrate = null
-
-        mStreamerGL = null
 
         broadcastInitStateChanged(BroadcastInitState.Uninitialized)
     }
@@ -424,15 +604,17 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         mContext = null
         mHandler = null
         mSelectedCamera = null
+
+        effectManager.stopRenderThread()
     }
 
     override fun flip() {
-        if (mStreamer == null || !isVideoCaptureStarted()) {
+        if (mStreamerWrapper?.displayStreamer == null || !isVideoCaptureStarted()) {
             // preventing accidental touch issues
             return
         }
         mAdaptiveBitrate?.pause()
-        mStreamerGL?.flip()
+        mStreamerWrapper?.flip()
 
         // Re-select camera
         val cameraManager = mCameraManager ?: return
@@ -446,7 +628,7 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
     }
 
     override fun snapShot() {
-        if (mStreamer == null || !isVideoCaptureStarted()) {
+        if (mStreamerWrapper?.displayStreamer == null || !isVideoCaptureStarted()) {
             // preventing accidental touch issues
             return
         }
@@ -459,8 +641,24 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         mStatisticTimerInterval = interval
     }
 
+    override fun setFaceFilter(faceFilterId: String, value: Float): Boolean {
+        return effectManager.setFaceFilter(faceFilterId, value)
+    }
+
+    override fun removeFaceFilter() {
+        effectManager.removeFaceFilter()
+    }
+
+    override fun setPreset(presetId: String, value: Float): Boolean {
+        return effectManager.setPreset(presetId, value)
+    }
+
+    override fun removePreset() {
+        effectManager.removePreset()
+    }
+
     override fun getHandler(): Handler? {
-        return mHandler
+        return if(mWithByteplus == true) effectManager.getHandler() else mHandler
     }
 
     override fun onConnectionStateChanged(
@@ -469,7 +667,7 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         status: Streamer.STATUS?,
         info: JSONObject?,
     ) {
-        if (mStreamer == null) return
+        if (mStreamerWrapper?.displayStreamer == null) return
         if (mConnectionId?.first != connectionId) return
 
         mConnectionState = state
@@ -523,7 +721,8 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
                 // stop confirmation
             }
             Streamer.CAPTURE_STATE.ENCODER_FAIL, Streamer.CAPTURE_STATE.FAILED, null -> {
-                mStreamer?.stopVideoCapture()
+                mStreamerWrapper?.stopVideoCapture()
+
                 broadcastInitStateChanged(
                     BroadcastInitState.Error(
                         BroadcasterException(BroadcasterErrorType.VideoFailed)
@@ -545,7 +744,8 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
                 // stop confirmation
             }
             Streamer.CAPTURE_STATE.ENCODER_FAIL, Streamer.CAPTURE_STATE.FAILED, null -> {
-                mStreamer?.stopAudioCapture()
+                mStreamerWrapper?.stopAudioCapture()
+
                 broadcastInitStateChanged(
                     BroadcastInitState.Error(
                         BroadcasterException(BroadcasterErrorType.AudioFailed)
@@ -576,38 +776,39 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
     }
 
     override fun fps(): Double? {
-        return mStreamer?.fps
+        return mStreamerWrapper?.fps()
     }
 
     override fun bytesSent(connectionId: Int): Long? {
-        return mStreamer?.getBytesSent(connectionId)
+        return mStreamerWrapper?.byteSend(connectionId)
     }
 
     override fun audioPacketsLost(connectionId: Int): Long? {
-        return mStreamer?.getAudioPacketsLost(connectionId)
+        return mStreamerWrapper?.audioPacketsLost(connectionId)
     }
 
     override fun videoPacketsLost(connectionId: Int): Long? {
-        return mStreamer?.getVideoPacketsLost(connectionId)
+        return mStreamerWrapper?.videoPacketsLost(connectionId)
     }
 
     override fun udpPacketsLost(connectionId: Int): Long? {
-        return mStreamer?.getUdpPacketsLost(connectionId)
+        return mStreamerWrapper?.udpPacketsLost(connectionId)
     }
 
     override fun changeBitrate(bitrate: Int) {
-        mStreamer?.changeBitRate(bitrate)
+        mStreamerWrapper?.changeBitrate(bitrate)
+
         mMetric = mMetric.copy(
             videoBitrate = bitrate.toLong()
         )
     }
 
     override fun changeFpsRange(fpsRange: Streamer.FpsRange) {
-        mStreamer?.changeFpsRange(fpsRange)
+        mStreamerWrapper?.changeFpsRange(fpsRange)
     }
 
     private fun findPreferredCamera(cameraList: List<BroadcasterCamera>): BroadcasterCamera {
-        val activeCamId = mStreamerGL?.activeCameraId
+        val activeCamId = mStreamerWrapper?.activeCameraId()
         if (activeCamId != null) {
             val activeCamera = cameraList.firstOrNull { it.cameraId == activeCamId }
             if (activeCamera != null)
@@ -619,15 +820,6 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
             return frontFacingCamera
 
         return cameraList.first()
-    }
-
-    private fun startAudioCapture() {
-        // Pass Streamer.AudioCallback instance to access raw pcm audio and calculate audio level
-        mStreamer?.startAudioCapture(mAudioCallback)
-    }
-
-    private fun startVideoCapture() {
-        mStreamer?.startVideoCapture()
     }
 
     private fun isAudioCaptureStarted(): Boolean {

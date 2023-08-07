@@ -10,7 +10,9 @@ data class RemoveCartTokofoodParam (
 ) {
 
     fun getIsCartIdsEmpty(): Boolean {
-        return businessData.firstOrNull()?.cartGroups?.firstOrNull()?.cartIds.isNullOrEmpty()
+        return businessData.firstOrNull()?.cartGroups?.firstOrNull()?.cartIds.let {
+            it.isNullOrEmpty() || it.all { cartId -> cartId.isBlank() }
+        }
     }
 
     companion object {

@@ -223,6 +223,10 @@ data class SerializedNotificationData(
 
     @SerializedName(ADVANCE_TARGET)
     @Expose
-    val isAdvanceTargeting: String?
+    val isAdvanceTargeting: String?,
+
+    @SerializedName(USER_TYPE)
+    @Expose
+    val userType: String?
 
 ) : Parcelable

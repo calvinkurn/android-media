@@ -192,7 +192,6 @@ object ConstantTransactionAnalytics {
         const val VALIDATION_ERROR_KOTA_KECAMATAN_PADA_TAMBAH_ADDRESS = "validation error kota / kecamatan pada + address"
         const val VALIDATION_ERROR_KODE_POS_PADA_TAMBAH_ADDRESS = "validation error kode pos pada + address"
         const val VALIDATION_ERROR_ALAMAT_PADA_TAMBAH_ADDRESS = "validation error alamat pada + address"
-        const val VIEW_INFORMATION_AND_WARNING_TICKER_IN_CART = "view information and warning ticker in cart"
 
         // PHASE 2
         const val CLICK_PILIH_ALAMAT_LAIN = "click pilih alamat lain"
@@ -357,7 +356,6 @@ object ConstantTransactionAnalytics {
         const val VIEW_ERROR_PAGE_WHEN_LOAD_CART = "view error page when load cart"
         const val CLICK_WISHLIST_ICON_IN_CART_PAGE = "click wishlist icon in cart page"
         const val CLICK_FOLLOW_SHOP_ON_UNAVAILABLE_SECTION = "click follow shop on unavailable section"
-        const val CLICK_BACK_BUTTON_NAV = "click back button nav"
         const val CLICK_GLOBAL_MENU_NAV = "click global menu nav"
 
         // Checkout TokoNow
@@ -523,5 +521,11 @@ object ConstantTransactionAnalytics {
         // Platform Fee
         const val CLICK_INFO_BUTTON_IN_PLATFORM_FEE = "43346"
         const val VIEW_PLATFORM_FEE_IN_CHECKOUT_PAGE = "43710"
+
+        // Gopay Cicil
+        const val IMPRESSION_PROMO_ACTIVATED_GOPAY_CICIL = "45451"
+        const val CLICK_ACTIVATED_GOPAY_CICIL = "45453"
+        const val IMPRESSION_ELIGIBLE_PROMO_SECTION_GOPAY_CICIL = "45454"
+        const val IMPRESSION_INELIGIBLE_PROMO_SECTION_GOPAY_CICIL_PROMO_VALIDATION = "45456"
     }
 }

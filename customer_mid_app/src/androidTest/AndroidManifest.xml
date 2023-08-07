@@ -1,11 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     android:versionCode="1"
-    android:versionName="1.0.0"
-    package="com.tokopedia.customer_mid_app">
+    android:versionName="1.0.0">
 
     <application>
         <activity
-            android:name=".activity.TestConsumerSplashScreen"
+            android:name="com.tokopedia.customer_mid_app.activity.TestConsumerSplashScreen"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"

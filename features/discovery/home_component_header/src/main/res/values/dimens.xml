@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="home_channel_header_margin_default">16dp</dimen>
+
+    <dimen name="home_channel_header_cta_container">32dp</dimen>
+    <dimen name="home_channel_header_cta_icon">24dp</dimen>
+    <dimen name="home_channel_header_subtitle_top_padding">6dp</dimen>
+    <dimen name="home_channel_header_timer_top_padding">4dp</dimen>
+    <dimen name="home_channel_header_bottom_padding">12dp</dimen>
+    <dimen name="home_channel_header_bottom_padding_with_timer_old">8dp</dimen>
+</resources>

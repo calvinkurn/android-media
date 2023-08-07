@@ -27,7 +27,7 @@
             app:loader_corner_radius="5dp"
             app:loader_type="rect"
             android:ellipsize="end"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             android:layout_height="12dp" />
     </LinearLayout>
     <LinearLayout
@@ -51,7 +51,7 @@
             app:loader_corner_radius="5dp"
             app:loader_type="rect"
             android:ellipsize="end"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             android:layout_height="12dp" />
     </LinearLayout>
     <LinearLayout
@@ -75,7 +75,7 @@
             app:loader_corner_radius="5dp"
             app:loader_type="rect"
             android:ellipsize="end"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             android:layout_height="12dp" />
     </LinearLayout>
     <LinearLayout
@@ -99,7 +99,7 @@
             app:loader_corner_radius="5dp"
             app:loader_type="rect"
             android:ellipsize="end"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             android:layout_height="12dp" />
     </LinearLayout>
     <LinearLayout
@@ -123,7 +123,7 @@
             app:loader_corner_radius="5dp"
             app:loader_type="rect"
             android:ellipsize="end"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             android:layout_height="12dp" />
     </LinearLayout>
 </LinearLayout>

@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.common.utils.paging.PagingHandler
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.content.common.usecase.GetWhiteListUseCase
+import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatus
@@ -20,7 +21,6 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.data.feedrevamp.reversed
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.CheckUpcomingCampaignReminderUseCase
-import com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.FeedXTrackViewerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedNewUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetFollowingUseCase
@@ -107,7 +107,7 @@ class FeedViewModel @Inject constructor(
     private val sendReportUseCase: SubmitReportContentUseCase,
     private val getWhiteListUseCase: GetWhiteListUseCase,
     private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
-    private val trackVisitChannelBroadcasterUseCase: FeedBroadcastTrackerUseCase,
+    private val trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
     private val feedXTrackViewerUseCase: FeedXTrackViewerUseCase,
     private val checkUpcomingCampaignReminderUseCase: CheckUpcomingCampaignReminderUseCase,
     private val postUpcomingCampaignReminderUseCase: PostUpcomingCampaignReminderUseCase,
@@ -423,8 +423,9 @@ class FeedViewModel @Inject constructor(
     fun trackVisitChannel(channelId: String, rowNumber: Int) {
         viewModelScope.launchCatchError(block = {
             trackVisitChannelBroadcasterUseCase.setRequestParams(
-                FeedBroadcastTrackerUseCase.createParams(
-                    channelId
+                TrackVisitChannelBroadcasterUseCase.createParams(
+                    channelId,
+                    TrackVisitChannelBroadcasterUseCase.FEED_ENTRY_POINT_VALUE
                 )
             )
             val trackResponse = withContext(baseDispatcher.io) {
@@ -432,7 +433,7 @@ class FeedViewModel @Inject constructor(
             }
             val data = ViewsKolModel()
             data.rowNumber = rowNumber
-            data.isSuccess = trackResponse.reportVisitChannelTracking.success
+            data.isSuccess = trackResponse.model.success
             viewTrackResponse.postValue(Success(data))
         }) {
             viewTrackResponse.postValue(Fail(it))

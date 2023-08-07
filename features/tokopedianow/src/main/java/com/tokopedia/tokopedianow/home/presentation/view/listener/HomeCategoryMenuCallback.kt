@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.home.presentation.view.listener
 
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuItemUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder
@@ -8,11 +9,13 @@ import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewMod
 
 class HomeCategoryMenuCallback(
     private val analytics: HomeAnalytics,
-    private val warehouseId: String,
+    private val localCacheModel: LocalCacheModel?,
     private val viewModel: TokoNowHomeViewModel
-): TokoNowCategoryMenuViewHolder.TokoNowCategoryMenuListener {
+) : TokoNowCategoryMenuViewHolder.TokoNowCategoryMenuListener {
     override fun onCategoryMenuWidgetRetried() {
-        viewModel.getCategoryMenu(warehouseId)
+        localCacheModel?.let {
+            viewModel.getCategoryMenu(it)
+        }
     }
 
     override fun onSeeAllCategoryClicked() {
@@ -27,6 +30,7 @@ class HomeCategoryMenuCallback(
     }
 
     override fun onCategoryMenuWidgetImpression(data: TokoNowCategoryMenuUiModel) {
+        val warehouseId = localCacheModel?.warehouse_id.orEmpty()
         analytics.trackCategoryImpression(data, warehouseId)
     }
 

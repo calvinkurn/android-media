@@ -1,5 +1,6 @@
 package com.tokopedia.applink.internal
 
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
 
 object ApplinkConstInternalUserPlatform {
@@ -360,6 +361,11 @@ object ApplinkConstInternalUserPlatform {
     const val TELEPHONY_MASKING = "$NEW_INTERNAL_USER/telephony-masking"
 
     /**
+     * This param is used to identify the source page
+     **/
+    const val PARAM_SOURCE = "source"
+
+    /**
      * ## KYC Param | projectId
      * This param is used to identify the source
      **/
@@ -382,6 +388,22 @@ object ApplinkConstInternalUserPlatform {
      * This param is used to add applink callback when user is verified
      **/
     const val PARAM_CALL_BACK = "callBack"
+
+    /**
+     * ## GoTo KYC
+     * ### Open GoTo KYC
+     *
+     * @class       : GotoKycTransparentActivity
+     * @Applink     : tokopedia-android-internal://user/goto-kyc?projectId={projectId}&source={source}
+     * @param
+     *  - projectId    : required | String | ref: [PARAM_PROJECT_ID]
+     *  - source       : required only for BU | String | ref: [PARAM_SOURCE]
+     **/
+
+    const val GOTO_KYC = "$NEW_INTERNAL_USER/goto-kyc?" +
+        "$PARAM_PROJECT_ID={$PARAM_PROJECT_ID}&" +
+        "$PARAM_SOURCE={$PARAM_SOURCE}&" +
+        "$PARAM_CALL_BACK={$PARAM_CALL_BACK}"
 
     /**
      * ## KYC Param | type
@@ -511,4 +533,8 @@ object ApplinkConstInternalUserPlatform {
     const val TAB_PRIVATE = "private"
 
     const val SHARING_WISHLIST = "$NEW_INTERNAL_USER/sharing-wishlist?tab={$PARAM_TAB}"
+
+    fun getGotoKYCApplink(projectId: String, source: String, callback: String = ""): String {
+       return  UriUtil.buildUri(GOTO_KYC, projectId, source, callback)
+    }
 }

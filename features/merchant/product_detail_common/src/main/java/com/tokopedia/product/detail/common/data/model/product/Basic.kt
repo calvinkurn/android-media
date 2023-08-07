@@ -98,10 +98,6 @@ data class Category(
     }
 
     class Detail(
-            @SerializedName("breadcrumbUrl")
-            @Expose
-            val breadcrumbUrl: String = "",
-
             @SerializedName("id")
             @Expose
             val id: String = "",

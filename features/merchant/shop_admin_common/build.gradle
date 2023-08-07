@@ -13,10 +13,15 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.shopadmin.common'
+    testNamespace 'com.tokopedia.shopadmin.common.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
 

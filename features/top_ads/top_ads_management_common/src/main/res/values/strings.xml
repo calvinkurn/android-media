@@ -278,4 +278,5 @@
     <string name="topads_autoads_advantage_body_3">Kamu masih bisa atur sendiri produk yang ingin diiklankan dan anggaran harianmu.</string>
     <string name="topads_autoads_advantage_body_4">Dengan dukungan sistem pintar TopAds, produk tampil lebih sering &amp; tepat sasaran.</string>
     <string name="topads_autoads_advantage_cta">Ya, Aktifkan</string>
+    <string name="mp_ad_group_list_search_hint">Cari grup iklan di sini</string>
 </resources>

@@ -28,6 +28,7 @@ import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.analytics.EditShippingAnalytics
 import com.tokopedia.editshipping.data.preference.WhitelabelInstanCoachMarkSharePref
 import com.tokopedia.editshipping.databinding.FragmentShopShippingBinding
+import com.tokopedia.editshipping.databinding.PopupValidationBoBinding
 import com.tokopedia.editshipping.domain.model.ValidateShippingModel
 import com.tokopedia.editshipping.domain.model.editshipping.Courier
 import com.tokopedia.editshipping.domain.model.editshipping.ShopShipping
@@ -61,7 +62,6 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.android.synthetic.main.popup_validation_bo.view.*
 
 /**
  * Created by Kris on 2/19/2016.
@@ -218,7 +218,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     override fun validateShowPopup(data: ValidateShippingModel?) {
         if (data != null) {
             if (data.data.showPopup) {
-                data.let { openPopupValidation(it) }
+                openPopupValidation(data)
             } else {
                 submitData()
             }
@@ -624,12 +624,12 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
 
     private fun openPopupValidation(data: ValidateShippingModel) {
         bottomSheetValidation = BottomSheetUnify()
-        val viewBottomSheetValidation =
-            View.inflate(activity, R.layout.popup_validation_bo, null).apply {
-                ticker_validation_bo.tickerTitle =
-                    HtmlLinkHelper(context, data.data.tickerTitle).spannedString.toString()
-                ticker_validation_bo.setHtmlDescription(data.data.tickerContent)
-                ticker_validation_bo.setDescriptionClickEvent(object : TickerCallback {
+        context?.let { ctx ->
+            val viewBottomSheetValidation = PopupValidationBoBinding.inflate(LayoutInflater.from(ctx)).apply {
+                tickerValidationBo.tickerTitle =
+                    HtmlLinkHelper(ctx, data.data.tickerTitle).spannedString.toString()
+                tickerValidationBo.setHtmlDescription(data.data.tickerContent)
+                tickerValidationBo.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
                         val url = data.data.tickerContent.substringAfter("<a href='")
                             .substringBefore("'>di sini</a>")
@@ -645,24 +645,25 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
                     }
                 })
 
-                point_one.text = HtmlLinkHelper(context, data.data.popupContent[0]).spannedString
-                point_two.text = HtmlLinkHelper(context, data.data.popupContent[1]).spannedString
-                point_three.text = HtmlLinkHelper(context, data.data.popupContent[2]).spannedString
+                pointOne.text = HtmlLinkHelper(ctx, data.data.popupContent[0]).spannedString
+                pointTwo.text = HtmlLinkHelper(ctx, data.data.popupContent[1]).spannedString
+                pointThree.text = HtmlLinkHelper(ctx, data.data.popupContent[2]).spannedString
 
-                btn_nonaktifkan.setOnClickListener {
+                btnNonaktifkan.setOnClickListener {
                     submitData()
                     bottomSheetValidation?.dismiss()
                 }
-                btn_aktifkan.setOnClickListener {
+                btnAktifkan.setOnClickListener {
                     bottomSheetValidation?.dismiss()
                 }
             }
 
-        bottomSheetValidation?.apply {
-            setTitle(LABEL_VALIDATION_BO)
-            setCloseClickListener { dismiss() }
-            setChild(viewBottomSheetValidation)
-            setOnDismissListener { dismiss() }
+            bottomSheetValidation?.apply {
+                setTitle(LABEL_VALIDATION_BO)
+                setCloseClickListener { dismiss() }
+                setChild(viewBottomSheetValidation.root)
+                setOnDismissListener { dismiss() }
+            }
         }
 
         fragmentManager?.let {

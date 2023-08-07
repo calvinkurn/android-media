@@ -11,6 +11,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.util.CenterLayoutManager
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
+import com.tokopedia.product.detail.view.viewholder.PdpRecommendationWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
@@ -35,7 +36,9 @@ class ProductDetailTopAdsVerificationTest {
 
             override fun getActivityIntent(): Intent {
                 val context = InstrumentationRegistry.getInstrumentation().targetContext
-                return ProductDetailActivity.createIntent(context, "8787687640")
+                return ProductDetailActivity.createIntent(context, "2170611118").apply {
+                    putExtra("layoutID", "177")
+                }
             }
         }
 
@@ -63,6 +66,7 @@ class ProductDetailTopAdsVerificationTest {
         val itemCount = recyclerView.adapter?.itemCount ?: 0
 
         for (i in 0 until itemCount) {
+            waitForData(500)
             scrollRecyclerViewToPosition(recyclerView, i)
             checkTopAdsOnProductRecommendationViewHolder(recyclerView, i)
         }
@@ -71,17 +75,19 @@ class ProductDetailTopAdsVerificationTest {
 
     private fun checkTopAdsOnProductRecommendationViewHolder(recyclerView: RecyclerView, i: Int) {
         val viewHolder = recyclerView.findViewHolderForAdapterPosition(i)
-        if (viewHolder is ProductRecommendationViewHolder) {
+        if (
+            viewHolder is ProductRecommendationViewHolder ||
+            viewHolder is PdpRecommendationWidgetViewHolder
+        ) {
             waitForData()
-            val childRecyclerView: RecyclerView? =
-                viewHolder.itemView.findViewById(R.id.carouselProductCardRecyclerView)
+            val childRecyclerView: RecyclerView? = viewHolder.getChildRecyclerView()
 
-            //check if adapter null, means recom widget data is empty from backend
+            // check if adapter null, means recom widget data is empty from backend
             if (childRecyclerView != null && childRecyclerView.adapter != null) {
                 clickOnEachItemRecyclerView(
-                    viewHolder.itemView,
-                    com.tokopedia.carouselproductcard.R.id.carouselProductCardRecyclerView,
-                    0
+                    view = viewHolder.itemView,
+                    recyclerViewId = childRecyclerView.id,
+                    fixedItemPositionLimit = 0
                 )
             }
         }
@@ -92,11 +98,17 @@ class ProductDetailTopAdsVerificationTest {
         activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset(position, 0) }
     }
 
-    private fun waitForData() {
-        Thread.sleep(15000)
+    private fun waitForData(millis: Long = 15000) {
+        Thread.sleep(millis)
     }
 
     private fun login() {
         InstrumentationAuthHelper.loginToAnUser(activityRule.activity.application)
+    }
+
+    private fun RecyclerView.ViewHolder.getChildRecyclerView(): RecyclerView? {
+        return itemView
+            .findViewById(R.id.carouselProductCardRecyclerView) ?: itemView
+            .findViewById(R.id.rv_recommendation_vertical)
     }
 }

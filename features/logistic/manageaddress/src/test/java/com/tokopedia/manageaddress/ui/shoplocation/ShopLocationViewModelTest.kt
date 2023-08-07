@@ -29,7 +29,7 @@ class ShopLocationViewModelTest {
 
     private val shopLocationObserver: Observer<ShopLocationState<ShopLocationModel>> = mockk(relaxed = true)
     private val resultObserver: Observer<ShopLocationState<ShopLocationSetStatusResponse>> = mockk(relaxed = true)
-    private val shopWhitelistObserver: Observer<ShopLocationState<ShopLocWhitelist>> = mockk(relaxed = true)
+    private val shopWhitelistObserver: Observer<ShopLocationState<KeroGetRolloutEligibility>> = mockk(relaxed = true)
 
     private lateinit var shopLocationViewModel: ShopLocationViewModel
 
@@ -74,7 +74,7 @@ class ShopLocationViewModelTest {
 
     @Test
     fun `Get Whitelisted User success`() {
-        coEvery { repo.getShopLocationWhitelist(any()) } returns ShopLocationWhitelistResponse()
+        coEvery { repo.getShopLocationWhitelist(any()) } returns KeroGetRolloutEligibilityResponse()
         shopLocationViewModel.getWhitelistData(123)
         verify { shopWhitelistObserver.onChanged(match { it is ShopLocationState.Success }) }
     }

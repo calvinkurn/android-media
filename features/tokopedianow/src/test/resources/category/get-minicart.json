@@ -1,0 +1,102 @@
+{
+  "status": "OK",
+  "mini_cart_v3": {
+    "error_message": [],
+    "status": "OK",
+    "data": {
+      "errors": [],
+      "beli_button_config": {
+        "button_type": 1,
+        "button_wording": "Beli"
+      },
+      "bottom_bar": {
+        "text": "",
+        "is_shop_active": false,
+        "total_price_fmt": ""
+      },
+      "total_product_count": 3,
+      "total_product_error": 0,
+      "total_product_price": 27300,
+      "simplified_shopping_summary": {
+        "text": "",
+        "sections": []
+      },
+      "available_section": {
+        "available_group": [
+          {
+            "cart_string": "11515028-0-11528233-198062699",
+            "shop": {
+              "shop_id": 11515028,
+              "shop_name": "11515028tknw",
+              "shop_type_info": {
+                "title_fmt": "official_store"
+              }
+            },
+            "shipment_information": {
+              "free_shipping": {
+                "eligible": false
+              },
+              "free_shipping_extra": {
+                "eligible": false
+              }
+            },
+            "cart_details": [
+              {
+                "bundle_detail": {
+                  "bundle_id": 0,
+                  "bundle_name": "",
+                  "bundle_type": "",
+                  "bundle_status": "",
+                  "bundle_description": "",
+                  "bundle_price": 0,
+                  "bundle_price_fmt": "",
+                  "bundle_original_price": 0,
+                  "bundle_original_price_fmt": "",
+                  "bundle_min_order": 0,
+                  "bundle_max_order": 0,
+                  "bundle_quota": 0,
+                  "edit_app_link": "",
+                  "bundle_qty": 0,
+                  "bundle_group_id": "",
+                  "slash_price_label": "",
+                  "bundle_grayscale_icon_url": ""
+                },
+                "products": [
+                  {
+                    "cart_id": 6527787934,
+                    "parent_id": 1223,
+                    "product_id": 2025598474,
+                    "product_quantity": 1,
+                    "product_notes": "",
+                    "campaign_id": 0,
+                    "product_tracker_data": {
+                      "attribution": ""
+                    },
+                    "product_weight": 5000,
+                    "slash_price_label": "",
+                    "warehouse_id": 345,
+                    "category_id": 123,
+                    "category": "",
+                    "product_name": "Jeruk",
+                    "variant_description_detail": {
+                      "variant_name": []
+                    },
+                    "free_shipping_general": {
+                      "bo_name": "",
+                      "bo_type": 0,
+                      "badge_url": ""
+                    },
+                    "product_price": 2000,
+                    "product_invenage_value": 94,
+                    "product_switch_invenage": 1
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "unavailable_section": []
+    }
+  }
+}

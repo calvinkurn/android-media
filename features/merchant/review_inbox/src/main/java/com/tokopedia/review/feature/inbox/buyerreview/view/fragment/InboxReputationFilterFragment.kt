@@ -33,7 +33,6 @@ class InboxReputationFilterFragment : BaseDaggerFragment(),
     InboxReputationFilterAdapter.FilterListener, InboxReputationFilterActivity.ResetListener {
 
     companion object {
-        private const val FILTER_ALL_TIME: String = "1"
         private const val FILTER_LAST_WEEK: String = "2"
         private const val FILTER_THIS_MONTH: String = "3"
         private const val FILTER_LAST_3_MONTH: String = "4"
@@ -137,12 +136,6 @@ class InboxReputationFilterFragment : BaseDaggerFragment(),
     private fun createListOption(): ArrayList<OptionUiModel> {
         val list: ArrayList<OptionUiModel> = ArrayList()
         list.add(HeaderOptionUiModel(getString(R.string.filter_time)))
-        list.add(
-            OptionUiModel(
-                getString(R.string.filter_all_time),
-                GetInboxReputationUseCase.PARAM_TIME_FILTER, FILTER_ALL_TIME, list.size
-            )
-        )
         list.add(
             OptionUiModel(
                 getString(R.string.filter_last_7_days),

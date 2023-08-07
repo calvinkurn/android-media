@@ -161,7 +161,7 @@ object DeeplinkMapperOrder {
      * @return tokopedia-android-internal://snapshot/order?order_id=166497971&order_detail_id=20370225
      * or will return empty string if given invalid deep link
      * */
-    fun getSnapshotOrderInternalAppLink(context: Context, deepLink: String): String {
+    fun getSnapshotOrderInternalAppLink(deepLink: String): String {
         val uri = Uri.parse(deepLink)
         return when {
             uri.pathSegments.size == 3 && uri.pathSegments[0] == PATH_ORDER -> {

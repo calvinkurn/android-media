@@ -99,6 +99,25 @@ internal class NavToolbarIconAdapter(
         notifyDataSetChanged()
     }
 
+    /**
+     * replace icon with the new icon id
+     * @param oldIconId id of the old icon
+     * @param newIconId id of the new icon
+     * this method is used to update the icon with the registered icon id
+     * in the [com.tokopedia.iconunify.IconUnify.Companion]
+     */
+    fun updateIcon(oldIconId: Int, newIconId: Int) {
+        var position = 0
+        val oldIcon = this.iconConfig.iconList.find {
+            it.id == oldIconId
+        } ?: return
+        val oldIconIndex = this.iconConfig.iconList.indexOf(oldIcon)
+        iconConfig.iconList.removeAt(oldIconIndex)
+        val newIcon = oldIcon.copy(id = newIconId)
+        iconConfig.iconList.add(oldIconIndex, newIcon)
+        notifyItemChanged(position)
+    }
+
     fun setIconCounter(iconId: Int, counter: Int) {
         val selectedIcon = this.iconConfig.iconList.find { it.id == iconId }
         val selectedIconPosition = this.iconConfig.iconList.indexOf(selectedIcon)
@@ -283,7 +302,7 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
         val unifyColor = if (itemView.context.isDarkMode()) {
             ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
         } else {
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         }
         return unifyColor
     }
