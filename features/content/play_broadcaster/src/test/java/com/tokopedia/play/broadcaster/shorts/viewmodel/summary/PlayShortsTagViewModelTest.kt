@@ -158,6 +158,151 @@ class PlayShortsTagViewModelTest {
     }
 
     @Test
+    fun playShorts_summary_tag_selectTagToMaxTagAllowed() {
+        val mockSelectedIdxList = listOf(1, 2, 4)
+        val maxTags = 3
+
+        coEvery { mockRepo.getTagRecommendation(any()) } returns mockTagsSize5.copy(maxTags = maxTags)
+
+        val robot = PlayShortsViewModelRobot(
+            repo = mockRepo
+        )
+
+        robot.use {
+            val state = it.setUp {
+                submitAction(PlayShortsAction.LoadTag)
+            }.recordState {
+                submitAction(PlayShortsAction.SelectTag(mockTagsSize5.tags.toList()[mockSelectedIdxList.first()]))
+                submitAction(PlayShortsAction.SelectTag(mockTagsSize5.tags.toList()[mockSelectedIdxList.last()]))
+            }
+
+            assertTagSuccess(state.tags) { data ->
+                data.tags.forEachIndexed { idx, e ->
+                    if (idx == mockSelectedIdxList.first() || idx == mockSelectedIdxList.last()) {
+                        e.isChosen.assertTrue()
+                    }
+                    else {
+                        e.isChosen.assertFalse()
+                    }
+                    e.isActive.assertTrue()
+                }
+            }
+
+            val state2 = it.recordState {
+                submitAction(PlayShortsAction.SelectTag(mockTagsSize5.tags.toList()[mockSelectedIdxList[1]]))
+            }
+
+            assertTagSuccess(state2.tags) { data ->
+                data.tags.forEachIndexed { idx, e ->
+                    if (mockSelectedIdxList.contains(idx)) {
+                        e.isChosen.assertTrue()
+                        e.isActive.assertTrue()
+                    }
+                    else {
+                        e.isChosen.assertFalse()
+                        e.isActive.assertFalse()
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
+    fun playShorts_summary_tag_AlrMaxTag_unselectTag() {
+        val mockSelectedIdxList = listOf(1, 2, 4)
+        val maxTags = 3
+
+        coEvery { mockRepo.getTagRecommendation(any()) } returns mockTagsSize5.copy(maxTags = maxTags)
+
+        val robot = PlayShortsViewModelRobot(
+            repo = mockRepo
+        )
+
+        robot.use {
+            val state = it.setUp {
+                submitAction(PlayShortsAction.LoadTag)
+            }.recordState {
+                mockSelectedIdxList.forEach { idx ->
+                    submitAction(PlayShortsAction.SelectTag(mockTagsSize5.tags.toList()[idx]))
+                }
+            }
+
+            assertTagSuccess(state.tags) { data ->
+                data.tags.forEachIndexed { idx, e ->
+                    if (mockSelectedIdxList.contains(idx)) {
+                        e.isChosen.assertTrue()
+                        e.isActive.assertTrue()
+                    }
+                    else {
+                        e.isChosen.assertFalse()
+                        e.isActive.assertFalse()
+                    }
+                }
+            }
+
+            val state2 = it.recordState {
+                submitAction(PlayShortsAction.SelectTag(mockTagsSize5.tags.toList()[mockSelectedIdxList.first()]))
+            }
+
+            assertTagSuccess(state2.tags) { data ->
+                data.tags.forEachIndexed { idx, e ->
+                    if (mockSelectedIdxList.contains(idx) && idx != mockSelectedIdxList.first()) {
+                        e.isChosen.assertTrue()
+                    }
+                    else {
+                        e.isChosen.assertFalse()
+                    }
+                    e.isActive.assertTrue()
+                }
+            }
+        }
+    }
+
+    @Test
+    fun playShorts_summary_tag_selectDisabledTag() {
+        val mockSelectedIdxList = listOf(1, 2, 4)
+        val maxTags = 3
+
+        coEvery { mockRepo.getTagRecommendation(any()) } returns mockTagsSize5.copy(maxTags = maxTags)
+
+        val robot = PlayShortsViewModelRobot(
+            repo = mockRepo
+        )
+
+        robot.use {
+            val state = it.setUp {
+                submitAction(PlayShortsAction.LoadTag)
+            }.recordState {
+                mockSelectedIdxList.forEach { idx ->
+                    submitAction(PlayShortsAction.SelectTag(mockTagsSize5.tags.toList()[idx]))
+                }
+            }
+
+            assertTagSuccess(state.tags) { data ->
+                data.tags.forEachIndexed { idx, e ->
+                    if (mockSelectedIdxList.contains(idx)) {
+                        e.isChosen.assertTrue()
+                        e.isActive.assertTrue()
+                    }
+                    else {
+                        e.isChosen.assertFalse()
+                        e.isActive.assertFalse()
+                    }
+                }
+            }
+
+            val state2 = it.recordState {
+                submitAction(PlayShortsAction.SelectTag(mockTagsSize5.tags.toList()[3]))
+            }
+
+            assertTagSuccess(state2.tags) { data ->
+                data.tags.toList()[3].isChosen.assertFalse()
+                data.tags.toList()[3].isActive.assertFalse()
+            }
+        }
+    }
+
+    @Test
     fun playShorts_summary_tag_cantSelectUnselectTagIfStatusNotSuccess() {
         val mockSelectedIdxList = listOf(2, 4)
 
