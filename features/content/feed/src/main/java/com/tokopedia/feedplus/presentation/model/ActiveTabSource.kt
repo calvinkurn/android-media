@@ -6,4 +6,8 @@ package com.tokopedia.feedplus.presentation.model
 data class ActiveTabSource(
     val tabName: String?,
     val index: Int
-)
+) {
+    companion object {
+        val Empty = ActiveTabSource(null, 0)
+    }
+}

@@ -114,7 +114,7 @@ object DeeplinkMapperContent {
      */
     private fun goToAppLinkFeedDetailInternal(uri: Uri): String {
         return UriUtil.buildUriAppendParams(
-            "${ApplinkConstInternalContent.INTERNAL_CONTENT}/${uri.lastPathSegment}",
+            "${ApplinkConstInternalContent.INTERNAL_CONTENT}/detail/${uri.lastPathSegment}",
             buildMap {
                 val sourceName = uri.getQueryParameter(EXTRA_SOURCE_NAME)
                 if (sourceName != null) put(UF_EXTRA_FEED_SOURCE_NAME, sourceName)
