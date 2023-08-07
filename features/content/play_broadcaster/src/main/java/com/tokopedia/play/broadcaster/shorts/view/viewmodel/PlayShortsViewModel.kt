@@ -432,19 +432,30 @@ class PlayShortsViewModel @Inject constructor(
     }
 
     private fun handleSelectTag(tag: PlayTagItem) {
+
+        if (!tag.isActive) return
+
         val tagState = _tags.value
         when (tagState is NetworkResult.Success) {
             true -> {
                 _tags.update {
+                    val newTags = tagState.data.tags.map {
+                        if (it.isActive && it.tag == tag.tag) {
+                            it.copy(isChosen = !it.isChosen)
+                        } else {
+                            it
+                        }
+                    }.toSet()
+
+                    val finalTags = if (newTags.count { it.isChosen } == tagState.data.maxTags) {
+                        newTags.map { it.copy(isActive = it.isChosen) }
+                    } else {
+                        newTags.map { it.copy(isActive = true) }
+                    }.toSet()
+
                     NetworkResult.Success(
                         data = tagState.data.copy(
-                            tags = tagState.data.tags.map {
-                                if (it.isActive && it.tag == tag.tag) {
-                                    it.copy(isChosen = !it.isChosen)
-                                } else {
-                                    it
-                                }
-                            }.toSet()
+                            tags = finalTags
                         )
                     )
                 }

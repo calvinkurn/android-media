@@ -21,7 +21,15 @@ class TagViewHolder private constructor() {
         fun bind(item: PlayTagItem) {
             binding.chipsTag.chipText = item.tag
 
-            binding.chipsTag.chipType = if (item.isChosen) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
+            binding.chipsTag.chipType = when {
+                item.isActive -> {
+                    if (item.isChosen)
+                        ChipsUnify.TYPE_SELECTED
+                    else
+                        ChipsUnify.TYPE_NORMAL
+                }
+                else -> ChipsUnify.TYPE_DISABLE
+            }
 
             binding.chipsTag.setOnClickListener {
                 listener.onTagClicked(item)
