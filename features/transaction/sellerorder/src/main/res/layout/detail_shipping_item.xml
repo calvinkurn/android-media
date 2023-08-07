@@ -79,19 +79,19 @@
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:visibility="gone"
-        tools:visibility="visible"
         android:id="@+id/tv_courier_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:textColor="@color/Unify_NN950_68"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/tv_shipping_name"
         app:layout_constraintTop_toBottomOf="@+id/kurir_label"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
-        tools:text="Di-pickup oleh AnterAja" />
+        tools:text="Di-pickup oleh AnterAja"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/booking_code_title"
