@@ -1035,7 +1035,7 @@ object DeeplinkMainApp {
             DLP.goTo(DeeplinkMapperUser::getRegisteredUserNavigation)
         ),
         "webview" to mutableListOf(
-            DLP.goTo(ApplinkConstInternalGlobal.WEBVIEW_BASE)
+            DLP.goTo(DeeplinkMapper::getWebviewApplink)
         ),
         "webviewbackhome" to mutableListOf(
             DLP.goTo(ApplinkConstInternalGlobal.WEBVIEW_BACK_HOME)

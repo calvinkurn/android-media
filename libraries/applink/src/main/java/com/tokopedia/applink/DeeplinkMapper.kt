@@ -285,6 +285,14 @@ object DeeplinkMapper {
         return ""
     }
 
+    fun getWebviewApplink(deeplink: String): String {
+        return if (deeplink.contains("landing-dana-instant")) {
+            "tokopedia-android-internal://user/webviewkyc"
+        } else {
+            ApplinkConstInternalGlobal.WEBVIEW_BASE
+        }
+    }
+
     fun getTokopediaSchemeList(): Map<String, MutableList<DLP>> {
         return DeeplinkMainApp.deeplinkPatternTokopediaSchemeListv2
     }
