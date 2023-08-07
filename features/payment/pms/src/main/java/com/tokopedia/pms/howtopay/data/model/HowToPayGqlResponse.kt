@@ -55,7 +55,7 @@ data class HelpPageData(
 ) {
     fun isVA(): Boolean = gatewayType == VA
     companion object {
-        private const val VA = "VA"
+        private const val VA = "VIRTUAL_ACCOUNT"
     }
 }
 

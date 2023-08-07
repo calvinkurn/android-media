@@ -18,6 +18,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logger.ServerLogger
@@ -233,6 +234,7 @@ class HowToPayFragment : BaseDaggerFragment() {
 
     private fun addVATicker() {
         tickerAmountNote.visible()
+        tickerAmountNote.tickerTitle = String.EMPTY
         tickerAmountNote.setTextDescription(getString(R.string.pms_va_ticker_description))
     }
 
