@@ -231,7 +231,6 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
                 spanSizeLookup = createSpanSizeLookup()
             }
             adapter = categoryAdapter
-            itemAnimator = null
             addProductItemDecoration()
         }
     }
