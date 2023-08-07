@@ -58,6 +58,7 @@ import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.gesture.PlayClickTouchListener
 import com.tokopedia.play.ui.component.UiComponent
 import com.tokopedia.play.ui.engagement.model.EngagementUiModel
+import com.tokopedia.play.ui.explorewidget.PlayChannelRecommendationFragment
 import com.tokopedia.play.util.CachedState
 import com.tokopedia.play.util.changeConstraint
 import com.tokopedia.play.util.isChanged
@@ -102,7 +103,6 @@ import com.tokopedia.play.view.uimodel.action.ClickShareAction
 import com.tokopedia.play.view.uimodel.action.ClickSharingOptionAction
 import com.tokopedia.play.view.uimodel.action.CloseSharingOptionAction
 import com.tokopedia.play.view.uimodel.action.CommentVisibilityAction
-import com.tokopedia.play.view.uimodel.action.FetchWidgets
 import com.tokopedia.play.view.uimodel.action.InteractiveGameResultBadgeClickedAction
 import com.tokopedia.play.view.uimodel.action.OpenFooterUserReport
 import com.tokopedia.play.view.uimodel.action.OpenKebabAction
@@ -524,6 +524,11 @@ class PlayUserInteractionFragment @Inject constructor(
                         )
                     )
                 }
+            }
+            is PlayChannelRecommendationFragment -> {
+                childFragment.setFactory(object : PlayChannelRecommendationFragment.Factory {
+                    override fun getViewModelFactory(): ViewModelProvider = getPlayViewModelProvider()
+                })
             }
         }
     }
@@ -1006,7 +1011,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 handleStatus(cachedState)
                 handleAutoSwipe(cachedState)
                 renderEngagement(prevState?.engagement, state.engagement)
-                if (cachedState.isChanged { it.exploreWidget.shouldShow }) renderExploreView(state.exploreWidget.shouldShow)
+                renderExploreView(cachedState)
 
                 if (prevState?.tagItems?.product != state.tagItems.product &&
                     prevState?.tagItems?.voucher != state.tagItems.voucher
@@ -2144,19 +2149,22 @@ class PlayUserInteractionFragment @Inject constructor(
      * Explore Widget
      */
 
-    private fun renderExploreView(shouldShow: Boolean) {
-        exploreView?.setupVisibility(shouldShow)
+    private fun renderExploreView(state: CachedState<PlayViewerNewUiState>) {
+        if (state.isChanged { it.exploreWidget }) {
+            exploreView?.setupVisibility(state.value.exploreWidget.shouldShow)
+            exploreView?.setText(state.value.exploreWidget.config.categoryWidgetConfig.categoryName)
+        }
     }
 
     override fun onExploreClicked(viewComponent: ExploreWidgetViewComponent) {
-        playViewModel.submitAction(FetchWidgets)
-        eventBus.emit(ExploreWidgetViewComponent.Event.OnClicked)
-        PlayExploreWidgetFragment.getOrCreate(childFragmentManager, requireActivity().classLoader)
+        eventBus.emit(ExploreWidgetViewComponent.Event.OnClicked(playViewModel.widgetInfo))
+        PlayChannelRecommendationFragment
+            .getOrCreate(childFragmentManager, requireActivity().classLoader)
             .showNow(childFragmentManager)
     }
 
     override fun onExploreWidgetIconImpressed(viewComponent: ExploreWidgetViewComponent) {
-        eventBus.emit(ExploreWidgetViewComponent.Event.OnImpressed)
+        eventBus.emit(ExploreWidgetViewComponent.Event.OnImpressed(playViewModel.widgetInfo))
     }
 
     private fun onCommentIconEvent(event: CommentIconUiComponent.Event) {
