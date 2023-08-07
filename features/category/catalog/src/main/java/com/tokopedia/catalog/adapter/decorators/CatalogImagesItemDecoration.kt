@@ -14,6 +14,6 @@ internal class CatalogImagesItemDecoration : RecyclerView.ItemDecoration() {
         val itemPosition = parent.getChildAdapterPosition(view)
         if (itemPosition == RecyclerView.NO_POSITION) return
 
-        outRect.right = view.context.resources.getDimensionPixelSize(R.dimen.dp_8)
+        outRect.right = view.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8)
     }
 }

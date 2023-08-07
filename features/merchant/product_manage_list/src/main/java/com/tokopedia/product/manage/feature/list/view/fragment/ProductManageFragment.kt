@@ -2893,17 +2893,17 @@ open class ProductManageFragment :
         context?.let { it ->
             val htmlText = HtmlLinkHelper(
                 it,
-                getString(R.string.product_manage_confirm_inactive_dt_product_desc)
+                getString(com.tokopedia.product.manage.common.R.string.product_manage_confirm_inactive_dt_product_desc)
             )
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(
                     getString(
-                        R.string.product_manage_confirm_inactive_dt_product_title
+                        com.tokopedia.product.manage.common.R.string.product_manage_confirm_inactive_dt_product_title
                     )
                 )
                 setDescription(htmlText.spannedString ?: String.EMPTY)
-                setPrimaryCTAText(getString(R.string.product_manage_confirm_inactive_dt_product_positive_button))
-                setSecondaryCTAText(getString(R.string.product_manage_confirm_dt_product_cancel_button))
+                setPrimaryCTAText(getString(com.tokopedia.product.manage.common.R.string.product_manage_confirm_inactive_dt_product_positive_button))
+                setSecondaryCTAText(getString(com.tokopedia.product.manage.common.R.string.product_manage_confirm_dt_product_cancel_button))
                 setPrimaryCTAClickListener {
                     val productIds = itemsChecked.map { item -> item.id }
                     viewModel.editProductsByStatus(
@@ -3579,7 +3579,7 @@ open class ProductManageFragment :
                 context?.let { context ->
                     ContextCompat.getColor(
                         context,
-                        com.tokopedia.unifycomponents.R.color.Unify_NN300
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN300
                     )
                 }?.let { color ->
                     iconMenuAddProduct?.setColorFilter(
@@ -3608,7 +3608,7 @@ open class ProductManageFragment :
                     title
                 )
                 setDescription(desc)
-                setPrimaryCTAText(getString(com.tokopedia.product.manage.common.R.string.oke))
+                setPrimaryCTAText(getString(com.tokopedia.design.R.string.oke))
                 setPrimaryCTAClickListener {
                     dismiss()
                 }

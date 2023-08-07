@@ -15,6 +15,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.UnifyMotion
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 object ScpRewardsToaster {
     private val emptyClickListener = View.OnClickListener { }
@@ -76,7 +77,7 @@ object ScpRewardsToaster {
         if (type == TYPE_NORMAL) {
             constraintLayoutToaster.setBackgroundResource(R.drawable.scp_rewards_toaster_bg_normal)
         } else {
-            constraintLayoutToaster.setBackgroundResource(R.drawable.toaster_bg_error)
+            constraintLayoutToaster.setBackgroundResource(unifycomponentsR.drawable.toaster_bg_error)
         }
 
         val actionTextButton = viewLayout.findViewById<Typography>(R.id.snackbar_btn)

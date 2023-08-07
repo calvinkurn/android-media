@@ -87,7 +87,7 @@ class MPSFragmentTest {
 
         onView(withId(R.id.mpsSwipeRefreshLayout)).check(matches(not(isDisplayed())))
         onView(withId(R.id.mpsLoadingView)).check(matches(not(isDisplayed())))
-        onView(withId(R.id.main_retry)).check(matches(isDisplayed()))
+        onView(withId(com.tokopedia.abstraction.R.id.main_retry)).check(matches(isDisplayed()))
     }
 
     @Test
