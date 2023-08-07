@@ -16,7 +16,6 @@ import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.ExploreWidgetItemUiModel
 import com.tokopedia.play.view.uimodel.ExploreWidgetState
 import com.tokopedia.play.view.uimodel.ExploreWidgetType
-import com.tokopedia.play.view.uimodel.TabMenuUiModel
 import com.tokopedia.play.view.uimodel.WidgetParamUiModel
 import com.tokopedia.play.view.uimodel.WidgetUiModel
 import com.tokopedia.play.view.uimodel.action.DismissExploreWidget
@@ -28,17 +27,6 @@ import com.tokopedia.play.view.uimodel.recom.CategoryWidgetConfig
 import com.tokopedia.play.view.uimodel.recom.ExploreWidgetConfig
 import com.tokopedia.play.view.uimodel.recom.PlayChannelRecommendationConfig
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMock
-import com.tokopedia.play.widget.ui.model.PartnerType
-import com.tokopedia.play.widget.ui.model.PlayWidgetChannelTypeTransition
-import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetPartnerUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetProduct
-import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
-import com.tokopedia.play.widget.ui.model.PlayWidgetShareUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetTotalView
-import com.tokopedia.play.widget.ui.model.PlayWidgetVideoUiModel
-import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
-import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
@@ -301,7 +289,7 @@ class PlayChannelRecomTest {
                 it.submitAction(NextPageWidgets(ExploreWidgetType.Category))
             }
             it.viewModel.isAnyBottomSheetsShown.assertTrue()
-            stateAndEvent.first.exploreWidget.data.state.isFail.assertTrue()
+            stateAndEvent.first.exploreWidget.category.state.isFail.assertTrue()
         }
     }
 }
