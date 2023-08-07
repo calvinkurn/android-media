@@ -144,6 +144,11 @@ class PromoCheckoutViewModel @Inject constructor(
     val getPromoSuggestionResponse: LiveData<GetPromoSuggestionAction>
         get() = _getPromoSuggestionResponse
 
+    // Live data to handle actionable CTA
+    private val _getActionableApplinkNavigation = MutableLiveData<String>()
+    val getActionableApplinkNavigation: LiveData<String>
+        get() = _getActionableApplinkNavigation
+
     // Page source : CART, CHECKOUT, OCC
     fun getPageSource(): Int {
         return fragmentUiModel.value?.uiData?.pageSource ?: 0
@@ -177,6 +182,10 @@ class PromoCheckoutViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
+        cancelAllJobs()
+    }
+
+    fun cancelAllJobs() {
         getCouponListRecommendationUseCase.cancelJobs()
         validateUseUseCase.cancelJobs()
         clearCacheAutoApplyStackUseCase.cancelJobs()
@@ -1409,6 +1418,23 @@ class PromoCheckoutViewModel @Inject constructor(
 
         setFragmentStateHasPromoSelected(false)
         resetRecommendedPromo()
+    }
+
+    fun handlePromoListAfterClickPromoItem(
+        element: PromoListItemUiModel,
+        position: Int
+    ) {
+        if (element.uiState.isContainActionableGopayCicilCTA) {
+            _getActionableApplinkNavigation.value = element.uiData.cta.applink
+            analytics.sendClickActivatedGopayCicilEvent(
+                getPageSource(),
+                element.uiData.promoCode,
+                element.uiData.benefitAmount,
+                position
+            )
+        } else {
+            updatePromoListAfterClickPromoItem(element)
+        }
     }
 
     fun updatePromoListAfterClickPromoItem(element: PromoListItemUiModel) {
