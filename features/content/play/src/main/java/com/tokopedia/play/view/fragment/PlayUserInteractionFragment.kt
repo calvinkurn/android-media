@@ -525,6 +525,11 @@ class PlayUserInteractionFragment @Inject constructor(
                     )
                 }
             }
+            is PlayChannelRecommendationFragment -> {
+                childFragment.setFactory(object : PlayChannelRecommendationFragment.Factory {
+                    override fun getViewModelFactory(): ViewModelProvider = getPlayViewModelProvider()
+                })
+            }
         }
     }
 
@@ -2154,11 +2159,6 @@ class PlayUserInteractionFragment @Inject constructor(
         eventBus.emit(ExploreWidgetViewComponent.Event.OnClicked(playViewModel.widgetInfo))
         PlayChannelRecommendationFragment
             .getOrCreate(childFragmentManager, requireActivity().classLoader)
-            .apply {
-                setFactory(object : PlayChannelRecommendationFragment.Factory {
-                    override fun getViewModelFactory(): ViewModelProvider = getPlayViewModelProvider()
-                })
-            }
             .showNow(childFragmentManager)
     }
 
