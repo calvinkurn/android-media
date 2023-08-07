@@ -9,14 +9,12 @@ import com.tokopedia.logisticCommon.data.entity.response.AutoFillResponse
 import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.repository.ShopLocationRepository
-import com.tokopedia.logisticCommon.data.response.AutoCompleteResponse
 import com.tokopedia.logisticCommon.data.response.GetDistrictDetailsResponse
 import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
 import com.tokopedia.logisticCommon.data.response.KeroDistrictRecommendation
 import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocCheckCouriers
 import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocCheckCouriersNewLocResponse
 import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocationUpdateWarehouseResponse
-import com.tokopedia.logisticCommon.domain.model.Place
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -41,7 +39,6 @@ class ShopEditAddressViewModelTest {
     private val shopRepo: ShopLocationRepository = mockk(relaxed = true)
     private val autoCompleteMapper = AutoCompleteMapper()
 
-    private val autoCompleteListObserver: Observer<Result<Place>> = mockk(relaxed = true)
     private val districtLocationObserver: Observer<Result<DistrictLocation>> = mockk(relaxed = true)
     private val zipCodeListObserver: Observer<Result<KeroDistrictRecommendation>> = mockk(relaxed = true)
     private val districtGeocodeObserver: Observer<Result<KeroMapsAutofill>> = mockk(relaxed = true)
@@ -56,26 +53,11 @@ class ShopEditAddressViewModelTest {
     fun setup() {
         Dispatchers.setMain(TestCoroutineDispatcher())
         shopEditAddressViewModel = ShopEditAddressViewModel(keroRepo, shopRepo, autoCompleteMapper)
-        shopEditAddressViewModel.autoCompleteList.observeForever(autoCompleteListObserver)
         shopEditAddressViewModel.districtLocation.observeForever(districtLocationObserver)
         shopEditAddressViewModel.zipCodeList.observeForever(zipCodeListObserver)
         shopEditAddressViewModel.districtGeocode.observeForever(districtGeocodeObserver)
         shopEditAddressViewModel.checkCouriers.observeForever(checkCouriersObserver)
         shopEditAddressViewModel.saveEditShop.observeForever(saveEditShopObserver)
-    }
-
-    @Test
-    fun `Get placeId from warehouse district success`() {
-        coEvery { keroRepo.getAutoComplete(any(), any()) } returns AutoCompleteResponse()
-        shopEditAddressViewModel.getAutoCompleteList("Jakarta")
-        verify { autoCompleteListObserver.onChanged(match { it is Success }) }
-    }
-
-    @Test
-    fun `Get placeId from warehouse district failed`() {
-        coEvery { keroRepo.getAutoComplete(any(), any()) } throws defaultThrowable
-        shopEditAddressViewModel.getAutoCompleteList("Jakarta")
-        verify { autoCompleteListObserver.onChanged(match { it is Fail }) }
     }
 
     @Test

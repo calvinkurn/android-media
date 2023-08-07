@@ -151,7 +151,6 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     }
 
                     address?.let {
-                        viewModel.getAutoCompleteList(it.districtName)
                         warehouseModel?.districtId = it.districtId
                     }
                 }
@@ -225,13 +224,6 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     }
                 }
                 is Fail -> zipCodes = arrayListOf()
-            }
-        }
-
-        viewModel.autoCompleteList.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> viewModel.getDistrictLocation(it.data.data.first().placeId)
-                is Fail -> Timber.d(it.throwable)
             }
         }
 

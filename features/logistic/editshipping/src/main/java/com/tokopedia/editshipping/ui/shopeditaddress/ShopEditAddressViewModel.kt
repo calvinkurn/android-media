@@ -12,7 +12,6 @@ import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.repository.ShopLocationRepository
 import com.tokopedia.logisticCommon.data.response.KeroDistrictRecommendation
 import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocCheckCouriers
-import com.tokopedia.logisticCommon.domain.model.Place
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -25,10 +24,6 @@ class ShopEditAddressViewModel @Inject constructor(
     private val shopRepo: ShopLocationRepository,
     private val mapper: AutoCompleteMapper
 ) : ViewModel() {
-
-    private val _autoCompleteList = MutableLiveData<Result<Place>>()
-    val autoCompleteList: LiveData<Result<Place>>
-        get() = _autoCompleteList
 
     private val _districtLocation = MutableLiveData<Result<DistrictLocation>>()
     val districtLocation: LiveData<Result<DistrictLocation>>
@@ -49,13 +44,6 @@ class ShopEditAddressViewModel @Inject constructor(
     private val _checkCouriers = MutableLiveData<ShopEditAddressState<ShopLocCheckCouriers>>()
     val checkCouriers: LiveData<ShopEditAddressState<ShopLocCheckCouriers>>
         get() = _checkCouriers
-
-    fun getAutoCompleteList(keyword: String) {
-        viewModelScope.launch(onErrorAutoComplete) {
-            val autoComplete = repo.getAutoComplete(keyword, "")
-            _autoCompleteList.value = Success(mapper.mapAutoComplete(autoComplete))
-        }
-    }
 
     fun getDistrictLocation(placeId: String) {
         viewModelScope.launch(onErrorGetDistrictLocation) {
@@ -85,7 +73,7 @@ class ShopEditAddressViewModel @Inject constructor(
         districtId: Long,
         latLon: String,
         addressDetail: String,
-        postalCode: String,
+        postalCode: String
     ) {
         _saveEditShop.value = ShopEditAddressState.Loading
         viewModelScope.launch(onErrorSaveEditShopLocation) {
@@ -110,10 +98,6 @@ class ShopEditAddressViewModel @Inject constructor(
             _checkCouriers.value =
                 ShopEditAddressState.Success(getCheckCouriersData.shopLocCheckCouriers)
         }
-    }
-
-    private val onErrorAutoComplete = CoroutineExceptionHandler { _, e ->
-        _autoCompleteList.value = Fail(e)
     }
 
     private val onErrorGetDistrictLocation = CoroutineExceptionHandler { _, e ->
