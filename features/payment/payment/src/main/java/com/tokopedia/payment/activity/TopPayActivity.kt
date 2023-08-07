@@ -906,6 +906,7 @@ class TopPayActivity :
         val decodedURL = try {
             URLDecoder.decode(url, CHARSET_UTF_8)
         } catch (e: Exception) {
+            Timber.e(e)
             ""
         }
 
