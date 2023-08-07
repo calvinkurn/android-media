@@ -20,6 +20,7 @@ object TokoChatErrorLogger {
 
     object PAGE {
         const val TOKOCHAT = "TokoChat"
+        const val TOKOCHAT_LIST = "TokoChat List"
     }
 
     object ErrorDescription {
@@ -64,5 +65,4 @@ object TokoChatErrorLogger {
             STACKTRACE_KEY to throwable.stackTraceToString()
         )
     }
-
 }

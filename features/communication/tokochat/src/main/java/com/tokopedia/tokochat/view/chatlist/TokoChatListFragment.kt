@@ -166,7 +166,7 @@ class TokoChatListFragment @Inject constructor(
 
         viewModel.error.observe(viewLifecycleOwner) {
             TokoChatErrorLogger.logExceptionToServerLogger(
-                TokoChatErrorLogger.PAGE.TOKOCHAT,
+                TokoChatErrorLogger.PAGE.TOKOCHAT_LIST,
                 it.first,
                 TokoChatErrorLogger.ErrorType.ERROR_PAGE,
                 userSession.deviceId.orEmpty(),
