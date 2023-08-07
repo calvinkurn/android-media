@@ -56,6 +56,7 @@ import javax.inject.Inject
 
 class TokoNowCategoryViewModel @Inject constructor(
     private val getCategoryDetailUseCase: GetCategoryDetailUseCase,
+    private val addressData: TokoNowLocalAddress,
     getCategoryProductUseCase: GetCategoryProductUseCase,
     getProductAdsUseCase: GetProductAdsUseCase,
     getTargetedTickerUseCase: GetTargetedTickerUseCase,
@@ -66,7 +67,6 @@ class TokoNowCategoryViewModel @Inject constructor(
     deleteCartUseCase: DeleteCartUseCase,
     affiliateService: NowAffiliateService,
     aceSearchParamMapper: AceSearchParamMapper,
-    addressData: TokoNowLocalAddress,
     userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers
 ) : BaseCategoryViewModel(
@@ -248,6 +248,7 @@ class TokoNowCategoryViewModel @Inject constructor(
     private fun loadCategoryPage(tickerList: List<TickerData>) {
         launchCatchError(
             block = {
+                val addressData = addressData.getAddressData()
                 val detailResponse = getCategoryDetailUseCase.execute(
                     warehouseId = getWarehouseId(),
                     categoryIdL1 = categoryIdL1
@@ -264,7 +265,7 @@ class TokoNowCategoryViewModel @Inject constructor(
                 )
                 visitableList.addChooseAddress(
                     detailResponse = detailResponse,
-                    addressData = getAddressData()
+                    addressData = addressData
                 )
                 visitableList.addTicker(
                     detailResponse = detailResponse,
@@ -288,11 +289,11 @@ class TokoNowCategoryViewModel @Inject constructor(
                 updateVisitableListLiveData()
                 hidePageLoading()
                 getFirstPage()
-//                _categoryFirstPage.postValue(Success(visitableList))
+
                 sendOpenScreenL1Tracker(detailResponse)
             },
             onError = {
-//                _categoryFirstPage.postValue(Fail(it))
+                _onPageError.postValue(it)
             }
         )
     }

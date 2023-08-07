@@ -65,13 +65,16 @@ abstract class BaseCategoryViewModel(
         private const val INVALID_ID = 0L
     }
 
+    protected val visitableList = mutableListOf<Visitable<*>>()
+
+    protected val _onPageError = MutableLiveData<Throwable>()
+
     private val _openScreenTracker: MutableLiveData<CategoryOpenScreenTrackerModel> = MutableLiveData()
     private val _visitableListLiveData = MutableLiveData<List<Visitable<*>>>()
     private val _updateToolbarNotification: MutableLiveData<Boolean> = MutableLiveData()
     private val _refreshState = MutableLiveData<Unit>()
     private val _outOfCoverageState = MutableLiveData<Unit>()
     private val _isPageLoading = MutableLiveData<Boolean>()
-    private val _pageError = MutableLiveData<Throwable>()
 
     val openScreenTracker: LiveData<CategoryOpenScreenTrackerModel> = _openScreenTracker
     val visitableListLiveData: LiveData<List<Visitable<*>>> = _visitableListLiveData
@@ -79,9 +82,7 @@ abstract class BaseCategoryViewModel(
     val refreshState: LiveData<Unit> = _refreshState
     val outOfCoverageState: LiveData<Unit> = _outOfCoverageState
     val isPageLoading: LiveData<Boolean> = _isPageLoading
-    val pageError: LiveData<Throwable> = _pageError
-
-    protected val visitableList = mutableListOf<Visitable<*>>()
+    val onPageError: LiveData<Throwable> = _onPageError
 
     private var loadMoreJob: Job? = null
 

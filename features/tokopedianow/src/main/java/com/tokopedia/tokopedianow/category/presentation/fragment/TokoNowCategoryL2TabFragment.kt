@@ -13,8 +13,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -71,6 +71,8 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
 
         private const val SPAN_COUNT = 3
         private const val SPAN_FULL_SPACE = 1
+
+        private const val SCROLL_DOWN_DIRECTION = 1
     }
 
     @Inject
@@ -218,7 +220,14 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
     private fun setupRecyclerView() {
         binding?.recyclerView?.apply {
             layoutManager = GridLayoutManager(context, SPAN_COUNT).apply {
-                addOnScrollListener(createEndlessScrollListener(this))
+                addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                        super.onScrolled(recyclerView, dx, dy)
+                        val isAtTheBottomOfThePage =
+                            !recyclerView.canScrollVertically(SCROLL_DOWN_DIRECTION)
+                        viewModel.onScroll(isAtTheBottomOfThePage)
+                    }
+                })
                 spanSizeLookup = createSpanSizeLookup()
             }
             adapter = categoryAdapter
@@ -557,15 +566,6 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
 
             override fun getResultCount(selectedOption: Option) {
                 viewModel.getProductCount(selectedOption)
-            }
-        }
-    }
-
-    private fun createEndlessScrollListener(
-        layoutManager: GridLayoutManager
-    ): EndlessRecyclerViewScrollListener {
-        return object : EndlessRecyclerViewScrollListener(layoutManager) {
-            override fun onLoadMore(page: Int, totalItemsCount: Int) {
             }
         }
     }

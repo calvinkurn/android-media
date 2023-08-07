@@ -151,8 +151,6 @@ open class BaseTokoNowViewModel(
 
     fun updateAddressData() = addressData.updateLocalData()
 
-    fun getAddressData() = addressData.getAddressData()
-
     fun createAffiliateLink(url: String) = affiliateService.createAffiliateLink(url)
 
     fun getAffiliateShareInput() = affiliateService.createShareInput()

@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -29,7 +31,6 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.model.LinkerData
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -95,38 +96,30 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
     protected var currentCategoryId = String.EMPTY
     protected var queryParamMap: HashMap<String, String>? = hashMapOf()
 
-    protected val recyclerView: RecyclerView?
-        get() = binding?.rvCategory
-
     protected val shopId: String
         get() = viewModel.getShopId().toString()
+
+    protected val onScrollListener: RecyclerView.OnScrollListener
+        get() = createOnScrollListener()
+
+    protected abstract val viewModel: BaseCategoryViewModel
+
+    protected abstract val swipeRefreshLayout: SwipeToRefresh?
+
+    protected abstract val recyclerView: RecyclerView?
+
+    protected abstract fun createMainView(): View?
+
+    protected abstract fun createAdapterTypeFactory(): BaseAdapterTypeFactory
+
+    protected abstract fun createAdapterDiffer(): BaseTokopediaNowDiffer
+
+    protected abstract fun initInjector()
 
     private val categoryIdL3: String
         get() = String.EMPTY
     private val userId: String
         get() = viewModel.getUserId()
-    private val addressData: LocalCacheModel
-        get() = viewModel.getAddressData()
-
-    protected val navToolbarHeight: Int
-        get() {
-            val defaultHeight = context?.resources?.getDimensionPixelSize(R.dimen.tokopedianow_default_toolbar_height).orZero()
-            return if (binding?.navToolbar?.height.isZero()) {
-                defaultHeight
-            } else {
-                binding?.navToolbar?.height
-            } ?: defaultHeight
-        }
-
-    private val onScrollListener: RecyclerView.OnScrollListener
-        get() = object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val isAtTheBottomOfThePage =
-                    !recyclerView.canScrollVertically(SCROLL_DOWN_DIRECTION)
-                viewModel.onScroll(isAtTheBottomOfThePage)
-            }
-        }
 
     private val recycledViewPool
         get() = RecyclerView.RecycledViewPool()
@@ -135,19 +128,21 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
     private var screenshotDetector: ScreenshotDetector? = null
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
 
-    private var binding by autoClearedNullable<FragmentTokopedianowCategoryBaseBinding>()
-
     private val adapter: CategoryAdapter by lazy {
         CategoryAdapter(createAdapterTypeFactory(), createAdapterDiffer())
     }
 
-    protected abstract val viewModel: BaseCategoryViewModel
+    private var binding by autoClearedNullable<FragmentTokopedianowCategoryBaseBinding>()
 
-    protected abstract fun createAdapterTypeFactory(): BaseAdapterTypeFactory
+    protected val navToolbar: NavToolbar?
+        get() = binding?.navToolbar
 
-    protected abstract fun createAdapterDiffer(): BaseTokopediaNowDiffer
-
-    protected abstract fun initInjector()
+    protected open fun setupMainLayout(
+        container: ConstraintLayout?,
+        mainLayout: FrameLayout?
+    ) {
+        mainLayout?.addView(createMainView())
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -167,8 +162,15 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val container = binding?.container
+        val mainLayout = binding?.mainLayout
+        setupMainLayout(container, mainLayout)
+
         observeLiveData()
-        setupView(binding)
+        setupRecyclerView()
+        setupRefreshLayout()
+        setupNavigationToolbar()
+        setNavToolbarHeight()
     }
 
     override fun onResume() {
@@ -271,40 +273,22 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
         return NO_ADDRESS_EVENT_TRACKER
     }
 
-    protected open fun observeLiveData() {
-        observePageLoading()
-        observeVisitableList()
-        observeMiniCart()
-        observeAddToCart()
-        observeUpdateCartItem()
-        observeRemoveCartItem()
-        observeRefreshState()
-        observeOutOfCoverageState()
-        observeToolbarNotification()
-        observeOpenLoginPage()
-    }
-
-    protected open fun setupView(
-        binding: FragmentTokopedianowCategoryBaseBinding?
-    ) {
-        binding?.apply {
-            setNavToolbarHeight(navToolbar)
-            setupRecyclerView(rvCategory, navToolbar)
-            setupRefreshLayout(strRefreshLayout)
-            setupNavigationToolbar(navToolbar)
+    protected fun getNavToolbarHeight(navToolbar: NavToolbar): Int {
+        val defaultHeight = context?.resources
+            ?.getDimensionPixelSize(R.dimen.tokopedianow_default_toolbar_height).orZero()
+        return if (navToolbar.height.isZero()) {
+            defaultHeight
+        } else {
+            navToolbar.height
         }
     }
 
-    protected open fun setupRecyclerView(
-        recyclerView: RecyclerView,
-        navToolbar: NavToolbar
-    ) {
-        recyclerView.apply {
+    protected fun setupRecyclerView() {
+        recyclerView?.apply {
             adapter = this@BaseCategoryFragment.adapter
             layoutManager = LinearLayoutManager(context)
             addOnScrollListener(onScrollListener)
             setRecycledViewPool(recycledViewPool)
-            animation = null
         }
     }
 
@@ -372,26 +356,34 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
         activity?.startActivityForResult(intent, RequestCode.REQUEST_CODE_LOGIN)
     }
 
-    protected fun updateToolbarNotification() {
-        binding?.navToolbar?.updateNotification()
-    }
-
-    protected fun removeScrollListener(listener: RecyclerView.OnScrollListener? = onScrollListener) {
-        listener?.let {
-            binding?.rvCategory?.removeOnScrollListener(it)
-        }
-    }
-
-    protected fun addScrollListener(listener: RecyclerView.OnScrollListener?) {
-        listener?.let {
-            binding?.rvCategory?.addOnScrollListener(it)
-        }
-    }
-
     protected fun createTokoNowViewCallback() = TokoNowViewCallback(
         fragment = this@BaseCategoryFragment
     ) {
         viewModel.refreshLayout()
+    }
+
+    protected fun updateToolbarNotification() {
+        navToolbar?.updateNotification()
+    }
+
+    private fun observeLiveData() {
+        observePageLoading()
+        observeVisitableList()
+        observeMiniCart()
+        observeAddToCart()
+        observeUpdateCartItem()
+        observeRemoveCartItem()
+        observeRefreshState()
+        observeOutOfCoverageState()
+        observeToolbarNotification()
+        observeOpenLoginPage()
+        observePageError()
+    }
+
+    private fun observePageError() {
+        observe(viewModel.onPageError) {
+            onPageError(it)
+        }
     }
 
     private fun observeVisitableList() {
@@ -448,24 +440,16 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
 
     private fun observeRefreshState() {
         viewModel.refreshState.observe(viewLifecycleOwner) {
-            binding?.apply {
-                rvCategory.removeOnScrollListener(onScrollListener)
-                rvCategory.addOnScrollListener(onScrollListener)
-            }
+            recyclerView?.removeOnScrollListener(onScrollListener)
+            recyclerView?.addOnScrollListener(onScrollListener)
             viewModel.onViewCreated()
         }
     }
 
     private fun observeOutOfCoverageState() {
         viewModel.outOfCoverageState.observe(viewLifecycleOwner) {
-            binding?.showOutOfCoverageLayout()
-            analytic.sendOocOpenScreenEvent(viewModel.isLoggedIn())
-        }
-    }
-
-    private fun observeToolbarNotification() {
-        viewModel.updateToolbarNotification.observe(viewLifecycleOwner) { needToUpdate ->
-            if (needToUpdate) updateToolbarNotification()
+            showOutOfCoverageLayout()
+            sendOutOfCoverageTracker()
         }
     }
 
@@ -475,32 +459,94 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
         }
     }
 
-    private fun setCategoryViewModelData() {
-        viewModel.apply {
-            categoryIdL1 = this@BaseCategoryFragment.categoryIdL1
-            categoryIdL2 = this@BaseCategoryFragment.categoryIdL2
-            currentCategoryId = this@BaseCategoryFragment.currentCategoryId
-            queryParamMap = this@BaseCategoryFragment.queryParamMap
+    private fun observeToolbarNotification() {
+        viewModel.updateToolbarNotification.observe(viewLifecycleOwner) { needToUpdate ->
+            if (needToUpdate) updateToolbarNotification()
         }
     }
 
-    private fun setupRefreshLayout(swipeToRefresh :SwipeToRefresh) {
-        swipeToRefresh.apply {
-            setProgressViewOffset(
-                false,
-                START_SWIPE_PROGRESS_POSITION,
-                END_SWIPE_PROGRESS_POSITION
-            )
-            setOnRefreshListener {
-                isRefreshing = false
-                refreshLayout()
+    private fun setNavToolbarHeight() {
+        binding?.navToolbar?.let {
+            it.post {
+                val navToolbarHeight = getNavToolbarHeight(it)
+                viewModel.navToolbarHeight = navToolbarHeight
+                viewModel.onViewCreated()
             }
         }
     }
 
-    private fun setupNavigationToolbar(navToolbar: NavToolbar) {
-        navToolbar.apply {
-            viewLifecycleOwner.lifecycle.addObserver(navToolbar)
+    private fun onPageError(throwable: Throwable) {
+        binding?.apply {
+            globalError.showErrorLayout(throwable)
+            categoryShimmering.root.hide()
+            mainLayout.hide()
+            oocLayout.hide()
+        }
+    }
+
+    private fun GlobalError.showErrorLayout(throwable: Throwable) {
+        if (throwable is MessageErrorException) {
+            val errorCode = throwable.errorCode
+            val errorType = GlobalErrorUtil.getErrorType(
+                throwable = throwable,
+                errorCode = errorCode
+            )
+            setType(errorType)
+
+            when (errorCode) {
+                GlobalErrorUtil.ERROR_PAGE_NOT_FOUND -> setupGlobalErrorPageNotFound()
+                GlobalErrorUtil.ERROR_SERVER -> setupActionGlobalErrorClickListener()
+                GlobalErrorUtil.ERROR_MAINTENANCE -> setupGlobalErrorMaintenance()
+                GlobalErrorUtil.ERROR_PAGE_FULL -> setupActionGlobalErrorClickListener()
+                else -> setupActionGlobalErrorClickListener()
+            }
+        } else {
+            val errorType = GlobalErrorUtil.getErrorType(
+                throwable = throwable,
+                errorCode = String.EMPTY
+            )
+            setType(errorType)
+
+            if (errorType == GlobalError.NO_CONNECTION) {
+                setupGlobalErrorNoConnection()
+            } else {
+                setupActionGlobalErrorClickListener()
+            }
+        }
+        show()
+    }
+
+    private fun showShimmeringLayout() {
+        binding?.apply {
+            mainLayout.hide()
+            categoryShimmering.root.show()
+            globalError.hide()
+            oocLayout.hide()
+        }
+    }
+
+    private fun showMainLayout() {
+        binding?.apply {
+            mainLayout.show()
+            categoryShimmering.root.hide()
+            globalError.hide()
+            oocLayout.hide()
+        }
+    }
+
+    private fun showOutOfCoverageLayout() {
+        binding?.apply {
+            mainLayout.hide()
+            globalError.hide()
+            categoryShimmering.root.hide()
+            oocLayout.show()
+            oocLayout.actionListener = this@BaseCategoryFragment
+        }
+    }
+
+    private fun setupNavigationToolbar() {
+        navToolbar?.apply {
+            viewLifecycleOwner.lifecycle.addObserver(this)
             setupToolbarWithStatusBar(activity = requireActivity())
             setToolbarPageName(PAGE_NAME)
             setIcon(
@@ -514,57 +560,55 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
         }
     }
 
-    private fun showShimmeringLayout() {
-        binding?.apply {
-            mainLayout.hide()
-            categoryShimmering.root.show()
-            globalError.hide()
-            oocLayout.hide()
+    private fun setCategoryViewModelData() {
+        viewModel.apply {
+            categoryIdL1 = this@BaseCategoryFragment.categoryIdL1
+            categoryIdL2 = this@BaseCategoryFragment.categoryIdL2
+            currentCategoryId = this@BaseCategoryFragment.currentCategoryId
+            queryParamMap = this@BaseCategoryFragment.queryParamMap
         }
     }
 
-    private fun setNavToolbarHeight(navToolbar: NavToolbar) {
-        navToolbar.post {
-            viewModel.navToolbarHeight = navToolbarHeight
-            viewModel.onViewCreated()
+    private fun setupRefreshLayout() {
+        swipeRefreshLayout?.apply {
+            setProgressViewOffset(
+                false,
+                START_SWIPE_PROGRESS_POSITION,
+                END_SWIPE_PROGRESS_POSITION
+            )
+            setOnRefreshListener {
+                isRefreshing = false
+                refreshLayout()
+            }
         }
     }
 
-    private fun showMiniCart(
-        data: MiniCartSimplifiedData
-    ) {
-        val showMiniCartWidget = data.isShowMiniCartWidget
-        if (showMiniCartWidget) {
-            val pageName = MiniCartAnalytics.Page.HOME_PAGE
-            val shopIds = listOf(shopId)
-            val source = MiniCartSource.TokonowHome
-            binding?.apply {
-                miniCartWidget.initialize(
+    private fun showMiniCart(data: MiniCartSimplifiedData) {
+        binding?.miniCartWidget?.apply {
+            val showMiniCartWidget = data.isShowMiniCartWidget
+            if (showMiniCartWidget) {
+                val pageName = MiniCartAnalytics.Page.CATEGORY_PAGE
+                val shopIds = listOf(shopId)
+                val source = MiniCartSource.TokonowHome
+                initialize(
                     shopIds = shopIds,
                     fragment = this@BaseCategoryFragment,
                     listener = this@BaseCategoryFragment,
                     pageName = pageName,
                     source = source
                 )
-                miniCartWidgetShadow.show()
-                miniCartWidget.show()
-                miniCartWidget.hideTopContentView()
+                binding?.miniCartWidgetShadow?.show()
+                hideTopContentView()
+                show()
+            } else {
+                hideMiniCart()
             }
-        } else {
-            hideMiniCart()
         }
     }
 
-    private fun getMiniCartHeight(): Int {
-        val space16 = context?.resources?.getDimension(
-            com.tokopedia.unifyprinciples.R.dimen.unify_space_16
-        )?.toInt().orZero()
-        return binding?.miniCartWidget?.height.orZero() - space16
+    private fun showMiniCartBottomSheet() {
+        binding?.miniCartWidget?.showMiniCartListBottomSheet(this)
     }
-
-    private fun refreshLayout() = viewModel.refreshLayout()
-
-    private fun getMiniCart() = viewModel.getMiniCart()
 
     private fun hideMiniCart() {
         binding?.apply {
@@ -573,10 +617,19 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
         }
     }
 
-    private fun showMiniCartBottomSheet() {
-        binding?.miniCartWidget?.showMiniCartListBottomSheet(
-            fragment = this
-        )
+    private fun refreshLayout() = viewModel.refreshLayout()
+
+    private fun getMiniCart() = viewModel.getMiniCart()
+
+    private fun getMiniCartHeight(): Int {
+        val space16 = context?.resources?.getDimension(
+            com.tokopedia.unifyprinciples.R.dimen.unify_space_16
+        )?.toInt().orZero()
+        return binding?.miniCartWidget?.height.orZero() - space16
+    }
+
+    private fun sendOutOfCoverageTracker() {
+        analytic.sendOocOpenScreenEvent(viewModel.isLoggedIn())
     }
 
     private fun NavToolbar.setupSearchbar() = setupSearchbar(
@@ -725,6 +778,15 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
         )
     }
 
+    private fun createOnScrollListener() = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+            val isAtTheBottomOfThePage =
+                !recyclerView.canScrollVertically(SCROLL_DOWN_DIRECTION)
+            viewModel.onScroll(isAtTheBottomOfThePage)
+        }
+    }
+
     private fun setupScreenshotDetector() {
         context?.let {
             screenshotDetector = SharingUtil.createAndStartScreenShotDetector(
@@ -750,104 +812,43 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
         shareTokonow?.thumbNailTitle = thumbNailTitle
     }
 
-    protected fun showMainLayout() {
-        binding?.apply {
-            mainLayout.show()
-            categoryShimmering.root.hide()
-            globalError.hide()
-            oocLayout.hide()
+    private fun GlobalError.setupGlobalErrorPageNotFound() {
+        errorAction.text = getString(R.string.tokopedianow_common_error_state_button_back_to_tokonow_home_page)
+        errorSecondaryAction.show()
+        errorSecondaryAction.text = getString(R.string.tokopedianow_common_empty_state_button_return)
+        setActionClickListener {
+            RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME)
+            activity?.finish()
+        }
+        setSecondaryActionClickListener {
+            RouteManager.route(context, ApplinkConst.HOME)
+            activity?.finish()
         }
     }
 
-    protected fun showErrorLayout(throwable: Throwable) {
-       binding?.apply {
-           mainLayout.hide()
-           categoryShimmering.root.hide()
-           globalError.show()
-           oocLayout.hide()
-
-           if (throwable is MessageErrorException) {
-               val errorCode = throwable.errorCode
-               val errorType = GlobalErrorUtil.getErrorType(
-                   throwable = throwable,
-                   errorCode = errorCode
-               )
-               globalError.setType(errorType)
-
-               when (errorCode) {
-                   GlobalErrorUtil.ERROR_PAGE_NOT_FOUND -> setupGlobalErrorPageNotFound()
-                   GlobalErrorUtil.ERROR_SERVER -> setupActionGlobalErrorClickListener()
-                   GlobalErrorUtil.ERROR_MAINTENANCE -> setupGlobalErrorMaintenance()
-                   GlobalErrorUtil.ERROR_PAGE_FULL -> setupActionGlobalErrorClickListener()
-                   else -> setupActionGlobalErrorClickListener()
-               }
-           } else {
-               val errorType = GlobalErrorUtil.getErrorType(
-                   throwable = throwable,
-                   errorCode = String.EMPTY
-               )
-               globalError.setType(errorType)
-
-               if (errorType == GlobalError.NO_CONNECTION) {
-                   setupGlobalErrorNoConnection()
-               } else {
-                   setupActionGlobalErrorClickListener()
-               }
-           }
-       }
-    }
-
-    private fun FragmentTokopedianowCategoryBaseBinding.setupGlobalErrorPageNotFound() {
-        globalError.apply {
-            errorAction.text = getString(R.string.tokopedianow_common_error_state_button_back_to_tokonow_home_page)
-            errorSecondaryAction.show()
-            errorSecondaryAction.text = getString(R.string.tokopedianow_common_empty_state_button_return)
-            setActionClickListener {
-                RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME)
-                activity?.finish()
-            }
-            setSecondaryActionClickListener {
-                RouteManager.route(context, ApplinkConst.HOME)
-                activity?.finish()
-            }
-        }
-    }
-
-    private fun FragmentTokopedianowCategoryBaseBinding.setupActionGlobalErrorClickListener() {
-        globalError.setActionClickListener {
+    private fun GlobalError.setupActionGlobalErrorClickListener() {
+        setActionClickListener {
             refreshLayout()
         }
     }
 
-    private fun FragmentTokopedianowCategoryBaseBinding.setupGlobalErrorMaintenance() {
-        globalError.apply {
-            errorAction.text = getString(R.string.tokopedianow_common_error_state_button_back_to_tokonow_home_page)
-            setActionClickListener {
-                RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME)
-                activity?.finish()
-            }
+    private fun GlobalError.setupGlobalErrorMaintenance() {
+        errorAction.text = getString(R.string.tokopedianow_common_error_state_button_back_to_tokonow_home_page)
+        setActionClickListener {
+            RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME)
+            activity?.finish()
         }
     }
 
-    private fun FragmentTokopedianowCategoryBaseBinding.setupGlobalErrorNoConnection() {
-        globalError.apply {
-            errorSecondaryAction.show()
-            errorSecondaryAction.text = getString(R.string.tokopedianow_common_empty_state_button_return)
-            setActionClickListener {
-                refreshLayout()
-            }
-            setSecondaryActionClickListener {
-                RouteManager.route(context, ApplinkConst.HOME)
-                activity?.finish()
-            }
+    private fun GlobalError.setupGlobalErrorNoConnection() {
+        errorSecondaryAction.show()
+        errorSecondaryAction.text = getString(R.string.tokopedianow_common_empty_state_button_return)
+        setActionClickListener {
+            refreshLayout()
         }
-    }
-
-    private fun FragmentTokopedianowCategoryBaseBinding.showOutOfCoverageLayout() {
-        mainLayout.hide()
-        globalError.hide()
-        categoryShimmering.root.hide()
-        oocLayout.show()
-        oocLayout.actionListener = this@BaseCategoryFragment
+        setSecondaryActionClickListener {
+            RouteManager.route(context, ApplinkConst.HOME)
+            activity?.finish()
+        }
     }
 }

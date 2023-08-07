@@ -2,17 +2,19 @@ package com.tokopedia.tokopedianow.common.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.customview.ProductCardCompactCarouselView.ProductCardCompactCarouselListener
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.listener.ProductAdsCarouselListener
+import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
+import com.tokopedia.tokopedianow.common.listener.HorizontalItemTouchListener
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductAdsCarouselBinding
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -42,7 +44,7 @@ class TokoNowAdsCarouselViewHolder(
     }
 
     override fun bind(uiModel: TokoNowAdsCarouselUiModel, payloads: MutableList<Any>) {
-        if(payloads.firstOrNull() == true) {
+        if (payloads.firstOrNull() == true) {
             binding?.productCardCarousel?.bindItems(uiModel.items)
         }
     }
@@ -55,6 +57,7 @@ class TokoNowAdsCarouselViewHolder(
             header.setModel(TokoNowDynamicHeaderUiModel(title = title))
             productCardCarousel.setListener(createProductCardListener(title))
             productCardCarousel.bindItems(uiModel.items)
+            setupItemTouchListener()
 
             containerBackground.show()
             productCardCarousel.show()
@@ -63,8 +66,14 @@ class TokoNowAdsCarouselViewHolder(
         }
     }
 
+    private fun setupItemTouchListener() {
+        binding?.productCardCarousel
+            ?.findViewById<RecyclerView>(R.id.recycler_view)
+            ?.addOnItemTouchListener(HorizontalItemTouchListener())
+    }
+
     private fun createProductCardListener(title: String): ProductCardCompactCarouselListener {
-        return object: ProductCardCompactCarouselListener {
+        return object : ProductCardCompactCarouselListener {
             override fun onProductCardClicked(
                 position: Int,
                 product: ProductCardCompactCarouselItemUiModel

@@ -1,9 +1,13 @@
 package com.tokopedia.tokopedianow.category.presentation.fragment
 
 import android.net.Uri
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getDigits
 import com.tokopedia.kotlin.extensions.view.observe
@@ -34,10 +38,12 @@ import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategor
 import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
 import com.tokopedia.tokopedianow.common.util.TrackerUtil.getTrackerPosition
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
+import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowCategoryL1Binding
 import com.tokopedia.tokopedianow.similarproduct.presentation.activity.TokoNowSimilarProductBottomSheetActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class TokoNowCategoryFragment : BaseCategoryFragment() {
@@ -66,8 +72,10 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
     lateinit var productRecommendationViewModel: TokoNowProductRecommendationViewModel
 
     /**
-     * -- private getter variable section --
+     * -- private variable section --
      */
+
+    private var binding by autoClearedNullable<FragmentTokopedianowCategoryL1Binding>()
 
     private val recycledViewPool
         get() = RecyclerView.RecycledViewPool()
@@ -103,23 +111,21 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
 
     override fun createAdapterDiffer() = CategoryDiffer()
 
-    override fun observeLiveData() {
-        super.observeLiveData()
-        observeCategoryHeader()
-        observeScrollNotNeeded()
-        observeAtcDataTracker()
-        observeProductRecommendationAddToCart()
-        observeProductRecommendationRemoveCartItem()
-        observeProductRecommendationUpdateCartItem()
-        observeProductRecommendationToolbarNotification()
-        observeProductRecommendationAtcDataTracker()
-        observeOpenScreenTracker()
+    override val swipeRefreshLayout: SwipeToRefresh?
+        get() = binding?.strRefreshLayout
+
+    override val recyclerView: RecyclerView?
+        get() = binding?.rvCategory
+
+    override fun createMainView(): View? {
+        binding = FragmentTokopedianowCategoryL1Binding.inflate(LayoutInflater.from(context))
+        return binding?.root
     }
 
-    override fun setupRecyclerView(recyclerView: RecyclerView, navToolbar: NavToolbar) {
-        super.setupRecyclerView(recyclerView, navToolbar)
-        val navScrollListener = createNavRecyclerViewOnScrollListener(navToolbar)
-        recyclerView.addOnScrollListener(navScrollListener)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        observeLiveData()
+        setupOnScrollListener()
     }
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
@@ -144,47 +150,27 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
      * -- private function section --
      */
 
-    private fun createNavRecyclerViewOnScrollListener(
-        navToolbar: NavToolbar
-    ): RecyclerView.OnScrollListener {
-        val transitionRange = context?.resources?.getDimensionPixelSize(R.dimen.tokopedianow_searchbar_transition_range).orZero()
-        return NavRecyclerViewScrollListener(
-            navToolbar = navToolbar,
-            startTransitionPixel = navToolbarHeight - transitionRange - transitionRange,
-            toolbarTransitionRangePixel = transitionRange,
-            navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
-                override fun onAlphaChanged(offsetAlpha: Float) { /* nothing to do */ }
-
-                override fun onSwitchToLightToolbar() { /* nothing to do */ }
-
-                override fun onYposChanged(yOffset: Int) { /* nothing to do */ }
-
-                override fun onSwitchToDarkToolbar() {
-                    navToolbar.hideShadow()
-                }
-            },
-            fixedIconColor = NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
-        )
+    private fun setupOnScrollListener() {
+        navToolbar?.let {
+            val navScrollListener = createNavRecyclerViewOnScrollListener(it)
+            binding?.rvCategory?.addOnScrollListener(navScrollListener)
+        }
     }
 
-    private fun observeCategoryHeader() {
-        viewModel.categoryFirstPage.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Success -> {
-                    showMainLayout()
-                    submitList(result.data)
-                    viewModel.getFirstPage()
-                }
-                is Fail -> showErrorLayout(
-                    throwable = result.throwable
-                )
-            }
-        }
+    private fun observeLiveData() {
+        observeScrollNotNeeded()
+        observeAtcDataTracker()
+        observeProductRecommendationAddToCart()
+        observeProductRecommendationRemoveCartItem()
+        observeProductRecommendationUpdateCartItem()
+        observeProductRecommendationToolbarNotification()
+        observeProductRecommendationAtcDataTracker()
+        observeOpenScreenTracker()
     }
 
     private fun observeScrollNotNeeded() {
         observe(viewModel.scrollNotNeeded) {
-            removeScrollListener()
+            recyclerView?.removeOnScrollListener(onScrollListener)
         }
     }
 
@@ -582,6 +568,29 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
             analytic = analytic.productAdsAnalytic,
             categoryIdL1 = categoryIdL1,
             startActivityResult = ::startActivityForResult
+        )
+    }
+
+    private fun createNavRecyclerViewOnScrollListener(
+        navToolbar: NavToolbar
+    ): RecyclerView.OnScrollListener {
+        val transitionRange = context?.resources?.getDimensionPixelSize(R.dimen.tokopedianow_searchbar_transition_range).orZero()
+        return NavRecyclerViewScrollListener(
+            navToolbar = navToolbar,
+            startTransitionPixel = getNavToolbarHeight(navToolbar) - transitionRange - transitionRange,
+            toolbarTransitionRangePixel = transitionRange,
+            navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
+                override fun onAlphaChanged(offsetAlpha: Float) { /* nothing to do */ }
+
+                override fun onSwitchToLightToolbar() { /* nothing to do */ }
+
+                override fun onYposChanged(yOffset: Int) { /* nothing to do */ }
+
+                override fun onSwitchToDarkToolbar() {
+                    navToolbar.hideShadow()
+                }
+            },
+            fixedIconColor = NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
         )
     }
 }

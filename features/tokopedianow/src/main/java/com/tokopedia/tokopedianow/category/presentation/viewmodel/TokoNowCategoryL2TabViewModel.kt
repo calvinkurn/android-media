@@ -253,6 +253,10 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         getMiniCart()
     }
 
+    fun onScroll(atTheBottomOfThePage: Boolean) {
+        if(atTheBottomOfThePage) loadMore()
+    }
+
     private fun setCategoryData(
         categoryIdL1: String,
         categoryIdL2: String,

@@ -62,26 +62,35 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
     dispatchers = dispatchers
 ) {
 
+    private val _tab = MutableLiveData<CategoryL2TabUiModel>()
     private val _categoryTabs = MutableLiveData<List<CategoryL2TabModel>>()
     private val _loadMore = MutableLiveData<Unit>()
 
-    val categoryTabs: LiveData<List<CategoryL2TabModel>> = _categoryTabs
+    val tab: LiveData<CategoryL2TabUiModel> = _tab
     val loadMore: LiveData<Unit> = _loadMore
 
     override fun loadFirstPage(tickerList: List<TickerData>) {
         launchCatchError(
             block = {
-                val getCategoryLayout = getCategoryLayoutAsync()
-                val getCategoryDetail = getCategoryDetailAsync()
+                val addressData = addressData.getAddressData()
+                val getCategoryLayout = getCategoryLayoutAsync().await()
+                val getCategoryDetail = getCategoryDetailAsync().await()
 
                 visitableList.clear()
-                visitableList.addChooseAddress(getAddressData())
+                visitableList.addChooseAddress(addressData)
                 visitableList.mapToCategoryUiModel(
                     categoryIdL1,
                     categoryIdL2,
-                    getCategoryLayout.await(),
-                    getCategoryDetail.await()
+                    getCategoryLayout,
+                    getCategoryDetail
                 )
+
+                val tab = visitableList.filterIsInstance<CategoryL2TabUiModel>().first()
+                val index = visitableList.indexOf(tab)
+
+                _tab.postValue(tab)
+
+                visitableList.removeAt(index)
 
                 hidePageLoading()
                 updateCategoryTab()
@@ -95,18 +104,6 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
 
     override suspend fun loadNextPage() {
         _loadMore.postValue(Unit)
-    }
-
-    fun onTabSelected(position: Int) {
-        val tab = visitableList.filterIsInstance<CategoryL2TabUiModel>().first()
-        val newTabUiModel = tab.copy(selectedTabPosition = position)
-        val index = visitableList.indexOf(tab)
-        visitableList[index] = newTabUiModel
-        updateVisitableListLiveData()
-    }
-
-    fun getTabPosition(): Int {
-        return visitableList.indexOfFirst { it is CategoryL2TabUiModel }
     }
 
     private suspend fun getCategoryLayoutAsync(): Deferred<CategoryGetDetailModular?> {
