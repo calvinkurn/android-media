@@ -174,9 +174,9 @@ class PlayAnalytic(
         val section = products.keys.firstOrNull()?.section?.config?.type ?: ProductSectionType.Unknown
 
         val (eventAction, eventLabel) = when (section) {
-            ProductSectionType.Active -> Pair("impression - product in ongoing section", generateBaseEventLabel(product = products.keys.firstOrNull()?.product ?: PlayProductUiModel.Product.Empty, campaignId = products.keys.firstOrNull()?.section?.id.orEmpty(), rankType = products.keys.firstOrNull()?.product?.rankType ?: "no ribbon"))
-            ProductSectionType.Upcoming -> Pair("impression - product in upcoming section", generateBaseEventLabel(product = products.keys.firstOrNull()?.product ?: PlayProductUiModel.Product.Empty, campaignId = products.keys.firstOrNull()?.section?.id.orEmpty(), rankType = products.keys.firstOrNull()?.product?.rankType ?: "no ribbon"))
-            else -> Pair("view product", "$mChannelId - ${products.keys.firstOrNull()?.product?.id.orEmpty()} - ${mChannelType.value} - product in bottom sheet - is pinned product ${products.keys.firstOrNull()?.product?.isPinned.orFalse()} - ${products.keys.firstOrNull()?.product?.rankType ?: "no ribbon"}")
+            ProductSectionType.Active -> Pair("impression - product in ongoing section", generateBaseEventLabel(product = products.keys.firstOrNull()?.product ?: PlayProductUiModel.Product.Empty, campaignId = products.keys.firstOrNull()?.section?.id.orEmpty(), rankType = products.keys.firstOrNull()?.product?.label?.rankType ?: "no ribbon"))
+            ProductSectionType.Upcoming -> Pair("impression - product in upcoming section", generateBaseEventLabel(product = products.keys.firstOrNull()?.product ?: PlayProductUiModel.Product.Empty, campaignId = products.keys.firstOrNull()?.section?.id.orEmpty(), rankType = products.keys.firstOrNull()?.product?.label?.rankType ?: "no ribbon"))
+            else -> Pair("view product", "$mChannelId - ${products.keys.firstOrNull()?.product?.id.orEmpty()} - ${mChannelType.value} - product in bottom sheet - is pinned product ${products.keys.firstOrNull()?.product?.isPinned.orFalse()} - ${products.keys.firstOrNull()?.product?.label?.rankType ?: "no ribbon"}")
         }
 
         val items = arrayListOf<Bundle>().apply {
@@ -210,9 +210,9 @@ class PlayAnalytic(
         position: Int
     ) {
         val (eventAction, eventLabel) = when (sectionInfo.config.type) {
-            ProductSectionType.Upcoming -> Pair("click - product in upcoming section", generateBaseEventLabel(product = product, campaignId = sectionInfo.id, rankType = product.rankType))
-            ProductSectionType.Active -> Pair("click - product in ongoing section", generateBaseEventLabel(product = product, campaignId = sectionInfo.id, rankType = product.rankType))
-            else -> Pair("click product in bottom sheet", "$mChannelId - ${product.id} - ${mChannelType.value} - product in bottom sheet - is pinned product ${product.isPinned} - ${product.rankType}")
+            ProductSectionType.Upcoming -> Pair("click - product in upcoming section", generateBaseEventLabel(product = product, campaignId = sectionInfo.id, rankType = product.label.rankType))
+            ProductSectionType.Active -> Pair("click - product in ongoing section", generateBaseEventLabel(product = product, campaignId = sectionInfo.id, rankType = product.label.rankType))
+            else -> Pair("click product in bottom sheet", "$mChannelId - ${product.id} - ${mChannelType.value} - product in bottom sheet - is pinned product ${product.isPinned} - ${product.label.rankType}")
         }
 
         trackingQueue.putEETracking(
@@ -375,7 +375,7 @@ class PlayAnalytic(
                 "productView",
                 EventCategory.groupChatRoom,
                 "view on featured product",
-                "$mChannelId - ${products.first().first.id} - ${mChannelType.value} - featured product tagging - ${products.first().first.rankType}"
+                "$mChannelId - ${products.first().first.id} - ${mChannelType.value} - featured product tagging - ${products.first().first.label.rankType}"
             ),
             hashMapOf(
                 "ecommerce" to hashMapOf(
@@ -402,7 +402,7 @@ class PlayAnalytic(
                 "productClick",
                 EventCategory.groupChatRoom,
                 "click featured product tagging",
-                "$mChannelId - ${featuredProduct.id} - ${mChannelType.value} - featured product tagging - ${featuredProduct.rankType}"
+                "$mChannelId - ${featuredProduct.id} - ${mChannelType.value} - featured product tagging - ${featuredProduct.label.rankType}"
             ),
             hashMapOf(
                 "ecommerce" to hashMapOf(
@@ -512,7 +512,7 @@ class PlayAnalytic(
     private fun convertProductToHashMapWithList(product: PlayProductUiModel.Product, position: Int, sourceFrom: String): HashMap<String, Any> {
         val dimension115 = buildString {
             append("pinned.${product.isPinned}, ")
-            append("ribbon.${product.rankType}")
+            append("ribbon.${product.label.rankType}")
         }
         return hashMapOf(
             "name" to product.title,
@@ -594,8 +594,8 @@ class PlayAnalytic(
         shopInfo: PlayPartnerInfo
     ) {
         val (eventAction, eventLabel) = when (sectionInfo.config.type) {
-            ProductSectionType.Active -> Pair("click - buy in ongoing section", "${generateBaseEventLabel(product = product, campaignId = sectionInfo.id, rankType = product.rankType)} - beli langsung ${action == ProductAction.OCC}")
-            else -> Pair("click buy in bottom sheet", "$mChannelId - ${product.id} - ${mChannelType.value} - is pinned product ${product.isPinned} - beli langsung ${action == ProductAction.OCC} - ${product.rankType}")
+            ProductSectionType.Active -> Pair("click - buy in ongoing section", "${generateBaseEventLabel(product = product, campaignId = sectionInfo.id, rankType = product.label.rankType)} - beli langsung ${action == ProductAction.OCC}")
+            else -> Pair("click buy in bottom sheet", "$mChannelId - ${product.id} - ${mChannelType.value} - is pinned product ${product.isPinned} - beli langsung ${action == ProductAction.OCC} - ${product.label.rankType}")
         }
         trackingQueue.putEETracking(
             EventModel(
@@ -624,8 +624,8 @@ class PlayAnalytic(
         shopInfo: PlayPartnerInfo
     ) {
         val (eventAction, eventLabel) = when (sectionInfo.config.type) {
-            ProductSectionType.Active -> Pair("click - atc in ongoing section", generateBaseEventLabel(product = product, campaignId = sectionInfo.id, rankType = product.rankType))
-            else -> Pair("click atc in bottom sheet", "$mChannelId - ${product.id} - ${mChannelType.value} - is pinned product ${product.isPinned} - ${product.rankType}")
+            ProductSectionType.Active -> Pair("click - atc in ongoing section", generateBaseEventLabel(product = product, campaignId = sectionInfo.id, rankType = product.label.rankType))
+            else -> Pair("click atc in bottom sheet", "$mChannelId - ${product.id} - ${mChannelType.value} - is pinned product ${product.isPinned} - ${product.label.rankType}")
         }
         trackingQueue.putEETracking(
             EventModel(

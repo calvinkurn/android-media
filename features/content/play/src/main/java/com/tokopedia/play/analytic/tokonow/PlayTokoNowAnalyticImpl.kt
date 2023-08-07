@@ -168,7 +168,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
                 "productClick",
                 EventCategory.groupChatRoom,
                 "click - now product bottomsheet",
-                "$channelId - ${product.id} - ${channelType.value} - is pinned product ${product.isPinned} - ${product.rankType}"
+                "$channelId - ${product.id} - ${channelType.value} - is pinned product ${product.isPinned} - ${product.label.rankType}"
             ),
             hashMapOf(
                 "ecommerce" to hashMapOf(
@@ -188,7 +188,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
                 "productClick",
                 EventCategory.groupChatRoom,
                 "click - now product carousel",
-                "$channelId - ${featuredProduct.id} - ${channelType.value} - is pinned product ${featuredProduct.isPinned} - ${featuredProduct.rankType}"
+                "$channelId - ${featuredProduct.id} - ${channelType.value} - is pinned product ${featuredProduct.isPinned} - ${featuredProduct.label.rankType}"
             ),
             hashMapOf(
                 "ecommerce" to hashMapOf(
@@ -228,7 +228,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
             putString(TrackAppUtils.EVENT, KEY_EVENT_ITEM_LIST)
             putString(Key.eventCategory, EventCategory.groupChatRoom)
             putString(Key.eventAction, "view - now product bottomsheet")
-            putString(Key.eventLabel, "$channelId - ${products.keys.firstOrNull()?.product?.id.orEmpty()} - ${channelType.value} - is pinned product ${products.keys.firstOrNull()?.product?.isPinned ?: false} - ${products.keys.firstOrNull()?.product?.rankType ?: "no ribbon"}")
+            putString(Key.eventLabel, "$channelId - ${products.keys.firstOrNull()?.product?.id.orEmpty()} - ${channelType.value} - is pinned product ${products.keys.firstOrNull()?.product?.isPinned ?: false} - ${products.keys.firstOrNull()?.product?.label?.rankType ?: "no ribbon"}")
             putString(Key.currentSite, CurrentSite.tokopediaMarketplace)
             putString(Key.sessionIris, TrackApp.getInstance().gtm.irisSessionId)
             putString(Key.userId, userId)
@@ -253,7 +253,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
                 "productView",
                 EventCategory.groupChatRoom,
                 "view - now product carousel",
-                "$channelId - ${products.first().first.id} - ${channelType.value} - is pinned product ${products.first().first.isPinned} - ${products.first().first.rankType}"
+                "$channelId - ${products.first().first.id} - ${channelType.value} - is pinned product ${products.first().first.isPinned} - ${products.first().first.label.rankType}"
             ),
             hashMapOf(
                 "ecommerce" to hashMapOf(
@@ -285,7 +285,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
                 Event.addToCart,
                 EventCategory.groupChatRoom,
                 "click - buy now product",
-                "$channelId - ${product.id} - ${channelType.value} - is pinned product ${product.isPinned} - ${product.rankType}"
+                "$channelId - ${product.id} - ${channelType.value} - is pinned product ${product.isPinned} - ${product.label.rankType}"
             ),
             hashMapOf(
                 "ecommerce" to hashMapOf(
@@ -310,7 +310,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
                 Event.addToCart,
                 EventCategory.groupChatRoom,
                 "click - atc now product",
-                "$channelId - ${product.id} - ${channelType.value} - is pinned product ${product.isPinned} - ${product.rankType}"
+                "$channelId - ${product.id} - ${channelType.value} - is pinned product ${product.isPinned} - ${product.label.rankType}"
             ),
             hashMapOf(
                 "ecommerce" to hashMapOf(
@@ -349,7 +349,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
     private fun convertProductToHashMapWithList(product: PlayProductUiModel.Product, position: Int, sourceFrom: String): HashMap<String, Any> {
         val dimension115 = buildString {
             append("pinned.${product.isPinned}, ")
-            append("ribbon.${product.rankType}")
+            append("ribbon.${product.label.rankType}")
         }
 
         return hashMapOf(
@@ -371,7 +371,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
     private fun convertProductAndShopToHashMapWithList(product: PlayProductUiModel.Product, shopInfo: PlayPartnerInfo, dimension39: String = ""): HashMap<String, Any> {
         val dimension115 = buildString {
             append("pinned.${product.isPinned}, ")
-            append("ribbon.${product.rankType}")
+            append("ribbon.${product.label.rankType}")
         }
 
         return hashMapOf(

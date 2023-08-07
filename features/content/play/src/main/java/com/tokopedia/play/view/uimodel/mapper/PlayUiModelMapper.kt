@@ -154,9 +154,11 @@ class PlayUiModelMapper @Inject constructor(
             isNumerationShown = prevDetail.isNumerationShown,
             rating = prevDetail.rating,
             soldQuantity = prevDetail.soldQuantity,
-            rankType = prevDetail.rankType.ifEmpty { "no ribbon" },
-            rankFmt = prevDetail.rankFmt,
-            rankColors = prevDetail.rankColors,
+            label = PlayProductUiModel.Product.Label(
+                rankType = prevDetail.label.rankType.ifEmpty { "no ribbon" },
+                rankFmt = prevDetail.label.rankFmt,
+                rankColors = prevDetail.label.rankColors,
+            )
         )
     }
 }

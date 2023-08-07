@@ -61,9 +61,9 @@ class ProductFeaturedViewHolder(
         binding.lblProductNumber.showWithCondition(item.isNumerationShown)
         binding.lblProductNumber.text = item.number
 
-        binding.layoutRibbon.showWithCondition(item.rankFmt.isNotBlank())
-        binding.layoutRibbon.rankFmt = item.rankFmt
-        binding.layoutRibbon.configRibbon(item.rankColors)
+        binding.layoutRibbon.showWithCondition(item.label.rankFmt.isNotBlank())
+        binding.layoutRibbon.rankFmt = item.label.rankFmt
+        binding.layoutRibbon.configRibbon(item.label.rankColors)
     }
 
     fun startAnimation() {
