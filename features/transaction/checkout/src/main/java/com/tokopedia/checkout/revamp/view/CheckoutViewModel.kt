@@ -1696,6 +1696,29 @@ class CheckoutViewModel @Inject constructor(
         calculateTotal()
     }
 
+    fun updateDonation(checked: Boolean) {
+        val checkoutItems = listData.value.toMutableList()
+        val crossSellGroup = checkoutItems.crossSellGroup()!!
+        val newList: MutableList<CheckoutCrossSellItem> = arrayListOf()
+        for (checkoutCrossSellItem in crossSellGroup.crossSellList) {
+            if (checkoutCrossSellItem is CheckoutDonationModel) {
+                newList.add(
+                    checkoutCrossSellItem.copy(
+                        donation = checkoutCrossSellItem.donation.copy(
+                            isChecked = checked
+                        ),
+                        isChecked = checked
+                    )
+                )
+            } else {
+                newList.add(checkoutCrossSellItem)
+            }
+        }
+        checkoutItems[checkoutItems.size - 2] = crossSellGroup.copy(crossSellList = newList)
+        listData.value = checkoutItems
+        calculateTotal()
+    }
+
     fun validatePrescriptionOnBackPressed(): CheckoutEpharmacyModel? {
         val epharmacy = listData.value.epharmacy()
         if (epharmacy != null && epharmacy.epharmacy.showImageUpload) {

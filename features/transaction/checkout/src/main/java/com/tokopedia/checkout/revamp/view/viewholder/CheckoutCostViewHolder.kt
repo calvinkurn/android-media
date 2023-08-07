@@ -360,6 +360,17 @@ class CheckoutCostViewHolder(
                 (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(binding.root.context.resources.displayMetrics)
                 binding.llCheckoutCostOthers.addView(itemBinding.root)
             }
+            cost.listCrossSell.forEach {
+                val itemBinding = ItemCheckoutCostDynamicBinding.inflate(
+                    layoutInflater,
+                    binding.llCheckoutCostOthers,
+                    false
+                )
+                itemBinding.tvCheckoutCostItemTitle.text = it.crossSellModel.orderSummary.title
+                itemBinding.tvCheckoutCostItemValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(it.crossSellModel.price, false).removeDecimalSuffix()
+                (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(binding.root.context.resources.displayMetrics)
+                binding.llCheckoutCostOthers.addView(itemBinding.root)
+            }
             egoldList.forEach {
                 val itemBinding = ItemCheckoutCostDynamicBinding.inflate(
                     layoutInflater,
