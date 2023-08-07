@@ -22,6 +22,7 @@ import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerMod
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_SHORTS_AFFILIATE
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagItem
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play_common.model.result.NetworkResult
@@ -105,7 +106,7 @@ class PlayShortsViewModel @Inject constructor(
     private val _selectedAccount = MutableStateFlow(ContentAccountUiModel.Empty)
     private val _menuList = MutableStateFlow<List<DynamicPreparationMenu>>(emptyList())
     private val _productSectionList = MutableStateFlow<List<ProductTagSectionUiModel>>(emptyList())
-    private val _tags = MutableStateFlow<NetworkResult<Set<PlayTagUiModel>>>(NetworkResult.Unknown)
+    private val _tags = MutableStateFlow<NetworkResult<PlayTagUiModel>>(NetworkResult.Unknown)
     private val _uploadState = MutableStateFlow<PlayShortsUploadUiState>(PlayShortsUploadUiState.Unknown)
     private val _isAffiliate = MutableStateFlow(false)
     val isSelectedAccountAffiliate: Boolean
@@ -430,19 +431,21 @@ class PlayShortsViewModel @Inject constructor(
         }
     }
 
-    private fun handleSelectTag(tag: PlayTagUiModel) {
+    private fun handleSelectTag(tag: PlayTagItem) {
         val tagState = _tags.value
         when (tagState is NetworkResult.Success) {
             true -> {
                 _tags.update {
                     NetworkResult.Success(
-                        data = tagState.data.map {
-                            if (it.tag == tag.tag) {
-                                it.copy(isChosen = !it.isChosen)
-                            } else {
-                                it
-                            }
-                        }.toSet()
+                        data = tagState.data.copy(
+                            tags = tagState.data.tags.map {
+                                if (it.isActive && it.tag == tag.tag) {
+                                    it.copy(isChosen = !it.isChosen)
+                                } else {
+                                    it
+                                }
+                            }.toSet()
+                        )
                     )
                 }
             }
@@ -587,7 +590,7 @@ class PlayShortsViewModel @Inject constructor(
     private suspend fun saveTag() {
         val tagState = _tags.value
         if (tagState is NetworkResult.Success) {
-            val selectedTag = tagState.data.filter { it.isChosen }.map { it.tag }.toSet()
+            val selectedTag = tagState.data.tags.filter { it.isChosen }.map { it.tag }.toSet()
 
             if (selectedTag.isNotEmpty()) {
                 val result = repo.saveTag(shortsId, selectedTag)

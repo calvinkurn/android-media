@@ -13,6 +13,7 @@ import com.tokopedia.play.broadcaster.shorts.domain.model.PlayShortsConfig
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.shortsaffiliate.BroadcasterCheckAffiliateResponseUiModel
 import com.tokopedia.play.broadcaster.ui.model.shortsaffiliate.OnboardAffiliateUiModel
+import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagItem
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import javax.inject.Inject
 
@@ -62,13 +63,18 @@ class PlayShortsUiMapper @Inject constructor(
         )
     }
 
-    override fun mapTagRecommendation(response: GetRecommendedChannelTagsResponse): Set<PlayTagUiModel> {
-        return response.recommendedTags.tags.map {
-            PlayTagUiModel(
-                tag = it,
-                isChosen = false
-            )
-        }.toSet()
+    override fun mapTagRecommendation(response: GetRecommendedChannelTagsResponse): PlayTagUiModel {
+        return PlayTagUiModel(
+            tags = response.recommendedTags.tags.map {
+                PlayTagItem(
+                    tag = it,
+                    isChosen = false,
+                    isActive = true,
+                )
+            }.toSet(),
+            minTags = response.recommendedTags.minTags,
+            maxTags = response.recommendedTags.maxTags,
+        )
     }
 
     override fun mapBroadcasterCheckAffiliate(response: BroadcasterCheckAffiliateResponseModel): BroadcasterCheckAffiliateResponseUiModel {
