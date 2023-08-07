@@ -2,15 +2,12 @@ package com.tokopedia.play.view.custom
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
 import android.graphics.Paint
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
-import androidx.core.graphics.BlendModeColorFilterCompat
-import androidx.core.graphics.BlendModeCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -25,8 +22,6 @@ import com.tokopedia.play.view.uimodel.isShowSoldQuantity
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.isUpcoming
 import com.tokopedia.play_common.util.extension.buildSpannedString
-import com.tokopedia.play_common.view.setGradientAnimBackground
-import java.lang.Exception
 
 /**
  * Created by kenny.hadisaputra on 19/08/22
@@ -124,10 +119,10 @@ class ProductBottomSheetCardView: FrameLayout {
             mListener?.onButtonTransactionProduct(this, item, section, lastButton.type.toAction)
         }
 
-        binding.layoutRibbon.root.showWithCondition(item.rankFmt.isNotBlank())
-        binding.layoutRibbon.playTvRibbon.text = item.rankFmt
-        binding.layoutRibbon.root.transitionToEnd()
-        configRibbon(item.rankColors)
+        binding.layoutRibbon.showWithCondition(item.rankFmt.isNotBlank())
+        binding.layoutRibbon.rankFmt = item.rankFmt
+        binding.layoutRibbon.configRibbon(item.rankColors)
+        binding.layoutRibbon.startAnimation()
 
         binding.cardPlayPinned.setOnClickListener {
             if (!item.applink.isNullOrEmpty()) mListener?.onClicked(this, item, section)
@@ -184,18 +179,6 @@ class ProductBottomSheetCardView: FrameLayout {
                 context.getString(R.string.play_product_item_stock, item.stock.stock.toString())
             append(stockText, stockSpan, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
         }
-    }
-
-    private fun configRibbon(colors: List<String>) {
-        if (colors.isNullOrEmpty()) return
-
-        try {
-            binding.layoutRibbon.playIvRibbon.setGradientAnimBackground(colors.takeLast(2))
-            binding.layoutRibbon.ivTailRibbon.colorFilter =
-                BlendModeColorFilterCompat.createBlendModeColorFilterCompat(Color.parseColor(colors.first()), BlendModeCompat.SRC_ATOP)
-            binding.layoutRibbon.ivBackRibbon.colorFilter =
-                BlendModeColorFilterCompat.createBlendModeColorFilterCompat(Color.parseColor(colors.getOrElse(1) {colors.first()} ), BlendModeCompat.SRC_ATOP)
-        } catch (e: Exception) { false }
     }
 
     companion object {

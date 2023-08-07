@@ -2,15 +2,12 @@ package com.tokopedia.play.ui.view.carousel.viewholder
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
 import android.graphics.Paint
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.graphics.BlendModeColorFilterCompat
-import androidx.core.graphics.BlendModeCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.iconunify.IconUnify
@@ -22,9 +19,7 @@ import com.tokopedia.play.databinding.ItemPlayPinnedProductBinding
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play_common.util.extension.buildSpannedString
-import com.tokopedia.play_common.view.setGradientAnimBackground
 import com.tokopedia.unifycomponents.UnifyButton
-import java.lang.Exception
 import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
@@ -136,7 +131,10 @@ class ProductCarouselViewHolder private constructor() {
             }
             binding.lblProductNumber.showWithCondition(item.isNumerationShown)
             binding.lblProductNumber.text = item.number
-            configRibbon(colors = item.rankColors, rankFmt = item.rankFmt)
+
+            binding.layoutRibbon.showWithCondition(item.rankFmt.isNotBlank())
+            binding.layoutRibbon.rankFmt = item.rankFmt
+            binding.layoutRibbon.configRibbon(item.rankColors)
         }
 
         private fun getInfo(item: PlayProductUiModel.Product): CharSequence {
@@ -159,23 +157,8 @@ class ProductCarouselViewHolder private constructor() {
             }
         }
 
-        private fun configRibbon(colors: List<String>, rankFmt: String) {
-            binding.layoutRibbon.root.showWithCondition(rankFmt.isNotBlank())
-            binding.layoutRibbon.playTvRibbon.text = rankFmt
-
-            if (colors.isNullOrEmpty()) return
-
-            try {
-                binding.layoutRibbon.playIvRibbon.setGradientAnimBackground(colors.takeLast(2))
-                binding.layoutRibbon.ivTailRibbon.colorFilter =
-                    BlendModeColorFilterCompat.createBlendModeColorFilterCompat(Color.parseColor(colors.first()), BlendModeCompat.SRC_ATOP)
-                binding.layoutRibbon.ivBackRibbon.colorFilter =
-                    BlendModeColorFilterCompat.createBlendModeColorFilterCompat(Color.parseColor(colors.getOrElse(1) {colors.first()} ), BlendModeCompat.SRC_ATOP)
-            } catch (e: Exception) { false }
-        }
-
         fun startAnimation() {
-            binding.layoutRibbon.root.transitionToEnd()
+            binding.layoutRibbon.startAnimation()
         }
 
         companion object {

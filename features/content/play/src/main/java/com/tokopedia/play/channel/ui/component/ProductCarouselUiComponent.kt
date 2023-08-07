@@ -2,6 +2,7 @@ package com.tokopedia.play.channel.ui.component
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.databinding.ViewProductFeaturedBinding
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.ui.component.UiComponent
@@ -26,7 +27,8 @@ class ProductCarouselUiComponent(
     binding: ViewProductFeaturedBinding,
     private val bus: EventBus<Any>,
     scope: CoroutineScope,
-) : UiComponent<PlayViewerNewUiState> {
+    dispatchers: CoroutineDispatchers,
+    ) : UiComponent<PlayViewerNewUiState> {
 
     private val uiView = ProductCarouselUiView(
         binding, scope, object : ProductCarouselUiView.Listener {
@@ -52,7 +54,7 @@ class ProductCarouselUiComponent(
             ) {
                 bus.emit(Event.OnTransactionClicked(product, action))
             }
-        }
+        } , dispatchers
     )
 
     init {

@@ -5,9 +5,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <include
+    <com.tokopedia.play.view.custom.PlayLabelAnimation
         android:id="@+id/layout_ribbon"
-        layout="@layout/play_motion_card_ribbon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_8" />

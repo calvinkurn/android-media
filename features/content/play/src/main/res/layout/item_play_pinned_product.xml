@@ -5,9 +5,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <include
+    <com.tokopedia.play.view.custom.PlayLabelAnimation
         android:id="@+id/layout_ribbon"
-        layout="@layout/play_motion_card_ribbon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_8" />
@@ -38,7 +37,7 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_gravity="center"
-                android:background="@drawable/bg_play_product_out_of_stock"
+                android:background="@drawable/bg_content_product_out_of_stock"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@id/img_product"
                 app:layout_constraintEnd_toEndOf="@id/img_product"

@@ -2,6 +2,7 @@ package com.tokopedia.play.ui.view.carousel
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.databinding.ViewProductFeaturedBinding
@@ -25,7 +26,8 @@ class ProductCarouselUiView(
     private val binding: ViewProductFeaturedBinding,
     private val scope: CoroutineScope,
     private val listener: Listener,
-) {
+    private val dispatchers: CoroutineDispatchers,
+    ) {
 
     private val context = binding.root.context
 
@@ -183,7 +185,7 @@ class ProductCarouselUiView(
         val products = adapter.getItems()
         if (products.isEmpty()) return
 
-        scope.launch(Dispatchers.Main) {
+        scope.launch(dispatchers.main) {
             delay(UnifyMotion.T2)
             val startPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
             val endPosition = layoutManager.findLastCompletelyVisibleItemPosition()

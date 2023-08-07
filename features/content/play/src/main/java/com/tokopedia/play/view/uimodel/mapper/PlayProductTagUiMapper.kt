@@ -92,7 +92,7 @@ class PlayProductTagUiMapper @Inject constructor() {
             soldQuantity = input.soldQuantity,
             rankType = input.rankType.ifEmpty { "no ribbon" },
             rankFmt = input.rankFmt,
-            rankColors = input.ribbonColors,
+            rankColors = input.ribbonColors ?: emptyList(),
         )
     }
 
