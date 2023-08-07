@@ -231,7 +231,7 @@ abstract class BaseCategoryViewModel(
                 val tickerList = getTickerData()
                 loadFirstPage(tickerList)
             } else {
-                _outOfCoverageState.value = Unit
+                _outOfCoverageState.postValue(Unit)
             }
         }) {
 
