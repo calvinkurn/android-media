@@ -44,7 +44,7 @@ ext {
     runnerVersion = "1.4.0"
     rulesVersion = "1.4.0"
     apolloVersion = '0.3.0'
-    lottieVersion = '6.0.0'
+    lottieVersion = '3.4.1'
     cardioVersion = '5.5.1'
     roomVersion = '2.4.3'
     sqliteFrameworkVersion = '2.1.0'
@@ -93,7 +93,7 @@ ext {
     sliceVersion = '1.0.0-alpha6'
     sliceCoreVersion = '1.0.0'
     transitionVersion = '1.3.1'
-    robolectricVersion = "4.4"
+    robolectricVersion = "4.9"
     orchestratorVersion = '1.4.1'
     leakCanaryVersion = '2.9.1'
     embraceVersion = '4.15.0'
@@ -113,7 +113,7 @@ ext {
     benchmarkTestVersion = '1.0.0'
     testCore = '1.4.0'
     fragmentTest = "1.4.1"
-    androidxFragment = '1.4.1'
+    androidxFragment = '1.5.7'
     debugToolsEnabled = true
 
     // Sort and categorize alphabetically by folder name
@@ -133,7 +133,7 @@ ext {
     unifyIconVersion = '0.0.4'
     unifyIconsVersion = '1.0.30'
     unifyPrinciplesVersion = '1.4.12'
-    unifyComponentsVersion = '1.2.35'
+    unifyComponentsVersion = '1.2.31-rc02'
     unifyCoachMarkVersion = '1.2.23'
     unifyCalendarVersion = '1.2.3'
     unifyBannerVersion = '1.0.6.2'
@@ -277,7 +277,7 @@ ext {
             chips                 : 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar',
             roundCornerProgressBar: 'com.akexorcist:RoundCornerProgressBar:2.0.3',
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
-            hansel                : "io.hansel.preprocessor:preprocessor:9.3.2",
+            hansel                : "io.hansel.preprocessor:preprocessor:10.0.0",
             protobuf              : "com.google.protobuf:protobuf-gradle-plugin:0.8.12",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
             flexBoxLayout         : "com.google.android:flexbox:0.3.2",
@@ -357,7 +357,7 @@ ext {
 
     testDependencies = [
             androidxTest          : 'androidx.test.ext:junit:1.1.3',
-            junit                 : "junit:junit:4.12",
+            junit                 : "junit:junit:$JunitVersion",
             junitJupiterApi       : "org.junit.jupiter:junit-jupiter-api:$JunitJupiterVersion",
             junitJupiterEngine    : "org.junit.jupiter:junit-jupiter-engine:$JunitJupiterVersion",
             mockk                 : "io.mockk:mockk:$MockkVersion",

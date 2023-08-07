@@ -93,6 +93,7 @@ import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
 import com.tokopedia.tokopedianow.searchcategory.domain.mapper.ProductItemMapper.mapResponseToProductItem
 import com.tokopedia.tokopedianow.searchcategory.domain.mapper.VisitableMapper.updateWishlistStatus
 import com.tokopedia.tokopedianow.searchcategory.domain.mapper.mapChooseAddressToQuerySafeModel
+import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.Product
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProduct
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProductData
@@ -393,10 +394,12 @@ abstract class BaseSearchCategoryViewModel(
     protected open fun createRequestParams(): RequestParams {
         val tokonowQueryParam = createTokonowQueryParams()
         val productAdsParam = createProductAdsParam()
+            .generateQueryParams()
 
         val requestParams = RequestParams.create()
         requestParams.putObject(TOKONOW_QUERY_PARAMS, tokonowQueryParam)
-        requestParams.putObject(PRODUCT_ADS_PARAMS, productAdsParam.generateQueryParams())
+        requestParams.putObject(PRODUCT_ADS_PARAMS, productAdsParam)
+        requestParams.putObject(USER_WAREHOUSE_ID, warehouseId)
 
         return requestParams
     }
@@ -478,7 +481,7 @@ abstract class BaseSearchCategoryViewModel(
         val isEmptyProductList = contentDataView.aceSearchProductData.productList.isEmpty()
 
         initFilterController(headerDataView)
-        createVisitableListFirstPage(headerDataView, contentDataView, isEmptyProductList)
+        createVisitableListFirstPage(headerDataView, contentDataView, isEmptyProductList, searchProduct.data.violation)
         processEmptyState(isEmptyProductList)
         if (getKeywordForGeneralSearchTracking().isNotEmpty()) {
             sendGeneralSearchTracking(searchProduct)
@@ -501,23 +504,35 @@ abstract class BaseSearchCategoryViewModel(
     private fun createVisitableListFirstPage(
         headerDataView: HeaderDataView,
         contentDataView: ContentDataView,
-        isEmptyProductList: Boolean
+        isEmptyProductList: Boolean,
+        violation: AceSearchProductModel.Violation
     ) {
         visitableList.clear()
 
         if (isEmptyProductList) {
-            createVisitableListWithEmptyProduct()
+            createVisitableListWithEmptyProduct(violation)
         } else {
             createVisitableListWithProduct(headerDataView, contentDataView)
         }
     }
 
-    protected open fun createVisitableListWithEmptyProduct() {
+    protected open fun createVisitableListWithEmptyProduct(
+        violation: AceSearchProductModel.Violation
+    ) {
         val activeFilterList = filterController.getActiveFilterOptionList()
         isEmptyResult = true
 
         visitableList.add(chooseAddressDataView)
-        visitableList.add(TokoNowEmptyStateNoResultUiModel(activeFilterList = activeFilterList))
+        visitableList.add(
+            TokoNowEmptyStateNoResultUiModel(
+                activeFilterList = activeFilterList,
+                defaultTitle = violation.headerText,
+                defaultDescription = violation.descriptionText,
+                defaultImage = violation.imageUrl,
+                defaultTextPrimaryButton = violation.buttonText,
+                defaultUrlPrimaryButton = violation.ctaUrl
+            )
+        )
         visitableList.add(
             TokoNowProductRecommendationUiModel(
                 requestParam = createProductRecommendationRequestParam(

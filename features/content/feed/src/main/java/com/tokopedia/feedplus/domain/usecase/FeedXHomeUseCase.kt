@@ -8,6 +8,7 @@ import com.tokopedia.feedplus.presentation.model.FeedModel
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import javax.inject.Inject
 
 /**
@@ -16,6 +17,7 @@ import javax.inject.Inject
 class FeedXHomeUseCase @Inject constructor(
     @ApplicationContext private val graphqlRepository: GraphqlRepository,
     private val uiMapper: MapperFeedXHome,
+    private val addressHelper: ChosenAddressRequestHelper,
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<Map<String, Any>, FeedModel>(dispatcher.io) {
 
@@ -274,6 +276,7 @@ class FeedXHomeUseCase @Inject constructor(
               }
               hasVoucher
               cta {
+                subtitle
                 texts
                 color
                 colorGradient {
@@ -371,6 +374,7 @@ class FeedXHomeUseCase @Inject constructor(
               shopID
               shopName
               mods
+              isStockAvailable
             }
     """.trimIndent()
 
@@ -380,10 +384,12 @@ class FeedXHomeUseCase @Inject constructor(
         limit: Int = 0,
         detailId: String = ""
     ): Map<String, Any> {
+        val whId = addressHelper.getChosenAddress().tokonow.warehouseId
         val params = mutableMapOf(
             PARAMS_SOURCE to source,
             PARAMS_CURSOR to cursor,
-            PARAMS_LIMIT to limit
+            PARAMS_LIMIT to limit,
+            PARAMS_WH_ID to whId,
         )
         if (detailId.isNotEmpty()) {
             params[PARAMS_SOURCE_ID] = detailId
@@ -393,14 +399,16 @@ class FeedXHomeUseCase @Inject constructor(
     }
 
     fun createPostDetailParams(postId: String): Map<String, Any> {
-        val params = mapOf<String, Any>(
-            PARAMS_SOURCE to SOURCE_DETAIL,
-            PARAMS_SOURCE_ID to postId,
-            PARAMS_CURSOR to "",
-            PARAMS_LIMIT to LIMIT_DETAIL
-        )
+        return createParamsWithId(postId, SOURCE_DETAIL)
+    }
 
-        return mapOf(PARAMS_REQUEST to params)
+    fun createParamsWithId(sourceId: String, source: String?): Map<String, Any> {
+        return createParams(
+            source = source ?: SOURCE_DETAIL,
+            cursor = "",
+            limit = LIMIT_DETAIL,
+            detailId = sourceId
+        )
     }
 
     companion object {
@@ -410,6 +418,7 @@ class FeedXHomeUseCase @Inject constructor(
         private const val PARAMS_SOURCE_ID = "sourceID"
         private const val PARAMS_CURSOR = "cursor"
         private const val PARAMS_LIMIT = "limit"
+        private const val PARAMS_WH_ID = "warehouseID"
 
         private const val SOURCE_DETAIL = "detail-immersive"
 

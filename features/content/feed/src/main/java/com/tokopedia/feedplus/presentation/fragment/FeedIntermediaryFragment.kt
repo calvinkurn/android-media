@@ -9,7 +9,11 @@ import androidx.fragment.app.commit
 import com.tokopedia.feedplus.databinding.FragmentFeedIntermediaryBinding
 import com.tokopedia.feedplus.oldFeed.view.fragment.FeedPlusContainerFragment
 import com.tokopedia.navigation_common.listener.FragmentListener
-import com.tokopedia.remoteconfig.*
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.RollenceKey
 
 /**
  * Created by kenny.hadisaputra on 12/05/23

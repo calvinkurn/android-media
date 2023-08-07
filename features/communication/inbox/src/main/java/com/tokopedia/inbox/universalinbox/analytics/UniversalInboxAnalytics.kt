@@ -91,7 +91,7 @@ class UniversalInboxAnalytics @Inject constructor() {
         tracker.sendGeneralEvent(mapData)
     }
 
-    // Chat dengan Penjual
+    // Chat Penjual
     fun clickOnBuyerChat(
         abVariant: String,
         userRole: String,
@@ -100,17 +100,17 @@ class UniversalInboxAnalytics @Inject constructor() {
     ) {
         val mapData = mapOf(
             EVENT to CLICK_COMMUNICATION,
-            EVENT_ACTION to CLICK_CHAT_PEMBELI,
+            EVENT_ACTION to CLICK_CHAT_PENJUAL,
             EVENT_CATEGORY to NEW_INBOX_PAGE,
             EVENT_LABEL to "$abVariant - $userRole - $shopId - $buyerChatCounter",
-            TRACKER_ID to TRACKER_ID_44353,
+            TRACKER_ID to TRACKER_ID_44354,
             BUSINESS_UNIT to COMMUNICATION,
             CURRENT_SITE to TOKOPEDIA_MARKETPLACE
         )
         tracker.sendGeneralEvent(mapData)
     }
 
-    // Chat dengan Pembeli
+    // Chat Pembeli
     fun clickOnSellerChat(
         abVariant: String,
         userRole: String,
@@ -119,10 +119,10 @@ class UniversalInboxAnalytics @Inject constructor() {
     ) {
         val mapData = mapOf(
             EVENT to CLICK_COMMUNICATION,
-            EVENT_ACTION to CLICK_CHAT_PENJUAL,
+            EVENT_ACTION to CLICK_CHAT_PEMBELI,
             EVENT_CATEGORY to NEW_INBOX_PAGE,
             EVENT_LABEL to "$abVariant - $userRole - $shopId - $sellerChatCounter",
-            TRACKER_ID to TRACKER_ID_44354,
+            TRACKER_ID to TRACKER_ID_44353,
             BUSINESS_UNIT to COMMUNICATION,
             CURRENT_SITE to TOKOPEDIA_MARKETPLACE
         )

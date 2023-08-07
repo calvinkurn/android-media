@@ -11,7 +11,6 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUse
 import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
-import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper
 import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
@@ -120,11 +119,13 @@ class TokoNowSearchViewModel @Inject constructor (
         headerList.updateSuggestionDataView(suggestionModel, suggestionDataViewIndex)
     }
 
-    override fun createVisitableListWithEmptyProduct() {
+    override fun createVisitableListWithEmptyProduct(
+        violation: AceSearchProductModel.Violation
+    ) {
         if (isShowBroadMatch())
             createVisitableListWithEmptyProductBroadmatch()
         else
-            super.createVisitableListWithEmptyProduct()
+            super.createVisitableListWithEmptyProduct(violation)
     }
 
     override fun getKeywordForGeneralSearchTracking() = query
@@ -164,13 +165,12 @@ class TokoNowSearchViewModel @Inject constructor (
 
     override fun createProductAdsParam(): GetProductAdsParam {
         val query = queryParamMutable[SearchApiConst.Q].orEmpty()
-        val warehouseIds = AddressMapper.mapToWarehouseIds(chooseAddressData)
 
         return GetProductAdsParam(
             query = query,
-            warehouseIds = warehouseIds,
             src = GetProductAdsParam.SRC_SEARCH_TOKONOW,
-            userId = userSession.userId
+            userId = userSession.userId,
+            addressData = chooseAddressData
         )
     }
 

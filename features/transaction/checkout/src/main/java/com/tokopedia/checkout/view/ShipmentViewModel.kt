@@ -37,6 +37,7 @@ import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.PRODUCT_LEV
 import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.SOURCE_NORMAL
 import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.SOURCE_OCS
 import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.getAddOnFromSAF
+import com.tokopedia.checkout.domain.mapper.ShipmentAddOnProductServiceMapper
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
@@ -66,6 +67,7 @@ import com.tokopedia.checkout.view.uimodel.CrossSellModel
 import com.tokopedia.checkout.view.uimodel.CrossSellOrderSummaryModel
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.view.uimodel.EgoldTieringModel
+import com.tokopedia.checkout.view.uimodel.ShipmentAddOnSummaryModel
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel
@@ -94,6 +96,7 @@ import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
+import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.CodModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
@@ -121,25 +124,28 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
+import com.tokopedia.purchase_platform.common.feature.addons.domain.SaveAddOnStateUseCase
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.model.UpdateDynamicDataPassingUiModel
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest.DynamicDataParam
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.domain.UpdateDynamicDataPassingUseCase
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCaseCoroutine
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnButtonModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnMetadataItemModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnNoteItemModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnProductItemModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnTickerModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingBottomSheetModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingButtonModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingMetadataItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingNoteItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingProductItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingTickerModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrder
@@ -195,6 +201,7 @@ class ShipmentViewModel @Inject constructor(
     private val updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase,
     private val getPaymentFeeCheckoutUseCase: GetPaymentFeeCheckoutUseCase,
     private val checkoutGqlUseCase: CheckoutUseCase,
+    private val saveAddOnProductUseCase: SaveAddOnStateUseCase,
     private val shipmentDataConverter: ShipmentDataConverter,
     private val shippingCourierConverter: ShippingCourierConverter,
     private val stateConverter: RatesResponseStateConverter,
@@ -295,6 +302,15 @@ class ShipmentViewModel @Inject constructor(
 
     var isTradeIn: Boolean = false
 
+    var isAnyProductHasAddOnsProduct: Boolean = false
+
+    // add ons product
+    // list summary add on - ready to render
+    var listSummaryAddOnModel: List<ShipmentAddOnSummaryModel> = emptyList()
+
+    // list summary default
+    private var summariesAddOnUiModel: HashMap<Int, String> = hashMapOf()
+
     val isTradeInByDropOff: Boolean
         get() {
             val recipientAddressModel = this.recipientAddressModel
@@ -350,7 +366,12 @@ class ShipmentViewModel @Inject constructor(
         var insuranceFee = 0.0
         var totalBookingFee = 0
         var hasAddOnSelected = false
-        var totalAddOnPrice = 0.0
+        var totalAddOnGiftingPrice = 0.0
+        var totalAddOnProductServicePrice = 0.0
+        var qtyAddOn: Int
+        var totalPriceAddOn: Double
+        val countMapSummaries = hashMapOf<Int, Pair<Double, Int>>()
+        val listShipmentAddOnSummary: ArrayList<ShipmentAddOnSummaryModel> = arrayListOf()
         for (shipmentData in shipmentCartItemModelList) {
             if (shipmentData is ShipmentCartItemModel) {
                 val cartItemModels = shipmentData.cartItemModels
@@ -372,11 +393,31 @@ class ShipmentViewModel @Inject constructor(
                         } else {
                             totalItemPrice += cartItem.quantity * cartItem.price
                         }
-                        if (cartItem.addOnProductLevelModel.status == 1) {
-                            if (cartItem.addOnProductLevelModel.addOnsDataItemModelList.isNotEmpty()) {
-                                for (addOnsData in cartItem.addOnProductLevelModel.addOnsDataItemModelList) {
-                                    totalAddOnPrice += addOnsData.addOnPrice
+                        if (cartItem.addOnGiftingProductLevelModel.status == 1) {
+                            if (cartItem.addOnGiftingProductLevelModel.addOnsDataItemModelList.isNotEmpty()) {
+                                for (addOnsData in cartItem.addOnGiftingProductLevelModel.addOnsDataItemModelList) {
+                                    totalAddOnGiftingPrice += addOnsData.addOnPrice
                                     hasAddOnSelected = true
+                                }
+                            }
+                        }
+                        if (cartItem.addOnProduct.listAddOnProductData.isNotEmpty()) {
+                            for (addOnProductService in cartItem.addOnProduct.listAddOnProductData) {
+                                if (addOnProductService.status == ADD_ON_PRODUCT_STATUS_CHECK || addOnProductService.status == ADD_ON_PRODUCT_STATUS_MANDATORY) {
+                                    totalAddOnProductServicePrice += (addOnProductService.price * cartItem.quantity)
+                                    qtyAddOn = if (countMapSummaries.containsKey(addOnProductService.type)) {
+                                        countMapSummaries[addOnProductService.type]?.second?.plus(cartItem.quantity) ?: cartItem.quantity
+                                    } else {
+                                        cartItem.quantity
+                                    }
+
+                                    val addOnPrice = cartItem.quantity * addOnProductService.price
+                                    totalPriceAddOn = if (countMapSummaries.containsKey(addOnProductService.type)) {
+                                        countMapSummaries[addOnProductService.type]?.first?.plus(addOnPrice) ?: addOnPrice
+                                    } else {
+                                        addOnPrice
+                                    }
+                                    countMapSummaries[addOnProductService.type] = totalPriceAddOn to qtyAddOn
                                 }
                             }
                         }
@@ -417,7 +458,7 @@ class ShipmentViewModel @Inject constructor(
                 val addOnsDataModel = shipmentData.addOnsOrderLevelModel
                 if (addOnsDataModel.status == 1 && addOnsDataModel.addOnsDataItemModelList.isNotEmpty()) {
                     for ((addOnPrice) in addOnsDataModel.addOnsDataItemModelList) {
-                        totalAddOnPrice += addOnPrice
+                        totalAddOnGiftingPrice += addOnPrice
                         hasAddOnSelected = true
                     }
                 }
@@ -430,7 +471,7 @@ class ShipmentViewModel @Inject constructor(
         }
         totalPrice =
             totalItemPrice + finalShippingFee + insuranceFee + totalPurchaseProtectionPrice + additionalFee + totalBookingFee -
-            shipmentCost.productDiscountAmount - tradeInPrice + totalAddOnPrice
+            shipmentCost.productDiscountAmount - tradeInPrice + totalAddOnGiftingPrice + totalAddOnProductServicePrice
         shipmentCost.totalWeight = totalWeight
         shipmentCost.additionalFee = additionalFee
         shipmentCost.totalItemPrice = totalItemPrice
@@ -440,7 +481,7 @@ class ShipmentViewModel @Inject constructor(
         shipmentCost.totalPurchaseProtectionItem = totalPurchaseProtectionItem
         shipmentCost.purchaseProtectionFee = totalPurchaseProtectionPrice
         shipmentCost.tradeInPrice = tradeInPrice
-        shipmentCost.totalAddOnPrice = totalAddOnPrice
+        shipmentCost.totalAddOnPrice = totalAddOnGiftingPrice
         shipmentCost.hasAddOn = hasAddOnSelected
         if (shipmentDonationModel != null && shipmentDonationModel!!.isChecked) {
             shipmentCost.donation = shipmentDonationModel!!.donation.nominal.toDouble()
@@ -485,6 +526,22 @@ class ShipmentViewModel @Inject constructor(
             }
         }
         shipmentCost.bookingFee = totalBookingFee
+
+        for (entry in countMapSummaries) {
+            val addOnWording = summariesAddOnUiModel[entry.key]?.replace(CartConstant.QTY_ADDON_REPLACE, entry.value.second.toString())
+            val addOnPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(entry.value.first, false).removeDecimalSuffix()
+            val summaryAddOn = ShipmentAddOnSummaryModel(
+                wording = addOnWording ?: "",
+                type = entry.key,
+                qty = entry.value.second,
+                priceLabel = addOnPrice,
+                priceValue = entry.value.first.toLong()
+            )
+            listShipmentAddOnSummary.add(summaryAddOn)
+        }
+
+        listSummaryAddOnModel = listShipmentAddOnSummary
+        shipmentCost.listAddOnSummary = listSummaryAddOnModel
         shipmentCostModel.value = shipmentCost
         updateCheckoutButtonData(shipmentCost)
     }
@@ -907,6 +964,24 @@ class ShipmentViewModel @Inject constructor(
         isUsingDdp = cartShipmentAddressFormData.isUsingDdp
         dynamicData = cartShipmentAddressFormData.dynamicData
         shipmentPlatformFeeData = cartShipmentAddressFormData.shipmentPlatformFee
+        listSummaryAddOnModel = ShipmentAddOnProductServiceMapper.mapSummaryAddOns(cartShipmentAddressFormData)
+        isAnyProductHasAddOnsProduct = validateNeedSaveAddons(cartShipmentAddressFormData)
+    }
+
+    private fun validateNeedSaveAddons(cartShipmentAddressFormData: CartShipmentAddressFormData): Boolean {
+        var isAnyProductHasAddonsProduct = false
+        cartShipmentAddressFormData.groupAddress.forEach { groupAddress ->
+            groupAddress.groupShop.forEach { groupShop ->
+                groupShop.groupShopData.forEach { groupShopV2 ->
+                    groupShopV2.products.forEach { product ->
+                        if (product.addOnProduct.listAddOnProductData.isNotEmpty()) {
+                            isAnyProductHasAddonsProduct = true
+                        }
+                    }
+                }
+            }
+        }
+        return isAnyProductHasAddonsProduct
     }
 
     internal fun initializePresenterData(cartShipmentAddressFormData: CartShipmentAddressFormData) {
@@ -987,6 +1062,7 @@ class ShipmentViewModel @Inject constructor(
         fetchPrescriptionIds(cartShipmentAddressFormData.epharmacyData)
         cartDataForRates = cartShipmentAddressFormData.cartData
         shippingCourierViewModelsState = hashMapOf()
+        summariesAddOnUiModel = ShipmentAddOnProductServiceMapper.getShoppingSummaryAddOns(cartShipmentAddressFormData.listSummaryAddons)
     }
 
     internal fun setPurchaseProtection(isPurchaseProtectionPage: Boolean) {
@@ -1598,8 +1674,10 @@ class ShipmentViewModel @Inject constructor(
                         }
                         onValidatePromoSuccess(shipmentValidatePromoHolderData, validateUsePromoRevampUiModel)
                     } catch (t: Throwable) {
-                        promoQueue.remove()
-                        itemToProcess = promoQueue.peek()
+                        if (promoQueue.isNotEmpty()) {
+                            promoQueue.remove()
+                            itemToProcess = promoQueue.peek()
+                        }
                         if (promoQueue.any { it.cartString == shipmentValidatePromoHolderData.cartString }) {
                             // ignore this, because there is a new one in the queue
                             continue@loopProcess
@@ -1639,8 +1717,10 @@ class ShipmentViewModel @Inject constructor(
                         onCancelPromoSuccess(shipmentValidatePromoHolderData, responseData)
                     } catch (t: Throwable) {
                         Timber.d(t)
-                        promoQueue.remove()
-                        itemToProcess = promoQueue.peek()
+                        if (promoQueue.isNotEmpty()) {
+                            promoQueue.remove()
+                            itemToProcess = promoQueue.peek()
+                        }
                         if (promoQueue.any { it.cartString == shipmentValidatePromoHolderData.cartString }) {
                             // ignore this, because there is a new one in the queue
                             continue@loopProcess
@@ -2366,19 +2446,18 @@ class ShipmentViewModel @Inject constructor(
     }
 
     fun validateClearAllBoPromo() {
-        if (lastValidateUseRequest != null) {
+        val validateUseRequest = lastValidateUseRequest
+        if (validateUseRequest != null) {
             for (shipmentCartItemModel in shipmentCartItemModelList) {
                 if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.voucherLogisticItemUiModel != null) {
-                    for (order in lastValidateUseRequest!!.orders) {
-                        if (order.cartStringGroup == shipmentCartItemModel.cartStringGroup && order.codes.contains(
-                                shipmentCartItemModel.voucherLogisticItemUiModel!!.code
-                            )
-                        ) {
+                    for (order in validateUseRequest.orders) {
+                        if (order.cartStringGroup == shipmentCartItemModel.cartStringGroup && order.codes.isEmpty()) {
                             doUnapplyBo(
                                 shipmentCartItemModel.cartStringGroup,
                                 shipmentCartItemModel.voucherLogisticItemUiModel!!.uniqueId,
                                 shipmentCartItemModel.voucherLogisticItemUiModel!!.code
                             )
+                            break
                         }
                     }
                 }
@@ -3197,8 +3276,10 @@ class ShipmentViewModel @Inject constructor(
                                 v.showToastErrorAkamai(exception.message)
                             }
                         }
-                        ratesQueue.remove()
-                        itemToProcess = ratesQueue.peek()
+                        if (ratesQueue.isNotEmpty()) {
+                            ratesQueue.remove()
+                            itemToProcess = ratesQueue.peek()
+                        }
                     }
                 } else {
                     try {
@@ -3570,8 +3651,10 @@ class ShipmentViewModel @Inject constructor(
                                 v.showToastErrorAkamai(exception.message)
                             }
                         }
-                        ratesQueue.remove()
-                        itemToProcess = ratesQueue.peek()
+                        if (ratesQueue.isNotEmpty()) {
+                            ratesQueue.remove()
+                            itemToProcess = ratesQueue.peek()
+                        }
                     }
                 }
             }
@@ -4867,8 +4950,8 @@ class ShipmentViewModel @Inject constructor(
     }
     // endregion
 
-    // region add ons
-    fun updateAddOnProductLevelDataBottomSheet(saveAddOnStateResult: SaveAddOnStateResult) {
+    // region add ons gifting
+    fun updateAddOnGiftingProductLevelDataBottomSheet(saveAddOnStateResult: SaveAddOnStateResult) {
         for (addOnResult in saveAddOnStateResult.addOns) {
             for (shipmentCartItemModel in shipmentCartItemModelList) {
                 if (shipmentCartItemModel is ShipmentCartItemModel) {
@@ -4878,8 +4961,8 @@ class ShipmentViewModel @Inject constructor(
                         val keyProductLevel =
                             "${cartItemModel.cartStringGroup}-${cartItemModel.cartId}"
                         if (keyProductLevel.equals(addOnResult.addOnKey, ignoreCase = true)) {
-                            val addOnsDataModel = cartItemModel.addOnProductLevelModel
-                            setAddOnsData(
+                            val addOnsDataModel = cartItemModel.addOnGiftingProductLevelModel
+                            setAddOnsGiftingData(
                                 addOnsDataModel,
                                 addOnResult,
                                 0,
@@ -4893,7 +4976,7 @@ class ShipmentViewModel @Inject constructor(
         }
     }
 
-    fun updateAddOnOrderLevelDataBottomSheet(saveAddOnStateResult: SaveAddOnStateResult) {
+    fun updateAddOnGiftingOrderLevelDataBottomSheet(saveAddOnStateResult: SaveAddOnStateResult) {
         for (addOnResult in saveAddOnStateResult.addOns) {
             for (shipmentCartItemModel in shipmentCartItemModelList) {
                 if (shipmentCartItemModel is ShipmentCartItemModel && (shipmentCartItemModel.cartStringGroup + "-0").equals(
@@ -4902,7 +4985,7 @@ class ShipmentViewModel @Inject constructor(
                     )
                 ) {
                     val addOnsDataModel = shipmentCartItemModel.addOnsOrderLevelModel
-                    setAddOnsData(
+                    setAddOnsGiftingData(
                         addOnsDataModel,
                         addOnResult,
                         1,
@@ -4915,8 +4998,8 @@ class ShipmentViewModel @Inject constructor(
     }
 
     // identifier : 0 = product level, 1  = order level
-    private fun setAddOnsData(
-        addOnsDataModel: AddOnsDataModel,
+    private fun setAddOnsGiftingData(
+        addOnsDataModel: AddOnGiftingDataModel,
         addOnResult: AddOnResult,
         identifier: Int,
         cartString: String,
@@ -4924,7 +5007,7 @@ class ShipmentViewModel @Inject constructor(
     ) {
         addOnsDataModel.status = addOnResult.status
         val addOnButton = addOnResult.addOnButton
-        addOnsDataModel.addOnsButtonModel = AddOnButtonModel(
+        addOnsDataModel.addOnsButtonModel = AddOnGiftingButtonModel(
             addOnButton.leftIconUrl,
             addOnButton.rightIconUrl,
             addOnButton.description,
@@ -4932,30 +5015,31 @@ class ShipmentViewModel @Inject constructor(
             addOnButton.title
         )
         val addOnBottomSheet = addOnResult.addOnBottomSheet
-        val addOnBottomSheetModel = AddOnBottomSheetModel()
+        val addOnBottomSheetModel = AddOnGiftingBottomSheetModel()
         addOnBottomSheetModel.headerTitle = addOnBottomSheet.headerTitle
         addOnBottomSheetModel.description = addOnBottomSheet.description
-        val addOnTickerModel = AddOnTickerModel()
+        val addOnTickerModel = AddOnGiftingTickerModel()
         addOnTickerModel.text = addOnBottomSheet.ticker.text
         addOnBottomSheetModel.ticker = addOnTickerModel
-        val listProductAddOn = ArrayList<AddOnProductItemModel>()
+        val listProductAddOn = ArrayList<AddOnGiftingProductItemModel>()
         for (product in addOnBottomSheet.products) {
-            val addOnProductItemModel = AddOnProductItemModel()
+            val addOnProductItemModel = AddOnGiftingProductItemModel()
             addOnProductItemModel.productName = product.productName
             addOnProductItemModel.productImageUrl = product.productImageUrl
             listProductAddOn.add(addOnProductItemModel)
         }
         addOnBottomSheetModel.products = listProductAddOn
         addOnsDataModel.addOnsBottomSheetModel = addOnBottomSheetModel
-        val listAddOnDataItem = arrayListOf<AddOnDataItemModel>()
+        val listAddOnDataItem = arrayListOf<AddOnGiftingDataItemModel>()
         for (addOnData in addOnResult.addOnData) {
-            val addOnDataItemModel = AddOnDataItemModel()
+            val addOnDataItemModel = AddOnGiftingDataItemModel()
             val addOnNote = addOnData.addOnMetadata.addOnNote
             addOnDataItemModel.addOnId = addOnData.addOnId
+            addOnDataItemModel.addOnUniqueId = addOnData.addOnUniqueId
             addOnDataItemModel.addOnPrice = addOnData.addOnPrice
             addOnDataItemModel.addOnQty = addOnData.addOnQty.toLong()
-            addOnDataItemModel.addOnMetadata = AddOnMetadataItemModel(
-                AddOnNoteItemModel(
+            addOnDataItemModel.addOnMetadata = AddOnGiftingMetadataItemModel(
+                AddOnGiftingNoteItemModel(
                     addOnNote.isCustomNote,
                     addOnNote.to,
                     addOnNote.from,
@@ -5030,14 +5114,14 @@ class ShipmentViewModel @Inject constructor(
                 for (groupShopV2 in groupShop.groupShopData) {
                     for (product in groupShopV2.products) {
                         // product level
-                        if (product.addOnProduct.status == 1) {
+                        if (product.addOnGiftingProduct.status == 1) {
                             val dynamicDataParam = DynamicDataParam()
                             dynamicDataParam.level = PRODUCT_LEVEL
                             dynamicDataParam.parentUniqueId = groupShop.cartString
                             dynamicDataParam.uniqueId = product.cartId.toString()
                             dynamicDataParam.attribute = ATTRIBUTE_ADDON_DETAILS
                             dynamicDataParam.addOn =
-                                getAddOnFromSAF(product.addOnProduct, isOneClickShipment)
+                                getAddOnFromSAF(product.addOnGiftingProduct, isOneClickShipment)
                             listDataParam.add(dynamicDataParam)
                         }
                     }
@@ -5505,27 +5589,30 @@ class ShipmentViewModel @Inject constructor(
     }
     // endregion
 
+    // region platform fee
     fun getDynamicPaymentFee(request: PaymentFeeCheckoutRequest?) {
-        view?.showPaymentFeeSkeletonLoading()
+        if (view != null) {
+            view?.showPaymentFeeSkeletonLoading()
 
-        getPaymentFeeCheckoutUseCase.setParams(request!!)
-        getPaymentFeeCheckoutUseCase.execute(
-            { (platformFeeData): PaymentFeeGqlResponse ->
-                if (view != null) {
-                    if (platformFeeData.success) {
-                        view?.showPaymentFeeData(platformFeeData)
-                    } else {
-                        view?.showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.errorWording)
+            getPaymentFeeCheckoutUseCase.setParams(request!!)
+            getPaymentFeeCheckoutUseCase.execute(
+                { (platformFeeData): PaymentFeeGqlResponse ->
+                    if (view != null) {
+                        if (platformFeeData.success) {
+                            view?.showPaymentFeeData(platformFeeData)
+                        } else {
+                            view?.showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.errorWording)
+                        }
                     }
+                    Unit
+                }
+            ) { throwable: Throwable ->
+                Timber.d(throwable)
+                if (view != null) {
+                    view?.showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.errorWording)
                 }
                 Unit
             }
-        ) { throwable: Throwable ->
-            Timber.d(throwable)
-            if (view != null) {
-                view?.showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.errorWording)
-            }
-            Unit
         }
     }
 
@@ -5536,6 +5623,52 @@ class ShipmentViewModel @Inject constructor(
     fun setPlatformFeeData(paymentFee: ShipmentPaymentFeeModel) {
         shipmentCostModel.value = shipmentCostModel.value.copy(dynamicPlatformFee = paymentFee)
     }
+    // endregion
+
+    // region addons product service
+    fun saveAddOnsProduct(cartItemModel: CartItemModel) {
+        val params = ShipmentAddOnProductServiceMapper.generateSaveAddOnProductRequestParams(cartItemModel, isOneClickShipment)
+        saveAddOnProductUseCase.setParams(params, true)
+        saveAddOnProductUseCase.execute(
+            onSuccess = {
+                updateShipmentCostModel()
+            },
+            onError = {
+                updateShipmentCostModel()
+            }
+        )
+    }
+
+    fun saveAddOnsProductBeforeCheckout() {
+        if (shipmentCartItemModelList.isNotEmpty()) {
+            val allShipmentCartItemModel: ArrayList<CartItemModel> = arrayListOf()
+            shipmentCartItemModelList.filterIsInstance<ShipmentCartItemModel>().forEach { shipmentCartItem ->
+                shipmentCartItem.cartItemModels.forEach { cartItemModel ->
+                    allShipmentCartItemModel.add(cartItemModel)
+                }
+            }
+
+            val params = ShipmentAddOnProductServiceMapper.generateSaveAddOnProductRequestParams(allShipmentCartItemModel, isOneClickShipment)
+            saveAddOnProductUseCase.setParams(params, false)
+            saveAddOnProductUseCase.execute(
+                onSuccess = {
+                    if (it.saveAddOns.status.equals(statusOK, true)) {
+                        view?.handleOnSuccessSaveAddOnProduct()
+                    } else {
+                        if (it.saveAddOns.errorMessage.isNotEmpty()) {
+                            view?.showToastError(it.saveAddOns.errorMessage.first())
+                        } else {
+                            view?.showToastError(view?.getStringResource(R.string.message_error_checkout_empty))
+                        }
+                    }
+                },
+                onError = {
+                    view?.showToastError(getErrorMessage(view?.activity, it))
+                }
+            )
+        }
+    }
+    // end region
 
     companion object {
         private const val LAST_THREE_DIGIT_MODULUS: Long = 1000
