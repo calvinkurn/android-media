@@ -21,6 +21,7 @@ import com.tokopedia.inbox.databinding.UniversalInboxFragmentBinding
 import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalytics
 import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxTopAdsAnalytic
 import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxAllCounterResponse
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxErrorLogger
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.CHATBOT_TYPE
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.CLICK_TYPE_WISHLIST
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.COMPONENT_NAME_TOP_ADS
@@ -142,7 +143,7 @@ class UniversalInboxFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initViews(view, savedInstanceState)
+        initViews()
         setupTrackingQueue()
     }
 
@@ -159,7 +160,7 @@ class UniversalInboxFragment @Inject constructor(
         trackingQueue?.sendAll()
     }
 
-    private fun initViews(view: View, savedInstanceState: Bundle?) {
+    private fun initViews() {
         setupRecyclerView()
         setupRecyclerViewLoadMore()
         setupObservers()
@@ -201,6 +202,7 @@ class UniversalInboxFragment @Inject constructor(
                     adapter.notifyItemRangeChanged(Int.ZERO, it.size - Int.ONE)
                 }
             }
+            loadWidgetMetaAndCounter(isFirstLoad = true)
             loadTopAdsAndRecommendation()
         }
 
@@ -241,7 +243,7 @@ class UniversalInboxFragment @Inject constructor(
                     }
                 }
                 is Fail -> {
-                    // Do nothing
+                    // No-op
                 }
             }
         }
@@ -250,7 +252,9 @@ class UniversalInboxFragment @Inject constructor(
             removeLoadMoreLoading()
             when (it) {
                 is Success -> onSuccessGetFirstRecommendationData(it.data)
-                is Fail -> {}
+                is Fail -> {
+                    // no-op
+                }
             }
         }
 
@@ -260,8 +264,19 @@ class UniversalInboxFragment @Inject constructor(
                 is Success -> {
                     addRecommendationItem(it.data)
                 }
-                is Fail -> {}
+                is Fail -> {
+                    // no-op
+                }
             }
+        }
+
+        viewModel.error.observe(viewLifecycleOwner) {
+            Timber.d(it.first)
+            UniversalInboxErrorLogger.logExceptionToServerLogger(
+                it.first,
+                userSession.deviceId.orEmpty(),
+                it.second
+            )
         }
     }
 
@@ -270,18 +285,9 @@ class UniversalInboxFragment @Inject constructor(
             viewLifecycleOwner.removeObservers(liveData)
             liveData.observe(viewLifecycleOwner) {
                 viewModel.driverChatData = it // Always save data
-                /**
-                 * First time flow
-                 * 1. Load widget
-                 * 2. Inside load widget, mapper get driver ui model also with driver counter
-                 */
-                if (!adapter.isWidgetMetaAdded()) {
-                    loadWidgetMetaAndCounter()
-                } else {
-                    when (it) {
-                        is Success -> onSuccessGetDriverChat(it.data.first, it.data.second)
-                        is Fail -> onErrorGetDriverChat(it.throwable)
-                    }
+                when (it) {
+                    is Success -> onSuccessGetDriverChat(it.data.first, it.data.second)
+                    is Fail -> onErrorGetDriverChat(it.throwable)
                 }
             }
         }
@@ -492,11 +498,14 @@ class UniversalInboxFragment @Inject constructor(
     private fun setupInboxMenu() {
         binding?.inboxLayoutSwipeRefresh?.isRefreshing = true
         viewModel.generateStaticMenu()
-        observeDriverCounter()
     }
 
-    override fun loadWidgetMetaAndCounter() {
-        viewModel.loadWidgetMetaAndCounter()
+    override fun loadWidgetMetaAndCounter(isFirstLoad: Boolean) {
+        viewModel.loadWidgetMetaAndCounter {
+            if (isFirstLoad) {
+                observeDriverCounter()
+            }
+        }
     }
 
     private fun loadTopAdsAndRecommendation() {
@@ -568,13 +577,13 @@ class UniversalInboxFragment @Inject constructor(
     }
 
     override fun onRefreshWidgetMeta() {
-        observeDriverCounter() // Driver observer will trigger widget meta
+        loadWidgetMetaAndCounter(false)
     }
 
     override fun onRefreshWidgetCard(item: UniversalInboxWidgetUiModel) {
         when (item.type) {
             CHATBOT_TYPE -> {
-                loadWidgetMetaAndCounter()
+                loadWidgetMetaAndCounter(false)
             }
             GOJEK_TYPE -> {
                 observeDriverCounter()

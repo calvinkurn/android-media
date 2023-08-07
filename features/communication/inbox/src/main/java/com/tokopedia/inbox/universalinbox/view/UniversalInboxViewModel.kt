@@ -36,7 +36,6 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import javax.inject.Inject
 
 class UniversalInboxViewModel @Inject constructor(
@@ -73,20 +72,13 @@ class UniversalInboxViewModel @Inject constructor(
 
     private var _allChannelsLiveData: LiveData<List<ConversationsChannel>>? = null
 
-    val driverChatCounter: LiveData<Result<Pair<Int, Int>>>?
-        get() {
-            setAllDriverChannels()
-            return _allChannelsLiveData?.switchMap {
-                getDriverUnreadCount(it)
-            }
-        }
-
+    var driverChatCounter: LiveData<Result<Pair<Int, Int>>>? = null
     var driverChatWidgetData: Pair<Int, UniversalInboxWidgetDataResponse>? = null
     var driverChatData: Result<Pair<Int, Int>>? = null
 
     // Error live data for all purpose
-    private val _error = MutableLiveData<Throwable>()
-    val error: LiveData<Throwable>
+    private val _error = MutableLiveData<Pair<Throwable, String>>()
+    val error: LiveData<Pair<Throwable, String>>
         get() = _error
 
     fun generateStaticMenu() {
@@ -94,16 +86,27 @@ class UniversalInboxViewModel @Inject constructor(
         _inboxMenu.postValue(staticMenuList)
     }
 
-    fun loadWidgetMetaAndCounter() {
+    fun loadWidgetMetaAndCounter(
+        additionalAction: () -> Unit
+    ) {
         viewModelScope.launch {
             try {
                 val widgetMetaResponse = getWidgetMetaAsync().await()
-                // Save driver chat data for dynamic show
+                resetDriver()
+                // Get driver data only when response has driver widget
                 widgetMetaResponse?.metaData?.forEachIndexed { index, response ->
                     if (response.type == GOJEK_TYPE) {
                         driverChatWidgetData = Pair(index, response)
                     }
                 }
+                if (driverChatWidgetData != null) {
+                    setAllDriverChannels()
+                    driverChatCounter = _allChannelsLiveData?.switchMap {
+                        getDriverUnreadCount(it)
+                    } as? MutableLiveData<Result<Pair<Int, Int>>>
+                    additionalAction.invoke()
+                }
+                driverChatData = driverChatCounter?.value // Set driver chat data
                 val allCounterResponse = getAllCounterAsync().await()
                 val result = inboxMenuMapper.mapWidgetMetaToUiModel(
                     widgetMetaResponse,
@@ -112,10 +115,14 @@ class UniversalInboxViewModel @Inject constructor(
                 )
                 _widget.value = Pair(result, allCounterResponse)
             } catch (throwable: Throwable) {
-                Timber.d(throwable)
                 _widget.value = Pair(UniversalInboxWidgetMetaUiModel(isError = true), null)
             }
         }
+    }
+
+    private fun resetDriver() {
+        driverChatWidgetData = null
+        driverChatCounter = null
     }
 
     private fun setAllDriverChannels() {
@@ -124,8 +131,7 @@ class UniversalInboxViewModel @Inject constructor(
                 _allChannelsLiveData = getDriverChatCounterUseCase.getAllChannels()
             }
         } catch (throwable: Throwable) {
-            Timber.d(throwable)
-            _error.value = throwable
+            _error.value = Pair(throwable, ::setAllDriverChannels.name)
         }
     }
 
@@ -147,7 +153,7 @@ class UniversalInboxViewModel @Inject constructor(
                     Pair(activeChannel, unreadTotal)
                 )
             } catch (throwable: Throwable) {
-                Timber.d(throwable)
+                _error.value = Pair(throwable, ::getDriverUnreadCount.name)
                 unreadDriverChatCount.value = Fail(throwable)
             }
         }
@@ -159,7 +165,7 @@ class UniversalInboxViewModel @Inject constructor(
             try {
                 getWidgetMetaUseCase(Unit).chatInboxWidgetMeta
             } catch (throwable: Throwable) {
-                Timber.d(throwable)
+                _error.value = Pair(throwable, ::getWidgetMetaAsync.name)
                 null
             }
         }
@@ -172,7 +178,7 @@ class UniversalInboxViewModel @Inject constructor(
                 _allCounter.value = Success(result)
                 result
             } catch (throwable: Throwable) {
-                Timber.d(throwable)
+                _error.value = Pair(throwable, ::getAllCounterAsync.name)
                 _allCounter.value = Fail(throwable)
                 null
             }
@@ -187,6 +193,7 @@ class UniversalInboxViewModel @Inject constructor(
                     _firstPageRecommendation.postValue(Success(recommendationWidget))
                 } catch (throwable: Throwable) {
                     _firstPageRecommendation.postValue(Fail(throwable))
+                    _error.value = Pair(throwable, ::loadFirstPageRecommendation.name)
                 }
             }
         }
@@ -200,6 +207,7 @@ class UniversalInboxViewModel @Inject constructor(
                     _morePageRecommendation.postValue(Success(recommendationWidget.recommendationItemList))
                 } catch (throwable: Throwable) {
                     _morePageRecommendation.postValue(Fail(throwable))
+                    _error.value = Pair(throwable, ::loadMoreRecommendation.name)
                 }
             }
         }
@@ -238,6 +246,7 @@ class UniversalInboxViewModel @Inject constructor(
                     }
                 } catch (throwable: Throwable) {
                     actionListener.onErrorAddWishList(throwable, model.productId.toString())
+                    _error.value = Pair(throwable, ::addWishlistV2.name)
                 }
             }
         }
@@ -270,6 +279,7 @@ class UniversalInboxViewModel @Inject constructor(
                     }
                 } catch (throwable: Throwable) {
                     actionListener.onErrorRemoveWishlist(throwable, model.productId.toString())
+                    _error.value = Pair(throwable, ::removeWishlistV2.name)
                 }
             }
         }
