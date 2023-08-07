@@ -2789,4 +2789,12 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
             ApplinkConstInternalMechant.SHOP_NIB_CUSTOMER_APP
         )
     }
+
+    @Test
+    fun `check bmgm applink`() {
+        assertEqualsDeepLinkMapper(
+            ApplinkConst.BUY_MORE_GET_MORE_OLP,
+            ApplinkConstInternalMechant.BUY_MORE_GET_MORE_OLP
+        )
+    }
 }
