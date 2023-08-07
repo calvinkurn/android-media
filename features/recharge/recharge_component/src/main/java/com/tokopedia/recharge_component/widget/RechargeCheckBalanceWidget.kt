@@ -10,14 +10,14 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.recharge_component.R
 import com.tokopedia.recharge_component.databinding.WidgetRechargeCheckBalanceBinding
 import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceUnitModel
 import com.tokopedia.recharge_component.presentation.adapter.RechargeCheckBalanceUnitAdapter
+import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeCheckBalanceUnitViewHolder
+import com.tokopedia.recharge_component.presentation.util.CustomDividerItemDecorator
 import com.tokopedia.unifycomponents.BaseCustomView
 import org.jetbrains.annotations.NotNull
-import com.tokopedia.recharge_component.presentation.util.CustomDividerItemDecorator
-import com.tokopedia.recharge_component.R
-import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeCheckBalanceUnitViewHolder
 
 class RechargeCheckBalanceWidget @JvmOverloads constructor(
     @NotNull context: Context,
@@ -44,7 +44,7 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
             checkBalanceAdapter = RechargeCheckBalanceUnitAdapter().apply {
                 setBalanceInfo(balanceInfo)
                 setCheckBalanceUnitListener(
-                    object: RechargeCheckBalanceUnitViewHolder.RechargeCheckBalanceUnitListener {
+                    object : RechargeCheckBalanceUnitViewHolder.RechargeCheckBalanceUnitListener {
                         override fun onClickCheckBalanceUnit() {
                             checkBalanceWidgetListener?.onClickWidget()
                         }
@@ -69,6 +69,60 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
     }
 
     fun showWarningMessage(message: String, iconUrl: String) {
+        showWidgetMessage(message, iconUrl)
+        binding.run {
+            checkBalanceWarningContainer.setBackgroundColor(
+                MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_YN50
+                )
+            )
+            checkBalanceWarningTxt.setTextColor(
+                MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_YN500
+                )
+            )
+        }
+    }
+
+    fun showCriticalMessage(message: String, iconUrl: String) {
+        showWidgetMessage(message, iconUrl)
+        binding.run {
+            checkBalanceWarningContainer.setBackgroundColor(
+                MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_RN50
+                )
+            )
+            checkBalanceWarningTxt.setTextColor(
+                MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_RN500
+                )
+            )
+        }
+    }
+
+    fun showInformationMessage(message: String, iconUrl: String) {
+        showWidgetMessage(message, iconUrl)
+        binding.run {
+            checkBalanceWarningContainer.setBackgroundColor(
+                MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN50
+                )
+            )
+            checkBalanceWarningTxt.setTextColor(
+                MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                )
+            )
+        }
+    }
+
+    private fun showWidgetMessage(message: String, iconUrl: String) {
         binding.run {
             checkBalanceWarningContainer.show()
             checkBalanceWarningIcon.loadImage(iconUrl)
@@ -95,7 +149,7 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
         }
     }
 
-    fun hideWarningMessage() {
+    fun hideWidgetMessage() {
         binding.checkBalanceWarningContainer.hide()
     }
 

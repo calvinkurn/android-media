@@ -2,12 +2,14 @@ package com.tokopedia.digital_product_detail.presentation.webview
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.webkit.WebView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.EXTRA_CHECK_BALANCE_ACCESS_TOKEN
 import com.tokopedia.digital_product_detail.databinding.FragmentRechargeCheckBalanceWebViewBinding
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.webview.BaseSessionWebViewFragment
 
@@ -21,7 +23,7 @@ class RechargeCheckBalanceWebViewFragment : BaseSessionWebViewFragment() {
     }
 
     override fun getUrl(): String {
-        return arguments?.getString(EXTRA_WEB_URL) ?: ""
+        return arguments?.getString(EXTRA_APPLINK_WEBVIEW) ?: ""
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -32,14 +34,19 @@ class RechargeCheckBalanceWebViewFragment : BaseSessionWebViewFragment() {
 
     private fun getDataFromBundle() {
         arguments?.run {
-            webUrl = getString(EXTRA_WEB_URL) ?: ""
+            val applink = getString(EXTRA_APPLINK_WEBVIEW) ?: ""
+            webUrl = getWebUrl(applink)
         }
+    }
+
+    private fun getWebUrl(applink: String): String {
+        return applink.split(APPLINK_PARAM_URL)[Int.ONE]
     }
 
     override fun shouldOverrideUrlLoading(webview: WebView?, url: String): Boolean {
         if (url.isNotEmpty() && url.contains(ApplinkConst.INDOSAT_CHECK_BALANCE)) {
-            // TODO: [Misael] get access token
-            val accessToken = ""
+            val uri = Uri.parse(url)
+            val accessToken = uri.getQueryParameter(QUERY_PARAM_ACCESS_TOKEN)
             val intent = Intent().apply {
                 putExtra(EXTRA_CHECK_BALANCE_ACCESS_TOKEN, accessToken)
             }
@@ -51,12 +58,14 @@ class RechargeCheckBalanceWebViewFragment : BaseSessionWebViewFragment() {
     }
 
     companion object {
-        private const val EXTRA_WEB_URL = "EXTRA_WEB_URL"
+        private const val EXTRA_APPLINK_WEBVIEW = "EXTRA_APPLINK_WEBVIEW"
+        private const val APPLINK_PARAM_URL = "url="
+        private const val QUERY_PARAM_ACCESS_TOKEN = "access_token"
 
-        fun createInstance(webUrl: String): RechargeCheckBalanceWebViewFragment {
+        fun createInstance(applink: String): RechargeCheckBalanceWebViewFragment {
             val fragment = RechargeCheckBalanceWebViewFragment()
             val bundle = Bundle()
-            bundle.putString(EXTRA_WEB_URL, webUrl)
+            bundle.putString(EXTRA_APPLINK_WEBVIEW, applink)
             fragment.arguments = bundle
             return fragment
         }

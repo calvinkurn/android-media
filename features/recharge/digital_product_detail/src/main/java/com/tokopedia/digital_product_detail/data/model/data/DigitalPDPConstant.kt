@@ -27,7 +27,6 @@ object DigitalPDPConstant {
     const val REQUEST_CODE_LOGIN = 1010
     const val REQUEST_CODE_LOGIN_ALT = 1011
     const val REQUEST_CODE_VERIFY_PHONE_NUMBER = 1012
-    const val REQUEST_CODE_INDOSAT_CHECK_BALANCE = 1013
     const val RESULT_CODE_QR_SCAN = 101
 
     const val DELAY_PREFIX_TIME = 200L
@@ -46,5 +45,7 @@ object DigitalPDPConstant {
     const val OTHER_COMPONENT_APPLINK_OMNI = "applink_omni"
     const val APPLINK_OMNI_DATA_CODE = "omni_applink_data_code"
 
-    const val EXTRA_CHECK_BALANCE_ACCESS_TOKEN = "indosat_check_balance"
+    const val EXTRA_CHECK_BALANCE_ACCESS_TOKEN = "indosat_check_balance_access_token"
+    const val INDOSAT_CHECK_BALANCE_TYPE_OTP = "otp"
+    const val INDOSAT_CHECK_BALANCE_TYPE_WIDGET = "widget"
 }

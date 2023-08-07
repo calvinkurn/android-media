@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -42,16 +43,16 @@ import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DEFAULT_ICON_RES
-import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.EXTRA_CHECK_BALANCE_ACCESS_TOKEN
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.EXTRA_PARAM
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FAVNUM_PERMISSION_CHECKER_IS_DENIED
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.INDOSAT_CHECK_BALANCE_TYPE_OTP
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.INDOSAT_CHECK_BALANCE_TYPE_WIDGET
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.INPUT_ACTION_TRACKING_DELAY
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.LOADER_DIALOG_TEXT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MAXIMUM_VALID_NUMBER_LENGTH
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MINIMUM_OPERATOR_PREFIX
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MINIMUM_VALID_NUMBER_LENGTH
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_DIGITAL_SAVED_NUMBER
-import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_INDOSAT_CHECK_BALANCE
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_LOGIN
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_LOGIN_ALT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_VERIFY_PHONE_NUMBER
@@ -168,9 +169,12 @@ class DigitalPDPPulsaFragment :
         FirebaseRemoteConfigImpl(context)
     }
 
-    private val indosatCheckBalanceLauncher = registerForActivityResult(OpenRechargeCheckBalance()) { isSuccess ->
-        if (isSuccess) {
-            getIndosatCheckBalance()
+    private val indosatCheckBalanceLauncher = registerForActivityResult(OpenRechargeCheckBalance()) { accessToken ->
+        if (accessToken.isNotEmpty()) {
+            Toast.makeText(context, "Access Token: $accessToken", Toast.LENGTH_LONG).show()
+//            saveIndosatAccessToken(accessToken)
+        } else {
+            Toast.makeText(context, "Gagal melakukan verifikasi, mohon dicoba lagi nanti", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -628,73 +632,42 @@ class DigitalPDPPulsaFragment :
             hideCheckBalanceWidget()
             hideCheckBalanceWidgetShimmering()
 
-            // TODO: [Misael] Remove this line later
-            if (checkBalanceData.iconUrl.isEmpty()) {
-                setupDynamicScrollViewPadding()
-                return
+            when (checkBalanceData.widgetType.lowercase()) {
+                INDOSAT_CHECK_BALANCE_TYPE_OTP -> {
+                    renderCheckBalanceOTPWidget(
+                        DigitalPDPWidgetMapper.mapCheckBalanceOTPToWidgetModels(checkBalanceData)
+                    )
+                    showCheckBalanceOtpWidget()
+                    digitalPDPAnalytics.impressionCheckBalanceWidget(
+                        DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                        operator.attributes.name,
+                        loyaltyStatus,
+                        userSession.userId
+                    )
+                }
+                INDOSAT_CHECK_BALANCE_TYPE_WIDGET -> {
+                    renderCheckBalanceWidget(
+                        DigitalPDPWidgetMapper.mapCheckBalanceToWidgetBalanceInfoModels(checkBalanceData),
+                        DigitalPDPWidgetMapper.mapCheckBalanceToBottomSheetBalanceDetailModels(checkBalanceData)
+                    )
+                    digitalPDPAnalytics.impressionCheckBalanceInfo(
+                        DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                        operator.attributes.name,
+                        loyaltyStatus,
+                        checkBalanceData.campaignLabelText,
+                        userSession.userId
+                    )
+                    showCheckBalanceWidget()
+                }
+                else -> return
             }
 
-            if (checkBalanceData.widgets.isEmpty()) {
-                renderCheckBalanceOTPWidget(
-                    DigitalPDPWidgetMapper.mapCheckBalanceOTPToWidgetModels(checkBalanceData)
-                )
-                showCheckBalanceOtpWidget()
-                digitalPDPAnalytics.impressionCheckBalanceWidget(
-                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                    operator.attributes.name,
-                    loyaltyStatus,
-                    userSession.userId
-                )
-            } else {
-                renderCheckBalanceWidget(
-                    DigitalPDPWidgetMapper.mapCheckBalanceToWidgetBalanceInfoModels(checkBalanceData),
-                    DigitalPDPWidgetMapper.mapCheckBalanceToBottomSheetBalanceDetailModels(checkBalanceData)
-                )
-                digitalPDPAnalytics.impressionCheckBalanceInfo(
-                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                    operator.attributes.name,
-                    loyaltyStatus,
-                    checkBalanceData.campaignLabelText,
-                    userSession.userId
-                )
-                showCheckBalanceWidget()
-            }
-
-            // TODO: [Misael] Back to this logic
-//            when (checkBalanceData.widgetType.lowercase()) {
-//                "otp" -> {
-//                    renderCheckBalanceOTPWidget(
-//                        DigitalPDPWidgetMapper.mapCheckBalanceOTPToWidgetModels(checkBalanceData)
-//                    )
-//                    showCheckBalanceOtpWidget()
-//                    digitalPDPAnalytics.impressionCheckBalanceWidget(
-//                        DigitalPDPCategoryUtil.getCategoryName(categoryId),
-//                        operator.attributes.name,
-//                        loyaltyStatus,
-//                        userSession.userId
-//                    )
-//                }
-//                "widget" -> {
-//                    renderCheckBalanceWidget(
-//                        DigitalPDPWidgetMapper.mapCheckBalanceToWidgetModels(checkBalanceData)
-//                    )
-//                    showCheckBalanceWidget()
-//                    digitalPDPAnalytics.impressionCheckBalanceInfo(
-//                        DigitalPDPCategoryUtil.getCategoryName(categoryId),
-//                        operator.attributes.name,
-//                        loyaltyStatus,
-//                        checkBalanceData.campaignLabelText,
-//                        userSession.userId
-//                    )
-//                }
-//                else -> return
-//            }
-//
             // =======
             if (checkBalanceData.campaignLabelText.isNotEmpty()) {
                 showCheckBalanceWarning(
                     checkBalanceData.campaignLabelText,
-                    checkBalanceData.iconUrl
+                    checkBalanceData.iconUrl,
+                    checkBalanceData.campaignLabelTextColor
                 )
                 removeClientNumberBottomPadding()
             } else {
@@ -1578,9 +1551,7 @@ class DigitalPDPPulsaFragment :
             loyaltyStatus,
             userSession.userId
         )
-        // TODO: [Misael] remove this dummy applink
-//        indosatCheckBalanceLauncher.launch(applink)
-        indosatCheckBalanceLauncher.launch("https://staging.tokopedia.com/mybills")
+        indosatCheckBalanceLauncher.launch(applink)
     }
     //endregion
 
@@ -1689,11 +1660,6 @@ class DigitalPDPPulsaFragment :
                 addToCartFromUrl()
             } else if (requestCode == REQUEST_CODE_CART_DIGITAL) {
                 showErrorFromCheckout(data)
-            } else if (requestCode == REQUEST_CODE_INDOSAT_CHECK_BALANCE) {
-                if (data != null) {
-                    val accessToken = data.getStringExtra(EXTRA_CHECK_BALANCE_ACCESS_TOKEN) ?: ""
-                    saveIndosatAccessToken(accessToken)
-                }
             }
         }
     }

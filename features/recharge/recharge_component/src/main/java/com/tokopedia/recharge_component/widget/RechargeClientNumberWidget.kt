@@ -432,7 +432,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
         binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalance.run {
             setBalanceInfo(balanceInfo)
             if (balanceDetailBottomSheetModel.details.isNotEmpty()) {
-                setListener(object: RechargeCheckBalanceWidget.RechargeCheckBalanceWidgetListener {
+                setListener(object : RechargeCheckBalanceWidget.RechargeCheckBalanceWidgetListener {
                     override fun onClickWidget() {
                         mCheckBalanceListener?.onClickCheckBalanceWidget(balanceDetailBottomSheetModel)
                     }
@@ -441,15 +441,18 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
         }
     }
 
-    fun showCheckBalanceWarning(message: String, iconUrl: String) {
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalance.showWarningMessage(
-            message,
-            iconUrl
-        )
+    fun showCheckBalanceWarning(message: String, iconUrl: String, type: String) {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalance.run {
+            when (type) {
+                CHECK_BALANCE_WARNING -> showWarningMessage(message, iconUrl)
+                CHECK_BALANCE_CRITICAL -> showCriticalMessage(message, iconUrl)
+                CHECK_BALANCE_INFORMATION -> showInformationMessage(message, iconUrl)
+            }
+        }
     }
 
     fun hideCheckBalanceWarning() {
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalance.hideWarningMessage()
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalance.hideWidgetMessage()
     }
 
     fun removeClientNumberBottomPadding() {
@@ -518,6 +521,8 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
         private const val ALPHA_1_0 = 1.0f
         private const val PADDING_16 = 16
 
-        private const val DEFAULT_EMPTY_STRING = ""
+        private const val CHECK_BALANCE_INFORMATION = "information"
+        private const val CHECK_BALANCE_CRITICAL = "critical"
+        private const val CHECK_BALANCE_WARNING = "warning"
     }
 }
