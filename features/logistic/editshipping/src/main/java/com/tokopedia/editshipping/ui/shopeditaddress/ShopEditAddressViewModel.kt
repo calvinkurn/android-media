@@ -73,7 +73,6 @@ class ShopEditAddressViewModel @Inject constructor(
         warehouseName: String,
         districtId: Long,
         latLon: String,
-        email: String,
         addressDetail: String,
         postalCode: String
     ) {
@@ -85,7 +84,6 @@ class ShopEditAddressViewModel @Inject constructor(
                 warehouseName,
                 districtId,
                 latLon,
-                email,
                 addressDetail,
                 postalCode
             )

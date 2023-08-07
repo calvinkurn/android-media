@@ -48,7 +48,6 @@ class ShopLocationRepository @Inject constructor(@ApplicationContext private val
         warehouseName: String,
         districtId: Long,
         latLon: String,
-        email: String,
         addressDetail: String,
         postalCode: String
     ): ShopLocationUpdateWarehouseResponse {
@@ -59,7 +58,6 @@ class ShopLocationRepository @Inject constructor(@ApplicationContext private val
                 "warehouse_name" to warehouseName,
                 "district" to districtId,
                 "latlon" to latLon,
-                "email" to email,
                 "address_detail" to addressDetail,
                 "postal" to postalCode
             )

@@ -338,7 +338,6 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     binding?.etNamaLokasiShop?.text.toString(),
                     it.districtId,
                     latLong,
-                    userSession.email,
                     binding?.etDetailAlamatShop?.text.toString(),
                     binding?.etKodePosShop?.text.toString()
                 )
@@ -366,7 +365,6 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                         binding?.etNamaLokasiShop?.text.toString(),
                         it.districtId,
                         latLong,
-                        userSession.email,
                         binding?.etDetailAlamatShop?.text.toString(),
                         binding?.etKodePosShop?.text.toString()
                     )
