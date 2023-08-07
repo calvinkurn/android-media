@@ -613,8 +613,10 @@ class TokoNowCategoryFragment :
         }
     }
 
-    override fun refreshLayout() {
-        super.refreshLayout()
+    override fun refreshLayout(
+        isDynamicFilterRemoved: Boolean
+    ) {
+        super.refreshLayout(isDynamicFilterRemoved)
         refreshProductRecommendation(TOKONOW_CLP)
     }
 

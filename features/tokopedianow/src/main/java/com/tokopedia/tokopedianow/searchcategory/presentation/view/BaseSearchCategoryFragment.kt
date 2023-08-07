@@ -401,12 +401,16 @@ abstract class BaseSearchCategoryFragment:
 
     private fun configureSwipeRefreshLayout() {
         swipeRefreshLayout?.setOnRefreshListener {
-            refreshLayout()
+            refreshLayout(
+                isDynamicFilterRemoved = false
+            )
         }
     }
 
-    protected open fun refreshLayout() {
-        getViewModel().onViewReloadPage()
+    protected open fun refreshLayout(
+        isDynamicFilterRemoved: Boolean = true
+    ) {
+        getViewModel().onViewReloadPage(isDynamicFilterRemoved)
         refreshProductRecommendation(TOKONOW_NO_RESULT)
     }
 
