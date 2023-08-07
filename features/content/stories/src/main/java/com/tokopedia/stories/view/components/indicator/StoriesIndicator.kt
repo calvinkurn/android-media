@@ -25,37 +25,52 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun StoriesIndicator(
-    storiesCount: Int,
-    storiesCurrentPosition: Int,
-    paused: Boolean,
-    onFinished: () -> Unit,
+    count: Int,
+    position: Int,
+    progress: Float,
+    isPause: Boolean,
+    event: (StoriesIndicatorEvent) -> Unit,
 ) {
-    val percent = remember { Animatable(0f) }
-    LaunchedEffect(paused) {
-        if (paused) percent.stop()
+    val duration = 7 * 1000
+    val anim = remember { Animatable(progress) }
+    LaunchedEffect(isPause, position) {
+        if (isPause) anim.stop()
         else {
-            percent.animateTo(
+            anim.animateTo(
                 targetValue = 1f,
                 animationSpec = tween(
-                    durationMillis = (7000 * (1f - percent.value)).toInt(),
-                    easing = LinearEasing
+                    durationMillis = (duration * (1f - anim.value)).toInt(),
+                    easing = LinearEasing,
                 )
             )
-            onFinished()
+            event.invoke(StoriesIndicatorEvent.NEXT)
+            anim.snapTo(0F)
         }
     }
+    StoriesIndicatorBar(
+        count = count,
+        position = position,
+        progress = anim.value,
+    )
+}
+
+@Composable
+private fun StoriesIndicatorBar(
+    count: Int,
+    position: Int,
+    progress: Float,
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .height(48.dp)
-            .padding(8.dp, 0.dp),
-
-        ) {
-        for (index in 1..storiesCount) {
+            .padding(horizontal = 8.dp),
+    ) {
+        for (index in 1..count) {
             Row(
                 modifier = Modifier
                     .height(4.dp)
-                    .clip(RoundedCornerShape(50, 50, 50, 50))
+                    .clip(RoundedCornerShape(50))
                     .weight(1f)
                     .background(Color.White.copy(alpha = 0.4f))
             ) {
@@ -64,22 +79,24 @@ fun StoriesIndicator(
                         .background(Color.White)
                         .fillMaxHeight().let {
                             when (index) {
-                                storiesCurrentPosition -> it.fillMaxWidth(percent.value)
-                                in 0..storiesCurrentPosition -> it.fillMaxWidth(1f)
+                                position -> it.fillMaxWidth(progress)
+                                in 0..position -> it.fillMaxWidth(1f)
                                 else -> it
                             }
                         },
                 )
             }
-            if (index != storiesCount) {
-                Spacer(modifier = Modifier.width(4.dp))
-            }
+            if (index != count) Spacer(modifier = Modifier.width(4.dp))
         }
     }
 }
 
-@Preview
+@Preview(showSystemUi = true)
 @Composable
-fun StoriesIndicatorPreview() {
-    StoriesIndicator(storiesCount = 3, storiesCurrentPosition = 0, paused = false) { }
+internal fun StoriesIndicatorPreview() {
+    StoriesIndicator(count = 3, position = 0, isPause = false, progress = 0F) { }
+}
+
+enum class StoriesIndicatorEvent {
+    NEXT,
 }

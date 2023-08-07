@@ -31,7 +31,7 @@ class StoriesFragment @Inject constructor(
             lifecycle,
             binding.storiesViewPager,
         ) { tabPosition ->
-            viewModel.mCounter = tabPosition
+            viewModel.mCounter.value = tabPosition
         }
     }
 
