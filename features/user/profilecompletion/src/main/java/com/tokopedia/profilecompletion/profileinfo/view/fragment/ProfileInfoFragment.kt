@@ -68,6 +68,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.isUsingNightModeResources
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
@@ -164,7 +165,11 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         initListener()
 
         binding?.itemProfileManagement?.imgTitle?.loadImageWithoutPlaceholder(
-            getString(R.string.img_url_profile_management_entry_point)
+            if (isUsingNightModeResources()) {
+                getString(R.string.img_profile_management_entry_point_night)
+            } else {
+                getString(R.string.img_profile_management_entry_point_light)
+            }
         )
 
         val isProfileManagementM1Activated = isProfileManagementM1Activated()
