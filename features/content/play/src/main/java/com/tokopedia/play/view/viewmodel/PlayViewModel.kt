@@ -2823,6 +2823,10 @@ class PlayViewModel @AssistedInject constructor(
                         }
                     }
                 }
+                else -> {
+                    if (_exploreWidget.value.widgets.isEmpty())
+                        _exploreWidget.update { widget -> widget.copy(state = ExploreWidgetState.Empty) }
+                }
             }
         }) { exception ->
             _exploreWidget.update {
@@ -2832,6 +2836,15 @@ class PlayViewModel @AssistedInject constructor(
                         onRetry = { updateDefaultWidget(param) }
                     )
                 )
+            }
+            widgetQuery.update { query ->
+                query.mapValues {
+                    if (it.key == ExploreWidgetType.Default) {
+                        it.value.copy(isRefresh = false)
+                    } else {
+                        it.value
+                    }
+                }
             }
         }
     }
@@ -2857,7 +2870,16 @@ class PlayViewModel @AssistedInject constructor(
                 cursor = cursor
             )
             val widgets = response.getChannelBlocks.getChannelCards
-            _categoryWidget.update { widget -> widget.copy(data = widget.data + widgets, state = ExploreWidgetState.Success(response.getConfig.cursor.isNotBlank())) }
+            if (widgets.isNotEmpty()) {
+                _categoryWidget.update { widget ->
+                    widget.copy(
+                        data = widget.data + widgets,
+                        state = ExploreWidgetState.Success(response.getConfig.cursor.isNotBlank())
+                    )
+                }
+            } else {
+                _categoryWidget.update { widget -> widget.copy(state = ExploreWidgetState.Empty) }
+            }
             widgetQuery.update { query ->
                 query.mapValues {
                     if (it.key == ExploreWidgetType.Category) {
@@ -2875,6 +2897,15 @@ class PlayViewModel @AssistedInject constructor(
                         onRetry = { updateCategoryWidget(param) }
                     )
                 )
+            }
+            widgetQuery.update { query ->
+                query.mapValues {
+                    if (it.key == ExploreWidgetType.Category) {
+                        it.value.copy(isRefresh = false)
+                    } else {
+                        it.value
+                    }
+                }
             }
         }
     }
