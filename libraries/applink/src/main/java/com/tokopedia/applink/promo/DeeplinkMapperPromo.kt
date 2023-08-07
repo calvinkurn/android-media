@@ -1,5 +1,6 @@
 package com.tokopedia.applink.promo
 
+import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
@@ -134,10 +135,53 @@ object DeeplinkMapperPromo {
             ApplinkConst.Tokomember.COUPON_DETAIL to  Regex(couponDetailRegex)
         )
     }
+fun getCelebrationBottomsheetDeeplink(deeplink: Uri): String {
+    return if (deeplink.pathSegments.size < 2) ""
+    else UriUtil.buildUri(
+        ApplinkConstInternalPromo.CELEBRATION_BOTTOMSHEET,
+        deeplink.pathSegments.last()
+    )
+}
 
+    fun invokeScpToasterUniversalAppLink(context: Context, deeplink: Uri): String {
+        // PArse deeplink to get order id
+        return ""
+    }
 
     fun isMatchPattern(pattern:Regex?,link:String) : Boolean{
         return pattern?.matches(link) ?: false
+    }
+
+    fun getInternalDeeplinkForScpMedalCabinet(deeplink: Uri): String {
+        return UriUtil.appendDeeplinkWithQuery(
+            ApplinkConstInternalPromo.MEDAL_CABINET,
+            deeplink.query.orEmpty()
+        )
+    }
+
+    fun getInternalDeeplinkForScpMedalCabinetSeeMore(deeplink: Uri): String {
+        return UriUtil.appendDeeplinkWithQuery(
+            ApplinkConstInternalPromo.SEE_MORE_MEDALI,
+            deeplink.query.orEmpty()
+        )
+    }
+
+    fun getInternalDeeplinkForScpMedalDetail(deeplink: Uri): String {
+        val segments = deeplink.pathSegments
+        if (segments.last() != "") {
+            val medaliSlug = segments.last()
+            return UriUtil.buildUri(ApplinkConstInternalPromo.MEDAL_DETAIL, medaliSlug)
+        }
+        return ""
+    }
+
+    fun getInternalDeeplinkForScpCelebration(deeplink: Uri): String {
+        val segments = deeplink.pathSegments
+        if (segments.last() != "") {
+            val medaliSlug = segments.last()
+            return UriUtil.buildUri(ApplinkConstInternalPromo.CELEBRATION_PAGE, medaliSlug)
+        }
+        return ""
     }
 }
 

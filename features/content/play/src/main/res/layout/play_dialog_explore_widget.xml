@@ -16,9 +16,9 @@
         app:rcl_topLeftRadius="@dimen/content_common_space_16">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/iv_knob"
-            android:layout_width="4dp"
-            android:layout_height="64dp"
+            android:id="@+id/iv_play_explore_dialog_knob"
+            android:layout_width="@dimen/layout_lvl1"
+            android:layout_height="@dimen/layout_lvl7"
             android:layout_marginStart="@dimen/unify_space_8"
             android:src="@drawable/bottomsheet_knob_icon"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -48,7 +48,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/iv_knob"
+            app:layout_constraintStart_toEndOf="@+id/iv_play_explore_dialog_knob"
             app:layout_constraintTop_toBottomOf="@+id/tab_play_explore_widget"
             app:layout_constraintVertical_bias="0.0" />
     </com.tokopedia.play_common.view.RoundedConstraintLayout>

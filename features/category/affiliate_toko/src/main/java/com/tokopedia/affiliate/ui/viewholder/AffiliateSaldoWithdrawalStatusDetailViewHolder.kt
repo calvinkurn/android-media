@@ -34,14 +34,14 @@ class AffiliateSaldoWithdrawalStatusDetailViewHolder(val view: View): RecyclerVi
     private fun setColorState(isFirstItem: Boolean) {
         view.apply {
             if (isFirstItem) {
-                findViewById<Typography>(R.id.tvStatusTitle).setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                findViewById<Typography>(R.id.tvStatusTitle).setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
                 findViewById<ImageView>(R.id.ivCircleDot).setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.affiliate_ic_circle_light_green))
-                findViewById<DividerUnify>(R.id.statusDivider).setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                findViewById<DividerUnify>(R.id.statusDivider).setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
             }
             else {
-                findViewById<Typography>(R.id.tvStatusTitle).setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+                findViewById<Typography>(R.id.tvStatusTitle).setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
                 findViewById<ImageView>(R.id.ivCircleDot).setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.affiliate_ic_circle_light_grey))
-                findViewById<DividerUnify>(R.id.statusDivider).setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+                findViewById<DividerUnify>(R.id.statusDivider).setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_32))
             }
         }
     }

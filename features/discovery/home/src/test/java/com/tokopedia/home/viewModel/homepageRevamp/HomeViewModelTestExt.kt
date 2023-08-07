@@ -85,6 +85,7 @@ import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import java.util.concurrent.TimeoutException
+import com.tokopedia.home.beranda.data.mapper.BestSellerMapper as BestSellerRevampMapper
 
 /**
  * Created by Lukas on 14/05/20.
@@ -149,6 +150,7 @@ fun createHomeViewModel(
 fun createHomeDynamicChannelUseCase(
     homeBalanceWidgetUseCase: HomeBalanceWidgetUseCase = mockk(relaxed = true),
     homeDataMapper: HomeDataMapper = mockk(relaxed = true),
+    bestSellerRevampMapper: BestSellerRevampMapper = mockk(relaxed = true),
     homeDynamicChannelsRepository: HomeDynamicChannelsRepository = mockk(relaxed = true),
     homeAtfRepository: HomeAtfRepository = mockk(relaxed = true),
     homeUserStatusRepository: HomeUserStatusRepository = mockk(relaxed = true),
@@ -178,6 +180,7 @@ fun createHomeDynamicChannelUseCase(
     return HomeDynamicChannelUseCase(
         homeBalanceWidgetUseCase = homeBalanceWidgetUseCase,
         homeDataMapper = homeDataMapper,
+        bestSellerRevampMapper = bestSellerRevampMapper,
         homeDynamicChannelsRepository = homeDynamicChannelsRepository,
         atfDataRepository = homeAtfRepository,
         homeUserStatusRepository = homeUserStatusRepository,
@@ -316,7 +319,7 @@ fun HomeSalamRecommendationUseCase.givenOnDeclineSalamRecommendationError() {
 }
 
 fun HomeRecommendationUseCase.givenOnHomeBestSellerFilterClickReturn(bestSellerDataModel: BestSellerDataModel = BestSellerDataModel()) {
-    coEvery { onHomeBestSellerFilterClick(any(), any(), any()) } returns bestSellerDataModel
+    coEvery { onHomeBestSellerFilterClick(any(), any(), any<Int>()) } returns bestSellerDataModel
 }
 
 fun HomeRechargeBuWidgetUseCase.givenOnGetRechargeBuWidgetFromHolderReturn(rechargeBUWidgetDataModel: RechargeBUWidgetDataModel) {

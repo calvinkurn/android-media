@@ -2,7 +2,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:dither="true" android:shape="rectangle">
-            <solid android:color="@color/Unify_N100"/>
+            <solid android:color="@color/Unify_NN200"/>
             <corners android:radius="3dp"/>
             <padding android:bottom="8dp" android:left="8dp" android:right="8dp" android:top="8dp"/>
         </shape>

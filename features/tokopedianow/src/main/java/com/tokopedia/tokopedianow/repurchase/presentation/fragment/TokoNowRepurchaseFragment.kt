@@ -19,7 +19,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_DEVICE
@@ -50,6 +49,7 @@ import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.REC
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.searchbar.helper.ViewHelper
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -441,14 +441,14 @@ class TokoNowRepurchaseFragment:
     }
 
     private fun setIconNewTopNavigation() {
-        val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
+        val icons = IconBuilder(IconBuilderFlag(pageSource = NavSource.TOKONOW))
             .addIcon(IconList.ID_CART, onClick = ::onClickCartButton)
             .addIcon(IconList.ID_NAV_GLOBAL) {}
         navToolbar?.setIcon(icons)
     }
 
     private fun setIconOldTopNavigation() {
-        val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
+        val icons = IconBuilder(IconBuilderFlag(pageSource = NavSource.TOKONOW))
             .addIcon(IconList.ID_CART, onClick = ::onClickCartButton)
         navToolbar?.setIcon(icons)
     }
@@ -949,8 +949,8 @@ class TokoNowRepurchaseFragment:
     }
 
     private fun onScrollProductList() {
-        val layoutManager = rvRepurchase?.layoutManager as? StaggeredGridLayoutManager
-        val index = layoutManager?.findLastCompletelyVisibleItemPositions(null)
+        val layoutManager = rvRepurchase?.layoutManager as? GridLayoutManager
+        val index = layoutManager?.findLastCompletelyVisibleItemPosition()
         val itemCount = layoutManager?.itemCount.orZero()
         viewModel.onScrollProductList(index, itemCount)
     }

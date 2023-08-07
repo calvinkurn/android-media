@@ -12,5 +12,15 @@
     <color name="clr_dms_shop_campaign_tab_first_color">#60BB55</color>
     <color name="clr_dms_shop_campaign_tab_second_color">#26A116</color>
     <color name="clr_dms_content_creation_bg">#EF144A</color>
+    <color name="clr_dms_voucher_claim">#F5F6FF</color>
+    <color name="clr_dms_voucher_title">#212121</color>
+    <color name="clr_dms_voucher_min_purchase">#212121</color>
+    <color name="dms_color_525A67">#525A67</color>
+    <color name="dms_static_Unify_NN950_dark">#F5F6FF</color>
+    <color name="dms_static_Unify_NN950_light">#212121</color>
+    <color name="dms_static_Unify_BFC9D9_light">#BFC9D9</color>
+    <color name="dms_static_Unify_NN600_light">#6D7588</color>
+
+
 
 </resources>

@@ -63,7 +63,7 @@
                     android:paddingEnd="@dimen/unify_space_4"
                     android:paddingRight="@dimen/unify_space_2"
                     android:text="@string/up_btn_text_live"
-                    android:textColor="@color/Unify_N0"
+                    android:textColor="@color/Unify_NN0"
                     android:textSize="@dimen/fontSize_lvl10"
                     android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="@+id/view_profile_outer_ring"
@@ -273,8 +273,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         app:backgroundTint="@color/Unify_GN500"
-        app:fbType="circle"
-        app:srcCompat="@drawable/ic_feed_post_plus" />
+        app:fbType="circle"/>
 
     <com.tokopedia.feedcomponent.view.custom.FeedFloatingButton
         android:id="@+id/fab_user_profile"

@@ -13,6 +13,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductIn
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ShipmentPlusData
@@ -63,7 +64,10 @@ interface DynamicProductDetailListener {
         componentTrackDataModel: ComponentTrackDataModel?
     )
 
-    fun onMerchantVoucherSummaryClicked(shopId: String, @MvcSource source: Int, productId: String)
+    fun onMerchantVoucherSummaryClicked(
+        @MvcSource source: Int,
+        uiModel: ProductMerchantVoucherSummaryDataModel.UiModel
+    )
     fun showThumbnailImage(): Boolean
     fun onShowProductMediaRecommendationClicked()
 

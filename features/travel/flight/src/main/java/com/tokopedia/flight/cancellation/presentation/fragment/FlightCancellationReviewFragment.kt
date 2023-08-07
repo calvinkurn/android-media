@@ -224,7 +224,7 @@ class FlightCancellationReviewFragment :
 
     private fun descriptionText(): SpannableString {
         val color =
-            requireContext().resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G600)
+            requireContext().resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN600)
         val startIndex =
             getString(R.string.flight_cancellation_refund_description).indexOf(LEARN_TEXT)
         val stopIndex = getString(R.string.flight_cancellation_refund_description).length

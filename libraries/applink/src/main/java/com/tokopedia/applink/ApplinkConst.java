@@ -51,6 +51,9 @@ public interface ApplinkConst {
     String SHOP_PENALTY_DETAIL = "tokopedia://shop-penalty-detail";
     String SHOP_FOLLOWER_LIST = "tokopedia://shop/{shop_id}/follower";
     String SHOP_SETTINGS_CUSTOMER_APP = "tokopedia://shop/{shop_id}/settings";
+
+    String SHOP_NIB_CUSTOMER_APP = "tokopedia://shop-nib";
+
     String TOKOPEDIA_CHAT_AUTO_REPLY_SETTINGS = "tokopedia://webview?url=https://m.tokopedia.com/chat/setting/auto-reply";
     //shop widget
     String SHOP_OPERATIONAL_HOUR = "tokopedia://shop/{shop_id}/operational-hour";
@@ -204,7 +207,7 @@ public interface ApplinkConst {
     String REGISTER_INIT = "tokopedia://register-init";
     String PROFILE = "tokopedia://people/{user_id}";
 
-    String PROFILE_SETTINGS = "tokopedia://people-settings/{user_id}";
+    String PROFILE_SETTINGS = "tokopedia://people/settings/{user_id}";
     String PROFILE_AFTER_POST = "tokopedia://people/{user_id}?after_post=true";
     String PROFILE_AFTER_EDIT = "tokopedia://people/{user_id}?after_edit=true";
     String PROFILE_SUCCESS_POST = "tokopedia://people/{user_id}?success_post=true";
@@ -515,6 +518,15 @@ public interface ApplinkConst {
         String HISTORY = "tokopedia://tokopoints/history";
     }
 
+    interface ScpRewards{
+        String CELEBRATION_BASE = "celebration/{slug}";
+        String MEDAL_DETAIL_BASE = "detail";
+        String MEDAL_CABINET = "medali";
+        String SEE_MORE_MEDAL = "more";
+        String CELEBRATION_BOTTOMSHEET = "celebration-bottomsheet";
+        String SCP_TOASTER = "celebration_toaster";
+    }
+
     String OQR_PIN_URL_ENTRY_LINK = "tokopedia://ovoqrthanks/";
     String DISCOVERY = "tokopedia://discovery";
     String DISCOVERY_DEALS = "tokopedia://discovery/deals";
@@ -626,6 +638,7 @@ public interface ApplinkConst {
         String RECIPE_HOME = "tokopedia://now/recipe";
         String RECIPE_SEARCH = "tokopedia://now/recipe/search";
         String RECIPE_AUTO_COMPLETE = "tokopedia://now/recipe/autocomplete";
+        String SEE_ALL_CATEGORY = "tokopedia://now/see-all-category";
     }
 
     interface TokoFood {

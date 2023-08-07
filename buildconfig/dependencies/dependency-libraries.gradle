@@ -81,7 +81,6 @@ ext {
             iris                    : ":libraries:iris",
             irisSession             : ":libraries:iris_session",
             keys                    : ":libraries:keys",
-            kotlinExtensions        : ":libraries:kotlin_extensions",
             linker                  : ":libraries:linker",
             universal_sharing       : ":libraries:universal_sharing",
             locationmanager         : ":libraries:locationmanager",

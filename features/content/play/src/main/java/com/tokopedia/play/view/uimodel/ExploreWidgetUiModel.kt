@@ -12,7 +12,7 @@ import com.tokopedia.play_common.model.result.ResultState
  */
 data class ExploreWidgetUiModel(
     val chips: TabMenuUiModel,
-    val widgets: List<WidgetItemUiModel>,
+    val widgets: List<ExploreWidgetItemUiModel>,
     val state: ExploreWidgetState
 ) {
     companion object {
@@ -70,13 +70,13 @@ data class TabMenuUiModel(
     }
 }
 
-data class WidgetItemUiModel(
+data class ExploreWidgetItemUiModel(
     val id: Long,
     val item: PlayWidgetUiModel
 ) : WidgetUiModel() {
     companion object {
-        val Empty: WidgetItemUiModel
-            get() = WidgetItemUiModel(item = PlayWidgetUiModel.Empty, id = 0L)
+        val Empty: ExploreWidgetItemUiModel
+            get() = ExploreWidgetItemUiModel(item = PlayWidgetUiModel.Empty, id = 0L)
     }
 }
 
@@ -103,12 +103,12 @@ val WidgetParamUiModel.hasNextPage: Boolean
         return this.cursor.isNotEmpty()
     }
 
-val List<WidgetUiModel>.getChannelBlocks: List<WidgetItemUiModel>
+val List<WidgetUiModel>.getChannelBlocks: List<ExploreWidgetItemUiModel>
     get() {
-        return this.filterIsInstance<WidgetItemUiModel>().distinctBy { it.item.items }
+        return this.filterIsInstance<ExploreWidgetItemUiModel>().distinctBy { it.item.items }
     }
 
-val List<WidgetItemUiModel>.getChannelCards: List<PlayWidgetItemUiModel>
+val List<ExploreWidgetItemUiModel>.getChannelCards: List<PlayWidgetItemUiModel>
     get() {
         val list = this
         return list.flatMap { it.item.items }
@@ -144,13 +144,13 @@ internal val getCategoryShimmering: List<PlayWidgetShimmerUiModel>
     }
 
 sealed class ExploreWidgetState {
-    object Success : ExploreWidgetState()
+    data class Success(val withNextPage: Boolean): ExploreWidgetState()
     object Loading : ExploreWidgetState()
     object Empty : ExploreWidgetState()
     data class Fail(val error: Throwable, val onRetry: () -> Unit = {}) : ExploreWidgetState()
 
     val isSuccess: Boolean
-        get() = this == Success
+        get() = this is Success
 
     val isLoading: Boolean
         get() = this == Loading
@@ -160,6 +160,9 @@ sealed class ExploreWidgetState {
 
     val isEmpty: Boolean
         get() = this is Empty
+
+    val hasNextPage: Boolean
+        get() = this is Success && this.withNextPage
 }
 
 enum class ExploreWidgetType {

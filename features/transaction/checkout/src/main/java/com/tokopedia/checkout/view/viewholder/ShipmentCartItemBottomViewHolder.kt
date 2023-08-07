@@ -437,7 +437,7 @@ class ShipmentCartItemBottomViewHolder(
                     labelDropshipper.setTextColor(
                         ContextCompat.getColor(
                             itemView.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_N700_20
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN950_20
                         )
                     )
                     imgDropshipperInfo.setOnClickListener {
@@ -453,7 +453,7 @@ class ShipmentCartItemBottomViewHolder(
                     labelDropshipper.setTextColor(
                         ContextCompat.getColor(
                             itemView.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
                         )
                     )
                     llDropshipper.setOnClickListener {

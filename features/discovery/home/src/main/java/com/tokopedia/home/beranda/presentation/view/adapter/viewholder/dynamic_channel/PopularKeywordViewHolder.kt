@@ -195,7 +195,7 @@ class PopularKeywordViewHolder (val view: View,
                         channelTitle?.visibility = View.VISIBLE
                         channelTitle?.setTextColor(
                             if(element.channel.header.textColor.isNotEmpty()) Color.parseColor(element.channel.header.textColor).invertIfDarkMode(itemView.context)
-                            else ContextCompat.getColor(view.context, R.color.Unify_N700).invertIfDarkMode(itemView.context)
+                            else ContextCompat.getColor(view.context, R.color.Unify_NN950).invertIfDarkMode(itemView.context)
                         )
                         loaderPopularKeywordTitle?.gone()
                         anchorReloadButtonTo(R.id.channel_pk_title)

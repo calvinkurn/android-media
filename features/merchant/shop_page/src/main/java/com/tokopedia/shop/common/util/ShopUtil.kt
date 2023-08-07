@@ -160,4 +160,16 @@ object ShopUtil {
             Int.ZERO
         }
     }
+
+    fun joinDash(vararg s: String?): String {
+        return TextUtils.join(" - ", s)
+    }
+
+    fun formatPrice(displayedPrice: String): String {
+        return if (!TextUtils.isEmpty(displayedPrice)) {
+            displayedPrice.replace("\\D".toRegex(), "")
+        } else {
+            ""
+        }
+    }
 }

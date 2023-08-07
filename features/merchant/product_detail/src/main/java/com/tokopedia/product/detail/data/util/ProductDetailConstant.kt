@@ -108,6 +108,7 @@ object ProductDetailConstant {
     const val FINTECH_WIDGET_NAME = "paylater_cicilan"
     const val DILAYANI_TOKOPEDIA = "dt_info"
     const val AR_BUTTON = "button_ar"
+    const val RECOM_VERTICAL = "pdp_vertical"
 
     // custom info title as component type
     const val CUSTOM_INFO_TITLE = "custom_info_title"

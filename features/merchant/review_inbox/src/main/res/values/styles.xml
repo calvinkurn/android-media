@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="TextView.Small.BlackDisabled">
-        <item name="android:textColor">@color/Unify_N700_32</item>
+        <item name="android:textColor">@color/Unify_NN950_32</item>
     </style>
     <style name="TextView.Small.BlackDisabled.Bold">
         <item name="android:textStyle">bold</item>
     </style>
     <style name="TextView.Small.WhitePrimary">
-        <item name="android:textColor">@color/Unify_N0</item>
+        <item name="android:textColor">@color/Unify_NN0</item>
     </style>
     <style name="TextView.Small.WhitePrimary.Bold">
         <item name="android:textStyle">bold</item>

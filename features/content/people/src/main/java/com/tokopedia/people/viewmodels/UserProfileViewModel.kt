@@ -29,6 +29,7 @@ import com.tokopedia.people.views.uimodel.profile.ProfileType
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.getReviewSettings
 import com.tokopedia.people.views.uimodel.mapper.UserProfileLikeStatusMapper
+import com.tokopedia.people.views.uimodel.profile.ProfileTabState
 import com.tokopedia.people.views.uimodel.saved.SavedReminderData
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -105,7 +106,10 @@ class UserProfileViewModel @AssistedInject constructor(
     val isShortVideoEntryPointShow: Boolean get() = _creationInfo.value.showShortVideo
 
     val profileTab: ProfileTabUiModel
-        get() = _profileTab.value
+        get() = when (val state = _profileTab.value) {
+            is ProfileTabState.Success -> state.profileTab
+            else -> ProfileTabUiModel()
+        }
 
     private val isFirstTimeSeeReviewTab: Boolean
         get() = isSelfProfile &&
@@ -118,7 +122,7 @@ class UserProfileViewModel @AssistedInject constructor(
     private val _creationInfo = MutableStateFlow(ProfileCreationInfoUiModel())
     private val _profileType = MutableStateFlow(ProfileType.Unknown)
     private val _shopRecom = MutableStateFlow(ShopRecomUiModel())
-    private val _profileTab = MutableStateFlow(ProfileTabUiModel())
+    private val _profileTab = MutableStateFlow<ProfileTabState>(ProfileTabState.Unknown)
     private val _feedPostsContent = MutableStateFlow(UserFeedPostsUiModel())
     private val _videoPostContent = MutableStateFlow(UserPlayVideoUiModel.Empty)
     private val _reviewContent = MutableStateFlow(UserReviewUiModel.Empty)
@@ -693,15 +697,17 @@ class UserProfileViewModel @AssistedInject constructor(
                 val isEmpty = result == ProfileTabUiModel()
 
                 _profileTab.update {
-                    result.copy(
-                        tabs = if (isFirstTimeSeeReviewTab) {
-                            result.tabs.map { tab ->
-                                tab.copy(isNew = tab.key == ProfileTabUiModel.Key.Review)
-                            }
-                        } else {
-                            result.tabs
-                        },
-                        showTabs = result.showTabs
+                    ProfileTabState.Success(
+                        result.copy(
+                            tabs = if (isFirstTimeSeeReviewTab) {
+                                result.tabs.map { tab ->
+                                    tab.copy(isNew = tab.key == ProfileTabUiModel.Key.Review)
+                                }
+                            } else {
+                                result.tabs
+                            },
+                            showTabs = result.showTabs
+                        )
                     )
                 }
 
@@ -716,8 +722,10 @@ class UserProfileViewModel @AssistedInject constructor(
 
                 if (isEmpty && isSelfProfile) loadShopRecom()
             },
-            onError = {
-                _uiEvent.emit(UserProfileUiEvent.ErrorGetProfileTab(it))
+            onError = { err ->
+                _profileTab.update {
+                    ProfileTabState.Error(err)
+                }
             }
         )
     }

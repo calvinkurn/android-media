@@ -80,11 +80,11 @@ class PlayChannelAnalyticManager @Inject constructor(
                     KebabIconUiComponent.Event.OnClicked -> analytic.clickKebabMenu()
                     KebabIconUiComponent.Event.OnImpressed -> analytic2?.impressKebab()
                     is ExploreWidgetViewComponent.Event.OnImpressed -> {
-                        val type = if (it.widgetInfo.hasCategory) ExploreWidgetType.Category else ExploreWidgetType.Default
+                        val type = if (it.widgetInfo.categoryWidgetConfig.hasCategory) ExploreWidgetType.Category else ExploreWidgetType.Default
                         analytic2?.impressExploreIcon(it.widgetInfo, type)
                     }
                     is ExploreWidgetViewComponent.Event.OnClicked -> {
-                        val type = if (it.widgetInfo.hasCategory) ExploreWidgetType.Category else ExploreWidgetType.Default
+                        val type = if (it.widgetInfo.categoryWidgetConfig.hasCategory) ExploreWidgetType.Category else ExploreWidgetType.Default
                         analytic2?.clickExploreIcon(it.widgetInfo, type)
                     }
                 }

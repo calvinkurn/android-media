@@ -84,7 +84,7 @@ class HeaderControlLayoutStrategy : HeaderLayoutStrategy {
             if (channel.style == ChannelStyle.ChannelHome) {
                 seeAllButton?.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
             } else if (channel.style == ChannelStyle.ChannelOS) {
-                seeAllButton?.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_P600))
+                seeAllButton?.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_PN600))
             }
 
             seeAllButton?.show()
@@ -139,7 +139,7 @@ class HeaderControlLayoutStrategy : HeaderLayoutStrategy {
             if (channelHeader.textColor.isNotEmpty()) {
                 Color.parseColor(channelHeader.textColor).invertIfDarkMode(context)
             } else {
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700).invertIfDarkMode(context)
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950).invertIfDarkMode(context)
             }
         )
     }
@@ -154,7 +154,7 @@ class HeaderControlLayoutStrategy : HeaderLayoutStrategy {
             if (channelHeader.textColor.isNotEmpty()) {
                 Color.parseColor(channelHeader.textColor).invertIfDarkMode(context)
             } else {
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700).invertIfDarkMode(context)
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950).invertIfDarkMode(context)
             }
         )
     }

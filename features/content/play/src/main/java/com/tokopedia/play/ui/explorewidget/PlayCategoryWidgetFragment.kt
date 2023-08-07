@@ -206,8 +206,8 @@ class PlayCategoryWidgetFragment @Inject constructor(
     }
 
     private fun goToNextPage() {
-        if (requireParentFragment() !is PlayExploreWidget) return
-        (requireParentFragment() as PlayExploreWidget).moveTab(1)
+        if (requireParentFragment() !is PlayChannelRecommendationFragment) return
+        (requireParentFragment() as PlayChannelRecommendationFragment).moveTab(1)
     }
 
     override fun onDestroyView() {

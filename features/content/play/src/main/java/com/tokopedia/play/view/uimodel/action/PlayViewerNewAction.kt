@@ -6,8 +6,6 @@ import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
-import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
-import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.model.ShareModel
 
 /**
@@ -69,7 +67,6 @@ object ClickLikeAction : PlayViewerNewAction()
  * Share
  */
 object ClickShareAction : PlayViewerNewAction()
-object CopyLinkAction : PlayViewerNewAction()
 
 /**
  * Swipe
@@ -79,7 +76,6 @@ object SetChannelActiveAction : PlayViewerNewAction()
 /**
  * Sharing Experience
  */
-object ShowShareExperienceAction : PlayViewerNewAction()
 data class ClickSharingOptionAction(val shareModel: ShareModel, val isScreenshotBottomSheet: Boolean) : PlayViewerNewAction()
 data class CloseSharingOptionAction(val isScreenshotBottomSheet: Boolean) : PlayViewerNewAction()
 object ScreenshotTakenAction : PlayViewerNewAction()
@@ -117,7 +113,8 @@ data class UpdateReminder(val channelId: String, val reminderType: PlayWidgetRem
 object DismissExploreWidget : PlayViewerNewAction()
 data class EmptyPageWidget(val type: ExploreWidgetType) : PlayViewerNewAction()
 
+// Atc Variant
 data class CommentVisibilityAction(val isOpen: Boolean) : PlayViewerNewAction()
-//Atc Variant
+
 data class ShowVariantAction(val product: PlayProductUiModel.Product, val forcePushTop: Boolean) : PlayViewerNewAction()
-object HideBottomSheet: PlayViewerNewAction()
+object HideBottomSheet : PlayViewerNewAction()

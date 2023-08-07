@@ -1,7 +1,6 @@
 package com.tokopedia.entertainment.search.fragment
 
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,13 +10,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.common.util.EventQuery.getEventSearchCategory
+import com.tokopedia.entertainment.databinding.EntSearchEventFragmentBinding
 import com.tokopedia.entertainment.search.activity.EventCategoryActivity
 import com.tokopedia.entertainment.search.adapter.viewholder.CategoryTextBubbleAdapter
 import com.tokopedia.entertainment.search.adapter.viewholder.EventGridAdapter
@@ -27,17 +26,10 @@ import com.tokopedia.entertainment.search.viewmodel.EventDetailViewModel
 import com.tokopedia.entertainment.search.viewmodel.factory.EventDetailViewModelFactory
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.ent_search_category_emptystate.*
-import kotlinx.android.synthetic.main.ent_search_category_text.*
-import kotlinx.android.synthetic.main.ent_search_detail_activity.*
-import kotlinx.android.synthetic.main.ent_search_detail_shimmer.*
-import kotlinx.android.synthetic.main.ent_search_fragment.recycler_viewParent
-import kotlinx.android.synthetic.main.ent_search_fragment.swipe_refresh_layout
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -56,6 +48,8 @@ class EventCategoryFragment : BaseDaggerFragment(), EventGridAdapter.EventGridLi
     private var CATEGORY_ID: String = ""
     private val gridLayoutManager = GridLayoutManager(context,2)
     private val endlessScroll = getScrollListener()
+
+    private var binding by autoClearedNullable<EntSearchEventFragmentBinding>()
 
     @Inject
     lateinit var factory: EventDetailViewModelFactory
@@ -85,7 +79,8 @@ class EventCategoryFragment : BaseDaggerFragment(), EventGridAdapter.EventGridLi
         QUERY_TEXT = (activity as EventCategoryActivity).getQueryText() ?: ""
         CITY_ID = (activity as EventCategoryActivity).getCityId() ?: ""
         CATEGORY_ID = (activity as EventCategoryActivity).getCategoryId() ?: ""
-        return inflater.inflate(R.layout.ent_search_event_fragment, container, false)
+        binding = EntSearchEventFragmentBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,7 +93,6 @@ class EventCategoryFragment : BaseDaggerFragment(), EventGridAdapter.EventGridLi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.txt_search?.searchBarTextField?.setText(QUERY_TEXT)
         observeLiveData()
         observeErrorReport()
         setInitData()
@@ -121,7 +115,7 @@ class EventCategoryFragment : BaseDaggerFragment(), EventGridAdapter.EventGridLi
             }
         }
 
-        recycler_viewParent.apply {
+        binding?.recyclerViewParent?.run {
             setHasFixedSize(true)
             layoutManager = gridLayoutManager
             addOnScrollListener(endlessScroll)
@@ -137,9 +131,9 @@ class EventCategoryFragment : BaseDaggerFragment(), EventGridAdapter.EventGridLi
     }
 
     private fun setupRefreshLayout(){
-        swipe_refresh_layout.apply {
+        binding?.swipeRefreshLayout?.run {
             setOnRefreshListener {
-                recycler_viewParent.addOnScrollListener(endlessScroll)
+                binding?.recyclerViewParent?.addOnScrollListener(endlessScroll)
                 viewModel.page = "1"
                 viewModel.getData(CacheType.ALWAYS_CLOUD,query = getQueryCategory())
             }
@@ -171,7 +165,7 @@ class EventCategoryFragment : BaseDaggerFragment(), EventGridAdapter.EventGridLi
             lifecycleScope.launch {
                 delay(DELAY_TIME)
                 NetworkErrorHelper.createSnackbarRedWithAction(activity, ErrorHandler.getErrorMessage(context, it)) {
-                    recycler_viewParent.addOnScrollListener(endlessScroll)
+                    binding?.recyclerViewParent?.addOnScrollListener(endlessScroll)
                     viewModel.page = "1"
                     viewModel.getData(CacheType.ALWAYS_CLOUD,getQueryCategory())
                 }.showRetrySnackbar()
@@ -187,7 +181,7 @@ class EventCategoryFragment : BaseDaggerFragment(), EventGridAdapter.EventGridLi
     private fun setupCategoryAdapter(){
         categoryTextAdapter = CategoryTextBubbleAdapter(::onCategoryClicked)
 
-        activity?.recycler_view_category!!.apply {
+        (activity as EventCategoryActivity).binding?.recyclerViewCategory?.run {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
             adapter = categoryTextAdapter
@@ -209,7 +203,7 @@ class EventCategoryFragment : BaseDaggerFragment(), EventGridAdapter.EventGridLi
             categoryTextAdapter.notifyDataSetChanged()
 
             if(it.position != -1 && it.position < it.listCategory.size) {
-                activity?.recycler_view_category!!.scrollToPosition(it.position)
+                (activity as EventCategoryActivity).binding?.recyclerViewCategory?.scrollToPosition(it.position)
             }
 
         })
@@ -226,7 +220,7 @@ class EventCategoryFragment : BaseDaggerFragment(), EventGridAdapter.EventGridLi
     }
 
     private fun observeViewState(){
-        viewModel.isItRefreshing.observe(viewLifecycleOwner, Observer { swipe_refresh_layout.isRefreshing = it })
+        viewModel.isItRefreshing.observe(viewLifecycleOwner, Observer { binding?.swipeRefreshLayout?.isRefreshing = it })
         viewModel.isItShimmering.observe(viewLifecycleOwner, Observer { showOrHideShimmer(it) })
         viewModel.showParentView.observe(viewLifecycleOwner, Observer { showOrHideParentView(it) })
         viewModel.showResetFilter.observe(viewLifecycleOwner, Observer { showOrHideResetFilter(it) })
@@ -239,9 +233,9 @@ class EventCategoryFragment : BaseDaggerFragment(), EventGridAdapter.EventGridLi
     }
 
     private fun showOrHideResetFilter(state: Boolean) {
-        activity?.resetFilter?.visibility = if(state) View.VISIBLE else View.GONE
+        (activity as EventCategoryActivity).binding?.resetFilter?.root?.visibility = if(state) View.VISIBLE else View.GONE
         if (state){
-            activity?.globalerror_category_event?.let { globalError ->
+            (activity as EventCategoryActivity).binding?.resetFilter?.globalerrorCategoryEvent?.let { globalError ->
                 globalError.errorIllustration.loadImageDrawable(R.drawable.ent_ic_empty_item)
                 context?.let { context ->
                     globalError.errorTitle.setText(context.resources.getString(R.string.ent_search_oops))
@@ -256,9 +250,9 @@ class EventCategoryFragment : BaseDaggerFragment(), EventGridAdapter.EventGridLi
         }
     }
 
-    private fun showOrHideParentView(state: Boolean){ activity?.parent_view?.visibility = if(state) View.VISIBLE else View.GONE }
+    private fun showOrHideParentView(state: Boolean){(activity as EventCategoryActivity).binding?.parentView?.visibility = if(state) View.VISIBLE else View.GONE }
 
-    private fun showOrHideShimmer(state: Boolean){ activity?.shimering_layout?.visibility = if(state) View.VISIBLE else View.GONE }
+    private fun showOrHideShimmer(state: Boolean){ (activity as EventCategoryActivity).binding?.shimmeringLayoutCategory?.root?.visibility = if(state) View.VISIBLE else View.GONE }
 
     private fun getEventData(){
         viewModel.getData(query=getQueryCategory())

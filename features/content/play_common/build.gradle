@@ -34,7 +34,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.mediauploader)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
 
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.adapterDelegate)
     implementation projectOrAar(rootProject.ext.libraries.utils)

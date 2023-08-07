@@ -1,9 +1,9 @@
 package com.tokopedia.tokofood.cassavatest.features.purchase
 
-import com.tokopedia.tokofood.cassavatest.base.BaseTokoFoodCassavaTest
+import com.tokopedia.tokofood.cassavatest.base.TokoFoodPurchaseCassavaTest
 import org.junit.Test
 
-class PurchaseCassavaTest: BaseTokoFoodCassavaTest() {
+class PurchaseCassavaTest: TokoFoodPurchaseCassavaTest() {
 
     override fun setup() {
         super.setup()

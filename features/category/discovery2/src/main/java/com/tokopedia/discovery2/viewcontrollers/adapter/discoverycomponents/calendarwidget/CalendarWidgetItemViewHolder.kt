@@ -275,9 +275,9 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                 if (!boxColor.isNullOrEmpty()) {
                     setColouredBackground(boxColor)
                 } else {
-                    calendarParent.setBackgroundColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-                    calendarTitle.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
-                    calendarDesc.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
+                    calendarParent.setBackgroundColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+                    calendarTitle.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+                    calendarDesc.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
                     calendarDateAlpha.gone()
                     calendarDate.setBackgroundColor(MethodChecker.getColor(itemView.context, R.color.discovery2_dms_clr_2F89FC))
                 }
@@ -335,11 +335,11 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
             } else {
                 itemView.findViewById<View>(R.id.calendar_date_alpha).hide()
                 itemView.findViewById<ConstraintLayout>(R.id.calendar_parent)
-                    .setBackgroundColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                    .setBackgroundColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
                 itemView.findViewById<Typography>(R.id.calendar_title)
-                    .setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
+                    .setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
                 itemView.findViewById<Typography>(R.id.calendar_desc)
-                    .setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
+                    .setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
                 itemView.findViewById<Typography>(R.id.calendar_date)
                     .setBackgroundColor(Color.parseColor(Utils.getValidHexCode(itemView.context, boxColor)))
             }

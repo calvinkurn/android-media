@@ -5,7 +5,9 @@ import android.text.Spanned
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,10 +16,11 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.util.Router
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.analytic.PlayAnalytic2
 import com.tokopedia.play.databinding.FragmentPlayExploreWidgetBinding
-import com.tokopedia.play.ui.explorewidget.*
+import com.tokopedia.play.ui.explorewidget.PlayExploreWidgetCoordinator
 import com.tokopedia.play.ui.explorewidget.adapter.ChipsWidgetAdapter
 import com.tokopedia.play.ui.explorewidget.adapter.WidgetAdapter
 import com.tokopedia.play.ui.explorewidget.itemdecoration.ChipItemDecoration
@@ -26,10 +29,21 @@ import com.tokopedia.play.util.isAnyChanged
 import com.tokopedia.play.util.isChanged
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.fragment.BasePlayFragment
-import com.tokopedia.play.view.uimodel.*
-import com.tokopedia.play.view.uimodel.action.*
+import com.tokopedia.play.view.uimodel.ChipWidgetUiModel
+import com.tokopedia.play.view.uimodel.ExploreWidgetState
+import com.tokopedia.play.view.uimodel.ExploreWidgetType
+import com.tokopedia.play.view.uimodel.TabMenuUiModel
+import com.tokopedia.play.view.uimodel.WidgetUiModel
+import com.tokopedia.play.view.uimodel.action.ClickChipWidget
+import com.tokopedia.play.view.uimodel.action.EmptyPageWidget
+import com.tokopedia.play.view.uimodel.action.FetchWidgets
+import com.tokopedia.play.view.uimodel.action.NextPageWidgets
+import com.tokopedia.play.view.uimodel.action.RefreshWidget
+import com.tokopedia.play.view.uimodel.action.UpdateReminder
 import com.tokopedia.play.view.uimodel.event.ShowInfoEvent
 import com.tokopedia.play.view.uimodel.event.UiString
+import com.tokopedia.play.view.uimodel.getChipsShimmering
+import com.tokopedia.play.view.uimodel.getWidgetShimmering
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
@@ -209,12 +223,11 @@ class PlayExploreWidgetFragment @Inject constructor(
 
     private fun observeState() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.uiState.withCache().collectLatest {
-                val cachedState = it
+            viewModel.uiState.withCache().collectLatest { cachedState ->
 
                 if (cachedState.isChanged {
-                    it.exploreWidget.data.chips
-                }
+                        it.exploreWidget.data.chips
+                    }
                 ) {
                     renderChips(
                         cachedState.value.exploreWidget.data.chips
@@ -235,7 +248,7 @@ class PlayExploreWidgetFragment @Inject constructor(
                 if (analytic != null || cachedState.value.channel.channelInfo.id.isBlank()) return@collectLatest
                 analytic = analyticFactory.create(
                     trackingQueue = trackingQueue,
-                    channelInfo = it.value.channel.channelInfo
+                    channelInfo = cachedState.value.channel.channelInfo
                 )
             }
         }
@@ -262,9 +275,11 @@ class PlayExploreWidgetFragment @Inject constructor(
             ResultState.Success -> {
                 chipsAdapter.setItemsAndAnimateChanges(chips.items)
             }
+
             ResultState.Loading -> {
                 chipsAdapter.setItemsAndAnimateChanges(getChipsShimmering)
             }
+
             is ResultState.Fail -> {
                 toaster.showError(
                     err = chips.state.error,
@@ -287,13 +302,15 @@ class PlayExploreWidgetFragment @Inject constructor(
         showEmpty(state is ExploreWidgetState.Empty)
 
         when (state) {
-            ExploreWidgetState.Success -> {
+            is ExploreWidgetState.Success -> {
                 widgetAdapter.setItemsAndAnimateChanges(widget)
                 scrollListener.updateStateAfterGetData()
             }
+
             ExploreWidgetState.Loading -> {
                 widgetAdapter.setItemsAndAnimateChanges(getWidgetShimmering)
             }
+
             is ExploreWidgetState.Fail -> {
                 analytic?.impressToasterGlobalError()
                 toaster.showToaster(
@@ -307,11 +324,13 @@ class PlayExploreWidgetFragment @Inject constructor(
                     }
                 )
             }
+
             else -> {
                 // no-op
             }
         }
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -348,7 +367,7 @@ class PlayExploreWidgetFragment @Inject constructor(
         analytic?.clickContentCard(
             selectedChannel = item,
             position = channelPositionInList,
-            widgetInfo = viewModel.widgetInfo.copy(categoryName = viewModel.selectedChips),
+            widgetInfo = viewModel.widgetInfo.copy(exploreWidgetConfig = viewModel.widgetInfo.exploreWidgetConfig.copy(categoryName = viewModel.selectedChips)),
             config = viewModel.exploreWidgetConfig,
             type = ExploreWidgetType.Default
         )
@@ -364,7 +383,7 @@ class PlayExploreWidgetFragment @Inject constructor(
         analytic?.impressChannelCard(
             item = item,
             position = channelPositionInList,
-            widgetInfo = viewModel.widgetInfo.copy(categoryName = viewModel.selectedChips),
+            widgetInfo = viewModel.widgetInfo,
             config = viewModel.exploreWidgetConfig,
             type = ExploreWidgetType.Default
         )
@@ -383,7 +402,8 @@ class PlayExploreWidgetFragment @Inject constructor(
     private fun setLayoutManager(state: ExploreWidgetState) {
         if (state is ExploreWidgetState.Fail) return
 
-        binding.rvWidgets.layoutManager = if (state is ExploreWidgetState.Loading) shimmerLayoutManager else widgetLayoutManager
+        binding.rvWidgets.layoutManager =
+            if (state is ExploreWidgetState.Loading) shimmerLayoutManager else widgetLayoutManager
         scrollListener.updateLayoutManager(binding.rvWidgets.layoutManager)
     }
 
@@ -417,11 +437,6 @@ class PlayExploreWidgetFragment @Inject constructor(
         private const val TAG = "PlayExploreWidgetFragment"
 
         private const val SPAN_SHIMMER = 2
-
-        private const val DIALOG_VISIBILITY_THRESHOLD = 600f
-        private const val VIEW_TRANSLATION_THRESHOLD = 100f
-        private const val VIEW_TRANSLATION_VELOCITY = 16f
-        private const val EXPLORE_WIDGET_WIDTH_RATIO = 0.75
 
         fun get(fragmentManager: FragmentManager): PlayExploreWidgetFragment? {
             return fragmentManager.findFragmentByTag(TAG) as? PlayExploreWidgetFragment

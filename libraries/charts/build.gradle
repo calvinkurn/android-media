@@ -15,7 +15,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
 
     implementation rootProject.ext.libraries.mpAndroidChart
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 }
 
 project.ext {

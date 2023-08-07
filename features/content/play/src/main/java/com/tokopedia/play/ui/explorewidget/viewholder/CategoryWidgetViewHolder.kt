@@ -27,18 +27,21 @@ internal class CategoryWidgetViewHolder {
                     listener.onClicked(item, absoluteAdapterPosition)
                 }
 
-                root.addOnImpressionListener(impressHolder){
+                root.addOnImpressionListener(impressHolder) {
                     listener.onImpressed(item, absoluteAdapterPosition)
                 }
 
-                ivCategoryVideo.loadImage(item.video.coverUrl)
+                ivPlayCategoryVideo.loadImage(item.video.coverUrl)
                 tvCategoryVideoTitle.text = item.title
                 tvCategoryVideoCreator.text = item.partner.name
                 ivCategoryCreator.loadImage(item.partner.avatarUrl)
                 tvCategoryView.text = item.totalView.totalViewFmt
                 layoutLiveBadge.root.showWithCondition(item.channelType == PlayWidgetChannelType.Live)
                 val currentPosition = absoluteAdapterPosition + 1
-                tvPlayCategoryRank.text = "$currentPosition."
+                tvPlayCategoryRank.text = buildString {
+                    append(currentPosition)
+                    append(".")
+                }
             }
         }
 
@@ -48,6 +51,6 @@ internal class CategoryWidgetViewHolder {
         }
     }
 
-    internal class Shimmer(private val binding: ItemPlayExploreCategoryShimmerBinding) :
+    internal class Shimmer(binding: ItemPlayExploreCategoryShimmerBinding) :
         RecyclerView.ViewHolder(binding.root) {}
 }

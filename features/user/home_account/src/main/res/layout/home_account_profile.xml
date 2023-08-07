@@ -14,7 +14,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:id="@+id/account_user_item_profile_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
         android:layout_width="16dp"
         android:layout_height="16dp"
         android:visibility="gone"
-        app:icon_color_light_enable="@color/Unify_R500"
+        app:icon_color_light_enable="@color/Unify_RN500"
         app:icon_name="WARNING"
         app:layout_constraintLeft_toRightOf="@id/account_user_item_profile_name"
         app:layout_constraintTop_toTopOf="@id/account_user_item_profile_name"
@@ -51,7 +51,7 @@
         app:layout_constraintBottom_toBottomOf="@id/account_user_item_profile_icon_warning_name" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:id="@+id/account_user_item_profile_phone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -83,7 +83,7 @@
         android:layout_marginTop="@dimen/home_account_dp_2"
         android:layout_marginEnd="16dp"
         android:lineHeight="18dp"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:ellipsize="end"
         android:maxLines="1"
         android:lines="1"

@@ -746,7 +746,7 @@ class OrderSummaryPageViewModel @Inject constructor(
                     it.isError = false
                 }
                 orderPayment.value = orderPayment.value.copy(creditCard = creditCard.copy(selectedTerm = selectedInstallmentTerm, availableTerms = installmentList))
-                calculateTotal(skipDynamicFee = true)
+                validateUsePromo()
                 globalEvent.value = OccGlobalEvent.Normal
                 orderSummaryAnalytics.eventViewTenureOption(selectedInstallmentTerm.term.toString())
                 return@launch
@@ -759,7 +759,8 @@ class OrderSummaryPageViewModel @Inject constructor(
         selectedInstallmentTerm: OrderPaymentGoCicilTerms,
         installmentList: List<OrderPaymentGoCicilTerms>,
         tickerMessage: String,
-        isSilent: Boolean
+        isSilent: Boolean,
+        shouldRevalidatePromo: Boolean = true
     ) {
         launch(executorDispatchers.immediate) {
             val walletData = orderPayment.value.walletData
@@ -771,25 +772,48 @@ class OrderSummaryPageViewModel @Inject constructor(
                 )
             )
             orderPayment.value = orderPayment.value.copy(walletData = newWalletData)
-            calculateTotal(skipDynamicFee = true)
-            if (isSilent) {
-                return@launch
+            if (shouldRevalidatePromo) {
+                var param = cartProcessor.generateUpdateCartParam(
+                    orderCart,
+                    orderProfile.value,
+                    orderShipment.value,
+                    orderPayment.value
+                )
+                if (param == null) {
+                    globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
+                } else {
+                    param = param.copy(
+                        skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(
+                            orderShipment.value
+                        ),
+                        source = SOURCE_UPDATE_OCC_PAYMENT
+                    )
+                    // ignore result, result is important only in final update
+                    cartProcessor.updatePreference(param)
+                }
+                validateUsePromo()
+            } else {
+                calculateTotal(skipDynamicFee = true)
             }
-            orderSummaryAnalytics.eventViewTenureOption(selectedInstallmentTerm.installmentTerm.toString())
-            var param: UpdateCartOccRequest = cartProcessor.generateUpdateCartParam(
-                orderCart,
-                orderProfile.value,
-                orderShipment.value,
-                orderPayment.value
-            ) ?: return@launch
-            param = param.copy(
-                skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(
-                    orderShipment.value
-                ),
-                source = SOURCE_UPDATE_OCC_PAYMENT
-            )
-            // ignore result, result is important only in final update
-            cartProcessor.updatePreference(param)
+            if (!isSilent) {
+                orderSummaryAnalytics.eventViewTenureOption(selectedInstallmentTerm.installmentTerm.toString())
+                if (!shouldRevalidatePromo) {
+                    var param: UpdateCartOccRequest = cartProcessor.generateUpdateCartParam(
+                        orderCart,
+                        orderProfile.value,
+                        orderShipment.value,
+                        orderPayment.value
+                    ) ?: return@launch
+                    param = param.copy(
+                        skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(
+                            orderShipment.value
+                        ),
+                        source = SOURCE_UPDATE_OCC_PAYMENT
+                    )
+                    // ignore result, result is important only in final update
+                    cartProcessor.updatePreference(param)
+                }
+            }
         }
     }
 
@@ -1165,7 +1189,8 @@ class OrderSummaryPageViewModel @Inject constructor(
                     result.selectedInstallment,
                     result.installmentList,
                     result.tickerMessage,
-                    !result.shouldUpdateCart
+                    !result.shouldUpdateCart,
+                    false
                 )
                 return
             } else {

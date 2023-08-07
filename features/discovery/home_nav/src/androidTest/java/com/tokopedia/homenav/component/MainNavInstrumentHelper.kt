@@ -18,7 +18,6 @@ import org.hamcrest.CoreMatchers
 /**
  * Created by dhaba
  */
-const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_FAVORITE_SHOP = "tracker/home_nav/favorite_shop.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_ORDER_TRANSACTION =
     "tracker/home_nav/order_transaction.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_WISHLIST = "tracker/home_nav/wishlist.json"

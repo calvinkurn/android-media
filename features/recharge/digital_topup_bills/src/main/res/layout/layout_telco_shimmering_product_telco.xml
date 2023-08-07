@@ -22,7 +22,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:cardBackgroundColor="@color/Unify_N0"
+        app:cardBackgroundColor="@color/Unify_NN0"
         app:cardCornerRadius="@dimen/layout_lvl1"
         app:cardElevation="@dimen/telco_space_1"
         app:cardPreventCornerOverlap="false">

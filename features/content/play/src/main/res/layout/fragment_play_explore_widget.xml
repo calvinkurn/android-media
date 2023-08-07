@@ -10,7 +10,7 @@
     tools:context=".view.dialog.PlayExploreWidgetFragment">
 
     <com.tokopedia.content.common.util.scroll.NestedScrollableHost
-        android:id="@+id/host_chips"
+        android:id="@+id/play_host_chips"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_8"
@@ -45,7 +45,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/host_chips"
+        app:layout_constraintTop_toBottomOf="@+id/play_host_chips"
         app:layout_constraintVertical_bias="1.0">
 
         <LinearLayout
@@ -73,7 +73,7 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/host_chips"
-        app:layout_constraintStart_toStartOf="@+id/host_chips"
-        app:layout_constraintTop_toBottomOf="@+id/host_chips" />
+        app:layout_constraintEnd_toEndOf="@+id/play_host_chips"
+        app:layout_constraintStart_toStartOf="@+id/play_host_chips"
+        app:layout_constraintTop_toBottomOf="@+id/play_host_chips" />
 </androidx.constraintlayout.widget.ConstraintLayout>
