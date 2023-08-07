@@ -414,6 +414,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                     }
                     ... on pdpDataProductDetailMediaComponent {
                       title
+                      description
                       contentMedia {
                         url
                         ratio
