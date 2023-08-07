@@ -5,20 +5,17 @@ import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
-import android.widget.TextSwitcher
 import android.widget.ViewSwitcher
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.get
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.promocheckout.common.R
 import com.tokopedia.promocheckout.common.view.uimodel.PromoEntryPointSummaryItem
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.DividerUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -38,7 +35,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
     private var activeView: View? = null
     private var activeViewRightIcon: IconUnify? = null
     private var activeViewLeftImage: ImageUnify? = null
-    private var activeViewWording: TextSwitcher? = null
+    private var activeViewWording: TextFlipper? = null
     private var activeViewTitleWording: Typography? = null
     private var activeViewDescWording: Typography? = null
     private var activeViewDivider: DividerUnify? = null
@@ -47,18 +44,9 @@ class PromoEntryPointWidget @JvmOverloads constructor(
 
     private var inActiveView: View? = null
     private var inActiveViewLeftImage: ImageUnify? = null
-    private var inActiveViewWording: TextSwitcher? = null
+    private var inActiveViewWording: TextFlipper? = null
     private var inActiveViewRightIcon: IconUnify? = null
     private var errorView: View? = null
-
-    private var isFlipping: Boolean = false
-    private var flippingWordings: List<String> = emptyList()
-    private var flippingTextSwitcher: TextSwitcher? = null
-
-    private val animSlideUpIn: Animation by lazy { AnimationUtils.loadAnimation(context, R.anim.anim_slide_up_in) }
-    private val animSlideUpOut: Animation by lazy { AnimationUtils.loadAnimation(context, R.anim.anim_slide_up_out) }
-    private val animSlideDownIn: Animation by lazy { AnimationUtils.loadAnimation(context, R.anim.anim_slide_down_in) }
-    private val animSlideDownOut: Animation by lazy { AnimationUtils.loadAnimation(context, R.anim.anim_slide_down_out) }
 
     init {
         inflate(context, getLayout(), this)
@@ -204,7 +192,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
     ) {
         switcherView?.reset()
         inActiveViewLeftImage?.setImageUrl("https://images.tokopedia.net/img/ios/promo_widget/disabled_product.png")
-        inActiveViewWording?.setCurrentText(MethodChecker.fromHtml(wording))
+        inActiveViewWording?.setCurrentText(HtmlLinkHelper(context, wording).spannedString)
         inActiveViewRightIcon?.visibility = View.GONE
         switcherView?.displayedChild = 1
         switcherView?.visibility = View.VISIBLE
@@ -224,7 +212,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         if (animate && switcherView?.visibility == View.VISIBLE) {
             switcherView?.visibility = View.VISIBLE
             inActiveViewLeftImage?.setImageUrl(leftImageUrl)
-            inActiveViewWording?.setCurrentText(MethodChecker.fromHtml(wording))
+            inActiveViewWording?.setCurrentText(HtmlLinkHelper(context, wording).spannedString)
             inActiveViewRightIcon?.visibility = View.GONE
             if (switcherView?.displayedChild != 1) {
                 // only trigger animation if currently showing different view
@@ -235,7 +223,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         } else {
             switcherView?.reset()
             inActiveViewLeftImage?.setImageUrl(leftImageUrl)
-            inActiveViewWording?.setCurrentText(MethodChecker.fromHtml(wording))
+            inActiveViewWording?.setCurrentText(HtmlLinkHelper(context, wording).spannedString)
             inActiveViewRightIcon?.visibility = View.GONE
             switcherView?.displayedChild = 1
             switcherView?.visibility = View.VISIBLE
@@ -266,17 +254,17 @@ class PromoEntryPointWidget @JvmOverloads constructor(
             activeViewRightIcon?.setImage(rightIcon)
             if (switcherView?.displayedChild != 0) {
                 // only trigger view switch animation if currently showing different view
-                activeViewWording?.setCurrentText(MethodChecker.fromHtml(wording))
+                activeViewWording?.setCurrentText(HtmlLinkHelper(context, wording).spannedString)
                 switcherView?.displayedChild = 0
             } else if (animateWording) {
-                activeViewWording?.setText(MethodChecker.fromHtml(wording))
+                activeViewWording?.setText(HtmlLinkHelper(context, wording).spannedString)
             }
             errorView?.visibility = View.GONE
             loadingView?.visibility = View.GONE
         } else {
             switcherView?.reset()
             activeViewLeftImage?.setImageUrl(leftImageUrl)
-            activeViewWording?.setCurrentText(MethodChecker.fromHtml(wording))
+            activeViewWording?.setCurrentText(HtmlLinkHelper(context, wording).spannedString)
             activeViewRightIcon?.setImage(rightIcon)
             switcherView?.displayedChild = 0
             switcherView?.visibility = View.VISIBLE
@@ -302,7 +290,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         activeViewWording?.visibility = View.VISIBLE
         switcherView?.reset()
         activeViewLeftImage?.setImageUrl("https://images.tokopedia.net/img/ios/promo_widget/promo_coupon.png")
-        activeViewWording?.setCurrentText(MethodChecker.fromHtml(wording))
+        activeViewWording?.setCurrentText(HtmlLinkHelper(context, wording).spannedString)
         activeViewRightIcon?.setImage(rightIcon)
         switcherView?.displayedChild = 0
         switcherView?.visibility = View.VISIBLE
@@ -313,9 +301,22 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         }
     }
 
+    private fun setFlippingDuration(durationInMs: Long) {
+        activeViewWording?.setFlippingDuration(durationInMs)
+        inActiveViewWording?.setFlippingDuration(durationInMs)
+    }
+
+    private fun setMaximumFlippingCount(count: Int) {
+        activeViewWording?.setMaximumFlippingCount(count)
+        inActiveViewWording?.setMaximumFlippingCount(count)
+    }
+
     fun showActiveFlipping(
+        leftImageUrl: String,
         wordings: List<String>,
         rightIcon: Int,
+        flippingDurationInMs: Long,
+        maximumFlippingCount: Int,
         onClickListener: () -> Unit = {}
     ) {
         if (wordings.isEmpty()) {
@@ -328,10 +329,12 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         activeViewTitleWording?.visibility = View.GONE
         activeViewDescWording?.visibility = View.GONE
         switcherView?.reset()
-        activeViewLeftImage?.setImageResource(R.drawable.ic_promo_coupon_yellow)
-        activeViewWording?.setCurrentText(MethodChecker.fromHtml(wordings.first()))
+        activeViewLeftImage?.setImageUrl(leftImageUrl)
+        activeViewWording?.setCurrentText(HtmlLinkHelper(context, wordings.first()).spannedString)
+        setFlippingDuration(flippingDurationInMs)
+        setMaximumFlippingCount(maximumFlippingCount)
         if (wordings.size > 1) {
-            triggerTextFlip(wordings, activeViewWording)
+            activeViewWording?.startFlipping(wordings)
         }
         activeViewRightIcon?.setImage(rightIcon)
         switcherView?.displayedChild = 0
@@ -340,34 +343,6 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         loadingView?.visibility = View.GONE
         activeView?.setOnClickListener {
             onClickListener.invoke()
-        }
-    }
-
-    private fun triggerTextFlip(wordings: List<String>, textSwitcher: TextSwitcher?) {
-        flippingWordings = wordings
-        flippingTextSwitcher = textSwitcher
-        isFlipping = true
-        postDelayed(flipper, 3000)
-    }
-
-    private val flipper: Runnable = Runnable {
-        // todo: refactor into text flipper class
-        if (isFlipping) {
-            flip()
-        }
-    }
-
-    private fun flip() {
-        if (flippingTextSwitcher?.displayedChild == 0) {
-            flippingTextSwitcher?.inAnimation = animSlideUpIn
-            flippingTextSwitcher?.outAnimation = animSlideUpOut
-            flippingTextSwitcher?.setText(flippingWordings[1])
-            postDelayed(flipper, 3000)
-        } else if (flippingTextSwitcher?.displayedChild == 1) {
-            flippingTextSwitcher?.inAnimation = animSlideDownIn
-            flippingTextSwitcher?.outAnimation = animSlideDownOut
-            flippingTextSwitcher?.setText(flippingWordings[0])
-            postDelayed(flipper, 3000)
         }
     }
 
@@ -383,8 +358,8 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         switcherView?.reset()
         activeViewConfettiFrame?.visibility = if (showConfetti) View.VISIBLE else View.GONE
         activeViewLeftImage?.setImageUrl("https://images.tokopedia.net/img/ios/promo_widget/checklist.png")
-        activeViewTitleWording?.text = MethodChecker.fromHtml(title)
-        activeViewDescWording?.text = MethodChecker.fromHtml(desc)
+        activeViewTitleWording?.text = HtmlLinkHelper(context, title).spannedString
+        activeViewDescWording?.text = HtmlLinkHelper(context, desc).spannedString
         activeViewWording?.visibility = View.GONE
         activeViewTitleWording?.visibility = View.VISIBLE
         activeViewDescWording?.visibility = View.VISIBLE

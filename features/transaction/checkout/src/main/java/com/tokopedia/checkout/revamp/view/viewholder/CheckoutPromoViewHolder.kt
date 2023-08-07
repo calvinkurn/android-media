@@ -59,8 +59,11 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
 
         // todo: testing flip
 //        binding.btnCheckoutPromo.showActiveFlipping(
+//            "https://static.vecteezy.com/system/resources/previews/004/495/473/original/sales-promotion-line-icon-logo-free-vector.jpg",
 //            listOf("astaga 1, ini percobaan kalo textnya pannnjaaaaannggg sekaliiiii, astaga 2, ini percobaan kalo textnya pannnjaaaaannggg sekaliiiii", "wow bisa luar biasa sekali, tapi kenapa gak berhenti?"),
-//            IconUnify.CHEVRON_RIGHT
+//            IconUnify.CHEVRON_RIGHT,
+//            2_000,
+//            4
 //        )
 
         // todo: testing cart
