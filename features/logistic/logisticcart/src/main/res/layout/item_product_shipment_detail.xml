@@ -19,19 +19,22 @@
             android:id="@+id/group_shipment_detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:constraint_referenced_ids="icon_product_shipment_info, tv_weight_origin" />
+            app:constraint_referenced_ids="icon_product_shipment_info, tv_weight_origin"
+            tools:visibility="gone"/>
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/group_preorder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:constraint_referenced_ids="icon_preorder, tv_preorder_info" />
+            app:constraint_referenced_ids="icon_preorder, tv_preorder_info"
+            tools:visibility="gone"/>
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/icon_product_shipment_info"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:visibility="gone"
+            tools:visibility="visible"
             app:icon_color_light_enable="@color/Unify_NN900"
             app:icon_name="PRODUCT_INFO"
             app:layout_constraintStart_toStartOf="parent"
@@ -46,6 +49,7 @@
             android:visibility="gone"
             app:layout_constraintStart_toEndOf="@id/icon_product_shipment_info"
             app:layout_constraintTop_toTopOf="@id/icon_product_shipment_info"
+            app:layout_constraintEnd_toEndOf="parent"
             app:typographyType="display_3"
             tools:text="Dikirim dari Tangerang • Berat 5 kg" />
 
@@ -69,6 +73,7 @@
             android:visibility="gone"
             app:layout_constraintStart_toEndOf="@id/icon_preorder"
             app:layout_constraintTop_toTopOf="@id/icon_preorder"
+            app:layout_constraintEnd_toEndOf="parent"
             app:typographyType="display_3"
             tools:text="Barang dikirim 17 Jan (PreOrder 25 hari)" />
     </androidx.constraintlayout.widget.ConstraintLayout>
