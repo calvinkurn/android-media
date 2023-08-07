@@ -155,6 +155,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMedia.INTERNAL_MEDIA_E
 import com.tokopedia.applink.internal.ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER
 import com.tokopedia.applink.internal.ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER_ALBUM
 import com.tokopedia.applink.internal.ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER_PREVIEW
+import com.tokopedia.applink.internal.ApplinkConstInternalMedia.INTERNAL_UNIVERSAL_MEDIA_EDITOR
 import com.tokopedia.applink.internal.ApplinkConstInternalNotification.NOTIFICATION
 import com.tokopedia.applink.internal.ApplinkConstInternalNotification.NOTIFICATION_BUYER
 import com.tokopedia.applink.internal.ApplinkConstInternalOperational
@@ -678,7 +679,8 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Media
             add(DFP({
-                it.startsWith(INTERNAL_MEDIA_EDITOR)
+                it.startsWith(INTERNAL_MEDIA_EDITOR) ||
+                it.startsWith(INTERNAL_UNIVERSAL_MEDIA_EDITOR)
             }, DF_FEED_CONTENT_CREATION, R.string.title_image_editor))
 
             // Transaction
@@ -976,7 +978,8 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Media
             add(DFP({
-                it.startsWith(INTERNAL_MEDIA_EDITOR)
+                it.startsWith(INTERNAL_MEDIA_EDITOR) ||
+                it.startsWith(INTERNAL_UNIVERSAL_MEDIA_EDITOR)
             }, DF_FEED_CONTENT_CREATION, R.string.title_image_editor))
 
             add(DFP({

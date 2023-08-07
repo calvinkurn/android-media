@@ -8,6 +8,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.MotionEvent
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -139,6 +140,17 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
     override fun onDestroy() {
         super.onDestroy()
         eventBus.reset()
+    }
+
+    private val immersiveEditorIntent = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            val data = it.data?.getStringExtra(RESULT_UNIVERSAL_EDITOR) ?: return@registerForActivityResult
+            val result = PickerResult(listOf(data))
+
+            onFinishIntent(result)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -429,7 +441,21 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             pickerAnalytics.clickCloseButton()
         }
 
-        PickerPreviewActivity.start(this, ArrayList(medias), REQUEST_PREVIEW_PAGE)
+        if (param.get().isImmersiveEditorEnabled() && medias.isNotEmpty()) {
+            val files = medias.map { it.getSingleFilePath() }
+
+            val intent = UniversalEditor.intent(this) {
+                setPageSource(param.get().pageSource())
+                filePaths(files)
+            }
+
+            immersiveEditorIntent.launch(intent)
+
+            // remove selection state on gallery
+            eventBus.notifyDataOnChangedEvent(emptyList())
+        } else {
+            PickerPreviewActivity.start(this, ArrayList(medias), REQUEST_PREVIEW_PAGE)
+        }
     }
 
     override fun onCameraThumbnailClicked() {
