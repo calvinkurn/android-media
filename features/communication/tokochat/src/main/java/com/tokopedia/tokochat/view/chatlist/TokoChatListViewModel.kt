@@ -34,14 +34,18 @@ class TokoChatListViewModel @Inject constructor(
     val error: LiveData<Pair<Throwable, String>>
         get() = _error
 
-    fun getChatListFlow(): Flow<Result<List<TokoChatListItemUiModel>>> { // change it to regular livedata
-        return try {
-            chatChannelUseCase.getAllCachedChannels(listOf(ChannelType.GroupBooking))
-                .onStart {
-                    setPaginationTimeStamp(0L) // reset
-                }
-                .map {
-                    filterExpiredChannelAndMap(it)
+    private val _chatList:
+        MediatorLiveData<Result<List<TokoChatListItemUiModel>>> = MediatorLiveData()
+    val chatList: LiveData<Result<List<TokoChatListItemUiModel>>>
+        get() = _chatList.distinctUntilChanged()
+
+    fun setupChatListSource() {
+        viewModelScope.launch {
+            try {
+                setPaginationTimeStamp(0L) // reset
+                val cachedChannels = chatChannelUseCase.getAllCachedChannels(listOf(ChannelType.GroupBooking))
+                _chatList.addSource(cachedChannels!!) { // expected to use !!
+                    _chatList.value = Success(filterExpiredChannelAndMap(it))
                 }
             } catch (throwable: Throwable) {
                 _error.value = Pair(throwable, ::setupChatListSource.name)
