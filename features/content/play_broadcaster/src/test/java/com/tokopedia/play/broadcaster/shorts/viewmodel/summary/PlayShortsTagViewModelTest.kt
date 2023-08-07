@@ -45,8 +45,8 @@ class PlayShortsTagViewModelTest {
                 submitAction(PlayShortsAction.LoadTag)
             }
 
-            assertTagSuccess(state.tags) { tags ->
-                tags.assertEqualTo(mockTagsSize5)
+            assertTagSuccess(state.tags) { data ->
+                data.tags.assertEqualTo(mockTagsSize5.tags)
             }
         }
     }
@@ -83,8 +83,8 @@ class PlayShortsTagViewModelTest {
                 submitAction(PlayShortsAction.LoadTag)
             }
 
-            assertTagSuccess(state.tags) { tags ->
-                tags.assertEqualTo(mockTagsSize5)
+            assertTagSuccess(state.tags) { data ->
+                data.tags.assertEqualTo(mockTagsSize5.tags)
             }
 
             coEvery { mockRepo.getTagRecommendation(any()) } returns mockTagsSize10
@@ -93,8 +93,8 @@ class PlayShortsTagViewModelTest {
                 submitAction(PlayShortsAction.LoadTag)
             }
 
-            assertTagSuccess(stateAfterReload.tags) { tags ->
-                tags.assertEqualTo(mockTagsSize5)
+            assertTagSuccess(stateAfterReload.tags) { data ->
+                data.tags.assertEqualTo(mockTagsSize5.tags)
             }
         }
     }
@@ -113,8 +113,8 @@ class PlayShortsTagViewModelTest {
             val state = it.setUp {
                 submitAction(PlayShortsAction.LoadTag)
             }.recordState {
-                submitAction(PlayShortsAction.SelectTag(mockTagsSize5.toList()[mockSelectedIdxList.first()]))
-                submitAction(PlayShortsAction.SelectTag(mockTagsSize5.toList()[mockSelectedIdxList.last()]))
+                submitAction(PlayShortsAction.SelectTag(mockTagsSize5.tags.toList()[mockSelectedIdxList.first()]))
+                submitAction(PlayShortsAction.SelectTag(mockTagsSize5.tags.toList()[mockSelectedIdxList.last()]))
             }
 
             assertTagSuccess(state.tags) { tags ->
@@ -137,8 +137,8 @@ class PlayShortsTagViewModelTest {
             val state = it.setUp {
                 submitAction(PlayShortsAction.LoadTag)
             }.recordState {
-                submitAction(PlayShortsAction.SelectTag(mockTagsSize5.toList()[mockSelectedIdxList.first()]))
-                submitAction(PlayShortsAction.SelectTag(mockTagsSize5.toList()[mockSelectedIdxList.last()]))
+                submitAction(PlayShortsAction.SelectTag(mockTagsSize5.tags.toList()[mockSelectedIdxList.first()]))
+                submitAction(PlayShortsAction.SelectTag(mockTagsSize5.tags.toList()[mockSelectedIdxList.last()]))
             }
 
             assertTagSuccess(state.tags) { tags ->
@@ -148,7 +148,7 @@ class PlayShortsTagViewModelTest {
             val stateAfterUnselect = it.setUp {
                 submitAction(PlayShortsAction.LoadTag)
             }.recordState {
-                submitAction(PlayShortsAction.SelectTag(mockTagsSize5.toList()[mockSelectedIdxList.first()]))
+                submitAction(PlayShortsAction.SelectTag(mockTagsSize5.tags.toList()[mockSelectedIdxList.first()]))
             }
 
             assertTagSuccess(stateAfterUnselect.tags) { tags ->
@@ -171,12 +171,12 @@ class PlayShortsTagViewModelTest {
             val state = it.setUp {
                 submitAction(PlayShortsAction.LoadTag)
             }.recordState {
-                submitAction(PlayShortsAction.SelectTag(mockTagsSize5.toList()[mockSelectedIdxList.first()]))
-                submitAction(PlayShortsAction.SelectTag(mockTagsSize5.toList()[mockSelectedIdxList.last()]))
+                submitAction(PlayShortsAction.SelectTag(mockTagsSize5.tags.toList()[mockSelectedIdxList.first()]))
+                submitAction(PlayShortsAction.SelectTag(mockTagsSize5.tags.toList()[mockSelectedIdxList.last()]))
             }
 
-            assertTagFail(state.tags) {
-                it.assertEqualTo(mockException)
+            assertTagFail(state.tags) { throwable ->
+                throwable.assertEqualTo(mockException)
             }
         }
     }
@@ -184,26 +184,26 @@ class PlayShortsTagViewModelTest {
     /**
      * Assertion Helper Function
      */
-    private fun assertTagSuccess(tags: NetworkResult<Set<PlayTagUiModel>>, fn: (tags: Set<PlayTagUiModel>) -> Unit) {
-        if(tags is NetworkResult.Success) {
-            fn(tags.data)
+    private fun assertTagSuccess(tag: NetworkResult<PlayTagUiModel>, fn: (tags: PlayTagUiModel) -> Unit) {
+        if(tag is NetworkResult.Success) {
+            fn(tag.data)
         }
         else {
             fail(Exception("tag status should be NetworkResult.Success"))
         }
     }
 
-    private fun assertTagFail(tags: NetworkResult<Set<PlayTagUiModel>>, fn: (e: Throwable) -> Unit) {
-        if(tags is NetworkResult.Fail) {
-            fn(tags.error)
+    private fun assertTagFail(tag: NetworkResult<PlayTagUiModel>, fn: (e: Throwable) -> Unit) {
+        if(tag is NetworkResult.Fail) {
+            fn(tag.error)
         }
         else {
             fail(Exception("tag status should be NetworkResult.Fail"))
         }
     }
 
-    private fun assertTagIsChosen(tags: Set<PlayTagUiModel>, chosenIdxList: List<Int>) {
-        tags.forEachIndexed { idx, e ->
+    private fun assertTagIsChosen(tag: PlayTagUiModel, chosenIdxList: List<Int>) {
+        tag.tags.forEachIndexed { idx, e ->
             if(chosenIdxList.contains(idx)) {
                 e.isChosen.assertTrue()
             }
