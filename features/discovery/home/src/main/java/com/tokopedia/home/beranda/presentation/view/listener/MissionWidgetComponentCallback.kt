@@ -36,7 +36,7 @@ class MissionWidgetComponentCallback(
         } else {
             MissionWidgetTracking.sendMissionWidgetClicked(element, horizontalPosition, homeCategoryListener.userId)
         }
-        homeCategoryListener.onDynamicChannelClicked(element.appLink)
+        homeCategoryListener.onDynamicChannelClicked(element.data.appLink)
     }
 
     override fun onMissionImpressed(
@@ -63,6 +63,6 @@ class MissionWidgetComponentCallback(
     }
 
     private fun CarouselMissionWidgetDataModel.isProduct(): Boolean {
-        return this.productID.isNotBlank() && this.productID != ZERO_PRODUCT_ID
+        return this.data.productID.isNotBlank() && this.data.productID != ZERO_PRODUCT_ID
     }
 }

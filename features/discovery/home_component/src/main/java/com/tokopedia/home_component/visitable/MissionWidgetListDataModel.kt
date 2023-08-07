@@ -2,15 +2,18 @@ package com.tokopedia.home_component.visitable
 
 import android.os.Bundle
 import com.tokopedia.home_component.HomeComponentTypeFactory
-import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.kotlin.model.ImpressHolder
 
 /**
  * Created by dhaba
  */
 data class MissionWidgetListDataModel(
+    val id: String = "",
+    val name: String = "",
+    val header: ChannelHeader = ChannelHeader(),
     val missionWidgetList: List<MissionWidgetDataModel> = listOf(),
-    val channelModel: ChannelModel,
+    val verticalPosition: Int = 0,
     val status: Int = STATUS_LOADING
 ) : HomeComponentVisitable, ImpressHolder() {
 
@@ -25,7 +28,7 @@ data class MissionWidgetListDataModel(
     }
 
     override fun visitableId(): String {
-        return channelModel.id
+        return id
     }
 
     override fun equalsWith(b: Any?): Boolean {

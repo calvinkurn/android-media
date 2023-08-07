@@ -2,6 +2,7 @@ package com.tokopedia.home_component.usecase.missionwidget
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.home_component_header.model.ChannelHeader
 
 /**
  * Created by dhaba
@@ -14,10 +15,23 @@ class HomeMissionWidgetData {
     )
 
     data class GetHomeMissionWidget(
+        @SerializedName("header")
+        @Expose
+        val header: Header = Header(),
         @SerializedName("missions")
         @Expose
         val missions: List<Mission> = listOf()
     )
+
+    data class Header(
+        @SerializedName("title")
+        @Expose
+        val title: String = ""
+    ) {
+        fun getAsHomeComponentHeader() = ChannelHeader(
+            name = title
+        )
+    }
 
     data class Mission(
         @SerializedName("id")

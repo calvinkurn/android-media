@@ -3,14 +3,18 @@ package com.tokopedia.home_component.visitable
 import android.os.Bundle
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.kotlin.model.ImpressHolder
 
 /**
  * Created by frenzel
  */
 data class TodoWidgetListDataModel(
+    val id: String = "",
     val todoWidgetList: List<TodoWidgetDataModel> = listOf(),
-    val channelModel: ChannelModel,
+    val header: ChannelHeader = ChannelHeader(),
+    val widgetParam: String = "",
+    val verticalPosition: Int = 0,
     val status: Int = STATUS_LOADING,
 ) : HomeComponentVisitable, ImpressHolder() {
 
@@ -28,7 +32,7 @@ data class TodoWidgetListDataModel(
     }
 
     override fun visitableId(): String {
-        return channelModel.id
+        return id
     }
 
     override fun equalsWith(b: Any?): Boolean {

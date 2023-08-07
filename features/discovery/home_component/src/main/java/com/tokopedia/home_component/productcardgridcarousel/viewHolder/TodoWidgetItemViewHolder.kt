@@ -59,16 +59,16 @@ class TodoWidgetItemViewHolder(
 
     private fun setTextContent(element: CarouselTodoWidgetDataModel) {
         binding?.run {
-            titleTodoWidget.text = element.title
-            imageTodoWidget.setImageUrl(element.imageUrl)
-            dueDateTodoWidget.renderData(element.dueDate)
-            descTodoWidget.renderData(element.contextInfo)
-            priceTodoWidget.renderData(element.price)
+            titleTodoWidget.text = element.data.title
+            imageTodoWidget.setImageUrl(element.data.imageUrl)
+            dueDateTodoWidget.renderData(element.data.dueDate)
+            descTodoWidget.renderData(element.data.contextInfo)
+            priceTodoWidget.renderData(element.data.price)
             slashedPriceTodoWidget.apply {
-                renderData(element.slashedPrice)
+                renderData(element.data.slashedPrice)
                 paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             }
-            labelDiscountTodoWidget.renderData(element.discountPercentage)
+            labelDiscountTodoWidget.renderData(element.data.discountPercentage)
         }
     }
 
@@ -91,14 +91,14 @@ class TodoWidgetItemViewHolder(
         binding?.ctaTodoWidget?.run {
             isInverse = false
 
-            visibility = if (element.ctaText.isEmpty()) {
+            visibility = if (element.data.ctaText.isEmpty()) {
                 View.GONE
                 return
             } else {
                 View.VISIBLE
             }
-            val mode = element.ctaMode.ifEmpty { HomeComponentCta.CTA_MODE_MAIN }
-            val type = element.ctaType.ifEmpty { HomeComponentCta.CTA_TYPE_FILLED }
+            val mode = element.data.ctaMode.ifEmpty { HomeComponentCta.CTA_MODE_MAIN }
+            val type = element.data.ctaType.ifEmpty { HomeComponentCta.CTA_TYPE_FILLED }
 
             when (type) {
                 HomeComponentCta.CTA_TYPE_FILLED -> buttonVariant = UnifyButton.Variant.FILLED
@@ -114,7 +114,7 @@ class TodoWidgetItemViewHolder(
                 HomeComponentCta.CTA_MODE_INVERTED -> isInverse = true
             }
 
-            text = element.ctaText
+            text = element.data.ctaText
 
             setOnClickListener {
                 element.todoWidgetComponentListener.onTodoCTAClicked(element)

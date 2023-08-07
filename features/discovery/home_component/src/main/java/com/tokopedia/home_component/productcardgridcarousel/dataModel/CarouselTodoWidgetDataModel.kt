@@ -5,33 +5,21 @@ import com.tokopedia.home_component.listener.TodoWidgetComponentListener
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactory
 import com.tokopedia.home_component.viewholders.TodoWidgetDismissListener
+import com.tokopedia.home_component.visitable.TodoWidgetDataModel
 import com.tokopedia.kotlin.model.ImpressHolder
 
 /**
  * Created by frenzel
  */
-class CarouselTodoWidgetDataModel(
-    val id: Long = 0L,
-    val title: String = "",
-    val dataSource: String = "",
-    val dueDate: String = "",
-    val contextInfo: String = "",
-    val price: String = "",
-    val slashedPrice: String = "",
-    val discountPercentage: String = "",
-    val cardApplink: String = "",
-    val ctaType: String = "",
-    val ctaMode: String = "",
-    val ctaText: String = "",
-    val ctaApplink: String = "",
-    val imageUrl: String = "",
-    val feParam: String = "",
+data class CarouselTodoWidgetDataModel(
+    val data: TodoWidgetDataModel,
+    val channelId: String,
+    val headerName: String,
+    val cardInteraction: Boolean,
+    val isCarousel: Boolean,
+    val verticalPosition: Int,
+    val cardPosition: Int,
     val todoWidgetComponentListener: TodoWidgetComponentListener,
-    val channel: ChannelModel,
-    val verticalPosition: Int = -1,
-    val cardPosition: Int = -1,
-    val cardInteraction: Boolean = false,
-    val isCarousel: Boolean = false,
     val todoWidgetDismissListener: TodoWidgetDismissListener,
 ) : Visitable<CommonCarouselProductCardTypeFactory>, ImpressHolder() {
     override fun type(typeFactory: CommonCarouselProductCardTypeFactory): Int {

@@ -36,15 +36,14 @@ class HomeViewModelTodoWidgetUnitTest {
     private val homeTodoWidgetUseCase = mockk<HomeTodoWidgetUseCase>(relaxed = true)
     private lateinit var homeViewModel: HomeRevampViewModel
     private val testDispatcher = TestCoroutineDispatcher()
-    private val mockChannelModel = ChannelModel(id = "1", groupId = "2")
     private val mockFailedTodoWidget = TodoWidgetListDataModel(
-        channelModel = mockChannelModel,
+        id = "123",
         status = TodoWidgetListDataModel.STATUS_ERROR
     )
     private val todoWidgetItem1 = TodoWidgetDataModel(id = 1)
     private val todoWidgetItem2 = TodoWidgetDataModel(id = 2)
     private val mockSuccessTodoWidget = TodoWidgetListDataModel(
-        channelModel = mockChannelModel,
+        id = "123",
         todoWidgetList = listOf(todoWidgetItem1, todoWidgetItem2),
         status = TodoWidgetListDataModel.STATUS_SUCCESS
     )

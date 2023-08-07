@@ -5,6 +5,8 @@ object AtfKey {
     const val TYPE_TICKER = "ticker"
     const val TYPE_ICON = "dynamic_icon"
     const val TYPE_CHANNEL = "channel"
+    const val TYPE_TODO = "todo_widget_carousel"
+    const val TYPE_MISSION = "mission_widget"
 
     const val STATUS_LOADING = 0
     const val STATUS_ERROR = 1

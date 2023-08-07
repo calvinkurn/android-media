@@ -37,15 +37,15 @@ class MissionWidgetItemViewHolder(
                 CardUnify2.ANIMATE_OVERLAY
             }
             cardContainerMissionWidget.rootView.setOnClickListener {
-                element.missionWidgetComponentListener.onMissionClicked(element, absoluteAdapterPosition)
+                element.missionWidgetComponentListener.onMissionClicked(element, element.cardPosition)
             }
             cardContainerMissionWidget.rootView.addOnImpressionListener(element) {
-                element.missionWidgetComponentListener.onMissionImpressed(element, absoluteAdapterPosition)
+                element.missionWidgetComponentListener.onMissionImpressed(element, element.cardPosition)
             }
-            imageMissionWidget.setImageUrl(element.imageURL)
-            titleMissionWidget.text = element.title
+            imageMissionWidget.setImageUrl(element.data.imageURL)
+            titleMissionWidget.text = element.data.title
             subtitleMissionWidget.height = element.subtitleHeight
-            subtitleMissionWidget.text = element.subTitle
+            subtitleMissionWidget.text = element.data.subTitle
             subtitleMissionWidget.maxLines = MAX_LINES_MISSION_WIDGET
             subtitleMissionWidget.ellipsize = TextUtils.TruncateAt.END
         }

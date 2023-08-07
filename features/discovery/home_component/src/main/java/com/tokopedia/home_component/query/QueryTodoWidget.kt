@@ -12,6 +12,9 @@ internal object QueryTodoWidget {
     const val TODO_WIDGET_QUERY_NAME = "TodoWidgetQuery"
     const val TODO_WIDGET_QUERY = "query getHomeToDoWidget(\$param: String!, \$location: String!) {\n" +
         "   getHomeToDoWidget(param: \$param, location: \$location) {\n" +
+        "       header {\n" +
+        "           title\n" +
+        "       }\n" +
         "       toDos {\n" +
         "           id\n" +
         "           dataSource\n" +

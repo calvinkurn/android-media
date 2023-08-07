@@ -2,6 +2,7 @@ package com.tokopedia.home_component.usecase.todowidget
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.home_component_header.model.ChannelHeader
 
 /**
  * Created by frenzel
@@ -14,10 +15,23 @@ class HomeTodoWidgetData {
     )
 
     data class GetHomeTodoWidget(
+        @SerializedName("header")
+        @Expose
+        val header: Header = Header(),
         @SerializedName("toDos")
         @Expose
         val todos: List<Todo> = listOf()
     )
+
+    data class Header(
+        @SerializedName("title")
+        @Expose
+        val title: String = ""
+    ) {
+        fun getAsHomeComponentHeader() = ChannelHeader(
+            name = title
+        )
+    }
 
     data class Todo(
         @SerializedName("id")

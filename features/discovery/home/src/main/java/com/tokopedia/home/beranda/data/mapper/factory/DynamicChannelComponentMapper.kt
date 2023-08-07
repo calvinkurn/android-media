@@ -6,6 +6,7 @@ import com.tokopedia.home_component.model.*
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseBorderStyle
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseDividerSize
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseImageStyle
+import com.tokopedia.home_component_header.model.ChannelHeader as HomeComponentHeader
 
 object DynamicChannelComponentMapper {
     fun mapHomeChannelToComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int): ChannelModel {

@@ -6,14 +6,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
-import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.GlobalComponentMissionWidgetBinding
 import com.tokopedia.home_component.decoration.MissionWidgetItemDecoration
 import com.tokopedia.home_component.listener.MissionWidgetComponentListener
-import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMissionWidgetDataModel
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
-import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.MissionWidgetUtil
 import com.tokopedia.home_component.viewholders.adapter.MissionWidgetAdapter
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
@@ -39,26 +36,15 @@ class MissionWidgetViewHolder(
     private var adapter: MissionWidgetAdapter? = null
 
     private fun setHeaderComponent(element: MissionWidgetListDataModel) {
-        binding?.homeComponentHeaderView?.setChannel(
-            element.channelModel,
-            object : HeaderListener {
-                override fun onSeeAllClick(link: String) {
-                    // no-op
-                }
-
-                override fun onChannelExpired(channelModel: ChannelModel) {
-                    // no-op
-                }
-            }
-        )
+        binding?.homeComponentHeaderView?.bind(element.header)
     }
 
     private fun setChannelDivider(element: MissionWidgetListDataModel) {
-        ChannelWidgetUtil.validateHomeComponentDivider(
-            channelModel = element.channelModel,
-            dividerTop = binding?.homeComponentDividerHeader,
-            dividerBottom = binding?.homeComponentDividerFooter
-        )
+//        ChannelWidgetUtil.validateHomeComponentDivider(
+//            channelModel = element.channelModel,
+//            dividerTop = binding?.homeComponentDividerHeader,
+//            dividerBottom = binding?.homeComponentDividerFooter
+//        )
     }
 
     private fun valuateRecyclerViewDecoration() {
@@ -74,44 +60,30 @@ class MissionWidgetViewHolder(
         )
     }
 
-    private fun mappingItem(channel: ChannelModel, visitables: MutableList<Visitable<*>>) {
-        val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel, cardInteraction)
+    private fun mappingItem(visitables: List<Visitable<*>>) {
+        val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl()
         adapter = MissionWidgetAdapter(visitables, typeFactoryImpl)
         binding?.homeComponentMissionWidgetRcv?.adapter = adapter
         binding?.homeComponentMissionWidgetRcv?.scrollToPosition(0)
     }
 
-    private fun convertDataToMissionWidgetData(element: MissionWidgetListDataModel): MutableList<Visitable<*>> {
-        val list: MutableList<Visitable<*>> = mutableListOf()
+    private fun convertDataToMissionWidgetData(element: MissionWidgetListDataModel): List<Visitable<*>> {
         val subtitleHeight = MissionWidgetUtil.findMaxHeightSubtitleText(
             element.missionWidgetList,
             itemView.context
         )
-        for (missionWidget in element.missionWidgetList) {
-            list.add(
-                CarouselMissionWidgetDataModel(
-                    id = missionWidget.id,
-                    title = missionWidget.title,
-                    subTitle = missionWidget.subTitle,
-                    appLink = missionWidget.appLink,
-                    imageURL = missionWidget.imageURL,
-                    pageName = missionWidget.pageName,
-                    categoryID = missionWidget.categoryID,
-                    productID = missionWidget.productID,
-                    productName = missionWidget.productName,
-                    recommendationType = missionWidget.recommendationType,
-                    buType = missionWidget.buType,
-                    isTopads = missionWidget.isTopads,
-                    isCarousel = missionWidget.isCarousel,
-                    shopId = missionWidget.shopId,
-                    subtitleHeight = subtitleHeight,
-                    missionWidgetComponentListener = missionWidgetComponentListener,
-                    channel = element.channelModel,
-                    verticalPosition = element.channelModel.verticalPosition
-                )
+        return element.missionWidgetList.mapIndexed { index, item ->
+            CarouselMissionWidgetDataModel(
+                data = item,
+                channelId = element.id,
+                channelName = element.name,
+                headerName = element.header.name,
+                subtitleHeight = subtitleHeight,
+                missionWidgetComponentListener = missionWidgetComponentListener,
+                verticalPosition = element.verticalPosition,
+                cardPosition = index
             )
         }
-        return list
     }
 
     private fun setLayoutByStatus(element: MissionWidgetListDataModel) {
@@ -147,7 +119,7 @@ class MissionWidgetViewHolder(
                     binding?.homeComponentMissionWidgetRcv?.setHasFixedSize(true)
                     valuateRecyclerViewDecoration()
                     val visitables = convertDataToMissionWidgetData(element)
-                    mappingItem(element.channelModel, visitables)
+                    mappingItem(visitables)
                 }
             }
         } else {

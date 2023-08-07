@@ -66,7 +66,7 @@ class HomeChannelHeaderView : FrameLayout {
 
     fun bind(
         channelHeader: ChannelHeader,
-        listener: HomeChannelHeaderListener,
+        listener: HomeChannelHeaderListener? = null,
         colorMode: Int? = null,
         ctaMode: Int? = null
     ) {

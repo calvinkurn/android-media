@@ -19,7 +19,7 @@ import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidget
-import com.tokopedia.home.beranda.helper.LazyLoadDynamicChannelHelper
+import com.tokopedia.home.beranda.helper.LazyLoadDataMapper
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
@@ -264,8 +264,9 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         },
                         mapToWidgetData = { visitableFound, data, _ ->
                             val resultList =
-                                LazyLoadDynamicChannelHelper.convertMissionWidgetDataList(data.getHomeMissionWidget.missions)
+                                LazyLoadDataMapper.mapMissionWidgetData(data.getHomeMissionWidget.missions)
                             visitableFound.copy(
+                                header = data.getHomeMissionWidget.header.getAsHomeComponentHeader(),
                                 missionWidgetList = resultList,
                                 status = MissionWidgetListDataModel.STATUS_SUCCESS
                             )
@@ -284,7 +285,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                 )
                                 putString(
                                     GetTodoWidgetUseCase.PARAM,
-                                    it.channelModel.widgetParam
+                                    it.widgetParam
                                 )
                             }
                         },
@@ -292,8 +293,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             visitableFound.copy(status = TodoWidgetListDataModel.STATUS_ERROR)
                         },
                         mapToWidgetData = { visitableFound, data, _ ->
-                            val resultList =
-                                LazyLoadDynamicChannelHelper.convertTodoWidgetDataList(data.getHomeTodoWidget.todos)
+                            val resultList = LazyLoadDataMapper.mapTodoWidgetData(data.getHomeTodoWidget.todos)
                             visitableFound.copy(
                                 todoWidgetList = resultList,
                                 status = TodoWidgetListDataModel.STATUS_SUCCESS
@@ -1080,6 +1080,70 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                                 type = if (atfData.param.contains(TYPE_ATF_1)) 1 else 2
                                             )
                                         )
+                                        atfData.status = AtfKey.STATUS_SUCCESS
+                                    }
+                                    homeData.atfData?.isProcessingAtf = false
+                                } catch (e: Exception) {
+                                    atfData.status = AtfKey.STATUS_ERROR
+                                    atfData.errorString = ErrorHandler.getErrorMessage(
+                                        applicationContext,
+                                        MessageErrorException(e.localizedMessage)
+                                    )
+                                }
+                                cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
+                                    saveToDatabase(homeData)
+                                })
+                                nonTickerResponseFinished = true
+                                atfData
+                            }
+                            jobList.add(job)
+                        }
+                        AtfKey.TYPE_TODO -> {
+                            val job = async {
+                                try {
+                                    homeTodoWidgetRepository.getRemoteData(
+                                        Bundle().apply {
+                                            putString(
+                                                GetTodoWidgetUseCase.LOCATION_PARAM,
+                                                homeChooseAddressRepository.getRemoteData()?.convertToLocationParams()
+                                            )
+                                            putString(
+                                                GetTodoWidgetUseCase.PARAM,
+                                                atfData.param
+                                            )
+                                        }
+                                    ).let {
+                                        atfData.content = gson.toJson(it.getHomeTodoWidget)
+                                        atfData.status = AtfKey.STATUS_SUCCESS
+                                    }
+                                    homeData.atfData?.isProcessingAtf = false
+                                } catch (e: Exception) {
+                                    atfData.status = AtfKey.STATUS_ERROR
+                                    atfData.errorString = ErrorHandler.getErrorMessage(
+                                        applicationContext,
+                                        MessageErrorException(e.localizedMessage)
+                                    )
+                                }
+                                cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
+                                    saveToDatabase(homeData)
+                                })
+                                nonTickerResponseFinished = true
+                                atfData
+                            }
+                            jobList.add(job)
+                        }
+                        AtfKey.TYPE_MISSION -> {
+                            val job = async {
+                                try {
+                                    homeMissionWidgetRepository.getRemoteData(
+                                        Bundle().apply {
+                                            putString(
+                                                GetTodoWidgetUseCase.LOCATION_PARAM,
+                                                homeChooseAddressRepository.getRemoteData()?.convertToLocationParams()
+                                            )
+                                        }
+                                    ).let {
+                                        atfData.content = gson.toJson(it.getHomeMissionWidget)
                                         atfData.status = AtfKey.STATUS_SUCCESS
                                     }
                                     homeData.atfData?.isProcessingAtf = false

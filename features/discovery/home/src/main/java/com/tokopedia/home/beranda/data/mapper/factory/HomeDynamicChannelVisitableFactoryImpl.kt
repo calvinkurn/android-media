@@ -713,10 +713,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
         verticalPosition: Int
     ): Visitable<*> {
         return TodoWidgetListDataModel(
-            channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
-                channel,
-                verticalPosition
-            ),
+            id = channel.id,
+            widgetParam = channel.widgetParam,
+            verticalPosition = verticalPosition,
             status = TodoWidgetListDataModel.STATUS_LOADING
         )
     }
@@ -772,10 +771,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
         if (!isCache) {
             visitableList.add(
                 MissionWidgetListDataModel(
-                    channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
-                        channel,
-                        verticalPosition
-                    ),
+                    id = channel.id,
+                    name = channel.name,
+                    verticalPosition = verticalPosition,
                     status = MissionWidgetListDataModel.STATUS_LOADING
                 )
             )

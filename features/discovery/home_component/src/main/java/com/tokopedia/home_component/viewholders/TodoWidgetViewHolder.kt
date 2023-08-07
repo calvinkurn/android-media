@@ -6,16 +6,15 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
-import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.HomeComponentTodoWidgetBinding
 import com.tokopedia.home_component.decoration.TodoWidgetItemDecoration
 import com.tokopedia.home_component.listener.TodoWidgetComponentListener
-import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselTodoWidgetDataModel
+import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactory
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
-import com.tokopedia.home_component.util.ChannelWidgetUtil
-import com.tokopedia.home_component.viewholders.adapter.TodoWidgetAdapter
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
+import com.tokopedia.home_component.widget.common.CarouselListAdapter
+import com.tokopedia.home_component.widget.todo.TodoWidgetDiffUtil
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.view.binding.viewBinding
@@ -33,30 +32,21 @@ class TodoWidgetViewHolder(
     }
 
     private var binding: HomeComponentTodoWidgetBinding? by viewBinding()
-    private var adapter: TodoWidgetAdapter? = null
-    private var visitables = mutableListOf<Visitable<*>>()
+    private val adapter: CarouselListAdapter<CarouselTodoWidgetDataModel, CommonCarouselProductCardTypeFactory> by lazy {
+        CarouselListAdapter(CommonCarouselProductCardTypeFactoryImpl(), TodoWidgetDiffUtil())
+    }
+    private var visitables = mutableListOf<CarouselTodoWidgetDataModel>()
 
     private fun setHeaderComponent(element: TodoWidgetListDataModel) {
-        binding?.homeComponentHeaderView?.setChannel(
-            element.channelModel,
-            object : HeaderListener {
-                override fun onSeeAllClick(link: String) {
-                    // no-op
-                }
-
-                override fun onChannelExpired(channelModel: ChannelModel) {
-                    // no-op
-                }
-            }
-        )
+        binding?.homeComponentHeaderView?.bind(element.header)
     }
 
     private fun setChannelDivider(element: TodoWidgetListDataModel) {
-        ChannelWidgetUtil.validateHomeComponentDivider(
-            channelModel = element.channelModel,
-            dividerTop = binding?.homeComponentDividerHeader,
-            dividerBottom = binding?.homeComponentDividerFooter
-        )
+//        ChannelWidgetUtil.validateHomeComponentDivider(
+//            channelModel = element.channelModel,
+//            dividerTop = binding?.homeComponentDividerHeader,
+//            dividerBottom = binding?.homeComponentDividerFooter
+//        )
     }
 
     private fun valuateRecyclerViewDecoration() {
@@ -72,46 +62,29 @@ class TodoWidgetViewHolder(
         )
     }
 
-    private fun mappingItem(channel: ChannelModel, visitables: MutableList<Visitable<*>>) {
-        val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel)
-        adapter = TodoWidgetAdapter(visitables, typeFactoryImpl)
+    private fun initAdapter() {
         binding?.homeComponentTodoWidgetRv?.adapter = adapter
         binding?.homeComponentTodoWidgetRv?.scrollToPosition(0)
         (binding?.homeComponentTodoWidgetRv?.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = true
     }
 
-    private fun convertDataToTodoWidgetData(element: TodoWidgetListDataModel): MutableList<Visitable<*>> {
-        val list: MutableList<Visitable<*>> = mutableListOf()
-
-        element.todoWidgetList.forEachIndexed { index, todoWidget ->
-            list.add(
-                CarouselTodoWidgetDataModel(
-                    id = todoWidget.id,
-                    title = todoWidget.title,
-                    dataSource = todoWidget.dataSource,
-                    dueDate = todoWidget.dueDate,
-                    contextInfo = todoWidget.contextInfo,
-                    imageUrl = todoWidget.imageUrl,
-                    price = todoWidget.price,
-                    slashedPrice = todoWidget.slashedPrice,
-                    discountPercentage = todoWidget.discountPercentage,
-                    todoWidgetComponentListener = todoWidgetComponentListener,
-                    cardApplink = todoWidget.cardApplink,
-                    ctaApplink = todoWidget.ctaApplink,
-                    ctaMode = todoWidget.ctaMode,
-                    ctaType = todoWidget.ctaType,
-                    ctaText = todoWidget.ctaText,
-                    feParam = todoWidget.feParam,
-                    channel = element.channelModel,
-                    verticalPosition = element.channelModel.verticalPosition,
-                    cardPosition = index,
-                    isCarousel = element.todoWidgetList.size > 1,
-                    todoWidgetDismissListener = this,
-                    cardInteraction = true
-                )
+    private fun mappingItem(element: TodoWidgetListDataModel) {
+        val items = element.todoWidgetList.mapIndexed { index, item ->
+            CarouselTodoWidgetDataModel(
+                data = item,
+                channelId = element.id,
+                headerName = element.header.name,
+                todoWidgetComponentListener = todoWidgetComponentListener,
+                verticalPosition = element.verticalPosition,
+                cardPosition = index,
+                isCarousel = element.todoWidgetList.size > 1,
+                todoWidgetDismissListener = this,
+                cardInteraction = true
             )
         }
-        return list
+        visitables.clear()
+        visitables.addAll(items)
+        adapter.submitList(visitables.toList())
     }
 
     private fun setLayoutByStatus(element: TodoWidgetListDataModel) {
@@ -146,8 +119,8 @@ class TodoWidgetViewHolder(
                     binding?.homeComponentHeaderView?.show()
                     binding?.homeComponentTodoWidgetRv?.setHasFixedSize(true)
                     valuateRecyclerViewDecoration()
-                    visitables = convertDataToTodoWidgetData(element)
-                    mappingItem(element.channelModel, visitables)
+                    initAdapter()
+                    mappingItem(element)
                 }
             }
         } else {
@@ -173,7 +146,7 @@ class TodoWidgetViewHolder(
 
     override fun dismiss(element: CarouselTodoWidgetDataModel, position: Int) {
         visitables.removeAt(position)
-        adapter?.notifyItemRemoved(position)
+        adapter.submitList(visitables.toList())
         todoWidgetComponentListener.onTodoCloseClicked(element)
     }
 }

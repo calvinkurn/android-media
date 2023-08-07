@@ -21,19 +21,19 @@ class TodoWidgetComponentCallback(
 
     override fun onTodoCardClicked(element: CarouselTodoWidgetDataModel) {
         TodoWidgetTracking.sendTodoWidgetCardClicked(element)
-        if (element.cardApplink.isNotBlank()) {
-            homeCategoryListener.onDynamicChannelClicked(element.cardApplink)
+        if (element.data.cardApplink.isNotBlank()) {
+            homeCategoryListener.onDynamicChannelClicked(element.data.cardApplink)
         }
     }
 
     override fun onTodoCTAClicked(element: CarouselTodoWidgetDataModel) {
         TodoWidgetTracking.sendTodoWidgetCTAClicked(element, homeCategoryListener.userId)
-        homeCategoryListener.onDynamicChannelClicked(element.ctaApplink)
+        homeCategoryListener.onDynamicChannelClicked(element.data.ctaApplink)
     }
 
     override fun onTodoCloseClicked(element: CarouselTodoWidgetDataModel) {
         TodoWidgetTracking.sendTodoWidgetCloseClicked(element)
-        homeRevampViewModel.dismissTodoWidget(element.cardPosition, element.dataSource, element.feParam)
+        homeRevampViewModel.dismissTodoWidget(element.cardPosition, element.data.dataSource, element.data.feParam)
     }
 
     override fun onTodoImpressed(element: CarouselTodoWidgetDataModel) {
