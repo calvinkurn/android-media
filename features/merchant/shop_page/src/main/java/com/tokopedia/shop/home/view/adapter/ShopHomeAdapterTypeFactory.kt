@@ -324,9 +324,6 @@ open class ShopHomeAdapterTypeFactory(
             ShopHomeVoucherViewHolder.LAYOUT -> {
                 ShopHomeVoucherViewHolder(parent, onMerchantVoucherListWidgetListener)
             }
-            ShopHomeV4TerlarisViewHolder.LAYOUT -> {
-                ShopHomeV4TerlarisViewHolder(parent, shopHomeV4TerlarisViewHolderListener)
-            }
             ShopLayoutLoadingShimmerViewHolder.LAYOUT -> {
                 ShopLayoutLoadingShimmerViewHolder(parent)
             }
@@ -358,6 +355,10 @@ open class ShopHomeAdapterTypeFactory(
             ShopHomePersoProductComparisonViewHolder.LAYOUT -> ShopHomePersoProductComparisonViewHolder(parent, shopPersoProductComparisonListener, shopHomeListener)
             ShopHomeDisplayBannerTimerPlaceholderViewHolder.LAYOUT -> ShopHomeDisplayBannerTimerPlaceholderViewHolder(parent)
             ShopHomeDisplayBannerTimerViewHolder.LAYOUT -> ShopHomeDisplayBannerTimerViewHolder(parent, shopHomeDisplayBannerTimerWidgetListener)
+            // ========= Shop Home Revamp V4 - New widgets ========= //
+            ShopHomeV4TerlarisViewHolder.LAYOUT -> {
+                ShopHomeV4TerlarisViewHolder(parent, shopHomeV4TerlarisViewHolderListener)
+            }
 
             else -> return super.createViewHolder(parent, type)
         }

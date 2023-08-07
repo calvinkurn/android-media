@@ -61,31 +61,27 @@ class ShopHomeV4TerlarisAdapter(
         }
 
         fun bindData(productListData: List<ShopHomeV4TerlarisItemUiModel>) {
-            if (productListData.size == 3) {
-                productContainer1?.setOnClickListener {
-                    listener.onProductClick(productId = productListData[0].appUrl)
-                }
-                productImg1?.loadImageRounded(url = productListData[0].imgUrl)
-                productName1?.text = productListData[0].name
-                productPrice1?.text = productListData[0].price
-                productRank1?.text = "0"
-                productContainer2?.setOnClickListener {
-                    listener.onProductClick(productId = productListData[1].appUrl)
-                }
-                productImg2?.loadImageRounded(url = productListData[1].imgUrl)
-                productName2?.text = productListData[1].name
-                productPrice2?.text = productListData[1].price
-                productRank2?.text = "1"
-                productContainer3?.setOnClickListener {
-                    listener.onProductClick(productId = productListData[2].appUrl)
-                }
-                productImg3?.loadImageRounded(url = productListData[2].imgUrl)
-                productName3?.text = productListData[2].name
-                productPrice3?.text = productListData[2].price
-                productRank3?.text = "3"
-            } else if (productListData.size >= 6) {
-
+            productContainer1?.setOnClickListener {
+                listener.onProductClick(productId = productListData[0].appUrl)
             }
+            productImg1?.loadImageRounded(url = productListData[0].imgUrl)
+            productName1?.text = productListData[0].name
+            productPrice1?.text = productListData[0].price
+            productRank1?.text = "0"
+            productContainer2?.setOnClickListener {
+                listener.onProductClick(productId = productListData[1].appUrl)
+            }
+            productImg2?.loadImageRounded(url = productListData[1].imgUrl)
+            productName2?.text = productListData[1].name
+            productPrice2?.text = productListData[1].price
+            productRank2?.text = "1"
+            productContainer3?.setOnClickListener {
+                listener.onProductClick(productId = productListData[2].appUrl)
+            }
+            productImg3?.loadImageRounded(url = productListData[2].imgUrl)
+            productName3?.text = productListData[2].name
+            productPrice3?.text = productListData[2].price
+            productRank3?.text = "3"
         }
 
     }
