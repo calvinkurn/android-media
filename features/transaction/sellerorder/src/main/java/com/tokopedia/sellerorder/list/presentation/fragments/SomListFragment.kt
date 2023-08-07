@@ -273,6 +273,7 @@ open class SomListFragment :
         }
     }
 
+    // The isEnabledCoachmark allows the EP team to automate tests with coachmark hiding on the SOM Page
     private val isEnabledCoachmark: Boolean by lazy {
         arguments?.getString(SomConsts.COACHMARK_KEY).orEmpty() != SomConsts.COACHMARK_DISABLED
     }
