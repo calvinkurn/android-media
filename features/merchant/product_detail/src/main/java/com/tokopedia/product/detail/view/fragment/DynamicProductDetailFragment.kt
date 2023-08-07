@@ -2002,7 +2002,7 @@ open class DynamicProductDetailFragment :
         trackOnTickerClicked(tickerTitle, tickerType, componentTrackDataModel, tickerDescription)
         goToRecommendation()
     }
-    
+
     private val mvcLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == MvcView.RESULT_CODE_OK && doActivityResult) {
             onSwipeRefresh()
