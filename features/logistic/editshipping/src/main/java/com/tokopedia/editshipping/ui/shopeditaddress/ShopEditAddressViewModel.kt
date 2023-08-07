@@ -13,7 +13,6 @@ import com.tokopedia.logisticCommon.data.repository.ShopLocationRepository
 import com.tokopedia.logisticCommon.data.response.KeroDistrictRecommendation
 import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocCheckCouriers
 import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocUpdateWarehouse
-import com.tokopedia.logisticCommon.domain.model.Place
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -88,8 +87,7 @@ class ShopEditAddressViewModel @Inject constructor(
                 latLon,
                 email,
                 addressDetail,
-                postalCode,
-                phone
+                postalCode
             )
             _saveEditShop.value =
                 ShopEditAddressState.Success(saveEditLocation.shopLocUpdateWarehouse)

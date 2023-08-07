@@ -333,9 +333,14 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
             val latLong = "$currentLat,$currentLong"
             warehouseModel?.let {
                 viewModel.saveEditShopLocation(
-                    userSession.shopId.toLong(), it.warehouseId, binding?.etNamaLokasiShop?.text.toString(),
-                    it.districtId, latLong, userSession.email, binding?.etDetailAlamatShop?.text.toString(),
-                    binding?.etKodePosShop?.text.toString(), userSession.phoneNumber
+                    userSession.shopId.toLong(),
+                    it.warehouseId,
+                    binding?.etNamaLokasiShop?.text.toString(),
+                    it.districtId,
+                    latLong,
+                    userSession.email,
+                    binding?.etDetailAlamatShop?.text.toString(),
+                    binding?.etKodePosShop?.text.toString()
                 )
             }
         } else {
@@ -363,8 +368,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                         latLong,
                         userSession.email,
                         binding?.etDetailAlamatShop?.text.toString(),
-                        binding?.etKodePosShop?.text.toString(),
-                        userSession.phoneNumber
+                        binding?.etKodePosShop?.text.toString()
                     )
                 }
             }
