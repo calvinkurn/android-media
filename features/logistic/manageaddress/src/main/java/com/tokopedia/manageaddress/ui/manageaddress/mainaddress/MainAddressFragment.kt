@@ -73,10 +73,10 @@ import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollect
 import com.tokopedia.usercomponents.userconsent.ui.UserConsentWidget
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -825,7 +825,7 @@ class MainAddressFragment :
                     it.setResult(Activity.RESULT_OK, resultIntent)
                     it.finish()
                 }
-            } else if (viewModel.isEligibleShareAddress && viewModel.isNeedToShareAddress) {
+            } else if (viewModel.isNeedToShareAddress) {
                 addressData?.apply {
                     ShareAddressAnalytics.onClickShareAddress()
                     showShareAddressConfirmationBottomSheet(
