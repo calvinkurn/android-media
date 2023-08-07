@@ -101,9 +101,6 @@ class UniversalInboxViewModel @Inject constructor(
                 }
                 if (driverChatWidgetData != null) {
                     setAllDriverChannels()
-                    driverChatCounter = _allChannelsLiveData?.switchMap {
-                        getDriverUnreadCount(it)
-                    } as? MutableLiveData<Result<Pair<Int, Int>>>
                     additionalAction.invoke()
                 }
                 driverChatData = driverChatCounter?.value // Set driver chat data
@@ -115,6 +112,7 @@ class UniversalInboxViewModel @Inject constructor(
                 )
                 _widget.value = Pair(result, allCounterResponse)
             } catch (throwable: Throwable) {
+                _error.value = Pair(throwable, ::loadWidgetMetaAndCounter.name)
                 _widget.value = Pair(UniversalInboxWidgetMetaUiModel(isError = true), null)
             }
         }
@@ -129,6 +127,11 @@ class UniversalInboxViewModel @Inject constructor(
         try {
             if (_allChannelsLiveData == null) {
                 _allChannelsLiveData = getDriverChatCounterUseCase.getAllChannels()
+            }
+            _allChannelsLiveData?.run {
+                driverChatCounter = switchMap {
+                    getDriverUnreadCount(it)
+                }
             }
         } catch (throwable: Throwable) {
             _error.value = Pair(throwable, ::setAllDriverChannels.name)
