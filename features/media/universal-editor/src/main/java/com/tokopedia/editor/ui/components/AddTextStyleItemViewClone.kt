@@ -18,6 +18,7 @@ import com.tokopedia.unifyprinciples.R as principleR
 class AddTextStyleItemViewClone(context: Context, attributeSet: AttributeSet?): CardUnify2(context, attributeSet) {
 
     private var textContent: Typography? = null
+    private var isActive: Boolean = false
 
     init {
         val lp = LinearLayout.LayoutParams(
@@ -44,6 +45,7 @@ class AddTextStyleItemViewClone(context: Context, attributeSet: AttributeSet?): 
             )
             it.setTextColorCompat(principleR.color.Unify_NN950)
         }
+        isActive = true
     }
 
     fun setInactive() {
@@ -53,10 +55,15 @@ class AddTextStyleItemViewClone(context: Context, attributeSet: AttributeSet?): 
             )
             it.setTextColorCompat(principleR.color.Unify_NN0)
         }
+        isActive = false
     }
 
     fun setFont(font: FontDetail) {
         textContent?.setTypeface(null, font.fontStyle)
+    }
+
+    fun isActive(): Boolean {
+        return isActive
     }
 
     companion object {
