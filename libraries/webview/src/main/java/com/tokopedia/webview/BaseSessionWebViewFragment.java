@@ -1,8 +1,6 @@
 package com.tokopedia.webview;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.webkit.WebView;
 
 import androidx.annotation.NonNull;
 
@@ -35,10 +33,5 @@ public class BaseSessionWebViewFragment extends BaseWebViewFragment {
         args.putBoolean(KEY_PULL_TO_REFRESH, pullToRefresh);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    @Override
-    protected void addJavascriptInterface(WebView webView, Activity activity) {
-        //no-op
     }
 }
