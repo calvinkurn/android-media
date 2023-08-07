@@ -33,12 +33,16 @@ object GeneralResult {
     }
 
     fun assertDriverBadge(position: Int) {
+        onView(
+            withRecyclerView(R.id.tokochat_list_rv)
+                .atPositionOnView(position, R.id.tokochat_list_iv_logo)
+        ).check(matches(isDisplayed()))
     }
 
     fun assertDriverTypeOrder(position: Int, order: String) {
         onView(
             withRecyclerView(R.id.tokochat_list_rv)
-                .atPositionOnView(position, R.id.tokochat_list_tv_driver_name)
+                .atPositionOnView(position, R.id.tokochat_list_tv_order_type)
         ).check(matches(withSubstring(order)))
     }
 

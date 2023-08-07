@@ -1,7 +1,9 @@
 package com.tokopedia.tokochat.view.chatlist
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.viewModelScope
 import com.gojek.conversations.babble.channel.data.ChannelType
 import com.gojek.conversations.channel.ConversationsChannel
@@ -14,16 +16,8 @@ import com.tokopedia.tokochat.domain.usecase.TokoChatChannelUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import javax.inject.Inject
 
 class TokoChatListViewModel @Inject constructor(
@@ -49,18 +43,9 @@ class TokoChatListViewModel @Inject constructor(
                 .map {
                     filterExpiredChannelAndMap(it)
                 }
-                .transformLatest { value ->
-                    emit(Success(value) as Result<List<TokoChatListItemUiModel>>)
-                }
-                .catch {
-                    _error.value = Pair(it, ::getChatListFlow.name)
-                    emit(Fail(it))
-                }
-                .flowOn(dispatcher.io)
-        } catch (throwable: Throwable) {
-            Timber.d(throwable)
-            flow {
-                emit(Fail(throwable))
+            } catch (throwable: Throwable) {
+                _error.value = Pair(throwable, ::setupChatListSource.name)
+                _chatList.value = Fail(throwable)
             }
         }
     }

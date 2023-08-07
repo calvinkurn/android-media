@@ -42,6 +42,7 @@ class TokoChatListGeneralTest : BaseTokoChatListTest() {
     fun should_show_default_thumbnail_message() {
         // When
         launchChatListActivity()
+        Thread.sleep(10000)
 
         // Then
         generalResult {
@@ -104,6 +105,7 @@ class TokoChatListGeneralTest : BaseTokoChatListTest() {
 
         // When
         launchChatListActivity()
+        Thread.sleep(10000)
 
         // Then
         generalResult {

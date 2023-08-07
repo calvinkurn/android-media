@@ -13,9 +13,11 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.tokochat.analytics.TokoChatAnalytics
 import com.tokopedia.tokochat.common.util.TokoChatNetworkUtil
 import com.tokopedia.tokochat.common.util.TokoChatTimeUtil.getRelativeTime
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil.BATCH_LIMIT
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.getSource
 import com.tokopedia.tokochat.common.view.chatlist.TokoChatListBaseFragment
 import com.tokopedia.tokochat.common.view.chatlist.adapter.TokoChatListBaseAdapter
@@ -30,7 +32,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -42,13 +43,13 @@ class TokoChatListFragment @Inject constructor(
     TokoChatListBaseFragment<TokochatChatlistFragmentBinding>(),
     TokoChatListItemListener {
 
-    private var chatListJob: Job? = null
-
     override var adapter: TokoChatListBaseAdapter = TokoChatListBaseAdapter(
         itemListener = this
     )
 
+    private var chatListJob: Job? = null
     private var tokoChatAnalytics = TokoChatAnalytics()
+    private var isFirstLoad = true
 
     override fun getScreenName(): String = TAG
 
@@ -71,22 +72,31 @@ class TokoChatListFragment @Inject constructor(
     private fun initChatListData() {
         toggleRecyclerViewLayout(true)
         addInitialShimmering()
-        lifecycleScope.launch {
+        chatListJob = lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                var isFirstLoad = true
-                viewModel.getChatListFlow().collectLatest {
-                    when (it) {
-                        is Success -> {
-                            setChatListData(it.data, isFirstLoad)
-                            if (isFirstLoad) {
-                                loadChatListData(it.data.size)
-                                isFirstLoad = false
-                            }
-                        }
-                        is Fail -> {
-                            showErrorLayout()
+                isFirstLoad = true
+                loadChatListData(BATCH_LIMIT)
+                viewModel.setupChatListSource()
+                observerChatList()
+            }
+        }
+    }
+
+    private fun observerChatList() {
+        removeObservers(viewModel.chatList)
+        viewModel.chatList.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    setChatListData(it.data, isFirstLoad)
+                    if (isFirstLoad) {
+                        isFirstLoad = false
+                        if (it.data.size > BATCH_LIMIT) {
+                            loadChatListData(it.data.size - BATCH_LIMIT)
                         }
                     }
+                }
+                is Fail -> {
+                    showErrorLayout()
                 }
             }
         }
@@ -110,7 +120,7 @@ class TokoChatListFragment @Inject constructor(
             addEmptyChatItem()
         } else {
             baseBinding?.tokochatListRv?.post {
-                adapter.setItemsAndAnimateChanges(newData)
+                adapter.addOrUpdateChatListData(newData)
             }
         }
     }
@@ -121,10 +131,8 @@ class TokoChatListFragment @Inject constructor(
             val emptyPosition = adapter.getEmptyViewPosition()
             if (emptyPosition >= Int.ZERO) {
                 adapter.clearAllItems()
-                adapter.setItemsAndAnimateChanges(newData)
-            } else {
-                adapter.addOrUpdateChatListData(newData)
             }
+            adapter.addOrUpdateChatListData(newData)
         }
     }
 
