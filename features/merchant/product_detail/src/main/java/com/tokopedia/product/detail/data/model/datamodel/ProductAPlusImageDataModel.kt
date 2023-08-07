@@ -10,6 +10,7 @@ data class ProductAPlusImageDataModel(
     var url: String = "",
     var ratio: String = "1:1",
     var title: String = "",
+    var description: String = "",
     var showOnCollapsed: Boolean = true,
     var ctaText: String = "",
     var collapsed: Boolean = true,

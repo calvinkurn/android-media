@@ -308,7 +308,7 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.A_PLUS_IMAGE -> {
                     val aPlusData = component.componentData.firstOrNull()
                     val aPlusMediaData = aPlusData?.contentMedia?.firstOrNull()
-                    if (aPlusMediaData != null) {
+                    if (aPlusMediaData != null && aPlusMediaData.valid()) {
                         listOfComponent.add(
                             ProductAPlusImageDataModel(
                                 type = component.type,
@@ -316,6 +316,7 @@ object DynamicProductDetailMapper {
                                 url = aPlusMediaData.url,
                                 ratio = aPlusMediaData.ratio,
                                 title = aPlusData.title,
+                                description = aPlusData.description,
                                 showOnCollapsed = aPlusData.show,
                                 ctaText = aPlusData.ctaText,
                                 showTopDivider = firstAPlusMedia

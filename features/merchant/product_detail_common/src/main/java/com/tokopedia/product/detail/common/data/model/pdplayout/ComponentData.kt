@@ -248,4 +248,6 @@ data class ContentMedia(
     val url: String,
     @SerializedName("ratio")
     val ratio: String
-)
+) {
+    fun valid() = url.isNotBlank() && ratio.matches(Regex("[0-9]+:[0-9]+"))
+}

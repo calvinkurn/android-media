@@ -25,6 +25,7 @@ class ProductAPlusImageViewHolder(
     override fun bind(element: ProductAPlusImageDataModel) {
         setupDivider(element.showTopDivider)
         setupTitle(element)
+        setupDescription(element)
         setupImage(element)
         setupToggle(element)
     }
@@ -37,6 +38,13 @@ class ProductAPlusImageViewHolder(
         binding.tvProductDetailAPlusImageTitle.apply {
             text = element.title
             showWithCondition(element.title.isNotBlank())
+        }
+    }
+
+    private fun setupDescription(element: ProductAPlusImageDataModel) {
+        binding.tvProductDetailAPlusImageDescription.apply {
+            text = element.description
+            showWithCondition(element.description.isNotBlank())
         }
     }
 
