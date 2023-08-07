@@ -341,6 +341,8 @@ class ProductManageViewModel @Inject constructor(
                     val warehouseId = getWarehouseId(shopId)
                     val extraInfo =
                         if (filterOptions?.contains(FilterOption.FilterByCondition.ProductArchival)
+                                .orFalse() || filterOptions?.contains(FilterOption.FilterByCondition.ProductArchivedStatus)
+                                .orFalse() || filterOptions?.contains(FilterOption.FilterByCondition.ProductPotentialArchivedStatus)
                                 .orFalse()
                         ) {
                             listOf(ExtraInfo.TOPADS, ExtraInfo.RBAC, ExtraInfo.ARCHIVAL)
