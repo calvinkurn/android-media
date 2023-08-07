@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -156,9 +157,6 @@ open class GalleryFragment @Inject constructor(
             uiModel.bucketId = id
 
             endlessScrollListener.resetState()
-            // force move to top every single bucketId has changed
-            binding?.lstMedia?.smoothScrollToPosition(0)
-
             viewModel.loadMedia(uiModel.bucketId)
         }
     }
@@ -217,6 +215,7 @@ open class GalleryFragment @Inject constructor(
                     val isRecyclerViewIdle = binding?.lstMedia?.scrollState == SCROLL_STATE_IDLE
 
                     if (isNotComputingLayout && isRecyclerViewIdle) {
+                        mLayoutManager.scrollToPosition(Int.ZERO)
                         featureAdapter.setItems(it)
                         featureAdapter.notifyDataSetChanged()
                     }
