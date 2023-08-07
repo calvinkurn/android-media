@@ -946,11 +946,9 @@ public class SideSheetBehavior<V extends View> extends CoordinatorLayout.Behavio
 
         // Reading a single color with getColorStateList() on API 15 and below doesn't always correctly
         // read the value. Instead we'll first try to read the color directly here.
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
-            int color = attributes.getColor(index, -1);
-            if (color != -1) {
-                return ColorStateList.valueOf(color);
-            }
+        int color = attributes.getColor(index, -1);
+        if (color != -1) {
+            return ColorStateList.valueOf(color);
         }
 
         return attributes.getColorStateList(index);

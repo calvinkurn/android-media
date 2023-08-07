@@ -30,7 +30,7 @@ open class BasePlayFragment : Fragment() {
             viewModel = ViewModelProvider(
                 child, fg.viewModelProviderFactory
             )[PlayViewModel::class.java]
-        } catch (e: Exception){ false }
+        } catch (expected: Exception){ false }
         super.onCreate(savedInstanceState)
     }
 
