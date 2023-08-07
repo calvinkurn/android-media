@@ -86,7 +86,8 @@ data class Voucher(
 
     @Parcelize
     data class SubsidyDetail(
-        val programDetail: ProgramDetail = ProgramDetail()
+        val programDetail: ProgramDetail = ProgramDetail(),
+        val quotaSubsidized: QuotaSubsidized = QuotaSubsidized()
     ) : Parcelable {
         @Parcelize
         data class ProgramDetail(
@@ -96,6 +97,14 @@ data class Voucher(
             val programLabelDetail: String = "",
             val promotionStatus: PromotionStatus = PromotionStatus.REGISTERED,
             val promotionLabel: String = ""
+        ) : Parcelable
+
+        @Parcelize
+        data class QuotaSubsidized(
+            val voucherQuota: Int = 0,
+            val remainingQuota: Int = 0,
+            val bookedGlobalQuota: Int = 0,
+            val confirmedGlobalQuota: Int = 0
         ) : Parcelable
     }
 
