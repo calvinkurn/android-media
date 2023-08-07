@@ -533,7 +533,7 @@ class SmartBillsAnalytics {
         const val CURRENT_SITE_VALUE = "tokopediaDigitalRecharge"
         const val BUSINESS_UNIT_VALUE = "top up and tagihan"
         const val CURRENCY_CODE_VALUE = "IDR"
-        const val STEP_VALUE = "1"
+        const val STEP_VALUE = "0"
         const val OPTION_VALUE = "click bayar"
 
         private const val CATEGORY_SMART_BILLS = "digital - smart bill management"
