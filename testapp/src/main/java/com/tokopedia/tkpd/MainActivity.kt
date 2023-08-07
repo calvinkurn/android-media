@@ -162,7 +162,7 @@ class MainActivity : AppCompatActivity() {
         /*
          * Put your default applink here
          */
-        return "tokopedia-android-internal://marketplace/product-detail/15332892/"
+        return ""
     }
 
     data class Model(
