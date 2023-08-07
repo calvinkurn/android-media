@@ -118,6 +118,8 @@ dependencies {
     androidTestImplementation rootProject.ext.miscDependencies.dagger
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
+    androidTestImplementation rootProject.ext.testDependencies.retrofitMockWebserver
+    androidTestImplementation rootProject.ext.testDependencies.okhttpIdlingResource
 
     androidTestImplementation projectOrAar(rootProject.ext.features.topAdsSdk)
     androidTestImplementation projectOrAar(rootProject.ext.features.atc_common)

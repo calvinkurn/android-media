@@ -1,0 +1,10 @@
+{
+  "success": true,
+  "data": {
+    "id": "testId1",
+    "sendbird_id": "testSendBirdId1",
+    "sendbird_token": "testSendBirdToken1",
+    "phone": "89676955972"
+  },
+  "errors": []
+}

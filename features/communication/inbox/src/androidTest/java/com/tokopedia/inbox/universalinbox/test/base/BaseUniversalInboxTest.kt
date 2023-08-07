@@ -13,10 +13,12 @@ import com.tokopedia.inbox.universalinbox.di.UniversalInboxActivityComponentFact
 import com.tokopedia.inbox.universalinbox.stub.common.ActivityScenarioTestRule
 import com.tokopedia.inbox.universalinbox.stub.common.BabbleCourierClientStub
 import com.tokopedia.inbox.universalinbox.stub.common.ConversationsPreferencesStub
+import com.tokopedia.inbox.universalinbox.stub.common.MockWebServerDispatcher
 import com.tokopedia.inbox.universalinbox.stub.common.UserSessionStub
 import com.tokopedia.inbox.universalinbox.stub.common.util.FakeAbTestPlatformImpl
 import com.tokopedia.inbox.universalinbox.stub.data.response.GqlResponseStub
 import com.tokopedia.inbox.universalinbox.stub.di.UniversalInboxFakeActivityComponentFactory
+import com.tokopedia.inbox.universalinbox.stub.di.tokochat.UniversalInboxTokoChatNetworkModuleStub.PORT_NUMBER
 import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
 import com.tokopedia.inbox.universalinbox.view.UniversalInboxActivity
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetComponentProvider
@@ -24,6 +26,7 @@ import com.tokopedia.tokochat.config.repository.TokoChatRepository
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -56,16 +59,21 @@ abstract class BaseUniversalInboxTest {
         userSession as UserSessionStub
     }
 
+    private lateinit var mockWebServer: MockWebServer
+    private val mockWebServerDispatcher = MockWebServerDispatcher()
+
     @Before
     open fun beforeTest() {
         Intents.init()
         setupDaggerComponent()
         setupConversationAndCourier()
         GqlResponseStub.reset()
+        setMockWebServer()
     }
 
     @After
     open fun afterTest() {
+        mockWebServer.shutdown()
         Intents.release()
     }
 
@@ -78,6 +86,12 @@ abstract class BaseUniversalInboxTest {
         RecommendationWidgetComponentProvider.setRecommendationComponent(
             fakeComponent.recommendationWidgetComponent
         )
+    }
+
+    private fun setMockWebServer() {
+        mockWebServer = MockWebServer()
+        mockWebServer.start(PORT_NUMBER)
+        mockWebServer.dispatcher = mockWebServerDispatcher
     }
 
     protected fun launchActivity(
