@@ -1266,6 +1266,7 @@ class FeedPostViewModelTest {
         assert(followRecomModel is FeedFollowRecommendationModel)
         assert((followRecomModel as FeedFollowRecommendationModel).status == FeedFollowRecommendationModel.Status.Success)
         assert(followRecomModel.data == mockFollowRecommendationData.data)
+        assert(viewModel.followRecommendationResult.value is Fail)
     }
 
     @Test
