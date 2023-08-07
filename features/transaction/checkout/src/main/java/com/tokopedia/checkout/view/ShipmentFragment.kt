@@ -3927,6 +3927,11 @@ class ShipmentFragment :
             }
         }
 
+        val deselectAddOnIds = arrayListOf<String>()
+        cartItemModel.addOnProduct.listDeselectAddOnProductData.forEach {
+            deselectAddOnIds.add(it.id.toString())
+        }
+
         val price: Double
         val discountedPrice: Double
         if (cartItemModel.campaignId == 0) {
@@ -3943,6 +3948,7 @@ class ShipmentFragment :
             mapOf(
                 AddOnConstant.QUERY_PARAM_CART_ID to cartId,
                 AddOnConstant.QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds.toString().replace("[", "").replace("]", ""),
+                AddOnConstant.QUERY_PARAM_DESELECTED_ADDON_IDS to deselectAddOnIds.toString().replace("[", "").replace("]", ""),
                 AddOnConstant.QUERY_PARAM_PAGE_ATC_SOURCE to SOURCE_NORMAL_CHECKOUT,
                 ApplinkConstInternalMechant.QUERY_PARAM_WAREHOUSE_ID to cartItemModel.warehouseId,
                 AddOnConstant.QUERY_PARAM_IS_TOKOCABANG to cartItemModel.isTokoCabang,
@@ -3953,6 +3959,8 @@ class ShipmentFragment :
                 AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toString().removeSingleDecimalSuffix()
             )
         )
+
+        println("++ applink = $applink")
 
         checkoutAnalyticsCourierSelection.eventClickLihatSemuaAddOnsProductServiceWidget()
         activity?.let {
@@ -4338,17 +4346,36 @@ class ShipmentFragment :
 
                         if (addOnUiModel.addOnType == PRODUCT_PROTECTION_INSURANCE_TYPE) {
                             isProteksiProdukUpdated = true
-                            if (addOnUiModel.getSaveAddonSelectedStatus().value == ADD_ON_PRODUCT_STATUS_CHECK ||
+                            updatedCartItemModel = if (addOnUiModel.getSaveAddonSelectedStatus().value == ADD_ON_PRODUCT_STATUS_CHECK ||
                                 addOnUiModel.getSaveAddonSelectedStatus().value == ADD_ON_PRODUCT_STATUS_MANDATORY
                             ) {
-                                updatedCartItemModel = needUpdateAddOnItem.second?.copy(
+                                needUpdateAddOnItem.second?.copy(
                                     isProtectionOptIn = true
                                 )
                             } else {
-                                updatedCartItemModel = needUpdateAddOnItem.second?.copy(
+                                needUpdateAddOnItem.second?.copy(
                                     isProtectionOptIn = false
                                 )
                             }
+                        }
+                    }
+                }
+
+                needUpdateAddOnItem.second?.addOnProduct?.listDeselectAddOnProductData?.clear()
+                if (addOnProductDataResult.changedAddons.isNotEmpty()) {
+                    addOnProductDataResult.changedAddons.forEach {
+                        if (it.getSaveAddonSelectedStatus().value == ADD_ON_PRODUCT_STATUS_UNCHECK) {
+                            needUpdateAddOnItem.second?.addOnProduct?.listDeselectAddOnProductData?.add(
+                                AddOnProductDataItemModel(
+                                    id = it.id.toLongOrZero(),
+                                    uniqueId = it.uniqueId,
+                                    price = it.price.toDouble(),
+                                    infoLink = it.eduLink,
+                                    name = it.name,
+                                    type = it.addOnType,
+                                    status = it.getSaveAddonSelectedStatus().value
+                                )
+                            )
                         }
                     }
                 }
