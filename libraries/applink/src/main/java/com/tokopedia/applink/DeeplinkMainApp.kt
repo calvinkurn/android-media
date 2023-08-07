@@ -209,6 +209,9 @@ object DeeplinkMainApp {
             DLP.matchPattern("order", DeeplinkMapperUoh::getRegisteredNavigationUohOrder),
             DLP.goTo(DeeplinkMapperDeals::getRegisteredNavigationDeals)
         ),
+        "device-notification-settings" to mutableListOf(
+            DLP.startsWith(ApplinkConst.AppNotifSetting.DEVICE_APP_NOTIF_SETTINGS_PAGE) { ctx, uri, _, _ -> navigateToAppNotifSettings(ctx) }
+        ),
         "digital" to mutableListOf(
             DLP.startsWith("order", DeeplinkMapperUoh::getRegisteredNavigationUohOrder),
             DLP.goTo(DeeplinkMapperDigital::getRegisteredNavigationDigital)
@@ -441,9 +444,6 @@ object DeeplinkMainApp {
         ),
         "notif-center" to mutableListOf(
             DLP.matchPattern("", DeeplinkMapperInbox::getRegisteredNavigationNotifcenter)
-        ),
-        "device-notification-settings" to mutableListOf(
-            DLP.startsWith(ApplinkConst.AppNotifSetting.DEVICE_APP_NOTIF_SETTINGS_PAGE) { ctx, uri, _, _ -> navigateToAppNotifSettings(ctx) }
         ),
         "notification" to mutableListOf(
             DLP.matchPattern("", DeeplinkMapperInbox::getRegisteredNavigationNotifcenter)

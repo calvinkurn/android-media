@@ -440,6 +440,7 @@ public interface ApplinkConst {
     String OVOP2PTHANKYOUPAGE = "tokopedia://ovop2pthankyoupage/{transfer_id}";
     String OVO_WALLET = "tokopedia://ovo";
     String DEALS_HOME = "tokopedia://deals";
+    String DEVICE_NOTIFICATION_SETTINGS = "tokopedia://device-notification-settings";
     String DEALS_DETAIL = "tokopedia://deals/{slug}";
     String DEALS_BRAND_DETAIL = "tokopedia://deals/brand/{slug}";
     String DEALS_ALL_BRANDS = "tokopedia://deals/allbrands/{isVoucher}";
