@@ -123,7 +123,7 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment() {
     }
 
     private fun observeLiveData() {
-        observe(viewModel.tab) { data ->
+        observe(viewModel.categoryTab) { data ->
             addTabFragments(data)
             setupTabsUnifyMediator(data)
             setSelectedTabPosition(data)

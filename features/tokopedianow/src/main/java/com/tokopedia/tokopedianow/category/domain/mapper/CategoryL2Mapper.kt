@@ -8,7 +8,6 @@ import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResp
 import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResponse.Component
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryComponentType.Companion.HEADLINE_L1
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryComponentType.Companion.TABS_HORIZONTAL_SCROLL
-import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2TabModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2HeaderUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2TabUiModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
@@ -19,13 +18,10 @@ object CategoryL2Mapper {
     private const val DEFAULT_INDEX = 0
 
     private val SUPPORTED_LAYOUT_TYPES = listOf(
-        HEADLINE_L1,
-        TABS_HORIZONTAL_SCROLL
+        HEADLINE_L1
     )
 
     fun MutableList<Visitable<*>>.mapToCategoryUiModel(
-        categoryIdL1: String,
-        categoryIdL2: String,
         categoryModularResponse: CategoryGetDetailModular?,
         categoryDetailResponse: CategoryDetailResponse?
     ) {
@@ -38,13 +34,6 @@ object CategoryL2Mapper {
                         componentResponse = componentResponse,
                         categoryDetailResponse = categoryDetailResponse
                     )
-                    TABS_HORIZONTAL_SCROLL -> addCategoryTab(
-                        id = componentResponse.id,
-                        categoryIdL1 = categoryIdL1,
-                        categoryIdL2 = categoryIdL2,
-                        componentListResponse = componentsListResponse,
-                        categoryDetailResponse = categoryDetailResponse
-                    )
                 }
             }
     }
@@ -53,48 +42,8 @@ object CategoryL2Mapper {
         add(TokoNowChooseAddressWidgetUiModel(addressData = addressData))
     }
 
-    fun MutableList<Visitable<*>>.getCategoryTabs(): List<CategoryL2TabModel> {
-        return filterIsInstance<CategoryL2TabUiModel>().firstOrNull()?.run {
-            categoryL2Ids.mapIndexed { index, categoryIdL2 ->
-                CategoryL2TabModel(id = categoryIdL2, name = titleList[index])
-            }
-        } ?: emptyList()
-    }
-
     fun MutableList<Visitable<*>>.filterNotLoadedLayout(): MutableList<Visitable<*>> {
         return filter { it.getLayoutState() == TokoNowLayoutState.LOADING }.toMutableList()
-    }
-
-    private fun MutableList<Visitable<*>>.addCategoryTab(
-        id: String,
-        categoryIdL1: String,
-        categoryIdL2: String,
-        componentListResponse: List<Component>,
-        categoryDetailResponse: CategoryDetailResponse?
-    ) {
-        val categoryDetail = categoryDetailResponse?.categoryDetail
-        val categoryChildList = categoryDetail?.data?.child.orEmpty()
-        val categoryNameList = categoryChildList.map { it.name }
-        val categoryL2Ids = categoryChildList.map { it.id }
-
-        val tabComponents = componentListResponse.filterTabComponents()
-        val selectedTabPosition = if (categoryL2Ids.contains(categoryIdL2)) {
-            categoryL2Ids.indexOf(categoryIdL2)
-        } else {
-            DEFAULT_INDEX
-        }
-
-        add(
-            CategoryL2TabUiModel(
-                id = id,
-                titleList = categoryNameList,
-                componentList = tabComponents,
-                categoryIdL1 = categoryIdL1,
-                categoryL2Ids = categoryL2Ids,
-                selectedTabPosition = selectedTabPosition,
-                state = TokoNowLayoutState.LOADED
-            )
-        )
     }
 
     private fun MutableList<Visitable<*>>.addHeader(
@@ -112,6 +61,38 @@ object CategoryL2Mapper {
                 )
             )
         }
+    }
+
+    fun mapToCategoryTab(
+        categoryIdL1: String,
+        categoryIdL2: String,
+        getCategoryLayoutResponse: CategoryGetDetailModular?,
+        categoryDetailResponse: CategoryDetailResponse?
+    ): CategoryL2TabUiModel {
+        val componentListResponse = getCategoryLayoutResponse?.components.orEmpty()
+        val id = componentListResponse
+            .firstOrNull { it.type == TABS_HORIZONTAL_SCROLL }?.id.orEmpty()
+        val categoryDetail = categoryDetailResponse?.categoryDetail
+        val categoryChildList = categoryDetail?.data?.child.orEmpty()
+        val categoryNameList = categoryChildList.map { it.name }
+        val categoryL2Ids = categoryChildList.map { it.id }
+
+        val tabComponents = componentListResponse.filterTabComponents()
+        val selectedTabPosition = if (categoryL2Ids.contains(categoryIdL2)) {
+            categoryL2Ids.indexOf(categoryIdL2)
+        } else {
+            DEFAULT_INDEX
+        }
+
+        return CategoryL2TabUiModel(
+            id = id,
+            titleList = categoryNameList,
+            componentList = tabComponents,
+            categoryIdL1 = categoryIdL1,
+            categoryL2Ids = categoryL2Ids,
+            selectedTabPosition = selectedTabPosition,
+            state = TokoNowLayoutState.LOADED
+        )
     }
 
     private fun MutableList<Visitable<*>>.getItemIndex(visitableId: String?): Int? {
