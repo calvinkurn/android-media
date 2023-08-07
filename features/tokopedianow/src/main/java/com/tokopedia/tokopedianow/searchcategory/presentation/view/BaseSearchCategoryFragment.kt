@@ -410,7 +410,9 @@ abstract class BaseSearchCategoryFragment:
     protected open fun refreshLayout(
         isDynamicFilterRemoved: Boolean = true
     ) {
-        getViewModel().onViewReloadPage(isDynamicFilterRemoved)
+        getViewModel().onViewReloadPage(
+            isDynamicFilterRemoved = isDynamicFilterRemoved
+        )
         refreshProductRecommendation(TOKONOW_NO_RESULT)
     }
 

@@ -432,4 +432,13 @@ class TokoNowCategoryViewModel @Inject constructor(
             listOf(tokonowParam[SearchApiConst.SRP_PAGE_ID] ?: "")
         }
     }
+
+    override fun onViewReloadPage(
+        isDynamicFilterRemoved: Boolean,
+        updateMoreQueryParams: () -> Unit
+    ) {
+        super.onViewReloadPage(isDynamicFilterRemoved) {
+            updateQueryParamWithCategoryIds()
+        }
+    }
 }

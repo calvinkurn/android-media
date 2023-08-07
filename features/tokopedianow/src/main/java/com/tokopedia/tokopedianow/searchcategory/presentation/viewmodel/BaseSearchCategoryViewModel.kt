@@ -132,7 +132,7 @@ import kotlinx.coroutines.withContext
 
 abstract class BaseSearchCategoryViewModel(
     private val baseDispatcher: CoroutineDispatchers,
-    queryParamMap: Map<String, String>,
+    private val queryParamMap: Map<String, String>,
     protected val getFilterUseCase: GetFilterUseCase,
     protected val getProductCountUseCase: UseCase<String>,
     protected val getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
@@ -690,10 +690,15 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     open fun onViewReloadPage(
-        isDynamicFilterRemoved: Boolean = true
+        isDynamicFilterRemoved: Boolean = true,
+        updateMoreQueryParams: () -> Unit = {}
     ) {
         if (isDynamicFilterRemoved) {
             dynamicFilterModelMutableLiveData.value = null
+            queryParamMutable.clear()
+            queryParamMutable.putAll(queryParamMap)
+            updateQueryParams()
+            updateMoreQueryParams.invoke()
         }
         totalData = 0
         totalFetchedData = 0
@@ -1344,6 +1349,10 @@ abstract class BaseSearchCategoryViewModel(
         resetSortFilterIfPminPmax(option)
         filterController.refreshMapParameter(queryParam)
         filter(option, false)
+
+        getFilter(
+            needToOpenBottomSheet = false
+        )
     }
 
     fun needToShowOnBoardBottomSheet(has20mBottomSheetBeenShown: Boolean): Boolean {
