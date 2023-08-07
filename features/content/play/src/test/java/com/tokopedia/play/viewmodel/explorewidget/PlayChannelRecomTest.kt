@@ -13,12 +13,20 @@ import com.tokopedia.play.util.assertFalse
 import com.tokopedia.play.util.assertTrue
 import com.tokopedia.play.util.assertType
 import com.tokopedia.play.view.type.PlayChannelType
-import com.tokopedia.play.view.uimodel.*
-import com.tokopedia.play.view.uimodel.action.*
+import com.tokopedia.play.view.uimodel.ExploreWidgetItemUiModel
+import com.tokopedia.play.view.uimodel.ExploreWidgetState
+import com.tokopedia.play.view.uimodel.ExploreWidgetType
+import com.tokopedia.play.view.uimodel.WidgetParamUiModel
+import com.tokopedia.play.view.uimodel.WidgetUiModel
+import com.tokopedia.play.view.uimodel.action.DismissExploreWidget
+import com.tokopedia.play.view.uimodel.action.EmptyPageWidget
+import com.tokopedia.play.view.uimodel.action.FetchWidgets
+import com.tokopedia.play.view.uimodel.action.NextPageWidgets
+import com.tokopedia.play.view.uimodel.action.RefreshWidget
+import com.tokopedia.play.view.uimodel.recom.CategoryWidgetConfig
 import com.tokopedia.play.view.uimodel.recom.ExploreWidgetConfig
 import com.tokopedia.play.view.uimodel.recom.PlayChannelRecommendationConfig
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMock
-import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
@@ -29,9 +37,9 @@ import org.junit.Rule
 import org.junit.Test
 
 /**
- * @author by astidhiyaa on  31/10/22
+ * @author by astidhiyaa on 07/07/23
  */
-class PlayExploreWidgetTest {
+class PlayChannelRecomTest {
     @get:Rule
     val coroutineTestRule = CoroutineTestRule()
     private val testDispatcher = coroutineTestRule.dispatchers
@@ -44,9 +52,16 @@ class PlayExploreWidgetTest {
 
     private val config =
         PlayChannelRecommendationConfig(
+            categoryWidgetConfig = CategoryWidgetConfig(
+                categoryGroup = "explore-cate",
+                categorySourceType = "Suneo",
+                categoryId = "25490",
+                hasCategory = true,
+                categoryName = "UHT"
+            ),
             exploreWidgetConfig = ExploreWidgetConfig(
                 group = "explore",
-                sourceType = "Suneo",
+                sourceType = "dora-emon",
                 sourceId = "25490"
             )
         )
@@ -64,27 +79,6 @@ class PlayExploreWidgetTest {
     private val repo: PlayViewerRepository = mockk(relaxed = true)
 
     val widgets = listOf<WidgetUiModel>(
-        TabMenuUiModel(
-            items = listOf(
-                ChipWidgetUiModel(
-                    group = "LIVE",
-                    sourceId = "11",
-                    sourceType = "a",
-                    isSelected = false,
-                    text = "Hehe"
-                ),
-                ChipWidgetUiModel(
-                    group = "KK",
-                    sourceId = "11111",
-                    sourceType = "aaa",
-                    isSelected = false,
-                    text = "HeDoraemonkuhe"
-                )
-
-            ),
-            state = ResultState.Loading
-        ),
-        SubSlotUiModel,
         ExploreWidgetItemUiModel(item = PlayWidgetUiMock.getSamplePlayWidget(), id = 1)
     )
 
@@ -103,11 +97,11 @@ class PlayExploreWidgetTest {
             it.focusPage(mockChannelData)
 
             val state = it.recordState {}
-            state.channel.channelRecomConfig.exploreWidgetConfig.assertType<ExploreWidgetConfig> {
-                c -> c.sourceId.assertEqualTo(config.exploreWidgetConfig.sourceId)
-                c.group.assertEqualTo(config.exploreWidgetConfig.group)
-                c.sourceType.assertEqualTo(config.exploreWidgetConfig.sourceType)
-                c.categoryName.assertEqualTo(config.exploreWidgetConfig.categoryName)
+            state.channel.channelRecomConfig.categoryWidgetConfig.assertType<CategoryWidgetConfig> { c ->
+                c.categorySourceId.assertEqualTo(config.categoryWidgetConfig.categorySourceId)
+                c.categoryGroup.assertEqualTo(config.categoryWidgetConfig.categoryGroup)
+                c.categorySourceType.assertEqualTo(config.categoryWidgetConfig.categorySourceType)
+                c.categoryName.assertEqualTo(config.categoryWidgetConfig.categoryName)
             }
         }
     }
@@ -125,14 +119,13 @@ class PlayExploreWidgetTest {
             val state = it.recordState {
                 it.submitAction(DismissExploreWidget)
             }
-            state.channel.channelRecomConfig.exploreWidgetConfig.assertType<ExploreWidgetConfig> {
-                    c -> c.sourceId.assertEqualTo(config.exploreWidgetConfig.sourceId)
-                c.group.assertEqualTo(config.exploreWidgetConfig.group)
-                c.sourceType.assertEqualTo(config.exploreWidgetConfig.sourceType)
-                c.categoryName.assertEqualTo(config.exploreWidgetConfig.categoryName)
+            state.channel.channelRecomConfig.categoryWidgetConfig.assertType<CategoryWidgetConfig> { c ->
+                c.categorySourceId.assertEqualTo(config.categoryWidgetConfig.categorySourceId)
+                c.categoryGroup.assertEqualTo(config.categoryWidgetConfig.categoryGroup)
+                c.categorySourceType.assertEqualTo(config.categoryWidgetConfig.categorySourceType)
+                c.categoryName.assertEqualTo(config.categoryWidgetConfig.categoryName)
             }
-            state.exploreWidget.data.widgets.assertEmpty()
-            state.exploreWidget.data.chips.assertEqualTo(TabMenuUiModel.Empty)
+            state.exploreWidget.category.data.assertEmpty()
             it.viewModel.isAnyBottomSheetsShown.assertFalse()
         }
     }
@@ -165,7 +158,7 @@ class PlayExploreWidgetTest {
             it.focusPage(mockChannelData)
 
             val stateAndEvent = it.recordStateAndEvent {
-                it.submitAction(FetchWidgets(ExploreWidgetType.Default))
+                it.submitAction(FetchWidgets(ExploreWidgetType.Category))
             }
             stateAndEvent.second.any { it is ExploreWidgetState }
         }
@@ -183,18 +176,20 @@ class PlayExploreWidgetTest {
             it.focusPage(mockChannelData)
 
             val stateAndEvent = it.recordStateAndEvent {
-                it.submitAction(FetchWidgets(ExploreWidgetType.Default))
+                it.submitAction(FetchWidgets(ExploreWidgetType.Category))
             }
             it.viewModel.isAnyBottomSheetsShown.assertTrue()
-            stateAndEvent.first.exploreWidget.data.state.isFail.assertTrue()
+            stateAndEvent.first.exploreWidget.category.state.isFail.assertTrue()
 
-            val param = it.viewModel.getPrivateField<MutableStateFlow<Map<ExploreWidgetType, WidgetParamUiModel>>>("widgetQuery")
-            param.value.getValue(ExploreWidgetType.Default).assertType<WidgetParamUiModel> {
-                c ->
-                c.sourceId.assertEqualTo(config.exploreWidgetConfig.sourceId)
-                c.sourceType.assertEqualTo(config.exploreWidgetConfig.sourceType)
-                c.group.assertEqualTo(config.exploreWidgetConfig.group)
-                c.isRefresh.assertFalse()
+            val param =
+                it.viewModel.getPrivateField<MutableStateFlow<Map<ExploreWidgetType, WidgetParamUiModel>>>(
+                    "widgetQuery"
+                )
+            stateAndEvent.first.channel.channelRecomConfig.categoryWidgetConfig.assertType<CategoryWidgetConfig> { c ->
+                c.categorySourceId.assertEqualTo(config.categoryWidgetConfig.categorySourceId)
+                c.categoryGroup.assertEqualTo(config.categoryWidgetConfig.categoryGroup)
+                c.categorySourceType.assertEqualTo(config.categoryWidgetConfig.categorySourceType)
+                c.categoryName.assertEqualTo(config.categoryWidgetConfig.categoryName)
             }
         }
     }
@@ -211,8 +206,8 @@ class PlayExploreWidgetTest {
             it.focusPage(mockChannelData)
 
             val stateAndEvent = it.recordStateAndEvent {
-                it.submitAction(FetchWidgets(ExploreWidgetType.Default))
-                it.submitAction(EmptyPageWidget(ExploreWidgetType.Default))
+                it.submitAction(FetchWidgets(ExploreWidgetType.Category))
+                it.submitAction(EmptyPageWidget(ExploreWidgetType.Category))
             }
             it.viewModel.isAnyBottomSheetsShown.assertTrue()
         }
@@ -230,7 +225,7 @@ class PlayExploreWidgetTest {
             it.focusPage(mockChannelData)
 
             val stateAndEvent = it.recordStateAndEvent {
-                it.submitAction(FetchWidgets(ExploreWidgetType.Default))
+                it.submitAction(FetchWidgets(ExploreWidgetType.Category))
                 it.submitAction(RefreshWidget)
             }
             it.viewModel.isAnyBottomSheetsShown.assertTrue()
@@ -250,7 +245,7 @@ class PlayExploreWidgetTest {
             it.focusPage(mockChannelData)
 
             val stateAndEvent = it.recordStateAndEvent {
-                it.submitAction(FetchWidgets(ExploreWidgetType.Default))
+                it.submitAction(FetchWidgets(ExploreWidgetType.Category))
                 it.submitAction(RefreshWidget)
             }
             it.viewModel.isAnyBottomSheetsShown.assertTrue()
@@ -270,8 +265,8 @@ class PlayExploreWidgetTest {
             it.focusPage(mockChannelData)
 
             val stateAndEvent = it.recordStateAndEvent {
-                it.submitAction(FetchWidgets(ExploreWidgetType.Default))
-                it.submitAction(NextPageWidgets(ExploreWidgetType.Default))
+                it.submitAction(FetchWidgets(ExploreWidgetType.Category))
+                it.submitAction(NextPageWidgets(ExploreWidgetType.Category))
             }
             it.viewModel.isAnyBottomSheetsShown.assertTrue()
             stateAndEvent.second.any { it !is ExploreWidgetState }
@@ -290,11 +285,11 @@ class PlayExploreWidgetTest {
             it.focusPage(mockChannelData)
 
             val stateAndEvent = it.recordStateAndEvent {
-                it.submitAction(FetchWidgets(ExploreWidgetType.Default))
-                it.submitAction(NextPageWidgets(ExploreWidgetType.Default))
+                it.submitAction(FetchWidgets(ExploreWidgetType.Category))
+                it.submitAction(NextPageWidgets(ExploreWidgetType.Category))
             }
             it.viewModel.isAnyBottomSheetsShown.assertTrue()
-            stateAndEvent.first.exploreWidget.data.state.isFail.assertTrue()
+            stateAndEvent.first.exploreWidget.category.state.isFail.assertTrue()
         }
     }
 }
