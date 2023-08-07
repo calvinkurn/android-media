@@ -97,6 +97,7 @@ import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductMo
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProduct
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProductData
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProductHeader
+import com.tokopedia.tokopedianow.searchcategory.domain.usecase.GetFilterUseCase
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.BannerDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterItemDataView
@@ -132,7 +133,7 @@ import kotlinx.coroutines.withContext
 abstract class BaseSearchCategoryViewModel(
     private val baseDispatcher: CoroutineDispatchers,
     queryParamMap: Map<String, String>,
-    protected val getFilterUseCase: UseCase<DynamicFilterModel>,
+    protected val getFilterUseCase: GetFilterUseCase,
     protected val getProductCountUseCase: UseCase<String>,
     protected val getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
     protected val cartService: CartService,
@@ -996,24 +997,29 @@ abstract class BaseSearchCategoryViewModel(
     open fun onViewOpenFilterPage() {
         if (isFilterPageOpenLiveData.value == true) return
 
-        val getFilterRequestParams = RequestParams.create()
-        getFilterRequestParams.putAll(createTokonowQueryParams())
+        if (dynamicFilterModelLiveData.value == null) {
+            getFilter(
+                needToOpenBottomSheet = true
+            )
+        } else {
+            isFilterPageOpenMutableLiveData.value = true
+        }
+    }
 
-        getFilterUseCase.cancelJobs()
-        getFilterUseCase.execute(
-            ::onGetFilterSuccess,
-            ::onGetFilterFailed,
-            getFilterRequestParams
+    private fun getFilter(
+        needToOpenBottomSheet: Boolean
+    ) {
+        launchCatchError(
+            block = {
+                val dynamicFilterModel = getFilterUseCase.execute(createTokonowQueryParams())
+                filterController.appendFilterList(queryParam, dynamicFilterModel.data.filter)
+                dynamicFilterModelMutableLiveData.postValue(dynamicFilterModel)
+
+                if (needToOpenBottomSheet) {
+                    isFilterPageOpenMutableLiveData.postValue(true)
+                }
+            }, onError = { /* do nothing */ }
         )
-    }
-
-    protected open fun onGetFilterSuccess(dynamicFilterModel: DynamicFilterModel) {
-        filterController.appendFilterList(queryParam, dynamicFilterModel.data.filter)
-        dynamicFilterModelMutableLiveData.value = dynamicFilterModel
-        isFilterPageOpenMutableLiveData.value = true
-    }
-
-    protected open fun onGetFilterFailed(throwable: Throwable) {
     }
 
     open fun onViewDismissFilterPage() {
@@ -1024,6 +1030,10 @@ abstract class BaseSearchCategoryViewModel(
         resetSortFilterIfExclude(option)
         filterController.refreshMapParameter(queryParam)
         filter(option, isSelected)
+
+        getFilter(
+            needToOpenBottomSheet = false
+        )
     }
 
     private fun resetSortFilterIfExclude(option: Option) {
@@ -1100,6 +1110,10 @@ abstract class BaseSearchCategoryViewModel(
         onViewDismissL3FilterPage()
         removeAllCategoryFilter(chosenCategoryFilter)
         filter(chosenCategoryFilter, true)
+
+        getFilter(
+            needToOpenBottomSheet = false
+        )
     }
 
     private fun removeAllCategoryFilter(chosenCategoryFilter: Option) {

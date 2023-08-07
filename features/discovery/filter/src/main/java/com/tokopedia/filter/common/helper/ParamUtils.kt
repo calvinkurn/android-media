@@ -3,7 +3,6 @@ package com.tokopedia.filter.common.helper
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import timber.log.Timber
 
 fun String.toMapParam(): Map<String, String> {
