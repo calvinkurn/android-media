@@ -2903,7 +2903,6 @@ open class SomListFragment :
     }
 
     protected open fun onSuccessGetFilter(result: Success<SomListFilterUiModel>) {
-        viewModel.setTabActiveFromAppLink("")
         val somFilterUiModel = result.data
 
         somListOrderStatusFilterTab?.show(somFilterUiModel)
