@@ -141,7 +141,7 @@ class FeedFragment :
                 feedFollowRecommendationListener,
             )
         ) {
-            if (feedPostViewModel.shouldShowNoMoreContent) return@FeedContentAdapter
+            if (feedPostViewModel.shouldShowNoMoreContent || !feedPostViewModel.hasNext) return@FeedContentAdapter
             adapter.showLoading()
             feedPostViewModel.fetchFeedPosts(data?.type ?: "")
         }
