@@ -1,19 +1,26 @@
 package com.tokopedia.home_component.widget.todo
 
 import androidx.recyclerview.widget.DiffUtil
-import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselTodoWidgetDataModel
 
 /**
  * Created by frenzel
  */
-internal class TodoWidgetDiffUtil: DiffUtil.ItemCallback<CarouselTodoWidgetDataModel>() {
+internal open class TodoWidgetDiffUtil: DiffUtil.ItemCallback<TodoWidgetVisitable>() {
+
     override fun areItemsTheSame(
-        oldItem: CarouselTodoWidgetDataModel,
-        newItem: CarouselTodoWidgetDataModel
-    ): Boolean = oldItem.data.id == newItem.data.id
+        oldItem: TodoWidgetVisitable,
+        newItem: TodoWidgetVisitable
+    ): Boolean = oldItem.getId() == newItem.getId()
 
     override fun areContentsTheSame(
-        oldItem: CarouselTodoWidgetDataModel,
-        newItem: CarouselTodoWidgetDataModel
-    ): Boolean = oldItem == newItem
+        oldItem: TodoWidgetVisitable,
+        newItem: TodoWidgetVisitable
+    ): Boolean = oldItem.equalsWith(newItem)
+
+    override fun getChangePayload(
+        oldItem: TodoWidgetVisitable,
+        newItem: TodoWidgetVisitable
+    ): Any? {
+        return oldItem.getChangePayloadFrom(newItem)
+    }
 }

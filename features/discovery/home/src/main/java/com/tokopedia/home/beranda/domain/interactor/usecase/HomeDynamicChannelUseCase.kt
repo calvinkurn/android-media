@@ -298,7 +298,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                 todoWidgetList = resultList,
                                 status = TodoWidgetListDataModel.STATUS_SUCCESS
                             )
-                        }
+                        },
+                        deleteWidgetWhen = { it?.getHomeTodoWidget?.todos?.isEmpty() == true }
                     )
 
                     dynamicChannelPlainResponse.getWidgetDataIfExist<

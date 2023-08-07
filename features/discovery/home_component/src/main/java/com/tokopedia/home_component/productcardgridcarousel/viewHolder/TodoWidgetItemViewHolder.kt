@@ -1,6 +1,7 @@
 package com.tokopedia.home_component.productcardgridcarousel.viewHolder
 
 import android.graphics.Paint
+import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -10,7 +11,9 @@ import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.HomeComponentTodoWidgetItemBinding
 import com.tokopedia.home_component.model.HomeComponentCta
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselTodoWidgetDataModel
+import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselTodoWidgetDataModel.Companion.PAYLOAD_ITEM_POSITION
 import com.tokopedia.home_component.util.TodoWidgetUtil
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -35,14 +38,24 @@ class TodoWidgetItemViewHolder(
         setLayout(element)
     }
 
+    override fun bind(element: CarouselTodoWidgetDataModel, payloads: MutableList<Any>) {
+        if(payloads.isNotEmpty() && (payloads[0] as? Bundle)?.getBoolean(PAYLOAD_ITEM_POSITION).orFalse()) {
+            setListener(element)
+        }
+    }
+
     private fun setLayout(element: CarouselTodoWidgetDataModel) {
         binding?.run {
             cardContainerTodoWidget.setInteraction(element)
+            setListener(element)
+            setLayoutWidth(element)
+            setTextContent(element)
+            mappingCtaButton(element)
+        }
+    }
 
-            icCloseTodoWidget.setOnClickListener {
-                element.todoWidgetDismissListener.dismiss(element, element.cardPosition)
-            }
-
+    private fun setListener(element: CarouselTodoWidgetDataModel) {
+        binding?.run {
             cardContainerTodoWidget.addOnImpressionListener(element) {
                 element.todoWidgetComponentListener.onTodoImpressed(element)
             }
@@ -51,9 +64,9 @@ class TodoWidgetItemViewHolder(
                 element.todoWidgetComponentListener.onTodoCardClicked(element)
             }
 
-            setLayoutWidth(element)
-            setTextContent(element)
-            mappingCtaButton(element)
+            icCloseTodoWidget.setOnClickListener {
+                element.todoWidgetDismissListener.dismiss(element, element.cardPosition)
+            }
         }
     }
 

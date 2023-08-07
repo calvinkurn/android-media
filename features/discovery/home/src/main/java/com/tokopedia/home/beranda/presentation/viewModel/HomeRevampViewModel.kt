@@ -585,10 +585,6 @@ open class HomeRevampViewModel @Inject constructor(
         findWidget<TodoWidgetListDataModel> { todoWidgetListDataModel, position ->
             launch {
                 updateWidget(
-                    todoWidgetListDataModel.copy(status = TodoWidgetListDataModel.STATUS_LOADING),
-                    position
-                )
-                updateWidget(
                     homeTodoWidgetUseCase.get()
                         .onTodoWidgetRefresh(todoWidgetListDataModel),
                     position
@@ -795,7 +791,9 @@ open class HomeRevampViewModel @Inject constructor(
                             removeAt(horizontalPosition)
                         }
                         val newTodoWidget = item.copy(todoWidgetList = newTodoWidgetList)
-                        homeDataModel.updateWidgetModel(newTodoWidget, item, verticalPosition) { }
+                        homeDataModel.updateWidgetModel(newTodoWidget, item, verticalPosition) {
+                            updateHomeData(homeDataModel)
+                        }
                     }
                 }
             } catch (_: Exception) { }

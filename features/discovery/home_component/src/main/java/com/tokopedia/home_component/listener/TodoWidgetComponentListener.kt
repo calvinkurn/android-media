@@ -11,5 +11,5 @@ interface TodoWidgetComponentListener {
     fun onTodoCTAClicked(element: CarouselTodoWidgetDataModel)
     fun onTodoCloseClicked(element: CarouselTodoWidgetDataModel)
     fun onTodoImpressed(element: CarouselTodoWidgetDataModel)
-    fun refreshTodowidget(element: TodoWidgetListDataModel)
+    fun refreshTodowidget()
 }

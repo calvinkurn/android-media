@@ -22,13 +22,13 @@ data class TodoWidgetListDataModel(
         const val STATUS_LOADING = 0
         const val STATUS_ERROR = 1
         const val STATUS_SUCCESS = 2
+        const val PAYLOAD_IS_REFRESH = "isRefresh"
     }
 
     fun isShowTodoWidget() : Boolean {
         return if (status == STATUS_SUCCESS)
             todoWidgetList.isNotEmpty()
-        else
-            true
+        else status != STATUS_LOADING
     }
 
     override fun visitableId(): String {
@@ -36,15 +36,20 @@ data class TodoWidgetListDataModel(
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        return this === b
+        return this == b
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {
-        return Bundle.EMPTY
+        val bundle = Bundle()
+        if (b is TodoWidgetListDataModel
+            && b.status == STATUS_LOADING
+            && this.status != STATUS_LOADING) {
+            bundle.putBoolean(PAYLOAD_IS_REFRESH, true)
+        }
+        return bundle
     }
 
     override fun type(typeFactory: HomeComponentTypeFactory): Int {
         return typeFactory.type(this)
     }
-
 }

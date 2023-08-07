@@ -45,7 +45,7 @@ class TodoWidgetComponentCallback(
         )
     }
 
-    override fun refreshTodowidget(element: TodoWidgetListDataModel) {
+    override fun refreshTodowidget() {
         homeRevampViewModel.getTodoWidgetRefresh()
     }
 }

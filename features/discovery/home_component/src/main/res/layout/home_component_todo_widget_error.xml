@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.LocalLoad
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/refresh_todo_widget"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/home_todo_widget_height"
+    app:unify_local_load_title="@string/mission_widget_failed_title"
+    app:unify_local_load_description="@string/mission_widget_failed_description" />

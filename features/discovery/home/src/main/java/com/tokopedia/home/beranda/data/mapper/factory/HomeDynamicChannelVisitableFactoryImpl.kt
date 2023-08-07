@@ -7,7 +7,6 @@ import com.tokopedia.home.analytics.v2.LegoBannerTracking
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
-import com.tokopedia.home_component.util.HomeComponentRemoteConfigController
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.util.ServerTimeOffsetUtil
@@ -15,6 +14,7 @@ import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.util.ChannelStyleUtil.BORDER_STYLE_PADDING
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseBorderStyle
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseDividerSize
+import com.tokopedia.home_component.util.HomeComponentRemoteConfigController
 import com.tokopedia.home_component.visitable.*
 import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampDataModel
 import com.tokopedia.home_component_header.model.ChannelHeader
@@ -904,12 +904,14 @@ class HomeDynamicChannelVisitableFactoryImpl(
     }
 
     private fun createTodoWidget(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
-        visitableList.add(
-            mappingTodoWidgetComponent(
-                channel,
-                verticalPosition
+        if (!isCache) {
+            visitableList.add(
+                mappingTodoWidgetComponent(
+                    channel,
+                    verticalPosition
+                )
             )
-        )
+        }
     }
 
     private fun createDealsWidget(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {

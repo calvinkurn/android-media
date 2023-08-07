@@ -1,11 +1,11 @@
 package com.tokopedia.home_component.productcardgridcarousel.dataModel
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
+import android.os.Bundle
 import com.tokopedia.home_component.listener.TodoWidgetComponentListener
-import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactory
 import com.tokopedia.home_component.viewholders.TodoWidgetDismissListener
 import com.tokopedia.home_component.visitable.TodoWidgetDataModel
+import com.tokopedia.home_component.widget.todo.TodoWidgetVisitable
+import com.tokopedia.home_component.widget.todo.TodoWidgetTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
 
 /**
@@ -21,8 +21,27 @@ data class CarouselTodoWidgetDataModel(
     val cardPosition: Int,
     val todoWidgetComponentListener: TodoWidgetComponentListener,
     val todoWidgetDismissListener: TodoWidgetDismissListener,
-) : Visitable<CommonCarouselProductCardTypeFactory>, ImpressHolder() {
-    override fun type(typeFactory: CommonCarouselProductCardTypeFactory): Int {
+) : TodoWidgetVisitable, ImpressHolder() {
+
+    companion object {
+        const val PAYLOAD_ITEM_POSITION = "item_position"
+    }
+
+    override fun getId(): String = data.id.toString()
+
+    override fun equalsWith(visitable: TodoWidgetVisitable): Boolean {
+        return visitable is CarouselTodoWidgetDataModel && visitable == this
+    }
+
+    override fun getChangePayloadFrom(visitable: TodoWidgetVisitable): Bundle {
+        val bundle = Bundle()
+        if(visitable is CarouselTodoWidgetDataModel && visitable.cardPosition != cardPosition) {
+            bundle.putBoolean(PAYLOAD_ITEM_POSITION, true)
+        }
+        return bundle
+    }
+
+    override fun type(typeFactory: TodoWidgetTypeFactory): Int {
         return typeFactory.type(this)
     }
 }

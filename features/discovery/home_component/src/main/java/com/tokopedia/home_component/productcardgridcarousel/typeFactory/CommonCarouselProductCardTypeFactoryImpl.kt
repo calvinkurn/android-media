@@ -13,7 +13,7 @@ import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampI
  * @author by yoasfs on 09/06/20
  */
 
-class CommonCarouselProductCardTypeFactoryImpl(
+open class CommonCarouselProductCardTypeFactoryImpl(
     @Deprecated("Please ignore passing this field to avoid re-instantiating everytime data changes. Only pass the necessary data on the respective models instead.")
     private val channels: ChannelModel = ChannelModel(id = "0", groupId = "0"),
     private val cardInteraction: Boolean = false,
@@ -57,10 +57,6 @@ class CommonCarouselProductCardTypeFactoryImpl(
 
     override fun type(dataModel: CarouselBannerCardDataModel): Int {
         return CarouselBannerItemViewHolder.LAYOUT
-    }
-
-    override fun type(dataModel: CarouselTodoWidgetDataModel): Int {
-        return TodoWidgetItemViewHolder.LAYOUT
     }
 
     override fun type(dataModel: SpecialReleaseRevampItemDataModel): Int {
