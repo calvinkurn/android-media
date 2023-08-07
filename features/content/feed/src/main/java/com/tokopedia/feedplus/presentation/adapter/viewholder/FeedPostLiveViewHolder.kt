@@ -63,7 +63,12 @@ class FeedPostLiveViewHolder(
     fun bind(item: FeedContentAdapter.Item) {
         val data = item.data as FeedCardLivePreviewContentModel
         bind(data)
-        if (item.isSelected) onSelected(data)
+
+        if (item.isSelected) {
+            onSelected(data)
+        } else {
+            onNotSelected()
+        }
     }
 
     override fun bind(element: FeedCardLivePreviewContentModel?) {

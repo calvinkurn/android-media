@@ -108,7 +108,7 @@ class FeedPostImageViewHolder(
         binding.productTagView.root,
         binding.productTagButton.root,
         binding.rvFeedAsgcTags,
-        binding.feedCampaignRibbon.root,
+        binding.feedCampaignRibbon.root
     )
 
     init {
@@ -220,7 +220,12 @@ class FeedPostImageViewHolder(
     fun bind(item: FeedContentAdapter.Item) {
         val data = item.data as FeedCardImageContentModel
         bind(data)
-        if (item.isSelected) onSelected(data)
+
+        if (item.isSelected) {
+            onSelected(data)
+        } else {
+            onNotSelected()
+        }
     }
 
     override fun bind(element: FeedCardImageContentModel?) {
@@ -275,15 +280,18 @@ class FeedPostImageViewHolder(
 
     fun bind(item: FeedContentAdapter.Item, payloads: MutableList<Any>) {
         val selectedPayload = if (item.isSelected) FEED_POST_SELECTED else FEED_POST_NOT_SELECTED
+
         val feedPayloads =
             payloads.firstOrNull { it is FeedViewHolderPayloads } as? FeedViewHolderPayloads
-        val newPayloads =
-            if (feedPayloads != null && feedPayloads.payloads.contains(FEED_POST_SELECTED_CHANGED)) {
-                payloads.toMutableList().also { it.add(selectedPayload) }
-            } else {
-                payloads
+
+        if (feedPayloads == null) {
+            bind(item.data as FeedCardImageContentModel, payloads)
+        } else {
+            val newPayloads = mutableListOf(*payloads.toTypedArray()).apply {
+                if (feedPayloads.payloads.contains(FEED_POST_SELECTED_CHANGED)) add(selectedPayload)
             }
-        bind(item.data as FeedCardImageContentModel, newPayloads)
+            bind(item.data as FeedCardImageContentModel, newPayloads)
+        }
     }
 
     override fun bind(element: FeedCardImageContentModel?, payloads: MutableList<Any>) {
@@ -321,11 +329,11 @@ class FeedPostImageViewHolder(
             }
 
             if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_SCROLLING)) {
-                onScrolling()
+                onScrolling(true)
             }
 
             if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_DONE_SCROLL)) {
-                onDoneScroll()
+                onScrolling(false)
             }
 
             payloads.forEach { payload ->
@@ -344,6 +352,7 @@ class FeedPostImageViewHolder(
         campaignView.startAnimation()
         sendImpressionTracker(data)
         updateProductTagText(data)
+        onScrolling(false)
 
         isAutoSwipeOn = true
         runAutoSwipe()
@@ -353,6 +362,7 @@ class FeedPostImageViewHolder(
         job?.cancel()
         campaignView.resetView()
         hideClearView()
+        onScrolling(false)
 
         isAutoSwipeOn = false
     }
@@ -593,15 +603,14 @@ class FeedPostImageViewHolder(
         productButtonView.showIfPossible()
     }
 
-    private fun onScrolling() {
+    private fun onScrolling(isScrolling: Boolean) {
         opacityViewList.forEach {
-            it.animateAlpha(SCROLL_OPACITY, OPACITY_ANIMATE_DURATION)
-        }
-    }
-
-    private fun onDoneScroll() {
-        opacityViewList.forEach {
-            it.alpha = FULL_OPACITY
+            if (isScrolling) {
+                it.animateAlpha(SCROLL_OPACITY, OPACITY_ANIMATE_DURATION)
+            } else {
+                it.animate().cancel()
+                it.alpha = FULL_OPACITY
+            }
         }
     }
 

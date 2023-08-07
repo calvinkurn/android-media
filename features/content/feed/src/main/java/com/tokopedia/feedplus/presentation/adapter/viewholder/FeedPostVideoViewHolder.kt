@@ -98,7 +98,7 @@ class FeedPostVideoViewHolder(
         binding.productTagView.root,
         binding.productTagButton.root,
         binding.rvFeedAsgcTags,
-        binding.feedCampaignRibbon.root,
+        binding.feedCampaignRibbon.root
     )
 
     init {
@@ -203,7 +203,12 @@ class FeedPostVideoViewHolder(
     fun bind(item: FeedContentAdapter.Item) {
         val data = item.data as FeedCardVideoContentModel
         bind(data)
-        if (item.isSelected) onSelected(item.data)
+
+        if (item.isSelected) {
+            onSelected(data)
+        } else {
+            onNotSelected()
+        }
     }
 
     override fun bind(element: FeedCardVideoContentModel?) {
@@ -243,15 +248,18 @@ class FeedPostVideoViewHolder(
 
     fun bind(item: FeedContentAdapter.Item, payloads: MutableList<Any>) {
         val selectedPayload = if (item.isSelected) FEED_POST_SELECTED else FEED_POST_NOT_SELECTED
+
         val feedPayloads =
             payloads.firstOrNull { it is FeedViewHolderPayloads } as? FeedViewHolderPayloads
-        val newPayloads =
-            if (feedPayloads != null && feedPayloads.payloads.contains(FEED_POST_SELECTED_CHANGED)) {
-                payloads.toMutableList().also { it.add(selectedPayload) }
-            } else {
-                payloads
+
+        if (feedPayloads == null) {
+            bind(item.data as FeedCardVideoContentModel, payloads)
+        } else {
+            val newPayloads = mutableListOf(*payloads.toTypedArray()).apply {
+                if (feedPayloads.payloads.contains(FEED_POST_SELECTED_CHANGED)) add(selectedPayload)
             }
-        bind(item.data as FeedCardVideoContentModel, newPayloads)
+            bind(item.data as FeedCardVideoContentModel, newPayloads)
+        }
     }
 
     override fun bind(element: FeedCardVideoContentModel?, payloads: MutableList<Any>) {
@@ -288,11 +296,11 @@ class FeedPostVideoViewHolder(
             }
 
             if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_SCROLLING)) {
-                onScrolling()
+                onScrolling(true)
             }
 
             if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_DONE_SCROLL)) {
-                onDoneScroll()
+                onScrolling(false)
             }
 
             payloads.forEach { payload ->
@@ -497,15 +505,14 @@ class FeedPostVideoViewHolder(
         productButtonView.showIfPossible()
     }
 
-    private fun onScrolling() {
+    private fun onScrolling(isScrolling: Boolean) {
         opacityViewList.forEach {
-            it.animateAlpha(SCROLL_OPACITY, OPACITY_ANIMATE_DURATION)
-        }
-    }
-
-    private fun onDoneScroll() {
-        opacityViewList.forEach {
-            it.alpha = FULL_OPACITY
+            if (isScrolling) {
+                it.animateAlpha(SCROLL_OPACITY, OPACITY_ANIMATE_DURATION)
+            } else {
+                it.animate().cancel()
+                it.alpha = FULL_OPACITY
+            }
         }
     }
 
@@ -522,12 +529,14 @@ class FeedPostVideoViewHolder(
         campaignView.startAnimation()
         mVideoPlayer?.resume()
         listener.onWatchPostVideo(element, trackerModel)
+        onScrolling(false)
     }
 
     private fun onNotSelected() {
         mIsSelected = false
         mVideoPlayer?.pause()
         mVideoPlayer?.reset()
+        onScrolling(false)
 
         campaignView.resetView()
         hideClearView()
