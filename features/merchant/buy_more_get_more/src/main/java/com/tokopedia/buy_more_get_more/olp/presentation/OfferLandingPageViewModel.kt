@@ -12,9 +12,6 @@ import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetOfferInfoForBuyerUs
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class OfferLandingPageViewModel @Inject constructor(
@@ -22,12 +19,12 @@ class OfferLandingPageViewModel @Inject constructor(
     private val getOfferInfoForBuyerUseCase: GetOfferInfoForBuyerUseCase
 ) : BaseViewModel(dispatchers.main) {
 
-    private val _offeringInfo = MutableLiveData<Result<OfferInfoForBuyerUiModel>>()
-    val offeringInfo: LiveData<Result<OfferInfoForBuyerUiModel>>
+    private val _offeringInfo = MutableLiveData<OfferInfoForBuyerUiModel>()
+    val offeringInfo: LiveData<OfferInfoForBuyerUiModel>
         get() = _offeringInfo
 
-    private val _productList = MutableLiveData<Result<OfferProductListUiModel>>()
-    val productList: LiveData<Result<OfferProductListUiModel>>
+    private val _productList = MutableLiveData<OfferProductListUiModel>()
+    val productList: LiveData<OfferProductListUiModel>
         get() = _productList
 
     private val _error = MutableLiveData<Throwable>()
@@ -49,10 +46,10 @@ class OfferLandingPageViewModel @Inject constructor(
                         cityId = localCacheModel?.city_id.toIntOrZero()
                     )
                 )
-                _offeringInfo.postValue(Success(getOfferInfoForBuyerUseCase.execute(param)))
+                _offeringInfo.postValue(getOfferInfoForBuyerUseCase.execute(param))
             },
             onError = {
-                _offeringInfo.postValue(Fail(it))
+                _error.postValue(it)
             }
         )
     }

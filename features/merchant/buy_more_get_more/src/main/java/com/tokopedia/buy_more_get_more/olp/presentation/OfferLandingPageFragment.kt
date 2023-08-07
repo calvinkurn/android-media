@@ -34,14 +34,13 @@ import com.tokopedia.buy_more_get_more.sort.listener.ProductSortListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
 
 class OfferLandingPageFragment :
     BaseListFragment<Visitable<*>, AdapterTypeFactory>(),
-    ProductSortListener{
+    ProductSortListener {
 
     companion object {
         @JvmStatic
@@ -118,14 +117,7 @@ class OfferLandingPageFragment :
 
     private fun setupObservables() {
         viewModel.offeringInfo.observe(viewLifecycleOwner) { offerInfoForBuyer ->
-            when(offerInfoForBuyer) {
-                is Success -> {
-                    setupContent(offerInfoForBuyer.data)
-                }
-                else -> {
-                    setViewState(VIEW_ERROR)
-                }
-            }
+            setupContent(offerInfoForBuyer)
             setViewState(VIEW_CONTENT)
         }
 
@@ -244,6 +236,7 @@ class OfferLandingPageFragment :
                     errorPageLarge.gone()
                 }
             }
+
             VIEW_ERROR -> {
                 binding?.apply {
                     loadingStateOlp.root.gone()
@@ -251,6 +244,7 @@ class OfferLandingPageFragment :
                     errorPageLarge.visible()
                 }
             }
+
             else -> {
                 binding?.apply {
                     loadingStateOlp.root.gone()
