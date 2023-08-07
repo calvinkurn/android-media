@@ -1,12 +1,15 @@
 package com.tokopedia.checkout
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import com.tokopedia.checkout.revamp.view.CheckoutFragment
 import com.tokopedia.checkout.view.ShipmentFragment
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
+import com.tokopedia.purchase_platform.common.revamp.CartCheckoutRevampRollenceManager
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.telemetry.ITelemetryActivity
 
 class ShipmentActivity :
@@ -28,6 +31,8 @@ class ShipmentActivity :
     }
 
     override fun getNewFragment(): Fragment? {
+        val value = CartCheckoutRevampRollenceManager(RemoteConfigInstance.getInstance().abTestPlatform).getValue()
+        Log.i("qwertyuiop", value)
         val leasingId = intent.data?.getQueryParameter(CartConstant.CHECKOUT_LEASING_ID) ?: ""
         val isPlusSelected = intent.data?.getBooleanQueryParameter(CartConstant.CHECKOUT_IS_PLUS_SELECTED, false) ?: false
         val isOneClickShipment = intent.getBooleanExtra(CheckoutConstant.EXTRA_IS_ONE_CLICK_SHIPMENT, false)
