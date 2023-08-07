@@ -208,7 +208,7 @@ class PlayShortsSummaryFragment @Inject constructor(
                 val isButtonEnabled = when(curr.tags) {
                     is NetworkResult.Success -> {
                         if(curr.tags.data.tags.isEmpty()) true
-                        else curr.tags.data.tags.firstOrNull { it.isChosen } != null
+                        else curr.tags.data.tags.count { it.isChosen } in curr.tags.data.minTags..curr.tags.data.maxTags
                     }
                     is NetworkResult.Fail -> {
                         true
