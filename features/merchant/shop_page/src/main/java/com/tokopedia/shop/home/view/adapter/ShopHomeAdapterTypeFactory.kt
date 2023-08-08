@@ -231,9 +231,10 @@ open class ShopHomeAdapterTypeFactory(
 
     private fun determineShowcaseNavigationBannerWidget(model: BaseShopHomeWidgetUiModel): Int {
         val uiModel = model as? ShopHomeShowcaseUiModel
-
         val tabsCount = uiModel?.tabs?.size.orZero()
+
         if (tabsCount > 1) {
+            //If there are more than 1 tabs, we forced the layout to use left main banner viewholder
             return ShopHomeShowCaseLeftMainBannerViewHolder.LAYOUT
         }
 
