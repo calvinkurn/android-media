@@ -228,7 +228,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
             putString(TrackAppUtils.EVENT, KEY_EVENT_ITEM_LIST)
             putString(Key.eventCategory, EventCategory.groupChatRoom)
             putString(Key.eventAction, "view - now product bottomsheet")
-            putString(Key.eventLabel, "$channelId - ${products.keys.firstOrNull()?.product?.id.orEmpty()} - ${channelType.value} - is pinned product ${products.keys.firstOrNull()?.product?.isPinned ?: false} - ${products.keys.firstOrNull()?.product?.label?.rankType ?: "no ribbon"}")
+            putString(Key.eventLabel, "$channelId - ${products.keys.firstOrNull()?.product?.id.orEmpty()} - ${channelType.value} - is pinned product ${products.keys.firstOrNull()?.product?.isPinned ?: false} - ${products.keys.firstOrNull()?.product?.label?.rankType ?: PlayProductUiModel.Product.Label.RIBBON_TYPE_DEFAULT}")
             putString(Key.currentSite, CurrentSite.tokopediaMarketplace)
             putString(Key.sessionIris, TrackApp.getInstance().gtm.irisSessionId)
             putString(Key.userId, userId)

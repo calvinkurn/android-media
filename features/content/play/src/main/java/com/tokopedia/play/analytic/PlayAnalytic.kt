@@ -174,9 +174,9 @@ class PlayAnalytic(
         val section = products.keys.firstOrNull()?.section?.config?.type ?: ProductSectionType.Unknown
 
         val (eventAction, eventLabel) = when (section) {
-            ProductSectionType.Active -> Pair("impression - product in ongoing section", generateBaseEventLabel(product = products.keys.firstOrNull()?.product ?: PlayProductUiModel.Product.Empty, campaignId = products.keys.firstOrNull()?.section?.id.orEmpty(), rankType = products.keys.firstOrNull()?.product?.label?.rankType ?: "no ribbon"))
-            ProductSectionType.Upcoming -> Pair("impression - product in upcoming section", generateBaseEventLabel(product = products.keys.firstOrNull()?.product ?: PlayProductUiModel.Product.Empty, campaignId = products.keys.firstOrNull()?.section?.id.orEmpty(), rankType = products.keys.firstOrNull()?.product?.label?.rankType ?: "no ribbon"))
-            else -> Pair("view product", "$mChannelId - ${products.keys.firstOrNull()?.product?.id.orEmpty()} - ${mChannelType.value} - product in bottom sheet - is pinned product ${products.keys.firstOrNull()?.product?.isPinned.orFalse()} - ${products.keys.firstOrNull()?.product?.label?.rankType ?: "no ribbon"}")
+            ProductSectionType.Active -> Pair("impression - product in ongoing section", generateBaseEventLabel(product = products.keys.firstOrNull()?.product ?: PlayProductUiModel.Product.Empty, campaignId = products.keys.firstOrNull()?.section?.id.orEmpty(), rankType = products.keys.firstOrNull()?.product?.label?.rankType ?: PlayProductUiModel.Product.Label.RIBBON_TYPE_DEFAULT))
+            ProductSectionType.Upcoming -> Pair("impression - product in upcoming section", generateBaseEventLabel(product = products.keys.firstOrNull()?.product ?: PlayProductUiModel.Product.Empty, campaignId = products.keys.firstOrNull()?.section?.id.orEmpty(), rankType = products.keys.firstOrNull()?.product?.label?.rankType ?: PlayProductUiModel.Product.Label.RIBBON_TYPE_DEFAULT))
+            else -> Pair("view product", "$mChannelId - ${products.keys.firstOrNull()?.product?.id.orEmpty()} - ${mChannelType.value} - product in bottom sheet - is pinned product ${products.keys.firstOrNull()?.product?.isPinned.orFalse()} - ${products.keys.firstOrNull()?.product?.label?.rankType ?: PlayProductUiModel.Product.Label.RIBBON_TYPE_DEFAULT}")
         }
 
         val items = arrayListOf<Bundle>().apply {

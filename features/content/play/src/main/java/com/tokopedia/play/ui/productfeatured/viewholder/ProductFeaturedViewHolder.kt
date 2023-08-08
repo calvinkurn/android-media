@@ -55,7 +55,7 @@ class ProductFeaturedViewHolder(
 
         binding.rclPlayCarouselCard.setOnClickListener {
             if (item.applink.isNullOrEmpty()) return@setOnClickListener
-            listener.onClickProductCard(item, bindingAdapterPosition)
+            listener.onClickProductCard(item, absoluteAdapterPosition)
         }
 
         binding.lblProductNumber.showWithCondition(item.isNumerationShown)

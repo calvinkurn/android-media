@@ -32,12 +32,15 @@ sealed class PlayProductUiModel {
     ) : PlayProductUiModel() {
 
         val impressHolder = ImpressHolder()
-
         data class Label (
             val rankColors: List<String>,
             val rankFmt: String,
             val rankType: String,
-        )
+        ) {
+            companion object {
+                const val RIBBON_TYPE_DEFAULT = "no ribbon"
+            }
+        }
 
         companion object {
             val Empty: Product
