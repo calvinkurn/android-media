@@ -115,6 +115,7 @@ open class ShopHomeAdapterTypeFactory(
     private val shopHomeListener: ShopHomeListener,
     private val shopPersoProductComparisonListener: ShopHomePersoProductComparisonViewHolder.ShopHomePersoProductComparisonViewHolderListener,
     private val shopHomeDisplayBannerTimerWidgetListener: ShopHomeDisplayBannerTimerWidgetListener,
+    private val shopHomeShowcaseListener: ShopHomeShowcaseListener,
     private val fragment: Fragment
 ) : BaseAdapterTypeFactory(), TypeFactoryShopHome, ThematicWidgetTypeFactory, ShopWidgetTypeFactory {
     var productCardType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
@@ -360,13 +361,13 @@ open class ShopHomeAdapterTypeFactory(
                 ShopHomeVoucherViewHolder(parent, onMerchantVoucherListWidgetListener)
             }
             ShopHomeShowCaseLeftMainBannerViewHolder.LAYOUT -> {
-                ShopHomeShowCaseLeftMainBannerViewHolder(parent, fragment)
+                ShopHomeShowCaseLeftMainBannerViewHolder(parent, fragment, shopHomeShowcaseListener)
             }
             ShopHomeShowCaseTopMainBannerViewHolder.LAYOUT -> {
-                ShopHomeShowCaseTopMainBannerViewHolder(parent)
+                ShopHomeShowCaseTopMainBannerViewHolder(parent, shopHomeShowcaseListener)
             }
             ShopHomeShowCaseCarouselViewHolder.LAYOUT -> {
-                ShopHomeShowCaseCarouselViewHolder(parent)
+                ShopHomeShowCaseCarouselViewHolder(parent, shopHomeShowcaseListener)
             }
             ShopLayoutLoadingShimmerViewHolder.LAYOUT -> {
                 ShopLayoutLoadingShimmerViewHolder(parent)

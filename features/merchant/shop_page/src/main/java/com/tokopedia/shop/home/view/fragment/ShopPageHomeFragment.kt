@@ -172,6 +172,7 @@ import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.listener.ShopHomePlayWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseListWidgetListener
+import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseListener
 import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
 import com.tokopedia.shop.home.view.model.CheckCampaignNotifyMeUiModel
 import com.tokopedia.shop.home.view.model.GetCampaignNotifyMeUiModel
@@ -244,7 +245,7 @@ open class ShopPageHomeFragment :
     ShopHomeProductListSellerEmptyListener,
     ShopHomeListener,
     ShopHomePersoProductComparisonViewHolder.ShopHomePersoProductComparisonViewHolderListener,
-    ShopHomeDisplayBannerTimerWidgetListener {
+    ShopHomeDisplayBannerTimerWidgetListener, ShopHomeShowcaseListener {
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -400,7 +401,8 @@ open class ShopPageHomeFragment :
             shopHomeListener = this,
             shopPersoProductComparisonListener = this,
             shopHomeDisplayBannerTimerWidgetListener = this,
-            fragment = this
+            fragment = this,
+            shopHomeShowcaseListener = this
         )
     }
 
@@ -5082,5 +5084,15 @@ open class ShopPageHomeFragment :
         } else {
             parentFragment
         }
+    }
+
+    override fun onViewAllShowcaseClick(selectedShowcase: ShopHomeShowcaseUiModel.ShowcaseHeader) {
+        //TODO: Route to show case list page
+    }
+
+    override fun onShowcaseClick(
+        selectedShowcase: ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase
+    ) {
+        //TODO: Route to showcase page
     }
 }

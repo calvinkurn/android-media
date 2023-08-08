@@ -6,11 +6,15 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.databinding.ItemShopHomeShowcaseBinding
+import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseListener
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseUiModel
 
-class ShopHomeShowCaseAdapter : RecyclerView.Adapter<ShopHomeShowCaseAdapter.ShowCaseViewHolder>() {
+class ShopHomeShowCaseAdapter(
+    private val listener: ShopHomeShowcaseListener
+) : RecyclerView.Adapter<ShopHomeShowCaseAdapter.ShowCaseViewHolder>() {
 
-    private var showcases = mutableListOf<ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase>()
+    private var showcases =
+        mutableListOf<ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShowCaseViewHolder {
         val binding =
@@ -34,6 +38,7 @@ class ShopHomeShowCaseAdapter : RecyclerView.Adapter<ShopHomeShowCaseAdapter.Sho
         fun bind(showcase: ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase) {
             binding.tpgBannerTitle.text = showcase.name
             binding.imgBanner.loadImage(showcase.imageUrl)
+            binding.root.setOnClickListener { listener.onShowcaseClick(showcase) }
         }
     }
 

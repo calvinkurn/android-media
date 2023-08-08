@@ -9,10 +9,14 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopHomeShowcaseTopMainBannerBinding
+import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseListener
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-class ShopHomeShowCaseTopMainBannerViewHolder(itemView: View) : AbstractViewHolder<ShopHomeShowcaseUiModel>(itemView) {
+class ShopHomeShowCaseTopMainBannerViewHolder(
+    itemView: View, private val
+    listener: ShopHomeShowcaseListener
+) : AbstractViewHolder<ShopHomeShowcaseUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -27,7 +31,9 @@ class ShopHomeShowCaseTopMainBannerViewHolder(itemView: View) : AbstractViewHold
 
     override fun bind(model: ShopHomeShowcaseUiModel) {
         viewBinding?.tpgTitle?.text = model.showcaseHeader.title
-        viewBinding?.tpgTitle?.isVisible = model.showcaseHeader.title.isNotEmpty() && model.tabs.isNotEmpty()
+        viewBinding?.tpgTitle?.isVisible =
+            model.showcaseHeader.title.isNotEmpty() && model.tabs.isNotEmpty()
+        viewBinding?.iconChevron?.setOnClickListener { listener.onViewAllShowcaseClick(model.showcaseHeader) }
 
         val showcases = model.tabs.getOrNull(0)?.showcases ?: emptyList()
 
@@ -54,13 +60,15 @@ class ShopHomeShowCaseTopMainBannerViewHolder(itemView: View) : AbstractViewHold
     private fun setupShowCaseRecyclerView(
         showcases: List<ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase>
     ) {
-        val filteredShowcases = showcases.filterIndexed { index, _ -> index in SECOND_SHOWCASE_INDEX..TWELVE_SHOWCASE_INDEX}
+        val filteredShowcases =
+            showcases.filterIndexed { index, _ -> index in SECOND_SHOWCASE_INDEX..TWELVE_SHOWCASE_INDEX }
 
-        val showCaseAdapter = ShopHomeShowCaseAdapter()
+        val showCaseAdapter = ShopHomeShowCaseAdapter(listener)
 
         val recyclerView = viewBinding?.recyclerView
         recyclerView?.apply {
-            layoutManager = LinearLayoutManager(recyclerView.context, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager =
+                LinearLayoutManager(recyclerView.context, LinearLayoutManager.HORIZONTAL, false)
             adapter = showCaseAdapter
         }
 

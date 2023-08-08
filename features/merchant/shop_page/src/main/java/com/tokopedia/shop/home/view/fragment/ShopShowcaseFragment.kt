@@ -39,7 +39,7 @@ open class ShopShowcaseFragment : BaseDaggerFragment() {
             BUNDLE_KEY_SHOWCASES
         )?.toList().orEmpty()
     }
-
+    private var onShowcaseClick : (ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase) -> Unit = {}
 
     private var binding by autoClearedNullable<FragmentShopShowcaseBinding>()
 
@@ -86,6 +86,9 @@ open class ShopShowcaseFragment : BaseDaggerFragment() {
             binding?.tpgFirstBannerTitle?.text = firstShowcase.name
             binding?.imgFirstBanner?.visible()
             binding?.tpgFirstBannerTitle?.visible()
+
+            binding?.imgFirstBanner?.setOnClickListener { onShowcaseClick(firstShowcase) }
+            binding?.tpgFirstBannerTitle?.setOnClickListener { onShowcaseClick(firstShowcase) }
         }
 
         secondShowcase?.let {
@@ -93,26 +96,41 @@ open class ShopShowcaseFragment : BaseDaggerFragment() {
             binding?.tpgSecondBannerTitle?.text = secondShowcase.name
             binding?.imgSecondBanner?.visible()
             binding?.tpgSecondBannerTitle?.visible()
+
+            binding?.imgSecondBanner?.setOnClickListener { onShowcaseClick(secondShowcase) }
+            binding?.tpgSecondBannerTitle?.setOnClickListener { onShowcaseClick(secondShowcase) }
         }
         thirdShowcase?.let {
             binding?.imgThirdBanner?.loadImage(thirdShowcase.imageUrl)
             binding?.tpgThirdBannerTitle?.text = thirdShowcase.name
             binding?.imgThirdBanner?.visible()
             binding?.tpgThirdBannerTitle?.visible()
+
+            binding?.imgThirdBanner?.setOnClickListener { onShowcaseClick(thirdShowcase) }
+            binding?.tpgThirdBannerTitle?.setOnClickListener { onShowcaseClick(thirdShowcase) }
         }
         fourthShowcase?.let {
             binding?.imgFourthBanner?.loadImage(fourthShowcase.imageUrl)
             binding?.tpgFourthBannerTitle?.text = fourthShowcase.name
             binding?.imgFourthBanner?.visible()
             binding?.tpgFourthBannerTitle?.visible()
+
+            binding?.imgFourthBanner?.setOnClickListener { onShowcaseClick(fourthShowcase) }
+            binding?.tpgFourthBannerTitle?.setOnClickListener { onShowcaseClick(fourthShowcase) }
         }
         fifthShowcase?.let {
             binding?.imgFifthBanner?.loadImage(fifthShowcase.imageUrl)
             binding?.tpgFifthBannerTitle?.text = fifthShowcase.name
             binding?.imgFifthBanner?.visible()
             binding?.tpgFifthBannerTitle?.visible()
+
+            binding?.imgFifthBanner?.setOnClickListener { onShowcaseClick(fifthShowcase) }
+            binding?.tpgFifthBannerTitle?.setOnClickListener { onShowcaseClick(fifthShowcase) }
         }
     }
 
+    fun setOnShowcaseClick(onShowcaseClick: (ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase) -> Unit) {
+        this.onShowcaseClick = onShowcaseClick
+    }
 
 }
