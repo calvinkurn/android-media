@@ -11,6 +11,9 @@ import com.tokopedia.content.common.comment.model.CountComment
 import com.tokopedia.content.common.comment.usecase.GetCountCommentsUseCase
 import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
 import com.tokopedia.content.common.model.TrackVisitChannelResponse
+import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
+import com.tokopedia.content.common.report_content.model.UserReportOptions
+import com.tokopedia.content.common.report_content.model.UserReportSubmissionResponse
 import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.usecase.GetUserReportListUseCase
@@ -71,6 +74,7 @@ import com.tokopedia.topads.sdk.domain.model.*
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -1201,6 +1205,106 @@ class FeedPostViewModelTest {
         assert(viewModel.feedTagProductList.value is Success)
         val response = viewModel.feedTagProductList.value as Success
         assert(response.data.size == getDummyData().data.products.size)
+    }
+
+    /**
+     * submit report
+     */
+
+    @Test
+    fun `when submit report return success` () {
+        coEvery { userSession.userId } returns "13232"
+        coEvery { userSession.isLoggedIn } returns true
+
+        val response = UserReportSubmissionResponse(
+            submissionReport = UserReportSubmissionResponse.Result(
+                "success"
+            )
+        )
+
+        coEvery { postReportUseCase.createParam(any(), any(), any(), any(), any(), any(), any(), any()) } coAnswers { RequestParams() }
+        coEvery { postReportUseCase.setRequestParams(any()) } coAnswers {}
+        coEvery { postReportUseCase.executeOnBackground() } returns response
+
+        viewModel.selectReport(PlayUserReportReasoningUiModel.Reasoning.Empty)
+        viewModel.submitReport("",0L, FeedCardVideoContentModel.Empty)
+
+        assert(viewModel.isReported.value is Success)
+        assert(viewModel.selectedReport == PlayUserReportReasoningUiModel.Reasoning.Empty)
+    }
+
+    @Test
+    fun `when submit report video return error from be` () {
+        coEvery { userSession.isLoggedIn } returns true
+
+        coEvery { postReportUseCase.executeOnBackground() } throws MessageErrorException()
+
+        viewModel.selectReport(PlayUserReportReasoningUiModel.Reasoning.Empty)
+        viewModel.submitReport("",0L, FeedCardVideoContentModel.Empty)
+
+        assert(viewModel.isReported.value is Fail)
+        assert(viewModel.selectedReport == PlayUserReportReasoningUiModel.Reasoning.Empty)
+    }
+
+    @Test
+    fun `when submit report video return error` () {
+        coEvery { userSession.isLoggedIn } returns true
+
+        val response = UserReportSubmissionResponse(
+            submissionReport = UserReportSubmissionResponse.Result(
+                "failed"
+            )
+        )
+        coEvery { postReportUseCase.executeOnBackground() } returns response
+
+        viewModel.selectReport(PlayUserReportReasoningUiModel.Reasoning.Empty)
+        viewModel.submitReport("",0L, FeedCardVideoContentModel.Empty)
+
+        assert(viewModel.isReported.value is Fail)
+        assert(viewModel.selectedReport == PlayUserReportReasoningUiModel.Reasoning.Empty)
+    }
+
+    /**
+     * get list
+     */
+
+    @Test
+    fun `get reasoning list is success`(){
+        val response = UserReportOptions.Response(
+            data = listOf(
+                UserReportOptions(
+                    id = 1,
+                    value = "Harga melanggar etika",
+                    detail = ""
+                ), UserReportOptions(
+                    id = 11,
+                    value = "Melanggar HAM",
+                    detail = ""
+                ), UserReportOptions(
+                    id = 12,
+                    value = "SARA",
+                    detail = ""
+                ), UserReportOptions(
+                    id = 9,
+                    value = "Melanggar etik",
+                    detail = ""
+                )
+            )
+        )
+
+        coEvery { getReportListUseCase.executeOnBackground() } returns response
+        viewModel.getReport()
+
+        assert(viewModel.userReportList is Success)
+        assert((viewModel.userReportList as Success<List<PlayUserReportReasoningUiModel>>).data.isNotEmpty())
+    }
+
+    @Test
+    fun `get reasoning list is error`(){
+        coEvery { getReportListUseCase.executeOnBackground() } throws MessageErrorException()
+        viewModel.getReport()
+
+        assert(viewModel.userReportList is Fail)
     }
 
     private fun getDummyData(): FeedXGQLResponse = FeedXGQLResponse(
