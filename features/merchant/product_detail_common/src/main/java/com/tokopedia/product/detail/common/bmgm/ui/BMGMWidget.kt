@@ -14,7 +14,7 @@ import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.product.detail.common.bmgm.ui.adapter.BMGMProductAdapter
+import com.tokopedia.product.detail.common.bmgm.ui.adapter.BMGMProductItemAdapter
 import com.tokopedia.product.detail.common.bmgm.ui.model.BMGMUiModel
 import com.tokopedia.product.detail.common.bmgm.ui.model.BMGMUiState
 import com.tokopedia.product.detail.common.databinding.BmgmProductListBinding
@@ -49,7 +49,7 @@ class BMGMWidget @JvmOverloads constructor(
     }
 
     private val productAdapter by lazyThreadSafetyNone {
-        BMGMProductAdapter().apply {
+        BMGMProductItemAdapter().apply {
             productListBinding.bmgmProductList.layoutManager = GridLayoutManager(
                 context,
                 SPAN_COUNT,

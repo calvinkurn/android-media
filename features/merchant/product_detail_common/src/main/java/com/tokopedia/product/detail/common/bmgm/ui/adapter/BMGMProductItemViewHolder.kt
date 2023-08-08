@@ -16,7 +16,7 @@ import com.tokopedia.product.detail.common.databinding.BmgmProductShowMoreViewBi
  * Project name: android-tokopedia-core
  **/
 
-class BMGMProductViewHolder(
+class BMGMProductItemViewHolder(
     private val binding: BmgmProductItemBinding
 ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -38,10 +38,10 @@ class BMGMProductViewHolder(
 
     companion object {
 
-        fun create(parent: ViewGroup): BMGMProductViewHolder {
+        fun create(parent: ViewGroup): BMGMProductItemViewHolder {
             val inflater = LayoutInflater.from(parent.context)
             val view = BmgmProductItemBinding.inflate(inflater)
-            return BMGMProductViewHolder(view)
+            return BMGMProductItemViewHolder(view)
         }
     }
 }

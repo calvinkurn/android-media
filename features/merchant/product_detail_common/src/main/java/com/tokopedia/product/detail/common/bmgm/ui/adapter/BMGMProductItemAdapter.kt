@@ -10,7 +10,7 @@ import com.tokopedia.product.detail.common.bmgm.ui.model.BMGMUiModel
  * Project name: android-tokopedia-core
  **/
 
-class BMGMProductAdapter : ListAdapter<BMGMUiModel.Product, BMGMProductViewHolder>(DIFF_ITEMS) {
+class BMGMProductItemAdapter : ListAdapter<BMGMUiModel.Product, BMGMProductItemViewHolder>(DIFF_ITEMS) {
 
     companion object {
         private val DIFF_ITEMS = object : DiffUtil.ItemCallback<BMGMUiModel.Product>() {
@@ -29,11 +29,11 @@ class BMGMProductAdapter : ListAdapter<BMGMUiModel.Product, BMGMProductViewHolde
 
     private var onClick: () -> Unit = {}
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BMGMProductViewHolder {
-        return BMGMProductViewHolder.create(parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BMGMProductItemViewHolder {
+        return BMGMProductItemViewHolder.create(parent)
     }
 
-    override fun onBindViewHolder(holder: BMGMProductViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: BMGMProductItemViewHolder, position: Int) {
         val product = getItem(position) ?: return
 
         holder.bind(product = product)
