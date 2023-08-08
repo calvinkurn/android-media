@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.design.R
 import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking.onClickCloseKotaKecamatan
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.Companion.newInstance
@@ -28,7 +27,7 @@ class DiscomActivity : BaseSimpleActivity(), HasComponent<Any?>, DiscomFragment.
         analytics = CheckoutAnalyticsChangeAddress()
         if (supportActionBar != null) {
             supportActionBar!!.elevation = 0f
-            toolbar.setNavigationIcon(R.drawable.ic_close_thin)
+            toolbar.setNavigationIcon(com.tokopedia.design.R.drawable.ic_close_thin)
         }
     }
 

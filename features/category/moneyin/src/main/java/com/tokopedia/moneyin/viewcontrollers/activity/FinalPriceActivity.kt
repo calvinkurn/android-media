@@ -154,7 +154,7 @@ class FinalPriceActivity : BaseMoneyInActivity<FinalPriceViewModel>(), Observer<
             hideProgressBar()
             sendGeneralEvent(MoneyInGTMConstants.ACTION_VIEW_MONEYIN,
                     category,
-                    MoneyInGTMConstants.ACTION_VIEW_HARGA_FINAL, String.format("diagnostic id - %s", deviceId))
+                    MoneyInGTMConstants.ACTION_VIEW_HARGA_FINAL, "diagnostic id - $deviceId")
         }
     }
 

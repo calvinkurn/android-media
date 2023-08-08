@@ -27,7 +27,7 @@ fun String?.toAddressUiState(): AddressUiState {
     return this?.let { value ->
         try {
             AddressUiState.valueOf(value)
-        } catch (e: IllegalArgumentException) {
+        } catch (@Suppress("SwallowedException") e: IllegalArgumentException) {
             AddressUiState.AddAddress
         }
     } ?: AddressUiState.AddAddress
