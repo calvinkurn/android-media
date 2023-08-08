@@ -56,6 +56,7 @@ import com.tokopedia.promousage.view.adapter.PromoRecommendationDelegateAdapter
 import com.tokopedia.promousage.view.adapter.PromoTncDelegateAdapter
 import com.tokopedia.promousage.view.viewmodel.PromoUsageViewModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -70,6 +71,8 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         private const val BUNDLE_KEY_PROMO_REQUEST = "promo_request"
         private const val BUNDLE_KEY_TOTAL_AMOUNT = "total_amount"
         private const val BUNDLE_KEY_CHOSEN_ADDRESS = "chosen_address"
+        private const val BUNDLE_KEY_VALIDATE_USE = "validate_use"
+        private const val BUNDLE_KEY_BO_PROMO_CODES = "bo_promo_codes"
         private const val BUNDLE_KEY_PROMO_CODE = "promo_code"
 
         private const val BOTTOM_SHEET_MARGIN_TOP_IN_DP = 64
@@ -78,16 +81,22 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         fun newInstance(
             entryPoint: PromoPageEntryPoint,
             promoRequest: PromoRequest,
+            validateUsePromoRequest: ValidateUsePromoRequest,
+            boPromoCodes: List<String>,
             totalAmount: Double,
-            chosenAddress: ChosenAddress? = null
+            chosenAddress: ChosenAddress? = null,
+            listener: Listener? = null
         ): PromoUsageBottomSheet {
             return PromoUsageBottomSheet().apply {
-                arguments = Bundle().apply {
+                this.arguments = Bundle().apply {
                     putParcelable(BUNDLE_KEY_ENTRY_POINT, entryPoint)
                     putParcelable(BUNDLE_KEY_PROMO_REQUEST, promoRequest)
+                    putParcelable(BUNDLE_KEY_VALIDATE_USE, validateUsePromoRequest)
+                    putStringArrayList(BUNDLE_KEY_BO_PROMO_CODES, ArrayList(boPromoCodes))
                     putParcelable(BUNDLE_KEY_CHOSEN_ADDRESS, chosenAddress)
                     putDouble(BUNDLE_KEY_TOTAL_AMOUNT, totalAmount)
                 }
+                this.listener = listener
             }
         }
     }
@@ -101,6 +110,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     private var _binding by autoClearedNullable<PromoUsageBottomsheetBinding>()
     private val binding: PromoUsageBottomsheetBinding
         get() = _binding!!
+    var listener: Listener? = null
     private val recyclerViewAdapter by lazy {
         CompositeAdapter.Builder()
             .add(PromoRecommendationDelegateAdapter(onClickPromoItem, onClickApplyPromoRecommendation))
@@ -186,10 +196,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val entryPoint =
-            arguments?.getParcelable(BUNDLE_KEY_ENTRY_POINT) ?: PromoPageEntryPoint.CART_PAGE
-        val totalAmount = arguments?.getDouble(BUNDLE_KEY_TOTAL_AMOUNT) ?: 0.0
-        setupView(entryPoint, totalAmount)
+        setupView()
         setupObservers()
 
         val promoRequest: PromoRequest? = arguments?.getParcelable(BUNDLE_KEY_PROMO_REQUEST)
@@ -200,7 +207,15 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         )
     }
 
-    private fun setupView(entryPoint: PromoPageEntryPoint, totalAmount: Double) {
+    private fun setupView() {
+        val entryPoint = arguments?.getParcelable(BUNDLE_KEY_ENTRY_POINT)
+            ?: PromoPageEntryPoint.CART_PAGE
+        val totalAmount = arguments?.getDouble(BUNDLE_KEY_TOTAL_AMOUNT) ?: 0.0
+        val validateUsePromoRequest = arguments?.getParcelable(BUNDLE_KEY_VALIDATE_USE)
+            ?: ValidateUsePromoRequest()
+        val boPromoCodes: List<String> = arguments?.getStringArrayList(BUNDLE_KEY_BO_PROMO_CODES)
+            ?: emptyList()
+
         binding.buttonClose.setOnClickListener {
             dismiss()
         }
@@ -218,9 +233,8 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 binding.buttonBuy.setOnClickListener {
                     viewModel.onClickBuy(
                         entryPoint = entryPoint,
-                        onSuccess = {
-                            dismiss()
-                        }
+                        validateUsePromoRequest = validateUsePromoRequest,
+                        boPromoCodes = boPromoCodes
                     )
                 }
                 binding.buttonBuy.visible()
@@ -242,9 +256,8 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 binding.buttonBuy.setOnClickListener {
                     viewModel.onClickBuy(
                         entryPoint = entryPoint,
-                        onSuccess = {
-                            dismiss()
-                        }
+                        validateUsePromoRequest = validateUsePromoRequest,
+                        boPromoCodes = boPromoCodes
                     )
                 }
                 binding.buttonBuy.visible()
@@ -389,22 +402,22 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     updateTickerInfo(state.tickerInfo)
                     updateRecyclerView(state.items)
                     updateSavingInfo(state.savingInfo)
-                    hideLoading()
+                    setDialogLoading(false)
                     showContent()
                 }
 
                 is PromoPageState.Error -> {
                     // TODO: Handle error state
-                    hideLoading()
+                    setDialogLoading(false)
                     hideContent()
                 }
 
                 is PromoPageState.Loading -> {
-                    showLoading()
+                    setDialogLoading(true)
                 }
 
                 else -> {
-                    // TODO: Handle other states
+                    // no-op
                 }
             }
         }
@@ -492,7 +505,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         { recommendationItem: PromoRecommendationItem ->
             viewModel.onClickApplyPromoRecommendation(
                 onSuccess = {
-                    hideLoading()
+                    setDialogLoading(false)
                     showLottieConfettiAnimation(recommendationItem)
                 }
             )
@@ -562,17 +575,29 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         )
     }
 
-    private fun showLoading() {
-        if (loaderDialog == null) {
-            loaderDialog = LoaderDialog(requireContext())
-            loaderDialog?.show()
+    private fun setDialogLoading(isLoading: Boolean) {
+        if (isLoading) {
+            if (loaderDialog == null) {
+                loaderDialog = LoaderDialog(requireContext())
+                loaderDialog?.show()
+            }
+        } else {
+            if (loaderDialog != null) {
+                loaderDialog?.dismiss()
+                loaderDialog = null
+            }
         }
     }
 
-    private fun hideLoading() {
-        if (loaderDialog != null) {
-            loaderDialog?.dismiss()
-            loaderDialog = null
-        }
+    interface Listener {
+
+        fun onApplyPromoSuccess(
+            entryPoint: PromoPageEntryPoint,
+            validateUsePromoRequest: ValidateUsePromoRequest
+        )
+
+        fun onApplyPromoFailed(
+            entryPoint: PromoPageEntryPoint
+        )
     }
 }

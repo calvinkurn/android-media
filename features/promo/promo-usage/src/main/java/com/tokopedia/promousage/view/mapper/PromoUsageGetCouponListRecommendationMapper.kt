@@ -24,10 +24,9 @@ import com.tokopedia.promousage.domain.entity.list.PromoAccordionViewAllItem
 import com.tokopedia.promousage.domain.entity.list.PromoAttemptItem
 import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 import com.tokopedia.promousage.util.composite.DelegateAdapterItem
-import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import javax.inject.Inject
 
-class PromoUsageMapper @Inject constructor() {
+class PromoUsageGetCouponListRecommendationMapper @Inject constructor() {
 
     fun mapCouponListRecommendationResponseToPageTickerInfo(
         response: GetCouponListRecommendationResponse
@@ -214,6 +213,7 @@ class PromoUsageMapper @Inject constructor() {
                     cartStringGroup = it.cartStringGroup,
                     shippingId = it.shippingId,
                     spId = it.spId,
+
                 )
             },
             expiryInfo = coupon.expiryInfo,
@@ -250,6 +250,7 @@ class PromoUsageMapper @Inject constructor() {
             headerId = couponSection.id,
             index = secondaryCoupon.index,
             uniqueId = secondaryCoupon.uniqueId,
+            shopId = secondaryCoupon.shopId,
             code = secondaryCoupon.code,
             benefitAmount = secondaryCoupon.benefitAmount,
             benefitAmountStr = secondaryCoupon.benefitAmountStr,
@@ -279,6 +280,7 @@ class PromoUsageMapper @Inject constructor() {
                     cartStringGroup = it.cartStringGroup,
                     shippingId = it.shippingId,
                     spId = it.spId,
+
                 )
             },
             expiryInfo = secondaryCoupon.expiryInfo,

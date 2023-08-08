@@ -4621,6 +4621,8 @@ class CartFragment :
          val bottomSheet = PromoUsageBottomSheet.newInstance(
              entryPoint = PromoPageEntryPoint.CART_PAGE,
              promoRequest = generateParamsCouponList(),
+             validateUsePromoRequest = generateParamGetLastApplyPromo(),
+             boPromoCodes = emptyList(),
              totalAmount = 30_000.0 // TODO: Get data from cart
          )
          bottomSheet.show(childFragmentManager, bottomSheet.tag)

@@ -189,7 +189,21 @@ data class AdditionalBoData(
     @SerializedName("shipping_id")
     val shippingId: Long = 0,
     @SerializedName("sp_id")
-    val spId: Long = 0
+    val spId: Long = 0,
+    @SerializedName("benefit_amount")
+    val benefitAmount: Double = 0.0,
+    @SerializedName("promo_id")
+    val promoId: Long = 0,
+    @SerializedName("shipping_price")
+    val shippingPrice: Double = 0.0,
+    @SerializedName("shipping_subsidy")
+    val shippingSubsidy: Long = 0,
+    @SerializedName("benefit_class")
+    val benefitClass: String = "",
+    @SerializedName("bo_campaign_id")
+    val boCampaignId: Long = 0,
+    @SerializedName("eta_txt")
+    val etaText: String = ""
 )
 
 data class PromoInfo(
