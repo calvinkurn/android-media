@@ -367,9 +367,8 @@ class FeedPostViewModel @Inject constructor(
 
                     val defaultTopAdsUrlParams: MutableMap<String, Any> = getTopAdsParams()
                     val topAdsAddressData = topAdsAddressHelper.getAddressData()
-                    val indexToRemove = mutableListOf<Int>()
 
-                    val newItems = it.data.items.mapIndexed { index, item ->
+                    val newItems = it.data.items.mapNotNull { item ->
                         when {
                             item is FeedCardImageContentModel && item.isTopAds && !item.isFetched -> {
                                 val topAdsDeferred = async {
@@ -387,19 +386,13 @@ class FeedPostViewModel @Inject constructor(
                                         transformCpmToFeedTopAds(item, cpmModel)
                                     } else {
                                         // Error fetch TopAds, should remove the view
-                                        indexToRemove.add(index)
-                                        item.copy(isFetched = true)
+                                        null
                                     }
                                 }
                                 topAdsDeferred.await()
                             }
                             else -> item
                         }
-                    }.toMutableList()
-
-                    indexToRemove.forEach { indexNumber ->
-                        if (newItems.size <= indexNumber) return@forEach
-                        newItems.removeAt(indexNumber)
                     }
 
                     _feedHome.value = Success(
