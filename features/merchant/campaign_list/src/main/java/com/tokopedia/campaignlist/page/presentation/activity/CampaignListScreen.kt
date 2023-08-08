@@ -24,6 +24,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -138,7 +139,7 @@ private fun SearchBar(
     onSearchbarCleared: () -> Unit
 ) {
     NestSearchBar(
-        value = "",
+        value = TextFieldValue(),
         placeholderText = stringResource(id = R.string.cl_search_active_campaign),
         modifier = modifier.fillMaxWidth(),
         onSearchBarCleared = onSearchbarCleared,

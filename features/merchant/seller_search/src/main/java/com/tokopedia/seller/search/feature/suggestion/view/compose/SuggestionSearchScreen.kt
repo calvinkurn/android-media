@@ -1,9 +1,5 @@
 package com.tokopedia.seller.search.feature.suggestion.view.compose
 
-import android.content.Context
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.TextAppearanceSpan
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -41,7 +37,6 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.nest.components.NestChips
 import com.tokopedia.nest.components.NestChipsSize
 import com.tokopedia.nest.components.NestChipsState
@@ -52,14 +47,11 @@ import com.tokopedia.nest.components.NestImageType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
-import com.tokopedia.nest.principles.utils.toAnnotatedString
-import com.tokopedia.seller.search.R
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.ARTICLES
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.FAQ
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.ORDER
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.PRODUCT
 import com.tokopedia.seller.search.common.util.indexOfSearchQuery
-import com.tokopedia.seller.search.common.util.safeSetSpan
 import com.tokopedia.seller.search.feature.initialsearch.view.compose.OPACITY_68
 import com.tokopedia.seller.search.feature.suggestion.view.model.SellerSearchNoResultUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.model.compose.SuggestionSearchUiEvent
@@ -609,30 +601,6 @@ fun DividerSellerSearch() {
 }
 
 @Composable
-fun getSpannableString(context: Context, keyword: String, title: String): AnnotatedString {
-    val startIndex = indexOfSearchQuery(title, keyword)
-    val highlightedTitle = SpannableString(title)
-
-    return if (startIndex == -Int.ONE) {
-        highlightedTitle.toAnnotatedString()
-    } else {
-        highlightedTitle.safeSetSpan(
-            TextAppearanceSpan(context, com.tokopedia.seller.search.R.style.searchTextHiglight),
-            Int.ZERO,
-            startIndex,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        highlightedTitle.safeSetSpan(
-            TextAppearanceSpan(context, com.tokopedia.seller.search.R.style.searchTextHiglight),
-            startIndex + keyword.length,
-            title.length.orZero(),
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        highlightedTitle.toAnnotatedString()
-    }
-}
-
-@Composable
 fun getSpannableAnnotatedString(keyword: String, title: String): AnnotatedString {
     val startIndex = indexOfSearchQuery(title, keyword)
     val style = SpanStyle(
@@ -642,6 +610,7 @@ fun getSpannableAnnotatedString(keyword: String, title: String): AnnotatedString
     return buildAnnotatedString {
         append(title)
         if (startIndex != -Int.ONE) {
+            addStyle(style, Int.ZERO, startIndex)
             addStyle(style, startIndex + keyword.length, title.length)
         }
     }
