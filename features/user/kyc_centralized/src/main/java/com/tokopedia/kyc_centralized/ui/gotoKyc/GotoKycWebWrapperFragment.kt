@@ -15,14 +15,6 @@ class GotoKycWebWrapperFragment : BaseSessionWebViewFragment() {
     @Inject
     lateinit var oneKycSdk: OneKycSdk
 
-    fun newInstance(url: String): GotoKycWebWrapperFragment {
-        val fragment = GotoKycWebWrapperFragment()
-        val args = Bundle()
-        args.putString(KEY_URL, url)
-        fragment.arguments = args
-        return fragment
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -47,5 +39,13 @@ class GotoKycWebWrapperFragment : BaseSessionWebViewFragment() {
 
     companion object {
         const val KEY_URL = "url"
+
+        fun newInstance(url: String): GotoKycWebWrapperFragment {
+            val fragment = GotoKycWebWrapperFragment()
+            val args = Bundle()
+            args.putString(KEY_URL, url)
+            fragment.arguments = args
+            return fragment
+        }
     }
 }
