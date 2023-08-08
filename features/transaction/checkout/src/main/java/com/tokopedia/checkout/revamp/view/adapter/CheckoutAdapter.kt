@@ -172,7 +172,7 @@ class CheckoutAdapter(
             }
 
             is CheckoutEpharmacyModel -> {
-                (holder as UploadPrescriptionViewHolder).bindViewHolder(item.epharmacy)
+                (holder as CheckoutEpharmacyViewHolder).bindViewHolder(item.epharmacy)
             }
 
             is CheckoutPromoModel -> {

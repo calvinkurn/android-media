@@ -16,6 +16,7 @@ import com.tokopedia.checkout.R
 import com.tokopedia.checkout.databinding.ItemCheckoutProductBinding
 import com.tokopedia.checkout.databinding.LayoutCheckoutProductBinding
 import com.tokopedia.checkout.databinding.LayoutCheckoutProductBundleBinding
+import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
@@ -54,6 +55,7 @@ class CheckoutProductViewHolder(
         } else {
             renderProductItem(product)
         }
+        renderError(product)
     }
 
     @SuppressLint("SetTextI18n")
@@ -447,9 +449,49 @@ class CheckoutProductViewHolder(
         }
     }
 
+    private fun renderError(product: CheckoutProductModel) {
+        if (product.isError) {
+            binding.frameCheckoutProductContainer.alpha = VIEW_ALPHA_DISABLED
+        } else {
+            binding.frameCheckoutProductContainer.alpha = VIEW_ALPHA_ENABLED
+        }
+        showShipmentWarning(product)
+    }
+
+    private fun showShipmentWarning(cartItemModel: CheckoutProductModel) {
+        if (cartItemModel.errorMessage.isNotEmpty()) {
+            if (cartItemModel.errorMessageDescription.isNotEmpty()) {
+                binding.checkoutTickerProductError.tickerTitle = cartItemModel.errorMessage
+                binding.checkoutTickerProductError.setTextDescription(cartItemModel.errorMessageDescription)
+            } else {
+                binding.checkoutTickerProductError.setTextDescription(cartItemModel.errorMessage)
+            }
+
+            if (cartItemModel.isBundlingItem) {
+                if (cartItemModel.bundlingItemPosition == ShipmentMapper.BUNDLING_ITEM_HEADER) {
+                    binding.checkoutTickerProductError.visible()
+                    binding.checkoutTickerProductError.post {
+                        binding.checkoutTickerProductError.requestLayout()
+                    }
+                } else {
+                    binding.checkoutTickerProductError.gone()
+                }
+            } else {
+                binding.checkoutTickerProductError.visible()
+                binding.checkoutTickerProductError.post {
+                    binding.checkoutTickerProductError.requestLayout()
+                }
+            }
+        } else {
+            binding.checkoutTickerProductError.gone()
+        }
+    }
+
     companion object {
         val VIEW_TYPE = R.layout.item_checkout_product
 
+        private const val VIEW_ALPHA_ENABLED = 1.0f
+        private const val VIEW_ALPHA_DISABLED = 0.5f
         private const val DEBOUNCE_TIME_ADDON = 500L
     }
 }

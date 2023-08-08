@@ -139,9 +139,32 @@
         tools:text="Toko Adidas"
         tools:visibility="visible" />
 
-    <include layout="@layout/layout_checkout_product_bundle" />
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/checkout_ticker_product_error"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:closeButtonVisibility="gone"
+        app:tickerShapeType="loose"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_checkout_shop_name"
+        app:tickerType="error" />
 
-    <include layout="@layout/layout_checkout_product" />
+    <FrameLayout
+        android:id="@+id/frame_checkout_product_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/checkout_ticker_product_error">
+
+        <include layout="@layout/layout_checkout_product_bundle" />
+
+        <include layout="@layout/layout_checkout_product" />
+
+    </FrameLayout>
 
     <com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingView
         android:id="@+id/button_gifting_addon_product_level"
@@ -153,6 +176,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll_addon_product_items" />
+        app:layout_constraintTop_toBottomOf="@id/frame_checkout_product_container" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
