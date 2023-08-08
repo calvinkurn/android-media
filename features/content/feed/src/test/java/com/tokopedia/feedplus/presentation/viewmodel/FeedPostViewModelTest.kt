@@ -1870,6 +1870,7 @@ class FeedPostViewModelTest {
                     thumbnailUrl = "https://images.tokopedia.net/img/jJtrdn/2022/1/21/2f1ba9eb-a8d4-4de1-b445-ed66b96f26a9.jpg?b=UaM%25G%23Rjn4WYVBx%5DjFWX%3D~t6bbWB0PkWkqoL",
                     imageUrl = "https://images.tokopedia.net/img/seller_no_logo_1.png",
                     videoUrl = "https://vod.tokopedia.com/view/adaptive.m3u8?id=4d30328d17e948b4b1c4c34c5bb9f372",
+                    applink = "applink",
                     isFollowed = false,
                 )
             },
