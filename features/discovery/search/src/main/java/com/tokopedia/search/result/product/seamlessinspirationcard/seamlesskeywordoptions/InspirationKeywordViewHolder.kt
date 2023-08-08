@@ -66,22 +66,22 @@ class InspirationKeywordViewHolder(
         inspirationKeywords:  InspirationKeywordCardView,
         viewType: ViewType
     ) {
-        binding?.inspirationKeywordOptionList?.let {
+        binding?.inspirationKeywordOptionList?.run {
             val isNeedToShowNoImageCard = inspirationKeywords.isOneOrMoreIsEmptyImage
             val columnQty = generateColumnQty(inspirationKeywords.optionsItems.size, isNeedToShowNoImageCard)
-            it.layoutManager = createLayoutManager(
-                context = it.context,
+            this.layoutManager = createLayoutManager(
+                context = this.context,
                 columnQty = columnQty,
                 viewType
             )
-            it.adapter =
+            this.adapter =
                 InspirationKeywordAdapter(
                     createInspirationKeywordTypeFactory(columnQty, isNeedToShowNoImageCard)
                 ).apply {
                     setList(inspirationKeywords.optionsItems)
                 }
-            it.setItemDecoration(
-                spacing = it.context.getSpacingResource(),
+            this.setItemDecoration(
+                spacing = this.context.getSpacingResource(),
                 spanQty = columnQty
             )
         }

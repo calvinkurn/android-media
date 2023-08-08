@@ -94,12 +94,10 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         return firstOption != null && !firstOption.hasProducts()
     }
 
-    private fun InspirationCarouselDataView.isInvalidProductBundleLayout(): Boolean {
-        return isBundleLayout() &&
-            (
-                options.size < PRODUCT_BUNDLE_MINIMUM_SIZE ||
-                    options.size > PRODUCT_BUNDLE_MAXIMUM_SIZE
-                )
+    private fun InspirationCarouselDataView.isInvalidProductBundleLayout() : Boolean {
+        return isBundleLayout()
+            && (options.size < PRODUCT_BUNDLE_MINIMUM_SIZE
+            || options.size > PRODUCT_BUNDLE_MAXIMUM_SIZE)
     }
 
     private fun shouldShowInspirationCarousel(layout: String): Boolean {
@@ -183,10 +181,8 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         externalReference: String
     ): List<Visitable<*>> {
         val inspirationKeywordVisitableList = mutableListOf<Visitable<*>>()
-        val (inspirationKeyboard, inspirationProduct, isOneOrMoreItemIsEmptyImage) = InspirationSeamlessMapper.convertToInspirationList(
-            data.options,
-            externalReference
-        )
+        val (inspirationKeyboard, inspirationProduct, isOneOrMoreItemIsEmptyImage) =
+            InspirationSeamlessMapper.convertToInspirationList(data.options, externalReference)
         inspirationKeywordVisitableList.add(
             InspirationKeywordCardView.create(data.title, inspirationKeyboard, isOneOrMoreItemIsEmptyImage)
         )

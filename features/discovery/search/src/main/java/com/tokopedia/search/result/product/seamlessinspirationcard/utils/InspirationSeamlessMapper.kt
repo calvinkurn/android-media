@@ -9,12 +9,11 @@ object InspirationSeamlessMapper {
     fun convertToInspirationList(
         inspirationOptions: List<InspirationCarouselDataView.Option>,
         externalReference: String
-    ):
-        Triple<List<InspirationKeywordDataView>, List<InspirationProductItemDataView>, Boolean> {
+    ): Triple<List<InspirationKeywordDataView>, List<InspirationProductItemDataView>, Boolean> {
         val listOfInspirationKeywordItems = mutableListOf<InspirationKeywordDataView>()
         val listOfOptionProductItems = mutableListOf<InspirationProductItemDataView>()
         var isOneOrMoreItemIsEmptyImage = false
-        inspirationOptions.map { option ->
+        inspirationOptions.forEach { option ->
             listOfInspirationKeywordItems.add(
                 option.convertToInspirationKeywordDataView()
             )
@@ -40,7 +39,7 @@ object InspirationSeamlessMapper {
     ): List<InspirationProductItemDataView> {
         val listOfOptionProductItems = mutableListOf<InspirationProductItemDataView>()
         val products = this.product
-        products.mapIndexed { index, product ->
+        products.forEachIndexed { index, product ->
             listOfOptionProductItems.add(
                 product.convertToInspirationProduct(
                     option = this,
@@ -56,8 +55,7 @@ object InspirationSeamlessMapper {
         option: InspirationCarouselDataView.Option,
         index: Int,
         externalReference: String = ""
-    ) =
-        InspirationProductItemDataView.create(
+    ) = InspirationProductItemDataView.create(
             product = this,
             option = option,
             index = index,
