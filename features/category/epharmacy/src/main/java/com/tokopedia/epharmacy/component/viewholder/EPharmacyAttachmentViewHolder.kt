@@ -5,6 +5,7 @@ import android.view.View
 import android.view.animation.CycleInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -36,6 +37,7 @@ import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo as EProductInfo
 
 class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmacyListener: EPharmacyListener?) : AbstractViewHolder<EPharmacyAttachmentDataModel?>(view) {
 
@@ -50,6 +52,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     private val productImageCard = view.findViewById<CardUnify2>(R.id.product_image_card)
     private val divider = view.findViewById<DividerUnify>(R.id.divider)
     private val productAccordionView = view.findViewById<LinearLayout>(R.id.btn_PAP_minimize)
+    private val productAccordionViewRL = view.findViewById<RelativeLayout>(R.id.rl_expand_other_product)
     private val productAccordionRV = view.findViewById<RecyclerView>(R.id.accordion_expandable_rv)
     private val productAccordionChevron = view.findViewById<IconUnify>(R.id.iv_expand_other_product)
     private val productChevronTitle = view.findViewById<Typography>(R.id.tv_expand_other_product)
@@ -75,7 +78,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
         private const val VIBRATION_ANIMATION_CYCLE = 4f
     }
 
-    private val ePharmacyAdapterFactory by lazy(LazyThreadSafetyMode.NONE) { EPharmacyAdapterFactoryImpl(null) }
+    private val ePharmacyAdapterFactory by lazy(LazyThreadSafetyMode.NONE) { EPharmacyAdapterFactoryImpl(ePharmacyListener) }
 
     private val ePharmacyAdapter by lazy(LazyThreadSafetyMode.NONE) {
         val asyncDifferConfig: AsyncDifferConfig<BaseEPharmacyDataModel> = AsyncDifferConfig.Builder(
@@ -120,23 +123,28 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     }
 
     private fun renderQuantityChangedLayout() {
+        if(dataModel?.quantityChangedModel?.currentQty == 0){
+            dataModel?.quantityChangedModel?.currentQty = dataModel?.quantityChangedModel?.recommendedQty ?: 0
+        }
         if(dataModel?.quantityChangedModel != null){
             quantityChangedLayout?.show()
-            medicalProductQuantity.text = dataModel?.quantityChangedModel?.productQuantity.toString()
-            productQuantityType.text = "Barang"
-            quantityChangedEditor.setValue(dataModel?.quantityChangedModel?.medicalQuantity ?: 0)
+            medicalProductQuantity.text = "${dataModel?.quantityChangedModel?.initialQty.toString()} barang"
+            productQuantityType.text = "barang"
+            if(dataModel?.quantityChangedModel?.currentQty != quantityChangedEditor.getValue() && quantityChangedEditor.getValue() != 1)
+                quantityChangedEditor.setValue(dataModel?.quantityChangedModel?.recommendedQty ?: 0)
+            if(quantityChangedEditor.getValue() >= (dataModel?.quantityChangedModel?.recommendedQty ?: 0)){
+                quantityChangedEditor.addButton.isEnabled = false
+            }
             totalAmount.displayTextOrHide(getTotalAmount(dataModel?.quantityChangedModel))
-            totalQuantity.displayTextOrHide("Subtotal (${dataModel?.quantityChangedModel?.currentQuantity.toString()} barang)")
+            totalQuantity.displayTextOrHide("Subtotal (${dataModel?.quantityChangedModel?.recommendedQty.toString()} barang)")
             quantityChangedEditor.setValueChangedListener { newValue, oldValue, isOver ->
                 if(newValue == 1){
                     ePharmacyListener?.onToast(Toaster.TYPE_ERROR,"Jumlah barang tidak boleh melebihi yang sudah diresepkan atau kurang dari 1.")
                     quantityChangedEditor.subtractButton.isEnabled = false
-                }else if(newValue == dataModel?.quantityChangedModel?.medicalQuantity) {
-                    quantityChangedEditor.addButton.isEnabled = false
                 } else {
                     quantityChangedEditor.subtractButton.isEnabled = true
                     quantityChangedEditor.addButton.isEnabled = true
-                    dataModel?.quantityChangedModel?.currentQuantity = newValue
+                    dataModel?.quantityChangedModel?.currentQty = newValue
                 }
                 renderQuantityChangedLayout()
             }
@@ -146,8 +154,8 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     }
 
     // TODO Format
-    private fun getTotalAmount(quantityChangedModel: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.QuantityChangedModel?): String {
-        return "Rp${quantityChangedModel?.currentQuantity ?: 0.0 * (dataModel?.quantityChangedModel?.productPrice ?: 0.0)}"
+    private fun getTotalAmount(quantityChangedModel: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product.QtyComparison?): String {
+        return "Rp${(quantityChangedModel?.currentQty?.toDouble() ?: 0.0) * ((dataModel?.quantityChangedModel?.productPrice?: 0.0))}"
     }
 
     private fun renderOrderTitle() {
@@ -231,10 +239,15 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
 
         if ((dataModel?.shopInfo?.products?.size ?: 0) > 1) {
             productAccordionView.show()
+            if(dataModel?.isAccordionEnable == true){
+                productAccordionViewRL.show()
+            }else {
+                productAccordionViewRL.hide()
+            }
             if (productAccordionRV.adapter == null) {
                 productAccordionRV.layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
                 productAccordionRV.adapter = ePharmacyAdapter
-                productAccordionView.setOnClickListener {
+                productAccordionViewRL.setOnClickListener {
                     ePharmacyListener?.onInteractAccordion(bindingAdapterPosition, dataModel?.productsIsExpanded ?: false, dataModel?.name)
                 }
             }
@@ -243,7 +256,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
                 ePharmacyAdapter.submitList(getProductVisitablesWithoutFirst(products))
             }
 
-            if (dataModel?.productsIsExpanded == true) {
+            if (dataModel?.productsIsExpanded == true || dataModel?.isAccordionEnable == false) {
                 productChevronTitle.text = view.context.getString(R.string.epharmacy_show_less)
                 productAccordionRV.show()
                 productAccordionChevron.setImage(IconUnify.CHEVRON_UP, null, null, null, null)
@@ -257,7 +270,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
         }
     }
 
-    private fun getProductVisitablesWithoutFirst(shopInfo: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo?): List<BaseEPharmacyDataModel> {
+    private fun getProductVisitablesWithoutFirst(shopInfo: EProductInfo?): List<BaseEPharmacyDataModel> {
         val productSubList = arrayListOf<EPharmacyAccordionProductDataModel>()
         shopInfo?.products?.forEachIndexed { index, product ->
             if (index != 0) {
@@ -287,10 +300,10 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     }
 
     private fun renderDivider() {
-        if ((dataModel?.shopInfo?.products?.size == 1 && dataModel?.showUploadWidget == false)) {
+        if (((((dataModel?.shopInfo?.products?.size ?: 0) == 1) && dataModel?.showUploadWidget == false))) {
             divisionSingleProduct.show()
         } else {
-            if(dataModel?.quantityChangedModel != null) divisionSingleProduct.hide()
+            divisionSingleProduct.hide()
         }
         if (dataModel?.showDivider == true) divider.show() else divider.hide()
     }

@@ -1,5 +1,6 @@
 package com.tokopedia.epharmacy.utils
 
+import android.text.Html
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
@@ -259,6 +260,13 @@ object EPharmacyUtils {
             EPHARMACY_ANDROID_SOURCE
         )
     }
+
+    fun getTextFromHtml(htmlText: String): CharSequence =
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            Html.fromHtml(htmlText, Html.FROM_HTML_MODE_LEGACY)
+        } else {
+            Html.fromHtml(htmlText)
+        }
 }
 
 enum class PrescriptionActionType(val type: String) {

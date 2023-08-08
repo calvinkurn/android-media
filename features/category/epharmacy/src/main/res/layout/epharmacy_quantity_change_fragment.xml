@@ -13,6 +13,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="24dp"
         android:paddingBottom="8dp"
         app:layout_constraintBottom_toTopOf="@id/total_amount"
         tools:listitem="@layout/epharmacy_prescription_attachment_view_item"
@@ -42,8 +43,8 @@
 
     <com.tokopedia.globalerror.GlobalError
         android:id="@+id/epharmacy_global_error"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:gravity="center"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"

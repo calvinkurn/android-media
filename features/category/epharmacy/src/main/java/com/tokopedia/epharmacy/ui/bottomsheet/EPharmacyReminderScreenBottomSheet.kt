@@ -38,7 +38,7 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
     private var isOutsideWorkingHours = false
     companion object {
         fun newInstance(
-            isOutsideWorkingHours: Boolean,
+            isOutsideWorkingHours: Boolean = false,
             openTime: String,
             closeTime: String,
             reminderType: Int,

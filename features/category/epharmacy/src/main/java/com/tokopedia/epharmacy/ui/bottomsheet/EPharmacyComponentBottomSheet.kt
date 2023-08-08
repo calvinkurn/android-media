@@ -29,13 +29,13 @@ class EPharmacyComponentBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         setUpTitle()
         if(savedInstanceState == null) {
-            childFragmentManager.beginTransaction().replace(R.id.frame_content,
+            childFragmentManager.beginTransaction().replace(R.id.ep_frame_content,
                 EPharmacyQuantityChangeFragment.newInstance()).commit()
         }
     }
 
     private fun setUpTitle() {
-        //setTitle()
+        setTitle("Perubahan jumlah pesanan")
     }
 
     companion object {

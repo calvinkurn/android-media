@@ -45,7 +45,7 @@ class EPharmacyAdapterFactoryImpl(private val ePharmacyListener: EPharmacyListen
             EPharmacyPrescriptionViewHolder.LAYOUT -> EPharmacyPrescriptionViewHolder(view, ePharmacyListener)
             EPharmacyProductViewHolder.LAYOUT -> EPharmacyProductViewHolder(view)
             EPharmacyAttachmentViewHolder.LAYOUT -> EPharmacyAttachmentViewHolder(view, ePharmacyListener)
-            EPharmacyAccordionProductItemViewHolder.LAYOUT -> EPharmacyAccordionProductItemViewHolder(view)
+            EPharmacyAccordionProductItemViewHolder.LAYOUT -> EPharmacyAccordionProductItemViewHolder(view, ePharmacyListener)
             EPharmacyTickerViewHolder.LAYOUT -> EPharmacyTickerViewHolder(view)
             EPharmacyShimmerViewHolder.LAYOUT -> EPharmacyShimmerViewHolder(view)
             else -> super.createViewHolder(view, type)

@@ -46,6 +46,7 @@ import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_NAME
 import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_IS_ONLY_CONSULT
+import com.tokopedia.epharmacy.utils.EPHARMACY_NOTE
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
 import com.tokopedia.epharmacy.utils.EPharmacyAttachmentUiUpdater
 import com.tokopedia.epharmacy.utils.EPharmacyButtonState
@@ -64,7 +65,6 @@ import com.tokopedia.epharmacy.utils.SHIMMER_COMPONENT_1
 import com.tokopedia.epharmacy.utils.SHIMMER_COMPONENT_2
 import com.tokopedia.epharmacy.utils.TYPE_DOCTOR_NOT_AVAILABLE_REMINDER
 import com.tokopedia.epharmacy.utils.UPLOAD_PAGE_SOURCE_PAP
-import com.tokopedia.epharmacy.utils.WEB_LINK_PREFIX
 import com.tokopedia.epharmacy.utils.openDocument
 import com.tokopedia.epharmacy.viewmodel.EPharmacyPrescriptionAttachmentViewModel
 import com.tokopedia.globalerror.GlobalError
@@ -298,20 +298,17 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                 consultationResponse.epharmacyGroupId ?: "",
                 consultationResponse.getInitiateConsultation?.initiateConsultationData?.consultationSource?.id.toString()
             )
-            activity?.let { safeContext ->
-                RouteManager.getIntent(activity, EPHARMACY_CHECKOUT_APPLINK).apply {
-                    putExtra(EPHARMACY_GROUP_ID, consultationResponse.epharmacyGroupId)
-                    putExtra(EPHARMACY_ENABLER_ID, consultationResponse.getInitiateConsultation?.initiateConsultationData?.consultationSource?.id.toString())
-                    putExtra(EPHARMACY_TOKO_CONSULTATION_ID, consultationResponse.getInitiateConsultation?.initiateConsultationData?.tokoConsultationId)
-                }.also {
-                    startActivityForResult(it, 11111)
-                }
-                // TODO Remove
-//                startActivityForResult(
-//                    RouteManager.getIntent(safeContext, "${WEB_LINK_PREFIX}${consultationResponse.getInitiateConsultation?.initiateConsultationData?.consultationSource?.pwaLink}"),
-//                    EPHARMACY_MINI_CONSULTATION_REQUEST_CODE
-//                )
-            }
+            openEPharmacyGeneralCheckoutPage(consultationResponse)
+        }
+    }
+
+    private fun openEPharmacyGeneralCheckoutPage(consultationResponse: EPharmacyInitiateConsultationResponse) {
+        RouteManager.getIntent(activity, EPHARMACY_CHECKOUT_APPLINK).apply {
+            putExtra(EPHARMACY_GROUP_ID, consultationResponse.epharmacyGroupId)
+            putExtra(EPHARMACY_ENABLER_ID, consultationResponse.getInitiateConsultation?.initiateConsultationData?.consultationSource?.id.toString())
+            putExtra(EPHARMACY_TOKO_CONSULTATION_ID, consultationResponse.getInitiateConsultation?.initiateConsultationData?.tokoConsultationId)
+        }.also {
+            startActivityForResult(it, 11111)
         }
     }
 
@@ -489,7 +486,8 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             model.prescriptionCTA,
             model.tokoConsultationId,
             model.price,
-            model.duration
+            model.duration,
+            model.note
         )
         EPharmacyMiniConsultationAnalytics.clickAttachPrescriptionButton(
             model.prescriptionCTA?.title ?: "",
@@ -529,17 +527,18 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         prescriptionCTA: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionCTA?,
         tokoConsultationId: String?,
         price: String?,
-        duration: String?
+        duration: String?,
+        note: String?
     ) {
         when (prescriptionCTA?.actionType) {
             PrescriptionActionType.REDIRECT_PWA.type -> {
-                startAttachmentChooser(chooserLogo, groupId, enablerName, price, duration, true)
+                startAttachmentChooser(chooserLogo, groupId, enablerName, price, duration, note, true)
             }
             PrescriptionActionType.REDIRECT_UPLOAD.type -> {
                 startPhotoUpload(enablerName, groupId)
             }
             PrescriptionActionType.REDIRECT_OPTION.type -> {
-                startAttachmentChooser(chooserLogo, groupId, enablerName, price, duration)
+                startAttachmentChooser(chooserLogo, groupId, enablerName, price, duration, note)
             }
             PrescriptionActionType.REDIRECT_PRESCRIPTION.type -> {
                 tokoConsultationId?.let {
@@ -560,6 +559,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         enablerName: String?,
         price: String?,
         duration: String?,
+        note: String?,
         isOnlyConsult: Boolean = false
     ) {
         RouteManager.getIntent(activity, EPHARMACY_CHOOSER_APPLINK).apply {
@@ -568,6 +568,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             putExtra(EPHARMACY_ENABLER_NAME, enablerName)
             putExtra(EPHARMACY_CONS_PRICE, price)
             putExtra(EPHARMACY_CONS_DURATION, duration)
+            putExtra(EPHARMACY_NOTE, note)
             putExtra(EPHARMACY_IS_ONLY_CONSULT, isOnlyConsult)
         }.also {
             startActivityForResult(it, EPHARMACY_CHOOSER_REQUEST_CODE)

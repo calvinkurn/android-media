@@ -124,6 +124,8 @@ data class EPharmacyPrepareProductsGroupResponse(
                     val pwaLink: String?,
                     @SerializedName("price")
                     val price: String? = "",
+                    @SerializedName("note")
+                    val note: String?,
                     @SerializedName("status")
                     val status: String?
                 ) : Parcelable {
@@ -206,24 +208,23 @@ data class EPharmacyPrepareProductsGroupResponse(
                         @SerializedName("quantity")
                         val quantity: String?,
                         @SerializedName("qty_comparison")
-                        val qtyComparison: QtyComparison?
+                        val qtyComparison: QtyComparison?,
+                        @SerializedName("price")
+                        val price: Double?,
                     ) : Parcelable {
                         @Parcelize
                         data class QtyComparison(
                             @SerializedName("initial_qty")
                             var initialQty: Int?,
                             @SerializedName("recommended_qty")
-                            val recommendedQty: Int?
+                            val recommendedQty: Int?,
+                            @SerializedName("current_qty")
+                            var currentQty: Int = 0,
+                            @SerializedName("price")
+                            val productPrice: Double?
                         ) : Parcelable
                     }
                 }
-
-                data class QuantityChangedModel (
-                    var productQuantity: Int? = 0,
-                    var productPrice: Double? = 0.0,
-                    var medicalQuantity: Int? = 0,
-                    var currentQuantity: Int? = 0,
-                )
             }
         }
     }

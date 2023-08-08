@@ -3,6 +3,7 @@ package com.tokopedia.epharmacy.ui.bottomsheet
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,7 @@ import com.tokopedia.epharmacy.utils.*
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class EPharmacyChooserBottomSheet : BottomSheetUnify() {
@@ -26,6 +28,7 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
     private var enablerName = ""
     private var duration = ""
     private var price = ""
+    private var note = ""
     private var isOnlyConsultation = false
     companion object {
         fun newInstance(
@@ -34,6 +37,7 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
             enablerName: String,
             price: String?,
             duration: String?,
+            note: String?,
             isOnlyConsult: Boolean
         ): EPharmacyChooserBottomSheet {
             return EPharmacyChooserBottomSheet().apply {
@@ -49,6 +53,7 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
                     putString(EPHARMACY_ENABLER_NAME, enablerName)
                     putString(EPHARMACY_CONS_PRICE, price)
                     putString(EPHARMACY_CONS_DURATION, duration)
+                    putString(EPHARMACY_NOTE, note)
                     putBoolean(EPHARMACY_IS_ONLY_CONSULT, isOnlyConsult)
                 }
             }
@@ -96,6 +101,7 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
         enablerName = arguments?.getString(EPHARMACY_ENABLER_NAME) ?: ""
         price = arguments?.getString(EPHARMACY_CONS_PRICE) ?: ""
         duration = arguments?.getString(EPHARMACY_CONS_DURATION) ?: ""
+        note = arguments?.getString(EPHARMACY_NOTE) ?: ""
         isOnlyConsultation = arguments?.getBoolean(EPHARMACY_IS_ONLY_CONSULT) ?: false
     }
 
@@ -127,10 +133,24 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
                 chooserMiniConsultation.parent.setOnClickListener {
                     miniConsultationAction()
                 }
+
+                renderNote(note)
+
                 if (duration.isNotBlank() || price.isNotBlank()) {
                     chooserMiniConsultation.payGroup.show()
                     chooserMiniConsultation.durationValue.text = duration
                     chooserMiniConsultation.feeValue.text = price
+                }
+            }
+        }
+    }
+
+    private fun renderNote(note: String) {
+        if(note.isNotBlank()){
+            context?.let {
+                binding?.chooserMiniConsultation?.noteLl?.show()
+                context?.let {
+                    binding?.chooserMiniConsultation?.noteText?.text = EPharmacyUtils.getTextFromHtml(note)
                 }
             }
         }

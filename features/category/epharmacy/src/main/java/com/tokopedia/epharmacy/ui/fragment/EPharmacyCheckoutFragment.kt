@@ -89,7 +89,7 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
     }
 
     private fun setUpObservers() {
-        observerEPharmacyDetail()
+        observerAtcDetail()
         observerEPharmacyCheckoutGeneral()
     }
 
@@ -106,7 +106,7 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
         ePharmacyCheckoutViewModel?.getEPharmacyAtcData(EPharmacyUtils.createAtcParams(groupId, enablerId, tConsultationId, ePharmacyCheckoutParams))
     }
 
-    private fun observerEPharmacyDetail() {
+    private fun observerAtcDetail() {
         ePharmacyCheckoutViewModel?.ePharmacyAtcData?.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {

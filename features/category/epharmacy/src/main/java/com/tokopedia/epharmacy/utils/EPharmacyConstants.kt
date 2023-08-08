@@ -19,6 +19,7 @@ const val EPHARMACY_ENABLER_ID = "epharmacy_enabler_id"
 const val EPHARMACY_TOKO_CONSULTATION_ID = "epharmacy_toko_consultation_id"
 const val EPHARMACY_CONS_DURATION = "epharmacy_cons_duration"
 const val EPHARMACY_CONS_PRICE = "epharmacy_cons_price"
+const val EPHARMACY_NOTE = "epharmacy_note"
 const val EPHARMACY_IS_ONLY_CONSULT = "epharmacy_is_only_consult"
 
 const val STATIC_INFO_COMPONENT = "static info component"
@@ -104,6 +105,9 @@ const val UTC = "UTC"
 
 const val WEB_LINK_PREFIX = "tokopedia://webview?url="
 const val TYPE_DOCTOR_NOT_AVAILABLE_REMINDER = 1
+const val TYPE_OUTSIDE_WORKING_HOURS_REMINDER = 2
+const val DEFAULT_OPEN_TIME = "2001-01-01T03:00:00Z"
+const val DEFAULT_CLOSE_TIME = "2001-01-01T21:00:00Z"
 
 const val ERROR_CODE_OUTSIDE_WORKING_HOUR = 404
 const val REMINDER_ILLUSTRATION_IMAGE = "https://images.tokopedia.net/img/pharmacy-illustration.png"

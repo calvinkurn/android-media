@@ -1,6 +1,7 @@
 package com.tokopedia.epharmacy.component.model
 
 import android.os.Bundle
+import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.epharmacy.adapters.factory.EPharmacyAdapterFactory
 import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup as EG
@@ -18,8 +19,9 @@ data class EPharmacyAttachmentDataModel(
     val consultationString: String?,
     val price: String?,
     val duration: String?,
+    val note: String?,
     val ticker: EG.Ticker?,
-    var quantityChangedModel : EG.QuantityChangedModel?,
+    var quantityChangedModel : EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product.QtyComparison?,
     val prescription: List<EG.ConsultationData.Prescription?>?,
     val partnerConsultationId: String?,
     val tokoConsultationId: String?,
@@ -32,7 +34,8 @@ data class EPharmacyAttachmentDataModel(
     val showUploadWidget: Boolean = false,
     val showDivider: Boolean = true,
     var isError: Boolean = false,
-    var isFirstError: Boolean = false
+    var isFirstError: Boolean = false,
+    var isAccordionEnable: Boolean = true
 ) :
     BaseEPharmacyDataModel {
 
