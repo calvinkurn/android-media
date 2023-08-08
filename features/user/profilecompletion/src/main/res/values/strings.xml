@@ -192,7 +192,7 @@
     <string name="close_account_failed">Yaah, lagi ada gangguan. Tunggu sebentar &amp; coba lagi, ya.</string>
 
     <!--Profile Management-->
-    <string name="title_profile_management_entry_point">PROFILE</string>
-    <string name="subtitle_profile_management_entry_point">Lihat info akun GoTo Anda dalam satu tempat.</string>
+    <string name="profile_management_entry_point_subtitle">Lihat info akun GoTo Anda dalam satu tempat.</string>
+    <string name="profile_management_webview_loader">Memuat data profilmu…</string>
 </resources>
 

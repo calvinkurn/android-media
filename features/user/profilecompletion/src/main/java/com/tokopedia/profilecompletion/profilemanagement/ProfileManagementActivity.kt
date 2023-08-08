@@ -134,6 +134,7 @@ class ProfileManagementActivity: BaseSimpleWebViewActivity(), HasComponent<Profi
         binding?.apply {
             globalError.showWithCondition(state is GetUrlProfileManagementResult.Failed)
             loader.showWithCondition(state is GetUrlProfileManagementResult.Loading)
+            tvLoader.showWithCondition(state is GetUrlProfileManagementResult.Loading)
             parentView.showWithCondition(state is GetUrlProfileManagementResult.Success)
         }
     }
