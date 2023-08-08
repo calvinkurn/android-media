@@ -418,31 +418,6 @@ class CartAdapter constructor(
         }
     }
 
-    fun getCartItemByBundleGroupId(
-        bundleId: String,
-        bundleGroupId: String
-    ): List<CartItemHolderData> {
-        val cartItemHolderDataList = mutableListOf<CartItemHolderData>()
-        loop@ for (data in cartDataList) {
-            if (cartItemHolderDataList.isNotEmpty()) {
-                break@loop
-            }
-            when (data) {
-                is CartGroupHolderData -> {
-                    data.productUiModelList.forEach { cartItemHolderData ->
-                        if (cartItemHolderData.isBundlingItem && cartItemHolderData.bundleId == bundleId && cartItemHolderData.bundleGroupId == bundleGroupId) {
-                            cartItemHolderDataList.add(cartItemHolderData)
-                        }
-                    }
-                }
-
-                hasReachAllShopItems(data) -> break@loop
-            }
-        }
-
-        return cartItemHolderDataList
-    }
-
     fun getCartShopBottomHolderDataFromIndex(shopBottomIndex: Int): CartShopBottomHolderData? {
         val bottomItem = cartDataList[shopBottomIndex]
         return if (bottomItem is CartShopBottomHolderData) {
@@ -498,106 +473,7 @@ class CartAdapter constructor(
         return RecyclerView.NO_POSITION
     }
 
-    fun removeAccordionDisabledItem() {
-        var item: DisabledAccordionHolderData? = null
-        cartDataList.forEach {
-            if (it is DisabledAccordionHolderData) {
-                item = it
-            }
-        }
-
-        item?.let {
-            cartDataList.remove(it)
-        }
-    }
-
     // TODO: remove
-    private fun hasReachAllShopItems(data: Any): Boolean {
-        return data is CartRecentViewHolderData ||
-            data is CartWishlistHolderData ||
-            data is CartTopAdsHeadlineData ||
-            data is CartRecommendationItemHolderData
-    }
-
-    fun setLastItemAlwaysSelected(): Boolean {
-        var cartItemCount = 0
-        getData().forEach outer@{ any ->
-            when (any) {
-                is CartGroupHolderData -> {
-                    any.productUiModelList.forEach {
-                        cartItemCount++
-
-                        if (cartItemCount > 1) {
-                            return@outer
-                        }
-                    }
-                }
-            }
-        }
-
-        if (cartItemCount == 1) {
-            var tmpIndex = 0
-            getData().forEachIndexed { index, any ->
-                when (any) {
-                    is CartGroupHolderData -> {
-                        tmpIndex = index
-                        any.isAllSelected = true
-                        any.productUiModelList.forEach {
-                            it.isSelected = true
-                        }
-                    }
-
-                    is DisabledItemHeaderHolderData, is CartSectionHeaderHolderData -> {
-                        return@forEachIndexed
-                    }
-                }
-            }
-
-            notifyItemChanged(tmpIndex)
-
-            return true
-        }
-
-        return false
-    }
-
-    fun hasAvailableItemLeft(): Boolean {
-        getData().forEach {
-            when (it) {
-                is CartGroupHolderData -> {
-                    if (it.productUiModelList.isNotEmpty()) {
-                        return true
-                    }
-                }
-
-                is DisabledItemHeaderHolderData, is CartSectionHeaderHolderData -> {
-                    return false
-                }
-            }
-        }
-
-        return false
-    }
-
-    fun isAllAvailableItemCheked(): Boolean {
-        getData().forEach {
-            when (it) {
-                is CartGroupHolderData -> {
-                    it.productUiModelList.forEach {
-                        if (!it.isSelected) {
-                            return false
-                        }
-                    }
-                }
-
-                is DisabledItemHeaderHolderData, is CartSectionHeaderHolderData -> {
-                    return true
-                }
-            }
-        }
-
-        return true
-    }
 
     fun getData(): ArrayList<Any> {
         return cartDataList
@@ -605,32 +481,6 @@ class CartAdapter constructor(
 
     fun setCoachMark(coachMark: CoachMark2) {
         plusCoachMark = coachMark
-    }
-
-    fun updateAddOnByCartId(cartId: String, newAddOnWording: String, selectedAddons: List<AddOnUIModel>) {
-        val position: Int
-        loop@ for ((index, item) in cartDataList.withIndex()) {
-            if (item is CartItemHolderData) {
-                if (item.cartId == cartId) {
-                    position = index
-                    item.addOnsProduct.widget.wording = newAddOnWording
-                    item.addOnsProduct.listData.clear()
-                    selectedAddons.forEach {
-                        item.addOnsProduct.listData.add(
-                            CartAddOnProductData(
-                                id = it.id,
-                                uniqueId = it.uniqueId,
-                                status = it.getSelectedStatus().value,
-                                type = it.addOnType,
-                                price = it.price.toDouble()
-                            )
-                        )
-                    }
-                    notifyItemChanged(position)
-                    break@loop
-                }
-            }
-        }
     }
 
     override fun onNeedToRefreshSingleProduct(childPosition: Int) {

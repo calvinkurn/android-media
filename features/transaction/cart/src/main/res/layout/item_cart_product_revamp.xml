@@ -524,7 +524,7 @@
             app:layout_constraintStart_toEndOf="@id/iu_image_product"
             app:layout_constraintTop_toBottomOf="@+id/item_addon_cart"
             app:lottie_autoPlay="false"
-            app:lottie_rawRes="@raw/anim_add_note" />
+            app:lottie_rawRes="@raw/anim_cart_note" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/button_toggle_wishlist"
@@ -571,27 +571,6 @@
             app:layout_constraintTop_toBottomOf="@id/qty_editor_product"
             app:typographyType="display_3"
             tools:text="Min. beli 2" />
-
-        <!--        <androidx.constraintlayout.widget.Group-->
-        <!--            android:id="@+id/container_product_action"-->
-        <!--            android:layout_width="0dp"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_marginTop="16dp"-->
-        <!--            tools:visibility="invisible"-->
-        <!--            app:layout_constraintStart_toEndOf="@id/button_change_note"-->
-        <!--            app:layout_constraintTop_toBottomOf="@+id/item_addon_cart"-->
-        <!--            app:layout_constraintEnd_toEndOf="parent"-->
-        <!--            app:constraint_referenced_ids="button_toggle_wishlist,button_change_note" />-->
-
-        <!--        <androidx.constraintlayout.widget.Group-->
-        <!--            android:id="@+id/container_product_quantity_action"-->
-        <!--            android:layout_width="0dp"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            tools:visibility="invisible"-->
-        <!--            app:layout_constraintStart_toEndOf="@id/button_change_note"-->
-        <!--            app:layout_constraintTop_toBottomOf="@+id/item_addon_cart"-->
-        <!--            app:layout_constraintEnd_toEndOf="parent"-->
-        <!--            app:constraint_referenced_ids="qty_editor_product" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
