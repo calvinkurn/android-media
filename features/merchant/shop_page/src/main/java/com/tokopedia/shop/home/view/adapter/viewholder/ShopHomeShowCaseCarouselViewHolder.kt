@@ -20,7 +20,7 @@ class ShopHomeShowCaseCarouselViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_showcase_carousel_banner
-        private const val SHOW_VIEW_ALL_SHOWCASE_THRESHOLD = 5
+        private const val SHOW_VIEW_ALL_SHOWCASE_THRESHOLD = 12
     }
 
     private val viewBinding: ItemShopHomeShowcaseCarouselBannerBinding? by viewBinding()
