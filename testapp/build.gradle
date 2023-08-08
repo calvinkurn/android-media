@@ -148,8 +148,4 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
-	implementation projectOrAar(rootProject.ext.features.report)
-	implementation projectOrAar(rootProject.ext.features.sellerSearch)
-	implementation projectOrAar(rootProject.ext.features.logisticseller)
-	implementation projectOrAar(rootProject.ext.features.campaignList)
 }
