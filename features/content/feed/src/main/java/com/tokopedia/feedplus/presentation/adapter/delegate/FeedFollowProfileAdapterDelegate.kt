@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.feedplus.presentation.adapter.FeedFollowProfileAdapter
+import com.tokopedia.feedplus.presentation.adapter.FeedFollowRecommendationPayload
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedFollowRecommendationListener
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedFollowProfileViewHolder
 import com.tokopedia.content.common.R as contentCommonR
@@ -30,6 +31,21 @@ class FeedFollowProfileAdapterDelegate private constructor() {
             holder: FeedFollowProfileViewHolder.Profile
         ) {
             holder.bind(item)
+        }
+
+        override fun onBindViewHolderWithPayloads(
+            item: FeedFollowProfileAdapter.Model.Profile,
+            holder: FeedFollowProfileViewHolder.Profile,
+            payloads: Bundle
+        ) {
+            val isSelectedChanged = FeedFollowRecommendationPayload.isSelectedChanged(payloads)
+            if (isSelectedChanged) {
+                if (item.isSelected) {
+                    holder.onSelected()
+                } else {
+                    holder.onUnselected()
+                }
+            }
         }
 
         override fun onCreateViewHolder(

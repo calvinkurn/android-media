@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.presentation.adapter
 
+import android.os.Bundle
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
@@ -51,6 +52,18 @@ class FeedFollowProfileAdapter(
 
     override fun areContentsTheSame(oldItem: Model, newItem: Model): Boolean {
         return oldItem == newItem
+    }
+
+    override fun getChangePayload(oldItem: Model, newItem: Model): Bundle? {
+        if (oldItem is Model.Profile && newItem is Model.Profile) {
+            if (oldItem.isSelected != newItem.isSelected) {
+                return FeedFollowRecommendationPayload().apply {
+                    isSelectedChanged = true
+                }.create()
+            }
+        }
+
+        return null
     }
 
     sealed interface Model {
