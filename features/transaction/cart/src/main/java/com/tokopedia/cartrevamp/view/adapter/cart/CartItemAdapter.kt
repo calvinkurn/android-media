@@ -1,6 +1,7 @@
 package com.tokopedia.cartrevamp.view.adapter.cart
 
 import android.widget.ImageView
+import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import com.tokopedia.iconunify.IconUnify
@@ -16,7 +17,7 @@ class CartItemAdapter {
         fun onCartItemCheckChanged(position: Int, cartItemHolderData: CartItemHolderData)
         fun onBundleItemCheckChanged(cartItemHolderData: CartItemHolderData)
         fun onWishlistCheckChanged(cartItemHolderData: CartItemHolderData, wishlistIcon: IconUnify, animatedWishlistImage: ImageView, position: Int)
-        fun onNoteClicked(cartItemHolderData: CartItemHolderData)
+        fun onNoteClicked(cartItemHolderData: CartItemHolderData, noteIcon: ImageView, noteLottieIcon: LottieAnimationView, position: Int)
         fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData, itemPosition: Int)
         fun onNeedToRefreshWeight(cartItemHolderData: CartItemHolderData)
         fun onNeedToRecalculate()

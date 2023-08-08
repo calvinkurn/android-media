@@ -3,6 +3,7 @@ package com.tokopedia.cartrevamp.view.uimodel
 import android.widget.ImageView
 import androidx.lifecycle.LiveData
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.atcexternal.AddToCartExternalModel
 import com.tokopedia.cartcommon.data.response.common.OutOfService
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
@@ -52,6 +53,11 @@ sealed class CartGlobalEvent {
 
     data class UpdateCartShopGroupTicker(
         val cartGroupHolderData: CartGroupHolderData
+    ) : CartGlobalEvent()
+
+    data class OnNeedUpdateWishlistAdapterData(
+        val wishlistHolderData: CartWishlistHolderData,
+        val wishlistIndex: Int
     ) : CartGlobalEvent()
 }
 
@@ -181,6 +187,11 @@ sealed interface UpdateCartPromoState {
 sealed interface SeamlessLoginEvent {
     data class Success(val url: String) : SeamlessLoginEvent
     data class Failed(val msg: String) : SeamlessLoginEvent
+}
+
+sealed interface AddToCartExternalEvent {
+    data class Success(val model: AddToCartExternalModel) : AddToCartExternalEvent
+    data class Failed(val throwable: Throwable) : AddToCartExternalEvent
 }
 
 @Suppress("UNCHECKED_CAST")

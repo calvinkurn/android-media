@@ -28,8 +28,7 @@
         app:layout_constraintStart_toEndOf="@id/iv_addon_check"
         android:layout_marginStart="6dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Jasa Pasang Standard (Rp100.000)"/>
+        android:layout_marginBottom="8dp"/>
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iv_addon_chevron"

@@ -63,6 +63,7 @@ data class CartItemHolderData(
     var butuhResepText: String = "",
     var butuhResepIconUrl: String = "",
     var isFinalItem: Boolean = false,
+    var isAlreadyShowMinimumQuantityPurchasedError: Boolean = false,
 
     // OWOC
     var shopHolderData: CartShopHolderData = CartShopHolderData(),

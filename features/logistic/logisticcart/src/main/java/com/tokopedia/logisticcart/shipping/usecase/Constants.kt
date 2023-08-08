@@ -10,15 +10,15 @@ query $queryName(${"$"}param : OngkirRatesV3Input!) {
       id
       rates_id
       type
-      #origin {
-      #  city_id
-      #  city_name
-      #}
-      #destination {
-      #  city_id
-      #  city_name
-      #}
-      #weight
+      origin {
+        city_id
+        city_name
+      }
+      destination {
+        city_id
+        city_name
+      }
+      weight
       error {
         error_id
         error_message
@@ -168,8 +168,8 @@ query $queryName(${"$"}param : OngkirRatesV3Input!) {
         service_id
         is_applied
         image_url
-        #image_url_chosen
-        #quota
+        image_url_chosen
+        quota
         discounted_rate
         shipping_rate
         benefit_amount
@@ -218,8 +218,8 @@ query $queryName(${"$"}param : OngkirRatesV3Input!) {
         service_id
         is_applied
         image_url
-        #image_url_chosen
-        #quota
+        image_url_chosen
+        quota
         discounted_rate
         shipping_rate
         benefit_amount
@@ -277,15 +277,15 @@ internal fun ratesQuery() = """
         ratesv3 {
           id
           rates_id
-          #origin {
-          #  city_id
-          #  city_name
-          #}
-          #destination {
-          #  city_id
-          #  city_name
-          #}
-          #weight
+          origin {
+            city_id
+            city_name
+          }
+          destination {
+            city_id
+            city_name
+          }
+          weight
           type
           error {
             error_id
@@ -436,8 +436,8 @@ internal fun ratesQuery() = """
             service_id
             is_applied
             image_url
-            #image_url_chosen
-            #quota
+            image_url_chosen
+            quota
             discounted_rate
             shipping_rate
             benefit_amount
@@ -486,8 +486,8 @@ internal fun ratesQuery() = """
             service_id
             is_applied
             image_url
-            #image_url_chosen
-            #quota
+            image_url_chosen
+            quota
             discounted_rate
             shipping_rate
             benefit_amount

@@ -9,7 +9,6 @@ import android.text.style.StyleSpan
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -43,14 +42,13 @@ class ShippingDurationViewHolder(itemView: View, private val cartPosition: Int) 
     private val tvPriceOrDuration: TextView = itemView.findViewById(R.id.tv_price_or_duration)
     private val tvTextDesc: TextView = itemView.findViewById(R.id.tv_text_desc)
     private val imgCheck: IconUnify = itemView.findViewById(R.id.img_check)
-    private val rlContent: RelativeLayout = itemView.findViewById(R.id.rl_content)
+    private val layoutShippingDuration: ConstraintLayout = itemView.findViewById(R.id.layout_shipping_duration)
     private val tvOrderPrioritas: TextView = itemView.findViewById(R.id.tv_order_prioritas)
     private val tvShippingInformation: Typography = itemView.findViewById(R.id.tv_shipping_information)
     private val labelCodAvailableEta: Label = itemView.findViewById(R.id.lbl_cod_available_eta)
     private val tvMvcError: Typography = itemView.findViewById(R.id.tv_mvc_error)
     private val imgMvc: ImageView = itemView.findViewById(R.id.img_mvc)
     private val tvMvc: Typography = itemView.findViewById(R.id.tv_mvc_text)
-    private val layoutMvc: ConstraintLayout = itemView.findViewById(R.id.layout_mvc)
     private val flDisableContainer: FrameLayout = itemView.findViewById(R.id.fl_container)
     private val labelDynamicPricing: Label = itemView.findViewById(R.id.lbl_dynamic_pricing)
 
@@ -95,20 +93,20 @@ class ShippingDurationViewHolder(itemView: View, private val cartPosition: Int) 
 
         /*MVC*/
         if (shippingDurationUiModel.merchantVoucherModel.isMvc == 1) {
-            layoutMvc.visibility = View.VISIBLE
+            flDisableContainer.visibility = View.VISIBLE
             flDisableContainer.foreground = ContextCompat.getDrawable(flDisableContainer.context, R.drawable.fg_enabled_item)
             ImageHandler.LoadImage(imgMvc, shippingDurationUiModel.merchantVoucherModel.mvcLogo)
             tvMvc.text = shippingDurationUiModel.merchantVoucherModel.mvcTitle
             tvMvcError.visibility = View.GONE
         } else if (shippingDurationUiModel.merchantVoucherModel.isMvc == -1) {
-            layoutMvc.visibility = View.VISIBLE
+            flDisableContainer.visibility = View.VISIBLE
             flDisableContainer.foreground = ContextCompat.getDrawable(flDisableContainer.context, R.drawable.fg_disabled_item)
             ImageHandler.LoadImage(imgMvc, shippingDurationUiModel.merchantVoucherModel.mvcLogo)
             tvMvc.text = shippingDurationUiModel.merchantVoucherModel.mvcTitle
             tvMvcError.visibility = View.VISIBLE
             tvMvcError.text = shippingDurationUiModel.merchantVoucherModel.mvcErrorMessage
         } else {
-            layoutMvc.visibility = View.GONE
+            flDisableContainer.visibility = View.GONE
             tvMvcError.visibility = View.GONE
         }
 
@@ -161,7 +159,7 @@ class ShippingDurationViewHolder(itemView: View, private val cartPosition: Int) 
     private fun setShowCase() {
         val label = itemView.context.getString(R.string.label_title_showcase_shipping_duration)
         val text = itemView.context.getString(R.string.label_body_showcase_shipping_duration)
-        val showCase = ShowCaseObject(rlContent, label, text, ShowCaseContentPosition.UNDEFINED)
+        val showCase = ShowCaseObject(layoutShippingDuration, label, text, ShowCaseContentPosition.UNDEFINED)
         val showCaseObjectList = ArrayList<ShowCaseObject>()
         showCaseObjectList.add(showCase)
         val showCaseDialog = createShowCaseDialog()

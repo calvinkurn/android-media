@@ -1,5 +1,6 @@
 package com.tokopedia.cartrevamp.view
 
+import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -10,6 +11,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,6 +33,7 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
+import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
@@ -70,12 +73,14 @@ import com.tokopedia.cartrevamp.view.bottomsheet.showSummaryTransactionBottomshe
 import com.tokopedia.cartrevamp.view.compoundview.CartToolbarListener
 import com.tokopedia.cartrevamp.view.decorator.CartItemDecoration
 import com.tokopedia.cartrevamp.view.di.DaggerCartRevampComponent
+import com.tokopedia.cartrevamp.view.helper.CartDataHelper
 import com.tokopedia.cartrevamp.view.mapper.CartUiModelMapper
 import com.tokopedia.cartrevamp.view.mapper.PromoRequestMapper
 import com.tokopedia.cartrevamp.view.mapper.RecentViewMapper
 import com.tokopedia.cartrevamp.view.mapper.WishlistMapper
 import com.tokopedia.cartrevamp.view.uimodel.AddCartToWishlistV2Event
 import com.tokopedia.cartrevamp.view.uimodel.AddToCartEvent
+import com.tokopedia.cartrevamp.view.uimodel.AddToCartExternalEvent
 import com.tokopedia.cartrevamp.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.cartrevamp.view.uimodel.CartCheckoutButtonState
 import com.tokopedia.cartrevamp.view.uimodel.CartGlobalEvent
@@ -127,7 +132,6 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
-import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics
@@ -282,23 +286,11 @@ class CartRevampFragment :
         private const val SPAN_SIZE_ONE = 1
         private const val SPAN_SIZE_TWO = 2
 
-        const val GET_CART_STATE_AFTER_CHOOSE_ADDRESS = 1
-
         const val HAS_ELEVATION = 9
         const val NO_ELEVATION = 0
         const val CART_TRACE = "mp_cart"
         const val CART_ALL_TRACE = "mp_cart_all"
         const val CART_PAGE = "cart"
-        const val NAVIGATION_PDP = 123
-        const val NAVIGATION_SHOP_PAGE = 234
-        const val NAVIGATION_WISHLIST = 345
-        const val NAVIGATION_PROMO = 456
-        const val NAVIGATION_SHIPMENT = 567
-        const val NAVIGATION_TOKONOW_HOME_PAGE = 678
-        const val NAVIGATION_EDIT_BUNDLE = 789
-        const val NAVIGATION_VERIFICATION = 890
-        const val NAVIGATION_APPLINK = 809
-        const val NAVIGATION_ADDON = 808
         const val WISHLIST_SOURCE_AVAILABLE_ITEM = "WISHLIST_SOURCE_AVAILABLE_ITEM"
         const val WISHLIST_SOURCE_UNAVAILABLE_ITEM = "WISHLIST_SOURCE_UNAVAILABLE_ITEM"
         const val WORDING_GO_TO_HOMEPAGE = "Kembali ke Homepage"
@@ -308,12 +300,6 @@ class CartRevampFragment :
         const val PROMO_ANIMATION_DURATION = 500L
         const val SELECTED_AMOUNT_ANIMATION_DURATION = 500L
         const val DELAY_CHECK_BOX_GLOBAL = 500L
-        const val ANIMATED_IMAGE_ALPHA = 0.5f
-        const val ANIMATED_IMAGE_FILLED = 1.0f
-        const val ANIMATED_SCALE_HALF = 0.5f
-        const val ANIMATED_SCALE_FULL = 1.0f
-        const val IMAGE_ANIMATION_DURATION = 1250L
-        const val COORDINATE_HEIGHT_DIVISOR = 3
         const val KEY_OLD_BUNDLE_ID = "old_bundle_id"
         const val KEY_NEW_BUNLDE_ID = "new_bundle_id"
         const val KEY_IS_CHANGE_VARIANT = "is_variant_changed"
@@ -384,6 +370,25 @@ class CartRevampFragment :
         }
 
         initActivityLauncher()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        plusCoachMark = CoachMark2(context ?: requireContext())
+        plusCoachMark?.let {
+            cartAdapter.setCoachMark(it)
+        }
+
+        // Check if currently not refreshing, not ATC external flow and not on error state
+        if (refreshHandler?.isRefreshing == false && !isAtcExternalFlow() && binding?.layoutGlobalError?.visibility != View.VISIBLE) {
+            if (!::cartAdapter.isInitialized || (::cartAdapter.isInitialized && cartAdapter.itemCount == 0)) {
+                viewModel.processInitialGetCartData(
+                    getCartId(),
+                    viewModel.cartDataList.value == null,
+                    true
+                )
+            }
+        }
     }
 
     override fun onCreateView(
@@ -467,7 +472,7 @@ class CartRevampFragment :
     override fun onShopItemCheckChanged(index: Int, checked: Boolean) {
         viewModel.cartModel.hasPerformChecklistChange = true
         viewModel.setShopSelected(index, checked)
-        viewModel.reCalculateSubTotal(viewModel.getAllAvailableShopGroupDataList())
+        viewModel.reCalculateSubTotal()
         val data = viewModel.cartDataList.value[index]
         var isCollapsed = false
         var productSize = 1
@@ -485,7 +490,7 @@ class CartRevampFragment :
             onNeedToUpdateMultipleViewItem(index, productSize + 1)
         }
         validateGoToCheckout()
-        viewModel.saveCheckboxState(viewModel.getAllAvailableCartItemHolderData())
+        viewModel.saveCheckboxState()
 
         val params = viewModel.generateParamGetLastApplyPromo()
         if (isNeedHitUpdateCartAndValidateUse(params)) {
@@ -541,7 +546,7 @@ class CartRevampFragment :
             binding?.goToCourierPageButton?.isEnabled = false
             binding?.vDisabledGoToCourierPageButton?.show()
             binding?.vDisabledGoToCourierPageButton?.setOnClickListener {
-                if (viewModel.getAllAvailableCartItemData().isNotEmpty()) {
+                if (CartDataHelper.getAllAvailableCartItemData(viewModel.cartDataList.value).isNotEmpty()) {
                     showToastMessageGreen(getString(R.string.message_no_cart_item_selected))
                 }
             }
@@ -664,8 +669,10 @@ class CartRevampFragment :
 
         recommendationItemClick?.let {
             cartPageAnalytics.enhancedEcommerceClickProductRecommendationOnEmptyCart(
-                viewModel.generateRecommendationDataOnClickAnalytics(it,
-                    FLAG_IS_CART_EMPTY, index)
+                viewModel.generateRecommendationDataOnClickAnalytics(
+                    it,
+                    FLAG_IS_CART_EMPTY, index
+                )
             )
         }
 
@@ -745,8 +752,6 @@ class CartRevampFragment :
 
     override fun onDeleteAllDisabledProduct() {
         val allDisabledCartItemDataList = viewModel.getAllDisabledCartItemData()
-        val allCartItemDataList = viewModel.getAllCartItemData()
-
         for (cartItemData in allDisabledCartItemDataList) {
             if (cartItemData.selectedUnavailableActionId == Action.ACTION_CHECKOUTBROWSER) {
                 cartPageAnalytics.eventClickHapusButtonOnProductContainTobacco()
@@ -758,7 +763,8 @@ class CartRevampFragment :
         )
 
         if (allDisabledCartItemDataList.isNotEmpty()) {
-            val dialog = getMultipleDisabledItemsDialogDeleteConfirmation(allDisabledCartItemDataList.size)
+            val dialog =
+                getMultipleDisabledItemsDialogDeleteConfirmation(allDisabledCartItemDataList.size)
             dialog?.setPrimaryCTAClickListener {
                 var forceExpand = false
                 if (allDisabledCartItemDataList.size > 1 && unavailableItemAccordionCollapseState) {
@@ -766,7 +772,6 @@ class CartRevampFragment :
                     forceExpand = true
                 }
                 viewModel.processDeleteCartItem(
-                    allCartItemDataList,
                     allDisabledCartItemDataList,
                     false,
                     forceExpand
@@ -801,8 +806,6 @@ class CartRevampFragment :
             onNeedToUpdateViewItem(index - 1 - cartShopBottomHolderData.shopData.productUiModelList.size)
             val layoutManager: RecyclerView.LayoutManager? = binding?.rvCart?.layoutManager
             if (layoutManager != null) {
-                // TODO: remove offset
-//                val offset = resources.getDimensionPixelOffset(R.dimen.dp_40)
                 (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
                     index - 1 - cartShopBottomHolderData.shopData.productUiModelList.size,
                     0
@@ -832,7 +835,6 @@ class CartRevampFragment :
     }
 
     override fun onCollapsedProductClicked(index: Int, cartItemHolderData: CartItemHolderData) {
-        // TODO: change logic
         val (shopIndex, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(
             cartItemHolderData.cartString,
             false
@@ -912,12 +914,10 @@ class CartRevampFragment :
 
     override fun onGlobalDeleteClicked() {
         cartPageAnalytics.eventClickGlobalDelete()
-        val allCartItemDataList = viewModel.getAllCartItemData()
         val deletedCartItems = viewModel.getSelectedCartItemData()
         val dialog = getMultipleItemsDialogDeleteConfirmation(deletedCartItems.size)
         dialog?.setPrimaryCTAClickListener {
             viewModel.processDeleteCartItem(
-                allCartItemData = allCartItemDataList,
                 removedCartItems = deletedCartItems,
                 addWishList = false,
                 isFromGlobalCheckbox = true
@@ -956,7 +956,6 @@ class CartRevampFragment :
         if (isFromDeleteButton) {
             cartPageAnalytics.eventClickAtcCartClickTrashBin()
         }
-        val allCartItemDataList = viewModel.getAllCartItemData()
         val toBeDeletedProducts = mutableListOf<CartItemHolderData>()
         if (cartItemHolderData.isBundlingItem) {
             val cartGroupHolderData =
@@ -981,7 +980,6 @@ class CartRevampFragment :
             }
 
             viewModel.processDeleteCartItem(
-                allCartItemDataList,
                 toBeDeletedProducts,
                 false,
                 forceExpand
@@ -1008,7 +1006,7 @@ class CartRevampFragment :
     }
 
     override fun onCartItemQuantityInputFormClicked(qty: String) {
-        TODO("Not yet implemented")
+        cartPageAnalytics.eventClickAtcCartClickInputQuantity(qty)
     }
 
     override fun onCartItemLabelInputRemarkClicked() {
@@ -1054,16 +1052,11 @@ class CartRevampFragment :
                 cartItemHolderData.productId
             )
         }
-        val isLastItem = viewModel.getAllCartItemData().size == 1
-        // TODO: remove
-//        var forceExpand = false
-//        if (isError) {
-//            // If unavailable item > 1 and state is collapsed, then expand first
-//            if (viewModel.allDisabledCartItemData.size > 1 && unavailableItemAccordionCollapseState) {
-//                collapseOrExpandDisabledItem()
-//                forceExpand = true
-//            }
-//        }
+        val allCartItemData = CartDataHelper.getAllCartItemData(
+            viewModel.cartDataList.value,
+            viewModel.cartModel
+        )
+        val isLastItem = allCartItemData.size == 1
         if (cartItemHolderData.isWishlisted) {
             viewModel.processAddCartToWishlist(
                 cartItemHolderData.productId,
@@ -1084,7 +1077,12 @@ class CartRevampFragment :
         }
     }
 
-    override fun onNoteClicked(data: CartItemHolderData) {
+    override fun onNoteClicked(
+        data: CartItemHolderData,
+        noteIcon: ImageView,
+        noteLottieIcon: LottieAnimationView,
+        position: Int
+    ) {
         val bottomSheet = CartNoteBottomSheet.newInstance(
             CartNoteBottomSheetData(
                 productName = data.productName,
@@ -1095,6 +1093,7 @@ class CartRevampFragment :
         )
         bottomSheet.setListener(listener = { newNote ->
             data.notes = newNote
+            playNoteAnimation(newNote, noteIcon, noteLottieIcon, position)
         })
         if (bottomSheet.isAdded || childFragmentManager.isStateSaved) return
         bottomSheet.show(childFragmentManager, CartNoteBottomSheet.TAG)
@@ -1124,7 +1123,10 @@ class CartRevampFragment :
 
     override fun onNeedToRefreshWeight(cartItemHolderData: CartItemHolderData) {
         // TODO: fix logic
-        val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(cartItemHolderData.cartString, false)
+        val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(
+            cartItemHolderData.cartString,
+            false
+        )
         if (index >= 0) {
             val shopHeaderData = groupData.first()
             if (shopHeaderData is CartGroupHolderData) {
@@ -1139,7 +1141,7 @@ class CartRevampFragment :
     }
 
     override fun onNeedToRecalculate() {
-        viewModel.reCalculateSubTotal(viewModel.getAllAvailableShopGroupDataList())
+        viewModel.reCalculateSubTotal()
     }
 
     override fun onCartItemQuantityChanged(
@@ -1207,7 +1209,7 @@ class CartRevampFragment :
     }
 
     override fun onShowTickerTobacco() {
-        TODO("Not yet implemented")
+        cartPageAnalytics.eventViewTickerProductContainTobacco()
     }
 
     override fun onSimilarProductUrlClicked(data: CartItemHolderData) {
@@ -1257,12 +1259,14 @@ class CartRevampFragment :
             discountedPrice = cartItemData.productPrice
         }
 
-        val applinkAddon = ApplinkConst.ADDON.replace(AddOnConstant.QUERY_PARAM_ADDON_PRODUCT, productId)
+        val applinkAddon =
+            ApplinkConst.ADDON.replace(AddOnConstant.QUERY_PARAM_ADDON_PRODUCT, productId)
         val applink = UriUtil.buildUriAppendParams(
             applinkAddon,
             mapOf(
                 AddOnConstant.QUERY_PARAM_CART_ID to cartId,
-                AddOnConstant.QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds.toString().replace("[", "").replace("]", ""),
+                AddOnConstant.QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds.toString().replace("[", "")
+                    .replace("]", ""),
                 AddOnConstant.QUERY_PARAM_PAGE_ATC_SOURCE to AddOnConstant.SOURCE_NORMAL_CHECKOUT,
                 AddOnConstant.QUERY_PARAM_WAREHOUSE_ID to cartItemData.warehouseId,
                 AddOnConstant.QUERY_PARAM_IS_TOKOCABANG to cartItemData.isFulfillment,
@@ -1270,7 +1274,8 @@ class CartRevampFragment :
                 AddOnConstant.QUERY_PARAM_SHOP_ID to cartItemData.shopHolderData.shopId,
                 AddOnConstant.QUERY_PARAM_QUANTITY to cartItemData.quantity,
                 AddOnConstant.QUERY_PARAM_PRICE to price.toString().removeSingleDecimalSuffix(),
-                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toString().removeSingleDecimalSuffix()
+                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toString()
+                    .removeSingleDecimalSuffix()
             )
         )
 
@@ -1419,7 +1424,7 @@ class CartRevampFragment :
     }
 
     private fun addToCartExternal(productId: Long) {
-//        dPresenter.processAddToCartExternal(productId)
+        viewModel.processAddToCartExternal(productId)
     }
 
     private fun animatePromoButtonToHiddenPosition(valueY: Float) {
@@ -1819,8 +1824,8 @@ class CartRevampFragment :
         if (isCheckUncheckDirectAction) {
             viewModel.setAllAvailableItemCheck(isChecked)
             viewModel.updateSelectedAmount()
-            viewModel.reCalculateSubTotal(viewModel.getAllAvailableShopGroupDataList())
-            viewModel.saveCheckboxState(viewModel.getAllAvailableCartItemHolderData())
+            viewModel.reCalculateSubTotal()
+            viewModel.saveCheckboxState()
             setSelectedAmountVisibility()
             cartPageAnalytics.eventCheckUncheckGlobalCheckbox(isChecked)
 
@@ -1862,14 +1867,18 @@ class CartRevampFragment :
 
     private fun handleSelectedAmountVisibilityOnScroll(dy: Int) {
         val rlTopLayout = binding?.rlTopLayout ?: return
-        var valueY = rlTopLayout.y - (abs(dy) / 1.5f)
+        val navToolbar = binding?.navToolbar ?: return
+        var valueY = rlTopLayout.y - abs(dy)
+        Log.d("<RESULT>", "dy = $dy")
+        Log.d("<RESULT>", "valueY = $valueY")
+        Log.d("<RESULT>", "initialSelectedAmountPosition = $initialSelectedAmountPosition")
         SELECTED_AMOUNT_TRANSLATION_LENGTH += dy
         if (dy != 0) {
             if (initialSelectedAmountPosition == 0f && SELECTED_AMOUNT_TRANSLATION_LENGTH - dy == 0f) {
-                initialSelectedAmountPosition = binding?.llPromoCheckout?.y ?: 0f
+                initialSelectedAmountPosition = navToolbar.y + navToolbar.height
             }
 
-            if (SELECTED_AMOUNT_TRANSLATION_LENGTH != 0f) {
+            if (SELECTED_AMOUNT_TRANSLATION_LENGTH != 0f && valueY >= initialSelectedAmountPosition) {
                 animateSelectedAmountToHiddenPosition(valueY)
             }
         }
@@ -1908,7 +1917,7 @@ class CartRevampFragment :
 
         val firstVisibleItemData = adapterData[topItemPosition]
 
-        if (viewModel.getAllAvailableCartItemData().isNotEmpty() &&
+        if (CartDataHelper.getAllAvailableCartItemData(adapterData).isNotEmpty() &&
             viewModel.hasSelectedCartItem() &&
             firstVisibleItemData !is CartSelectedAmountHolderData
         ) {
@@ -2035,6 +2044,8 @@ class CartRevampFragment :
 
         observeAddToCart()
 
+        observeAddToCartExternal()
+
         observeCartDataList()
 
         observeCartEvent()
@@ -2130,54 +2141,74 @@ class CartRevampFragment :
     }
 
     private fun observeAddCartToWishlistEvent() {
-        viewModel.addCartToWishlistV2Event.observe(viewLifecycleOwner) { event ->
-            when (event) {
+        viewModel.addCartToWishlistV2Event.observe(viewLifecycleOwner) { addCartToWishlistV2Event ->
+            when (addCartToWishlistV2Event) {
                 is AddCartToWishlistV2Event.Success -> {
                     onAddCartToWishlistSuccess(
-                        event.productId,
-                        event.isLastItem,
-                        event.source,
-                        event.wishlistIcon,
-                        event.animatedWishlistImage
+                        addCartToWishlistV2Event.productId,
+                        addCartToWishlistV2Event.isLastItem,
+                        addCartToWishlistV2Event.source,
+                        addCartToWishlistV2Event.wishlistIcon,
+                        addCartToWishlistV2Event.animatedWishlistImage
                     )
                 }
 
                 is AddCartToWishlistV2Event.Failed -> {
-                    showToastMessageRed(event.throwable)
+                    showToastMessageRed(addCartToWishlistV2Event.throwable)
                 }
             }
         }
     }
 
     private fun observeAddToCart() {
-        viewModel.addToCartEvent.observe(viewLifecycleOwner) { event ->
-            when (event) {
+        viewModel.addToCartEvent.observe(viewLifecycleOwner) { addToCartEvent ->
+            when (addToCartEvent) {
                 is AddToCartEvent.Success -> {
-                    if (event.addToCartDataModel.status.equals(
+                    if (addToCartEvent.addToCartDataModel.status.equals(
                             AddToCartDataModel.STATUS_OK,
                             true
-                        ) && event.addToCartDataModel.data.success == 1
+                        ) && addToCartEvent.addToCartDataModel.data.success == 1
                     ) {
                         triggerSendEnhancedEcommerceAddToCartSuccess(
-                            event.addToCartDataModel,
-                            event.productModel
+                            addToCartEvent.addToCartDataModel,
+                            addToCartEvent.productModel
                         )
                         resetRecentViewList()
                         viewModel.processInitialGetCartData("0", false, false)
-                        if (event.addToCartDataModel.data.message.size > 0) {
-                            showToastMessageGreen(event.addToCartDataModel.data.message[0])
+                        if (addToCartEvent.addToCartDataModel.data.message.size > 0) {
+                            showToastMessageGreen(addToCartEvent.addToCartDataModel.data.message[0])
                             notifyBottomCartParent()
                         }
                     } else {
-                        if (event.addToCartDataModel.errorMessage.size > 0) {
-                            showToastMessageRed(event.addToCartDataModel.errorMessage[0])
+                        if (addToCartEvent.addToCartDataModel.errorMessage.size > 0) {
+                            showToastMessageRed(addToCartEvent.addToCartDataModel.errorMessage[0])
                         }
                     }
                 }
 
                 is AddToCartEvent.Failed -> {
                     hideProgressLoading()
-                    showToastMessageRed(event.throwable)
+                    showToastMessageRed(addToCartEvent.throwable)
+                }
+            }
+        }
+    }
+
+    private fun observeAddToCartExternal() {
+        viewModel.addToCartExternalEvent.observe(viewLifecycleOwner) { addToCartExternalEvent ->
+            when (addToCartExternalEvent) {
+                is AddToCartExternalEvent.Success -> {
+                    hideProgressLoading()
+                    if (addToCartExternalEvent.model.message.isNotEmpty()) {
+                        showToastMessageGreen(addToCartExternalEvent.model.message[0])
+                    }
+                    refreshCartWithSwipeToRefresh()
+                }
+
+                is AddToCartExternalEvent.Failed -> {
+                    hideProgressLoading()
+                    showToastMessageRed(addToCartExternalEvent.throwable)
+                    refreshCartWithSwipeToRefresh()
                 }
             }
         }
@@ -2208,26 +2239,26 @@ class CartRevampFragment :
     }
 
     private fun observeCartTrackerEvent() {
-        viewModel.cartTrackerEvent.observe(viewLifecycleOwner) { event ->
-            when (event) {
+        viewModel.cartTrackerEvent.observe(viewLifecycleOwner) { cartTrackerEvent ->
+            when (cartTrackerEvent) {
                 is CartTrackerEvent.ATCTrackingURLRecent -> {
-                    sendATCTrackingURLRecent(event.productModel)
+                    sendATCTrackingURLRecent(cartTrackerEvent.productModel)
                 }
 
                 is CartTrackerEvent.ATCTrackingURLRecommendation -> {
-                    sendATCTrackingURL(event.recommendationItem)
+                    sendATCTrackingURL(cartTrackerEvent.recommendationItem)
                 }
 
                 is CartTrackerEvent.ATCTrackingURLBanner -> {
-                    sendATCTrackingURL(event.bannerShop)
+                    sendATCTrackingURL(cartTrackerEvent.bannerShop)
                 }
             }
         }
     }
 
     private fun observeCheckoutButton() {
-        viewModel.cartCheckoutButtonState.observe(viewLifecycleOwner) { state ->
-            when (state) {
+        viewModel.cartCheckoutButtonState.observe(viewLifecycleOwner) { data ->
+            when (data) {
                 CartCheckoutButtonState.ENABLE -> onCartDataEnableToCheckout()
                 CartCheckoutButtonState.DISABLE -> onCartDataDisableToCheckout()
             }
@@ -2235,10 +2266,10 @@ class CartRevampFragment :
     }
 
     private fun observeDeleteCartEvent() {
-        viewModel.deleteCartEvent.observe(viewLifecycleOwner) { event ->
-            when (event) {
+        viewModel.deleteCartEvent.observe(viewLifecycleOwner) { deleteCartEvent ->
+            when (deleteCartEvent) {
                 is DeleteCartEvent.Success -> {
-                    event.apply {
+                    deleteCartEvent.apply {
                         renderLoadGetCartDataFinish()
                         onDeleteCartDataSuccess(
                             toBeDeletedCartIds,
@@ -2259,7 +2290,7 @@ class CartRevampFragment :
                 }
 
                 is DeleteCartEvent.Failed -> {
-                    event.apply {
+                    deleteCartEvent.apply {
                         if (forceExpandCollapsedUnavailableItems) {
                             collapseOrExpandDisabledItem()
                         }
@@ -2313,13 +2344,16 @@ class CartRevampFragment :
     }
 
     private fun observeRemoveFromWishlist() {
-        viewModel.removeFromWishlistEvent.observe(viewLifecycleOwner) { event ->
-            when (event) {
+        viewModel.removeFromWishlistEvent.observe(viewLifecycleOwner) { removeFromWishlistEvent ->
+            when (removeFromWishlistEvent) {
                 is RemoveFromWishlistEvent.Success -> {
-                    this@CartRevampFragment.onSuccessRemoveWishlistV2(event.data, event.productId)
+                    this@CartRevampFragment.onSuccessRemoveWishlistV2(
+                        removeFromWishlistEvent.data,
+                        removeFromWishlistEvent.productId
+                    )
                     cartPageAnalytics.eventRemoveWishlistWishlistsSection(
                         FLAG_IS_CART_EMPTY,
-                        event.productId
+                        removeFromWishlistEvent.productId
                     )
                 }
 
@@ -2327,18 +2361,23 @@ class CartRevampFragment :
                     this@CartRevampFragment.onErrorRemoveWishlist(
                         ErrorHandler.getErrorMessage(
                             context,
-                            event.throwable
+                            removeFromWishlistEvent.throwable
                         ),
-                        event.productId
+                        removeFromWishlistEvent.productId
                     )
                 }
 
                 is RemoveFromWishlistEvent.RemoveWishlistFromCartSuccess -> {
-                    event.wishlistIcon?.let { onRemoveFromWishlistSuccess(it, event.position) }
+                    removeFromWishlistEvent.wishlistIcon?.let {
+                        onRemoveFromWishlistSuccess(
+                            it,
+                            removeFromWishlistEvent.position
+                        )
+                    }
                 }
 
                 is RemoveFromWishlistEvent.RemoveWishlistFromCartFailed -> {
-                    showToastMessageRed(event.throwable)
+                    showToastMessageRed(removeFromWishlistEvent.throwable)
                 }
             }
         }
@@ -2351,12 +2390,12 @@ class CartRevampFragment :
                     hideProgressLoading()
                     goToLite(seamlessLoginEvent.url)
                 }
+
                 is SeamlessLoginEvent.Failed -> {
                     hideProgressLoading()
                     if (seamlessLoginEvent.msg.isNotBlank()) {
                         showToastMessageRed(seamlessLoginEvent.msg)
-                    }
-                    else {
+                    } else {
                         showToastMessageRed()
                     }
                 }
@@ -2447,6 +2486,11 @@ class CartRevampFragment :
 
                 is CartGlobalEvent.UpdateCartShopGroupTicker -> {
                     updateCartShopGroupTicker(event.cartGroupHolderData)
+                }
+
+                is CartGlobalEvent.OnNeedUpdateWishlistAdapterData -> {
+                    event.wishlistHolderData.wishList.removeAt(event.wishlistIndex)
+                    cartAdapter.cartWishlistAdapter?.updateWishlistItems(event.wishlistHolderData.wishList)
                 }
             }
         }
@@ -2746,15 +2790,22 @@ class CartRevampFragment :
 
     private fun onResultFromAddOnBottomSheet(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
-            val addOnProductDataResult = data?.getParcelableExtra(AddOnExtraConstant.EXTRA_ADDON_PAGE_RESULT) ?: AddOnPageResult()
+            val addOnProductDataResult =
+                data?.getParcelableExtra(AddOnExtraConstant.EXTRA_ADDON_PAGE_RESULT)
+                    ?: AddOnPageResult()
 
             if (addOnProductDataResult.aggregatedData.isGetDataSuccess) {
                 var newAddOnWording = ""
                 if (addOnProductDataResult.aggregatedData.title.isNotEmpty()) {
-                    newAddOnWording = "${addOnProductDataResult.aggregatedData.title} <b>(${addOnProductDataResult.aggregatedData.price})</b>"
+                    newAddOnWording =
+                        "${addOnProductDataResult.aggregatedData.title} <b>(${addOnProductDataResult.aggregatedData.price})</b>"
                 }
 
-                viewModel.updateAddOnByCartId(addOnProductDataResult.cartId.toString(), newAddOnWording, addOnProductDataResult.aggregatedData.selectedAddons)
+                viewModel.updateAddOnByCartId(
+                    addOnProductDataResult.cartId.toString(),
+                    newAddOnWording,
+                    addOnProductDataResult.aggregatedData.selectedAddons
+                )
             } else {
                 showToastMessageRed(addOnProductDataResult.aggregatedData.getDataErrorMessage)
             }
@@ -2763,19 +2814,17 @@ class CartRevampFragment :
 
     private fun onResultFromEditBundle(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
-            val oldBundleId = data?.getStringExtra(CartFragment.KEY_OLD_BUNDLE_ID) ?: ""
-            val newBundleId = data?.getStringExtra(CartFragment.KEY_NEW_BUNLDE_ID) ?: ""
+            val oldBundleId = data?.getStringExtra(KEY_OLD_BUNDLE_ID) ?: ""
+            val newBundleId = data?.getStringExtra(KEY_NEW_BUNLDE_ID) ?: ""
             val isChangeVariant =
-                data?.getBooleanExtra(CartFragment.KEY_IS_CHANGE_VARIANT, false) ?: false
+                data?.getBooleanExtra(KEY_IS_CHANGE_VARIANT, false) ?: false
             val toBeDeletedBundleGroupId = viewModel.cartModel.toBeDeletedBundleGroupId
             if (((oldBundleId.isNotBlank() && newBundleId.isNotBlank() && oldBundleId != newBundleId) || isChangeVariant) && toBeDeletedBundleGroupId.isNotEmpty()) {
                 val cartItems =
-                    cartAdapter.getCartItemByBundleGroupId(oldBundleId, toBeDeletedBundleGroupId)
+                    viewModel.getCartItemByBundleGroupId(oldBundleId, toBeDeletedBundleGroupId)
                 viewModel.cartModel.toBeDeletedBundleGroupId = ""
                 if (cartItems.isNotEmpty()) {
-                    val allCartItemDataList = viewModel.getAllCartItemData()
                     viewModel.processDeleteCartItem(
-                        allCartItemData = allCartItemDataList,
                         removedCartItems = cartItems,
                         addWishList = false,
                         forceExpandCollapsedUnavailableItems = false,
@@ -2849,6 +2898,44 @@ class CartRevampFragment :
     private fun onUndoDeleteClicked(cartIds: List<String>) {
         cartPageAnalytics.eventClickUndoAfterDeleteProduct(userSession.userId)
         viewModel.processUndoDeleteCartItem(cartIds)
+    }
+
+    private fun playNoteAnimation(
+        newNote: String,
+        noteIcon: ImageView,
+        noteLottieIcon: LottieAnimationView,
+        position: Int
+    ) {
+        if (newNote.isEmpty()) {
+            noteIcon.setImageResource(R.drawable.ic_add_note)
+        } else {
+            noteIcon.invisible()
+            noteLottieIcon.show()
+//            noteIcon.setImageResource(R.drawable.ic_add_note_completed)
+            noteLottieIcon.addAnimatorListener(object : Animator.AnimatorListener {
+                override fun onAnimationRepeat(animator: Animator) {}
+
+                override fun onAnimationEnd(animator: Animator) {
+                    noteLottieIcon.gone()
+                    noteIcon.show()
+                    onNeedToUpdateViewItem(position)
+//                Handler(Looper.getMainLooper()).postDelayed({
+//                    noteLottieIcon.gone()
+//                }, 3000)
+                }
+
+                override fun onAnimationCancel(animator: Animator) {
+                    noteLottieIcon.gone()
+                    noteIcon.show()
+                    onNeedToUpdateViewItem(position)
+                }
+
+                override fun onAnimationStart(animator: Animator) {}
+            })
+            if (!noteLottieIcon.isAnimating) {
+                noteLottieIcon.playAnimation()
+            }
+        }
     }
 
     private fun refreshCartWithProgressDialog(getCartState: Int) {
@@ -2981,7 +3068,7 @@ class CartRevampFragment :
         // use notify data set changed due to massive update
         viewModel.cartDataList.notifyObserver()
 
-        viewModel.reCalculateSubTotal(viewModel.getAllAvailableShopGroupDataList())
+        viewModel.reCalculateSubTotal()
         notifyBottomCartParent()
     }
 
@@ -3054,10 +3141,13 @@ class CartRevampFragment :
         renderCartAvailableItems(cartData)
         renderCartUnavailableItems(cartData)
 
-        viewModel.reCalculateSubTotal(viewModel.getAllAvailableShopGroupDataList())
+        viewModel.reCalculateSubTotal()
 
         cartPageAnalytics.eventViewCartListFinishRender()
-        val cartItemDataList = viewModel.getAllCartItemData()
+        val cartItemDataList = CartDataHelper.getAllCartItemData(
+            viewModel.cartDataList.value,
+            viewModel.cartModel
+        )
         cartPageAnalytics.enhancedECommerceCartLoadedStep0(
             viewModel.generateCheckoutDataAnalytics(
                 cartItemDataList,
@@ -3295,7 +3385,7 @@ class CartRevampFragment :
                 if (viewModel.getSelectedCartItemData().isEmpty()) {
                     binding?.promoCheckoutBtnCart?.showInactive(
                         getString(R.string.promo_desc_no_selected_item),
-                        onClickListener = { onClickListener(false)}
+                        onClickListener = { onClickListener(false) }
                     )
                 } else {
                     binding?.promoCheckoutBtnCart?.showActive(
@@ -3422,9 +3512,11 @@ class CartRevampFragment :
     }
 
     private fun renderSelectedAmount() {
-        initialSelectedAmountPosition = 0f
-        viewModel.addItems(0, listOf(CartSelectedAmountHolderData()))
-        viewModel.updateSelectedAmount()
+        binding?.navToolbar?.let { navToolbar ->
+            initialSelectedAmountPosition = navToolbar.y + navToolbar.height
+            viewModel.addItems(0, listOf(CartSelectedAmountHolderData()))
+            viewModel.updateSelectedAmount()
+        }
     }
 
     private fun renderTickerAnnouncement(cartData: CartData) {
@@ -3855,7 +3947,7 @@ class CartRevampFragment :
             }
             rlTopLayout.post {
                 if (initialSelectedAmountPosition == 0f) {
-                    initialSelectedAmountPosition = navToolbar.y
+                    initialSelectedAmountPosition = navToolbar.y + navToolbar.height
                 }
             }
         }
@@ -4134,7 +4226,7 @@ class CartRevampFragment :
     private fun updateCartAfterDetached() {
         val hasChanges = viewModel.dataHasChanged()
         try {
-            val cartItemDataList = viewModel.getAllAvailableCartItemData()
+            val cartItemDataList = CartDataHelper.getAllAvailableCartItemData(viewModel.cartDataList.value)
             activity?.let {
                 if (hasChanges && cartItemDataList.isNotEmpty() && !FLAG_BEGIN_SHIPMENT_PROCESS) {
                     viewModel.processUpdateCartData(true)
@@ -4256,7 +4348,7 @@ class CartRevampFragment :
 
     private fun updateStateAfterCheckChanged() {
         viewModel.cartModel.hasPerformChecklistChange = true
-        viewModel.reCalculateSubTotal(viewModel.getAllAvailableShopGroupDataList())
+        viewModel.reCalculateSubTotal()
         setCheckboxGlobalState()
         setSelectedAmountVisibility()
         validateGoToCheckout()
@@ -4267,7 +4359,7 @@ class CartRevampFragment :
         } else {
             updatePromoCheckoutManualIfNoSelected(getAllAppliedPromoCodes(params))
         }
-        viewModel.saveCheckboxState(viewModel.getAllAvailableCartItemHolderData())
+        viewModel.saveCheckboxState()
     }
 
     private fun updateStateAfterFinishGetCartList() {

@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/promo_constraint_wrapper"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="-4dp"
@@ -14,6 +15,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:orientation="vertical"
+        android:translationZ="2dp"
         app:card_background_color="@color/Unify_GN50"
         app:card_type="border_active"
         app:layout_constraintEnd_toEndOf="parent"
@@ -293,6 +295,59 @@
 
     </com.tokopedia.unifycomponents.CardUnify>
 
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/card_promo_actionable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:translationZ="1dp"
+        android:paddingTop="24dp"
+        android:orientation="vertical"
+        app:card_background_color="@color/Unify_GN50"
+        app:card_type="border"
+        app:layout_constraintTop_toBottomOf="@id/card_promo_item"
+        app:layout_constraintBottom_toBottomOf="@id/card_promo_item"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container_constraint_promo_wrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_promo_actionable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/icon_promo_actionable"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="paragraph_3"
+                tools:text="Aktifkan GoPay Later Cicil untuk pakai promo" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/icon_promo_actionable"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="12dp"
+                app:icon_color_light_enable="@color/Unify_GN500"
+                app:icon_color_night_enable="@color/Unify_GN500"
+                app:icon_name="CHEVRON_RIGHT"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/text_promo_actionable"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify>
+
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/promo_quantity_identifier_top"
         android:layout_width="wrap_content"
@@ -334,7 +389,7 @@
         android:layout_height="1dp"
         android:layout_marginTop="12dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/card_promo_item" />
+        app:layout_constraintTop_toBottomOf="@+id/card_promo_actionable" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/last_promo_divider_2"

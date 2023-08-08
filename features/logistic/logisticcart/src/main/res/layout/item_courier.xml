@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:foreground="?selectableItemBackground"
-    android:paddingLeft="16dp"
-    android:paddingTop="16dp"
-    android:paddingRight="16dp">
+    android:foreground="?selectableItemBackground">
 
     <FrameLayout
         android:id="@+id/fl_container"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="@id/tv_courier"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layout_mvc"
@@ -52,9 +52,12 @@
         android:id="@+id/tv_courier"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/fl_container"
-        android:textColor="@color/Unify_NN950_96"
-        app:typographyType="body_2"
+        android:layout_marginStart="16dp"
+        app:layout_goneMarginEnd="16dp"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/fl_container"
+        app:typographyType="display_2"
         app:typographyWeight="bold"
         tools:text="@string/tv_courier" />
 
@@ -62,66 +65,76 @@
         android:id="@+id/lbl_cod_available"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@id/tv_courier"
-        android:layout_alignBottom="@id/tv_courier"
         android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
         android:layout_toEndOf="@+id/tv_courier"
         android:text="@string/tersedia_bayar_di_tempat"
         android:visibility="gone"
-        tools:visibility="visible"
-        app:labelType="general_light_grey" />
+        app:labelType="general_light_grey"
+        app:layout_constraintStart_toEndOf="@id/tv_courier"
+        app:layout_constraintTop_toTopOf="@id/tv_courier"
+        tools:visibility="visible" />
 
     <!--price in old view, duration in ETA-->
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_price_or_duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_courier"
         android:layout_marginTop="4dp"
-        android:textColor="@color/Unify_NN950_68"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler"
+        android:layout_marginEnd="16dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintStart_toStartOf="@id/tv_courier"
+        app:layout_constraintTop_toBottomOf="@id/tv_courier"
+        app:typographyType="display_3"
         tools:text="@string/tv_price" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_mvc_error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_price_or_duration"
         android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
         android:text="@string/label_shipping_information"
         android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@id/tv_courier"
+        app:layout_constraintTop_toBottomOf="@+id/tv_price_or_duration"
         app:typographyType="small"
-        app:typographyWeight="reguler" />
+        app:typographyWeight="reguler"
+        tools:visibility="visible" />
 
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/lbl_otd_available"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_mvc_error"
         android:layout_marginTop="4dp"
         android:text="@string/jaminan_tepat_waktu"
-        app:labelType="general_light_green"
         android:visibility="gone"
-        tools:visibility="visible"/>
+        app:labelType="general_light_green"
+        app:layout_constraintStart_toStartOf="@id/tv_courier"
+        app:layout_constraintTop_toBottomOf="@+id/tv_mvc_error"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/lbl_dynamic_pricing"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/lbl_otd_available"
         android:layout_marginTop="4dp"
         android:text="@string/txt_label_dynamic_pricing"
         android:visibility="gone"
-        app:labelType="general_light_green" />
+        app:labelType="general_light_green"
+        app:layout_constraintStart_toStartOf="@id/tv_courier"
+        app:layout_constraintTop_toBottomOf="@+id/lbl_otd_available"
+        tools:visibility="visible" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/img_check"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="16dp"
         android:contentDescription="@string/content_img_check"
         app:icon_color_light_enable="@color/Unify_GN500"
         app:icon_color_night_enable="@color/Unify_GN500"
@@ -132,8 +145,8 @@
         android:id="@+id/separator"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:layout_below="@id/lbl_dynamic_pricing"
+        app:layout_constraintTop_toBottomOf="@id/lbl_dynamic_pricing"
         android:layout_marginTop="16dp"
-        android:background="@color/Unify_NN200" />
+        android:background="@color/Unify_NN50" />
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
