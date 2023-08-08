@@ -75,6 +75,7 @@ object ProductDetailConstant {
     const val PRODUCT_WHOLESALE_INFO = "wholesale"
     const val PRODUCT_SHOP_CREDIBILITY = "shop_credibility"
     const val PRODUCT_CUSTOM_INFO = "custom_info"
+    const val PRODUCT_DYNAMIC_ONELINER = "dynamic_oneliner"
     const val PRODUCT_SHOP_ADDITIONAL = "shop_additional"
     const val PRODUCT_INSTALLMENT_INFO = "installment"
     const val PRODUCT_INSTALLMENT_PAYLATER_INFO = "installment_paylater"

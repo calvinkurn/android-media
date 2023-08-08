@@ -612,6 +612,15 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
               isShow
               appLink
             }
+            dynamicOneLiner {
+                name
+                text
+                applink
+                separator
+                icon
+                status
+                chevronPos
+            }
             bmgm {
               separator
               data {

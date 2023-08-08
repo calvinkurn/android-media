@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.DynamicOneLinerDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.GlobalBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.LoadingDataModel
@@ -84,6 +85,7 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: ProductCustomInfoTitleDataModel): Int
     fun type(data: ProductShopReviewDataModel): Int
     fun type(data: OngoingCampaignDataModel): Int
+    fun type(data: DynamicOneLinerDataModel): Int
     fun type(data: BMGMDataModel): Int
 
     // This is the new centralized recom widget model.
