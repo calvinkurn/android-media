@@ -467,6 +467,8 @@ ext {
             composeLiveData     : "androidx.compose.runtime:runtime-livedata:$composeVersion",
             composeCoil         : "io.coil-kt:coil-compose:$composeCoil",
             composeVideoCoil    : "io.coil-kt:coil-video:$composeCoil",
+            composeUiTest       : "androidx.compose.ui:ui-test-junit4:$composeVersion",
+            composeAndroidUiTest: "androidx.compose.ui:ui-test-manifest:$composeVersion",
             accompanistPager    : "com.google.accompanist:accompanist-pager:$accompanistPagerVersion"
     ]
 }
