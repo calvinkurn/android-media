@@ -393,9 +393,10 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     }
 
     fun convertToNonVariant() {
-        productInputModel.value?.apply {
+        productInputModel.getValueOrDefault().apply {
             val variantProduct = variantInputModel.products.firstOrNull() ?: ProductVariantInputModel()
             detailInputModel.price = variantProduct.price
+            detailInputModel.sku = variantProduct.sku
             detailInputModel.stock = variantProduct.stock.orZero()
             shipmentInputModel.weight = variantProduct.weight.orZero()
             shipmentInputModel.weightUnit = ProductMapperConstants.getWeightUnitConstant(variantProduct.weightUnit)

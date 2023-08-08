@@ -413,7 +413,10 @@ class AddEditProductVariantDetailFragment :
         viewModel.isSingleProductVariant.observe(viewLifecycleOwner) {
             if (it) {
                 buttonSave?.setOnClickListener {
-                    showSingleProductVariantDialog()
+                    invokeFieldsValidation()
+                    if (viewModel.getInputDataValidStatus()) {
+                        showSingleProductVariantDialog()
+                    }
                 }
             } else {
                 buttonSave?.setOnClickListener {
@@ -549,6 +552,7 @@ class AddEditProductVariantDetailFragment :
             setSecondaryCTAText(getString(R.string.action_back))
             setImageUrl(TokopediaImageUrl.AEP_SINGLE_VARIANT_WARNING)
             setPrimaryCTAClickListener {
+                viewModel.updateProductInputModel()
                 viewModel.convertToNonVariant()
                 sendResultData()
                 dismiss()
