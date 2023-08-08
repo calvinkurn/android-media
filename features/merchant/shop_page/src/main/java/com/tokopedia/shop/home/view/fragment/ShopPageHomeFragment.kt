@@ -5086,13 +5086,13 @@ open class ShopPageHomeFragment :
         }
     }
 
-    override fun onViewAllShowcaseClick(selectedShowcase: ShopHomeShowcaseUiModel.ShowcaseHeader) {
-        //TODO: Route to show case list page
+    override fun onViewAllShowcaseClick(selectedShowcaseHeader: ShopHomeShowcaseUiModel.ShowcaseHeader) {
+        RouteManager.route(activity ?: return, selectedShowcaseHeader.ctaLink)
     }
 
     override fun onShowcaseClick(
         selectedShowcase: ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase
     ) {
-        //TODO: Route to showcase page
+        RouteManager.route(activity ?: return, selectedShowcase.ctaLink)
     }
 }
