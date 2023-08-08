@@ -181,6 +181,8 @@ class FeedCampaignRibbonView(
 
     private fun runRecursiveDelayDiscount(index: Int) {
         mCta?.texts?.let {
+            if (it.isEmpty()) return@let
+
             val ctaIndex = index % it.size
             if (ctaIndex < it.size) {
                 with(binding) {
@@ -189,7 +191,10 @@ class FeedCampaignRibbonView(
                             tyFeedCampaignRibbonTitleSecond.text = it[ctaIndex]
 
                             startDelayProcess(THREE_SECOND) {
-                                root.setTransition(root.currentState, R.id.second_title_with_icon)
+                                root.setTransition(
+                                    root.currentState,
+                                    R.id.second_title_with_icon
+                                )
                                 root.transitionToEnd()
                                 runRecursiveDelayDiscount(index + ONE)
                             }
@@ -198,7 +203,10 @@ class FeedCampaignRibbonView(
                             tyFeedCampaignRibbonTitle.text = it[ctaIndex]
 
                             startDelayProcess(THREE_SECOND) {
-                                root.setTransition(root.currentState, R.id.initial_title_with_icon)
+                                root.setTransition(
+                                    root.currentState,
+                                    R.id.initial_title_with_icon
+                                )
                                 root.transitionToEnd()
                                 runRecursiveDelayDiscount(index + ONE)
                             }
@@ -207,7 +215,10 @@ class FeedCampaignRibbonView(
                             tyFeedCampaignRibbonTitleSecond.text = it[ctaIndex]
 
                             startDelayProcess(THREE_SECOND) {
-                                root.setTransition(root.currentState, R.id.initial_title_with_icon)
+                                root.setTransition(
+                                    root.currentState,
+                                    R.id.initial_title_with_icon
+                                )
                                 root.transitionToEnd()
                                 runRecursiveDelayDiscount(index + ONE)
                             }

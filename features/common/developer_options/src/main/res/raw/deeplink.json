@@ -410,6 +410,11 @@
           "deeplink_variable": "ApplinkConstInternalContent.VIDEO_DETAIL"
      }, 
      {
+          "destination_activity": "com.tokopedia.people.views.activity.ProfileSettingsActivity", 
+          "deeplink": "tokopedia-android-internal://people/settings/.*\\", 
+          "deeplink_variable": "ApplinkConstInternalContent.PROFILE_SETTINGS"
+     }, 
+     {
           "destination_activity": "com.tokopedia.people.views.activity.UserProfileActivity", 
           "deeplink": "tokopedia-android-internal://people/.*\\", 
           "deeplink_variable": "ApplinkConstInternalContent.PROFILE_DETAIL"
@@ -908,6 +913,31 @@
           "destination_activity": "com.tokopedia.logisticaddaddress.features.pinpoint.webview.PinpointWebviewActivity", 
           "deeplink": "tokopedia-android-internal://logistic/pin-point-picker-result", 
           "deeplink_variable": "ApplinkConstInternalLogistic.PINPOINT_WEBVIEW"
+     }, 
+     {
+          "destination_activity": "com.tokopedia.scp_rewards.celebration.presentation.activity.MedalCelebrationActivity", 
+          "deeplink": "tokopedia-android-internal://scp-rewards/celebration/.*", 
+          "deeplink_variable": ""
+     }, 
+     {
+          "destination_activity": "com.tokopedia.scp_rewards.detail.presentation.ui.MedalDetailActivity", 
+          "deeplink": "tokopedia-android-internal://scp-rewards/medali/detail/.*", 
+          "deeplink_variable": ""
+     }, 
+     {
+          "destination_activity": "com.tokopedia.scp_rewards.cabinet.presentation.ui.MedalCabinetActivity", 
+          "deeplink": "tokopedia-android-internal://scp-rewards/medali/cabinet", 
+          "deeplink_variable": "ApplinkConstInternalPromo.MEDAL_CABINET"
+     }, 
+     {
+          "destination_activity": "com.tokopedia.scp_rewards.cabinet.presentation.ui.MedalCabinetActivity", 
+          "deeplink": "tokopedia-android-internal://scp-rewards/medali/cabinet/more", 
+          "deeplink_variable": "ApplinkConstInternalPromo.SEE_MORE_MEDALI"
+     }, 
+     {
+          "destination_activity": "com.tokopedia.scp_rewards_touchpoints.RewardsTouchPointActionsActivity", 
+          "deeplink": "tokopedia-android-internal://scp-rewards/medali/celebration-bottomsheet/.*", 
+          "deeplink_variable": ""
      }, 
      {
           "destination_activity": "com.tokopedia.gamification.giftbox.presentation.activities.GiftBoxDailyActivity", 
@@ -1555,41 +1585,6 @@
           "deeplink_variable": "ApplinkConstInternalSellerapp.SELLER_SETTINGS"
      }, 
      {
-          "destination_activity": "com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/shop-page/.*\\/", 
-          "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_PAGE"
-     }, 
-     {
-          "destination_activity": "com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/shop-page/.*\\/home", 
-          "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_PAGE_HOME"
-     }, 
-     {
-          "destination_activity": "com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/shop-page/.*\\/info", 
-          "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_PAGE_INFO"
-     }, 
-     {
-          "destination_activity": "com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/shop-page/.*\\/review", 
-          "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_PAGE_REVIEW"
-     }, 
-     {
-          "destination_activity": "com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/shop-page/.*\\/product", 
-          "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT"
-     }, 
-     {
-          "destination_activity": "com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/shop-page/.*\\/feed", 
-          "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_PAGE_FEED"
-     }, 
-     {
-          "destination_activity": "com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/shop-page/.*\\/note", 
-          "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_PAGE_NOTE"
-     }, 
-     {
           "destination_activity": "com.tokopedia.shop.product.view.activity.ShopProductListResultActivity", 
           "deeplink": "tokopedia-android-internal://marketplace/shop-page-product-list/.*\\/etalase/.*\\/", 
           "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT_LIST"
@@ -1718,6 +1713,11 @@
           "destination_activity": "com.tokopedia.shop_nib.presentation.landing_page.LandingPageActivity", 
           "deeplink": "tokopedia-android-internal://sellerapp/shop-nib", 
           "deeplink_variable": "ApplinkConstInternalSellerapp.SELLER_SHOP_NIB"
+     }, 
+     {
+          "destination_activity": "com.tokopedia.shop_nib.presentation.landing_page.LandingPageActivity", 
+          "deeplink": "tokopedia-android-internal://merchant/shop-nib", 
+          "deeplink_variable": "ApplinkConstInternalMechant.SHOP_NIB_CUSTOMER_APP"
      }, 
      {
           "destination_activity": "com.tokopedia.review.feature.reviewdetail.view.activity.SellerReviewDetailActivity", 

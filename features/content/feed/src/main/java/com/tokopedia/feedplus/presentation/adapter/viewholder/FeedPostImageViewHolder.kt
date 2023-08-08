@@ -31,10 +31,12 @@ import com.tokopedia.feedplus.presentation.model.*
 import com.tokopedia.feedplus.presentation.uiview.*
 import com.tokopedia.feedplus.presentation.util.animation.FeedLikeAnimationComponent
 import com.tokopedia.feedplus.presentation.util.animation.FeedSmallLikeIconAnimationComponent
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.play_common.util.extension.changeConstraint
 import kotlinx.coroutines.*
 import kotlin.math.abs
 
@@ -56,8 +58,18 @@ class FeedPostImageViewHolder(
         LinearLayoutManager(binding.root.context, RecyclerView.HORIZONTAL, false)
     private var adapter: FeedPostImageAdapter? = null
 
+    private val captionViewListener = object : FeedCaptionView.Listener {
+        override fun onExpanded(view: FeedCaptionView) {
+            val screenHeight = getScreenHeight()
+            val maxHeight = screenHeight * 0.45f
+            binding.root.changeConstraint {
+                constrainMaxHeight(binding.layoutFeedCaption.id, maxHeight.toInt())
+            }
+        }
+    }
+
     private val authorView = FeedAuthorInfoView(binding.layoutAuthorInfo, listener)
-    private val captionView = FeedCaptionView(binding.tvFeedCaption, listener)
+    private val captionView = FeedCaptionView(binding.tvFeedCaption, binding.layoutFeedCaption, listener, captionViewListener)
     private val productButtonView = FeedProductButtonView(binding.productTagButton, listener)
     private val asgcTagsView = FeedAsgcTagsView(binding.rvFeedAsgcTags)
     private val campaignView = FeedCampaignRibbonView(binding.feedCampaignRibbon, listener)

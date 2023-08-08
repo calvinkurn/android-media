@@ -12,6 +12,7 @@ import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenter
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
 import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterPresenter
+import com.tokopedia.search.result.product.grid.ProductGridType
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselPresenter
 import com.tokopedia.search.result.product.pagination.Pagination
 import com.tokopedia.search.result.product.safesearch.SafeSearchPresenter
@@ -42,6 +43,7 @@ interface ProductListSectionContract {
         fun showAdultRestriction()
         fun redirectSearchToAnotherPage(applink: String?)
         fun setDefaultLayoutType(defaultView: Int)
+        fun setProductGridType(productGridType: ProductGridType)
         fun showRefreshLayout()
         fun hideRefreshLayout()
         val isFirstActiveTab: Boolean
@@ -66,6 +68,7 @@ interface ProductListSectionContract {
         fun hideQuickFilterShimmering()
         fun setQuickFilter(items: List<SortFilterItem>)
         fun showOnBoarding(firstProductPosition: Int)
+        fun enableProductViewTypeOnBoarding()
         fun isFilterSelected(option: Option?): Boolean
         val className: String
         fun redirectionStartActivity(applink: String?, url: String?)
