@@ -31,9 +31,9 @@ import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.LayoutFragmentPurchasePromoBinding
 import com.tokopedia.tokofood.feature.purchase.analytics.TokoFoodPurchaseAnalytics
 import com.tokopedia.tokofood.feature.purchase.promopage.di.DaggerTokoFoodPromoComponent
-import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.PromoListTokoFoodButtonOld
-import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.PromoListTokoFoodEmptyStateOld
-import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.PromoListTokoFoodErrorPageOld
+import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.MerchantPromoListTokoFoodButton
+import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.MerchantPromoListTokoFoodEmptyState
+import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.MerchantPromoListTokoFoodErrorPage
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.adapter.TokoFoodPromoAdapter
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.adapter.TokoFoodPromoAdapterTypeFactory
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.toolbar.TokoFoodPromoToolbar
@@ -47,7 +47,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class TokoFoodPromoFragmentOld : BaseMultiFragment(),
+class MerchantTokoFoodPromoFragment : BaseMultiFragment(),
     TokoFoodPromoActionListener, TokoFoodPromoToolbarListener, IBaseMultiFragment {
 
     @Inject
@@ -58,7 +58,7 @@ class TokoFoodPromoFragmentOld : BaseMultiFragment(),
 
     private var viewBinding by autoClearedNullable<LayoutFragmentPurchasePromoBinding>()
     private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(TokoFoodPromoViewModelOld::class.java)
+        ViewModelProvider(this, viewModelFactory).get(MerchantTokoFoodPromoViewModel::class.java)
     }
 
     private var toolbar: TokoFoodPromoToolbar? = null
@@ -101,8 +101,8 @@ class TokoFoodPromoFragmentOld : BaseMultiFragment(),
         fun createInstance(source: String,
                            merchantId: String? = null,
                            isNew: Boolean = false
-        ): TokoFoodPromoFragmentOld {
-            return TokoFoodPromoFragmentOld().apply {
+        ): MerchantTokoFoodPromoFragment {
+            return MerchantTokoFoodPromoFragment().apply {
                 arguments = Bundle().apply {
                     putString(SOURCE_KEY, source)
                     putBoolean(IS_NEW_KEY, isNew)
@@ -197,7 +197,7 @@ class TokoFoodPromoFragmentOld : BaseMultiFragment(),
         activity?.let { ctx ->
             viewBinding?.toolbarPurchasePromo?.removeAllViews()
             val tokoFoodPurchaseToolbar = TokoFoodPromoToolbar(ctx).apply {
-                listener = this@TokoFoodPromoFragmentOld
+                listener = this@MerchantTokoFoodPromoFragment
             }
 
             toolbar = tokoFoodPurchaseToolbar
@@ -260,7 +260,7 @@ class TokoFoodPromoFragmentOld : BaseMultiFragment(),
             when (it.state) {
                 UiEvent.EVENT_SUCCESS_LOAD_PROMO_PAGE -> renderPromoPage()
                 UiEvent.EVENT_ERROR_PAGE_PROMO_PAGE -> {
-                    (it.data as? PromoListTokoFoodErrorPageOld)?.let { errorPage ->
+                    (it.data as? MerchantPromoListTokoFoodErrorPage)?.let { errorPage ->
                         renderGlobalError(errorPage)
                         logError(MessageErrorException(errorPage.description))
                     }
@@ -278,7 +278,7 @@ class TokoFoodPromoFragmentOld : BaseMultiFragment(),
                     }
                 }
                 UiEvent.EVENT_NO_COUPON -> {
-                    (it.data as? PromoListTokoFoodEmptyStateOld)?.let { emptyState ->
+                    (it.data as? MerchantPromoListTokoFoodEmptyState)?.let { emptyState ->
                         renderEmptyState(emptyState)
                     }
                 }
@@ -325,7 +325,7 @@ class TokoFoodPromoFragmentOld : BaseMultiFragment(),
         }
     }
 
-    private fun renderGlobalError(errorPage: PromoListTokoFoodErrorPageOld) {
+    private fun renderGlobalError(errorPage: MerchantPromoListTokoFoodErrorPage) {
         viewBinding?.layoutGlobalErrorPurchasePromo?.run {
             setType(GlobalError.SERVER_ERROR)
             errorPage.title.takeIf { it.isNotBlank() }?.let { titleError ->
@@ -338,10 +338,10 @@ class TokoFoodPromoFragmentOld : BaseMultiFragment(),
             errorAction.text = errorPage.button.firstOrNull()?.text.orEmpty()
             setActionClickListener {
                 when(errorPage.button.firstOrNull()?.action) {
-                    PromoListTokoFoodButtonOld.REFRESH_ACTION -> {
+                    MerchantPromoListTokoFoodButton.REFRESH_ACTION -> {
                         loadData()
                     }
-                    PromoListTokoFoodButtonOld.REDIRECT_ACTION -> {
+                    MerchantPromoListTokoFoodButton.REDIRECT_ACTION -> {
                         TokofoodRouteManager.routePrioritizeInternal(context, errorPage.button.firstOrNull()?.link.orEmpty())
                     }
                     else -> {
@@ -354,7 +354,7 @@ class TokoFoodPromoFragmentOld : BaseMultiFragment(),
         viewBinding?.recyclerViewPurchasePromo?.gone()
     }
 
-    private fun renderEmptyState(emptyState: PromoListTokoFoodEmptyStateOld) {
+    private fun renderEmptyState(emptyState: MerchantPromoListTokoFoodEmptyState) {
         viewBinding?.layoutGlobalErrorPurchasePromo?.run {
             setType(GlobalError.SERVER_ERROR)
             emptyState.title.takeIf { it.isNotBlank() }?.let { titleError ->

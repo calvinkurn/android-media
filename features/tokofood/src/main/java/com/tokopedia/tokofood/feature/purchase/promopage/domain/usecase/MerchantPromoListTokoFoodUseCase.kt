@@ -6,13 +6,13 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.address.TokoFoodChosenAddressRequestHelper
 import com.tokopedia.tokofood.common.domain.additionalattributes.CartAdditionalAttributesTokoFood
+import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.MerchantPromoListTokoFoodResponse
 import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.PromoListTokoFood
-import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.PromoListTokoFoodResponseOld
-import com.tokopedia.tokofood.feature.purchase.promopage.domain.param.PromoTokoFoodParamOld
+import com.tokopedia.tokofood.feature.purchase.promopage.domain.param.MerchantPromoTokoFoodParam
 import javax.inject.Inject
 
 private const val QUERY = """
-        query PromoListTokofood(${'$'}params: cartTokofoodParams!) {
+        query MerchantPromoListTokofood(${'$'}params: cartTokofoodParams!) {
           promo_list_tokofood(params: ${'$'}params) {
             message
             status
@@ -84,15 +84,15 @@ private const val QUERY = """
         }
     """
 
-@GqlQuery("PromoListTokofoodOld", QUERY)
-class PromoListTokoFoodUseCaseOld @Inject constructor(
+@GqlQuery("MerchantPromoListTokofood", QUERY)
+class MerchantPromoListTokoFoodUseCase @Inject constructor(
     repository: GraphqlRepository,
     private val chosenAddressRequestHelper: TokoFoodChosenAddressRequestHelper
-): GraphqlUseCase<PromoListTokoFoodResponseOld>(repository) {
+): GraphqlUseCase<MerchantPromoListTokoFoodResponse>(repository) {
 
     init {
-        setTypeClass(PromoListTokoFoodResponseOld::class.java)
-        setGraphqlQuery(PromoListTokofoodOld())
+        setTypeClass(MerchantPromoListTokoFoodResponse::class.java)
+        setGraphqlQuery(MerchantPromoListTokofood())
     }
 
     suspend fun execute(source: String,
@@ -116,7 +116,7 @@ class PromoListTokoFoodUseCaseOld @Inject constructor(
         private fun generateParams(additionalAttributes: String,
                                    source: String,
                                    merchantId: String): Map<String, Any> {
-            val params = PromoTokoFoodParamOld(
+            val params = MerchantPromoTokoFoodParam(
                 additionalAttributes = additionalAttributes,
                 source = source,
                 merchantId = merchantId

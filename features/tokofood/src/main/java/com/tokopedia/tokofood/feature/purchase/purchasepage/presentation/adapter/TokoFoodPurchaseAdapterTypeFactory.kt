@@ -14,15 +14,12 @@ import com.tokopedia.tokofood.databinding.ItemPurchaseGeneralTickerBinding
 import com.tokopedia.tokofood.databinding.ItemPurchaseLoadingBinding
 import com.tokopedia.tokofood.databinding.ItemPurchaseProductBinding
 import com.tokopedia.tokofood.databinding.ItemPurchaseProductListHeaderBinding
-import com.tokopedia.tokofood.databinding.ItemPurchaseProductOldBinding
 import com.tokopedia.tokofood.databinding.ItemPurchaseProductUnavailableReasonBinding
 import com.tokopedia.tokofood.databinding.ItemPurchasePromoBinding
 import com.tokopedia.tokofood.databinding.ItemPurchaseShippingBinding
 import com.tokopedia.tokofood.databinding.ItemPurchaseSummaryTransactionBinding
-import com.tokopedia.tokofood.databinding.ItemPurchaseSummaryTransactionOldBinding
 import com.tokopedia.tokofood.databinding.ItemPurchaseTickerErrorShopLevelBinding
 import com.tokopedia.tokofood.databinding.ItemPurchaseTotalAmountBinding
-import com.tokopedia.tokofood.databinding.ItemPurchaseTotalAmountOldBinding
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseActionListener
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseAddressTokoFoodPurchaseUiModel
@@ -131,10 +128,6 @@ class TokoFoodPurchaseAdapterTypeFactory(private val listener: TokoFoodPurchaseA
                 val viewBinding = ItemPurchaseProductBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
                 TokoFoodPurchaseProductViewHolder(viewBinding, listener)
             }
-            TokoFoodPurchaseProductViewHolderOld.LAYOUT -> {
-                val viewBinding = ItemPurchaseProductOldBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
-                TokoFoodPurchaseProductViewHolderOld(viewBinding, listener)
-            }
             TokoFoodPurchaseProductUnavailableReasonViewHolder.LAYOUT -> {
                 val viewBinding = ItemPurchaseProductUnavailableReasonBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
                 TokoFoodPurchaseProductUnavailableReasonViewHolder(viewBinding)
@@ -151,10 +144,6 @@ class TokoFoodPurchaseAdapterTypeFactory(private val listener: TokoFoodPurchaseA
                 val viewBinding = ItemPurchaseSummaryTransactionBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
                 TokoFoodPurchaseSummaryTransactionViewHolder(viewBinding, listener)
             }
-            TokoFoodPurchaseSummaryTransactionViewHolderOld.LAYOUT -> {
-                val viewBinding = ItemPurchaseSummaryTransactionOldBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
-                TokoFoodPurchaseSummaryTransactionViewHolderOld(viewBinding, listener)
-            }
             TokoFoodPurchaseTickerErrorShopLevelViewHolder.LAYOUT -> {
                 val viewBinding = ItemPurchaseTickerErrorShopLevelBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
                 TokoFoodPurchaseTickerErrorShopLevelViewHolder(viewBinding, listener)
@@ -162,10 +151,6 @@ class TokoFoodPurchaseAdapterTypeFactory(private val listener: TokoFoodPurchaseA
             TokoFoodPurchaseTotalAmountViewHolder.LAYOUT -> {
                 val viewBinding = ItemPurchaseTotalAmountBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
                 TokoFoodPurchaseTotalAmountViewHolder(viewBinding, listener)
-            }
-            TokoFoodPurchaseTotalAmountViewHolderOld.LAYOUT -> {
-                val viewBinding = ItemPurchaseTotalAmountOldBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
-                TokoFoodPurchaseTotalAmountViewHolderOld(viewBinding, listener)
             }
             TokoFoodPurchaseLoadingViewHolder.LAYOUT -> {
                 val viewBinding = ItemPurchaseLoadingBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)

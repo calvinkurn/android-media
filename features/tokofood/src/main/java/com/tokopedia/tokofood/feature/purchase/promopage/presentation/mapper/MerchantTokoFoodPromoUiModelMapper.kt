@@ -1,7 +1,7 @@
 package com.tokopedia.tokofood.feature.purchase.promopage.presentation.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.PromoListTokoFoodCouponOld
+import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.MerchantPromoListTokoFoodCoupon
 import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.PromoListTokoFoodData
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.uimodel.TokoFoodPromoEligibilityHeaderUiModel
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.uimodel.TokoFoodPromoFragmentUiModel
@@ -9,7 +9,7 @@ import com.tokopedia.tokofood.feature.purchase.promopage.presentation.uimodel.To
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.uimodel.TokoFoodPromoItemUiModel
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.uimodel.TokoFoodPromoTickerUiModel
 
-object TokoFoodPromoUiModelMapperOld {
+object MerchantTokoFoodPromoUiModelMapper {
 
     fun mapResponseDataToVisitables(data: PromoListTokoFoodData): MutableList<Visitable<*>> {
         return mutableListOf<Visitable<*>>().apply {
@@ -76,7 +76,7 @@ object TokoFoodPromoUiModelMapperOld {
         )
     }
 
-    private fun mapPromoItemUiModel(coupon: PromoListTokoFoodCouponOld,
+    private fun mapPromoItemUiModel(coupon: MerchantPromoListTokoFoodCoupon,
                                     isAvailable: Boolean): TokoFoodPromoItemUiModel {
         return TokoFoodPromoItemUiModel(
             isAvailable = isAvailable,

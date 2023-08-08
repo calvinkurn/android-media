@@ -7,16 +7,16 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.tokofood.feature.purchase.promopage.domain.usecase.PromoListTokoFoodUseCaseOld
-import com.tokopedia.tokofood.feature.purchase.promopage.presentation.mapper.TokoFoodPromoUiModelMapperOld
+import com.tokopedia.tokofood.feature.purchase.promopage.domain.usecase.MerchantPromoListTokoFoodUseCase
+import com.tokopedia.tokofood.feature.purchase.promopage.presentation.mapper.MerchantTokoFoodPromoUiModelMapper
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.uimodel.TokoFoodPromoFragmentUiModel
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import dagger.Lazy
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-open class TokoFoodPromoViewModelOld @Inject constructor(
-    private val promoListTokoFoodUseCase: Lazy<PromoListTokoFoodUseCaseOld>,
+open class MerchantTokoFoodPromoViewModel @Inject constructor(
+    private val promoListTokoFoodUseCase: Lazy<MerchantPromoListTokoFoodUseCase>,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -52,9 +52,9 @@ open class TokoFoodPromoViewModelOld @Inject constructor(
                         it.data.availableSection.subSection.coupons.isNotEmpty() || it.data.unavailableSection.subSection.coupons.isNotEmpty() -> {
                             _uiEvent.value = UiEvent(state = UiEvent.EVENT_SUCCESS_LOAD_PROMO_PAGE)
                             _fragmentUiModel.value =
-                                TokoFoodPromoUiModelMapperOld.mapResponseDataToFragmentUiModel(it.data)
+                                MerchantTokoFoodPromoUiModelMapper.mapResponseDataToFragmentUiModel(it.data)
                             _visitables.value =
-                                TokoFoodPromoUiModelMapperOld.mapResponseDataToVisitables(it.data)
+                                MerchantTokoFoodPromoUiModelMapper.mapResponseDataToVisitables(it.data)
                             it.data.changeRestrictionMessage.takeIf { message -> message.isNotEmpty() }
                                 ?.let { message ->
                                     _changeRestrictionMessage.value = message

@@ -29,11 +29,6 @@ class TokoFoodHomeModule {
     }
 
     @Provides
-    fun homeAnalyticOld(): TokoFoodHomeAnalyticsOld {
-        return TokoFoodHomeAnalyticsOld()
-    }
-
-    @Provides
     fun trackingQueue(@ApplicationContext context: Context): TrackingQueue {
         return TrackingQueue(context)
     }
@@ -41,11 +36,6 @@ class TokoFoodHomeModule {
     @Provides
     fun categoryAnalytic(): TokoFoodCategoryAnalytics {
         return TokoFoodCategoryAnalytics()
-    }
-
-    @Provides
-    fun categoryAnalyticOld(): TokoFoodCategoryAnalyticsOld {
-        return TokoFoodCategoryAnalyticsOld()
     }
 
 }
