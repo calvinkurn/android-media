@@ -201,6 +201,7 @@ import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
 import com.tokopedia.shop_widget.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop_widget.mvc_locked_to_product.util.MvcLockedToProductUtil
 import com.tokopedia.shop_widget.note.view.bottomsheet.ShopNoteBottomSheet
+import com.tokopedia.stories.common.StoriesKey
 import com.tokopedia.stories.common.storiesAvatarManager
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.*
@@ -453,7 +454,7 @@ class ShopPageHeaderFragment :
     }
     private var queryParamTab: String = ""
 
-    private val storiesManager by storiesAvatarManager()
+    private val storiesManager by storiesAvatarManager(StoriesKey.ShopPage)
 
     override fun getComponent() = activity?.run {
         DaggerShopPageHeaderComponent.builder().shopPageHeaderModule(ShopPageHeaderModule())
@@ -579,7 +580,7 @@ class ShopPageHeaderFragment :
             this,
             this,
             this,
-            storiesManager,
+            storiesManager
         )
         initToolbar()
         initAdapter()
@@ -1987,7 +1988,7 @@ class ShopPageHeaderFragment :
                 selectedPosition = getSelectedPositionFromTabModel()
             }
         } else {
-            if(isResetSelectedPosition){
+            if (isResetSelectedPosition) {
                 selectedPosition = getSelectedPositionFromTabModel()
             }
         }
@@ -3534,9 +3535,8 @@ class ShopPageHeaderFragment :
         val selectedTabPosition = getTabPositionBasedOnTabName(tabName)
         viewPager?.setCurrentItem(selectedTabPosition, false)
         tabLayout?.getTabAt(selectedTabPosition)?.select()
-        if(isScrollToTop) {
+        if (isScrollToTop) {
             scrollSelectedTabToTop(false)
         }
     }
-
 }

@@ -1,7 +1,7 @@
 package com.tokopedia.stories.common.di
 
-import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.stories.common.StoriesAvatarViewModel
 import dagger.Component
 
 /**
@@ -13,10 +13,11 @@ import dagger.Component
         BaseAppComponent::class
     ],
     modules = [
-        StoriesAvatarModule::class
+        StoriesAvatarModule::class,
+        StoriesRemoteConfigModule::class
     ]
 )
-interface StoriesAvatarComponent {
+internal interface StoriesAvatarComponent {
 
-    fun viewModelFactory(): ViewModelProvider.Factory
+    fun storiesViewModelFactory(): StoriesAvatarViewModel.Factory
 }

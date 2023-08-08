@@ -41,6 +41,7 @@ buildscript {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.utils)
 
@@ -49,6 +50,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.playCommon)
 
     implementation rootProject.ext.composeDependencies.composeUi
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     implementation rootProject.ext.miscDependencies.dataStorePreferences
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx

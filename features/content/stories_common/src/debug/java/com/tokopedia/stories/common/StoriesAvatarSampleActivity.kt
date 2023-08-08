@@ -13,9 +13,7 @@ class StoriesAvatarSampleActivity : BaseActivity() {
         ActivityStoriesAvatarSampleBinding.inflate(layoutInflater)
     }
 
-    private val storiesManager by lazy {
-        StoriesAvatarManager.tiedTo(this)
-    }
+    private val storiesManager by storiesAvatarManager(StoriesKey.ShopPage)
 
     private val adapter by lazy {
         StoriesAvatarSampleAdapter(storiesManager)

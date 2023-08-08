@@ -8,11 +8,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.get
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.stories.common.di.DaggerStoriesAvatarComponent
 import com.tokopedia.stories.common.di.StoriesAvatarComponent
@@ -23,18 +25,27 @@ import kotlinx.coroutines.launch
  * Created by kenny.hadisaputra on 27/07/23
  */
 class StoriesAvatarManager(
+    private val key: StoriesKey,
     context: Context,
     private val lifecycleOwner: LifecycleOwner,
     private val viewModelStoreOwner: ViewModelStoreOwner
 ) {
 
     private val component = createComponent(context)
-    private val viewModelFactory = component.viewModelFactory()
+    private val viewModelFactory = component.storiesViewModelFactory()
 
     private val viewToObserverMap = mutableMapOf<StoriesAvatarView, StoriesAvatarMeta>()
 
+    @Suppress("UNCHECKED_CAST")
     private val viewModelProvider by lazy {
-        ViewModelProvider(viewModelStoreOwner, viewModelFactory)
+        ViewModelProvider(
+            viewModelStoreOwner,
+            object : ViewModelProvider.Factory {
+                override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
+                    return viewModelFactory.create(key) as T
+                }
+            }
+        )
     }
 
     private val coachMark = StoriesAvatarCoachMark(context) {
@@ -188,16 +199,18 @@ class StoriesAvatarManager(
 
     companion object {
 
-        fun tiedTo(fragment: Fragment): StoriesAvatarManager {
+        fun create(key: StoriesKey, fragment: Fragment): StoriesAvatarManager {
             return StoriesAvatarManager(
+                key,
                 fragment.requireContext(),
                 fragment.viewLifecycleOwner,
                 fragment
             )
         }
 
-        fun tiedTo(activity: AppCompatActivity): StoriesAvatarManager {
+        fun create(key: StoriesKey, activity: AppCompatActivity): StoriesAvatarManager {
             return StoriesAvatarManager(
+                key,
                 activity,
                 activity,
                 activity

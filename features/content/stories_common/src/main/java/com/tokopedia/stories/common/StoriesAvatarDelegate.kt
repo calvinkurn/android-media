@@ -12,8 +12,8 @@ import kotlin.reflect.KProperty
 /**
  * Created by kenny.hadisaputra on 04/08/23
  */
-class StoriesAvatarDelegate<LO: LifecycleOwner>(
-    private val delegate: AbstractLifecycleBoundDelegate<LO, StoriesAvatarManager>,
+class StoriesAvatarDelegate<LO : LifecycleOwner>(
+    private val delegate: AbstractLifecycleBoundDelegate<LO, StoriesAvatarManager>
 ) : ReadOnlyProperty<LO, StoriesAvatarManager> {
 
     override fun getValue(thisRef: LO, property: KProperty<*>): StoriesAvatarManager {
@@ -21,14 +21,14 @@ class StoriesAvatarDelegate<LO: LifecycleOwner>(
     }
 }
 
-fun AppCompatActivity.storiesAvatarManager() = StoriesAvatarDelegate(
+fun AppCompatActivity.storiesAvatarManager(key: StoriesKey) = StoriesAvatarDelegate(
     lifecycleBound(
-        { StoriesAvatarManager.tiedTo(this) },
+        { StoriesAvatarManager.create(key, this) }
     )
 )
 
-fun Fragment.storiesAvatarManager() = StoriesAvatarDelegate(
+fun Fragment.storiesAvatarManager(key: StoriesKey) = StoriesAvatarDelegate(
     viewLifecycleBound(
-        { StoriesAvatarManager.tiedTo(this) },
+        { StoriesAvatarManager.create(key, this) }
     )
 )
