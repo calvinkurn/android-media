@@ -152,12 +152,9 @@ class FinalPriceActivity : BaseMoneyInActivity<FinalPriceViewModel>(), Observer<
                 setbuttonCheckout()
             }
             hideProgressBar()
-            sendGeneralEvent(
-                MoneyInGTMConstants.ACTION_VIEW_MONEYIN,
-                category,
-                MoneyInGTMConstants.ACTION_VIEW_HARGA_FINAL,
-                "diagnostic id - $deviceId"
-            )
+            sendGeneralEvent(MoneyInGTMConstants.ACTION_VIEW_MONEYIN,
+                    category,
+                    MoneyInGTMConstants.ACTION_VIEW_HARGA_FINAL, "diagnostic id - $deviceId")
         }
     }
 
@@ -193,12 +190,10 @@ class FinalPriceActivity : BaseMoneyInActivity<FinalPriceViewModel>(), Observer<
         val clickableSpan: ClickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
                 showTnC()
-                sendGeneralEvent(
-                    "clickTradeIn",
-                    "harga final trade in",
-                    "click syarat dan ketentuan",
-                    ""
-                )
+                sendGeneralEvent("clickTradeIn",
+                        "harga final trade in",
+                        "click syarat dan ketentuan",
+                        "")
             }
         }
         val greenColor = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
@@ -212,12 +207,10 @@ class FinalPriceActivity : BaseMoneyInActivity<FinalPriceViewModel>(), Observer<
         mTvButtonPayOrKtp?.text = getString(checkoutString)
         mTvButtonPayOrKtp?.setOnClickListener { v: View? ->
             goToCheckout()
-            sendGeneralEvent(
-                MoneyInGTMConstants.ACTION_CLICK_MONEYIN,
-                category,
-                "click " + getString(checkoutString).toLowerCase(Locale.getDefault()) + " button",
-                ""
-            )
+            sendGeneralEvent(MoneyInGTMConstants.ACTION_CLICK_MONEYIN,
+                    category,
+                    "click " + getString(checkoutString).toLowerCase(Locale.getDefault()) + " button",
+                    "")
         }
     }
 

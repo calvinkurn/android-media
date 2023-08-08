@@ -55,8 +55,9 @@ import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePayme
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePromoProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.ResultRates
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.model.AddOnsProductDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
@@ -123,6 +124,7 @@ class OrderSummaryPageViewModel @Inject constructor(
     private var debounceJob: Job? = null
     private var finalUpdateJob: Job? = null
     private var dynamicPaymentFeeJob: Job? = null
+    private val saveAddOnProductStateJobs: MutableMap<String, Job> = mutableMapOf()
 
     private var hasSentViewOspEe = false
 
@@ -1007,11 +1009,43 @@ class OrderSummaryPageViewModel @Inject constructor(
                     if (validateSelectedTerm()) {
                         finalUpdateJob?.cancel()
                         finalUpdateJob = launch(executorDispatchers.immediate) {
+                            // if there is at least one addon should follow logic to save all addons
+                            val isAddOnProductAvailable = orderProducts.value.any { it.addOnsProductData.data.isNotEmpty() }
+                            if (isAddOnProductAvailable) {
+                                // before save all addons of all products making sure all jobs canceled
+                                saveAddOnProductStateJobs.values.forEach { it.cancel() }
+                                saveAddOnProductStateJobs.clear()
+
+                                // save all addons of all products
+                                val saveAddOnState = cartProcessor.saveAllAddOnsAllProductsState(
+                                    products = orderProducts.value
+                                )
+
+                                // if save all addons of all products is not successful, execution will not continue and error toaster will be shown
+                                if (!saveAddOnState.isSuccess) {
+                                    globalEvent.value = OccGlobalEvent.Error(
+                                        errorMessage = saveAddOnState.message,
+                                        throwable = saveAddOnState.throwable,
+                                        ctaText = ERROR_WHEN_SAVE_ADD_ONS_CTA_TEXT
+                                    )
+                                    return@launch
+                                }
+                            }
+
+                            // if save all addons of all products is successful then do final validation
                             val (isSuccess, errorGlobalEvent) = cartProcessor.finalUpdateCart(param)
                             if (isSuccess) {
-                                finalValidateUse(orderCart.products, shop, orderProfile.value, onSuccessCheckout, skipCheckIneligiblePromo)
+                                finalValidateUse(
+                                    products = orderCart.products,
+                                    shop = shop,
+                                    profile = orderProfile.value,
+                                    onSuccessCheckout = onSuccessCheckout,
+                                    skipCheckIneligiblePromo = skipCheckIneligiblePromo
+                                )
                                 return@launch
                             }
+
+                            // if final update to cart is failed then show global error
                             globalEvent.value = errorGlobalEvent
                         }
                     }
@@ -1254,11 +1288,11 @@ class OrderSummaryPageViewModel @Inject constructor(
 
     private fun setDefaultAddOnState(orderShop: OrderShop, orderProduct: OrderProduct?) {
         if (orderShop.isFulfillment) {
-            orderShop.addOn = AddOnsDataModel()
+            orderShop.addOn = AddOnGiftingDataModel()
             this.orderShop.value = orderShop
         } else {
             orderProduct?.let {
-                it.addOn = AddOnsDataModel()
+                it.addOn = AddOnGiftingDataModel()
                 orderProducts.value = listOf(it)
             }
         }
@@ -1308,11 +1342,48 @@ class OrderSummaryPageViewModel @Inject constructor(
         )
     }
 
+    fun updateAddOnProduct(
+        newAddOnProductData: AddOnsProductDataModel.Data,
+        product: OrderProduct
+    ) {
+        changeAddOnProductStatus(
+            productId = product.productId,
+            addOnProductId = newAddOnProductData.id,
+            status = newAddOnProductData.status
+        )
+
+        val job = launch(executorDispatchers.immediate) {
+            cartProcessor.saveAddOnProductState(
+                newAddOnProductData = newAddOnProductData,
+                product = product
+            )
+        }
+
+        job.invokeOnCompletion {
+            saveAddOnProductStateJobs.remove(newAddOnProductData.id)
+        }
+        saveAddOnProductStateJobs[newAddOnProductData.id] = job
+
+        calculateTotal()
+    }
+
+    private fun changeAddOnProductStatus(
+        productId: String,
+        addOnProductId: String,
+        status: Int
+    ) {
+        orderProducts.value.find { it.productId == productId }?.apply {
+            addOnsProductData.data.find { it.id == addOnProductId }?.status = status
+        }
+    }
+
     override fun onCleared() {
         debounceJob?.cancel()
         finalUpdateJob?.cancel()
         getCartJob?.cancel()
         dynamicPaymentFeeJob?.cancel()
+        saveAddOnProductStateJobs.values.forEach { it.cancel() }
+        saveAddOnProductStateJobs.clear()
         super.onCleared()
     }
 
@@ -1338,6 +1409,7 @@ class OrderSummaryPageViewModel @Inject constructor(
         const val MAXIMUM_AMOUNT_ERROR_MESSAGE = "Belanjaanmu melebihi limit transaksi"
 
         const val CHANGE_PAYMENT_METHOD_MESSAGE = "Ubah"
+        const val ERROR_WHEN_SAVE_ADD_ONS_CTA_TEXT = "Oke"
 
         const val INSTALLMENT_INVALID_MIN_AMOUNT = "Oops, tidak bisa bayar dengan cicilan karena min. pembeliannya kurang."
 

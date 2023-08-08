@@ -1,6 +1,14 @@
 package com.tokopedia.addongifting.addonbottomsheet.view.mapper
 
-import com.tokopedia.addongifting.addonbottomsheet.data.saveaddonstate.*
+import com.tokopedia.purchase_platform.common.feature.addons.data.response.AddOnBottomSheetResponse
+import com.tokopedia.purchase_platform.common.feature.addons.data.response.AddOnButtonResponse
+import com.tokopedia.purchase_platform.common.feature.addons.data.response.AddOnDataResponse
+import com.tokopedia.purchase_platform.common.feature.addons.data.response.AddOnMetadataResponse
+import com.tokopedia.purchase_platform.common.feature.addons.data.response.AddOnNoteResponse
+import com.tokopedia.purchase_platform.common.feature.addons.data.response.AddOnResponse
+import com.tokopedia.purchase_platform.common.feature.addons.data.response.ProductResponse
+import com.tokopedia.purchase_platform.common.feature.addons.data.response.SaveAddOnStateResponse
+import com.tokopedia.purchase_platform.common.feature.addons.data.response.TickerResponse
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.*
 
 object AddOnResultMapper {

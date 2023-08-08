@@ -49,6 +49,7 @@ class WishlistV2GridItemViewHolder(
             }
 
             binding.pcGridItem.setThreeDotsWishlistOnClickListener { actionListener?.onThreeDotsMenuClicked(item.wishlistItem) }
+            actionListener?.onViewProductCard(item.wishlistItem, position)
         }
     }
 
