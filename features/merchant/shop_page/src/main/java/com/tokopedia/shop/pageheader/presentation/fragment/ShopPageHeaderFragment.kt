@@ -335,6 +335,7 @@ class ShopPageHeaderFragment :
         private const val AFFILIATE_SITE_ID = "1"
         private const val AFFILIATE_VERTICAL_ID = "1"
         private const val CHIPS_NAME_CAMPAIGN = "Launching Eksklusif"
+        private const val CHIPS_NAME_TOKO_PAGE = "Halaman Toko"
 
         @JvmStatic
         fun createInstance() = ShopPageHeaderFragment()
@@ -3627,6 +3628,12 @@ class ShopPageHeaderFragment :
             }else{
                 universalShareBottomSheet?.setImageGeneratorParam(shopPageParamModel)
                 universalShareBottomSheet?.getImageFromMedia(shopPageParamModel.shopProfileImgUrl.isNotEmpty())
+            }
+
+            if (it.title == CHIPS_NAME_TOKO_PAGE){
+                universalShareBottomSheet?.showAffiliateTicker()
+            }else{
+                universalShareBottomSheet?.hideAffiliateTicker()
             }
             universalShareBottomSheet?.setUtmCampaignData(
                 SHOP_PAGE_SHARE_BOTTOM_SHEET_PAGE_NAME,
