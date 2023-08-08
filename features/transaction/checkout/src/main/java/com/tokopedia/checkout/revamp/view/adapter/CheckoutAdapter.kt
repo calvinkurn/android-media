@@ -3,14 +3,15 @@ package com.tokopedia.checkout.revamp.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.checkout.databinding.ItemCheckoutUpsellBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutAddressBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutButtonPaymentBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutCostBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutCrossSellBinding
+import com.tokopedia.checkout.databinding.ItemCheckoutEpharmacyBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutOrderBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutProductBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutPromoBinding
+import com.tokopedia.checkout.databinding.ItemCheckoutUpsellBinding
 import com.tokopedia.checkout.revamp.view.address
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutAddressModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutButtonPaymentModel
@@ -27,18 +28,17 @@ import com.tokopedia.checkout.revamp.view.viewholder.CheckoutAddressViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutButtonPaymentViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutCostViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutCrossSellViewHolder
+import com.tokopedia.checkout.revamp.view.viewholder.CheckoutEpharmacyViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutOrderViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutProductViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutPromoViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutTickerViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutUpsellViewHolder
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionListener
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionViewHolder
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementViewHolder
 
 class CheckoutAdapter(
-    private val listener: CheckoutAdapterListener,
-    private val epharmacyListener: UploadPrescriptionListener
+    private val listener: CheckoutAdapterListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var list: List<CheckoutItem> = emptyList()
@@ -117,13 +117,13 @@ class CheckoutAdapter(
             }
 
             UploadPrescriptionViewHolder.ITEM_VIEW_UPLOAD -> {
-                UploadPrescriptionViewHolder(
-                    inflater.inflate(
-                        UploadPrescriptionViewHolder.ITEM_VIEW_UPLOAD,
+                CheckoutEpharmacyViewHolder(
+                    ItemCheckoutEpharmacyBinding.inflate(
+                        inflater,
                         parent,
                         false
                     ),
-                    epharmacyListener
+                    listener
                 )
             }
 

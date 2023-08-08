@@ -7,6 +7,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 
 interface CheckoutAdapterListener {
@@ -65,6 +66,12 @@ interface CheckoutAdapterListener {
     fun onInsuranceChecked(isChecked: Boolean, order: CheckoutOrderModel, position: Int)
 
     fun onInsuranceInfoTooltipClickedTrackingAnalytics()
+
+    fun uploadPrescriptionAction(
+        uploadPrescriptionUiModel: UploadPrescriptionUiModel,
+        buttonText: String,
+        buttonNotes: String
+    )
 
     fun onClickPromoCheckout(lastApplyUiModel: LastApplyUiModel)
 

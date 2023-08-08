@@ -50,6 +50,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
+import com.tokopedia.checkout.revamp.view.viewholder.CheckoutEpharmacyViewHolder
 import com.tokopedia.checkout.utils.CheckoutFingerprintUtil
 import com.tokopedia.checkout.view.ShipmentFragment
 import com.tokopedia.checkout.view.dialog.ExpireTimeDialogListener
@@ -156,7 +157,6 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Produ
 class CheckoutFragment :
     BaseDaggerFragment(),
     CheckoutAdapterListener,
-    UploadPrescriptionListener,
     ShippingDurationBottomsheetListener,
     ShippingCourierBottomsheetListener,
     ExpireTimeDialogListener {
@@ -193,7 +193,7 @@ class CheckoutFragment :
 
     private var header by autoCleared<HeaderCheckoutBinding>()
 
-    private val adapter: CheckoutAdapter = CheckoutAdapter(this, this)
+    private val adapter: CheckoutAdapter = CheckoutAdapter(this)
 
     private var loader: LoaderDialog? = null
 
@@ -1941,7 +1941,7 @@ class CheckoutFragment :
             ePharmacyAnalytics.sendPrescriptionWidgetClick(uploadPrescriptionUiModel.checkoutId)
             val uploadPrescriptionIntent = RouteManager.getIntent(
                 activity,
-                UploadPrescriptionViewHolder.EPharmacyAppLink
+                CheckoutEpharmacyViewHolder.EPharmacyAppLink
             )
             uploadPrescriptionIntent.putExtra(
                 ShipmentFragment.EXTRA_CHECKOUT_ID_STRING,
@@ -1954,7 +1954,7 @@ class CheckoutFragment :
         } else {
             val uploadPrescriptionIntent = RouteManager.getIntent(
                 activity,
-                UploadPrescriptionViewHolder.EPharmacyMiniConsultationAppLink
+                CheckoutEpharmacyViewHolder.EPharmacyMiniConsultationAppLink
             )
             startActivityForResult(
                 uploadPrescriptionIntent,
