@@ -8,7 +8,9 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopHomeShowcaseLeftMainBannerBinding
 import com.tokopedia.shop.home.view.fragment.ShopShowcaseFragment
@@ -26,6 +28,8 @@ class ShopHomeShowCaseLeftMainBannerViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_showcase_left_main_banner
         private const val SHOW_VIEW_ALL_SHOWCASE_THRESHOLD = 5
+        private const val ONE_TAB = 1
+        private const val TWO_TAB = 2
     }
 
     private val viewBinding: ItemShopHomeShowcaseLeftMainBannerBinding? by viewBinding()
@@ -48,10 +52,25 @@ class ShopHomeShowCaseLeftMainBannerViewHolder(
 
         viewBinding?.run {
             viewPager.adapter = pagerAdapter
-            tabsUnify.isVisible = tabs.size > 1
-            tabsUnify.customTabMode = TabLayout.MODE_SCROLLABLE
+
             tabsUnify.tabLayout.isTabIndicatorFullWidth = false
             tabsUnify.tabLayout.setBackgroundColor(Color.TRANSPARENT)
+
+            when {
+                tabs.isEmpty() -> tabsUnify.gone()
+                tabs.size == ONE_TAB -> tabsUnify.gone()
+                tabs.size == TWO_TAB -> {
+                    tabsUnify.visible()
+                    tabsUnify.customTabMode = TabLayout.MODE_FIXED
+                    tabsUnify.customTabGravity = TabLayout.GRAVITY_FILL
+                }
+                else -> {
+                    tabsUnify.visible()
+                    tabsUnify.customTabMode = TabLayout.MODE_SCROLLABLE
+                    tabsUnify.customTabGravity = TabLayout.GRAVITY_CENTER
+                }
+            }
+
 
             val centeredTabIndicator = ContextCompat.getDrawable(tabsUnify.tabLayout.context, R.drawable.shape_showcase_tab_indicator_color)
             tabsUnify.tabLayout.setSelectedTabIndicator(centeredTabIndicator)
@@ -61,8 +80,6 @@ class ShopHomeShowCaseLeftMainBannerViewHolder(
                 tab.setCustomText(fragments[currentPosition].first)
             }
         }
-
-
 
     }
 
