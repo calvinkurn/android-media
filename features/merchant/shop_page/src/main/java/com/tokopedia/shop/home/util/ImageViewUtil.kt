@@ -5,11 +5,10 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.tokopedia.autocompletecomponent.R
 
 internal fun ImageView.loadImageRounded(
     url: String,
-    roundingRadius: Int = context.resources.getDimensionPixelSize(R.dimen.dp_8)
+    roundingRadius: Int = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
 ) {
     Glide.with(context)
         .load(url)
