@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.databinding.BmgmProductListBinding
 import com.tokopedia.product.detail.databinding.BmgmWidgetBinding
+import com.tokopedia.product.detail.view.util.isInflated
 import com.tokopedia.product.detail.view.viewholder.bmgm.adapter.BMGMProductItemAdapter
 import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMWidgetUiModel
 import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMWidgetUiState
@@ -119,7 +120,7 @@ class BMGMWidget @JvmOverloads constructor(
             productAdapter.submit(uiModel.products) {
                 setRouting(action = uiModel.action, router = router)
             }
-        } else if (binding.bmgmProductListStub.parent == null) { // stub has already inflated
+        } else if (binding.bmgmProductListStub.isInflated()) { // stub has already inflated
             productListBinding.root.gone()
         }
     }

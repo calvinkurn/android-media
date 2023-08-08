@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.databinding.BmgmProductItemBinding
 import com.tokopedia.product.detail.databinding.BmgmProductShowMoreViewBinding
+import com.tokopedia.product.detail.view.util.isInflated
 import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMWidgetUiModel
 
 /**
@@ -31,7 +32,7 @@ class BMGMProductItemViewHolder(
         if (product.loadMoreText.isNotBlank()) {
             overlayBinding.root.show()
             overlayBinding.bmgmShowMoreText.text = product.loadMoreText
-        } else if (binding.bmgmProductShowMoreStub.parent == null) {
+        } else if (binding.bmgmProductShowMoreStub.isInflated()) {
             overlayBinding.root.hide()
         }
     }
