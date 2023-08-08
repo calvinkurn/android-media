@@ -1,21 +1,22 @@
-package com.tokopedia.product.detail.view.viewholder
+package com.tokopedia.product.detail.view.viewholder.bmgm
 
 import android.view.View
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.bmgm.ui.BMGMRouter
-import com.tokopedia.product.detail.common.bmgm.ui.model.BMGMUiState
 import com.tokopedia.product.detail.data.model.datamodel.ProductBMGMDataModel
 import com.tokopedia.product.detail.databinding.ItemDynamicProductBmgmBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
+import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMUiState
+import com.tokopedia.product.detail.view.viewholder.bmgm.widget.BMGMRouter
 
 /**
  * Created by yovi.putra on 27/07/23"
  * Project name: android-tokopedia-core
  **/
 
-class ProductBMGMViewHolder(
+class BMGMViewHolder(
     private val view: View,
     private val listener: DynamicProductDetailListener
 ) : ProductDetailPageViewHolder<ProductBMGMDataModel>(view) {

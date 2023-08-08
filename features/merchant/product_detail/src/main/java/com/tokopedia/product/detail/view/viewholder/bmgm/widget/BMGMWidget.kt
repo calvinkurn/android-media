@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.common.bmgm.ui
+package com.tokopedia.product.detail.view.viewholder.bmgm.widget
 
 import android.content.Context
 import android.graphics.Color
@@ -14,11 +14,11 @@ import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.product.detail.common.bmgm.ui.adapter.BMGMProductItemAdapter
-import com.tokopedia.product.detail.common.bmgm.ui.model.BMGMUiModel
-import com.tokopedia.product.detail.common.bmgm.ui.model.BMGMUiState
-import com.tokopedia.product.detail.common.databinding.BmgmProductListBinding
-import com.tokopedia.product.detail.common.databinding.BmgmWidgetBinding
+import com.tokopedia.product.detail.databinding.BmgmProductListBinding
+import com.tokopedia.product.detail.databinding.BmgmWidgetBinding
+import com.tokopedia.product.detail.view.viewholder.bmgm.adapter.BMGMProductItemAdapter
+import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMUiModel
+import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMUiState
 import com.tokopedia.unifyprinciples.stringToUnifyColor
 
 /**
@@ -39,7 +39,7 @@ class BMGMWidget @JvmOverloads constructor(
     }
 
     private val binding by lazyThreadSafetyNone {
-        val view = inflate(context, com.tokopedia.product.detail.common.R.layout.bmgm_widget, this)
+        val view = inflate(context, com.tokopedia.product.detail.R.layout.bmgm_widget, this)
         BmgmWidgetBinding.bind(view)
     }
 

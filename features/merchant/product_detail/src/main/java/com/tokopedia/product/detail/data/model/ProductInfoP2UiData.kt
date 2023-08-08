@@ -2,7 +2,7 @@ package com.tokopedia.product.detail.data.model
 
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.product.detail.common.bmgm.model.BMGMData
+import com.tokopedia.product.detail.data.model.bmgm.BMGMData
 import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.bundleinfo.BundleInfo

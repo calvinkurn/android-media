@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.common.bmgm.ui.adapter
+package com.tokopedia.product.detail.view.viewholder.bmgm.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,9 +7,9 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.product.detail.common.bmgm.ui.model.BMGMUiModel
-import com.tokopedia.product.detail.common.databinding.BmgmProductItemBinding
-import com.tokopedia.product.detail.common.databinding.BmgmProductShowMoreViewBinding
+import com.tokopedia.product.detail.databinding.BmgmProductItemBinding
+import com.tokopedia.product.detail.databinding.BmgmProductShowMoreViewBinding
+import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMUiModel
 
 /**
  * Created by yovi.putra on 27/07/23"

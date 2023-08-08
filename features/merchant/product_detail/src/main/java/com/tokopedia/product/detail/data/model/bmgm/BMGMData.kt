@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.common.bmgm.model
+package com.tokopedia.product.detail.data.model.bmgm
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

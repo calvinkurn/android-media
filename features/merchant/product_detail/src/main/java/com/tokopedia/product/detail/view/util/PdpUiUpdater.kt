@@ -11,9 +11,9 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.pdp.fintech.view.FintechPriceDataModel
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.bmgm.model.BMGMData
-import com.tokopedia.product.detail.common.bmgm.model.asUiModel
-import com.tokopedia.product.detail.common.bmgm.ui.model.BMGMUiState
+import com.tokopedia.product.detail.data.model.bmgm.BMGMData
+import com.tokopedia.product.detail.data.model.bmgm.asUiModel
+import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMUiState
 import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1

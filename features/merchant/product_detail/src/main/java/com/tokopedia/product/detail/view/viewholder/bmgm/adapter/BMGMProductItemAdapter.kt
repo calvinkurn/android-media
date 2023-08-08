@@ -1,16 +1,18 @@
-package com.tokopedia.product.detail.common.bmgm.ui.adapter
+package com.tokopedia.product.detail.view.viewholder.bmgm.adapter
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.tokopedia.product.detail.common.bmgm.ui.model.BMGMUiModel
+import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMUiModel
 
 /**
  * Created by yovi.putra on 27/07/23"
  * Project name: android-tokopedia-core
  **/
 
-class BMGMProductItemAdapter : ListAdapter<BMGMUiModel.Product, BMGMProductItemViewHolder>(DIFF_ITEMS) {
+class BMGMProductItemAdapter : ListAdapter<BMGMUiModel.Product, BMGMProductItemViewHolder>(
+    DIFF_ITEMS
+) {
 
     companion object {
         private val DIFF_ITEMS = object : DiffUtil.ItemCallback<BMGMUiModel.Product>() {

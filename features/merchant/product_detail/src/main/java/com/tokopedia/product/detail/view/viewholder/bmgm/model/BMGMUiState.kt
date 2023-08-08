@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.common.bmgm.ui.model
+package com.tokopedia.product.detail.view.viewholder.bmgm.model
 
 /**
  * Created by yovi.putra on 28/07/23"

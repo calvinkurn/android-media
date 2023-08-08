@@ -60,7 +60,7 @@ import com.tokopedia.product.detail.view.viewholder.PageErrorViewHolder
 import com.tokopedia.product.detail.view.viewholder.PdpComparisonWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.PdpRecommendationWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductArViewHolder
-import com.tokopedia.product.detail.view.viewholder.ProductBMGMViewHolder
+import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductBundlingViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductCategoryCarouselViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductContentViewHolder
@@ -265,7 +265,7 @@ class DynamicProductDetailAdapterFactoryImpl(
     }
 
     override fun type(data: ProductBMGMDataModel): Int {
-        return ProductBMGMViewHolder.LAYOUT
+        return BMGMViewHolder.LAYOUT
     }
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
@@ -371,7 +371,7 @@ class DynamicProductDetailAdapterFactoryImpl(
                 listener = listener
             )
             OngoingCampaignViewHolder.LAYOUT -> OngoingCampaignViewHolder(view, listener)
-            ProductBMGMViewHolder.LAYOUT -> ProductBMGMViewHolder(view, listener)
+            BMGMViewHolder.LAYOUT -> BMGMViewHolder(view, listener)
             else -> super.createViewHolder(view, type)
         }
     }

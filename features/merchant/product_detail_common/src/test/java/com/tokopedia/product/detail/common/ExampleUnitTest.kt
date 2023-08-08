@@ -1,6 +1,5 @@
 package com.tokopedia.product.detail.common
 
-import com.tokopedia.product.detail.common.bmgm.ui.model.BMGMUiModel
 import org.junit.Test
 
 /**
@@ -11,15 +10,6 @@ import org.junit.Test
 class ExampleUnitTest {
     @Test
     fun hashCodeChecker() {
-        var bmgm = BMGMUiModel.Product(imageUrl = "aaaa")
-        println(bmgm.hashCode())
-        bmgm = bmgm.copy(loadMoreText = "bbb")
-        println(bmgm.hashCode())
-        bmgm = bmgm.copy(loadMoreText = "bbb")
-        println(bmgm.hashCode())
-        bmgm = bmgm.copy(loadMoreText = "aaa")
-        println(bmgm.hashCode())
-        bmgm = bmgm.copy(loadMoreText = "bbb", imageUrl = "cccc")
-        println(bmgm.hashCode())
+
     }
 }

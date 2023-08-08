@@ -2,7 +2,7 @@ package com.tokopedia.product.detail.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.product.detail.common.bmgm.model.BMGMData
+import com.tokopedia.product.detail.data.model.bmgm.BMGMData
 import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.bundleinfo.BundleInfo
