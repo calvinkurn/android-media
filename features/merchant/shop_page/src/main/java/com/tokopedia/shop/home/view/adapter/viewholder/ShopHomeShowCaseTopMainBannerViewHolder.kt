@@ -54,6 +54,9 @@ class ShopHomeShowCaseTopMainBannerViewHolder(
             viewBinding?.tpgFirstBannerTitle?.text = firstShowcase.name
             viewBinding?.imgFirstBanner?.visible()
             viewBinding?.tpgFirstBannerTitle?.visible()
+
+            viewBinding?.imgFirstBanner?.setOnClickListener { listener.onShowcaseClick(firstShowcase) }
+            viewBinding?.tpgFirstBannerTitle?.setOnClickListener { listener.onShowcaseClick(firstShowcase)  }
         }
     }
 
