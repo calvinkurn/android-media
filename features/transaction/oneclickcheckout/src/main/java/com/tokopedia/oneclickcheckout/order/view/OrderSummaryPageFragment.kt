@@ -136,6 +136,7 @@ import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.QUERY_PARAM_ADDON_PRODUCT
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.QUERY_PARAM_CART_ID
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.QUERY_PARAM_CATEGORY_ID
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.QUERY_PARAM_DESELECTED_ADDON_IDS
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.QUERY_PARAM_IS_TOKOCABANG
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.QUERY_PARAM_PAGE_ATC_SOURCE
@@ -397,6 +398,26 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                             }
                         }
                         adapter.notifyItemChanged(adapter.getAddOnProductServiceIndex(cartId))
+
+                        listProducts[index].addOnsProductData.deselectedData.clear()
+                        if (addOnProductDataResult.changedAddons.isNotEmpty()) {
+                            addOnProductDataResult.changedAddons.forEach {
+                                if (it.getSaveAddonSelectedStatus().value == AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK) {
+                                    listProducts[index].addOnsProductData.deselectedData.add(
+                                        AddOnsProductDataModel.Data(
+                                            id = it.id,
+                                            uniqueId = it.uniqueId,
+                                            price = it.price,
+                                            infoLink = it.eduLink,
+                                            name = it.name,
+                                            status = it.getSaveAddonSelectedStatus().value,
+                                            type = it.addOnType,
+                                            productQuantity = listProducts[index].orderQuantity
+                                        )
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
                 viewModel.calculateTotal()
@@ -1591,6 +1612,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 }
             }
 
+            val deselectAddOnIds = arrayListOf<String>()
+            addOnsProductData.deselectedData.forEach {
+                deselectAddOnIds.add(it.id)
+            }
+
             val price: Double
             val discountedPrice: Double
             if (product.campaignId == "0") {
@@ -1607,6 +1633,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 mapOf(
                     QUERY_PARAM_CART_ID to cartId,
                     QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds.toString().replace("[", "").replace("]", ""),
+                    QUERY_PARAM_DESELECTED_ADDON_IDS to deselectAddOnIds.toString().replace("[", "").replace("]", ""),
                     QUERY_PARAM_PAGE_ATC_SOURCE to SOURCE_ONE_CLICK_CHECKOUT,
                     QUERY_PARAM_WAREHOUSE_ID to product.warehouseId,
                     QUERY_PARAM_IS_TOKOCABANG to product.isFulfillment,
@@ -1617,6 +1644,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toString().removeSingleDecimalSuffix()
                 )
             )
+
+            println("++ applink = $applink")
 
             activity?.let {
                 val intent = RouteManager.getIntent(it, applink)
