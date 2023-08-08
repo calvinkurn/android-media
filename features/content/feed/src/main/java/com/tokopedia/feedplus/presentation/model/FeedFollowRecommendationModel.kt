@@ -56,6 +56,7 @@ data class FeedFollowRecommendationModel(
         val imageUrl: String,
         val thumbnailUrl: String,
         val videoUrl: String,
+        val applink: String,
         val isFollowed: Boolean,
     ) {
         val isShop: Boolean
