@@ -3608,7 +3608,7 @@ open class ProductManageFragment :
                     title
                 )
                 setDescription(desc)
-                setPrimaryCTAText(getString(com.tokopedia.design.R.string.oke))
+                setPrimaryCTAText(getString(com.tokopedia.product.manage.common.R.string.oke))
                 setPrimaryCTAClickListener {
                     dismiss()
                 }
