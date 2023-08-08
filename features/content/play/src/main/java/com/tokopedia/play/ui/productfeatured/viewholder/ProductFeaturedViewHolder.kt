@@ -63,7 +63,7 @@ class ProductFeaturedViewHolder(
 
         binding.layoutRibbon.showWithCondition(item.label.rankFmt.isNotBlank())
         binding.layoutRibbon.rankFmt = item.label.rankFmt
-        binding.layoutRibbon.configRibbon(item.label.rankColors)
+        binding.layoutRibbon.setRibbonColors(item.label.rankColors)
     }
 
     fun startAnimation() {

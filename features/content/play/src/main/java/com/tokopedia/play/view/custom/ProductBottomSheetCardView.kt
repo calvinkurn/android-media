@@ -121,7 +121,7 @@ class ProductBottomSheetCardView: FrameLayout {
 
         binding.layoutRibbon.showWithCondition(item.label.rankFmt.isNotBlank())
         binding.layoutRibbon.rankFmt = item.label.rankFmt
-        binding.layoutRibbon.configRibbon(item.label.rankColors)
+        binding.layoutRibbon.setRibbonColors(item.label.rankColors)
         binding.layoutRibbon.startAnimation()
 
         binding.cardPlayPinned.setOnClickListener {

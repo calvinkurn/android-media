@@ -189,7 +189,7 @@ class ProductCarouselUiView(
             delay(UnifyMotion.T2)
             val startPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
             val endPosition = layoutManager.findLastCompletelyVisibleItemPosition()
-            if (startPosition > -1 && endPosition < products.size) {
+            if (startPosition in products.indices) {
                 for (i in startPosition..endPosition) {
                     when (val vh = binding.rvProductFeatured.findViewHolderForAdapterPosition(i)) {
                         is ProductFeaturedViewHolder -> vh.startAnimation()

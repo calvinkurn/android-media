@@ -33,7 +33,7 @@ class PlayLabelAnimation : MotionLayout {
             binding.playTvRibbon.text = value
         }
 
-    fun configRibbon(colors: List<String>) {
+    fun setRibbonColors(colors: List<String>) {
         if (colors.isEmpty()) return
 
         try {
