@@ -137,7 +137,9 @@ class UniversalInboxFragment @Inject constructor(
         return binding?.root
     }
 
-    override fun initInjector() {}
+    override fun initInjector() {
+        // no-op
+    }
 
     override fun getScreenName(): String = TAG
 

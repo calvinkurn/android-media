@@ -141,7 +141,9 @@ open class TokoChatFragment @Inject constructor(
 
     override fun getScreenName(): String = TAG
 
-    override fun initInjector() {}
+    override fun initInjector() {
+        // no-op
+    }
 
     override fun onClickAttachmentButton() {
         baseBinding?.tokochatLayoutMenu?.toggleAttachmentMenu(

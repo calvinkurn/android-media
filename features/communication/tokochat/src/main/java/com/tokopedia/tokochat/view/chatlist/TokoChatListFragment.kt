@@ -53,7 +53,9 @@ class TokoChatListFragment @Inject constructor(
 
     override fun getScreenName(): String = TAG
 
-    override fun initInjector() {}
+    override fun initInjector() {
+        // no-op
+    }
 
     override fun getViewBindingInflate(container: ViewGroup?): TokochatChatlistFragmentBinding {
         return TokochatChatlistFragmentBinding.inflate(
