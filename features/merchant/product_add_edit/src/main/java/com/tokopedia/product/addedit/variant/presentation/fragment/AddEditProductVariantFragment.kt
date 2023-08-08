@@ -448,8 +448,10 @@ class AddEditProductVariantFragment :
     }
 
     override fun onCustomVariantTypeCountChanged(count: Int) {
-        buttonAddVariantType.isEnabled = count < MAX_CUSTOM_VARIANT_TYPE
-        titleLayoutVariantType.isActionButtonVisible = count.isMoreThanZero()
+        view?.post {
+            buttonAddVariantType.isEnabled = count < MAX_CUSTOM_VARIANT_TYPE
+            titleLayoutVariantType.isActionButtonVisible = count.isMoreThanZero()
+        }
     }
 
     override fun onVariantTypeDisabledSelected(adapterPosition: Int) {
