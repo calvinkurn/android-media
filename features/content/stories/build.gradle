@@ -54,6 +54,11 @@ android {
     buildFeatures {
         viewBinding true
         buildConfig true
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = rootProject.ext.composeVersion
     }
 
     testOptions {
@@ -81,6 +86,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    implementation projectOrAar(rootProject.ext.features.contentCommon)
 
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
     implementation rootProject.ext.supportLibDependencies.constraintLayout
@@ -102,6 +108,9 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.global_error
+    implementation rootProject.ext.composeDependencies.composeConstraint
+    implementation rootProject.ext.unifyDependencies.nestPrinciples
+    implementation rootProject.ext.unifyDependencies.nestComponents
 
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true

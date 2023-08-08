@@ -2,6 +2,7 @@ package com.tokopedia.stories
 
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.stories.bottomsheet.StoriesThreeDotsBottomSheet
 import com.tokopedia.stories.databinding.ActivityStoriesBinding
 
 class StoriesActivity : BaseActivity() {
@@ -14,6 +15,12 @@ class StoriesActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setupView()
         getData()
+
+        /**
+         * For testing purpose
+         */
+
+        showBottomSheet()
     }
 
     private fun setupView() {
@@ -33,4 +40,11 @@ class StoriesActivity : BaseActivity() {
         _binding = null
     }
 
+    private fun showBottomSheet() {
+        binding.button2.setOnClickListener {
+            val bottomSheet = StoriesThreeDotsBottomSheet
+                .getOrCreateFragment(supportFragmentManager, classLoader)
+            bottomSheet.show(supportFragmentManager)
+        }
+    }
 }
