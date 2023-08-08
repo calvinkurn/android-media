@@ -38,7 +38,7 @@ class GotoKycWebWrapperFragment : BaseSessionWebViewFragment() {
     }
 
     companion object {
-        const val KEY_URL = "url"
+        private const val KEY_URL = "url"
 
         fun newInstance(url: String): GotoKycWebWrapperFragment {
             val fragment = GotoKycWebWrapperFragment()
