@@ -431,7 +431,9 @@ object ShopPageHomeMapper {
                     BANNER_TIMER -> {
                         ShopPageWidgetMapper.mapToBannerTimerWidget(widgetResponse, widgetLayout)
                     }
-                    SHOWCASE_NAVIGATION_BANNER -> ShopPageWidgetMapper.mapToHomeShowcaseWidget(widgetResponse)
+                    SHOWCASE_NAVIGATION_BANNER -> {
+                        ShopPageWidgetMapper.mapToHomeShowcaseWidget(widgetResponse)
+                    }
                     else -> null
                 }
 

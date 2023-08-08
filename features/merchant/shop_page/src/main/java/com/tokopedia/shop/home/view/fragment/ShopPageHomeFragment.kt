@@ -1263,7 +1263,7 @@ open class ShopPageHomeFragment :
                 when (it) {
                     is Success -> {
                         shopHomeAdapter?.setHomeMerchantVoucherData(it.data)
-                        shopHomeAdapter?.setShopShowcaseBanner(
+                        /*shopHomeAdapter?.setShopShowcaseBanner(
                             ShopHomeShowcaseUiModel(
                                 widgetId = "5432",
                                 showcaseHeader = ShopHomeShowcaseUiModel.ShowcaseHeader(
@@ -1394,7 +1394,7 @@ open class ShopPageHomeFragment :
                                     )
                                 )
                             )
-                        )
+                        )*/
                     }
                     is Fail -> {
                         shopHomeAdapter?.getMvcWidgetUiModel()?.let { uiModel ->
