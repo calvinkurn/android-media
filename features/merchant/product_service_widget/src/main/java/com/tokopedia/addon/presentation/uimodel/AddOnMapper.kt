@@ -56,7 +56,8 @@ object AddOnMapper {
 
     fun mapAddOnWithSelectedIds(
         addonGroupList: List<AddOnGroupUIModel>,
-        selectedAddonIds: List<String>
+        selectedAddonIds: List<String>,
+        predeselectedAddonIds: List<String>
     ): List<AddOnGroupUIModel> {
         return addonGroupList.map {
             it.copy(
@@ -65,7 +66,7 @@ object AddOnMapper {
                         addon.isMandatory || addon.isAutoselect
                     } else {
                         addon.id in selectedAddonIds || addon.isMandatory
-                    }
+                    } && addon.id !in predeselectedAddonIds
                     addon.copy(
                         isSelected = isPreselected,
                         isPreselected = isPreselected
