@@ -194,6 +194,7 @@ class CheckoutProductViewHolder(
 
     private fun renderGroupInfo(product: CheckoutProductModel) {
         if (product.shouldShowGroupInfo) {
+            binding.vDividerOrder.isVisible = product.orderNumber > 1
             binding.tvCheckoutOrderNumber.text = itemView.context.getString(
                 R.string.label_order_counter,
                 product.orderNumber
@@ -235,6 +236,7 @@ class CheckoutProductViewHolder(
                 binding.imgFreeShipping.isVisible = false
             }
         } else {
+            binding.vDividerOrder.isVisible = false
             binding.tvCheckoutOrderNumber.isVisible = false
             binding.bgCheckoutSupergraphicOrder.isVisible = false
             binding.ivCheckoutOrderBadge.isVisible = false
@@ -458,8 +460,12 @@ class CheckoutProductViewHolder(
             val order = listener.getOrderByCartStringGroup(product.cartStringGroup)
             if (order != null) {
                 renderGroupError(order)
-                renderWarningGroup(order)
-                renderCustomError(order)
+                if (!binding.checkoutTickerShopError.isVisible) {
+                    renderWarningGroup(order)
+                }
+                if (!binding.checkoutTickerShopError.isVisible) {
+                    renderCustomError(order)
+                }
                 return
             }
         }

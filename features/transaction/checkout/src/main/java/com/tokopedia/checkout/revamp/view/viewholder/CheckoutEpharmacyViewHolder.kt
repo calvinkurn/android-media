@@ -10,6 +10,7 @@ import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setTextColorCompat
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
@@ -47,6 +48,7 @@ class CheckoutEpharmacyViewHolder(private val binding: ItemCheckoutEpharmacyBind
                     itemView.resources.getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_invalid_title_text)
                 binding.uploadDescriptionText.text =
                     itemView.resources.getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_invalid_description_text)
+                binding.uploadDescriptionText.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
                 binding.uploadDescriptionText.show()
             } else {
                 binding.uploadPrescriptionText.text = uploadPrescriptionUiModel.uploadImageText
@@ -71,7 +73,6 @@ class CheckoutEpharmacyViewHolder(private val binding: ItemCheckoutEpharmacyBind
         }
 
         if (uploadPrescriptionUiModel.isError) {
-            binding.containerUploadPrescription.setBackgroundResource(com.tokopedia.purchase_platform.common.R.drawable.bg_pp_rounded_red)
             binding.containerUploadPrescription.animate()
                 .translationX(VIBRATION_ANIMATION_TRANSLATION_X.toFloat())
                 .setDuration(VIBRATION_ANIMATION_DURATION.toLong())
@@ -92,8 +93,10 @@ class CheckoutEpharmacyViewHolder(private val binding: ItemCheckoutEpharmacyBind
                     }
                 })
                 .start()
-        } else {
-            binding.containerUploadPrescription.setBackgroundResource(com.tokopedia.purchase_platform.common.R.drawable.bg_pp_rounded_grey)
+            binding.uploadDescriptionText.text =
+                itemView.resources.getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_message_error_prescription_or_consultation_not_found)
+            binding.uploadDescriptionText.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_RN500)
+            binding.uploadDescriptionText.show()
         }
     }
 

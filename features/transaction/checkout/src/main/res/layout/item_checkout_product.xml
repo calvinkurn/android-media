@@ -6,6 +6,15 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/v_divider_order"
+        android:layout_width="0dp"
+        android:layout_height="8dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/v_divider_shop"
         android:layout_width="0dp"
         android:layout_height="1dp"
@@ -13,7 +22,7 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/v_divider_order" />
 
     <View
         android:id="@+id/bg_checkout_supergraphic_order"
@@ -63,7 +72,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1"
         app:layout_constraintStart_toEndOf="@id/tv_checkout_order_number"
-        app:layout_constraintTop_toBottomOf="@id/v_divider_shop"
+        app:layout_constraintTop_toBottomOf="@id/checkout_ticker_shop_error"
         app:typographyType="display_3"
         app:typographyWeight="reguler"
         tools:text="Preorder 300 hari • Tangerang Selatan Dekatnya Jakarta" />
