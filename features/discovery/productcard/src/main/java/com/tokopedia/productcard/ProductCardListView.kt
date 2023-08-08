@@ -13,7 +13,9 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.productcard.layout.LayoutStrategyBestSeller
+import com.tokopedia.productcard.layout.LayoutStrategyListView
 import com.tokopedia.productcard.utils.ViewId
 import com.tokopedia.productcard.utils.ViewStubId
 import com.tokopedia.productcard.utils.expandTouchArea
@@ -22,11 +24,8 @@ import com.tokopedia.productcard.utils.getDimensionPixelSize
 import com.tokopedia.productcard.utils.glideClear
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.loadImageRounded
-import com.tokopedia.productcard.utils.renderLabelBestSeller
-import com.tokopedia.productcard.utils.renderLabelBestSellerCategoryBottom
-import com.tokopedia.productcard.utils.renderLabelBestSellerCategorySide
-import com.tokopedia.productcard.utils.renderLabelCampaign
 import com.tokopedia.productcard.utils.renderStockBar
+import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey.PRODUCT_CARD_ENABLE_INTERACTION
@@ -36,8 +35,8 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.CardUnify2.Companion.ANIMATE_OVERLAY
 import com.tokopedia.unifycomponents.CardUnify2.Companion.ANIMATE_OVERLAY_BOUNCE
-import com.tokopedia.video_widget.VideoPlayerController
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.video_widget.VideoPlayerController
 import kotlin.LazyThreadSafetyMode.NONE
 
 class ProductCardListView: ConstraintLayout, IProductCardView {
@@ -140,6 +139,18 @@ class ProductCardListView: ConstraintLayout, IProductCardView {
     private val buttonSeeOtherProduct: UnifyButton? by lazy(NONE) {
         findViewById(R.id.buttonSeeOtherProduct)
     }
+    private val labelOverlayBackground: ImageView? by lazy(NONE) {
+        findViewById(R.id.labelOverlayBackground)
+    }
+    private val labelOverlay: Typography? by lazy(NONE) {
+        findViewById(R.id.labelOverlay)
+    }
+    private val labelOverlayStatus: Label? by lazy(NONE) {
+        findViewById(R.id.labelOverlayStatus)
+    }
+    private val spaceMediaAnchorToInfo: Space? by lazyThreadSafetyNone {
+        findViewById(R.id.spaceMediaAnchorToProductInfo)
+    }
     private var isUsingViewStub = false
 
     constructor(context: Context) : super(context) {
@@ -201,39 +212,41 @@ class ProductCardListView: ConstraintLayout, IProductCardView {
             productCardModel.productImageUrl,
             productCardModel.layoutStrategy.imageCornerRadius()
         )
-        productCardModel.layoutStrategy.setImageSize(mediaAnchorProduct)
 
-        val isShowCampaign = productCardModel.isShowLabelCampaign()
-        renderLabelCampaign(
-            isShowCampaign,
+        productCardModel.layoutStrategy.setImageSizeListView(mediaAnchorProduct)
+
+        productCardModel.layoutStrategy.renderOverlayLabel(
+            labelOverlayBackground,
+            labelOverlay,
+            labelOverlayStatus,
+            productCardModel,
+        )
+
+        productCardModel.layoutStrategy.renderCampaignLabel(
             labelCampaignBackground,
             textViewLabelCampaign,
             productCardModel
         )
 
-        val isShowBestSeller = productCardModel.isShowLabelBestSeller()
-        renderLabelBestSeller(
-            isShowBestSeller,
+        productCardModel.layoutStrategy.renderLabelBestSeller(
             labelBestSeller,
             productCardModel
         )
 
-        val isShowCategorySide = productCardModel.isShowLabelCategorySide()
-        renderLabelBestSellerCategorySide(
-            isShowCategorySide,
+        productCardModel.layoutStrategy.renderLabelBestSellerCategorySide(
             textCategorySide,
             productCardModel
         )
 
-        val isShowCategoryBottom = productCardModel.isShowLabelCategoryBottom()
-        renderLabelBestSellerCategoryBottom(
-            isShowCategoryBottom,
+        productCardModel.layoutStrategy.renderLabelBestSellerCategoryBottom(
             textCategoryBottom,
             productCardModel
         )
 
-        val isShowCampaignOrBestSeller = isShowCampaign || isShowBestSeller
-        spaceCampaignBestSeller?.showWithCondition(isShowCampaignOrBestSeller)
+        productCardModel.layoutStrategy.renderSpaceCampaignBestSeller(
+            spaceCampaignBestSeller,
+            productCardModel,
+        )
 
         outOfStockOverlay?.showWithCondition(productCardModel.isOutOfStock)
 
@@ -243,38 +256,51 @@ class ProductCardListView: ConstraintLayout, IProductCardView {
 
         imageVideoIdentifier?.showWithCondition(productCardModel.hasVideo)
 
+        val isMergePriceSection = productCardModel.layoutStrategy !is LayoutStrategyBestSeller
+            && productCardModel.layoutStrategy !is LayoutStrategyListView
+
+        setMediaAnchorToInfoSpaceSize(productCardModel)
+
         renderProductCardContent(
-            productCardModel,
-            isWideContent = productCardModel.layoutStrategy !is LayoutStrategyBestSeller
+            productCardModel = productCardModel,
+            isMergePriceSection = isMergePriceSection,
+            isMergeShippingSection = true,
         )
 
         renderStockBar(progressBarStock, textViewStockLabel, productCardModel)
 
         renderProductCardFooter(productCardModel, isProductCardList = true)
 
-        imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
+        imageThreeDots.shouldShowWithAction(productCardModel.hasThreeDots) {
+            constraintLayoutProductCard?.post {
+                imageThreeDots?.expandTouchArea(
+                    it.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                    it.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                    it.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                    it.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
+                )
+            }
+        }
 
         cartExtension.setProductModel(productCardModel)
         video.setVideoURL(productCardModel.customVideoURL)
 
         cardViewProductCard?.animateOnPress = cardViewAnimationOnPress(productCardModel)
+    }
 
-        constraintLayoutProductCard?.post {
-            imageThreeDots?.expandTouchArea(
-                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
-                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
-                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
-                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
-            )
-        }
+    private fun setMediaAnchorToInfoSpaceSize(productCardModel: ProductCardModel) {
+        val layoutParams = spaceMediaAnchorToInfo?.layoutParams ?: return
+        layoutParams.width = productCardModel.layoutStrategy.getMediaAnchorToInfoSpaceSize()
+        spaceMediaAnchorToInfo?.layoutParams = layoutParams
     }
 
     private fun cardViewAnimationOnPress(productCardModel: ProductCardModel): Int {
-        val isOverlayBounce =
-            remoteConfig.getBoolean(PRODUCT_CARD_ENABLE_INTERACTION, true)
-                && productCardModel.cardInteraction
-
-        return if (isOverlayBounce) ANIMATE_OVERLAY_BOUNCE else ANIMATE_OVERLAY
+        return if(productCardModel.cardInteraction != null) {
+            val isOverlayBounce =
+                remoteConfig.getBoolean(PRODUCT_CARD_ENABLE_INTERACTION, true)
+                    && productCardModel.cardInteraction
+            if (isOverlayBounce) ANIMATE_OVERLAY_BOUNCE else ANIMATE_OVERLAY
+        } else productCardModel.animateOnPress
     }
 
     fun setImageProductViewHintListener(impressHolder: ImpressHolder, viewHintListener: ViewHintListener) {

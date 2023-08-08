@@ -65,6 +65,7 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceRecomProductCartMapData
+import com.tokopedia.purchase_platform.common.constant.CartConstant.QTY_ADDON_REPLACE
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrder
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrderData
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
@@ -138,6 +139,7 @@ class CartListPresenter @Inject constructor(
 
     private var cartListData: CartData? = null
     private var summaryTransactionUiModel: SummaryTransactionUiModel? = null
+    private var summariesAddOnUiModel: HashMap<Int, String> = hashMapOf()
     private var promoSummaryUiModel: PromoSummaryData? = null
 
     private var hasPerformChecklistChange: Boolean = false
@@ -166,6 +168,8 @@ class CartListPresenter @Inject constructor(
 
     // Cart shop ticker debounce job
     private var cartShopGroupTickerJob: Job? = null
+
+    private var totalQtyWithAddon: Int = 0
 
     companion object {
         private const val PERCENTAGE = 100.0f
@@ -210,7 +214,18 @@ class CartListPresenter @Inject constructor(
             CartUiModelMapper.mapPromoSummaryUiModel(cartListData.promoSummary)
     }
 
-    override fun getSummaryTransactionUiModel(): SummaryTransactionUiModel? {
+    override fun getSummaryTransactionUiModel(selectedCartItemData: List<CartItemHolderData>): SummaryTransactionUiModel? {
+        val updatedAddOnSummary = cartListData?.shoppingSummary?.summaryAddOnList?.let {
+            CartUiModelMapper.mapSummariesAddOnsFromSelectedItems(it, selectedCartItemData)
+        }
+        if (updatedAddOnSummary != null) {
+            var totalAddOnPrice = 0L
+            for (entry in updatedAddOnSummary) {
+                totalAddOnPrice += entry.priceValue.toLong()
+            }
+            summaryTransactionUiModel?.paymentTotal = summaryTransactionUiModel?.totalValue?.plus(totalAddOnPrice) ?: 0
+            summaryTransactionUiModel?.listSummaryAddOns = updatedAddOnSummary
+        }
         return summaryTransactionUiModel
     }
 
@@ -267,6 +282,7 @@ class CartListPresenter @Inject constructor(
             }
             setCartListData(cartData)
             summaryTransactionUiModel = CartUiModelMapper.mapSummaryTransactionUiModel(cartData)
+            summariesAddOnUiModel = CartUiModelMapper.getShoppingSummaryAddOns(cartData.shoppingSummary.summaryAddOnList)
             showChoosePromoWidget = cartData.promo.showChoosePromoWidget
             promoTicker = cartData.promo.ticker
             it.renderLoadGetCartDataFinish()
@@ -643,6 +659,7 @@ class CartListPresenter @Inject constructor(
             totalItemQty,
             subtotalCashback
         )
+
         view?.updateCashback(subtotalCashback)
         view?.renderDetailInfoSubTotal(totalItemQty.toString(), subtotalPrice, dataList.isEmpty())
     }
@@ -653,15 +670,32 @@ class CartListPresenter @Inject constructor(
         totalItemQty: Int,
         subtotalCashback: Double
     ) {
+        // update summary addons
+        var totalAddonPrice = 0.0
+        for ((key, value) in summariesAddOnUiModel) {
+            summaryTransactionUiModel?.listSummaryAddOns?.forEach {
+                if (it.type == key) {
+                    it.qty = totalQtyWithAddon
+                    it.wording = value.replace(QTY_ADDON_REPLACE, totalQtyWithAddon.toString())
+
+                    totalAddonPrice = totalQtyWithAddon * it.priceValue
+                    it.priceLabel = CurrencyFormatUtil.convertPriceValueToIdrFormat(totalAddonPrice, false).removeDecimalSuffix()
+                }
+            }
+        }
+
+        val priceAfterAddon = subtotalPrice + totalAddonPrice
+        val priceAfterAddonBeforeSlashedPrice = subtotalBeforeSlashedPrice + totalAddonPrice
+
         summaryTransactionUiModel?.qty = totalItemQty.toString()
-        if (subtotalBeforeSlashedPrice == 0.0) {
+        if (priceAfterAddonBeforeSlashedPrice == 0.0) {
             summaryTransactionUiModel?.totalValue = subtotalPrice.toLong()
         } else {
             summaryTransactionUiModel?.totalValue = subtotalBeforeSlashedPrice.toLong()
         }
         summaryTransactionUiModel?.discountValue =
-            (subtotalBeforeSlashedPrice - subtotalPrice).toLong()
-        summaryTransactionUiModel?.paymentTotal = subtotalPrice.toLong()
+            (priceAfterAddonBeforeSlashedPrice - priceAfterAddon).toLong()
+        summaryTransactionUiModel?.paymentTotal = priceAfterAddon.toLong()
         summaryTransactionUiModel?.sellerCashbackValue = subtotalCashback.toLong()
     }
 
@@ -863,6 +897,13 @@ class CartListPresenter @Inject constructor(
                 subtotalBeforeSlashedPrice = returnValueNormalProduct.first
                 subtotalPrice = returnValueNormalProduct.second
                 subtotalCashback = returnValueNormalProduct.third
+            }
+
+            if (cartItemHolderData.addOnsProduct.listData.isNotEmpty()) {
+                totalQtyWithAddon = itemQty
+                cartItemHolderData.addOnsProduct.listData.forEach {
+                    subtotalPrice += (totalQtyWithAddon * it.price)
+                }
             }
         }
 

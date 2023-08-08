@@ -144,6 +144,11 @@ class PromoCheckoutViewModel @Inject constructor(
     val getPromoSuggestionResponse: LiveData<GetPromoSuggestionAction>
         get() = _getPromoSuggestionResponse
 
+    // Live data to handle actionable CTA
+    private val _getActionableApplinkNavigation = MutableLiveData<String>()
+    val getActionableApplinkNavigation: LiveData<String>
+        get() = _getActionableApplinkNavigation
+
     // Page source : CART, CHECKOUT, OCC
     fun getPageSource(): Int {
         return fragmentUiModel.value?.uiData?.pageSource ?: 0
@@ -177,6 +182,10 @@ class PromoCheckoutViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
+        cancelAllJobs()
+    }
+
+    fun cancelAllJobs() {
         getCouponListRecommendationUseCase.cancelJobs()
         validateUseUseCase.cancelJobs()
         clearCacheAutoApplyStackUseCase.cancelJobs()
@@ -1421,6 +1430,23 @@ class PromoCheckoutViewModel @Inject constructor(
         resetRecommendedPromo()
     }
 
+    fun handlePromoListAfterClickPromoItem(
+        element: PromoListItemUiModel,
+        position: Int
+    ) {
+        if (element.uiState.isContainActionableGopayCicilCTA) {
+            _getActionableApplinkNavigation.value = element.uiData.cta.applink
+            analytics.sendClickActivatedGopayCicilEvent(
+                getPageSource(),
+                element.uiData.promoCode,
+                element.uiData.benefitAmount,
+                position
+            )
+        } else {
+            updatePromoListAfterClickPromoItem(element)
+        }
+    }
+
     fun updatePromoListAfterClickPromoItem(element: PromoListItemUiModel) {
         if (clashCalculationJob == null || clashCalculationJob?.isActive == false) {
             clashCalculationJob = launch {
@@ -1604,14 +1630,10 @@ class PromoCheckoutViewModel @Inject constructor(
             it.uiState.isButtonSelectEnabled = false
 
             val expandedParentIdentifierList = mutableSetOf<Int>()
+            // Apply recommended promo from primary
             promoListUiModel.value?.forEach {
                 if (it is PromoListItemUiModel) {
-                    val promoCode = if (it.uiData.useSecondaryPromo) {
-                        it.uiData.secondaryCoupons.first().code
-                    } else {
-                        it.uiData.promoCode
-                    }
-                    if (promoRecommendation.uiData.promoCodes.contains(promoCode)) {
+                    if (promoRecommendation.uiData.promoCodes.contains(it.uiData.promoCode)) {
                         uncheckSibling(it)
                         it.uiState.isSelected = true
                         it.uiState.isRecommended = true
@@ -1620,7 +1642,25 @@ class PromoCheckoutViewModel @Inject constructor(
                         expandedParentIdentifierList.add(it.uiData.parentIdentifierId)
                         analytics.eventClickPilihOnRecommendation(
                             getPageSource(),
-                            promoCode,
+                            it.uiData.promoCode,
+                            it.uiState.isCausingOtherPromoClash
+                        )
+                    }
+                }
+            }
+            // Apply recommended promo from secondary promo
+            promoListUiModel.value?.forEach {
+                if (it is PromoListItemUiModel) {
+                    if (it.uiData.useSecondaryPromo && promoRecommendation.uiData.promoCodes.contains(it.uiData.secondaryCoupons.first().code)) {
+                        uncheckSibling(it)
+                        it.uiState.isSelected = true
+                        it.uiState.isRecommended = true
+                        _tmpUiModel.value = Update(it)
+                        calculateClash(it, true)
+                        expandedParentIdentifierList.add(it.uiData.parentIdentifierId)
+                        analytics.eventClickPilihOnRecommendation(
+                            getPageSource(),
+                            it.uiData.secondaryCoupons.first().code,
                             it.uiState.isCausingOtherPromoClash
                         )
                     }

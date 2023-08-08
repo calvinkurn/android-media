@@ -20,6 +20,7 @@ import com.tokopedia.people.utils.UserProfileSharedPref
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
+import com.tokopedia.people.views.uimodel.profile.ProfileTabState
 import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
@@ -27,6 +28,7 @@ import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
+import org.assertj.core.api.Assertions
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -78,13 +80,16 @@ class UserProfileContentViewModelTest {
     private val mockPlayVideoUpcoming = playVideoBuilder.buildModel(channelType = PlayWidgetChannelType.Upcoming, reminderType = PlayWidgetReminderType.NotReminded)
     private val mockPlayVideoChannel = mockPlayVideo.items.first()
 
-    private val robot = UserProfileViewModelRobot(
-        username = mockOwnUsername,
-        repo = mockRepo,
-        dispatcher = testDispatcher,
-        userSession = mockUserSession,
-        userProfileSharedPref = mockUserProfileSharedPref,
-    )
+    private val robot by lazy {
+        UserProfileViewModelRobot(
+            username = mockOwnUsername,
+            repo = mockRepo,
+            dispatcher = testDispatcher,
+            userSession = mockUserSession,
+            userProfileSharedPref = mockUserProfileSharedPref,
+            dispatchers = testDispatcher,
+        )
+    }
 
     @Before
     fun setUp() {
@@ -113,7 +118,7 @@ class UserProfileContentViewModelTest {
             it.recordState {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
             } andThen {
-                profileTab equalTo mockProfileTabShown
+                assert(profileTab is ProfileTabState.Success)
                 it.viewModel.profileTab equalTo mockProfileTabShown
             }
         }
@@ -139,24 +144,11 @@ class UserProfileContentViewModelTest {
             it.setup {
                 coEvery { mockRepo.getUserProfileTab(mockOwnProfile.userID) } throws mockException
             }
-            it.recordEvent {
-                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
-            } andThen {
-                last().assertEvent(UserProfileUiEvent.ErrorGetProfileTab(Throwable()))
-            }
-        }
-    }
-
-    @Test
-    fun `when user reload profile tab`() {
-        robot.use {
-            it.setup {
-                coEvery { mockRepo.getUserProfileTab(mockOwnProfile.userID) } returns mockProfileTabShown
-            }
             it.recordState {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
             } andThen {
-                profileTab equalTo mockProfileTabShown
+                assert(profileTab is ProfileTabState.Error)
+                it.viewModel.profileTab equalTo mockProfileTabNotShown
             }
         }
     }

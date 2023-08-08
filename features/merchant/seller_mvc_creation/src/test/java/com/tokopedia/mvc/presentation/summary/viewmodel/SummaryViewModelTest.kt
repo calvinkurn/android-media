@@ -1,7 +1,9 @@
 package com.tokopedia.mvc.presentation.summary.viewmodel
 
+import android.content.SharedPreferences
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.mvc.R
 import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.VoucherDetailData
@@ -25,7 +27,6 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import com.tokopedia.mvc.R
 
 @ExperimentalCoroutinesApi
 class SummaryViewModelTest {
@@ -34,16 +35,24 @@ class SummaryViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     private lateinit var viewModel: SummaryViewModel
+
     @RelaxedMockK
     internal lateinit var merchantPromotionGetMVDataByIDUseCase: MerchantPromotionGetMVDataByIDUseCase
+
     @RelaxedMockK
     internal lateinit var getCouponImagePreviewUseCase: GetCouponImagePreviewFacadeUseCase
+
     @RelaxedMockK
     internal lateinit var addEditCouponFacadeUseCase: AddEditCouponFacadeUseCase
+
     @RelaxedMockK
     internal lateinit var voucherValidationPartialUseCase: VoucherValidationPartialUseCase
+
     @RelaxedMockK
     internal lateinit var tracker: SummaryPageTracker
+
+    @RelaxedMockK
+    internal lateinit var sharedPreference: SharedPreferences
 
     @Before
     fun setup() {
@@ -54,7 +63,8 @@ class SummaryViewModelTest {
             getCouponImagePreviewUseCase,
             addEditCouponFacadeUseCase,
             voucherValidationPartialUseCase,
-            tracker
+            tracker,
+            sharedPreference
         )
     }
 
@@ -124,7 +134,8 @@ class SummaryViewModelTest {
         } returns VoucherDetailData(
             voucherId = 123123L,
             voucherStartTime = "2016-09-17T08:14:03+00:00",
-            voucherFinishTime = "2016-10-17T08:14:03+00:00")
+            voucherFinishTime = "2016-10-17T08:14:03+00:00"
+        )
 
         viewModel.setupEditMode(123123L)
         coVerify { merchantPromotionGetMVDataByIDUseCase.execute(any()) }
@@ -148,7 +159,7 @@ class SummaryViewModelTest {
     }
 
     @Test
-    fun `When previewImage is Success, Expect trigger changes to couponImage livedata`(){
+    fun `When previewImage is Success, Expect trigger changes to couponImage livedata`() {
         runBlocking {
             coEvery {
                 getCouponImagePreviewUseCase.execute(any(), any(), any(), any())
@@ -173,7 +184,7 @@ class SummaryViewModelTest {
     }
 
     @Test
-    fun `When addCoupon is Success, Expect trigger changes to uploadCouponSuccess livedata`(){
+    fun `When addCoupon is Success, Expect trigger changes to uploadCouponSuccess livedata`() {
         runBlocking {
             coEvery {
                 addEditCouponFacadeUseCase.executeAdd(any(), any(), any())
@@ -200,7 +211,7 @@ class SummaryViewModelTest {
     }
 
     @Test
-    fun `When editCoupon is Success, Expect trigger changes to uploadCouponSuccess livedata`(){
+    fun `When editCoupon is Success, Expect trigger changes to uploadCouponSuccess livedata`() {
         runBlocking {
             coEvery {
                 addEditCouponFacadeUseCase.executeEdit(any(), any())
@@ -276,7 +287,7 @@ class SummaryViewModelTest {
                     totalLiveTime = "",
                     available = true,
                     notAvailableReason = "",
-                    type = 0,
+                    type = 0
                 )
             ),
             validationError = VoucherValidationResult.ValidationError(
@@ -302,5 +313,4 @@ class SummaryViewModelTest {
             validationProduct = listOf()
         )
     }
-
 }

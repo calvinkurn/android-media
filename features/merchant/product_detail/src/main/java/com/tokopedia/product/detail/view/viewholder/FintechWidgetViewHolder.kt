@@ -34,7 +34,8 @@ class FintechWidgetViewHolder(val view: View,val  listener: DynamicProductDetail
                 it,
                 this,
                 element.isLoggedIn,
-                element.shopId
+                element.shopId,
+                element.parentId
             )
         }
     }

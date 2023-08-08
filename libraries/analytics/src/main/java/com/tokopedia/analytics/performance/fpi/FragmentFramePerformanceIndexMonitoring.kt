@@ -3,19 +3,23 @@ package com.tokopedia.analytics.performance.fpi
 import android.annotation.TargetApi
 import android.os.Build
 import android.os.Handler
+import android.os.Looper
 import android.view.FrameMetrics
 import android.view.Window
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.cachemanager.CacheManager
 import com.tokopedia.cachemanager.PersistentCacheManager
+import com.tokopedia.kotlin.extensions.view.orZero
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
+import kotlin.math.pow
 
-class FragmentFramePerformanceIndexMonitoring : LifecycleObserver, CoroutineScope {
+
+class FragmentFramePerformanceIndexMonitoring : LifecycleEventObserver, CoroutineScope {
     private val DEFAULT_WARNING_LEVEL_MS = 17f
     private val METRICS_ALL_FRAMES = "all_frames"
     private val METRICS_JANKY_FRAMES = "janky_frames"
@@ -26,14 +30,15 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleObserver, CoroutineScop
 
     private var onFrameMetricAvailableListener: Window.OnFrameMetricsAvailableListener? = null
     private var onFrameListener: OnFrameListener? = null
-    private var fragment: Fragment? = null
+    var fragment: Fragment? = null
     private var cacheManager: CacheManager? = null
     private var pageName: String? = null
+    private val durationDivider = 10.0.pow(6.0)
 
     var mainPerformanceData: FpiPerformanceData? = FpiPerformanceData()
     private set
 
-    protected val masterJob = SupervisorJob()
+    private val masterJob = SupervisorJob()
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + masterJob
@@ -53,6 +58,7 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleObserver, CoroutineScop
         fragment.activity?.applicationContext?.let {
             this.cacheManager = PersistentCacheManager(it)
         }
+        fragment.viewLifecycleOwner.lifecycle.addObserver(this)
     }
 
     fun onFragmentHidden(isHidden: Boolean) {
@@ -61,11 +67,6 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleObserver, CoroutineScop
         } else {
             startRecordingFramePerformanceIndex()
         }
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    private fun sendRemainingPerformanceData() {
-        startRecordingFramePerformanceIndex()
     }
 
     private fun startRecordingFramePerformanceIndex() {
@@ -89,11 +90,6 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleObserver, CoroutineScop
         }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    private fun saveToDatabase() {
-        stopRecordingFramePerformanceIndex()
-    }
-
     private fun stopRecordingFramePerformanceIndex() {
         launch {
             pageName?.let { pageName ->
@@ -104,11 +100,6 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleObserver, CoroutineScop
             }
         }
         stopFrameMetrics()
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    private fun destroyInstance() {
-        flush()
     }
 
     private fun sendPerformanceMonitoringData(performanceData: FpiPerformanceData?, pageName: String) {
@@ -127,12 +118,12 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleObserver, CoroutineScop
     private suspend fun startFrameMetrics() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && onFrameMetricAvailableListener == null) {
             withContext(Dispatchers.Main) {
-                onFrameMetricAvailableListener = Window.OnFrameMetricsAvailableListener { window, frameMetrics, dropCountSinceLastInvocation ->
+                onFrameMetricAvailableListener = Window.OnFrameMetricsAvailableListener { _, frameMetrics, _ ->
                     val frameMetricsCopy = FrameMetrics(frameMetrics)
                     recordFrames(frameMetricsCopy)
                 }
                 onFrameMetricAvailableListener?.let {
-                    fragment?.activity?.window?.addOnFrameMetricsAvailableListener(it, Handler())
+                    fragment?.activity?.window?.addOnFrameMetricsAvailableListener(it, Handler(Looper.getMainLooper()))
                 }
             }
         }
@@ -141,10 +132,13 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleObserver, CoroutineScop
     private fun recordFrames(frameMetricsCopy: FrameMetrics) {
         mainPerformanceData?.incrementAllFrames()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            val totalDurationMs = (0.000001 * frameMetricsCopy.getMetric(FrameMetrics.TOTAL_DURATION)).toFloat()
+            val totalDurationMs = frameMetricsCopy.getMetric(FrameMetrics.TOTAL_DURATION).div(durationDivider)
+            mainPerformanceData?.incrementDuration(totalDurationMs.orZero())
+
             if (totalDurationMs > DEFAULT_WARNING_LEVEL_MS) {
-                mainPerformanceData?.incremenetJankyFrames()
+                mainPerformanceData?.incrementJankyFrames()
             }
+
             mainPerformanceData?.let { onFrameListener?.onFrameRendered(it) }
         }
     }
@@ -163,6 +157,23 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleObserver, CoroutineScop
         stopFrameMetrics()
         if (isActive && !masterJob.isCancelled){
             masterJob.children.map { it.cancel() }
+        }
+    }
+
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+        when (event) {
+            Lifecycle.Event.ON_RESUME -> {
+                startRecordingFramePerformanceIndex()
+            }
+            Lifecycle.Event.ON_PAUSE -> {
+                stopRecordingFramePerformanceIndex()
+            }
+            Lifecycle.Event.ON_DESTROY -> {
+                flush()
+            }
+            else -> {
+                // no-ops
+            }
         }
     }
 }
