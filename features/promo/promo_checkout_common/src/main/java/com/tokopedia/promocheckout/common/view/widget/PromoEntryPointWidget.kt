@@ -11,6 +11,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.get
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.setTextColorCompat
 import com.tokopedia.promocheckout.common.R
 import com.tokopedia.promocheckout.common.view.uimodel.PromoEntryPointSummaryItem
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -186,12 +187,15 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         }
     }
 
+    /**
+     * show inactive state for cart page without promo revamp (when user have not select any product)
+     */
     fun showInactive(
         wording: String,
         onClickListener: () -> Unit = {}
     ) {
         switcherView?.reset()
-        inActiveViewLeftImage?.setImageUrl("https://images.tokopedia.net/img/ios/promo_widget/disabled_product.png")
+        inActiveViewLeftImage?.setImageUrl(DISABLED_PRODUCTS_ICON)
         inActiveViewWording?.setCurrentText(HtmlLinkHelper(context, wording).spannedString)
         inActiveViewRightIcon?.visibility = View.GONE
         switcherView?.displayedChild = 1
@@ -203,6 +207,9 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         }
     }
 
+    /**
+     * show inactive state for cart page with promo revamp (when user have not select any product, when user blacklisted, etc)
+     */
     fun showInactiveNew(
         leftImageUrl: String,
         wording: String,
@@ -235,6 +242,9 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         }
     }
 
+    /**
+     * show active state for cart page with promo revamp without expandable & confetti (when user have not use any promo, when applied promo in cart)
+     */
     fun showActiveNew(
         leftImageUrl: String,
         wording: String,
@@ -271,12 +281,167 @@ class PromoEntryPointWidget @JvmOverloads constructor(
             errorView?.visibility = View.GONE
             loadingView?.visibility = View.GONE
         }
+        activeViewRightIcon?.setOnClickListener {
+            /* no-op */
+        }
         activeView?.setOnClickListener {
             onClickListener.invoke()
         }
     }
 
+    /**
+     * show active state for checkout page with promo revamp with expandable & confetti
+     */
+    fun showActiveNewExpandable(
+        leftImageUrl: String,
+        wording: String,
+        firstLevelSummary: List<PromoEntryPointSummaryItem>,
+        groupedSummary: List<PromoEntryPointSummaryItem>,
+        secondaryText: String,
+        isSecondaryTextEnabled: Boolean = false,
+        isExpanded: Boolean = false,
+        animateWording: Boolean = false,
+        onClickListener: () -> Unit = {}
+    ) {
+        activeViewConfettiFrame?.visibility = View.VISIBLE
+        activeViewSummaryLayout?.visibility = View.GONE
+        activeViewDivider?.visibility = View.GONE
+        activeViewTitleWording?.visibility = View.GONE
+        activeViewDescWording?.visibility = View.GONE
+        activeViewWording?.visibility = View.VISIBLE
+        if (switcherView?.visibility == View.VISIBLE) {
+            activeViewLeftImage?.setImageUrl(leftImageUrl)
+            if (switcherView?.displayedChild != 0) {
+                // only trigger view switch animation if currently showing different view
+                activeViewWording?.setCurrentText(HtmlLinkHelper(context, wording).spannedString)
+                switcherView?.displayedChild = 0
+            } else if (animateWording) {
+                activeViewWording?.setText(HtmlLinkHelper(context, wording).spannedString)
+            }
+            errorView?.visibility = View.GONE
+            loadingView?.visibility = View.GONE
+        } else {
+            switcherView?.reset()
+            activeViewLeftImage?.setImageUrl(leftImageUrl)
+            activeViewWording?.setCurrentText(HtmlLinkHelper(context, wording).spannedString)
+            switcherView?.displayedChild = 0
+            switcherView?.visibility = View.VISIBLE
+            errorView?.visibility = View.GONE
+            loadingView?.visibility = View.GONE
+        }
+        if (firstLevelSummary.isNotEmpty() || secondaryText.isNotEmpty() || groupedSummary.isNotEmpty()) {
+            activeViewSummaryLayout?.apply {
+                removeAllViews()
+                firstLevelSummary.forEach {
+                    val summaryView = LayoutInflater.from(this.context)
+                        .inflate(R.layout.layout_item_promo_checkout_summary, this, false)
+                    summaryView.findViewById<Typography>(R.id.tv_promo_checkout_summary_title).text =
+                        it.title
+                    summaryView.findViewById<Typography>(R.id.tv_promo_checkout_summary_value).text =
+                        it.value
+                    if (it.subValue.isNotEmpty()) {
+                        summaryView.findViewById<Typography>(R.id.tv_promo_checkout_summary_subvalue).apply {
+                            text = it.value
+                            visibility = View.VISIBLE
+                        }
+                    } else {
+                        summaryView.findViewById<Typography>(R.id.tv_promo_checkout_summary_subvalue).visibility = View.GONE
+                    }
+                    this.addView(summaryView)
+                }
+                if (secondaryText.isNotEmpty()) {
+                    val summaryView = LayoutInflater.from(this.context)
+                        .inflate(R.layout.layout_promo_checkout_summary_grouping, this, false)
+                    val secondaryTv =
+                        summaryView.findViewById<Typography>(R.id.tv_promo_checkout_summary_button)
+                    val secondaryIc =
+                        summaryView.findViewById<IconUnify>(R.id.ic_promo_checkout_summary_button)
+                    secondaryTv.text = HtmlLinkHelper(context, secondaryText).spannedString
+                    if (isSecondaryTextEnabled) {
+                        secondaryTv.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+                        secondaryIc.visibility = View.VISIBLE
+                    } else {
+                        secondaryTv.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN400)
+                        secondaryIc.visibility = View.GONE
+                    }
+                    summaryView.findViewById<View>(R.id.group_promo_checkout_summary).visibility = View.GONE
+                    summaryView.setOnClickListener {
+                        onClickListener.invoke()
+                    }
+                    this.addView(summaryView)
+                } else if (groupedSummary.isNotEmpty()) {
+                    val summaryView = LayoutInflater.from(this.context)
+                        .inflate(R.layout.layout_promo_checkout_summary_grouping, this, false)
+                    summaryView.findViewById<Typography>(R.id.tv_promo_checkout_summary_button).visibility = View.GONE
+                        summaryView.findViewById<IconUnify>(R.id.ic_promo_checkout_summary_button).visibility = View.GONE
+                    val groupContainer =
+                        summaryView.findViewById<View>(R.id.group_promo_checkout_summary)
+                    val groupLayout =
+                        summaryView.findViewById<LinearLayout>(R.id.ll_promo_checkout_summary_group)
+                    this.addView(summaryView)
+                    // todo: overlay
+//                    val outValue = TypedValue()
+//                    groupContainer.context.theme.resolveAttribute(
+//                        R.drawable.background_overlay_promo_summary_group,
+//                        outValue,
+//                        true
+//                    )
+//                    groupContainer.setBackgroundResource(outValue.resourceId)
+                    groupedSummary.forEach {
+                        val summaryGroupItemView = LayoutInflater.from(this.context)
+                            .inflate(R.layout.layout_item_promo_checkout_summary, groupLayout, false)
+                        summaryGroupItemView.findViewById<Typography>(R.id.tv_promo_checkout_summary_title).text =
+                            it.title
+                        summaryGroupItemView.findViewById<Typography>(R.id.tv_promo_checkout_summary_value).text =
+                            it.value
+                        if (it.subValue.isNotEmpty()) {
+                            summaryGroupItemView.findViewById<Typography>(R.id.tv_promo_checkout_summary_subvalue).apply {
+                                text = it.value
+                                visibility = View.VISIBLE
+                            }
+                        } else {
+                            summaryGroupItemView.findViewById<Typography>(R.id.tv_promo_checkout_summary_subvalue).visibility = View.GONE
+                        }
+                        groupLayout.addView(summaryGroupItemView)
+                    }
+                    groupContainer.setOnClickListener {
+                        onClickListener.invoke()
+                    }
+                }
+            }
+            if (isExpanded) {
+                activeViewRightIcon?.setImage(IconUnify.CHEVRON_UP)
+                activeViewSummaryLayout?.visibility = View.VISIBLE
+                activeViewDivider?.visibility = View.VISIBLE
+            } else {
+                activeViewRightIcon?.setImage(IconUnify.CHEVRON_DOWN)
+                activeViewSummaryLayout?.visibility = View.GONE
+                activeViewDivider?.visibility = View.GONE
+            }
+            activeViewRightIcon?.setOnClickListener {
+                if (activeViewSummaryLayout?.visibility == View.VISIBLE) {
+                    activeViewRightIcon?.setImage(IconUnify.CHEVRON_DOWN)
+                    activeViewSummaryLayout?.visibility = View.GONE
+                    activeViewDivider?.visibility = View.GONE
+                } else {
+                    activeViewRightIcon?.setImage(IconUnify.CHEVRON_UP)
+                    activeViewSummaryLayout?.visibility = View.VISIBLE
+                    activeViewDivider?.visibility = View.VISIBLE
+                }
+            }
+        } else {
+            activeViewSummaryLayout?.visibility = View.GONE
+            activeViewDivider?.visibility = View.GONE
+            activeViewRightIcon?.setOnClickListener {
+                /* no-op */
+            }
+        }
+    }
+
     // cart makin hemat pakai promo
+    /**
+     * show active state for cart-checkout page without promo revamp
+     */
     fun showActive(
         wording: String,
         rightIcon: Int,
@@ -289,7 +454,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         activeViewDescWording?.visibility = View.GONE
         activeViewWording?.visibility = View.VISIBLE
         switcherView?.reset()
-        activeViewLeftImage?.setImageUrl("https://images.tokopedia.net/img/ios/promo_widget/promo_coupon.png")
+        activeViewLeftImage?.setImageUrl(PROMO_COUPON_ICON)
         activeViewWording?.setCurrentText(HtmlLinkHelper(context, wording).spannedString)
         activeViewRightIcon?.setImage(rightIcon)
         switcherView?.displayedChild = 0
@@ -311,6 +476,9 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         inActiveViewWording?.setMaximumFlippingCount(count)
     }
 
+    /**
+     * show active state for cart page with promo revamp and flipping animation
+     */
     fun showActiveFlipping(
         leftImageUrl: String,
         wordings: List<String>,
@@ -347,6 +515,9 @@ class PromoEntryPointWidget @JvmOverloads constructor(
     }
 
     // for old promo in cart & checkout, when has promo applied
+    /**
+     * show active state for cart-checkout page without promo revamp with promo applied
+     */
     fun showApplied(
         title: String,
         desc: String,
@@ -357,7 +528,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
     ) {
         switcherView?.reset()
         activeViewConfettiFrame?.visibility = if (showConfetti) View.VISIBLE else View.GONE
-        activeViewLeftImage?.setImageUrl("https://images.tokopedia.net/img/ios/promo_widget/checklist.png")
+        activeViewLeftImage?.setImageUrl(CHECKMARK_APPLIED_ICON)
         activeViewTitleWording?.text = HtmlLinkHelper(context, title).spannedString
         activeViewDescWording?.text = HtmlLinkHelper(context, desc).spannedString
         activeViewWording?.visibility = View.GONE
@@ -404,5 +575,11 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         activeView?.setOnClickListener {
             onClickListener.invoke()
         }
+    }
+
+    companion object {
+        private const val CHECKMARK_APPLIED_ICON = "https://images.tokopedia.net/img/ios/promo_widget/checklist.png"
+        private const val PROMO_COUPON_ICON = "https://images.tokopedia.net/img/ios/promo_widget/promo_coupon.png"
+        private const val DISABLED_PRODUCTS_ICON = "https://images.tokopedia.net/img/ios/promo_widget/disabled_product.png"
     }
 }
