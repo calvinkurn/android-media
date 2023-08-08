@@ -39,6 +39,7 @@
     <string name="action_back_to_recent_page">Ke Halaman Sebelumnya</string>
     <string name="action_choose_package">Beli Paket</string>
     <string name="action_package_chosen">Paket Terpilih</string>
+    <string name="action_see_all">Lihat Semua</string>
 
     <!-- single bundle item mapping -->
     <string name="preorder_prefix">PreOrder %1s</string>
@@ -86,5 +87,11 @@
     <string name="product_bundle_total_sold">Terjual %s paket</string>
     <string name="bundlewidget_other_product_text">produk lainnya</string>
     <string name="bundlewidget_other_product_count_format">+%d</string>
+
+    <!-- add on -->
+    <string name="addon_total_text">Total Tambahan</string>
+    <string name="addon_bottomsheet_title">Tambahan buat produkmu</string>
+    <string name="addon_total_default_text">-</string>
+    <string name="addon_max_selection">Maks. 1</string>
 
 </resources>
