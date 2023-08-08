@@ -614,9 +614,9 @@ class TokoNowCategoryFragment :
     }
 
     override fun refreshLayout(
-        isDynamicFilterRemoved: Boolean
+        needToResetQueryParams: Boolean
     ) {
-        super.refreshLayout(isDynamicFilterRemoved)
+        super.refreshLayout(needToResetQueryParams)
         refreshProductRecommendation(TOKONOW_CLP)
     }
 

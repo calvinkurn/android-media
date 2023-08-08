@@ -480,9 +480,7 @@ abstract class BaseSearchCategoryViewModel(
 
         val isEmptyProductList = contentDataView.aceSearchProductData.productList.isEmpty()
 
-        if (dynamicFilterModelLiveData.value == null) {
-            initFilterController(headerDataView)
-        }
+        initFilterController(headerDataView)
         createVisitableListFirstPage(headerDataView, contentDataView, isEmptyProductList)
         processEmptyState(isEmptyProductList)
         if (getKeywordForGeneralSearchTracking().isNotEmpty()) {
@@ -496,9 +494,9 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private fun initFilterController(headerDataView: HeaderDataView) {
-        val filterList =
-            headerDataView.quickFilterDataValue.filter +
-                headerDataView.categoryFilterDataValue.filter
+        if (dynamicFilterModelLiveData.value != null) return
+
+        val filterList = headerDataView.quickFilterDataValue.filter + headerDataView.categoryFilterDataValue.filter
 
         filterController.initFilterController(queryParamMutable, filterList)
     }
@@ -690,16 +688,14 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     open fun onViewReloadPage(
-        isDynamicFilterRemoved: Boolean = true,
+        needToResetQueryParams: Boolean = true,
         updateMoreQueryParams: () -> Unit = {}
     ) {
-        if (isDynamicFilterRemoved) {
-            dynamicFilterModelMutableLiveData.value = null
-            queryParamMutable.clear()
-            queryParamMutable.putAll(queryParamMap)
-            updateQueryParams()
-            updateMoreQueryParams.invoke()
-        }
+        resetQueryParam(
+            needToResetQueryParams = needToResetQueryParams,
+            updateMoreQueryParams = updateMoreQueryParams
+        )
+
         totalData = 0
         totalFetchedData = 0
         nextPage = 1
@@ -708,6 +704,28 @@ abstract class BaseSearchCategoryViewModel(
         isFeedbackFieldVisible = false
         showLoading()
         processLoadDataPage()
+    }
+
+    /**
+     * Reset the query param is needed to ensure the query param will be used is the previous query param,
+     * this reset mechanism will set the dynamic filter to null.
+     *
+     * @param needToResetQueryParams there will be a some cases where it needs to reset to query param,
+     * example case is when trying to pull and refresh the page. Otherwise there will be a few cases reset is not needed,
+     * example case is when reload page after the filter is selected.
+     * @param updateMoreQueryParams is used for child of BaseViewModel to update the query param needed on the page.
+     */
+    private fun resetQueryParam(
+        needToResetQueryParams: Boolean,
+        updateMoreQueryParams: () -> Unit
+    ) {
+        if (!needToResetQueryParams) return
+
+        dynamicFilterModelMutableLiveData.value = null
+        queryParamMutable.clear()
+        queryParamMutable.putAll(queryParamMap)
+        updateQueryParams()
+        updateMoreQueryParams.invoke()
     }
 
     private fun applyFilter() {
@@ -999,7 +1017,11 @@ abstract class BaseSearchCategoryViewModel(
         updateVisitableListLiveData()
     }
 
-    open fun onViewOpenFilterPage() {
+    /**
+     * Dynamic filter will have null value when first time user clicks filter to open main bottomsheet.
+     * in that case need to fetch the data, so filter in bottomsheet will be up to date.
+     */
+    fun onViewOpenFilterPage() {
         if (isFilterPageOpenLiveData.value == true) return
 
         if (dynamicFilterModelLiveData.value == null) {
@@ -1011,6 +1033,11 @@ abstract class BaseSearchCategoryViewModel(
         }
     }
 
+    /**
+     * Update filter in main bottomsheet to be up to date
+     *
+     * @param needToOpenBottomSheet is used only when clicking filter chip
+     */
     private fun getFilter(
         needToOpenBottomSheet: Boolean
     ) {
@@ -1065,7 +1092,7 @@ abstract class BaseSearchCategoryViewModel(
         refreshQueryParamFromFilterController()
 
         onViewReloadPage(
-            isDynamicFilterRemoved = false
+            needToResetQueryParams = false
         )
     }
 

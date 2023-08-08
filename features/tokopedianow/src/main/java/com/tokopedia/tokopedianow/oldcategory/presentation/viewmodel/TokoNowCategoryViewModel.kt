@@ -434,11 +434,14 @@ class TokoNowCategoryViewModel @Inject constructor(
     }
 
     override fun onViewReloadPage(
-        isDynamicFilterRemoved: Boolean,
+        needToResetQueryParams: Boolean,
         updateMoreQueryParams: () -> Unit
     ) {
-        super.onViewReloadPage(isDynamicFilterRemoved) {
-            updateQueryParamWithCategoryIds()
-        }
+        super.onViewReloadPage(
+            needToResetQueryParams = needToResetQueryParams,
+            updateMoreQueryParams = {
+                updateQueryParamWithCategoryIds()
+            }
+        )
     }
 }
