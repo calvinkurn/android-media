@@ -27,6 +27,8 @@ class ShopHomeShowCaseTopMainBannerViewHolder(itemView: View) : AbstractViewHold
 
     override fun bind(model: ShopHomeShowcaseUiModel) {
         viewBinding?.tpgTitle?.text = model.showcaseHeader.title
+        viewBinding?.tpgTitle?.isVisible = model.showcaseHeader.title.isNotEmpty() && model.tabs.isNotEmpty()
+
         val showcases = model.tabs.getOrNull(0)?.showcases ?: emptyList()
 
         setupViewAllIcon(showcases)
