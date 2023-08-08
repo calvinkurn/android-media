@@ -19,8 +19,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHomeV4TerlarisViewHolder(
     itemView: View,
-    private val listener: ShopHomeV4TerlarisViewHolderListener,
-): AbstractViewHolder<ShopHomeV4TerlarisUiModel>(itemView) {
+    private val listener: ShopHomeV4TerlarisViewHolderListener
+) : AbstractViewHolder<ShopHomeV4TerlarisUiModel>(itemView) {
 
     interface ShopHomeV4TerlarisViewHolderListener {
         fun onProductClick(productId: String)
@@ -60,7 +60,6 @@ class ShopHomeV4TerlarisViewHolder(
     private var productName3: TextView? = null
     private var productPrice3: TextView? = null
 
-
     override fun bind(element: ShopHomeV4TerlarisUiModel?) {
         element?.let {
             if (it.productList.size.orZero() == PRODUCT_ZERO) {
@@ -78,6 +77,8 @@ class ShopHomeV4TerlarisViewHolder(
                 showHorizontalProductCarousel()
                 val productListCarouselData = getCarouselData(it.productList)
                 terlarisWidgetAdapter?.updateData(productList = productListCarouselData)
+            } else {
+                hideTheContainer()
             }
         }
     }
@@ -156,5 +157,4 @@ class ShopHomeV4TerlarisViewHolder(
     private fun hideHorizontalProductCarousel() {
         rvProductCarousel?.visibility = View.GONE
     }
-
 }
