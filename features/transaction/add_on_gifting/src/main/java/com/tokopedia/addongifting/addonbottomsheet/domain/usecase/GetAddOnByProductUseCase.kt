@@ -62,6 +62,7 @@ class GetAddOnByProductUseCase @Inject constructor(@ApplicationContext private v
                       }
                       AddOnType
                       Status
+                      AddOnKey
                     }
                     Inventory {
                       WarehouseID

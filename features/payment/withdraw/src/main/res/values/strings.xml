@@ -120,6 +120,12 @@
     <string name="swd_ticker_rp_info">Sebagai pengguna Rekening Premium, kamu cuma bisa tarik saldo ke rekening ini.</string>
     <string name="swd_coachmark_gopay_wd_title">Sekarang bisa tarik saldo ke Gopay!</string>
     <string name="swd_coachmark_gopay_wd_description">Tinggal satu klik, kamu bisa tarik Saldo Tokopedia langsung ke saldo GoPay.</string>
+    <string name="swd_coachmark_gopay_wd_upgrade_description">Cukup upgrade akun ke GoPay Plus untuk bisa tarik Saldo Tokopedia ke saldo GoPay kamu.</string>
+    <string name="swd_coachmark_gopay_wd_activate_description">Cukup aktifkan dan upgrade ke GoPay Plus untuk bisa tarik Saldo Tokopedia ke saldo GoPay kamu.</string>
 
     <string name="swd_dialog_gopay_redirection_cta">Buka Aplikasi</string>
+    <string name="swd_dialog_gopay_redirection_upgrade_title">Upgrade di aplikasi Tokopedia, ya!</string>
+    <string name="swd_dialog_gopay_redirection_upgrade_description">Untuk sekarang, kamu hanya bisa upgrade ke GoPay Plus lewat aplikasi Tokopedia.</string>
+    <string name="swd_dialog_gopay_redirection_activate_title">Daftarnya lewat aplikasi, ya</string>
+    <string name="swd_dialog_gopay_redirection_activate_description">Untuk sekarang, kamu hanya bisa aktifkan GoPay lewat aplikasi Tokopedia.</string>
 </resources>

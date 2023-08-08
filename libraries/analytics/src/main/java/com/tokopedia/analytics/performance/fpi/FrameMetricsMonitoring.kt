@@ -3,6 +3,7 @@ package com.tokopedia.analytics.performance.fpi
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -10,7 +11,7 @@ import android.os.Looper
 import android.view.FrameMetrics
 import android.view.Window
 import androidx.annotation.RequiresApi
-import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import androidx.core.content.edit
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
@@ -21,8 +22,9 @@ import kotlin.math.pow
  * Project name: android-tokopedia-core
  **/
 
-class FrameMetricsMonitoring(
-    private val applicationContext: Context
+class FrameMetricsMonitoring @JvmOverloads constructor(
+    private val applicationContext: Context,
+    private val forceEnable: Boolean = false
 ) : Application.ActivityLifecycleCallbacks {
 
     companion object {
@@ -46,6 +48,10 @@ class FrameMetricsMonitoring(
 
     private val frameMetricsPopupWindow by lazyThreadSafetyNone {
         FrameMetricsPopupWindow(applicationContext)
+    }
+
+    init {
+        applicationContext.setForceConfig()
     }
 
     override fun onActivityResumed(activity: Activity) {
@@ -105,9 +111,20 @@ class FrameMetricsMonitoring(
         GlobalConfig.isAllowDebuggingTools() && applicationContext.isFpiMonitoringEnable()
 
     private fun Context.isFpiMonitoringEnable(): Boolean = getSharedPreferences(
-        PREF_KEY,
-        BaseActivity.MODE_PRIVATE
-    ).getBoolean(PREF_KEY, false)
+        PREF_KEY, MODE_PRIVATE
+    ).getBoolean(PREF_KEY, forceEnable)
+
+    private fun Context.setForceConfig() {
+        val current = getSharedPreferences(PREF_KEY, MODE_PRIVATE).getBoolean(PREF_KEY, true)
+        val forceEnableToConfig = current && forceEnable
+
+        // if current is true and force enable is true, force config to true, otherwise no-ops
+        if (forceEnableToConfig) {
+            getSharedPreferences(PREF_KEY, MODE_PRIVATE).edit {
+                putBoolean(PREF_KEY, true)
+            }
+        }
+    }
 
     private fun Long.toMillis() = div(10.0.pow(6.0))
 
