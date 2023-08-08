@@ -12,6 +12,7 @@ import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.getResColor
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.profilecompletion.R
@@ -34,8 +35,8 @@ class ProfileManagementActivity: BaseSimpleWebViewActivity(), HasComponent<Profi
 
     private var binding : ActivityProfileManagementBinding? = null
 
-    override fun getLayoutRes(): Int {
-        return R.layout.activity_profile_management
+    override fun getParentViewResourceID(): Int {
+        return binding?.parentView?.id.orZero()
     }
 
     override fun setupFragment(savedInstance: Bundle?) {
