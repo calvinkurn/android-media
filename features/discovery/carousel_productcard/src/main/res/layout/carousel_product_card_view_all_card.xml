@@ -5,5 +5,5 @@
     android:id="@+id/carouselProductViewAllCard"
     android:layout_width="@dimen/carousel_product_card_grid_width"
     android:layout_height="match_parent"
-    app:view_all_card_unify_title="Test"
+    app:view_all_card_unify_title=""
     app:view_all_card_unify_container_view_to_match_parent="true"/>
