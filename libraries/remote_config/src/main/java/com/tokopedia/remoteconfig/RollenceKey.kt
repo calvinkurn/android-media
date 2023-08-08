@@ -86,4 +86,7 @@ object RollenceKey {
 
     // Share affiliate
     const val AFFILIATE_SHARE_ICON = "ShareAff_pdpshop"
+
+    // Wishlist
+    const val WISHLIST_AFFILIATE_TICKER = "aff_ticker_col"
 }
