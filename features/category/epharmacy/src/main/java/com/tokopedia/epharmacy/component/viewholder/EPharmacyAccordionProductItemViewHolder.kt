@@ -23,7 +23,7 @@ class EPharmacyAccordionProductItemViewHolder(val view: View, private val ePharm
     private val productQuantity = view.findViewById<Typography>(R.id.lbl_PAP_productWeight)
     private val productImageUnify = view.findViewById<ImageView>(R.id.product_image)
     private val quantityChangedLayout = view.findViewById<ConstraintLayout>(R.id.quantity_change_layout)
-    private val medicalProductQuantity = view.findViewById<Typography>(R.id.medical_product_quantity)
+    private val medicalProductQuantity = view.findViewById<Typography>(R.id.initial_product_quantity)
     private val quantityChangedEditor = view.findViewById<QuantityEditorUnify>(R.id.quantity_change)
     private val productQuantityType = view.findViewById<Typography>(R.id.quantity_type)
     private val totalQuantity = view.findViewById<Typography>(R.id.total_quantity)

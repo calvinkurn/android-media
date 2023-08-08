@@ -9,19 +9,21 @@ import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.ui.bottomsheet.EPharmacyReminderScreenBottomSheet
-import com.tokopedia.epharmacy.ui.fragment.EPharmacyCheckoutFragment
 import com.tokopedia.epharmacy.utils.DEFAULT_CLOSE_TIME
 import com.tokopedia.epharmacy.utils.DEFAULT_OPEN_TIME
-import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_ID
-import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_ID
-import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
-import com.tokopedia.epharmacy.utils.OUTSIDE_WORKING_HOURS_SOURCE
-import com.tokopedia.epharmacy.utils.TYPE_OUTSIDE_WORKING_HOURS_REMINDER
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.user.session.UserSessionInterface
-import javax.inject.Inject
+import com.tokopedia.epharmacy.utils.TYPE_DOCTOR_NOT_AVAILABLE_REMINDER
+import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 class EPharmacyReminderActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent> {
+
+    private var openTime: String = DEFAULT_OPEN_TIME
+    private var closeTime: String = DEFAULT_CLOSE_TIME
+    private var reminderType: Int = TYPE_DOCTOR_NOT_AVAILABLE_REMINDER
+    private var consultationSourceId: Long = 0L
+    private var groupId: String = ""
+    private var enablerName: String = ""
+
 
     private val ePharmacyComponent: EPharmacyComponent by lazy(LazyThreadSafetyMode.NONE) { initInjector() }
 
@@ -35,11 +37,23 @@ class EPharmacyReminderActivity : BaseSimpleActivity(), HasComponent<EPharmacyCo
     override fun getParentViewResourceID(): Int = R.id.e_pharmacy_parent_view
 
     override fun getNewFragment(): Fragment {
+        extractArguments()
         return EPharmacyReminderScreenBottomSheet.newInstance(
             true,
-            DEFAULT_OPEN_TIME,DEFAULT_CLOSE_TIME,
-            TYPE_OUTSIDE_WORKING_HOURS_REMINDER,
-            0L,"","")
+            openTime, closeTime,
+            reminderType,
+            consultationSourceId,groupId,enablerName)
+    }
+
+    private fun extractArguments() {
+        intent?.data?.let {
+            openTime = it.getQueryParameter(REMINDER_OPEN_TIME_KEY) ?: ""
+            closeTime = it.getQueryParameter(REMINDER_CLOSE_TIME_KEY) ?: ""
+            reminderType = it.getQueryParameter(REMINDER_TYPE_KEY).toIntSafely()
+            consultationSourceId = it.getQueryParameter(REMINDER_C_ID_KEY).toLongOrZero()
+            groupId = it.getQueryParameter(REMINDER_GROUP_ID_KEY) ?: ""
+            enablerName = it.getQueryParameter(REMINDER_ENABLER_NAME_KEY) ?: ""
+        }
     }
 
     override fun getComponent() = ePharmacyComponent
@@ -49,4 +63,13 @@ class EPharmacyReminderActivity : BaseSimpleActivity(), HasComponent<EPharmacyCo
             (applicationContext as BaseMainApplication)
                 .baseAppComponent
         ).build()
+
+    companion object {
+        const val REMINDER_OPEN_TIME_KEY = "openTime"
+        const val REMINDER_CLOSE_TIME_KEY = "closeTime"
+        const val REMINDER_TYPE_KEY = "reminderType"
+        const val REMINDER_C_ID_KEY = "consultationSourceId"
+        const val REMINDER_GROUP_ID_KEY = "groupId"
+        const val REMINDER_ENABLER_NAME_KEY = "enablerName"
+    }
 }

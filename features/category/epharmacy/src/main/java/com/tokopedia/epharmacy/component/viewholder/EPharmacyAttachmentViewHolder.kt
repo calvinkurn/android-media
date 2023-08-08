@@ -66,7 +66,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     private val ticker = view.findViewById<Ticker>(R.id.ticker)
     private val divisionSingleProduct = view.findViewById<View>(R.id.division_single_card)
     private val quantityChangedLayout = view.findViewById<ConstraintLayout>(R.id.quantity_change_layout)
-    private val medicalProductQuantity = view.findViewById<Typography>(R.id.medical_product_quantity)
+    private val initialProductQuantity = view.findViewById<Typography>(R.id.initial_product_quantity)
     private val quantityChangedEditor = view.findViewById<QuantityEditorUnify>(R.id.quantity_change)
     private val productQuantityType = view.findViewById<Typography>(R.id.quantity_type)
     private val totalQuantity = view.findViewById<Typography>(R.id.total_quantity)
@@ -123,29 +123,33 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     }
 
     private fun renderQuantityChangedLayout() {
-        if(dataModel?.quantityChangedModel?.currentQty == 0){
-            dataModel?.quantityChangedModel?.currentQty = dataModel?.quantityChangedModel?.recommendedQty ?: 0
-        }
         if(dataModel?.quantityChangedModel != null){
+            if(dataModel?.quantityChangedModel?.currentQty == 0){
+                dataModel?.quantityChangedModel?.currentQty = dataModel?.quantityChangedModel?.recommendedQty ?: 0
+            }
+
             quantityChangedLayout?.show()
-            medicalProductQuantity.text = "${dataModel?.quantityChangedModel?.initialQty.toString()} barang"
+            initialProductQuantity.text = "${dataModel?.quantityChangedModel?.initialQty.toString()} barang"
             productQuantityType.text = "barang"
-            if(dataModel?.quantityChangedModel?.currentQty != quantityChangedEditor.getValue() && quantityChangedEditor.getValue() != 1)
+            val currentEditorValue = quantityChangedEditor.getValue()
+            if(dataModel?.quantityChangedModel?.currentQty != currentEditorValue && currentEditorValue != 1)
                 quantityChangedEditor.setValue(dataModel?.quantityChangedModel?.recommendedQty ?: 0)
             if(quantityChangedEditor.getValue() >= (dataModel?.quantityChangedModel?.recommendedQty ?: 0)){
                 quantityChangedEditor.addButton.isEnabled = false
             }
             totalAmount.displayTextOrHide(getTotalAmount(dataModel?.quantityChangedModel))
-            totalQuantity.displayTextOrHide("Subtotal (${dataModel?.quantityChangedModel?.recommendedQty.toString()} barang)")
+            totalQuantity.displayTextOrHide("Subtotal (${dataModel?.quantityChangedModel?.currentQty.toString()} barang)")
             quantityChangedEditor.setValueChangedListener { newValue, oldValue, isOver ->
                 if(newValue == 1){
                     ePharmacyListener?.onToast(Toaster.TYPE_ERROR,"Jumlah barang tidak boleh melebihi yang sudah diresepkan atau kurang dari 1.")
                     quantityChangedEditor.subtractButton.isEnabled = false
+                }else if(newValue == dataModel?.quantityChangedModel?.recommendedQty){
+                    quantityChangedEditor.addButton.isEnabled = false
                 } else {
                     quantityChangedEditor.subtractButton.isEnabled = true
                     quantityChangedEditor.addButton.isEnabled = true
-                    dataModel?.quantityChangedModel?.currentQty = newValue
                 }
+                dataModel?.quantityChangedModel?.currentQty = newValue
                 renderQuantityChangedLayout()
             }
         }else {
