@@ -127,6 +127,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -163,6 +164,7 @@ abstract class BaseSearchCategoryViewModel(
     private var currentProductPosition: Int = 1
     protected var feedbackFieldToggle = false
     private var isFeedbackFieldVisible = false
+    private var getFilterJob: Job? = null
 
     val queryParam: Map<String, String> = queryParamMutable
     val hasGlobalMenu: Boolean
@@ -1041,7 +1043,8 @@ abstract class BaseSearchCategoryViewModel(
     private fun getFilter(
         needToOpenBottomSheet: Boolean
     ) {
-        launchCatchError(
+        getFilterJob?.cancel()
+        getFilterJob = launchCatchError(
             block = {
                 val dynamicFilterModel = getFilterUseCase.execute(createTokonowQueryParams())
                 filterController.appendFilterList(queryParam, dynamicFilterModel.data.filter)

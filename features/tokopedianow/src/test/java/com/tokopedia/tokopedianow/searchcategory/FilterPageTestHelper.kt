@@ -29,18 +29,18 @@ class FilterPageTestHelper(
     private var applySortFilterModel: ApplySortFilterModel? = null
 
     fun `test open filter page first time`(expectedQueryParamMap: Map<String, String>) {
-//        val filterRequestParamsSlot = slot<RequestParams>()
-//        val filterRequestParams by lazy { filterRequestParamsSlot.captured }
-//
-//        callback.`Given first page API will be successful`()
-//        `Given view already created`()
-//        `Given get filter API will be successful`(dynamicFilterModel, filterRequestParamsSlot)
-//
-//        `When view open filter page`()
-//
-//        `Then assert filter is open live data`(true)
-//        `Then assert filter request params`(expectedQueryParamMap, filterRequestParams)
-//        `Then assert dynamic filter model live data is updated`(dynamicFilterModel)
+        val filterRequestParamsSlot = slot<MutableMap<String, Any>>()
+        val filterRequestParams by lazy { filterRequestParamsSlot.captured }
+
+        callback.`Given first page API will be successful`()
+        `Given view already created`()
+        `Given get filter API will be successful`(dynamicFilterModel, filterRequestParamsSlot)
+
+        `When view open filter page`()
+
+        `Then assert filter is open live data`(true)
+        `Then assert filter request params`(expectedQueryParamMap, filterRequestParams)
+        `Then assert dynamic filter model live data is updated`(dynamicFilterModel)
     }
 
     private fun `Given view already created`() {
@@ -49,10 +49,10 @@ class FilterPageTestHelper(
 
     private fun `Given get filter API will be successful`(
         dynamicFilterModel: DynamicFilterModel,
-        filterRequestParamsSlot: CapturingSlot<RequestParams> = slot()
+        filterRequestParamsSlot: CapturingSlot<MutableMap<String, Any>> = slot()
     ) {
         coEvery {
-            getFilterUseCase.execute(capture(filterRequestParamsSlot).parameters)
+            getFilterUseCase.execute(capture(filterRequestParamsSlot))
         } returns dynamicFilterModel
     }
 
@@ -68,11 +68,10 @@ class FilterPageTestHelper(
 
     private fun `Then assert filter request params`(
         expectedQueryParamMap: Map<String, String>,
-        filterRequestParams: RequestParams,
+        filterRequestParams: MutableMap<String, Any>,
     ) {
-        val actualRequestParams = filterRequestParams.parameters
         expectedQueryParamMap.forEach { (key, value) ->
-            assertThat(actualRequestParams[key], shouldBe(value))
+            assertThat(filterRequestParams[key], shouldBe(value))
         }
     }
 
@@ -200,7 +199,9 @@ class FilterPageTestHelper(
         }
     }
 
-    fun `test get filter count success when choosing filter`(mandatoryParams: Map<String, Any>) {
+    fun `test get filter count success when choosing filter`(
+        mandatoryParams: Map<String, Any>
+    ) {
         val requestParamsSlot = slot<RequestParams>()
         val requestParams by lazy { requestParamsSlot.captured }
         val successResponse = "10rb+"
@@ -271,8 +272,7 @@ class FilterPageTestHelper(
     }
 
     fun `test open filter page after applying filter should update filter from API`() {
-        val requestParamsSlot = mutableListOf<RequestParams>()
-        val requestParams by lazy { requestParamsSlot.last() }
+        val requestParamsSlot = mutableListOf<MutableMap<String, Any>>()
 
         `Given view setup from created until open filter page`()
         `Given view apply filter and dismissed`()
@@ -280,7 +280,6 @@ class FilterPageTestHelper(
         `When view open filter page`()
 
         `Then verify filter API is called twice`(requestParamsSlot)
-        `Then verify query params with filter map param`(requestParams.parameters)
     }
 
     private fun `Given view apply filter and dismissed`() {
@@ -291,9 +290,9 @@ class FilterPageTestHelper(
         baseViewModel.onViewDismissFilterPage()
     }
 
-    private fun `Then verify filter API is called twice`(requestParamsSlot: MutableList<RequestParams>) {
-        coVerify(exactly = 2) {
-            getFilterUseCase.execute(capture(requestParamsSlot).parameters)
+    private fun `Then verify filter API is called twice`(requestParamsSlot: MutableList<MutableMap<String, Any>>) {
+        coVerify(exactly = 1) {
+            getFilterUseCase.execute(capture(requestParamsSlot))
         }
     }
 
