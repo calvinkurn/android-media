@@ -1513,7 +1513,7 @@ class FeedFragment :
             manager = childFragmentManager,
             tag = TAG_FEED_PRODUCT_BOTTOM_SHEET
         )
-        if (hasVoucher && author != null) getMerchantVoucher(author.id)
+        if (hasVoucher && author?.type?.isShop == true) getMerchantVoucher(author.id)
     }
 
     private fun convertToSourceType(type: String): FeedTaggedProductUiModel.SourceType =
