@@ -48,7 +48,6 @@ class FeedFollowRecommendationViewHolder(
         binding.rvFollowRecommendation.addItemDecoration(FeedFollowProfileItemDecoration(itemView.context))
         snapHelper.attachToRecyclerView(binding.rvFollowRecommendation)
         binding.rvFollowRecommendation.adapter = profileAdapter
-        binding.rvFollowRecommendation.itemAnimator = null
 
         binding.rvFollowRecommendation.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {

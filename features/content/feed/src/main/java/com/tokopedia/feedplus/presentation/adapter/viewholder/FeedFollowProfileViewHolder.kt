@@ -91,18 +91,7 @@ class FeedFollowProfileViewHolder private constructor() {
 
         fun bind(model: FeedFollowProfileAdapter.Model.Profile) {
 
-            mProfile = model
-
-            /** resume & pause video when user swipe the recommendation (left-right) / content (up-down) */
-            if (model.isSelected) {
-                if (!player.getExoPlayer().isPlaying) {
-                    player.start(model.data.videoUrl, isMute = false)
-                    followRecommendationListener.onImpressProfile(model.data)
-                }
-            } else {
-                player.stop()
-                binding.playerView.hide()
-            }
+            setupProfile(model)
 
             binding.imgProfile.setImageUrl(model.data.imageUrl)
             binding.imgBadge.shouldShowWithAction(model.data.badge.isNotEmpty()) {
@@ -118,6 +107,21 @@ class FeedFollowProfileViewHolder private constructor() {
                     buttonVariant = UnifyButton.Variant.FILLED
                     text = itemView.context.getString(contentCommonR.string.feed_component_follow)
                 }
+            }
+        }
+
+        fun setupProfile(model: FeedFollowProfileAdapter.Model.Profile) {
+            mProfile = model
+
+            /** resume & pause video when user swipe the recommendation (left-right) / content (up-down) */
+            if (model.isSelected) {
+                if (!player.getExoPlayer().isPlaying) {
+                    player.start(model.data.videoUrl, isMute = false)
+                    followRecommendationListener.onImpressProfile(model.data)
+                }
+            } else {
+                player.stop()
+                binding.playerView.hide()
             }
 
             setupListener(model)
