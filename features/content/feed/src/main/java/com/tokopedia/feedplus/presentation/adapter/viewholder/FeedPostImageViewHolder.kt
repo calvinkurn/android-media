@@ -20,17 +20,20 @@ import com.tokopedia.feedplus.presentation.adapter.FeedPostImageAdapter
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_CLEAR_MODE
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_COMMENT_COUNT
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_DONE_SCROLL
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_LIKED_UNLIKED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_REMINDER_CHANGED
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SCROLLING
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SCROLLING_CHANGED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED_CHANGED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloads
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
-import com.tokopedia.feedplus.presentation.adapter.util.animateAlpha
 import com.tokopedia.feedplus.presentation.model.*
 import com.tokopedia.feedplus.presentation.uiview.*
 import com.tokopedia.feedplus.presentation.util.animation.FeedLikeAnimationComponent
+import com.tokopedia.feedplus.presentation.util.animation.FeedPostAlphaAnimator
 import com.tokopedia.feedplus.presentation.util.animation.FeedSmallLikeIconAnimationComponent
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
@@ -51,6 +54,12 @@ class FeedPostImageViewHolder(
     private val listener: FeedListener,
     private val trackerMapper: MapperFeedModelToTrackerDataModel
 ) : AbstractViewHolder<FeedCardImageContentModel>(binding.root) {
+
+    private val alphaAnimator = FeedPostAlphaAnimator(object : FeedPostAlphaAnimator.Listener {
+        override fun onAnimateAlpha(animator: FeedPostAlphaAnimator, alpha: Float) {
+            opacityViewList.forEach { it.alpha = alpha }
+        }
+    })
 
     private var job: Job? = null
     private val scope = CoroutineScope(Dispatchers.Main)
@@ -244,7 +253,6 @@ class FeedPostImageViewHolder(
                     bindLike(data)
                     bindComments(data)
                 }
-
                 bindAuthor(data)
                 bindCaption(data)
                 bindImagesContent(data.media)
@@ -280,6 +288,7 @@ class FeedPostImageViewHolder(
 
     fun bind(item: FeedContentAdapter.Item, payloads: MutableList<Any>) {
         val selectedPayload = if (item.isSelected) FEED_POST_SELECTED else FEED_POST_NOT_SELECTED
+        val scrollingPayload = if (item.isScrolling) FEED_POST_SCROLLING else FEED_POST_DONE_SCROLL
 
         val feedPayloads =
             payloads.firstOrNull { it is FeedViewHolderPayloads } as? FeedViewHolderPayloads
@@ -289,6 +298,7 @@ class FeedPostImageViewHolder(
         } else {
             val newPayloads = mutableListOf(*payloads.toTypedArray()).apply {
                 if (feedPayloads.payloads.contains(FEED_POST_SELECTED_CHANGED)) add(selectedPayload)
+                if (feedPayloads.payloads.contains(FEED_POST_SCROLLING_CHANGED)) add(scrollingPayload)
             }
             bind(item.data as FeedCardImageContentModel, newPayloads)
         }
@@ -328,11 +338,11 @@ class FeedPostImageViewHolder(
                 bindAuthor(element)
             }
 
-            if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_SCROLLING)) {
+            if (payloads.contains(FEED_POST_SCROLLING)) {
                 onScrolling(true)
             }
 
-            if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_DONE_SCROLL)) {
+            if (payloads.contains(FEED_POST_DONE_SCROLL)) {
                 onScrolling(false)
             }
 
@@ -604,13 +614,11 @@ class FeedPostImageViewHolder(
     }
 
     private fun onScrolling(isScrolling: Boolean) {
-        opacityViewList.forEach {
-            if (isScrolling) {
-                it.animateAlpha(SCROLL_OPACITY, OPACITY_ANIMATE_DURATION)
-            } else {
-                it.animate().cancel()
-                it.alpha = FULL_OPACITY
-            }
+        val startAlpha = opacityViewList.first().alpha
+        if (isScrolling) {
+            alphaAnimator.animateToAlpha(startAlpha)
+        } else {
+            alphaAnimator.animateToOpaque(startAlpha)
         }
     }
 
@@ -656,7 +664,7 @@ class FeedPostImageViewHolder(
 
         const val SCROLL_OPACITY = .3f
         const val FULL_OPACITY = 1f
-        const val OPACITY_ANIMATE_DURATION = 300L
+        const val OPACITY_ANIMATE_DURATION = 100L
 
         private const val MINIMUM_DISTANCE_SWIPE = 100
 

@@ -244,14 +244,12 @@ class FeedFragment :
                     isOverScroll: Boolean
                 ) {
                     if (isOverScroll) {
-                        binding.rvFeedPost.post { adapter.stopScrolling() }
+                        adapter.stopScrolling()
                         return
                     }
 
-                    binding.rvFeedPost.post {
-                        if (binding.rvFeedPost.scrollState == RecyclerView.SCROLL_STATE_IDLE) return@post
-                        adapter.onScrolling()
-                    }
+                    if (binding.rvFeedPost.scrollState == RecyclerView.SCROLL_STATE_IDLE) return
+                    adapter.onScrolling()
                 }
             }
         )
@@ -269,7 +267,7 @@ class FeedFragment :
                 val position = getCurrentPosition()
                 updateBottomActionView(position)
 
-                binding.rvFeedPost.post { adapter.select(position) }
+                adapter.select(position)
             }
         }
     }

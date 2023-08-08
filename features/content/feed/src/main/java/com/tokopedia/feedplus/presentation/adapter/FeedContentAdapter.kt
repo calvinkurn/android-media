@@ -61,6 +61,9 @@ class FeedContentAdapter(
                 if (oldItem.isSelected != newItem.isSelected) {
                     add(FeedViewHolderPayloadActions.FEED_POST_SELECTED_CHANGED)
                 }
+                if (oldItem.isScrolling != newItem.isScrolling) {
+                    add(FeedViewHolderPayloadActions.FEED_POST_SCROLLING_CHANGED)
+                }
             }
 
             if (oldItem.data is FeedCardImageContentModel && newItem.data is FeedCardImageContentModel) {
@@ -102,10 +105,10 @@ class FeedContentAdapter(
 ) {
 
     private val loadingMoreModel = Item(LoadingMoreModel(), isSelected = false)
-    private val errorNetworkModel =
-        Item(ErrorNetworkModel(), isSelected = false)
+    private val errorNetworkModel = Item(ErrorNetworkModel(), isSelected = false)
 
     private var mSelectedPosition = RecyclerView.NO_POSITION
+    private var mIsScrolling = false
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -217,27 +220,49 @@ class FeedContentAdapter(
     }
 
     fun select(position: Int) {
-        val prevPosition = mSelectedPosition
-        stopScrolling(prevPosition)
-
         mSelectedPosition = position
         val newList = currentList.mapIndexed { index, data ->
             if (index == position || data.isSelected) {
-                data.copy(isSelected = index == position)
+                data.copy(isSelected = index == position, isScrolling = false)
             } else {
-                data
+                if (data.isScrolling) {
+                    data.copy(isScrolling = false)
+                } else {
+                    data
+                }
             }
         }
+        mIsScrolling = false
         submitList(newList)
     }
 
     fun onScrolling() {
         val currPosition = mSelectedPosition
-        notifyItemChanged(currPosition, FeedViewHolderPayloadActions.FEED_POST_SCROLLING)
+        val newList = currentList.mapIndexed { index, data ->
+            if (index == currPosition) {
+                data.copy(isScrolling = true)
+            } else {
+                if (data.isScrolling) {
+                    data.copy(isScrolling = false)
+                } else {
+                    data
+                }
+            }
+        }
+        mIsScrolling = true
+        submitList(newList)
     }
 
-    fun stopScrolling(position: Int = mSelectedPosition) {
-        notifyItemChanged(position, FeedViewHolderPayloadActions.FEED_POST_DONE_SCROLL)
+    fun stopScrolling() {
+        val newList = currentList.map { data ->
+            if (data.isScrolling) {
+                data.copy(isScrolling = false)
+            } else {
+                data
+            }
+        }
+        mIsScrolling = false
+        submitList(newList)
     }
 
     fun setList(elements: List<Any>, commitCallback: () -> Unit = {}) {
@@ -249,7 +274,7 @@ class FeedContentAdapter(
 
         submitList(
             elements.mapIndexed { index, element ->
-                Item(element, index == mSelectedPosition)
+                Item(element, index == mSelectedPosition, if (mIsScrolling) index == mSelectedPosition else false)
             },
             commitCallback
         )
@@ -262,6 +287,7 @@ class FeedContentAdapter(
 
     data class Item(
         val data: Any,
-        val isSelected: Boolean
+        val isSelected: Boolean,
+        val isScrolling: Boolean = false
     )
 }
