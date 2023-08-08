@@ -26,7 +26,6 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
-import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivityOld
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.LayoutFragmentPurchasePromoBinding
@@ -180,11 +179,7 @@ class TokoFoodPromoFragmentOld : BaseMultiFragment(),
     }
 
     override fun onBackPressed() {
-        if (isNew) {
-            (activity as? BaseTokofoodActivity)?.onBackPressed()
-        } else {
-            (activity as? BaseTokofoodActivityOld)?.onBackPressed()
-        }
+        (activity as? BaseTokofoodActivity)?.onBackPressed()
     }
 
     private fun setupRecyclerView() {
