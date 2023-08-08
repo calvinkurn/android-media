@@ -22,7 +22,9 @@ interface PromoCheckoutActionListener {
 
     fun onTabSelected(element: PromoTabUiModel)
 
-    fun onShowPromoItem(element: PromoListItemUiModel, position: Int)
+    fun onShowPromoItem(element: PromoListItemUiModel, position: Int, state: Int)
 
     fun onShowPromoRecommendation(element: PromoRecommendationUiModel)
+
+    fun onShowPromoActionable(element: PromoListItemUiModel, position: Int)
 }
