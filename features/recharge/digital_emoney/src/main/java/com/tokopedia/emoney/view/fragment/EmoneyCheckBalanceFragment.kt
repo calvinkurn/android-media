@@ -12,6 +12,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.DeadObjectException
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -32,6 +33,7 @@ import com.tokopedia.common_electronic_money.util.NfcCardErrorTypeDef
 import com.tokopedia.emoney.R
 import com.tokopedia.emoney.di.DaggerDigitalEmoneyComponent
 import com.tokopedia.emoney.domain.request.JakCardStatus
+import com.tokopedia.emoney.integration.BCALibrary
 import com.tokopedia.emoney.util.DigitalEmoneyGqlQuery
 import com.tokopedia.emoney.viewmodel.EmoneyBalanceViewModel
 import com.tokopedia.emoney.viewmodel.JakCardBalanceViewModel
@@ -67,6 +69,8 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
     private val emoneyBalanceViewModel by viewModels<EmoneyBalanceViewModel> { viewModelFactory }
     private val tapcashBalanceViewModel by viewModels<TapcashBalanceViewModel> { viewModelFactory }
     private val jakcardBalanceViewModel by viewModels<JakCardBalanceViewModel> { viewModelFactory }
+
+    private val bcaLibrary = BCALibrary()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -120,6 +124,12 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
         val rawPublicKey = getPublicKey()
         val rawPrivateKey = getPrivateKey()
+        bcaLibrary.myTag = tag
+        val isoDep = IsoDep.get(tag)
+        if (!isoDep.isConnected) {
+            isoDep.connect()
+        }
+        Toast.makeText(context, bcaLibrary.C_BCAVersionDll(), Toast.LENGTH_LONG).show()
         if (CardUtils.isTapcashCard(intent)) {
             issuerActive = ISSUER_ID_TAP_CASH
             showLoading(getOperatorName(issuerActive))
@@ -150,7 +160,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                 showError(context.resources.getString(com.tokopedia.emoney.R.string.emoney_nfc_card_isnot_supported),
                     context.resources.getString(com.tokopedia.emoney.R.string.emoney_nfc_not_supported),
                     context.resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_card_is_not_supported),
-                    false
+                     false
                 )
             }
         }
