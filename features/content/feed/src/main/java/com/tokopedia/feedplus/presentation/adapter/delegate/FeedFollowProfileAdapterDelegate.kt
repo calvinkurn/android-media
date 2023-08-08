@@ -40,11 +40,7 @@ class FeedFollowProfileAdapterDelegate private constructor() {
         ) {
             val isSelectedChanged = FeedFollowRecommendationPayload.isSelectedChanged(payloads)
             if (isSelectedChanged) {
-                if (item.isSelected) {
-                    holder.onSelected()
-                } else {
-                    holder.onUnselected()
-                }
+                holder.setupProfile(item)
             }
         }
 

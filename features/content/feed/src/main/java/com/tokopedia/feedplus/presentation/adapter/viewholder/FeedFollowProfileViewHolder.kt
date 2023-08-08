@@ -91,14 +91,7 @@ class FeedFollowProfileViewHolder private constructor() {
 
         fun bind(model: FeedFollowProfileAdapter.Model.Profile) {
 
-            mProfile = model
-
-            /** resume & pause video when user swipe the recommendation (left-right) / content (up-down) */
-            if (model.isSelected) {
-                onSelected()
-            } else {
-                onUnselected()
-            }
+            setupProfile(model)
 
             binding.imgProfile.setImageUrl(model.data.imageUrl)
             binding.imgBadge.shouldShowWithAction(model.data.badge.isNotEmpty()) {
@@ -115,26 +108,29 @@ class FeedFollowProfileViewHolder private constructor() {
                     text = itemView.context.getString(contentCommonR.string.feed_component_follow)
                 }
             }
+        }
+
+        fun setupProfile(model: FeedFollowProfileAdapter.Model.Profile) {
+            mProfile = model
+
+            /** resume & pause video when user swipe the recommendation (left-right) / content (up-down) */
+            if (model.isSelected) {
+                if (!player.getExoPlayer().isPlaying) {
+                    player.start(model.data.videoUrl, isMute = false)
+                }
+                followRecommendationListener.onImpressProfile(model.data)
+            } else {
+                player.stop()
+                binding.playerView.hide()
+            }
 
             setupListener(model)
         }
 
-        fun onSelected() {
-            val profile = mProfile ?: return
-
-            if (!player.getExoPlayer().isPlaying) {
-                player.start(profile.data.videoUrl, isMute = false)
-            }
-            followRecommendationListener.onImpressProfile(profile.data)
-        }
-
-        fun onUnselected() {
-            player.stop()
-            binding.playerView.hide()
-        }
-
         private fun setupListener(model: FeedFollowProfileAdapter.Model.Profile) {
-            binding.root.setOnClickListener { listener.onScrollProfile(absoluteAdapterPosition) }
+            binding.root.setOnClickListener {
+                listener.onScrollProfile(absoluteAdapterPosition)
+            }
 
             binding.imgProfile.setOnClickListener { onClickProfile(model.data) }
             binding.tvProfileName.setOnClickListener { onClickProfile(model.data) }
