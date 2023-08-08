@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.utils.extensions.validDimensionRatio
 import com.tokopedia.product.detail.data.model.datamodel.ProductAPlusImageDataModel
 import com.tokopedia.product.detail.databinding.ItemDynamicAPlusImageBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -51,7 +52,7 @@ class ProductAPlusImageViewHolder(
     }
 
     private fun setupImage(element: ProductAPlusImageDataModel) {
-        if (element.url.isNotBlank() && element.ratio.matches(Regex("[0-9]+:[0-9]+"))) {
+        if (element.url.isNotBlank() && element.ratio.validDimensionRatio()) {
             // Update the image ratio
             // Note: please make sure that all direct descendant views of root have id to prevent crash
             val constraintSet = ConstraintSet()

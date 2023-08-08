@@ -10,6 +10,7 @@ import com.tokopedia.product.detail.common.data.model.product.VariantBasic
 import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.detail.common.data.model.variant.Variant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
+import com.tokopedia.product.detail.common.utils.extensions.validDimensionRatio
 
 data class ComponentData(
     //region General data
@@ -251,5 +252,5 @@ data class ContentMedia(
     @SerializedName("ratio")
     val ratio: String
 ) {
-    fun valid() = url.isNotBlank() && ratio.matches(Regex("[0-9]+:[0-9]+"))
+    fun valid() = url.isNotBlank() && ratio.validDimensionRatio()
 }
