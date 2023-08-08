@@ -802,7 +802,7 @@ class CartItemViewHolder constructor(
         if (element.isError) return
         binding.buttonChangeNote.show()
         binding.buttonChangeNote.setOnClickListener {
-            actionListener?.onNoteClicked(element, binding.buttonChangeNote, binding.buttonChangeNoteLottie)
+            actionListener?.onNoteClicked(element, binding.buttonChangeNote, binding.buttonChangeNoteLottie, absoluteAdapterPosition)
         }
         if (element.notes.isNotBlank()) {
             renderProductNotesFilled()
