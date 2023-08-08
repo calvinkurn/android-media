@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.viewholder
+package com.tokopedia.product.detail.view.viewholder.a_plus_content
 
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintSet
@@ -10,22 +10,21 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.utils.extensions.validDimensionRatio
-import com.tokopedia.product.detail.data.model.datamodel.ProductAPlusImageDataModel
-import com.tokopedia.product.detail.databinding.ItemDynamicAPlusImageBinding
+import com.tokopedia.product.detail.databinding.ItemAPlusImageBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 
-class ProductAPlusImageViewHolder(
+class APlusImageViewHolder(
     itemView: View,
     private val listener: DynamicProductDetailListener
-) : AbstractViewHolder<ProductAPlusImageDataModel>(itemView) {
+) : AbstractViewHolder<APlusImageUiModel>(itemView) {
 
     companion object {
-        val LAYOUT = R.layout.item_dynamic_a_plus_image
+        val LAYOUT = R.layout.item_a_plus_image
     }
 
-    private val binding = ItemDynamicAPlusImageBinding.bind(itemView)
+    private val binding = ItemAPlusImageBinding.bind(itemView)
 
-    override fun bind(element: ProductAPlusImageDataModel) {
+    override fun bind(element: APlusImageUiModel) {
         setupDivider(element.showTopDivider)
         setupTitle(element)
         setupDescription(element)
@@ -37,21 +36,21 @@ class ProductAPlusImageViewHolder(
         binding.dividerProductDetailAPlusImage.showWithCondition(showTopDivider)
     }
 
-    private fun setupTitle(element: ProductAPlusImageDataModel) {
+    private fun setupTitle(element: APlusImageUiModel) {
         binding.tvProductDetailAPlusImageTitle.apply {
             text = element.title
             showWithCondition(element.title.isNotBlank())
         }
     }
 
-    private fun setupDescription(element: ProductAPlusImageDataModel) {
+    private fun setupDescription(element: APlusImageUiModel) {
         binding.tvProductDetailAPlusImageDescription.apply {
             text = element.description
             showWithCondition(element.description.isNotBlank())
         }
     }
 
-    private fun setupImage(element: ProductAPlusImageDataModel) {
+    private fun setupImage(element: APlusImageUiModel) {
         if (element.url.isNotBlank() && element.ratio.validDimensionRatio()) {
             // Update the image ratio
             // Note: please make sure that all direct descendant views of root have id to prevent crash
@@ -66,7 +65,7 @@ class ProductAPlusImageViewHolder(
         }
     }
 
-    private fun setupToggle(element: ProductAPlusImageDataModel) {
+    private fun setupToggle(element: APlusImageUiModel) {
         binding.tvProductDetailAPlusImageToggle.apply {
             text = element.ctaText
             showWithCondition(

@@ -1,10 +1,11 @@
-package com.tokopedia.product.detail.data.model.datamodel
+package com.tokopedia.product.detail.view.viewholder.a_plus_content
 
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
-data class ProductAPlusImageDataModel(
+data class APlusImageUiModel(
     var name: String = "",
     var type: String = "",
     var url: String = "",

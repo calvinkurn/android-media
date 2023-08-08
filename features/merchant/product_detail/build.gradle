@@ -5,6 +5,16 @@ apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'kotlin-parcelize'
 
 android {
+    def pathSources = "src/main/res/"
+    sourceSets {
+        main {
+            res.srcDirs = [
+                    pathSources,
+                    pathSources + 'detail',
+                    pathSources + 'detail/a_plus_content'
+            ]
+        }
+    }
 
     sourceSets.each {
         it.java.srcDirs += "src/$it.name/kotlin"

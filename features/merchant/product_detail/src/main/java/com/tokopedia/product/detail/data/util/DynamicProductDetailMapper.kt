@@ -43,7 +43,7 @@ import com.tokopedia.product.detail.data.model.datamodel.LoadingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OngoingCampaignDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductAPlusImageDataModel
+import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCategoryCarouselDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
@@ -315,7 +315,7 @@ object DynamicProductDetailMapper {
                         (aPlusMediaData != null && aPlusMediaData.valid())
                     ) {
                         listOfComponent.add(
-                            ProductAPlusImageDataModel(
+                            APlusImageUiModel(
                                 type = component.type,
                                 name = component.componentName,
                                 url = aPlusMediaData?.url.orEmpty(),

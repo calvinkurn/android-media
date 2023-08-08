@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductAPlusImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductLoadingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
@@ -31,6 +30,7 @@ import com.tokopedia.product.detail.view.viewholder.ProductRecommendationVertica
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationVerticalViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationViewHolder
 import com.tokopedia.product.detail.view.viewholder.ViewToViewWidgetViewHolder
+import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 
 /**
  * Created by Yehezkiel on 04/01/21
@@ -165,7 +165,7 @@ class ProductDetailAdapter(asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataMo
 
     fun getSeeMoreAPlusTogglePosition(): Int {
         return currentList.indexOfFirst {
-            it is ProductAPlusImageDataModel && it.showOnCollapsed && it.ctaText.isNotBlank()
+            it is APlusImageUiModel && it.showOnCollapsed && it.ctaText.isNotBlank()
         }
     }
 }

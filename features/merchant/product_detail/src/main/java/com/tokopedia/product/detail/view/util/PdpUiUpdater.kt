@@ -32,7 +32,7 @@ import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OngoingCampaignDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpRecommendationWidgetDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductAPlusImageDataModel
+import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
@@ -1209,9 +1209,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     private fun MutableList<DynamicPdpDataModel>.adjustAPlusMedia(
         collapsed: Boolean
     ): MutableList<DynamicPdpDataModel> {
-        if (collapsed) removeAll { it is ProductAPlusImageDataModel && !it.showOnCollapsed }
+        if (collapsed) removeAll { it is APlusImageUiModel && !it.showOnCollapsed }
         forEachIndexed { index, dataModel ->
-            if (dataModel is ProductAPlusImageDataModel) {
+            if (dataModel is APlusImageUiModel) {
                 this[index] = dataModel.copy(collapsed = collapsed)
             }
         }

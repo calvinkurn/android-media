@@ -12,7 +12,6 @@ import com.tokopedia.product.detail.data.model.datamodel.OngoingCampaignDataMode
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpRecommendationWidgetDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductAPlusImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCategoryCarouselDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
@@ -43,6 +42,7 @@ import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewDataModel
+import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 
 interface DynamicProductDetailAdapterFactory {
     fun type(data: ProductMostHelpfulReviewDataModel): Int
@@ -84,7 +84,7 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: ProductCustomInfoTitleDataModel): Int
     fun type(data: ProductShopReviewDataModel): Int
     fun type(data: OngoingCampaignDataModel): Int
-    fun type(productAPlusImageDataModel: ProductAPlusImageDataModel): Int
+    fun type(productAPlusImageDataModel: APlusImageUiModel): Int
 
     // This is the new centralized recom widget model.
     // After migration, all recom widgets will only be mapped into this model
