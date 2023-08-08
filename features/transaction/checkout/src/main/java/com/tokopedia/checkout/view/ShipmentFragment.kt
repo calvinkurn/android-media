@@ -164,7 +164,9 @@ import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_DATA_RE
 import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.PRODUCT_PROTECTION_INSURANCE_TYPE
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.SOURCE_NORMAL_CHECKOUT
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_NEW_USER
@@ -2237,7 +2239,11 @@ class ShipmentFragment :
 
     override fun onProcessToPayment() {
         showLoading()
-        shipmentViewModel.saveAddOnsProductBeforeCheckout()
+        if (shipmentViewModel.isAnyProductHasAddOnsProduct) {
+            shipmentViewModel.saveAddOnsProductBeforeCheckout()
+        } else {
+            shipmentAdapter.checkDropshipperValidation()
+        }
     }
 
     private fun onResultFromPayment(resultCode: Int, data: Intent?) {
@@ -4305,9 +4311,11 @@ class ShipmentFragment :
         if (resultCode == Activity.RESULT_OK) {
             val addOnProductDataResult = data?.getParcelableExtra(AddOnExtraConstant.EXTRA_ADDON_PAGE_RESULT) ?: AddOnPageResult()
 
+            var isProteksiProdukUpdated = false
             if (addOnProductDataResult.aggregatedData.isGetDataSuccess) {
                 val cartIdAddOn = addOnProductDataResult.cartId
                 val needUpdateAddOnItem = shipmentAdapter.getAddOnProductServicePosition(cartIdAddOn)
+                var updatedCartItemModel = needUpdateAddOnItem.second
                 needUpdateAddOnItem.second?.addOnProduct?.listAddOnProductData?.forEach { addOnExisting ->
                     for (addOnUiModel in addOnProductDataResult.aggregatedData.selectedAddons) {
                         if (addOnExisting.type == addOnUiModel.addOnType) {
@@ -4321,9 +4329,28 @@ class ShipmentFragment :
                                 status = addOnUiModel.getSaveAddonSelectedStatus().value
                             }
                         }
+
+                        if (addOnUiModel.addOnType == PRODUCT_PROTECTION_INSURANCE_TYPE) {
+                            isProteksiProdukUpdated = true
+                            if (addOnUiModel.getSaveAddonSelectedStatus().value == ADD_ON_PRODUCT_STATUS_CHECK ||
+                                addOnUiModel.getSaveAddonSelectedStatus().value == ADD_ON_PRODUCT_STATUS_MANDATORY
+                            ) {
+                                updatedCartItemModel = needUpdateAddOnItem.second?.copy(
+                                    isProtectionOptIn = true
+                                )
+                            } else {
+                                updatedCartItemModel = needUpdateAddOnItem.second?.copy(
+                                    isProtectionOptIn = false
+                                )
+                            }
+                        }
                     }
                 }
-                onNeedUpdateViewItem(needUpdateAddOnItem.first)
+                if (isProteksiProdukUpdated) {
+                    updatedCartItemModel?.let { shipmentAdapter.onCheckPurchaseProtection(needUpdateAddOnItem.first, it) }
+                } else {
+                    onNeedUpdateViewItem(needUpdateAddOnItem.first)
+                }
                 updateCost()
                 shipmentAdapter.updateSubtotal()
             } else {

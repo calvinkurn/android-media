@@ -4601,7 +4601,7 @@ class CartFragment :
             if (addOnProductDataResult.aggregatedData.isGetDataSuccess) {
                 var newAddOnWording = ""
                 if (addOnProductDataResult.aggregatedData.title.isNotEmpty()) {
-                    newAddOnWording = "${addOnProductDataResult.aggregatedData.title} <b>(${addOnProductDataResult.aggregatedData.price})</b>"
+                    newAddOnWording = "${addOnProductDataResult.aggregatedData.title} <b>(Rp${addOnProductDataResult.aggregatedData.price})</b>"
                 }
 
                 cartAdapter.updateAddOnByCartId(addOnProductDataResult.cartId.toString(), newAddOnWording, addOnProductDataResult.aggregatedData.selectedAddons)

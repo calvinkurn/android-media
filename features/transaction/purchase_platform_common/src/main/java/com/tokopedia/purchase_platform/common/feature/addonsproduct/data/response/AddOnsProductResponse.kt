@@ -1,5 +1,6 @@
 package com.tokopedia.purchase_platform.common.feature.addonsproduct.data.response
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.EMPTY
 
@@ -24,6 +25,7 @@ data class AddOnsProductResponse(
         val id: String = String.EMPTY,
         @SerializedName("unique_id")
         val uniqueId: String = String.EMPTY,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         val price: Long = 0L,
         @SerializedName("info_link")
