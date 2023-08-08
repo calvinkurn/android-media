@@ -75,6 +75,7 @@ import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.data.ParamsForOpenScreen
 import com.tokopedia.discovery2.data.ScrollData
 import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
+import com.tokopedia.discovery2.datamapper.DYNAMIC_COMPONENT_IDENTIFIER
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.datamapper.discoveryPageData
 import com.tokopedia.discovery2.datamapper.getSectionPositionMap
@@ -180,6 +181,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import com.tokopedia.unifyprinciples.R as RUnify
@@ -758,6 +763,7 @@ open class DiscoveryFragment :
                         } else {
                             hideGlobalError()
                             scrollToPinnedComponent(listComponent)
+                            removePaddingIfComponent()
                         }
                     }
                     mProgressBar.hide()
@@ -1416,19 +1422,30 @@ open class DiscoveryFragment :
                     if (position > 0 && isTabPresent) {
                         handleAutoScrollUI()
                         if(isFromForcedNavigation){
-                            recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object :
-                                ViewTreeObserver.OnGlobalLayoutListener {
-                                override fun onGlobalLayout() {
-                                    var pos = -1
-                                    discoveryAdapter.currentList.forEachIndexed { index, componentsItem ->
-                                        if (componentsItem.id == pinnedComponentId) {
-                                            pos = index
-                                        }
+//                            recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object :
+//                                ViewTreeObserver.OnGlobalLayoutListener {
+//                                override fun onGlobalLayout() {
+//                                    var pos = -1
+//                                    discoveryAdapter.currentList.forEachIndexed { index, componentsItem ->
+//                                        if (componentsItem.id == pinnedComponentId) {
+//                                            pos = index
+//                                        }
+//                                    }
+//                                    recyclerView.smoothScrollToPosition(position)
+//                                    removePaddingIfComponent()
+//                                    recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+//                                }
+//                            })
+                            var pos = -1
+                            CoroutineScope(Dispatchers.Main).launch {
+                                delay(2000)
+                                discoveryAdapter.currentList.forEachIndexed { index, componentsItem ->
+                                    if (componentsItem.id == pinnedComponentId) {
+                                        pos = index
                                     }
-                                    recyclerView.smoothScrollToPosition(position)
-                                    recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
                                 }
-                            })
+                                recyclerView.smoothScrollToPosition(pos)
+                            }
                             isFromForcedNavigation = false
                         }
                     }
@@ -1448,6 +1465,38 @@ open class DiscoveryFragment :
         chooseAddressWidget?.hide()
         chooseAddressWidgetDivider?.hide()
         recyclerView.setPaddingToInnerRV(0, recyclerView.dpToPx(55).toInt(), 0, 0)
+    }
+
+
+    private fun removePaddingIfComponent() {
+        recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                var pos = Int.MIN_VALUE
+                discoveryAdapter.currentList.forEachIndexed { index, componentsItem ->
+                    if (componentsItem.name == ComponentsList.Tabs.componentName) {
+                        pos = index
+                    }
+                    if(index == pos + 1){
+                        val i = pos+1
+                        val firstVisibleItemPositions = staggeredGridLayoutManager?.findFirstVisibleItemPositions(null)
+                        val lastVisibleItemPositions = staggeredGridLayoutManager?.findLastVisibleItemPositions(null)
+
+                        if (firstVisibleItemPositions != null && lastVisibleItemPositions != null) {
+                            val firstVisibleItemPosition = firstVisibleItemPositions.minOrNull() ?: -1
+                            val lastVisibleItemPosition = lastVisibleItemPositions.maxOrNull() ?: -1
+
+                            if (firstVisibleItemPosition != RecyclerView.NO_POSITION && lastVisibleItemPosition != RecyclerView.NO_POSITION) {
+                                if (i in firstVisibleItemPosition..lastVisibleItemPosition) {
+                                    recyclerView.setPaddingToInnerRV(0, recyclerView.dpToPx(0).toInt(), 0, 0)
+                                }
+                            }
+                        }
+                    }
+                }
+                recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
     }
 
     fun scrollToComponentWithID(componentID: String) {
