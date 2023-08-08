@@ -310,10 +310,7 @@ class FeedFragment :
         }
 
         override fun onClickProfileRecommendation(profile: FeedFollowRecommendationModel.Profile) {
-            val templateAppLink = if (profile.isShop) ApplinkConst.SHOP else ApplinkConst.PROFILE
-            val completeAppLink = UriUtil.buildUri(templateAppLink, profile.id)
-
-            goToProfilePage(completeAppLink, profile.isShop)
+            goToProfilePage(profile.applink, profile.isShop)
         }
 
         override fun reloadProfileRecommendation() {

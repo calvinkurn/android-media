@@ -31,6 +31,7 @@ class MapperFeedXRecomWidget @Inject constructor(
                     imageUrl = profile.logoImageUrl,
                     thumbnailUrl = profile.coverUrl,
                     videoUrl = profile.mediaUrl,
+                    applink = profile.applink,
                     isFollowed = false,
                 )
             },
