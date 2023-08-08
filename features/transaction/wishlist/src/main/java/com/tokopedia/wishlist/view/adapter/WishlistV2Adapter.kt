@@ -102,6 +102,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun onResetFilter()
         fun onManageClicked(showCheckbox: Boolean, isDeleteOnly: Boolean, isBulkAdd: Boolean)
         fun onProductItemClicked(wishlistItem: WishlistV2UiModel.Item, position: Int)
+        fun onViewProductCard(wishlistItem: WishlistV2UiModel.Item, position: Int)
         fun onBannerTopAdsImpression(topAdsImageViewModel: TopAdsImageViewModel, position: Int)
         fun onBannerTopAdsClick(topAdsImageViewModel: TopAdsImageViewModel, position: Int)
         fun onRecommendationItemImpression(recommendationItem: RecommendationItem, position: Int)

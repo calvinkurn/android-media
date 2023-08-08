@@ -91,7 +91,10 @@ data class CartItemHolderData(
 
     // Will be set after calculation
     var wholesalePrice: Double = 0.0,
-    var wholesalePriceFormatted: String? = null
+    var wholesalePriceFormatted: String? = null,
+
+    // AddOns Product
+    var addOnsProduct: CartAddOnData = CartAddOnData()
 ) {
     companion object {
         const val BUNDLING_ITEM_DEFAULT = 0

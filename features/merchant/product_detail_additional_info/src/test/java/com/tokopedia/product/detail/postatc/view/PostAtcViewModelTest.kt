@@ -51,6 +51,10 @@ class PostAtcViewModelTest {
         val cartId = ""
         val layoutId = ""
         val pageSource = ""
+        val isFulfillment = false
+        val selectedAddonsIds = emptyList<String>()
+        val warehouseId = ""
+        val quantity = 1
         val response = PostAtcLayout(
             components = listOf(
                 PostAtcLayout.Component(
@@ -67,7 +71,16 @@ class PostAtcViewModelTest {
             getPostAtcLayoutUseCase.execute(productId, cartId, layoutId, pageSource)
         } returns response
 
-        viewModel.fetchLayout(productId, cartId, layoutId, pageSource)
+        viewModel.initializeParameters(
+            productId,
+            cartId,
+            isFulfillment,
+            layoutId,
+            pageSource,
+            selectedAddonsIds,
+            warehouseId,
+            quantity
+        )
 
         Assert.assertTrue(viewModel.layouts.value is Success)
         val data = (viewModel.layouts.value as Success).data
@@ -85,6 +98,10 @@ class PostAtcViewModelTest {
         val shopId = "444"
         val categoryId = "555"
         val categoryName = "elektronik"
+        val isFulfillment = false
+        val selectedAddonsIds = emptyList<String>()
+        val warehouseId = ""
+        val quantity = 1
         val response = PostAtcLayout(
             name = layoutName,
             basicInfo = PostAtcLayout.BasicInfo(
@@ -100,7 +117,16 @@ class PostAtcViewModelTest {
             getPostAtcLayoutUseCase.execute(productId, cartId, layoutId, pageSource)
         } returns response
 
-        viewModel.fetchLayout(productId, cartId, layoutId, pageSource)
+        viewModel.initializeParameters(
+            productId,
+            cartId,
+            isFulfillment,
+            layoutId,
+            pageSource,
+            selectedAddonsIds,
+            warehouseId,
+            quantity
+        )
 
         val atcInfo = viewModel.postAtcInfo
         Assert.assertEquals(productId, atcInfo.productId)
@@ -119,6 +145,10 @@ class PostAtcViewModelTest {
         val cartId = ""
         val layoutId = ""
         val pageSource = ""
+        val isFulfillment = false
+        val selectedAddonsIds = emptyList<String>()
+        val warehouseId = ""
+        val quantity = 1
 
         val errorMessage = "something wrong"
 
@@ -126,7 +156,16 @@ class PostAtcViewModelTest {
             getPostAtcLayoutUseCase.execute(productId, cartId, layoutId, pageSource)
         } throws Throwable(errorMessage)
 
-        viewModel.fetchLayout(productId, cartId, layoutId, pageSource)
+        viewModel.initializeParameters(
+            productId,
+            cartId,
+            isFulfillment,
+            layoutId,
+            pageSource,
+            selectedAddonsIds,
+            warehouseId,
+            quantity
+        )
 
         Assert.assertTrue(viewModel.layouts.value is Fail)
     }
@@ -137,13 +176,26 @@ class PostAtcViewModelTest {
         val cartId = ""
         val layoutId = ""
         val pageSource = ""
+        val isFulfillment = false
+        val selectedAddonsIds = emptyList<String>()
+        val warehouseId = ""
+        val quantity = 1
         val response = PostAtcLayout()
 
         coEvery {
             getPostAtcLayoutUseCase.execute(productId, cartId, layoutId, pageSource)
         } returns response
 
-        viewModel.fetchLayout(productId, cartId, layoutId, pageSource)
+        viewModel.initializeParameters(
+            productId,
+            cartId,
+            isFulfillment,
+            layoutId,
+            pageSource,
+            selectedAddonsIds,
+            warehouseId,
+            quantity
+        )
 
         Assert.assertTrue(viewModel.layouts.value is Fail)
     }
