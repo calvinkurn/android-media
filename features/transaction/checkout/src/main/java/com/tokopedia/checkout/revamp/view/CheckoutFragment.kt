@@ -122,7 +122,6 @@ import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnPro
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionListener
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionViewHolder
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnMetadata
@@ -942,6 +941,26 @@ class CheckoutFragment :
                 isReloadData = true,
                 skipUpdateOnboardingState = true,
                 isReloadAfterPriceChangeHigher = false
+            )
+        }
+    }
+
+    override fun getOrderByCartStringGroup(cartStringGroup: String): CheckoutOrderModel? {
+        return viewModel.listData.value.firstOrNull { it is CheckoutOrderModel && it.cartStringGroup == cartStringGroup } as? CheckoutOrderModel
+    }
+
+    override fun onClickLihatOnTickerOrderError(
+        shopId: String,
+        errorMessage: String,
+        order: CheckoutOrderModel,
+        position: Int
+    ) {
+        if (position > 0) {
+            val firstErrorPosition = position + order.firstProductErrorIndex
+            binding.rvCheckout.scrollToPosition(firstErrorPosition)
+            checkoutAnalyticsCourierSelection.eventClickLihatOnTickerErrorOrderLevelErrorInCheckoutPage(
+                shopId,
+                errorMessage
             )
         }
     }

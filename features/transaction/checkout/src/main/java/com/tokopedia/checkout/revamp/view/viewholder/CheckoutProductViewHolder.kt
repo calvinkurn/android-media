@@ -19,6 +19,7 @@ import com.tokopedia.checkout.databinding.LayoutCheckoutProductBundleBinding
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
@@ -28,6 +29,8 @@ import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.databinding.ItemAddOnProductBinding
 import com.tokopedia.purchase_platform.common.utils.getHtmlFormat
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -50,12 +53,13 @@ class CheckoutProductViewHolder(
     private var delayChangeCheckboxAddOnState: Job? = null
 
     fun bind(product: CheckoutProductModel) {
+        renderErrorAndWarningGroup(product)
         if (product.isBundlingItem) {
             renderBundleItem(product)
         } else {
             renderProductItem(product)
         }
-        renderError(product)
+        renderErrorProduct(product)
     }
 
     @SuppressLint("SetTextI18n")
@@ -449,16 +453,152 @@ class CheckoutProductViewHolder(
         }
     }
 
-    private fun renderError(product: CheckoutProductModel) {
-        if (product.isError) {
+    private fun renderErrorAndWarningGroup(product: CheckoutProductModel) {
+        if (product.shouldShowGroupInfo) {
+            val order = listener.getOrderByCartStringGroup(product.cartStringGroup)
+            if (order != null) {
+                renderGroupError(order)
+                renderWarningGroup(order)
+                renderCustomError(order)
+                return
+            }
+        }
+        binding.checkoutTickerShopError.isVisible = false
+    }
+
+    private fun renderGroupError(order: CheckoutOrderModel) {
+        with(binding) {
+            if (order.isError) {
+                val errorTitle = order.errorTitle
+                val errorDescription = order.errorDescription
+                if (errorTitle.isNotEmpty()) {
+                    if (errorDescription.isNotEmpty()) {
+                        checkoutTickerShopError.tickerTitle = errorTitle
+                        checkoutTickerShopError.setTextDescription(errorDescription)
+                        checkoutTickerShopError.setDescriptionClickEvent(object : TickerCallback {
+                            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                                // no-op
+                            }
+
+                            override fun onDismiss() {
+                                // no-op
+                            }
+                        })
+                    } else {
+                        if (order.isCustomEpharmacyError) {
+                            checkoutTickerShopError.setHtmlDescription(
+                                "$errorTitle ${itemView.context.getString(R.string.checkout_ticker_lihat_cta_suffix)}"
+                            )
+                            checkoutTickerShopError.setDescriptionClickEvent(object : TickerCallback {
+                                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                                    listener.onClickLihatOnTickerOrderError(
+                                        order.shopId.toString(),
+                                        errorTitle,
+                                        order,
+                                        bindingAdapterPosition
+                                    )
+                                }
+
+                                override fun onDismiss() {
+                                    // no op
+                                }
+                            })
+                        } else {
+                            checkoutTickerShopError.setTextDescription(errorTitle)
+                            checkoutTickerShopError.setDescriptionClickEvent(object : TickerCallback {
+                                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                                    // no op
+                                }
+
+                                override fun onDismiss() {
+                                    // no op
+                                }
+                            })
+                        }
+                    }
+                    checkoutTickerShopError.tickerType = Ticker.TYPE_ERROR
+                    checkoutTickerShopError.tickerShape = Ticker.SHAPE_LOOSE
+                    checkoutTickerShopError.closeButtonVisibility = View.GONE
+                    checkoutTickerShopError.visible()
+//                    layoutError.visible()
+                } else {
+                    checkoutTickerShopError.gone()
+//                    layoutError.gone()
+                }
+            } else {
+                checkoutTickerShopError.gone()
+//                layoutError.gone()
+            }
+//            layoutWarning.gone()
+        }
+    }
+
+    private fun renderWarningGroup(order: CheckoutOrderModel) {
+        with(binding) {
+            if (!order.isError && order.shopTicker.isNotEmpty()) {
+                checkoutTickerShopError.tickerTitle =
+                    order.shopTickerTitle
+                checkoutTickerShopError.setHtmlDescription(order.shopTicker)
+                checkoutTickerShopError.visible()
+                checkoutTickerShopError.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        // no-op
+                    }
+
+                    override fun onDismiss() {
+                        order.shopTicker = ""
+                        checkoutTickerShopError.gone()
+                    }
+                })
+            } else {
+                checkoutTickerShopError.gone()
+            }
+        }
+    }
+
+    private fun renderCustomError(order: CheckoutOrderModel) {
+        with(binding) {
+            if ((
+                    !order.isError && order.isHasUnblockingError &&
+                        order.unblockingErrorMessage.isNotEmpty()
+                    ) &&
+                order.firstProductErrorIndex > -1
+            ) {
+                val errorMessage = order.unblockingErrorMessage
+                checkoutTickerShopError.setHtmlDescription(errorMessage + " " + itemView.context.getString(R.string.checkout_ticker_lihat_cta_suffix))
+                checkoutTickerShopError.setDescriptionClickEvent(object : TickerCallback {
+
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        listener.onClickLihatOnTickerOrderError(
+                            order.shopId.toString(),
+                            errorMessage,
+                            order,
+                            bindingAdapterPosition
+                        )
+                    }
+
+                    override fun onDismiss() {
+                        // no-op
+                    }
+                })
+                checkoutTickerShopError.tickerType = Ticker.TYPE_ERROR
+                checkoutTickerShopError.tickerShape = Ticker.SHAPE_LOOSE
+                checkoutTickerShopError.closeButtonVisibility = View.GONE
+                checkoutTickerShopError.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun renderErrorProduct(product: CheckoutProductModel) {
+        if (product.isError || product.isShopError) {
             binding.frameCheckoutProductContainer.alpha = VIEW_ALPHA_DISABLED
         } else {
             binding.frameCheckoutProductContainer.alpha = VIEW_ALPHA_ENABLED
         }
-        showShipmentWarning(product)
+        renderErrorProductTicker(product)
     }
 
-    private fun showShipmentWarning(cartItemModel: CheckoutProductModel) {
+    private fun renderErrorProductTicker(cartItemModel: CheckoutProductModel) {
         if (cartItemModel.errorMessage.isNotEmpty()) {
             if (cartItemModel.errorMessageDescription.isNotEmpty()) {
                 binding.checkoutTickerProductError.tickerTitle = cartItemModel.errorMessage

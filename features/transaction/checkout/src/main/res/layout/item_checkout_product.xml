@@ -25,6 +25,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/v_divider_shop" />
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/checkout_ticker_shop_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/v_divider_shop" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_checkout_order_number"
         android:layout_width="wrap_content"
@@ -33,7 +44,7 @@
         android:layout_marginTop="12dp"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/v_divider_shop"
+        app:layout_constraintTop_toBottomOf="@id/checkout_ticker_shop_error"
         app:typographyType="display_3_uppercase"
         app:typographyWeight="bold"
         tools:text="Pesanan 1"

@@ -39,7 +39,7 @@ data class CheckoutOrderModel(
     val shopShipmentList: List<ShopShipment> = emptyList(),
     val isTokoNow: Boolean = false,
     val shopTickerTitle: String = "",
-    val shopTicker: String = "",
+    var shopTicker: String = "",
     val enablerLabel: String = "",
 
     // AddOns

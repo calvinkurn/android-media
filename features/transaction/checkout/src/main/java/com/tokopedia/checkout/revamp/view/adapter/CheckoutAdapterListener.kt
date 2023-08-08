@@ -20,6 +20,15 @@ interface CheckoutAdapterListener {
 
     fun onClickCancelNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel)
 
+    fun getOrderByCartStringGroup(cartStringGroup: String): CheckoutOrderModel?
+
+    fun onClickLihatOnTickerOrderError(
+        shopId: String,
+        errorMessage: String,
+        order: CheckoutOrderModel,
+        position: Int
+    )
+
     fun onViewFreeShippingPlusBadge()
 
     fun onCheckboxAddonProductListener(
