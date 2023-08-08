@@ -51,7 +51,7 @@ class ShopHomeShowCaseLeftMainBannerViewHolder(
         viewBinding?.iconChevron?.isVisible = showcases.size > SHOW_VIEW_ALL_SHOWCASE_THRESHOLD
     }
 
-    private fun setupTabs(tabs: List<ShopHomeShowcaseUiModel.ShopHomeShowCaseTab>) {
+    private fun setupTabs(tabs: List<ShopHomeShowcaseUiModel.Tab>) {
         val fragments = createFragments(tabs)
         val pagerAdapter = TabPagerAdapter(fragment, fragments)
 
@@ -98,7 +98,7 @@ class ShopHomeShowCaseLeftMainBannerViewHolder(
     }
 
     private fun createFragments(
-        tabs: List<ShopHomeShowcaseUiModel.ShopHomeShowCaseTab>
+        tabs: List<ShopHomeShowcaseUiModel.Tab>
     ): List<Pair<String, Fragment>> {
         val pages = mutableListOf<Pair<String, Fragment>>()
 

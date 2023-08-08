@@ -23,7 +23,7 @@ open class ShopShowcaseFragment : BaseDaggerFragment() {
 
         @JvmStatic
         fun newInstance(
-            showcases: List<ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase>
+            showcases: List<ShopHomeShowcaseUiModel.Tab.Showcase>
         ): ShopShowcaseFragment {
             return ShopShowcaseFragment().apply {
                 arguments = Bundle().apply {
@@ -35,11 +35,11 @@ open class ShopShowcaseFragment : BaseDaggerFragment() {
     }
 
     private val showcases by lazy {
-        arguments?.getParcelableArrayList<ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase>(
+        arguments?.getParcelableArrayList<ShopHomeShowcaseUiModel.Tab.Showcase>(
             BUNDLE_KEY_SHOWCASES
         )?.toList().orEmpty()
     }
-    private var onShowcaseClick : (ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase) -> Unit = {}
+    private var onShowcaseClick : (ShopHomeShowcaseUiModel.Tab.Showcase) -> Unit = {}
 
     private var binding by autoClearedNullable<FragmentShopShowcaseBinding>()
 
@@ -72,7 +72,7 @@ open class ShopShowcaseFragment : BaseDaggerFragment() {
     }
 
     private fun renderShowcase(
-        showcases: List<ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase>
+        showcases: List<ShopHomeShowcaseUiModel.Tab.Showcase>
     ) {
         val firstShowcase = showcases.getOrNull(0)
         val secondShowcase = showcases.getOrNull(1)
@@ -129,7 +129,7 @@ open class ShopShowcaseFragment : BaseDaggerFragment() {
         }
     }
 
-    fun setOnShowcaseClick(onShowcaseClick: (ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase) -> Unit) {
+    fun setOnShowcaseClick(onShowcaseClick: (ShopHomeShowcaseUiModel.Tab.Showcase) -> Unit) {
         this.onShowcaseClick = onShowcaseClick
     }
 

@@ -241,18 +241,18 @@ open class ShopHomeAdapterTypeFactory(
 
         val firstTab = uiModel?.tabs?.getOrNull(0)
         val firstTabMainBannerPosition = firstTab?.mainBannerPosition
-            ?: ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.CAROUSEL
+            ?: ShopHomeShowcaseUiModel.MainBannerPosition.CAROUSEL
 
         return when (firstTabMainBannerPosition) {
-            ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.LEFT -> {
+            ShopHomeShowcaseUiModel.MainBannerPosition.LEFT -> {
                 ShopHomeShowCaseLeftMainBannerViewHolder.LAYOUT
             }
 
-            ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.TOP -> {
+            ShopHomeShowcaseUiModel.MainBannerPosition.TOP -> {
                 ShopHomeShowCaseTopMainBannerViewHolder.LAYOUT
             }
 
-            ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.CAROUSEL -> {
+            ShopHomeShowcaseUiModel.MainBannerPosition.CAROUSEL -> {
                 ShopHomeShowCaseCarouselViewHolder.LAYOUT
             }
         }

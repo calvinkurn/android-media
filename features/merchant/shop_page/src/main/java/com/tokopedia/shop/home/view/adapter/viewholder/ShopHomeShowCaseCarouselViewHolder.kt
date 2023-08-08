@@ -38,7 +38,7 @@ class ShopHomeShowCaseCarouselViewHolder(
     }
 
     private fun setupShowCaseRecyclerView(
-        showcases: List<ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase>
+        showcases: List<ShopHomeShowcaseUiModel.Tab.Showcase>
     ) {
         val showCaseAdapter = ShopHomeShowCaseAdapter(listener)
 

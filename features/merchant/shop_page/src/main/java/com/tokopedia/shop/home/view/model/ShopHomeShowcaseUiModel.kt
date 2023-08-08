@@ -10,7 +10,7 @@ import kotlinx.parcelize.Parcelize
 
 data class ShopHomeShowcaseUiModel(
     val showcaseHeader: ShowcaseHeader,
-    val tabs: List<ShopHomeShowCaseTab>,
+    val tabs: List<Tab>,
     override val widgetId: String = "",
     override val layoutOrder: Int = -1,
     override val name: String = WidgetName.SHOWCASE_NAVIGATION_BANNER,
@@ -22,28 +22,28 @@ data class ShopHomeShowcaseUiModel(
     data class ShowcaseHeader(
         val title: String,
         val ctaLink: String,
-        val widgetStyle: ShopHomeShowcaseWidgetStyle
+        val widgetStyle: WidgetStyle
     )
 
-    enum class ShopHomeShowcaseWidgetStyle {
+    enum class WidgetStyle {
         ROUNDED_CORNER,
         CIRCLE
     }
 
-    enum class ShopHomeShowcaseMainBannerPosition {
+    enum class MainBannerPosition {
         LEFT,
         TOP,
         CAROUSEL
     }
 
-    data class ShopHomeShowCaseTab(
+    data class Tab(
         val text: String,
         val imageUrl: String,
-        val mainBannerPosition: ShopHomeShowcaseMainBannerPosition,
-        val showcases: List<ShopHomeShowcase>,
+        val mainBannerPosition: MainBannerPosition,
+        val showcases: List<Showcase>,
     ) {
         @Parcelize
-        data class ShopHomeShowcase(
+        data class Showcase(
             val id: String,
             val name: String,
             val imageUrl: String,

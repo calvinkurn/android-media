@@ -4,5 +4,5 @@ import com.tokopedia.shop.home.view.model.ShopHomeShowcaseUiModel
 
 interface ShopHomeShowcaseListener {
     fun onViewAllShowcaseClick(selectedShowcaseHeader: ShopHomeShowcaseUiModel.ShowcaseHeader)
-    fun onShowcaseClick(selectedShowcase: ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase)
+    fun onShowcaseClick(selectedShowcase: ShopHomeShowcaseUiModel.Tab.Showcase)
 }

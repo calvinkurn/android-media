@@ -14,7 +14,7 @@ class ShopHomeShowCaseAdapter(
 ) : RecyclerView.Adapter<ShopHomeShowCaseAdapter.ShowCaseViewHolder>() {
 
     private var showcases =
-        mutableListOf<ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase>()
+        mutableListOf<ShopHomeShowcaseUiModel.Tab.Showcase>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShowCaseViewHolder {
         val binding =
@@ -35,7 +35,7 @@ class ShopHomeShowCaseAdapter(
     inner class ShowCaseViewHolder(
         private val binding: ItemShopHomeShowcaseBinding
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(showcase: ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase) {
+        fun bind(showcase: ShopHomeShowcaseUiModel.Tab.Showcase) {
             binding.tpgBannerTitle.text = showcase.name
             binding.imgBanner.loadImage(showcase.imageUrl)
             binding.root.setOnClickListener { listener.onShowcaseClick(showcase) }
@@ -43,8 +43,8 @@ class ShopHomeShowCaseAdapter(
     }
 
     inner class DiffCallback(
-        private val oldItems: List<ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase>,
-        private val newItems: List<ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase>
+        private val oldItems: List<ShopHomeShowcaseUiModel.Tab.Showcase>,
+        private val newItems: List<ShopHomeShowcaseUiModel.Tab.Showcase>
     ) : DiffUtil.Callback() {
 
         override fun getOldListSize() = oldItems.size
@@ -60,7 +60,7 @@ class ShopHomeShowCaseAdapter(
 
     }
 
-    fun submit(newShowcases: List<ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase>) {
+    fun submit(newShowcases: List<ShopHomeShowcaseUiModel.Tab.Showcase>) {
         val diffCallback = DiffCallback(this.showcases, newShowcases)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
 
