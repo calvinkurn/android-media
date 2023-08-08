@@ -58,9 +58,19 @@ open class BaseDiscoveryAnalytics(
     open fun trackClickDetailedFilter(componentName: String?) {}
     open fun trackClickApplyFilter(mapParameters: Map<String, String>) {}
     open fun trackTimerSprintSale() {}
-    open fun viewProductsList(componentsItems: ComponentsItem, isLogin: Boolean) {}
+    open fun viewProductsList(
+        componentsItems: ComponentsItem,
+        isLogin: Boolean,
+        isFulFillment: Boolean = false,
+        warehouseId: Long = 0
+    ) {}
     open fun clearProductViewIds(isRefresh: Boolean) {}
-    open fun trackProductCardClick(componentsItems: ComponentsItem, isLogin: Boolean) {}
+    open fun trackProductCardClick(
+        componentsItems: ComponentsItem,
+        isLogin: Boolean,
+        isFulFillment: Boolean = false,
+        warehouseId: Long = 0
+    ) {}
     open fun trackEventImpressionCoupon(componentsItems: ArrayList<ComponentsItem>) {}
     open fun trackClickClaimCoupon(couponName: String?, promoCode: String?) {}
     open fun trackEventClickCoupon(componentsItems: ComponentsItem, position: Int, isDouble: Boolean) {}
@@ -167,6 +177,6 @@ open class BaseDiscoveryAnalytics(
     open fun trackEventProductBundlingCarouselImpression(componentsItems: ComponentsItem, bundledProductList: List<BundleUiModel>, totalBundlings: Int, totalBundleSeenPosition: Int, lastVisibleItemPosition: Int) {}
     open fun trackContentCardImpression(componentsItems: ComponentsItem, userID: String?) {}
     open fun trackContentCardClick(componentsItems: ComponentsItem, userID: String?) {}
-    open fun trackPromoProductHighlightImpression(productHighlightData: List<DataItem>,components: ComponentsItem?) {}
+    open fun trackPromoProductHighlightImpression(productHighlightData: List<DataItem>, components: ComponentsItem?) {}
     open fun trackProductHighlightClick(productHighlightData: DataItem, productHighlightPosition: Int, components: ComponentsItem?, isLogin: Boolean) {}
 }

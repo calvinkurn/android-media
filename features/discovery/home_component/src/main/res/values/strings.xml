@@ -52,4 +52,6 @@
     <string name="content_desc_header_cta">Header CTA Button</string>
 
     <string name="content_desc_flash_sale_supergraphic">Flash sale supergraphic</string>
+
+    <string name="content_desc_special_release_cta">Header CTA Button</string>
 </resources>

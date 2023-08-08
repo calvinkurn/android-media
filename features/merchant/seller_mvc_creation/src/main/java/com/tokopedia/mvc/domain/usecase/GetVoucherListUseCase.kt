@@ -94,6 +94,10 @@ class GetVoucherListUseCase @Inject constructor(
                             promotion_status
                             promotion_label
                           }
+                          quota_subsidized{
+                            booked_global_quota
+                            confirmed_global_quota
+                          }
                         }
                       }
                     }
