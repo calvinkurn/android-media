@@ -760,6 +760,7 @@ class UniversalInboxFragment @Inject constructor(
         ActivityResultContracts.StartActivityForResult()
     ) {
         loadWidgetMetaAndCounter()
+        refreshRecommendations()
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -886,6 +887,12 @@ class UniversalInboxFragment @Inject constructor(
             }
             AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, view)
         }
+    }
+
+    private fun refreshRecommendations() {
+        endlessRecyclerViewScrollListener?.resetState()
+        adapter.removeAllProductRecommendation()
+        loadTopAdsAndRecommendation()
     }
 
     companion object {
