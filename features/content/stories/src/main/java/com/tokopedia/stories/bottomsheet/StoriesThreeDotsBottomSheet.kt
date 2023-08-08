@@ -11,8 +11,10 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
 import com.tokopedia.content.common.report_content.model.FeedMenuItem
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.stories.view.showDialog
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.stories.R as storiesR
+import com.tokopedia.content.common.R as commonR
 
 /**
  * @author by astidhiyaa on 08/08/23
@@ -37,6 +39,16 @@ class StoriesThreeDotsBottomSheet : BottomSheetUnify() {
                     )
                 }, onMenuClicked = { item ->
                     //TODO() move it to event - show
+                    dismiss()
+                    this.context.showDialog(
+                        title = getString(storiesR.string.stories_delete_story_title),
+                        description = getString(storiesR.string.stories_delete_story_description),
+                        primaryCTAText = getString(commonR.string.card_dialog_title_delete),
+                        secondaryCTAText = getString(commonR.string.card_dialog_title_cancel),
+                        primaryAction = {
+                            //TODO () hit gql
+                        }
+                    )
                 })
             }
         }

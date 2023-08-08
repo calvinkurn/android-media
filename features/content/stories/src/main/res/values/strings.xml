@@ -1,3 +1,4 @@
 <resources>
     <string name="stories_delete_story_title">Hapus Story</string>
+    <string name="stories_delete_story_description">Kamu yakin ingin menghapus story ini?</string>
 </resources>
