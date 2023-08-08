@@ -1,5 +1,6 @@
 package com.tokopedia.logisticaddaddress.common.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -30,6 +31,7 @@ class LabelAlamatChipsAdapter(private var actionListener: ActionListener) :
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun submitList(addressLabels: List<Pair<String, Boolean>>) {
         labelAlamatList.clear()
         labelAlamatList.addAll(addressLabels)
