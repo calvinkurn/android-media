@@ -80,11 +80,11 @@ class ManageAddressViewModelTest {
     private val tickerUseCase: GetTargetedTickerUseCase = mockk(relaxed = true)
 
     private var observerManageAddressState =
-        mockk<Observer<ManageAddressState<String>>>(relaxed = true)
+        mockk<Observer<ManageAddressState<SetDefaultPeopleAddressResponse>>>(relaxed = true)
     private var observerManageAddressStateAddressList =
         mockk<Observer<ManageAddressState<AddressListModel>>>(relaxed = true)
     private var observerResultRemovedAddress =
-        mockk<Observer<ManageAddressState<String>>>(relaxed = true)
+        mockk<Observer<ManageAddressState<DeletePeopleAddressData>>>(relaxed = true)
     private var observerValidateShareAddressState =
         mockk<Observer<ValidateShareAddressState>>(relaxed = true)
     private val mockThrowable = mockk<Throwable>(relaxed = true)

@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.entity.address.WarehouseDataModel
 import com.tokopedia.logisticCommon.data.mapper.AddAddressMapper
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.response.DataAddAddress
@@ -144,6 +145,7 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
         viewModelScope.launch {
             try {
                 val editAddressData = repo.editAddress(model, sourceValue)
+                saveDataModel = editAddressData.keroEditAddress.data.toSaveAddressDataModel()
                 _editAddress.value = Success(editAddressData.keroEditAddress.data)
             } catch (e: Throwable) {
                 _editAddress.value = Fail(e)
@@ -197,7 +199,7 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
         saveDataModel?.apply {
             this.receiverName = receiverName
             this.phone = phoneNo
-            this.isTokonowRequest = isTokonow
+            this.isTokonowRequest = true
             this.address1 = address1
             this.address1Notes = address1Notes
             this.addressName = addressName
@@ -314,5 +316,41 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
         if (currentLat.isNotBlank() && currentLong.isNotBlank()) {
             tempAddress2 = "$currentLat,$currentLong"
         }
+    }
+
+    fun getCollectionId(): String {
+        return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+            if (isEdit) {
+                AddressConstants.EDIT_ADDRESS_COLLECTION_ID_STAGING
+            } else {
+                AddressConstants.ADD_ADDRESS_COLLECTION_ID_STAGING
+            }
+        } else {
+            if (isEdit) {
+                AddressConstants.EDIT_ADDRESS_COLLECTION_ID_PRODUCTION
+            } else {
+                AddressConstants.ADD_ADDRESS_COLLECTION_ID_PRODUCTION
+            }
+        }
+    }
+
+    private fun KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse.toSaveAddressDataModel(): SaveAddressDataModel {
+        val addressData = this.chosenAddressData
+        val tokonowData = this.tokonow
+        val warehouses = tokonowData.warehouses.map { WarehouseDataModel(warehouseId = it.warehouseId, serviceType = it.serviceType) }
+        return SaveAddressDataModel(
+            id = addressData.addressId,
+            addressName = addressData.addressName,
+            receiverName = addressData.receiverName,
+            postalCode = addressData.postalCode,
+            cityId = addressData.cityId.toLong(),
+            districtId = addressData.districtId.toLong(),
+            latitude = addressData.latitude,
+            longitude = addressData.longitude,
+            shopId = tokonowData.shopId,
+            warehouseId = tokonowData.warehouseId,
+            serviceType = tokonowData.serviceType,
+            warehouses = warehouses
+        )
     }
 }

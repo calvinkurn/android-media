@@ -1356,6 +1356,7 @@ class AddressFormFragment :
                 Intent().apply {
                     putExtra(EXTRA_EDIT_ADDRESS, viewModel.saveDataModel?.id?.toString())
                     putExtra(EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED, isEditChosenAddress)
+                    putExtra(EXTRA_ADDRESS_NEW, viewModel.saveDataModel)
                 }
             )
             finish()
@@ -1430,21 +1431,21 @@ class AddressFormFragment :
     private fun setUserConsent() {
         binding?.userConsentWidget?.visible()
 
-        binding?.userConsentWidget?.apply {
-            setBtnSaveAddressEnable(addressUiState.isEdit())
-            setOnCheckedChangeListener { isChecked ->
-                setBtnSaveAddressEnable(isChecked)
-            }
-            setOnFailedGetCollectionListener {
-                setBtnSaveAddressEnable(true)
-            }
-        }?.load(
-            viewLifecycleOwner,
-            this,
-            ConsentCollectionParam(
-                collectionId = collectionId
+            binding?.userConsentWidget?.apply {
+                setBtnSaveAddressEnable(addressUiState.isEdit())
+                setOnCheckedChangeListener { isChecked ->
+                    setBtnSaveAddressEnable(isChecked)
+                }
+                setOnFailedGetCollectionListener {
+                    setBtnSaveAddressEnable(true)
+                }
+            }?.load(
+                viewLifecycleOwner,
+                this,
+                ConsentCollectionParam(
+                    collectionId = collectionId
+                )
             )
-        )
     }
 
     private fun setBtnSaveAddressEnable(isEnabled: Boolean) {
