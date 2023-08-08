@@ -4,8 +4,8 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.minicart.R
-import com.tokopedia.minicart.bmgm.presentation.model.BmgmSingleProductUiModel
 import com.tokopedia.minicart.databinding.ItemBmgmMiniCartSingleProductBinding
+import com.tokopedia.purchase_platform.common.feature.bmgm.uimodel.BmgmCommonDataUiModel
 
 /**
  * Created by @ilhamsuaib on 31/07/23.
@@ -13,7 +13,7 @@ import com.tokopedia.minicart.databinding.ItemBmgmMiniCartSingleProductBinding
 
 class BmgmSingleProductViewHolder(
     itemView: View
-) : AbstractViewHolder<BmgmSingleProductUiModel>(itemView) {
+) : AbstractViewHolder<BmgmCommonDataUiModel.SingleProductUiModel>(itemView) {
 
     companion object {
         val RES_LAYOUT = R.layout.item_bmgm_mini_cart_single_product
@@ -21,7 +21,7 @@ class BmgmSingleProductViewHolder(
 
     private val binding = ItemBmgmMiniCartSingleProductBinding.bind(itemView)
 
-    override fun bind(element: BmgmSingleProductUiModel) {
+    override fun bind(element: BmgmCommonDataUiModel.SingleProductUiModel) {
         binding.imgBmgmSingleProduct.loadImage(element.productImage)
     }
 }

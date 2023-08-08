@@ -7,9 +7,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.minicart.bmgm.presentation.adapter.viewholder.BmgmProductPlaceholderViewHolder
 import com.tokopedia.minicart.bmgm.presentation.adapter.viewholder.BmgmSingleProductViewHolder
 import com.tokopedia.minicart.bmgm.presentation.adapter.viewholder.BmgmBundledProductViewHolder
-import com.tokopedia.minicart.bmgm.presentation.model.BmgmBundledProductUiModel
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmProductPlaceholderUiModel
-import com.tokopedia.minicart.bmgm.presentation.model.BmgmSingleProductUiModel
+import com.tokopedia.purchase_platform.common.feature.bmgm.adapter.BmgmMiniCartAdapterFactory
+import com.tokopedia.purchase_platform.common.feature.bmgm.uimodel.BmgmCommonDataUiModel
 
 /**
  * Created by @ilhamsuaib on 31/07/23.
@@ -17,15 +17,15 @@ import com.tokopedia.minicart.bmgm.presentation.model.BmgmSingleProductUiModel
 
 class BmgmMiniCartAdapterFactoryImpl : BaseAdapterTypeFactory(), BmgmMiniCartAdapterFactory {
 
-    override fun type(model: BmgmSingleProductUiModel): Int {
+    override fun type(model: BmgmCommonDataUiModel.SingleProductUiModel): Int {
         return BmgmSingleProductViewHolder.RES_LAYOUT
     }
 
-    override fun type(model: BmgmBundledProductUiModel): Int {
+    override fun type(model: BmgmCommonDataUiModel.BundledProductUiModel): Int {
         return BmgmBundledProductViewHolder.RES_LAYOUT
     }
 
-    override fun type(model: BmgmProductPlaceholderUiModel): Int {
+    override fun type(model: Visitable<*>): Int {
         return BmgmProductPlaceholderViewHolder.RES_LAYOUT
     }
 

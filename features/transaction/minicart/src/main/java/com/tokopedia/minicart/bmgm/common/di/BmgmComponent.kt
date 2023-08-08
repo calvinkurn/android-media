@@ -9,7 +9,10 @@ import dagger.Component
  */
 
 @BmgmMiniCartScope
-@Component(modules = [BmgmViewModelModule::class], dependencies = [BaseAppComponent::class])
+@Component(
+    modules = [BmgmViewModelModule::class, BmgmModule::class],
+    dependencies = [BaseAppComponent::class]
+)
 interface BmgmComponent {
 
     fun inject(fragment: BmgmMiniCartFragment)
