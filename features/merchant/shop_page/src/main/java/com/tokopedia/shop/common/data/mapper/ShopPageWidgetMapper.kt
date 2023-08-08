@@ -10,6 +10,7 @@ import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.data.model.ShopPageWidgetRequestModel
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
+import com.tokopedia.shop.home.view.model.ShopHomeShowcaseUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
@@ -163,6 +164,52 @@ object ShopPageWidgetMapper {
         return PlayWidgetUseCase.WidgetType.ShopPageExclusiveLaunch(
             shopId = shopId,
             campaignId = campaignId
+        )
+    }
+
+    fun mapToHomeShowcaseWidget(response: ShopLayoutWidget.Widget): ShopHomeShowcaseUiModel {
+        val widgetStyle = if (response.header.widgetStyle == "rounded-corner") {
+            ShopHomeShowcaseUiModel.WidgetStyle.ROUNDED_CORNER
+        } else {
+            ShopHomeShowcaseUiModel.WidgetStyle.CIRCLE
+        }
+
+        val tabs = response.data.map { tab ->
+            val showcases = tab.showcaseList.map { showcase ->
+                ShopHomeShowcaseUiModel.Tab.Showcase(
+                    showcase.showcaseID,
+                    showcase.name,
+                    showcase.imageURL,
+                    showcase.ctaLink,
+                    showcase.isMainBanner
+                )
+            }
+
+            val mainBannerPosition = if (tab.mainBannerPosition == "top") {
+                ShopHomeShowcaseUiModel.MainBannerPosition.TOP
+            } else {
+                ShopHomeShowcaseUiModel.MainBannerPosition.LEFT
+            }
+
+            ShopHomeShowcaseUiModel.Tab(
+                text = tab.text,
+                imageUrl = tab.imageURL,
+                mainBannerPosition = mainBannerPosition,
+                showcases = showcases
+            )
+        }
+
+        return ShopHomeShowcaseUiModel(
+            showcaseHeader = ShopHomeShowcaseUiModel.ShowcaseHeader(
+                title = response.header.title,
+                ctaLink = response.header.ctaLink,
+                widgetStyle = widgetStyle
+            ),
+            tabs = tabs,
+            widgetId = response.widgetID,
+            layoutOrder = response.layoutOrder,
+            name = response.name,
+            type = response.type
         )
     }
     private fun Int?.mapToStatusCampaign(): StatusCampaign {

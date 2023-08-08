@@ -60,7 +60,9 @@ data class ShopLayoutWidget(
             @SerializedName("etalaseID")
             val etalaseId: String = "",
             @SerializedName("isShowEtalaseName")
-            val isShowEtalaseName: Int = 1
+            val isShowEtalaseName: Int = 1,
+            @SerializedName("widgetStyle")
+            val widgetStyle: String = ""
         )
 
         data class Data(
@@ -74,6 +76,12 @@ data class ShopLayoutWidget(
                 val bundleProducts: List<BundleProduct> = listOf(),
                 @SerializedName("imageUrl")
                 val imageUrl: String = "",
+                @SerializedName("imageURL")
+                val imageURL: String = "",
+                @SerializedName("mainBannerPosition")
+                val mainBannerPosition: String = "",
+                @SerializedName("showcaseList")
+                val showcaseList: List<ShowcaseList> = emptyList(),
                 @SerializedName("appLink")
                 val appLink: String = "",
                 @SerializedName("webLink")
@@ -165,8 +173,22 @@ data class ShopLayoutWidget(
                 val linkType: String = "",
                 @SerializedName("timeInfo")
                 val timeInfo: TimeInfo = TimeInfo(),
+                @SerializedName("text")
+                val text: String = ""
 
         ) {
+            data class ShowcaseList(
+                @SerializedName("showcaseID")
+                val showcaseID: String = "",
+                @SerializedName("name")
+                val name: String = "",
+                @SerializedName("imageURL")
+                val imageURL: String = "",
+                @SerializedName("ctaLink")
+                val ctaLink: String = "",
+                @SerializedName("isMainBanner")
+                val isMainBanner: Boolean = false
+            )
             data class ProductBundleDetailsItem(
                 @SerializedName("bundleID")
                 val bundleId: String = "0",
