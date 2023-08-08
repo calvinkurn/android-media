@@ -7,6 +7,7 @@ import android.graphics.Canvas
 import android.graphics.Matrix
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -133,7 +134,7 @@ class DetailEditorFragment @Inject constructor(
     private var removeBackgroundType = 0
 
     private var isEdited = false
-    private var initialImageMatrix: Matrix? = null
+    private var initialImageMatrix: FloatArray? = null
 
     private var initialRotateNumber = 0
 
@@ -397,7 +398,6 @@ class DetailEditorFragment @Inject constructor(
         viewBinding?.imgUcropPreview?.let {
             it.post {
                 readPreviousState()
-                initialImageMatrix = Matrix(it.cropImageView.imageMatrix)
             }
 
             // waiting for crop & rotate state implementation process for AddLogo overlay size
@@ -408,6 +408,10 @@ class DetailEditorFragment @Inject constructor(
                         it.overlayView.cropViewRect.height()
                     )
                 )
+
+                Handler().postDelayed(getRunnable{
+                    initialImageMatrix = it.cropImageView.imageMatrix.values()
+                }, INITIAL_MATRIX_DELAY)
             }, DELAY_CROP_ROTATE_PROCESS)
         }
     }
@@ -980,7 +984,7 @@ class DetailEditorFragment @Inject constructor(
         viewBinding?.btnSave?.setOnClickListener {
             if (data.isToolCrop()) {
                 // check if user move crop area via image matrix translation, works for crop
-                initialImageMatrix?.values()?.let { initialMatrixValue ->
+                initialImageMatrix?.let { initialMatrixValue ->
                     val currentMatrix =
                         viewBinding?.imgUcropPreview?.cropImageView?.imageMatrix?.values()
                     currentMatrix?.let {
@@ -1605,5 +1609,6 @@ class DetailEditorFragment @Inject constructor(
         private const val ORIENTATION_ROTATED = 1
 
         private const val UCROP_MATRIX_TOLERANCE_VALUE = 0.001f
+        private const val INITIAL_MATRIX_DELAY = 400L
     }
 }
