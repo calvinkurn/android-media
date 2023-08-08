@@ -1,5 +1,7 @@
 package com.tokopedia.inbox.universalinbox.stub.data.response
 
+import com.gojek.conversations.utils.ConversationsConstants.Companion.CHANNEL_REQUEST_DEFAULT_BATCH_SIZE
+
 object ApiResponseStub {
 
     private const val GENERAL_RESPONSE_CODE = 200
@@ -53,8 +55,5 @@ object ApiResponseStub {
     /**
      * Chat List
      */
-    const val CHANNEL_LIST = "v2/chat/channels?batch_size=10&timestamp="
-
-    // Values
-    const val MESSAGES = "messages"
+    const val CHANNEL_LIST = "v2/chat/channels?batch_size=$CHANNEL_REQUEST_DEFAULT_BATCH_SIZE&timestamp="
 }

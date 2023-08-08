@@ -18,6 +18,7 @@ import dagger.Component
         UniversalInboxModuleStub::class,
         UniversalInboxTokoChatNetworkModuleStub::class,
         UniversalInboxTokoChatCourierConversationModule::class,
+        UniversalInboxUseCaseModuleStub::class,
 
         // Real modules
         UniversalInboxUseCaseModule::class,

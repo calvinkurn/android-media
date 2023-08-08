@@ -9,6 +9,7 @@ import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertAppli
 import com.tokopedia.inbox.universalinbox.test.robot.menuRobot
 import com.tokopedia.inbox.universalinbox.test.robot.recommendation.RecommendationResult.assertApplinkPDP
 import com.tokopedia.inbox.universalinbox.test.robot.recommendationRobot
+import com.tokopedia.inbox.universalinbox.test.robot.widget.WidgetResult.assertApplinkChatListDriver
 import com.tokopedia.inbox.universalinbox.test.robot.widget.WidgetResult.assertApplinkHelp
 import com.tokopedia.inbox.universalinbox.test.robot.widgetRobot
 import com.tokopedia.test.application.annotations.UiTest
@@ -96,5 +97,18 @@ class UniversalInboxApplinkTest : BaseUniversalInboxTest() {
 
         // Then
         assertApplinkPDP()
+    }
+
+    @Test
+    fun should_open_chat_list_driver() {
+        // When
+        launchActivity()
+        stubAllIntents()
+        widgetRobot {
+            clickWidgetOnPosition(0)
+        }
+
+        // Then
+        assertApplinkChatListDriver()
     }
 }

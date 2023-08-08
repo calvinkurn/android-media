@@ -202,7 +202,7 @@ class UniversalInboxFragment @Inject constructor(
                     adapter.notifyItemRangeChanged(Int.ZERO, it.size - Int.ONE)
                 }
             }
-            loadWidgetMetaAndCounter(isFirstLoad = true)
+            loadWidgetMetaAndCounter()
             loadTopAdsAndRecommendation()
         }
 
@@ -397,6 +397,11 @@ class UniversalInboxFragment @Inject constructor(
                 it.isError = true
             }
         }
+        UniversalInboxErrorLogger.logExceptionToServerLogger(
+            throwable,
+            userSession.deviceId.orEmpty(),
+            ::onErrorGetDriverChat.name
+        )
     }
 
     private fun onSuccessGetFirstRecommendationData(
@@ -500,11 +505,9 @@ class UniversalInboxFragment @Inject constructor(
         viewModel.generateStaticMenu()
     }
 
-    override fun loadWidgetMetaAndCounter(isFirstLoad: Boolean) {
+    override fun loadWidgetMetaAndCounter() {
         viewModel.loadWidgetMetaAndCounter {
-            if (isFirstLoad) {
-                observeDriverCounter()
-            }
+            observeDriverCounter()
         }
     }
 
@@ -577,15 +580,16 @@ class UniversalInboxFragment @Inject constructor(
     }
 
     override fun onRefreshWidgetMeta() {
-        loadWidgetMetaAndCounter(false)
+        loadWidgetMetaAndCounter()
     }
 
     override fun onRefreshWidgetCard(item: UniversalInboxWidgetUiModel) {
         when (item.type) {
             CHATBOT_TYPE -> {
-                loadWidgetMetaAndCounter(false)
+                loadWidgetMetaAndCounter()
             }
             GOJEK_TYPE -> {
+                viewModel.setAllDriverChannels()
                 observeDriverCounter()
             }
         }

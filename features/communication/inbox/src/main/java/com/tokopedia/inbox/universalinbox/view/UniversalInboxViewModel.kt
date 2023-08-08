@@ -123,7 +123,7 @@ class UniversalInboxViewModel @Inject constructor(
         driverChatCounter = null
     }
 
-    private fun setAllDriverChannels() {
+    fun setAllDriverChannels() {
         try {
             if (_allChannelsLiveData == null) {
                 _allChannelsLiveData = getDriverChatCounterUseCase.getAllChannels()
@@ -135,6 +135,7 @@ class UniversalInboxViewModel @Inject constructor(
             }
         } catch (throwable: Throwable) {
             _error.value = Pair(throwable, ::setAllDriverChannels.name)
+            driverChatCounter = MutableLiveData(Fail(throwable))
         }
     }
 
