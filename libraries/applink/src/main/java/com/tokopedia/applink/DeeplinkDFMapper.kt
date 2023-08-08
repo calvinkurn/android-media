@@ -8,6 +8,7 @@ import com.tokopedia.applink.ApplinkConst.ADD_FINGERPRINT_ONBOARDING
 import com.tokopedia.applink.ApplinkConst.BRAND_LIST
 import com.tokopedia.applink.ApplinkConst.BRAND_LIST_WITH_SLASH
 import com.tokopedia.applink.ApplinkConst.BUYER_ORDER_EXTENSION
+import com.tokopedia.applink.ApplinkConst.BUY_MORE_GET_MORE_OLP
 import com.tokopedia.applink.ApplinkConst.CHANGE_INACTIVE_PHONE
 import com.tokopedia.applink.ApplinkConst.CONTACT_US
 import com.tokopedia.applink.ApplinkConst.CONTACT_US_NATIVE
@@ -144,6 +145,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.USER_NOTIF
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.BRANDLIST
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.BRANDLIST_SEARCH
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_ADDON
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_GIFTING
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_PRODUCT_BUNDLE
@@ -419,6 +421,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(OPEN_SHOP) }, DF_MERCHANT_LOGIN, R.string.title_open_shop))
             add(DFP({ it.startsWithPattern(MERCHANT_PRODUCT_BUNDLE) }, DF_MERCHANT_NONLOGIN, R.string.title_bundling_selection_page ))
             add(DFP({ it.startsWithPattern(MERCHANT_GIFTING) }, DF_MERCHANT_NONLOGIN, R.string.title_gifting_bottomsheet ))
+            add(DFP({ it.startsWithPattern(MERCHANT_ADDON) }, DF_MERCHANT_NONLOGIN, R.string.title_addon_bottomsheet ))
 
             add(DFP({ it.startsWith(FAVORITE) }, DF_MERCHANT_LOGIN, R.string.favorite_shop, { DFWebviewFallbackUrl.FAVORITE_SHOP }))
             add(DFP({ it.startsWithPattern(REPORT_PRODUCT) }, DF_MERCHANT_LOGIN, R.string.applink_report_title, ::getDefaultFallbackUrl))
@@ -430,6 +433,7 @@ object DeeplinkDFMapper : CoroutineScope {
                     ApplinkConstInternalMechant.SHOP_NIB_CUSTOMER_APP
                 )
             }, DF_BASE, R.string.title_seller_shop_nib))
+            add(DFP({ it.startsWith(BUY_MORE_GET_MORE_OLP) }, DF_BASE, R.string.title_buy_more_get_more))
 
             add(DFP({ it.startsWith(INTERNAL_SELLER) }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.SELLER_ORDER }))
             add(DFP({

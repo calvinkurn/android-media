@@ -32,8 +32,9 @@ object ApplinkConstInternalMechant {
     const val MERCHANT_PRODUCT_DRAFT = "$INTERNAL_MERCHANT/product-draft"
 
     // Product Service Widget
-    const val MERCHANT_PRODUCT_BUNDLE = "$INTERNAL_MERCHANT/product-bundle/{product_id}/"
-    const val MERCHANT_GIFTING = "$INTERNAL_MERCHANT/gifting/{addon_id}/"
+    const val MERCHANT_PRODUCT_BUNDLE = "${INTERNAL_MERCHANT}/product-bundle/{product_id}/"
+    const val MERCHANT_GIFTING = "${INTERNAL_MERCHANT}/gifting/{addon_id}/"
+    const val MERCHANT_ADDON = "${INTERNAL_MERCHANT}/addon/{addon_id}/"
 
     // Official Store Brandlist
     const val BRANDLIST = "$INTERNAL_MERCHANT/official-store/brand/{category_id}/"
@@ -51,4 +52,6 @@ object ApplinkConstInternalMechant {
     const val MERCHANT_STATISTIC_DASHBOARD = "$INTERNAL_MERCHANT/statistic_dashboard"
 
     const val SHOP_NIB_CUSTOMER_APP = "$INTERNAL_MERCHANT/shop-nib"
+
+    const val BUY_MORE_GET_MORE_OLP = "$INTERNAL_MERCHANT/buy-more-get-more/{shop_id}/olp"
 }
