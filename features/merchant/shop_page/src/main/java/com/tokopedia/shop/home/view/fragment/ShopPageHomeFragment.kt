@@ -1273,7 +1273,7 @@ open class ShopPageHomeFragment :
                                     ShopHomeShowcaseUiModel.ShopHomeShowCaseTab(
                                         text = "Handphone",
                                         imageUrl = "",
-                                        mainBannerPosition = ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.LEFT,
+                                        mainBannerPosition = ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.CAROUSEL,
                                         showcases = listOf(
                                             ShopHomeShowcaseUiModel.ShopHomeShowCaseTab.ShopHomeShowcase(
                                                 id = "121",

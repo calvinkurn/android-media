@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.shop.common.util.ShopProductViewGridType
@@ -231,11 +232,16 @@ open class ShopHomeAdapterTypeFactory(
     private fun determineShowcaseNavigationBannerWidget(model: BaseShopHomeWidgetUiModel): Int {
         val uiModel = model as? ShopHomeShowcaseUiModel
 
-        val firstShowcase = uiModel?.tabs?.getOrNull(0)
-        val showcaseMainBannerPosition = firstShowcase?.mainBannerPosition
+        val tabsCount = uiModel?.tabs?.size.orZero()
+        if (tabsCount > 1) {
+            return ShopHomeShowCaseLeftMainBannerViewHolder.LAYOUT
+        }
+
+        val firstTab = uiModel?.tabs?.getOrNull(0)
+        val firstTabMainBannerPosition = firstTab?.mainBannerPosition
             ?: ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.CAROUSEL
 
-        return when (showcaseMainBannerPosition) {
+        return when (firstTabMainBannerPosition) {
             ShopHomeShowcaseUiModel.ShopHomeShowcaseMainBannerPosition.LEFT -> {
                 ShopHomeShowCaseLeftMainBannerViewHolder.LAYOUT
             }
