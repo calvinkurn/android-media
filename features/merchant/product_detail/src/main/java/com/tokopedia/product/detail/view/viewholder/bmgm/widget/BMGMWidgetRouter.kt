@@ -5,7 +5,7 @@ package com.tokopedia.product.detail.view.viewholder.bmgm.widget
  * Project name: android-tokopedia-core
  **/
 
-interface BMGMRouter {
+interface BMGMWidgetRouter {
 
     fun goToAppLink(url: String)
 

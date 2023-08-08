@@ -3,28 +3,28 @@ package com.tokopedia.product.detail.view.viewholder.bmgm.adapter
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMUiModel
+import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMWidgetUiModel
 
 /**
  * Created by yovi.putra on 27/07/23"
  * Project name: android-tokopedia-core
  **/
 
-class BMGMProductItemAdapter : ListAdapter<BMGMUiModel.Product, BMGMProductItemViewHolder>(
+class BMGMProductItemAdapter : ListAdapter<BMGMWidgetUiModel.Product, BMGMProductItemViewHolder>(
     DIFF_ITEMS
 ) {
 
     companion object {
-        private val DIFF_ITEMS = object : DiffUtil.ItemCallback<BMGMUiModel.Product>() {
+        private val DIFF_ITEMS = object : DiffUtil.ItemCallback<BMGMWidgetUiModel.Product>() {
             override fun areItemsTheSame(
-                oldItem: BMGMUiModel.Product,
-                newItem: BMGMUiModel.Product
+                oldItem: BMGMWidgetUiModel.Product,
+                newItem: BMGMWidgetUiModel.Product
             ): Boolean = oldItem.loadMoreText == newItem.loadMoreText &&
                 oldItem.imageUrl == newItem.imageUrl
 
             override fun areContentsTheSame(
-                oldItem: BMGMUiModel.Product,
-                newItem: BMGMUiModel.Product
+                oldItem: BMGMWidgetUiModel.Product,
+                newItem: BMGMWidgetUiModel.Product
             ): Boolean = oldItem == newItem
         }
     }
@@ -45,7 +45,7 @@ class BMGMProductItemAdapter : ListAdapter<BMGMUiModel.Product, BMGMProductItemV
         }
     }
 
-    fun submit(products: List<BMGMUiModel.Product>, onClick: () -> Unit) {
+    fun submit(products: List<BMGMWidgetUiModel.Product>, onClick: () -> Unit) {
         this.onClick = onClick
         submitList(products)
     }

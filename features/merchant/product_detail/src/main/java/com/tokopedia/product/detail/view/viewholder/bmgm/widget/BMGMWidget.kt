@@ -17,8 +17,8 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.databinding.BmgmProductListBinding
 import com.tokopedia.product.detail.databinding.BmgmWidgetBinding
 import com.tokopedia.product.detail.view.viewholder.bmgm.adapter.BMGMProductItemAdapter
-import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMUiModel
-import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMUiState
+import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMWidgetUiModel
+import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMWidgetUiState
 import com.tokopedia.unifyprinciples.stringToUnifyColor
 
 /**
@@ -64,17 +64,17 @@ class BMGMWidget @JvmOverloads constructor(
     // endregion
 
     // region expose function
-    fun setData(uiState: BMGMUiState, router: BMGMRouter) {
+    fun setData(uiState: BMGMWidgetUiState, router: BMGMWidgetRouter) {
         when (uiState) {
-            is BMGMUiState.Loading -> {
+            is BMGMWidgetUiState.Loading -> {
                 // no - ops
             }
 
-            is BMGMUiState.Hide -> {
+            is BMGMWidgetUiState.Hide -> {
                 hideContent()
             }
 
-            is BMGMUiState.Show -> {
+            is BMGMWidgetUiState.Show -> {
                 showContent(uiModel = uiState.uiModel, router = router)
             }
         }
@@ -90,7 +90,7 @@ class BMGMWidget @JvmOverloads constructor(
     // endregion
 
     // region show content
-    private fun showContent(uiModel: BMGMUiModel, router: BMGMRouter) {
+    private fun showContent(uiModel: BMGMWidgetUiModel, router: BMGMWidgetRouter) {
         binding.root.setLayoutHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
 
         binding.bmgmImageLeft.loadImage(url = uiModel.iconUrl)
@@ -112,7 +112,7 @@ class BMGMWidget @JvmOverloads constructor(
     // endregion
 
     // region set product list
-    private fun setProductList(uiModel: BMGMUiModel, router: BMGMRouter) {
+    private fun setProductList(uiModel: BMGMWidgetUiModel, router: BMGMWidgetRouter) {
         if (uiModel.products.isNotEmpty()) {
             productListBinding.root.show()
 
@@ -143,19 +143,19 @@ class BMGMWidget @JvmOverloads constructor(
     // endregion
 
     // region event
-    private fun setEvent(action: BMGMUiModel.Action, router: BMGMRouter) {
+    private fun setEvent(action: BMGMWidgetUiModel.Action, router: BMGMWidgetRouter) {
         binding.bmgmComponent.setOnClickListener {
             setRouting(action = action, router = router)
         }
     }
 
     private fun setRouting(
-        action: BMGMUiModel.Action,
-        router: BMGMRouter
+        action: BMGMWidgetUiModel.Action,
+        router: BMGMWidgetRouter
     ) {
         when (action.type) {
-            BMGMUiModel.Action.APPLINK -> router.goToAppLink(action.link)
-            BMGMUiModel.Action.WEBVIEW -> router.goToWebView(action.link)
+            BMGMWidgetUiModel.Action.APPLINK -> router.goToAppLink(action.link)
+            BMGMWidgetUiModel.Action.WEBVIEW -> router.goToWebView(action.link)
         }
     }
     // endregion

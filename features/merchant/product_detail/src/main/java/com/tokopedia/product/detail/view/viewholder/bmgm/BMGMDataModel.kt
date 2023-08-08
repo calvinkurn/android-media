@@ -1,8 +1,9 @@
-package com.tokopedia.product.detail.data.model.datamodel
+package com.tokopedia.product.detail.view.viewholder.bmgm
 
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMUiState
+import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
+import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMWidgetUiState
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
 /**
@@ -10,10 +11,10 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
  * Project name: android-tokopedia-core
  **/
 
-data class ProductBMGMDataModel(
+data class BMGMDataModel(
     val type: String = "",
     val name: String = "",
-    var state: BMGMUiState = BMGMUiState.Loading
+    var state: BMGMWidgetUiState = BMGMWidgetUiState.Loading
 ): DynamicPdpDataModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()
@@ -27,7 +28,7 @@ data class ProductBMGMDataModel(
     }
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
-        return newData is ProductBMGMDataModel && state == newData.state
+        return newData is BMGMDataModel && state == newData.state
     }
 
     override fun newInstance(): DynamicPdpDataModel = copy()

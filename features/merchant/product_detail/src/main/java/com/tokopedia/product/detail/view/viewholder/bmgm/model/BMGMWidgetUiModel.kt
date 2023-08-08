@@ -5,7 +5,7 @@ package com.tokopedia.product.detail.view.viewholder.bmgm.model
  * Project name: android-tokopedia-core
  **/
 
-data class BMGMUiModel(
+data class BMGMWidgetUiModel(
     val title: String = "",
     val iconUrl: String = "",
     val products: List<Product> = emptyList(),

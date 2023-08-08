@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.databinding.BmgmProductItemBinding
 import com.tokopedia.product.detail.databinding.BmgmProductShowMoreViewBinding
-import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMUiModel
+import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMWidgetUiModel
 
 /**
  * Created by yovi.putra on 27/07/23"
@@ -25,7 +25,7 @@ class BMGMProductItemViewHolder(
         BmgmProductShowMoreViewBinding.bind(view)
     }
 
-    fun bind(product: BMGMUiModel.Product) {
+    fun bind(product: BMGMWidgetUiModel.Product) {
         binding.bmgmProductImage.loadImage(product.imageUrl)
 
         if (product.loadMoreText.isNotBlank()) {
