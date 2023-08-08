@@ -9,6 +9,8 @@ import android.os.Looper
 import android.util.Pair
 import android.view.Surface
 import android.view.SurfaceHolder
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.ktx.Firebase
 import com.tokopedia.broadcaster.revamp.state.BroadcastInitState
 import com.tokopedia.broadcaster.revamp.state.BroadcastState
 import com.tokopedia.broadcaster.revamp.util.BroadcasterUtil
@@ -323,27 +325,32 @@ class BroadcastManager @Inject constructor(
                 })
 
                 effectManager.getHandler()?.post {
-                    mEglCore = EglCore(null, EglCore.FLAG_RECORDABLE)
-                    mDisplaySurface = WindowSurface(mEglCore, holder.surface, false)
-                    mDisplaySurface?.makeCurrent()
-                    mStreamerWrapper?.pusherStreamer = createCodecStreamer(
-                        context,
-                        audioConfig,
-                        videoConfig
-                    )?.apply {
-                        startVideoCapture()
-                        startAudioCapture(mAudioCallback)
+                    try {
+                        initializeSurfaceWithByteplusSDK(context, holder, audioConfig, videoConfig)
+                    } catch (e: Throwable) {
+                        Firebase.crashlytics.recordException(e)
                     }
-
-                    mCodecSurface = WindowSurface(mEglCore, mStreamerWrapper?.pusherStreamer?.encoderSurface, false)
                 }
             }
-            catch (_: ExceptionInInitializerError) {
+            catch (e: ExceptionInInitializerError) {
+                Firebase.crashlytics.recordException(e)
+
                 broadcastInitStateChanged(
                     BroadcastInitState.ByteplusInitializationError(
                         BroadcasterException(BroadcasterErrorType.ServiceUnrecoverable)
                     )
                 )
+                return
+            }
+            catch (throwable: Throwable) {
+                Firebase.crashlytics.recordException(throwable)
+
+                broadcastInitStateChanged(
+                    BroadcastInitState.ByteplusInitializationError(
+                        BroadcasterException(BroadcasterErrorType.ServiceUnrecoverable)
+                    )
+                )
+                return
             }
         }
 
@@ -382,6 +389,27 @@ class BroadcastManager @Inject constructor(
         )
 
         broadcastInitStateChanged(BroadcastInitState.Initialized)
+    }
+
+    private fun initializeSurfaceWithByteplusSDK(
+        context: Context,
+        holder: SurfaceHolder,
+        audioConfig: AudioConfig,
+        videoConfig: VideoConfig,
+    ) {
+        mEglCore = EglCore(null, EglCore.FLAG_RECORDABLE)
+        mDisplaySurface = WindowSurface(mEglCore, holder.surface, false)
+        mDisplaySurface?.makeCurrent()
+        mStreamerWrapper?.pusherStreamer = createCodecStreamer(
+            context,
+            audioConfig,
+            videoConfig
+        )?.apply {
+            startVideoCapture()
+            startAudioCapture(mAudioCallback)
+        }
+
+        mCodecSurface = WindowSurface(mEglCore, mStreamerWrapper?.pusherStreamer?.encoderSurface, false)
     }
 
     private fun createCodecStreamer(

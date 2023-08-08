@@ -5,7 +5,7 @@
 
     <string name="swd_title_action_withdraw">Tarik Saldo</string>
     <string name="swd_rp">Rp%s</string>
-    <string name="swd_choose_bank_account">Rekening Tujuan</string>
+    <string name="swd_choose_bank_account">Mau tarik saldo ke mana?</string>
     <string name="swd_has_no_bank">Anda belum memiliki rekening bank yang terdaftar di Tokopedia</string>
     <string name="swd_title_add_account_bank">Tambah Rekening</string>
     <string name="swd_title_set_account_bank">Atur Rekening</string>
@@ -27,9 +27,11 @@
 
     <string name="swd_tnc_full_text">Dengan klik tombol di bawah, kamu telah setuju dengan</string>
 
-    <string name="swd_tnc_clickable_text">ketentuan penarikan saldo.</string>
+    <string name="swd_tnc_clickable_text">Syarat &amp; Ketentuan</string>
+    <string name="swd_tnc_end">penarikan Saldo Tokopedia.</string>
     <string name="swd_tnc_title">Ketentuan penarikan saldo</string>
-    <string name="swd_saldo_exceeding_withdraw_balance">Nominal melebihi saldo milikmu</string>
+    <string name="swd_saldo_exceeding_withdraw_balance">Oops, jumlahnya lebih dari saldo kamu saat ini.</string>
+    <string name="swd_saldo_exceeding_withdraw_balance_gopay">Oops, ini lebih dari maksimal tarik ke GoPay kamu.</string>
     <string name="swd_continue_pull">Lanjut Tarik</string>
     <string name="swd_back">Kembali</string>
     <string name="swd_max_saldo_withdraw_hint">Maks. penarikan saldo %s</string>
@@ -41,7 +43,7 @@
     <string name="swd_back_to_saldo_detail">Balik</string>
     <string name="swd_backto_shop">Belanja di Tokopedia</string>
     <string name="swd_ttl_total">Total Penarikan</string>
-    <string name="swd_destination_account">Rekening Tujuan</string>
+    <string name="swd_destination_account">Tujuan Penarikan</string>
     <string name="swd_ttl_withdraw_dtl">Detail penarikan</string>
     <string name="swd_withdrawal_being_processed_title">Penarikanmu sedang diproses</string>
     <string name="swd_contact_tokopedia_care">Hubungi Tim Tokopedia Care</string>
@@ -59,7 +61,7 @@
     <string name="swd_refund_empty_msg">Kamu tidak punya Saldo Refund untuk ditarik</string>
     <string name="swd_admin_fee_msg">Dikenai biaya admin %s</string>
     <string name="swd_penghasilan_empty_msg">Kamu tidak punya Saldo Penghasilan untuk ditarik</string>
-    <string name="swd_account_number_name">"%1$s • %2$s"</string>
+    <string name="swd_account_number_name">"%1$s - %2$s"</string>
     <string name="swd_special_offer">Penawaran Khusus</string>
     <string name="swd_join_premium_account_icon_title">Gabung ke rekening premium</string>
     <string name="swd_join_premium_account_icon_description">Temukan akun bank bertanda ini untuk tarik saldo sekaligus gabung ke rekening premium. Eksklusif untuk Power Merchant.</string>
@@ -113,4 +115,17 @@
     <string name="swd_deactivate">Nonaktifkan</string>
     <string name="swd_awd_no_saved_account">Belum ada rekening tersimpan.</string>
     <string name="swd_awd_pilih">Pilih</string>
+    <string name="swd_baru">BARU</string>
+
+    <string name="swd_ticker_rp_info">Sebagai pengguna Rekening Premium, kamu cuma bisa tarik saldo ke rekening ini.</string>
+    <string name="swd_coachmark_gopay_wd_title">Sekarang bisa tarik saldo ke Gopay!</string>
+    <string name="swd_coachmark_gopay_wd_description">Tinggal satu klik, kamu bisa tarik Saldo Tokopedia langsung ke saldo GoPay.</string>
+    <string name="swd_coachmark_gopay_wd_upgrade_description">Cukup upgrade akun ke GoPay Plus untuk bisa tarik Saldo Tokopedia ke saldo GoPay kamu.</string>
+    <string name="swd_coachmark_gopay_wd_activate_description">Cukup aktifkan dan upgrade ke GoPay Plus untuk bisa tarik Saldo Tokopedia ke saldo GoPay kamu.</string>
+
+    <string name="swd_dialog_gopay_redirection_cta">Buka Aplikasi</string>
+    <string name="swd_dialog_gopay_redirection_upgrade_title">Upgrade di aplikasi Tokopedia, ya!</string>
+    <string name="swd_dialog_gopay_redirection_upgrade_description">Untuk sekarang, kamu hanya bisa upgrade ke GoPay Plus lewat aplikasi Tokopedia.</string>
+    <string name="swd_dialog_gopay_redirection_activate_title">Daftarnya lewat aplikasi, ya</string>
+    <string name="swd_dialog_gopay_redirection_activate_description">Untuk sekarang, kamu hanya bisa aktifkan GoPay lewat aplikasi Tokopedia.</string>
 </resources>

@@ -25,6 +25,7 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.DynamicOneLinerDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaContainerType
@@ -405,6 +406,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     idToPriceUrlMap = productIdToPriceURLMap
                     isLoggedIn = loggedIn
                     shopId = productDetail.basic.shopID
+                    parentId = variantData?.parentId ?: productId
                 }
             }
         }
@@ -490,10 +492,13 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
             updateData(ProductDetailConstant.MVC) {
                 mvcSummaryData?.run {
-                    animatedInfos = it.merchantVoucherSummary.animatedInfos
-                    isShown = it.merchantVoucherSummary.isShown
-                    shopId = it.shopInfo.shopCore.shopID
-                    productIdMVC = productId
+                    uiModel = uiModel.copy(
+                        animatedInfo = it.merchantVoucherSummary.animatedInfos,
+                        isShown = it.merchantVoucherSummary.isShown,
+                        shopId = it.shopInfo.shopCore.shopID,
+                        productIdMVC = productId,
+                        additionalData = it.merchantVoucherSummary.additionalData
+                    )
                 }
             }
 
@@ -572,6 +577,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             updateData(ProductDetailConstant.SHOP_REVIEW) {
                 updateReviewList(it)
             }
+            updateDynamicOneLiner(it)
         }
     }
 
@@ -1227,6 +1233,23 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                         metadata = globalRecomWidgetMetadata,
                         trackingModel = globalRecomWidgetTrackingModel
                     )
+                )
+            }
+        }
+    }
+
+    private fun updateDynamicOneLiner(p2: ProductInfoP2UiData) {
+        val dynamicOneLiner = p2.dynamicOneLiner
+        dynamicOneLiner.forEach { item ->
+            val dataModel = mapOfData[item.name] as? DynamicOneLinerDataModel ?: return@forEach
+            mapOfData[item.name] = (dataModel.newInstance() as DynamicOneLinerDataModel).apply {
+                data = DynamicOneLinerDataModel.Data(
+                    text = item.text,
+                    applink = item.applink,
+                    separator = item.separator,
+                    icon = item.icon,
+                    status = item.status,
+                    chevronPos = item.chevronPos
                 )
             }
         }

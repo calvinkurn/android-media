@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
@@ -22,6 +23,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.common.util.reduceDragSensitivity
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.analytics.FeedAnalytics
@@ -291,6 +293,7 @@ class FeedBaseFragment :
         }
         isJustLoggedIn = false
 
+        binding.vpFeedTabItemsContainer.reduceDragSensitivity(3)
         binding.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
                 OnPageChangeCallback() {
 
@@ -349,6 +352,8 @@ class FeedBaseFragment :
 
         feedMainViewModel.updateUserInfo()
         feedMainViewModel.fetchFeedMetaData()
+
+        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     private fun onPauseInternal() {
@@ -358,6 +363,8 @@ class FeedBaseFragment :
         mOnboarding = null
 
         Toaster.toasterCustomBottomHeight = 0
+
+        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     private fun observeFeedTabData() {
@@ -716,6 +723,7 @@ class FeedBaseFragment :
 
         const val TAB_TYPE_FOR_YOU = "foryou"
         const val TAB_TYPE_FOLLOWING = "following"
+        const val CDP = "cdp"
 
         private const val EXTRAS_UTM_MEDIUM = "utm_medium"
         private const val PARAM_PUSH_NOTIFICATION = "push"
