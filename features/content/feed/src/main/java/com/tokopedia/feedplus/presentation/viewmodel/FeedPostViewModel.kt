@@ -843,8 +843,8 @@ class FeedPostViewModel @Inject constructor(
     /**
      * Merchant Voucher
      */
-    private val _merchantVoucherLiveData = MutableLiveData<Result<TokopointsCatalogMVCSummary>>()
-    val merchantVoucherLiveData: LiveData<Result<TokopointsCatalogMVCSummary>>
+    private val _merchantVoucherLiveData = MutableLiveData<Result<TokopointsCatalogMVCSummary>?>()
+    val merchantVoucherLiveData: LiveData<Result<TokopointsCatalogMVCSummary>?>
         get() = _merchantVoucherLiveData
 
     fun getMerchantVoucher(shopId: String) {
@@ -869,6 +869,10 @@ class FeedPostViewModel @Inject constructor(
         }) {
             _merchantVoucherLiveData.value = Fail(it)
         }
+    }
+
+    fun clearMerchantVoucher() {
+        _merchantVoucherLiveData.value = null
     }
 
     fun getReport() {

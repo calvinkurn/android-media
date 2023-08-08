@@ -105,7 +105,7 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
             }
         }
     }
-    private val mvcObserver = Observer<Result<TokopointsCatalogMVCSummary>> { result ->
+    private val mvcObserver = Observer<Result<TokopointsCatalogMVCSummary>?> { result ->
         when (result) {
             is Success -> {
                 if (!result.data.animatedInfoList.isNullOrEmpty()) {
@@ -113,7 +113,7 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
                 }
                 showMerchantVoucherWidget(result.data)
             }
-            is Fail -> hideMerchantVoucherWidget()
+            else -> hideMerchantVoucherWidget()
         }
     }
 
@@ -228,7 +228,7 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
 
         fun sendMvcImpressionTracker(mvcList: List<AnimatedInfos?>)
 
-        val mvcLiveData: LiveData<Result<TokopointsCatalogMVCSummary>>
+        val mvcLiveData: LiveData<Result<TokopointsCatalogMVCSummary>?>
         val productListLiveData: LiveData<Result<List<FeedTaggedProductUiModel>>?>
     }
 

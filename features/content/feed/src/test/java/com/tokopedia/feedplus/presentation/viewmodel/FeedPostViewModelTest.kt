@@ -223,6 +223,15 @@ class FeedPostViewModelTest {
     }
 
     @Test
+    fun onClearMerchantVoucher_shouldReturnNull() {
+        // when
+        viewModel.clearMerchantVoucher()
+
+        // then
+        assert(viewModel.merchantVoucherLiveData.value == null)
+    }
+
+    @Test
     fun onSuspendFollow_shouldUpdateValue() {
         // given
         coEvery { userFollowUseCase.executeOnBackground(any()) } throws MessageErrorException("Failed")

@@ -1513,7 +1513,11 @@ class FeedFragment :
             manager = childFragmentManager,
             tag = TAG_FEED_PRODUCT_BOTTOM_SHEET
         )
-        if (hasVoucher && author?.type?.isShop == true) getMerchantVoucher(author.id)
+        if (hasVoucher && author?.type?.isShop == true) {
+            getMerchantVoucher(author.id)
+        } else {
+            feedPostViewModel.clearMerchantVoucher()
+        }
     }
 
     private fun convertToSourceType(type: String): FeedTaggedProductUiModel.SourceType =
@@ -1583,7 +1587,7 @@ class FeedFragment :
         }
     }
 
-    override val mvcLiveData: LiveData<Result<TokopointsCatalogMVCSummary>>
+    override val mvcLiveData: LiveData<Result<TokopointsCatalogMVCSummary>?>
         get() = feedPostViewModel.merchantVoucherLiveData
 
     override val productListLiveData: LiveData<Result<List<FeedTaggedProductUiModel>>?>
