@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.data.model.bmgm
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -39,6 +40,7 @@ data class BMGMData(
         @SerializedName("loadMoreText")
         @Expose
         val loadMoreText: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("productIDs")
         @Expose
         val productIDs: List<String> = emptyList()
