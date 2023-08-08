@@ -6,18 +6,19 @@ import com.google.gson.annotations.SerializedName
  * Created by Yoris on 05/08/21.
  */
 
+@Deprecated("Remove this class after integrating SCP Login to Tokopedia")
 data class LinkStatusResponse(
     @SerializedName("accountsLinkerStatus")
     val response: LinkStatusPojo = LinkStatusPojo()
 )
-
+@Deprecated("Remove this class after integrating SCP Login to Tokopedia")
 data class LinkStatusPojo(
     @SerializedName("link_status")
     val linkStatus: ArrayList<LinkStatus> = arrayListOf(),
     @SerializedName("error")
     val error: String = ""
 )
-
+@Deprecated("Remove this class after integrating SCP Login to Tokopedia")
 data class LinkStatus(
     @SerializedName("linking_type")
     val type: String = "",
