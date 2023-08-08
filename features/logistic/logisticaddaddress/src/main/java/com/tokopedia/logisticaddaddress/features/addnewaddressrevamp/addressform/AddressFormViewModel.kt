@@ -318,22 +318,6 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
         }
     }
 
-    fun getCollectionId(): String {
-        return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
-            if (isEdit) {
-                AddressConstants.EDIT_ADDRESS_COLLECTION_ID_STAGING
-            } else {
-                AddressConstants.ADD_ADDRESS_COLLECTION_ID_STAGING
-            }
-        } else {
-            if (isEdit) {
-                AddressConstants.EDIT_ADDRESS_COLLECTION_ID_PRODUCTION
-            } else {
-                AddressConstants.ADD_ADDRESS_COLLECTION_ID_PRODUCTION
-            }
-        }
-    }
-
     private fun KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse.toSaveAddressDataModel(): SaveAddressDataModel {
         val addressData = this.chosenAddressData
         val tokonowData = this.tokonow
