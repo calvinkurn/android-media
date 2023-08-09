@@ -71,6 +71,40 @@ fun StoriesFailedLoad(
     }
 }
 
+@Composable
+fun StoriesUnavailable() {
+    val ctx = LocalContext.current
+    NestTheme {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = colorResource(id = unifyR.color.Unify_Static_Black)),
+        ) {
+            val iconDrawable = getIconUnifyDrawable(
+                ctx,
+                IconUnify.IMAGE,
+                MethodChecker.getColor(
+                    ctx,
+                    unifyR.color.Unify_Static_White
+                )
+            )
+            Image(
+                painter = rememberImagePainter(iconDrawable), contentDescription = "",
+                modifier = Modifier
+                    .size(80.dp)
+                    .align(Alignment.CenterHorizontally),
+            )
+            NestTypography(
+                text = ctx.getString(R.string.stories_content_unavailable),
+                textStyle = NestTheme.typography.heading3,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .align(Alignment.CenterHorizontally)
+            )
+        }
+    }
+}
+
 @Preview
 @Composable
 private fun StoriesFailedLoadPage() {
