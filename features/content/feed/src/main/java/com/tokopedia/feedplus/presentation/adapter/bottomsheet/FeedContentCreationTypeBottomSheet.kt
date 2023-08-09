@@ -29,6 +29,7 @@ class FeedContentCreationTypeBottomSheet : BottomSheetUnify() {
     }
 
     private var mListener: Listener? = null
+    private var mDataSource: DataSource? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +45,7 @@ class FeedContentCreationTypeBottomSheet : BottomSheetUnify() {
         super.onDestroyView()
         _binding = null
         mListener = null
+        mDataSource = null
     }
 
     private fun setupBottomSheet() {
@@ -55,19 +57,21 @@ class FeedContentCreationTypeBottomSheet : BottomSheetUnify() {
 
     private fun setupView() {
         binding.rvFeedContentCreation.adapter = adapter
+
+        val dataSource = mDataSource ?: return
+        adapter.updateData(dataSource.creationItems())
     }
 
     fun setListener(listener: Listener?) {
         mListener = listener
     }
 
-    fun show(fragmentManager: FragmentManager) {
-        if (!isAdded) show(fragmentManager, TAG)
+    fun setDataSource(dataSource: DataSource) {
+        mDataSource = dataSource
     }
 
-    fun setData(contentAccountList: List<ContentCreationTypeItem>): FeedContentCreationTypeBottomSheet {
-        adapter.updateData(contentAccountList)
-        return this
+    fun show(fragmentManager: FragmentManager) {
+        if (!isAdded) show(fragmentManager, TAG)
     }
 
     companion object {
@@ -87,5 +91,9 @@ class FeedContentCreationTypeBottomSheet : BottomSheetUnify() {
 
     interface Listener {
         fun onCreationItemClick(creationTypeItem: ContentCreationTypeItem)
+    }
+
+    interface DataSource {
+        fun creationItems(): List<ContentCreationTypeItem>
     }
 }

@@ -156,4 +156,15 @@
         app:layout_constraintTop_toTopOf="parent"
         />
 
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/feed_loading"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_gravity="center_horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="decorative_white" />
+
 </androidx.constraintlayout.motion.widget.MotionLayout>

@@ -16,29 +16,30 @@ import com.tokopedia.iconunify.IconUnify
 object MapperFeedTabs {
     fun transform(
         header: FeedXHeader
-    ): FeedTabsModel =
-        FeedTabsModel(
-            meta = MetaModel(
-                selectedIndex = 0,
-                profileApplink = header.data.userProfile.applink,
-                profilePhotoUrl = header.data.userProfile.image,
-                showMyProfile = header.data.userProfile.isShown,
-                isCreationActive = header.data.creation.isActive,
-                showLive = header.data.live.isActive,
-                liveApplink = header.data.live.applink,
-                eligibleCreationEntryPoints = mapCreationItems(header.data.creation)
-            ),
-            data = header.data.tab.items.sortedBy { it.position }
-                .filter { it.isActive }.map {
-                    FeedDataModel(
-                        title = it.title,
-                        key = it.key,
-                        type = it.type,
-                        position = it.position,
-                        isActive = it.isActive
-                    )
-                }
-        )
+    ) = FeedTabsModel(
+        meta = MetaModel(
+            selectedIndex = 0,
+            profileApplink = header.data.userProfile.applink,
+            profilePhotoUrl = header.data.userProfile.image,
+            showMyProfile = header.data.userProfile.isShown,
+            isCreationActive = header.data.creation.isActive,
+            showLive = header.data.live.isActive,
+            liveApplink = header.data.live.applink,
+            eligibleCreationEntryPoints = mapCreationItems(header.data.creation)
+        ),
+        data = header.data.tab.items
+            .sortedBy { it.position }
+            .filter { it.isActive }
+            .map {
+                FeedDataModel(
+                    title = it.title,
+                    key = it.key,
+                    type = it.type,
+                    position = it.position,
+                    isActive = it.isActive
+                )
+            }
+    )
 
     private fun mapCreationItems(data: Creation): List<ContentCreationTypeItem> {
         return data.authors

@@ -6,11 +6,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
+import com.tokopedia.content.common.producttag.view.uimodel.NetworkResult
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.createpost.common.domain.usecase.cache.DeleteMediaPostCacheUseCase
 import com.tokopedia.feedplus.domain.repository.FeedRepository
-import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
 import com.tokopedia.feedplus.presentation.model.CreateContentType
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
@@ -48,10 +48,10 @@ class FeedMainViewModel @Inject constructor(
     private val uiEventManager: UiEventManager<FeedMainEvent>
 ) : ViewModel(), OnboardingPreferences by onboardingPreferences {
 
-    private val _feedTabs = MutableStateFlow<Result<List<FeedDataModel>>?>(null)
+    private val _feedTabs = MutableStateFlow<NetworkResult<List<FeedDataModel>>?>(null)
     val feedTabs get() = _feedTabs.asStateFlow()
 
-    private val _metaData = MutableStateFlow<Result<MetaModel>?>(null)
+    private val _metaData = MutableStateFlow(MetaModel.Empty)
     val metaData get() = _metaData.asStateFlow()
 
     private val _isPageResumed = MutableLiveData<Boolean>(null)
@@ -60,11 +60,6 @@ class FeedMainViewModel @Inject constructor(
     private val _reportResponse = MutableLiveData<Result<FeedComplaintSubmitReportResponse>>()
     val reportResponse: LiveData<Result<FeedComplaintSubmitReportResponse>>
         get() = _reportResponse
-
-    private val _feedCreateContentBottomSheetData =
-        MutableLiveData<Result<List<ContentCreationTypeItem>>>()
-    val feedCreateContentBottomSheetData: LiveData<Result<List<ContentCreationTypeItem>>>
-        get() = _feedCreateContentBottomSheetData
 
     private val _currentTabIndex = MutableLiveData<Int>()
     val currentTabIndex: LiveData<Int>
@@ -88,10 +83,8 @@ class FeedMainViewModel @Inject constructor(
 
     val isShortEntryPointShowed: Boolean
         get() {
-            val feedCreateContentData = _feedCreateContentBottomSheetData.value
-
-            return feedCreateContentData is Success &&
-                feedCreateContentData.data.find {
+            val feedCreateContentData = _metaData.value
+            return feedCreateContentData.eligibleCreationEntryPoints.find {
                 it.type == CreateContentType.ShortVideo
             } != null
         }
@@ -124,12 +117,11 @@ class FeedMainViewModel @Inject constructor(
     }
 
     fun changeCurrentTabByType(type: String) {
-        feedTabs.value?.let {
-            if (it is Success) {
-                it.data.forEachIndexed { index, tab ->
-                    if (tab.type == type && tab.isActive) {
-                        _currentTabIndex.value = index
-                    }
+        val tabValue = _feedTabs.value
+        if (tabValue is NetworkResult.Success) {
+            tabValue.data.forEachIndexed { index, tab ->
+                if (tab.type == type && tab.isActive) {
+                    _currentTabIndex.value = index
                 }
             }
         }
@@ -137,9 +129,9 @@ class FeedMainViewModel @Inject constructor(
 
     fun scrollCurrentTabToTop() {
         viewModelScope.launch {
-            val feedTabsValue = feedTabs.value
-            if (feedTabsValue !is Success) return@launch
-            feedTabsValue.data.forEachIndexed { _, tab ->
+            val tabValue = _feedTabs.value
+            if (tabValue !is NetworkResult.Success) return@launch
+            tabValue.data.forEachIndexed { _, tab ->
                 if (!tab.isActive) return@forEachIndexed
                 uiEventManager.emitEvent(
                     FeedMainEvent.ScrollToTop(tab.key)
@@ -148,16 +140,16 @@ class FeedMainViewModel @Inject constructor(
         }
     }
 
-    fun getCurrentTabType() =
-        feedTabs.value?.let {
-            if (it is Success) {
-                currentTabIndex.value?.let { idx ->
-                    it.data.getOrNull(idx)?.type.orEmpty()
-                }.orEmpty()
-            } else {
-                ""
-            }
-        }.orEmpty()
+    fun getCurrentTabType(): String {
+        val tabValue = _feedTabs.value
+        return if (tabValue is NetworkResult.Success) {
+            currentTabIndex.value?.let { idx ->
+                tabValue.data.getOrNull(idx)?.type.orEmpty()
+            }.orEmpty()
+        } else {
+            ""
+        }
+    }
 
     fun consumeEvent(event: FeedMainEvent) {
         viewModelScope.launch {
@@ -191,33 +183,31 @@ class FeedMainViewModel @Inject constructor(
     }
 
     fun fetchFeedTabs() {
+        _feedTabs.value = NetworkResult.Loading
         viewModelScope.launchCatchError(block = {
             val response = repository.getTabs()
-            _feedTabs.value = Success(response.data)
+            _feedTabs.value = NetworkResult.Success(response.data)
         }) {
-            _feedTabs.value = Fail(it)
+            _feedTabs.value = NetworkResult.Error(it)
         }
     }
 
     fun fetchFeedMetaData() {
         viewModelScope.launchCatchError(block = {
             val response = repository.getMeta()
-            _metaData.value = Success(response)
-            _feedCreateContentBottomSheetData.value = Success(response.eligibleCreationEntryPoints)
+            _metaData.value = response
         }) {
-            _metaData.value = Fail(it)
-            _feedCreateContentBottomSheetData.value = Fail(it)
         }
     }
 
-    fun getTabType(index: Int): String =
-        feedTabs.value?.let {
-            if (it is Success && it.data.size > index) {
-                it.data[index].type
-            } else {
-                ""
-            }
-        } ?: ""
+    fun getTabType(index: Int): String {
+        val tabValue = _feedTabs.value
+        return if (tabValue is NetworkResult.Success && tabValue.data.size > index) {
+            tabValue.data[index].type
+        } else {
+            ""
+        }
+    }
 
     fun reportContent(feedReportRequestParamModel: FeedComplaintSubmitReportUseCase.Param) {
         viewModelScope.launchCatchError(block = {

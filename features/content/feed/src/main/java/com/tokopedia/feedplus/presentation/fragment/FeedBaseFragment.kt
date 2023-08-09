@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.content.common.producttag.view.uimodel.NetworkResult
 import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.reduceDragSensitivity
@@ -47,8 +48,6 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.play_common.shortsuploader.analytic.PlayShortsUploadAnalytic
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -167,6 +166,11 @@ class FeedBaseFragment :
             when (fragment) {
                 is FeedContentCreationTypeBottomSheet -> {
                     fragment.setListener(this)
+                    fragment.setDataSource(object : FeedContentCreationTypeBottomSheet.DataSource {
+                        override fun creationItems(): List<ContentCreationTypeItem> {
+                            return feedMainViewModel.metaData.value.eligibleCreationEntryPoints
+                        }
+                    })
                 }
             }
         }
@@ -346,7 +350,7 @@ class FeedBaseFragment :
         feedMainViewModel.resumePage()
 
         val meta = feedMainViewModel.metaData.value
-        if (meta is Success) showOnboarding(meta.data)
+        showOnboarding(meta)
 
         feedMainViewModel.updateUserInfo()
         feedMainViewModel.fetchFeedMetaData()
@@ -369,11 +373,17 @@ class FeedBaseFragment :
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 feedMainViewModel.feedTabs.collectLatest { result ->
-                    if (result == null) return@collectLatest
                     when (result) {
-                        is Success -> initTabsView(result.data)
-                        is Fail -> {
-                            // show error
+                        NetworkResult.Loading -> showLoading()
+                        is NetworkResult.Success -> {
+                            hideLoading()
+                            initTabsView(result.data)
+                        }
+                        is NetworkResult.Error -> {
+                            hideLoading()
+                        }
+                        else -> {
+                            // nothing
                         }
                     }
                 }
@@ -383,13 +393,7 @@ class FeedBaseFragment :
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 feedMainViewModel.metaData.collectLatest { result ->
-                    if (result == null) return@collectLatest
-                    when (result) {
-                        is Success -> initMetaView(result.data)
-                        is Fail -> {
-                            // show error
-                        }
-                    }
+                    initMetaView(result)
                 }
             }
         }
@@ -640,20 +644,9 @@ class FeedBaseFragment :
     }
 
     private fun onCreatePostClicked() {
-        activity?.let {
-            val creationBottomSheet = FeedContentCreationTypeBottomSheet
-                .getFragment(childFragmentManager, it.classLoader)
-
-            val feedCreateBottomSheetDataResult =
-                feedMainViewModel.feedCreateContentBottomSheetData.value
-            if (feedCreateBottomSheetDataResult is Success) {
-                val list = feedCreateBottomSheetDataResult.data
-                if (list.isNotEmpty()) {
-                    creationBottomSheet.setData(feedCreateBottomSheetDataResult.data)
-                    creationBottomSheet.show(childFragmentManager)
-                }
-            }
-        }
+        FeedContentCreationTypeBottomSheet
+            .getFragment(childFragmentManager, requireActivity().classLoader)
+            .show(childFragmentManager)
     }
 
     private fun showJustLoggedInToaster() {
@@ -695,6 +688,14 @@ class FeedBaseFragment :
         activity?.intent?.getStringExtra(ApplinkConstInternalContent.UF_EXTRA_FEED_ENTRY_POINT)
     } else {
         FeedAnalytics.ENTRY_POINT_SHARE_LINK
+    }
+
+    private fun showLoading() {
+        binding.feedLoading.show()
+    }
+
+    private fun hideLoading() {
+        binding.feedLoading.hide()
     }
 
     companion object {
