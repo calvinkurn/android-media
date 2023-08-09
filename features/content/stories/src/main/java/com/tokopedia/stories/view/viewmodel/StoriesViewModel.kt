@@ -41,8 +41,8 @@ class StoriesViewModel @Inject constructor(
 
     fun submitAction(action: StoriesUiAction) {
         when (action) {
-            is StoriesUiAction.SelectCategories -> handleSelectCategories(action.selectedCategories)
             is StoriesUiAction.SetInitialData -> handleSetInitialData(action.data)
+            is StoriesUiAction.SelectCategories -> handleSelectCategories(action.selectedCategories)
             StoriesUiAction.NextStories -> handleNextStories()
             StoriesUiAction.PreviousStories -> handlePreviousStories()
             StoriesUiAction.NextCategories -> handleNextCategories()
@@ -52,6 +52,11 @@ class StoriesViewModel @Inject constructor(
         }
     }
 
+    private fun handleSetInitialData(data: Bundle?) {
+        shopId = data?.getString(SHOP_ID, "").orEmpty()
+        storiesId = data?.getString(STORIES_ID, "").orEmpty()
+    }
+
     private fun handleSelectCategories(selectedPage: Int) {
         mCounter = selectedPage
         storiesSelectedCategories.update {
@@ -59,19 +64,16 @@ class StoriesViewModel @Inject constructor(
         }
     }
 
-    private fun handleSetInitialData(data: Bundle?) {
-        shopId = data?.getString(SHOP_ID, "").orEmpty()
-        storiesId = data?.getString(STORIES_ID, "").orEmpty()
-    }
-
     private fun handleNextStories() {
         storiesSelectedCategories.update { data ->
+            if (data.selected >= data.count) return
             data.copy(selected = data.selected + 1)
         }
     }
 
     private fun handlePreviousStories() {
         storiesSelectedCategories.update { data ->
+            if (data.selected <= 1) return
             data.copy(selected = data.selected - 1)
         }
     }

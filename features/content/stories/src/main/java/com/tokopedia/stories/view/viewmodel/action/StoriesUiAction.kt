@@ -4,8 +4,8 @@ import android.os.Bundle
 
 sealed interface StoriesUiAction {
 
-    data class SelectCategories(val selectedCategories: Int): StoriesUiAction
     data class SetInitialData(val data: Bundle?): StoriesUiAction
+    data class SelectCategories(val selectedCategories: Int): StoriesUiAction
 
     object PauseStories: StoriesUiAction
 
