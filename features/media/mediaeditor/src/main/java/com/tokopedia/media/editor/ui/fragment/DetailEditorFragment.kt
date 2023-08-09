@@ -383,7 +383,13 @@ class DetailEditorFragment @Inject constructor(
             // check if any crop state before
             if (data.cropRotateValue.cropRatio != EMPTY_RATIO) {
                 // if had crop state then compare if ratio is change
-                if (data.cropRotateValue.cropRatio != newRatioPair) {
+                val (cropRatioX, cropRatioY) = data.cropRotateValue.cropRatio
+
+                // need compare by value since image ratio can contain width height instead of direct ratio 3:4 / 2:1
+                val ratioValue = cropRatioX / cropRatioY
+                val newRatioValue = newRatioPair.first / newRatioPair.second
+
+                if (ratioValue != newRatioValue) {
                     setCropRatio(newRatioPair)
                 }
             } else if (data.originalRatio != ratio.getRatio()) { // if didn't have crop state, compare original ratio
