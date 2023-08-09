@@ -23,38 +23,39 @@ class StoriesViewModel @Inject constructor(
     private var storiesId: String = ""
     var mCounter = 0
 
-    var storiesSelectedPage = MutableStateFlow(StoriesDataUiModel.Empty)
+    var storiesSelectedCategories = MutableStateFlow(StoriesDataUiModel.Empty)
 
-    private val _storiesUiEvent = MutableSharedFlow<StoriesUiEvent>(extraBufferCapacity = 100)
-    val storiesUiEvent: Flow<StoriesUiEvent>
-        get() = _storiesUiEvent
+    private val _uiEvent = MutableSharedFlow<StoriesUiEvent>(extraBufferCapacity = 100)
+    val uiEvent: Flow<StoriesUiEvent>
+        get() = _uiEvent
 
-    private var _storiesUiState = MutableStateFlow(StoriesUiModel.Empty)
-    val storiesUiState: Flow<StoriesUiModel>
-        get() = _storiesUiState
+    private var _uiState = MutableStateFlow(StoriesUiModel.Empty)
+    val uiState: Flow<StoriesUiModel>
+        get() = _uiState
 
     init {
-        _storiesUiState.update {
+        _uiState.update {
             repository.getStoriesData()
         }
     }
 
     fun submitAction(action: StoriesUiAction) {
         when (action) {
-            is StoriesUiAction.SelectPage -> handleSelectPage(action.selectedPage)
+            is StoriesUiAction.SelectCategories -> handleSelectCategories(action.selectedCategories)
             is StoriesUiAction.SetInitialData -> handleSetInitialData(action.data)
-            StoriesUiAction.NextIndicator -> handleNextIndicator()
-            StoriesUiAction.NextPage -> handleNextPage()
-            StoriesUiAction.PreviousPage -> handlePreviousPage()
-            StoriesUiAction.OnPauseStories -> handleOnPauseStories()
-            StoriesUiAction.OnResumeStories -> handleOnResumeStories()
+            StoriesUiAction.NextStories -> handleNextStories()
+            StoriesUiAction.PreviousStories -> handlePreviousStories()
+            StoriesUiAction.NextCategory -> handleNextCategories()
+            StoriesUiAction.PreviousCategory -> handlePreviousCategories()
+            StoriesUiAction.PauseStories -> handleOnPauseStories()
+            StoriesUiAction.ResumeStories -> handleOnResumeStories()
         }
     }
 
-    private fun handleSelectPage(selectedPage: Int) {
+    private fun handleSelectCategories(selectedPage: Int) {
         mCounter = selectedPage
-        storiesSelectedPage.update {
-            _storiesUiState.value.stories[selectedPage]
+        storiesSelectedCategories.update {
+            _uiState.value.stories[selectedPage]
         }
     }
 
@@ -63,30 +64,38 @@ class StoriesViewModel @Inject constructor(
         storiesId = data?.getString(STORIES_ID, "").orEmpty()
     }
 
-    private fun handleNextIndicator() {
-        storiesSelectedPage.update { data ->
+    private fun handleNextStories() {
+        storiesSelectedCategories.update { data ->
             data.copy(selected = data.selected + 1)
         }
     }
 
-    private fun handleNextPage() {
-        viewModelScope.launch {
-            _storiesUiEvent.emit(StoriesUiEvent.NextPage(mCounter + 1))
+    private fun handlePreviousStories() {
+        storiesSelectedCategories.update { data ->
+            data.copy(selected = data.selected - 1)
         }
-
     }
 
-    private fun handlePreviousPage() {
+    private fun handleNextCategories() {
+        viewModelScope.launch {
+            _uiEvent.emit(StoriesUiEvent.SelectCategories(mCounter + 1))
+        }
+    }
+
+    private fun handlePreviousCategories() {
+        viewModelScope.launch {
+            _uiEvent.emit(StoriesUiEvent.SelectCategories(mCounter - 1))
+        }
     }
 
     private fun handleOnPauseStories() {
-        storiesSelectedPage.update { data ->
+        storiesSelectedCategories.update { data ->
             data.copy(isPause = true)
         }
     }
 
     private fun handleOnResumeStories() {
-        storiesSelectedPage.update { data ->
+        storiesSelectedCategories.update { data ->
             data.copy(isPause = false)
         }
     }

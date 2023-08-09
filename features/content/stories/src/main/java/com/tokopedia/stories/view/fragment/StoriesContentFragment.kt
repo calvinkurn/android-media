@@ -17,7 +17,8 @@ import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.components.indicator.StoriesEventAction
 import com.tokopedia.stories.view.components.indicator.StoriesIndicator
 import com.tokopedia.stories.view.model.StoriesDataUiModel
-import com.tokopedia.stories.view.utils.onPauseEventStories
+import com.tokopedia.stories.view.utils.StoriesViewEvent
+import com.tokopedia.stories.view.utils.onViewEventStories
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import kotlinx.coroutines.flow.collectLatest
@@ -59,7 +60,7 @@ class StoriesContentFragment @Inject constructor(
 
     private fun setupObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.storiesSelectedPage.withCache().collectLatest { (prevState, state) ->
+            viewModel.storiesSelectedCategories.withCache().collectLatest { (prevState, state) ->
                 renderStoriesIndicator(prevState, state)
             }
         }
@@ -85,20 +86,40 @@ class StoriesContentFragment @Inject constructor(
 
     private fun storiesEventAction(event: StoriesEventAction) {
         when (event) {
-            StoriesEventAction.NEXT_INDICATOR -> viewModelAction(StoriesUiAction.NextIndicator)
-            StoriesEventAction.NEXT_PAGE -> viewModelAction(StoriesUiAction.NextPage)
+            StoriesEventAction.NEXT_STORIES -> viewModelAction(StoriesUiAction.NextStories)
+            StoriesEventAction.NEXT_CATEGORIES -> viewModelAction(StoriesUiAction.NextCategory)
         }
     }
 
     private fun setupStoriesView() = with(binding) {
-        flStories.onPauseEventStories { isPaused ->
-            if (isPaused) {
-                viewModelAction(StoriesUiAction.OnPauseStories)
-                cvStoriesIndicator.hide()
+        flStoriesPrev.onViewEventStories { event ->
+            when (event) {
+                StoriesViewEvent.PAUSE -> {
+                    viewModelAction(StoriesUiAction.PauseStories)
+                    cvStoriesIndicator.hide()
+                }
+                StoriesViewEvent.RESUME -> {
+                    viewModelAction(StoriesUiAction.ResumeStories)
+                    cvStoriesIndicator.show()
+                }
+                StoriesViewEvent.NEXT_PREV -> {
+                    viewModelAction(StoriesUiAction.PreviousStories)
+                }
             }
-            else {
-                viewModelAction(StoriesUiAction.OnResumeStories)
-                cvStoriesIndicator.show()
+        }
+        flStoriesNext.onViewEventStories { event ->
+            when (event) {
+                StoriesViewEvent.PAUSE -> {
+                    viewModelAction(StoriesUiAction.PauseStories)
+                    cvStoriesIndicator.hide()
+                }
+                StoriesViewEvent.RESUME -> {
+                    viewModelAction(StoriesUiAction.ResumeStories)
+                    cvStoriesIndicator.show()
+                }
+                StoriesViewEvent.NEXT_PREV -> {
+                    viewModelAction(StoriesUiAction.NextStories)
+                }
             }
         }
     }

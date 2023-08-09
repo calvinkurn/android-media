@@ -36,7 +36,7 @@ class StoriesFragment @Inject constructor(
             lifecycle,
             binding.storiesViewPager,
         ) { selectedPage ->
-            viewModelAction(StoriesUiAction.SelectPage(selectedPage))
+            viewModelAction(StoriesUiAction.SelectCategories(selectedPage))
         }
     }
 
@@ -76,7 +76,7 @@ class StoriesFragment @Inject constructor(
 
     private fun setupUiStateObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.storiesUiState.withCache().collectLatest { (prevValue, value) ->
+            viewModel.uiState.withCache().collectLatest { (prevValue, value) ->
                 renderStoriesCategory(prevValue, value)
             }
         }
@@ -84,9 +84,9 @@ class StoriesFragment @Inject constructor(
 
     private fun setupUiEventObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.storiesUiEvent.collect { event ->
+            viewModel.uiEvent.collect { event ->
                 when (event) {
-                    is StoriesUiEvent.NextPage -> manageNextPageEvent(event.position)
+                    is StoriesUiEvent.SelectCategories -> manageNextPageEvent(event.position)
                 }
             }
         }

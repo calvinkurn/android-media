@@ -4,16 +4,18 @@ import android.os.Bundle
 
 sealed interface StoriesUiAction {
 
-    data class SelectPage(val selectedPage: Int): StoriesUiAction
+    data class SelectCategories(val selectedCategories: Int): StoriesUiAction
     data class SetInitialData(val data: Bundle?): StoriesUiAction
 
-    object OnPauseStories: StoriesUiAction
+    object PauseStories: StoriesUiAction
 
-    object OnResumeStories: StoriesUiAction
+    object ResumeStories: StoriesUiAction
 
-    object NextIndicator: StoriesUiAction
+    object NextStories: StoriesUiAction
 
-    object NextPage: StoriesUiAction
+    object PreviousStories: StoriesUiAction
 
-    object PreviousPage: StoriesUiAction
+    object NextCategory: StoriesUiAction
+
+    object PreviousCategory: StoriesUiAction
 }

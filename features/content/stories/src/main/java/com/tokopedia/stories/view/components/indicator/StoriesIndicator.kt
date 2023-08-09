@@ -41,8 +41,8 @@ fun StoriesIndicator(
                 )
             )
             event.invoke(
-                if (data.selected >= data.count) StoriesEventAction.NEXT_PAGE
-                else StoriesEventAction.NEXT_INDICATOR
+                if (data.selected >= data.count) StoriesEventAction.NEXT_CATEGORIES
+                else StoriesEventAction.NEXT_STORIES
             )
             anim.snapTo(0F)
         }
@@ -98,6 +98,6 @@ internal fun StoriesIndicatorPreview() {
 }
 
 enum class StoriesEventAction {
-    NEXT_INDICATOR,
-    NEXT_PAGE,
+    NEXT_STORIES,
+    NEXT_CATEGORIES,
 }
