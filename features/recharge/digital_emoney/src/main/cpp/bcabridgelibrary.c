@@ -117,3 +117,33 @@ Java_com_tokopedia_emoney_integration_BCALibrary_C_1BCAIsMyCard(JNIEnv *env, job
     }
     return 1;
 }
+
+JNIEXPORT jobject JNICALL
+Java_com_tokopedia_emoney_integration_BCALibrary_C_1BCACheckBalance(JNIEnv *env, jobject thiz) {
+    g_env = env;
+    g_obj = thiz;
+
+    //create the object result class that will returned in jobject
+    jclass resultClass = (*env)->FindClass(env, "com/tokopedia/emoney/integration/data/CheckBalanceResult");
+    jmethodID constructor = (*env)->GetMethodID(env, resultClass, "<init>", "(ILjava/lang/String;)V");
+
+    //create return value balance
+    long balance = -1;
+    //create return value cardNo with length LENGTH_STR_CARDNO with initial is 0 with size of LENGTH_STR_CARDNO
+    unsigned char cardNo[LENGTH_STR_CARDNO];
+    memset(cardNo, 0x00, sizeof(cardNo));
+    //create return value strLogRsp with length LENGTH_BCASES_RESULT with initial is 0 with size of LENGTH_BCASES_RESULT
+    unsigned char strLogRsp[LENGTH_BCASES_RESULT];
+    memset(strLogRsp, 0x00, sizeof(strLogRsp));
+
+    unsigned char result = BCACheckBalance(&balance, cardNo, strLogRsp);
+    if (result == FALSE){
+        //set the return value result fail
+        jobject resultObject = (*env)->NewObject(env, resultClass, constructor, -1, (*env)->NewStringUTF(env, cardNo));
+        return resultObject;
+    }
+
+    //set the return value result success
+    jobject resultObject = (*env)->NewObject(env, resultClass, constructor, balance, (*env)->NewStringUTF(env, cardNo));
+    return resultObject;
+}

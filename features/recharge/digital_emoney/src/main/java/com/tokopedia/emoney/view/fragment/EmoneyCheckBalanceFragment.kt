@@ -151,15 +151,10 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         } else if(CardUtils.isBrizziCard(intent)) {
             processBrizzi(intent)
         } else {
-            bcaLibrary.myTag = tag
-            val isoDep = IsoDep.get(tag)
-            if (!isoDep.isConnected) {
-                isoDep.connect()
-            }
+            initializeBCALibs(tag)
             if(bcaLibrary.C_BCAIsMyCard() == Int.ONE) {
-                Toast.makeText(context, bcaLibrary.C_BCAIsMyCard().toString(), Toast.LENGTH_LONG).show()
+                Toast.makeText(context, bcaLibrary.C_BCACheckBalance().balance.toString(), Toast.LENGTH_LONG).show()
             } else {
-                isoDep.close()
                 context?.let { context ->
                     showError(
                         context.resources.getString(com.tokopedia.emoney.R.string.emoney_nfc_card_isnot_supported),
@@ -466,6 +461,14 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                 context.resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_check_balance_problem_label)+" "+errorMessage.second,
                 context.resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_failed_read_card_link),
                 true)
+        }
+    }
+
+    private fun initializeBCALibs(tag: Tag?) {
+        bcaLibrary.myTag = tag
+        val isoDep = IsoDep.get(tag)
+        if (!isoDep.isConnected) {
+            isoDep.connect()
         }
     }
 

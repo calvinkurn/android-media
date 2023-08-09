@@ -2,6 +2,7 @@ package com.tokopedia.emoney.integration
 
 import android.nfc.Tag
 import android.nfc.tech.IsoDep
+import com.tokopedia.emoney.integration.data.CheckBalanceResult
 import java.io.IOException
 import java.util.*
 
@@ -12,6 +13,8 @@ class BCALibrary {
     external fun C_BCAVersionDll(): String
 
     external fun C_BCAIsMyCard(): Int
+
+    external fun C_BCACheckBalance(): CheckBalanceResult
 
     val HEX_DIGITS = charArrayOf(
         '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
