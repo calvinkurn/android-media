@@ -10,7 +10,7 @@ class CartActivity :
     BaseCheckoutActivity(),
     ITelemetryActivity {
 
-    private var fragment: CartFragment? = null
+    private var fragment: CartRevampFragment? = null
     private var cartId: String? = null
     private var productId: Long = 0L
 
@@ -50,7 +50,7 @@ class CartActivity :
         bundle.putString(EXTRA_CART_ID, cartId)
         bundle.putLong(EXTRA_PRODUCT_ID, productId)
         bundle.putBoolean(EXTRA_IS_FROM_CART_ACTIVITY, true)
-        fragment = CartFragment.newInstance(bundle, "")
+        fragment = CartRevampFragment.newInstance(bundle, "")
         return fragment
     }
 
