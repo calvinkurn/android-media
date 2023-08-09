@@ -440,6 +440,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                         } else {
                             it.shopInfo.shopLastActive.getRelativeDate(context)
                         }
+                    shopId = it.shopInfo.shopCore.shopID
                     shopName = it.shopInfo.shopCore.name
                     shopAva = it.shopInfo.shopAssets.avatar
                     partnerLabel = it.shopInfo.partnerLabel

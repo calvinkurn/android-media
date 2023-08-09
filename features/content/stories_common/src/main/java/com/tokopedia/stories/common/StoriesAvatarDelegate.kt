@@ -1,7 +1,6 @@
 package com.tokopedia.stories.common
 
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.play_common.lifecycle.AbstractLifecycleBoundDelegate
 import com.tokopedia.play_common.lifecycle.lifecycleBound
@@ -21,14 +20,16 @@ class StoriesAvatarDelegate<LO : LifecycleOwner>(
     }
 }
 
-fun AppCompatActivity.storiesAvatarManager(key: StoriesKey) = StoriesAvatarDelegate(
-    lifecycleBound(
-        { StoriesAvatarManager.create(key, this) }
+fun activityStoriesManager(key: StoriesKey): StoriesAvatarDelegate<AppCompatActivity> {
+    return StoriesAvatarDelegate(
+        lifecycleBound(
+            { StoriesAvatarManager.create(key, it) }
+        )
     )
-)
+}
 
-fun Fragment.storiesAvatarManager(key: StoriesKey) = StoriesAvatarDelegate(
+fun storiesManager(key: StoriesKey) = StoriesAvatarDelegate(
     viewLifecycleBound(
-        { StoriesAvatarManager.create(key, this) }
+        { StoriesAvatarManager.create(key, it) }
     )
 )

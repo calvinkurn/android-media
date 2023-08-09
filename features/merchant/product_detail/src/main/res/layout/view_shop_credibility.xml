@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:paddingBottom="16dp">
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <com.tokopedia.stories.common.StoriesAvatarView
         android:id="@+id/shop_credibility_ava"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -14,7 +14,8 @@
         app:layout_constraintBottom_toBottomOf="@+id/shop_credibility_location"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="@+id/shop_credibility_name"
-        tools:src="@tools:sample/avatars" />
+        tools:src="@tools:sample/avatars"
+        />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/shop_credibility_badge"

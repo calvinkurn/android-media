@@ -202,7 +202,8 @@ import com.tokopedia.shop_widget.favourite.view.activity.ShopFavouriteListActivi
 import com.tokopedia.shop_widget.mvc_locked_to_product.util.MvcLockedToProductUtil
 import com.tokopedia.shop_widget.note.view.bottomsheet.ShopNoteBottomSheet
 import com.tokopedia.stories.common.StoriesKey
-import com.tokopedia.stories.common.storiesAvatarManager
+import com.tokopedia.stories.common.activityStoriesManager
+import com.tokopedia.stories.common.storiesManager
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper
@@ -454,7 +455,7 @@ class ShopPageHeaderFragment :
     }
     private var queryParamTab: String = ""
 
-    private val storiesManager by storiesAvatarManager(StoriesKey.ShopPage)
+    private val storiesManager by storiesManager(StoriesKey.ShopPage)
 
     override fun getComponent() = activity?.run {
         DaggerShopPageHeaderComponent.builder().shopPageHeaderModule(ShopPageHeaderModule())

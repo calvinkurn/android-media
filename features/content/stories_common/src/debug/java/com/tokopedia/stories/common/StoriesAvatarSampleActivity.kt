@@ -13,7 +13,7 @@ class StoriesAvatarSampleActivity : BaseActivity() {
         ActivityStoriesAvatarSampleBinding.inflate(layoutInflater)
     }
 
-    private val storiesManager by storiesAvatarManager(StoriesKey.ShopPage)
+    private val storiesManager by activityStoriesManager(StoriesKey.ShopPage)
 
     private val adapter by lazy {
         StoriesAvatarSampleAdapter(storiesManager)
@@ -22,8 +22,6 @@ class StoriesAvatarSampleActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
-        delegate.localNightMode
 
 //        binding.btnToggle.setOnClickListener {
 //            binding.storiesAvatar.setImageUrl("https://4.img-dpreview.com/files/p/E~TS590x0~articles/3925134721/0266554465.jpeg")

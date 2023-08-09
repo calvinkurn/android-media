@@ -296,6 +296,9 @@ import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
+import com.tokopedia.stories.common.StoriesAvatarManager
+import com.tokopedia.stories.common.StoriesKey
+import com.tokopedia.stories.common.storiesManager
 import com.tokopedia.topads.detail_sheet.TopAdsDetailSheet
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -321,6 +324,7 @@ import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
+import java.lang.ref.WeakReference
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -525,7 +529,7 @@ open class DynamicProductDetailFragment :
             playWidgetCoordinator = PlayWidgetCoordinator(this).apply {
                 setListener(this@DynamicProductDetailFragment)
             },
-            affiliateCookieHelper.get()
+            affiliateCookieHelper.get(),
         )
     }
     private val adapter by lazy {
@@ -572,6 +576,8 @@ open class DynamicProductDetailFragment :
     }
 
     private val compositeSubscription by lazy { CompositeSubscription() }
+
+    private val mStoriesAvatarManager by storiesManager(StoriesKey.ProductDetail)
 
     private val scrollListener by lazy {
         navToolbar?.let {
@@ -2955,6 +2961,8 @@ open class DynamicProductDetailFragment :
                     uuid = uuid,
                     affiliateChannel = affiliateChannel
                 )
+
+                mStoriesAvatarManager.updateStories(listOf(p1.basic.shopID))
             }
             onSuccessGetDataP2(it, boeData, ratesData, shipmentPlus)
             checkAffiliateEligibility(it.shopInfo)
@@ -5793,6 +5801,10 @@ open class DynamicProductDetailFragment :
 
     override fun getTrackingQueueInstance(): TrackingQueue {
         return trackingQueue
+    }
+
+    override fun getStoriesAvatarManager(): StoriesAvatarManager {
+        return mStoriesAvatarManager
     }
 
     override fun getUserSession(): UserSessionInterface {

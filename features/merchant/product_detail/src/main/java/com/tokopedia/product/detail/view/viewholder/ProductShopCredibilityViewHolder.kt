@@ -1,19 +1,17 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
-import android.view.ViewStub
 import android.widget.ImageView
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.extensions.getColorChecker
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -26,17 +24,22 @@ import com.tokopedia.product.detail.databinding.ViewShopCredibilityShimmeringBin
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.inflateWithBinding
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.stories.common.StoriesAvatarManager
+import com.tokopedia.stories.common.StoriesKey
+import com.tokopedia.stories.common.activityStoriesManager
+import com.tokopedia.stories.common.storiesManager
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
+import java.lang.ref.WeakReference
 
 /**
  * Created by Yehezkiel on 15/06/20
  */
 class ProductShopCredibilityViewHolder(
     private val view: View,
-    private val listener: DynamicProductDetailListener
+    private val listener: DynamicProductDetailListener,
 ) : AbstractViewHolder<ProductShopCredibilityDataModel>(view) {
 
     companion object {
@@ -49,6 +52,8 @@ class ProductShopCredibilityViewHolder(
     private var tickerBinding: ViewCredibilityTickerBinding? = null
 
     private val context = view.context
+
+    private val Fragment.storiesAvatarManager by storiesManager(StoriesKey.ProductDetail)
 
     init {
         itemBinding.shopCredibilityMain.setOnInflateListener { _, view ->
@@ -328,7 +333,9 @@ class ProductShopCredibilityViewHolder(
             showOldBadge(element.isOs, element.isPm, binding)
         }
 
-        shopCredibilityAva.loadImageCircle(element.shopAva)
+//        shopCredibilityAva.loadImageCircle(element.shopAva)
+        listener.getStoriesAvatarManager().manage(shopCredibilityAva, element.shopId)
+        shopCredibilityAva.setImageUrl(element.shopAva)
     }
 
     private fun isNewShopBadgeEnabled() = true

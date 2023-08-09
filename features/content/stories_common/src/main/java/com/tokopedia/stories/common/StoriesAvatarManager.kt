@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 /**
  * Created by kenny.hadisaputra on 27/07/23
  */
-class StoriesAvatarManager(
+class StoriesAvatarManager private constructor(
     private val key: StoriesKey,
     context: Context,
     private val lifecycleOwner: LifecycleOwner,
