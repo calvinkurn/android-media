@@ -31,4 +31,5 @@
     <string name="mini_cart_bundle_qty_label">Paket isi %d</string>
     <string name="mini_cart_product_bundle_recommendation_success_toaster_description">Paket Bundling berhasil ditambahkan ke keranjang belanja.</string>
     <string name="mini_cart_check_cart">Cek Keranjang</string>
+    <string name="mini_cart_bmgm_bottom_sheet_title">Barang yang Dipilih</string>
 </resources>

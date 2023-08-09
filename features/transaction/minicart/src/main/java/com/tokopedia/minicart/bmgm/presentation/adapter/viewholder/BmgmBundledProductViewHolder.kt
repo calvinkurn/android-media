@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.bmgm.presentation.adapter.BmgmBundledProductAdapter
+import com.tokopedia.minicart.bmgm.presentation.adapter.BmgmMiniCartAdapter
 import com.tokopedia.minicart.bmgm.presentation.adapter.itemdecoration.BmgmBundledProductItemDecoration
 import com.tokopedia.minicart.databinding.ItemBmgmMiniCartBundledProductBinding
 import com.tokopedia.purchase_platform.common.feature.bmgm.uimodel.BmgmCommonDataUiModel
@@ -14,7 +15,8 @@ import com.tokopedia.purchase_platform.common.feature.bmgm.uimodel.BmgmCommonDat
  */
 
 class BmgmBundledProductViewHolder(
-    itemView: View
+    itemView: View,
+    private val listener: BmgmMiniCartAdapter.Listener
 ) : AbstractViewHolder<BmgmCommonDataUiModel.BundledProductUiModel>(itemView) {
 
     companion object {
@@ -25,6 +27,7 @@ class BmgmBundledProductViewHolder(
 
     override fun bind(element: BmgmCommonDataUiModel.BundledProductUiModel) {
 
+        itemView.setOnClickListener { listener.setOnItemClickedListener() }
         setupProductList(element.products)
     }
 
@@ -34,7 +37,7 @@ class BmgmBundledProductViewHolder(
             layoutManager = object : LinearLayoutManager(context, HORIZONTAL, false) {
                 override fun canScrollHorizontally(): Boolean = false
             }
-            adapter = BmgmBundledProductAdapter(products)
+            adapter = BmgmBundledProductAdapter(products, listener)
         }
     }
 }

@@ -10,6 +10,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
@@ -22,6 +24,7 @@ import com.tokopedia.minicart.bmgm.presentation.adapter.BmgmMiniCartAdapter
 import com.tokopedia.minicart.bmgm.presentation.adapter.itemdecoration.BmgmMiniCartItemDecoration
 import com.tokopedia.minicart.bmgm.presentation.viewmodel.BmgmMiniCartViewModel
 import com.tokopedia.minicart.databinding.FragmentBmgmMiniCartWidgetBinding
+import com.tokopedia.minicart.databinding.ViewBmgmMiniCartSubTotalBinding
 import com.tokopedia.purchase_platform.common.feature.bmgm.uimodel.BmgmCommonDataUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -31,7 +34,7 @@ import javax.inject.Inject
  * Created by @ilhamsuaib on 31/07/23.
  */
 
-class BmgmMiniCartFragment : Fragment() {
+class BmgmMiniCartFragment : Fragment(), BmgmMiniCartAdapter.Listener {
 
     companion object {
 
@@ -46,10 +49,12 @@ class BmgmMiniCartFragment : Fragment() {
     lateinit var viewModelFactory: ViewModelFactory
 
     private var binding: FragmentBmgmMiniCartWidgetBinding? = null
-    private val miniCartAdapter by lazy { BmgmMiniCartAdapter() }
+    private val miniCartAdapter by lazy { BmgmMiniCartAdapter(this) }
     private val viewModel: BmgmMiniCartViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[BmgmMiniCartViewModel::class.java]
     }
+
+    private var data: BmgmCommonDataUiModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,6 +78,14 @@ class BmgmMiniCartFragment : Fragment() {
         observeCartData()
     }
 
+    override fun setOnItemClickedListener() {
+        context?.let {
+            data?.let {
+                RouteManager.route(context, ApplinkConstInternalGlobal.BMGM_MINI_CART)
+            }
+        }
+    }
+
     private fun observeCartData() {
         viewLifecycleOwner.observe(viewModel.cartData) {
             when (it) {
@@ -85,16 +98,18 @@ class BmgmMiniCartFragment : Fragment() {
     }
 
     private fun setOnSuccessGetCartData(data: BmgmCommonDataUiModel) {
+        this.data = data
         binding?.run {
+            val checkoutView = ViewBmgmMiniCartSubTotalBinding.bind(root)
             if (data.products.isNotEmpty()) {
                 tvBmgmCartDiscount.text = data.offerMessage.parseAsHtml()
                 tvBmgmCartDiscount.visible()
                 rvBmgmMiniCart.visible()
-                bmgmBtnOpenCart.isEnabled = true
+                checkoutView.bmgmBtnOpenCart.isEnabled = true
             } else {
                 tvBmgmCartDiscount.gone()
                 rvBmgmMiniCart.gone()
-                bmgmBtnOpenCart.isEnabled = false
+                checkoutView.bmgmBtnOpenCart.isEnabled = false
             }
 
             miniCartAdapter.data.clear()

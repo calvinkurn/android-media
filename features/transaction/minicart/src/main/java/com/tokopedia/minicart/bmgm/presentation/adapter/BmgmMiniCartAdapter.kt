@@ -9,6 +9,10 @@ import com.tokopedia.purchase_platform.common.feature.bmgm.uimodel.BmgmMiniCartV
  * Created by @ilhamsuaib on 31/07/23.
  */
 
-class BmgmMiniCartAdapter : BaseListAdapter<BmgmMiniCartVisitable, AdapterTypeFactory>(
-    BmgmMiniCartAdapterFactoryImpl()
-)
+class BmgmMiniCartAdapter(listener: Listener) : BaseListAdapter<BmgmMiniCartVisitable, AdapterTypeFactory>(
+    BmgmMiniCartAdapterFactoryImpl(listener)
+) {
+    interface Listener {
+        fun setOnItemClickedListener()
+    }
+}

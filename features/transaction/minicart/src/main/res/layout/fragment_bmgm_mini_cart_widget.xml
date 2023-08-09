@@ -49,44 +49,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/bmgmLblTotalPrice"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="@string/mini_cart_widget_label_total_price"
-            android:textColor="@color/Unify_NN600"
-            app:layout_constraintBottom_toTopOf="@+id/bmgmTvTotalPrice"
-            app:layout_constraintEnd_toStartOf="@+id/bmgmBtnOpenCart"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/bmgmBtnOpenCart"
-            app:layout_constraintVertical_chainStyle="packed"
-            app:typographyType="display_3" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/bmgmTvTotalPrice"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/mini_cart_widget_label_total_price_unavailable_default"
-            app:layout_constraintBottom_toBottomOf="@+id/bmgmBtnOpenCart"
-            app:layout_constraintEnd_toStartOf="@+id/bmgmBtnOpenCart"
-            app:layout_constraintStart_toStartOf="@+id/bmgmLblTotalPrice"
-            app:layout_constraintTop_toBottomOf="@+id/bmgmLblTotalPrice"
-            app:typographyType="display_3" />
-
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/bmgmBtnOpenCart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="8dp"
-            android:enabled="false"
-            android:text="@string/mini_cart_check_cart"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1"
-            app:unifyButtonSize="medium" />
+        <include layout="@layout/view_bmgm_mini_cart_sub_total" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

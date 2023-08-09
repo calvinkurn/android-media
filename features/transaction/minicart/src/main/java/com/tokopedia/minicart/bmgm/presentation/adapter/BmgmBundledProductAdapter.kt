@@ -14,7 +14,8 @@ import com.tokopedia.unifycomponents.CardUnify2
  */
 
 class BmgmBundledProductAdapter(
-    private val items: List<BmgmCommonDataUiModel.SingleProductUiModel>
+    private val items: List<BmgmCommonDataUiModel.SingleProductUiModel>,
+    private val listener: BmgmMiniCartAdapter.Listener
 ) : Adapter<BmgmBundledProductAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -39,6 +40,8 @@ class BmgmBundledProductAdapter(
                 cardBmgmProduct.cardType = CardUnify2.TYPE_SHADOW_DISABLED
                 cardBmgmProduct.radius = 4f
                 imgBmgmUpsellingItem.loadImage(item.productImage)
+
+                root.setOnClickListener { listener.setOnItemClickedListener() }
             }
         }
     }
