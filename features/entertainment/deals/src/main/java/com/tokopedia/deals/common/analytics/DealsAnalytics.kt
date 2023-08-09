@@ -44,6 +44,7 @@ import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.PRICE
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.PRODUCT_CARD
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.PROMO
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.QUANTITY
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.SCREEN_NAME
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.SCREEN_NAME_DEALS_CHECKOUT
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.SCREEN_NAME_DEALS_PDP
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.SHOP_ID
@@ -951,19 +952,20 @@ class DealsAnalytics @Inject constructor(
         val itemBundles = arrayListOf<Bundle>()
         itemBundles.add(
             Bundle().apply {
-                putString(DealsAnalyticsConstants.Item.name, product.displayName)
-                putString(DealsAnalyticsConstants.Item.id, product.id)
+                putString(ITEM_NAME, product.displayName)
+                putString(ITEM_ID, product.id)
                 putLong(DealsAnalyticsConstants.Item.price, product.salesPrice)
-                putString(DealsAnalyticsConstants.Item.brand, brandName)
-                putString(DealsAnalyticsConstants.Item.category, category.title)
-                putString(DealsAnalyticsConstants.Item.variant, DealsAnalyticsConstants.NONE)
-                putString(DealsAnalyticsConstants.Item.list, String.format(DealsAnalyticsConstants.Label.SEARCH_RESULT_BRAND_CLICK, position.toString(), product.displayName))
-                putInt(DealsAnalyticsConstants.Item.position, position)
+                putString(ITEM_BRAND, brandName)
+                putString(ITEM_CATEGORY, category.title)
+                putString(ITEM_VARIANT, DealsAnalyticsConstants.NONE)
+                putString(DIMENSION_40, String.format(DealsAnalyticsConstants.Label.SEARCH_RESULT_BRAND_CLICK, position.toString(), product.displayName))
+                putInt(INDEX, position)
             }
         )
         eventDataLayer.putString(ITEM_LIST, String.format(DealsAnalyticsConstants.Label.SEARCH_RESULT_BRAND_CLICK, position.toString(), product.displayName))
         eventDataLayer.putString(ITEM_LIST_NAME, String.format(DealsAnalyticsConstants.Label.SEARCH_RESULT_BRAND_CLICK, position.toString(), product.displayName))
         eventDataLayer.putString(CATEGORY_LABEL, DEALS)
+        eventDataLayer.putString(SCREEN_NAME, "")
         eventDataLayer.putParcelableArrayList(ITEMS, itemBundles)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DealsAnalyticsConstants.Event.VIEW_ITEM_LIST, eventDataLayer)
     }
