@@ -1,7 +1,7 @@
 package com.tokopedia.feedplus.domain.mapper
 
+import com.tokopedia.content.common.model.Creation
 import com.tokopedia.content.common.model.FeedXHeader
-import com.tokopedia.feedplus.presentation.model.ContentCreationItem
 import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
 import com.tokopedia.feedplus.presentation.model.CreateContentType
 import com.tokopedia.feedplus.presentation.model.CreatorType
@@ -25,7 +25,8 @@ object MapperFeedTabs {
                 showMyProfile = header.data.userProfile.isShown,
                 isCreationActive = header.data.creation.isActive,
                 showLive = header.data.live.isActive,
-                liveApplink = header.data.live.applink
+                liveApplink = header.data.live.applink,
+                eligibleCreationEntryPoints = mapCreationItems(header.data.creation)
             ),
             data = header.data.tab.items.sortedBy { it.position }
                 .filter { it.isActive }.map {
@@ -39,39 +40,34 @@ object MapperFeedTabs {
                 }
         )
 
-    fun getCreationBottomSheetData(header: FeedXHeader): List<ContentCreationItem> =
-        header.data.creation.authors.map { author ->
-            val creatorType = CreatorType.values().find { it.value == author.type } ?: CreatorType.NONE
-            ContentCreationItem(
-                id = author.id,
-                name = author.name,
-                image = author.image,
-                type = creatorType,
-                hasUsername = author.hasUsername,
-                hasAcceptTnC = author.hasAcceptTnC,
-                items = author.items.map {
-                    val currentCreationType = CreateContentType.values().find { createContentType ->
-                        createContentType.value == it.type
-                    } ?: CreateContentType.NONE
-                    ContentCreationTypeItem(
-                        name = it.title,
-                        isActive = it.isActive,
-                        imageSrc = it.image,
-                        drawableIconId = getDefaultDrawableForCreationOption(type = currentCreationType),
-                        type = currentCreationType,
-                        weblink = it.weblink,
-                        applink = it.applink,
-                        creatorType = creatorType
-                    )
-                }.toList()
-            )
-        }
+    private fun mapCreationItems(data: Creation): List<ContentCreationTypeItem> {
+        return data.authors
+            .flatMap { author ->
+                author.items.mapNotNull { item ->
+                    if (!item.isActive) {
+                        null
+                    } else {
+                        val type = CreateContentType.getTypeByValue(item.type)
+                        ContentCreationTypeItem(
+                            name = item.title,
+                            imageSrc = item.image,
+                            type = type,
+                            creatorType = CreatorType.getTypeByValue(author.type),
+                            drawableIconId = getDefaultDrawableForCreationOption(type)
+                        )
+                    }
+                }
+            }
+            .sortedBy { it.type.ordinal * CreatorType.values().size + it.creatorType.ordinal }
+            .distinctBy { it.type }
+    }
 
-    private fun getDefaultDrawableForCreationOption(type: CreateContentType): Int =
-        when (type) {
-            CreateContentType.CREATE_LIVE -> IconUnify.VIDEO
-            CreateContentType.CREATE_POST -> IconUnify.IMAGE
-            CreateContentType.CREATE_SHORT_VIDEO -> IconUnify.SHORT_VIDEO
+    private fun getDefaultDrawableForCreationOption(type: CreateContentType): Int {
+        return when (type) {
+            CreateContentType.Live -> IconUnify.VIDEO
+            CreateContentType.Post -> IconUnify.IMAGE
+            CreateContentType.ShortVideo -> IconUnify.SHORT_VIDEO
             CreateContentType.NONE -> -1
         }
+    }
 }

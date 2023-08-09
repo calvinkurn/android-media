@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
 import androidx.fragment.app.viewModels
@@ -200,7 +199,6 @@ class FeedBaseFragment :
         setupView()
 
         observeFeedTabData()
-        observeCreateContentBottomSheetData()
         observeCurrentTabPosition()
 
         observeEvent()
@@ -233,12 +231,12 @@ class FeedBaseFragment :
 
     override fun onCreationItemClick(creationTypeItem: ContentCreationTypeItem) {
         when (creationTypeItem.type) {
-            CreateContentType.CREATE_LIVE -> {
+            CreateContentType.Live -> {
                 feedNavigationAnalytics.eventClickCreateLive(feedMainViewModel.getCurrentTabType())
 
                 openAppLink.launch(ApplinkConst.PLAY_BROADCASTER)
             }
-            CreateContentType.CREATE_POST -> {
+            CreateContentType.Post -> {
                 feedNavigationAnalytics.eventClickCreatePost(feedMainViewModel.getCurrentTabType())
 
                 val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2).apply {
@@ -267,7 +265,7 @@ class FeedBaseFragment :
                 TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
             }
 
-            CreateContentType.CREATE_SHORT_VIDEO -> {
+            CreateContentType.ShortVideo -> {
                 feedNavigationAnalytics.eventClickCreateVideo(feedMainViewModel.getCurrentTabType())
 
                 openCreateShorts.launch()
@@ -369,48 +367,30 @@ class FeedBaseFragment :
 
     private fun observeFeedTabData() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                feedMainViewModel.feedTabs.collectLatest {
-                    when (it) {
-                        is Success -> initTabsView(it.data)
-                        is Fail -> Toast.makeText(
-                            requireContext(),
-                            it.throwable.localizedMessage,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        else -> {}
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                feedMainViewModel.feedTabs.collectLatest { result ->
+                    if (result == null) return@collectLatest
+                    when (result) {
+                        is Success -> initTabsView(result.data)
+                        is Fail -> {
+                            // show error
+                        }
                     }
                 }
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                feedMainViewModel.metaData.collectLatest {
-                    when (it) {
-                        is Success -> initMetaView(it.data)
-                        is Fail -> Toast.makeText(
-                            requireContext(),
-                            it.throwable.localizedMessage,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        else -> {}
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                feedMainViewModel.metaData.collectLatest { result ->
+                    if (result == null) return@collectLatest
+                    when (result) {
+                        is Success -> initMetaView(result.data)
+                        is Fail -> {
+                            // show error
+                        }
                     }
                 }
-            }
-        }
-    }
-
-    private fun observeCreateContentBottomSheetData() {
-        feedMainViewModel.feedCreateContentBottomSheetData.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                }
-                is Fail -> Toast.makeText(
-                    requireContext(),
-                    it.throwable.localizedMessage,
-                    Toast.LENGTH_SHORT
-                ).show()
             }
         }
     }

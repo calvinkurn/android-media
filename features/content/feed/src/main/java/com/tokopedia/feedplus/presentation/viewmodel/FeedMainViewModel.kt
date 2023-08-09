@@ -6,16 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
-import com.tokopedia.content.common.model.FeedXHeaderRequestFields
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
-import com.tokopedia.content.common.usecase.FeedXHeaderUseCase
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.createpost.common.domain.usecase.cache.DeleteMediaPostCacheUseCase
-import com.tokopedia.feedplus.domain.mapper.MapperFeedTabs
-import com.tokopedia.feedplus.presentation.model.ContentCreationItem
+import com.tokopedia.feedplus.domain.repository.FeedRepository
 import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
 import com.tokopedia.feedplus.presentation.model.CreateContentType
-import com.tokopedia.feedplus.presentation.model.CreatorType
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.model.MetaModel
@@ -43,7 +39,7 @@ import javax.inject.Inject
  * Created By : Muhammad Furqan on 09/02/23
  */
 class FeedMainViewModel @Inject constructor(
-    private val feedXHeaderUseCase: FeedXHeaderUseCase,
+    private val repository: FeedRepository,
     private val submitReportUseCase: FeedComplaintSubmitReportUseCase,
     private val deletePostCacheUseCase: DeleteMediaPostCacheUseCase,
     private val dispatchers: CoroutineDispatchers,
@@ -96,7 +92,7 @@ class FeedMainViewModel @Inject constructor(
 
             return feedCreateContentData is Success &&
                 feedCreateContentData.data.find {
-                it.type == CreateContentType.CREATE_SHORT_VIDEO
+                it.type == CreateContentType.ShortVideo
             } != null
         }
 
@@ -196,18 +192,8 @@ class FeedMainViewModel @Inject constructor(
 
     fun fetchFeedTabs() {
         viewModelScope.launchCatchError(block = {
-            val response = withContext(dispatchers.io) {
-                feedXHeaderUseCase.setRequestParams(
-                    FeedXHeaderUseCase.createParam(
-                        listOf(
-                            FeedXHeaderRequestFields.TAB.value
-                        )
-                    )
-                )
-                feedXHeaderUseCase.executeOnBackground()
-            }
-            val mappedData = MapperFeedTabs.transform(response.feedXHeaderData)
-            _feedTabs.value = Success(mappedData.data)
+            val response = repository.getTabs()
+            _feedTabs.value = Success(response.data)
         }) {
             _feedTabs.value = Fail(it)
         }
@@ -215,26 +201,9 @@ class FeedMainViewModel @Inject constructor(
 
     fun fetchFeedMetaData() {
         viewModelScope.launchCatchError(block = {
-            val response = withContext(dispatchers.io) {
-                feedXHeaderUseCase.setRequestParams(
-                    FeedXHeaderUseCase.createParam(
-                        listOf(
-                            FeedXHeaderRequestFields.LIVE.value,
-                            FeedXHeaderRequestFields.CREATION.value,
-                            FeedXHeaderRequestFields.USER.value
-                        )
-                    )
-                )
-                feedXHeaderUseCase.executeOnBackground()
-            }
-            val mappedData = MapperFeedTabs.transform(response.feedXHeaderData)
-            _metaData.value = Success(mappedData.meta)
-
-            handleCreationData(
-                MapperFeedTabs.getCreationBottomSheetData(
-                    response.feedXHeaderData
-                )
-            )
+            val response = repository.getMeta()
+            _metaData.value = Success(response)
+            _feedCreateContentBottomSheetData.value = Success(response.eligibleCreationEntryPoints)
         }) {
             _metaData.value = Fail(it)
             _feedCreateContentBottomSheetData.value = Fail(it)
@@ -263,51 +232,6 @@ class FeedMainViewModel @Inject constructor(
         }) {
             _reportResponse.value = Fail(it)
         }
-    }
-
-    /**
-     * Creation Button Position is Static :
-     * 1. Short
-     * 2. Post
-     * 3. Live
-     */
-    private fun handleCreationData(creationDataList: List<ContentCreationItem>) {
-        val authorUserdataList = creationDataList.find { it.type == CreatorType.USER }?.items
-        val authorShopDataList = creationDataList.find { it.type == CreatorType.SHOP }?.items
-
-        val creatorList = mutableListOf<ContentCreationTypeItem>()
-
-        authorShopDataList?.find {
-            it.type == CreateContentType.CREATE_SHORT_VIDEO && it.isActive
-        }?.let {
-            creatorList.add(it)
-        } ?: authorUserdataList?.find {
-            it.type == CreateContentType.CREATE_SHORT_VIDEO && it.isActive
-        }?.let {
-            creatorList.add(it)
-        }
-
-        authorUserdataList?.find {
-            it.type == CreateContentType.CREATE_POST && it.isActive
-        }?.let {
-            creatorList.add(it)
-        } ?: authorShopDataList?.find {
-            it.type == CreateContentType.CREATE_POST && it.isActive
-        }?.let {
-            creatorList.add(it)
-        }
-
-        authorShopDataList?.find {
-            it.type == CreateContentType.CREATE_LIVE && it.isActive
-        }?.let {
-            creatorList.add(it)
-        } ?: authorUserdataList?.find {
-            it.type == CreateContentType.CREATE_LIVE && it.isActive
-        }?.let {
-            creatorList.add(it)
-        }
-
-        _feedCreateContentBottomSheetData.value = Success(creatorList)
     }
 
     private fun emitEvent(event: FeedMainEvent) {

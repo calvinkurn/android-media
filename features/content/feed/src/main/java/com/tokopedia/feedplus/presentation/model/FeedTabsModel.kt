@@ -14,7 +14,7 @@ data class FeedTabsModel(
         val Empty: FeedTabsModel
             get() = FeedTabsModel(
                 data = emptyList(),
-                meta = MetaModel.Empty,
+                meta = MetaModel.Empty
             )
     }
 }
@@ -35,7 +35,8 @@ data class MetaModel(
     val showMyProfile: Boolean,
     val isCreationActive: Boolean,
     val showLive: Boolean,
-    val liveApplink: String
+    val liveApplink: String,
+    val eligibleCreationEntryPoints: List<ContentCreationTypeItem>
 ) {
     companion object {
         val Empty: MetaModel
@@ -47,6 +48,7 @@ data class MetaModel(
                 isCreationActive = false,
                 showLive = false,
                 liveApplink = "",
+                eligibleCreationEntryPoints = emptyList()
             )
     }
 }
