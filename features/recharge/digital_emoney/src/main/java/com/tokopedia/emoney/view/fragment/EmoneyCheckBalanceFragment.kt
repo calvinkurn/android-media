@@ -482,10 +482,12 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
     }
 
     private fun initializeBCALibs(tag: Tag?) {
-        bcaLibrary.myTag = tag
-        val isoDep = IsoDep.get(tag)
-        if (!isoDep.isConnected) {
-            isoDep.connect()
+        if (tag != null) {
+            bcaLibrary.myTag = tag
+            val isoDep = IsoDep.get(tag)
+            if (!isoDep.isConnected) {
+                isoDep.connect()
+            }
         }
     }
 
