@@ -138,11 +138,11 @@ class OfferLandingPageFragment :
         setupToolbar(offerInfoForBuyer)
     }
 
-    private fun setupContent(offerInfoForBuyer: OfferInfoForBuyerUiModel?) {
-        offerInfoForBuyer?.let { setupHeader(it) }
+    private fun setupContent(offerInfoForBuyer: OfferInfoForBuyerUiModel) {
+        setupHeader(offerInfoForBuyer)
         olpAdapter?.submitList(
             newList = listOf(
-                generateDummyOfferingData(), // pass offering data
+                offerInfoForBuyer, // pass offering data
                 OfferProductSortingUiModel() // pass product count
             )
         )

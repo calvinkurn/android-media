@@ -46,7 +46,8 @@ class OfferLandingPageViewModel @Inject constructor(
                         cityId = localCacheModel?.city_id.toIntOrZero()
                     )
                 )
-                _offeringInfo.postValue(getOfferInfoForBuyerUseCase.execute(param))
+                val result = getOfferInfoForBuyerUseCase.execute(param)
+                _offeringInfo.postValue(result)
             },
             onError = {
                 _error.postValue(it)

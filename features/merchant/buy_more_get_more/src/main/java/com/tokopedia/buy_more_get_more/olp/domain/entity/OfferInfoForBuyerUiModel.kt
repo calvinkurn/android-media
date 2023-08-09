@@ -5,7 +5,7 @@ import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapterTypeFa
 
 data class OfferInfoForBuyerUiModel(
     val responseHeader: ResponseHeader = ResponseHeader(),
-    val offeringJsonData: String = "hakuna matata",
+    val offeringJsonData: String = "",
     val offerings: List<Offering> = emptyList()
 ): Visitable<OlpAdapterTypeFactory> {
     data class ResponseHeader(
@@ -21,8 +21,14 @@ data class OfferInfoForBuyerUiModel(
         val startDate: String = "",
         val endDate: String = "",
         val maxAppliedTier: Int = 0,
-        val tierList: List<Tier> = emptyList()
+        val tierList: List<Tier> = emptyList(),
+        val shopData: ShopData = ShopData()
     ) {
+        data class ShopData(
+            val shopId: Long = 0,
+            val shopName: String = "",
+            val badge: String =""
+        )
         data class Tier(
             val tierId: Long = 0,
             val level: Int = 0,
