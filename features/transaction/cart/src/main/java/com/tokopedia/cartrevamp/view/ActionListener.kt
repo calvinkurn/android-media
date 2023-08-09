@@ -63,6 +63,7 @@ interface ActionListener {
     fun scrollToClickedExpandedProduct(index: Int, offset: Int)
 
     fun onToggleUnavailableItemAccordion(data: DisabledAccordionHolderData, buttonWording: String)
+    fun onToggleUnavailableItemAccordion()
 
     fun onDisabledCartItemProductClicked(cartItemHolderData: CartItemHolderData)
 

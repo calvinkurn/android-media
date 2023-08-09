@@ -866,6 +866,10 @@ class CartItemViewHolder constructor(
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 delayChangeQty?.cancel()
+                if (s.toString().replace(".", "").toIntOrZero() == 0) {
+                    actionListener?.onCartItemDeleteButtonClicked(data, false)
+                    return
+                }
                 delayChangeQty = GlobalScope.launch(Dispatchers.Main) {
                     val newValue = s.toString().replace(".", "").toIntOrZero()
                     val minOrder = data.minOrder
@@ -895,9 +899,6 @@ class CartItemViewHolder constructor(
         qtyEditorProduct.editText.addTextChangedListener(qtyTextWatcher)
         qtyEditorProduct.setSubstractListener {
             if (!data.isError && bindingAdapterPosition != RecyclerView.NO_POSITION) {
-                if (data.isAlreadyShowMinimumQuantityPurchasedError) {
-                    actionListener?.onCartItemDeleteButtonClicked(data, false)
-                }
                 actionListener?.onCartItemQuantityMinusButtonClicked()
             }
         }
@@ -947,12 +948,12 @@ class CartItemViewHolder constructor(
                 qtyEditorCart.setValue(element.minOrder)
                 element.isAlreadyShowMinimumQuantityPurchasedError = true
             } else {
-                binding.labelMinQuantityError.gone()
+                element.isAlreadyShowMinimumQuantityPurchasedError = false
                 qtyEditorCart.errorMessageText = String.EMPTY
             }
         } else {
             if (!element.isAlreadyShowMinimumQuantityPurchasedError) {
-                binding.labelMinQuantityError.gone()
+                element.isAlreadyShowMinimumQuantityPurchasedError = false
                 qtyEditorCart.errorMessageText = String.EMPTY
             }
         }
@@ -1120,12 +1121,12 @@ class CartItemViewHolder constructor(
             binding.containerProductInformation.layoutParams as ViewGroup.MarginLayoutParams
         if (cartItemHolderData.isError) {
             layoutParams.bottomMargin =
-                IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
+                PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
         } else {
             if (cartItemHolderData.isBundlingItem && cartItemHolderData.isMultipleBundleProduct && cartItemHolderData.bundlingItemPosition != BUNDLING_ITEM_FOOTER) {
                 layoutParams.bottomMargin = 0
             } else {
-                layoutParams.bottomMargin = IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
+                layoutParams.bottomMargin = PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
             }
         }
     }

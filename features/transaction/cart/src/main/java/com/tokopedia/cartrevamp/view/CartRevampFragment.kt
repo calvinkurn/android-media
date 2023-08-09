@@ -888,13 +888,27 @@ class CartRevampFragment :
             buttonWording
         )
         data.isCollapsed = !data.isCollapsed
-        val disabledItemHeaderHolderDataPosition =
-            viewModel.cartDataList.value.indexOfFirst { it is DisabledItemHeaderHolderData }
-        (cartAdapter.getData()[disabledItemHeaderHolderDataPosition] as DisabledItemHeaderHolderData).isDividerShown =
-            !data.isCollapsed
+        val cartDataList = viewModel.cartDataList.value
+        val disabledItemHeaderHolderDataPosition = cartDataList.indexOfFirst { it is DisabledItemHeaderHolderData }
+        (cartDataList[disabledItemHeaderHolderDataPosition] as DisabledItemHeaderHolderData).isDividerShown = !data.isCollapsed
         onNeedToUpdateViewItem(disabledItemHeaderHolderDataPosition)
         unavailableItemAccordionCollapseState = data.isCollapsed
         collapseOrExpandDisabledItem(data)
+    }
+
+    override fun onToggleUnavailableItemAccordion() {
+        val cartDataList = viewModel.cartDataList.value
+        val accordionHolderDataPosition = cartDataList.indexOfFirst { it is DisabledAccordionHolderData }
+        val data = cartDataList.getOrNull(accordionHolderDataPosition)
+
+        if (data != null && data is DisabledAccordionHolderData) {
+            data.isCollapsed = !data.isCollapsed
+            val disabledItemHeaderHolderDataPosition = cartDataList.indexOfFirst { it is DisabledItemHeaderHolderData }
+            (cartDataList[disabledItemHeaderHolderDataPosition] as DisabledItemHeaderHolderData).isDividerShown = !data.isCollapsed
+            onNeedToUpdateViewItem(disabledItemHeaderHolderDataPosition)
+            unavailableItemAccordionCollapseState = data.isCollapsed
+            collapseOrExpandDisabledItem(data)
+        }
     }
 
     override fun onDisabledCartItemProductClicked(cartItemHolderData: CartItemHolderData) {
@@ -1845,7 +1859,6 @@ class CartRevampFragment :
 
     private fun handleSelectedAmountVisibilityOnIdle(newState: Int) {
         if (newState == RecyclerView.SCROLL_STATE_IDLE && initialSelectedAmountPosition > 0) {
-            // Delay after recycler view idle, then show promo button
             delayShowSelectedAmountJob?.cancel()
             delayShowSelectedAmountJob =
                 viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
@@ -1884,7 +1897,7 @@ class CartRevampFragment :
                 initialSelectedAmountPosition = navToolbar.y + navToolbar.height
             }
 
-            if (SELECTED_AMOUNT_TRANSLATION_LENGTH != 0f && valueY >= initialSelectedAmountPosition) {
+            if (SELECTED_AMOUNT_TRANSLATION_LENGTH != 0f && valueY >= navToolbar.y - rlTopLayout.height) {
                 animateSelectedAmountToHiddenPosition(valueY)
             }
         }
@@ -2289,6 +2302,7 @@ class CartRevampFragment :
                             viewModel.doUpdateCartAndGetLastApply(params)
                         }
                         viewModel.processUpdateCartCounter()
+                        viewModel.updateSelectedAmount()
                     }
                 }
 
