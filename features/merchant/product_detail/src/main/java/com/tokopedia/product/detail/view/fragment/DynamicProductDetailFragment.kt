@@ -481,9 +481,6 @@ open class DynamicProductDetailFragment :
 
     // This productId is only use for backend hit
     private var productId: String? = null
-
-    // this product id will be assign after thumbnail variant selected, it will use when open vbs
-    private var productIdThumbnailSelected: String? = null
     private var productKey: String? = null
     private var shopDomain: String? = null
     private var affiliateString: String? = null
@@ -2675,7 +2672,6 @@ open class DynamicProductDetailFragment :
 
         viewModel.updateDynamicProductInfoData(updatedDynamicProductInfo)
         productId = updatedDynamicProductInfo?.basic?.productID
-        productIdThumbnailSelected = productId
 
         val boeData = viewModel.getBebasOngkirDataByProductId()
         productId?.let { productId ->
@@ -2739,7 +2735,7 @@ open class DynamicProductDetailFragment :
             updateProductInfoOnVariantChanged(selectedChild)
         }
         // store the product id to this variable to open vbs later
-        productIdThumbnailSelected = selectedChild?.productId.ifNull { productId.orEmpty() }
+        productId = selectedChild?.productId.ifNull { productId.orEmpty() }
 
         scrollThumbnailVariant()
 
@@ -3590,18 +3586,13 @@ open class DynamicProductDetailFragment :
                         saveAfterClose = false
                         cartTypeData = customCartRedirection
                     }
-                    // if pdp show single variant with thumbnail type, so product id from [productIdThumbnailSelected]
-                    // otherwise [productId]
-                    val isFromThumbnailVariant =
-                        pdpUiUpdater?.productSingleVariant?.isThumbnailType.orFalse()
-                    val pid = if (isFromThumbnailVariant) productIdThumbnailSelected else productId
 
                     viewModel.clearCacheP2Data()
 
                     AtcVariantHelper.pdpToAtcVariant(
                         context = ctx,
                         pageSource = VariantPageSource.PDP_PAGESOURCE,
-                        productId = pid.orEmpty(),
+                        productId = productId.orEmpty(),
                         productInfoP1 = p1,
                         warehouseId = warehouseId.orEmpty(),
                         pdpSession = p1.pdpSession,
@@ -5104,7 +5095,6 @@ open class DynamicProductDetailFragment :
     private fun updateProductId() {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             productId = productInfo.basic.productID
-            productIdThumbnailSelected = productId // reset when p1 refresh
         }
     }
 
