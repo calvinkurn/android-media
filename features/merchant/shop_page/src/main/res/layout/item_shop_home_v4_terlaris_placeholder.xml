@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/shop_home_v4_terlaris_widget_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="16dp"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:background="@color/transparent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/shimmering_title"
+        android:layout_width="130dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/shimmering_subtitle"
+        android:layout_width="250dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="8dp"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shimmering_title" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_terlaris_widget"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shimmering_subtitle"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <!-- Show Layout of 3 -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shimmering_subtitle"
+        android:id="@+id/terlaris_container_item_product"
+        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!--    Product 1-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/terlaris_product_detail_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="@+id/terlaris_container_item_product"
+            app:layout_constraintTop_toTopOf="@+id/terlaris_container_item_product"
+            android:paddingBottom="8dp"
+            android:paddingRight="16dp">
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/shimmering_product_img_1"
+                android:layout_width="88dp"
+                android:layout_height="88dp"
+                app:loader_corner_radius="8dp"
+                app:loader_type="rect"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/terlaris_product_detail_1" />
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/shimmering_product_description_1"
+                android:layout_width="260dp"
+                android:layout_height="88dp"
+                android:layout_marginLeft="12dp"
+                app:loader_corner_radius="8dp"
+                app:loader_type="rect"
+                app:layout_constraintLeft_toRightOf="@+id/shimmering_product_img_1"
+                app:layout_constraintTop_toTopOf="@+id/terlaris_product_detail_1" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Product 2 -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/terlaris_product_detail_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="@+id/terlaris_container_item_product"
+            app:layout_constraintTop_toBottomOf="@+id/terlaris_product_detail_1"
+            android:paddingBottom="8dp"
+            android:paddingRight="16dp">
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/shimmering_product_img_2"
+                android:layout_width="88dp"
+                android:layout_height="88dp"
+                app:loader_corner_radius="8dp"
+                app:loader_type="rect"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/terlaris_product_detail_2" />
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/shimmering_product_description_2"
+                android:layout_width="260dp"
+                android:layout_height="88dp"
+                android:layout_marginLeft="12dp"
+                app:loader_corner_radius="8dp"
+                app:loader_type="rect"
+                app:layout_constraintLeft_toRightOf="@+id/shimmering_product_img_2"
+                app:layout_constraintTop_toTopOf="@+id/terlaris_product_detail_2" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Product 2 -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/terlaris_product_detail_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="@+id/terlaris_container_item_product"
+            app:layout_constraintTop_toBottomOf="@+id/terlaris_product_detail_2"
+            android:paddingBottom="16dp"
+            android:paddingRight="16dp">
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/shimmering_product_img_3"
+                android:layout_width="88dp"
+                android:layout_height="88dp"
+                app:loader_corner_radius="8dp"
+                app:loader_type="rect"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/terlaris_product_detail_3" />
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/shimmering_product_description_3"
+                android:layout_width="260dp"
+                android:layout_height="88dp"
+                android:layout_marginLeft="12dp"
+                app:loader_corner_radius="8dp"
+                app:loader_type="rect"
+                app:layout_constraintLeft_toRightOf="@+id/shimmering_product_img_3"
+                app:layout_constraintTop_toTopOf="@+id/terlaris_product_detail_3" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
