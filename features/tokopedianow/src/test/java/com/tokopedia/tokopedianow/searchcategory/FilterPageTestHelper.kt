@@ -46,6 +46,17 @@ class FilterPageTestHelper(
         `Then assert dynamic filter model live data is updated`(dynamicFilterModel)
     }
 
+    fun `test open filter page first time but getting filter failed`() {
+         callback.`Given first page API will be successful`()
+        `Given view already created`()
+        `Given get filter API will be failed`()
+
+        `When view open filter page`()
+
+        `Then assert filter is open live data`(false)
+        `Then assert dynamic filter model live data is updated`(null)
+    }
+
     private fun `Given view already created`() {
         baseViewModel.onViewCreated()
     }
@@ -58,6 +69,13 @@ class FilterPageTestHelper(
             getFilterUseCase.execute(capture(filterRequestParamsSlot))
         } returns dynamicFilterModel
     }
+
+    private fun `Given get filter API will be failed`() {
+        coEvery {
+            getFilterUseCase.execute(any())
+        } throws Throwable()
+    }
+
 
     private fun `When view open filter page`() {
         baseViewModel.onViewOpenFilterPage()
@@ -79,9 +97,21 @@ class FilterPageTestHelper(
     }
 
     private fun `Then assert dynamic filter model live data is updated`(
-        dynamicFilterModel: DynamicFilterModel
+        dynamicFilterModel: DynamicFilterModel?
     ) {
         assertThat(baseViewModel.dynamicFilterModelLiveData.value, shouldBe(dynamicFilterModel))
+    }
+
+    private fun `Then assert query param contains pmix and pmax`() {
+        val queryParamMutable = baseViewModel.getParentPrivateField<MutableMap<String, String>>("queryParamMutable")
+
+        assert(queryParamMutable.containsKey(SearchApiConst.PMAX) && queryParamMutable.containsKey(SearchApiConst.PMIN))
+    }
+
+    private fun `Then assert query param doesn't contain pmix and pmax`() {
+        val queryParamMutable = baseViewModel.getParentPrivateField<MutableMap<String, String>>("queryParamMutable")
+
+        assert(!queryParamMutable.containsKey(SearchApiConst.PMAX) && !queryParamMutable.containsKey(SearchApiConst.PMIN))
     }
 
     fun `test open filter page cannot be spammed`() {
@@ -150,48 +180,39 @@ class FilterPageTestHelper(
     }
 
     fun `test apply price filter`() {
-        val queryParamMutable = baseViewModel.getParentPrivateField<MutableMap<String, String>>("queryParamMutable")
-        val isPreviousFilterPageOpenNotTrue = baseViewModel.isFilterPageOpenLiveData.value != true
+        `Then assert filter is open live data`(false)
 
         `Given view setup from created until open filter page`()
         `Given mock apply filter price param`(dynamicFilterModel)
 
         `When view apply filter`()
 
-        val doPreviousQueryParamsContainPmaxPmin = queryParamMutable.containsKey(SearchApiConst.PMAX) && queryParamMutable.containsKey(SearchApiConst.PMIN)
-        val isCurrentDynamicFilterNotNull = baseViewModel.dynamicFilterModelLiveData.value != null
-        val isCurrentFilterPageOpenTrue = baseViewModel.isFilterPageOpenLiveData.value == true
-
-        assert(isPreviousFilterPageOpenNotTrue)
-        assert(doPreviousQueryParamsContainPmaxPmin)
-        assert(isCurrentDynamicFilterNotNull)
-        assert(isCurrentFilterPageOpenTrue)
+        `Then assert filter is open live data`(true)
+        `Then assert dynamic filter model live data is updated`(dynamicFilterModel)
+        `Then assert query param contains pmix and pmax`()
     }
 
     fun `test apply and remove price filter`() {
-        val queryParamMutable = baseViewModel.getParentPrivateField<MutableMap<String, String>>("queryParamMutable")
-        val isPreviousFilterPageOpenNotTrue = baseViewModel.isFilterPageOpenLiveData.value != true
+        `Then assert filter is open live data`(false)
 
         `Given view setup from created until open filter page`()
         `Given mock apply filter price param`(dynamicFilterModel)
 
         `When view apply filter`()
 
-        val doPreviousQueryParamsContainPmaxPmin = queryParamMutable.containsKey(SearchApiConst.PMAX) && queryParamMutable.containsKey(SearchApiConst.PMIN)
+        `Then assert query param contains pmix and pmax`()
 
+        `Remove filter which has been selected`()
+
+        `Then assert filter is open live data`(true)
+        `Then assert dynamic filter model live data is updated`(dynamicFilterModel)
+        `Then assert query param doesn't contain pmix and pmax`()
+    }
+
+    private fun `Remove filter which has been selected`() {
         selectedFilterOptions.forEach {
             baseViewModel.onViewRemoveFilter(it)
         }
-
-        val doCurrentQueryParamsNotContainPmaxPmin = !queryParamMutable.containsKey(SearchApiConst.PMAX) && !queryParamMutable.containsKey(SearchApiConst.PMIN)
-        val isCurrentDynamicFilterNotNull = baseViewModel.dynamicFilterModelLiveData.value != null
-        val isCurrentFilterPageOpenTrue = baseViewModel.isFilterPageOpenLiveData.value == true
-
-        assert(isPreviousFilterPageOpenNotTrue)
-        assert(doPreviousQueryParamsContainPmaxPmin)
-        assert(doCurrentQueryParamsNotContainPmaxPmin)
-        assert(isCurrentDynamicFilterNotNull)
-        assert(isCurrentFilterPageOpenTrue)
     }
 
     private fun `Given view setup from created until open filter page`() {

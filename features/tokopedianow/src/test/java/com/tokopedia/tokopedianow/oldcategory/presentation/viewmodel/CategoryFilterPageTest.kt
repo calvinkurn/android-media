@@ -48,6 +48,11 @@ class CategoryFilterPageTest: CategoryTestFixtures(), Callback {
     }
 
     @Test
+    fun `open filter page first time but getting filter failed`() {
+        filterPageTestHelper.`test open filter page first time but getting filter failed`()
+    }
+
+    @Test
     fun `open filter page cannot be spammed`() {
         filterPageTestHelper.`test open filter page cannot be spammed`()
     }

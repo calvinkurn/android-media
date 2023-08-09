@@ -48,6 +48,11 @@ class SearchFilterPageTest: SearchTestFixtures(), Callback {
     }
 
     @Test
+    fun `open filter page first time but getting filter failed`() {
+        filterPageTestHelper.`test open filter page first time but getting filter failed`()
+    }
+
+    @Test
     fun `open filter page cannot be spammed`() {
         filterPageTestHelper.`test open filter page cannot be spammed`()
     }
@@ -65,6 +70,16 @@ class SearchFilterPageTest: SearchTestFixtures(), Callback {
     @Test
     fun `apply filter from filter page`() {
         filterPageTestHelper.`test apply filter from filter page`()
+    }
+
+    @Test
+    fun `apply price filter`() {
+        filterPageTestHelper.`test apply price filter`()
+    }
+
+    @Test
+    fun `apply and remove price filter`() {
+        filterPageTestHelper.`test apply and remove price filter`()
     }
 
     @Test
