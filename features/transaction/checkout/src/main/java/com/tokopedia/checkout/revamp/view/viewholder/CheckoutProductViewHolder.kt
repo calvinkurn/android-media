@@ -447,6 +447,10 @@ class CheckoutProductViewHolder(
         }
     }
 
+    private fun renderBmgmInfo() {
+
+    }
+
     companion object {
         val VIEW_TYPE = R.layout.item_checkout_product
 

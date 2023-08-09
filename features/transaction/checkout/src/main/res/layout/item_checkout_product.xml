@@ -139,7 +139,53 @@
         tools:text="Toko Adidas"
         tools:visibility="visible" />
 
-    <include layout="@layout/layout_checkout_product_bundle" />
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iv_checkout_bmgm_badge"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="14dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="4dp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tv_checkout_bmgm_desc"
+        app:layout_constraintTop_toBottomOf="@id/iv_checkout_shop_badge"
+        app:unify_image_type="rect"
+        tools:visibility="visible"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_checkout_bmgm_desc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:lines="1"
+        android:textColor="@color/Unify_NN950"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@id/iv_checkout_bmgm_detail"
+        app:layout_constraintStart_toEndOf="@id/iv_checkout_bmgm_badge"
+        app:layout_constraintTop_toTopOf="@id/iv_checkout_bmgm_badge"
+        app:layout_constraintBottom_toBottomOf="@id/iv_checkout_bmgm_badge"
+        app:layout_goneMarginStart="16dp"
+        app:typographyType="display_3"
+        app:typographyWeight="reguler"
+        tools:text="Potongan Rp550rb . Summer Sale Clearance!"
+        tools:visibility="visible" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iv_checkout_bmgm_detail"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="16dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/iv_checkout_bmgm_badge"
+        app:layout_constraintBottom_toBottomOf="@id/iv_checkout_bmgm_badge"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tv_checkout_bmgm_desc"
+        app:unify_image_type="rect"
+        app:icon_name="INFORMATION"/>
 
     <include layout="@layout/layout_checkout_product" />
 
