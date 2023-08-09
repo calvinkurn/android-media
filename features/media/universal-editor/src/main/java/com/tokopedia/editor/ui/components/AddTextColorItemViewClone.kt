@@ -11,8 +11,7 @@ import com.tokopedia.unifyprinciples.R as principleR
 class AddTextColorItemViewClone(context: Context) : AppCompatImageView(context) {
     private val shapeDrawable = GradientDrawable()
 
-    private val strokeInactiveColor = principleR.color.Unify_NN0
-    private val strokeActiveColor = principleR.color.Unify_GN500
+    private val strokeColor = ContextCompat.getColor(context, principleR.color.Unify_NN0)
 
     init {
         val lp = LinearLayout.LayoutParams(
@@ -32,27 +31,28 @@ class AddTextColorItemViewClone(context: Context) : AppCompatImageView(context) 
         shapeDrawable.setColor(colorRef)
         shapeDrawable.setStroke(
             COLOR_CIRCLE_STROKE.toPx(),
-            ContextCompat.getColor(context, strokeInactiveColor)
+            strokeColor
         )
     }
 
     fun setActive() {
         shapeDrawable.setStroke(
-            COLOR_CIRCLE_STROKE.toPx(),
-            ContextCompat.getColor(context, strokeActiveColor)
+            COLOR_CIRCLE_STROKE_ACTIVE.toPx(),
+            strokeColor
         )
     }
 
     fun setInactive() {
         shapeDrawable.setStroke(
             COLOR_CIRCLE_STROKE.toPx(),
-            ContextCompat.getColor(context, strokeInactiveColor)
+            strokeColor
         )
     }
 
     companion object {
         private const val COLOR_CIRCLE_SIZE = 32
         private const val COLOR_CIRCLE_STROKE = 2
+        private const val COLOR_CIRCLE_STROKE_ACTIVE = 4
         private const val COLOR_CIRCLE_MARGIN = 16
     }
 }
