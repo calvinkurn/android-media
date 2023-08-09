@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imageUnify"
+        android:layout_width="0dp"
+        android:layout_height="132dp"
+        android:background="@color/Unify_NN950"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgProductName"
+        android:layout_width="0dp"
+        app:typographyType="display_3"
+        android:layout_marginTop="8dp"
+        android:minLines="1"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/imageUnify"
+        app:layout_constraintStart_toStartOf="@+id/imageUnify"
+        app:layout_constraintTop_toBottomOf="@+id/imageUnify"
+        tools:text="Samsung Galaxy S23 - 512 GB" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgProductPrice"
+        android:layout_width="0dp"
+        android:layout_marginTop="2dp"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/imageUnify"
+        app:layout_constraintStart_toStartOf="@+id/imageUnify"
+        app:layout_constraintTop_toBottomOf="@+id/tpgProductName"
+        tools:text="Rp18.849.000" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/labelDiscount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:labelType="general_light_red"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toStartOf="@+id/imageUnify"
+        app:layout_constraintTop_toBottomOf="@id/tpgProductPrice"
+        tools:text="20%" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgSlashedProductPrice"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:textColor="@color/Unify_NN400"
+        app:layout_constraintBottom_toBottomOf="@+id/labelDiscount"
+        app:layout_constraintEnd_toEndOf="@+id/imageUnify"
+        app:layout_constraintStart_toEndOf="@+id/labelDiscount"
+        app:layout_constraintTop_toTopOf="@+id/labelDiscount"
+        app:typographyType="display_3"
+        tools:text="Rp20.849.000" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imgStar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bottomBarrier"
+        app:srcCompat="@drawable/ic_shop_home_star_filled" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgRating"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="@+id/imgStar"
+        app:layout_constraintStart_toEndOf="@+id/labelDiscount"
+        app:layout_constraintTop_toTopOf="@+id/imgStar"
+        app:typographyType="display_3"
+        tools:text="4.8" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgBullet"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="@+id/imgStar"
+        app:layout_constraintStart_toEndOf="@+id/tpgRating"
+        app:layout_constraintTop_toTopOf="@+id/imgStar"
+        app:typographyType="display_3"
+        android:layout_marginStart="8dp"
+        android:text="@string/shop_page_dot_character" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgProductSoldCount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN600"
+        android:layout_marginStart="4dp"
+        app:layout_constraintBottom_toBottomOf="@+id/imgStar"
+        app:layout_constraintStart_toEndOf="@+id/tpgBullet"
+        app:layout_constraintTop_toTopOf="@+id/imgStar"
+        app:typographyType="display_3"
+        tools:text="Terjual 500" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/bottomBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="tpgProductPrice, labelDiscount"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

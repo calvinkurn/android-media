@@ -212,6 +212,11 @@ object ShopPageWidgetMapper {
             type = response.type
         )
     }
+
+    fun mapToProductCarouselWidget() {
+
+    }
+
     private fun Int?.mapToStatusCampaign(): StatusCampaign {
         return when (this) {
             0 -> StatusCampaign.UPCOMING
