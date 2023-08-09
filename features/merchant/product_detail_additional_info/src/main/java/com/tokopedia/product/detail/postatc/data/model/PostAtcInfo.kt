@@ -30,6 +30,7 @@ data class PostAtcInfo(
     }
 
     data class Addons(
+        val deselectedAddonsIds: List<String>,
         val isFulfillment: Boolean,
         val selectedAddonsIds: List<String>,
         val warehouseId: String,
@@ -37,6 +38,7 @@ data class PostAtcInfo(
     ) {
         companion object {
             fun parse(addons: PostAtc.Addons) = Addons(
+                deselectedAddonsIds = addons.deselectedAddonsIds,
                 isFulfillment = addons.isFulfillment,
                 selectedAddonsIds = addons.selectedAddonsIds,
                 warehouseId = addons.warehouseId,

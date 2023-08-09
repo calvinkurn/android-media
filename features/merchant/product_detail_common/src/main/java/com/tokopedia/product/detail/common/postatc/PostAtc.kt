@@ -14,6 +14,7 @@ data class PostAtc(
 
     @Parcelize
     data class Addons(
+        val deselectedAddonsIds: List<String>,
         val isFulfillment: Boolean,
         val selectedAddonsIds: List<String>,
         val warehouseId: String,

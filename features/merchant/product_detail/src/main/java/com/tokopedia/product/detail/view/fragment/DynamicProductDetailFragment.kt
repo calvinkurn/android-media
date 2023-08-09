@@ -3675,11 +3675,16 @@ open class DynamicProductDetailFragment :
         postAtcLayout: PostAtcLayout
     ) {
         val context = context ?: return
+
+        val addonsIds = cartDataModel.addOns.groupBy(
+            keySelector = { it.status },
+            valueTransform = { it.id }
+        )
+
         val addons = PostAtc.Addons(
+            deselectedAddonsIds = addonsIds[2] ?: emptyList(),
             isFulfillment = cartDataModel.isFulfillment,
-            selectedAddonsIds = cartDataModel.addOns.mapNotNull { item ->
-                item.id.takeIf { item.status == 1 }
-            },
+            selectedAddonsIds = addonsIds[1] ?: emptyList(),
             warehouseId = cartDataModel.warehouseId,
             quantity = cartDataModel.quantity
         )
@@ -3691,6 +3696,7 @@ open class DynamicProductDetailFragment :
             session = postAtcLayout.postAtcSession,
             addons = addons
         )
+
         PostAtcHelper.start(
             context,
             productId,

@@ -57,6 +57,7 @@ private fun toAddonsUiModel(
             warehouseId = addons.warehouseId,
             isFulfillment = addons.isFulfillment,
             selectedAddonsIds = addons.selectedAddonsIds,
+            deselectedAddonsIds = addons.deselectedAddonsIds,
             categoryId = postAtcInfo.categoryId,
             shopId = postAtcInfo.shopId,
             quantity = addons.quantity.toLong(),

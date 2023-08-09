@@ -707,11 +707,15 @@ class AtcVariantBottomSheet :
         postAtcLayout: PostAtcLayout,
         cartData: DataModel
     ) {
+        val addonsIds = cartData.addOns.groupBy(
+            keySelector = { it.status },
+            valueTransform = { it.id }
+        )
+
         val addons = PostAtc.Addons(
+            deselectedAddonsIds = addonsIds[2] ?: emptyList(),
             isFulfillment = cartData.isFulfillment,
-            selectedAddonsIds = cartData.addOns.mapNotNull { addon ->
-                addon.id.takeIf { addon.status == 1 }
-            },
+            selectedAddonsIds = addonsIds[1] ?: emptyList(),
             warehouseId = cartData.warehouseId,
             quantity = cartData.quantity
         )
@@ -730,6 +734,7 @@ class AtcVariantBottomSheet :
             session = postAtcLayout.postAtcSession,
             addons = addons
         )
+
         PostAtcHelper.start(
             context,
             productId,
