@@ -5,8 +5,11 @@ import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartModel
 import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartRecommendationItemHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartSectionHeaderHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartTopAdsHeadlineData
 import com.tokopedia.cartrevamp.view.uimodel.CartWishlistHolderData
+import com.tokopedia.cartrevamp.view.uimodel.DisabledAccordionHolderData
+import com.tokopedia.cartrevamp.view.uimodel.DisabledItemHeaderHolderData
 
 object CartDataHelper {
 
@@ -50,6 +53,22 @@ object CartDataHelper {
         return cartItemDataList
     }
 
+    fun getAllAvailableShopGroupDataList(cartDataList: ArrayList<Any>): List<CartGroupHolderData> {
+        val availableShopGroupList = mutableListOf<CartGroupHolderData>()
+        loop@ for (data in cartDataList) {
+            when (data) {
+                is CartGroupHolderData -> {
+                    if (!data.isError) {
+                        availableShopGroupList.add(data)
+                    }
+                }
+
+                hasReachAllShopItems(data) -> break@loop
+            }
+        }
+        return availableShopGroupList
+    }
+
     fun getAllCartItemData(cartDataList: ArrayList<Any>, cartModel: CartModel): List<CartItemHolderData> {
         val cartItemDataList = ArrayList<CartItemHolderData>()
         loop@ for (data in cartDataList) {
@@ -74,6 +93,70 @@ object CartDataHelper {
         return cartItemDataList
     }
 
+    fun getAllCartItemProductId(cartDataList: ArrayList<Any>): List<String> {
+        val productIdList = ArrayList<String>()
+        loop@ for (data in cartDataList) {
+            when (data) {
+                is CartGroupHolderData -> {
+                    data.productUiModelList.let {
+                        for (cartItemHolderData in it) {
+                            productIdList.add(cartItemHolderData.productId)
+                        }
+                    }
+                }
+
+                hasReachAllShopItems(data) -> break@loop
+            }
+        }
+
+        return productIdList
+    }
+
+    fun getAllDisabledCartItemData(cartDataList: ArrayList<Any>, cartModel: CartModel): List<CartItemHolderData> {
+        val cartItemDataList = ArrayList<CartItemHolderData>()
+        if (cartModel.tmpAllUnavailableShop?.isNotEmpty() == true) {
+            cartItemDataList.addAll(getCollapsedUnavailableCartItemData(cartModel))
+        } else {
+            loop@ for (data in cartDataList) {
+                when (data) {
+                    is CartGroupHolderData -> {
+                        if (data.isError) {
+                            cartItemDataList.addAll(data.productUiModelList)
+                        }
+                    }
+
+                    hasReachAllShopItems(data) -> break@loop
+                }
+            }
+        }
+
+        return cartItemDataList
+    }
+
+    fun getAllShopGroupDataList(cartDataList: ArrayList<Any>): List<CartGroupHolderData> {
+        val shopGroupList = mutableListOf<CartGroupHolderData>()
+        loop@ for (data in cartDataList) {
+            when (data) {
+                is CartGroupHolderData -> {
+                    shopGroupList.add(data)
+                }
+
+                hasReachAllShopItems(data) -> break@loop
+            }
+        }
+        return shopGroupList
+    }
+
+    fun getCartWishlistHolderData(cartDataList: ArrayList<Any>): CartWishlistHolderData {
+        cartDataList.forEach {
+            if (it is CartWishlistHolderData) {
+                return it
+            }
+        }
+
+        return CartWishlistHolderData()
+    }
+
     private fun getCollapsedUnavailableCartItemData(cartModel: CartModel): List<CartItemHolderData> {
         val cartItemDataList = mutableListOf<CartItemHolderData>()
         cartModel.tmpAllUnavailableShop?.let {
@@ -88,10 +171,167 @@ object CartDataHelper {
         return cartItemDataList
     }
 
+    fun getDisabledAccordionHolderData(cartDataList: ArrayList<Any>): DisabledAccordionHolderData? {
+        cartDataList.forEach {
+            if (it is DisabledAccordionHolderData) {
+                return it
+            }
+        }
+
+        return null
+    }
+
+    fun getSelectedAvailableCartItemData(cartDataList: ArrayList<Any>): List<CartItemHolderData> {
+        val cartItemDataList = ArrayList<CartItemHolderData>()
+        loop@ for (data in cartDataList) {
+            when (data) {
+                is CartGroupHolderData -> {
+                    if (!data.isError) {
+                        for (cartItemHolderData in data.productUiModelList) {
+                            if (cartItemHolderData.isSelected) {
+                                cartItemDataList.add(cartItemHolderData)
+                            }
+                        }
+                    }
+                }
+
+                hasReachAllShopItems(data) -> break@loop
+            }
+        }
+
+        return cartItemDataList
+    }
+
+    fun getDisabledItemHeaderPosition(cartDataList: ArrayList<Any>): Int {
+        for (i in cartDataList.indices) {
+            if (cartDataList[i] is DisabledItemHeaderHolderData) {
+                return i
+            }
+        }
+
+        return 0
+    }
+
+    fun getRecommendationItem(itemCount: Int, cartDataList: ArrayList<Any>): List<CartRecommendationItemHolderData> {
+        var firstRecommendationItemIndex = 0
+        for ((index, item) in cartDataList.withIndex()) {
+            if (item is CartRecommendationItemHolderData) {
+                firstRecommendationItemIndex = index
+                break
+            }
+        }
+
+        var lastIndex = itemCount
+        // Check if last item is not loading view type
+        if (cartDataList[itemCount - 1] !is CartRecommendationItemHolderData) {
+            lastIndex = itemCount - 1
+        }
+        val recommendationList = cartDataList.subList(firstRecommendationItemIndex, lastIndex)
+
+        return recommendationList as List<CartRecommendationItemHolderData>
+    }
+
+    fun getSelectedCartGroupHolderData(cartDataList: ArrayList<Any>): List<CartGroupHolderData> {
+        val cartGroupHolderDataList = ArrayList<CartGroupHolderData>()
+        loop@ for (data in cartDataList) {
+            when (data) {
+                is CartGroupHolderData -> {
+                    if (data.isPartialSelected || data.isAllSelected) {
+                        cartGroupHolderDataList.add(data)
+                    }
+                }
+
+                hasReachAllShopItems(data) -> break@loop
+            }
+        }
+
+        return cartGroupHolderDataList
+    }
+
+    fun getSelectedCartItemData(cartDataList: ArrayList<Any>): List<CartItemHolderData> {
+        val cartItemDataList = ArrayList<CartItemHolderData>()
+        loop@ for (data in cartDataList) {
+            when (data) {
+                is CartGroupHolderData -> {
+                    if ((data.isPartialSelected || data.isAllSelected)) {
+                        for (cartItemHolderData in data.productUiModelList) {
+                            if (cartItemHolderData.isSelected && !cartItemHolderData.isError) {
+                                cartItemHolderData.shopBoMetadata = data.boMetadata
+                                cartItemHolderData.shopCartShopGroupTickerData =
+                                    data.cartShopGroupTicker
+                                cartItemDataList.add(cartItemHolderData)
+                            }
+                        }
+                    }
+                }
+
+                hasReachAllShopItems(data) -> break@loop
+            }
+        }
+
+        return cartItemDataList
+    }
+
     private fun hasReachAllShopItems(data: Any): Boolean {
         return data is CartRecentViewHolderData ||
             data is CartWishlistHolderData ||
             data is CartTopAdsHeadlineData ||
             data is CartRecommendationItemHolderData
+    }
+
+    fun hasAvailableItemLeft(cartDataList: ArrayList<Any>): Boolean {
+        cartDataList.forEach {
+            when (it) {
+                is CartGroupHolderData -> {
+                    if (it.productUiModelList.isNotEmpty()) {
+                        return true
+                    }
+                }
+
+                is DisabledItemHeaderHolderData, is CartSectionHeaderHolderData -> {
+                    return false
+                }
+            }
+        }
+
+        return false
+    }
+
+    fun hasSelectedCartItem(cartDataList: ArrayList<Any>): Boolean {
+        cartDataList.forEach {
+            when (it) {
+                is CartGroupHolderData -> {
+                    it.productUiModelList.forEach { cartItem ->
+                        if (cartItem.isSelected) return true
+                    }
+                }
+
+                is DisabledItemHeaderHolderData, is CartSectionHeaderHolderData -> {
+                    return false
+                }
+            }
+        }
+
+        return false
+    }
+
+    fun isAllAvailableItemChecked(cartDataList: ArrayList<Any>): Boolean {
+        cartDataList.forEach {
+            when (it) {
+                is CartGroupHolderData -> {
+                    it.productUiModelList.forEach { itemHolderData ->
+                        if (!itemHolderData.isSelected) {
+                            return false
+                        }
+                    }
+                }
+
+                is DisabledItemHeaderHolderData, is CartSectionHeaderHolderData -> {
+                    return true
+                }
+            }
+        }
+
+        return true
     }
 }

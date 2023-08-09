@@ -16,8 +16,10 @@ import com.tokopedia.checkout.R
 import com.tokopedia.checkout.databinding.ItemCheckoutProductBinding
 import com.tokopedia.checkout.databinding.LayoutCheckoutProductBinding
 import com.tokopedia.checkout.databinding.LayoutCheckoutProductBundleBinding
+import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
@@ -27,6 +29,8 @@ import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.databinding.ItemAddOnProductBinding
 import com.tokopedia.purchase_platform.common.utils.getHtmlFormat
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -49,11 +53,13 @@ class CheckoutProductViewHolder(
     private var delayChangeCheckboxAddOnState: Job? = null
 
     fun bind(product: CheckoutProductModel) {
+        renderErrorAndWarningGroup(product)
         if (product.isBundlingItem) {
             renderBundleItem(product)
         } else {
             renderProductItem(product)
         }
+        renderErrorProduct(product)
     }
 
     @SuppressLint("SetTextI18n")
@@ -188,6 +194,7 @@ class CheckoutProductViewHolder(
 
     private fun renderGroupInfo(product: CheckoutProductModel) {
         if (product.shouldShowGroupInfo) {
+            binding.vDividerOrder.isVisible = product.orderNumber > 1
             binding.tvCheckoutOrderNumber.text = itemView.context.getString(
                 R.string.label_order_counter,
                 product.orderNumber
@@ -229,6 +236,7 @@ class CheckoutProductViewHolder(
                 binding.imgFreeShipping.isVisible = false
             }
         } else {
+            binding.vDividerOrder.isVisible = false
             binding.tvCheckoutOrderNumber.isVisible = false
             binding.bgCheckoutSupergraphicOrder.isVisible = false
             binding.ivCheckoutOrderBadge.isVisible = false
@@ -447,9 +455,189 @@ class CheckoutProductViewHolder(
         }
     }
 
+    private fun renderErrorAndWarningGroup(product: CheckoutProductModel) {
+        if (product.shouldShowGroupInfo) {
+            val order = listener.getOrderByCartStringGroup(product.cartStringGroup)
+            if (order != null) {
+                renderGroupError(order)
+                if (!binding.checkoutTickerShopError.isVisible) {
+                    renderWarningGroup(order)
+                }
+                if (!binding.checkoutTickerShopError.isVisible) {
+                    renderCustomError(order)
+                }
+                return
+            }
+        }
+        binding.checkoutTickerShopError.isVisible = false
+    }
+
+    private fun renderGroupError(order: CheckoutOrderModel) {
+        with(binding) {
+            if (order.isError) {
+                val errorTitle = order.errorTitle
+                val errorDescription = order.errorDescription
+                if (errorTitle.isNotEmpty()) {
+                    if (errorDescription.isNotEmpty()) {
+                        checkoutTickerShopError.tickerTitle = errorTitle
+                        checkoutTickerShopError.setTextDescription(errorDescription)
+                        checkoutTickerShopError.setDescriptionClickEvent(object : TickerCallback {
+                            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                                // no-op
+                            }
+
+                            override fun onDismiss() {
+                                // no-op
+                            }
+                        })
+                    } else {
+                        if (order.isCustomEpharmacyError) {
+                            checkoutTickerShopError.setHtmlDescription(
+                                "$errorTitle ${itemView.context.getString(R.string.checkout_ticker_lihat_cta_suffix)}"
+                            )
+                            checkoutTickerShopError.setDescriptionClickEvent(object : TickerCallback {
+                                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                                    listener.onClickLihatOnTickerOrderError(
+                                        order.shopId.toString(),
+                                        errorTitle,
+                                        order,
+                                        bindingAdapterPosition
+                                    )
+                                }
+
+                                override fun onDismiss() {
+                                    // no op
+                                }
+                            })
+                        } else {
+                            checkoutTickerShopError.setTextDescription(errorTitle)
+                            checkoutTickerShopError.setDescriptionClickEvent(object : TickerCallback {
+                                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                                    // no op
+                                }
+
+                                override fun onDismiss() {
+                                    // no op
+                                }
+                            })
+                        }
+                    }
+                    checkoutTickerShopError.tickerType = Ticker.TYPE_ERROR
+                    checkoutTickerShopError.tickerShape = Ticker.SHAPE_LOOSE
+                    checkoutTickerShopError.closeButtonVisibility = View.GONE
+                    checkoutTickerShopError.visible()
+//                    layoutError.visible()
+                } else {
+                    checkoutTickerShopError.gone()
+//                    layoutError.gone()
+                }
+            } else {
+                checkoutTickerShopError.gone()
+//                layoutError.gone()
+            }
+//            layoutWarning.gone()
+        }
+    }
+
+    private fun renderWarningGroup(order: CheckoutOrderModel) {
+        with(binding) {
+            if (!order.isError && order.shopTicker.isNotEmpty()) {
+                checkoutTickerShopError.tickerTitle =
+                    order.shopTickerTitle
+                checkoutTickerShopError.setHtmlDescription(order.shopTicker)
+                checkoutTickerShopError.visible()
+                checkoutTickerShopError.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        // no-op
+                    }
+
+                    override fun onDismiss() {
+                        order.shopTicker = ""
+                        checkoutTickerShopError.gone()
+                    }
+                })
+            } else {
+                checkoutTickerShopError.gone()
+            }
+        }
+    }
+
+    private fun renderCustomError(order: CheckoutOrderModel) {
+        with(binding) {
+            if ((
+                    !order.isError && order.isHasUnblockingError &&
+                        order.unblockingErrorMessage.isNotEmpty()
+                    ) &&
+                order.firstProductErrorIndex > -1
+            ) {
+                val errorMessage = order.unblockingErrorMessage
+                checkoutTickerShopError.setHtmlDescription(errorMessage + " " + itemView.context.getString(R.string.checkout_ticker_lihat_cta_suffix))
+                checkoutTickerShopError.setDescriptionClickEvent(object : TickerCallback {
+
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        listener.onClickLihatOnTickerOrderError(
+                            order.shopId.toString(),
+                            errorMessage,
+                            order,
+                            bindingAdapterPosition
+                        )
+                    }
+
+                    override fun onDismiss() {
+                        // no-op
+                    }
+                })
+                checkoutTickerShopError.tickerType = Ticker.TYPE_ERROR
+                checkoutTickerShopError.tickerShape = Ticker.SHAPE_LOOSE
+                checkoutTickerShopError.closeButtonVisibility = View.GONE
+                checkoutTickerShopError.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun renderErrorProduct(product: CheckoutProductModel) {
+        if (product.isError || product.isShopError) {
+            binding.frameCheckoutProductContainer.alpha = VIEW_ALPHA_DISABLED
+        } else {
+            binding.frameCheckoutProductContainer.alpha = VIEW_ALPHA_ENABLED
+        }
+        renderErrorProductTicker(product)
+    }
+
+    private fun renderErrorProductTicker(cartItemModel: CheckoutProductModel) {
+        if (cartItemModel.errorMessage.isNotEmpty()) {
+            if (cartItemModel.errorMessageDescription.isNotEmpty()) {
+                binding.checkoutTickerProductError.tickerTitle = cartItemModel.errorMessage
+                binding.checkoutTickerProductError.setTextDescription(cartItemModel.errorMessageDescription)
+            } else {
+                binding.checkoutTickerProductError.setTextDescription(cartItemModel.errorMessage)
+            }
+
+            if (cartItemModel.isBundlingItem) {
+                if (cartItemModel.bundlingItemPosition == ShipmentMapper.BUNDLING_ITEM_HEADER) {
+                    binding.checkoutTickerProductError.visible()
+                    binding.checkoutTickerProductError.post {
+                        binding.checkoutTickerProductError.requestLayout()
+                    }
+                } else {
+                    binding.checkoutTickerProductError.gone()
+                }
+            } else {
+                binding.checkoutTickerProductError.visible()
+                binding.checkoutTickerProductError.post {
+                    binding.checkoutTickerProductError.requestLayout()
+                }
+            }
+        } else {
+            binding.checkoutTickerProductError.gone()
+        }
+    }
+
     companion object {
         val VIEW_TYPE = R.layout.item_checkout_product
 
+        private const val VIEW_ALPHA_ENABLED = 1.0f
+        private const val VIEW_ALPHA_DISABLED = 0.5f
         private const val DEBOUNCE_TIME_ADDON = 500L
     }
 }

@@ -72,14 +72,14 @@
                 app:typographyWeight="reguler"
                 tools:text="1 promo dipakai" />
 
-            <TextSwitcher
+            <com.tokopedia.promocheckout.common.view.widget.TextFlipper
                 android:id="@+id/tv_promo_checkout_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:layout_marginBottom="12dp"
-                android:inAnimation="@anim/anim_slide_up_in"
-                android:outAnimation="@anim/anim_slide_up_out"
+                android:inAnimation="@anim/anim_promo_slide_up_in"
+                android:outAnimation="@anim/anim_promo_slide_up_out"
                 app:layout_constraintBottom_toTopOf="@id/barrier_bottom_promo_checkout_header"
                 app:layout_constraintEnd_toStartOf="@+id/ic_promo_checkout_right"
                 app:layout_constraintStart_toEndOf="@id/iv_promo_checkout_left"
@@ -104,7 +104,7 @@
                     app:typographyWeight="reguler"
                     tools:text="Ada promo Rp10.000 pakai JNE Same Day!Ada promo Rp10.000 pakai JNE Same Day!" />
 
-            </TextSwitcher>
+            </com.tokopedia.promocheckout.common.view.widget.TextFlipper>
 
         </LinearLayout>
 

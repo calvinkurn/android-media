@@ -9,8 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateFirstView="false"
-        android:inAnimation="@anim/anim_slide_down_in"
-        android:outAnimation="@anim/anim_slide_down_out"
+        android:inAnimation="@anim/anim_promo_slide_down_in"
+        android:outAnimation="@anim/anim_promo_slide_down_out"
         android:visibility="gone">
 
         <include layout="@layout/layout_widget_promo_checkout" />

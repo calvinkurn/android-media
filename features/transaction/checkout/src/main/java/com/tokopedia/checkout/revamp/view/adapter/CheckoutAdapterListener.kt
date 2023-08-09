@@ -7,6 +7,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 
 interface CheckoutAdapterListener {
@@ -18,6 +19,15 @@ interface CheckoutAdapterListener {
     fun onClickApplyNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel)
 
     fun onClickCancelNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel)
+
+    fun getOrderByCartStringGroup(cartStringGroup: String): CheckoutOrderModel?
+
+    fun onClickLihatOnTickerOrderError(
+        shopId: String,
+        errorMessage: String,
+        order: CheckoutOrderModel,
+        position: Int
+    )
 
     fun onViewFreeShippingPlusBadge()
 
@@ -66,6 +76,12 @@ interface CheckoutAdapterListener {
 
     fun onInsuranceInfoTooltipClickedTrackingAnalytics()
 
+    fun uploadPrescriptionAction(
+        uploadPrescriptionUiModel: UploadPrescriptionUiModel,
+        buttonText: String,
+        buttonNotes: String
+    )
+
     fun onClickPromoCheckout(lastApplyUiModel: LastApplyUiModel)
 
     fun onSendAnalyticsClickPromoCheckout(isApplied: Boolean, listAllPromoCodes: List<String>)
@@ -77,6 +93,8 @@ interface CheckoutAdapterListener {
     fun getParentWidth(): Int
 
     fun onEgoldChecked(checked: Boolean)
+
+    fun onDonationChecked(checked: Boolean)
 
     fun checkPlatformFee()
 
