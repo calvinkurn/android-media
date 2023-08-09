@@ -14,6 +14,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.ViewFlipper
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -54,9 +55,6 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
-import kotlinx.android.synthetic.main.tp_content_coupon_catalog.*
-import kotlinx.android.synthetic.main.tp_coupon_notfound_error.*
-import kotlinx.android.synthetic.main.tp_fragment_coupon_detail.*
 import rx.Observable
 import rx.Subscriber
 import rx.Subscription
@@ -101,6 +99,11 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     private var tv_code: Typography? = null
     private var tv_dynamic_infos: Typography? = null
     private var btn_action_claim: UnifyButton? = null
+    private var layoutCouponCode: ConstraintLayout? = null
+    private var tpBottomSeparator: View? = null
+    private var catalogBottomSection: ConstraintLayout? = null
+    private var btnContainer: RelativeLayout? = null
+    private var btnError: UnifyButton? = null
 
     override val activityContext: Context
         get() = requireActivity()
@@ -281,6 +284,11 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             )
             tv_dynamic_infos = binding.tpContentCouponCatalog.layoutCouponCode.tvDynamicInfos
             btn_action_claim = binding.tpContentCouponCatalog.btnActionClaim
+            layoutCouponCode = binding.tpContentCouponCatalog.layoutCouponCode.root
+            tpBottomSeparator = binding.tpContentCouponCatalog.tpBottomSeparator
+            catalogBottomSection = binding.tpContentCouponCatalog.catalogBottomSection
+            btnContainer = binding.tpContentCouponCatalog.btnContainer
+            btnError = binding.tpCouponNotfoundError.btnError
         }
     }
 
@@ -420,22 +428,22 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             description?.text = data.title
             btnAction2?.text = data.buttonStr
             btnAction2?.setBackgroundResource(R.drawable.bg_button_buy_green_tokopoints)
-            layout_coupon_code.hide()
+            layoutCouponCode?.hide()
             btn_action_claim?.hide()
         } else {
-            gift_section_main_layout.hide()
-            tp_bottom_separator.hide()
+            giftSectionMainLayout?.hide()
+            tpBottomSeparator?.hide()
             if (data.actionCTA?.isShown == true) {
-                catalog_bottom_section?.show()
+                catalogBottomSection?.show()
                 btn_action_claim?.show()
             } else {
-                catalog_bottom_section?.hide()
+                catalogBottomSection?.hide()
                 btn_action_claim?.hide()
             }
             if (data.globalPromoCodes?.isNotEmpty() == true) {
-                layout_coupon_code.show()
+                layoutCouponCode?.show()
             } else {
-                layout_coupon_code.hide()
+                layoutCouponCode?.hide()
             }
             data.globalPromoCodes?.first().let { promoCode ->
                 run {
@@ -463,7 +471,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
                 CommonConstant.CTA_TYPE_REDIRECT -> {
                     if (data.actionCTA?.isShown == true) {
                         btnContainer?.show()
-                        catalog_bottom_section.hide()
+                        catalogBottomSection?.hide()
                         btn_action_claim?.text = data.actionCTA?.text
                         btn_action_claim?.isEnabled = data.actionCTA?.isDisabled == false
                         btn_action_claim?.setOnClickListener {
@@ -481,12 +489,12 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
                             )
                         }
                     } else {
-                        catalog_bottom_section?.hide()
+                        catalogBottomSection?.hide()
                     }
                 }
                 CommonConstant.CTA_TYPE_REDEEM -> {
                     btn_action_claim?.hide()
-                    catalog_bottom_section.show()
+                    catalogBottomSection?.show()
                     btnAction2?.text = "Klaim"
                     btnAction2?.isEnabled = data.actionCTA?.isDisabled == false
                 }
@@ -773,8 +781,8 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         if (menu != null) {
             setMenuVisibility(menu!!, false)
         }
-        container?.displayedChild = CONTAINER_COUPON_ERROR
-        btnError.setOnClickListener {
+        mContainerMain?.displayedChild = CONTAINER_COUPON_ERROR
+        btnError?.setOnClickListener {
             RouteManager.route(context, ApplinkConst.TOKOPEDIA_REWARD)
         }
     }
