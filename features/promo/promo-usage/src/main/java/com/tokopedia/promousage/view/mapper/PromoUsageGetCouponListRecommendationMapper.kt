@@ -8,8 +8,10 @@ import com.tokopedia.promousage.data.response.CouponSection
 import com.tokopedia.promousage.data.response.GetCouponListRecommendationResponse
 import com.tokopedia.promousage.data.response.PromoRecommendation
 import com.tokopedia.promousage.data.response.SecondaryCoupon
+import com.tokopedia.promousage.domain.entity.PromoAttemptedError
 import com.tokopedia.promousage.domain.entity.BoAdditionalData
 import com.tokopedia.promousage.domain.entity.PromoCta
+import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.promousage.domain.entity.list.PromoItem
 import com.tokopedia.promousage.domain.entity.PromoItemBenefitDetail
 import com.tokopedia.promousage.domain.entity.PromoItemCardDetail
@@ -26,7 +28,18 @@ import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 import com.tokopedia.promousage.util.composite.DelegateAdapterItem
 import javax.inject.Inject
 
-class PromoUsageGetCouponListRecommendationMapper @Inject constructor() {
+internal class PromoUsageGetCouponListRecommendationMapper @Inject constructor() {
+
+    fun mapCouponListRecommendationResponseToEntryPointInfo(
+        response: GetCouponListRecommendationResponse
+    ) : PromoEntryPointInfo {
+        return PromoEntryPointInfo(
+            messages = response.couponListRecommendation.data.entryPointInfo.messages,
+            iconUrl = response.couponListRecommendation.data.entryPointInfo.iconUrl,
+            state = response.couponListRecommendation.data.entryPointInfo.state,
+            clickable = response.couponListRecommendation.data.entryPointInfo.clickable
+        )
+    }
 
     fun mapCouponListRecommendationResponseToPageTickerInfo(
         response: GetCouponListRecommendationResponse
@@ -303,5 +316,14 @@ class PromoUsageGetCouponListRecommendationMapper @Inject constructor() {
                 backgroundUrl = it.backgroundUrl
             )
         }
+    }
+
+    fun mapCouponListRecommendationResponseToAttemptedPromoCodeError(
+        response: GetCouponListRecommendationResponse
+    ) : PromoAttemptedError {
+        return PromoAttemptedError(
+            code = response.couponListRecommendation.data.attemptedPromoCodeError.code,
+            message = response.couponListRecommendation.data.attemptedPromoCodeError.message
+        )
     }
 }

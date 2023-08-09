@@ -6,7 +6,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.promousage.data.request.ValidateUsePromoUsageParam
-import com.tokopedia.promousage.data.response.ValidateUsePromoUsageResponse
+import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.ValidateUseResponse
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
@@ -16,9 +16,9 @@ import javax.inject.Inject
 )
 class ValidateUsePromoUsageUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository
-) : CoroutineUseCase<ValidateUsePromoUsageParam, ValidateUsePromoUsageResponse>(Dispatchers.IO) {
+) : CoroutineUseCase<ValidateUsePromoUsageParam, ValidateUseResponse>(Dispatchers.IO) {
 
-    override suspend fun execute(params: ValidateUsePromoUsageParam): ValidateUsePromoUsageResponse {
+    override suspend fun execute(params: ValidateUsePromoUsageParam): ValidateUseResponse {
         return repository.request(QUERY.trimIndent(), params)
     }
 

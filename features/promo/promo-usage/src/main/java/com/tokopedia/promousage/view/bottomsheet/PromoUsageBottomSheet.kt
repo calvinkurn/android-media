@@ -22,6 +22,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
@@ -33,11 +34,11 @@ import com.tokopedia.kotlin.extensions.view.splitByThousand
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageBottomsheetBinding
 import com.tokopedia.promousage.di.DaggerPromoUsageComponent
 import com.tokopedia.promousage.domain.entity.PromoPageEntryPoint
-import com.tokopedia.promousage.domain.entity.PromoPageState
 import com.tokopedia.promousage.domain.entity.PromoPageTickerInfo
 import com.tokopedia.promousage.domain.entity.PromoSavingInfo
 import com.tokopedia.promousage.domain.entity.list.PromoAccordionHeaderItem
@@ -45,18 +46,24 @@ import com.tokopedia.promousage.domain.entity.list.PromoAccordionViewAllItem
 import com.tokopedia.promousage.domain.entity.list.PromoItem
 import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 import com.tokopedia.promousage.domain.entity.list.PromoTncItem
+import com.tokopedia.promousage.util.analytics.PromoUsageAnalytics
 import com.tokopedia.promousage.util.composite.CompositeAdapter
 import com.tokopedia.promousage.util.composite.DelegateAdapterItem
 import com.tokopedia.promousage.util.extension.foregroundDrawable
+import com.tokopedia.promousage.util.logger.PromoErrorException
 import com.tokopedia.promousage.view.adapter.PromoAccordionHeaderDelegateAdapter
 import com.tokopedia.promousage.view.adapter.PromoAccordionItemDelegateAdapter
 import com.tokopedia.promousage.view.adapter.PromoAccordionViewAllDelegateAdapter
 import com.tokopedia.promousage.view.adapter.PromoAttemptCodeDelegateAdapter
 import com.tokopedia.promousage.view.adapter.PromoRecommendationDelegateAdapter
 import com.tokopedia.promousage.view.adapter.PromoTncDelegateAdapter
+import com.tokopedia.promousage.view.viewmodel.ApplyPromoUiAction
+import com.tokopedia.promousage.view.viewmodel.PromoAttemptUiAction
+import com.tokopedia.promousage.view.viewmodel.PromoPageUiState
 import com.tokopedia.promousage.view.viewmodel.PromoUsageViewModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -103,6 +110,9 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var analytics: PromoUsageAnalytics
     private val viewModel: PromoUsageViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[PromoUsageViewModel::class.java]
     }
@@ -113,7 +123,12 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     var listener: Listener? = null
     private val recyclerViewAdapter by lazy {
         CompositeAdapter.Builder()
-            .add(PromoRecommendationDelegateAdapter(onClickPromoItem, onClickApplyPromoRecommendation))
+            .add(
+                PromoRecommendationDelegateAdapter(
+                    onClickPromoItem,
+                    onClickApplyPromoRecommendation
+                )
+            )
             .add(PromoAccordionHeaderDelegateAdapter(onClickPromoAccordionHeader))
             .add(PromoAccordionItemDelegateAdapter(onClickPromoItem))
             .add(PromoAccordionViewAllDelegateAdapter(onClickPromoAccordionViewAll))
@@ -122,6 +137,8 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             .build()
     }
     private var loaderDialog: LoaderDialog? = null
+    private val defaultErrorMessage: String
+        get() = binding.root.context.getString(R.string.promo_usage_global_error_promo)
 
     @Suppress("DEPRECATION")
     private val registerGopayLaterCicilLauncher =
@@ -195,19 +212,30 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     @Suppress("DEPRECATION")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setupView()
         setupObservers()
-
         val promoRequest: PromoRequest? = arguments?.getParcelable(BUNDLE_KEY_PROMO_REQUEST)
         val chosenAddress: ChosenAddress? = arguments?.getParcelable(BUNDLE_KEY_CHOSEN_ADDRESS)
-        viewModel.loadPromoList(
+        viewModel.reloadPromoList(
+            promoRequest = promoRequest,
+            chosenAddress = chosenAddress
+        )
+    }
+
+    private fun reloadUi() {
+        setupView()
+        val promoRequest: PromoRequest? = arguments?.getParcelable(BUNDLE_KEY_PROMO_REQUEST)
+        val chosenAddress: ChosenAddress? = arguments?.getParcelable(BUNDLE_KEY_CHOSEN_ADDRESS)
+        viewModel.reloadPromoList(
             promoRequest = promoRequest,
             chosenAddress = chosenAddress
         )
     }
 
     private fun setupView() {
+        hideContent()
+        showShimmer()
+
         val entryPoint = arguments?.getParcelable(BUNDLE_KEY_ENTRY_POINT)
             ?: PromoPageEntryPoint.CART_PAGE
         val totalAmount = arguments?.getDouble(BUNDLE_KEY_TOTAL_AMOUNT) ?: 0.0
@@ -271,7 +299,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 binding.buttonBackToShipment.text =
                     context?.getString(R.string.promo_voucher_back_to_shipment)
                 binding.buttonBackToShipment.setOnClickListener {
-                    viewModel.onClickBackToCheckout(
+                    viewModel.onBackToCheckout(
                         onSuccess = {
                             dismiss()
                         }
@@ -373,14 +401,17 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun setupObservers() {
-        observePromoRecommendation()
         observePromoPageState()
-        observeCtaAction()
+        observePromoRecommendationUiAction()
+        observePromoAttemptUiAction()
+        observePromoCtaUiAction()
+        observeApplyPromoUiAction()
     }
 
-    private fun observePromoRecommendation() {
-        viewModel.promoRecommendation.observe(viewLifecycleOwner) { item ->
-            val hasRecommendedItems = item != null && item.promos.isNotEmpty()
+    private fun observePromoRecommendationUiAction() {
+        viewModel.promoRecommendationUiAction.observe(viewLifecycleOwner) { uiAction ->
+            val hasRecommendedItems = uiAction.promoRecommendationItem != null
+                && uiAction.promoRecommendationItem.promos.isNotEmpty()
             if (hasRecommendedItems) {
                 addHeaderScrollListener()
                 useGradientHeaderColor()
@@ -390,30 +421,46 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
+    private fun observePromoAttemptUiAction() {
+        viewModel.promoAttemptUiAction.observe(viewLifecycleOwner) { uiAction ->
+            when (uiAction.state) {
+                PromoAttemptUiAction.State.SHOW_ERROR_TOAST -> {
+                    if (uiAction.errorMessage.isNotBlank()) {
+                        showToastMessage(uiAction.errorMessage)
+                    }
+                }
+
+                else -> {
+
+                }
+            }
+        }
+    }
+
     private fun observePromoPageState() {
-        viewModel.promoPageState.observe(viewLifecycleOwner) { state ->
+        viewModel.promoPageUiState.observe(viewLifecycleOwner) { state ->
             when (state) {
 
-                is PromoPageState.Initial -> {
+                is PromoPageUiState.Initial -> {
                     showShimmer()
                 }
 
-                is PromoPageState.Success -> {
+                is PromoPageUiState.Success -> {
                     updateTickerInfo(state.tickerInfo)
                     updateRecyclerView(state.items)
                     updateSavingInfo(state.savingInfo)
-                    setDialogLoading(false)
+                    setLoadingDialog(false)
                     showContent()
                 }
 
-                is PromoPageState.Error -> {
+                is PromoPageUiState.Error -> {
                     // TODO: Handle error state
-                    setDialogLoading(false)
+                    setLoadingDialog(false)
                     hideContent()
                 }
 
-                is PromoPageState.Loading -> {
-                    setDialogLoading(true)
+                is PromoPageUiState.Loading -> {
+                    setLoadingDialog(true)
                 }
 
                 else -> {
@@ -486,11 +533,37 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
-    private fun observeCtaAction() {
-        viewModel.promoCtaAction.observe(viewLifecycleOwner) { item ->
-            val ctaAppLink = item.appLink
-            if (ctaAppLink.isNotBlank()) {
-                goToRegisterGoPayLaterCicilRegistration(ctaAppLink)
+    private fun observePromoCtaUiAction() {
+        viewModel.promoCtaUiAction.observe(viewLifecycleOwner) { uiAction ->
+            if (uiAction.promoCta != null) {
+                val ctaAppLink = uiAction.promoCta.appLink
+                if (ctaAppLink.isNotBlank()) {
+                    goToRegisterGoPayLaterCicilRegistration(ctaAppLink)
+                }
+            }
+        }
+    }
+
+    private fun observeApplyPromoUiAction() {
+        viewModel.applyPromoUiAction.observe(viewLifecycleOwner) { uiAction ->
+            when (uiAction.state) {
+
+                ApplyPromoUiAction.State.SHOW_ERROR_TOAST_AND_RELOAD -> {
+                    if (uiAction.throwable != null) {
+                        showToastMessage(uiAction.throwable)
+                    }
+                    reloadUi()
+                }
+
+                ApplyPromoUiAction.State.SHOW_ERROR_TOAST -> {
+                    if (uiAction.throwable != null) {
+                        showToastMessage(uiAction.throwable)
+                    }
+                }
+
+                else -> {
+
+                }
             }
         }
     }
@@ -503,9 +576,9 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
     private val onClickApplyPromoRecommendation: (PromoRecommendationItem) -> Unit =
         { recommendationItem: PromoRecommendationItem ->
-            viewModel.onClickApplyPromoRecommendation(
+            viewModel.onApplyPromoRecommendation(
                 onSuccess = {
-                    setDialogLoading(false)
+                    setLoadingDialog(false)
                     showLottieConfettiAnimation(recommendationItem)
                 }
             )
@@ -575,7 +648,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         )
     }
 
-    private fun setDialogLoading(isLoading: Boolean) {
+    private fun setLoadingDialog(isLoading: Boolean) {
         if (isLoading) {
             if (loaderDialog == null) {
                 loaderDialog = LoaderDialog(requireContext())
@@ -589,15 +662,26 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
+    private fun showToastMessage(throwable: Throwable) {
+        showToastMessage(getErrorMessage(throwable))
+    }
+
+    private fun showToastMessage(message: String) {
+        Toaster.build(binding.root, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+    }
+
+    private fun getErrorMessage(throwable: Throwable): String {
+        var errorMessage = throwable.message
+        if (throwable !is PromoErrorException && throwable !is AkamaiErrorException) {
+            errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        }
+        if (errorMessage.isNullOrBlank()) {
+            errorMessage = getString(R.string.promo_usage_global_error_promo)
+        }
+        return errorMessage
+    }
+
     interface Listener {
 
-        fun onApplyPromoSuccess(
-            entryPoint: PromoPageEntryPoint,
-            validateUsePromoRequest: ValidateUsePromoRequest
-        )
-
-        fun onApplyPromoFailed(
-            entryPoint: PromoPageEntryPoint
-        )
     }
 }

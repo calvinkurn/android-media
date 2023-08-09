@@ -16,7 +16,11 @@ data class CouponListRecommendation(
     var status: String = "",
     @SerializedName("data")
     val data: Data = Data()
-)
+) {
+    companion object {
+        const val STATUS_OK = "OK"
+    }
+}
 
 data class Data(
     @SerializedName("result_status")
@@ -32,7 +36,9 @@ data class Data(
     @SerializedName("entry_point_info")
     val entryPointInfo: EntryPointInfo = EntryPointInfo(),
     @SerializedName("ticker_info")
-    val tickerInfo: TickerInfo = TickerInfo()
+    val tickerInfo: TickerInfo = TickerInfo(),
+    @SerializedName("attempted_promo_code_error")
+    val attemptedPromoCodeError: AttemptedPromoCodeError = AttemptedPromoCodeError()
 )
 
 data class ResultStatus(
@@ -277,7 +283,9 @@ data class EntryPointInfo(
     @SerializedName("icon_url")
     val iconUrl: String = "",
     @SerializedName("state")
-    val state: String = ""
+    val state: String = "",
+    @SerializedName("clickable")
+    val clickable: Boolean = false
 )
 
 data class TickerInfo(
@@ -287,4 +295,11 @@ data class TickerInfo(
     val iconUrl: String = "",
     @SerializedName("background_url")
     val backgroundUrl: String = ""
+)
+
+data class AttemptedPromoCodeError(
+    @SerializedName("code")
+    val code: String = "",
+    @SerializedName("message")
+    val message: String = ""
 )
