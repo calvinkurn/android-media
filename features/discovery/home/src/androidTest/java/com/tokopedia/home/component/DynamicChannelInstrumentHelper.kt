@@ -160,7 +160,7 @@ fun String.name(loggedIn: Boolean, darkMode: Boolean = false) = this + (if (logg
 
 fun clickOnProductHighlightItem() {
     try {
-        Espresso.onView(firstView(ViewMatchers.withId(R.id.master_product_card_deals)))
+        Espresso.onView(firstView(ViewMatchers.withId(com.tokopedia.home_component.R.id.master_product_card_deals)))
             .perform(ViewActions.click())
     } catch (e: PerformException) {
         e.printStackTrace()
@@ -175,17 +175,17 @@ fun clickOnPopularKeywordSection(viewHolder: RecyclerView.ViewHolder, position: 
 
 fun clickOnMixLeftSection(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
     clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
-    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_product, 0)
+    clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.home_component.R.id.rv_product, 0)
 }
 
 fun clickOnMixLeftPaddingSection(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
     clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
-    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_product_mix_left_padding, 0)
+    clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.home_component.R.id.rv_product_mix_left_padding, 0)
 }
 
 fun clickOnMixTopSection(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
     clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
-    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
+    clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.home_component.R.id.dc_banner_rv, 0)
     clickOnMixTopCTA(viewHolder.itemView)
 }
 
@@ -235,16 +235,16 @@ fun clickOnTickerSection(viewHolder: RecyclerView.ViewHolder) {
 
 fun actionOnBannerCarouselWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
     clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
-    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_banner, 0)
+    clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.home_component.R.id.rv_banner, 0)
 }
 
 fun actionOnMerchantVoucherWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
     clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
-    clickOnEachItemRecyclerViewMerchantVoucher(viewHolder.itemView, R.id.home_component_mvc_rv, 0)
+    clickOnEachItemRecyclerViewMerchantVoucher(viewHolder.itemView, com.tokopedia.home_component.R.id.home_component_mvc_rv, 0)
 }
 
 fun actionOnCueWidgetCategory(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
-    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_component_cue_category_rv, 0)
+    clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.home_component.R.id.home_component_cue_category_rv, 0)
 }
 
 fun actionOnVpsWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
@@ -253,7 +253,7 @@ fun actionOnVpsWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
 }
 
 fun actionOnMissionWidget(viewHolder: RecyclerView.ViewHolder) {
-    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_component_mission_widget_rcv, 0)
+    clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.home_component.R.id.home_component_mission_widget_rcv, 0)
 }
 
 fun actionOnLego4Product(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
@@ -267,12 +267,12 @@ fun actionOnTodoWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
 
 fun actionOnFlashSaleWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
     clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
-    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.carouselProductCardRecyclerView, 0)
+    clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.carouselproductcard.R.id.carouselProductCardRecyclerView, 0)
 }
 
 fun actionOnSpecialReleaseRevampWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
     clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
-    clickOnEachItemRecyclerViewSpecialRelease(viewHolder.itemView, R.id.home_component_special_release_rv, 0)
+    clickOnEachItemRecyclerViewSpecialRelease(viewHolder.itemView, com.tokopedia.home_component.R.id.home_component_special_release_rv, 0)
 }
 
 fun clickOnEachItemRecyclerViewMerchantVoucher(view: View, recyclerViewId: Int, fixedItemPositionLimit: Int) {
@@ -285,10 +285,10 @@ fun clickOnEachItemRecyclerViewMerchantVoucher(view: View, recyclerViewId: Int, 
     for (i in 0 until childItemCountExcludeViewAllCard) {
         try {
             Espresso.onView(ViewMatchers.withId(recyclerViewId)).perform(
-                actionOnItemAtPosition<RecyclerView.ViewHolder>(i, clickOnViewChild(R.id.container_shop))
+                actionOnItemAtPosition<RecyclerView.ViewHolder>(i, clickOnViewChild(com.tokopedia.home_component.R.id.container_shop))
             )
             Espresso.onView(ViewMatchers.withId(recyclerViewId)).perform(
-                actionOnItemAtPosition<RecyclerView.ViewHolder>(i, clickOnViewChild(R.id.container_product))
+                actionOnItemAtPosition<RecyclerView.ViewHolder>(i, clickOnViewChild(com.tokopedia.home_component.R.id.container_product))
             )
         } catch (e: PerformException) {
             e.printStackTrace()
@@ -317,10 +317,10 @@ fun clickOnEachItemRecyclerViewSpecialRelease(view: View, recyclerViewId: Int, f
     for (i in 0 until childItemCountExcludeViewAllCard) {
         try {
             Espresso.onView(ViewMatchers.withId(recyclerViewId)).perform(
-                actionOnItemAtPosition<RecyclerView.ViewHolder>(i, clickOnViewChild(R.id.cta))
+                actionOnItemAtPosition<RecyclerView.ViewHolder>(i, clickOnViewChild(com.tokopedia.home_component.R.id.cta))
             )
             Espresso.onView(ViewMatchers.withId(recyclerViewId)).perform(
-                actionOnItemAtPosition<RecyclerView.ViewHolder>(i, clickOnViewChild(R.id.product_card))
+                actionOnItemAtPosition<RecyclerView.ViewHolder>(i, clickOnViewChild(com.tokopedia.home_component.R.id.product_card))
             )
         } catch (e: PerformException) {
             Log.e(TAG, "clickOnEachItemRecyclerViewSpecialRelease: ", e)
@@ -389,7 +389,7 @@ fun checkRechargeBUWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int
 private fun impressionRechargeBUWidget() {
     waitForData()
     try {
-        Espresso.onView(ViewMatchers.withId(R.id.rv_recharge_bu_product))
+        Espresso.onView(ViewMatchers.withId(com.tokopedia.recharge_component.R.id.rv_recharge_bu_product))
             .perform(RecyclerViewActions.scrollToPosition<RechargeBUWidgetMixLeftViewHolder>(5))
     } catch (e: PerformException) {
         e.printStackTrace()
@@ -399,7 +399,7 @@ private fun impressionRechargeBUWidget() {
 private fun clickProductRechargeBUWidget() {
     waitForData()
     try {
-        Espresso.onView(ViewMatchers.withId(R.id.rv_recharge_bu_product))
+        Espresso.onView(ViewMatchers.withId(com.tokopedia.recharge_component.R.id.rv_recharge_bu_product))
             .perform(RecyclerViewActions.actionOnItemAtPosition<RechargeBUWidgetMixLeftViewHolder>(4, ViewActions.click()))
     } catch (e: PerformException) {
         e.printStackTrace()
@@ -408,7 +408,7 @@ private fun clickProductRechargeBUWidget() {
 
 fun actionOnSpecialReleaseWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
     clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
-    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_component_special_release_rv, 0)
+    clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.home_component.R.id.home_component_special_release_rv, 0)
 }
 
 fun actionOnCampaignWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
@@ -419,7 +419,7 @@ fun actionOnCampaignWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: In
 private fun clickAllProductCardRechargeBUWidget() {
     waitForData()
     try {
-        Espresso.onView(ViewMatchers.withId(R.id.rv_recharge_bu_product)).perform(scrollToPosition<RechargeBUWidgetMixLeftViewHolder>(5))
+        Espresso.onView(ViewMatchers.withId(com.tokopedia.recharge_component.R.id.rv_recharge_bu_product)).perform(scrollToPosition<RechargeBUWidgetMixLeftViewHolder>(5))
         Espresso.onView(ViewMatchers.withId(R.id.card_see_more_banner_mix))
             .perform(ViewActions.click())
     } catch (e: PerformException) {
@@ -430,7 +430,7 @@ private fun clickAllProductCardRechargeBUWidget() {
 private fun clickEmptyBannerRechargeBUWidget() {
     waitForData()
     try {
-        Espresso.onView(ViewMatchers.withId(R.id.rv_recharge_bu_product))
+        Espresso.onView(ViewMatchers.withId(com.tokopedia.recharge_component.R.id.rv_recharge_bu_product))
             .perform(RecyclerViewActions.actionOnItemAtPosition<CarouselEmptyCardViewHolder>(0, ViewActions.click()))
     } catch (e: PerformException) {
         e.printStackTrace()
@@ -468,10 +468,10 @@ fun clickAllRecommendationFeedTabs(view: View) {
 
 private fun clickOnMixTopCTA(view: View) {
     val childView = view
-    val bannerButton = childView.findViewById<View>(R.id.banner_button)
+    val bannerButton = childView.findViewById<View>(com.tokopedia.home_component.R.id.banner_button)
     if (bannerButton.visibility == View.VISIBLE) {
         try {
-            Espresso.onView(firstView(ViewMatchers.withId(R.id.banner_button)))
+            Espresso.onView(firstView(ViewMatchers.withId(com.tokopedia.home_component.R.id.banner_button)))
                 .perform(ViewActions.click())
         } catch (e: PerformException) {
             e.printStackTrace()
@@ -484,9 +484,9 @@ private fun clickLihatSemuaPopularKeyword(view: View, position: Int) {
         if (view.findViewById<View?>(R.id.tv_reload).isVisible) {
             Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
                 .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(position, clickOnViewChild(R.id.tv_reload, 0)))
-        } else if (view.findViewById<View?>(R.id.cta_button_revamp).isVisible) {
+        } else if (view.findViewById<View?>(com.tokopedia.home_component.R.id.cta_button_revamp).isVisible) {
             Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
-                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(position, clickOnViewChild(R.id.cta_button_revamp, 0)))
+                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(position, clickOnViewChild(com.tokopedia.home_component.R.id.cta_button_revamp, 0)))
         }
     } catch (e: PerformException) {
         e.printStackTrace()
@@ -503,13 +503,13 @@ private fun clickBUWidgetTab() {
 
 private fun clickTickerItem(view: View) {
     try {
-        Espresso.onView(firstView(AllOf.allOf(ViewMatchers.withId(R.id.ticker_description), ViewMatchers.isDisplayed()))).perform(ViewActions.click())
+        Espresso.onView(firstView(AllOf.allOf(ViewMatchers.withId(com.tokopedia.unifycomponents.R.id.ticker_description), ViewMatchers.isDisplayed()))).perform(ViewActions.click())
     } catch (e: PerformException) {
         e.printStackTrace()
     }
 
     try {
-        Espresso.onView(firstView(ViewMatchers.withId(R.id.ticker_close_icon)))
+        Espresso.onView(firstView(ViewMatchers.withId(com.tokopedia.unifycomponents.R.id.ticker_close_icon)))
             .perform(ViewActions.click())
     } catch (e: PerformException) {
         e.printStackTrace()
@@ -519,7 +519,7 @@ private fun clickTickerItem(view: View) {
 private fun clickLihatSemuaButtonIfAvailable(view: View, itemPos: Int, scrollVerticalBy: Int = 0) {
     val childView = view
     val seeAllButton = childView.findViewById<View>(R.id.see_all_button)
-    val ctaButton = childView.findViewById<View>(R.id.cta_button_revamp)
+    val ctaButton = childView.findViewById<View>(com.tokopedia.home_component.R.id.cta_button_revamp)
     if (seeAllButton != null && seeAllButton.isVisible) {
         try {
             Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
@@ -528,7 +528,7 @@ private fun clickLihatSemuaButtonIfAvailable(view: View, itemPos: Int, scrollVer
     } else if (ctaButton != null && ctaButton.isVisible) {
         try {
             Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
-                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(itemPos, clickOnViewChild(R.id.cta_button_revamp, scrollVerticalBy)))
+                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(itemPos, clickOnViewChild(com.tokopedia.home_component.R.id.cta_button_revamp, scrollVerticalBy)))
         } catch (_: PerformException) { }
     }
 }
@@ -578,7 +578,7 @@ private fun clickReminderWidgetSalam() {
     try {
         Espresso.onView(
             AllOf.allOf(
-                ViewMatchers.withId(com.tokopedia.home_componentR.id.btn_reminder_recommendation),
+                ViewMatchers.withId(com.tokopedia.home_component.R.id.btn_reminder_recommendation),
                 ViewMatchers.isDisplayed(),
                 ViewMatchers.withText("Berbagi Sekarang")
             )

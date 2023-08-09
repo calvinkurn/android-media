@@ -386,7 +386,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
             doActivityTestByModelClass(dataModelClass = RecommendationListCarouselDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
                 activityRule.runOnUiThread { viewHolder.itemView.findViewById<View>(com.tokopedia.productcard.R.id.buttonAddToCart).performClick() }
                 CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList, 0)
-                onView(withId(R.id.buy_again_close_image_view)).perform(ViewActions.click())
+                onView(withId(com.tokopedia.home_component.R.id.buy_again_close_image_view)).perform(ViewActions.click())
             }
         } validateAnalytics {
             addDebugEnd()
