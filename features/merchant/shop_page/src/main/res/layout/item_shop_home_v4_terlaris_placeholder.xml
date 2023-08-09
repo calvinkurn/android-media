@@ -31,15 +31,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/shimmering_title" />
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_terlaris_widget"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shimmering_subtitle"
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
     <!-- Show Layout of 3 -->
     <androidx.constraintlayout.widget.ConstraintLayout
         app:layout_constraintLeft_toLeftOf="parent"
