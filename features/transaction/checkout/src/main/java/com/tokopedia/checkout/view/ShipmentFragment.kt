@@ -354,9 +354,6 @@ class ShipmentFragment :
         shippingCourierBottomsheet = null
         val countDownTimer = binding?.partialCountdown?.countDown?.timer
         countDownTimer?.cancel()
-        if (countDownTimer != null) {
-            Toast.makeText(context, "cancel", Toast.LENGTH_SHORT).show()
-        }
         shipmentViewModel.detachView()
         super.onDestroyView()
     }
@@ -3325,9 +3322,6 @@ class ShipmentFragment :
             binding?.partialCountdown?.tvCountDown?.text = timer.timerDescription
             binding?.partialCountdown?.countDown?.remainingMilliseconds = diff
             binding?.partialCountdown?.countDown?.onFinish = {
-                context?.let {
-                    Toast.makeText(context, "finish", Toast.LENGTH_SHORT).show()
-                }
                 fragmentManager?.let { fm ->
                     val dialog =
                         newInstance(timer, checkoutAnalyticsCourierSelection, this@ShipmentFragment)
