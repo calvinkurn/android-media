@@ -131,6 +131,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
 
+    implementation rootProject.ext.composeDependencies.composeUiTest
+    debugImplementation rootProject.ext.composeDependencies.composeAndroidUiTest
+
     api rootProject.ext.miscDependencies.coroutineTest
 
 }

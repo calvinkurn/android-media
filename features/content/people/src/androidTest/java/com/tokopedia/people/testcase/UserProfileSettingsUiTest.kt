@@ -1,21 +1,23 @@
 package com.tokopedia.people.testcase
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
 import com.tokopedia.people.builder.ProfileModelBuilder
-import com.tokopedia.people.builder.UserReviewModelBuilder
 import com.tokopedia.people.data.UserProfileRepository
 import com.tokopedia.people.di.DaggerUserProfileTestComponent
 import com.tokopedia.people.di.UserProfileInjector
@@ -25,10 +27,11 @@ import com.tokopedia.people.views.activity.ProfileSettingsActivity
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import com.tokopedia.people.R
+import com.tokopedia.people.views.uimodel.getReviewSettings
+import com.tokopedia.test.application.compose.createAndroidIntentComposeRule
 
 /**
  * Created By : Jonathan Darwin on August 08, 2023
@@ -36,7 +39,11 @@ import com.tokopedia.people.R
 class UserProfileSettingsUiTest {
 
     @get:Rule
-    val composeActivityTestRule = createAndroidComposeRule<ProfileSettingsActivity>()
+    val composeActivityTestRule = createAndroidIntentComposeRule<ProfileSettingsActivity> { context ->
+        Intent(context, ProfileSettingsActivity::class.java).apply {
+            data = "tokopedia://people/settings/$mockUserId"
+        }
+    }
 
     private val context = InstrumentationRegistry.getInstrumentation().context
 
@@ -48,13 +55,11 @@ class UserProfileSettingsUiTest {
 
     private val profileModelBuilder = ProfileModelBuilder()
 
+    private val mockUserId = "123123"
     private val mockProfileSettings = profileModelBuilder.buildProfileSettings()
 
     init {
-        coEvery { mockUserSession.userId } returns "123"
-        coEvery { mockUserSession.isLoggedIn } returns true
-
-        coEvery { mockRepo.getProfileSettings(any()) } returns mockProfileSettings
+        coEvery { mockRepo.getProfileSettings(mockUserId) } returns mockProfileSettings
         coEvery { mockRepo.setShowReview(any(), any(), true) } returns true
         coEvery { mockRepo.setShowReview(any(), any(), false) } returns false
 
@@ -89,6 +94,8 @@ class UserProfileSettingsUiTest {
 
         Thread.sleep(1000)
 
+        composeActivityTestRule.onNodeWithText(mockProfileSettings.getReviewSettings().title).assertExists()
+
         composeActivityTestRule.onNodeWithTag("review_toggle").performClick()
 
         Thread.sleep(1000)
@@ -97,7 +104,5 @@ class UserProfileSettingsUiTest {
 
         onView(withText(context.getString(R.string.up_error_unknown)))
             .check(matches(isDisplayed()))
-
-        Thread.sleep(1000)
     }
 }
