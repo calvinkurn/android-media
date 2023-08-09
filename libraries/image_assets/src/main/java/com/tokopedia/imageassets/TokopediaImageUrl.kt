@@ -380,5 +380,5 @@ object TokopediaImageUrl {
     const val IMG_14TH_ANNIV_HOME_OS = "https://images.tokopedia.net/img/android/seller_home/img_14th_anniv_os_background_effect.png"
     const val ILLUSTRATION_MVC_DETAIL_ENDED_VOUCHER = "https://images.tokopedia.net/img/android/mvc/illustration_recap.png"
     const val ILLUSTRATION_MVC_DETAIL_CARD_PERFORMANCE = "https://images.tokopedia.net/img/android/mvc/bg_image.png"
-    const val ILLUSTRATION_SHOP_ETALASE_NOT_FOUND = "https://images.tokopedia.net/img/frontend/illustration/global_state_page_not_found.png "
+    const val ILLUSTRATION_SHOP_ETALASE_NOT_FOUND = "https://images.tokopedia.net/img/frontend/illustration/global_state_page_not_found.png"
 }

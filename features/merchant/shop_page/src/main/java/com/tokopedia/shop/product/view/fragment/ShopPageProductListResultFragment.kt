@@ -2148,7 +2148,7 @@ class ShopPageProductListResultFragment :
                     deeplink = UriUtil.buildUri(
                         ApplinkConst.SHOP_ETALASE,
                         shopId,
-                        "tess"
+                        selectedEtalaseAlias
                     )
                 )
             )
