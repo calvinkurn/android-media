@@ -12,10 +12,9 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.inbox.R
-import com.tokopedia.inbox.common.viewmatcher.withRecyclerView
 import com.tokopedia.inbox.universalinbox.stub.common.atPositionCheckInstanceOf
+import com.tokopedia.inbox.universalinbox.stub.common.withRecyclerView
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSectionUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
@@ -76,7 +75,7 @@ object MenuResult {
     fun assertApplinkChatBuyer() {
         intended(
             hasData(
-                "${ApplinkConstInternalMarketplace.TOPCHAT}?${ApplinkConst.Inbox.PARAM_ROLE}=${ApplinkConst.Inbox.VALUE_ROLE_BUYER}"
+                "${ApplinkConst.TOP_CHAT}?${ApplinkConst.Inbox.PARAM_ROLE}=${ApplinkConst.Inbox.VALUE_ROLE_BUYER}"
             )
         )
     }
@@ -84,7 +83,7 @@ object MenuResult {
     fun assertApplinkChatSeller() {
         intended(
             hasData(
-                "${ApplinkConstInternalMarketplace.TOPCHAT}?${ApplinkConst.Inbox.PARAM_ROLE}=${ApplinkConst.Inbox.VALUE_ROLE_SELLER}"
+                "${ApplinkConst.TOP_CHAT}?${ApplinkConst.Inbox.PARAM_ROLE}=${ApplinkConst.Inbox.VALUE_ROLE_SELLER}"
             )
         )
     }
