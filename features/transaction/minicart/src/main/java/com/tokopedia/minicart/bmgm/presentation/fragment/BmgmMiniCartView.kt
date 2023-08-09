@@ -1,12 +1,14 @@
 package com.tokopedia.minicart.bmgm.presentation.fragment
 
-import android.os.Bundle
+import android.content.Context
+import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewTreeViewModelStoreOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -34,68 +36,84 @@ import javax.inject.Inject
  * Created by @ilhamsuaib on 31/07/23.
  */
 
-class BmgmMiniCartFragment : Fragment(), BmgmMiniCartAdapter.Listener {
+class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener,
+    DefaultLifecycleObserver {
 
-    companion object {
-
-        const val TAG = "BmgmMiniCartWidgetFragment"
-        fun getInstance(fm: FragmentManager): BmgmMiniCartFragment {
-            return (fm.findFragmentByTag(TAG) as? BmgmMiniCartFragment)
-                ?: BmgmMiniCartFragment()
-        }
-    }
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context, attrs, defStyleAttr
+    )
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
     private var binding: FragmentBmgmMiniCartWidgetBinding? = null
     private val miniCartAdapter by lazy { BmgmMiniCartAdapter(this) }
-    private val viewModel: BmgmMiniCartViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[BmgmMiniCartViewModel::class.java]
+    private val viewModel by lazy {
+        ViewModelProvider(
+            ViewTreeViewModelStoreOwner.get(this)!!,
+            viewModelFactory
+        )[BmgmMiniCartViewModel::class.java]
     }
-
     private var data: BmgmCommonDataUiModel? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    init {
+        binding = FragmentBmgmMiniCartWidgetBinding.inflate(
+            LayoutInflater.from(context), this, true
+        )
+        setAsLifecycleObserver()
+        setupRecyclerView()
+    }
+
+    override fun onCreate(owner: LifecycleOwner) {
+        super.onCreate(owner)
         initInjector()
         fetchMiniCartData()
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentBmgmMiniCartWidgetBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        setupView()
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
         observeCartData()
     }
 
+    override fun onDestroy(owner: LifecycleOwner) {
+        super.onDestroy(owner)
+        binding = null
+        data = null
+    }
+
     override fun setOnItemClickedListener() {
-        context?.let {
-            data?.let {
-                RouteManager.route(context, ApplinkConstInternalGlobal.BMGM_MINI_CART)
-            }
+        data?.let {
+            RouteManager.route(context, ApplinkConstInternalGlobal.BMGM_MINI_CART)
         }
     }
 
+    fun fetchMiniCartData() {
+        getLifecycleOwner()?.lifecycleScope?.launchWhenStarted {
+            val param = BmgmParamModel(0L, 0L, listOf())
+            viewModel.getMiniCartData(param)
+        }
+    }
+
+    private fun setAsLifecycleObserver() {
+        getLifecycleOwner()?.lifecycle?.addObserver(this)
+    }
+
     private fun observeCartData() {
-        viewLifecycleOwner.observe(viewModel.cartData) {
-            when (it) {
-                is Success -> setOnSuccessGetCartData(it.data)
-                is Fail -> {
-                    it.throwable.printStackTrace()
+        getLifecycleOwner()?.lifecycleScope?.launchWhenStarted {
+            getLifecycleOwner()?.observe(viewModel.cartData) {
+                when (it) {
+                    is Success -> setOnSuccessGetCartData(it.data)
+                    is Fail -> {
+                        it.throwable.printStackTrace()
+                    }
                 }
             }
         }
     }
+
+    private fun getLifecycleOwner() = (context as? LifecycleOwner)
 
     private fun setOnSuccessGetCartData(data: BmgmCommonDataUiModel) {
         this.data = data
@@ -119,15 +137,6 @@ class BmgmMiniCartFragment : Fragment(), BmgmMiniCartAdapter.Listener {
         }
     }
 
-    private fun fetchMiniCartData() {
-        val param = BmgmParamModel(0L, 0L, listOf())
-        viewModel.getMiniCartData(param)
-    }
-
-    private fun setupView() {
-        setupRecyclerView()
-    }
-
     private fun setupRecyclerView() {
         binding?.rvBmgmMiniCart?.run {
             addItemDecoration(BmgmMiniCartItemDecoration())
@@ -137,11 +146,8 @@ class BmgmMiniCartFragment : Fragment(), BmgmMiniCartAdapter.Listener {
     }
 
     private fun initInjector() {
-        context?.let {
-            DaggerBmgmComponent.builder()
-                .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
-        }
+        DaggerBmgmComponent.builder()
+            .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
+            .build().inject(this)
     }
 }

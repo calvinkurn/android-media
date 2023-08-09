@@ -35,13 +35,13 @@
 
     </com.tokopedia.buy_more_get_more.olp.view.widget.StickySingleHeaderView>
 
-    <FrameLayout
+    <com.tokopedia.minicart.bmgm.presentation.fragment.BmgmMiniCartView
         android:id="@+id/miniCartPlaceholder"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="@color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:background="@color/transparent"
         app:layout_constraintStart_toStartOf="parent"
         tools:layout_height="60dp" />
 
