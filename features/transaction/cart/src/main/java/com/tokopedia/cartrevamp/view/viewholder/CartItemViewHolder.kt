@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
@@ -72,6 +73,7 @@ class CartItemViewHolder constructor(
         this.viewHolderListener = viewHolderListener
         this.dataSize = dataSize
 
+        setNoteAnimationResource()
         renderAlpha(data)
         renderContainer(data)
         renderDivider(data)
@@ -80,6 +82,14 @@ class CartItemViewHolder constructor(
         renderProductInfo(data)
         renderQuantity(data, viewHolderListener)
         renderProductAction(data)
+    }
+
+    private fun setNoteAnimationResource() {
+        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+            binding.buttonChangeNoteLottie.setAnimation(R.raw.anim_cart_note_dark)
+        } else {
+            binding.buttonChangeNoteLottie.setAnimation(R.raw.anim_cart_note)
+        }
     }
 
     private fun renderLeftAnchor(data: CartItemHolderData) {
@@ -653,8 +663,7 @@ class CartItemViewHolder constructor(
             binding.textPrescription.visible()
             binding.iuPrescription.loadIcon(data.butuhResepIconUrl)
             binding.textPrescription.text = data.butuhResepText
-        }
-        else {
+        } else {
             binding.iuPrescription.gone()
             binding.textPrescription.gone()
         }
@@ -674,8 +683,7 @@ class CartItemViewHolder constructor(
                 val productInfo = createProductInfoText(it)
                 layoutProductInfo.addView(productInfo)
             }
-        }
-        else {
+        } else {
             binding.textProductInformation.gone()
             binding.textProductInformationSeparator.gone()
         }
@@ -837,8 +845,7 @@ class CartItemViewHolder constructor(
                 data.minOrder
             )
             binding.labelMinQuantityError.visible()
-        }
-        else {
+        } else {
             binding.labelMinQuantityError.gone()
         }
 
@@ -939,13 +946,11 @@ class CartItemViewHolder constructor(
             if (!element.isAlreadyShowMinimumQuantityPurchasedError) {
                 qtyEditorCart.setValue(element.minOrder)
                 element.isAlreadyShowMinimumQuantityPurchasedError = true
-            }
-            else {
+            } else {
                 binding.labelMinQuantityError.gone()
                 qtyEditorCart.errorMessageText = String.EMPTY
             }
-        }
-        else {
+        } else {
             if (!element.isAlreadyShowMinimumQuantityPurchasedError) {
                 binding.labelMinQuantityError.gone()
                 qtyEditorCart.errorMessageText = String.EMPTY
@@ -1119,8 +1124,7 @@ class CartItemViewHolder constructor(
         } else {
             if (cartItemHolderData.isBundlingItem && cartItemHolderData.isMultipleBundleProduct && cartItemHolderData.bundlingItemPosition != BUNDLING_ITEM_FOOTER) {
                 layoutParams.bottomMargin = 0
-            }
-            else {
+            } else {
                 layoutParams.bottomMargin = IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
             }
         }
