@@ -12,5 +12,6 @@ data class ShopPageHeaderTabModel(
     val isFocus: Boolean = false,
     val isDefault: Boolean = false,
     val chipsWording: String = "",
-    val shareWording: String = ""
+    val shareWording: String = "",
+    val tabPathUrl: String = ""
 )

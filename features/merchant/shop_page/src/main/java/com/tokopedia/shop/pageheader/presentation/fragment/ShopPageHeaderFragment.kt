@@ -297,6 +297,7 @@ class ShopPageHeaderFragment :
         private const val PATH_FEED = "feed"
         private const val PATH_REVIEW = "review"
         private const val PATH_NOTE = "note"
+        private const val PATH_ETALASE = "etalase"
         private const val PATH_CAMPAIGN = "campaign"
         private const val QUERY_SHOP_REF = "shop_ref"
         private const val QUERY_SHOP_ATTRIBUTION = "tracker_attribution"
@@ -2334,23 +2335,23 @@ class ShopPageHeaderFragment :
                 ShopPageHeaderTabName.CAMPAIGN -> {
                     val campaignFragment = createCampaignTabFragment(it)
                     campaignFragment
-                    campaignFragment
                 }
 
                 else -> {
                     null
                 }
-            }?.let { tabFragment ->
+            }?.let { tab ->
                 listShopPageTabModel.add(
                     ShopPageHeaderTabModel(
                         tabTitle = it.name,
-                        tabFragment = tabFragment,
+                        tabFragment = tab,
                         iconUrl = it.icon,
                         iconActiveUrl = it.iconFocus,
                         isFocus = it.isFocus == Int.ONE,
                         isDefault = it.isDefault,
                         chipsWording = it.chipWording,
-                        shareWording = it.shareWording
+                        shareWording = it.shareWording,
+                        tabPathUrl = getPathTab(it.name)
                     )
                 )
             }
@@ -3395,6 +3396,11 @@ class ShopPageHeaderFragment :
                         String.EMPTY
                     }
 
+
+                    val shopUrl = Uri.parse(UriUtil.buildUri(shopPageHeaderDataModel?.shopCoreUrl ?: ""))
+                        .buildUpon()
+                        .appendPath(listShopPageTabModel[index].tabPathUrl).toString()
+
                     shopPageHeaderTabModel.map(
                         isSelected,
                         LinkProperties(
@@ -3402,7 +3408,7 @@ class ShopPageHeaderFragment :
                             ogTitle = getShareBottomSheetOgTitle(),
                             ogImageUrl = thumbnail,
                             ogDescription = getShareBottomSheetOgDescription(),
-                            desktopUrl = shopPageHeaderDataModel?.shopCoreUrl ?: "",
+                            desktopUrl = shopUrl,
                             id = shopPageHeaderDataModel?.shopId ?: "",
                             deeplink = Uri.parse(UriUtil.buildUri(ApplinkConst.SHOP, shopId))
                                 .buildUpon()
@@ -3641,6 +3647,36 @@ class ShopPageHeaderFragment :
                 shopId+"-${it.title}",
                 SHOP_PAGE_SHARE_BOTTOM_SHEET_FEATURE_NAME
             )
+        }
+    }
+
+    private fun getPathTab(tabName:String) : String{
+        return when (tabName) {
+            ShopPageHeaderTabName.HOME -> {
+                PATH_HOME
+            }
+            ShopPageHeaderTabName.PRODUCT -> {
+                PATH_PRODUCT
+            }
+
+            ShopPageHeaderTabName.SHOWCASE -> {
+                PATH_ETALASE
+            }
+
+            ShopPageHeaderTabName.FEED -> {
+                PATH_FEED
+            }
+
+            ShopPageHeaderTabName.REVIEW -> {
+                PATH_REVIEW
+            }
+
+            ShopPageHeaderTabName.CAMPAIGN -> {
+                PATH_CAMPAIGN
+            }
+            else ->{
+                ""
+            }
         }
     }
 
