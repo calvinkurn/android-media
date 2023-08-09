@@ -225,7 +225,9 @@ class ShipmentFragment :
     ExpireTimeDialogListener,
     UploadPrescriptionListener {
 
-    private var binding by autoClearedNullable<FragmentShipmentBinding>()
+    private var binding by autoClearedNullable<FragmentShipmentBinding>() {
+        onDestroyViewBinding()
+    }
     private var progressDialogNormal: AlertDialog? = null
     private var shippingCourierBottomsheet: ShippingCourierBottomsheet? = null
     private var shipmentTracePerformance: PerformanceMonitoring? = null
@@ -349,11 +351,15 @@ class ShipmentFragment :
         hideLoading()
     }
 
+    private fun onDestroyViewBinding() {
+        val countDownTimer = binding?.partialCountdown?.countDown?.timer
+        countDownTimer?.cancel()
+    }
+
     override fun onDestroyView() {
         toasterThrottleSubscription?.unsubscribe()
         shippingCourierBottomsheet = null
-        val countDownTimer = binding?.partialCountdown?.countDown?.timer
-        countDownTimer?.cancel()
+        onDestroyViewBinding()
         shipmentViewModel.detachView()
         super.onDestroyView()
     }
