@@ -551,7 +551,9 @@ class AddEditProductDescriptionFragment :
 
     private fun observeIsRemovingSingleVariant() {
         descriptionViewModel.isRemovingSingleVariant.observe(viewLifecycleOwner) {
-            if (it) sendDataBack()
+            view?.post {
+                if (it) sendDataBack()
+            }
         }
     }
 
