@@ -4,4 +4,6 @@
     <string name="stories_retry">Coba Lagi</string>
     <string name="stories_retry_description">Yaah, gagal memuat konten</string>
     <string name="stories_content_unavailable">Yaah, konten sudah tidak tersedia</string>
+    <string name="stories_content_no_network_title">Koneksi internetmu terganggu!</string>
+    <string name="stories_content_no_network_description">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
 </resources>

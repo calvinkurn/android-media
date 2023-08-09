@@ -23,7 +23,6 @@ import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.stories.R
 import com.tokopedia.unifyprinciples.R as unifyR
 
-
 /**
  * @author by astidhiyaa on 09/08/23
  */
@@ -101,6 +100,56 @@ fun StoriesUnavailable() {
                     .fillMaxSize()
                     .align(Alignment.CenterHorizontally)
             )
+        }
+    }
+}
+
+@Composable
+fun StoriesUnavailable(
+    onRetryClicked: (Unit) -> Unit
+) {
+    val ctx = LocalContext.current
+    NestTheme {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = colorResource(id = unifyR.color.Unify_Static_Black)),
+        ) {
+            val iconDrawable = getIconUnifyDrawable(
+                ctx,
+                IconUnify.SIGNAL_INACTIVE,
+                MethodChecker.getColor(
+                    ctx,
+                    unifyR.color.Unify_Static_White
+                )
+            )
+            Image(
+                painter = rememberImagePainter(iconDrawable), contentDescription = "",
+                modifier = Modifier
+                    .size(80.dp)
+                    .align(Alignment.CenterHorizontally),
+            )
+            NestTypography(
+                text = ctx.getString(R.string.stories_content_no_network_title),
+                textStyle = NestTheme.typography.heading3,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .align(Alignment.CenterHorizontally)
+            )
+            NestTypography(
+                text = ctx.getString(R.string.stories_content_no_network_description),
+                textStyle = NestTheme.typography.display2,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .align(Alignment.CenterHorizontally)
+            )
+            NestButton(
+                text = ctx.getString(R.string.stories_retry),
+                variant = ButtonVariant.GHOST,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .align(Alignment.CenterHorizontally),
+                onClick = { onRetryClicked(Unit) })
         }
     }
 }
