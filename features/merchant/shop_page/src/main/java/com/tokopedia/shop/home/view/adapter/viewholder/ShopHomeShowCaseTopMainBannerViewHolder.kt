@@ -66,7 +66,7 @@ class ShopHomeShowCaseTopMainBannerViewHolder(
         val filteredShowcases =
             showcases.filterIndexed { index, _ -> index in SECOND_SHOWCASE_INDEX..TWELVE_SHOWCASE_INDEX }
 
-        val showCaseAdapter = ShopHomeShowCaseAdapter(listener)
+        val showCaseAdapter = ShopHomeShowCaseAdapter(ShopHomeShowcaseUiModel.WidgetStyle.ROUNDED_CORNER, listener)
 
         val recyclerView = viewBinding?.recyclerView
         recyclerView?.apply {

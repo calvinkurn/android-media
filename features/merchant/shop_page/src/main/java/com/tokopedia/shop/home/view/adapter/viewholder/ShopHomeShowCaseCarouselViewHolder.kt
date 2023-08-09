@@ -40,7 +40,7 @@ class ShopHomeShowCaseCarouselViewHolder(
     private fun setupShowCaseRecyclerView(
         showcases: List<ShopHomeShowcaseUiModel.Tab.Showcase>
     ) {
-        val showCaseAdapter = ShopHomeShowCaseAdapter(listener)
+        val showCaseAdapter = ShopHomeShowCaseAdapter(ShopHomeShowcaseUiModel.WidgetStyle.CIRCLE, listener)
 
         val recyclerView = viewBinding?.recyclerView
         recyclerView?.apply {

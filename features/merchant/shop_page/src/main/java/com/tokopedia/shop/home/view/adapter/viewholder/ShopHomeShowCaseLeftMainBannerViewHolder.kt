@@ -39,7 +39,7 @@ class ShopHomeShowCaseLeftMainBannerViewHolder(
 
     override fun bind(model: ShopHomeShowcaseUiModel) {
         setupShowcaseHeader(model)
-        setupTabs(model.tabs)
+        setupTabs(model.tabs, model.showcaseHeader.widgetStyle)
     }
 
     private fun setupShowcaseHeader(model: ShopHomeShowcaseUiModel) {
@@ -51,8 +51,11 @@ class ShopHomeShowCaseLeftMainBannerViewHolder(
         viewBinding?.iconChevron?.isVisible = showcases.size > SHOW_VIEW_ALL_SHOWCASE_THRESHOLD
     }
 
-    private fun setupTabs(tabs: List<ShopHomeShowcaseUiModel.Tab>) {
-        val fragments = createFragments(tabs)
+    private fun setupTabs(
+        tabs: List<ShopHomeShowcaseUiModel.Tab>,
+        widgetStyle: ShopHomeShowcaseUiModel.WidgetStyle
+    ) {
+        val fragments = createFragments(tabs, widgetStyle)
         val pagerAdapter = TabPagerAdapter(fragment, fragments)
 
         viewBinding?.run {
@@ -98,12 +101,13 @@ class ShopHomeShowCaseLeftMainBannerViewHolder(
     }
 
     private fun createFragments(
-        tabs: List<ShopHomeShowcaseUiModel.Tab>
+        tabs: List<ShopHomeShowcaseUiModel.Tab>,
+        widgetStyle: ShopHomeShowcaseUiModel.WidgetStyle
     ): List<Pair<String, Fragment>> {
         val pages = mutableListOf<Pair<String, Fragment>>()
 
         tabs.forEachIndexed { _, currentTab ->
-            val fragment = ShopShowcaseFragment.newInstance(currentTab.showcases)
+            val fragment = ShopShowcaseFragment.newInstance(currentTab.showcases, widgetStyle)
             fragment.setOnShowcaseClick { selectedShowcase ->
                 listener.onShowcaseClick(selectedShowcase)
             }

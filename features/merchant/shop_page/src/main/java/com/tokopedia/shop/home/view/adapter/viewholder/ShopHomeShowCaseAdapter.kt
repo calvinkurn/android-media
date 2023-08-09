@@ -8,8 +8,10 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.databinding.ItemShopHomeShowcaseBinding
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseListener
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseUiModel
+import com.tokopedia.unifycomponents.ImageUnify
 
 class ShopHomeShowCaseAdapter(
+    private val widgetStyle: ShopHomeShowcaseUiModel.WidgetStyle,
     private val listener: ShopHomeShowcaseListener
 ) : RecyclerView.Adapter<ShopHomeShowCaseAdapter.ShowCaseViewHolder>() {
 
@@ -37,8 +39,18 @@ class ShopHomeShowCaseAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(showcase: ShopHomeShowcaseUiModel.Tab.Showcase) {
             binding.tpgBannerTitle.text = showcase.name
-            binding.imgBanner.loadImage(showcase.imageUrl)
+            binding.imgBanner.loadShowcaseImage(showcase.imageUrl, widgetStyle)
             binding.root.setOnClickListener { listener.onShowcaseClick(showcase) }
+        }
+
+        private fun ImageUnify.loadShowcaseImage(imageUrl: String, widgetStyle: ShopHomeShowcaseUiModel.WidgetStyle) {
+            type = if (widgetStyle == ShopHomeShowcaseUiModel.WidgetStyle.ROUNDED_CORNER) {
+                ImageUnify.TYPE_RECT
+            } else {
+                ImageUnify.TYPE_CIRCLE
+            }
+
+            loadImage(imageUrl)
         }
     }
 
