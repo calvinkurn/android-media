@@ -350,12 +350,12 @@ class ShipmentFragment :
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         toasterThrottleSubscription?.unsubscribe()
         shippingCourierBottomsheet = null
         val countDownTimer = binding?.partialCountdown?.countDown?.timer
         countDownTimer?.cancel()
         shipmentViewModel.detachView()
+        super.onDestroyView()
     }
 
     override fun onDestroy() {
@@ -3322,9 +3322,11 @@ class ShipmentFragment :
             binding?.partialCountdown?.tvCountDown?.text = timer.timerDescription
             binding?.partialCountdown?.countDown?.remainingMilliseconds = diff
             binding?.partialCountdown?.countDown?.onFinish = {
-                val dialog =
-                    newInstance(timer, checkoutAnalyticsCourierSelection, this@ShipmentFragment)
-                dialog.show(fragmentManager!!, "expired dialog")
+                fragmentManager?.let { fm ->
+                    val dialog =
+                        newInstance(timer, checkoutAnalyticsCourierSelection, this@ShipmentFragment)
+                    dialog.show(fm, "expired dialog")
+                }
             }
         }
     }
