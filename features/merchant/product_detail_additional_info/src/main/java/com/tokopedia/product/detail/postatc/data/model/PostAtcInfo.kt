@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.postatc.data.model
 
+import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.postatc.PostAtc
 
 data class PostAtcInfo(
@@ -16,7 +17,8 @@ data class PostAtcInfo(
     val price: Double = 0.0,
     val productId: String = "",
     val session: String = "",
-    val shopId: String = ""
+    val shopId: String = "",
+    val userLocationRequest: UserLocationRequest = UserLocationRequest()
 ) {
     data class Footer(
         val image: String = "",

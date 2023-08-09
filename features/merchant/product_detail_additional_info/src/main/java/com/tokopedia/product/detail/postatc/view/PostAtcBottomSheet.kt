@@ -15,6 +15,8 @@ import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.getParcelableArg
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.getStringArg
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.postatc.PostAtc
 import com.tokopedia.product.detail.databinding.PostAtcBottomSheetBinding
@@ -26,6 +28,7 @@ import com.tokopedia.product.detail.postatc.base.PostAtcLayoutManager
 import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
 import com.tokopedia.product.detail.postatc.di.DaggerPostAtcComponent
 import com.tokopedia.product.detail.postatc.di.PostAtcModule
+import com.tokopedia.product.detail.postatc.mapper.generateUserLocationRequest
 import com.tokopedia.product.detail.postatc.tracker.PostAtcTracking
 import com.tokopedia.product.detail.postatc.view.component.error.ErrorUiModel
 import com.tokopedia.product.detail.postatc.view.component.fallback.FallbackUiModel
@@ -72,6 +75,7 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val component by getComponent()
+    private val localCacheModel by getLocalCacheModel()
     override val viewModel by getViewModel()
 
     private val callback by lazy { PostAtcCallback(this) }
@@ -222,7 +226,11 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
          * Init Loading
          */
         adapter.replaceComponents(listOf(LoadingUiModel()))
-        viewModel.initializeParameters(argProductId, argPostAtc)
+        viewModel.initializeParameters(
+            productId = argProductId,
+            postAtc = argPostAtc,
+            userLocationRequest = localCacheModel.generateUserLocationRequest()
+        )
     }
 
     private fun getComponent() = lazy {
@@ -234,5 +242,10 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
 
     private fun getViewModel() = lazy {
         ViewModelProvider(this, viewModelFactory)[PostAtcViewModel::class.java]
+    }
+
+    private fun getLocalCacheModel() = lazy {
+        val context = context ?: return@lazy LocalCacheModel()
+        ChooseAddressUtils.getLocalizingAddressData(context)
     }
 }

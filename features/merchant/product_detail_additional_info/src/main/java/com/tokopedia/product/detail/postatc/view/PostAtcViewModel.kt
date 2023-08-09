@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.postatc.PostAtc
 import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
 import com.tokopedia.product.detail.postatc.data.model.PostAtcInfo
@@ -39,7 +40,8 @@ class PostAtcViewModel @Inject constructor(
      */
     fun initializeParameters(
         productId: String,
-        postAtc: PostAtc
+        postAtc: PostAtc,
+        userLocationRequest: UserLocationRequest
     ) {
         val addons = postAtc.addons?.let {
             PostAtcInfo.Addons.parse(it)
@@ -51,7 +53,8 @@ class PostAtcViewModel @Inject constructor(
             layoutId = postAtc.layoutId,
             pageSource = postAtc.pageSource.name,
             productId = productId,
-            session = postAtc.session
+            session = postAtc.session,
+            userLocationRequest = userLocationRequest
         )
 
         fetchLayout()
@@ -64,7 +67,8 @@ class PostAtcViewModel @Inject constructor(
                 postAtcInfo.cartId,
                 postAtcInfo.layoutId,
                 postAtcInfo.pageSource,
-                postAtcInfo.session
+                postAtcInfo.session,
+                postAtcInfo.userLocationRequest
             )
 
             updateInfo(result)
@@ -95,8 +99,8 @@ class PostAtcViewModel @Inject constructor(
 
             _recommendations.value = uniqueId to widget.asSuccess()
         }, onError = {
-                _recommendations.value = uniqueId to it.asFail()
-            })
+            _recommendations.value = uniqueId to it.asFail()
+        })
     }
 
     private fun updateInfo(data: PostAtcLayout) {
