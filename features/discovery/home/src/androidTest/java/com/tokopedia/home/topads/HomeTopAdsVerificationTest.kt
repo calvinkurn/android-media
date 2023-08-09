@@ -175,7 +175,7 @@ class HomeTopAdsVerificationTest {
         when (val viewHolder = homeRecyclerView.findViewHolderForAdapterPosition(i)) {
             is MixTopComponentViewHolder -> {
                 waitForData()
-                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
+                clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.home_component.R.id.dc_banner_rv, 0)
             }
             is MixLeftComponentViewHolder -> {
                 val childRecyclerView: RecyclerView = viewHolder.itemView.findViewById(R.id.rv_product)
@@ -186,7 +186,7 @@ class HomeTopAdsVerificationTest {
             }
             is FeaturedShopViewHolder -> {
                 waitForData()
-                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
+                clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.home_component.R.id.dc_banner_rv, 0)
             }
             is HomeRecommendationFeedViewHolder -> {
                 waitForData()
@@ -195,13 +195,13 @@ class HomeTopAdsVerificationTest {
             }
             is BestSellerViewHolder -> {
                 waitForData()
-                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.best_seller_recommendation_recycler_view, 0)
+                clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.recommendation_widget_common.R.id.best_seller_recommendation_recycler_view, 0)
             }
             is Lego4ProductViewHolder -> {
                 clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList, 0)
             }
             is FlashSaleViewHolder -> {
-                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.carouselProductCardRecyclerView, 0)
+                clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.carouselproductcard.R.id.carouselProductCardRecyclerView, 0)
             }
         }
     }

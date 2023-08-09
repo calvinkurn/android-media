@@ -547,7 +547,7 @@ private fun clickClosedReminderWidgetSalam() {
         Espresso.onView(
             CommonMatcher.getElementFromMatchAtPosition(
                 AllOf.allOf(
-                    ViewMatchers.withId(R.id.ic_close_reminder_recommendation),
+                    ViewMatchers.withId(com.tokopedia.home_component.R.id.ic_close_reminder_recommendation),
                     ViewMatchers.isDisplayed()
                 ),
                 0
@@ -563,7 +563,7 @@ private fun clickClosedReminderWidgetRecharge() {
         Espresso.onView(
             CommonMatcher.getElementFromMatchAtPosition(
                 AllOf.allOf(
-                    ViewMatchers.withId(R.id.ic_close_reminder_recommendation),
+                    ViewMatchers.withId(com.tokopedia.home_component.R.id.ic_close_reminder_recommendation),
                     ViewMatchers.isDisplayed()
                 ),
                 0
@@ -578,7 +578,7 @@ private fun clickReminderWidgetSalam() {
     try {
         Espresso.onView(
             AllOf.allOf(
-                ViewMatchers.withId(R.id.btn_reminder_recommendation),
+                ViewMatchers.withId(com.tokopedia.home_componentR.id.btn_reminder_recommendation),
                 ViewMatchers.isDisplayed(),
                 ViewMatchers.withText("Berbagi Sekarang")
             )
@@ -597,7 +597,7 @@ private fun clickReminderWidgetRecharge(i: Int) {
         Espresso.onView(
             CommonMatcher.getElementFromMatchAtPosition(
                 AllOf.allOf(
-                    ViewMatchers.withId(R.id.btn_reminder_recommendation),
+                    ViewMatchers.withId(com.tokopedia.home_component.R.id.btn_reminder_recommendation),
                     ViewMatchers.isDisplayed(),
                     ViewMatchers.withText("Bayar Sekarang")
                 ),
@@ -614,7 +614,7 @@ fun actionOnBalanceWidget(viewHolder: RecyclerView.ViewHolder) {
 }
 
 fun actionOnDynamicIcon(viewHolder: RecyclerView.ViewHolder) {
-    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dynamic_icon_recycler_view, 0)
+    clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.home_component.R.id.dynamic_icon_recycler_view, 0)
 }
 
 // ==================================== end of item action ======================================
