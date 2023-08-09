@@ -3,11 +3,14 @@ package com.tokopedia.play.view.uimodel.state
 import com.tokopedia.play.ui.engagement.model.EngagementUiModel
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
+import com.tokopedia.play.view.uimodel.CategoryWidgetUiModel
 import com.tokopedia.play.view.uimodel.ExploreWidgetUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
 import com.tokopedia.play.view.uimodel.WarehouseInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.ExploreWidgetConfig
 import com.tokopedia.play.view.uimodel.recom.PlayChannelDetailUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayChannelRecommendationConfig
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.uimodel.recom.PlayQuickReplyInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
@@ -155,12 +158,16 @@ data class FollowPopUpUiState(
 data class ExploreWidgetUiState(
     val shouldShow: Boolean,
     val data: ExploreWidgetUiModel,
+    val category: CategoryWidgetUiModel,
+    val config: PlayChannelRecommendationConfig,
 ) {
     companion object {
         val Empty: ExploreWidgetUiState
             get() = ExploreWidgetUiState(
                 shouldShow = false,
                 data = ExploreWidgetUiModel.Empty,
+                category = CategoryWidgetUiModel.Empty,
+                config = PlayChannelRecommendationConfig(),
             )
     }
 }

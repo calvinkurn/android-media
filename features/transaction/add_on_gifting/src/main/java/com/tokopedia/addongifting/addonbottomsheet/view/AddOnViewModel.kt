@@ -3,31 +3,30 @@ package com.tokopedia.addongifting.addonbottomsheet.view
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.addongifting.addonbottomsheet.data.getaddonbyproduct.*
-import com.tokopedia.addongifting.addonbottomsheet.data.getaddonsavedstate.GetAddOnSavedStateRequest
 import com.tokopedia.addongifting.addonbottomsheet.data.getaddonsavedstate.GetAddOnSavedStateResponse
-import com.tokopedia.addongifting.addonbottomsheet.data.saveaddonstate.*
 import com.tokopedia.addongifting.addonbottomsheet.domain.mapper.AddOnRequestMapper
 import com.tokopedia.addongifting.addonbottomsheet.domain.usecase.GetAddOnByProductUseCase
 import com.tokopedia.addongifting.addonbottomsheet.domain.usecase.GetAddOnSavedStateUseCase
-import com.tokopedia.addongifting.addonbottomsheet.domain.usecase.SaveAddOnStateUseCase
 import com.tokopedia.addongifting.addonbottomsheet.view.mapper.AddOnUiModelMapper
 import com.tokopedia.addongifting.addonbottomsheet.view.uimodel.AddOnUiModel
 import com.tokopedia.addongifting.addonbottomsheet.view.uimodel.FragmentUiModel
 import com.tokopedia.addongifting.addonbottomsheet.view.uimodel.ProductUiModel
 import com.tokopedia.addongifting.addonbottomsheet.view.uimodel.TotalAmountUiModel
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.ResponseErrorException
-import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.feature.addons.data.response.SaveAddOnStateResponse
+import com.tokopedia.purchase_platform.common.feature.addons.domain.SaveAddOnStateUseCase
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnProductData
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispatchers,
-                                         private val getAddOnByProductUseCase: GetAddOnByProductUseCase,
-                                         private val getAddOnSavedStateUseCase: GetAddOnSavedStateUseCase,
-                                         private val saveAddOnStateUseCase: SaveAddOnStateUseCase)
-    : BaseViewModel(executorDispatchers.main) {
+class AddOnViewModel @Inject constructor(
+    val executorDispatchers: CoroutineDispatchers,
+    private val getAddOnByProductUseCase: GetAddOnByProductUseCase,
+    private val getAddOnSavedStateUseCase: GetAddOnSavedStateUseCase,
+    private val saveAddOnStateUseCase: SaveAddOnStateUseCase
+) :
+    BaseViewModel(executorDispatchers.main) {
 
     private val _uiEvent = MutableSharedFlow<UiEvent>()
     val uiEvent = _uiEvent.asSharedFlow()
@@ -40,9 +39,9 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
     private val _totalAmountUiModel = MutableStateFlow(TotalAmountUiModel())
 
     val fragmentUiModel: Flow<FragmentUiModel> = combine(
-            _productUiModel,
-            _addOnUiModel,
-            _totalAmountUiModel
+        _productUiModel,
+        _addOnUiModel,
+        _totalAmountUiModel
     ) { productUiModel, addonUiModel, totalAmountUiModel ->
         FragmentUiModel().apply {
             hasLoadedData = hasLoadData
@@ -55,17 +54,19 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
         val params = AddOnRequestMapper.generateGetAddOnByProductRequestParams(addOnProductData)
         getAddOnByProductUseCase.setParams(params)
         getAddOnByProductUseCase.execute(
-                onSuccess = {
-                    handleOnSuccessGetAddOnByProduct(it, addOnProductData)
-                },
-                onError = {
-                    handleOnErrorGetAddOnProduct(it)
-                }
+            onSuccess = {
+                handleOnSuccessGetAddOnByProduct(it, addOnProductData)
+            },
+            onError = {
+                handleOnErrorGetAddOnProduct(it)
+            }
         )
     }
 
-    private fun handleOnSuccessGetAddOnByProduct(getAddOnByProductResponse: GetAddOnByProductResponse,
-                                                 addOnProductData: AddOnProductData) {
+    private fun handleOnSuccessGetAddOnByProduct(
+        getAddOnByProductResponse: GetAddOnByProductResponse,
+        addOnProductData: AddOnProductData
+    ) {
         if (getAddOnByProductResponse.dataResponse.error.errorCode.isBlank()) {
             loadSavedStateData(addOnProductData, getAddOnByProductResponse)
         } else {
@@ -76,31 +77,35 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
     private fun handleOnErrorGetAddOnProduct(throwable: Throwable) {
         launch {
             _uiEvent.emit(
-                    UiEvent().apply {
-                        state = UiEvent.STATE_FAILED_LOAD_ADD_ON_DATA
-                        this.throwable = throwable
-                    }
+                UiEvent().apply {
+                    state = UiEvent.STATE_FAILED_LOAD_ADD_ON_DATA
+                    this.throwable = throwable
+                }
             )
         }
     }
 
-    private fun loadSavedStateData(addOnProductData: AddOnProductData,
-                                   addOnByProductResponse: GetAddOnByProductResponse) {
+    private fun loadSavedStateData(
+        addOnProductData: AddOnProductData,
+        addOnByProductResponse: GetAddOnByProductResponse
+    ) {
         val params = AddOnRequestMapper.generateGetAddOnSavedStateRequestParams(addOnProductData)
         getAddOnSavedStateUseCase.setParams(params)
         getAddOnSavedStateUseCase.execute(
-                onSuccess = {
-                    handleOnSuccessGetAddOnSavedState(it, addOnProductData, addOnByProductResponse)
-                },
-                onError = {
-                    handleOnErrorGetAddOnSavedState(addOnProductData, addOnByProductResponse)
-                }
+            onSuccess = {
+                handleOnSuccessGetAddOnSavedState(it, addOnProductData, addOnByProductResponse)
+            },
+            onError = {
+                handleOnErrorGetAddOnSavedState(addOnProductData, addOnByProductResponse)
+            }
         )
     }
 
-    private fun handleOnSuccessGetAddOnSavedState(getAddOnSavedStateResponse: GetAddOnSavedStateResponse,
-                                                  addOnProductData: AddOnProductData,
-                                                  addOnByProductResponse: GetAddOnByProductResponse) {
+    private fun handleOnSuccessGetAddOnSavedState(
+        getAddOnSavedStateResponse: GetAddOnSavedStateResponse,
+        addOnProductData: AddOnProductData,
+        addOnByProductResponse: GetAddOnByProductResponse
+    ) {
         if (getAddOnSavedStateResponse.getAddOns.errorMessage.firstOrNull()?.isNotBlank() == true) {
             handleOnErrorGetAddOnSavedState(addOnProductData, addOnByProductResponse)
         } else {
@@ -108,18 +113,20 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
         }
     }
 
-    private fun prepareAddOnData(addOnProductData: AddOnProductData,
-                                 addOnByProductResponse: GetAddOnByProductResponse,
-                                 getAddOnSavedStateResponse: GetAddOnSavedStateResponse? = null) {
+    private fun prepareAddOnData(
+        addOnProductData: AddOnProductData,
+        addOnByProductResponse: GetAddOnByProductResponse,
+        getAddOnSavedStateResponse: GetAddOnSavedStateResponse? = null
+    ) {
         hasLoadData = true
         if (AddOnUiModelMapper.hasSavedAddOn(addOnProductData, addOnByProductResponse, getAddOnSavedStateResponse)) {
             hasSavedState = true
         }
         launch {
             _uiEvent.emit(
-                    UiEvent().apply {
-                        state = UiEvent.STATE_SUCCESS_LOAD_ADD_ON_DATA
-                    }
+                UiEvent().apply {
+                    state = UiEvent.STATE_SUCCESS_LOAD_ADD_ON_DATA
+                }
             )
             val productUiModel = AddOnUiModelMapper.mapProduct(addOnProductData, addOnByProductResponse)
             _productUiModel.emit(productUiModel)
@@ -128,15 +135,17 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
         }
     }
 
-    private fun handleOnErrorGetAddOnSavedState(addOnProductData: AddOnProductData,
-                                                addOnByProductResponse: GetAddOnByProductResponse) {
+    private fun handleOnErrorGetAddOnSavedState(
+        addOnProductData: AddOnProductData,
+        addOnByProductResponse: GetAddOnByProductResponse
+    ) {
         hasLoadData = true
         hasSavedState = false
         launch {
             _uiEvent.emit(
-                    UiEvent().apply {
-                        state = UiEvent.STATE_SUCCESS_LOAD_ADD_ON_DATA
-                    }
+                UiEvent().apply {
+                    state = UiEvent.STATE_SUCCESS_LOAD_ADD_ON_DATA
+                }
             )
             val productUiModel = AddOnUiModelMapper.mapProduct(addOnProductData, addOnByProductResponse)
             _productUiModel.emit(productUiModel)
@@ -148,14 +157,14 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
     fun saveAddOnState(addOnProductData: AddOnProductData) {
         val addOnUiModel = _addOnUiModel.value
         val params = AddOnRequestMapper.generateSaveAddOnStateRequestParams(addOnProductData, addOnUiModel)
-        saveAddOnStateUseCase.setParams(params)
+        saveAddOnStateUseCase.setParams(params, false)
         saveAddOnStateUseCase.execute(
-                onSuccess = {
-                    handleOnSuccessSaveAddOnState(it)
-                },
-                onError = {
-                    handleOnErrorSaveAddOnState(it)
-                }
+            onSuccess = {
+                handleOnSuccessSaveAddOnState(it)
+            },
+            onError = {
+                handleOnErrorSaveAddOnState(it)
+            }
         )
     }
 
@@ -165,10 +174,10 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
         } else {
             launch {
                 _uiEvent.emit(
-                        UiEvent().apply {
-                            state = UiEvent.STATE_SUCCESS_SAVE_ADD_ON
-                            data = saveAddOnStateResponse
-                        }
+                    UiEvent().apply {
+                        state = UiEvent.STATE_SUCCESS_SAVE_ADD_ON
+                        data = saveAddOnStateResponse
+                    }
                 )
             }
         }
@@ -177,10 +186,10 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
     private fun handleOnErrorSaveAddOnState(throwable: Throwable) {
         launch {
             _uiEvent.emit(
-                    UiEvent().apply {
-                        state = UiEvent.STATE_FAILED_SAVE_ADD_ON
-                        this.throwable = throwable
-                    }
+                UiEvent().apply {
+                    state = UiEvent.STATE_FAILED_SAVE_ADD_ON
+                    this.throwable = throwable
+                }
             )
         }
     }
@@ -202,15 +211,15 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
         launch {
             if (hasChangedState()) {
                 _uiEvent.emit(
-                        UiEvent().apply {
-                            state = UiEvent.STATE_SHOW_CLOSE_DIALOG_CONFIRMATION
-                        }
+                    UiEvent().apply {
+                        state = UiEvent.STATE_SHOW_CLOSE_DIALOG_CONFIRMATION
+                    }
                 )
             } else {
                 _uiEvent.emit(
-                        UiEvent().apply {
-                            state = UiEvent.STATE_DISMISS_BOTTOM_SHEET
-                        }
+                    UiEvent().apply {
+                        state = UiEvent.STATE_DISMISS_BOTTOM_SHEET
+                    }
                 )
             }
         }
@@ -220,13 +229,13 @@ class AddOnViewModel @Inject constructor(val executorDispatchers: CoroutineDispa
         _addOnUiModel.value.let {
             return if (hasSavedState) {
                 it.initialSelectedState != it.isAddOnSelected ||
-                        it.initialAddOnNote != it.addOnNote ||
-                        it.initialAddOnNoteTo != it.addOnNoteTo ||
-                        it.initialAddOnNoteFrom != it.addOnNoteFrom
+                    it.initialAddOnNote != it.addOnNote ||
+                    it.initialAddOnNoteTo != it.addOnNoteTo ||
+                    it.initialAddOnNoteFrom != it.addOnNoteFrom
             } else {
                 it.initialAddOnNote != it.addOnNote ||
-                        it.initialAddOnNoteTo != it.addOnNoteTo ||
-                        it.initialAddOnNoteFrom != it.addOnNoteFrom
+                    it.initialAddOnNoteTo != it.addOnNoteTo ||
+                    it.initialAddOnNoteFrom != it.addOnNoteFrom
             }
         }
     }
