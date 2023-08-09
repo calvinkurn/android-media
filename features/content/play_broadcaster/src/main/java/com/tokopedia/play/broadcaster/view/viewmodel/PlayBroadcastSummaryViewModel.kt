@@ -14,8 +14,6 @@ import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
 import com.tokopedia.play.broadcaster.ui.state.LiveReportUiState
@@ -305,15 +303,9 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
             }.toList()
 
             _trafficMetric.value = NetworkResult.Success(metrics)
-
-            if (!isEligiblePostVideo(reportChannelSummary.duration)) {
-                _uiEvent.emit(PlayBroadcastSummaryEvent.VideoUnder60Seconds)
-            }
         }) {
             _channelSummary.value = ChannelSummaryUiModel.empty()
             _trafficMetric.value = NetworkResult.Fail(it) { fetchLiveTraffic() }
-
-            _uiEvent.emit(PlayBroadcastSummaryEvent.VideoUnder60Seconds)
         }
     }
 
