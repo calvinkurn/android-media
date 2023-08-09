@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.product.detail.common.postatc.PostAtc
 import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
 import com.tokopedia.product.detail.postatc.data.model.PostAtcInfo
 import com.tokopedia.product.detail.postatc.data.model.PostAtcLayout
@@ -38,25 +39,19 @@ class PostAtcViewModel @Inject constructor(
      */
     fun initializeParameters(
         productId: String,
-        cartId: String,
-        isFulfillment: Boolean,
-        layoutId: String,
-        pageSource: String,
-        selectedAddonsIds: List<String>,
-        warehouseId: String,
-        quantity: Int,
-        postAtcSession: String
+        postAtc: PostAtc
     ) {
+        val addons = postAtc.addons?.let {
+            PostAtcInfo.Addons.parse(it)
+        }
+
         postAtcInfo = postAtcInfo.copy(
+            addons = addons,
+            cartId = postAtc.cartId,
+            layoutId = postAtc.layoutId,
+            pageSource = postAtc.pageSource.name,
             productId = productId,
-            cartId = cartId,
-            isFulfillment = isFulfillment,
-            layoutId = layoutId,
-            pageSource = pageSource,
-            selectedAddonsIds = selectedAddonsIds,
-            warehouseId = warehouseId,
-            quantity = quantity,
-            postAtcSession = postAtcSession
+            session = postAtc.session
         )
 
         fetchLayout()
@@ -69,7 +64,7 @@ class PostAtcViewModel @Inject constructor(
                 postAtcInfo.cartId,
                 postAtcInfo.layoutId,
                 postAtcInfo.pageSource,
-                postAtcInfo.postAtcSession
+                postAtcInfo.session
             )
 
             updateInfo(result)

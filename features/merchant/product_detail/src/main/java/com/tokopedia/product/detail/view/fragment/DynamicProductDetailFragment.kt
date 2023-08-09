@@ -153,6 +153,7 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
+import com.tokopedia.product.detail.common.postatc.PostAtc
 import com.tokopedia.product.detail.common.showImmediately
 import com.tokopedia.product.detail.common.showToasterError
 import com.tokopedia.product.detail.common.showToasterSuccess
@@ -3668,21 +3669,32 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    private fun showGlobalPostATC(cartDataModel: DataModel, productId: String, postAtcLayout: PostAtcLayout) {
+    private fun showGlobalPostATC(
+        cartDataModel: DataModel,
+        productId: String,
+        postAtcLayout: PostAtcLayout
+    ) {
         val context = context ?: return
-        PostAtcHelper.start(
-            context,
-            productId,
-            layoutId = postAtcLayout.layoutId,
-            cartId = cartDataModel.cartId,
+        val addons = PostAtc.Addons(
+            isFulfillment = cartDataModel.isFulfillment,
             selectedAddonsIds = cartDataModel.addOns.mapNotNull { item ->
                 item.id.takeIf { item.status == 1 }
             },
-            isFulfillment = cartDataModel.isFulfillment,
-            pageSource = PostAtcHelper.Source.PDP,
             warehouseId = cartDataModel.warehouseId,
-            quantity = cartDataModel.quantity,
-            postAtcSession = postAtcLayout.postAtcSession
+            quantity = cartDataModel.quantity
+        )
+
+        val postAtc = PostAtc(
+            cartId = cartDataModel.cartId,
+            layoutId = postAtcLayout.layoutId,
+            pageSource = PostAtc.Source.PDP,
+            session = postAtcLayout.postAtcSession,
+            addons = addons
+        )
+        PostAtcHelper.start(
+            context,
+            productId,
+            postAtc
         )
     }
 

@@ -12,12 +12,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
-import com.tokopedia.kotlin.extensions.view.getBooleanArg
-import com.tokopedia.kotlin.extensions.view.getIntArg
+import com.tokopedia.kotlin.extensions.view.getParcelableArg
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.getStringArg
-import com.tokopedia.kotlin.extensions.view.getStringArrayListArg
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.postatc.PostAtc
 import com.tokopedia.product.detail.databinding.PostAtcBottomSheetBinding
 import com.tokopedia.product.detail.databinding.ViewPostAtcFooterBinding
 import com.tokopedia.product.detail.postatc.base.PostAtcAdapter
@@ -50,36 +49,15 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
         const val TAG = "post_atc_bs"
 
         private const val ARG_PRODUCT_ID = "productId"
-        private const val ARG_CART_ID = "cartId"
-        private const val ARG_IS_FULFILLMENT = "is_fulfillment"
-        private const val ARG_LAYOUT_ID = "layoutId"
-        private const val ARG_PAGE_SOURCE = "pageSource"
-        private const val ARG_SELECTED_ADDONS_IDS = "selected_addons_ids"
-        private const val ARG_WAREHOUSE_ID = "warehouse_id"
-        private const val ARG_QUANTITY = "quantity"
-        private const val ARG_POST_ATC_SESSION = "postAtcSession"
+        private const val ARG_POST_ATC = "postAtc"
 
         fun instance(
             productId: String,
-            cartId: String,
-            isFulfillment: Boolean,
-            layoutId: String,
-            pageSource: String,
-            selectedAddonsIds: List<String>,
-            warehouseId: String,
-            quantity: Int,
-            postAtcSession: String
+            postAtc: PostAtc
         ) = PostAtcBottomSheet().apply {
             arguments = Bundle().apply {
                 putString(ARG_PRODUCT_ID, productId)
-                putString(ARG_CART_ID, cartId)
-                putBoolean(ARG_IS_FULFILLMENT, isFulfillment)
-                putString(ARG_LAYOUT_ID, layoutId)
-                putString(ARG_PAGE_SOURCE, pageSource)
-                putStringArrayList(ARG_SELECTED_ADDONS_IDS, ArrayList(selectedAddonsIds))
-                putString(ARG_WAREHOUSE_ID, warehouseId)
-                putInt(ARG_QUANTITY, quantity)
-                putString(ARG_POST_ATC_SESSION, postAtcSession)
+                putParcelable(ARG_POST_ATC, postAtc)
             }
         }
     }
@@ -100,14 +78,7 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
     override val adapter by lazy { PostAtcAdapter(callback) }
 
     private val argProductId: String by getStringArg(ARG_PRODUCT_ID)
-    private val argCartId: String by getStringArg(ARG_CART_ID)
-    private val argIsFulfillment: Boolean by getBooleanArg(ARG_IS_FULFILLMENT)
-    private val argLayoutId: String by getStringArg(ARG_LAYOUT_ID)
-    private val argPageSource by getStringArg(ARG_PAGE_SOURCE)
-    private val argSelectedAddonsIds: List<String> by getStringArrayListArg(ARG_SELECTED_ADDONS_IDS)
-    private val argWarehouseId: String by getStringArg(ARG_WAREHOUSE_ID)
-    private val argQuantity: Int by getIntArg(ARG_QUANTITY)
-    private val argPostAtcSession: String by getStringArg(ARG_POST_ATC_SESSION)
+    private val argPostAtc: PostAtc by getParcelableArg(ARG_POST_ATC, PostAtc())
 
     override var binding: PostAtcBottomSheetBinding? = null
         private set
@@ -242,7 +213,7 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
         if (it is SocketTimeoutException || it is UnknownHostException || it is ConnectException) {
             adapter.replaceComponents(listOf(ErrorUiModel(errorType = GlobalError.NO_CONNECTION)))
         } else {
-            adapter.replaceComponents(listOf(FallbackUiModel(cartId = argCartId)))
+            adapter.replaceComponents(listOf(FallbackUiModel(cartId = argPostAtc.cartId)))
         }
     }
 
@@ -251,17 +222,7 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
          * Init Loading
          */
         adapter.replaceComponents(listOf(LoadingUiModel()))
-        viewModel.initializeParameters(
-            argProductId,
-            argCartId,
-            argIsFulfillment,
-            argLayoutId,
-            argPageSource,
-            argSelectedAddonsIds,
-            argWarehouseId,
-            argQuantity,
-            argPostAtcSession
-        )
+        viewModel.initializeParameters(argProductId, argPostAtc)
     }
 
     private fun getComponent() = lazy {

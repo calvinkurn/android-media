@@ -66,6 +66,7 @@ import com.tokopedia.product.detail.common.data.model.carttype.PostAtcLayout
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.mapper.AtcVariantMapper
+import com.tokopedia.product.detail.common.postatc.PostAtc
 import com.tokopedia.product.detail.common.showToasterError
 import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.product.detail.common.view.AtcVariantListener
@@ -706,25 +707,33 @@ class AtcVariantBottomSheet :
         postAtcLayout: PostAtcLayout,
         cartData: DataModel
     ) {
-        val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
-        val postAtcPageSource = if (pageSource == VariantPageSource.PDP_PAGESOURCE.source) {
-            PostAtcHelper.Source.PDP
+        val addons = PostAtc.Addons(
+            isFulfillment = cartData.isFulfillment,
+            selectedAddonsIds = cartData.addOns.mapNotNull { addon ->
+                addon.id.takeIf { addon.status == 1 }
+            },
+            warehouseId = cartData.warehouseId,
+            quantity = cartData.quantity
+        )
+
+        val variantPageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
+        val pageSource = if (variantPageSource == VariantPageSource.PDP_PAGESOURCE.source) {
+            PostAtc.Source.PDP
         } else {
-            PostAtcHelper.Source.Default
+            PostAtc.Source.Default
         }
+
+        val postAtc = PostAtc(
+            cartId = cartData.cartId,
+            layoutId = postAtcLayout.layoutId,
+            pageSource = pageSource,
+            session = postAtcLayout.postAtcSession,
+            addons = addons
+        )
         PostAtcHelper.start(
             context,
             productId,
-            layoutId = postAtcLayout.layoutId,
-            cartId = cartData.cartId,
-            pageSource = postAtcPageSource,
-            warehouseId = cartData.warehouseId,
-            isFulfillment = cartData.isFulfillment,
-            selectedAddonsIds = cartData.addOns.mapNotNull { item ->
-                item.id.takeIf { item.status == 1 }
-            },
-            quantity = cartData.quantity,
-            postAtcSession = postAtcLayout.postAtcSession
+            postAtc
         )
         dismiss()
     }
