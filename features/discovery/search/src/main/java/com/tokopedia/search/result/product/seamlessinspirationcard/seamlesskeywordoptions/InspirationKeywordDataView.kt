@@ -37,7 +37,8 @@ data class InspirationKeywordDataView(
             imageKeyword = option.bannerImageUrl,
             applink = option.applink,
             trackingOption = option.trackingOption,
-            carouselTitle = option.carouselTitle
+            carouselTitle = option.carouselTitle,
+            componentId = option.componentId
         )
     }
 
