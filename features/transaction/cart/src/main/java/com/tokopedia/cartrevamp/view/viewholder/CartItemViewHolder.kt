@@ -866,10 +866,6 @@ class CartItemViewHolder constructor(
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 delayChangeQty?.cancel()
-                if (s.toString().replace(".", "").toIntOrZero() == 0) {
-                    actionListener?.onCartItemDeleteButtonClicked(data, false)
-                    return
-                }
                 delayChangeQty = GlobalScope.launch(Dispatchers.Main) {
                     val newValue = s.toString().replace(".", "").toIntOrZero()
                     val minOrder = data.minOrder
@@ -939,6 +935,10 @@ class CartItemViewHolder constructor(
                 element.maxOrder
             )
         } else if (newValue < element.minOrder) {
+            if (element.minOrder <= 1) {
+                actionListener?.onCartItemDeleteButtonClicked(element, false)
+                return
+            }
             binding.labelMinQuantityError.show()
             binding.labelMinQuantityError.text = String.format(
                 itemView.context.getString(R.string.cart_min_quantity_error),
@@ -950,6 +950,7 @@ class CartItemViewHolder constructor(
             } else {
                 element.isAlreadyShowMinimumQuantityPurchasedError = false
                 qtyEditorCart.errorMessageText = String.EMPTY
+                actionListener?.onCartItemDeleteButtonClicked(element, false)
             }
         } else {
             if (!element.isAlreadyShowMinimumQuantityPurchasedError) {
