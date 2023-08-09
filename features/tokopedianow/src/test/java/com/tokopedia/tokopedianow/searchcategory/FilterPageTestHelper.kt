@@ -123,10 +123,10 @@ class FilterPageTestHelper(
         `When view open filter page`()
         `When view open filter page`()
 
-        `Then verify get filter API called`()
+        `Then verify get filter API only called once`()
     }
 
-    private fun `Then verify get filter API called`() {
+    private fun `Then verify get filter API only called once`() {
         coVerify(exactly = 1) {
             getFilterUseCase.execute(any())
         }
@@ -151,7 +151,7 @@ class FilterPageTestHelper(
         baseViewModel.onViewDismissFilterPage()
     }
 
-    fun `test open filter page second time should call API again`() {
+    fun `test open filter page second time should not call API again`() {
         callback.`Given first page API will be successful`()
         `Given view already created`()
         `Given get filter API will be successful`(dynamicFilterModel)
@@ -160,7 +160,7 @@ class FilterPageTestHelper(
 
         `When view open filter page`()
 
-        `Then verify get filter API called`()
+        `Then verify get filter API only called once`()
     }
 
     private fun `Given view dismiss filter page`() {

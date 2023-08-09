@@ -64,7 +64,7 @@ class CategoryFilterPageTest: CategoryTestFixtures(), Callback {
 
     @Test
     fun `open filter page second time should call API again`() {
-        filterPageTestHelper.`test open filter page second time should call API again`()
+        filterPageTestHelper.`test open filter page second time should not call API again`()
     }
 
     @Test
