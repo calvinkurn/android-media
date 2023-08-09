@@ -45,8 +45,8 @@ class StoriesViewModel @Inject constructor(
             is StoriesUiAction.SetInitialData -> handleSetInitialData(action.data)
             StoriesUiAction.NextStories -> handleNextStories()
             StoriesUiAction.PreviousStories -> handlePreviousStories()
-            StoriesUiAction.NextCategory -> handleNextCategories()
-            StoriesUiAction.PreviousCategory -> handlePreviousCategories()
+            StoriesUiAction.NextCategories -> handleNextCategories()
+            StoriesUiAction.PreviousCategories -> handlePreviousCategories()
             StoriesUiAction.PauseStories -> handleOnPauseStories()
             StoriesUiAction.ResumeStories -> handleOnResumeStories()
         }

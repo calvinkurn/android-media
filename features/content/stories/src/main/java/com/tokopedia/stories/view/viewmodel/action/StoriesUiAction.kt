@@ -15,7 +15,7 @@ sealed interface StoriesUiAction {
 
     object PreviousStories: StoriesUiAction
 
-    object NextCategory: StoriesUiAction
+    object NextCategories: StoriesUiAction
 
-    object PreviousCategory: StoriesUiAction
+    object PreviousCategories: StoriesUiAction
 }

@@ -27,7 +27,7 @@ import com.tokopedia.stories.view.model.StoriesDataUiModel
 @Composable
 fun StoriesIndicator(
     data: StoriesDataUiModel,
-    event: (StoriesEventAction) -> Unit,
+    event: (StoriesIndicatorEvent) -> Unit,
 ) {
     val anim = remember { Animatable(0F) }
     LaunchedEffect(data) {
@@ -41,8 +41,8 @@ fun StoriesIndicator(
                 )
             )
             event.invoke(
-                if (data.selected >= data.count) StoriesEventAction.NEXT_CATEGORIES
-                else StoriesEventAction.NEXT_STORIES
+                if (data.selected >= data.count) StoriesIndicatorEvent.NEXT_CATEGORIES
+                else StoriesIndicatorEvent.NEXT_STORIES
             )
             anim.snapTo(0F)
         }
@@ -97,7 +97,7 @@ internal fun StoriesIndicatorPreview() {
     StoriesIndicator(data = StoriesDataUiModel.Empty) { }
 }
 
-enum class StoriesEventAction {
+enum class StoriesIndicatorEvent {
     NEXT_STORIES,
     NEXT_CATEGORIES,
 }

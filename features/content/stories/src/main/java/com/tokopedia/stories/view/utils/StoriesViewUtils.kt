@@ -3,14 +3,14 @@ package com.tokopedia.stories.view.utils
 import android.view.MotionEvent
 import android.view.View
 
-internal fun View.onViewEventStories(
-    eventAction: (event: StoriesViewEvent) -> Unit,
+internal fun View.onTouchEventStories(
+    eventAction: (event: TouchEventStories) -> Unit,
 ) {
     var longPressState = false
 
     setOnLongClickListener {
         longPressState = true
-        eventAction.invoke(StoriesViewEvent.PAUSE)
+        eventAction.invoke(TouchEventStories.PAUSE)
         true
     }
     setOnTouchListener { _, p1 ->
@@ -18,13 +18,13 @@ internal fun View.onViewEventStories(
         if (p1?.action == MotionEvent.ACTION_UP) {
             if (longPressState) {
                 longPressState = false
-                eventAction.invoke(StoriesViewEvent.RESUME)
-            } else eventAction.invoke(StoriesViewEvent.NEXT_PREV)
+                eventAction.invoke(TouchEventStories.RESUME)
+            } else eventAction.invoke(TouchEventStories.NEXT_PREV)
         }
         false
     }
 }
 
-enum class StoriesViewEvent {
+enum class TouchEventStories {
     PAUSE, RESUME, NEXT_PREV
 }

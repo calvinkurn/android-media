@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.stories.databinding.FragmentStoriesBinding
 import com.tokopedia.stories.utils.withCache
@@ -34,10 +35,7 @@ class StoriesFragment @Inject constructor(
             childFragmentManager,
             requireActivity(),
             lifecycle,
-            binding.storiesViewPager,
-        ) { selectedPage ->
-            viewModelAction(StoriesUiAction.SelectCategories(selectedPage))
-        }
+        )
     }
 
     override fun getScreenName(): String {
@@ -67,6 +65,12 @@ class StoriesFragment @Inject constructor(
 
     private fun setupViewPager() = with(binding.storiesViewPager) {
         adapter = pagerAdapter
+        registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                viewModelAction(StoriesUiAction.SelectCategories(position))
+                super.onPageSelected(position)
+            }
+        })
     }
 
     private fun setupObserver() {
@@ -77,7 +81,7 @@ class StoriesFragment @Inject constructor(
     private fun setupUiStateObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest { (prevValue, value) ->
-                renderStoriesCategory(prevValue, value)
+                renderStoriesCategories(prevValue, value)
             }
         }
     }
@@ -92,7 +96,7 @@ class StoriesFragment @Inject constructor(
         }
     }
 
-    private fun renderStoriesCategory(
+    private fun renderStoriesCategories(
         prevValue: StoriesUiModel?,
         value: StoriesUiModel
     ) {
