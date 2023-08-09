@@ -357,11 +357,11 @@ class ShipmentFragment :
     }
 
     override fun onDestroyView() {
+        super.onDestroyView()
         toasterThrottleSubscription?.unsubscribe()
         shippingCourierBottomsheet = null
         onDestroyViewBinding()
         shipmentViewModel.detachView()
-        super.onDestroyView()
     }
 
     override fun onDestroy() {
