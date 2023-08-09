@@ -73,7 +73,7 @@ class CartItemViewHolder constructor(
         this.viewHolderListener = viewHolderListener
         this.dataSize = dataSize
 
-        setLottieAnimation()
+        setNoteAnimationResource()
         renderAlpha(data)
         renderContainer(data)
         renderDivider(data)
@@ -84,7 +84,7 @@ class CartItemViewHolder constructor(
         renderProductAction(data)
     }
 
-    private fun setLottieAnimation() {
+    private fun setNoteAnimationResource() {
         if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
             binding.buttonChangeNoteLottie.setAnimation(R.raw.anim_cart_note_dark)
         } else {
