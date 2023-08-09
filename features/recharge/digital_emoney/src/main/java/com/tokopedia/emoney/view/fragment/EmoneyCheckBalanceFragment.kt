@@ -67,11 +67,12 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var bcaLibrary: BCALibrary
+
     private val emoneyBalanceViewModel by viewModels<EmoneyBalanceViewModel> { viewModelFactory }
     private val tapcashBalanceViewModel by viewModels<TapcashBalanceViewModel> { viewModelFactory }
     private val jakcardBalanceViewModel by viewModels<JakCardBalanceViewModel> { viewModelFactory }
-
-    private val bcaLibrary = BCALibrary()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
