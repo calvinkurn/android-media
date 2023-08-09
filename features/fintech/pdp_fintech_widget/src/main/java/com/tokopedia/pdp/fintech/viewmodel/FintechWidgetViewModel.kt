@@ -30,6 +30,7 @@ class FintechWidgetViewModel @Inject constructor
         productCategory: String,
         listOfAmountandUrls: HashMap<String, FintechPriceDataModel>,
         shopId: String,
+        parentId: String,
     ) {
         fintchWidgetUseCase.getWidgetData(
             ::onSuccessWidgetData,
@@ -37,6 +38,7 @@ class FintechWidgetViewModel @Inject constructor
             productCategory,
             listOfAmountandUrls,
             shopId,
+            parentId
         )
     }
 

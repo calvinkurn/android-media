@@ -23,6 +23,8 @@ import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultTrackerListener
+import com.tokopedia.tokopedianow.search.analytics.SearchEmptyNoResultAdultAnalytics
 import com.tokopedia.tokopedianow.search.analytics.SearchProductAdsAnalytics
 import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.Action.ACTION_CLICK_ATC_SRP_PRODUCT
 import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.Action.ACTION_CLICK_SRP_PRODUCT
@@ -62,7 +64,8 @@ class TokoNowSearchFragment :
     CategoryJumperListener,
     CTATokoNowHomeListener,
     BroadMatchListener,
-    SwitcherWidgetListener{
+    SwitcherWidgetListener,
+    TokoNowEmptyStateNoResultTrackerListener {
 
     companion object {
         private const val AR_ORIGIN_TOKONOW_SEARCH_RESULT = 6
@@ -78,6 +81,9 @@ class TokoNowSearchFragment :
 
     @Inject
     lateinit var productAdsAnalytics: SearchProductAdsAnalytics
+
+    @Inject
+    lateinit var searchEmptyNoResultAdultAnalytics: SearchEmptyNoResultAdultAnalytics
 
     private lateinit var tokoNowSearchViewModel: TokoNowSearchViewModel
 
@@ -208,6 +214,7 @@ class TokoNowSearchFragment :
             productCardCompactSimilarProductTrackerListener = createSimilarProductCallback(false),
             switcherWidgetListener = this,
             tokoNowEmptyStateNoResultListener = this,
+            tokoNowEmptyStateNoResultTrackerListener = this,
             suggestionListener = this,
             categoryJumperListener = this,
             ctaTokoNowHomeListener = this,
@@ -572,4 +579,15 @@ class TokoNowSearchFragment :
             event.invoke(userId,warehouseId,isSearchResult)
     }
 
+    override fun trackClickDefaultPrimaryButton() {
+        searchEmptyNoResultAdultAnalytics.sendClickLearnMoreNoResultForAdultProductEvent(
+            keyword = getViewModel().query
+        )
+    }
+
+    override fun trackImpressEmptyStateNoResult() {
+        searchEmptyNoResultAdultAnalytics.sendImpressionNoResultForAdultProductEvent(
+            keyword = getViewModel().query
+        )
+    }
 }

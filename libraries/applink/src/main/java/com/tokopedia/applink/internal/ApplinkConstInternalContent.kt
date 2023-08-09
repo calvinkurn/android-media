@@ -26,7 +26,7 @@ object ApplinkConstInternalContent {
     const val SHOP_POST_PICKER = "$INTERNAL_CONTENT/content-shop/picker"
 
     const val PROFILE_DETAIL = "${DeeplinkConstant.SCHEME_INTERNAL}://people/{user_id}"
-    const val PROFILE_SETTINGS = "${DeeplinkConstant.SCHEME_INTERNAL}://people-settings/{user_id}"
+    const val PROFILE_SETTINGS = "${DeeplinkConstant.SCHEME_INTERNAL}://people/settings/{user_id}"
 
     const val HOST_PLAY = "play"
     const val HOST_FEED = "feed"
@@ -58,7 +58,8 @@ object ApplinkConstInternalContent {
      */
     const val UF_TAB_POSITION_FOR_YOU = 0
     const val UF_TAB_POSITION_FOLLOWING = 1
-    const val UF_EXTRA_FEED_RELEVANT_POST = "FEED_RELEVANT_POST"
+    const val UF_EXTRA_FEED_SOURCE_ID = "ARGS_FEED_SOURCE_ID"
+    const val UF_EXTRA_FEED_SOURCE_NAME = "ARGS_FEED_SOURCE_NAME"
     const val UF_EXTRA_FEED_IS_JUST_LOGGED_IN = "FEED_IS_JUST_LOGGED_IN"
     const val UF_EXTRA_FEED_ENTRY_POINT = "ARGS_FEED_ENTRY_POINT"
 

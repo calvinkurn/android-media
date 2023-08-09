@@ -330,6 +330,17 @@
             tools:text="Incident"
             tools:visibility="gone" />
 
+        <include
+            android:id="@+id/item_addon_cart"
+            layout="@layout/item_cart_addon"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iu_image_product"/>
+
         <com.tokopedia.unifycomponents.TextFieldUnify2
             android:id="@+id/text_field_notes"
             android:layout_width="0dp"
@@ -340,7 +351,7 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/v_bundling_product_separator"
-            app:layout_constraintTop_toBottomOf="@+id/iu_image_product"
+            app:layout_constraintTop_toBottomOf="@+id/item_addon_cart"
             app:unify_text_field_label="@string/cart_label_text_field_notes"
             app:unify_text_field_label_static="true"
             tools:layout_height="32dp"
@@ -359,7 +370,7 @@
             android:textColor="@color/Unify_GN500"
             android:visibility="gone"
             app:layout_constraintStart_toEndOf="@id/v_bundling_product_separator"
-            app:layout_constraintTop_toBottomOf="@+id/iu_image_product"
+            app:layout_constraintTop_toBottomOf="@+id/item_addon_cart"
             app:typographyType="body_3"
             tools:visibility="visible" />
 
@@ -380,7 +391,7 @@
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toEndOf="@id/v_bundling_product_separator"
-            app:layout_constraintTop_toBottomOf="@+id/iu_image_product"
+            app:layout_constraintTop_toBottomOf="@+id/item_addon_cart"
             app:typographyType="body_3"
             tools:text="Jangan Jangan Jangan Jangan Jangan Jangan Jangan "
             tools:visibility="visible" />

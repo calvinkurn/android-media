@@ -28,7 +28,7 @@ class GiftingViewModel @Inject constructor(
     fun getAddOn(addOnId: String) {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
-                getAddOnUseCase.setParams(addOnId)
+                getAddOnUseCase.setParams(listOf(addOnId))
                 getAddOnUseCase.executeOnBackground().getAddOnByID
             }
             mGetAddOnResult.value = result

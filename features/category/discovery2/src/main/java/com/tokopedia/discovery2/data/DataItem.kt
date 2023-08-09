@@ -385,6 +385,9 @@ data class DataItem(
     @SerializedName("image")
     val image: String = "",
 
+    @SerializedName("lottie_image")
+    val lottieImage: String = "",
+
     @SerializedName("tracking_fields")
     val trackingFields: TrackingFields? = null,
 
@@ -571,6 +574,9 @@ data class DataItem(
     var itemWeight: Float? = 1.0f,
 
     var typeProductHighlightComponentCard: String? = "",
+
+    @SerializedName("warehouse_id")
+    var warehouseId: Long? = null
 ) {
     val leftMargin: Int
         get() {

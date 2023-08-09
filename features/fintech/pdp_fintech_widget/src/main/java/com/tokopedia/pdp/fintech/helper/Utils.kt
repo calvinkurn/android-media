@@ -31,7 +31,8 @@ object Utils {
             linkingStatus = chipsData.linkingStatus,
             gatewayPartnerName = chipsData.name,
             installmentAmout = chipsData.installmentAmount,
-            promoName = chipsData.promoName
+            promoName = chipsData.promoName,
+            subtitle = chipsData.subheader.orEmpty(),
         )
     }
 
