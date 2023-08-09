@@ -1,11 +1,8 @@
 package com.tokopedia.scp_rewards.widget.medalHeader
 
-import android.animation.ObjectAnimator
-import android.animation.PropertyValuesHolder
 import android.content.Context
 import android.graphics.Bitmap
 import android.util.AttributeSet
-import android.util.Property
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -15,11 +12,13 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.graphics.scale
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.scp_rewards.R
-import com.tokopedia.scp_rewards.common.constants.EASE_IN_OUT
-import com.tokopedia.scp_rewards.common.constants.OVER_SHOOT
 import com.tokopedia.scp_rewards.common.utils.downloadImage
 import com.tokopedia.scp_rewards.databinding.WidgetMedalLottieAnimationBinding
+import com.tokopedia.scp_rewards_common.EASE_IN_OUT
+import com.tokopedia.scp_rewards_common.OVER_SHOOT
+import com.tokopedia.scp_rewards_common.animateView
 import com.tokopedia.scp_rewards_common.loadLottieFromUrl
+import com.tokopedia.scp_rewards_common.propertyValueHolder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -227,17 +226,13 @@ class MedalLottieAnimation(private val context: Context, attrs: AttributeSet?) :
         if (to == scaleX && to == scaleY) {
             return
         }
-
-        ObjectAnimator.ofPropertyValuesHolder(this, scaleProperty(View.SCALE_X, from, to), scaleProperty(View.SCALE_Y, from, to)).apply {
-            this.duration = DURATION
-            interpolator = when (interpolatorType) {
-                EASE_IN_OUT -> AccelerateDecelerateInterpolator()
-                OVER_SHOOT -> OvershootInterpolator()
-                else -> AccelerateDecelerateInterpolator()
-            }
-            start()
-        }
+        animateView(
+            arrayOf(
+                propertyValueHolder(View.SCALE_X, from, to),
+                propertyValueHolder(View.SCALE_Y, from, to)
+            ),
+            DURATION,
+            interpolatorType
+        )
     }
-
-    private fun scaleProperty(property: Property<View, Float>, from: Float, to: Float) = PropertyValuesHolder.ofFloat(property, from, to)
 }

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
 import com.tokopedia.cart.databinding.HolderItemCartTickerErrorBinding
 import com.tokopedia.cart.databinding.ItemCartChooseAddressBinding
 import com.tokopedia.cart.databinding.ItemCartDisabledAccordionBinding
@@ -22,6 +23,7 @@ import com.tokopedia.cart.databinding.ItemSelectAllBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.adapter.recentview.CartRecentViewAdapter
 import com.tokopedia.cart.view.adapter.wishlist.CartWishlistAdapter
+import com.tokopedia.cart.view.uimodel.CartAddOnProductData
 import com.tokopedia.cart.view.uimodel.CartChooseAddressHolderData
 import com.tokopedia.cart.view.uimodel.CartEmptyHolderData
 import com.tokopedia.cart.view.uimodel.CartGroupHolderData
@@ -1451,6 +1453,32 @@ class CartAdapter constructor(
 
     fun setCoachMark(coachMark: CoachMark2) {
         plusCoachMark = coachMark
+    }
+
+    fun updateAddOnByCartId(cartId: String, newAddOnWording: String, selectedAddons: List<AddOnUIModel>) {
+        val position: Int
+        loop@ for ((index, item) in cartDataList.withIndex()) {
+            if (item is CartItemHolderData) {
+                if (item.cartId == cartId) {
+                    position = index
+                    item.addOnsProduct.widget.wording = newAddOnWording
+                    item.addOnsProduct.listData.clear()
+                    selectedAddons.forEach {
+                        item.addOnsProduct.listData.add(
+                            CartAddOnProductData(
+                                id = it.id,
+                                uniqueId = it.uniqueId,
+                                status = it.getSaveAddonSelectedStatus().value,
+                                type = it.addOnType,
+                                price = it.price.toDouble()
+                            )
+                        )
+                    }
+                    notifyItemChanged(position)
+                    break@loop
+                }
+            }
+        }
     }
 
     override fun onNeedToRefreshSingleProduct(childPosition: Int) {
