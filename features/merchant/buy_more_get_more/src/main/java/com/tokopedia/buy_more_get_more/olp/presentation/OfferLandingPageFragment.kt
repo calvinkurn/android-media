@@ -27,6 +27,7 @@ import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductSortingUiModel
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapter
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapterTypeFactoryImpl
+import com.tokopedia.buy_more_get_more.olp.presentation.listener.AtcProductListener
 import com.tokopedia.buy_more_get_more.olp.utils.BundleConstant
 import com.tokopedia.buy_more_get_more.olp.utils.DataEndlessScrollListener
 import com.tokopedia.buy_more_get_more.sort.activity.ShopProductSortActivity
@@ -34,13 +35,16 @@ import com.tokopedia.buy_more_get_more.sort.listener.ProductSortListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
 
 class OfferLandingPageFragment :
     BaseListFragment<Visitable<*>, AdapterTypeFactory>(),
-    ProductSortListener {
+    ProductSortListener,
+    AtcProductListener {
 
     companion object {
         @JvmStatic
@@ -67,7 +71,7 @@ class OfferLandingPageFragment :
     }
 
     private val olpAdapterTypeFactory by lazy {
-        OlpAdapterTypeFactoryImpl(this)
+        OlpAdapterTypeFactoryImpl(this, this)
     }
     private var sortId = ""
     private var sortName = ""
@@ -191,6 +195,7 @@ class OfferLandingPageFragment :
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             REQUEST_CODE_SORT -> {
                 if (resultCode == Activity.RESULT_OK) {
@@ -200,7 +205,8 @@ class OfferLandingPageFragment :
                 }
             }
         }
-        super.onActivityResult(requestCode, resultCode, data)
+        AtcVariantHelper.onActivityResultAtcVariant(requireContext(), requestCode, data) {
+        }
     }
 
     override fun onSortChipClicked() {
@@ -293,5 +299,26 @@ class OfferLandingPageFragment :
             )
         }
         return products
+    }
+
+    override fun onProductAtcVariantClicked(product: OfferProductListUiModel.Product) {
+        if (product.isVbs) {
+            openAtcVariant(product)
+        } else {
+            addToCartProduct(product)
+        }
+    }
+
+    private fun addToCartProduct(product: OfferProductListUiModel.Product) {
+    }
+
+    private fun openAtcVariant(product: OfferProductListUiModel.Product) {
+        AtcVariantHelper.goToAtcVariant(
+            context = requireContext(),
+            productId = product.productId.toString(),
+            pageSource = VariantPageSource.BUY_MORE_GET_MORE,
+            shopId = shopId,
+            startActivitResult = this::startActivityForResult
+        )
     }
 }

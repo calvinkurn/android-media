@@ -6,10 +6,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.buy_more_get_more.R
 import com.tokopedia.buy_more_get_more.databinding.ItemOlpProductListBinding
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel
+import com.tokopedia.buy_more_get_more.olp.presentation.listener.AtcProductListener
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-class OfferingProductListViewHolder(itemView: View) : AbstractViewHolder<OfferProductListUiModel.Product>(itemView)  {
+class OfferingProductListViewHolder(itemView: View, private val atcProductListener: AtcProductListener) : AbstractViewHolder<OfferProductListUiModel.Product>(itemView) {
 
     private val binding: ItemOlpProductListBinding? by viewBinding()
 
@@ -20,7 +21,10 @@ class OfferingProductListViewHolder(itemView: View) : AbstractViewHolder<OfferPr
 
     override fun bind(element: OfferProductListUiModel.Product) {
         binding?.run {
-            productCard.setProductModel(element.mapToProductCardModel())
+            productCard.apply {
+                setProductModel(element.mapToProductCardModel())
+                setAddToCartOnClickListener { atcProductListener.onProductAtcVariantClicked(element) }
+            }
         }
     }
 
@@ -30,7 +34,7 @@ class OfferingProductListViewHolder(itemView: View) : AbstractViewHolder<OfferPr
             productName = name,
             discountPercentage = campaign.discountedPercentage,
             slashedPrice = campaign.originalPrice,
-            formattedPrice = campaign.discountedPrice.ifEmpty { price } ,
+            formattedPrice = campaign.discountedPrice.ifEmpty { price },
             countSoldRating = rating,
             hasAddToCartButton = true,
             labelGroupList = listOf(
@@ -38,7 +42,7 @@ class OfferingProductListViewHolder(itemView: View) : AbstractViewHolder<OfferPr
                     position = "integrity",
                     title = "terjual $soldCount",
                     type = "textDarkGrey"
-                ),
+                )
             )
         )
     }

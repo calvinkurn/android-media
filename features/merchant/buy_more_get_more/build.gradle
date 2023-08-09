@@ -114,6 +114,9 @@ dependencies {implementation rootProject.ext.supportLibDependencies.recyclerView
     //Product card
     implementation projectOrAar(rootProject.ext.features.productCard)
 
+    //Product Detail Common
+    implementation projectOrAar(rootProject.ext.features.productDetailCommon)
+
     // UI test
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
