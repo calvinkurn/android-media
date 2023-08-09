@@ -36,8 +36,7 @@ class CartCollapsedProductViewHolder(private val viewBinding: ItemCartCollapsedP
         val layoutParams = viewBinding.containerCollapsedProduct.layoutParams
         if (cartItemHolderData.isError) {
             layoutParams.width = ERROR_WIDTH.dpToPx(itemView.resources.displayMetrics)
-        }
-        else {
+        } else {
             layoutParams.width = TOKONOW_WIDTH.dpToPx(itemView.resources.displayMetrics)
         }
         viewBinding.containerCollapsedProduct.layoutParams = layoutParams
@@ -55,8 +54,7 @@ class CartCollapsedProductViewHolder(private val viewBinding: ItemCartCollapsedP
     private fun renderPrice(cartItemHolderData: CartItemHolderData) {
         if (cartItemHolderData.isError) {
             viewBinding.textProductPrice.gone()
-        }
-        else {
+        } else {
             viewBinding.textProductPrice.show()
             viewBinding.textProductPrice.text = if (cartItemHolderData.isBundlingItem) {
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItemHolderData.bundlePrice, false)
@@ -71,6 +69,9 @@ class CartCollapsedProductViewHolder(private val viewBinding: ItemCartCollapsedP
         viewBinding.imageProduct.setOnClickListener {
             val position = absoluteAdapterPosition
             if (position != RecyclerView.NO_POSITION) {
+                if (cartItemHolderData.isError) {
+                    actionListener.onToggleUnavailableItemAccordion()
+                }
                 actionListener.onCollapsedProductClicked(position, cartItemHolderData)
             }
         }
@@ -79,8 +80,7 @@ class CartCollapsedProductViewHolder(private val viewBinding: ItemCartCollapsedP
     private fun renderQuantity(cartItemHolderData: CartItemHolderData) {
         if (cartItemHolderData.isError) {
             viewBinding.textProductQuantity.gone()
-        }
-        else {
+        } else {
             viewBinding.textProductQuantity.show()
             viewBinding.textProductQuantity.text = if (cartItemHolderData.isBundlingItem) {
                 itemView.resources.getString(R.string.label_collapsed_product_bundle_quantity, cartItemHolderData.bundleQuantity)
