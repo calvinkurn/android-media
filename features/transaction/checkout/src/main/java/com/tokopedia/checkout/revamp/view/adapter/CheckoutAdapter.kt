@@ -11,6 +11,7 @@ import com.tokopedia.checkout.databinding.ItemCheckoutEpharmacyBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutOrderBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutProductBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutPromoBinding
+import com.tokopedia.checkout.databinding.ItemCheckoutTickerErrorBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutUpsellBinding
 import com.tokopedia.checkout.revamp.view.address
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutAddressModel
@@ -22,6 +23,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerErrorModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutUpsellModel
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutAddressViewHolder
@@ -32,6 +34,7 @@ import com.tokopedia.checkout.revamp.view.viewholder.CheckoutEpharmacyViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutOrderViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutProductViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutPromoViewHolder
+import com.tokopedia.checkout.revamp.view.viewholder.CheckoutTickerErrorViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutTickerViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutUpsellViewHolder
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionViewHolder
@@ -45,6 +48,7 @@ class CheckoutAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (list[position]) {
+            is CheckoutTickerErrorModel -> CheckoutTickerErrorViewHolder.VIEW_TYPE
             is CheckoutTickerModel -> TickerAnnouncementViewHolder.LAYOUT
             is CheckoutAddressModel -> CheckoutAddressViewHolder.VIEW_TYPE
             is CheckoutUpsellModel -> CheckoutUpsellViewHolder.VIEW_TYPE
@@ -62,6 +66,12 @@ class CheckoutAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
+            CheckoutTickerErrorViewHolder.VIEW_TYPE -> {
+                CheckoutTickerErrorViewHolder(
+                    ItemCheckoutTickerErrorBinding.inflate(inflater, parent, false)
+                )
+            }
+
             TickerAnnouncementViewHolder.LAYOUT -> {
                 CheckoutTickerViewHolder(
                     inflater.inflate(
@@ -151,6 +161,10 @@ class CheckoutAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = list[position]) {
+            is CheckoutTickerErrorModel -> {
+                (holder as CheckoutTickerErrorViewHolder).bind(item)
+            }
+
             is CheckoutTickerModel -> {
                 (holder as CheckoutTickerViewHolder).bind(item)
             }

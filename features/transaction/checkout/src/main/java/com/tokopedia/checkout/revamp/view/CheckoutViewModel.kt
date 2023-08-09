@@ -39,6 +39,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageToaster
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerErrorModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutUpsellModel
 import com.tokopedia.checkout.view.CheckoutLogger
@@ -224,6 +225,7 @@ class CheckoutViewModel @Inject constructor(
             stopEmbraceTrace()
             when (saf) {
                 is CheckoutPageState.Success -> {
+                    val tickerError = CheckoutTickerErrorModel(errorMessage = saf.cartShipmentAddressFormData.errorTicker)
                     val tickerData = saf.cartShipmentAddressFormData.tickerData
                     var ticker = CheckoutTickerModel(ticker = TickerAnnouncementHolderData())
                     if (tickerData != null) {
@@ -312,6 +314,7 @@ class CheckoutViewModel @Inject constructor(
 
                     withContext(dispatchers.main) {
                         listData.value = listOf(
+                            tickerError,
                             ticker,
                             address,
                             upsell
@@ -2080,17 +2083,17 @@ internal fun <T, R> List<T>.firstOrNullInstanceOf(kClass: Class<R>): R? {
 }
 
 internal fun List<CheckoutItem>.address(): CheckoutAddressModel? {
-    val item = getOrNull(1)
+    val item = getOrNull(2)
     return item as? CheckoutAddressModel
 }
 
 internal fun List<CheckoutItem>.upsell(): CheckoutUpsellModel? {
-    val item = getOrNull(2)
+    val item = getOrNull(3)
     return item as? CheckoutUpsellModel
 }
 
 internal fun List<CheckoutItem>.epharmacy(): CheckoutEpharmacyModel? {
-    val item = getOrNull(size - 4)
+    val item = getOrNull(size - 5)
     return item as? CheckoutEpharmacyModel
 }
 

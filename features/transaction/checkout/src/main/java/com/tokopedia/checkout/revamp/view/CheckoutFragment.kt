@@ -305,7 +305,7 @@ class CheckoutFragment :
                 super.onScrolled(recyclerView, dx, dy)
                 val linearLayoutManager = recyclerView.layoutManager as? LinearLayoutManager
                 if (recyclerView.isVisible &&
-                    (linearLayoutManager?.findFirstVisibleItemPosition() ?: -1) > 1
+                    (linearLayoutManager?.findFirstVisibleItemPosition() ?: -1) > 2
                 ) {
                     header.tvCheckoutHeaderText.animateGone()
                     header.tvCheckoutHeaderAddressHeader.animateShow()
@@ -640,7 +640,7 @@ class CheckoutFragment :
             }
 
             Activity.RESULT_CANCELED -> if (activity != null && data == null && viewModel.listData.value.isEmpty()) {
-                activity!!.finish()
+                activity?.finish()
             }
 
             else -> viewModel.loadSAF(
