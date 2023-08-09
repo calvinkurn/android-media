@@ -179,7 +179,6 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.GetWishlistV2Response
-import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
@@ -259,13 +258,7 @@ class CartRevampFragment :
     private var unavailableItemAccordionCollapseState = true
     private var hasCalledOnSaveInstanceState = false
     private var isCheckUncheckDirectAction = true
-    private var isNavToolbar = false
     private var plusCoachMark: CoachMark2? = null
-
-    private var recommendationWishlistV2ActionListener: WishlistV2ActionListener? = null
-    private var cartUnavailableWishlistV2ActionListener: WishlistV2ActionListener? = null
-    private var lastSeenWishlistV2ActionListener: WishlistV2ActionListener? = null
-    private var wishlistsWishlistV2ActionListener: WishlistV2ActionListener? = null
 
     private lateinit var editBundleActivityResult: ActivityResultLauncher<Intent>
     private lateinit var shipmentActivityResult: ActivityResultLauncher<Intent>
@@ -546,7 +539,7 @@ class CartRevampFragment :
             binding?.vDisabledGoToCourierPageButton?.show()
             binding?.vDisabledGoToCourierPageButton?.setOnClickListener {
                 if (CartDataHelper.getAllAvailableCartItemData(viewModel.cartDataList.value)
-                        .isNotEmpty()
+                    .isNotEmpty()
                 ) {
                     showToastMessageGreen(getString(R.string.message_no_cart_item_selected))
                 }
@@ -675,7 +668,8 @@ class CartRevampFragment :
             cartPageAnalytics.enhancedEcommerceClickProductRecommendationOnEmptyCart(
                 viewModel.generateRecommendationDataOnClickAnalytics(
                     it,
-                    FLAG_IS_CART_EMPTY, index
+                    FLAG_IS_CART_EMPTY,
+                    index
                 )
             )
         }
@@ -1390,7 +1384,6 @@ class CartRevampFragment :
 
         super.onStop()
     }
-
 
     private fun addEndlessRecyclerViewScrollListener(
         cartRecyclerView: RecyclerView,
@@ -2410,7 +2403,6 @@ class CartRevampFragment :
                     }
                 }
             }
-
         }
     }
 
@@ -3338,7 +3330,7 @@ class CartRevampFragment :
 
             val onClickListener: (applied: Boolean) -> Unit = { applied ->
                 if (CartDataHelper.getSelectedCartItemData(viewModel.cartDataList.value)
-                        .isEmpty()
+                    .isEmpty()
                 ) {
                     showToastMessageGreen(getString(R.string.promo_choose_item_cart))
                     PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
@@ -3362,12 +3354,12 @@ class CartRevampFragment :
                     desc = lastApplyData.additionalInfo.messageInfo.detail,
                     rightIcon = IconUnify.CHEVRON_RIGHT,
                     summaries = emptyList(),
-                    onClickListener = { onClickListener(true) },
+                    onClickListener = { onClickListener(true) }
                 )
             } else {
                 isApplied = false
                 if (CartDataHelper.getSelectedCartItemData(viewModel.cartDataList.value)
-                        .isEmpty()
+                    .isEmpty()
                 ) {
                     binding?.promoCheckoutBtnCart?.showInactive(
                         getString(R.string.promo_desc_no_selected_item),
