@@ -18,6 +18,9 @@ buildscript {
 android {
     namespace 'com.tokopedia.tokopoints'
     testNamespace 'com.tokopedia.tokopoints.test'
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {

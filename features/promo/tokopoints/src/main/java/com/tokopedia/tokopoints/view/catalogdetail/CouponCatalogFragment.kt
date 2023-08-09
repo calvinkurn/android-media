@@ -32,6 +32,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopoints.R
+import com.tokopedia.tokopoints.databinding.TpFragmentCouponCatalogBinding
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.cataloglisting.ValidateMessageDialog
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity.Companion.getCallingIntent
@@ -51,10 +52,10 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.tp_content_coupon_catalog.*
 import kotlinx.android.synthetic.main.tp_coupon_notfound_error.*
-import kotlinx.android.synthetic.main.tp_fragment_catalog_listing.view.*
 import kotlinx.android.synthetic.main.tp_fragment_coupon_detail.*
 import rx.Observable
 import rx.Subscriber
@@ -110,6 +111,8 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     @Inject
     lateinit var factory: ViewModelFactory
 
+    private var binding by autoClearedNullable<TpFragmentCouponCatalogBinding>()
+
     private val mViewModel: CouponCatalogViewModel by lazy { ViewModelProviders.of(this, factory)[CouponCatalogViewModel::class.java] }
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
@@ -121,10 +124,8 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        initInjector()
-        val view = inflater.inflate(R.layout.tp_fragment_coupon_catalog, container, false)
-        initViews(view)
-        return view
+        binding = TpFragmentCouponCatalogBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -148,6 +149,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initViews()
         initListener()
         if (arguments == null) {
             if (activity != null) {
@@ -246,38 +248,40 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         }
     )
 
-    private fun initViews(view: View) {
-        mContainerMain = view.findViewById(R.id.container)
-        serverErrorView = view.findViewById(R.id.server_error_view)
-        quotaContainer = view.findViewById(R.id.quota_container)
-        timerContainer = view.findViewById(R.id.timer_container)
-        progressBar = view.findViewById(R.id.timer_unify)
-        minUsageLabel = view.findViewById(R.id.tv_min_txn_label)
-        minUsageValue = view.findViewById(R.id.tv_min_txn_value)
-        transactionContainer = view.findViewById(R.id.container_transaksi)
-        quota = view.findViewById(R.id.text_quota_count)
-        description = view.findViewById(R.id.text_description)
-        disabledError = view.findViewById(R.id.text_disabled_error)
-        giftSectionMainLayout = view.findViewById(R.id.gift_section_main_layout)
-        giftImage = view.findViewById(R.id.gift_image)
-        giftButton = view.findViewById(R.id.gift_btn)
-        bottomSeparator = view.findViewById(R.id.tp_bottom_separator)
-        btnAction2 = view.findViewById(R.id.button_action_2)
-        imgBanner = view.findViewById(R.id.img_banner)
-        labelPoint = view.findViewById(R.id.text_point_label)
-        textDiscount = view.findViewById(R.id.text_point_discount)
-        pointValueText = view.findViewById(R.id.text_point_value_label)
+    private fun initViews() {
+        binding?.let { binding ->
+            mContainerMain = binding.container
+            serverErrorView = binding.serverErrorView
+            quotaContainer = binding.tpContentCouponCatalog.quotaContainer
+            timerContainer = binding.tpContentCouponCatalog.timerContainer
+            progressBar = binding.tpContentCouponCatalog.timerUnify
+            minUsageLabel = binding.tpContentCouponCatalog.tvMinTxnLabel
+            minUsageValue = binding.tpContentCouponCatalog.tvMinTxnValue
+            transactionContainer = binding.tpContentCouponCatalog.containerTransaksi
+            quota = binding.tpContentCouponCatalog.textQuotaCount
+            description = binding.tpContentCouponCatalog.textDescription
+            disabledError = binding.tpContentCouponCatalog.textDisabledError
+            giftSectionMainLayout = binding.tpContentCouponCatalog.giftSectionMainLayout
+            giftImage = binding.tpContentCouponCatalog.giftImage
+            giftButton = binding.tpContentCouponCatalog.giftBtn
+            bottomSeparator = binding.tpContentCouponCatalog.tpBottomSeparator
+            btnAction2 = binding.tpContentCouponCatalog.buttonAction2
+            imgBanner = binding.tpContentCouponCatalog.imgBanner
+            labelPoint = binding.tpContentCouponCatalog.textPointLabel
+            textDiscount = binding.tpContentCouponCatalog.textPointDiscount
+            pointValueText = binding.tpContentCouponCatalog.textPointValueLabel
 
-        tv_coupon_title = view.findViewById(R.id.tv_coupon_title)
-        tv_code = view.findViewById(R.id.tv_code)
-        tv_code?.setCompoundDrawablesRelativeWithIntrinsicBounds(
-            null,
-            null,
-            context?.let { ContextCompat.getDrawable(it, com.tokopedia.iconunify.R.drawable.iconunify_copy) },
-            null
-        )
-        tv_dynamic_infos = view.findViewById(R.id.tv_dynamic_infos)
-        btn_action_claim = view.findViewById(R.id.btn_action_claim)
+            tv_coupon_title = binding.tpContentCouponCatalog.layoutCouponCode.tvCouponTitle
+            tv_code = binding.tpContentCouponCatalog.layoutCouponCode.tvCode
+            tv_code?.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                null,
+                null,
+                context?.let { ContextCompat.getDrawable(it, com.tokopedia.iconunify.R.drawable.iconunify_copy) },
+                null
+            )
+            tv_dynamic_infos = binding.tpContentCouponCatalog.layoutCouponCode.tvDynamicInfos
+            btn_action_claim = binding.tpContentCouponCatalog.btnActionClaim
+        }
     }
 
     private fun initListener() {
