@@ -7,11 +7,16 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.stories.databinding.FragmentStoriesBinding
+import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.adapter.StoriesPagerAdapter
+import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
-import com.tokopedia.stories.view.viewmodel.action.StoriesAction
+import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
+import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 class StoriesFragment @Inject constructor(
@@ -30,8 +35,8 @@ class StoriesFragment @Inject constructor(
             requireActivity(),
             lifecycle,
             binding.storiesViewPager,
-        ) { tabPosition ->
-            viewModel.mCounter.value = tabPosition
+        ) { selectedPage ->
+            viewModelAction(StoriesUiAction.SelectPage(selectedPage))
         }
     }
 
@@ -50,13 +55,13 @@ class StoriesFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModelAction(StoriesAction.SetInitialData(arguments))
+        viewModelAction(StoriesUiAction.SetInitialData(arguments))
 
         setupViewPager()
         setupObserver()
     }
 
-    private fun viewModelAction(event: StoriesAction) {
+    private fun viewModelAction(event: StoriesUiAction) {
         viewModel.submitAction(event)
     }
 
@@ -65,7 +70,39 @@ class StoriesFragment @Inject constructor(
     }
 
     private fun setupObserver() {
-        pagerAdapter.setCategorySize(10)
+        setupUiStateObserver()
+        setupUiEventObserver()
+    }
+
+    private fun setupUiStateObserver() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.storiesUiState.withCache().collectLatest { (prevValue, value) ->
+                renderStoriesCategory(prevValue, value)
+            }
+        }
+    }
+
+    private fun setupUiEventObserver() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.storiesUiEvent.collect { event ->
+                when (event) {
+                    is StoriesUiEvent.NextPage -> manageNextPageEvent(event.position)
+                }
+            }
+        }
+    }
+
+    private fun renderStoriesCategory(
+        prevValue: StoriesUiModel?,
+        value: StoriesUiModel
+    ) {
+        if (prevValue == StoriesUiModel.Empty || prevValue == value) return
+
+        pagerAdapter.setStoriesData(value)
+    }
+
+    private fun manageNextPageEvent(position: Int) = with(binding.storiesViewPager) {
+        currentItem = position
     }
 
     override fun onDestroyView() {

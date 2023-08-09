@@ -8,12 +8,16 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.stories.databinding.FragmentStoriesContentBinding
+import com.tokopedia.stories.utils.withCache
+import com.tokopedia.stories.view.components.indicator.StoriesEventAction
 import com.tokopedia.stories.view.components.indicator.StoriesIndicator
-import com.tokopedia.stories.view.components.indicator.StoriesIndicatorEvent
+import com.tokopedia.stories.view.model.StoriesDataUiModel
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
-import com.tokopedia.stories.view.viewmodel.action.StoriesAction
+import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 class StoriesContentFragment @Inject constructor(
@@ -41,40 +45,49 @@ class StoriesContentFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupViews()
+        setupObserver()
     }
 
     override fun onResume() {
         super.onResume()
-        binding.tvCounter.text = viewModel.mCounter.value.toString()
+        binding.tvCounter.text = "${viewModel.mCounter.plus(1)}"
     }
 
-    private fun setupViews() {
-        setupStoriesIndicator()
-        setupStoriesViewAction()
+    private fun setupObserver() {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.storiesSelectedPage.withCache().collectLatest { (prevState, state) ->
+                renderStoriesIndicator(prevState, state)
+            }
+        }
     }
 
-    private fun setupStoriesIndicator() = with(binding.cvStoriesIndicator) {
-        apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                StoriesIndicator(
-                    count = 2,
-                    position = viewModel.mCurrentSteps.value,
-                    isPause = viewModel.mIsPause.value,
-                    progress = viewModel.mPercent.value,
-                ) { event ->
-                    when (event) {
-                        StoriesIndicatorEvent.NEXT -> viewModel.submitAction(StoriesAction.NextPage)
+    private fun renderStoriesIndicator(
+        prevState: StoriesDataUiModel?,
+        state: StoriesDataUiModel,
+    ) {
+        if (prevState == null || prevState == state) return
+
+        with(binding.cvStoriesIndicator) {
+            apply {
+                setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+                setContent {
+                    StoriesIndicator(data = state) { event ->
+                        storiesEventAction(event)
                     }
-                    viewModel.mPercent.value = 0F
-                    viewModel.mCurrentSteps.value += 1
                 }
             }
         }
     }
 
-    private fun setupStoriesViewAction() = with(binding.flStories) {
+    private fun storiesEventAction(event: StoriesEventAction) {
+        when (event) {
+            StoriesEventAction.NEXT_INDICATOR -> viewModelAction(StoriesUiAction.NextIndicator)
+            StoriesEventAction.NEXT_PAGE -> viewModelAction(StoriesUiAction.NextPage)
+        }
+    }
+
+    private fun viewModelAction(event: StoriesUiAction) {
+        viewModel.submitAction(event)
     }
 
     override fun onDestroyView() {

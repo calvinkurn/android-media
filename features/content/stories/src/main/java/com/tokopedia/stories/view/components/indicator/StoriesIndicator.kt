@@ -22,34 +22,34 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tokopedia.stories.view.model.StoriesDataUiModel
 
 @Composable
 fun StoriesIndicator(
-    count: Int,
-    position: Int,
-    progress: Float,
-    isPause: Boolean,
-    event: (StoriesIndicatorEvent) -> Unit,
+    data: StoriesDataUiModel,
+    event: (StoriesEventAction) -> Unit,
 ) {
-    val duration = 7 * 1000
-    val anim = remember { Animatable(progress) }
-    LaunchedEffect(isPause, position) {
-        if (isPause) anim.stop()
+    val anim = remember { Animatable(0F) }
+    LaunchedEffect(data) {
+        if (data.isPause) anim.stop()
         else {
             anim.animateTo(
                 targetValue = 1f,
                 animationSpec = tween(
-                    durationMillis = (duration * (1f - anim.value)).toInt(),
+                    durationMillis = (7000 * (1f - anim.value)).toInt(),
                     easing = LinearEasing,
                 )
             )
-            event.invoke(StoriesIndicatorEvent.NEXT)
+            event.invoke(
+                if (data.selected >= data.count) StoriesEventAction.NEXT_PAGE
+                else StoriesEventAction.NEXT_INDICATOR
+            )
             anim.snapTo(0F)
         }
     }
     StoriesIndicatorBar(
-        count = count,
-        position = position,
+        count = data.count,
+        position = data.selected,
         progress = anim.value,
     )
 }
@@ -94,9 +94,10 @@ private fun StoriesIndicatorBar(
 @Preview(showSystemUi = true)
 @Composable
 internal fun StoriesIndicatorPreview() {
-    StoriesIndicator(count = 3, position = 0, isPause = false, progress = 0F) { }
+    StoriesIndicator(data = StoriesDataUiModel.Empty) { }
 }
 
-enum class StoriesIndicatorEvent {
-    NEXT,
+enum class StoriesEventAction {
+    NEXT_INDICATOR,
+    NEXT_PAGE,
 }

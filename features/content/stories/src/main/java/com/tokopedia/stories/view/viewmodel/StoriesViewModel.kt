@@ -1,11 +1,16 @@
 package com.tokopedia.stories.view.viewmodel
 
 import android.os.Bundle
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.tokopedia.stories.data.StoriesRepository
-import com.tokopedia.stories.view.viewmodel.action.StoriesAction
+import com.tokopedia.stories.view.model.StoriesDataUiModel
+import com.tokopedia.stories.view.model.StoriesUiModel
+import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
+import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 class StoriesViewModel @Inject constructor(
@@ -14,20 +19,38 @@ class StoriesViewModel @Inject constructor(
 
     private var shopId: String = ""
     private var storiesId: String = ""
-    var mCounter = mutableStateOf(1)
+    var mCounter = 0
 
-    var mTotalSteps = mutableStateOf(0)
-    var mCurrentSteps = mutableStateOf(1)
-    var mPercent = mutableStateOf(0F)
-    var mIsPause = mutableStateOf(false)
+    var storiesSelectedPage = MutableStateFlow(StoriesDataUiModel.Empty)
 
-    var mNextPage = MutableStateFlow(0)
+    private val _storiesUiEvent = MutableSharedFlow<StoriesUiEvent>(extraBufferCapacity = 100)
+    val storiesUiEvent: Flow<StoriesUiEvent>
+        get() = _storiesUiEvent
 
-    fun submitAction(event: StoriesAction) {
-        when (event) {
-           is StoriesAction.SetInitialData -> handleSetInitialData(event.data)
-            StoriesAction.NextPage -> handleNextPage()
-            StoriesAction.PreviousPage -> handlePreviousPage()
+    private var _storiesUiState = MutableStateFlow(StoriesUiModel.Empty)
+    val storiesUiState: Flow<StoriesUiModel>
+        get() = _storiesUiState
+
+    init {
+        _storiesUiState.update {
+            repository.getStoriesData()
+        }
+    }
+
+    fun submitAction(action: StoriesUiAction) {
+        when (action) {
+            is StoriesUiAction.SelectPage -> handleSelectPage(action.selectedPage)
+            is StoriesUiAction.SetInitialData -> handleSetInitialData(action.data)
+            StoriesUiAction.NextIndicator -> handleNextIndicator()
+            StoriesUiAction.NextPage -> handleNextPage()
+            StoriesUiAction.PreviousPage -> handlePreviousPage()
+        }
+    }
+
+    private fun handleSelectPage(selectedPage: Int) {
+        mCounter = selectedPage
+        storiesSelectedPage.update {
+            _storiesUiState.value.stories[selectedPage]
         }
     }
 
@@ -36,12 +59,16 @@ class StoriesViewModel @Inject constructor(
         storiesId = data?.getString(STORIES_ID, "").orEmpty()
     }
 
+    private fun handleNextIndicator() {
+        storiesSelectedPage.update { data ->
+            data.copy(selected = data.selected + 1)
+        }
+    }
+
     private fun handleNextPage() {
-        mNextPage.value += 1
     }
 
     private fun handlePreviousPage() {
-        mNextPage.value -= 1
     }
 
     companion object {

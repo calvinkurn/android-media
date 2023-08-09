@@ -7,30 +7,31 @@ import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.stories.view.fragment.StoriesContentFragment
+import com.tokopedia.stories.view.model.StoriesUiModel
 
 class StoriesPagerAdapter(
     private val fragmentManager: FragmentManager,
     private val fragmentActivity: FragmentActivity,
     lifecycle: Lifecycle,
     private val viewPager: ViewPager2,
-    private val tabPosition: (Int) -> Unit,
+    private val selectedPage: (Int) -> Unit,
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
-    private var _categoryCount: Int = 0
-    private val categoryCount: Int
-        get() = _categoryCount
+    private var _storiesData: StoriesUiModel = StoriesUiModel.Empty
+    private val storiesData: StoriesUiModel
+        get() = _storiesData
 
-    fun setCategorySize(count: Int) {
-        _categoryCount = count
+    fun setStoriesData(storiesData: StoriesUiModel) {
+        _storiesData = storiesData
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                tabPosition.invoke(position + 1)
+                selectedPage.invoke(position)
             }
         })
     }
 
-    override fun getItemCount(): Int = categoryCount
+    override fun getItemCount(): Int = storiesData.stories.size
 
     override fun createFragment(position: Int): Fragment {
         return StoriesContentFragment.getFragment(
