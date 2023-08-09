@@ -4,7 +4,7 @@
 
     <application>
         <activity
-            android:name="com.tokopedia.minicart.bmgm.presentation.activity.BmgmMiniCartActivity"
+            android:name="com.tokopedia.minicart.bmgm.presentation.activity.BmgmMiniCartDetailActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.Translucent">
             <intent-filter>

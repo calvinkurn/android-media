@@ -72,8 +72,8 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener,
         fetchMiniCartData()
     }
 
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
+    override fun onStart(owner: LifecycleOwner) {
+        super.onStart(owner)
         observeCartData()
     }
 

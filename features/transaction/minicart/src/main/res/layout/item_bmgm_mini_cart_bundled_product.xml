@@ -24,16 +24,16 @@
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="30dp"
         android:background="@drawable/bg_bmgm_mini_cart_upselling_discount"
         android:gravity="center"
         android:text="Diskon 5%"
-        android:textAllCaps="true"
         android:textColor="@color/Unify_NN0"
-        android:textSize="7sp"
+        android:textSize="8sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/rvBmgmBundledProduct"
         app:layout_constraintStart_toStartOf="@+id/rvBmgmBundledProduct"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="diskon 25%" />
+        tools:text="diskon 25%"
+        tools:ignore="SmallSp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

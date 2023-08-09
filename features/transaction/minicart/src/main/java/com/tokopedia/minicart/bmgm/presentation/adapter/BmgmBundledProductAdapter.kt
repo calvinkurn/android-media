@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.minicart.databinding.ItemBmgmMiniCartItemProductBundleBinding
 import com.tokopedia.purchase_platform.common.feature.bmgm.uimodel.BmgmCommonDataUiModel
@@ -38,7 +39,7 @@ class BmgmBundledProductAdapter(
         fun bind(item: BmgmCommonDataUiModel.SingleProductUiModel) {
             with(binding) {
                 cardBmgmProduct.cardType = CardUnify2.TYPE_SHADOW_DISABLED
-                cardBmgmProduct.radius = 4f
+                cardBmgmProduct.radius = root.context.dpToPx(2)
                 imgBmgmUpsellingItem.loadImage(item.productImage)
 
                 root.setOnClickListener { listener.setOnItemClickedListener() }
