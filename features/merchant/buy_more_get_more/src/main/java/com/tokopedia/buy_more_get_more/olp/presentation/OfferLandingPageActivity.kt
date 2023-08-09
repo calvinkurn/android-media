@@ -12,8 +12,13 @@ class OfferLandingPageActivity : BaseSimpleActivity() {
         return data?.pathSegments?.getOrNull(1) ?: ""
     }
 
+    private fun getOfferIdFromUri(): String {
+        val data = RouteManager.getIntent(this, intent.data.toString()).data
+        return data?.pathSegments?.getOrNull(3) ?: ""
+    }
+
     override fun getNewFragment(): Fragment =
-        OfferLandingPageFragment.newInstance(getShopIdFromUri())
+        OfferLandingPageFragment.newInstance(getShopIdFromUri(), getOfferIdFromUri())
 
     override fun getLayoutRes() = R.layout.activity_offer_landing_page
 

@@ -33,6 +33,7 @@ import com.tokopedia.buy_more_get_more.olp.utils.DataEndlessScrollListener
 import com.tokopedia.buy_more_get_more.sort.activity.ShopProductSortActivity
 import com.tokopedia.buy_more_get_more.sort.listener.ProductSortListener
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.product.detail.common.AtcVariantHelper
@@ -48,9 +49,10 @@ class OfferLandingPageFragment :
 
     companion object {
         @JvmStatic
-        fun newInstance(shopId: String) = OfferLandingPageFragment().apply {
+        fun newInstance(shopId: String, offerId: String) = OfferLandingPageFragment().apply {
             arguments = Bundle().apply {
                 putString(BundleConstant.BUNDLE_SHOP_ID, shopId)
+                putString(BundleConstant.BUNDLE_OFFER_ID, offerId)
             }
         }
 
@@ -79,6 +81,7 @@ class OfferLandingPageFragment :
     @Inject
     lateinit var viewModel: OfferLandingPageViewModel
     private val shopId by lazy { arguments?.getString(BundleConstant.BUNDLE_SHOP_ID).orEmpty() }
+    private val offerId by lazy { arguments?.getString(BundleConstant.BUNDLE_OFFER_ID).orEmpty() }
 
     override fun getScreenName() = ""
 
@@ -191,7 +194,7 @@ class OfferLandingPageFragment :
 
     override fun loadInitialData() {
         setViewState(VIEW_LOADING)
-        viewModel.getOfferingIndo(listOf(0), shopId, localCacheModel)
+        viewModel.getOfferingIndo(listOf(offerId.toIntOrZero()), shopId, localCacheModel)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
