@@ -3668,14 +3668,19 @@ open class DynamicProductDetailFragment :
 
     private fun showGlobalPostATC(cartDataModel: DataModel, basicInfo: BasicInfo) {
         val context = context ?: return
+
+        val addonsIds = cartDataModel.addOns.groupBy(
+            keySelector = { it.status },
+            valueTransform = { it.id }
+        )
+
         PostAtcHelper.start(
             context,
             basicInfo.productID,
             layoutId = basicInfo.postAtcLayout.layoutId,
             cartId = cartDataModel.cartId,
-            selectedAddonsIds = cartDataModel.addOns.mapNotNull { item ->
-                item.id.takeIf { item.status == 1 }
-            },
+            selectedAddonsIds = addonsIds[1] ?: emptyList(),
+            deselectedAddonsIds = addonsIds[2] ?: emptyList(),
             isFulfillment = cartDataModel.isFulfillment,
             pageSource = PostAtcHelper.Source.PDP,
             warehouseId = cartDataModel.warehouseId,

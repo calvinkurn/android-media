@@ -43,6 +43,7 @@ class PostAtcViewModel @Inject constructor(
         layoutId: String,
         pageSource: String,
         selectedAddonsIds: List<String>,
+        deselectedAddonsIds: List<String>,
         warehouseId: String,
         quantity: Int
     ) {
@@ -53,6 +54,7 @@ class PostAtcViewModel @Inject constructor(
             layoutId = layoutId,
             pageSource = pageSource,
             selectedAddonsIds = selectedAddonsIds,
+            deselectedAddonsIds = deselectedAddonsIds,
             warehouseId = warehouseId,
             quantity = quantity
         )
@@ -97,8 +99,8 @@ class PostAtcViewModel @Inject constructor(
 
             _recommendations.value = uniqueId to widget.asSuccess()
         }, onError = {
-            _recommendations.value = uniqueId to it.asFail()
-        })
+                _recommendations.value = uniqueId to it.asFail()
+            })
     }
 
     private fun updateInfo(data: PostAtcLayout) {

@@ -55,6 +55,7 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
         private const val ARG_LAYOUT_ID = "layoutId"
         private const val ARG_PAGE_SOURCE = "pageSource"
         private const val ARG_SELECTED_ADDONS_IDS = "selected_addons_ids"
+        private const val ARG_DESELECTED_ADDONS_IDS = "deselected_addons_ids"
         private const val ARG_WAREHOUSE_ID = "warehouse_id"
         private const val ARG_QUANTITY = "quantity"
 
@@ -65,6 +66,7 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
             layoutId: String,
             pageSource: String,
             selectedAddonsIds: List<String>,
+            deselectedAddonsIds: List<String>,
             warehouseId: String,
             quantity: Int
         ) = PostAtcBottomSheet().apply {
@@ -75,6 +77,7 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
                 putString(ARG_LAYOUT_ID, layoutId)
                 putString(ARG_PAGE_SOURCE, pageSource)
                 putStringArrayList(ARG_SELECTED_ADDONS_IDS, ArrayList(selectedAddonsIds))
+                putStringArrayList(ARG_DESELECTED_ADDONS_IDS, ArrayList(deselectedAddonsIds))
                 putString(ARG_WAREHOUSE_ID, warehouseId)
                 putInt(ARG_QUANTITY, quantity)
             }
@@ -102,6 +105,7 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
     private val argLayoutId: String by getStringArg(ARG_LAYOUT_ID)
     private val argPageSource by getStringArg(ARG_PAGE_SOURCE)
     private val argSelectedAddonsIds: List<String> by getStringArrayListArg(ARG_SELECTED_ADDONS_IDS)
+    private val argDeselectedAddonsIds: List<String> by getStringArrayListArg(ARG_DESELECTED_ADDONS_IDS)
     private val argWarehouseId: String by getStringArg(ARG_WAREHOUSE_ID)
     private val argQuantity: Int by getIntArg(ARG_QUANTITY)
 
@@ -254,6 +258,7 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
             argLayoutId,
             argPageSource,
             argSelectedAddonsIds,
+            argDeselectedAddonsIds,
             argWarehouseId,
             argQuantity
         )
