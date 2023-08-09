@@ -90,7 +90,6 @@ object UniversalInboxValueUtil {
      * Recommendation
      */
     // PDP
-    const val REQUEST_FROM_PDP = 138
     const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
 
     // TopAds

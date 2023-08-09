@@ -1,7 +1,6 @@
 package com.tokopedia.inbox.universalinbox.view
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,8 +12,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
-import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.inbox.databinding.UniversalInboxFragmentBinding
@@ -28,12 +25,10 @@ import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.GOJEK_TYP
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.HEADLINE_ADS_BANNER_COUNT
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.HEADLINE_POS_NOT_TO_BE_ADDED
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PDP_EXTRA_UPDATED_POSITION
-import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.REQUEST_FROM_PDP
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.SHIFTING_INDEX
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.TOP_ADS_BANNER_COUNT
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.TOP_ADS_BANNER_POS_NOT_TO_BE_ADDED
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.VALUE_X
-import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.WISHLIST_STATUS_IS_WISHLIST
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getHeadlineAdsParam
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getRoleUser
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getShopIdTracker
@@ -624,8 +619,7 @@ class UniversalInboxFragment @Inject constructor(
         if (position.isNotEmpty()) {
             intent.putExtra(PDP_EXTRA_UPDATED_POSITION, position[Int.ZERO])
         }
-        // Need to use startActivityForResult to be able to use handleProductCardOptionsActivityResult
-        startActivityForResult(intent, REQUEST_FROM_PDP)
+        inboxMenuResultLauncher.launch(intent)
     }
 
     private fun onClickTopAds(item: RecommendationItem) {
@@ -764,62 +758,6 @@ class UniversalInboxFragment @Inject constructor(
     ) {
         loadWidgetMetaAndCounter()
         refreshRecommendations()
-    }
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_FROM_PDP && data != null) {
-            val wishlistStatusFromPdp = data.getBooleanExtra(
-                WISHLIST_STATUS_IS_WISHLIST,
-                false
-            )
-            val position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1)
-            if (position < Int.ZERO || adapter.getItems().size <= position) return
-            if (adapter.getItems()[position] is RecommendationItem) {
-                val recommendation = adapter.getItems()[position] as RecommendationItem
-                recommendation.isWishlist = wishlistStatusFromPdp
-                binding?.inboxRv?.post {
-                    adapter.notifyItemChanged(position)
-                }
-            }
-        }
-        handleProductCardOptionsActivityResult(
-            requestCode,
-            resultCode,
-            data,
-            object : ProductCardOptionsWishlistCallback {
-                override fun onReceiveWishlistResult(
-                    productCardOptionsModel: ProductCardOptionsModel
-                ) {
-                    handleWishListAction(productCardOptionsModel)
-                }
-            }
-        )
-    }
-
-    private fun handleWishListAction(
-        productCardOptionsModel: ProductCardOptionsModel
-    ) {
-        if (productCardOptionsModel.wishlistResult.isSuccess) {
-            handleWishListV2ActionSuccess(productCardOptionsModel)
-        } else {
-            showErrorAddRemoveWishlistV2(productCardOptionsModel.wishlistResult)
-        }
-    }
-
-    private fun handleWishListV2ActionSuccess(productCardOptionsModel: ProductCardOptionsModel) {
-        val isAddWishlist = productCardOptionsModel.wishlistResult.isAddWishlist
-        topAdsAnalytic.eventClickRecommendationWishlist(isAddWishlist)
-        val payloads = Bundle().also {
-            it.putBoolean(WISHLIST_STATUS_IS_WISHLIST, isAddWishlist)
-        }
-        binding?.inboxRv?.post {
-            adapter.notifyItemChanged(productCardOptionsModel.productPosition, payloads)
-        }
-        if (isAddWishlist) {
-            showSuccessAddWishlistV2(wishlistResult = productCardOptionsModel.wishlistResult)
-        } else {
-            showSuccessRemoveWishlistV2(wishlistResult = productCardOptionsModel.wishlistResult)
-        }
     }
 
     private fun showSuccessAddWishlistV2(
