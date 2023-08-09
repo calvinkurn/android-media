@@ -1826,6 +1826,9 @@ class ShopPageHeaderFragmentV2 :
     private fun setupTabContentWrapper(): List<ShopPageHeaderTabModel> {
         val listShopPageTabModel = mutableListOf<ShopPageHeaderTabModel>()
         shopPageHeaderDataModel?.listDynamicTabData?.forEach {
+            if(it.name == ShopPageHeaderTabName.FEED && shopPageHeaderP1Data?.isWhitelist != true){
+                return@forEach
+            }
             val tabContentWrapper = ShopPageHeaderFragmentTabContentWrapper.createInstance().apply {
                 setTabData(it)
                 shopPageHeaderP1Data?.let { headerData ->
