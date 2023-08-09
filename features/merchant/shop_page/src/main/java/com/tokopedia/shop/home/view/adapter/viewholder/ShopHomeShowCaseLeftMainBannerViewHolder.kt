@@ -60,6 +60,8 @@ class ShopHomeShowCaseLeftMainBannerViewHolder(
 
             tabsUnify.tabLayout.isTabIndicatorFullWidth = false
             tabsUnify.tabLayout.setBackgroundColor(Color.TRANSPARENT)
+            tabsUnify.whiteShadeLeft.gone()
+            tabsUnify.whiteShadeRight.gone()
 
             when {
                 tabs.isEmpty() -> tabsUnify.gone()
