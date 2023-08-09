@@ -462,7 +462,7 @@ class CartItemViewHolder constructor(
     }
 
     private fun adjustProductVerticalSeparatorConstraint(data: CartItemHolderData) {
-        if (data.isError || !data.isBundlingItem) {
+        if ((data.isError || !data.isBundlingItem) && !data.isBmGm) {
             binding.vBundlingProductSeparator.gone()
             return
         }
@@ -524,6 +524,16 @@ class CartItemViewHolder constructor(
                     R.id.v_bundling_product_separator,
                     ConstraintSet.BOTTOM,
                     R.id.iu_image_product,
+                    ConstraintSet.BOTTOM,
+                    MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
+                )
+            }
+
+            if (data.isBmGm) {
+                connect(
+                    R.id.v_bundling_product_separator,
+                    ConstraintSet.BOTTOM,
+                    ConstraintSet.PARENT_ID,
                     ConstraintSet.BOTTOM,
                     MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
                 )
@@ -653,8 +663,7 @@ class CartItemViewHolder constructor(
             binding.textPrescription.visible()
             binding.iuPrescription.loadIcon(data.butuhResepIconUrl)
             binding.textPrescription.text = data.butuhResepText
-        }
-        else {
+        } else {
             binding.iuPrescription.gone()
             binding.textPrescription.gone()
         }
@@ -674,8 +683,7 @@ class CartItemViewHolder constructor(
                 val productInfo = createProductInfoText(it)
                 layoutProductInfo.addView(productInfo)
             }
-        }
-        else {
+        } else {
             binding.textProductInformation.gone()
             binding.textProductInformationSeparator.gone()
         }
@@ -923,14 +931,12 @@ class CartItemViewHolder constructor(
             if (!element.isAlreadyShowMinimumQuantityPurchasedError) {
                 qtyEditorCart.setValue(element.minOrder)
                 element.isAlreadyShowMinimumQuantityPurchasedError = true
-            }
-            else {
+            } else {
                 binding.labelQtyMinQuantityError.gone()
                 qtyEditorCart.errorMessageText = String.EMPTY
                 actionListener?.onCartItemDeleteButtonClicked(element, false)
             }
-        }
-        else {
+        } else {
             if (!element.isAlreadyShowMinimumQuantityPurchasedError) {
                 binding.labelQtyMinQuantityError.gone()
                 qtyEditorCart.errorMessageText = String.EMPTY

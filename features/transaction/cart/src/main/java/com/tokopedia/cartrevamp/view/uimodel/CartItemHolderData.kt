@@ -97,7 +97,10 @@ data class CartItemHolderData(
     var wholesalePriceFormatted: String? = null,
 
     // AddOns Product
-    var addOnsProduct: CartAddOnData = CartAddOnData()
+    var addOnsProduct: CartAddOnData = CartAddOnData(),
+
+    // BMGM
+    var isBmGm: Boolean = true
 ) {
     companion object {
         const val BUNDLING_ITEM_DEFAULT = 0
