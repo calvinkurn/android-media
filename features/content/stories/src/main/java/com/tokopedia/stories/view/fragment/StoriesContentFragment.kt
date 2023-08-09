@@ -10,11 +10,14 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.stories.databinding.FragmentStoriesContentBinding
 import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.components.indicator.StoriesEventAction
 import com.tokopedia.stories.view.components.indicator.StoriesIndicator
 import com.tokopedia.stories.view.model.StoriesDataUiModel
+import com.tokopedia.stories.view.utils.onPauseEventStories
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import kotlinx.coroutines.flow.collectLatest
@@ -65,7 +68,7 @@ class StoriesContentFragment @Inject constructor(
         prevState: StoriesDataUiModel?,
         state: StoriesDataUiModel,
     ) {
-        if (prevState == null || prevState == state) return
+        if (prevState == state) return
 
         with(binding.cvStoriesIndicator) {
             apply {

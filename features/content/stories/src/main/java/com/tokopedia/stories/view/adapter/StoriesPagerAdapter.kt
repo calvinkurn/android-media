@@ -25,8 +25,8 @@ class StoriesPagerAdapter(
         _storiesData = storiesData
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
                 selectedPage.invoke(position)
+                super.onPageSelected(position)
             }
         })
     }
