@@ -1004,14 +1004,13 @@ class FeedPostViewModel @Inject constructor(
                     ).data
                 }
 
-                val mappedData = response.products.filter { new ->
-                    currentList.firstOrNull { current ->
-                        current.id == new.id
-                    } == null
-                }.map {
+                val mappedData = response.products.map {
                     ProductMapper.transform(it, response.campaign, sourceType)
                 }
-                _feedTagProductList.value = Success(currentList + mappedData)
+                val distinctData = (currentList + mappedData).distinctBy {
+                    it.id
+                }
+                _feedTagProductList.value = Success(distinctData)
             } catch (t: Throwable) {
                 _feedTagProductList.value = Fail(t)
             }
