@@ -56,6 +56,7 @@ private fun toAddonsUiModel(
             warehouseId = postAtcInfo.warehouseId,
             isFulfillment = postAtcInfo.isFulfillment,
             selectedAddonsIds = postAtcInfo.selectedAddonsIds,
+            deselectedAddonsIds = postAtcInfo.deselectedAddonsIds,
             categoryId = postAtcInfo.categoryId,
             shopId = postAtcInfo.shopId,
             quantity = postAtcInfo.quantity.toLong(),

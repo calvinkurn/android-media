@@ -11,6 +11,7 @@ data class PostAtcInfo(
     val layoutName: String = "",
     val pageSource: String = "",
     val selectedAddonsIds: List<String> = emptyList(),
+    val deselectedAddonsIds: List<String> = emptyList(),
     val shopId: String = "",
     val warehouseId: String = "",
     val quantity: Int = 0,
@@ -27,6 +28,5 @@ data class PostAtcInfo(
     ) {
         val shouldShow: Boolean
             get() = image.isNotEmpty() && description.isNotEmpty()
-
     }
 }

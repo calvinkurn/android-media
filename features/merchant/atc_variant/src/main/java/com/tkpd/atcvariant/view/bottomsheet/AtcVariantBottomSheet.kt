@@ -647,6 +647,10 @@ class AtcVariantBottomSheet :
         postAtcLayoutId: String,
         cartData: DataModel
     ) {
+        val addonsIds = cartData.addOns.groupBy(
+            keySelector = { it.status },
+            valueTransform = { it.id }
+        )
         PostAtcHelper.start(
             context,
             productId,
@@ -655,9 +659,8 @@ class AtcVariantBottomSheet :
             pageSource = PostAtcHelper.Source.PDP,
             warehouseId = cartData.warehouseId,
             isFulfillment = cartData.isFulfillment,
-            selectedAddonsIds = cartData.addOns.mapNotNull { item ->
-                item.id.takeIf { item.status == 1 }
-            },
+            selectedAddonsIds = addonsIds[1] ?: emptyList(),
+            deselectedAddonsIds = addonsIds[2] ?: emptyList(),
             quantity = cartData.quantity
         )
         dismiss()

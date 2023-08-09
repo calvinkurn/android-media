@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.PostAtcHelper.PARAM_CART_ID
+import com.tokopedia.product.detail.common.PostAtcHelper.PARAM_DESELECTED_ADDONS_IDS
 import com.tokopedia.product.detail.common.PostAtcHelper.PARAM_IS_FULFILLMENT
 import com.tokopedia.product.detail.common.PostAtcHelper.PARAM_LAYOUT_ID
 import com.tokopedia.product.detail.common.PostAtcHelper.PARAM_PAGE_SOURCE
@@ -48,6 +49,7 @@ class PostAtcActivity : BaseSimpleActivity() {
         val layoutId = extras.getString(PARAM_LAYOUT_ID, "")
         val pageSource = extras.getString(PARAM_PAGE_SOURCE, "")
         val selectedAddonsIds = extras.getStringArrayList(PARAM_SELECTED_ADDONS_IDS) ?: emptyList()
+        val deselectedAddonsIds = extras.getStringArrayList(PARAM_DESELECTED_ADDONS_IDS) ?: emptyList()
         val warehouseId = extras.getString(PARAM_WAREHOUSE_ID, "")
         val quantity = extras.getInt(PARAM_QUANTITY, 0)
 
@@ -59,6 +61,7 @@ class PostAtcActivity : BaseSimpleActivity() {
                 layoutId,
                 pageSource,
                 selectedAddonsIds,
+                deselectedAddonsIds,
                 warehouseId,
                 quantity
             )
