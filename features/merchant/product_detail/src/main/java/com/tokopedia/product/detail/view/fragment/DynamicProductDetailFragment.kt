@@ -2735,6 +2735,9 @@ open class DynamicProductDetailFragment :
         pdpUiUpdater?.updateSingleVariant(singleVariantUpdated)
         pdpUiUpdater?.updateMediaScrollPosition(optionId)
 
+        if (selectedChild != null) {
+            updateProductInfoOnVariantChanged(selectedChild)
+        }
         // store the product id to this variable to open vbs later
         productIdThumbnailSelected = selectedChild?.productId.ifNull { productId.orEmpty() }
 
