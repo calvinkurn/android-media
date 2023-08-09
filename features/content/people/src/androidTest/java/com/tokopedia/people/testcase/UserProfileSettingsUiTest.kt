@@ -2,6 +2,7 @@ package com.tokopedia.people.testcase
 
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -38,10 +39,12 @@ import com.tokopedia.test.application.compose.createAndroidIntentComposeRule
  */
 class UserProfileSettingsUiTest {
 
+    private val mockUserId = "123123"
+
     @get:Rule
     val composeActivityTestRule = createAndroidIntentComposeRule<ProfileSettingsActivity> { context ->
         Intent(context, ProfileSettingsActivity::class.java).apply {
-            data = "tokopedia://people/settings/$mockUserId"
+            data = Uri.parse(UriUtil.buildUri(ApplinkConst.PROFILE_SETTINGS, mockUserId))
         }
     }
 
@@ -55,7 +58,6 @@ class UserProfileSettingsUiTest {
 
     private val profileModelBuilder = ProfileModelBuilder()
 
-    private val mockUserId = "123123"
     private val mockProfileSettings = profileModelBuilder.buildProfileSettings()
 
     init {
