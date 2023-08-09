@@ -2,6 +2,7 @@ package com.tokopedia.shop.common.data.mapper
 
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.shop.campaign.view.model.ShopCampaignWidgetCarouselProductUiModel
 import com.tokopedia.shop.campaign.view.model.ShopWidgetDisplaySliderBannerHighlightUiModel
@@ -10,6 +11,7 @@ import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.data.model.ShopPageWidgetRequestModel
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
+import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerProductHotspotUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
@@ -171,6 +173,45 @@ object ShopPageWidgetMapper {
             1 -> StatusCampaign.ONGOING
             2 -> StatusCampaign.FINISHED
             else -> StatusCampaign.UPCOMING
+        }
+    }
+
+    fun mapToBannerProductHotspotWidget(
+        widgetResponse: ShopLayoutWidget.Widget,
+        widgetLayout: ShopPageWidgetUiModel?
+    )= ShopWidgetDisplayBannerProductHotspotUiModel(
+        widgetId = widgetResponse.widgetID,
+        layoutOrder = widgetResponse.layoutOrder,
+        name = widgetResponse.name,
+        type = widgetResponse.type,
+        header = ShopPageHomeMapper.mapToHeaderModel(widgetResponse.header, widgetLayout),
+        isFestivity = widgetLayout?.isFestivity.orFalse(),
+        data = mapToBannerProductHotspotItem(widgetResponse.data).toMutableList().apply {  }
+    )
+
+    private fun mapToBannerProductHotspotItem(
+        listData: List<ShopLayoutWidget.Widget.Data>
+    ): List<ShopWidgetDisplayBannerProductHotspotUiModel.Data> {
+        return listData.map {data ->
+            ShopWidgetDisplayBannerProductHotspotUiModel.Data(
+                appLink = data.appLink,
+                imageUrl = data.imageUrl,
+                linkType = data.linkType,
+                listProductHotspot = data.productHotspot.map {
+                    ShopWidgetDisplayBannerProductHotspotUiModel.Data.ProductHotspot(
+                        productId = it.productID,
+                        name = it.name,
+                        imageUrl = it.imageUrl,
+                        productUrl = it.productUrl,
+                        displayedPrice = it.displayPrice,
+                        isSoldOut = it.isSoldOut,
+                        hotspotCoordinate = ShopWidgetDisplayBannerProductHotspotUiModel.Data.ProductHotspot.Coordinate(
+                            x = it.coordinate.x.toFloatOrZero(),
+                            y = it.coordinate.y.toFloatOrZero()
+                        )
+                    )
+                }
+            )
         }
     }
 }

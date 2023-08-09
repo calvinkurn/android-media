@@ -165,6 +165,8 @@ data class ShopLayoutWidget(
                 val linkType: String = "",
                 @SerializedName("timeInfo")
                 val timeInfo: TimeInfo = TimeInfo(),
+                @SerializedName("productHotspot")
+                val productHotspot: List<ProductHotspot> = listOf(),
 
         ) {
             data class ProductBundleDetailsItem(
@@ -305,13 +307,30 @@ data class ShopLayoutWidget(
                 val textColor: String = "",
                 @SerializedName("status")
                 val status: Int = -1,
-
-
-
-
-
-
             )
+            data class ProductHotspot(
+                @SerializedName("productID")
+                val productID: String = "",
+                @SerializedName("name")
+                val name: String = "",
+                @SerializedName("imageUrl")
+                val imageUrl: String = "",
+                @SerializedName("productUrl")
+                val productUrl: String = "",
+                @SerializedName("displayPrice")
+                val displayPrice: String = "",
+                @SerializedName("isSoldOut")
+                val isSoldOut: Boolean = false,
+                @SerializedName("coordinate")
+                val coordinate: Coordinate = Coordinate(),
+            ) {
+                data class Coordinate(
+                    @SerializedName("x")
+                    val x: String = "",
+                    @SerializedName("y")
+                    val y: String = ""
+                )
+            }
         }
     }
 }

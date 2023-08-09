@@ -47,6 +47,7 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
     public static final int MAX_VISIBLE_ITEMS = 3;
 
     private static final boolean CIRCLE_LAYOUT = false;
+    private static final boolean LEFT_RIGHT_CHILD_TRANSPARANT = false;
 
     private boolean mDecoratedChildSizeInvalid;
     private Integer mDecoratedChildWidth;
@@ -54,6 +55,8 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
 
     private final int mOrientation;
     private boolean mCircleLayout;
+
+    private boolean mIsLeftRightChildTransparant;
 
     private int mPendingScrollPosition;
 
@@ -73,7 +76,7 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
      */
     @SuppressWarnings("unused")
     public CarouselLayoutManager(final int orientation) {
-        this(orientation, CIRCLE_LAYOUT);
+        this(orientation, CIRCLE_LAYOUT, LEFT_RIGHT_CHILD_TRANSPARANT);
     }
 
     /**
@@ -83,12 +86,13 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
      * @param circleLayout true for enabling circleLayout
      */
     @SuppressWarnings("unused")
-    public CarouselLayoutManager(final int orientation, final boolean circleLayout) {
+    public CarouselLayoutManager(final int orientation, final boolean circleLayout, final boolean isLeftRightChildTransparant) {
         if (HORIZONTAL != orientation && VERTICAL != orientation) {
             throw new IllegalArgumentException("orientation should be HORIZONTAL or VERTICAL");
         }
         mOrientation = orientation;
         mCircleLayout = circleLayout;
+        mIsLeftRightChildTransparant = isLeftRightChildTransparant;
         mPendingScrollPosition = INVALID_POSITION;
     }
 
@@ -509,7 +513,9 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
 
             view.setScaleX(transformation.mScaleX);
             view.setScaleY(transformation.mScaleY);
-            view.setAlpha(transformation.mAlpha);
+            if(mIsLeftRightChildTransparant) {
+                view.setAlpha(transformation.mAlpha);
+            }
         }
     }
 
