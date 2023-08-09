@@ -7,6 +7,10 @@ sealed interface StoriesUiAction {
     data class SelectPage(val selectedPage: Int): StoriesUiAction
     data class SetInitialData(val data: Bundle?): StoriesUiAction
 
+    object OnPauseStories: StoriesUiAction
+
+    object OnResumeStories: StoriesUiAction
+
     object NextIndicator: StoriesUiAction
 
     object NextPage: StoriesUiAction

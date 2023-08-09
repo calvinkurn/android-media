@@ -48,6 +48,7 @@ class StoriesContentFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupStoriesView()
         setupObserver()
     }
 
@@ -86,6 +87,19 @@ class StoriesContentFragment @Inject constructor(
         when (event) {
             StoriesEventAction.NEXT_INDICATOR -> viewModelAction(StoriesUiAction.NextIndicator)
             StoriesEventAction.NEXT_PAGE -> viewModelAction(StoriesUiAction.NextPage)
+        }
+    }
+
+    private fun setupStoriesView() = with(binding) {
+        flStories.onPauseEventStories { isPaused ->
+            if (isPaused) {
+                viewModelAction(StoriesUiAction.OnPauseStories)
+                cvStoriesIndicator.hide()
+            }
+            else {
+                viewModelAction(StoriesUiAction.OnResumeStories)
+                cvStoriesIndicator.show()
+            }
         }
     }
 

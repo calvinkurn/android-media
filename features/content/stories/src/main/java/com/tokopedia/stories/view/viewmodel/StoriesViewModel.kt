@@ -2,6 +2,7 @@ package com.tokopedia.stories.view.viewmodel
 
 import android.os.Bundle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.stories.data.StoriesRepository
 import com.tokopedia.stories.view.model.StoriesDataUiModel
 import com.tokopedia.stories.view.model.StoriesUiModel
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class StoriesViewModel @Inject constructor(
@@ -44,6 +46,8 @@ class StoriesViewModel @Inject constructor(
             StoriesUiAction.NextIndicator -> handleNextIndicator()
             StoriesUiAction.NextPage -> handleNextPage()
             StoriesUiAction.PreviousPage -> handlePreviousPage()
+            StoriesUiAction.OnPauseStories -> handleOnPauseStories()
+            StoriesUiAction.OnResumeStories -> handleOnResumeStories()
         }
     }
 
@@ -66,9 +70,25 @@ class StoriesViewModel @Inject constructor(
     }
 
     private fun handleNextPage() {
+        viewModelScope.launch {
+            _storiesUiEvent.emit(StoriesUiEvent.NextPage(mCounter + 1))
+        }
+
     }
 
     private fun handlePreviousPage() {
+    }
+
+    private fun handleOnPauseStories() {
+        storiesSelectedPage.update { data ->
+            data.copy(isPause = true)
+        }
+    }
+
+    private fun handleOnResumeStories() {
+        storiesSelectedPage.update { data ->
+            data.copy(isPause = false)
+        }
     }
 
     companion object {
