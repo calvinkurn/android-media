@@ -16,10 +16,15 @@ import com.tokopedia.shop.home.view.model.ShopHomeShowcaseUiModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlin.collections.ArrayList
 
-open class ShopShowcaseFragment : BaseDaggerFragment() {
+class ShopShowcaseFragment : BaseDaggerFragment() {
 
     companion object {
         private const val BUNDLE_KEY_SHOWCASES = "showcases"
+        private const val FIRST_SHOWCASE_INDEX = 0
+        private const val SECOND_SHOWCASE_INDEX = 1
+        private const val THIRD_SHOWCASE_INDEX = 2
+        private const val FOURTH_SHOWCASE_INDEX = 3
+        private const val FIFTH_SHOWCASE_INDEX = 4
 
         @JvmStatic
         fun newInstance(
@@ -35,10 +40,9 @@ open class ShopShowcaseFragment : BaseDaggerFragment() {
     }
 
     private val showcases by lazy {
-        arguments?.getParcelableArrayList<ShopHomeShowcaseUiModel.Tab.Showcase>(
-            BUNDLE_KEY_SHOWCASES
-        )?.toList().orEmpty()
+        arguments?.getParcelableArrayList<ShopHomeShowcaseUiModel.Tab.Showcase>(BUNDLE_KEY_SHOWCASES)?.toList().orEmpty()
     }
+
     private var onShowcaseClick : (ShopHomeShowcaseUiModel.Tab.Showcase) -> Unit = {}
 
     private var binding by autoClearedNullable<FragmentShopShowcaseBinding>()
@@ -74,12 +78,11 @@ open class ShopShowcaseFragment : BaseDaggerFragment() {
     private fun renderShowcase(
         showcases: List<ShopHomeShowcaseUiModel.Tab.Showcase>
     ) {
-        val firstShowcase = showcases.getOrNull(0)
-        val secondShowcase = showcases.getOrNull(1)
-        val thirdShowcase = showcases.getOrNull(2)
-        val fourthShowcase = showcases.getOrNull(3)
-        val fifthShowcase = showcases.getOrNull(4)
-
+        val firstShowcase = showcases.getOrNull(FIRST_SHOWCASE_INDEX)
+        val secondShowcase = showcases.getOrNull(SECOND_SHOWCASE_INDEX)
+        val thirdShowcase = showcases.getOrNull(THIRD_SHOWCASE_INDEX)
+        val fourthShowcase = showcases.getOrNull(FOURTH_SHOWCASE_INDEX)
+        val fifthShowcase = showcases.getOrNull(FIFTH_SHOWCASE_INDEX)
 
         firstShowcase?.let {
             binding?.imgFirstBanner?.loadImage(firstShowcase.imageUrl)
@@ -100,6 +103,7 @@ open class ShopShowcaseFragment : BaseDaggerFragment() {
             binding?.imgSecondBanner?.setOnClickListener { onShowcaseClick(secondShowcase) }
             binding?.tpgSecondBannerTitle?.setOnClickListener { onShowcaseClick(secondShowcase) }
         }
+
         thirdShowcase?.let {
             binding?.imgThirdBanner?.loadImage(thirdShowcase.imageUrl)
             binding?.tpgThirdBannerTitle?.text = thirdShowcase.name
@@ -109,6 +113,7 @@ open class ShopShowcaseFragment : BaseDaggerFragment() {
             binding?.imgThirdBanner?.setOnClickListener { onShowcaseClick(thirdShowcase) }
             binding?.tpgThirdBannerTitle?.setOnClickListener { onShowcaseClick(thirdShowcase) }
         }
+
         fourthShowcase?.let {
             binding?.imgFourthBanner?.loadImage(fourthShowcase.imageUrl)
             binding?.tpgFourthBannerTitle?.text = fourthShowcase.name
@@ -118,6 +123,7 @@ open class ShopShowcaseFragment : BaseDaggerFragment() {
             binding?.imgFourthBanner?.setOnClickListener { onShowcaseClick(fourthShowcase) }
             binding?.tpgFourthBannerTitle?.setOnClickListener { onShowcaseClick(fourthShowcase) }
         }
+
         fifthShowcase?.let {
             binding?.imgFifthBanner?.loadImage(fifthShowcase.imageUrl)
             binding?.tpgFifthBannerTitle?.text = fifthShowcase.name
