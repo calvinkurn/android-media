@@ -2495,6 +2495,16 @@
           "deeplink_variable": "ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_BOTTOMSHEET"
      },
      {
+          "destination_activity": "com.tokopedia.wishlistcollection.view.activity.WishlistCollectionEditActivity",
+          "deeplink": "tokopedia-android-internal://transaction/wishlist-collection/edit",
+          "deeplink_variable": "ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_EDIT"
+     },
+     {
+          "destination_activity": "com.tokopedia.wishlistcollection.view.activity.WishlistCollectionCreateHostBottomSheetActivity",
+          "deeplink": "tokopedia-android-internal://transaction/wishlist-collection-create-bottomsheet",
+          "deeplink_variable": "ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_CREATE_BOTTOMSHEET"
+     },
+     {
           "destination_activity": "com.tokopedia.addongifting.AddOnActivity",
           "deeplink": "tokopedia-android-internal://marketplace/add-on-gifting",
           "deeplink_variable": "ApplinkConstInternalMarketplace.ADD_ON_GIFTING"
