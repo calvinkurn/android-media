@@ -63,10 +63,11 @@ class BottomSheetFilterViewDelegate @Inject constructor(
 
         sortFilterBottomSheet = SortFilterBottomSheet().also {
             it.show(
-                getFragment().parentFragmentManager,
-                getSearchParameter()?.getSearchParameterHashMap(),
-                dynamicFilterModel,
-                this
+                fragmentManager = getFragment().parentFragmentManager,
+                mapParameter = getSearchParameter()?.getSearchParameterHashMap(),
+                dynamicFilterModel = dynamicFilterModel,
+                callback = this,
+                isReimagine = true,
             )
         }
         sortFilterBottomSheet?.setOnDismissListener {

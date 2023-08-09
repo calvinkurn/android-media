@@ -15,11 +15,13 @@ import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetF
 import com.tokopedia.search.result.product.grid.ProductGridType
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselPresenter
 import com.tokopedia.search.result.product.pagination.Pagination
+import com.tokopedia.search.result.product.reimagine.Reimagine
 import com.tokopedia.search.result.product.safesearch.SafeSearchPresenter
 import com.tokopedia.search.result.product.ticker.TickerPresenter
 import com.tokopedia.search.result.product.wishlist.WishlistPresenter
 import com.tokopedia.sortfilter.SortFilterItem
 import org.json.JSONArray
+import com.tokopedia.filter.quick.SortFilterItem as SortFilterItemReimagine
 
 interface ProductListSectionContract {
     interface View : CustomerView {
@@ -67,6 +69,7 @@ interface ProductListSectionContract {
         fun setSortFilterIndicatorCounter()
         fun hideQuickFilterShimmering()
         fun setQuickFilter(items: List<SortFilterItem>)
+        fun setQuickFilterReimagine(items: List<SortFilterItemReimagine>)
         fun showOnBoarding(firstProductPosition: Int)
         fun enableProductViewTypeOnBoarding()
         fun isFilterSelected(option: Option?): Boolean
@@ -91,7 +94,8 @@ interface ProductListSectionContract {
         SafeSearchPresenter,
         WishlistPresenter,
         BottomSheetFilterPresenter,
-        InspirationCarouselPresenter {
+        InspirationCarouselPresenter,
+        Reimagine {
 
         fun loadMoreData(searchParameter: Map<String, Any>)
         fun loadData(searchParameter: Map<String, Any>)

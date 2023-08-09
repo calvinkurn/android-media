@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewStub
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -31,6 +32,7 @@ import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityRe
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
@@ -125,6 +127,9 @@ import com.tokopedia.video_widget.carousel.VideoCarouselWidgetCoordinator
 import com.tokopedia.video_widget.util.networkmonitor.DefaultNetworkMonitor
 import org.json.JSONArray
 import javax.inject.Inject
+import com.tokopedia.filter.quick.SortFilter as SortFilterReimagine
+import com.tokopedia.filter.quick.SortFilter.Listener as SortFilterListener
+import com.tokopedia.filter.quick.SortFilterItem as SortFilterItemReimagine
 
 class ProductListFragment: BaseDaggerFragment(),
     ProductListSectionContract.View,
@@ -233,6 +238,7 @@ class ProductListFragment: BaseDaggerFragment(),
     private var searchParameter: SearchParameter? = null
     private var irisSession: IrisSession? = null
     private var searchSortFilter: SortFilter? = null
+    private var searchSortFilterReimagine: SortFilterReimagine? = null
     private var shimmeringView: LinearLayout? = null
 
     override var productCardLifecycleObserver: ProductCardLifecycleObserver? = null
@@ -371,7 +377,6 @@ class ProductListFragment: BaseDaggerFragment(),
     private fun initViews(view: View) {
         initSwipeToRefresh(view)
 
-        initSearchQuickSortFilter(view)
         initShimmeringView(view)
 
         initLoadMoreListener()
@@ -381,10 +386,6 @@ class ProductListFragment: BaseDaggerFragment(),
     private fun initSwipeToRefresh(view: View) {
         refreshLayout = view.findViewById(R.id.swipe_refresh_layout)
         refreshLayout?.setOnRefreshListener(this::reloadData)
-    }
-
-    private fun initSearchQuickSortFilter(rootView: View) {
-        searchSortFilter = rootView.findViewById(R.id.search_product_quick_sort_filter)
     }
 
     private fun initShimmeringView(view: View) {
@@ -638,6 +639,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
     private fun hideViewOnError() {
         searchSortFilter?.gone()
+        searchSortFilterReimagine?.gone()
         shimmeringView?.gone()
         refreshLayout?.gone()
     }
@@ -1051,6 +1053,9 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun setQuickFilter(items: List<SortFilterItem>) {
+        if (searchSortFilter == null)
+            inflateQuickFilter()
+
         searchSortFilter?.let {
             it.sortFilterItems.removeAllViews()
             it.visibility = View.VISIBLE
@@ -1061,6 +1066,59 @@ class ProductListFragment: BaseDaggerFragment(),
 
             setSortFilterNewNotification(items)
         }
+    }
+
+    private fun inflateQuickFilter() {
+        view?.findViewById<ViewStub?>(R.id.viewStubSortFilter)?.let {
+            searchSortFilter = it.inflate() as? SortFilter
+        }
+    }
+
+    override fun setQuickFilterReimagine(items: List<SortFilterItemReimagine>) {
+        if (searchSortFilterReimagine == null)
+            inflateQuickFilterReimagine()
+
+        searchSortFilterReimagine?.let {
+            it.visible()
+            it.addItem(items)
+            it.scrollToPosition(0)
+            it.setListener(sortFilterListener())
+        }
+    }
+
+    private fun inflateQuickFilterReimagine() {
+        view?.findViewById<ViewStub?>(R.id.viewStubSortFilterReimagine)?.let {
+            searchSortFilterReimagine = it.inflate() as? SortFilterReimagine
+        }
+    }
+
+    private fun sortFilterListener() = object : SortFilterListener {
+        override fun onItemClicked(
+            sortFilterItem: SortFilterItemReimagine,
+            position: Int
+        ) {
+            val filter = presenter?.quickFilterList?.getOrNull(position) ?: return
+            val firstOption = filter.options.firstOrNull() ?: return
+            val searchParameter = getSearchParameter()?.getSearchParameterMap() ?: return
+
+            onQuickFilterSelected(
+                filter = filter,
+                option = firstOption,
+                pageSource = Dimension90Utils.getDimension90(searchParameter)
+            )
+        }
+
+        override fun onItemChevronClicked(
+            sortFilterItem: SortFilterItemReimagine,
+            position: Int
+        ) {
+            val filter = presenter?.quickFilterList?.getOrNull(position) ?: return
+            openBottomsheetMultipleOptionsQuickFilter(filter)
+        }
+
+        override fun onFilterClicked() { openBottomSheetFilterRevamp() }
+
+        override fun onSortClicked() { }
     }
 
     private fun setSortFilterNewNotification(items: List<SortFilterItem>) {
@@ -1081,20 +1139,33 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun configure(shouldRemove: Boolean) {
+        val sortFilterView = if (isReimagine()) searchSortFilterReimagine else searchSortFilter
+
         if (shouldRemove)
-            removeQuickFilterElevation(searchSortFilter)
+            removeQuickFilterElevation(sortFilterView)
         else
-            applyQuickFilterElevation(context, searchSortFilter)
+            applyQuickFilterElevation(context, sortFilterView)
     }
 
+    private fun isReimagine(): Boolean = presenter?.isReimagine() == true
+
     private fun hideSearchSortFilter() {
+        searchSortFilterReimagine?.gone()
         searchSortFilter?.gone()
         shimmeringView?.visible()
     }
 
     override fun setSortFilterIndicatorCounter() {
         val searchParameter = searchParameter ?: return
-        searchSortFilter?.indicatorCounter = getSortFilterCount(searchParameter.getSearchParameterMap())
+        val sortFilterCount = getSortFilterCount(searchParameter.getSearchParameterMap())
+
+        if (isReimagine())
+            searchSortFilterReimagine?.setSortFilterIndicatorCounter(
+                isAnySortActive,
+                sortFilterCount
+            )
+        else
+            searchSortFilter?.indicatorCounter = sortFilterCount
     }
     //endregion
 
