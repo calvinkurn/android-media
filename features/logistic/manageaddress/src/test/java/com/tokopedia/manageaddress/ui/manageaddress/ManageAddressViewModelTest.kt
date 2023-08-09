@@ -33,7 +33,6 @@ import com.tokopedia.manageaddress.domain.usecase.shareaddress.ValidateShareAddr
 import com.tokopedia.manageaddress.domain.usecase.shareaddress.ValidateShareAddressAsSenderUseCase
 import com.tokopedia.manageaddress.ui.uimodel.ValidateShareAddressState
 import com.tokopedia.manageaddress.util.ManageAddressConstant
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.url.Env
@@ -54,6 +53,7 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
@@ -520,6 +520,18 @@ class ManageAddressViewModelTest {
         assertEquals(manageAddressViewModel.source, source)
         assertEquals(manageAddressViewModel.receiverUserId, ruid)
         assertEquals(manageAddressViewModel.senderUserId, suid)
+        assertFalse(manageAddressViewModel.isFromMoneyIn)
+    }
+
+    @Test
+    fun `verify when setupDataFromArgument is incorrect`() {
+        // When
+        manageAddressViewModel.setupDataFromArgument(null)
+
+        // Then
+        assertEquals("", manageAddressViewModel.source)
+        assertNull(manageAddressViewModel.senderUserId)
+        assertNull(manageAddressViewModel.receiverUserId)
         assertFalse(manageAddressViewModel.isFromMoneyIn)
     }
 
