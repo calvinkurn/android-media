@@ -191,9 +191,9 @@ class FeedFragment :
             val feedMenuSheet =
                 childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet
             if (feedMenuSheet != null && userSession.isLoggedIn) {
-                val isVideo =
-                    feedPostViewModel.userReportList is Success && (feedPostViewModel.userReportList as? Success<List<PlayUserReportReasoningUiModel>>)?.data?.isNotEmpty()
-                        .orFalse()
+                val item = adapter.currentList[getCurrentPosition()]?.data
+                val isVideo = item is FeedCardVideoContentModel || item is FeedCardLivePreviewContentModel
+
                 feedMenuSheet.showReportLayoutWhenLaporkanClicked(isVideo = isVideo, action = {
                     ContentReportBottomSheet.getOrCreate(
                         childFragmentManager,
@@ -305,6 +305,7 @@ class FeedFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        showLoading()
         feedPostViewModel.fetchFeedPosts(
             data?.type ?: "",
             isNewData = true,
@@ -379,9 +380,8 @@ class FeedFragment :
                 if (!userSession.isLoggedIn) {
                     onGoToLogin()
                 } else {
-                    val isVideo =
-                        feedPostViewModel.userReportList is Success && (feedPostViewModel.userReportList as? Success<List<PlayUserReportReasoningUiModel>>)?.data?.isNotEmpty()
-                            .orFalse()
+                    val item = adapter.currentList[getCurrentPosition()]?.data
+                    val isVideo = item is FeedCardVideoContentModel || item is FeedCardLivePreviewContentModel
                     (childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet)?.showReportLayoutWhenLaporkanClicked(
                         isVideo = isVideo,
                         action = {
@@ -933,16 +933,11 @@ class FeedFragment :
             it.rvFeedPost.removeOnScrollListener(contentScrollListener)
             it.rvFeedPost.addOnScrollListener(contentScrollListener)
             it.rvFeedPost.itemAnimator = null
-
-            if (adapter.itemCount == 0) {
-                showLoading()
-            }
         }
     }
 
     private fun observePostData() {
         feedPostViewModel.feedHome.observe(viewLifecycleOwner) {
-            hideLoading()
             binding.swipeRefreshFeedLayout.isRefreshing = false
             adapter.hideLoading()
             when (it) {
@@ -967,8 +962,10 @@ class FeedFragment :
                         feedPostViewModel.fetchTopAdsData()
                     }
                     feedMainViewModel.onPostDataLoaded(it.data.items.isNotEmpty())
+                    hideLoading()
                 }
                 is Fail -> {
+                    hideLoading()
                     adapter.showErrorNetwork()
                 }
                 else -> {}

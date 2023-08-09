@@ -11,7 +11,6 @@ import com.tokopedia.play.broadcaster.domain.model.CreateLiveStreamChannelRespon
 import com.tokopedia.play.broadcaster.domain.model.GetLiveFollowersResponse
 import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
-import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.type.PriceUnknown
 import com.tokopedia.play.broadcaster.type.ProductPrice
 import com.tokopedia.play.broadcaster.type.ProductStock
@@ -24,11 +23,15 @@ import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.DurationConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductTagConfigUiModel
-import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetPage
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetType
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
+import com.tokopedia.play.broadcaster.ui.model.shortsaffiliate.BroadcasterCheckAffiliateResponseUiModel
+import com.tokopedia.play.broadcaster.ui.model.shortsaffiliate.OnboardAffiliateUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
@@ -117,6 +120,7 @@ class UiModelBuilder {
         scheduleConfig: BroadcastScheduleConfigUiModel = buildBroadcastScheduleConfigUiModel(),
         tnc: List<TermsAndConditionUiModel> = emptyList(),
         beautificationConfig: BeautificationConfigUiModel = BeautificationConfigUiModel.Empty,
+        showSaveButton: Boolean = false,
     ) = ConfigurationUiModel(
         streamAllowed = streamAllowed,
         shortVideoAllowed = shortVideoAllowed,
@@ -130,6 +134,7 @@ class UiModelBuilder {
         tnc = tnc,
         hasContent = hasContent,
         beautificationConfig = beautificationConfig,
+        showSaveButton = showSaveButton,
     )
 
     fun buildDurationConfigUiModel(
@@ -280,6 +285,40 @@ class UiModelBuilder {
         coverSource = coverSource,
     )
 
+    fun buildTickerBottomSheetResponse(
+        page: TickerBottomSheetPage = TickerBottomSheetPage.UNKNOWN,
+        type: TickerBottomSheetType = TickerBottomSheetType.UNKNOWN,
+    ): TickerBottomSheetUiModel {
+        return TickerBottomSheetUiModel(
+            mainText = listOf(
+                TickerBottomSheetUiModel.MainText(
+                    action = listOf(
+                        TickerBottomSheetUiModel.Action(
+                            item = "key item 1",
+                            text = "text link",
+                            link = "tokopedia.com",
+                        )
+                    ),
+                    title = "Test Title",
+                    description = "Test Description",
+                )
+            ),
+            page = page,
+            type = type,
+            imageURL = "tokopedia.com",
+            bottomText = TickerBottomSheetUiModel.BottomText(
+                action = listOf(
+                    TickerBottomSheetUiModel.Action(
+                        item = "key item 1",
+                        text = "text link",
+                        link = "tokopedia.com",
+                    )
+                ),
+                description = "Test Description"
+            )
+        )
+    }
+
     fun buildTags(
         size: Int = 5
     ): Set<PlayTagUiModel> {
@@ -319,5 +358,17 @@ class UiModelBuilder {
         maxTaggedProduct = maxTaggedProduct,
         shortsVideoSourceId = shortsVideoSourceId,
         hasContent = hasContent,
+    )
+
+    fun buildSubmitOnboardAffiliate(
+        errorMessage: String = ""
+    ) = OnboardAffiliateUiModel(errorMessage)
+
+    fun buildBroadcasterCheckAffiliate(
+        affiliateName: String = "jonathan",
+        isAffiliate: Boolean = true,
+    ) = BroadcasterCheckAffiliateResponseUiModel(
+        affiliateName = affiliateName,
+        isAffiliate = isAffiliate,
     )
 }

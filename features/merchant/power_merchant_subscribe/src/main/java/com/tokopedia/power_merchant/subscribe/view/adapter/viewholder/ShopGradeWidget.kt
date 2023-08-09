@@ -33,7 +33,6 @@ import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-
 /**
  * Created By @ilhamsuaib on 03/03/21
  */
@@ -46,7 +45,7 @@ class ShopGradeWidget(
 
     companion object {
         private const val DATE_FORMAT = "dd MMM yyyy"
-        private const val END_OF_TENURE_DAYS = 90L
+        private const val END_OF_TENURE_DAYS = 60L
         val RES_LAYOUT = R.layout.widget_pm_shop_grade
         const val SATURATION_INACTIVE = 0.0f
     }
@@ -82,7 +81,6 @@ class ShopGradeWidget(
                     separator.stepSeparatorInActive()
                     separator3.stepSeparatorInActive()
                     textPmProAdvanced.setWeight(Typography.BOLD)
-
                 }
                 isPmProExpert -> {
                     stepInActive(badgePm)
@@ -201,11 +199,7 @@ class ShopGradeWidget(
         val isPmProActive = isPmPro && isPmActive
         val isPmProIdle = isPmPro && element.pmStatus == PMStatusConst.IDLE
         val is30FirstMondayNewSeller = element.isNewSeller && element.is30FirstMonday
-        val labelStringId = if (element.isNewSeller) {
-            R.string.pm_shop_performance_sum_new_seller
-        } else {
-            R.string.pm_shop_performance_sum
-        }
+        val labelStringId = getLabelStringResId(element)
         val shopScoreFmt = PMCommonUtils.getShopScoreFmt(element.shopScore)
 
         tvPmShopGradeScore.text =
@@ -398,6 +392,18 @@ class ShopGradeWidget(
             DateFormatUtils.FORMAT_DD_MMMM_YYYY,
             nextMonthlyRefreshDate
         )
+    }
+
+    private fun getLabelStringResId(element: WidgetShopGradeUiModel): Int {
+        return if (element.isNewSeller) {
+            if (element.pmStatus == PMStatusConst.ACTIVE) {
+                R.string.pm_shop_performance_sum_new_seller
+            } else {
+                R.string.pm_shop_performance_sum
+            }
+        } else {
+            R.string.pm_shop_performance_sum
+        }
     }
 
     interface Listener {

@@ -20,6 +20,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.data.*
+import com.tokopedia.play.data.detail.recom.ChannelDetailsWithRecomResponse
 import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.multiplelikes.UpdateMultipleLikeConfig
 import com.tokopedia.play.data.realtimenotif.RealTimeNotification
@@ -202,6 +203,7 @@ class PlayViewModel @AssistedInject constructor(
     /** Needed to decide whether we need to call setResult() or no when leaving play room */
     private val _isChannelReportLoaded = MutableStateFlow(false)
     private val _exploreWidget = MutableStateFlow(ExploreWidgetUiModel.Empty)
+    private val _categoryWidget = MutableStateFlow(CategoryWidgetUiModel.Empty)
 
     private val _isFollowPopUpShown = MutableStateFlow(FollowPopUpUiState.Empty)
 
@@ -336,13 +338,15 @@ class PlayViewModel @AssistedInject constructor(
         } ?: products
     }.flowOn(dispatchers.computation)
 
-    private val _explore = combine(_status, _bottomInsets, _exploreWidget) {
-            status, bottomInsets, widgets ->
+    private val _explore = combine(_status, _bottomInsets, _exploreWidget, _categoryWidget, _channelDetail) {
+            status, bottomInsets, widgets, category, channel ->
         ExploreWidgetUiState(
             shouldShow = !bottomInsets.isAnyShown &&
                 status.channelStatus.statusType.isActive &&
                 !videoPlayer.isYouTube && isExploreWidget,
-            data = widgets
+            data = widgets,
+            category = category,
+            config = channel.channelRecomConfig
         )
     }.flowOn(dispatchers.computation)
 
@@ -550,6 +554,20 @@ class PlayViewModel @AssistedInject constructor(
     val exploreWidgetConfig: PlayWidgetConfigUiModel
         get() = _exploreWidget.value.widgets.firstOrNull()?.item?.config ?: PlayWidgetConfigUiModel.Empty
 
+    val widgetInfo: PlayChannelRecommendationConfig
+        get() = _channelDetail.value.channelRecomConfig
+
+    private val widgetQuery = MutableStateFlow(emptyMap<ExploreWidgetType, WidgetParamUiModel>())
+
+    val exploreWidgetTabs: List<String>
+        get() {
+            val config = _channelDetail.value.channelRecomConfig.categoryWidgetConfig
+            return buildList {
+                if (config.hasCategory) add(config.categoryName)
+                add(DEFAULT_TAB)
+            }
+        }
+
     private val _observableChannelInfo = MutableLiveData<PlayChannelInfoUiModel>()
     private val _observablePinnedMessage = MutableLiveData<PinnedMessageUiModel>()
     private val _observableVideoProperty = MutableLiveData<VideoPropertyUiModel>()
@@ -679,6 +697,14 @@ class PlayViewModel @AssistedInject constructor(
                     doOnForbidden()
                 }
             }
+        }
+
+        viewModelScope.launch {
+            widgetQuery.distinctUntilChanged { old, new -> old == new }
+                .collectLatest { param ->
+                    updateCategoryWidget(param.getOrElse(ExploreWidgetType.Category) { WidgetParamUiModel.Empty })
+                    updateDefaultWidget(param.getOrElse(ExploreWidgetType.Default) { WidgetParamUiModel.Empty })
+                }
         }
     }
 
@@ -1043,25 +1069,31 @@ class PlayViewModel @AssistedInject constructor(
             is SendWarehouseId -> handleWarehouse(action.id, action.isOOC)
             OpenCart -> openWithLogin(ApplinkConstInternalMarketplace.CART, REQUEST_CODE_LOGIN_CART)
             DismissFollowPopUp -> _isFollowPopUpShown.update { it.copy(shouldShow = false) }
-            FetchWidgets -> {
+            is FetchWidgets -> {
                 _isBottomSheetsShown.update { true }
-                fetchWidgets()
+                refreshWidget(action.type)
             }
-            is ClickChipWidget -> handleClickChip(action.item)
-            NextPageWidgets -> onActionWidget(isNextPage = true)
-            RefreshWidget -> onActionWidget(isNextPage = false)
+            is NextPageWidgets -> refreshWidget(action.type)
+            is ClickChipWidget -> onChipAction(action.item)
+            RefreshWidget -> {
+                widgetQuery.value = widgetQuery.value.mapValues {
+                    val config = _channelDetail.value.channelRecomConfig.exploreWidgetConfig
+                    if (ExploreWidgetType.Default == it.key) {
+                        it.value.copy(isRefresh = true, group = config.group, cursor = "", sourceId = config.sourceId, sourceType = config.sourceType)
+                    } else {
+                        it.value
+                    }
+                }
+            }
             is UpdateReminder -> updateReminderWidget(action.channelId, action.reminderType)
             DismissExploreWidget -> {
                 // Resetting
-                _exploreWidget.update {
-                    it.copy(widgets = emptyList(), chips = TabMenuUiModel.Empty)
-                }
-                _channelDetail.value.exploreWidgetConfig.let {
-                    updateWidgetParam(group = it.group, sourceId = it.sourceId, sourceType = it.sourceType)
-                }
+                setExploreWidgetParam(_channelDetail.value.channelRecomConfig)
+                _categoryWidget.update { it.copy(data = emptyList()) }
+                _exploreWidget.update { it.copy(widgets = emptyList(), chips = TabMenuUiModel.Empty) }
                 _isBottomSheetsShown.update { false }
             }
-            EmptyPageWidget -> handleEmptyExplore()
+            is EmptyPageWidget -> handleEmptyExplore(action.type)
             is SelectReason -> handleSelectedReason(action.reasonId)
             is CommentVisibilityAction -> {
                 _isBottomSheetsShown.update { action.isOpen }
@@ -1121,7 +1153,7 @@ class PlayViewModel @AssistedInject constructor(
         _tagItems.value = channelData.tagItems
         _quickReply.value = channelData.quickReplyInfo
 
-        with(channelData.channelDetail.exploreWidgetConfig) { updateWidgetParam(group, sourceType, sourceId) }
+        setExploreWidgetParam(channelData.channelDetail.channelRecomConfig)
     }
 
     fun focusPage(channelData: PlayChannelData) {
@@ -1881,6 +1913,19 @@ class PlayViewModel @AssistedInject constructor(
             is QuizResponse -> {
                 val interactive = playSocketToModelMapper.mapQuizFromSocket(result)
                 setupInteractive(interactive)
+            }
+            is ChannelDetailsWithRecomResponse.ExploreWidgetConfig -> {
+                _channelDetail.update { channel ->
+                    channel.copy(channelRecomConfig = channel.channelRecomConfig.copy(categoryWidgetConfig = channel.channelRecomConfig.categoryWidgetConfig.copy(categoryName = result.categoryName.ifBlank { DEFAULT_TAB }, categoryGroup = result.group, hasCategory = result.hasCategory, categoryLevel = result.categoryLvl, categoryId = result.categoryId)))
+                }
+                _categoryWidget.update { w -> w.copy(data = emptyList()) }
+                widgetQuery.value = widgetQuery.value.mapValues {
+                    if (it.key == ExploreWidgetType.Category) {
+                        it.value.copy(isRefresh = true, group = result.group, sourceType = result.sourceType, sourceId = result.sourceId, cursor = "")
+                    } else {
+                        it.value
+                    }
+                }
             }
         }
     }
@@ -2720,73 +2765,158 @@ class PlayViewModel @AssistedInject constructor(
         playLog.sendAll(channelId, videoPlayer)
     }
 
-    private fun fetchWidgets() {
-        viewModelScope.launchCatchError(block = {
-            _uiEvent.emit(ExploreWidgetInitialState)
-            _exploreWidget.update { it.copy(state = ExploreWidgetState.Loading, chips = it.chips.copy(state = ResultState.Loading)) }
-            val data = getWidgets()
-            val chips = data.getChips
+    /**
+     * Explore Widget
+     */
+    private fun setExploreWidgetParam(config: PlayChannelRecommendationConfig) {
+        widgetQuery.value = mapOf(
+            ExploreWidgetType.Category to WidgetParamUiModel(group = config.categoryWidgetConfig.categoryGroup, sourceId = config.categoryWidgetConfig.categorySourceId, sourceType = config.categoryWidgetConfig.categorySourceType),
+            ExploreWidgetType.Default to WidgetParamUiModel(group = config.exploreWidgetConfig.group, sourceId = config.exploreWidgetConfig.sourceId, sourceType = config.exploreWidgetConfig.sourceType)
+        )
+    }
 
-            _exploreWidget.update {
-                it.copy(chips = chips)
+    private fun updateDefaultWidget(param: WidgetParamUiModel) {
+        if (!param.isRefresh) return
+        viewModelScope.launchCatchError(block = {
+            val cursor = when {
+                param.hasNextPage -> param.cursor
+                else -> ""
             }
 
-            if (!data.isSubSlotAvailable && chips.items.isEmpty()) return@launchCatchError
-            updateWidgetParam(group = chips.items.first().group, sourceType = chips.items.first().sourceType, sourceId = chips.items.first().sourceId)
-            val widgets = getWidgets()
-            _exploreWidget.update {
-                val newList = it.widgets + widgets
-                it.copy(
-                    param = it.param.copy(cursor = widgets.getConfig.cursor),
-                    widgets = newList.getChannelBlocks,
-                    state = if (newList.isEmpty()) ExploreWidgetState.Empty else ExploreWidgetState.Success
-                )
+            when {
+                param.group == _channelDetail.value.channelRecomConfig.exploreWidgetConfig.group -> {
+                    _exploreWidget.update { widget -> widget.copy(chips = widget.chips.copy(state = ResultState.Loading)) }
+                }
+                _exploreWidget.value.widgets.isEmpty() -> {
+                    _exploreWidget.update { widget -> widget.copy(state = ExploreWidgetState.Loading) }
+                }
+                !_exploreWidget.value.state.hasNextPage -> return@launchCatchError
+            }
+
+            val response = repo.getWidgets(
+                group = param.group,
+                sourceType = param.sourceType,
+                sourceId = param.sourceId,
+                cursor = cursor
+            )
+
+            val chips = response.getChips
+            val widgets = response.getChannelBlocks
+
+            when {
+                chips.items.isNotEmpty() -> {
+                    if (!response.isSubSlotAvailable) {
+                        throw MessageErrorException()
+                    }
+                    _exploreWidget.update { widget -> widget.copy(chips = chips) }
+                    onChipAction(chips.items.first())
+                }
+                widgets.isNotEmpty() -> {
+                    _exploreWidget.update { widget -> widget.copy(widgets = widget.widgets + widgets, state = ExploreWidgetState.Success(response.getConfig.cursor.isNotBlank())) }
+                    widgetQuery.update { query ->
+                        query.mapValues {
+                            if (it.key == ExploreWidgetType.Default) {
+                                it.value.copy(cursor = response.getConfig.cursor, isRefresh = false)
+                            } else {
+                                it.value
+                            }
+                        }
+                    }
+                }
+                else -> {
+                    if (_exploreWidget.value.widgets.isEmpty())
+                        _exploreWidget.update { widget -> widget.copy(state = ExploreWidgetState.Empty) }
+                }
             }
         }) { exception ->
-            _exploreWidget.update { it.copy(state = ExploreWidgetState.Fail(exception)) }
+            _exploreWidget.update {
+                it.copy(
+                    state = ExploreWidgetState.Fail(
+                        error = exception,
+                        onRetry = { updateDefaultWidget(param) }
+                    )
+                )
+            }
+            widgetQuery.update { query ->
+                query.mapValues {
+                    if (it.key == ExploreWidgetType.Default) {
+                        it.value.copy(isRefresh = false)
+                    } else {
+                        it.value
+                    }
+                }
+            }
         }
     }
 
-    /**
-     * Next Page or Chips Clicked
-     */
-    private fun onActionWidget(isNextPage: Boolean = false) {
-        if (!_exploreWidget.value.param.hasNextPage && isNextPage) return
+    private fun updateCategoryWidget(param: WidgetParamUiModel) {
+        if (!param.isRefresh) return
+
         viewModelScope.launchCatchError(block = {
-            if (!isNextPage) _uiEvent.emit(ExploreWidgetInitialState)
-            _exploreWidget.update { it.copy(state = if (isNextPage) it.state else ExploreWidgetState.Loading, param = it.param.copy(cursor = if (isNextPage) it.param.cursor else "")) }
+            when {
+                _categoryWidget.value.data.isEmpty() -> _categoryWidget.update { widget -> widget.copy(state = ExploreWidgetState.Loading) }
+                !_categoryWidget.value.state.hasNextPage -> return@launchCatchError
+            }
 
-            val widgets = getWidgets()
+            val cursor = when {
+                param.hasNextPage -> param.cursor
+                else -> ""
+            }
 
-            _exploreWidget.update {
-                val newList = if (isNextPage) it.widgets + widgets else widgets
-
+            val response = repo.getWidgets(
+                group = param.group,
+                sourceType = param.sourceType,
+                sourceId = param.sourceId,
+                cursor = cursor
+            )
+            val widgets = response.getChannelBlocks.getChannelCards
+            if (widgets.isNotEmpty()) {
+                _categoryWidget.update { widget ->
+                    widget.copy(
+                        data = widget.data + widgets,
+                        state = ExploreWidgetState.Success(response.getConfig.cursor.isNotBlank())
+                    )
+                }
+            } else {
+                _categoryWidget.update { widget -> widget.copy(state = ExploreWidgetState.Empty) }
+            }
+            widgetQuery.update { query ->
+                query.mapValues {
+                    if (it.key == ExploreWidgetType.Category) {
+                        it.value.copy(cursor = response.getConfig.cursor, isRefresh = false)
+                    } else {
+                        it.value
+                    }
+                }
+            }
+        }) { exception ->
+            _categoryWidget.update {
                 it.copy(
-                    widgets = newList.getChannelBlocks,
-                    param = it.param.copy(cursor = widgets.getConfig.cursor),
-                    state = if (newList.isEmpty()) ExploreWidgetState.Empty else ExploreWidgetState.Success
+                    state = ExploreWidgetState.Fail(
+                        error = exception,
+                        onRetry = { updateCategoryWidget(param) }
+                    )
                 )
             }
-        }) { exception -> _exploreWidget.update { it.copy(state = ExploreWidgetState.Fail(exception)) } }
+            widgetQuery.update { query ->
+                query.mapValues {
+                    if (it.key == ExploreWidgetType.Category) {
+                        it.value.copy(isRefresh = false)
+                    } else {
+                        it.value
+                    }
+                }
+            }
+        }
     }
 
-    private fun handleClickChip(item: ChipWidgetUiModel) {
-        updateWidgetParam(item.group, item.sourceType, item.sourceId)
-        onActionWidget()
-    }
-
-    private fun updateWidgetParam(group: String, sourceType: String, sourceId: String, cursor: String = "") {
-        _exploreWidget.update {
-            it.copy(
-                param = it.param.copy(
-                    group = group,
-                    sourceType = sourceType,
-                    sourceId = sourceId,
-                    cursor = cursor
-                ),
-                chips = it.chips.copy(
-                    items = it.chips.items.map { chip ->
-                        if (group == chip.group) {
+    private fun onChipAction(element: ChipWidgetUiModel) {
+        _exploreWidget.update { widget ->
+            widget.copy(
+                widgets = emptyList(),
+                chips = widget.chips.copy(
+                    items = widget.chips.items.map { chip ->
+                        if (element.group == chip.group) {
                             chip.copy(isSelected = true)
                         } else {
                             chip.copy(isSelected = false)
@@ -2795,18 +2925,25 @@ class PlayViewModel @AssistedInject constructor(
                 )
             )
         }
+        widgetQuery.update { query ->
+            query.mapValues {
+                if (it.key == ExploreWidgetType.Default) {
+                    it.value.copy(sourceId = element.sourceId, sourceType = element.sourceType, group = element.group, cursor = "", isRefresh = true)
+                } else {
+                    it.value
+                }
+            }
+        }
     }
-
-    private suspend fun getWidgets(): List<WidgetUiModel> {
-        val config = _exploreWidget.value.param
-        return repo.getWidgets(
-            group = config.group,
-            sourceType = config.sourceType,
-            sourceId = config.sourceId,
-            cursor = config.cursor
-        )
+    private fun refreshWidget(widget: ExploreWidgetType) {
+        widgetQuery.value = widgetQuery.value.mapValues {
+            if (widget == it.key) {
+                it.value.copy(isRefresh = true)
+            } else {
+                it.value
+            }
+        }
     }
-
     private fun updateReminderWidget(channelId: String, reminderType: PlayWidgetReminderType) =
         authenticated {
             viewModelScope.launchCatchError(block = {
@@ -2863,10 +3000,16 @@ class PlayViewModel @AssistedInject constructor(
             _channelDetail.update { it.copy(commentConfig = response) }
         }) {}
     }
-    private fun handleEmptyExplore() {
-        val position = _exploreWidget.value.chips.items.indexOfFirst { it.isSelected }
-        val finalPosition = if (position >= _exploreWidget.value.chips.items.size) 0 else position.plus(1)
-        handleClickChip(_exploreWidget.value.chips.items[finalPosition])
+    private fun handleEmptyExplore(type: ExploreWidgetType) {
+        if (type == ExploreWidgetType.Category) {
+            viewModelScope.launch {
+                _uiEvent.emit(ExploreWidgetNextTab)
+            }
+        } else {
+            val position = _exploreWidget.value.chips.items.indexOfFirst { it.isSelected } + 1
+            val finalPosition = if (position >= _exploreWidget.value.chips.items.size) 0 else position
+            onChipAction(_exploreWidget.value.chips.items[finalPosition])
+        }
     }
 
     private fun handleSelectedReason(id: Int) {
@@ -2939,5 +3082,8 @@ class PlayViewModel @AssistedInject constructor(
          * Cart
          */
         private const val DELAY_UPDATE_CART_AFTER_BUY = 500L
+
+        // Explore Widget
+        private const val DEFAULT_TAB = "Eksplor"
     }
 }

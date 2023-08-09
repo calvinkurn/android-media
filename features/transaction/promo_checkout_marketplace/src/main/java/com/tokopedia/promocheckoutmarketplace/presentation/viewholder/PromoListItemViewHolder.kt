@@ -10,11 +10,13 @@ import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.promocheckoutmarketplace.R
 import com.tokopedia.promocheckoutmarketplace.data.response.PromoInfo
@@ -39,6 +41,8 @@ class PromoListItemViewHolder(
         const val STATE_SELECTED = 1
         const val STATE_ENABLED = 2
         const val STATE_DISABLED = 3
+
+        private const val HEX_COLOR_ALPHA_SUBSTRING = 2
     }
 
     private val colorTextEnabledDefault = ContextCompat.getColor(
@@ -90,7 +94,7 @@ class PromoListItemViewHolder(
             renderPromoState(viewBinding, element)
             setPromoItemClickListener(viewBinding, element)
             adapterPosition.takeIf { it != RecyclerView.NO_POSITION }?.let {
-                listener.onShowPromoItem(element, it)
+                listener.onShowPromoItem(element, it, getState(element))
             }
         }
     }
@@ -99,7 +103,7 @@ class PromoListItemViewHolder(
         viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
         element: PromoListItemUiModel
     ) {
-        viewBinding.cardPromoItem.setOnClickListener {
+        viewBinding.promoConstraintWrapper.setOnClickListener {
             adapterPosition.takeIf { it != RecyclerView.NO_POSITION }?.let {
                 if (element.uiState.isParentEnabled && !element.uiData.hasClashingPromo &&
                     !element.uiState.isDisabled && !element.uiState.isLoading
@@ -375,6 +379,7 @@ class PromoListItemViewHolder(
         renderUserValidity(viewBinding, element)
         renderErrorInfo(viewBinding, element)
         renderDivider(viewBinding, element)
+        renderPromoActionable(viewBinding, element)
         adjustConstraints(viewBinding)
         currentItemId = element.id
     }
@@ -789,9 +794,35 @@ class PromoListItemViewHolder(
         }
     }
 
-    private fun getPromoInformationDetailsCount(
+    private fun renderPromoActionable(
+        viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
         element: PromoListItemUiModel
-    ): Int {
+    ) {
+        with(viewBinding) {
+            cardPromoActionable.shouldShowWithAction(element.uiState.isContainActionableGopayCicilCTA) {
+                textPromoActionable.text = MethodChecker.fromHtml(
+                    convertToHtmlUnifyColor(element.uiData.cta.text)
+                )
+                adapterPosition.takeIf { it != RecyclerView.NO_POSITION }?.let {
+                    listener.onShowPromoActionable(element, it)
+                }
+            }
+        }
+    }
+
+    private fun convertToHtmlUnifyColor(htmlText: String): String {
+        val color = "#" + Integer.toHexString(
+            ContextCompat.getColor(
+                itemView.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            )
+        ).substring(HEX_COLOR_ALPHA_SUBSTRING)
+        return htmlText
+            .replace("<a>", "<font color=$color>")
+            .replace("</a>", "</font>")
+    }
+
+    private fun getPromoInformationDetailsCount(element: PromoListItemUiModel): Int {
         var promoInformationDetailsCount = 0
         val promoInfos = if (element.uiData.useSecondaryPromo) {
             element.uiData.secondaryCoupons.first().promoInfos
