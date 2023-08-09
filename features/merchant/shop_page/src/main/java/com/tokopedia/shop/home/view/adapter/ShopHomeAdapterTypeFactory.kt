@@ -383,10 +383,8 @@ open class ShopHomeAdapterTypeFactory(
             ShopHomeDisplayBannerTimerPlaceholderViewHolder.LAYOUT -> ShopHomeDisplayBannerTimerPlaceholderViewHolder(parent)
             ShopHomeDisplayBannerTimerViewHolder.LAYOUT -> ShopHomeDisplayBannerTimerViewHolder(parent, shopHomeDisplayBannerTimerWidgetListener)
             // ========= Shop Home Revamp V4 - New widgets ========= //
-            ShopHomeV4TerlarisViewHolder.LAYOUT -> {
-                ShopHomeV4TerlarisViewHolder(parent, shopHomeV4TerlarisViewHolderListener)
-            }
-
+            ShopHomeV4TerlarisPlaceholderViewHolder.LAYOUT -> ShopHomeV4TerlarisPlaceholderViewHolder(parent)
+            ShopHomeV4TerlarisViewHolder.LAYOUT -> ShopHomeV4TerlarisViewHolder(parent, shopHomeV4TerlarisViewHolderListener)
             else -> return super.createViewHolder(parent, type)
         }
         return viewHolder
