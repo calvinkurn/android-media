@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -14,6 +13,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.seller.search.common.plt.GlobalSearchSellerPerformanceMonitoringListener
@@ -55,7 +55,7 @@ class InitialSearchComposeFragment : BaseDaggerFragment() {
                 val softwareKeyboardController = LocalSoftwareKeyboardController.current
 
                 val getActivity = LocalContext.current as? InitialSellerSearchComposeActivity
-                val sellerSearchResult = viewModel.uiState.collectAsState()
+                val sellerSearchResult = viewModel.uiState.collectAsStateWithLifecycle()
 
                 LaunchedEffect(sellerSearchResult) {
                     if (!isMonitoringStarted.value) {
