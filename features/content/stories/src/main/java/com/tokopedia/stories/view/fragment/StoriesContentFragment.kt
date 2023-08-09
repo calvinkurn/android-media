@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.stories.databinding.FragmentStoriesContentBinding
 import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.components.indicator.StoriesIndicator
@@ -121,6 +122,13 @@ class StoriesContentFragment @Inject constructor(
                     viewModelAction(StoriesUiAction.NextStories)
                 }
             }
+        }
+        flStoriesProduct.setOnClickListener {
+            showToast("show product bottom sheet")
+            // pause stories when product bottom sheet shown
+            // and resume when product bottom sheet dismissed
+            // pause -> viewModelAction(StoriesUiAction.PauseStories)
+            // resume -> viewModelAction(StoriesUiAction.ResumeStories)
         }
     }
 
