@@ -9,14 +9,21 @@ import com.tokopedia.shop.databinding.ItemShopHomeShowcaseBinding
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseListener
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseUiModel
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.toPx
 
 class ShopHomeShowCaseAdapter(
     private val widgetStyle: ShopHomeShowcaseUiModel.WidgetStyle,
     private val listener: ShopHomeShowcaseListener
 ) : RecyclerView.Adapter<ShopHomeShowCaseAdapter.ShowCaseViewHolder>() {
 
-    private var showcases =
-        mutableListOf<ShopHomeShowcaseUiModel.Tab.Showcase>()
+    companion object {
+        private const val SHOWCASE_CAROUSEL_SIZE_HEIGHT = 64
+        private const val SHOWCASE_CAROUSEL_CIRCLE_SIZE_WIDTH = 64
+        private const val SHOWCASE_DEFAULT_SIZE_HEIGHT = 72
+        private const val SHOWCASE_DEFAULT_CIRCLE_SIZE_WIDTH = 72
+    }
+
+    private var showcases = mutableListOf<ShopHomeShowcaseUiModel.Tab.Showcase>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShowCaseViewHolder {
         val binding =
@@ -37,6 +44,19 @@ class ShopHomeShowCaseAdapter(
     inner class ShowCaseViewHolder(
         private val binding: ItemShopHomeShowcaseBinding
     ) : RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            if (widgetStyle == ShopHomeShowcaseUiModel.WidgetStyle.CIRCLE) {
+                binding.imgBanner.layoutParams.height = SHOWCASE_CAROUSEL_SIZE_HEIGHT.toPx()
+                binding.imgBanner.layoutParams.width = SHOWCASE_CAROUSEL_CIRCLE_SIZE_WIDTH.toPx()
+                binding.imgBanner.requestLayout()
+            } else {
+                binding.imgBanner.layoutParams.height = SHOWCASE_DEFAULT_SIZE_HEIGHT.toPx()
+                binding.imgBanner.layoutParams.width = SHOWCASE_DEFAULT_CIRCLE_SIZE_WIDTH.toPx()
+                binding.imgBanner.requestLayout()
+            }
+        }
+
         fun bind(showcase: ShopHomeShowcaseUiModel.Tab.Showcase) {
             binding.tpgBannerTitle.text = showcase.name
             binding.imgBanner.loadShowcaseImage(showcase.imageUrl, widgetStyle)

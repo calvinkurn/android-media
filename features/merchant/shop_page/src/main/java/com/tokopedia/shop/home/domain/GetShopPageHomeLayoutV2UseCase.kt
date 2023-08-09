@@ -51,6 +51,7 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                     ratio
                     isATC
                     isShowEtalaseName
+                    widgetStyle
                   }
                   data {
                     ... on BundleWidget {
@@ -102,6 +103,14 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                           ruleAdditionalData
                         }
                         descriptionHeader
+                      }
+                      mainBannerPosition
+                      showcaseList {
+                        showcaseID
+                        name
+                        imageURL
+                        ctaLink
+                        isMainBanner
                       }
                     }
                     ... on EtalaseWidget {
