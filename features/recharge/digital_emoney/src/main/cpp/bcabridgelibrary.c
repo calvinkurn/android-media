@@ -102,14 +102,18 @@ Java_com_tokopedia_emoney_integration_BCALibrary_C_1BCAVersionDll(JNIEnv *env, j
     return (*env)->NewStringUTF(env, strLogRsp);
 }
 
-JNIEXPORT jstring JNICALL
+JNIEXPORT jint JNICALL
 Java_com_tokopedia_emoney_integration_BCALibrary_C_1BCAIsMyCard(JNIEnv *env, jobject thiz) {
+    g_env = env;
+    g_obj = thiz;
     //create return value strLogRsp with length LENGTH_BCAISMYCARD_RESULT with initial is 0 with size of LENGTH_BCAISMYCARD_RESULT
     unsigned char strLogRsp[LENGTH_BCAISMYCARD_RESULT];
     memset(strLogRsp, 0x00, sizeof(strLogRsp));
 
     //call library function BCAIsMyCard
     unsigned char result = BCAIsMyCard(strLogRsp);
-    //TODO Add condition to check result
-    return (*env)->NewStringUTF(env, strLogRsp);
+    if (result == FALSE) {
+        return 0;
+    }
+    return 1;
 }
