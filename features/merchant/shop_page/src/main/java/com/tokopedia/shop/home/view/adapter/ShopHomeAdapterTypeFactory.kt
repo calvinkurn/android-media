@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.shop.common.util.ShopProductViewGridType
@@ -130,7 +129,7 @@ open class ShopHomeAdapterTypeFactory(
             VIDEO -> ShopHomeVideoViewHolder.LAYOUT_RES
             PRODUCT -> getShopHomeCarousellProductViewHolder(baseShopHomeWidgetUiModel)
             VOUCHER_STATIC -> ShopHomeVoucherViewHolder.LAYOUT
-            SHOWCASE_NAVIGATION_BANNER -> determineShowcaseNavigationBannerWidget(baseShopHomeWidgetUiModel)
+            SHOWCASE_NAVIGATION_BANNER -> determineShowcaseWidgetAppearance(baseShopHomeWidgetUiModel)
             RECENT_ACTIVITY, BUY_AGAIN, REMINDER, ADD_ONS, TRENDING -> getShopHomeCarouselProductPersonalizationViewHolder(baseShopHomeWidgetUiModel)
             NEW_PRODUCT_LAUNCH_CAMPAIGN -> getShopHomeNplCampaignViewHolder(baseShopHomeWidgetUiModel)
             FLASH_SALE_TOKO -> getShopFlashSaleViewHolder(baseShopHomeWidgetUiModel)
@@ -230,31 +229,42 @@ open class ShopHomeAdapterTypeFactory(
         return model.widgetState == WidgetState.PLACEHOLDER || model.widgetState == WidgetState.LOADING
     }
 
-    private fun determineShowcaseNavigationBannerWidget(model: BaseShopHomeWidgetUiModel): Int {
+    /**
+     * Showcase navigation banner widget has 3 appearance: left main banner, top main banner and carousel.
+     * It is controlled by Backend `widgetStyle` property
+     *
+     * widgetStyle == "rounded_corner"
+     *     - mainBannerPosition == "left" -> left main banner appearance
+     *          - showcaseList array size == 1 -> hide tab
+     *          - showcaseList array size == 2 -> show tab + fixed tab
+     *          - showcaseList array size >= 3 -> show tab + scrollable tab
+     *
+     *     - mainBannerPosition == "top" -> top main banner appearance
+     *
+     * widgetStyle == "circle" -> use carousel appearance
+     */
+    private fun determineShowcaseWidgetAppearance(model: BaseShopHomeWidgetUiModel): Int {
         val uiModel = model as? ShopHomeShowcaseUiModel
-        val tabsCount = uiModel?.tabs?.size.orZero()
+        val widgetStyle = uiModel?.showcaseHeader?.widgetStyle
 
-        if (tabsCount > 1) {
-            //If there are more than 1 tabs, we forced the layout to use left main banner viewholder
-            return ShopHomeShowCaseLeftMainBannerViewHolder.LAYOUT
-        }
+        return if (widgetStyle == ShopHomeShowcaseUiModel.WidgetStyle.ROUNDED_CORNER) {
+            val firstTab = uiModel.tabs.getOrNull(0)
+            val firstTabMainBannerPosition = firstTab?.mainBannerPosition
 
-        val firstTab = uiModel?.tabs?.getOrNull(0)
-        val firstTabMainBannerPosition = firstTab?.mainBannerPosition
-            ?: ShopHomeShowcaseUiModel.MainBannerPosition.CAROUSEL
-
-        return when (firstTabMainBannerPosition) {
-            ShopHomeShowcaseUiModel.MainBannerPosition.LEFT -> {
-                ShopHomeShowCaseLeftMainBannerViewHolder.LAYOUT
+            when (firstTabMainBannerPosition) {
+                ShopHomeShowcaseUiModel.MainBannerPosition.LEFT -> {
+                    ShopHomeShowCaseLeftMainBannerViewHolder.LAYOUT
+                }
+                ShopHomeShowcaseUiModel.MainBannerPosition.TOP -> {
+                    ShopHomeShowCaseTopMainBannerViewHolder.LAYOUT
+                }
+                else -> {
+                    ShopHomeShowCaseTopMainBannerViewHolder.LAYOUT
+                }
             }
 
-            ShopHomeShowcaseUiModel.MainBannerPosition.TOP -> {
-                ShopHomeShowCaseTopMainBannerViewHolder.LAYOUT
-            }
-
-            ShopHomeShowcaseUiModel.MainBannerPosition.CAROUSEL -> {
-                ShopHomeShowCaseCarouselViewHolder.LAYOUT
-            }
+        } else {
+            ShopHomeShowCaseCarouselViewHolder.LAYOUT
         }
     }
 
