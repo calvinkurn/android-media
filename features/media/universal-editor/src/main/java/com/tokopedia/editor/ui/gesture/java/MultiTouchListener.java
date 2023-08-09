@@ -1,14 +1,27 @@
 package com.tokopedia.editor.ui.gesture.java;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Rect;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+
+import androidx.annotation.NonNull;
 
 import com.tokopedia.editor.ui.gesture.listener.OnGestureControl;
 import com.tokopedia.editor.ui.gesture.listener.OnMultiTouchListener;
 import com.tokopedia.editor.ui.model.AddTextModel;
+import com.tokopedia.editor.ui.widget.DynamicTextCanvasView;
 import com.tokopedia.editor.ui.widget.GridGuidelineView;
+import com.tokopedia.unifyprinciples.Typography;
 
 public class MultiTouchListener implements View.OnTouchListener {
 
@@ -28,8 +41,18 @@ public class MultiTouchListener implements View.OnTouchListener {
     boolean isTextPinchZoomable;
 
     private GridGuidelineView gridGuidelineView;
+    private Button deleteView;
 
-    public MultiTouchListener(Context context, GridGuidelineView guideline) {
+    boolean isSelectedViewDraggedToTrash = false;
+    boolean isWithinDeletionBounds = false;
+    boolean isDragging = false;
+
+    private float originalScaleX = 0f;
+    private float originalScaleY = 0f;
+
+    public MultiTouchListener(Context context, GridGuidelineView guideline, Button deleteView) {
+        this.deleteView = deleteView;
+
         isTextPinchZoomable = true;
         scaleGestureDetector = new ScaleGestureDetector(new ScaleGestureListener(this));
         gestureListener = new GestureDetector(context, new GestureListener());
@@ -55,6 +78,9 @@ public class MultiTouchListener implements View.OnTouchListener {
         scale = Math.max(info.getMinScale(), Math.min(info.getMaxScale(), scale));
         view.setScaleX(scale);
         view.setScaleY(scale);
+
+        originalScaleX = scale;
+        originalScaleY = scale;
 
         float rotation = adjustAngle(view.getRotation() + info.getDeltaAngle());
         view.setRotation(rotation);
@@ -108,7 +134,6 @@ public class MultiTouchListener implements View.OnTouchListener {
                 prevY = event.getY();
                 activePointerId = event.getPointerId(0);
                 view.bringToFront();
-
                 break;
             case MotionEvent.ACTION_MOVE:
                 int pointerIndexMove = event.findPointerIndex(activePointerId);
@@ -124,6 +149,9 @@ public class MultiTouchListener implements View.OnTouchListener {
                     float centerY = view.getY() + view.getHeight() / 2f;
                     float parentCenterX = ((View) view.getParent()).getWidth() / 2f;
                     float parentCenterY = ((View) view.getParent()).getHeight() / 2f;
+
+                    Log.d("EDITOR-TEST", "width: " + view.getWidth() + ", height: " + view.getHeight());
+                    Log.d("EDITOR-TEST", "x: " + view.getX() + ", y: " + view.getY());
 
                     // Check if the TextView is close to the vertical center of the parent
                     boolean isAlignedWithCenterX = Math.abs(centerX - parentCenterX) <= 20f;
@@ -146,10 +174,35 @@ public class MultiTouchListener implements View.OnTouchListener {
                     // Show/hide vertical and horizontal guidelines based on alignment
                     gridGuidelineView.setShowVerticalLine(isAlignedWithCenterX);
                     gridGuidelineView.setShowHorizontalLine(isAlignedWithCenterY);
+
+                    if (!isDragging) {
+                        isDragging = true;
+                        showDeletionButton();
+                    }
+
+                    // TODO: still doesn't work.
+//                    isWithinDeletionBounds = isViewWithinBounds(view, deleteView, 0);
+//                    Log.d("EDITOR", "UNIVERSAL-EDITOR: " + isWithinDeletionBounds);
+//
+//                    if (isWithinDeletionBounds) {
+//                        enterDeletionBoundsAnimation(view);
+//                        if (!isSelectedViewDraggedToTrash) {
+//                            isSelectedViewDraggedToTrash = true;
+//                            enterDeletionBoundsAnimation(view);
+//                        }
+//                    } else {
+//                        if (isSelectedViewDraggedToTrash) {
+//                            isSelectedViewDraggedToTrash = false;
+//                            exitDeletionBoundsAnimation(view);
+//                        }
+//                    }
                 }
                 break;
             case MotionEvent.ACTION_CANCEL:
                 activePointerId = INVALID_POINTER_ID;
+
+                isDragging = false;
+                hideDeletionButton();
                 break;
             case MotionEvent.ACTION_UP:
                 activePointerId = INVALID_POINTER_ID;
@@ -164,6 +217,9 @@ public class MultiTouchListener implements View.OnTouchListener {
 
                 gridGuidelineView.setShowVerticalLine(false);
                 gridGuidelineView.setShowHorizontalLine(false);
+
+                isDragging = false;
+                hideDeletionButton();
                 break;
             case MotionEvent.ACTION_POINTER_UP:
                 int pointerIndexPointerUp = (action & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
@@ -177,6 +233,39 @@ public class MultiTouchListener implements View.OnTouchListener {
                 break;
         }
         return true;
+    }
+
+    private boolean isViewWithinBounds(View view, View targetView, int threshold) {
+        Rect viewRect = new Rect();
+        Rect targetRect = new Rect();
+        view.getHitRect(viewRect);
+        targetView.getHitRect(targetRect);
+
+        // Inflate the targetRect to include the deletion button's area
+        targetRect.inset(-threshold, -threshold);
+
+        return Rect.intersects(viewRect, targetRect);
+    }
+
+    private void showDeletionButton() {
+        deleteView.setVisibility(View.VISIBLE);
+    }
+
+    private void hideDeletionButton() {
+        deleteView.setVisibility(View.GONE);
+    }
+
+    private void animateScale(View view, float newScaleX, float newScaleY) {
+        view.setScaleX(newScaleX);
+        view.setScaleY(newScaleY);
+    }
+
+    private void enterDeletionBoundsAnimation(View view) {
+        animateScale(view, 0.8f, 0.8f);
+    }
+
+    private void exitDeletionBoundsAnimation(View view) {
+        animateScale(view, originalScaleX, originalScaleY);
     }
 
     private boolean isAlignedWithCenterX(View view) {
@@ -193,7 +282,7 @@ public class MultiTouchListener implements View.OnTouchListener {
         return Math.abs(centerY - viewY) <= 20;
     }
 
-    private void setOnMultiTouchListener(OnMultiTouchListener onMultiTouchListener) {
+    public void setOnMultiTouchListener(OnMultiTouchListener onMultiTouchListener) {
         this.onMultiTouchListener = onMultiTouchListener;
     }
 
