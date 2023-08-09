@@ -11,7 +11,7 @@ class AddOnAdapterFactory(
     private val somDetailAddOnListener: BmgmAddOnViewHolder.Listener
 ): BaseAdapterTypeFactory() {
 
-    fun type(addOnUiModel: AddOnSummaryUiModel): Int = BmgmAddOnViewHolder.RES_LAYOUT
+    fun type(addOnUiModel: AddOnSummaryUiModel.AddonItemUiModel): Int = BmgmAddOnViewHolder.RES_LAYOUT
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {

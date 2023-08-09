@@ -52,9 +52,6 @@ import com.tokopedia.buyerorderdetail.presentation.model.ThinDashedDividerUiMode
 import com.tokopedia.buyerorderdetail.presentation.model.ThinDividerUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
 import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
-import com.tokopedia.order_management_common.presentation.factory.BmgmAdapterTypeFactory
-import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
-import com.tokopedia.order_management_common.presentation.viewholder.BmgmSectionViewHolder
 
 @Suppress("UNUSED_PARAMETER")
 open class BuyerOrderDetailTypeFactory(
@@ -69,8 +66,7 @@ open class BuyerOrderDetailTypeFactory(
     protected val navigator: BuyerOrderDetailNavigator,
     protected val buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener,
     protected val orderResolutionListener: OrderResolutionViewHolder.OrderResolutionListener,
-    private val bmgmListener: BmgmSectionViewHolder.Listener
-) : BaseAdapterTypeFactory(), BmgmAdapterTypeFactory {
+) : BaseAdapterTypeFactory() {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
@@ -116,7 +112,6 @@ open class BuyerOrderDetailTypeFactory(
             ProductListToggleViewHolder.LAYOUT -> ProductListToggleViewHolder(parent, productListToggleListener)
             PofHeaderLabelViewHolder.LAYOUT -> PofHeaderLabelViewHolder(parent)
             PofRefundInfoViewHolder.LAYOUT -> PofRefundInfoViewHolder(parent, pofRefundInfoListener)
-            BmgmSectionViewHolder.LAYOUT -> BmgmSectionViewHolder(parent, bmgmListener)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -225,9 +220,5 @@ open class BuyerOrderDetailTypeFactory(
 
     fun type(pofRefundInfoUiModel: PofRefundInfoUiModel): Int {
         return PofRefundInfoViewHolder.LAYOUT
-    }
-
-    override fun type(productBmgmSectionUiModel: ProductBmgmSectionUiModel): Int {
-        return BmgmSectionViewHolder.LAYOUT
     }
 }

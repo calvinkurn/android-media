@@ -9,7 +9,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.order_management_common.R
 import com.tokopedia.order_management_common.databinding.ItemOrderProductBmgmListItemBinding
 import com.tokopedia.order_management_common.presentation.adapter.diffutil.ProductBmgmItemDiffUtilCallback
-import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.BaseProductBmgmSectionUiModel
 import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnSummaryViewHolder
 import com.tokopedia.order_management_common.util.composeItalicNote
 
@@ -17,7 +17,7 @@ class ProductBmgmItemAdapter(
     private val listener: ViewHolder.Listener
 ) : RecyclerView.Adapter<ProductBmgmItemAdapter.ViewHolder>() {
 
-    private val itemList = arrayListOf<ProductBmgmSectionUiModel.ProductUiModel>()
+    private val itemList = arrayListOf<BaseProductBmgmSectionUiModel.ProductUiModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemOrderProductBmgmListItemBinding.inflate(
@@ -41,8 +41,8 @@ class ProductBmgmItemAdapter(
             payloads.firstOrNull()?.let {
                 if (it is Pair<*, *>) {
                     val (oldItem, newItem) = it
-                    if (oldItem is ProductBmgmSectionUiModel.ProductUiModel &&
-                        newItem is ProductBmgmSectionUiModel.ProductUiModel
+                    if (oldItem is BaseProductBmgmSectionUiModel.ProductUiModel &&
+                        newItem is BaseProductBmgmSectionUiModel.ProductUiModel
                     ) {
                         if (oldItem != newItem) {
                             holder.bind(newItem)
@@ -53,7 +53,7 @@ class ProductBmgmItemAdapter(
         }
     }
 
-    fun setItems(newItemList: List<ProductBmgmSectionUiModel.ProductUiModel>) {
+    fun setItems(newItemList: List<BaseProductBmgmSectionUiModel.ProductUiModel>) {
         val diffCallback = ProductBmgmItemDiffUtilCallback(itemList, newItemList)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         diffResult.dispatchUpdatesTo(this)
@@ -66,24 +66,24 @@ class ProductBmgmItemAdapter(
         private val listener: Listener
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        private var element: ProductBmgmSectionUiModel.ProductUiModel? = null
+        private var element: BaseProductBmgmSectionUiModel.ProductUiModel? = null
 
         private var addOnSummaryViewHolder: BmgmAddOnSummaryViewHolder? = null
 
-        fun bind(model: ProductBmgmSectionUiModel.ProductUiModel?) {
+        fun bind(model: BaseProductBmgmSectionUiModel.ProductUiModel?) {
             model?.let {
                 element = it
                 setBmgmItemThumbnail(it.productThumbnailUrl)
                 setBmgmItemProductName(it.productName)
-                setBmgmItemProductPriceQuantity(it.quantity, it.priceText)
-                setupBundleItemProductNote(it.productNote)
+                setBmgmItemProductPriceQuantity(it.quantity, it.productPrice)
+                setupBundleItemProductNote(it.productNotes)
                 addOnSummaryViewHolder?.bind(it.addOnSummaryUiModel)
                 setupDividerAddonSummary(it)
                 setItemOnClickListener(it)
             }
         }
 
-        private fun setupDividerAddonSummary(uiModel: ProductBmgmSectionUiModel.ProductUiModel?) {
+        private fun setupDividerAddonSummary(uiModel: BaseProductBmgmSectionUiModel.ProductUiModel?) {
             binding.dividerAddOn.showWithCondition(uiModel?.addOnSummaryUiModel != null)
         }
 
@@ -111,7 +111,7 @@ class ProductBmgmItemAdapter(
         }
 
         private fun setItemOnClickListener(
-            item: ProductBmgmSectionUiModel.ProductUiModel
+            item: BaseProductBmgmSectionUiModel.ProductUiModel
         ) {
             binding.containerProductInfo.setOnClickListener {
                 listener.onBmgmItemClicked(item)
@@ -119,7 +119,7 @@ class ProductBmgmItemAdapter(
         }
 
         interface Listener {
-            fun onBmgmItemClicked(item: ProductBmgmSectionUiModel.ProductUiModel)
+            fun onBmgmItemClicked(item: BaseProductBmgmSectionUiModel.ProductUiModel)
         }
     }
 }

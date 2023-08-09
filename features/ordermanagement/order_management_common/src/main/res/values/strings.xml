@@ -13,7 +13,6 @@
     <string name="om_detail_add_on_description_copyable_format"><![CDATA[Ke\t\t\t: %1$s<br/>Dari\t: %2$s<br/>%3$s]]></string>
     <string name="om_detail_add_on_description_copied_message">Pesan berhasil disalin</string>
     <string name="om_detail_shipment_name_chevron_right"><![CDATA[>]]></string>
-    <string name="om_error_message_cant_open_snapshot_when_waiting_invoice">Oops, halaman detail produk belum bisa di akses karena sedang menunggu invoice</string>
 
     <string name="order_bmgm_price_total">Total Harga</string>
     <string name="order_bmgm_price_total_value">Rp1.630.000</string>

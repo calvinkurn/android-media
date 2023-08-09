@@ -5,6 +5,7 @@ import com.tokopedia.sellerorder.detail.data.model.GetResolutionTicketStatusResp
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
 import com.tokopedia.sellerorder.detail.data.model.SomDynamicPriceResponse
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactory
+import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactoryImpl
 import com.tokopedia.sellerorder.detail.presentation.model.DividerUiModel
 import com.tokopedia.unifycomponents.toPx
 

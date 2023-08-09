@@ -151,6 +151,62 @@ data class SomDetailOrder(
                 }
             }
 
+            data class Bmgm(
+                @SerializedName("bmgm_tier_name")
+                val bmgmTierName: String = "",
+                @SerializedName("id")
+                val id: String = "",
+                @SerializedName("order_detail")
+                val orderDetail: List<OrderDetail> = listOf(),
+                @SerializedName("price_after_benefit")
+                val priceAfterBenefit: Double = 0.0,
+                @SerializedName("price_after_benefit_formatted")
+                val priceAfterBenefitFormatted: String = "",
+                @SerializedName("price_before_benefit")
+                val priceBeforeBenefit: Double = 0.0,
+                @SerializedName("price_before_benefit_formatted")
+                val priceBeforeBenefitFormatted: String = "",
+                @SerializedName("tier_discount_amount")
+                val tierDiscountAmount: Int = 0,
+                @SerializedName("tier_discount_amount_formatted")
+                val tierDiscountAmountFormatted: String = ""
+            ) {
+                data class OrderDetail(
+                    @SerializedName("addon_summary")
+                    val addonSummary: AddOnSummary = AddOnSummary(),
+                    @SerializedName("is_ppp")
+                    val isPpp: Boolean = false,
+                    @SerializedName("order_dtl_id")
+                    val orderDtlId: String = "0",
+                    @SerializedName("product_cashback_label")
+                    val productCashbackLabel: String = "",
+                    @SerializedName("product_id")
+                    val productId: Long = 0,
+                    @SerializedName("product_name")
+                    val productName: String = "",
+                    @SerializedName("product_notes")
+                    val productNotes: String = "",
+                    @SerializedName("product_price")
+                    val productPrice: String = "",
+                    @SerializedName("product_price_total")
+                    val productPriceTotal: String = "",
+                    @SerializedName("product_qty")
+                    val productQty: Int = 0,
+                    @SerializedName("product_sku_id")
+                    val productSkuId: String = "",
+                    @SerializedName("product_snapshot_url")
+                    val productSnapshotUrl: String = "",
+                    @SerializedName("product_weight")
+                    val productWeight: String = "",
+                    @SerializedName("total_price")
+                    val totalPrice: Double = 0.0,
+                    @SerializedName("total_price_str")
+                    val totalPriceStr: String = "",
+                    @SerializedName("total_quantity")
+                    val totalQty: Int = 0
+                )
+            }
+
             data class AddOnInfo(
                 @SerializedName("order_level")
                 @Expose
@@ -191,6 +247,10 @@ data class SomDetailOrder(
                 @SerializedName("bundle_icon")
                 @Expose
                 val bundleIcon: String = "",
+                @SerializedName("bmgm_icon")
+                val bmgmIcon: String = "",
+                @SerializedName("bmgms")
+                val bmgms: List<Bmgm>? = null,
                 @SerializedName("addon_icon")
                 @Expose
                 val addOnIcon: String = "",

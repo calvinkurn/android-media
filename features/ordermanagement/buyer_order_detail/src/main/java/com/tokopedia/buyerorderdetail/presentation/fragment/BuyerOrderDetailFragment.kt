@@ -71,8 +71,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
-import com.tokopedia.order_management_common.presentation.viewholder.BmgmSectionViewHolder
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -96,8 +94,7 @@ open class BuyerOrderDetailFragment :
     PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener,
     OrderResolutionViewHolder.OrderResolutionListener,
     ProductListToggleViewHolder.Listener,
-    PofRefundInfoViewHolder.Listener,
-    BmgmSectionViewHolder.Listener {
+    PofRefundInfoViewHolder.Listener {
 
     companion object {
         @JvmStatic
@@ -149,7 +146,6 @@ open class BuyerOrderDetailFragment :
             this,
             this,
             navigator,
-            this,
             this,
             this
         )
@@ -838,8 +834,5 @@ open class BuyerOrderDetailFragment :
         val bottomSheet =
             PofDetailRefundedBottomSheet.newInstance(cacheManager?.id.orEmpty())
         bottomSheet.show(childFragmentManager)
-    }
-
-    override fun onBmgmItemClicked(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
     }
 }

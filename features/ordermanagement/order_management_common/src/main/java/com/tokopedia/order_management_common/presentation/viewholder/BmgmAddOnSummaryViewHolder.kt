@@ -77,7 +77,7 @@ class BmgmAddOnSummaryViewHolder(
             } else {
                 root.show()
                 setupAddOnSummaryLabel(element.addonsTitle)
-                setupAddOnSummaryAddOns(element.addonsItemList)
+                setupAddOnSummaryAddOns(element.addonItemList)
             }
         }
     }

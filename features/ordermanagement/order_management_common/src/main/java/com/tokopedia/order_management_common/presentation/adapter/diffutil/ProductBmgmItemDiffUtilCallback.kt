@@ -1,11 +1,11 @@
 package com.tokopedia.order_management_common.presentation.adapter.diffutil
 
 import androidx.recyclerview.widget.DiffUtil
-import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.BaseProductBmgmSectionUiModel
 
 class ProductBmgmItemDiffUtilCallback(
-    private val oldItems: List<ProductBmgmSectionUiModel.ProductUiModel>,
-    private val newItems: List<ProductBmgmSectionUiModel.ProductUiModel>
+    private val oldItems: List<BaseProductBmgmSectionUiModel.ProductUiModel>,
+    private val newItems: List<BaseProductBmgmSectionUiModel.ProductUiModel>
 ) : DiffUtil.Callback() {
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {

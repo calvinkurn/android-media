@@ -8,7 +8,7 @@ data class AddOnSummaryUiModel(
     val totalPriceText: String,
     val addonsLogoUrl: String,
     val addonsTitle: String,
-    val addonsItemList: List<AddonItemUiModel>,
+    val addonItemList: List<AddonItemUiModel>,
 ) {
 
     data class AddonItemUiModel(

@@ -341,6 +341,75 @@ class SomGetOrderDetailUseCase @Inject constructor(
                   label
                   icon_url
                 }
+                bmgm_icon
+                bmgms {
+                  id
+                  bmgm_tier_name
+                  label
+                  tier_discount_amount
+                  tier_discount_amount_formatted
+                  price_before_benefit
+                  price_before_benefit_formatted
+                  price_after_benefit
+                  price_after_benefit_formatted
+                  order_detail {
+                    id
+                    order_detail_id
+                    name
+                    product_url
+                    snapshot_url
+                    currency_type
+                    currency_rate
+                    thumbnail
+                    price
+                    price_text
+                    weight
+                    weight_text
+                    quantity
+                    note
+                    free_return
+                    free_return_message
+                    purchase_protection_fee
+                    purchase_protection_fee_text
+                    purchase_protection_quantity
+                    readiness_insurance_fee
+                    readiness_insurance_fee_text
+                    readiness_insurance_quantity
+                    addon_summary {
+                      addons {
+                        order_id
+                        id
+                        reference_id
+                        level
+                        name
+                        price
+                        price_str
+                        subtotal_price
+                        subtotal_price_str
+                        quantity
+                        type
+                        image_url
+                        metadata {
+                          add_on_note {
+                            is_custom_note
+                            from
+                            to
+                            notes
+                            short_notes
+                          }
+                        }
+                        create_time
+                      }
+                      total
+                      total_price
+                      total_price_str
+                      total_quantity
+                    }
+                    flags {
+                      is_eligible_pof
+                    }
+                  }
+                }
               }
             }
         """.trimIndent()
