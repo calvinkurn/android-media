@@ -186,6 +186,9 @@ data class ChannelDetailsWithRecomResponse(
 
         @SerializedName("explore_widget")
         val exploreWidgetConfig: ExploreWidgetConfig = ExploreWidgetConfig(),
+
+        @SerializedName("explore_widget_dominant")
+        val categoryWidgetConfig: ExploreWidgetConfig = ExploreWidgetConfig(),
     )
 
     data class FreezeData(
@@ -287,6 +290,18 @@ data class ChannelDetailsWithRecomResponse(
 
         @SerializedName("source_type")
         val sourceType: String = "",
+
+        @SerializedName("has_dominant_category")
+        val hasCategory: Boolean = false,
+
+        @SerializedName("category_name")
+        val categoryName: String = "",
+
+        @SerializedName("category_id")
+        val categoryId: String = "",
+
+        @SerializedName("category_level")
+        val categoryLvl: Int = 0,
     )
 
     data class ArchivedData(

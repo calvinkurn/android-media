@@ -81,6 +81,7 @@ import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetCreateNewCol
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetKebabMenuWishlistCollection
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetOnboardingWishlistCollection
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetUpdateWishlistCollectionName
+import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetWishlistAffiliateOnBoarding
 import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerBottomSheetMenu
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionViewModel
 import java.net.SocketTimeoutException
@@ -143,6 +144,8 @@ class WishlistCollectionFragment :
     private val coachMarkItemSharing2 = arrayListOf<CoachMark2Item>()
     private var coachMarkSharing2: CoachMark2? = null
 
+    private var isAffiliateRegistered: Boolean = false
+
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
@@ -181,6 +184,7 @@ class WishlistCollectionFragment :
         WishlistCollectionAnalytics.sendWishListHomePageOpenedEvent(userSession.isLoggedIn, userSession.userId)
         checkLogin()
         initTrackingQueue()
+        collectionViewModel.getAffiliateUserDetail()
     }
 
     private fun initTrackingQueue() {
@@ -248,6 +252,7 @@ class WishlistCollectionFragment :
         observingDeleteProgress()
         observeGetCollectionSharingData()
         observeUpdateAccessWishlistCollection()
+        observeAffiliateUserDetail()
     }
 
     private fun prepareLayout() {
@@ -682,6 +687,15 @@ class WishlistCollectionFragment :
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
                     showToasterActionOke(errorMessage, Toaster.TYPE_ERROR)
                 }
+            }
+        }
+    }
+
+    private fun observeAffiliateUserDetail() {
+        collectionViewModel.isUserAffiliate.observe(viewLifecycleOwner) {
+            isAffiliateRegistered = when (it) {
+                is Success -> it.data.isRegistered
+                is Fail -> false
             }
         }
     }
@@ -1132,5 +1146,10 @@ class WishlistCollectionFragment :
                 getString(R.string.collection_CTA_oke)
             ) {}.show()
         }
+    }
+
+    override fun onAffiliateTickerCtaClick() {
+        BottomSheetWishlistAffiliateOnBoarding.getFragmentInstance(isAffiliateRegistered)
+            .show(childFragmentManager, null)
     }
 }

@@ -164,6 +164,9 @@ class SeeMoreMedaliFragment : BaseDaggerFragment(), MedalCallbackListener {
                 when {
                     error is UnknownHostException || error is SocketTimeoutException -> {
                         viewError.setType(GlobalError.NO_CONNECTION)
+                        viewError.setActionClickListener {
+                            viewModel.getUserMedalis(badgeType = badgeType)
+                        }
                     }
 
                     scpError.errorCode == NON_WHITELISTED_USER_ERROR_CODE -> {
@@ -194,9 +197,8 @@ class SeeMoreMedaliFragment : BaseDaggerFragment(), MedalCallbackListener {
                     else -> {
                         viewError.apply {
                             setType(GlobalError.SERVER_ERROR)
-                            errorSecondaryAction.text = context.getText(R.string.goto_main_page_text)
-                            setSecondaryActionClickListener {
-                                activity?.finish()
+                            setActionClickListener {
+                                viewModel.getUserMedalis(badgeType = badgeType)
                             }
                         }
                     }

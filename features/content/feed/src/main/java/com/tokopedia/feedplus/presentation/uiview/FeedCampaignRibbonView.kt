@@ -3,6 +3,7 @@ package com.tokopedia.feedplus.presentation.uiview
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.TransitionDrawable
+import android.view.View.VISIBLE
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.util.TimeConverter
@@ -14,14 +15,24 @@ import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_ASGC_SHOP_FLASH
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_ASGC_SPECIAL_RELEASE
 import com.tokopedia.feedplus.databinding.LayoutFeedCampaignRibbonMotionBinding
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
-import com.tokopedia.feedplus.presentation.model.*
+import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
+import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
+import com.tokopedia.feedplus.presentation.model.FeedCardCtaModel
+import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
+import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.*
 import com.tokopedia.unifyprinciples.R as unifyR
 
@@ -56,6 +67,7 @@ class FeedCampaignRibbonView(
     private var feedPosition: Int = -1
 
     private val animationStateList = mutableListOf<Int>()
+    private val animationTextList = mutableListOf<String>()
 
     fun bindData(
         modelType: String,
@@ -126,30 +138,10 @@ class FeedCampaignRibbonView(
     }
 
     fun startAnimation() {
-        when (type) {
-            FeedCampaignRibbonType.ASGC_GENERAL -> {
-                startDelayProcess(TWO_SECOND) {
-                    setBackgroundGradient()
-                }
-            }
-            FeedCampaignRibbonType.ASGC_DISCOUNT -> {
-                startDelayProcess(TWO_SECOND) {
-                    setBackgroundGradient()
-
-                    runRecursiveDelayDiscount(START_ANIMATION_INDEX)
-                }
-            }
-            FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING, FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_ONGOING -> {
-                startDelayProcess(TWO_SECOND) {
-                    setBackgroundGradient()
-                    runLoopAnimation(index = START_ANIMATION_INDEX)
-                }
-            }
-            FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING, FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_UPCOMING -> {
-                startDelayProcess(TWO_SECOND) {
-                    setBackgroundGradient()
-                    runLoopAnimation(index = START_ANIMATION_INDEX)
-                }
+        if (binding.root.visibility == VISIBLE) {
+            startDelayProcess(TWO_SECOND) {
+                setBackgroundGradient()
+                runLoopAnimation(index = START_ANIMATION_INDEX)
             }
         }
     }
@@ -176,56 +168,6 @@ class FeedCampaignRibbonView(
             val stockBarColor =
                 ContextCompat.getColor(root.context, unifyR.color.Unify_Static_White)
             pbFeedCampaignRibbon.progressBarColor = intArrayOf(stockBarColor, stockBarColor)
-        }
-    }
-
-    private fun runRecursiveDelayDiscount(index: Int) {
-        mCta?.texts?.let {
-            if (it.isEmpty()) return@let
-
-            val ctaIndex = index % it.size
-            if (ctaIndex < it.size) {
-                with(binding) {
-                    when (root.currentState) {
-                        R.id.initial_title_with_icon -> {
-                            tyFeedCampaignRibbonTitleSecond.text = it[ctaIndex]
-
-                            startDelayProcess(THREE_SECOND) {
-                                root.setTransition(
-                                    root.currentState,
-                                    R.id.second_title_with_icon
-                                )
-                                root.transitionToEnd()
-                                runRecursiveDelayDiscount(index + ONE)
-                            }
-                        }
-                        R.id.second_title_with_icon -> {
-                            tyFeedCampaignRibbonTitle.text = it[ctaIndex]
-
-                            startDelayProcess(THREE_SECOND) {
-                                root.setTransition(
-                                    root.currentState,
-                                    R.id.initial_title_with_icon
-                                )
-                                root.transitionToEnd()
-                                runRecursiveDelayDiscount(index + ONE)
-                            }
-                        }
-                        else -> {
-                            tyFeedCampaignRibbonTitleSecond.text = it[ctaIndex]
-
-                            startDelayProcess(THREE_SECOND) {
-                                root.setTransition(
-                                    root.currentState,
-                                    R.id.initial_title_with_icon
-                                )
-                                root.transitionToEnd()
-                                runRecursiveDelayDiscount(index + ONE)
-                            }
-                        }
-                    }
-                }
-            }
         }
     }
 
@@ -297,6 +239,7 @@ class FeedCampaignRibbonView(
 
     private fun buildRibbonBasedOnType() {
         animationStateList.clear()
+        animationTextList.clear()
 
         with(binding) {
             when (type) {
@@ -305,10 +248,9 @@ class FeedCampaignRibbonView(
                     setupTimer("") {}
                     tyFeedCampaignRibbonSubtitle.text = ""
 
-                    if (!mCta?.texts.isNullOrEmpty()) {
-                        tyFeedCampaignRibbonTitle.text = mCta?.texts!![0]
-                        tyFeedCampaignRibbonTitleSecond.text = mCta?.texts!![0]
-                    }
+                    val text = mCta?.texts?.firstOrNull().orEmpty()
+                    tyFeedCampaignRibbonTitle.text = text
+                    tyFeedCampaignRibbonTitleSecond.text = text
 
                     icFeedCampaignRibbonIcon.setImage(IconUnify.CHEVRON_RIGHT)
                     icFeedCampaignRibbonIcon.setOnClickListener {
@@ -328,8 +270,14 @@ class FeedCampaignRibbonView(
                         }
                     }
 
-                    root.setTransition(root.currentState, R.id.initial_title_with_icon)
+                    root.setTransition(root.currentState, R.id.feed_initial_title_with_icon_state)
                     root.transitionToEnd()
+
+                    animationStateList.add(R.id.feed_initial_title_with_icon_state)
+                    animationTextList.add(text)
+                    if (mCta?.texts?.size.orZero() > ONE) {
+                        setupCtaStateAnimation(R.id.feed_initial_title_with_icon_state)
+                    }
 
                     root.setOnClickListener {
                         mAuthor?.let { author ->
@@ -377,11 +325,28 @@ class FeedCampaignRibbonView(
                         }
                     }
 
-                    root.setTransition(root.currentState, R.id.initial_title_with_timer_and_icon)
+                    root.setTransition(
+                        root.currentState,
+                        R.id.feed_initial_title_with_timer_and_icon_state
+                    )
                     root.transitionToEnd()
 
-                    animationStateList.add(R.id.initial_title_with_timer_and_icon)
-                    animationStateList.add(R.id.availability_state)
+                    animationStateList.add(R.id.feed_initial_title_with_timer_and_icon_state)
+                    animationTextList.add(mCampaign?.shortName.orEmpty())
+                    animationStateList.add(R.id.feed_availability_state)
+                    animationTextList.add("")
+
+                    mCta?.let {
+                        if (it.texts.isNotEmpty()) {
+                            animationTextList.add(it.texts.first())
+                            if (it.subtitles.isNotEmpty()) {
+                                animationTextList.add(it.subtitles.first())
+                                animationStateList.add(R.id.feed_cta_with_coupon_state)
+                            } else {
+                                animationStateList.add(R.id.feed_cta_only_state)
+                            }
+                        }
+                    }
 
                     root.setOnClickListener {
                         mAuthor?.let { author ->
@@ -427,11 +392,25 @@ class FeedCampaignRibbonView(
                         )
                     }
 
-                    root.setTransition(root.currentState, R.id.initial_title_with_icon)
+                    root.setTransition(root.currentState, R.id.feed_initial_title_with_icon_state)
                     root.transitionToEnd()
 
-                    animationStateList.add(R.id.initial_title_with_icon)
-                    animationStateList.add(R.id.start_in_state)
+                    animationStateList.add(R.id.feed_initial_title_with_icon_state)
+                    animationTextList.add(mCampaign?.shortName.orEmpty())
+                    animationStateList.add(R.id.feed_start_in_state)
+                    animationTextList.add("")
+
+                    mCta?.let {
+                        if (it.texts.isNotEmpty()) {
+                            animationTextList.add(it.texts.first())
+                            if (it.subtitles.isNotEmpty()) {
+                                animationTextList.add(it.subtitles.first())
+                                animationStateList.add(R.id.feed_cta_with_coupon_state)
+                            } else {
+                                animationStateList.add(R.id.feed_cta_only_state)
+                            }
+                        }
+                    }
 
                     root.setOnClickListener {}
                 }
@@ -486,16 +465,79 @@ class FeedCampaignRibbonView(
     }
 
     private fun runLoopAnimation(index: Int) {
-        if (animationStateList.isNotEmpty()) {
+        if (animationStateList.isNotEmpty() && animationStateList.size > ONE) {
             val animationIndex = index % animationStateList.size
 
             with(binding) {
                 startDelayProcess(THREE_SECOND) {
                     if (animationStateList.size > animationIndex) {
-                        root.setTransition(root.currentState, animationStateList[animationIndex])
+                        val animationState = animationStateList[animationIndex]
+
+                        if (animationTextList.size > animationIndex) {
+                            when (animationState) {
+                                R.id.feed_initial_title_with_icon_state, R.id.feed_cta_only_state -> {
+                                    tyFeedCampaignRibbonTitle.text =
+                                        animationTextList[animationIndex]
+                                }
+                                R.id.feed_second_title_with_icon_state -> {
+                                    tyFeedCampaignRibbonTitleSecond.text =
+                                        animationTextList[animationIndex]
+                                }
+                                R.id.feed_cta_with_coupon_state -> {
+                                    tyFeedCampaignRibbonTitle.text =
+                                        animationTextList[animationIndex]
+                                    if (animationTextList.size > animationIndex + ONE) {
+                                        tyFeedCampaignRibbonSecondSubtitle.text =
+                                            animationTextList[animationIndex + ONE]
+                                    } else {
+                                        tyFeedCampaignRibbonSecondSubtitle.text = ""
+                                    }
+                                }
+                                R.id.feed_availability_state -> {
+                                    setupAvailabilityProgress()
+                                    tyFeedCampaignRibbonTitleSecond.text =
+                                        animationTextList[animationIndex]
+                                }
+                                R.id.feed_start_in_state -> {
+                                    tyFeedCampaignRibbonTitleSecond.text =
+                                        animationTextList[animationIndex]
+                                    tyFeedCampaignRibbonSubtitle.text =
+                                        root.context.getString(R.string.feed_campaign_start_from_label)
+                                }
+                                else -> {
+                                    tyFeedCampaignRibbonTitle.text =
+                                        animationTextList[animationIndex]
+                                    tyFeedCampaignRibbonTitleSecond.text =
+                                        animationTextList[animationIndex]
+                                }
+                            }
+                        }
+
+                        root.setTransition(root.currentState, animationState)
                         root.transitionToEnd()
+
+                        val nextIndex = if (index < animationStateList.size) index + ONE else ZERO
+                        runLoopAnimation(nextIndex)
                     }
-                    runLoopAnimation(index + ONE)
+                }
+            }
+        }
+    }
+
+    private fun setupCtaStateAnimation(lastState: Int) {
+        var prevState = lastState
+
+        mCta?.texts?.forEach {
+            prevState = when (prevState) {
+                R.id.feed_second_title_with_icon_state -> {
+                    animationTextList.add(it)
+                    animationStateList.add(R.id.feed_initial_title_with_icon_state)
+                    R.id.feed_initial_title_with_icon_state
+                }
+                else -> {
+                    animationTextList.add(it)
+                    animationStateList.add(R.id.feed_second_title_with_icon_state)
+                    R.id.feed_second_title_with_icon_state
                 }
             }
         }
@@ -505,6 +547,7 @@ class FeedCampaignRibbonView(
         private const val TWO_SECOND = 2000L
         private const val THREE_SECOND = 3000L
         private const val COLOR_TRANSITION_DURATION = 250
+        private const val TEXT_TRANSITION_DURATION = 300L
 
         private const val SEVENTY_FIVE_PERCENT = 75
         private const val EIGHTY_FIVE_PERCENT = 85
@@ -512,6 +555,7 @@ class FeedCampaignRibbonView(
 
         private const val CORNER_RADIUS = 20f
         private const val START_ANIMATION_INDEX = 1
+        private const val ZERO = 0
         private const val ONE = 1
     }
 }
