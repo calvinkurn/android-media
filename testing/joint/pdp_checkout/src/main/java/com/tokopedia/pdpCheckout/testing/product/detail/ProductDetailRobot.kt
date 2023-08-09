@@ -24,6 +24,7 @@ import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.core.AllOf
+import com.tokopedia.unifycomponents.R as unifyComponentsR
 
 class ProductDetailRobot {
 
@@ -90,7 +91,7 @@ class ProductDetailRobot {
         pdpInterceptor?.customRecomWidgetRecomAtcResponsePath = RESPONSE_RECOM_AFTER_ATC_PATH
         clickAtcNormal()
         Thread.sleep(1_000)
-        onView(withId(R.id.snackbar_btn))
+        onView(withId(unifyComponentsR.id.snackbar_btn))
             .perform(click())
     }
 

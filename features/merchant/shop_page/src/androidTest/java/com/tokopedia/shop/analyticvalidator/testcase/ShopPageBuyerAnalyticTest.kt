@@ -33,6 +33,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import com.tokopedia.unifycomponents.R as unifyComponentsR
 
 class ShopPageBuyerAnalyticTest {
 
@@ -156,7 +157,7 @@ class ShopPageBuyerAnalyticTest {
         Espresso.onView(
             firstView(
                 AllOf.allOf(
-                    withId(R.id.snackbar_btn)
+                    withId(unifyComponentsR.id.snackbar_btn)
                 )
             )
         ).perform(click())
