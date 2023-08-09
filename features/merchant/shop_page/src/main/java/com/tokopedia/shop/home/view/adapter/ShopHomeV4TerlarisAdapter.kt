@@ -6,21 +6,20 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.inflateLayout
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeV4TerlarisViewHolder
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.util.loadImageRounded
-import com.tokopedia.shop.home.view.model.ShopHomeV4TerlarisItemUiModel
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeV4TerlarisViewHolder
+import com.tokopedia.shop.home.view.model.ShopHomeV4TerlarisUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
-
 class ShopHomeV4TerlarisAdapter(
     private val listener: ShopHomeV4TerlarisViewHolder.ShopHomeV4TerlarisViewHolderListener
-): RecyclerView.Adapter<ShopHomeV4TerlarisAdapter.TerlarisWidgetViewHolder>() {
+) : RecyclerView.Adapter<ShopHomeV4TerlarisAdapter.TerlarisWidgetViewHolder>() {
 
-    private var productListData: List<List<ShopHomeV4TerlarisItemUiModel>> = listOf()
+    private var productListData: List<List<ShopHomeV4TerlarisUiModel.ShopHomeV4TerlarisItemUiModel>> = listOf()
 
-    fun updateData(productList: List<List<ShopHomeV4TerlarisItemUiModel>>) {
+    fun updateData(productList: List<List<ShopHomeV4TerlarisUiModel.ShopHomeV4TerlarisItemUiModel>>) {
         productListData = productList
         notifyDataSetChanged()
     }
@@ -60,7 +59,7 @@ class ShopHomeV4TerlarisAdapter(
             context = itemView.context
         }
 
-        fun bindData(productListData: List<ShopHomeV4TerlarisItemUiModel>) {
+        fun bindData(productListData: List<ShopHomeV4TerlarisUiModel.ShopHomeV4TerlarisItemUiModel>) {
             productContainer1?.setOnClickListener {
                 listener.onProductClick(productId = productListData[0].appUrl)
             }
@@ -83,7 +82,5 @@ class ShopHomeV4TerlarisAdapter(
             productPrice3?.text = productListData[2].price
             productRank3?.text = "3"
         }
-
     }
-
 }

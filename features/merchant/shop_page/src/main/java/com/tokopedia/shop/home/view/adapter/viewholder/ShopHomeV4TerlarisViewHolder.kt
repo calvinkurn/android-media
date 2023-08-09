@@ -12,7 +12,6 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.LayoutShopHomeV4TerlarisWidgetBinding
 import com.tokopedia.shop.home.util.loadImageRounded
 import com.tokopedia.shop.home.view.adapter.ShopHomeV4TerlarisAdapter
-import com.tokopedia.shop.home.view.model.ShopHomeV4TerlarisItemUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeV4TerlarisUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.utils.view.binding.viewBinding
@@ -119,7 +118,7 @@ class ShopHomeV4TerlarisViewHolder(
         terlarisWidgetContainer?.visibility = View.VISIBLE
     }
 
-    private fun showLayoutThreeItem(productList: List<ShopHomeV4TerlarisItemUiModel>) {
+    private fun showLayoutThreeItem(productList: List<ShopHomeV4TerlarisUiModel.ShopHomeV4TerlarisItemUiModel>) {
         containerThreeProducts?.visibility = View.VISIBLE
         prodcutCard1?.setOnClickListener {
             listener.onProductClick(productList[0].id)
@@ -141,7 +140,7 @@ class ShopHomeV4TerlarisViewHolder(
         productPrice3?.text = productList[2].price
     }
 
-    private fun getCarouselData(productList: List<ShopHomeV4TerlarisItemUiModel>): List<List<ShopHomeV4TerlarisItemUiModel>> {
+    private fun getCarouselData(productList: List<ShopHomeV4TerlarisUiModel.ShopHomeV4TerlarisItemUiModel>): List<List<ShopHomeV4TerlarisUiModel.ShopHomeV4TerlarisItemUiModel>> {
         val chunkSize = 3
         return productList.chunked(chunkSize)
     }
