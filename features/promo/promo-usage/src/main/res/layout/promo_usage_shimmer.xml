@@ -27,7 +27,6 @@
         app:typographyType="heading_3"
         android:text="@string/promo_voucher_promo" />
 
-
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/top_shimmer"
         android:layout_width="189dp"

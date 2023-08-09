@@ -13,7 +13,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promousage.R
-import com.tokopedia.promousage.databinding.PromoUsageItemVoucherBinding
+import com.tokopedia.promousage.databinding.PromoUsageItemPromoBinding
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherRecommendationBinding
 import com.tokopedia.promousage.domain.entity.PromoItemState
 import com.tokopedia.promousage.domain.entity.list.PromoItem
@@ -33,11 +33,8 @@ class PromoRecommendationDelegateAdapter(
     }
 
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
-        val binding = PromoUsageItemVoucherRecommendationBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
-        )
+        val binding = PromoUsageItemVoucherRecommendationBinding
+            .inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
@@ -49,12 +46,12 @@ class PromoRecommendationDelegateAdapter(
         private val binding: PromoUsageItemVoucherRecommendationBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        init {
-            binding.rvPromoRecommendation.applyPaddingToLastItem(PADDING_BOTTOM_DP)
-        }
+//        init {
+//            binding.rvPromoRecommendation.applyPaddingToLastItem(PADDING_BOTTOM_DP)
+//        }
 
         fun bind(item: PromoRecommendationItem) {
-            val voucherAdapter = VoucherAdapter(onVoucherClick)
+//            val voucherAdapter = VoucherAdapter(onVoucherClick)
             val selectedRecommendedPromoCount = item.promos.count { it.state is PromoItemState.Selected }
             val recommendedPromoCount = item.promos.size
             binding.tpgRecommendationTitle.text = item.title
@@ -65,14 +62,14 @@ class PromoRecommendationDelegateAdapter(
                 binding.ivCheckmarkOutline.visible()
                 startButtonUseVoucherAnimation()
             }
-            binding.rvPromoRecommendation.apply {
-                layoutManager = LinearLayoutManager(binding.rvPromoRecommendation.context)
-                adapter = voucherAdapter
-            }
+//            binding.rvPromoRecommendation.apply {
+//                layoutManager = LinearLayoutManager(binding.rvPromoRecommendation.context)
+//                adapter = voucherAdapter
+//            }
             binding.btnRecommendationUseVoucher.isVisible = selectedRecommendedPromoCount < recommendedPromoCount
             binding.ivCheckmark.isVisible = selectedRecommendedPromoCount == recommendedPromoCount
             binding.ivCheckmarkOutline.isVisible = selectedRecommendedPromoCount == recommendedPromoCount
-            voucherAdapter.submit(item.promos)
+//            voucherAdapter.submit(item.promos)
         }
 
         private fun startButtonUseVoucherAnimation() {
@@ -90,9 +87,9 @@ class PromoRecommendationDelegateAdapter(
             })
             binding.ivCheckmarkOutline.startAnimation(shrinkOutAnimation)
 
-            val zoomInAnimation =
-                AnimationUtils.loadAnimation(binding.rvPromoRecommendation.context, R.anim.zoom_in)
-            binding.rvPromoRecommendation.startAnimation(zoomInAnimation)
+//            val zoomInAnimation =
+//                AnimationUtils.loadAnimation(binding.rvPromoRecommendation.context, R.anim.zoom_in)
+//            binding.rvPromoRecommendation.startAnimation(zoomInAnimation)
         }
     }
 
@@ -119,7 +116,7 @@ class PromoRecommendationDelegateAdapter(
         private val differ = AsyncListDiffer(this, differCallback)
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val binding = PromoUsageItemVoucherBinding
+            val binding = PromoUsageItemPromoBinding
                 .inflate(LayoutInflater.from(parent.context), parent, false)
             return ViewHolder(binding)
         }
@@ -133,11 +130,11 @@ class PromoRecommendationDelegateAdapter(
         }
 
         inner class ViewHolder(
-            private val binding: PromoUsageItemVoucherBinding
+            private val binding: PromoUsageItemPromoBinding
         ) : RecyclerView.ViewHolder(binding.root) {
 
             fun bind(item: PromoItem) {
-                binding.voucherView.bind(item)
+                binding.vcvPromo.bind(item)
                 binding.root.setOnClickListener { onVoucherClick(item) }
             }
         }

@@ -13,7 +13,7 @@ import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promousage.R
-import com.tokopedia.promousage.databinding.PromoUsageItemVoucherCodeBinding
+import com.tokopedia.promousage.databinding.PromoUsageItemPromoAttemptBinding
 import com.tokopedia.promousage.domain.entity.list.PromoAttemptItem
 import com.tokopedia.promousage.util.TextDrawable
 import com.tokopedia.promousage.util.composite.DelegateAdapter
@@ -31,7 +31,7 @@ internal class PromoAttemptCodeDelegateAdapter(
     }
 
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
-        val binding = PromoUsageItemVoucherCodeBinding
+        val binding = PromoUsageItemPromoAttemptBinding
             .inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
@@ -41,7 +41,7 @@ internal class PromoAttemptCodeDelegateAdapter(
     }
 
     internal inner class ViewHolder(
-        private val binding: PromoUsageItemVoucherCodeBinding
+        private val binding: PromoUsageItemPromoAttemptBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         init {
@@ -49,24 +49,26 @@ internal class PromoAttemptCodeDelegateAdapter(
         }
 
         fun bind(item: PromoAttemptItem) {
-            if (item.label.isNotBlank()) {
-                binding.tauVoucherCode.setLabel(item.label)
+            with(binding) {
+                if (item.label.isNotBlank()) {
+                    tauVoucherCode.setLabel(item.label)
+                }
+                if (item.attemptedPromoCode.isNotBlank()) {
+                    tauVoucherCode.editText.setText(item.attemptedPromoCode)
+                }
+                if (item.promo != null && item.errorMessage.isBlank()) {
+                    userInputVoucherView.bind(item.promo)
+                    userInputVoucherView.visible()
+                } else {
+                    userInputVoucherView.gone()
+                }
+                if (item.errorMessage.isNotBlank()) {
+                    tauVoucherCode.isInputError = true
+                    tauVoucherCode.setMessage(item.errorMessage)
+                    showClearIcon()
+                }
+                hideUsePromoCodeCta()    
             }
-            if (item.attemptedPromoCode.isNotBlank()) {
-                binding.tauVoucherCode.editText.setText(item.attemptedPromoCode)
-            }
-            if (item.promo != null && item.errorMessage.isBlank()) {
-                binding.userInputVoucherView.bind(item.promo)
-                binding.userInputVoucherView.visible()
-            } else {
-                binding.userInputVoucherView.gone()
-            }
-            if (item.errorMessage.isNotBlank()) {
-                binding.tauVoucherCode.isInputError = true
-                binding.tauVoucherCode.setMessage(item.errorMessage)
-                showClearIcon()
-            }
-            hideUsePromoCodeCta()
         }
 
         @SuppressLint("ClickableViewAccessibility")

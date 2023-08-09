@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/bottom_sheet_wrapper"
+    android:id="@+id/rlBottomSheetWrapper"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bottomsheet_background"
@@ -11,92 +11,148 @@
     app:behavior_peekHeight="@dimen/bottom_sheet_default_peek"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-    <!--Voucher Recommendation Info-->
-    <LinearLayout
-        android:id="@+id/layoutTickerInfo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/promo_usage_bg_bottomsheet_header_overlay"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        tools:visibility="visible">
-
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/iconTickerInfo"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:tint="@color/promo_dms_white" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tpgTickerInfoMessage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="4dp"
-            android:textColor="@color/promo_dms_white"
-            app:typographyType="paragraph_3"
-            tools:text="Kini Bebas Ongkir hanya bisa dipilih di Pengiriman." />
-
-    </LinearLayout>
-
-
-    <!--Bottomsheet Header (Title, Close Icon)-->
-    <RelativeLayout
-        android:id="@+id/layoutBottomSheetHeader"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/layoutTickerInfo"
-        android:layout_marginTop="-16dp"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        tools:background="@drawable/promo_usage_bg_bottomsheet_header"
-        tools:visibility="visible">
-
-        <ImageView
-            android:id="@+id/buttonClose"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:adjustViewBounds="true"
-            android:background="@drawable/promo_usage_ic_close_white" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/bottom_sheet_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@id/buttonClose"
-            android:layout_alignBottom="@id/buttonClose"
-            android:layout_marginStart="8dp"
-            android:layout_toRightOf="@id/buttonClose"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:textColor="@color/promo_dms_white"
-            app:typographyType="heading_3"
-            tools:text="Promo" />
-
-    </RelativeLayout>
-
     <include
-        android:id="@+id/shimmer"
+        android:id="@+id/layoutShimmer"
         layout="@layout/promo_usage_shimmer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:visibility="gone" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvPromo"
+    <!--Ticker Info-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clTickerInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/layoutSavingInfo"
-        android:layout_below="@id/layoutBottomSheetHeader"
-        tools:itemCount="3"
-        tools:listitem="@layout/promo_usage_item_voucher_section" />
+        android:orientation="horizontal"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iuTickerInfoBackground"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:unify_image_type="rect"
+            tools:src="@drawable/promo_usage_bg_ticker_info" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iuTickerInfoIcon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="24dp"
+            android:tint="@color/Unify_Static_White"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tpgTickerInfoMessage"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpgTickerInfoMessage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="24dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_Static_White"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iuTickerInfoIcon"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="paragraph_3"
+            tools:text="Kini Bebas Ongkir hanya bisa dipilih di Pengiriman." />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clBottomSheetContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/layoutSavingInfo"
+        android:layout_below="@id/clTickerInfo"
+        android:layout_marginTop="-16dp">
+
+        <!--Bottomsheet Header (Title, Close Icon)-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clBottomSheetHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:background="@color/black"
+            tools:visibility="visible">
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/btnBottomSheetHeaderClose"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                app:icon_color_light_enable="@color/Unify_Static_White"
+                app:icon_color_night_enable="@color/Unify_Static_White"
+                app:icon_name="CLOSE"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpgBottomSheetHeaderTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="16dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="@color/Unify_Static_White"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/btnBottomSheetHeaderClose"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="heading_3"
+                tools:text="Promo" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottieAnimationView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:lottie_autoPlay="false"
+            app:lottie_loop="false" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvPromo"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/clBottomSheetHeader"
+            tools:itemCount="3"
+            tools:listitem="@layout/promo_usage_item_promo_accordion_header" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <!--Total Savings-->
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layoutSavingInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -104,7 +160,7 @@
         android:layout_marginStart="-1dp"
         android:layout_marginEnd="-1dp"
         android:layout_marginBottom="-2dp"
-        android:background="@drawable/promo_usage_shape_voucher_summary"
+        android:background="@drawable/promo_usage_bg_promo_saving_info"
         android:visibility="gone"
         tools:visibility="visible">
 
@@ -115,23 +171,31 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tpgTotalSavings"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/promo_usage_ic_rounded_checkmark" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tpgTotalSavings"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_alignTop="@id/ivCheckmark"
             android:layout_alignBottom="@id/ivCheckmark"
             android:layout_gravity="center"
             android:layout_marginStart="8dp"
-            android:layout_toEndOf="@id/ivCheckmark"
+            android:layout_marginEnd="16dp"
             android:gravity="center|start"
             android:textColor="@color/Unify_NN950"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ivCheckmark"
+            app:layout_constraintTop_toTopOf="parent"
             app:typographyType="display_3"
             tools:text="@string/promo_voucher_placeholder_total_savings" />
 
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!--Total Price -->
     <androidx.cardview.widget.CardView
@@ -205,15 +269,5 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
-
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lottieAnimationView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@id/layoutBottomSheetHeader"
-        android:scaleType="centerCrop"
-        android:visibility="gone"
-        app:lottie_autoPlay="false"
-        app:lottie_loop="false" />
 
 </RelativeLayout>

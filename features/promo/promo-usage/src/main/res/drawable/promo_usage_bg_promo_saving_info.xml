@@ -1,0 +1,18 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/Unify_Background" />
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <solid android:color="@color/Unify_TN50" />
+            <corners
+                android:topLeftRadius="16dp"
+                android:topRightRadius="16dp" />
+            <stroke
+                android:width="1dp"
+                android:color="@color/Unify_TN300" />
+        </shape>
+    </item>
+</layer-list>

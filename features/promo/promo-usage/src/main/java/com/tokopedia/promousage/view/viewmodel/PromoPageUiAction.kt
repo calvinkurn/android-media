@@ -3,6 +3,10 @@ package com.tokopedia.promousage.view.viewmodel
 import com.tokopedia.promousage.domain.entity.PromoCta
 import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 
+data class LoadingUiAction(
+    val isLoading: Boolean = false
+)
+
 data class PromoRecommendationUiAction(
     val promoRecommendationItem: PromoRecommendationItem? = null
 )

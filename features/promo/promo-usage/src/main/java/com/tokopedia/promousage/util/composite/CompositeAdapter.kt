@@ -35,6 +35,10 @@ class CompositeAdapter(
 
     override fun getItemCount() = items.size
 
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
     fun submit(newItems: List<DelegateAdapterItem>) {
         val diffCallback = DiffCallback(this.items, newItems)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
@@ -60,7 +64,6 @@ class CompositeAdapter(
             return CompositeAdapter(delegates)
         }
     }
-
 
     inner class DiffCallback(
         private val oldProductList: List<DelegateAdapterItem>,

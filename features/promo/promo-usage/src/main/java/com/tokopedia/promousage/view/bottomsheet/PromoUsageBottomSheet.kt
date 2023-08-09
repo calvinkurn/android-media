@@ -2,7 +2,6 @@ package com.tokopedia.promousage.view.bottomsheet
 
 import android.animation.Animator
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -24,16 +23,18 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setTextColorCompat
 import com.tokopedia.kotlin.extensions.view.splitByThousand
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageBottomsheetBinding
@@ -46,10 +47,10 @@ import com.tokopedia.promousage.domain.entity.list.PromoAccordionViewAllItem
 import com.tokopedia.promousage.domain.entity.list.PromoItem
 import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 import com.tokopedia.promousage.domain.entity.list.PromoTncItem
+import com.tokopedia.promousage.util.BottomSheetUtil
 import com.tokopedia.promousage.util.analytics.PromoUsageAnalytics
 import com.tokopedia.promousage.util.composite.CompositeAdapter
 import com.tokopedia.promousage.util.composite.DelegateAdapterItem
-import com.tokopedia.promousage.util.extension.foregroundDrawable
 import com.tokopedia.promousage.util.logger.PromoErrorException
 import com.tokopedia.promousage.view.adapter.PromoAccordionHeaderDelegateAdapter
 import com.tokopedia.promousage.view.adapter.PromoAccordionItemDelegateAdapter
@@ -61,6 +62,7 @@ import com.tokopedia.promousage.view.viewmodel.ApplyPromoUiAction
 import com.tokopedia.promousage.view.viewmodel.PromoAttemptUiAction
 import com.tokopedia.promousage.view.viewmodel.PromoPageUiState
 import com.tokopedia.promousage.view.viewmodel.PromoUsageViewModel
+import com.tokopedia.promousage.view.viewmodel.getRecommendationItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.unifycomponents.Toaster
@@ -185,9 +187,9 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     ): View {
         _binding = PromoUsageBottomsheetBinding.inflate(inflater, container, false)
 
-        binding.bottomSheetTitle.text = context?.getString(R.string.promo_voucher_promo)
-        binding.buttonClose.setOnClickListener { dismissAllowingStateLoss() }
-        binding.layoutBottomSheetHeader.foregroundDrawable(R.drawable.promo_usage_bg_confetti)
+        binding.tpgBottomSheetHeaderTitle.text = context?.getString(R.string.promo_voucher_promo)
+        binding.btnBottomSheetHeaderClose.setOnClickListener { dismissAllowingStateLoss() }
+//        binding.clBottomSheetHeader.foregroundDrawable(R.drawable.promo_usage_bg_confetti)
 
         dialog?.setOnShowListener { applyBottomSheetMaxHeightRule() }
 
@@ -195,7 +197,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun applyBottomSheetMaxHeightRule() {
-        val frameDialogView = binding.bottomSheetWrapper.parent as View
+        val frameDialogView = binding.rlBottomSheetWrapper.parent as View
         frameDialogView.setBackgroundColor(Color.TRANSPARENT)
 
         frameDialogView.bringToFront()
@@ -236,6 +238,8 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         hideContent()
         showShimmer()
 
+        binding.clBottomSheetContent.background =
+            BottomSheetUtil.generateBackgroundDrawableWithColor(binding.root.context)
         val entryPoint = arguments?.getParcelable(BUNDLE_KEY_ENTRY_POINT)
             ?: PromoPageEntryPoint.CART_PAGE
         val totalAmount = arguments?.getDouble(BUNDLE_KEY_TOTAL_AMOUNT) ?: 0.0
@@ -244,9 +248,10 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         val boPromoCodes: List<String> = arguments?.getStringArrayList(BUNDLE_KEY_BO_PROMO_CODES)
             ?: emptyList()
 
-        binding.buttonClose.setOnClickListener {
+        binding.btnBottomSheetHeaderClose.setOnClickListener {
             dismiss()
         }
+        binding.rvPromo.itemAnimator = null
         binding.rvPromo.layoutManager = LinearLayoutManager(context)
         binding.rvPromo.adapter = recyclerViewAdapter
         when (entryPoint) {
@@ -330,44 +335,52 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun useWhiteHeaderColor() {
-        binding.run {
-            layoutBottomSheetHeader.background = ContextCompat.getDrawable(
-                layoutBottomSheetHeader.context ?: return,
-                R.drawable.promo_usage_bg_bottomsheet_header_scrolled
+        with(binding) {
+            clBottomSheetHeader.background = BottomSheetUtil
+                .generateBackgroundDrawableWithColor(
+                    binding.root.context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_Background
+                )
+            tpgBottomSheetHeaderTitle
+                .setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+            btnBottomSheetHeaderClose.setImageDrawable(
+                if (binding.root.context.isDarkMode()) {
+                    getIconUnifyDrawable(
+                        context = binding.root.context,
+                        iconId = IconUnify.CLOSE,
+                        assetColor = ContextCompat.getColor(
+                            binding.root.context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                        )
+                    )
+                } else {
+                    getIconUnifyDrawable(
+                        context = binding.root.context,
+                        iconId = IconUnify.CLOSE,
+                        assetColor = ContextCompat.getColor(
+                            binding.root.context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
+                        )
+                    )
+                }
             )
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                layoutBottomSheetHeader.foreground = null
-            }
-
-            bottomSheetTitle.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
-            val isDarkMode = context?.isDarkMode() ?: false
-            val closeIconDrawable = if (isDarkMode) {
-                ContextCompat.getDrawable(
-                    layoutBottomSheetHeader.context ?: return,
-                    R.drawable.promo_usage_ic_close_white
-                )
-            } else {
-                ContextCompat.getDrawable(
-                    layoutBottomSheetHeader.context ?: return,
-                    R.drawable.promo_usage_ic_close_black
-                )
-            }
-            buttonClose.background = closeIconDrawable
         }
     }
 
     private fun useGradientHeaderColor() {
-        binding.run {
-            layoutBottomSheetHeader.background = ContextCompat.getDrawable(
-                layoutBottomSheetHeader.context ?: return,
-                R.drawable.promo_usage_bg_bottomsheet_header
-            )
-            layoutBottomSheetHeader.foregroundDrawable(R.drawable.promo_usage_bg_confetti)
-            bottomSheetTitle.setTextColorCompat(R.color.promo_dms_white)
-            buttonClose.background = ContextCompat.getDrawable(
-                layoutBottomSheetHeader.context ?: return,
-                R.drawable.promo_usage_ic_close_white
+        with(binding) {
+            clBottomSheetHeader.background = null
+            tpgBottomSheetHeaderTitle
+                .setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+            btnBottomSheetHeaderClose.setImageDrawable(
+                getIconUnifyDrawable(
+                    context = binding.root.context,
+                    iconId = IconUnify.CLOSE,
+                    assetColor = ContextCompat.getColor(
+                        binding.root.context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                    )
+                )
             )
         }
     }
@@ -446,9 +459,13 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 }
 
                 is PromoPageUiState.Success -> {
-                    updateTickerInfo(state.tickerInfo)
-                    updateRecyclerView(state.items)
-                    updateSavingInfo(state.savingInfo)
+                    val promoRecommendation = state.items.getRecommendationItem()
+                    if (promoRecommendation != null) {
+                        renderPromoRecommendationBackground(promoRecommendation)
+                    }
+                    renderTickerInfo(state.tickerInfo)
+                    renderRecyclerView(state.items)
+                    renderSavingInfo(state.savingInfo)
                     setLoadingDialog(false)
                     showContent()
                 }
@@ -470,49 +487,71 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
-    private fun updateTickerInfo(tickerInfo: PromoPageTickerInfo) {
-        val hasTickerInfo = tickerInfo.message.isNotBlank() && tickerInfo.iconUrl.isNotBlank()
-        //&& tickerInfo.backgroundUrl.isNotBlank()
-        if (hasTickerInfo) {
-            // TODO: Handle tickerInfo.backgroundUrl
-            binding.iconTickerInfo.loadImage(tickerInfo.iconUrl)
-            binding.tpgTickerInfoMessage.text = tickerInfo.message
-            binding.layoutTickerInfo.isVisible = true
-        } else {
-            val layoutParams =
-                binding.layoutBottomSheetHeader.layoutParams as? RelativeLayout.LayoutParams
-            layoutParams?.setMargins(0, 0, 0, 0)
-            binding.layoutBottomSheetHeader.layoutParams = layoutParams
-            binding.layoutBottomSheetHeader.requestLayout()
-            binding.layoutTickerInfo.isVisible = false
+    private fun renderPromoRecommendationBackground(promoRecommendation: PromoRecommendationItem) {
+        with(binding) {
+            clBottomSheetContent.background = BottomSheetUtil
+                .generateBackgroundDrawableWithColor(root.context, "#763BD7")
+//            iuBottomSheetBackground
+//                .setImageDrawable(
+//                    ContextCompat.getDrawable(root.context, R.drawable.promo_usage_bg_bottomsheet_voucher_recommendation)
+//                )
         }
     }
 
-    private fun updateRecyclerView(items: List<DelegateAdapterItem>) {
+    private fun renderTickerInfo(tickerInfo: PromoPageTickerInfo) {
+        with(binding) {
+            // TODO: Remove hardcoded ticker info
+            val hasTickerInfo = tickerInfo.message.isNotBlank() && tickerInfo.iconUrl.isNotBlank()
+            //&& tickerInfo.backgroundUrl.isNotBlank()
+            if (hasTickerInfo) {
+                if (tickerInfo.backgroundUrl.isNotBlank()) {
+                    iuTickerInfoBackground.setImageUrl(tickerInfo.backgroundUrl)
+                } else {
+                    iuTickerInfoBackground.setImageDrawable(
+                        ContextCompat
+                            .getDrawable(root.context, R.drawable.promo_usage_bg_ticker_info)
+                    )
+                }
+                iuTickerInfoIcon.loadImage(tickerInfo.iconUrl)
+                tpgTickerInfoMessage.text = tickerInfo.message
+            } else {
+                val layoutParams =
+                    clBottomSheetHeader.layoutParams as? RelativeLayout.LayoutParams
+                layoutParams?.setMargins(0, 0, 0, 0)
+                clBottomSheetHeader.layoutParams = layoutParams
+                clBottomSheetHeader.requestLayout()
+            }
+            clTickerInfo.isVisible = hasTickerInfo
+        }
+    }
+
+    private fun renderRecyclerView(items: List<DelegateAdapterItem>) {
         recyclerViewAdapter.submit(items)
     }
 
     private fun showShimmer() {
-        binding.shimmer.root.visible()
+        binding.layoutShimmer.root.visible()
         binding.rvPromo.gone()
         binding.cvTotalAmount.gone()
     }
 
     private fun showContent() {
-        binding.shimmer.root.gone()
-        binding.layoutBottomSheetHeader.visible()
+        binding.layoutShimmer.root.gone()
+        binding.clTickerInfo.visible()
+        binding.clBottomSheetHeader.visible()
         binding.rvPromo.visible()
         binding.cvTotalAmount.visible()
     }
 
     private fun hideContent() {
-        binding.shimmer.root.gone()
-        binding.layoutBottomSheetHeader.gone()
+        binding.layoutShimmer.root.gone()
+        binding.clTickerInfo.gone()
+        binding.clBottomSheetHeader.gone()
         binding.rvPromo.gone()
         binding.cvTotalAmount.gone()
     }
 
-    private fun updateSavingInfo(promoSavingInfo: PromoSavingInfo) {
+    private fun renderSavingInfo(promoSavingInfo: PromoSavingInfo) {
         binding.run {
             val formattedTotalVoucherAmount =
                 promoSavingInfo.totalSelectedPromoBenefitAmount.splitByThousand()

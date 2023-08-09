@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.promousage.R
-import com.tokopedia.promousage.databinding.PromoUsageItemVoucherViewAllBinding
+import com.tokopedia.promousage.databinding.PromoUsageItemPromoAccordionViewAllBinding
 import com.tokopedia.promousage.domain.entity.list.PromoAccordionViewAllItem
 import com.tokopedia.promousage.util.composite.DelegateAdapter
 
@@ -16,7 +16,7 @@ class PromoAccordionViewAllDelegateAdapter(
 ) {
 
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
-        val binding = PromoUsageItemVoucherViewAllBinding
+        val binding = PromoUsageItemPromoAccordionViewAllBinding
             .inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
@@ -26,7 +26,7 @@ class PromoAccordionViewAllDelegateAdapter(
     }
 
     inner class ViewHolder(
-        private val binding: PromoUsageItemVoucherViewAllBinding
+        private val binding: PromoUsageItemPromoAccordionViewAllBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: PromoAccordionViewAllItem) {

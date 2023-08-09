@@ -834,7 +834,9 @@ object DummyData {
                 state = PromoItemState.Normal,
                 isAttempted = false,
                 isExpanded = true,
-                isVisible = true
+                isVisible = true,
+                isRecommended = true,
+                shouldShowRecommendedAnimation = false
             ),
             PromoItem(
                 headerId = PromoPageSection.SECTION_RECOMMENDATION,
@@ -882,7 +884,10 @@ object DummyData {
                 state = PromoItemState.Normal,
                 isAttempted = false,
                 isExpanded = true,
-                isVisible = true
+                isVisible = true,
+                isRecommended = true,
+                isLastRecommended = true,
+                shouldShowRecommendedAnimation = false
             )
         )
 
@@ -999,6 +1004,7 @@ object DummyData {
                 promos = recommendedPromos
             )
         )
+        items.addAll(recommendedPromos)
         items.add(
             PromoAccordionHeaderItem(
                 id = "payment_coupons",

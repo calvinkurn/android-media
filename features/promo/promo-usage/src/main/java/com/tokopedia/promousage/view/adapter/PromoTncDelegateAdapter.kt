@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.promousage.R
-import com.tokopedia.promousage.databinding.PromoUsageItemTncBinding
+import com.tokopedia.promousage.databinding.PromoUsageItemPromoTncBinding
 import com.tokopedia.promousage.domain.entity.list.PromoTncItem
 import com.tokopedia.promousage.util.composite.DelegateAdapter
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -14,7 +14,7 @@ internal class PromoTncDelegateAdapter(
 ) : DelegateAdapter<PromoTncItem, PromoTncDelegateAdapter.ViewHolder>(PromoTncItem::class.java) {
 
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
-        val binding = PromoUsageItemTncBinding
+        val binding = PromoUsageItemPromoTncBinding
             .inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
@@ -24,7 +24,7 @@ internal class PromoTncDelegateAdapter(
     }
 
     internal inner class ViewHolder(
-        private val binding: PromoUsageItemTncBinding
+        private val binding: PromoUsageItemPromoTncBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: PromoTncItem) {

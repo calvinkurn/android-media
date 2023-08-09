@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.promousage.databinding.PromoUsageItemVoucherSectionBinding
+import com.tokopedia.promousage.databinding.PromoUsageItemPromoAccordionHeaderBinding
 import com.tokopedia.promousage.domain.entity.list.PromoAccordionHeaderItem
 import com.tokopedia.promousage.util.composite.DelegateAdapter
 
@@ -15,7 +15,7 @@ class PromoAccordionHeaderDelegateAdapter(
 ) {
 
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
-        val binding = PromoUsageItemVoucherSectionBinding
+        val binding = PromoUsageItemPromoAccordionHeaderBinding
             .inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
@@ -25,7 +25,7 @@ class PromoAccordionHeaderDelegateAdapter(
     }
 
     inner class ViewHolder(
-        private val binding: PromoUsageItemVoucherSectionBinding
+        private val binding: PromoUsageItemPromoAccordionHeaderBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: PromoAccordionHeaderItem) {
@@ -36,8 +36,8 @@ class PromoAccordionHeaderDelegateAdapter(
                 } else {
                     IconUnify.CHEVRON_DOWN
                 }
-                binding.iconChevron.setImage(chevronIcon)
-                binding.root.setOnClickListener { onVoucherAccordionHeaderClick(item) }
+                iconChevron.setImage(chevronIcon)
+                root.setOnClickListener { onVoucherAccordionHeaderClick(item) }
             }
         }
     }

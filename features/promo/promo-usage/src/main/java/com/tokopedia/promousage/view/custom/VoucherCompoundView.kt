@@ -169,8 +169,8 @@ class VoucherCompoundView @JvmOverloads constructor(
                 remainingQuota
             )
 
-           updateVoucherTypeMarginTop(16.toPx())
-            updateCardViewMargin(4.toPx(), 8.toPx())
+            updateVoucherTypeMarginTop(16.toPx())
+            updateCardViewMargin(5.toPx(), 8.toPx())
         } else {
             binding?.layoutRemainingQuotaRibbon?.gone()
 

@@ -668,12 +668,26 @@ internal class PromoUsageViewModel @Inject constructor(
     fun onApplyPromoRecommendation(
         onSuccess: (() -> Unit)?
     ) {
-        _promoPageUiState.postValue(PromoPageUiState.Loading)
         launchCatchError(
             context = dispatchers.io,
             block = {
                 delay(1_000L)
                 unselectAllSelectedPromos()
+
+                _promoPageUiState.ifSuccess { state ->
+                    val currentItems = state.items
+                    val updatedItems = currentItems.map { item ->
+                        if (item is PromoItem && item.isRecommended) {
+                            item.copy(
+                                state = PromoItemState.Selected,
+                                shouldShowRecommendedAnimation = true
+                            )
+                        } else {
+                            item
+                        }
+                    }
+                    _promoPageUiState.postValue(state.copy(items = updatedItems))
+                }
 
                 onSuccess?.invoke()
             },
