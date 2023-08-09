@@ -68,6 +68,16 @@ class CategoryFilterPageTest: CategoryTestFixtures(), Callback {
     }
 
     @Test
+    fun `apply price filter`() {
+        filterPageTestHelper.`test apply price filter`()
+    }
+
+    @Test
+    fun `apply and remove price filter`() {
+        filterPageTestHelper.`test apply and remove price filter`()
+    }
+
+    @Test
     fun `get filter count success when choosing filter`() {
         val mandatoryParams = createMandatoryTokonowQueryParams()
 

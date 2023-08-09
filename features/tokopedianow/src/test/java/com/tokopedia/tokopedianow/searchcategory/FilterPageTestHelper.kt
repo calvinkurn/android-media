@@ -3,10 +3,12 @@ package com.tokopedia.tokopedianow.searchcategory
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterModel
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.tokopedianow.searchcategory.data.getTokonowQueryParam
 import com.tokopedia.tokopedianow.searchcategory.domain.usecase.GetFilterUseCase
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
+import com.tokopedia.tokopedianow.util.TestUtils.getParentPrivateField
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import io.mockk.CapturingSlot
@@ -27,6 +29,7 @@ class FilterPageTestHelper(
     private val mockApplyFilterMapParam = mutableMapOf<String, String>()
     private val selectedFilterMap = mutableMapOf<String, String>()
     private var applySortFilterModel: ApplySortFilterModel? = null
+    private var selectedFilterOptions: List<Option> = listOf()
 
     fun `test open filter page first time`(expectedQueryParamMap: Map<String, String>) {
         val filterRequestParamsSlot = slot<MutableMap<String, Any>>()
@@ -94,7 +97,7 @@ class FilterPageTestHelper(
     }
 
     private fun `Then verify get filter API called`() {
-        coEvery {
+        coVerify(exactly = 1) {
             getFilterUseCase.execute(any())
         }
     }
@@ -146,6 +149,51 @@ class FilterPageTestHelper(
         `Then verify query params is updated from filter`(requestParams)
     }
 
+    fun `test apply price filter`() {
+        val queryParamMutable = baseViewModel.getParentPrivateField<MutableMap<String, String>>("queryParamMutable")
+        val isPreviousFilterPageOpenNotTrue = baseViewModel.isFilterPageOpenLiveData.value != true
+
+        `Given view setup from created until open filter page`()
+        `Given mock apply filter price param`(dynamicFilterModel)
+
+        `When view apply filter`()
+
+        val doPreviousQueryParamsContainPmaxPmin = queryParamMutable.containsKey(SearchApiConst.PMAX) && queryParamMutable.containsKey(SearchApiConst.PMIN)
+        val isCurrentDynamicFilterNotNull = baseViewModel.dynamicFilterModelLiveData.value != null
+        val isCurrentFilterPageOpenTrue = baseViewModel.isFilterPageOpenLiveData.value == true
+
+        assert(isPreviousFilterPageOpenNotTrue)
+        assert(doPreviousQueryParamsContainPmaxPmin)
+        assert(isCurrentDynamicFilterNotNull)
+        assert(isCurrentFilterPageOpenTrue)
+    }
+
+    fun `test apply and remove price filter`() {
+        val queryParamMutable = baseViewModel.getParentPrivateField<MutableMap<String, String>>("queryParamMutable")
+        val isPreviousFilterPageOpenNotTrue = baseViewModel.isFilterPageOpenLiveData.value != true
+
+        `Given view setup from created until open filter page`()
+        `Given mock apply filter price param`(dynamicFilterModel)
+
+        `When view apply filter`()
+
+        val doPreviousQueryParamsContainPmaxPmin = queryParamMutable.containsKey(SearchApiConst.PMAX) && queryParamMutable.containsKey(SearchApiConst.PMIN)
+
+        selectedFilterOptions.forEach {
+            baseViewModel.onViewRemoveFilter(it)
+        }
+
+        val doCurrentQueryParamsNotContainPmaxPmin = !queryParamMutable.containsKey(SearchApiConst.PMAX) && !queryParamMutable.containsKey(SearchApiConst.PMIN)
+        val isCurrentDynamicFilterNotNull = baseViewModel.dynamicFilterModelLiveData.value != null
+        val isCurrentFilterPageOpenTrue = baseViewModel.isFilterPageOpenLiveData.value == true
+
+        assert(isPreviousFilterPageOpenNotTrue)
+        assert(doPreviousQueryParamsContainPmaxPmin)
+        assert(doCurrentQueryParamsNotContainPmaxPmin)
+        assert(isCurrentDynamicFilterNotNull)
+        assert(isCurrentFilterPageOpenTrue)
+    }
+
     private fun `Given view setup from created until open filter page`() {
         callback.`Given first page API will be successful`()
         `Given get filter API will be successful`(dynamicFilterModel)
@@ -171,6 +219,32 @@ class FilterPageTestHelper(
                 selectedSortMapParameter = mapOf(),
                 selectedSortName = "",
                 sortAutoFilterMapParameter = mapOf()
+        )
+    }
+
+    private fun `Given mock apply filter price param`(dynamicFilterModel: DynamicFilterModel) {
+        dynamicFilterModel.data.filter.map {
+            val filterOptions = it.options.filter { option -> option.key == SearchApiConst.PMIN || option.key == SearchApiConst.PMAX }
+            if (filterOptions.isNotEmpty()) {
+                selectedFilterOptions = filterOptions
+            }
+        }
+
+        selectedFilterMap.clear()
+        selectedFilterOptions.forEach {
+            selectedFilterMap[it.key] = it.value
+        }
+
+        mockApplyFilterMapParam.clear()
+        mockApplyFilterMapParam.putAll(baseViewModel.queryParam)
+        mockApplyFilterMapParam.putAll(selectedFilterMap)
+
+        applySortFilterModel = ApplySortFilterModel(
+            mapParameter = mockApplyFilterMapParam,
+            selectedFilterMapParameter = selectedFilterMap,
+            selectedSortMapParameter = mapOf(),
+            selectedSortName = "",
+            sortAutoFilterMapParameter = mapOf()
         )
     }
 
@@ -268,31 +342,6 @@ class FilterPageTestHelper(
             getProductCountUseCase.execute(any(), any(), capture(requestParamsSlot))
         } answers {
             secondArg<(Throwable) -> Unit>().invoke(Throwable())
-        }
-    }
-
-    fun `test open filter page after applying filter should update filter from API`() {
-        val requestParamsSlot = mutableListOf<MutableMap<String, Any>>()
-
-        `Given view setup from created until open filter page`()
-        `Given view apply filter and dismissed`()
-
-        `When view open filter page`()
-
-        `Then verify filter API is called twice`(requestParamsSlot)
-    }
-
-    private fun `Given view apply filter and dismissed`() {
-        val applySortFilterModel = applySortFilterModel
-            ?: throw AssertionError("Apply Sort Filter Model is null")
-
-        baseViewModel.onViewApplySortFilter(applySortFilterModel)
-        baseViewModel.onViewDismissFilterPage()
-    }
-
-    private fun `Then verify filter API is called twice`(requestParamsSlot: MutableList<MutableMap<String, Any>>) {
-        coVerify(exactly = 1) {
-            getFilterUseCase.execute(capture(requestParamsSlot))
         }
     }
 
