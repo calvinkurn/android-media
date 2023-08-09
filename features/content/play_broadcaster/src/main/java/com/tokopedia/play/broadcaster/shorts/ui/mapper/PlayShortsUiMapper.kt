@@ -69,7 +69,7 @@ class PlayShortsUiMapper @Inject constructor(
                 PlayTagItem(
                     tag = it,
                     isChosen = false,
-                    isActive = true,
+                    isActive = response.recommendedTags.maxTags != 0,
                 )
             }.toSet(),
             minTags = response.recommendedTags.minTags,
