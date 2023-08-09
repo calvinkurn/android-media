@@ -288,7 +288,7 @@ class DiscoveryPageDataMapper(
         }
         if (component.getComponentsItem().isNullOrEmpty()) {
             component.setComponentsItem(DiscoveryDataMapper.mapTabsListToComponentList(component, ComponentNames.TabsItem.componentName), component.tabName)
-        } else if (!component.getComponentsItem().isNullOrEmpty() && queryParameterMap[FORCED_NAVIGATION] == "true") {
+        } else if (!component.getComponentsItem().isNullOrEmpty() && queryParameterMap[FORCED_NAVIGATION] == "true") { //this is for the forced redirection case only, whenever tabs position is change using the product click from one tab to other
             val activeTabIndex = queryParameterMapWithoutRpc[ACTIVE_TAB]?.toIntOrNull()
             if (activeTabIndex != null) {
                 component.getComponentsItem()?.forEachIndexed { index, it ->
@@ -298,7 +298,6 @@ class DiscoveryPageDataMapper(
                         Utils.setTabSelectedBasedOnDataItem(it, false)
                     }
                 }
-//                component.setComponentsItem(DiscoveryDataMapper.mapTabsListToComponentList(component, ComponentNames.TabsItem.componentName), component.tabName)
             }
             queryParameterMap.remove(FORCED_NAVIGATION)
             component.shouldRefreshComponent = true
