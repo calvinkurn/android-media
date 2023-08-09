@@ -35,6 +35,7 @@ import com.tokopedia.emoney.di.DaggerDigitalEmoneyComponent
 import com.tokopedia.emoney.domain.request.JakCardStatus
 import com.tokopedia.emoney.integration.BCALibrary
 import com.tokopedia.emoney.util.DigitalEmoneyGqlQuery
+import com.tokopedia.emoney.viewmodel.BCABalanceViewModel
 import com.tokopedia.emoney.viewmodel.EmoneyBalanceViewModel
 import com.tokopedia.emoney.viewmodel.JakCardBalanceViewModel
 import com.tokopedia.emoney.viewmodel.TapcashBalanceViewModel
@@ -73,6 +74,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
     private val emoneyBalanceViewModel by viewModels<EmoneyBalanceViewModel> { viewModelFactory }
     private val tapcashBalanceViewModel by viewModels<TapcashBalanceViewModel> { viewModelFactory }
     private val jakcardBalanceViewModel by viewModels<JakCardBalanceViewModel> { viewModelFactory }
+    private val bcaBalanceViewModel by viewModels<BCABalanceViewModel> { viewModelFactory }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -154,7 +156,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         } else {
             initializeBCALibs(tag)
             if(bcaLibrary.C_BCAIsMyCard() == Int.ONE) {
-                Toast.makeText(context, bcaLibrary.C_BCACheckBalance().balance.toString(), Toast.LENGTH_LONG).show()
+                bcaBalanceViewModel.processBCATagBalance(IsoDep.get(tag))
             } else {
                 context?.let { context ->
                     showError(
@@ -321,6 +323,20 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         })
 
         jakcardBalanceViewModel.errorCardMessage.observe(viewLifecycleOwner, Observer { errorMessage ->
+            context?.let { context ->
+                val errorMessage = ErrorHandler.getErrorMessagePair(context, errorMessage, errorHanlderBuilder)
+                showError(errorMessage.first.orEmpty())
+            }
+        })
+
+        bcaBalanceViewModel.bcaInquiry.observe(viewLifecycleOwner, Observer{ bcaInquiry ->
+            bcaInquiry.attributesEmoneyInquiry?.let {attribute ->
+               //TODO add condition error
+               showCardLastBalance(bcaInquiry)
+            }
+        })
+
+        bcaBalanceViewModel.errorCardMessage.observe(viewLifecycleOwner, Observer { errorMessage ->
             context?.let { context ->
                 val errorMessage = ErrorHandler.getErrorMessagePair(context, errorMessage, errorHanlderBuilder)
                 showError(errorMessage.first.orEmpty())
