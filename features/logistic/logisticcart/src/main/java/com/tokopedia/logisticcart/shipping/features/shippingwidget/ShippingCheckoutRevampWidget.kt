@@ -467,7 +467,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             shippingNowWidget.gone()
 
             labelSelectedSingleShippingTitle.setText(R.string.checkout_label_set_pinpoint_title)
-            labelSingleShippingEta.gone()
+            groupLabelSingleShipping.gone()
             context?.apply {
                 val pinpointErrorMessage =
                     getString(R.string.checkout_label_set_pinpoint_description) + " "
@@ -484,8 +484,8 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
                     spannableString.length,
                     SpannableString.SPAN_INCLUSIVE_EXCLUSIVE
                 )
-                labelSingleShippingMessage.text = spannableString
-                labelSingleShippingMessage.visible()
+                labelSingleShippingEta.text = spannableString
+                labelSingleShippingEta.visible()
             }
 
             layoutStateHasSelectedSingleShipping.setOnClickListener {
