@@ -2101,8 +2101,7 @@ class CartViewModel @Inject constructor(
                         wishlistIcon,
                         position
                     )
-                }
-                else {
+                } else {
                     _removeFromWishlistEvent.value = RemoveFromWishlistEvent.Success(
                         result.data,
                         productId
@@ -2114,8 +2113,7 @@ class CartViewModel @Inject constructor(
                     _removeFromWishlistEvent.value = RemoveFromWishlistEvent.RemoveWishlistFromCartFailed(
                         error
                     )
-                }
-                else {
+                } else {
                     _removeFromWishlistEvent.value = RemoveFromWishlistEvent.Failed(
                         error,
                         productId
@@ -2129,16 +2127,18 @@ class CartViewModel @Inject constructor(
         cartIds: List<String>,
         needRefresh: Boolean,
         isFromGlobalCheckbox: Boolean
-    ): Pair<List<Int>, List<Int>> {
+    ): Triple<List<Int>, List<Int>, ArrayList<Any>> {
         val toBeRemovedItems = mutableListOf<Any>()
         val toBeRemovedIndices = mutableListOf<Int>()
         val toBeUpdatedIndices = mutableListOf<Int>()
+
+        val newCartDataList = ArrayList(cartDataList.value.toMutableList())
 
         var cartSelectedAmountHolderDataIndexPair: Pair<CartSelectedAmountHolderData, Int>? = null
         var cartItemTickerErrorHolderDataIndexPair: Pair<CartItemTickerErrorHolderData, Int>? = null
         var disabledItemHeaderHolderDataIndexPair: Pair<DisabledItemHeaderHolderData, Int>? = null
         var disabledAccordionHolderDataIndexPair: Pair<DisabledAccordionHolderData, Int>? = null
-        loop@ for ((index, data) in cartDataList.value.withIndex()) {
+        loop@ for ((index, data) in newCartDataList.withIndex()) {
             when {
                 data is CartSelectedAmountHolderData ->
                     cartSelectedAmountHolderDataIndexPair =
@@ -2174,8 +2174,8 @@ class CartViewModel @Inject constructor(
                         data.productUiModelList.removeAll(toBeDeletedProducts)
                         if (data.productUiModelList.isEmpty()) {
                             val previousIndex = index - 1
-                            if (data.isError && previousIndex < cartDataList.value.size) {
-                                val previousData = cartDataList.value[previousIndex]
+                            if (data.isError && previousIndex < newCartDataList.size) {
+                                val previousData = newCartDataList[previousIndex]
                                 if (previousData is DisabledReasonHolderData) {
                                     toBeRemovedItems.add(previousData)
                                     toBeRemovedIndices.add(previousIndex)
@@ -2210,32 +2210,32 @@ class CartViewModel @Inject constructor(
             }
         }
 
-        cartDataList.value.removeAll(toBeRemovedItems)
+        newCartDataList.removeAll(toBeRemovedItems)
 
-        if (CartDataHelper.getAllAvailableCartItemData(cartDataList.value).isEmpty()) {
+        if (CartDataHelper.getAllAvailableCartItemData(newCartDataList).isEmpty()) {
             cartSelectedAmountHolderDataIndexPair?.let {
-                cartDataList.value.remove(it.first)
+                newCartDataList.remove(it.first)
                 toBeRemovedItems.add(it.second)
             }
         }
 
         val disabledCartItems = CartDataHelper.getAllDisabledCartItemData(
-            cartDataList.value,
+            newCartDataList,
             cartModel
         )
         if (disabledCartItems.isEmpty()) {
             cartItemTickerErrorHolderDataIndexPair?.let {
-                cartDataList.value.remove(it.first)
+                newCartDataList.remove(it.first)
                 toBeRemovedItems.add(it.second)
                 toBeRemovedIndices.add(it.second)
             }
             disabledItemHeaderHolderDataIndexPair?.let {
-                cartDataList.value.remove(it.first)
+                newCartDataList.remove(it.first)
                 toBeRemovedItems.add(it.second)
                 toBeRemovedIndices.add(it.second)
             }
             disabledAccordionHolderDataIndexPair?.let {
-                cartDataList.value.remove(it.first)
+                newCartDataList.remove(it.first)
                 toBeRemovedItems.add(it.second)
                 toBeRemovedIndices.add(it.second)
             }
@@ -2269,13 +2269,13 @@ class CartViewModel @Inject constructor(
 
             if (removeAccordion) {
                 disabledAccordionHolderDataIndexPair?.let {
-                    cartDataList.value.remove(it.first)
+                    newCartDataList.remove(it.first)
                     toBeRemovedItems.add(it.second)
                     toBeRemovedIndices.add(it.second)
                 }
             }
         }
-        return Pair(toBeRemovedIndices, toBeUpdatedIndices)
+        return Triple(toBeRemovedIndices, toBeUpdatedIndices, newCartDataList)
     }
 
     private fun updateShopShownByCartGroup(cartGroupHolderData: CartGroupHolderData) {
@@ -2833,6 +2833,10 @@ class CartViewModel @Inject constructor(
         }
 
         return cartItemHolderDataList
+    }
+
+    fun updateCartDataList(newList: ArrayList<Any>) {
+        cartDataList.value = newList
     }
 
     override fun onCleared() {

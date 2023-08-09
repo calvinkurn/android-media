@@ -2996,11 +2996,11 @@ class CartRevampFragment :
 
     @SuppressLint("NotifyDataSetChanged")
     private fun removeLocalCartItem(
-        updateListResult: Pair<List<Int>, List<Int>>,
+        updateListResult: Triple<List<Int>, List<Int>, ArrayList<Any>>,
         forceExpandCollapsedUnavailableItems: Boolean
     ) {
         val allDisabledCartItemData = CartDataHelper.getAllDisabledCartItemData(
-            viewModel.cartDataList.value,
+            updateListResult.third,
             viewModel.cartModel
         )
 
@@ -3014,7 +3014,7 @@ class CartRevampFragment :
         }
 
         val allShopGroupDataList =
-            CartDataHelper.getAllShopGroupDataList(viewModel.cartDataList.value)
+            CartDataHelper.getAllShopGroupDataList(updateListResult.third)
 
         // Check if cart list has exactly 1 shop, and it's a toko now
         if (allShopGroupDataList.size == 1 && allShopGroupDataList[0].isTokoNow) {
@@ -3054,7 +3054,7 @@ class CartRevampFragment :
         }
 
         // use notify data set changed due to massive update
-        viewModel.cartDataList.notifyObserver()
+        viewModel.updateCartDataList(updateListResult.third)
 
         viewModel.reCalculateSubTotal()
         notifyBottomCartParent()
