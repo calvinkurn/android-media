@@ -70,6 +70,7 @@ import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeSliderSquarePlace
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeSliderSquareViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeV4TerlarisPlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeV4TerlarisViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeV4TerlarisViewHolderTest
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVideoViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopLayoutLoadingShimmerViewHolder
@@ -236,7 +237,8 @@ open class ShopHomeAdapterTypeFactory(
         return if (isShowTerlarisWidgetPlaceholder(baseShopHomeWidgetUiModel)) {
             ShopHomeV4TerlarisPlaceholderViewHolder.LAYOUT
         } else {
-            ShopHomeV4TerlarisViewHolder.LAYOUT
+            ShopHomeV4TerlarisViewHolderTest.LAYOUT
+            // ShopHomeV4TerlarisViewHolder.LAYOUT
         }
     }
 
@@ -384,7 +386,8 @@ open class ShopHomeAdapterTypeFactory(
             ShopHomeDisplayBannerTimerViewHolder.LAYOUT -> ShopHomeDisplayBannerTimerViewHolder(parent, shopHomeDisplayBannerTimerWidgetListener)
             // ========= Shop Home Revamp V4 - New widgets ========= //
             ShopHomeV4TerlarisPlaceholderViewHolder.LAYOUT -> ShopHomeV4TerlarisPlaceholderViewHolder(parent)
-            ShopHomeV4TerlarisViewHolder.LAYOUT -> ShopHomeV4TerlarisViewHolder(parent, shopHomeV4TerlarisViewHolderListener)
+            ShopHomeV4TerlarisViewHolderTest.LAYOUT -> ShopHomeV4TerlarisViewHolderTest(parent)
+//            ShopHomeV4TerlarisViewHolder.LAYOUT -> ShopHomeV4TerlarisViewHolder(parent, shopHomeV4TerlarisViewHolderListener)
             else -> return super.createViewHolder(parent, type)
         }
         return viewHolder
