@@ -3553,13 +3553,19 @@ open class DynamicProductDetailFragment :
         viewModel.dismissProductMediaRecomBottomSheet()
     }
 
-    override fun onToggleAPlus(collapse: Boolean) {
+    override fun onToggleAPlus(collapse: Boolean, componentTrackerData: ComponentTrackDataModel) {
         aPlusMediaCollapsed = collapse
         updateUi()
         if (aPlusMediaCollapsed) {
             val seeMorePosition = adapter.getSeeMoreAPlusTogglePosition()
             if (seeMorePosition != RecyclerView.NO_POSITION) scrollToPosition(seeMorePosition)
         }
+        DynamicProductDetailTracking.APlusContent.eventClickToggleExpandCollapse(
+            collapsing = aPlusMediaCollapsed,
+            componentTrackDataModel = componentTrackerData,
+            productInfo = viewModel.getDynamicProductInfoP1,
+            userID = viewModel.userId
+        )
     }
 
     private fun goToAtcVariant(customCartRedirection: Map<String, CartTypeData>? = null) {

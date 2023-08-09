@@ -531,5 +531,5 @@ interface DynamicProductDetailListener {
      */
     fun onProductMediaRecomBottomSheetDismissed()
 
-    fun onToggleAPlus(collapse: Boolean)
+    fun onToggleAPlus(collapse: Boolean, componentTrackerData: ComponentTrackDataModel)
 }

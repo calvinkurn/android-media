@@ -4,6 +4,7 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -30,6 +31,7 @@ class APlusImageViewHolder(
         setupDescription(element)
         setupImage(element)
         setupToggle(element)
+        setupImpressionListener(element)
     }
 
     private fun setupDivider(showTopDivider: Boolean) {
@@ -85,10 +87,24 @@ class APlusImageViewHolder(
             )
         }
         binding.tvProductDetailAPlusImageToggle.setOnClickListener {
-            listener.onToggleAPlus(!element.collapsed)
+            listener.onToggleAPlus(
+                !element.collapsed,
+                element.trackerData.copy(adapterPosition = bindingAdapterPosition)
+            )
         }
         binding.icProductDetailAPlusImageToggle.setOnClickListener {
-            listener.onToggleAPlus(!element.collapsed)
+            listener.onToggleAPlus(
+                !element.collapsed,
+                element.trackerData.copy(adapterPosition = bindingAdapterPosition)
+            )
+        }
+    }
+
+    private fun setupImpressionListener(element: APlusImageUiModel) {
+        binding.root.addOnImpressionListener(element.impressHolder) {
+            listener.onImpressComponent(
+                element.trackerData.copy(adapterPosition = bindingAdapterPosition)
+            )
         }
     }
 }
