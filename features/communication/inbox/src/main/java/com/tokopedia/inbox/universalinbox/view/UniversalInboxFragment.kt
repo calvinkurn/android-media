@@ -60,6 +60,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.global.recommendationWidgetViewModel
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -120,6 +121,8 @@ class UniversalInboxFragment @Inject constructor(
     private var isAdded = false
 
     private var trackingQueue: TrackingQueue? = null
+
+    private val recommendationWidgetViewModel by recommendationWidgetViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -890,9 +893,12 @@ class UniversalInboxFragment @Inject constructor(
     }
 
     private fun refreshRecommendations() {
-        endlessRecyclerViewScrollListener?.resetState()
-        adapter.removeAllProductRecommendation()
-        loadTopAdsAndRecommendation()
+        binding?.inboxRv?.post {
+            endlessRecyclerViewScrollListener?.resetState()
+            recommendationWidgetViewModel?.refresh()
+            adapter.removeAllProductRecommendation()
+            loadTopAdsAndRecommendation()
+        }
     }
 
     companion object {
