@@ -402,6 +402,10 @@ open class BuyerOrderDetailFragment :
         val cart =
             arguments?.getString(BuyerOrderDetailIntentParamKey.PARAM_CART_STRING, "").orEmpty()
         viewModel.getBuyerOrderDetailData(orderId, paymentId, cart, shouldCheckCache)
+        getMedalTouchPoint(
+            orderId = orderId.toLongOrZero(),
+            initialLoad = true
+        )
     }
 
     private fun observeBuyerOrderDetail() {
@@ -455,22 +459,24 @@ open class BuyerOrderDetailFragment :
 
     private fun observeMedalTouchPoint() {
         scpMedalTouchPointViewModel.medalTouchPointData.observe(viewLifecycleOwner) {
-            when (it) {
+            when (it.result) {
                 is com.tokopedia.scp_rewards_touchpoints.common.Success<*> -> {
-                    val data = (it.data as ScpRewardsMedalTouchPointResponse)
+                    val data = ((it.result as com.tokopedia.scp_rewards_touchpoints.common.Success<*>).data as ScpRewardsMedalTouchPointResponse)
                     if (data.scpRewardsMedaliTouchpointOrder.isShown) {
                         view?.let { view ->
-                            ScpToasterHelper.showToaster(
-                                view = view,
-                                data = data,
-                                customBottomHeight = getStickyActionButtonHeight(),
-                                ctaClickListener = {
-                                    viewModel.hideScpRewardsMedalTouchPointWidget()
-                                }
-                            )
-                            ScpRewardsToasterAnalytics.sendViewToasterEvent(
-                                badgeId = data.scpRewardsMedaliTouchpointOrder.medaliTouchpointOrder.medaliID.toString()
-                            )
+                            if (!it.initialLoad) {
+                                ScpToasterHelper.showToaster(
+                                    view = view,
+                                    data = data,
+                                    customBottomHeight = getStickyActionButtonHeight(),
+                                    ctaClickListener = {
+                                        viewModel.hideScpRewardsMedalTouchPointWidget()
+                                    }
+                                )
+                                ScpRewardsToasterAnalytics.sendViewToasterEvent(
+                                    badgeId = data.scpRewardsMedaliTouchpointOrder.medaliTouchpointOrder.medaliID.toString()
+                                )
+                            }
                             viewModel.updateScpRewardsMedalTouchPointWidgetState(
                                 data = data.scpRewardsMedaliTouchpointOrder.medaliTouchpointOrder,
                                 marginLeft = resources.getDimension(R.dimen.buyer_order_detail_scp_rewards_medal_touch_point_margin_left).toIntSafely(),
@@ -479,13 +485,17 @@ open class BuyerOrderDetailFragment :
                             )
                         }
                     } else {
-                        val message = (viewModel.finishOrderResult.value as? Success<FinishOrderResponse.Data.FinishOrderBuyer>)?.data?.message?.firstOrNull().orEmpty()
-                        showCommonToaster(message)
+                        if (!it.initialLoad) {
+                            val message = (viewModel.finishOrderResult.value as? Success<FinishOrderResponse.Data.FinishOrderBuyer>)?.data?.message?.firstOrNull().orEmpty()
+                            showCommonToaster(message)
+                        }
                     }
                 }
                 is Error -> {
-                    val message = (viewModel.finishOrderResult.value as? Success<FinishOrderResponse.Data.FinishOrderBuyer>)?.data?.message?.firstOrNull().orEmpty()
-                    showCommonToaster(message)
+                    if (!it.initialLoad) {
+                        val message = (viewModel.finishOrderResult.value as? Success<FinishOrderResponse.Data.FinishOrderBuyer>)?.data?.message?.firstOrNull().orEmpty()
+                        showCommonToaster(message)
+                    }
                 }
                 else -> {}
             }
@@ -563,17 +573,20 @@ open class BuyerOrderDetailFragment :
         bottomSheetManager.finishReceiveConfirmationBottomSheetLoading()
         bottomSheetManager.dismissBottomSheets()
         loadBuyerOrderDetail(false)
-        getMedalTouchPoint(data.message.firstOrNull().orEmpty())
+        getMedalTouchPoint(viewModel.getOrderId().toLongOrZero()) {
+            showCommonToaster(data.message.firstOrNull().orEmpty())
+        }
     }
 
-    private fun getMedalTouchPoint(finishMessage: String) {
+    private fun getMedalTouchPoint(orderId: Long, initialLoad: Boolean = false, backupAction: (() -> Unit)? = null) {
         if (isScpRewardTouchPointEnabled()) {
             scpMedalTouchPointViewModel.getMedalTouchPoint(
-                orderId = viewModel.getOrderId().toLongOrZero(),
-                sourceName = SOURCE_NAME_FOR_MEDAL_TOUCH_POINT
+                orderId = orderId,
+                sourceName = SOURCE_NAME_FOR_MEDAL_TOUCH_POINT,
+                initialLoad = initialLoad
             )
         } else {
-            showCommonToaster(finishMessage)
+            backupAction?.invoke()
         }
     }
 

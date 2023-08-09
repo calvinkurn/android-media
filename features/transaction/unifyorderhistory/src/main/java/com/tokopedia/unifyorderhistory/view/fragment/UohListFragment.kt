@@ -843,9 +843,9 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
 
     private fun observeScpToaster() {
         scpTouchPointViewModel.medalTouchPointData.observe(viewLifecycleOwner) {
-            when (it) {
+            when (it.result) {
                 is com.tokopedia.scp_rewards_touchpoints.common.Success<*> -> {
-                    val data = (it.data as ScpRewardsMedalTouchPointResponse)
+                    val data = ((it.result as com.tokopedia.scp_rewards_touchpoints.common.Success<*>).data as ScpRewardsMedalTouchPointResponse)
                     if (data.scpRewardsMedaliTouchpointOrder.isShown) {
                         view?.let { view ->
                             ScpToasterHelper.showToaster(
