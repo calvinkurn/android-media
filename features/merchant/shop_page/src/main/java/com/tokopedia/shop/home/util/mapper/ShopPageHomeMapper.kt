@@ -913,8 +913,8 @@ object ShopPageHomeMapper {
         return ShopHomeCarousellProductUiModel(
             widgetId = widgetModel.widgetID,
             layoutOrder = widgetModel.layoutOrder,
-            name = widgetModel.name,
-            type = "terlaris", // widgetModel.type, // ----> For Development & Testing purpose
+            name = "terlaris", // widgetModel.type, // ----> For Development & Testing purpose
+            type = widgetModel.type,
             header = mapToHeaderModel(widgetModel.header, widgetLayout),
             isFestivity = widgetLayout?.isFestivity.orFalse(),
             productList = mapToWidgetProductListItemViewModel(
