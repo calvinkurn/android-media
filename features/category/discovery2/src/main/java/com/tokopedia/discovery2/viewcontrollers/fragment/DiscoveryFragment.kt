@@ -1422,20 +1422,6 @@ open class DiscoveryFragment :
                     if (position > 0 && isTabPresent) {
                         handleAutoScrollUI()
                         if(isFromForcedNavigation){
-//                            recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object :
-//                                ViewTreeObserver.OnGlobalLayoutListener {
-//                                override fun onGlobalLayout() {
-//                                    var pos = -1
-//                                    discoveryAdapter.currentList.forEachIndexed { index, componentsItem ->
-//                                        if (componentsItem.id == pinnedComponentId) {
-//                                            pos = index
-//                                        }
-//                                    }
-//                                    recyclerView.smoothScrollToPosition(position)
-//                                    removePaddingIfComponent()
-//                                    recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-//                                }
-//                            })
                             var pos = -1
                             CoroutineScope(Dispatchers.Main).launch {
                                 delay(2000)
