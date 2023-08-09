@@ -1212,7 +1212,7 @@ class FeedPostViewModelTest {
      */
 
     @Test
-    fun `when submit report return success` () {
+    fun `when submit report return success`() {
         coEvery { userSession.userId } returns "13232"
         coEvery { userSession.isLoggedIn } returns true
 
@@ -1227,27 +1227,27 @@ class FeedPostViewModelTest {
         coEvery { postReportUseCase.executeOnBackground() } returns response
 
         viewModel.selectReport(PlayUserReportReasoningUiModel.Reasoning.Empty)
-        viewModel.submitReport("",0L, FeedCardVideoContentModel.Empty)
+        viewModel.submitReport("", 0L, FeedCardVideoContentModel.Empty)
 
         assert(viewModel.isReported.value is Success)
         assert(viewModel.selectedReport == PlayUserReportReasoningUiModel.Reasoning.Empty)
     }
 
     @Test
-    fun `when submit report video return error from be` () {
+    fun `when submit report video return error from be`() {
         coEvery { userSession.isLoggedIn } returns true
 
         coEvery { postReportUseCase.executeOnBackground() } throws MessageErrorException()
 
         viewModel.selectReport(PlayUserReportReasoningUiModel.Reasoning.Empty)
-        viewModel.submitReport("",0L, FeedCardVideoContentModel.Empty)
+        viewModel.submitReport("", 0L, FeedCardVideoContentModel.Empty)
 
         assert(viewModel.isReported.value is Fail)
         assert(viewModel.selectedReport == PlayUserReportReasoningUiModel.Reasoning.Empty)
     }
 
     @Test
-    fun `when submit report video return error` () {
+    fun `when submit report video return error`() {
         coEvery { userSession.isLoggedIn } returns true
 
         val response = UserReportSubmissionResponse(
@@ -1258,7 +1258,7 @@ class FeedPostViewModelTest {
         coEvery { postReportUseCase.executeOnBackground() } returns response
 
         viewModel.selectReport(PlayUserReportReasoningUiModel.Reasoning.Empty)
-        viewModel.submitReport("",0L, FeedCardVideoContentModel.Empty)
+        viewModel.submitReport("", 0L, FeedCardVideoContentModel.Empty)
 
         assert(viewModel.isReported.value is Fail)
         assert(viewModel.selectedReport == PlayUserReportReasoningUiModel.Reasoning.Empty)
@@ -1269,22 +1269,25 @@ class FeedPostViewModelTest {
      */
 
     @Test
-    fun `get reasoning list is success`(){
+    fun `get reasoning list is success`() {
         val response = UserReportOptions.Response(
             data = listOf(
                 UserReportOptions(
                     id = 1,
                     value = "Harga melanggar etika",
                     detail = ""
-                ), UserReportOptions(
+                ),
+                UserReportOptions(
                     id = 11,
                     value = "Melanggar HAM",
                     detail = ""
-                ), UserReportOptions(
+                ),
+                UserReportOptions(
                     id = 12,
                     value = "SARA",
                     detail = ""
-                ), UserReportOptions(
+                ),
+                UserReportOptions(
                     id = 9,
                     value = "Melanggar etik",
                     detail = ""
@@ -1300,7 +1303,7 @@ class FeedPostViewModelTest {
     }
 
     @Test
-    fun `get reasoning list is error`(){
+    fun `get reasoning list is error`() {
         coEvery { getReportListUseCase.executeOnBackground() } throws MessageErrorException()
         viewModel.getReport()
 
@@ -1310,11 +1313,11 @@ class FeedPostViewModelTest {
     private fun getDummyData(): FeedXGQLResponse = FeedXGQLResponse(
         data = FeedXGetActivityProductsResponse(
             products = listOf(
-                FeedXProduct(shopID = "09876"),
-                FeedXProduct(),
-                FeedXProduct(),
-                FeedXProduct(),
-                FeedXProduct()
+                FeedXProduct(shopID = "09876", id = "1"),
+                FeedXProduct(id = "2"),
+                FeedXProduct(id = "3"),
+                FeedXProduct(id = "4"),
+                FeedXProduct(id = "5")
             ),
             isFollowed = true,
             contentType = "content type",
