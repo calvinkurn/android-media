@@ -127,7 +127,6 @@ class ProductManageViewModel @Inject constructor(
         const val REQUEST_DELAY = 1000L
 
         // If hit bulk edit more than once in a row
-        const val REQUEST_DELAY_BULK_EDIT = 2500L
         private const val REASON_DT_FOR_BULK_EDIT = "FORBIDDEN_DT_PRODUCT_DELETION"
     }
 
