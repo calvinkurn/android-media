@@ -15,6 +15,7 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.cart.view.CartIdlingResource
 import com.tokopedia.cart.view.analytics.EnhancedECommerceActionFieldData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceClickData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceData
@@ -38,8 +39,10 @@ import com.tokopedia.cartrevamp.domain.usecase.GetCartRevampV4UseCase
 import com.tokopedia.cartrevamp.domain.usecase.SetCartlistCheckboxStateUseCase
 import com.tokopedia.cartrevamp.domain.usecase.UpdateAndReloadCartUseCase
 import com.tokopedia.cartrevamp.domain.usecase.UpdateCartAndGetLastApplyUseCase
+import com.tokopedia.cartrevamp.view.helper.CartDataHelper
 import com.tokopedia.cartrevamp.view.mapper.CartUiModelMapper
 import com.tokopedia.cartrevamp.view.mapper.PromoRequestMapper
+import com.tokopedia.cartrevamp.view.processor.CartCalculator
 import com.tokopedia.cartrevamp.view.uimodel.AddCartToWishlistV2Event
 import com.tokopedia.cartrevamp.view.uimodel.AddToCartEvent
 import com.tokopedia.cartrevamp.view.uimodel.AddToCartExternalEvent
@@ -167,7 +170,8 @@ class CartViewModel @Inject constructor(
     private val followShopUseCase: FollowShopUseCase,
     private val cartShopGroupTickerAggregatorUseCase: CartShopGroupTickerAggregatorUseCase,
     private val schedulers: ExecutorSchedulers,
-    private val dispatchers: CoroutineDispatchers
+    private val dispatchers: CoroutineDispatchers,
+    private val cartCalculator: CartCalculator
 ) : ViewModel(), CoroutineScope {
 
     override val coroutineContext: CoroutineContext
@@ -240,7 +244,6 @@ class CartViewModel @Inject constructor(
     private var cartShopGroupTickerJob: Job? = null
 
     companion object {
-        private const val PERCENTAGE = 100.0f
         private const val CART_SHOP_GROUP_TICKER_DELAY = 500L
         private const val BO_AFFORDABILITY_WEIGHT_KILO = 1000
 
@@ -266,7 +269,10 @@ class CartViewModel @Inject constructor(
 
     fun dataHasChanged(): Boolean {
         var hasChanges = false
-        getAllCartItemData().let {
+        CartDataHelper.getAllCartItemData(
+            cartDataList.value,
+            cartModel
+        ).let {
             for (cartItemHolderData in it) {
                 if (cartItemHolderData.quantity != cartItemHolderData.originalQty || cartItemHolderData.notes != cartItemHolderData.originalNotes ||
                     (cartItemHolderData.isBundlingItem && cartItemHolderData.bundleQuantity != cartItemHolderData.originalBundleQuantity)
@@ -284,282 +290,6 @@ class CartViewModel @Inject constructor(
         }
 
         return hasChanges
-    }
-
-    fun getAllShopGroupDataList(): List<CartGroupHolderData> {
-        val shopGroupList = mutableListOf<CartGroupHolderData>()
-        loop@ for (data in cartDataList.value) {
-            when (data) {
-                is CartGroupHolderData -> {
-                    shopGroupList.add(data)
-                }
-
-                hasReachAllShopItems(data) -> break@loop
-            }
-        }
-        return shopGroupList
-    }
-
-    fun getAllCartItemData(): List<CartItemHolderData> {
-        val cartItemDataList = ArrayList<CartItemHolderData>()
-        loop@ for (data in cartDataList.value) {
-            when (data) {
-                is CartGroupHolderData -> {
-                    val cartItemHolderDataList = data.productUiModelList
-                    for (cartItemHolderData in cartItemHolderDataList) {
-                        cartItemHolderData.shopBoMetadata = data.boMetadata
-                        cartItemHolderData.shopCartShopGroupTickerData = data.cartShopGroupTicker
-                        cartItemDataList.add(cartItemHolderData)
-                    }
-                }
-
-                hasReachAllShopItems(data) -> break@loop
-            }
-        }
-
-        if (cartModel.tmpAllUnavailableShop?.isNotEmpty() == true) {
-            cartItemDataList.addAll(getCollapsedUnavailableCartItemData())
-        }
-
-        return cartItemDataList
-    }
-
-    fun getAllAvailableCartItemData(): List<CartItemHolderData> {
-        val cartItemDataList = ArrayList<CartItemHolderData>()
-        loop@ for (data in cartDataList.value) {
-            when (data) {
-                is CartGroupHolderData -> {
-                    if (!data.isError) {
-                        val cartItemHolderDataList = data.productUiModelList
-                        for (cartItemHolderData in cartItemHolderDataList) {
-                            cartItemHolderData.shopBoMetadata = data.boMetadata
-                            cartItemHolderData.shopCartShopGroupTickerData =
-                                data.cartShopGroupTicker
-                            cartItemDataList.add(cartItemHolderData)
-                        }
-                    }
-                }
-
-                hasReachAllShopItems(data) -> break@loop
-            }
-        }
-
-        return cartItemDataList
-    }
-
-    fun getAllAvailableCartItemHolderData(): List<CartItemHolderData> {
-        val cartItemDataList = ArrayList<CartItemHolderData>()
-        loop@ for (data in cartDataList.value) {
-            when (data) {
-                is CartGroupHolderData -> {
-                    data.productUiModelList.let {
-                        cartItemDataList.addAll(it)
-                    }
-                }
-
-                hasReachAllShopItems(data) -> break@loop
-            }
-        }
-
-        return cartItemDataList
-    }
-
-    private fun getSelectedAvailableCartItemData(): List<CartItemHolderData> {
-        val cartItemDataList = ArrayList<CartItemHolderData>()
-        loop@ for (data in cartDataList.value) {
-            when (data) {
-                is CartGroupHolderData -> {
-                    if (!data.isError) {
-                        for (cartItemHolderData in data.productUiModelList) {
-                            if (cartItemHolderData.isSelected) {
-                                cartItemDataList.add(cartItemHolderData)
-                            }
-                        }
-                    }
-                }
-
-                hasReachAllShopItems(data) -> break@loop
-            }
-        }
-
-        return cartItemDataList
-    }
-
-    fun getSelectedCartGroupHolderData(): List<CartGroupHolderData> {
-        val cartGroupHolderDataList = ArrayList<CartGroupHolderData>()
-        loop@ for (data in cartDataList.value) {
-            when (data) {
-                is CartGroupHolderData -> {
-                    if (data.isPartialSelected || data.isAllSelected) {
-                        cartGroupHolderDataList.add(data)
-                    }
-                }
-
-                hasReachAllShopItems(data) -> break@loop
-            }
-        }
-
-        return cartGroupHolderDataList
-    }
-
-    fun getDisabledAccordionHolderData(): DisabledAccordionHolderData? {
-        cartDataList.value.forEach {
-            if (it is DisabledAccordionHolderData) {
-                return it
-            }
-        }
-
-        return null
-    }
-
-    fun getSelectedCartItemData(): List<CartItemHolderData> {
-        val cartItemDataList = ArrayList<CartItemHolderData>()
-        loop@ for (data in cartDataList.value) {
-            when (data) {
-                is CartGroupHolderData -> {
-                    if ((data.isPartialSelected || data.isAllSelected)) {
-                        for (cartItemHolderData in data.productUiModelList) {
-                            if (cartItemHolderData.isSelected && !cartItemHolderData.isError) {
-                                cartItemHolderData.shopBoMetadata = data.boMetadata
-                                cartItemHolderData.shopCartShopGroupTickerData =
-                                    data.cartShopGroupTicker
-                                cartItemDataList.add(cartItemHolderData)
-                            }
-                        }
-                    }
-                }
-
-                hasReachAllShopItems(data) -> break@loop
-            }
-        }
-
-        return cartItemDataList
-    }
-
-    fun getAllAvailableShopGroupDataList(): List<CartGroupHolderData> {
-        val availableShopGroupList = mutableListOf<CartGroupHolderData>()
-        loop@ for (data in cartDataList.value) {
-            when (data) {
-                is CartGroupHolderData -> {
-                    if (!data.isError) {
-                        availableShopGroupList.add(data)
-                    }
-                }
-
-                hasReachAllShopItems(data) -> break@loop
-            }
-        }
-        return availableShopGroupList
-    }
-
-    fun getAllCartItemProductId(): List<String> {
-        val productIdList = ArrayList<String>()
-        loop@ for (data in cartDataList.value) {
-            when (data) {
-                is CartGroupHolderData -> {
-                    data.productUiModelList.let {
-                        for (cartItemHolderData in it) {
-                            productIdList.add(cartItemHolderData.productId)
-                        }
-                    }
-                }
-
-                hasReachAllShopItems(data) -> break@loop
-            }
-        }
-
-        return productIdList
-    }
-
-    private fun getCollapsedUnavailableCartItemData(): List<CartItemHolderData> {
-        val cartItemDataList = mutableListOf<CartItemHolderData>()
-        cartModel.tmpAllUnavailableShop?.let {
-            loop@ for (data in it) {
-                when (data) {
-                    is CartGroupHolderData -> {
-                        cartItemDataList.addAll(data.productUiModelList)
-                    }
-                }
-            }
-        }
-        return cartItemDataList
-    }
-
-    fun getAllDisabledCartItemData(): List<CartItemHolderData> {
-        val cartItemDataList = ArrayList<CartItemHolderData>()
-        if (cartModel.tmpAllUnavailableShop?.isNotEmpty() == true) {
-            cartItemDataList.addAll(getCollapsedUnavailableCartItemData())
-        } else {
-            loop@ for (data in cartDataList.value) {
-                when (data) {
-                    is CartGroupHolderData -> {
-                        if (data.isError) {
-                            cartItemDataList.addAll(data.productUiModelList)
-                        }
-                    }
-
-                    hasReachAllShopItems(data) -> break@loop
-                }
-            }
-        }
-
-        return cartItemDataList
-    }
-
-    fun hasAvailableItemLeft(): Boolean {
-        cartDataList.value.forEach {
-            when (it) {
-                is CartGroupHolderData -> {
-                    if (it.productUiModelList.isNotEmpty()) {
-                        return true
-                    }
-                }
-
-                is DisabledItemHeaderHolderData, is CartSectionHeaderHolderData -> {
-                    return false
-                }
-            }
-        }
-
-        return false
-    }
-
-    fun getCartWishlistHolderData(): CartWishlistHolderData {
-        cartDataList.value.forEach {
-            if (it is CartWishlistHolderData) {
-                return it
-            }
-        }
-
-        return CartWishlistHolderData()
-    }
-
-    fun getDisabledItemHeaderPosition(): Int {
-        for (i in cartDataList.value.indices) {
-            if (cartDataList.value[i] is DisabledItemHeaderHolderData) {
-                return i
-            }
-        }
-
-        return 0
-    }
-
-    fun hasSelectedCartItem(): Boolean {
-        cartDataList.value.forEach {
-            when (it) {
-                is CartGroupHolderData -> {
-                    it.productUiModelList.forEach {
-                        if (it.isSelected) return true
-                    }
-                }
-
-                is DisabledItemHeaderHolderData, is CartSectionHeaderHolderData -> {
-                    return false
-                }
-            }
-        }
-
-        return false
     }
 
     fun setAllAvailableItemCheck(checked: Boolean) {
@@ -647,45 +377,6 @@ class CartViewModel @Inject constructor(
         return false
     }
 
-    fun isAllAvailableItemCheked(): Boolean {
-        cartDataList.value.forEach {
-            when (it) {
-                is CartGroupHolderData -> {
-                    it.productUiModelList.forEach { itemHolderData ->
-                        if (!itemHolderData.isSelected) {
-                            return false
-                        }
-                    }
-                }
-
-                is DisabledItemHeaderHolderData, is CartSectionHeaderHolderData -> {
-                    return true
-                }
-            }
-        }
-
-        return true
-    }
-
-    fun getRecommendationItem(itemCount: Int): List<CartRecommendationItemHolderData> {
-        var firstRecommendationItemIndex = 0
-        for ((index, item) in cartDataList.value.withIndex()) {
-            if (item is CartRecommendationItemHolderData) {
-                firstRecommendationItemIndex = index
-                break
-            }
-        }
-
-        var lastIndex = itemCount
-        // Check if last item is not loading view type
-        if (cartDataList.value[itemCount - 1] !is CartRecommendationItemHolderData) {
-            lastIndex = itemCount - 1
-        }
-        val recommendationList = cartDataList.value.subList(firstRecommendationItemIndex, lastIndex)
-
-        return recommendationList as List<CartRecommendationItemHolderData>
-    }
-
     fun removeAccordionDisabledItem() {
         var item: DisabledAccordionHolderData? = null
         cartDataList.value.forEach {
@@ -755,7 +446,10 @@ class CartViewModel @Inject constructor(
     ) {
         launch(dispatchers.io) {
             val cartItemDataList = ArrayList<CartItemHolderData>()
-            for (data in getAllAvailableCartItemData()) {
+            val allAvailableCartItemData = CartDataHelper.getAllAvailableCartItemData(
+                cartDataList.value
+            )
+            for (data in allAvailableCartItemData) {
                 if (!data.isError) {
                     cartItemDataList.add(data)
                 }
@@ -1070,200 +764,8 @@ class CartViewModel @Inject constructor(
         }
     }
 
-    private fun calculatePriceMarketplaceProduct(allCartItemDataList: ArrayList<CartItemHolderData>): Triple<Int, Pair<Double, Double>, Double> {
-        var totalItemQty = 0
-        var subtotalBeforeSlashedPrice = 0.0
-        var subtotalPrice = 0.0
-        var subtotalCashback = 0.0
-
-        val subtotalWholesaleBeforeSlashedPriceMap = HashMap<String, Double>()
-        val subtotalWholesalePriceMap = HashMap<String, Double>()
-        val subtotalWholesaleCashbackMap = HashMap<String, Double>()
-        val cartItemParentIdMap = HashMap<String, CartItemHolderData>()
-        val calculatedBundlingGroupId = HashSet<String>()
-
-        for (cartItemHolderData in allCartItemDataList) {
-            var itemQty =
-                if (cartItemHolderData.isBundlingItem) {
-                    cartItemHolderData.bundleQuantity * cartItemHolderData.quantity
-                } else {
-                    cartItemHolderData.quantity
-                }
-            totalItemQty += itemQty
-            if (cartItemHolderData.parentId.isNotBlank() && cartItemHolderData.parentId.isNotBlank() && cartItemHolderData.parentId != "0") {
-                for (cartItemHolderDataTmp in allCartItemDataList) {
-                    if (cartItemHolderData.productId != cartItemHolderDataTmp.productId &&
-                        cartItemHolderData.parentId == cartItemHolderDataTmp.parentId &&
-                        cartItemHolderData.productPrice == cartItemHolderDataTmp.productPrice
-                    ) {
-                        val tmpQty =
-                            if (cartItemHolderDataTmp.isBundlingItem) {
-                                cartItemHolderDataTmp.bundleQuantity * cartItemHolderDataTmp.quantity
-                            } else {
-                                cartItemHolderDataTmp.quantity
-                            }
-                        itemQty += tmpQty
-                    }
-                }
-            }
-
-            if (cartItemHolderData.isBundlingItem) {
-                if (!calculatedBundlingGroupId.contains(cartItemHolderData.bundleGroupId)) {
-                    subtotalPrice += cartItemHolderData.bundleQuantity * cartItemHolderData.bundlePrice
-                    subtotalBeforeSlashedPrice += cartItemHolderData.bundleQuantity * cartItemHolderData.bundleOriginalPrice
-                    calculatedBundlingGroupId.add(cartItemHolderData.bundleGroupId)
-                }
-            } else if (cartItemHolderData.wholesalePriceData.isNotEmpty()) {
-                // Calculate price and cashback for wholesale marketplace product
-                val returnValueWholesaleProduct =
-                    calculatePriceWholesaleProduct(cartItemHolderData, itemQty)
-
-                if (!subtotalWholesaleBeforeSlashedPriceMap.containsKey(cartItemHolderData.parentId)) {
-                    subtotalWholesaleBeforeSlashedPriceMap[cartItemHolderData.parentId] =
-                        returnValueWholesaleProduct.first
-                }
-                if (!subtotalWholesalePriceMap.containsKey(cartItemHolderData.parentId)) {
-                    subtotalWholesalePriceMap[cartItemHolderData.parentId] =
-                        returnValueWholesaleProduct.second
-                }
-                if (!subtotalWholesaleCashbackMap.containsKey(cartItemHolderData.parentId)) {
-                    subtotalWholesaleCashbackMap[cartItemHolderData.parentId] =
-                        returnValueWholesaleProduct.third
-                }
-            } else {
-                // Calculate price and cashback for normal marketplace product
-                val returnValueNormalProduct = calculatePriceNormalProduct(
-                    cartItemHolderData,
-                    itemQty,
-                    cartItemParentIdMap,
-                    subtotalBeforeSlashedPrice,
-                    subtotalPrice,
-                    subtotalCashback
-                )
-                subtotalBeforeSlashedPrice = returnValueNormalProduct.first
-                subtotalPrice = returnValueNormalProduct.second
-                subtotalCashback = returnValueNormalProduct.third
-            }
-
-            if (cartItemHolderData.addOnsProduct.listData.isNotEmpty()) {
-                cartModel = cartModel.copy(totalQtyWithAddon = totalItemQty)
-                cartItemHolderData.addOnsProduct.listData.forEach {
-                    subtotalPrice += (cartModel.totalQtyWithAddon * it.price)
-                }
-            }
-        }
-
-        if (subtotalWholesaleBeforeSlashedPriceMap.isNotEmpty()) {
-            for ((_, value) in subtotalWholesaleBeforeSlashedPriceMap) {
-                subtotalBeforeSlashedPrice += value
-            }
-        }
-
-        if (subtotalWholesalePriceMap.isNotEmpty()) {
-            for ((_, value) in subtotalWholesalePriceMap) {
-                subtotalPrice += value
-            }
-        }
-
-        if (subtotalWholesaleCashbackMap.isNotEmpty()) {
-            for ((_, value) in subtotalWholesaleCashbackMap) {
-                subtotalCashback += value
-            }
-        }
-
-        val pricePair = Pair(subtotalBeforeSlashedPrice, subtotalPrice)
-        return Triple(totalItemQty, pricePair, subtotalCashback)
-    }
-
-    private fun calculatePriceNormalProduct(
-        cartItemHolderData: CartItemHolderData,
-        itemQty: Int,
-        cartItemParentIdMap: HashMap<String, CartItemHolderData>,
-        subtotalBeforeSlashedPrice: Double,
-        subtotalPrice: Double,
-        subtotalCashback: Double
-    ): Triple<Double, Double, Double> {
-        var tmpSubtotalBeforeSlashedPrice = subtotalBeforeSlashedPrice
-        var tmpSubTotalPrice = subtotalPrice
-        var tmpSubtotalCashback = subtotalCashback
-
-        val parentIdPriceIndex =
-            cartItemHolderData.parentId + cartItemHolderData.productPrice.toString()
-        if (!cartItemParentIdMap.containsKey(parentIdPriceIndex)) {
-            val itemPrice = itemQty * cartItemHolderData.productPrice
-            if (cartItemHolderData.productCashBack.isNotBlank()) {
-                val cashbackPercentageString = cartItemHolderData.productCashBack
-                    .replace(" ", "")
-                    .replace("%", "")
-                val cashbackPercentage = cashbackPercentageString.toDouble()
-                val itemCashback = cashbackPercentage / PERCENTAGE * itemPrice
-                tmpSubtotalCashback += itemCashback
-            }
-
-            if (cartItemHolderData.productOriginalPrice > 0) {
-                tmpSubtotalBeforeSlashedPrice += (itemQty * cartItemHolderData.productOriginalPrice)
-            } else {
-                tmpSubtotalBeforeSlashedPrice += itemPrice
-            }
-
-            tmpSubTotalPrice += itemPrice
-            cartItemHolderData.wholesalePriceFormatted = null
-            cartItemParentIdMap[parentIdPriceIndex] = cartItemHolderData
-        }
-
-        return Triple(tmpSubtotalBeforeSlashedPrice, tmpSubTotalPrice, tmpSubtotalCashback)
-    }
-
-    private fun calculatePriceWholesaleProduct(
-        cartItemHolderData: CartItemHolderData,
-        itemQty: Int
-    ): Triple<Double, Double, Double> {
-        var subtotalBeforeSlashedPrice = 0.0
-        var subTotalWholesalePrice = 0.0
-        var subtotalWholesaleCashback = 0.0
-
-        var hasCalculateWholesalePrice = false
-        val wholesalePriceDataList = cartItemHolderData.wholesalePriceData
-
-        for (wholesalePriceData in wholesalePriceDataList) {
-            if (itemQty >= wholesalePriceData.qtyMin) {
-                subTotalWholesalePrice = (itemQty * wholesalePriceData.prdPrc)
-                hasCalculateWholesalePrice = true
-                val wholesalePriceFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    wholesalePriceData.prdPrc,
-                    false
-                ).removeDecimalSuffix()
-                cartItemHolderData.wholesalePriceFormatted = wholesalePriceFormatted
-                cartItemHolderData.wholesalePrice = wholesalePriceData.prdPrc
-                subtotalBeforeSlashedPrice = itemQty * cartItemHolderData.wholesalePrice
-                break
-            }
-        }
-
-        if (!hasCalculateWholesalePrice) {
-            subTotalWholesalePrice = (itemQty * cartItemHolderData.productPrice)
-            cartItemHolderData.wholesalePriceFormatted = null
-            cartItemHolderData.wholesalePrice = 0.0
-            subtotalBeforeSlashedPrice =
-                if (cartItemHolderData.productOriginalPrice > 0) {
-                    (itemQty * cartItemHolderData.productOriginalPrice)
-                } else {
-                    (itemQty * cartItemHolderData.productPrice)
-                }
-        }
-
-        if (cartItemHolderData.productCashBack.isNotBlank()) {
-            val cashbackPercentageString = cartItemHolderData.productCashBack
-                .replace(" ", "")
-                .replace("%", "")
-            val cashbackPercentage = cashbackPercentageString.toDouble()
-            subtotalWholesaleCashback = cashbackPercentage / PERCENTAGE * subTotalWholesalePrice
-        }
-
-        return Triple(subtotalBeforeSlashedPrice, subTotalWholesalePrice, subtotalWholesaleCashback)
-    }
-
-    fun reCalculateSubTotal(dataList: List<CartGroupHolderData>) {
+    fun reCalculateSubTotal() {
+        val dataList = CartDataHelper.getAllAvailableShopGroupDataList(cartDataList.value)
         var totalItemQty = 0
         var subtotalBeforeSlashedPrice = 0.0
         var subtotalPrice = 0.0
@@ -1273,7 +775,13 @@ class CartViewModel @Inject constructor(
         val cartItemDataList = getAvailableCartItemDataList(dataList)
 
         // Calculate total total item, price and cashback for marketplace product
-        val returnValueMarketplaceProduct = calculatePriceMarketplaceProduct(cartItemDataList)
+        val returnValueMarketplaceProduct = cartCalculator.calculatePriceMarketplaceProduct(
+            allCartItemDataList = cartItemDataList,
+            cartModel = cartModel,
+            updateCartModel = { newCartModel ->
+                cartModel = newCartModel
+            }
+        )
         totalItemQty += returnValueMarketplaceProduct.first
         subtotalBeforeSlashedPrice += returnValueMarketplaceProduct.second.first
         subtotalPrice += returnValueMarketplaceProduct.second.second
@@ -1409,10 +917,10 @@ class CartViewModel @Inject constructor(
 
         val cartItemDataList: List<CartItemHolderData> = if (fireAndForget) {
             // Update cart to save state
-            getAllAvailableCartItemData()
+            CartDataHelper.getAllAvailableCartItemData(cartDataList.value)
         } else {
             // Update cart to go to shipment
-            getSelectedCartItemData()
+            CartDataHelper.getSelectedCartItemData(cartDataList.value)
         }
 
         val updateCartRequestList = getUpdateCartRequest(cartItemDataList, onlyTokoNowProducts)
@@ -1486,7 +994,7 @@ class CartViewModel @Inject constructor(
 
     private fun getChecklistCondition(): Int {
         var checklistCondition = ITEM_CHECKED_ALL_WITHOUT_CHANGES
-        val cartShopHolderDataList = getAllShopGroupDataList()
+        val cartShopHolderDataList = CartDataHelper.getAllShopGroupDataList(cartDataList.value)
 
         if (cartShopHolderDataList.size == 1) {
             cartShopHolderDataList[0].productUiModelList.let {
@@ -1553,7 +1061,7 @@ class CartViewModel @Inject constructor(
     fun doUpdateCartForPromo() {
         _globalEvent.value = CartGlobalEvent.ProgressLoading(true)
 
-        val updateCartRequestList = getUpdateCartRequest(getSelectedCartItemData())
+        val updateCartRequestList = getUpdateCartRequest(CartDataHelper.getSelectedCartItemData(cartDataList.value))
         if (updateCartRequestList.isNotEmpty()) {
             updateCartUseCase.setParams(
                 updateCartRequestList,
@@ -1597,7 +1105,6 @@ class CartViewModel @Inject constructor(
         )
         summaryTransactionUiModel?.promoValue =
             lastApplyUiModel.benefitSummaryInfo.finalBenefitAmount.toLong()
-        // TODO: check assign by reference
     }
 
     fun checkForShipmentForm() {
@@ -1627,7 +1134,7 @@ class CartViewModel @Inject constructor(
         }
     }
 
-    fun processGetRecentViewData(allProductIds: List<String>) {
+    fun processGetRecentViewData() {
         _globalEvent.value = CartGlobalEvent.ItemLoading(true)
         launch {
             try {
@@ -1636,7 +1143,7 @@ class CartViewModel @Inject constructor(
                         pageNumber = 1,
                         xSource = RECENT_VIEW_XSOURCE,
                         pageName = PAGE_NAME_RECENT_VIEW,
-                        productIds = allProductIds,
+                        productIds = CartDataHelper.getAllCartItemProductId(cartDataList.value),
                         queryParam = ""
                     )
                 )
@@ -1646,10 +1153,6 @@ class CartViewModel @Inject constructor(
                 _recentViewState.value = LoadRecentReviewState.Failed(t)
             }
         }
-    }
-
-    fun updateCartModel(newCartModel: CartModel) {
-        this.cartModel = newCartModel
     }
 
     fun addCartRecentViewData(
@@ -1717,22 +1220,23 @@ class CartViewModel @Inject constructor(
         )
     }
 
-    fun saveCheckboxState(cartItemDataList: List<CartItemHolderData>) {
+    fun saveCheckboxState() {
+        val cartItemDataList = CartDataHelper.getAllAvailableCartItemHolderData(cartDataList.value)
         launchCatchError(dispatchers.io, block = {
             setCartlistCheckboxStateUseCase(cartItemDataList)
         }, onError = {})
     }
 
-    fun processGetRecommendationData(page: Int, allProductIds: List<String>) {
+    fun processGetRecommendationData() {
         _globalEvent.value = CartGlobalEvent.ItemLoading(true)
         launch {
             try {
                 val recommendationWidgets = getRecommendationUseCase.getData(
                     GetRecommendationRequestParam(
-                        pageNumber = page,
+                        pageNumber = cartModel.recommendationPage,
                         xSource = "recom_widget",
                         pageName = "cart",
-                        productIds = allProductIds,
+                        productIds = CartDataHelper.getAllCartItemProductId(cartDataList.value),
                         queryParam = ""
                     )
                 )
@@ -2051,7 +1555,7 @@ class CartViewModel @Inject constructor(
                     cartModel.cartListData?.promo?.lastApplyPromo ?: LastApplyPromo()
                 PromoRequestMapper.generateGetLastApplyRequestParams(
                     lastApplyPromo,
-                    getSelectedCartGroupHolderData(),
+                    CartDataHelper.getSelectedCartGroupHolderData(cartDataList.value),
                     null
                 )
             }
@@ -2060,7 +1564,7 @@ class CartViewModel @Inject constructor(
                 val promoUiModel = cartModel.lastValidateUseResponse?.promoUiModel ?: PromoUiModel()
                 PromoRequestMapper.generateGetLastApplyRequestParams(
                     promoUiModel,
-                    getSelectedCartGroupHolderData(),
+                    CartDataHelper.getSelectedCartGroupHolderData(cartDataList.value),
                     cartModel.lastValidateUseRequest
                 )
             }
@@ -2068,7 +1572,7 @@ class CartViewModel @Inject constructor(
             else -> {
                 PromoRequestMapper.generateGetLastApplyRequestParams(
                     null,
-                    getSelectedCartGroupHolderData(),
+                    CartDataHelper.getSelectedCartGroupHolderData(cartDataList.value),
                     null
                 )
             }
@@ -2077,7 +1581,7 @@ class CartViewModel @Inject constructor(
 
     fun doUpdateCartAndGetLastApply(promoRequest: ValidateUsePromoRequest) {
         val cartItemDataList = ArrayList<CartItemHolderData>()
-        getSelectedCartItemData().let { listCartItemData ->
+        CartDataHelper.getSelectedCartItemData(cartDataList.value).let { listCartItemData ->
             for (data in listCartItemData) {
                 if (!data.isError) {
                     cartItemDataList.add(data)
@@ -2160,7 +1664,7 @@ class CartViewModel @Inject constructor(
     }
 
     private fun syncCartGroupShopBoCodeWithPromoUiModel(promoUiModel: PromoUiModel) {
-        val groupDataList = getAllShopGroupDataList()
+        val groupDataList = CartDataHelper.getAllShopGroupDataList(cartDataList.value)
         promoUiModel.voucherOrderUiModels.forEach { voucherOrder ->
             if (
                 voucherOrder.shippingId > 0 && voucherOrder.spId > 0 && voucherOrder.isTypeLogistic() && voucherOrder.messageUiModel.state == "green"
@@ -2418,7 +1922,7 @@ class CartViewModel @Inject constructor(
     }
 
     fun updateSelectedAmount() {
-        val allSelectedAvailableCartItems = getSelectedAvailableCartItemData()
+        val allSelectedAvailableCartItems = CartDataHelper.getSelectedAvailableCartItemData(cartDataList.value)
         val totalSelected = allSelectedAvailableCartItems.count { it.isSelected }
         val selectedAmountHolderData = cartDataList.value.first()
         if (selectedAmountHolderData is CartSelectedAmountHolderData) {
@@ -2708,14 +2212,17 @@ class CartViewModel @Inject constructor(
 
         cartDataList.value.removeAll(toBeRemovedItems)
 
-        if (getAllAvailableCartItemData().isEmpty()) {
+        if (CartDataHelper.getAllAvailableCartItemData(cartDataList.value).isEmpty()) {
             cartSelectedAmountHolderDataIndexPair?.let {
                 cartDataList.value.remove(it.first)
                 toBeRemovedItems.add(it.second)
             }
         }
 
-        val disabledCartItems = getAllDisabledCartItemData()
+        val disabledCartItems = CartDataHelper.getAllDisabledCartItemData(
+            cartDataList.value,
+            cartModel
+        )
         if (disabledCartItems.isEmpty()) {
             cartItemTickerErrorHolderDataIndexPair?.let {
                 cartDataList.value.remove(it.first)
@@ -2824,8 +2331,13 @@ class CartViewModel @Inject constructor(
                     }
                     return@launch
                 }
-                val calculatePriceMarketplaceProduct =
-                    calculatePriceMarketplaceProduct(shopProductList)
+                val calculatePriceMarketplaceProduct = cartCalculator.calculatePriceMarketplaceProduct(
+                    allCartItemDataList = shopProductList,
+                    cartModel = cartModel,
+                    updateCartModel = { newCartModel ->
+                        cartModel = newCartModel
+                    }
+                )
                 val subtotalPrice = calculatePriceMarketplaceProduct.second.second.toLong()
                 val shipping = ShippingParam().apply {
                     destinationDistrictId = cartModel.lca?.district_id
@@ -2919,7 +2431,7 @@ class CartViewModel @Inject constructor(
     }
 
     fun validateBoPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel) {
-        val groupDataList = getAllShopGroupDataList()
+        val groupDataList = CartDataHelper.getAllShopGroupDataList(cartDataList.value)
         val boGroupUniqueIds = mutableSetOf<String>()
         for (voucherOrderUiModel in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
             if (voucherOrderUiModel.shippingId > 0 && voucherOrderUiModel.spId > 0 && voucherOrderUiModel.type == "logistic") {
@@ -2983,7 +2495,6 @@ class CartViewModel @Inject constructor(
     }
 
     fun processDeleteCartItem(
-        allCartItemData: List<CartItemHolderData>,
         removedCartItems: List<CartItemHolderData>,
         addWishList: Boolean,
         forceExpandCollapsedUnavailableItems: Boolean = false,
@@ -2991,6 +2502,10 @@ class CartViewModel @Inject constructor(
         isFromEditBundle: Boolean = false
     ) {
         _globalEvent.value = CartGlobalEvent.ProgressLoading(true)
+        val allCartItemData = CartDataHelper.getAllCartItemData(
+            cartDataList.value,
+            cartModel
+        )
 
         val removeAllItems = allCartItemData.size == removedCartItems.size
         val toBeDeletedCartIds = ArrayList<String>()
@@ -3249,12 +2764,10 @@ class CartViewModel @Inject constructor(
     }
 
     fun removeWishlist(productId: String) {
-        var wishlistIndex = 0
         var wishlistItemIndex = 0
         var cartWishlistHolderData: CartWishlistHolderData? = null
         for ((i, any) in cartDataList.value.withIndex()) {
             if (any is CartWishlistHolderData) {
-                wishlistIndex = i
                 val wishlist = any.wishList
                 for ((j, data) in wishlist.withIndex()) {
                     if (data.id == productId) {
@@ -3269,20 +2782,11 @@ class CartViewModel @Inject constructor(
 
         if (cartWishlistHolderData != null) {
             if (cartWishlistHolderData.wishList.size > 1) {
-                // TODO notify
                 _globalEvent.value = CartGlobalEvent.OnNeedUpdateWishlistAdapterData(
                     cartWishlistHolderData,
                     wishlistItemIndex
                 )
             } else {
-                // todo notify
-//                // Remove wishlist holder & wishlist header
-//                cartDataList.removeAt(wishlistIndex)
-//                val headerIndex = wishlistIndex - 1
-//                if (headerIndex > -1) {
-//                    cartDataList.removeAt(headerIndex)
-//                    notifyItemRangeRemoved(headerIndex, 2)
-//                }
                 cartDataList.notifyObserver()
             }
         }
@@ -3304,6 +2808,31 @@ class CartViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun getCartItemByBundleGroupId(
+        bundleId: String,
+        bundleGroupId: String
+    ): List<CartItemHolderData> {
+        val cartItemHolderDataList = mutableListOf<CartItemHolderData>()
+        loop@ for (data in cartDataList.value) {
+            if (cartItemHolderDataList.isNotEmpty()) {
+                break@loop
+            }
+            when (data) {
+                is CartGroupHolderData -> {
+                    data.productUiModelList.forEach { cartItemHolderData ->
+                        if (cartItemHolderData.isBundlingItem && cartItemHolderData.bundleId == bundleId && cartItemHolderData.bundleGroupId == bundleGroupId) {
+                            cartItemHolderDataList.add(cartItemHolderData)
+                        }
+                    }
+                }
+
+                hasReachAllShopItems(data) -> break@loop
+            }
+        }
+
+        return cartItemHolderDataList
     }
 
     override fun onCleared() {

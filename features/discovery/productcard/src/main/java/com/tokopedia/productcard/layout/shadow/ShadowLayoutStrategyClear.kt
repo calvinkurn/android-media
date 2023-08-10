@@ -1,5 +1,6 @@
 package com.tokopedia.productcard.layout.shadow
 
+import android.graphics.Color
 import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.productcard.ProductCardModel
@@ -17,6 +18,7 @@ internal class ShadowLayoutStrategyClear: ShadowLayoutStrategy {
     ) {
         cardView ?: return
         cardView.cardType = CardUnify2.TYPE_CLEAR
+        cardView.setCardUnifyBackgroundColor(Color.TRANSPARENT)
         cardView.useCompatPadding = false
 
         val margin = CARD_MARGIN.toPx()

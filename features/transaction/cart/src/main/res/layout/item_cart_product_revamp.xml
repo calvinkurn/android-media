@@ -174,8 +174,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:gravity="center"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
                 android:text="@string/cart_label_change"
                 android:textColor="@color/Unify_GN500"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -524,7 +522,7 @@
             app:layout_constraintStart_toEndOf="@id/iu_image_product"
             app:layout_constraintTop_toBottomOf="@+id/item_addon_cart"
             app:lottie_autoPlay="false"
-            app:lottie_rawRes="@raw/anim_add_note" />
+            app:lottie_rawRes="@raw/anim_cart_note_dark" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/button_toggle_wishlist"
@@ -559,39 +557,17 @@
             app:layout_constraintTop_toBottomOf="@+id/item_addon_cart" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/label_qty_min_quantity_error"
+            android:id="@+id/label_min_quantity_error"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:layout_weight="1"
-            android:paddingBottom="4dp"
             android:textColor="@color/Unify_NN600"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="@id/qty_editor_product"
             app:layout_constraintTop_toBottomOf="@id/qty_editor_product"
             app:typographyType="display_3"
             tools:text="Min. beli 2" />
-
-        <!--        <androidx.constraintlayout.widget.Group-->
-        <!--            android:id="@+id/container_product_action"-->
-        <!--            android:layout_width="0dp"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_marginTop="16dp"-->
-        <!--            tools:visibility="invisible"-->
-        <!--            app:layout_constraintStart_toEndOf="@id/button_change_note"-->
-        <!--            app:layout_constraintTop_toBottomOf="@+id/item_addon_cart"-->
-        <!--            app:layout_constraintEnd_toEndOf="parent"-->
-        <!--            app:constraint_referenced_ids="button_toggle_wishlist,button_change_note" />-->
-
-        <!--        <androidx.constraintlayout.widget.Group-->
-        <!--            android:id="@+id/container_product_quantity_action"-->
-        <!--            android:layout_width="0dp"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            tools:visibility="invisible"-->
-        <!--            app:layout_constraintStart_toEndOf="@id/button_change_note"-->
-        <!--            app:layout_constraintTop_toBottomOf="@+id/item_addon_cart"-->
-        <!--            app:layout_constraintEnd_toEndOf="parent"-->
-        <!--            app:constraint_referenced_ids="qty_editor_product" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

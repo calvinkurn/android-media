@@ -230,7 +230,7 @@ class CheckoutCalculator @Inject constructor(
         shipmentCost = shipmentCost.copy(finalShippingFee = finalShippingFee)
         shipmentCost = shipmentCost.copy(hasSelectAllShipping = hasSelectAllShipping)
         shipmentCost = shipmentCost.copy(shippingInsuranceFee = insuranceFee)
-        shipmentCost = shipmentCost.copy(totalOtherFee = insuranceFee + totalAddOnGiftingPrice + totalAddOnProductServicePrice)
+        var totalOtherFee = insuranceFee + totalAddOnGiftingPrice + totalAddOnProductServicePrice
         shipmentCost.totalPurchaseProtectionItem = totalPurchaseProtectionItem
         shipmentCost.purchaseProtectionFee = totalPurchaseProtectionPrice
         shipmentCost.tradeInPrice = tradeInPrice
@@ -243,7 +243,7 @@ class CheckoutCalculator @Inject constructor(
 //                shipmentCost.donation = 0.0
 //            }
 //        }
-        totalPrice += shipmentCost.donation
+//        totalPrice += shipmentCost.donation
         shipmentCost = shipmentCost.copy(totalPrice = totalPrice)
         var upsellCost: CheckoutCrossSellModel? = null
         val upsellModel = listData.upsell()
@@ -263,6 +263,7 @@ class CheckoutCalculator @Inject constructor(
                     if (crossSellModel.isChecked) {
                         listCheckedCrossModel.add(crossSellModel)
                         totalPrice += crossSellModel.crossSellModel.price
+                        totalOtherFee += crossSellModel.crossSellModel.price
                         shipmentCost = shipmentCost.copy(totalPrice = totalPrice)
                     }
                     listCrossSellItem.add(0, crossSellModel)
@@ -278,13 +279,14 @@ class CheckoutCalculator @Inject constructor(
                         }
                     }
                     totalPrice += shipmentCost.donation
+                    totalOtherFee += shipmentCost.donation
                     listCrossSellItem.add(0, crossSellModel)
                 }
 
                 is CheckoutEgoldModel -> {
                     var egoldAttribute = crossSellModel.egoldAttributeModel
                     if (egoldAttribute.isEligible) {
-                        egoldAttribute = updateEmasCostModel(shipmentCost, egoldAttribute)
+                        egoldAttribute = updateEmasCostModel(totalPrice, egoldAttribute)
                         if (egoldAttribute.isChecked) {
                             totalPrice += egoldAttribute.buyEgoldValue.toDouble()
                             shipmentCost = shipmentCost.copy(totalPrice = totalPrice)
@@ -293,6 +295,7 @@ class CheckoutCalculator @Inject constructor(
                             shipmentCost.emasPrice = 0.0
                         }
                     }
+                    totalOtherFee += shipmentCost.emasPrice
                     listCrossSellItem.add(
                         0,
                         crossSellModel.copy(
@@ -306,7 +309,9 @@ class CheckoutCalculator @Inject constructor(
         if (upsellCost != null) {
             listCheckedCrossModel.add(upsellCost)
             totalPrice += upsellCost.crossSellModel.price
+            totalOtherFee += upsellCost.crossSellModel.price
         }
+        shipmentCost = shipmentCost.copy(totalOtherFee = totalOtherFee)
         shipmentCost = shipmentCost.copy(totalPrice = totalPrice)
         shipmentCost.listCrossSell = listCheckedCrossModel
 //        val egoldAttribute = egoldAttributeModel.value
@@ -441,10 +446,9 @@ class CheckoutCalculator @Inject constructor(
     }
 
     private fun updateEmasCostModel(
-        shipmentCost: CheckoutCostModel,
+        totalPrice: Double,
         egoldAttribute: EgoldAttributeModel
     ): EgoldAttributeModel {
-        val totalPrice = shipmentCost.totalPrice.toLong()
         var valueTOCheck = 0
         val buyEgoldValue: Long
         if (egoldAttribute.isTiering) {

@@ -37,6 +37,7 @@ object RollenceKey {
     const val EXPERIMENT_VARIANT = "experiment_variant"
     const val TREATMENT_VARIANT = "treatment_variant"
     const val UOH_REPURCHASE = "uoh_buyagainexp_andr"
+    const val CART_CHECKOUT_REVAMP = "cartcheckout_android"
 
     // SRP Video Sneak Peek Autoplay
     const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY = "srp_prodvideo_3"
@@ -83,8 +84,9 @@ object RollenceKey {
     // Seller Order Management
     const val KEY_SOM_OG = "android_som_og"
 
-
     // Share affiliate
     const val AFFILIATE_SHARE_ICON = "ShareAff_pdpshop"
 
+    // Wishlist
+    const val WISHLIST_AFFILIATE_TICKER = "aff_ticker_col"
 }

@@ -6,6 +6,15 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/v_divider_order"
+        android:layout_width="0dp"
+        android:layout_height="8dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/v_divider_shop"
         android:layout_width="0dp"
         android:layout_height="1dp"
@@ -13,7 +22,7 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/v_divider_order" />
 
     <View
         android:id="@+id/bg_checkout_supergraphic_order"
@@ -25,6 +34,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/v_divider_shop" />
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/checkout_ticker_shop_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/v_divider_shop" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_checkout_order_number"
         android:layout_width="wrap_content"
@@ -33,7 +53,7 @@
         android:layout_marginTop="12dp"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/v_divider_shop"
+        app:layout_constraintTop_toBottomOf="@id/checkout_ticker_shop_error"
         app:typographyType="display_3_uppercase"
         app:typographyWeight="bold"
         tools:text="Pesanan 1"
@@ -52,7 +72,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1"
         app:layout_constraintStart_toEndOf="@id/tv_checkout_order_number"
-        app:layout_constraintTop_toBottomOf="@id/v_divider_shop"
+        app:layout_constraintTop_toBottomOf="@id/checkout_ticker_shop_error"
         app:typographyType="display_3"
         app:typographyWeight="reguler"
         tools:text="Preorder 300 hari • Tangerang Selatan Dekatnya Jakarta" />
@@ -187,7 +207,32 @@
         app:unify_image_type="rect"
         app:icon_name="INFORMATION"/>
 
-    <include layout="@layout/layout_checkout_product" />
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/checkout_ticker_product_error"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:closeButtonVisibility="gone"
+        app:tickerShapeType="loose"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_checkout_bmgm_desc"
+        app:tickerType="error" />
+
+    <FrameLayout
+        android:id="@+id/frame_checkout_product_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/checkout_ticker_product_error">
+
+        <include layout="@layout/layout_checkout_product_bundle" />
+
+        <include layout="@layout/layout_checkout_product" />
+
+    </FrameLayout>
 
     <com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingView
         android:id="@+id/button_gifting_addon_product_level"
@@ -199,6 +244,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll_addon_product_items" />
+        app:layout_constraintTop_toBottomOf="@id/frame_checkout_product_container" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

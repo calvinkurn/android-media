@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.revamp.view.viewholder
 
+import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.databinding.ItemCheckoutUpsellBinding
@@ -22,10 +23,21 @@ class CheckoutUpsellViewHolder(
 ): RecyclerView.ViewHolder(binding.root) {
 
     fun bind(data: ShipmentNewUpsellModel) {
-        if (data.isLoading) {
-            renderLoading()
+        if (!data.isShow) {
+            binding.root.gone()
+            binding.root.layoutParams = RecyclerView.LayoutParams(0, 0)
+            return
         } else {
-            renderContent(data)
+            binding.root.visible()
+            binding.root.layoutParams = RecyclerView.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            if (data.isLoading) {
+                renderLoading()
+            } else {
+                renderContent(data)
+            }
         }
     }
 

@@ -59,9 +59,58 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
 
         // todo: testing flip
 //        binding.btnCheckoutPromo.showActiveFlipping(
+//            "https://static.vecteezy.com/system/resources/previews/004/495/473/original/sales-promotion-line-icon-logo-free-vector.jpg",
 //            listOf("astaga 1, ini percobaan kalo textnya pannnjaaaaannggg sekaliiiii, astaga 2, ini percobaan kalo textnya pannnjaaaaannggg sekaliiiii", "wow bisa luar biasa sekali, tapi kenapa gak berhenti?"),
-//            IconUnify.CHEVRON_RIGHT
+//            IconUnify.CHEVRON_RIGHT,
+//            2_000,
+//            4
 //        )
+
+        // todo: testing checkout expandable
+//        binding.btnCheckoutPromo.showActiveNewExpandable(
+//            "https://static.vecteezy.com/system/resources/previews/004/495/473/original/sales-promotion-line-icon-logo-free-vector.jpg",
+//            "Yay, kamu hemat Rp50.000 di transaksi ini",
+//            listOf(
+//                PromoEntryPointSummaryItem("Bebas Ongkir", "Rp10.000"),
+//                PromoEntryPointSummaryItem("Diskon Pengiriman PLUS", "Rp10.000"),
+//            ),
+//            listOf(
+//                PromoEntryPointSummaryItem("Diskon Barang", "Rp10.000"),
+//                PromoEntryPointSummaryItem("Diskon Ongkos Kirim", "Rp10.000"),
+//                PromoEntryPointSummaryItem("Cashback Gopay Coins", "Rp10.000"),
+//            ),
+//            "",
+//            false,
+//            true,
+//            true
+//        ) {
+//            binding.btnCheckoutPromo.showActiveNewExpandable(
+//                "https://static.vecteezy.com/system/resources/previews/004/495/473/original/sales-promotion-line-icon-logo-free-vector.jpg",
+//                "Yay, kamu hemat <b>Rp20.000</b> di transaksi ini",
+//                listOf(
+//                    PromoEntryPointSummaryItem("Bebas Ongkir", "Rp10.000"),
+//                    PromoEntryPointSummaryItem("Diskon Pengiriman PLUS", "Rp10.000"),
+//                ),
+//                emptyList(),
+//                "Kamu udah lebih hemat pakai Bebas Ongkir",
+//                false,
+//                true,
+//                true
+//            ) {
+//                binding.btnCheckoutPromo.showActiveNewExpandable(
+//                    "https://static.vecteezy.com/system/resources/previews/004/495/473/original/sales-promotion-line-icon-logo-free-vector.jpg",
+//                    "Yay, kamu hemat <a href=\"\">Rp10.000</a> di transaksi ini",
+//                    listOf(
+//                        PromoEntryPointSummaryItem("Bebas Ongkir", "Rp10.000")
+//                    ),
+//                    emptyList(),
+//                    "Yuk pakai 2 promo biar hemat <b>Rp20.000</b>!",
+//                    true,
+//                    true,
+//                    true
+//                )
+//            }
+//        }
 
         // todo: testing cart
 //        binding.btnCheckoutPromo.showActive(

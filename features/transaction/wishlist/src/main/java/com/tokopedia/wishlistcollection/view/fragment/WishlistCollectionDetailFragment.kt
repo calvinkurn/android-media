@@ -2510,6 +2510,16 @@ class WishlistCollectionDetailFragment :
         }
     }
 
+    override fun onViewProductCard(wishlistItem: WishlistV2UiModel.Item, position: Int) {
+        userSession.userId?.let { userId ->
+            WishlistCollectionAnalytics.sendViewProductCardOnWishlistPageEvent(
+                wishlistItem,
+                userId,
+                position.toString()
+            )
+        }
+    }
+
     override fun onBannerTopAdsImpression(
         topAdsImageViewModel: TopAdsImageViewModel,
         position: Int

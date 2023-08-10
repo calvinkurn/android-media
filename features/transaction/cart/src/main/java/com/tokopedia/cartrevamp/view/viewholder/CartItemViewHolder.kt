@@ -139,6 +139,7 @@ class CartItemViewHolder constructor(
     private fun renderProductAction(data: CartItemHolderData) {
         with(binding) {
             buttonChangeNote.gone()
+            buttonChangeNote.gone()
             buttonToggleWishlist.gone()
             ivAnimatedWishlist.gone()
             textProductUnavailableAction.gone()
@@ -455,7 +456,6 @@ class CartItemViewHolder constructor(
                     ConstraintSet.BOTTOM,
                     margin
                 )
-                binding.qtyEditorProduct.setPadding(0, 0, 0, 0)
             }
             applyTo(binding.containerProductInformation)
         }
@@ -801,9 +801,11 @@ class CartItemViewHolder constructor(
     private fun renderProductNotes(element: CartItemHolderData) {
         if (element.isError) return
         binding.buttonChangeNote.show()
+        binding.buttonChangeNoteLottie.gone()
         binding.buttonChangeNote.setOnClickListener {
-            actionListener?.onNoteClicked(element, binding.buttonChangeNote, binding.buttonChangeNoteLottie)
+            actionListener?.onNoteClicked(element, binding.buttonChangeNote, binding.buttonChangeNoteLottie, absoluteAdapterPosition)
         }
+
         if (element.notes.isNotBlank()) {
             renderProductNotesFilled()
         } else {
@@ -828,6 +830,17 @@ class CartItemViewHolder constructor(
         qtyEditorProduct.autoHideKeyboard = true
         qtyEditorProduct.errorMessage.textAlignment = View.TEXT_ALIGNMENT_TEXT_END
         qtyEditorProduct.errorMessage.setType(Typography.DISPLAY_3)
+
+        if (data.isAlreadyShowMinimumQuantityPurchasedError) {
+            binding.labelMinQuantityError.text = String.format(
+                itemView.context.getString(R.string.cart_min_quantity_error),
+                data.minOrder
+            )
+            binding.labelMinQuantityError.visible()
+        }
+        else {
+            binding.labelMinQuantityError.gone()
+        }
 
         if (qtyTextWatcher != null) {
             // reset listener
@@ -875,6 +888,9 @@ class CartItemViewHolder constructor(
         qtyEditorProduct.editText.addTextChangedListener(qtyTextWatcher)
         qtyEditorProduct.setSubstractListener {
             if (!data.isError && bindingAdapterPosition != RecyclerView.NO_POSITION) {
+                if (data.isAlreadyShowMinimumQuantityPurchasedError) {
+                    actionListener?.onCartItemDeleteButtonClicked(data, false)
+                }
                 actionListener?.onCartItemQuantityMinusButtonClicked()
             }
         }
@@ -915,8 +931,8 @@ class CartItemViewHolder constructor(
                 element.maxOrder
             )
         } else if (newValue < element.minOrder) {
-            binding.labelQtyMinQuantityError.visible()
-            binding.labelQtyMinQuantityError.text = String.format(
+            binding.labelMinQuantityError.show()
+            binding.labelMinQuantityError.text = String.format(
                 itemView.context.getString(R.string.cart_min_quantity_error),
                 element.minOrder
             )
@@ -925,14 +941,13 @@ class CartItemViewHolder constructor(
                 element.isAlreadyShowMinimumQuantityPurchasedError = true
             }
             else {
-                binding.labelQtyMinQuantityError.gone()
+                binding.labelMinQuantityError.gone()
                 qtyEditorCart.errorMessageText = String.EMPTY
-                actionListener?.onCartItemDeleteButtonClicked(element, false)
             }
         }
         else {
             if (!element.isAlreadyShowMinimumQuantityPurchasedError) {
-                binding.labelQtyMinQuantityError.gone()
+                binding.labelMinQuantityError.gone()
                 qtyEditorCart.errorMessageText = String.EMPTY
             }
         }
@@ -1102,7 +1117,12 @@ class CartItemViewHolder constructor(
             layoutParams.bottomMargin =
                 IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
         } else {
-            layoutParams.bottomMargin = 0
+            if (cartItemHolderData.isBundlingItem && cartItemHolderData.isMultipleBundleProduct && cartItemHolderData.bundlingItemPosition != BUNDLING_ITEM_FOOTER) {
+                layoutParams.bottomMargin = 0
+            }
+            else {
+                layoutParams.bottomMargin = IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
+            }
         }
     }
 

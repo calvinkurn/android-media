@@ -159,7 +159,7 @@ class ShipmentViewModelAddOnsProductServiceTest : BaseShipmentViewModelTest() {
     }
 
     @Test
-    fun verifySaveAddonsBeforeCheckoutReturnSuccessResultNotOk() {
+    fun verifySaveAddonsBeforeCheckoutReturnSuccessResultNotOkErrorMessageEmpty() {
         val response = DataProvider.provideShipmentAddressFormWithAddOnsProductEnabledResponse()
         val cartShipmentAddressFormData = shipmentMapper
             .convertToShipmentAddressFormData(response.shipmentAddressFormResponse.data)
@@ -181,6 +181,50 @@ class ShipmentViewModelAddOnsProductServiceTest : BaseShipmentViewModelTest() {
                 SaveAddOnStateResponse(
                     saveAddOns = SaveAddOnsResponse(
                         status = "ERROR"
+                    )
+                )
+            )
+        }
+
+        // When
+        viewModel.processInitialLoadCheckoutPage(
+            false,
+            false,
+            false
+        )
+        viewModel.saveAddOnsProductBeforeCheckout()
+
+        // Then
+        assert(viewModel.listSummaryAddOnModel.isNotEmpty())
+        verify {
+            view.showToastError(any())
+        }
+    }
+
+    @Test
+    fun verifySaveAddonsBeforeCheckoutReturnSuccessResultNotOkErrorMessageNotEmpty() {
+        val response = DataProvider.provideShipmentAddressFormWithAddOnsProductEnabledResponse()
+        val cartShipmentAddressFormData = shipmentMapper
+            .convertToShipmentAddressFormData(response.shipmentAddressFormResponse.data)
+        cartShipmentAddressFormData.groupAddress.forEach { groupAddress ->
+            groupAddress.groupShop.forEach { groupShop ->
+                groupShop.groupShopData.forEach { groupShopV2 ->
+                    groupShopV2.products.forEach {
+                    }
+                }
+            }
+        }
+        val cartItemModel = CartItemModel(cartStringGroup = "111-111-111")
+
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns cartShipmentAddressFormData
+
+        coEvery { saveAddOnStateUseCase.setParams(any(), false) } just Runs
+        coEvery { saveAddOnStateUseCase.execute(any(), any()) } answers {
+            firstArg<(SaveAddOnStateResponse) -> Unit>().invoke(
+                SaveAddOnStateResponse(
+                    saveAddOns = SaveAddOnsResponse(
+                        status = "ERROR",
+                        errorMessage = listOf("Pesan Error")
                     )
                 )
             )

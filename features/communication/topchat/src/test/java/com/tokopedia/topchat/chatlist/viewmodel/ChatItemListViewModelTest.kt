@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.chatlist.viewmodel
 
 import android.content.Context
-import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -39,7 +38,7 @@ import com.tokopedia.topchat.chatroom.view.uimodel.ReplyParcelableModel
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.util.Utils
-import com.tokopedia.unit.test.TestUtils
+import com.tokopedia.topchat.common.util.Utils.getBuildVersion
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.coroutines.Fail
@@ -58,7 +57,6 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.lang.reflect.Field
 
 class ChatItemListViewModelTest {
 
@@ -123,7 +121,7 @@ class ChatItemListViewModelTest {
         viewModel.isWhitelistTopBot.observeForever(isWhitelistTopBotObserver)
         viewModel.isChatAdminEligible.observeForever(isChatAdminEligibleObserver)
 
-        mockkObject(ChatItemListViewModel.arrayFilterParam)
+        mockkObject(ChatItemListViewModel.Companion)
     }
 
     @Test fun `getChatListMessage should return chat list of messages`() {
@@ -908,9 +906,7 @@ class ChatItemListViewModelTest {
     fun should_give_2_filter_titles_when_buyer() {
         // Given
         val testContext: Context = mockk(relaxed = true)
-        every {
-            ChatItemListViewModel.arrayFilterParam.size
-        } returns 3
+        ChatItemListViewModel.arrayFilterParam = arrayListOf("", "", "")
 
         // When
         val result = viewModel.getFilterTitles(testContext, false)
@@ -923,9 +919,7 @@ class ChatItemListViewModelTest {
     fun should_give_3_filter_titles_when_seller_default() {
         // Given
         val testContext: Context = mockk(relaxed = true)
-        every {
-            ChatItemListViewModel.arrayFilterParam.size
-        } returns 3
+        ChatItemListViewModel.arrayFilterParam = arrayListOf("", "", "")
 
         // When
         val result = viewModel.getFilterTitles(testContext, true)
@@ -938,9 +932,7 @@ class ChatItemListViewModelTest {
     fun should_give_4_filter_titles_when_seller_whitelisted() {
         // Given
         val testContext: Context = mockk(relaxed = true)
-        every {
-            ChatItemListViewModel.arrayFilterParam.size
-        } returns 4
+        ChatItemListViewModel.arrayFilterParam = arrayListOf("", "", "", "")
 
         // When
         val result = viewModel.getFilterTitles(testContext, true)
@@ -1155,7 +1147,10 @@ class ChatItemListViewModelTest {
     @Test
     fun should_show_bubble_ticker_on_android_11_and_true_on_shared_pref() {
         // Given
-        setFinalStatic(Build.VERSION::class.java.getField(SDK_INT), 30)
+        mockkObject(Utils)
+        every {
+            getBuildVersion()
+        } returns 30
         every {
             cacheManager.getPreviousState(any(), any())
         } returns true
@@ -1170,7 +1165,10 @@ class ChatItemListViewModelTest {
     @Test
     fun should_not_show_bubble_ticker_on_android_below_11_and_true_on_shared_pref() {
         // Given
-        setFinalStatic(Build.VERSION::class.java.getField(SDK_INT), 29)
+        mockkObject(Utils)
+        every {
+            getBuildVersion()
+        } returns 29
         every {
             cacheManager.getPreviousState(any(), any())
         } returns true
@@ -1185,7 +1183,10 @@ class ChatItemListViewModelTest {
     @Test
     fun should_not_show_bubble_ticker_on_android_11_and_false_on_shared_pref() {
         // Given
-        setFinalStatic(Build.VERSION::class.java.getField(SDK_INT), 30)
+        mockkObject(Utils)
+        every {
+            getBuildVersion()
+        } returns 30
         every {
             cacheManager.getPreviousState(any(), any())
         } returns false
@@ -1200,7 +1201,10 @@ class ChatItemListViewModelTest {
     @Test
     fun should_not_show_bubble_ticker_on_android_bewlo_11_and_false_on_shared_pref() {
         // Given
-        setFinalStatic(Build.VERSION::class.java.getField(SDK_INT), 29)
+        mockkObject(Utils)
+        every {
+            getBuildVersion()
+        } returns 29
         every {
             cacheManager.getPreviousState(any(), any())
         } returns false
@@ -1215,7 +1219,10 @@ class ChatItemListViewModelTest {
     @Test
     fun test_save_ticker_pref() {
         // Given
-        setFinalStatic(Build.VERSION::class.java.getField(SDK_INT), 30)
+        mockkObject(Utils)
+        every {
+            getBuildVersion()
+        } returns 30
         every {
             cacheManager.getPreviousState(any(), any())
         } returns false
@@ -1236,7 +1243,7 @@ class ChatItemListViewModelTest {
         } returns true
 
         // When
-        val result = viewModel.getBooleanCache("${BROADCAST_FAB_LABEL_PREF_NAME}_${userSession.userId}",)
+        val result = viewModel.getBooleanCache("${BROADCAST_FAB_LABEL_PREF_NAME}_${userSession.userId}")
 
         // Then
         assertEquals(result, true)
@@ -1254,21 +1261,15 @@ class ChatItemListViewModelTest {
             "${BROADCAST_FAB_LABEL_PREF_NAME}_${userSession.userId}",
             true
         )
-        val result = viewModel.getBooleanCache("${BROADCAST_FAB_LABEL_PREF_NAME}_${userSession.userId}",)
+        val result = viewModel.getBooleanCache("${BROADCAST_FAB_LABEL_PREF_NAME}_${userSession.userId}")
 
         // Then
         assertEquals(result, true)
     }
 
-    // Mock the OS Build Version
-    @Throws(Exception::class)
-    private fun setFinalStatic(field: Field, newValue: Any) {
-        TestUtils.setFinalStatic(field, newValue)
-    }
-
     @After
     fun tearDown() {
-        setFinalStatic(Build.VERSION::class.java.getField(SDK_INT), 0)
+        unmockkAll()
     }
 
     companion object {

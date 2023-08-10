@@ -90,9 +90,9 @@ class CartNoteBottomSheet : BottomSheetUnify() {
             textAreaNote.editText.addTextChangedListener {
                 btnSave.isEnabled = it.toString() != data.note
             }
-            btnSave.isEnabled = data.note.isNotBlank()
+            btnSave.isEnabled = data.note.isNotBlank() && textAreaNote.editText.text.toString() != data.note
             btnSave.setOnClickListener {
-                listener?.invoke(textAreaNote.editText.text.toString())
+                listener?.invoke(textAreaNote.editText.text.toString().trim())
                 dismiss()
             }
         }

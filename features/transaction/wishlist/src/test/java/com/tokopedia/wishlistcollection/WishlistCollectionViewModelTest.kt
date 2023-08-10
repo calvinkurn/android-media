@@ -7,6 +7,8 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRec
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -14,10 +16,12 @@ import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressResponse
 import com.tokopedia.wishlist.domain.DeleteWishlistProgressUseCase
 import com.tokopedia.wishlistcollection.data.model.WishlistCollectionTypeLayoutData
 import com.tokopedia.wishlistcommon.data.params.UpdateWishlistCollectionParams
+import com.tokopedia.wishlistcollection.data.response.AffiliateUserDetailOnBoardingBottomSheetResponse
 import com.tokopedia.wishlistcollection.data.response.DeleteWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionSharingDataResponse
 import com.tokopedia.wishlistcommon.data.response.UpdateWishlistCollectionResponse
+import com.tokopedia.wishlistcollection.domain.AffiliateUserDetailOnBoardingBottomSheetUseCase
 import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionUseCase
 import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionSharingDataUseCase
 import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionUseCase
@@ -25,7 +29,9 @@ import com.tokopedia.wishlistcommon.domain.UpdateWishlistCollectionUseCase
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionViewModel
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockkStatic
 import io.mockk.spyk
 import org.assertj.core.api.SoftAssertions
 import org.junit.Before
@@ -63,6 +69,9 @@ class WishlistCollectionViewModelTest {
 
     @RelaxedMockK
     lateinit var updateWishlistCollectionUseCase: UpdateWishlistCollectionUseCase
+
+    @RelaxedMockK
+    lateinit var affiliateUserDetailOnBoardingBottomSheetUseCase: AffiliateUserDetailOnBoardingBottomSheetUseCase
 
     private var collectionWishlistResponseDataStatusOkErrorEmpty = GetWishlistCollectionResponse(
         getWishlistCollections = GetWishlistCollectionResponse.GetWishlistCollections(status = "OK", errorMessage = emptyList())
@@ -178,6 +187,14 @@ class WishlistCollectionViewModelTest {
         GetWishlistCollectionSharingDataResponse.GetWishlistCollectionSharingData(status = "ERROR", errorMessage = arrayListOf("error"))
     )
 
+    private var getAffiliateUserDetail_registered = AffiliateUserDetailOnBoardingBottomSheetResponse(
+        AffiliateUserDetailOnBoardingBottomSheetResponse.AffiliateUserDetail(isRegistered = true)
+    )
+
+    private var getAffiliateUserDetail_unregistered = AffiliateUserDetailOnBoardingBottomSheetResponse(
+        AffiliateUserDetailOnBoardingBottomSheetResponse.AffiliateUserDetail(isRegistered = false)
+    )
+
     private var collectionId = 1L
 
     @Before
@@ -192,6 +209,7 @@ class WishlistCollectionViewModelTest {
                 singleRecommendationUseCase,
                 deleteWishlistProgressUseCase,
                 getWishlistCollectionSharingDataUseCase,
+                affiliateUserDetailOnBoardingBottomSheetUseCase,
                 updateWishlistCollectionUseCase
             )
         )
@@ -225,10 +243,16 @@ class WishlistCollectionViewModelTest {
             singleRecommendationUseCase.getData(any())
         } returns RecommendationWidget()
 
+        mockkStatic(RemoteConfigInstance::class)
+
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.WISHLIST_AFFILIATE_TICKER, "")
+        } returns RollenceKey.WISHLIST_AFFILIATE_TICKER
+
         // when
         wishlistCollectionViewModel.getWishlistCollections()
 
-        // then
+        // the
         assert(wishlistCollectionViewModel.collections.value is Success)
         assert((wishlistCollectionViewModel.collections.value as Success).data.errorMessage.isEmpty())
     }
@@ -243,6 +267,12 @@ class WishlistCollectionViewModelTest {
         coEvery {
             singleRecommendationUseCase.getData(any())
         } returns RecommendationWidget()
+
+        mockkStatic(RemoteConfigInstance::class)
+
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.WISHLIST_AFFILIATE_TICKER, "")
+        } returns RollenceKey.WISHLIST_AFFILIATE_TICKER
 
         // when
         wishlistCollectionViewModel.getWishlistCollections()
@@ -636,5 +666,50 @@ class WishlistCollectionViewModelTest {
 
         // then
         assert(wishlistCollectionViewModel.getWishlistCollectionSharingDataResult.value is Fail)
+    }
+
+    @Test
+    fun `Execute getAffiliateUserDetail Success Registered`() {
+        // given
+        coEvery {
+            affiliateUserDetailOnBoardingBottomSheetUseCase(Unit)
+        } returns getAffiliateUserDetail_registered
+
+        // when
+        wishlistCollectionViewModel.getAffiliateUserDetail()
+
+        // then
+        assert(wishlistCollectionViewModel.isUserAffiliate.value is Success)
+        assert((wishlistCollectionViewModel.isUserAffiliate.value as Success).data.isRegistered)
+    }
+
+    @Test
+    fun `Execute getAffiliateUserDetail Success Not Registered`() {
+        // given
+        coEvery {
+            affiliateUserDetailOnBoardingBottomSheetUseCase(Unit)
+        } returns getAffiliateUserDetail_unregistered
+
+        // when
+        wishlistCollectionViewModel.getAffiliateUserDetail()
+
+        // then
+        assert(wishlistCollectionViewModel.isUserAffiliate.value is Success)
+        assert(!(wishlistCollectionViewModel.isUserAffiliate.value as Success).data.isRegistered)
+    }
+
+    @Test
+    fun `Execute getAffiliateUserDetail Failed`() {
+        // given
+        coEvery {
+            affiliateUserDetailOnBoardingBottomSheetUseCase(Unit)
+        } throws throwable.throwable
+
+        // when
+        wishlistCollectionViewModel.getAffiliateUserDetail()
+
+        // then
+        assert(wishlistCollectionViewModel.isUserAffiliate.value is Fail)
+        assert((wishlistCollectionViewModel.isUserAffiliate.value as Fail).throwable == throwable.throwable)
     }
 }

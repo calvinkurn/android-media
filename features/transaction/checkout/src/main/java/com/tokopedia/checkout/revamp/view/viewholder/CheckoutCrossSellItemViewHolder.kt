@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import android.widget.CompoundButton
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.checkout.R
 import com.tokopedia.checkout.databinding.ItemCheckoutCrossSellItemBinding
+import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutDonationModel
@@ -12,8 +14,6 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEgoldModel
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import com.tokopedia.checkout.R
-import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 
 class CheckoutCrossSellItemViewHolder(private val binding: ItemCheckoutCrossSellItemBinding, private val listener: CheckoutAdapterListener) :
     RecyclerView.ViewHolder(binding.root) {
@@ -53,6 +53,12 @@ class CheckoutCrossSellItemViewHolder(private val binding: ItemCheckoutCrossSell
     ) {
         itemBinding.ivCheckoutCrossSellItem.setImageResource(R.drawable.ic_donasi_lingkungan)
         itemBinding.tvCheckoutCrossSellItem.text = donationModel.donation.title
+        itemBinding.cbCheckoutCrossSellItem.setOnCheckedChangeListener { _, _ -> }
+        itemBinding.cbCheckoutCrossSellItem.isChecked = donationModel.donation.isChecked
+        itemBinding.cbCheckoutCrossSellItem.skipAnimation()
+        itemBinding.cbCheckoutCrossSellItem.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+            listener.onDonationChecked(isChecked)
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -62,10 +68,10 @@ class CheckoutCrossSellItemViewHolder(private val binding: ItemCheckoutCrossSell
     ) {
         itemBinding.ivCheckoutCrossSellItem.setImageResource(R.drawable.ic_logam_mulia)
         val text = "${egoldModel.egoldAttributeModel.titleText} (${
-            CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                egoldModel.egoldAttributeModel.buyEgoldValue,
-                false
-            ).removeDecimalSuffix()
+        CurrencyFormatUtil.convertPriceValueToIdrFormat(
+            egoldModel.egoldAttributeModel.buyEgoldValue,
+            false
+        ).removeDecimalSuffix()
         })"
         if (egoldModel.egoldAttributeModel.isEnabled) {
             itemBinding.cbCheckoutCrossSellItem.isEnabled = true
