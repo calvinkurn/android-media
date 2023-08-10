@@ -5086,4 +5086,9 @@ open class ShopPageHomeFragment :
     override fun onProductClick(selectedProduct: Product) {
 
     }
+
+    override val fragment: Fragment
+        get() = this
+    override val currentShopId: String
+        get() = shopId
 }

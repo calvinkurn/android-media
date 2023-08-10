@@ -22,7 +22,6 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHomeProductCarouselViewHolder(
     itemView: View,
-    private val fragment: Fragment,
     private val listener: ShopHomeProductCarouselListener
 ) : AbstractViewHolder<ShopHomeProductCarouselUiModel>(itemView) {
 
@@ -48,7 +47,7 @@ class ShopHomeProductCarouselViewHolder(
 
     private fun setupTabs(tabs: List<ShopHomeProductCarouselUiModel.Tab>) {
         val fragments = createFragments(tabs)
-        val pagerAdapter = TabPagerAdapter(fragment, fragments)
+        val pagerAdapter = TabPagerAdapter(listener.fragment, fragments)
 
         viewBinding?.run {
             viewPager.adapter = pagerAdapter
@@ -98,7 +97,7 @@ class ShopHomeProductCarouselViewHolder(
         val pages = mutableListOf<Pair<String, Fragment>>()
 
         tabs.forEachIndexed { _, currentTab ->
-            val fragment = ShopProductCarouselFragment.newInstance("6553224", currentTab.components)
+            val fragment = ShopProductCarouselFragment.newInstance(listener.currentShopId, currentTab.components)
             fragment.setOnMainBannerClick { mainBanner -> listener.onMainBannerClick(mainBanner) }
             fragment.setOnProductClick { selectedShowcase -> listener.onProductClick(selectedShowcase) }
 

@@ -378,7 +378,7 @@ open class ShopHomeAdapterTypeFactory(
                 ShopHomeShowCaseLeftMainBannerViewHolder(parent, fragment, shopHomeShowcaseListener)
             }
             ShopHomeProductCarouselViewHolder.LAYOUT -> {
-                ShopHomeProductCarouselViewHolder(parent, fragment, shopHomeProductCarouselListener)
+                ShopHomeProductCarouselViewHolder(parent, shopHomeProductCarouselListener)
             }
             ShopHomeShowCaseTopMainBannerViewHolder.LAYOUT -> {
                 ShopHomeShowCaseTopMainBannerViewHolder(parent, shopHomeShowcaseListener)
