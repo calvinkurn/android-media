@@ -69,12 +69,6 @@ class ProductArchivalViewHolder(
             )
         }
         binding?.tvInfoProductArchival?.showWithCondition(product.isArchived)
-        binding?.tvInfoProductArchival?.setCompoundDrawables(
-            ContextCompat.getDrawable(
-                view.context,
-                R.drawable.iconunify_product_info
-            ), null, null, null
-        )
     }
 
     private fun showProductCheckBox(product: ProductUiModel) {
