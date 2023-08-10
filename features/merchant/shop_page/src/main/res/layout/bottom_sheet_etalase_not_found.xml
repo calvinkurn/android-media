@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="14dp"
         android:layout_marginLeft="14dp"
+        android:contentDescription="illustration_not_found"
         />
 
     <com.tokopedia.unifyprinciples.Typography

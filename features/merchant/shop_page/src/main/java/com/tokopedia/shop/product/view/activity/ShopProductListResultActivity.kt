@@ -185,7 +185,7 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
             val iconBuilder =
                 IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.SHOP))
             iconBuilder.addIcon(IconList.ID_SHARE) {
-                if (fragment is ShopPageProductListResultFragment) (fragment as ShopPageProductListResultFragment?)?.clickShopShare()
+                if (fragment is ShopPageProductListResultFragment) (fragment as? ShopPageProductListResultFragment?)?.clickShopShare()
             }
 
             if (!GlobalConfig.isSellerApp()){
@@ -231,7 +231,7 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
                 searchbarClickCallback = {
                     if (null != shopPageTracking) shopPageTracking?.clickSearchBox(SCREEN_SHOP_PAGE)
                     if (null != shopInfo) {
-                        if (fragment is ShopPageProductListResultFragment) (fragment as ShopPageProductListResultFragment?)?.onSearchBarClicked()
+                        if (fragment is ShopPageProductListResultFragment) (fragment as? ShopPageProductListResultFragment?)?.onSearchBarClicked()
                     }
                 }
             )
@@ -250,7 +250,7 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
                 searchbarClickCallback = {
                     if (null != shopPageTracking) shopPageTracking?.clickSearchBox(SCREEN_SHOP_PAGE)
                     if (null != shopInfo) {
-                        if (fragment is ShopPageProductListResultFragment) (fragment as ShopPageProductListResultFragment?)?.onSearchBarClicked()
+                        if (fragment is ShopPageProductListResultFragment) (fragment as? ShopPageProductListResultFragment?)?.onSearchBarClicked()
                     }
                 }
             )
