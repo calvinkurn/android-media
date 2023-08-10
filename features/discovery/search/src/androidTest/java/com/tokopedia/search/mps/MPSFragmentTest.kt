@@ -41,7 +41,7 @@ class MPSFragmentTest {
     private inline fun <reified F : Fragment> launchFragmentInContainer(
         crossinline instantiate: () -> F
     ) = launchFragmentInContainer(
-        themeResId = R.style.DiscoveryTheme,
+        themeResId = com.tokopedia.discovery.common.R.style.DiscoveryTheme,
         instantiate = instantiate
     )
 
@@ -130,7 +130,7 @@ class MPSFragmentTest {
 
         launchFragmentInContainer { createMPSFragment(mpsStateSuccess) }
 
-        onView(withId(R.id.progressBarSortFilterBottomSheet)).check(matches(isDisplayed()))
+        onView(withId(com.tokopedia.filter.R.id.progressBarSortFilterBottomSheet)).check(matches(isDisplayed()))
     }
 
     @Test
@@ -144,7 +144,7 @@ class MPSFragmentTest {
 
         launchFragmentInContainer { createMPSFragment(mpsStateSuccess) }
 
-        onView(withId(R.id.recyclerViewSortFilterBottomSheet)).check(matches(isDisplayed()))
+        onView(withId(com.tokopedia.filter.R.id.recyclerViewSortFilterBottomSheet)).check(matches(isDisplayed()))
     }
 
     @Test

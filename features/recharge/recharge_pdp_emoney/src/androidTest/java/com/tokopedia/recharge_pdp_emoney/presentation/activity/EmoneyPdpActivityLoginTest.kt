@@ -101,11 +101,11 @@ class EmoneyPdpActivityLoginTest {
 
     private fun validateTicker() {
         Espresso.onView(withId(R.id.emoneyPdpTicker)).check(matches(isDisplayed()))
-        Espresso.onView(withId(R.id.ticker_description)).check(matches(isDisplayed()))
-        Espresso.onView(withId(R.id.ticker_description)).check(matches(withText("this is dummy ticker Action Text")))
+        Espresso.onView(withId(com.tokopedia.unifycomponents.R.id.ticker_description)).check(matches(isDisplayed()))
+        Espresso.onView(withId(com.tokopedia.unifycomponents.R.id.ticker_description)).check(matches(withText("this is dummy ticker Action Text")))
 
-        Espresso.onView(withId(R.id.ticker_close_icon)).check(matches(isDisplayed()))
-        Espresso.onView(withId(R.id.ticker_close_icon)).perform(click())
+        Espresso.onView(withId(com.tokopedia.unifycomponents.R.id.ticker_close_icon)).check(matches(isDisplayed()))
+        Espresso.onView(withId(com.tokopedia.unifycomponents.R.id.ticker_close_icon)).perform(click())
         Thread.sleep(1000)
         Espresso.onView(withId(R.id.emoneyPdpTicker)).check(matches(not(isDisplayed())))
     }
