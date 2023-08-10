@@ -238,6 +238,8 @@
 
     <string name="shop_page_dot_character">•</string>
 
+    <string name="shop_page_view_all">Lihat Semua</string>
+
     <string name="shop_page_placeholder_sold">Terjual %d</string>
     <string name="shop_page_placeholder_discount_percentage">%d%%</string>
 </resources>

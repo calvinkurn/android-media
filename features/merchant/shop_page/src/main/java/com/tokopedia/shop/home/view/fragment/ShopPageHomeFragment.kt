@@ -747,74 +747,80 @@ open class ShopPageHomeFragment :
                             title = "Product carousel",
                             tabs = listOf(
                                 ShopHomeProductCarouselUiModel.Tab(
-                                    tabId = 1,
                                     label = "all_time",
                                     name = "All Time",
-                                    components = listOf(
-                                        ShopHomeProductCarouselUiModel.Tab.Component(
+                                    componentList = listOf(
+                                        ShopHomeProductCarouselUiModel.Tab.ComponentList(
                                             id = 2345,
                                             name = "banner single",
                                             type = ShopHomeProductCarouselUiModel.ComponentType.BANNER_SINGLE,
                                             ratio = "3:1",
-                                            componentChild = listOf(
-                                                ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild(
+                                            data = listOf(
+                                                ShopHomeProductCarouselUiModel.Tab.ComponentList.Data(
                                                     imageId = 45,
                                                     imageUrl = "https://images.tokopedia.net/img/misiseru/BANNERUNICHARMAUG23.jpg",
                                                     ctaLink = "https://tokopedia.com/etalase/10",
                                                     linkId = 0,
-                                                    linkType = ""
+                                                    linkType = "",
+                                                    isShowProductInfo = false,
+                                                    bannerType = ""
                                                 )
                                             )
                                         ),
-                                        ShopHomeProductCarouselUiModel.Tab.Component(
+                                        ShopHomeProductCarouselUiModel.Tab.ComponentList(
                                             id = 2345,
                                             name = "product card with product info",
                                             type = ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITH_PRODUCT_INFO,
                                             ratio = "",
-                                            componentChild = listOf(
-                                                ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild(
+                                            data = listOf(
+                                                ShopHomeProductCarouselUiModel.Tab.ComponentList.Data(
                                                     imageId = 0,
                                                     imageUrl = "",
                                                     ctaLink = "",
                                                     linkId = 983,
-                                                    linkType = "terbaru"
+                                                    linkType = "terbaru",
+                                                    isShowProductInfo = true,
+                                                    bannerType = "vertical"
                                                 )
                                             )
                                         )
                                     )
                                 ),
                                 ShopHomeProductCarouselUiModel.Tab(
-                                    tabId = 1,
                                     label = "trending_today",
                                     name = "Trending Today",
-                                    components = listOf(
-                                        ShopHomeProductCarouselUiModel.Tab.Component(
+                                    componentList = listOf(
+                                        ShopHomeProductCarouselUiModel.Tab.ComponentList(
                                             id = 2345,
                                             name = "banner single",
                                             type = ShopHomeProductCarouselUiModel.ComponentType.BANNER_SINGLE,
                                             ratio = "3:1",
-                                            componentChild = listOf(
-                                                ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild(
+                                            data = listOf(
+                                                ShopHomeProductCarouselUiModel.Tab.ComponentList.Data(
                                                     imageId = 45,
                                                     imageUrl = "https://images.tokopedia.net/img/misiseru/BANNERTUDUNGAUG23.jpg",
                                                     ctaLink = "https://tokopedia.com/etalase/10",
                                                     linkId = 0,
-                                                    linkType = ""
+                                                    linkType = "",
+                                                    isShowProductInfo = false,
+                                                    bannerType = ""
                                                 )
                                             )
                                         ),
-                                        ShopHomeProductCarouselUiModel.Tab.Component(
+                                        ShopHomeProductCarouselUiModel.Tab.ComponentList(
                                             id = 2345,
                                             name = "product card without product info",
                                             type = ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITHOUT_PRODUCT_INFO,
                                             ratio = "",
-                                            componentChild = listOf(
-                                                ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild(
+                                            data = listOf(
+                                                ShopHomeProductCarouselUiModel.Tab.ComponentList.Data(
                                                     imageId = 0,
                                                     imageUrl = "https://images.tokopedia.net/img/hitjabnco.jpg",
                                                     ctaLink = "",
                                                     linkId = 0,
-                                                    linkType = ""
+                                                    linkType = "",
+                                                    isShowProductInfo = false,
+                                                    bannerType = ""
                                                 )
                                             )
                                         ),
@@ -5049,7 +5055,7 @@ open class ShopPageHomeFragment :
         RouteManager.route(activity ?: return, selectedShowcase.ctaLink)
     }
 
-    override fun onProductCarouselMainBannerClick(mainBanner: ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild) {
+    override fun onProductCarouselMainBannerClick(mainBanner: ShopHomeProductCarouselUiModel.Tab.ComponentList.Data) {
         try {
             RouteManager.route(activity ?: return, mainBanner.ctaLink)
         } catch (_: Exception) {
@@ -5062,6 +5068,13 @@ open class ShopPageHomeFragment :
         } catch (_: Exception) {
         }
 
+    }
+
+    override fun onProductCarouselVerticalBannerClick(verticalBanner: Product) {
+        try {
+            RouteManager.route(activity ?: return, verticalBanner.appLink)
+        } catch (_: Exception) {
+        }
     }
 
     override val fragment: Fragment

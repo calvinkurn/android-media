@@ -37,7 +37,7 @@ class ShopProductCarouselFragment : BaseDaggerFragment() {
         @JvmStatic
         fun newInstance(
             shopId: String,
-            widgets: List<ShopHomeProductCarouselUiModel.Tab.Component>
+            widgets: List<ShopHomeProductCarouselUiModel.Tab.ComponentList>
         ): ShopProductCarouselFragment {
             return ShopProductCarouselFragment().apply {
                 arguments = Bundle().apply {
@@ -52,7 +52,7 @@ class ShopProductCarouselFragment : BaseDaggerFragment() {
 
     private val shopId by lazy { arguments?.getString(BUNDLE_KEY_SHOP_ID).orEmpty() }
     private val widgets by lazy {
-        arguments?.getParcelableArrayList<ShopHomeProductCarouselUiModel.Tab.Component>(
+        arguments?.getParcelableArrayList<ShopHomeProductCarouselUiModel.Tab.ComponentList>(
             BUNDLE_KEY_WIDGETS
         )?.toList().orEmpty()
     }
@@ -62,8 +62,9 @@ class ShopProductCarouselFragment : BaseDaggerFragment() {
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider[ShopProductCarouselViewModel::class.java] }
 
-    private var onMainBannerClick : (ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild) -> Unit = {}
+    private var onMainBannerClick : (ShopHomeProductCarouselUiModel.Tab.ComponentList.Data) -> Unit = {}
     private var onProductClick : (Product) -> Unit = {}
+    private var onVerticalBannerClick : (Product) -> Unit = {}
 
     private var binding by autoClearedNullable<FragmentShopProductCarouselBinding>()
     private val productAdapter = ShopHomeProductCarouselAdapter()
@@ -103,7 +104,7 @@ class ShopProductCarouselFragment : BaseDaggerFragment() {
 
         val hasMainBanner = singleBanners != null
         if (hasMainBanner) {
-            val mainBanner = singleBanners?.componentChild?.getOrNull(0)
+            val mainBanner = singleBanners?.data?.getOrNull(0)
             val mainBannerImageUrl = mainBanner?.imageUrl.orEmpty()
             if (mainBannerImageUrl.isNotEmpty()) {
                 binding?.imgMainBanner?.visible()
@@ -149,7 +150,7 @@ class ShopProductCarouselFragment : BaseDaggerFragment() {
                 widgets.type == ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITHOUT_PRODUCT_INFO
         }
 
-        val firstProduct = products.getOrNull(0)?.componentChild
+        val firstProduct = products.getOrNull(0)?.data
         val firstProductLinkType = firstProduct?.getOrNull(0)?.linkType.orEmpty()
 
         val sortId = when (firstProductLinkType) {
@@ -162,11 +163,32 @@ class ShopProductCarouselFragment : BaseDaggerFragment() {
         viewModel.getShopProduct(sortId, shopId, userAddress)
     }
     private fun renderProducts(products: List<Product>) {
-        productAdapter.submit(products)
+        val f = widgets.filter { widgets ->
+            widgets.type == ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITH_PRODUCT_INFO
+                ||
+                widgets.type == ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITHOUT_PRODUCT_INFO
+        }
+
+        val firstProduct = f.getOrNull(0)?.data
+        val firstProductBannerType = firstProduct?.getOrNull(0)?.bannerType.orEmpty()
+
+        val shouldDisplayVerticalBanner = firstProductBannerType == "vertical"
+
+        val adjustedProduct = if (shouldDisplayVerticalBanner) {
+            listOf(Product("", "https://images.tokopedia.net/img/fintech/adapundi/adapundi.png", "Samsung Galaxy", "", "", 0, "", 0, "", "vertical")) + products
+        } else {
+            products
+        }
+
+        productAdapter.submit(adjustedProduct)
     }
 
-    fun setOnMainBannerClick(onMainBannerClick: (ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild) -> Unit) {
+    fun setOnMainBannerClick(onMainBannerClick: (ShopHomeProductCarouselUiModel.Tab.ComponentList.Data) -> Unit) {
         this.onMainBannerClick = onMainBannerClick
+    }
+
+    fun setOnVerticalBannerClick(onVerticalBannerClick: (Product) -> Unit) {
+        this.onVerticalBannerClick = onVerticalBannerClick
     }
 
     fun setOnProductClick(onProductClick: (Product) -> Unit) {

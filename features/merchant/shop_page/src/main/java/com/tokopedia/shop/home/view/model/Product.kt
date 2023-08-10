@@ -9,5 +9,6 @@ data class Product(
     val slashedPricePercent: Int,
     val rating: String,
     val soldCount: Int,
-    val appLink: String
+    val appLink: String,
+    val bannerType: String
 )

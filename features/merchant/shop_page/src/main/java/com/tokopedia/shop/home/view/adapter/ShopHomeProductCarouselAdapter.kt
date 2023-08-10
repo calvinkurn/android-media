@@ -11,27 +11,56 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.databinding.ItemShopHomeProductInfoCardBinding
 import com.tokopedia.shop.home.view.model.Product
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.ItemShopHomeProductVerticalBannerCardBinding
 
-class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<ShopHomeProductCarouselAdapter.ProductViewHolder>() {
+class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var products = mutableListOf<Product>()
+    private var items = mutableListOf<Product>()
     private var onProductClick: (Product) -> Unit = {}
     private var showProductInfo : Boolean = false
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
-        val binding =
-            ItemShopHomeProductInfoCardBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-        return ProductViewHolder(binding)
+    companion object {
+        private const val VIEW_TYPE_VERTICAL_BANNER = 1
+        private const val VIEW_TYPE_PRODUCT = 2
+    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if (viewType == VIEW_TYPE_VERTICAL_BANNER) {
+            val binding = ItemShopHomeProductVerticalBannerCardBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            VerticalBannerViewHolder(binding)
+        } else {
+            val binding = ItemShopHomeProductInfoCardBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            ProductViewHolder(binding)
+        }
     }
 
-    override fun getItemCount() = products.size
+    override fun getItemCount() = items.size
 
-    override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
-        holder.bind(products[position])
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val item = items[position]
+        if (item.bannerType == "vertical") {
+            (holder as VerticalBannerViewHolder).bind(item)
+        } else {
+            (holder as ProductViewHolder).bind(item)
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        val item = items[position]
+
+        if (item.bannerType == "vertical") {
+            return VIEW_TYPE_VERTICAL_BANNER
+        }
+
+        return VIEW_TYPE_PRODUCT
     }
 
     inner class ProductViewHolder(
@@ -73,6 +102,19 @@ class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<ShopHomeProductCarou
         }
     }
 
+    inner class VerticalBannerViewHolder(
+        private val binding: ItemShopHomeProductVerticalBannerCardBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(product: Product) {
+            binding.imgVerticalBanner.loadImage(product.imageUrl)
+            binding.tpgCtaText.text = binding.tpgCtaText.context.getString(R.string.shop_page_view_all)
+            binding.tpgBannerTitle.text = product.name
+
+            binding.root.setOnClickListener { onProductClick(product) }
+        }
+    }
+
     inner class DiffCallback(
         private val oldItems: List<Product>,
         private val newItems: List<Product>
@@ -96,12 +138,12 @@ class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<ShopHomeProductCarou
     }
 
     fun submit(newProducts: List<Product>) {
-        val diffCallback = DiffCallback(this.products, newProducts)
+        val diffCallback = DiffCallback(this.items, newProducts)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
 
-        this.products.clear()
+        this.items.clear()
 
-        this.products.addAll(newProducts)
+        this.items.addAll(newProducts)
         diffResult.dispatchUpdatesTo(this)
     }
 

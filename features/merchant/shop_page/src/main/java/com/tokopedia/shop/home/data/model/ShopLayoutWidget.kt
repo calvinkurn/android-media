@@ -175,12 +175,10 @@ data class ShopLayoutWidget(
                 val timeInfo: TimeInfo = TimeInfo(),
                 @SerializedName("text")
                 val text: String = "",
-                @SerializedName("componentTabID")
-                val componentTabID: Long = 0,
-                @SerializedName("componentTabLabel")
-                val componentTabLabel: String = "",
-                @SerializedName("componentTabName")
-                val componentTabName: String = "",
+                @SerializedName("tabLabel")
+                val tabLabel: String = "",
+                @SerializedName("tabName")
+                val tabName: String = "",
                 @SerializedName("componentList")
                 val componentList: List<Component> = emptyList()
 
@@ -207,7 +205,11 @@ data class ShopLayoutWidget(
                     @SerializedName("linkID")
                     val linkID: Long = 0,
                     @SerializedName("linkType")
-                    val linkType: String = ""
+                    val linkType: String = "",
+                    @SerializedName("isShowProductInfo")
+                    val isShowProductInfo: Boolean = false,
+                    @SerializedName("bannerType")
+                    val bannerType: String = ""
                 )
             }
 

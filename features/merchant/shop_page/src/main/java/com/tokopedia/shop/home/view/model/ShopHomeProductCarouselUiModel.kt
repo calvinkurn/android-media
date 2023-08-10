@@ -25,28 +25,29 @@ data class ShopHomeProductCarouselUiModel(
 
     @Parcelize
     data class Tab(
-        val tabId: Long,
         val label: String,
         val name: String,
-        val components: List<Component>
+        val componentList: List<ComponentList>
     ) : Parcelable {
 
         @Parcelize
-        data class Component(
+        data class ComponentList(
             val id: Long,
             val name: String,
             val type: ComponentType,
             val ratio: String,
-            val componentChild: List<ComponentChild>
+            val data: List<Data>
         ) : Parcelable {
 
             @Parcelize
-            data class ComponentChild(
+            data class Data(
                 val imageId: Long,  //For main banner
                 val imageUrl: String,  //For main banner
                 val ctaLink: String, //For main banner
                 val linkId: Long,  //For product info reference
-                val linkType: String //For product info reference
+                val linkType: String, //For product info reference
+                val isShowProductInfo: Boolean, //For product info reference
+                val bannerType: String //For product info reference
             ) : Parcelable
 
         }

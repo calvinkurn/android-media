@@ -216,7 +216,7 @@ object ShopPageWidgetMapper {
     }
     fun mapToHomeProductCarouselWidget(response: ShopLayoutWidget.Widget): ShopHomeProductCarouselUiModel {
         val tabs = response.data.map { tab ->
-            val tabComponents = tab.componentList.map { component ->
+            val tabComponentLists = tab.componentList.map { component ->
                 val componentType = when (component.componentType) {
                     ComponentType.BANNER_SINGLE -> {
                         ShopHomeProductCarouselUiModel.ComponentType.BANNER_SINGLE
@@ -232,30 +232,31 @@ object ShopPageWidgetMapper {
                     }
                 }
 
-                val componentChild = component.componentChild.map { componentChild ->
-                    ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild(
+                val componentListChild = component.componentChild.map { componentChild ->
+                    ShopHomeProductCarouselUiModel.Tab.ComponentList.Data(
                         componentChild.imageID,
                         componentChild.imageUrl,
                         componentChild.ctaLink,
                         componentChild.linkID,
-                        componentChild.linkType
+                        componentChild.linkType,
+                        componentChild.isShowProductInfo,
+                        componentChild.bannerType
                     )
                 }
 
-                ShopHomeProductCarouselUiModel.Tab.Component(
+                ShopHomeProductCarouselUiModel.Tab.ComponentList(
                     component.componentID,
                     component.componentName,
                     componentType,
                     component.ratio,
-                    componentChild
+                    componentListChild
                 )
             }
 
             ShopHomeProductCarouselUiModel.Tab(
-                tab.componentTabID,
-                tab.componentTabLabel,
-                tab.componentTabName,
-                tabComponents
+                tab.tabLabel,
+                tab.tabName,
+                tabComponentLists
             )
         }
 

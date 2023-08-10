@@ -76,7 +76,6 @@ class ShopHomeProductCarouselViewHolder(
             val centeredTabIndicator = ContextCompat.getDrawable(tabsUnify.tabLayout.context, R.drawable.shape_showcase_tab_indicator_color)
             tabsUnify.tabLayout.setSelectedTabIndicator(centeredTabIndicator)
 
-
             TabsUnifyMediator(tabsUnify, viewPager) { tab, currentPosition ->
                 tab.setCustomText(fragments[currentPosition].first)
             }
@@ -97,9 +96,10 @@ class ShopHomeProductCarouselViewHolder(
         val pages = mutableListOf<Pair<String, Fragment>>()
 
         tabs.forEachIndexed { _, currentTab ->
-            val fragment = ShopProductCarouselFragment.newInstance(listener.currentShopId, currentTab.components)
+            val fragment = ShopProductCarouselFragment.newInstance(listener.currentShopId, currentTab.componentList)
             fragment.setOnMainBannerClick { mainBanner -> listener.onProductCarouselMainBannerClick(mainBanner) }
             fragment.setOnProductClick { selectedShowcase -> listener.onProductCarouselProductClick(selectedShowcase) }
+            fragment.setOnVerticalBannerClick { verticalBanner -> listener.onProductCarouselVerticalBannerClick(verticalBanner) }
 
             val displayedTabName = currentTab.name
             pages.add(Pair(displayedTabName, fragment))

@@ -34,7 +34,7 @@ class ShopProductCarouselViewModel @Inject constructor(
     fun getShopProduct(
         sortId: Int,
         shopId: String,
-        userAddress: LocalCacheModel,
+        userAddress: LocalCacheModel
     ) {
         launchCatchError(
             context = dispatcherProvider.io,
@@ -64,7 +64,8 @@ class ShopProductCarouselViewModel @Inject constructor(
                         product.campaign.discountedPercentage.toIntOrZero(),
                         product.stats.averageRating,
                         1,
-                        product.appLink
+                        product.appLink,
+                        bannerType = ""
                     )
                 }
                 _products.postValue(Success(products))
