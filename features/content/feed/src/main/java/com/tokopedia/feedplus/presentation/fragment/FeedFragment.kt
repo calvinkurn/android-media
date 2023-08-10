@@ -14,9 +14,9 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_DRAGGING
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
@@ -166,9 +166,11 @@ class FeedFragment :
     private val feedMainViewModel: FeedMainViewModel by viewModels(
         ownerProducer = {
             parentFragment ?: this
-        }, factoryProducer = {
+        },
+        factoryProducer = {
             viewModelFactory
-        })
+        }
+    )
     private val feedPostViewModel: FeedPostViewModel by viewModels { viewModelFactory }
 
     private val feedMvcAnalytics = FeedMVCAnalytics()
@@ -233,7 +235,26 @@ class FeedFragment :
 
     private var feedFollowersOnlyBottomSheet: FeedFollowersOnlyBottomSheet? = null
 
-    private val layoutManager by lazy { FeedPostLayoutManager(context) }
+    private val layoutManager by lazy {
+        FeedPostLayoutManager(
+            context,
+            object : FeedPostLayoutManager.Listener {
+                override fun onScrolling(
+                    layoutManager: LinearLayoutManager,
+                    isOverScroll: Boolean
+                ) {
+                    if (isOverScroll) {
+                        adapter.stopScrolling()
+                        return
+                    }
+
+                    if (binding.rvFeedPost.scrollState == RecyclerView.SCROLL_STATE_IDLE) return
+                    adapter.onScrolling()
+                }
+            }
+        )
+    }
+
     private val contentScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             // update item state and send tracker
@@ -245,10 +266,8 @@ class FeedFragment :
 
                 val position = getCurrentPosition()
                 updateBottomActionView(position)
+
                 adapter.select(position)
-            } else if (newState == SCROLL_STATE_DRAGGING) {
-                val position = getCurrentPosition()
-                adapter.onScrolling(position)
             }
         }
     }
@@ -1730,8 +1749,11 @@ class FeedFragment :
     private fun updateBottomActionView(position: Int) {
         with(binding) {
             val currentItem =
-                if (position != RecyclerView.NO_POSITION && adapter.currentList.size > position)
-                    adapter.currentList[position] else null
+                if (position != RecyclerView.NO_POSITION && adapter.currentList.size > position) {
+                    adapter.currentList[position]
+                } else {
+                    null
+                }
 
             if (currentItem == null || !isCdp) {
                 containerBottomAction.hide()
