@@ -208,6 +208,10 @@ open class ProductAttachmentUiModel protected constructor(
         return wishList
     }
 
+    fun isProductDeleted(): Boolean {
+        return status == statusDeleted
+    }
+
     fun getStringProductId(): String {
         return productId.toString()
     }
