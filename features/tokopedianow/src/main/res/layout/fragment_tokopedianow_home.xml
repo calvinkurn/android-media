@@ -6,13 +6,48 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true">
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/view_background_image"
+    <FrameLayout
+        android:id="@+id/header_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/tokopedianow_header_background_content_description"
-        android:scaleType="fitXY"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="176dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/image_header_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/tokopedianow_header_background_content_description"
+            android:scaleType="fitXY"
+            android:visibility="gone"
+            app:unify_image_corner_radius="0"
+            app:unify_image_type="rect" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/image_header_supergraphic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:scaleType="fitXY"
+            android:visibility="gone"
+            app:unify_image_corner_radius="0"
+            app:unify_image_type="rect" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottie_animation_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:visibility="gone"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="false" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/header_shimmer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:loader_corner_radius="0dp"
+            app:loader_type="rect" />
+    </FrameLayout>
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
@@ -52,7 +87,7 @@
     <View
         android:id="@+id/status_bar_bg"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_25"
+        android:layout_height="25dp"
         android:background="@color/Unify_GN500"
         android:visibility="visible"
         app:layout_constraintTop_toTopOf="parent" />
@@ -71,9 +106,9 @@
         android:id="@+id/sticky_login_tokonow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:sticky_highlight_color="@color/Unify_GN500"
-        app:sticky_left_icon="@drawable/ic_toped_widget_login"/>
+        app:sticky_left_icon="@drawable/ic_toped_widget_login" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

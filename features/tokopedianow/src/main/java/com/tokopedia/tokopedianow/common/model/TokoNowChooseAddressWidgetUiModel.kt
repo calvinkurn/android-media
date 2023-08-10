@@ -7,7 +7,8 @@ import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowChooseAddres
 data class TokoNowChooseAddressWidgetUiModel(
         val id: String = "",
         val backgroundLightColor: String = String.EMPTY,
-        val backgroundDarkColor: String = String.EMPTY
+        val backgroundDarkColor: String = String.EMPTY,
+        val isColorStatic: Boolean = false
 ) : Visitable<TokoNowChooseAddressWidgetTypeFactory>  {
     override fun type(typeFactory: TokoNowChooseAddressWidgetTypeFactory): Int {
         return typeFactory.type(this)

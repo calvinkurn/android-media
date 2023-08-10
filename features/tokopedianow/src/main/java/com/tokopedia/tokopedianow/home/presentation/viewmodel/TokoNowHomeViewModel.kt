@@ -54,6 +54,9 @@ import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.domain.mapper.CatalogCouponListMapper.COUPON_WIDGET_DOUBLE_SLUG_SIZE
 import com.tokopedia.tokopedianow.home.domain.mapper.CatalogCouponListMapper.COUPON_WIDGET_SINGLE_SLUG_SIZE
 import com.tokopedia.tokopedianow.home.domain.mapper.CatalogCouponListMapper.mapToClaimCouponDataModel
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeHeaderMapper
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeHeaderMapper.mapHomeHeaderErrorState
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeHeaderMapper.mapToHomeHeaderUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addEmptyStateIntoList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addLoadingIntoList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addMoreHomeLayout
@@ -95,8 +98,10 @@ import com.tokopedia.tokopedianow.home.domain.mapper.RealTimeRecomMapper.mapRefr
 import com.tokopedia.tokopedianow.home.domain.mapper.RealTimeRecomMapper.removeRealTimeRecommendation
 import com.tokopedia.tokopedianow.home.domain.mapper.RecomParamMapper.mapToRecomRequestParam
 import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.getVisitableId
+import com.tokopedia.tokopedianow.home.domain.model.GetBuyerCommunication.GetBuyerCommunicationResponse
 import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
 import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
+import com.tokopedia.tokopedianow.home.domain.usecase.GetBuyerCommunicationUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetCatalogCouponListUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetHomeLayoutDataUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetHomeReferralUseCase
@@ -108,7 +113,9 @@ import com.tokopedia.tokopedianow.home.domain.usecase.ReferralEvaluateJoinUseCas
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.CATEGORY_LEVEL_DEPTH
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.DEFAULT_QUANTITY
 import com.tokopedia.tokopedianow.home.presentation.model.HomeClaimCouponDataModel
+import com.tokopedia.tokopedianow.home.presentation.model.HomeHeaderBackgroundData
 import com.tokopedia.tokopedianow.home.presentation.model.HomeReferralDataModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeHeaderUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
@@ -150,7 +157,9 @@ class TokoNowHomeViewModel @Inject constructor(
     private val getCatalogCouponListUseCase: GetCatalogCouponListUseCase,
     private val redeemCouponUseCase: RedeemCouponUseCase,
     private val getProductBundleRecomUseCase: GetProductBundleRecomUseCase,
+    private val getBuyerCommunicationUseCase: GetBuyerCommunicationUseCase,
     private val playWidgetTools: PlayWidgetTools,
+    private val addressData: TokoNowLocalAddress,
     private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers,
     addToCartUseCase: AddToCartUseCase,
@@ -158,7 +167,6 @@ class TokoNowHomeViewModel @Inject constructor(
     deleteCartUseCase: DeleteCartUseCase,
     affiliateService: NowAffiliateService,
     getTargetedTickerUseCase: GetTargetedTickerUseCase,
-    addressData: TokoNowLocalAddress
 ) : BaseTokoNowViewModel(
     addToCartUseCase,
     updateCartUseCase,
@@ -209,6 +217,8 @@ class TokoNowHomeViewModel @Inject constructor(
         get() = _couponClaimed
     val blockAddToCart: LiveData<Unit>
         get() = _blockAddToCart
+    val headerBackground: LiveData<HomeHeaderBackgroundData>
+        get() = _headerBackground
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _keywordSearch = MutableLiveData<SearchPlaceholder>()
@@ -224,6 +234,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val _updateToolbarNotification = MutableLiveData<Boolean>()
     private val _referralEvaluate = MutableLiveData<Result<HomeReceiverReferralDialogUiModel>>()
     private val _couponClaimed = MutableLiveData<Result<HomeClaimCouponDataModel>>()
+    private val _headerBackground = MutableLiveData<HomeHeaderBackgroundData>()
 
     private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel?>()
     private var channelToken = ""
@@ -282,8 +293,9 @@ class TokoNowHomeViewModel @Inject constructor(
         getHomeLayoutJob?.cancel()
         launchCatchError(block = {
             homeLayoutItemList.clear()
-
-            val tickerData = getTickerDataAsync(localCacheModel.warehouse_id, GetTargetedTickerUseCase.HOME_PAGE).await()
+            val warehouseId = localCacheModel.warehouse_id
+            val tickerPage = GetTargetedTickerUseCase.HOME_PAGE
+            val tickerData = getTickerDataAsync(warehouseId, tickerPage).await()
 
             val homeLayoutResponse = getHomeLayoutDataUseCase.execute(
                 localCacheModel = localCacheModel
@@ -796,6 +808,7 @@ class TokoNowHomeViewModel @Inject constructor(
             is HomePlayWidgetUiModel -> getPlayWidgetAsync(item).await()
             is HomeClaimCouponWidgetUiModel -> getCatalogCouponListAsync(item).await()
             is HomeProductCarouselChipsUiModel -> getCarouselChipsProductListAsync(item).await()
+            is HomeHeaderUiModel -> getGetBuyerCommunicationAsync(item).await()
             else -> removeUnsupportedLayout(item)
         }
     }
@@ -1014,6 +1027,25 @@ class TokoNowHomeViewModel @Inject constructor(
         val model = state.model.copy(title = title, actionAppLink = appLink)
         val widgetState = state.copy(model = model)
         return HomePlayWidgetUiModel(item.id, widgetType, widgetState, isAutoRefresh)
+    }
+
+    private fun getGetBuyerCommunicationAsync(item: HomeHeaderUiModel): Deferred<Unit?> {
+        return asyncCatchError(block = {
+            val response = getBuyerCommunicationUseCase.execute(addressData)
+            homeLayoutItemList.mapToHomeHeaderUiModel(item, response)
+            updateHeaderBackground(response)
+        }) {
+            homeLayoutItemList.mapHomeHeaderErrorState(item)
+            updateHeaderBackground(null)
+        }
+    }
+
+    private fun updateHeaderBackground(
+        buyerCommunicationResponse: GetBuyerCommunicationResponse?
+    ) {
+        val headerBackgroundUiModel = HomeHeaderMapper
+            .mapToHeaderBackgroundUiModel(buyerCommunicationResponse)
+        _headerBackground.postValue(headerBackgroundUiModel)
     }
 
     fun refreshRealTimeRecommendation(

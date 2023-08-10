@@ -94,6 +94,8 @@ import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeC
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetViewHolder.HomeClaimCouponWidgetListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowTickerViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.oldrepurchase.TokoNowProductCardViewHolder.TokoNowProductCardListener
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeHeaderUiModel
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeHeaderViewHolder
 
 class HomeAdapterTypeFactory(
     private val tokoNowView: TokoNowView? = null,
@@ -167,6 +169,7 @@ class HomeAdapterTypeFactory(
     override fun type(uiModel: HomeClaimCouponWidgetUiModel): Int = HomeClaimCouponWidgetViewHolder.LAYOUT
     override fun type(uiModel: HomeClaimCouponWidgetItemShimmeringUiModel): Int = HomeClaimCouponWidgetItemShimmeringViewHolder.LAYOUT
     override fun type(uiModel: HomeProductCarouselChipsUiModel): Int = HomeProductCarouselChipsViewHolder.LAYOUT
+    override fun type(uiModel: HomeHeaderUiModel): Int = HomeHeaderViewHolder.LAYOUT
     // endregion
 
     // region Global Home Component
@@ -207,6 +210,7 @@ class HomeAdapterTypeFactory(
             HomeClaimCouponWidgetViewHolder.LAYOUT -> HomeClaimCouponWidgetViewHolder(view, claimCouponWidgetItemListener, claimCouponWidgetItemTracker, claimCouponWidgetListener)
             HomeClaimCouponWidgetItemShimmeringViewHolder.LAYOUT -> HomeClaimCouponWidgetItemShimmeringViewHolder(view)
             HomeProductCarouselChipsViewHolder.LAYOUT -> HomeProductCarouselChipsViewHolder(view, productCarouselChipListener)
+            HomeHeaderViewHolder.LAYOUT -> HomeHeaderViewHolder(view)
             // endregion
 
             // region Global Home Component

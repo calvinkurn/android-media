@@ -40,7 +40,7 @@ class TokoNowChooseAddressWidgetViewHolder(
         setupChooseAddressWidget(element)
     }
 
-    private fun bindChooseAddressWidget() {
+    private fun bindChooseAddressWidget(element: TokoNowChooseAddressWidgetUiModel) {
         tokoNowView?.getFragmentPage()?.let { fragment ->
             chooseAddressWidget?.bindChooseAddress(object : ChooseAddressWidget.ChooseAddressWidgetListener {
                 override fun onLocalizingAddressUpdatedFromWidget() {
@@ -73,13 +73,21 @@ class TokoNowChooseAddressWidgetViewHolder(
                 override fun isFromTokonowPage(): Boolean {
                     return true
                 }
+
+                override fun onChangeTextColor(): Int {
+                    return if (element.isColorStatic) {
+                        com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                    } else {
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
+                    }
+                }
             })
         }
     }
 
     private fun setupChooseAddressWidget(element: TokoNowChooseAddressWidgetUiModel) {
         chooseAddressWidget = binding?.chooseAddressWidget
-        bindChooseAddressWidget()
+        bindChooseAddressWidget(element)
         showCoachMark()
         setBackgroundColor(element)
     }

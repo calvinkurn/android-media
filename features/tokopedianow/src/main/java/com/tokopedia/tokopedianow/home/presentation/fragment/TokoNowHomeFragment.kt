@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -11,13 +12,12 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -46,6 +46,8 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
@@ -104,6 +106,7 @@ import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceT
 import com.tokopedia.tokopedianow.common.util.TokoNowSharedPreference
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil.shareOptionRequest
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil.shareRequest
+import com.tokopedia.tokopedianow.common.util.ViewUtil
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener
@@ -129,6 +132,7 @@ import com.tokopedia.tokopedianow.home.presentation.activity.TokoNowHomeActivity
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapter
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapterTypeFactory
 import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffer
+import com.tokopedia.tokopedianow.home.presentation.model.HomeHeaderBackgroundData
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomePlayWidgetUiModel
@@ -178,6 +182,7 @@ import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
 import com.tokopedia.usercomponents.stickylogin.view.StickyLoginAction
 import com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.utils.resources.isDarkMode
 import java.util.*
 import javax.inject.Inject
 
@@ -285,7 +290,6 @@ class TokoNowHomeFragment :
     private var navToolbar: NavToolbar? = null
     private var statusBarBackground: View? = null
     private var localCacheModel: LocalCacheModel? = null
-    private var ivHeaderBackground: ImageView? = null
     private var swipeLayout: SwipeRefreshLayout? = null
     private var sharedPrefs: SharedPreferences? = null
     private var rvHome: RecyclerView? = null
@@ -722,32 +726,40 @@ class TokoNowHomeFragment :
         stickyLoginTokonow?.hide()
     }
 
-    private fun loadHeaderBackground() {
-        context?.resources?.apply {
-            val background = VectorDrawableCompat.create(
-                this,
-                R.drawable.tokopedianow_ic_header_background_shimmering,
-                context?.theme
-            )
-            ivHeaderBackground?.setImageDrawable(background)
-            ivHeaderBackground?.show()
+    private fun showThematicHeaderShimmer() {
+        binding?.apply {
+            headerShimmer.show()
+            headerContainer.show()
         }
     }
 
-    private fun showHeaderBackground() {
-        context?.resources?.apply {
-            val background = VectorDrawableCompat.create(
-                this,
-                R.drawable.tokopedianow_ic_header_background,
-                context?.theme
-            )
-            ivHeaderBackground?.setImageDrawable(background)
-            ivHeaderBackground?.show()
+    private fun showThematicHeader(background: HomeHeaderBackgroundData) {
+        binding?.apply {
+            showHeaderBackgroundColor(background)
+            imageHeaderSupergraphic.loadImageWithoutPlaceholder(background.imageUrl)
+            lottieAnimationHeader.apply {
+                setAnimationFromUrl(background.animationUrl)
+                setFailureListener {  }
+            }
+            headerShimmer.hide()
+            imageHeaderSupergraphic.show()
+            lottieAnimationHeader.show()
+            headerContainer.show()
+        }
+    }
+
+    private fun showHeaderBackgroundColor(background: HomeHeaderBackgroundData) {
+        context?.let {
+            val defaultColor = ContextCompat.getColor(it,
+                com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+            val color = ViewUtil.safeParseColor(background.color, defaultColor)
+            binding?.imageHeaderBackground?.loadImage(ColorDrawable(color))
+            binding?.imageHeaderBackground?.show()
         }
     }
 
     private fun hideHeaderBackground() {
-        ivHeaderBackground?.hide()
+        binding?.headerContainer?.hide()
     }
 
     private fun setupSwipeRefreshLayout() {
@@ -782,7 +794,6 @@ class TokoNowHomeFragment :
 
     private fun setupUi() {
         view?.apply {
-            ivHeaderBackground = binding?.viewBackgroundImage
             navToolbar = binding?.navToolbar
             statusBarBackground = binding?.statusBarBg
             rvHome = binding?.rvHome
@@ -862,7 +873,7 @@ class TokoNowHomeFragment :
     }
 
     private fun evaluateHeaderBackgroundOnScroll(recyclerView: RecyclerView, dy: Int) {
-        ivHeaderBackground?.translationY = viewModelTokoNow.getTranslationYHeaderBackground(dy)
+        binding?.headerContainer?.translationY = viewModelTokoNow.getTranslationYHeaderBackground(dy)
         if (recyclerView.canScrollVertically(WHILE_SCROLLING_VERTICALLY)) {
             navToolbar?.showShadow(lineShadow = true)
         } else {
@@ -1165,6 +1176,10 @@ class TokoNowHomeFragment :
                 )
             }
         }
+
+        observe(viewModelTokoNow.headerBackground) {
+            showThematicHeader(it)
+        }
     }
 
     private fun setupChooseAddress(data: GetStateChosenAddressResponse) {
@@ -1429,7 +1444,7 @@ class TokoNowHomeFragment :
 
     private fun onLoadingHomeLayout(data: HomeLayoutListUiModel) {
         showHomeLayout(data)
-        loadHeaderBackground()
+        showThematicHeaderShimmer()
         checkAddressDataAndServiceArea()
         showHideChooseAddress()
         hideSwitcherCoachMark()
@@ -1451,7 +1466,6 @@ class TokoNowHomeFragment :
     private fun onShowHomeLayout(data: HomeLayoutListUiModel) {
         startRenderPerformanceMonitoring()
         showHomeLayout(data)
-        showHeaderBackground()
         stickyLoginLoadContent()
         showOnBoarding()
         getLayoutComponentData()
@@ -1769,18 +1783,33 @@ class TokoNowHomeFragment :
                         override fun onAlphaChanged(offsetAlpha: Float) { /* nothing to do */
                         }
 
-                        override fun onSwitchToLightToolbar() { /* nothing to do */
+                        override fun onSwitchToLightToolbar() {
+                            toolbar.setBackButtonColor(
+                                com.tokopedia.unifyprinciples.R.color.Unify_Static_Black)
                         }
 
                         override fun onSwitchToDarkToolbar() {
+                            if(localCacheModel?.isOutOfCoverage() == true && !context.isDarkMode()) {
+                                toolbar.setBackButtonColor(
+                                    com.tokopedia.unifyprinciples.R.color.Unify_Static_Black)
+                                toolbar.switchToLightToolbar()
+                            } else {
+                                toolbar.setBackButtonColor(
+                                    com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+                            }
                             navToolbar?.hideShadow()
                         }
 
                         override fun onYposChanged(yOffset: Int) {}
-                    },
-                    fixedIconColor = NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
+                    }
                 )
             }
+        }
+    }
+
+    private fun NavToolbar.setBackButtonColor(color: Int) {
+        context?.let {
+            setCustomBackButton(color = ContextCompat.getColor(it, color))
         }
     }
 

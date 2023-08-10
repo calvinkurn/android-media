@@ -96,7 +96,10 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiM
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
+import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.HOME_HEADER
 import com.tokopedia.tokopedianow.home.domain.mapper.oldrepurchase.HomeRepurchaseMapper
+import com.tokopedia.tokopedianow.home.domain.model.GetBuyerCommunication.GetBuyerCommunicationResponse
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeHeaderUiModel
 import com.tokopedia.unifycomponents.ticker.TickerData
 
 object HomeLayoutMapper {
@@ -171,8 +174,14 @@ object HomeLayoutMapper {
         tickerList: List<TickerData>,
         enableNewRepurchase: Boolean
     ) {
-        val chooseAddressUiModel = TokoNowChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
+        val chooseAddressUiModel = TokoNowChooseAddressWidgetUiModel(
+            id = CHOOSE_ADDRESS_WIDGET_ID,
+            isColorStatic = true
+        )
+        val headerUiModel = HomeHeaderUiModel(id = HOME_HEADER)
+
         add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
+        add(HomeLayoutItemUiModel(headerUiModel, HomeLayoutItemState.NOT_LOADED))
 
         if (tickerList.isNotEmpty()) {
             val ticker = TokoNowTickerUiModel(id = TICKER_WIDGET_ID, tickers = tickerList)
