@@ -6,7 +6,7 @@ data class Product(
     val name: String,
     val price: String,
     val slashedPrice: String,
-    val slashedPricePercent: String,
+    val slashedPricePercent: Int,
     val rating: String,
     val soldCount: Int
 )

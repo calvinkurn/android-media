@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.home.view.model.Product
@@ -60,7 +61,7 @@ class ShopProductCarouselViewModel @Inject constructor(
                         product.name,
                         product.price.textIdr,
                         product.campaign.originalPriceFmt,
-                        product.campaign.discountedPercentage,
+                        product.campaign.discountedPercentage.toIntOrZero(),
                         product.stats.averageRating,
                         1
                     )

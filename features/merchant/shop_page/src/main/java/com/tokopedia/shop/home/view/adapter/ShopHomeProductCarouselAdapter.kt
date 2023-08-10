@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.strikethrough
 import com.tokopedia.media.loader.loadImage
@@ -46,22 +47,27 @@ class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<ShopHomeProductCarou
             binding.tpgProductPrice.text = product.price
             binding.tpgProductPrice.isVisible = showProductInfo
 
+            val isDiscounted = product.slashedPricePercent.isMoreThanZero()
+
             binding.tpgSlashedProductPrice.text = product.slashedPrice
             binding.tpgSlashedProductPrice.strikethrough()
-            binding.tpgSlashedProductPrice.isVisible = showProductInfo
+            binding.tpgSlashedProductPrice.isVisible = showProductInfo && isDiscounted
 
             val discountPercentage = binding.labelDiscount.context.getString(R.string.shop_page_placeholder_discount_percentage, product.slashedPricePercent)
             binding.labelDiscount.setLabel(discountPercentage)
-            binding.labelDiscount.isVisible = showProductInfo
+            binding.labelDiscount.isVisible = showProductInfo && isDiscounted
+
+            val hasRating = product.rating.isNotEmpty()
+
+            binding.imgStar.isVisible = showProductInfo && hasRating
+            binding.tpgBullet.isVisible = showProductInfo && hasRating
 
             binding.tpgRating.text = product.rating
-            binding.tpgRating.isVisible = showProductInfo
+            binding.tpgRating.isVisible = showProductInfo && hasRating
 
+            val hasBeenPurchased = product.soldCount.isMoreThanZero()
             binding.tpgProductSoldCount.text = binding.tpgProductSoldCount.context.getString(R.string.shop_page_placeholder_sold, product.soldCount)
-            binding.tpgProductSoldCount.isVisible = showProductInfo
-
-            binding.imgStar.isVisible = showProductInfo
-            binding.tpgBullet.isVisible = showProductInfo
+            binding.tpgProductSoldCount.isVisible = showProductInfo && hasBeenPurchased
 
             binding.root.setOnClickListener { onProductClick(product) }
         }
