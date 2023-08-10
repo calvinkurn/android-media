@@ -1,8 +1,6 @@
 package com.tokopedia.shop.product.view.viewmodel
 
-import android.content.Context
 import android.content.SharedPreferences
-import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -57,6 +55,9 @@ import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper.mapRest
 import com.tokopedia.shop.product.view.datamodel.*
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
+import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
+import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -65,6 +66,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageProcessingUtil
 import dagger.Lazy
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import rx.Subscriber
 import javax.inject.Inject
@@ -89,6 +91,7 @@ class ShopPageProductListResultViewModel @Inject constructor(
     private val sharedPreferences: SharedPreferences,
     @GqlGetShopInfoForHeaderUseCaseQualifier
     private val gqlGetShopInfoForHeaderUseCase: Lazy<GQLGetShopInfoUseCase>,
+    private val affiliateEligibilityCheckUseCase: Lazy<AffiliateEligibilityCheckUseCase>,
     ) : BaseViewModel(dispatcherProvider.main) {
 
     fun isMyShop(shopId: String) = userSession.shopId == shopId
@@ -149,6 +152,10 @@ class ShopPageProductListResultViewModel @Inject constructor(
     private val _shopPageShopShareData = MutableLiveData<Result<ShopInfo>>()
     val shopPageShopShareData: LiveData<Result<ShopInfo>>
         get() = _shopPageShopShareData
+
+    private val _resultAffiliate = MutableLiveData<Result<GenerateAffiliateLinkEligibility>>()
+    val resultAffiliate: LiveData<Result<GenerateAffiliateLinkEligibility>>
+        get() = _resultAffiliate
 
     fun getShop(shopId: String, shopDomain: String = "", isRefresh: Boolean = false) {
         if (shopId.toIntOrZero() == 0 && shopDomain == "") return
@@ -837,4 +844,16 @@ class ShopPageProductListResultViewModel @Inject constructor(
         return gqlGetShopInfoForHeaderUseCase.get().executeOnBackground()
     }
 
+    fun checkAffiliate(affiliateInput: AffiliateInput) {
+        launch {
+            try {
+                val result = affiliateEligibilityCheckUseCase.get().apply {
+                    params = AffiliateEligibilityCheckUseCase.createParam(affiliateInput)
+                }.executeOnBackground()
+                _resultAffiliate.value = Success(result)
+            } catch (e: Exception) {
+                _resultAffiliate.value = Fail(e)
+            }
+        }
+    }
 }

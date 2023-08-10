@@ -12,10 +12,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isNumeric
-import com.tokopedia.linker.model.LinkerData
-import com.tokopedia.linker.utils.AffiliateLinkType
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -25,7 +22,6 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.OldShopPageTrackingBuyer
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SCREEN_SHOP_PAGE
 import com.tokopedia.shop.common.constant.ShopCommonExtraConstant
 import com.tokopedia.shop.common.constant.ShopParamConstant
@@ -34,25 +30,14 @@ import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.view.model.ShopSharingInShowCaseUiModel
 import com.tokopedia.shop.databinding.ActivityNewShopProductListResultBinding
-import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderBadgeTextValueComponentUiModel
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListResultFragment
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListResultFragment.Companion.createInstance
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListResultFragment.ShopPageProductListResultFragmentListener
 import com.tokopedia.shop.product.view.listener.OnShopProductListFragmentListener
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
-import com.tokopedia.universal_sharing.model.ShopPageParamModel
-import com.tokopedia.universal_sharing.tracker.PageType
-import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
-import com.tokopedia.universal_sharing.view.model.AffiliateInput
-import com.tokopedia.universal_sharing.view.model.LinkProperties
-import com.tokopedia.universal_sharing.view.model.PageDetail
-import com.tokopedia.universal_sharing.view.model.Product
 import com.tokopedia.universal_sharing.view.model.ShareModel
-import com.tokopedia.universal_sharing.view.model.Shop
 import com.tokopedia.utils.view.binding.viewBinding
-import java.io.File
 
 /**
  * Created by nathan on 2/15/18.

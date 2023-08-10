@@ -40,6 +40,7 @@ object ShopPageTrackingConstant {
     const val SETTING_PAGE_SELLER = "setting page - seller"
     const val SHOP_PROFILE_PAGE_BUYER = "shop profile page - buyer"
     const val SHOP_CAMPAIGN_TAB_EVENT_CATEGORY = "shop page - buyer - campaign tab"
+    const val ETALASE_SHOP = "etalase shop"
 
     // ACTION
     const val INFO = "info"
@@ -100,6 +101,7 @@ object ShopPageTrackingConstant {
     const val ACTION_IMPRESSION_SHOP_HEADER_BUYER = "impression shop header"
     const val ACTION_IMPRESSION_SHOP_HEADER_SELLER = "impression shop header seller"
     const val CLICK_SHARE_BUTTON = "click - share button"
+
     const val CLICK_GLOBAL_HEADER = "click global header"
     const val CLICK_CLOSE_SHARE_BOTTOM_SHEET = "click - close share bottom sheet"
     const val CLICK_CLOSE_SCREENSHOT_SHARE_BOTTOM_SHEET = "click - close screenshot share bottom sheet"
@@ -131,6 +133,8 @@ object ShopPageTrackingConstant {
     const val PRODUCT_LIST_IMPRESSION_SHOP_DECOR = "product list impression - shop decor"
     const val CLICK_PRODUCT_SHOP_DECOR = "click product - shop decor"
     const val PACKAGE_VARIANT = "package variant"
+    const val CLICK_SHARE_CHIPS = "click - share contextual chip"
+
 
     // label
     const val CLICK_SHARE = "click share"
@@ -353,6 +357,11 @@ object ShopPageTrackingConstant {
     const val TRACKER_ID_VIEW_SCREEN_SHOT_BOTTOM_SHEET = "10552"
     const val TRACKER_ID_CLOSE_SCREEN_SHOT_SHARE_BOTTOM_SHEET = "10553"
     const val TRACKER_ID_SCREEN_SHOT_CLICK_SHARING_CHANNEL = "10554"
+    const val TRACKER_ID_CLICK_SHARE_IN_SHOP_ETALASE = "45699"
+    const val TRACKER_ID_CLICK_CLOSE_SHARE_IN_SHOP_ETALASE = "45700"
+    const val TRACKER_ID_CLICK_SHARE_OPTION_SHOP_ETALASE = "45701"
+    const val TRACKER_ID_IMPRESSION_UNIVERSAL_SHARE_IN_SHOP_ETALASE = "45702"
+    const val TRACKER_ID_CLICK_CHIPS_TAB_SHOP_PAGE = "45135"
 
     // dimension83
     const val BOE = "BoE"

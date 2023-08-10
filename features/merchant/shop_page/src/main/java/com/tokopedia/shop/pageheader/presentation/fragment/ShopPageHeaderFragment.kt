@@ -3849,6 +3849,8 @@ class ShopPageHeaderFragment :
         )
 
         universalShareBottomSheet?.onChipChangedListener {
+            shopPageTracking?.clickChipsInUniversalSharingBottomSheet(it.title, shopId, userId)
+
             universalShareBottomSheet?.setShareText("${it.shareText} %s")
             if (it.title == CHIPS_NAME_CAMPAIGN){
                 universalShareBottomSheet?.getImageFromMedia(false)
@@ -3869,6 +3871,7 @@ class ShopPageHeaderFragment :
                 SHOP_PAGE_SHARE_BOTTOM_SHEET_FEATURE_NAME
             )
         }
+
     }
 
     private fun getPathTab(tabName:String) : String{

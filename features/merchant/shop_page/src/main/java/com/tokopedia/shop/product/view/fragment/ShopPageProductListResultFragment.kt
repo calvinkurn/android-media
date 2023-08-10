@@ -38,6 +38,7 @@ import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -49,7 +50,6 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.model.LinkerData
-import com.tokopedia.linker.utils.AffiliateLinkType
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
@@ -64,6 +64,7 @@ import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.R
+import com.tokopedia.shop.analytic.ShopPageEtalaseTracking
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH
@@ -105,7 +106,6 @@ import com.tokopedia.shop.common.view.model.ShopSharingInShowCaseUiModel
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.shop.databinding.FragmentShopProductListResultNewBinding
-import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
@@ -134,15 +134,10 @@ import com.tokopedia.shop.search.view.fragment.ShopSearchProductFragment
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.universal_sharing.tracker.PageType
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
-import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.LinkProperties
-import com.tokopedia.universal_sharing.view.model.PageDetail
-import com.tokopedia.universal_sharing.view.model.Product
 import com.tokopedia.universal_sharing.view.model.ShareModel
-import com.tokopedia.universal_sharing.view.model.Shop
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -184,6 +179,8 @@ class ShopPageProductListResultFragment :
     }
 
     private var shopPageTracking: ShopPageTrackingBuyer? = null
+    private var shopPageEtalaseTracking: ShopPageEtalaseTracking? = null
+
     private val shopProductAdapter: ShopProductAdapter by lazy { adapter as ShopProductAdapter }
     private var shopId: String? = null
     private var shopDomain: String = ""
@@ -191,6 +188,8 @@ class ShopPageProductListResultFragment :
     private var shopRef: String = ""
     private var keyword: String = ""
     private var productListName: String = ""
+    var isAffiliate = false
+
     private var sortId
         get() = shopProductFilterParameter?.getSortId().orEmpty()
         set(value) {
@@ -251,7 +250,7 @@ class ShopPageProductListResultFragment :
     private val isLogin: Boolean
         get() = viewModel.isLogin
 
-    private val userId: String
+    val userId: String
         get() = viewModel.userId
 
     var localCacheModel: LocalCacheModel? = null
@@ -352,6 +351,7 @@ class ShopPageProductListResultFragment :
         super.onCreate(savedInstanceState)
         context?.let {
             shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(it))
+            shopPageEtalaseTracking = ShopPageEtalaseTracking(TrackingQueue(it))
         }
     }
 
@@ -750,6 +750,12 @@ class ShopPageProductListResultFragment :
                     it.shopStatus = result.data.statusInfo.shopStatus
                 }
                 showUniversalShareBottomSheet()
+            }
+        }
+
+        viewModel.resultAffiliate.observe(viewLifecycleOwner) {
+            if (it is Success) {
+                isAffiliate = it.data.eligibleCommission?.isEligible.orFalse()
             }
         }
         observeMiniCartLiveData()
@@ -2168,15 +2174,30 @@ class ShopPageProductListResultFragment :
 
         )
         universalShareBottomSheet?.show(activity?.supportFragmentManager, this)
+        shopPageEtalaseTracking?.impressionUniversalBottomSheetEtalase(shopId.orEmpty(),
+            selectedEtalaseId,isAffiliate,userId)
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
+        shopPageEtalaseTracking?.clickShareBottomSheetOption(
+            shareModel.channel.orEmpty(),
+            shopId.orEmpty(),
+            userId,
+            selectedEtalaseId,
+            shareModel.campaign?.split("-")?.lastOrNull().orEmpty(),
+            universalShareBottomSheet?.getUserType() ?: ""
+        )
     }
 
     override fun onCloseOptionClicked() {
+        shopPageEtalaseTracking?.clickCloseBottomSheetShareEtalase(shopId.orEmpty(),
+            selectedEtalaseId,isAffiliate,userId)
     }
 
     fun clickShopShare() {
+        shopPageEtalaseTracking?.clickShareEtalase(shopId.orEmpty(),
+            selectedEtalaseId,isAffiliate,userId)
+
         viewModel.getShopShareData(shopId.orEmpty(), shopDomain)
     }
 }
