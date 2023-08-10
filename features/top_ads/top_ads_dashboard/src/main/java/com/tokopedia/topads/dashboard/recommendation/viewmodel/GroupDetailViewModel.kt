@@ -132,7 +132,7 @@ class GroupDetailViewModel @Inject constructor(
                 )
                 loadDetailPage(
                     adType,
-                    data.topAdsListAllInsightCounts.adGroups.firstOrNull()?.adGroupID ?: ""
+                    adgroupID.ifEmpty { data.topAdsListAllInsightCounts.adGroups.firstOrNull()?.adGroupID ?: "" }
                 )
                 val list = mutableListOf(
                     if (adType == TYPE_PRODUCT_VALUE) TAB_NAME_PRODUCT else TAB_NAME_SHOP,

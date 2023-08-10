@@ -21,6 +21,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -667,6 +668,7 @@ class TopAdsDashboardActivity :
     }
 
     override fun onWidgetCTAClick() {
+        ((viewPager.adapter as TopAdsDashboardBasePagerAdapter).getItem(CONST_3) as? RecommendationFragment)?.selectTab(Int.ONE)
         switchTab(INSIGHT_PAGE)
     }
 }
