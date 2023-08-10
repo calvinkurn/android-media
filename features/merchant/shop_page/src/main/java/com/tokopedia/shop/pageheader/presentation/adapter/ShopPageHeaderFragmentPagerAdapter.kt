@@ -13,14 +13,17 @@ import com.airbnb.lottie.LottieDrawable
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtil.isUrlJson
 import com.tokopedia.shop.common.util.ShopUtil.isUrlPng
 import com.tokopedia.shop.databinding.ShopPageDynamicTabViewBinding
 import com.tokopedia.shop.databinding.ShopPageTabViewBinding
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderTabIconUrlModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderTabModel
+import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragmentTabContentWrapper
 import com.tokopedia.utils.resources.isDarkMode
 import java.lang.ref.WeakReference
 
@@ -203,17 +206,39 @@ internal class ShopPageHeaderFragmentPagerAdapter(
 
     fun getFragmentPosition(classType: Class<*>): Int {
         var fragmentPosition = 0
-        listShopPageTabModel.forEachIndexed { index, shopPageTabModel ->
-            if (shopPageTabModel.tabFragment::class.java == classType) {
-                fragmentPosition = index
+        if(ShopUtil.isEnableShopPageReImagined()) {
+            listShopPageTabModel.forEachIndexed { index, shopPageTabModel ->
+                val tabFragmentInsideWrapper = (shopPageTabModel.tabFragment as? ShopPageHeaderFragmentTabContentWrapper)?.getTabFragment()
+                tabFragmentInsideWrapper?.let {
+                    if (it::class.java == classType) {
+                        fragmentPosition = index
+                    }
+                }
+            }
+        } else {
+            listShopPageTabModel.forEachIndexed { index, shopPageTabModel ->
+                if (shopPageTabModel.tabFragment::class.java == classType) {
+                    fragmentPosition = index
+                }
             }
         }
         return fragmentPosition
     }
 
     fun isFragmentObjectExists(classType: Class<*>): Boolean {
-        return listShopPageTabModel.firstOrNull {
-            it.tabFragment::class.java == classType
-        } != null
+        return if (ShopUtil.isEnableShopPageReImagined()) {
+            listShopPageTabModel.firstOrNull {
+                val tabFragmentInsideWrapper =
+                    (it.tabFragment as? ShopPageHeaderFragmentTabContentWrapper)?.getTabFragment()
+                tabFragmentInsideWrapper?.let { tabFragmentInsideWrapper ->
+                    tabFragmentInsideWrapper::class.java == classType
+                }.orFalse()
+            } != null
+        } else {
+            listShopPageTabModel.firstOrNull {
+                it.tabFragment::class.java == classType
+            } != null
+        }
+
     }
 }

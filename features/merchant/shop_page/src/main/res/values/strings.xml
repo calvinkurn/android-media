@@ -235,4 +235,7 @@
     <string name="shop_page_please_wait">Tunggu sebentar</string>
     <string name="shop_page_use_voucher_success">Kupon sudah terpasang, transaksi sekarang yuk!</string>
     <string name="shop_page_use_merchant_voucher">Belanja Pakai Promo</string>
+
+    <string name="shop_page_dot_character">•</string>
+
 </resources>

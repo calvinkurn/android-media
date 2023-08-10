@@ -8,4 +8,6 @@ interface InterfaceShopPageHeader {
     fun isNewlyBroadcastSaved(): Boolean?
     fun clearIsNewlyBroadcastSaved()
     fun collapseAppBar()
+    fun onTabFragmentWrapperFinishLoad(){}
+    fun getCartCounterData(): Int{ return 0}
 }

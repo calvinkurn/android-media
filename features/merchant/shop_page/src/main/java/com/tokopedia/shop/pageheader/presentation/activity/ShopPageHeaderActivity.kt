@@ -2,7 +2,9 @@ package com.tokopedia.shop.pageheader.presentation.activity
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -28,12 +30,14 @@ import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HEADE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_TAB_TRACE_V3
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_PRODUCT_TAB_TRACE_V3
 import com.tokopedia.shop.common.di.component.ShopComponent
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.interfaces.HasSharedViewModel
 import com.tokopedia.shop.common.view.interfaces.ShopPageSharedListener
 import com.tokopedia.shop.common.view.viewmodel.ShopPageFeedTabSharedViewModel
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
+import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragmentV2
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
 
 class ShopPageHeaderActivity :
@@ -76,15 +80,27 @@ class ShopPageHeaderActivity :
         initPerformanceMonitoring()
         checkIfAppLinkToShopInfo()
         checkIfApplinkRedirectedForMigration()
+        if(ShopUtil.isEnableShopPageReImagined()){
+            configStatusBarAndSetFullScreen()
+        }
         super.onCreate(savedInstanceState)
         window?.decorView?.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+    }
+
+    private fun configStatusBarAndSetFullScreen() {
+        window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        window?.statusBarColor = Color.TRANSPARENT
     }
 
     override fun getLayoutRes(): Int {
         return R.layout.activity_new_shop_page
     }
 
-    override fun getNewFragment(): Fragment = ShopPageHeaderFragment.createInstance()
+    override fun getNewFragment(): Fragment = if (ShopUtil.isEnableShopPageReImagined()) {
+            ShopPageHeaderFragmentV2.createInstance()
+        } else {
+            ShopPageHeaderFragment.createInstance()
+        }
 
     override fun getComponent(): ShopComponent = ShopComponentHelper().getComponent(application, this)
 

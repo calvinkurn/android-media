@@ -193,6 +193,7 @@ import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
+import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragmentV2
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
 import com.tokopedia.shop.product.data.model.ShopProduct
@@ -465,7 +466,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun isShopHomeTabSelected(): Boolean {
-        return (parentFragment as? InterfaceShopPageHeader)?.isTabSelected(this::class.java)
+        return (getRealParentFragment() as? InterfaceShopPageHeader)?.isTabSelected(this::class.java)
             ?: false
     }
 
@@ -934,7 +935,11 @@ open class ShopPageHomeFragment :
     }
 
     protected fun getSelectedFragment(): Fragment? {
-        return (parentFragment as? ShopPageHeaderFragment)?.getSelectedFragmentInstance()
+        return if(ShopUtil.isEnableShopPageReImagined()){
+            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.getSelectedFragmentInstance()
+        } else {
+            (getRealParentFragment() as? ShopPageHeaderFragment)?.getSelectedFragmentInstance()
+        }
     }
 
     override fun onResume() {
@@ -1800,7 +1805,11 @@ open class ShopPageHomeFragment :
                         .orZero()
                 if (firstCompletelyVisibleItemPosition == 0 && isClickToScrollToTop) {
                     isClickToScrollToTop = false
-                    (parentFragment as? ShopPageHeaderFragment)?.expandHeader()
+                    if(ShopUtil.isEnableShopPageReImagined()){
+                        (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.expandHeader()
+                    } else {
+                        (getRealParentFragment() as? ShopPageHeaderFragment)?.expandHeader()
+                    }
                 }
                 if (firstCompletelyVisibleItemPosition != latestCompletelyVisibleItemIndex) {
                     hideScrollToTopButton()
@@ -2050,7 +2059,7 @@ open class ShopPageHomeFragment :
             }
             REQUEST_CODE_USER_LOGIN -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    (parentFragment as? InterfaceShopPageHeader)?.refreshData()
+                    (getRealParentFragment() as? InterfaceShopPageHeader)?.refreshData()
                 }
             }
             REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME -> if (resultCode == Activity.RESULT_OK) {
@@ -4230,15 +4239,27 @@ open class ShopPageHomeFragment :
     }
 
     private fun hideScrollToTopButton() {
-        (parentFragment as? ShopPageHeaderFragment)?.hideScrollToTopButton()
+        if(ShopUtil.isEnableShopPageReImagined()){
+            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.hideScrollToTopButton()
+        } else {
+            (getRealParentFragment() as? ShopPageHeaderFragment)?.hideScrollToTopButton()
+        }
     }
 
     private fun showScrollToTopButton() {
-        (parentFragment as? ShopPageHeaderFragment)?.showScrollToTopButton()
+        if(ShopUtil.isEnableShopPageReImagined()){
+            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.showScrollToTopButton()
+        } else {
+            (getRealParentFragment() as? ShopPageHeaderFragment)?.showScrollToTopButton()
+        }
     }
 
     protected open fun getSelectedTabName(): String {
-        return (parentFragment as? ShopPageHeaderFragment)?.getSelectedTabName().orEmpty()
+        return if(ShopUtil.isEnableShopPageReImagined()){
+            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.getSelectedTabName().orEmpty()
+        } else {
+            (getRealParentFragment() as? ShopPageHeaderFragment)?.getSelectedTabName().orEmpty()
+        }
     }
 
     override fun getWidgetCarouselPositionSavedState(): SparseIntArray {
@@ -4308,15 +4329,27 @@ open class ShopPageHomeFragment :
     }
 
     private fun showConfetti() {
-        (parentFragment as? ShopPageHeaderFragment)?.setupShopPageLottieAnimation(homeTabLottieUrl)
+        if(ShopUtil.isEnableShopPageReImagined()){
+            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.setupShopPageLottieAnimation(homeTabLottieUrl)
+        } else {
+            (getRealParentFragment() as? ShopPageHeaderFragment)?.setupShopPageLottieAnimation(homeTabLottieUrl)
+        }
     }
 
     private fun isShowConfetti(): Boolean {
-        return (parentFragment as? ShopPageHeaderFragment)?.isShowConfetti().orFalse()
+        return if (ShopUtil.isEnableShopPageReImagined()) {
+            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.isShowConfetti().orFalse()
+        } else {
+            (getRealParentFragment() as? ShopPageHeaderFragment)?.isShowConfetti().orFalse()
+        }
     }
 
     private fun setConfettiAlreadyShown() {
-        (parentFragment as? ShopPageHeaderFragment)?.setConfettiAlreadyShown()
+        if (ShopUtil.isEnableShopPageReImagined()) {
+            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.setConfettiAlreadyShown()
+        } else {
+            (getRealParentFragment() as? ShopPageHeaderFragment)?.setConfettiAlreadyShown()
+        }
     }
 
     fun setHomeTabListBackgroundColor(listBackgroundColor: List<String>) {
@@ -4446,7 +4479,7 @@ open class ShopPageHomeFragment :
 
                 if (widget?.model?.hasSuccessfulTranscodedChannel == true) showWidgetTranscodeSuccessToaster()
 
-                val parent = parentFragment
+                val parent = getRealParentFragment()
                 if (parent is InterfaceShopPageHeader) {
                     val recyclerView = getRecyclerView(view)
 
@@ -4520,7 +4553,7 @@ open class ShopPageHomeFragment :
             )
         },
         isUserVisibleHint: Boolean = userVisibleHint,
-        isParentHidden: Boolean = parentFragment?.isHidden ?: true
+        isParentHidden: Boolean = getRealParentFragment()?.isHidden ?: true
     ) {
         if (::playWidgetCoordinator.isInitialized) {
             val isViewVisible = isViewResumed && isUserVisibleHint && !isParentHidden
@@ -4582,7 +4615,12 @@ open class ShopPageHomeFragment :
     }
 
     private fun updateMiniCartWidget() {
-        (parentFragment as? ShopPageHeaderFragment)?.updateMiniCartWidget()
+        if (ShopUtil.isEnableShopPageReImagined()) {
+            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.updateMiniCartWidget()
+        } else {
+            (getRealParentFragment() as? ShopPageHeaderFragment)?.updateMiniCartWidget()
+
+        }
     }
 
     private fun showPlayWidgetBottomSheet(channelUiModel: PlayWidgetChannelUiModel) {
@@ -4823,7 +4861,11 @@ open class ShopPageHomeFragment :
     private fun checkShouldSelectCampaignTab(appLink: String) {
         val tabValue = Uri.parse(appLink).getQueryParameter(QUERY_PARAM_TAB).orEmpty()
         if (tabValue == ShopPageHeaderTabName.CAMPAIGN) {
-            (parentFragment as? ShopPageHeaderFragment)?.selectShopTab(ShopPageHeaderTabName.CAMPAIGN, true)
+            if(ShopUtil.isEnableShopPageReImagined()){
+                (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.selectShopTab(ShopPageHeaderTabName.CAMPAIGN, true)
+            }else{
+                (getRealParentFragment() as? ShopPageHeaderFragment)?.selectShopTab(ShopPageHeaderTabName.CAMPAIGN, true)
+            }
         }
     }
 
@@ -4892,8 +4934,22 @@ open class ShopPageHomeFragment :
     }
 
     protected fun refreshShopHeader(){
-        (parentFragment as? ShopPageHeaderFragment)?.apply {
-            refreshData()
+        if (ShopUtil.isEnableShopPageReImagined()) {
+            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.apply {
+                refreshData()
+            }
+        } else {
+            (getRealParentFragment() as? ShopPageHeaderFragment)?.apply {
+                refreshData()
+            }
+        }
+    }
+
+    private fun getRealParentFragment(): Fragment? {
+        return if (ShopUtil.isEnableShopPageReImagined()) {
+            parentFragment?.parentFragment
+        } else {
+            parentFragment
         }
     }
 
