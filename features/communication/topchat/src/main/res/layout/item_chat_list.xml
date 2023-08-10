@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/interactive_adapter_template_chat">
 
-    <com.tokopedia.topchat.chatroom.view.customview.TopchatSquareImageView
+    <com.tokopedia.stories.common.StoriesAvatarView
         android:id="@+id/thumbnail"
         android:layout_width="52dp"
         android:layout_height="52dp"
@@ -15,7 +15,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@color/Unify_YN500" />
+        tools:src="@color/Unify_YN500"
+        />
 
     <ImageView
         android:id="@+id/ivPin"

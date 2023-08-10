@@ -6,5 +6,6 @@ package com.tokopedia.stories.common
 enum class StoriesKey(val key: String) {
     ShopPage("shop_page"),
     ProductDetail("product_detail"),
-    TopChat("top_chat")
+    TopChatList("top_chat_list"),
+    TopChatRoom("top_chat_room")
 }

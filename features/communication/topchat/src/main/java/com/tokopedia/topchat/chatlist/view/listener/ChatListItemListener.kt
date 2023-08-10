@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chatlist.view.listener
 
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.stories.common.StoriesAvatarManager
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatChangeStateResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.domain.pojo.operational_insight.ShopChatTicker
@@ -21,6 +22,7 @@ interface ChatListItemListener {
     fun trackDeleteChat(element: ItemChatListPojo)
     fun isTabSeller(): Boolean
     fun getSupportChildFragmentManager(): FragmentManager
+    fun getStoriesAvatarManager(): StoriesAvatarManager
     fun pinUnpinChat(element: ItemChatListPojo, position: Int, isPinChat: Boolean = true)
     fun returnToSellerHome()
     fun onScrollToTop()

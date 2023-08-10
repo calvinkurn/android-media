@@ -12,6 +12,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.annotation.LayoutRes
+import androidx.compose.ui.unit.dp
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -22,6 +23,8 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.stories.common.StoriesAvatarManager
+import com.tokopedia.stories.common.StoriesAvatarView
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatStateItem
 import com.tokopedia.topchat.chatlist.domain.pojo.ItemChatListPojo
@@ -46,7 +49,7 @@ class ChatItemListViewHolder constructor(
 ) : AbstractViewHolder<ItemChatListPojo>(itemView) {
 
     private val userName: Typography = itemView.findViewById(R.id.user_name)
-    private val thumbnail: ImageView = itemView.findViewById(R.id.thumbnail)
+    private val thumbnail: StoriesAvatarView = itemView.findViewById(R.id.thumbnail)
     private val message: TextView = itemView.findViewById(R.id.message)
     private val unreadCounter: Typography = itemView.findViewById(R.id.unread_counter)
     private val time: Typography = itemView.findViewById(R.id.time)
@@ -60,6 +63,15 @@ class ChatItemListViewHolder constructor(
     private val labelIcon: ImageUnify? = itemView.findViewById(R.id.chatlist_img_label_icon)
 
     private val menu = LongClickMenu()
+
+    init {
+        thumbnail.updateSizeConfig {
+            it.copy(
+                imageToBorderGap = 4.dp,
+                unseenStoriesBorder = 2.dp
+            )
+        }
+    }
 
     override fun bind(element: ItemChatListPojo, payloads: MutableList<Any>) {
         super.bind(element, payloads)
@@ -126,7 +138,9 @@ class ChatItemListViewHolder constructor(
     }
 
     private fun bindProfilePicture(chat: ItemChatListPojo) {
-        thumbnail.loadImageCircle(chat.thumbnail)
+//        thumbnail.loadImageCircle(chat.thumbnail)
+        listener.getStoriesAvatarManager().manage(thumbnail, chat.id)
+        thumbnail.setImageUrl(chat.thumbnail)
     }
 
     private fun bindPin(chat: ItemChatListPojo) {

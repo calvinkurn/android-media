@@ -44,6 +44,9 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
+import com.tokopedia.stories.common.StoriesAvatarManager
+import com.tokopedia.stories.common.StoriesKey
+import com.tokopedia.stories.common.storiesManager
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_READ
@@ -133,6 +136,8 @@ class ChatListFragment :
     private var emptyUiModel: Visitable<*>? = null
     private var menu: Menu? = null
     private var broadCastButton: BroadcastButtonLayout? = null
+
+    private val mStoriesAvatarManager by storiesManager(StoriesKey.TopChatList)
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
     override fun getSwipeRefreshLayoutResourceId() = R.id.swipe_refresh_layout
@@ -572,6 +577,9 @@ class ChatListFragment :
 
     private fun onSuccessGetChatList(data: ChatListPojo.ChatListDataPojo) {
         renderList(data.list, data.hasNext)
+        if (sightTag == PARAM_TAB_USER) {
+            mStoriesAvatarManager.updateStories(data.list.map { it.id })
+        }
         fpmStopTrace()
     }
 
@@ -898,6 +906,10 @@ class ChatListFragment :
 
     override fun getSupportChildFragmentManager(): FragmentManager {
         return childFragmentManager
+    }
+
+    override fun getStoriesAvatarManager(): StoriesAvatarManager {
+        return mStoriesAvatarManager
     }
 
     override fun pinUnpinChat(element: ItemChatListPojo, position: Int, isPinChat: Boolean) {

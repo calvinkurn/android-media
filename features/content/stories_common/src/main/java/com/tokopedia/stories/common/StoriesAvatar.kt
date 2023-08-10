@@ -61,7 +61,13 @@ internal fun StoriesAvatarContent(
                 Modifier
                     .fillMaxSize()
                     .clip(CircleShape)
-                    .storiesBorder(storiesStatus, animationState.rotation, animationState.scale, animationState.dashedAlpha)
+                    .storiesBorder(
+                        storiesStatus,
+                        sizeConfig,
+                        animationState.rotation,
+                        animationState.scale,
+                        animationState.dashedAlpha,
+                    )
             )
 
             NestImage(
@@ -77,6 +83,7 @@ internal fun StoriesAvatarContent(
 
 private fun Modifier.storiesBorder(
     storiesStatus: StoriesStatus,
+    sizeConfig: StoriesAvatarView.SizeConfiguration,
     rotation: Float,
     scale: Float,
     dashedAlpha: Float
@@ -118,7 +125,7 @@ private fun Modifier.storiesBorder(
 
                 drawCircle(
                     color = Color.Gray,
-                    radius = size.width / 2 - storiesStatus.borderDp.toPx(),
+                    radius = size.width / 2 - storiesStatus.borderDp(sizeConfig.unseenStoriesBorder).toPx(),
                     blendMode = BlendMode.DstOut
                 )
             }
@@ -211,12 +218,13 @@ private fun AllStoriesSeenAvatarPreview() {
     )
 }
 
-private val StoriesStatus.borderDp: Dp
-    get() = when (this) {
+private fun StoriesStatus.borderDp(hasStoriesBorder: Dp = 3.dp): Dp {
+    return when (this) {
         StoriesStatus.NoStories -> 1.dp
-        StoriesStatus.HasUnseenStories -> 3.dp
+        StoriesStatus.HasUnseenStories -> hasStoriesBorder
         StoriesStatus.AllStoriesSeen -> 1.dp
     }
+}
 
 private val StoriesStatus.brush: Brush
     get() = when (this) {

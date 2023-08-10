@@ -69,12 +69,14 @@ class StoriesAvatarView @JvmOverloads constructor(
     }
 
     data class SizeConfiguration(
-        val imageToBorderGap: Dp
+        val imageToBorderGap: Dp,
+        val unseenStoriesBorder: Dp
     ) {
         companion object {
             val Default: SizeConfiguration
                 get() = SizeConfiguration(
-                    imageToBorderGap = 4.dp
+                    imageToBorderGap = 4.dp,
+                    unseenStoriesBorder = 3.dp,
                 )
         }
     }
