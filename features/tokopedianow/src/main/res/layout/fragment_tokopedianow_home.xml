@@ -9,7 +9,7 @@
     <FrameLayout
         android:id="@+id/header_container"
         android:layout_width="match_parent"
-        android:layout_height="176dp"
+        android:layout_height="184dp"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.tokopedia.unifycomponents.ImageUnify
@@ -47,6 +47,12 @@
             android:layout_height="match_parent"
             app:loader_corner_radius="0dp"
             app:loader_type="rect" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/tokopedianow_header_bottom_rounded" />
     </FrameLayout>
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
