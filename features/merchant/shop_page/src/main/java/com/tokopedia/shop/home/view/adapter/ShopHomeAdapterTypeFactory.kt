@@ -19,6 +19,7 @@ import com.tokopedia.shop.home.WidgetName.SHOWCASE_NAVIGATION_BANNER
 import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_TRIPLE_COLUMN
+import com.tokopedia.shop.home.WidgetName.DYNAMIC_COMPONENT
 import com.tokopedia.shop.home.WidgetName.FLASH_SALE_TOKO
 import com.tokopedia.shop.home.WidgetName.INFO_CARD
 import com.tokopedia.shop.home.WidgetName.NEW_PRODUCT_LAUNCH_CAMPAIGN
@@ -72,6 +73,7 @@ import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePersoProductCompa
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePersoProductComparisonPlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerTimerViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerTimerPlaceholderViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductCarouselViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowCaseCarouselViewHolder
 import com.tokopedia.shop.home.view.listener.*
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
@@ -115,6 +117,7 @@ open class ShopHomeAdapterTypeFactory(
     private val shopPersoProductComparisonListener: ShopHomePersoProductComparisonViewHolder.ShopHomePersoProductComparisonViewHolderListener,
     private val shopHomeDisplayBannerTimerWidgetListener: ShopHomeDisplayBannerTimerWidgetListener,
     private val shopHomeShowcaseListener: ShopHomeShowcaseListener,
+    private val shopHomeProductCarouselListener: ShopHomeProductCarouselListener,
     private val fragment: Fragment
 ) : BaseAdapterTypeFactory(), TypeFactoryShopHome, ThematicWidgetTypeFactory, ShopWidgetTypeFactory {
     var productCardType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
@@ -130,6 +133,7 @@ open class ShopHomeAdapterTypeFactory(
             PRODUCT -> getShopHomeCarousellProductViewHolder(baseShopHomeWidgetUiModel)
             VOUCHER_STATIC -> ShopHomeVoucherViewHolder.LAYOUT
             SHOWCASE_NAVIGATION_BANNER -> determineShowcaseWidgetAppearance(baseShopHomeWidgetUiModel)
+            DYNAMIC_COMPONENT -> ShopHomeProductCarouselViewHolder.LAYOUT
             RECENT_ACTIVITY, BUY_AGAIN, REMINDER, ADD_ONS, TRENDING -> getShopHomeCarouselProductPersonalizationViewHolder(baseShopHomeWidgetUiModel)
             NEW_PRODUCT_LAUNCH_CAMPAIGN -> getShopHomeNplCampaignViewHolder(baseShopHomeWidgetUiModel)
             FLASH_SALE_TOKO -> getShopFlashSaleViewHolder(baseShopHomeWidgetUiModel)
@@ -372,6 +376,9 @@ open class ShopHomeAdapterTypeFactory(
             }
             ShopHomeShowCaseLeftMainBannerViewHolder.LAYOUT -> {
                 ShopHomeShowCaseLeftMainBannerViewHolder(parent, fragment, shopHomeShowcaseListener)
+            }
+            ShopHomeProductCarouselViewHolder.LAYOUT -> {
+                ShopHomeProductCarouselViewHolder(parent, fragment, shopHomeProductCarouselListener)
             }
             ShopHomeShowCaseTopMainBannerViewHolder.LAYOUT -> {
                 ShopHomeShowCaseTopMainBannerViewHolder(parent, shopHomeShowcaseListener)

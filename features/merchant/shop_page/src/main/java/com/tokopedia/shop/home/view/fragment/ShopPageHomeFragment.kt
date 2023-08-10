@@ -171,6 +171,7 @@ import com.tokopedia.shop.home.view.listener.ShopHomeEndlessProductListener
 import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.listener.ShopHomePlayWidgetListener
+import com.tokopedia.shop.home.view.listener.ShopHomeProductCarouselListener
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseListWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseListener
 import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
@@ -182,6 +183,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListSliderUiModel
@@ -245,7 +247,7 @@ open class ShopPageHomeFragment :
     ShopHomeProductListSellerEmptyListener,
     ShopHomeListener,
     ShopHomePersoProductComparisonViewHolder.ShopHomePersoProductComparisonViewHolderListener,
-    ShopHomeDisplayBannerTimerWidgetListener, ShopHomeShowcaseListener {
+    ShopHomeDisplayBannerTimerWidgetListener, ShopHomeShowcaseListener, ShopHomeProductCarouselListener {
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -402,7 +404,8 @@ open class ShopPageHomeFragment :
             shopPersoProductComparisonListener = this,
             shopHomeDisplayBannerTimerWidgetListener = this,
             fragment = this,
-            shopHomeShowcaseListener = this
+            shopHomeShowcaseListener = this,
+            shopHomeProductCarouselListener = this
         )
     }
 
@@ -738,6 +741,117 @@ open class ShopPageHomeFragment :
                         setHomeTabBackgroundGradient()
                         setFestivityRvDecoration()
                         setHomeTabBackgroundPattern()
+
+                        val productCarouselUiModel = ShopHomeProductCarouselUiModel(
+                            title = "Product carousel",
+                            tabs = listOf(
+                                ShopHomeProductCarouselUiModel.Tab(
+                                    tabId = 1,
+                                    label = "all_time",
+                                    name = "All Time",
+                                    components = listOf(
+                                        ShopHomeProductCarouselUiModel.Tab.Component(
+                                            id = 2345,
+                                            name = "banner single",
+                                            type = ShopHomeProductCarouselUiModel.ComponentType.BANNER_SINGLE,
+                                            ratio = "3:1",
+                                            componentChild = listOf(
+                                                ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild(
+                                                    imageId = 45,
+                                                    imageUrl = "https://images.tokopedia.net/img/android/shop/ic_showcase_sample.png",
+                                                    ctaLink = "https://tokopedia.com/etalase/10",
+                                                    linkId = 0,
+                                                    linkType = ""
+                                                )
+                                            )
+                                        ),
+                                        ShopHomeProductCarouselUiModel.Tab.Component(
+                                            id = 2345,
+                                            name = "product card with product info",
+                                            type = ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITH_PRODUCT_INFO,
+                                            ratio = "",
+                                            componentChild = listOf(
+                                                ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild(
+                                                    imageId = 0,
+                                                    imageUrl = "",
+                                                    ctaLink = "",
+                                                    linkId = 983,
+                                                    linkType = "terbaru"
+                                                )
+                                            )
+                                        ),
+                                        ShopHomeProductCarouselUiModel.Tab.Component(
+                                            id = 2345,
+                                            name = "product card without product info",
+                                            type = ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITHOUT_PRODUCT_INFO,
+                                            ratio = "",
+                                            componentChild = listOf(
+                                                ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild(
+                                                    imageId = 0,
+                                                    imageUrl = "",
+                                                    ctaLink = "",
+                                                    linkId = 0,
+                                                    linkType = ""
+                                                )
+                                            )
+                                        ),
+                                    )
+                                ),
+                                ShopHomeProductCarouselUiModel.Tab(
+                                    tabId = 1,
+                                    label = "trending_today",
+                                    name = "Trending Today",
+                                    components = listOf(
+                                        ShopHomeProductCarouselUiModel.Tab.Component(
+                                            id = 2345,
+                                            name = "banner single",
+                                            type = ShopHomeProductCarouselUiModel.ComponentType.BANNER_SINGLE,
+                                            ratio = "3:1",
+                                            componentChild = listOf(
+                                                ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild(
+                                                    imageId = 45,
+                                                    imageUrl = "https://images.tokopedia.net/img/android/shop/ic_showcase_sample.png",
+                                                    ctaLink = "https://tokopedia.com/etalase/10",
+                                                    linkId = 0,
+                                                    linkType = ""
+                                                )
+                                            )
+                                        ),
+                                        ShopHomeProductCarouselUiModel.Tab.Component(
+                                            id = 2345,
+                                            name = "product card with product info",
+                                            type = ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITH_PRODUCT_INFO,
+                                            ratio = "",
+                                            componentChild = listOf(
+                                                ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild(
+                                                    imageId = 0,
+                                                    imageUrl = "https://images.tokopedia.net/img/hitjabnco.jpg",
+                                                    ctaLink = "",
+                                                    linkId = 983,
+                                                    linkType = "terbaru"
+                                                )
+                                            )
+                                        ),
+                                        ShopHomeProductCarouselUiModel.Tab.Component(
+                                            id = 2345,
+                                            name = "product card without product info",
+                                            type = ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITHOUT_PRODUCT_INFO,
+                                            ratio = "",
+                                            componentChild = listOf(
+                                                ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild(
+                                                    imageId = 0,
+                                                    imageUrl = "https://images.tokopedia.net/img/hitjabnco.jpg",
+                                                    ctaLink = "",
+                                                    linkId = 0,
+                                                    linkType = ""
+                                                )
+                                            )
+                                        ),
+                                    )
+                                )
+                            )
+                        )
+                        shopHomeAdapter?.setProductCarousel(productCarouselUiModel)
                     }
                     is Fail -> {
                         val throwable = it.throwable
@@ -4962,5 +5076,13 @@ open class ShopPageHomeFragment :
         selectedShowcase: ShopHomeShowcaseUiModel.Tab.Showcase
     ) {
         RouteManager.route(activity ?: return, selectedShowcase.ctaLink)
+    }
+
+    override fun onMainBannerClick(mainBanner: ShopHomeProductCarouselUiModel.Tab.Component) {
+
+    }
+
+    override fun onProductClick(selectedProduct: ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild) {
+
     }
 }

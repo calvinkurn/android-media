@@ -6,14 +6,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.databinding.ItemShopHomeProductInfoCardBinding
-import com.tokopedia.shop.home.view.listener.ShopHomeProductCarouselListener
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel
 
-class ShopHomeProductCarouselAdapter(
-    private val listener: ShopHomeProductCarouselListener
-) : RecyclerView.Adapter<ShopHomeProductCarouselAdapter.ProductViewHolder>() {
+class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<ShopHomeProductCarouselAdapter.ProductViewHolder>() {
 
     private var products = mutableListOf<ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild>()
+    private var onProductClick : (ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild) -> Unit = {}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         val binding =
@@ -38,7 +36,7 @@ class ShopHomeProductCarouselAdapter(
 
         fun bind(product: ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild) {
             binding.imgProduct.loadImage(product.imageUrl)
-            binding.root.setOnClickListener { listener.onProductClick(product) }
+            binding.root.setOnClickListener { onProductClick(product) }
         }
 
     }
@@ -71,4 +69,7 @@ class ShopHomeProductCarouselAdapter(
         diffResult.dispatchUpdatesTo(this)
     }
 
+    fun setOnProductClick(onProductClick: (ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild) -> Unit) {
+        this.onProductClick = onProductClick
+    }
 }

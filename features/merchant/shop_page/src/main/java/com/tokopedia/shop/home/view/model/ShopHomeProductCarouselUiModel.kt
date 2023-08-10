@@ -1,14 +1,16 @@
 package com.tokopedia.shop.home.view.model
 
 import android.os.Parcelable
+import com.tokopedia.shop.home.WidgetName
+import com.tokopedia.shop.home.WidgetType
 import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
 import kotlinx.parcelize.Parcelize
 
 data class ShopHomeProductCarouselUiModel(
     override val widgetId: String = "",
     override val layoutOrder: Int = -1,
-    override val name: String = "",
-    override val type: String = "",
+    override val name: String = WidgetName.DYNAMIC_COMPONENT,
+    override val type: String = WidgetType.DYNAMIC_COMPONENT,
     override val header: Header = Header(),
     override val isFestivity: Boolean = false,
     val title: String,

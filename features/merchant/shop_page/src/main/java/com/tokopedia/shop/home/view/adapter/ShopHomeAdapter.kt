@@ -172,6 +172,11 @@ open class ShopHomeAdapter(
         submitList(newList)
     }
 
+    fun setProductCarousel(productCarouselUiModel: ShopHomeProductCarouselUiModel) {
+        val newList = getNewVisitableItems()
+        newList.setElement(1, productCarouselUiModel)
+        submitList(newList)
+    }
     fun setProductComparisonData(uiModel: ShopHomePersoProductComparisonUiModel) {
         val newList = getNewVisitableItems()
         newList.indexOfFirst { it is ShopHomePersoProductComparisonUiModel }.let { index ->
