@@ -42,6 +42,7 @@ import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.stories.common.StoriesAvatarView
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.domain.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.view.fragment.ChatListInboxFragment
@@ -91,7 +92,7 @@ open class TopChatRoomActivity :
     private var chatRoomToolbarTitle: TextView? = null
     private var chatRoomToolbarLabel: TextView? = null
     private var chatRoomToolbarSubtitle: TextView? = null
-    private var chatRoomToolbarAvatar: ImageView? = null
+    private var chatRoomToolbarAvatar: StoriesAvatarView? = null
 
     private var layoutUpdatesJob: Job? = null
     private var displayState: Int = 0
@@ -288,7 +289,7 @@ open class TopChatRoomActivity :
 
     private fun setupDummyToolbar() {
         intent.getParcelableExtra<ChatRoomHeaderUiModel>(ApplinkConst.Chat.PARAM_HEADER)?.let { header ->
-            chatRoomToolbarAvatar?.loadImageCircle(header.image)
+            chatRoomToolbarAvatar?.setImageUrl(header.image)
             chatRoomToolbarTitle?.text = header.name
             chatRoomToolbarLabel?.hide()
             chatRoomToolbarSubtitle?.hide()

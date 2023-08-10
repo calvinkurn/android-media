@@ -106,6 +106,8 @@ class StoriesAvatarManager private constructor(
         }
         storiesView.setMeta(meta.copy(attachListener = listener))
         storiesView.addOnAttachStateChangeListener(listener)
+
+        if (storiesView.isAttachedToWindow) listener.onViewAttachedToWindow(storiesView)
     }
 
     fun updateStories(shopIds: List<String>) {

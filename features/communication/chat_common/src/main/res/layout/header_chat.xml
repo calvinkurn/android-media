@@ -15,12 +15,19 @@
         android:layout_height="40dp"
         android:layout_centerVertical="true">
 
-        <ImageView
+        <com.tokopedia.stories.common.StoriesAvatarView
             android:id="@+id/user_avatar"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:contentDescription="user_avatar"
-            tools:src="@color/Unify_YN500" />
+            tools:src="@color/Unify_YN500"
+            />
+<!--        <ImageView-->
+<!--            android:id="@+id/user_avatar"-->
+<!--            android:layout_width="40dp"-->
+<!--            android:layout_height="40dp"-->
+<!--            android:contentDescription="user_avatar"-->
+<!--            tools:src="@color/Unify_YN500" />-->
 
         <ImageView
             android:id="@+id/online_status"

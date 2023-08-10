@@ -94,6 +94,9 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.reputation.common.constant.ReputationCommonConstants
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
+import com.tokopedia.stories.common.StoriesAvatarManager
+import com.tokopedia.stories.common.StoriesKey
+import com.tokopedia.stories.common.storiesManager
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.data.ImageUploadServiceModel
 import com.tokopedia.topchat.chatroom.data.activityresult.ReviewRequestResult
@@ -156,6 +159,7 @@ import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
 import com.tokopedia.topchat.chatroom.view.listener.HeaderMenuListener
 import com.tokopedia.topchat.chatroom.view.listener.ReplyBoxTextListener
 import com.tokopedia.topchat.chatroom.view.listener.SendButtonListener
+import com.tokopedia.topchat.chatroom.view.listener.StoriesAvatarListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomFlexModeListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
@@ -235,7 +239,8 @@ open class TopChatRoomFragment :
     ReminderTickerViewHolder.Listener,
     ProductBundlingListener,
     ChatTextAreaTabLayoutListener,
-    BannedChatMessageViewHolder.TopChatMessageCensorListener {
+    BannedChatMessageViewHolder.TopChatMessageCensorListener,
+    StoriesAvatarListener {
 
     @Inject
     lateinit var topChatRoomDialog: TopChatRoomDialog
@@ -311,6 +316,8 @@ open class TopChatRoomFragment :
 
     var chatRoomFlexModeListener: TopChatRoomFlexModeListener? = null
     var chatBoxPadding: View? = null
+
+    private val mStoriesAvatarManager by storiesManager(StoriesKey.TopChatRoom)
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view_chatroom
     override fun getAnalytic(): TopChatAnalytics = analytics
@@ -718,7 +725,7 @@ open class TopChatRoomFragment :
         return TopChatViewStateImpl(
             view, this, this, this,
             this, this, this,
-            this,
+            this, this,
             (activity as BaseChatToolbarActivity).getToolbar(), analytics, session
         ).also {
             it.isFromBubble = activity?.isFromBubble() == true
@@ -888,6 +895,7 @@ open class TopChatRoomFragment :
         }
         viewModel.getTickerReminder(isSeller())
         interlocutorShopType = chatRoom.shopType
+        mStoriesAvatarManager.updateStories(listOf(chatRoom.headerModel.shopId))
     }
 
     private fun setupFirstTimeForSeller() {
@@ -2197,6 +2205,10 @@ open class TopChatRoomFragment :
 
     override fun getSupportChildFragmentManager(): FragmentManager {
         return childFragmentManager
+    }
+
+    override fun getStoriesAvatarManager(): StoriesAvatarManager {
+        return mStoriesAvatarManager
     }
 
     override fun onClickAddToWishList(product: ProductAttachmentUiModel, success: () -> Unit) {
