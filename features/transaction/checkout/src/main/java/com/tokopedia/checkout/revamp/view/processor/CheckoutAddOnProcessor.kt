@@ -31,7 +31,11 @@ class CheckoutAddOnProcessor @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) {
 
-    suspend fun fetchPrescriptionIds(epharmacyData: EpharmacyData, listData: List<CheckoutItem>, uploadPrescriptionUiModel: UploadPrescriptionUiModel) {
+    suspend fun fetchPrescriptionIds(
+        epharmacyData: EpharmacyData,
+        listData: List<CheckoutItem>,
+        uploadPrescriptionUiModel: UploadPrescriptionUiModel
+    ) {
         withContext(dispatchers.io) {
             if (epharmacyData.checkoutId.isNotEmpty() && epharmacyData.showImageUpload && !epharmacyData.consultationFlow) {
                 try {
@@ -64,8 +68,12 @@ class CheckoutAddOnProcessor @Inject constructor(
         }
     }
 
-    private fun processEpharmacyData(ePharmacyPrepareProductsGroupResponse: EPharmacyPrepareProductsGroupResponse, listData: List<CheckoutItem>) {
-        val uploadPrescriptionUiModel = listData.firstOrNullInstanceOf(CheckoutEpharmacyModel::class.java)?.epharmacy ?: return
+    private fun processEpharmacyData(
+        ePharmacyPrepareProductsGroupResponse: EPharmacyPrepareProductsGroupResponse,
+        listData: List<CheckoutItem>
+    ) {
+        val uploadPrescriptionUiModel =
+            listData.firstOrNullInstanceOf(CheckoutEpharmacyModel::class.java)?.epharmacy ?: return
         if (ePharmacyPrepareProductsGroupResponse.detailData != null) {
             val groupsData = ePharmacyPrepareProductsGroupResponse.detailData!!.groupsData
             if (groupsData?.epharmacyGroups != null) {
@@ -241,7 +249,8 @@ class CheckoutAddOnProcessor @Inject constructor(
     }
 
     fun setPrescriptionIds(prescriptionIds: ArrayList<String>, listData: List<CheckoutItem>) {
-        val uploadPrescriptionUiModel = listData.firstOrNullInstanceOf(CheckoutEpharmacyModel::class.java)?.epharmacy ?: return
+        val uploadPrescriptionUiModel =
+            listData.firstOrNullInstanceOf(CheckoutEpharmacyModel::class.java)?.epharmacy ?: return
         for (shipmentCartItemModel in listData) {
             if (shipmentCartItemModel is CheckoutOrderModel && !shipmentCartItemModel.isError && shipmentCartItemModel.hasEthicalProducts) {
                 shipmentCartItemModel.prescriptionIds = prescriptionIds
@@ -250,9 +259,13 @@ class CheckoutAddOnProcessor @Inject constructor(
         uploadPrescriptionUiModel.uploadedImageCount = prescriptionIds.size
     }
 
-    fun setMiniConsultationResult(results: ArrayList<EPharmacyMiniConsultationResult>, listData: List<CheckoutItem>) {
+    fun setMiniConsultationResult(
+        results: ArrayList<EPharmacyMiniConsultationResult>,
+        listData: List<CheckoutItem>
+    ) {
         // todo check this
-        val uploadPrescriptionUiModel = listData.firstOrNullInstanceOf(CheckoutEpharmacyModel::class.java)?.epharmacy ?: return
+        val uploadPrescriptionUiModel =
+            listData.firstOrNullInstanceOf(CheckoutEpharmacyModel::class.java)?.epharmacy ?: return
 //        if (view != null) {
         val epharmacyGroupIds = HashSet<String>()
         val mapPrescriptionCount = HashMap<String?, Int>()
@@ -430,10 +443,11 @@ class CheckoutAddOnProcessor @Inject constructor(
     suspend fun saveAddonsProduct(product: CheckoutProductModel, isOneClickShipment: Boolean) {
         withContext(dispatchers.io) {
             try {
-                val params = ShipmentAddOnProductServiceMapper.generateSaveAddOnProductRequestParamsNew(
-                    product,
-                    isOneClickShipment
-                )
+                val params =
+                    ShipmentAddOnProductServiceMapper.generateSaveAddOnProductRequestParamsNew(
+                        product,
+                        isOneClickShipment
+                    )
                 saveAddOnProductUseCase.setParams(params, true)
                 saveAddOnProductUseCase.executeOnBackground()
             } catch (t: Throwable) {
@@ -442,7 +456,10 @@ class CheckoutAddOnProcessor @Inject constructor(
         }
     }
 
-    suspend fun saveAddOnsProductBeforeCheckout(listData: List<CheckoutItem>, isOneClickShipment: Boolean): CheckoutPageToaster? {
+    suspend fun saveAddOnsProductBeforeCheckout(
+        listData: List<CheckoutItem>,
+        isOneClickShipment: Boolean
+    ): CheckoutPageToaster? {
         return withContext(dispatchers.io) {
             val listCartItemModel = listData.filterIsInstance(CheckoutProductModel::class.java)
             if (listCartItemModel.indexOfFirst { it.addOnProduct.listAddOnProductData.isNotEmpty() } != -1) {
@@ -457,7 +474,11 @@ class CheckoutAddOnProcessor @Inject constructor(
                     if (response.saveAddOns.status.equals(ShipmentViewModel.statusOK, true)) {
                         return@withContext null
                     } else {
-                        return@withContext CheckoutPageToaster(Toaster.TYPE_ERROR, toasterMessage = response.saveAddOns.errorMessage.firstOrNull() ?: "Barangmu lagi nggak bisa dibeli. Silakan balik ke keranjang untuk cek belanjaanmu.")
+                        return@withContext CheckoutPageToaster(
+                            Toaster.TYPE_ERROR,
+                            toasterMessage = response.saveAddOns.errorMessage.firstOrNull()
+                                ?: "Barangmu lagi nggak bisa dibeli. Silakan balik ke keranjang untuk cek belanjaanmu."
+                        )
                     }
                 } catch (t: Throwable) {
                     Timber.d(t)
