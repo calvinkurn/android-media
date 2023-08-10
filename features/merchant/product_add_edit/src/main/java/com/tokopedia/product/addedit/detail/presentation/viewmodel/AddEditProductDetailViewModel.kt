@@ -978,16 +978,18 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     private fun clearProductPhotoUrl(
         imagePickerResult: MutableList<String>,
-        originalImageUrl: MutableList<String>
+        originalImageUrls: MutableList<String>
     ): ArrayList<String> {
         val resultCleaner = arrayListOf<String>()
         imagePickerResult.forEachIndexed { index, uriEditImage ->
+            val originalImageUrl = originalImageUrls.getOrNull(index)
             when {
                 uriEditImage.isNotEmpty() -> {
                     resultCleaner.add(uriEditImage)
                 }
+                originalImageUrl.isNullOrEmpty() -> return@forEachIndexed
                 else -> {
-                    resultCleaner.add(originalImageUrl[index])
+                    resultCleaner.add(originalImageUrl)
                 }
             }
         }
