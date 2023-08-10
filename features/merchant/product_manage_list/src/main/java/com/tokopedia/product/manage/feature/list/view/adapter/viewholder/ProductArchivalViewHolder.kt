@@ -2,6 +2,7 @@ package com.tokopedia.product.manage.feature.list.view.adapter.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -11,7 +12,7 @@ import com.tokopedia.product.manage.databinding.ItemManageProductListArchivalBin
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ProductArchivalViewHolder(
-    view: View,
+    private val view: View,
     private val listener: ProductViewHolder.ProductViewHolderView
 ) : AbstractViewHolder<ProductUiModel>(view) {
 
@@ -68,6 +69,12 @@ class ProductArchivalViewHolder(
             )
         }
         binding?.tvInfoProductArchival?.showWithCondition(product.isArchived)
+        binding?.tvInfoProductArchival?.setCompoundDrawables(
+            ContextCompat.getDrawable(
+                view.context,
+                R.drawable.ic_archival
+            ), null, null, null
+        )
     }
 
     private fun showProductCheckBox(product: ProductUiModel) {

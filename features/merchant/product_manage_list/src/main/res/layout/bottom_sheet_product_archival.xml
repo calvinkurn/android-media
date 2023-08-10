@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/product_manage_title_detail_product_suspend"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
         tools:text="Produk diduga tidak layak jual karena:" />
@@ -32,7 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:text="Performa produk barumu belum mencapai kriteria performa produk yang berkualitas di Tokopedia."
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:typographyType="heading_5" />
 
     </LinearLayout>
@@ -42,7 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintTop_toBottomOf="@id/layout_product_archival"
         app:typographyType="body_2"
         tools:text="Stok produkmu otomatis menjadi kosong, sehingga pembeli tidak bisa memesannya." />
