@@ -186,7 +186,7 @@ class ProductCarouselUiView(
         if (products.isEmpty()) return
 
         scope.launch(dispatchers.main) {
-            delay(UnifyMotion.T2)
+            delay(delayAnimDuration)
             val startPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
             val endPosition = layoutManager.findLastCompletelyVisibleItemPosition()
             if (startPosition in products.indices) {
@@ -198,6 +198,10 @@ class ProductCarouselUiView(
                 }
             }
         }
+    }
+
+    companion object {
+        private const val delayAnimDuration = 2000L
     }
 
     interface Listener {

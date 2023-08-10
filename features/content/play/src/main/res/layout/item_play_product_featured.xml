@@ -9,6 +9,7 @@
         android:id="@+id/layout_ribbon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:translationZ="1dp"
         android:layout_marginTop="@dimen/unify_space_8" />
 
     <com.tokopedia.play_common.view.RoundedConstraintLayout
@@ -22,9 +23,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/layout_ribbon"
         app:layout_constraintTop_toTopOf="parent"
-        app:rcl_bottomLeftRadius="@dimen/play_featured_product_radius"
-        app:rcl_bottomRightRadius="@dimen/play_featured_product_radius"
-        app:rcl_topRightRadius="@dimen/play_featured_product_radius">
+        app:rcl_cornerRadius="@dimen/play_featured_product_radius">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_product_image"
