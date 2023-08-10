@@ -113,6 +113,7 @@ class FeedXHomeUseCase @Inject constructor(
               editable
               deletable
               reportable
+              hasVoucher
               detailScore {
                 label
                 value
@@ -185,6 +186,7 @@ class FeedXHomeUseCase @Inject constructor(
               editable
               deletable
               reportable
+              hasVoucher
               detailScore {
                 label
                 value

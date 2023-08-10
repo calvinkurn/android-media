@@ -15,6 +15,7 @@ import com.tokopedia.home_component.databinding.HomeComponentBannerRevampBinding
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.util.recordCrashlytics
 import com.tokopedia.home_component.viewholders.adapter.BannerItemListener
 import com.tokopedia.home_component.widget.atf_banner.BannerRevampItemModel
 import com.tokopedia.home_component.viewholders.adapter.BannerRevampChannelAdapter
@@ -64,34 +65,30 @@ class BannerRevampViewHolder(
             channelModel = element.channelModel
             isCache = element.isCache
             renderBanner()
-        } catch (_: Exception) {
-            // no-op
+        } catch (e: Exception) {
+            e.recordCrashlytics()
         }
     }
 
     private fun renderBanner() {
         channelModel?.let { channel ->
-            try {
-                val banners = channel.convertToBannerItemModel()
-                totalBanner = banners.size
-                if (previousTotalBanner != totalBanner) {
-                    binding?.bannerIndicator?.setBannerIndicators(banners.size)
-                    binding?.bannerIndicator?.setBannerListener(object :
-                        BannerIndicatorListener {
-                        override fun onChangePosition(position: Int) {
-                            scrollTo(position)
-                        }
+            val banners = channel.convertToBannerItemModel()
+            totalBanner = banners.size
+            initBanner(banners)
+            if (previousTotalBanner != totalBanner) {
+                binding?.bannerIndicator?.setBannerIndicators(banners.size)
+                binding?.bannerIndicator?.setBannerListener(object :
+                    BannerIndicatorListener {
+                    override fun onChangePosition(position: Int) {
+                        scrollTo(position)
+                    }
 
-                        override fun getCurrentPosition(position: Int) {
-                            // no-op
-                        }
-                    })
-                } else {
-                    isFromInitialize = true
-                }
-                initBanner(banners)
-            } catch (_: NumberFormatException) {
-                // no-op
+                    override fun getCurrentPosition(position: Int) {
+                        // no-op
+                    }
+                })
+            } else {
+                isFromInitialize = true
             }
         }
     }
