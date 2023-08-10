@@ -41,7 +41,7 @@
     <string name="tokopedianow_feedback_widget_desc">Kirim saran biar produk yang kamu butuhkan tersedia di NOW!</string>
     <string name="tokopedianow_feedback_widget_cta_text">Sarankan Produk</string>
     <string name="tokopedianow_feedback_bottomsheet_desc">Produk apa yang kamu butuhkan?</string>
-    <string name="tokopedianow_feedback_bottomsheet_input_hint">Tulis nama brand produk, boleh\n lengkap dengan varian, ukuran\n dll.</string>
+    <string name="tokopedianow_feedback_bottomsheet_input_hint">Tulis nama brand produk, boleh lengkap dengan varian, ukuran dll.</string>
     <string name="tokopedianow_feedback_bottomsheet_btn_text">Kirim</string>
     <string name="tokopedianow_feedback_bottomsheet_title">Sarankan produk untuk NOW!</string>
     <string name="tokopedianow_feedback_bottomsheet_input_message">Gunakan koma (,) jika produk lebih dari 1</string>
