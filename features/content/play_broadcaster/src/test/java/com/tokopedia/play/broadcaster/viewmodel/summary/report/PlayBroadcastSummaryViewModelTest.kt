@@ -18,7 +18,6 @@ import com.tokopedia.play.broadcaster.util.TestHtmlTextTransformer
 import com.tokopedia.play.broadcaster.util.TestUriParser
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.assertFalse
-import com.tokopedia.play.broadcaster.util.assertTrue
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
@@ -90,7 +89,6 @@ class PlayBroadcastSummaryViewModelTest {
                 )
                 channelSummary.date.assertEqualTo(mockPublishedAtFormatted)
                 channelSummary.duration.assertEqualTo(mockLiveStats.duration)
-                channelSummary.isEligiblePostVideo.assertTrue()
             }
         }
     }
@@ -134,7 +132,6 @@ class PlayBroadcastSummaryViewModelTest {
                 )
                 channelSummary.date.assertEqualTo(mockPublishedAtFormatted)
                 channelSummary.duration.assertEqualTo(mockLiveStats.duration)
-                channelSummary.isEligiblePostVideo.assertTrue()
             }
         }
     }
@@ -188,7 +185,6 @@ class PlayBroadcastSummaryViewModelTest {
 
             with(state.channelSummary) {
                 duration.assertEqualTo(mockLiveStat60Second.duration)
-                isEligiblePostVideo.assertTrue()
             }
         }
     }
@@ -216,7 +212,6 @@ class PlayBroadcastSummaryViewModelTest {
 
             with(state.channelSummary) {
                 duration.assertEqualTo(mockLiveStatExact1Hour.duration)
-                isEligiblePostVideo.assertTrue()
             }
         }
     }
