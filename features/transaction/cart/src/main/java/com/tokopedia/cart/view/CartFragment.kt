@@ -4309,8 +4309,7 @@ class CartFragment :
     }
 
     override fun navigateToPromoRecommendation() {
-        //routeToPromoCheckoutMarketplacePage()
-        showPromoCheckoutBottomSheet()
+        routeToPromoCheckoutMarketplacePage()
     }
 
     override fun generateGeneralParamGetLastApply(): ValidateUsePromoRequest {
@@ -4613,17 +4612,6 @@ class CartFragment :
                 showToastMessageRed(addOnProductDataResult.aggregatedData.getDataErrorMessage)
             }
         }
-    }
-
-     private fun showPromoCheckoutBottomSheet() {
-         val bottomSheet = PromoUsageBottomSheet.newInstance(
-             entryPoint = PromoPageEntryPoint.CART_PAGE,
-             promoRequest = generateParamsCouponList(),
-             validateUsePromoRequest = generateParamGetLastApplyPromo(),
-             boPromoCodes = emptyList(),
-             totalAmount = 30_000.0 // TODO: Get data from cart
-         )
-         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
     override fun onAddOnsProductWidgetImpression(addOnType: Int, productId: String) {
