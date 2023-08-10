@@ -32,6 +32,8 @@ import com.tokopedia.shop.product.domain.interactor.GetMembershipUseCaseNew
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.product.view.datamodel.*
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
+import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -1721,5 +1723,39 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
 
         shopPageProductListResultViewModel.getShopShareData(mockShopId, mockShopDomain)
         assert(shopPageProductListResultViewModel.shopPageShopShareData.value == null)
+    }
+
+    @Test
+    fun `when check affiliate is success`() {
+        val mockData = GenerateAffiliateLinkEligibility()
+        val mockParam = AffiliateInput()
+
+        coEvery {
+            eligibilityCheckUseCase.get().executeOnBackground()
+        } returns mockData
+
+        shopPageProductListResultViewModel.checkAffiliate(mockParam)
+        coVerify {
+            eligibilityCheckUseCase.get().executeOnBackground()
+        }
+        Assert.assertTrue(shopPageProductListResultViewModel.resultAffiliate.value is Success)
+    }
+
+    @Test
+    fun `when check affiliate throws error`() {
+        val mockError = Exception()
+        val mockParam = AffiliateInput()
+        coEvery {
+            eligibilityCheckUseCase.get().executeOnBackground()
+        } throws mockError
+
+        shopPageProductListResultViewModel.checkAffiliate(mockParam)
+        coVerify {
+            eligibilityCheckUseCase.get().executeOnBackground()
+        }
+        coVerify {
+            eligibilityCheckUseCase.get().executeOnBackground()
+        }
+        Assert.assertTrue(shopPageProductListResultViewModel.resultAffiliate.value is Fail)
     }
 }
