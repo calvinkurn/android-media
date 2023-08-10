@@ -19,6 +19,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.addon.presentation.uimodel.AddOnExtraConstant
+import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
@@ -188,7 +190,8 @@ class CheckoutFragment :
         ViewModelProvider(this, viewModelFactory)[CheckoutViewModel::class.java]
     }
 
-    private var binding by autoCleared<FragmentCheckoutBinding>()
+    private var binding by autoCleared<FragmentCheckoutBinding>() {
+    }
 
     private var header by autoCleared<HeaderCheckoutBinding>()
 
@@ -604,6 +607,10 @@ class CheckoutFragment :
 
             CheckoutConstant.REQUEST_ADD_ON_PRODUCT_LEVEL_BOTTOMSHEET -> {
                 onUpdateResultAddOnProductLevelBottomSheet(data)
+            }
+
+            ShipmentFragment.REQUEST_CODE_ADD_ON_PRODUCT_SERVICE_BOTTOMSHEET -> {
+                onResultFromAddOnProductBottomSheet(resultCode, data)
             }
 
             CheckoutConstant.REQUEST_ADD_ON_ORDER_LEVEL_BOTTOMSHEET -> {
@@ -1032,6 +1039,20 @@ class CheckoutFragment :
 
     override fun onImpressionAddOnProductService(addonType: Int, productId: String) {
         checkoutAnalyticsCourierSelection.eventViewAddOnsProductServiceWidget(addonType, productId)
+    }
+
+    private fun onResultFromAddOnProductBottomSheet(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            val addOnProductDataResult = data?.getParcelableExtra(AddOnExtraConstant.EXTRA_ADDON_PAGE_RESULT) ?: AddOnPageResult()
+            if (addOnProductDataResult.aggregatedData.isGetDataSuccess) {
+                val cartIdAddOn = addOnProductDataResult.cartId
+                viewModel.setAddonResult(cartIdAddOn, addOnProductDataResult)
+            } else {
+                view?.let { v ->
+                    Toaster.build(v, addOnProductDataResult.aggregatedData.getDataErrorMessage, type = Toaster.TYPE_ERROR).show()
+                }
+            }
+        }
     }
 
     override fun onClickAddOnGiftingProductLevel(

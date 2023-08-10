@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
@@ -46,6 +47,7 @@ import com.tokopedia.checkout.view.CheckoutLogger
 import com.tokopedia.checkout.view.CheckoutMutableLiveData
 import com.tokopedia.checkout.view.uimodel.ShipmentAddOnSummaryModel
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.logisticCommon.data.constant.InsuranceConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
@@ -2030,6 +2032,41 @@ class CheckoutViewModel @Inject constructor(
 //        shipmentViewModel.saveAddOnsProduct(cartItemModel)
 //        shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
 //        shipmentAdapter.updateSubtotal()
+    }
+
+    fun setAddonResult(cartIdAddOn: Long, addOnProductDataResult: AddOnPageResult) {
+        val checkoutItems = listData.value.toMutableList()
+        val itemIndex = checkoutItems.indexOfFirst { it is CheckoutProductModel && it.cartId == cartIdAddOn }
+        if (itemIndex > 0) {
+            val product = checkoutItems[itemIndex] as CheckoutProductModel
+            val oldList = product.addOnProduct.listAddOnProductData
+            val newProduct = product.copy(
+                addOnProduct = product.addOnProduct.copy(
+                    listAddOnProductData = oldList.map {
+                        for (addOnUiModel in addOnProductDataResult.aggregatedData.selectedAddons) {
+                            if (it.type == addOnUiModel.addOnType) {
+                                return@map it.copy(
+                                    id = addOnUiModel.id.toLongOrZero(),
+                                    uniqueId = addOnUiModel.uniqueId,
+                                    price = addOnUiModel.price.toDouble(),
+                                    infoLink = addOnUiModel.eduLink,
+                                    name = addOnUiModel.name,
+                                    type = addOnUiModel.addOnType,
+                                    status = addOnUiModel.getSaveAddonSelectedStatus().value
+                                )
+                            }
+                        }
+                        return@map it
+                    }
+                )
+            )
+            checkoutItems[itemIndex] = newProduct
+            viewModelScope.launch {
+                addOnProcessor.saveAddonsProduct(newProduct, isOneClickShipment)
+            }
+            listData.value = checkoutItems
+            calculateTotal()
+        }
     }
 
     fun setSelectedCourierInsurance(checked: Boolean, order: CheckoutOrderModel, position: Int) {

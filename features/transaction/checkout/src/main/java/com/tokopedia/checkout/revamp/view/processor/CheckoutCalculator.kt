@@ -152,7 +152,7 @@ class CheckoutCalculator @Inject constructor(
                         }
                         if (cartItem.addOnProduct.listAddOnProductData.isNotEmpty()) {
                             for (addOnProductService in cartItem.addOnProduct.listAddOnProductData) {
-                                if (addOnProductService.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK || addOnProductService.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY) {
+                                if (addOnProductService.isChecked) {
                                     totalAddOnProductServicePrice += (addOnProductService.price * cartItem.quantity)
                                     if (countMapSummaries.containsKey(addOnProductService.type)) {
                                         qtyAddOn += cartItem.quantity
@@ -382,7 +382,7 @@ class CheckoutCalculator @Inject constructor(
                     val orderProducts =
                         helper.getOrderProducts(listData, shipmentCartItemModel.cartStringGroup)
                     for (cartItemModel in orderProducts) {
-                        if (cartItemModel.isProtectionOptIn) {
+                        if (cartItemModel.addOnProduct.listAddOnProductData.any { it.type == AddOnConstant.PRODUCT_PROTECTION_INSURANCE_TYPE && it.isChecked }) {
                             shouldShowInsuranceTnc = true
                         }
                     }

@@ -3,6 +3,7 @@ package com.tokopedia.cart.view
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.cart.R
+import com.tokopedia.cartrevamp.view.CartRevampFragment
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity
 import com.tokopedia.telemetry.ITelemetryActivity
 
