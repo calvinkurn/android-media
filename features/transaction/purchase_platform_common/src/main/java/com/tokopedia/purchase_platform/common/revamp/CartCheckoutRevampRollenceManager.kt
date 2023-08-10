@@ -6,7 +6,12 @@ import javax.inject.Inject
 
 class CartCheckoutRevampRollenceManager @Inject constructor(private val abTestPlatform: AbTestPlatform) {
 
+    private var currentValue: String? = null
+
     fun getValue(): String {
-        return abTestPlatform.getString(RollenceKey.CART_CHECKOUT_REVAMP)
+        if (currentValue == null) {
+            currentValue = abTestPlatform.getString(RollenceKey.CART_CHECKOUT_REVAMP)
+        }
+        return currentValue ?: ""
     }
 }
