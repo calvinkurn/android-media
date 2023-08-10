@@ -107,7 +107,10 @@ class AddOnWidgetView : BaseCustomView {
                 }
             }
             viewModel.autoSave.observe(this) {
-                if (it.isActive)
+                val selectedAddons = AddOnMapper.flatmapToChangedAddonSelection(
+                    viewModel.modifiedAddOnGroups.value
+                )
+                if (it.isActive && selectedAddons.isNotEmpty())
                     viewModel.saveAddOnState(it.cartId, it.atcSource)
             }
         }
