@@ -46,6 +46,19 @@ class ProfileManagementViewModelTest {
 
     @Test
     fun `when get url profile management then return failed`() {
+        val url = ""
+        val expected = GetUrlProfileManagementResult.Failed(Throwable())
+
+        coEvery { getUrlProfileManagementUseCase.invoke(Unit) } returns expected
+        viewModel.getProfileManagementData()
+
+        val result = viewModel.getUrlProfileManagement.getOrAwaitValue()
+        assertTrue(result is GetUrlProfileManagementResult.Failed)
+        assertEquals(url, viewModel.url)
+    }
+
+    @Test
+    fun `when get url profile management then return error`() {
         val throwable = Throwable()
 
         coEvery { getUrlProfileManagementUseCase.invoke(Unit) } throws throwable
