@@ -49,6 +49,8 @@ class ShopHomeDisplayBannerProductHotspotViewHolder(
     }
 
     private val viewBinding: ShopHomeDisplayBannerProductHotspotViewHolderLayoutBinding? by viewBinding()
+    private val placeholderContainer: View? = viewBinding?.containerPlaceholder
+    private val contentContainer: View? = viewBinding?.containerContent
     private val imageBannerHotspot: ImageHotspotView? = viewBinding?.imageBannerHotspot
     private val recyclerViewProductHotspot: RecyclerView? = viewBinding?.rvProductHotspot
     private val textTitle: Typography? = viewBinding?.textTitle
@@ -64,9 +66,24 @@ class ShopHomeDisplayBannerProductHotspotViewHolder(
 
     override fun bind(uiModel: ShopWidgetDisplayBannerProductHotspotUiModel) {
         this.uiModel = uiModel
-        setHeaderSection()
-        setImageBannerHotspotSection()
-        setBannerIndicatorSection()
+        if (uiModel.isWidgetShowPlaceholder()) {
+            showPlaceholderView()
+        } else {
+            showContentView()
+            setHeaderSection()
+            setImageBannerHotspotSection()
+            setBannerIndicatorSection()
+        }
+    }
+
+    private fun showContentView() {
+        placeholderContainer?.hide()
+        contentContainer?.show()
+    }
+
+    private fun showPlaceholderView() {
+        placeholderContainer?.show()
+        contentContainer?.hide()
     }
 
     private fun setBannerIndicatorSection() {

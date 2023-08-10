@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.shop.common.util.ShopProductViewGridType
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
 import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
 import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleListener
@@ -44,6 +45,7 @@ import com.tokopedia.shop.home.view.adapter.viewholder.ProductGridListPlaceholde
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeCardDonationViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeCarouselProductPersonalizationViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopCarouselProductWidgetPlaceholderViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeAdvanceCarouselBannerViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeCarousellProductViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerProductHotspotViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeFlashSaleViewHolder
@@ -199,17 +201,27 @@ open class ShopHomeAdapterTypeFactory(
     }
 
     private fun getShopHomeSliderBannerViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
-        return if (isShowHomeWidgetPlaceHolder(baseShopHomeWidgetUiModel))
-            ShopHomeSliderBannerPlaceholderViewHolder.LAYOUT_RES
-        else
-            ShopHomeSliderBannerViewHolder.LAYOUT_RES
+        //        need to change isEnableShopPageReImagined() to use the one from BE
+        return if (ShopUtil.isEnableShopPageReImagined()) {
+            ShopHomeAdvanceCarouselBannerViewHolder.LAYOUT_RES
+        } else {
+            if (isShowHomeWidgetPlaceHolder(baseShopHomeWidgetUiModel))
+                ShopHomeSliderBannerPlaceholderViewHolder.LAYOUT_RES
+            else
+                ShopHomeSliderBannerViewHolder.LAYOUT_RES
+        }
     }
 
     private fun getShopHomeSliderSquareViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
-        return if (isShowHomeWidgetPlaceHolder(baseShopHomeWidgetUiModel))
-            ShopHomeSliderSquarePlaceholderViewHolder.LAYOUT_RES
-        else
-            ShopHomeSliderSquareViewHolder.LAYOUT_RES
+        //        need to change isEnableShopPageReImagined() to use the one from BE
+        return if (ShopUtil.isEnableShopPageReImagined()) {
+            ShopHomeAdvanceCarouselBannerViewHolder.LAYOUT_RES
+        } else {
+            if (isShowHomeWidgetPlaceHolder(baseShopHomeWidgetUiModel))
+                ShopHomeSliderSquarePlaceholderViewHolder.LAYOUT_RES
+            else
+                ShopHomeSliderSquareViewHolder.LAYOUT_RES
+        }
     }
 
     private fun getShopHomeMultipleImageColumnViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
@@ -364,7 +376,7 @@ open class ShopHomeAdapterTypeFactory(
             ShopHomeDisplayBannerTimerPlaceholderViewHolder.LAYOUT -> ShopHomeDisplayBannerTimerPlaceholderViewHolder(parent)
             ShopHomeDisplayBannerTimerViewHolder.LAYOUT -> ShopHomeDisplayBannerTimerViewHolder(parent, shopHomeDisplayBannerTimerWidgetListener)
             ShopHomeDisplayBannerProductHotspotViewHolder.LAYOUT -> ShopHomeDisplayBannerProductHotspotViewHolder(parent, shopHomeDisplayBannerProductHotspotListener)
-
+            ShopHomeAdvanceCarouselBannerViewHolder.LAYOUT_RES -> ShopHomeAdvanceCarouselBannerViewHolder(parent, listener)
             else -> return super.createViewHolder(parent, type)
         }
         return viewHolder
