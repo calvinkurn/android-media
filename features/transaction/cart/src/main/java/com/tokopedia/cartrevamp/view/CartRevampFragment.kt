@@ -179,7 +179,6 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.GetWishlistV2Response
-import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
@@ -259,13 +258,7 @@ class CartRevampFragment :
     private var unavailableItemAccordionCollapseState = true
     private var hasCalledOnSaveInstanceState = false
     private var isCheckUncheckDirectAction = true
-    private var isNavToolbar = false
     private var plusCoachMark: CoachMark2? = null
-
-    private var recommendationWishlistV2ActionListener: WishlistV2ActionListener? = null
-    private var cartUnavailableWishlistV2ActionListener: WishlistV2ActionListener? = null
-    private var lastSeenWishlistV2ActionListener: WishlistV2ActionListener? = null
-    private var wishlistsWishlistV2ActionListener: WishlistV2ActionListener? = null
 
     private lateinit var editBundleActivityResult: ActivityResultLauncher<Intent>
     private lateinit var shipmentActivityResult: ActivityResultLauncher<Intent>
@@ -546,7 +539,7 @@ class CartRevampFragment :
             binding?.vDisabledGoToCourierPageButton?.show()
             binding?.vDisabledGoToCourierPageButton?.setOnClickListener {
                 if (CartDataHelper.getAllAvailableCartItemData(viewModel.cartDataList.value)
-                        .isNotEmpty()
+                    .isNotEmpty()
                 ) {
                     showToastMessageGreen(getString(R.string.message_no_cart_item_selected))
                 }
@@ -675,7 +668,8 @@ class CartRevampFragment :
             cartPageAnalytics.enhancedEcommerceClickProductRecommendationOnEmptyCart(
                 viewModel.generateRecommendationDataOnClickAnalytics(
                     it,
-                    FLAG_IS_CART_EMPTY, index
+                    FLAG_IS_CART_EMPTY,
+                    index
                 )
             )
         }
@@ -894,13 +888,27 @@ class CartRevampFragment :
             buttonWording
         )
         data.isCollapsed = !data.isCollapsed
-        val disabledItemHeaderHolderDataPosition =
-            viewModel.cartDataList.value.indexOfFirst { it is DisabledItemHeaderHolderData }
-        (cartAdapter.getData()[disabledItemHeaderHolderDataPosition] as DisabledItemHeaderHolderData).isDividerShown =
-            !data.isCollapsed
+        val cartDataList = viewModel.cartDataList.value
+        val disabledItemHeaderHolderDataPosition = cartDataList.indexOfFirst { it is DisabledItemHeaderHolderData }
+        (cartDataList[disabledItemHeaderHolderDataPosition] as DisabledItemHeaderHolderData).isDividerShown = !data.isCollapsed
         onNeedToUpdateViewItem(disabledItemHeaderHolderDataPosition)
         unavailableItemAccordionCollapseState = data.isCollapsed
         collapseOrExpandDisabledItem(data)
+    }
+
+    override fun onToggleUnavailableItemAccordion() {
+        val cartDataList = viewModel.cartDataList.value
+        val accordionHolderDataPosition = cartDataList.indexOfFirst { it is DisabledAccordionHolderData }
+        val data = cartDataList.getOrNull(accordionHolderDataPosition)
+
+        if (data != null && data is DisabledAccordionHolderData) {
+            data.isCollapsed = !data.isCollapsed
+            val disabledItemHeaderHolderDataPosition = cartDataList.indexOfFirst { it is DisabledItemHeaderHolderData }
+            (cartDataList[disabledItemHeaderHolderDataPosition] as DisabledItemHeaderHolderData).isDividerShown = !data.isCollapsed
+            onNeedToUpdateViewItem(disabledItemHeaderHolderDataPosition)
+            unavailableItemAccordionCollapseState = data.isCollapsed
+            collapseOrExpandDisabledItem(data)
+        }
     }
 
     override fun onDisabledCartItemProductClicked(cartItemHolderData: CartItemHolderData) {
@@ -1391,7 +1399,6 @@ class CartRevampFragment :
         super.onStop()
     }
 
-
     private fun addEndlessRecyclerViewScrollListener(
         cartRecyclerView: RecyclerView,
         gridLayoutManager: GridLayoutManager
@@ -1852,7 +1859,6 @@ class CartRevampFragment :
 
     private fun handleSelectedAmountVisibilityOnIdle(newState: Int) {
         if (newState == RecyclerView.SCROLL_STATE_IDLE && initialSelectedAmountPosition > 0) {
-            // Delay after recycler view idle, then show promo button
             delayShowSelectedAmountJob?.cancel()
             delayShowSelectedAmountJob =
                 viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
@@ -1891,7 +1897,7 @@ class CartRevampFragment :
                 initialSelectedAmountPosition = navToolbar.y + navToolbar.height
             }
 
-            if (SELECTED_AMOUNT_TRANSLATION_LENGTH != 0f && valueY >= initialSelectedAmountPosition) {
+            if (SELECTED_AMOUNT_TRANSLATION_LENGTH != 0f && valueY >= navToolbar.y - rlTopLayout.height) {
                 animateSelectedAmountToHiddenPosition(valueY)
             }
         }
@@ -2296,6 +2302,7 @@ class CartRevampFragment :
                             viewModel.doUpdateCartAndGetLastApply(params)
                         }
                         viewModel.processUpdateCartCounter()
+                        viewModel.updateSelectedAmount()
                     }
                 }
 
@@ -2410,7 +2417,6 @@ class CartRevampFragment :
                     }
                 }
             }
-
         }
     }
 
@@ -2990,11 +2996,11 @@ class CartRevampFragment :
 
     @SuppressLint("NotifyDataSetChanged")
     private fun removeLocalCartItem(
-        updateListResult: Pair<List<Int>, List<Int>>,
+        updateListResult: Triple<List<Int>, List<Int>, ArrayList<Any>>,
         forceExpandCollapsedUnavailableItems: Boolean
     ) {
         val allDisabledCartItemData = CartDataHelper.getAllDisabledCartItemData(
-            viewModel.cartDataList.value,
+            updateListResult.third,
             viewModel.cartModel
         )
 
@@ -3008,7 +3014,7 @@ class CartRevampFragment :
         }
 
         val allShopGroupDataList =
-            CartDataHelper.getAllShopGroupDataList(viewModel.cartDataList.value)
+            CartDataHelper.getAllShopGroupDataList(updateListResult.third)
 
         // Check if cart list has exactly 1 shop, and it's a toko now
         if (allShopGroupDataList.size == 1 && allShopGroupDataList[0].isTokoNow) {
@@ -3048,7 +3054,7 @@ class CartRevampFragment :
         }
 
         // use notify data set changed due to massive update
-        viewModel.cartDataList.notifyObserver()
+        viewModel.updateCartDataList(updateListResult.third)
 
         viewModel.reCalculateSubTotal()
         notifyBottomCartParent()
@@ -3338,7 +3344,7 @@ class CartRevampFragment :
 
             val onClickListener: (applied: Boolean) -> Unit = { applied ->
                 if (CartDataHelper.getSelectedCartItemData(viewModel.cartDataList.value)
-                        .isEmpty()
+                    .isEmpty()
                 ) {
                     showToastMessageGreen(getString(R.string.promo_choose_item_cart))
                     PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
@@ -3362,12 +3368,12 @@ class CartRevampFragment :
                     desc = lastApplyData.additionalInfo.messageInfo.detail,
                     rightIcon = IconUnify.CHEVRON_RIGHT,
                     summaries = emptyList(),
-                    onClickListener = { onClickListener(true) },
+                    onClickListener = { onClickListener(true) }
                 )
             } else {
                 isApplied = false
                 if (CartDataHelper.getSelectedCartItemData(viewModel.cartDataList.value)
-                        .isEmpty()
+                    .isEmpty()
                 ) {
                     binding?.promoCheckoutBtnCart?.showInactive(
                         getString(R.string.promo_desc_no_selected_item),

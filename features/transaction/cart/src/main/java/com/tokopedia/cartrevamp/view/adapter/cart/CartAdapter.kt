@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
 import com.tokopedia.cart.databinding.HolderItemCartTickerErrorBinding
 import com.tokopedia.cart.databinding.ItemCartDisabledAccordionRevampBinding
 import com.tokopedia.cart.databinding.ItemCartDisabledCollapsedBinding
@@ -24,8 +23,6 @@ import com.tokopedia.cartrevamp.view.ActionListener
 import com.tokopedia.cartrevamp.view.adapter.diffutil.CartDiffUtilCallback
 import com.tokopedia.cartrevamp.view.adapter.recentview.CartRecentViewAdapter
 import com.tokopedia.cartrevamp.view.adapter.wishlist.CartWishlistAdapter
-import com.tokopedia.cartrevamp.view.uimodel.CartAddOnProductData
-import com.tokopedia.cartrevamp.view.uimodel.CartChooseAddressHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartEmptyHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
