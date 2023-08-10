@@ -62,7 +62,6 @@ import com.tokopedia.cartrevamp.data.model.response.promo.LastApplyPromoData
 import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.LocalizationChooseAddress
-import com.tokopedia.cartrevamp.util.CartRevampRollenceUtil
 import com.tokopedia.cartrevamp.view.adapter.cart.CartAdapter
 import com.tokopedia.cartrevamp.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cartrevamp.view.bottomsheet.CartBundlingBottomSheet
