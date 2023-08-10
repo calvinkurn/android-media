@@ -174,7 +174,7 @@ open class ShopHomeAdapter(
 
     fun setProductCarousel(productCarouselUiModel: ShopHomeProductCarouselUiModel) {
         val newList = getNewVisitableItems()
-        newList.setElement(1, productCarouselUiModel)
+        newList.setElement(0, productCarouselUiModel)
         submitList(newList)
     }
     fun setProductComparisonData(uiModel: ShopHomePersoProductComparisonUiModel) {

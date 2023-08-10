@@ -178,6 +178,7 @@ import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
 import com.tokopedia.shop.home.view.model.CheckCampaignNotifyMeUiModel
 import com.tokopedia.shop.home.view.model.GetCampaignNotifyMeUiModel
 import com.tokopedia.shop.home.view.model.NotifyMeAction
+import com.tokopedia.shop.home.view.model.Product
 import com.tokopedia.shop.home.view.model.ShopHomeCardDonationUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
@@ -5082,7 +5083,7 @@ open class ShopPageHomeFragment :
 
     }
 
-    override fun onProductClick(selectedProduct: ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild) {
+    override fun onProductClick(selectedProduct: Product) {
 
     }
 }

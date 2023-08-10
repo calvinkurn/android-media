@@ -13,6 +13,7 @@ import com.tokopedia.shop.databinding.FragmentShopProductCarouselBinding
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.view.adapter.ShopHomeProductCarouselAdapter
+import com.tokopedia.shop.home.view.model.Product
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlin.collections.ArrayList
@@ -24,11 +25,11 @@ class ShopProductCarouselFragment : BaseDaggerFragment() {
 
         @JvmStatic
         fun newInstance(
-            products: List<ShopHomeProductCarouselUiModel.Tab.Component>
+            widgets: List<ShopHomeProductCarouselUiModel.Tab.Component>
         ): ShopProductCarouselFragment {
             return ShopProductCarouselFragment().apply {
                 arguments = Bundle().apply {
-                    putParcelableArrayList(BUNDLE_KEY_WIDGETS, ArrayList(products))
+                    putParcelableArrayList(BUNDLE_KEY_WIDGETS, ArrayList(widgets))
                 }
             }
         }
@@ -43,7 +44,7 @@ class ShopProductCarouselFragment : BaseDaggerFragment() {
     }
 
     private var onMainBannerClick : (ShopHomeProductCarouselUiModel.Tab.Component) -> Unit = {}
-    private var onProductClick : (ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild) -> Unit = {}
+    private var onProductClick : (Product) -> Unit = {}
 
     private var binding by autoClearedNullable<FragmentShopProductCarouselBinding>()
     private val productAdapter = ShopHomeProductCarouselAdapter()
@@ -73,7 +74,8 @@ class ShopProductCarouselFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val mainBanner = widgets.firstOrNull { widget ->  widget.type == ShopHomeProductCarouselUiModel.ComponentType.BANNER_SINGLE}
+        val mainBanner =
+            widgets.firstOrNull { widget -> widget.type == ShopHomeProductCarouselUiModel.ComponentType.BANNER_SINGLE }
         val products = widgets.takeWhile { widgets ->
             widgets.type == ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITH_PRODUCT_INFO
                 ||
@@ -98,31 +100,65 @@ class ShopProductCarouselFragment : BaseDaggerFragment() {
     private fun setupProductRecyclerView(products: List<ShopHomeProductCarouselUiModel.Tab.Component>) {
         binding?.recyclerView?.apply {
             adapter = productAdapter
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         }
         productAdapter.setOnProductClick { selectedProduct ->
             onProductClick(selectedProduct)
         }
 
-        val formattedProducts =
-            mutableListOf<ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild>()
+        val formattedProducts = listOf(
+            Product(
+                "1",
+                "https://images.tokopedia.net/img/nafisa.jpg",
+                "Samsung Galaxy S23 - 512 GB",
+                "Rp18.849.000",
+                "Rp.20.849.000",
+                "20%",
+                "4.8",
+                500
+            ),
+            Product(
+                "2",
+                "https://images.tokopedia.net/img/nafisa.jpg",
+                "Samsung Galaxy Fold 5 - 512 GB",
+                "Rp28.849.000",
+                "Rp.55.849.000",
+                "20%",
+                "4.8",
+                1500
+            ),
 
-        products.forEach { component ->
-
-            component.componentChild.map {componentChild ->
-
-                formattedProducts.add(
-                    ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild(
-                        imageId = 0,
-                        imageUrl = "",
-                        ctaLink = "",
-                        linkId = componentChild.linkId,
-                        linkType = componentChild.linkType
-                    )
-                )
-            }
-
-        }
+            Product(
+                "3",
+                "https://images.tokopedia.net/img/nafisa.jpg",
+                "Samsung Galaxy Z Flip 5 - 512 GB",
+                "Rp38.849.000",
+                "Rp.60.849.000",
+                "40%",
+                "4.8",
+                2500
+            ),
+            Product(
+                "4",
+                "https://images.tokopedia.net/img/nafisa.jpg",
+                "Samsung Galaxy Z Flip 5 - 512 GB",
+                "Rp38.849.000",
+                "Rp.60.849.000",
+                "40%",
+                "4.8",
+                2500
+            ),
+            Product(
+                "5",
+                "https://images.tokopedia.net/img/nafisa.jpg",
+                "Samsung Galaxy Z Flip 5 - 512 GB",
+                "Rp38.849.000",
+                "Rp.60.849.000",
+                "40%",
+                "4.8",
+                2500
+            )
+        )
 
         productAdapter.submit(formattedProducts)
     }
@@ -131,7 +167,7 @@ class ShopProductCarouselFragment : BaseDaggerFragment() {
         this.onMainBannerClick = onMainBannerClick
     }
 
-    fun setOnProductClick(onProductClick: (ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild) -> Unit) {
+    fun setOnProductClick(onProductClick: (Product) -> Unit) {
         this.onProductClick = onProductClick
     }
 

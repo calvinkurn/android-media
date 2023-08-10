@@ -4,14 +4,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.strikethrough
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.databinding.ItemShopHomeProductInfoCardBinding
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel
+import com.tokopedia.shop.home.view.model.Product
 
-class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<ShopHomeProductCarouselAdapter.ProductViewHolder>() {
+class ShopHomeProductCarouselAdapter :
+    RecyclerView.Adapter<ShopHomeProductCarouselAdapter.ProductViewHolder>() {
 
-    private var products = mutableListOf<ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild>()
-    private var onProductClick : (ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild) -> Unit = {}
+    private var products = mutableListOf<Product>()
+    private var onProductClick: (Product) -> Unit = {}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         val binding =
@@ -34,23 +36,33 @@ class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<ShopHomeProductCarou
     ) : RecyclerView.ViewHolder(binding.root) {
 
 
-        fun bind(product: ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild) {
+        fun bind(product: Product) {
             binding.imgProduct.loadImage(product.imageUrl)
+            binding.tpgProductName.text = product.name
+
+            binding.tpgProductPrice.text = product.price
+            binding.tpgSlashedProductPrice.text = product.slashedPrice
+            binding.tpgSlashedProductPrice.strikethrough()
+            binding.labelDiscount.setLabel(product.slashedPricePercent)
+
+            binding.tpgRating.text = product.rating
+            binding.tpgProductSoldCount.text = "Terjual " + product.soldCount
+
             binding.root.setOnClickListener { onProductClick(product) }
         }
 
     }
 
     inner class DiffCallback(
-        private val oldItems: List<ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild>,
-        private val newItems: List<ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild>
+        private val oldItems: List<Product>,
+        private val newItems: List<Product>
     ) : DiffUtil.Callback() {
 
         override fun getOldListSize() = oldItems.size
         override fun getNewListSize() = newItems.size
 
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldItems[oldItemPosition].imageUrl == newItems[newItemPosition].imageUrl
+            return oldItems[oldItemPosition].id == newItems[newItemPosition].id
         }
 
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
@@ -59,7 +71,7 @@ class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<ShopHomeProductCarou
 
     }
 
-    fun submit(newProducts: List<ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild>) {
+    fun submit(newProducts: List<Product>) {
         val diffCallback = DiffCallback(this.products, newProducts)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
 
@@ -69,7 +81,7 @@ class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<ShopHomeProductCarou
         diffResult.dispatchUpdatesTo(this)
     }
 
-    fun setOnProductClick(onProductClick: (ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild) -> Unit) {
+    fun setOnProductClick(onProductClick: (Product) -> Unit) {
         this.onProductClick = onProductClick
     }
 }

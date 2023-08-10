@@ -238,4 +238,5 @@
 
     <string name="shop_page_dot_character">•</string>
 
+    <string name="shop_page_placeholder_sold">Terjual %s</string>
 </resources>
