@@ -612,7 +612,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _accountStateInfo.value = AccountStateInfo()
         _observableConfigInfo.value = NetworkResult.Loading
 
-        val accountList = repo.getAccountList()
+        val accountList = repo.getAccountList().filterNot { it.isUser && !it.enable }
         _accountListState.value = accountList
 
         if (accountList.isNotEmpty()) {
