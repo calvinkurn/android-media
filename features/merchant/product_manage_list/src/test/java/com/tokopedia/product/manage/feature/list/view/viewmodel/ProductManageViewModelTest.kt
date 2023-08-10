@@ -687,6 +687,114 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         }
     }
 
+
+    @Test
+    fun `get product list archival should map product to view model`() {
+        runBlocking {
+            val shopId = "1500"
+
+            val minPrice = PriceUiModel("10000", "Rp10.000")
+            val maxPrice = PriceUiModel("100000", "Rp100.000")
+            val pictures = listOf(Picture("imageUrl"))
+
+            val productList = listOf(
+                createProduct(
+                    name = "Tolak Angin Madu",
+                    price = Price(10000, 100000),
+                    pictures = pictures
+                )
+            )
+            val productListData = ProductListData(ProductList(header = null, data = productList))
+
+            val locationList = listOf(
+                ShopLocationResponse("1", MAIN_LOCATION),
+                ShopLocationResponse("2", OTHER_LOCATION)
+            )
+            val paramsProductList = createFilterOptions(1)
+            onGetWarehouseId_thenReturn(locationList)
+            onGetProductList_thenReturn(productListData)
+            paramsProductList.add(FilterOption.FilterByCondition.ProductPotentialArchivedStatus)
+
+            viewModel.getProductList(shopId, filterOptions = paramsProductList)
+
+            val topAdsInfo = TopAdsInfo(isTopAds = false, isAutoAds = false)
+            val productViewModelList = listOf(
+                createProductUiModel(
+                    name = "Tolak Angin Madu",
+                    minPrice = minPrice,
+                    maxPrice = maxPrice,
+                    topAds = topAdsInfo,
+                    access = createDefaultAccess()
+                )
+            )
+            val expectedProductList = Success(productViewModelList)
+
+            verifyGetWarehouseIdCalled()
+
+            viewModel.productListResult
+                .verifySuccessEquals(expectedProductList)
+
+            viewModel.showTicker
+                .verifyValueEquals(null)
+
+            verifyHideProgressBar()
+        }
+    }
+
+    @Test
+    fun `get product list arhival or potential archival should map product to view model`() {
+        runBlocking {
+            val shopId = "1500"
+
+            val minPrice = PriceUiModel("10000", "Rp10.000")
+            val maxPrice = PriceUiModel("100000", "Rp100.000")
+            val pictures = listOf(Picture("imageUrl"))
+
+            val productList = listOf(
+                createProduct(
+                    name = "Tolak Angin Madu",
+                    price = Price(10000, 100000),
+                    pictures = pictures
+                )
+            )
+            val productListData = ProductListData(ProductList(header = null, data = productList))
+
+            val locationList = listOf(
+                ShopLocationResponse("1", MAIN_LOCATION),
+                ShopLocationResponse("2", OTHER_LOCATION)
+            )
+            val paramsProductList = createFilterOptions(1)
+            onGetWarehouseId_thenReturn(locationList)
+            onGetProductList_thenReturn(productListData)
+            paramsProductList.add(FilterOption.FilterByCondition.ProductPotentialArchivedStatus)
+            paramsProductList.add(FilterOption.FilterByCondition.ProductArchival)
+
+            viewModel.getProductList(shopId, filterOptions = paramsProductList)
+
+            val topAdsInfo = TopAdsInfo(isTopAds = false, isAutoAds = false)
+            val productViewModelList = listOf(
+                createProductUiModel(
+                    name = "Tolak Angin Madu",
+                    minPrice = minPrice,
+                    maxPrice = maxPrice,
+                    topAds = topAdsInfo,
+                    access = createDefaultAccess()
+                )
+            )
+            val expectedProductList = Success(productViewModelList)
+
+            verifyGetWarehouseIdCalled()
+
+            viewModel.productListResult
+                .verifySuccessEquals(expectedProductList)
+
+            viewModel.showTicker
+                .verifyValueEquals(null)
+
+            verifyHideProgressBar()
+        }
+    }
+
     @Test
     fun `given get max stock success, get product list should map product to view model`() {
         runBlocking {
