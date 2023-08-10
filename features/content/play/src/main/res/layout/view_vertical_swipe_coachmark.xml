@@ -4,8 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/play_dms_vertical_swipe_overlay"
-    >
+    android:background="@color/play_dms_vertical_swipe_overlay">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_content"
@@ -14,8 +13,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        >
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_arrow"
@@ -27,8 +25,7 @@
             app:layout_constraintBottom_toTopOf="@id/tv_desc"
             app:srcCompat="@drawable/ic_vertical_swipe_arrow"
             app:layout_constraintVertical_chainStyle="packed"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            />
+            app:layout_constraintHorizontal_chainStyle="packed" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_hand"
@@ -38,8 +35,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="@id/img_arrow"
             app:srcCompat="@drawable/ic_vertical_swipe_hand"
-            android:translationX="-6dp"
-            />
+            android:translationX="-6dp" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_desc"
@@ -47,14 +43,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
             android:text="@string/play_check_next_video"
-            android:textColor="@color/Unify_NN0_96"
+            android:textColor="@color/Unify_NN0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/img_arrow"
             app:typographyType="heading_3"
-            app:typographyWeight="bold"
-            />
+            app:typographyWeight="bold" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

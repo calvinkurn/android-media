@@ -59,7 +59,6 @@ class CartGroupViewHolder(
         renderFreeShipping(cartGroupHolderData)
         renderEstimatedTimeArrival(cartGroupHolderData)
         renderMaximumWeight(cartGroupHolderData)
-        renderAddOnInfo(cartGroupHolderData)
     }
 
     private fun renderIconPin(cartGroupHolderData: CartGroupHolderData) {
@@ -375,31 +374,6 @@ class CartGroupViewHolder(
             with(binding) {
                 tickerWarning.gone()
             }
-        }
-    }
-
-    private fun renderAddOnInfo(cartGroupHolderData: CartGroupHolderData) {
-        if (cartGroupHolderData.addOnText.isNotEmpty()) {
-            binding.addonInfoWidgetLayout.root.visible()
-            binding.addonInfoWidgetLayout.descAddonInfo.text = cartGroupHolderData.addOnText
-            binding.addonInfoWidgetLayout.ivAddonLeft.loadImage(cartGroupHolderData.addOnImgUrl)
-            binding.addonInfoWidgetLayout.root.setOnClickListener {
-                if (cartGroupHolderData.addOnType == CartGroupHolderData.ADD_ON_GIFTING) {
-                    actionListener.onClickAddOnCart(
-                        cartGroupHolderData.productUiModelList.firstOrNull()?.productId ?: "",
-                        cartGroupHolderData.addOnId
-                    )
-                } else if (cartGroupHolderData.addOnType == CartGroupHolderData.ADD_ON_EPHARMACY) {
-                    actionListener.onClickEpharmacyInfoCart(cartGroupHolderData.enablerLabel, cartGroupHolderData.shop.shopId, cartGroupHolderData.productUiModelList)
-                }
-            }
-            if (cartGroupHolderData.addOnType == CartGroupHolderData.ADD_ON_GIFTING) {
-                actionListener.addOnImpression(
-                    cartGroupHolderData.productUiModelList.firstOrNull()?.productId ?: ""
-                )
-            }
-        } else {
-            binding.addonInfoWidgetLayout.root.gone()
         }
     }
 

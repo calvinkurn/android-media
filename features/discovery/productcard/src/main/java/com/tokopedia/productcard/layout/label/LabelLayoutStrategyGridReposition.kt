@@ -77,8 +77,7 @@ internal class LabelLayoutStrategyGridReposition : LabelLayoutStrategy {
             && productCardModel.isShowLabelBestSeller()
 
         return if (hasLabelBestSeller)
-            context.resources.getDimensionPixelSize(R.dimen.product_card_label_best_seller_height) +
-                context.resources.getDimensionPixelSize(R.dimen.product_card_label_best_seller_margintop)
+            context.resources.getDimensionPixelSize(R.dimen.product_card_label_best_seller_height)
         else 0
     }
 
@@ -90,7 +89,7 @@ internal class LabelLayoutStrategyGridReposition : LabelLayoutStrategy {
             && productCardModel.isShowLabelBestSeller()
 
         return if (hasLabelBestSeller)
-            context.resources.getDimensionPixelSize(R.dimen.product_card_content_margin_top)
+            0
         else context.resources.getDimensionPixelSize(R.dimen.product_card_content_margin)
     }
 
