@@ -104,4 +104,5 @@
     <string name="buyer_order_detail_pof_error_request">Ada gangguan yang perlu kami bereskan. Coba lagi nanti, ya.</string>
     <string name="buyer_order_detail_pof_success_message">Pesananmu akan dikirim sebagian dan akan ada dana yang dikembalikan setelah pesanan selesai.</string>
 
+    <string name="bom_error_message_cant_open_snapshot_when_waiting_invoice">Oops, halaman detail produk belum bisa di akses karena sedang menunggu invoice</string>
 </resources>

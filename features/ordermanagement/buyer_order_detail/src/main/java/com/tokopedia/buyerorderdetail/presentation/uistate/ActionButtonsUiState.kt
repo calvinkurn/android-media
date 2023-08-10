@@ -1,7 +1,5 @@
 package com.tokopedia.buyerorderdetail.presentation.uistate
 
-import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
-
 sealed interface ActionButtonsUiState {
     object Loading : ActionButtonsUiState
 

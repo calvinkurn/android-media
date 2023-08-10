@@ -356,25 +356,11 @@ class SomGetOrderDetailUseCase @Inject constructor(
                     id
                     order_detail_id
                     name
-                    product_url
-                    snapshot_url
-                    currency_type
-                    currency_rate
                     thumbnail
                     price
                     price_text
-                    weight
-                    weight_text
                     quantity
                     note
-                    free_return
-                    free_return_message
-                    purchase_protection_fee
-                    purchase_protection_fee_text
-                    purchase_protection_quantity
-                    readiness_insurance_fee
-                    readiness_insurance_fee_text
-                    readiness_insurance_quantity
                     addon_summary {
                       addons {
                         order_id

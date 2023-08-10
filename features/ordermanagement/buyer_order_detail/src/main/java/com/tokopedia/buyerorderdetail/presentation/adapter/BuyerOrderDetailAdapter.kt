@@ -93,6 +93,7 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         addProductListHeaderSection(context, productListUiModel.productListHeaderUiModel)
         addTickerDetailsSection(context, productListUiModel.tickerInfo)
         addPofHeaderSection(context, productListUiModel.productFulfilledHeaderLabel)
+        addProductBmgmListSection(productListUiModel.productBmgmList)
         addProductBundlingListSection(productListUiModel.productBundlingList)
         addProductListSection(context, productListUiModel.productList)
         addAddonsListSection(productListUiModel.addonsListUiModel)
@@ -262,6 +263,12 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         courierInfoUiModel: ShipmentInfoUiModel.CourierInfoUiModel
     ) {
         if (courierInfoUiModel.shouldShow(context)) add(courierInfoUiModel)
+    }
+
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addProductBmgmListSection(
+        productBmgmList: List<ProductListUiModel.ProductBmgmUiModel>
+    ) {
+        addAll(productBmgmList)
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addProductBundlingListSection(

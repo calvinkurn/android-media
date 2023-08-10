@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.AddonsViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.AwbInfoViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.BuyerBmgmSectionViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CopyableKeyValueViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierDriverInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierInfoViewHolder
@@ -62,6 +63,7 @@ open class BuyerOrderDetailTypeFactory(
     private val courierInfoViewHolderListener: CourierInfoViewHolder.CourierInfoViewHolderListener,
     private val productListToggleListener: ProductListToggleViewHolder.Listener,
     private val pofRefundInfoListener: PofRefundInfoViewHolder.Listener,
+    private val bmgmListener: BuyerBmgmSectionViewHolder.Listener,
     protected val productViewListener: PartialProductItemViewHolder.ProductViewListener,
     protected val navigator: BuyerOrderDetailNavigator,
     protected val buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener,
@@ -112,6 +114,7 @@ open class BuyerOrderDetailTypeFactory(
             ProductListToggleViewHolder.LAYOUT -> ProductListToggleViewHolder(parent, productListToggleListener)
             PofHeaderLabelViewHolder.LAYOUT -> PofHeaderLabelViewHolder(parent)
             PofRefundInfoViewHolder.LAYOUT -> PofRefundInfoViewHolder(parent, pofRefundInfoListener)
+            BuyerBmgmSectionViewHolder.LAYOUT -> BuyerBmgmSectionViewHolder(parent, bmgmListener)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -220,5 +223,9 @@ open class BuyerOrderDetailTypeFactory(
 
     fun type(pofRefundInfoUiModel: PofRefundInfoUiModel): Int {
         return PofRefundInfoViewHolder.LAYOUT
+    }
+
+    fun type(productBmgmUiModel: ProductListUiModel.ProductBmgmUiModel): Int {
+        return BuyerBmgmSectionViewHolder.LAYOUT
     }
 }

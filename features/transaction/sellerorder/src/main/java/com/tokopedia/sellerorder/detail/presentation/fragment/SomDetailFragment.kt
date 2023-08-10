@@ -48,7 +48,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.order_management_common.presentation.uimodel.BaseProductBmgmSectionUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickCtaActionInOrderDetail
@@ -996,7 +996,7 @@ open class SomDetailFragment :
         SomAnalytics.sendClickOnResolutionWidgetEvent(userSession.userId)
     }
 
-    override fun onBmgmItemClicked(uiModel: BaseProductBmgmSectionUiModel.ProductUiModel) {
+    override fun onBmgmItemClicked(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
         onClickProduct(uiModel.orderDetailId.toLongOrZero())
     }
 

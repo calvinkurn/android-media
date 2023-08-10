@@ -13,12 +13,12 @@ import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailCommonInt
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailIntentCode
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 import com.tokopedia.buyerorderdetail.common.constants.BuyerRequestCancellationIntentParamKey
-import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PaymentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.tokochat_common.view.customview.bottomsheet.MaskingPhoneNumberBottomSheet
 import java.net.URLDecoder
 

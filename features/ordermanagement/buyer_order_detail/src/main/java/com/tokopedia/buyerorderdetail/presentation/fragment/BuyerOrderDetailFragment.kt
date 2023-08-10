@@ -34,6 +34,7 @@ import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
 import com.tokopedia.buyerorderdetail.presentation.activity.BuyerOrderDetailActivity
 import com.tokopedia.buyerorderdetail.presentation.adapter.BuyerOrderDetailAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.BuyerBmgmSectionViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRecommendationViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderResolutionViewHolder
@@ -50,7 +51,6 @@ import com.tokopedia.buyerorderdetail.presentation.bottomsheet.PofEstimateRefund
 import com.tokopedia.buyerorderdetail.presentation.coachmark.CoachMarkManager
 import com.tokopedia.buyerorderdetail.presentation.dialog.RequestCancelResultDialog
 import com.tokopedia.buyerorderdetail.presentation.helper.BuyerOrderDetailStickyActionButtonHandler
-import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.EstimateInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
 import com.tokopedia.buyerorderdetail.presentation.model.PofRefundSummaryUiModel
@@ -71,6 +71,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -94,7 +96,8 @@ open class BuyerOrderDetailFragment :
     PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener,
     OrderResolutionViewHolder.OrderResolutionListener,
     ProductListToggleViewHolder.Listener,
-    PofRefundInfoViewHolder.Listener {
+    PofRefundInfoViewHolder.Listener,
+    BuyerBmgmSectionViewHolder.Listener {
 
     companion object {
         @JvmStatic
@@ -140,6 +143,7 @@ open class BuyerOrderDetailFragment :
             this,
             this,
             digitalRecommendationData,
+            this,
             this,
             this,
             this,
@@ -834,5 +838,9 @@ open class BuyerOrderDetailFragment :
         val bottomSheet =
             PofDetailRefundedBottomSheet.newInstance(cacheManager?.id.orEmpty())
         bottomSheet.show(childFragmentManager)
+    }
+
+    override fun onBmgmItemClicked(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
+        navigator.goToProductSnapshotPage(uiModel.orderId, uiModel.orderDetailId)
     }
 }

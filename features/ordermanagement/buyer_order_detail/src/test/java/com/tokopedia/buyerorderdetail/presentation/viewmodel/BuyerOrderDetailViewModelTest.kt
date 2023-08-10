@@ -4,7 +4,6 @@ import com.tokopedia.buyerorderdetail.domain.models.FinishOrderParams
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataParams
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import com.tokopedia.buyerorderdetail.presentation.mapper.EpharmacyInfoUiStateMapper
-import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
@@ -12,13 +11,13 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiSta
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
 import org.junit.Assert.assertEquals

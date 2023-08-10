@@ -21,9 +21,10 @@ object SomGetOrderDetailResponseMapper {
 
     private fun getBmgmList(
         bmgms: List<SomDetailOrder.Data.GetSomDetail.Bmgm>?,
+        orderId: String,
         bmgmIconUrl: String,
         addOnLabel: String,
-        addOnIcon: String
+        addOnIcon: String,
     ): List<SomBmgmUiModel> {
         return bmgms?.map { bmgm ->
             SomBmgmUiModel(
@@ -35,20 +36,17 @@ object SomGetOrderDetailResponseMapper {
                 totalPriceReductionInfoText = bmgm.tierDiscountAmountFormatted,
                 bmgmItemList = bmgm.orderDetail.map {
                     ProductBmgmSectionUiModel.ProductUiModel(
-                        //todo will updated later
-                        orderId = "",
+                        orderId = orderId,
                         orderDetailId = it.orderDtlId,
                         productId = it.productId,
                         productName = it.productName,
-                        productPrice = it.productPrice,
-                        productPriceTotal = it.productPriceTotal,
-                        quantity = it.productQty,
-                        productSkuId = it.productSkuId,
-                        productWeight = it.productWeight,
-                        productNotes = it.productNotes,
-                        productCashbackLabel = it.productCashbackLabel,
-                        productThumbnailUrl = it.productSnapshotUrl,
-                        totalPriceText = it.totalPriceStr,
+                        price = it.price,
+                        productPriceText = it.priceText,
+                        quantity = it.quantity,
+                        productNote = it.notes,
+                        categoryId = it.categoryId,
+                        category = it.category,
+                        thumbnailUrl = it.thumbnail,
                         addOnSummaryUiModel = com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel(
                             totalPriceText = it.addonSummary.totalPriceStr,
                             addonsLogoUrl = addOnIcon,
@@ -69,7 +67,6 @@ object SomGetOrderDetailResponseMapper {
                                 )
                             },
                         ),
-                        totalQty = it.totalQty,
                     )
                 }
             )
@@ -116,11 +113,12 @@ object SomGetOrderDetailResponseMapper {
 
     private fun MutableList<Visitable<SomDetailAdapterFactory>>.includeProductBmgms(
         bmgms: List<SomDetailOrder.Data.GetSomDetail.Bmgm>?,
+        orderId: String,
         bmgmIcon: String,
         addonIcon: String,
         addonLabel: String
     ) {
-        addAll(getBmgmList(bmgms, bmgmIcon, addonIcon, addonLabel))
+        addAll(getBmgmList(bmgms, orderId, bmgmIcon, addonIcon, addonLabel))
     }
 
     private fun MutableList<Visitable<SomDetailAdapterFactory>>.includeProductBundles(
@@ -220,7 +218,7 @@ object SomGetOrderDetailResponseMapper {
 
     private fun SomDetailOrder.Data.GetSomDetail.mapToProductsUiModel(): List<Visitable<SomDetailAdapterFactory>> {
         return mutableListOf<Visitable<SomDetailAdapterFactory>>().apply {
-            includeProductBmgms(details.bmgms, details.bmgmIcon, details.addOnIcon, details.addOnLabel)
+            includeProductBmgms(details.bmgms, orderId, details.bmgmIcon, details.addOnIcon, details.addOnLabel)
             includeProductBundles(details.bundle, details.bundleIcon)
             includeProductNonBundles(details.nonBundle, addOnInfo, details.addOnIcon, details.addOnLabel)
         }

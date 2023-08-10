@@ -172,38 +172,24 @@ data class SomDetailOrder(
                 val tierDiscountAmountFormatted: String = ""
             ) {
                 data class OrderDetail(
-                    @SerializedName("addon_summary")
-                    val addonSummary: AddOnSummary = AddOnSummary(),
-                    @SerializedName("is_ppp")
-                    val isPpp: Boolean = false,
-                    @SerializedName("order_dtl_id")
+                    @SerializedName("id")
+                    val id: String = "0",
+                    @SerializedName("order_detail_id")
                     val orderDtlId: String = "0",
-                    @SerializedName("product_cashback_label")
-                    val productCashbackLabel: String = "",
-                    @SerializedName("product_id")
-                    val productId: Long = 0,
-                    @SerializedName("product_name")
+                    @SerializedName("name")
                     val productName: String = "",
-                    @SerializedName("product_notes")
-                    val productNotes: String = "",
-                    @SerializedName("product_price")
-                    val productPrice: String = "",
-                    @SerializedName("product_price_total")
-                    val productPriceTotal: String = "",
-                    @SerializedName("product_qty")
-                    val productQty: Int = 0,
-                    @SerializedName("product_sku_id")
-                    val productSkuId: String = "",
-                    @SerializedName("product_snapshot_url")
-                    val productSnapshotUrl: String = "",
-                    @SerializedName("product_weight")
-                    val productWeight: String = "",
-                    @SerializedName("total_price")
-                    val totalPrice: Double = 0.0,
-                    @SerializedName("total_price_str")
-                    val totalPriceStr: String = "",
-                    @SerializedName("total_quantity")
-                    val totalQty: Int = 0
+                    @SerializedName("thumbnail")
+                    val thumbnail: String = "",
+                    @SerializedName("price")
+                    val price: Double = 0.0,
+                    @SerializedName("price_text")
+                    val priceText: String = "",
+                    @SerializedName("quantity")
+                    val quantity: Int = 0,
+                    @SerializedName("note")
+                    val note: String = "",
+                    @SerializedName("addon_summary")
+                    val addonSummary: AddOnSummary = AddOnSummary()
                 )
             }
 

@@ -28,7 +28,6 @@ import com.tokopedia.buyerorderdetail.presentation.mapper.PGRecommendationWidget
 import com.tokopedia.buyerorderdetail.presentation.mapper.PaymentInfoUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.ProductListUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.ShipmentInfoUiStateMapper
-import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.EpharmacyInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
@@ -46,6 +45,7 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.ShipmentInfoUiState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
