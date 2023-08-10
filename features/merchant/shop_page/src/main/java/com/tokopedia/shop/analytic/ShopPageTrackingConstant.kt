@@ -134,6 +134,7 @@ object ShopPageTrackingConstant {
     const val CLICK_PRODUCT_SHOP_DECOR = "click product - shop decor"
     const val PACKAGE_VARIANT = "package variant"
     const val CLICK_SHARE_CHIPS = "click - share contextual chip"
+    const val VIEW_SHARE_CHIPS = "view - share contextual chip"
 
 
     // label
@@ -362,6 +363,7 @@ object ShopPageTrackingConstant {
     const val TRACKER_ID_CLICK_SHARE_OPTION_SHOP_ETALASE = "45701"
     const val TRACKER_ID_IMPRESSION_UNIVERSAL_SHARE_IN_SHOP_ETALASE = "45702"
     const val TRACKER_ID_CLICK_CHIPS_TAB_SHOP_PAGE = "45135"
+    const val TRACKER_ID_SHOW_CHIPS_TAB_SHOP_PAGE = "45134"
 
     // dimension83
     const val BOE = "BoE"

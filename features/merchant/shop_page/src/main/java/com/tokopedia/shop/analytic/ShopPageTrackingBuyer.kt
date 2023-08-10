@@ -1630,4 +1630,23 @@ class ShopPageTrackingBuyer(
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
     }
+
+    fun showChipsInUniversalSharingBottomSheet(
+        chips: String,
+        shopId: String,
+        userId: String
+    ) {
+        val eventMap: MutableMap<String, Any> = mutableMapOf(
+            ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.VIEW_COMMUNICATION_IRIS,
+            ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.VIEW_SHARE_CHIPS,
+            ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE,
+            ShopPageTrackingConstant.EVENT_LABEL to "$shopId - $chips",
+            ShopPageTrackingConstant.TRACKER_ID to ShopPageTrackingConstant.TRACKER_ID_SHOW_CHIPS_TAB_SHOP_PAGE,
+            ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.SHARING_EXPERIENCE,
+            ShopPageTrackingConstant.CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+            ShopPageTrackingConstant.SHOP_ID to shopId,
+            ShopPageTrackingConstant.USER_ID to userId.ifEmpty { "0" }
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
+    }
 }

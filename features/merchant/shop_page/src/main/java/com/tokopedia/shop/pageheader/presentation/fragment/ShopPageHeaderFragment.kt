@@ -3640,6 +3640,7 @@ class ShopPageHeaderFragment :
 
                 }
             )
+            shopPageTracking?.showChipsInUniversalSharingBottomSheet(chips.joinToString("-"),shopId,userId)
 
             val targetIndex = Int.ZERO
             chips.swap(tabLayout?.selectedTabPosition.orZero(), targetIndex)
