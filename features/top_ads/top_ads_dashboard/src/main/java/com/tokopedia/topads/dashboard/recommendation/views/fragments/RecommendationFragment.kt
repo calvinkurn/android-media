@@ -17,6 +17,7 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -175,10 +176,7 @@ class RecommendationFragment : BaseDaggerFragment() {
         }
 
         potentialProductCard?.setOnClickListener {
-            RouteManager.route(
-                activity,
-                "tokopedia://webview?url=https://ta.tokopedia.com/v2/manage/recommendation/eligible-product"
-            )
+            RouteManager.route(activity, ApplinkConstInternalTopAds.TOPADS_PRODUCT_RECOMMENDATION)
         }
     }
 
