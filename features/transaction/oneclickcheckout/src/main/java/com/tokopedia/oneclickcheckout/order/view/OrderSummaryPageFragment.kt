@@ -379,25 +379,26 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 val listProducts = adapter.products
                 for (index in listProducts.indices) {
                     if (listProducts[index].cartId == cartId) {
-                        val addonProduct = listProducts[index].addOnsProductData
-                        addOnProductDataResult.aggregatedData.selectedAddons.forEach { addOnUiModel ->
-                            addonProduct.data.forEach { addonExisting ->
-                                if (addOnUiModel.addOnType == addonExisting.type) {
-                                    addonExisting.apply {
+                        listProducts[index].addOnsProductData.data.forEach { addOnExisting ->
+                            for (addOnUiModel in addOnProductDataResult.aggregatedData.selectedAddons) {
+                                // value 0 from selectedAddons means no changes
+                                if (addOnUiModel.addOnType == addOnExisting.type) {
+                                    addOnExisting.apply {
                                         id = addOnUiModel.id
                                         uniqueId = addOnUiModel.uniqueId
                                         price = addOnUiModel.price
                                         infoLink = addOnUiModel.eduLink
                                         name = addOnUiModel.name
-                                        status = addOnUiModel.getSelectedStatus().value
+                                        status = addOnUiModel.getSaveAddonSelectedStatus().value
                                         type = addOnUiModel.addOnType
+                                        productQuantity = listProducts[index].orderQuantity
                                     }
                                 }
                             }
                         }
+                        adapter.notifyItemChanged(adapter.getAddOnProductServiceIndex(cartId))
                     }
                 }
-                adapter.notifyItemChanged(adapter.getAddOnProductServiceIndex(cartId))
                 viewModel.calculateTotal()
             } else {
                 view?.let { v ->
@@ -717,7 +718,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
     private fun openShippingDurationBottomsheet(data: OrderShippingDuration) {
         activity?.let {
-            ShippingDurationBottomsheet().show(
+            ShippingDurationBottomsheet.show(
                 activity = it,
                 fragmentManager = parentFragmentManager,
                 shipmentDetailData = data.shipmentDetailData,
@@ -1616,7 +1617,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toString().removeSingleDecimalSuffix()
                 )
             )
-            println("++ applink = " + applink)
 
             activity?.let {
                 val intent = RouteManager.getIntent(it, applink)
@@ -1671,8 +1671,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
                 orderSummaryAnalytics.eventChangeCourierOSP(shipment.getRealShipperId().toString())
                 activity?.let {
-                    ShippingCourierBottomsheet().show(
-                        it,
+                    ShippingCourierBottomsheet.show(
                         parentFragmentManager,
                         object : ShippingCourierBottomsheetListener {
                             override fun onCourierChoosen(

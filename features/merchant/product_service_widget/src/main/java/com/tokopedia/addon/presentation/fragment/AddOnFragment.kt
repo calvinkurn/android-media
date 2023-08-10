@@ -10,6 +10,7 @@ import com.tokopedia.addon.di.DaggerAddOnComponent
 import com.tokopedia.addon.presentation.listener.AddOnComponentListener
 import com.tokopedia.addon.presentation.uimodel.AddOnExtraConstant
 import com.tokopedia.addon.presentation.uimodel.AddOnGroupUIModel
+import com.tokopedia.addon.presentation.uimodel.AddOnMapper
 import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.addon.presentation.uimodel.AddOnParam
 import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
@@ -113,9 +114,15 @@ class AddOnFragment : BaseDaggerFragment(), AddOnComponentListener {
         changedAddonSelections: List<AddOnUIModel>,
         addonGroups: List<AddOnGroupUIModel>
     ) {
+
+        val addOnTypes = AddOnMapper.getSelectedAddonsTypes(addonGroups)
         tempChangedAddons = changedAddonSelections
         binding?.btnSave?.isLoading = false
-        binding?.addonWidget?.getAddOnAggregatedData(selectedAddonIds)
+        binding?.addonWidget?.getAddOnAggregatedData(
+            selectedAddonIds,
+            addOnTypes,
+            addOnWidgetParam ?: AddOnParam()
+        )
     }
 
     override fun onSaveAddonLoading() {

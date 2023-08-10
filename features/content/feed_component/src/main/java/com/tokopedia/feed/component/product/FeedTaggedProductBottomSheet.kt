@@ -138,7 +138,8 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         viewModelFactory: ViewModelProvider.Factory,
         manager: FragmentManager,
         tag: String,
-        products: List<FeedTaggedProductUiModel> = emptyList()
+        products: List<FeedTaggedProductUiModel> = emptyList(),
+        sourceType: FeedTaggedProductUiModel.SourceType
     ) {
         this.isFirst = true
         this.activityId = activityId
@@ -146,8 +147,7 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
             viewModelOwner,
             viewModelFactory
         )[FeedTaggedProductViewModel::class.java]
-        viewModel?.fetchFeedProduct(activityId, products)
-
+        viewModel?.fetchFeedProduct(activityId, products, sourceType)
         show(manager, tag)
     }
 

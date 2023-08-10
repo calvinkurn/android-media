@@ -2,8 +2,8 @@ package com.tokopedia.product.detail.postatc.view.component.productinfo
 
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.product.detail.postatc.base.BaseCallbackImpl
 import com.tokopedia.product.detail.postatc.base.ComponentTrackData
+import com.tokopedia.product.detail.postatc.base.PostAtcBottomSheetDelegate
 import com.tokopedia.product.detail.postatc.tracker.PostAtcTracking
 import com.tokopedia.product.detail.postatc.view.PostAtcBottomSheet
 
@@ -14,15 +14,14 @@ interface ProductInfoCallback {
 
 class ProductInfoCallbackImpl(
     fragment: PostAtcBottomSheet
-) : BaseCallbackImpl(fragment), ProductInfoCallback {
+) : ProductInfoCallback, PostAtcBottomSheetDelegate by fragment {
     override fun onClickLihatKeranjang(
         cartId: String,
         componentTrackData: ComponentTrackData
     ) {
-        val fragment = fragment ?: return
         PostAtcTracking.sendClickLihatKeranjang(
-            fragment.userSession.userId,
-            fragment.viewModel.postAtcInfo,
+            userSession.userId,
+            viewModel.postAtcInfo,
             componentTrackData
         )
 
@@ -30,10 +29,10 @@ class ProductInfoCallbackImpl(
     }
 
     override fun goToCart(cartId: String) {
-        val fragment = fragment ?: return
-        val intent = RouteManager.getIntent(fragment.context, ApplinkConst.CART)
+        val context = getContext() ?: return
+        val intent = RouteManager.getIntent(context, ApplinkConst.CART)
         intent.putExtra("cart_id", cartId)
-        fragment.startActivity(intent)
-        fragment.dismissAllowingStateLoss()
+        startActivity(intent)
+        dismissAllowingStateLoss()
     }
 }

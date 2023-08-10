@@ -6,6 +6,8 @@ import com.tokopedia.addon.domain.model.Addon
 import com.tokopedia.addon.domain.model.GetAddOnByProduct
 import com.tokopedia.addon.domain.model.GetAddOnByProductResponse
 import com.tokopedia.addon.presentation.uimodel.AddOnGroupUIModel
+import com.tokopedia.addon.presentation.uimodel.AddOnParam
+import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
 import com.tokopedia.gifting.domain.model.GetAddOnResponse
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.network.exception.MessageErrorException
@@ -41,7 +43,7 @@ class AddOnViewModelTest: AddOnViewModelTestFixture() {
         )
 
         // When
-        viewModel.getAddOn("", "", false, false)
+        viewModel.getAddOn(AddOnParam(), false)
         val getAddOnResult = viewModel.getAddOnResult.getOrAwaitValue()
 
         // Then
@@ -57,7 +59,7 @@ class AddOnViewModelTest: AddOnViewModelTestFixture() {
         } throws MessageErrorException(errorMessage)
 
         // When
-        viewModel.getAddOn("", "", false, false)
+        viewModel.getAddOn(AddOnParam(), false)
         val errorThrowable = viewModel.errorThrowable.getOrAwaitValue()
 
         // Then
@@ -72,7 +74,7 @@ class AddOnViewModelTest: AddOnViewModelTestFixture() {
         } returns GetAddOnResponse()
 
         // When
-        viewModel.getAddOnAggregatedData(listOf("123"))
+        viewModel.getAddOnAggregatedData(listOf("123"), listOf(), AddOnParam())
         val result = viewModel.aggregatedData.getOrAwaitValue()
 
         // Then
@@ -88,7 +90,7 @@ class AddOnViewModelTest: AddOnViewModelTestFixture() {
         } throws MessageErrorException(errorMessage)
 
         // When
-        viewModel.getAddOnAggregatedData(listOf("123"))
+        viewModel.getAddOnAggregatedData(listOf("123"), listOf(), AddOnParam())
         val result = viewModel.aggregatedData.getOrAwaitValue()
 
         // Then
@@ -152,7 +154,13 @@ class AddOnViewModelTest: AddOnViewModelTestFixture() {
             }
         }
         viewModel.setSelectedAddons(
-            listOf(AddOnGroupUIModel())
+            listOf(AddOnGroupUIModel(
+                addon = listOf(
+                    AddOnUIModel(
+                        isSelected = true
+                    )
+                )
+            ))
         )
         viewModel.modifiedAddOnGroups.getOrAwaitValue()
     }

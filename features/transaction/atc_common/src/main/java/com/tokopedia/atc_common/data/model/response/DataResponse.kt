@@ -69,7 +69,7 @@ data class DataResponse(
     val isFulfillment: Boolean = false
 ) {
     data class AddOnsProduct(
-        @SerializedName("addon_id")
+        @SerializedName("id")
         @Expose
         val addOnId: String = "",
 

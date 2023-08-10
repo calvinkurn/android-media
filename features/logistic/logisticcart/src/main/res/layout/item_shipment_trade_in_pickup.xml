@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_trade_in_shipping_info"
+    android:paddingHorizontal="12dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp">
+    android:layout_height="match_parent" >
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_trade_in_shipping_price_title"

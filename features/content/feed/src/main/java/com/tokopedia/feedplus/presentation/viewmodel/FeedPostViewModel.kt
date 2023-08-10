@@ -14,11 +14,13 @@ import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateAtcSource
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.content.common.comment.usecase.GetCountCommentsUseCase
+import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.report_content.model.UserReportOptions
+import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
+import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.usecase.GetUserReportListUseCase
 import com.tokopedia.content.common.usecase.PostUserReportUseCase
-import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
 import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.createpost.common.domain.entity.SubmitPostData
@@ -106,6 +108,7 @@ class FeedPostViewModel @Inject constructor(
     private val affiliateCookieHelper: AffiliateCookieHelper,
     private val trackVisitChannelUseCase: TrackVisitChannelBroadcasterUseCase,
     private val trackReportTrackViewerUseCase: BroadcasterReportTrackViewerUseCase,
+    private val submitReportUseCase: FeedComplaintSubmitReportUseCase,
     private val getReportUseCase: GetUserReportListUseCase,
     private val postReportUseCase: PostUserReportUseCase,
     private val uiEventManager: UiEventManager<FeedPostEvent>,
@@ -149,13 +152,14 @@ class FeedPostViewModel @Inject constructor(
         get() = uiEventManager.event
 
     private val _userReport = MutableLiveData<Result<List<PlayUserReportReasoningUiModel>>>()
-    val userReportList get() =
-        _userReport.value ?: Success(emptyList())
+    val userReportList
+        get() =
+            _userReport.value ?: Success(emptyList())
 
     private val _selectedReport = MutableLiveData<PlayUserReportReasoningUiModel.Reasoning>()
     val selectedReport get() = _selectedReport.value
     private val _isReported = MutableLiveData<Result<Unit>>()
-    val isReported : LiveData<Result<Unit>> get() = _isReported
+    val isReported: LiveData<Result<Unit>> get() = _isReported
 
     fun fetchFeedPosts(
         source: String,
@@ -363,9 +367,8 @@ class FeedPostViewModel @Inject constructor(
 
                     val defaultTopAdsUrlParams: MutableMap<String, Any> = getTopAdsParams()
                     val topAdsAddressData = topAdsAddressHelper.getAddressData()
-                    val indexToRemove = mutableListOf<Int>()
 
-                    val newItems = it.data.items.mapIndexed { index, item ->
+                    val newItems = it.data.items.mapNotNull { item ->
                         when {
                             item is FeedCardImageContentModel && item.isTopAds && !item.isFetched -> {
                                 val topAdsDeferred = async {
@@ -383,19 +386,13 @@ class FeedPostViewModel @Inject constructor(
                                         transformCpmToFeedTopAds(item, cpmModel)
                                     } else {
                                         // Error fetch TopAds, should remove the view
-                                        indexToRemove.add(index)
-                                        item.copy(isFetched = true)
+                                        null
                                     }
                                 }
                                 topAdsDeferred.await()
                             }
                             else -> item
                         }
-                    }.toMutableList()
-
-                    indexToRemove.forEach { indexNumber ->
-                        if (newItems.size <= indexNumber) return@forEach
-                        newItems.removeAt(indexNumber)
                     }
 
                     _feedHome.value = Success(
@@ -870,11 +867,11 @@ class FeedPostViewModel @Inject constructor(
                     reasoningId = reasoning.id,
                     title = reasoning.value,
                     detail = reasoning.detail,
-                    submissionData = if(reasoning.additionalField.isNotEmpty()) reasoning.additionalField.first() else UserReportOptions.OptionAdditionalField()
+                    submissionData = if (reasoning.additionalField.isNotEmpty()) reasoning.additionalField.first() else UserReportOptions.OptionAdditionalField()
                 )
             }
             _userReport.value = Success(mapped)
-        }){
+        }) {
             _userReport.value = Fail(it)
         }
     }
@@ -941,6 +938,28 @@ class FeedPostViewModel @Inject constructor(
                 )
             }.executeOnBackground()
         }) {
+        }
+    }
+
+    /**
+     * Report
+     */
+    private val _reportResponse = MutableLiveData<Result<FeedComplaintSubmitReportResponse>>()
+    val reportResponse: LiveData<Result<FeedComplaintSubmitReportResponse>>
+        get() = _reportResponse
+
+    fun reportContent(feedReportRequestParamModel: FeedComplaintSubmitReportUseCase.Param) {
+        viewModelScope.launchCatchError(block = {
+            val response = withContext(dispatchers.io) {
+                submitReportUseCase(feedReportRequestParamModel)
+            }
+            if (response.data.success.not()) {
+                throw MessageErrorException("Error in Reporting")
+            } else {
+                _reportResponse.value = Success(response)
+            }
+        }) {
+            _reportResponse.value = Fail(it)
         }
     }
 

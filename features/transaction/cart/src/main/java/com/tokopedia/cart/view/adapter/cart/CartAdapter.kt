@@ -1468,7 +1468,7 @@ class CartAdapter constructor(
                             CartAddOnProductData(
                                 id = it.id,
                                 uniqueId = it.uniqueId,
-                                status = it.getSelectedStatus().value,
+                                status = it.getSaveAddonSelectedStatus().value,
                                 type = it.addOnType,
                                 price = it.price.toDouble()
                             )

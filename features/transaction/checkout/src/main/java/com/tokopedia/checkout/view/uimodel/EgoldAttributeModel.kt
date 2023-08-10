@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class EgoldAttributeModel(
+data class EgoldAttributeModel(
     var isEligible: Boolean = false,
     var isTiering: Boolean = false,
     var minEgoldRange: Int = 0,

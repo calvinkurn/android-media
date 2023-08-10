@@ -1,6 +1,7 @@
 package com.tokopedia.addon.presentation.uimodel
 
 import android.net.Uri
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.addon.presentation.uimodel.AddOnExtraConstant.CATEGORY_ID
 import com.tokopedia.addon.presentation.uimodel.AddOnExtraConstant.CONDITION
 import com.tokopedia.addon.presentation.uimodel.AddOnExtraConstant.DISCOUNTED_PRICE
@@ -27,10 +28,12 @@ object AddOnApplinkMapper {
     fun getSelectedAddonIdsFromUri(uri: Uri): List<String> {
         var selectedProductIds: List<String> = emptyList()
         try {
-            uri.getQueryParameter(SELECTED_ADDON_IDS)?.let {
+            uri.getQueryParameter(SELECTED_ADDON_IDS)?.filterNot { it.isWhitespace() }?.let {
                 if (it.isNotEmpty()) selectedProductIds = it.split(APPLINK_ARRAY_DELIMITER)
             }
-        } catch (e: Exception) { }
+        } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
+        }
         return selectedProductIds
     }
 

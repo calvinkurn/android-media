@@ -4,9 +4,10 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 data class GqlGetBankDataResponse(
-        @SerializedName("GetBankListWD")
+        @SerializedName("GetBankListWDV2")
         @Expose
         var bankAccount: GqlBankListResponse
 )
@@ -21,9 +22,13 @@ data class GqlBankListResponse(
         val message: String? = null,
         @SerializedName("data")
         @Expose
-        var bankAccountList: ArrayList<BankAccount> = arrayListOf()
+        var bankAccountList: ArrayList<BankAccount> = arrayListOf(),
+        @SerializedName("gopay_data")
+        @Expose
+        val gopayData: GopayData = GopayData()
 )
 
+@Parcelize
 data class BankAccount(
         @SerializedName("bankID")
         @Expose
@@ -96,63 +101,72 @@ data class BankAccount(
         @Expose
         var warningColor: Int = 0,
 
-        var isChecked: Boolean = false
+        @SerializedName("notes")
+        var notes: String = "",
+
+        @SerializedName("wallet_app_data")
+        var walletAppData: WalletAppData = WalletAppData(),
+
+        var isChecked: Boolean = false,
+
+        var gopayData: GopayData? = null
 ) : Parcelable {
-    constructor(parcel: Parcel) : this(
-            parcel.readLong(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readLong(),
-            parcel.readLong(),
-            parcel.readLong(),
-            parcel.readLong(),
-            parcel.readInt(),
-            parcel.readLong(),
-            parcel.readString(),
-            parcel.readInt(),
-            parcel.readString(),
-            parcel.readByte() != 0.toByte(),
-            parcel.readByte() != 0.toByte(),
-            parcel.readByte() != 0.toByte(),
-            parcel.readByte() != 0.toByte(),
-            parcel.readString(),
-            parcel.readInt(),
-            parcel.readByte() != 0.toByte()) {
+
+    fun isGopay(): Boolean {
+        return bankID == GOPAY_ID
     }
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeLong(bankID)
-        parcel.writeString(accountNo)
-        parcel.writeString(bankName)
-        parcel.writeLong(bankAccountID)
-        parcel.writeLong(minAmount)
-        parcel.writeLong(maxAmount)
-        parcel.writeLong(adminFee)
-        parcel.writeInt(status)
-        parcel.writeLong(isVerifiedAccount)
-        parcel.writeString(bankImageUrl)
-        parcel.writeInt(isDefaultBank)
-        parcel.writeString(accountName)
-        parcel.writeByte(if (isFraud) 1 else 0)
-        parcel.writeByte(if (haveRPProgram) 1 else 0)
-        parcel.writeByte(if (haveSpecialOffer) 1 else 0)
-        parcel.writeByte(if (defaultBankAccount) 1 else 0)
-        parcel.writeString(warningMessage)
-        parcel.writeInt(warningColor)
-        parcel.writeByte(if (isChecked) 1 else 0)
+    fun isGopayEligible(): Boolean {
+        return bankID == GOPAY_ID && walletAppData.message.isEmpty()
     }
 
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<BankAccount> {
-        override fun createFromParcel(parcel: Parcel): BankAccount {
-            return BankAccount(parcel)
-        }
-
-        override fun newArray(size: Int): Array<BankAccount?> {
-            return arrayOfNulls(size)
-        }
+    companion object {
+        private const val GOPAY_ID = 218L
     }
 }
+
+@Parcelize
+data class GopayData(
+    @SerializedName("limit")
+    @Expose
+    var limit: String = "",
+    @SerializedName("limit_copy_writing")
+    @Expose
+    var limitCopyWriting: String = "",
+    @SerializedName("image_url")
+    @Expose
+    var imageUrl: String = "",
+    @SerializedName("widget_note")
+    @Expose
+    var widgetNote: String = "",
+    @SerializedName("bottomsheet_data")
+    @Expose
+    var bottomsheetData: BottomsheetData = BottomsheetData()
+): Parcelable
+
+@Parcelize
+data class BottomsheetData(
+    @SerializedName("title")
+    @Expose
+    var title: String = "",
+    @SerializedName("description")
+    @Expose
+    var description: String = "",
+    @SerializedName("balance")
+    var balance: String = ""
+): Parcelable
+
+@Parcelize
+data class WalletAppData(
+    @SerializedName("message")
+    @Expose
+    var message: String = "",
+
+    @SerializedName("cta_copy_writing")
+    @Expose
+    var ctaCopyWriting: String = "",
+
+    @SerializedName("cta_link")
+    @Expose
+    var ctaLink: String = ""
+): Parcelable

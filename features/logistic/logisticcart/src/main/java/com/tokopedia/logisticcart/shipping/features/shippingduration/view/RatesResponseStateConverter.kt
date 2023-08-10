@@ -23,7 +23,7 @@ class RatesResponseStateConverter @Inject constructor() {
                         duration.isSelected = true
                     }
                 } else if (selectedServiceId != 0 && !isPromoApplied) {
-                    if (!(duration.serviceData.error != null && !(duration.serviceData.error.errorId).isNullOrBlank()) &&
+                    if (duration.serviceData.error.errorId.isEmpty() &&
                         selectedServiceId == duration.serviceData.serviceId
                     ) {
                         duration.isSelected = true

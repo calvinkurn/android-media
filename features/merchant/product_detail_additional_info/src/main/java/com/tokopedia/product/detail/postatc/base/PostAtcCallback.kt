@@ -17,10 +17,10 @@ class PostAtcCallback(
     errorCallback: ErrorCallback = ErrorCallbackImpl(fragment),
     productInfoCallback: ProductInfoCallback = ProductInfoCallbackImpl(fragment),
     recommendationCallback: RecommendationCallback = RecommendationCallbackImpl(fragment)
-) : BaseCallbackImpl(fragment),
-    AddonsCallback by addonsCallback,
+) : AddonsCallback by addonsCallback,
     ErrorCallback by errorCallback,
     ProductInfoCallback by productInfoCallback,
+    PostAtcBottomSheetDelegate by fragment,
     RecommendationCallback by recommendationCallback {
 
     fun impressComponent(componentTrackData: ComponentTrackData) {
@@ -30,11 +30,11 @@ class PostAtcCallback(
     }
 
     fun goToAppLink(appLink: String) {
-        val fragment = fragment ?: return
-        RouteManager.route(fragment.context, appLink)
+        val context = getContext() ?: return
+        RouteManager.route(context, appLink)
     }
 
     fun removeComponent(uiModelId: Int) {
-        fragment?.adapter?.removeComponent(uiModelId)
+        adapter.removeComponent(uiModelId)
     }
 }

@@ -9,6 +9,7 @@ import com.tokopedia.logisticcart.FileUtils
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
 import com.tokopedia.logisticcart.shipping.model.PreOrderModel
 import com.tokopedia.logisticcart.shipping.model.Product
+import com.tokopedia.logisticcart.shipping.model.ProductShipmentDetailModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
@@ -77,7 +78,7 @@ internal object DummyProvider {
     fun getShippingDataWithPromoAndPreOrderModel(): ShippingRecommendationData {
         val ratesData = getRatesResponseWithPromo()
         val shippingRecomData = ShippingDurationConverter().convertModel(ratesData.ratesData)
-        shippingRecomData.preOrderModel = PreOrderModel("header", "label", true)
+        shippingRecomData.productShipmentDetailModel = ProductShipmentDetailModel(preOrderModel = PreOrderModel("header", "label", true))
         return shippingRecomData
     }
 

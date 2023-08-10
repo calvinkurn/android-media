@@ -17,13 +17,13 @@ class SaveAddOnStateUseCase @Inject constructor(
     private var params: Map<String, Any>? = null
     private var isFireAndForget: Boolean = false
 
-    @GqlQuery(SaveAddOnStateFireAndForgetQuery, SaveAddOnStateUseCase.queryFireAndForget)
+    @GqlQuery(SaveAddOnStateFireAndForgetQuery, queryFireAndForget)
     fun setParams(saveAddOnStateRequest: SaveAddOnStateRequest, isFireAndForget: Boolean) {
         params = mapOf("params" to saveAddOnStateRequest)
         this.isFireAndForget = isFireAndForget
     }
 
-    @GqlQuery(SaveAddOnStateQuery, SaveAddOnStateUseCase.query)
+    @GqlQuery(SaveAddOnStateQuery, query)
     override suspend fun executeOnBackground(): SaveAddOnStateResponse {
         if (params.isNullOrEmpty()) {
             throw RuntimeException("Parameter can't be null or empty!")

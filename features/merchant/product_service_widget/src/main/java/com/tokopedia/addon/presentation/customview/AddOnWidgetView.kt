@@ -34,10 +34,13 @@ class AddOnWidgetView : BaseCustomView {
 
     @Inject
     lateinit var viewModel: AddOnViewModel
-    private var addonAdapter: AddOnAdapter = AddOnAdapter(::onAddonClickListener, ::onHelpClickListener)
+    private var addonAdapter: AddOnAdapter = AddOnAdapter(::onAddonClickListener,
+        ::onHelpClickListener, ::onItemImpressionListener)
     private var tfTitle: Typography? = null
     private var llSeeAll: LinearLayoutCompat? = null
+    private var divSeeAll: View? = null
     private var listener: AddOnComponentListener? = null
+    private var isObserverSetupDone: Boolean = false
 
     constructor(context: Context) : super(context) {
         setup(context, null)
@@ -56,16 +59,23 @@ class AddOnWidgetView : BaseCustomView {
         val lifecycleOwner = context as? LifecycleOwner ?:
             (context as? ContextThemeWrapper)?.baseContext as? LifecycleOwner
         lifecycleOwner?.run {
+            if (isObserverSetupDone) return@run
+            isObserverSetupDone = true
             viewModel.errorThrowable.observe(this) {
                 listener?.onAddonComponentError(ErrorHandler.getErrorMessage(context, it))
             }
             viewModel.getAddOnResult.observe(this) {
                 addonAdapter.setItems(it)
+                viewModel.lastSelectedAddOn = AddOnMapper.getGroupSelectedAddons(it).toMutableList()
                 viewModel.setSelectedAddons(it)
             }
             viewModel.isAddonDataEmpty.observe(this) {
                 if (it) listener?.onDataEmpty()
                 this@AddOnWidgetView.isVisible = !it
+            }
+            viewModel.shouldShowSeeAll.observe(this) {
+                llSeeAll?.isVisible = it
+                divSeeAll?.isVisible = it
             }
             viewModel.totalPrice.observe(this) {
                 listener?.onTotalPriceCalculated(it)
@@ -89,7 +99,7 @@ class AddOnWidgetView : BaseCustomView {
                                 AddOnMapper.flatmapToChangedAddonSelection(addonGroups),
                                 addonGroups
                             )
-                            viewModel.lastSelectedAddOn = addonGroups
+                            viewModel.lastSelectedAddOnGroups = addonGroups
                         } else {
                             listener?.onSaveAddonLoading()
                         }
@@ -108,6 +118,7 @@ class AddOnWidgetView : BaseCustomView {
         val rvAddons: RecyclerView = view.findViewById(R.id.rv_addons)
         tfTitle = view.findViewById(R.id.tf_widget_title)
         llSeeAll = view.findViewById(R.id.ll_see_all)
+        divSeeAll = view.findViewById(R.id.div_see_all)
         setupItems(rvAddons)
         defineCustomAttributes(attrs)
         initInjector()
@@ -117,6 +128,7 @@ class AddOnWidgetView : BaseCustomView {
     private fun setupSeeAll() {
         llSeeAll?.setOnClickListener {
             llSeeAll?.gone()
+            divSeeAll?.gone()
             viewModel.desimplifyAddonList()
         }
     }
@@ -155,13 +167,27 @@ class AddOnWidgetView : BaseCustomView {
         indexChild: Int,
         addOnGroupUIModels: List<AddOnGroupUIModel>
     ) {
+        val addonChild = addOnGroupUIModels.getOrNull(index)?.addon?.getOrNull(indexChild) ?: return
+        viewModel.lastSelectedAddOn.addOrUpdate(index, addonChild)
         listener?.onAddonComponentClick(index, indexChild, addOnGroupUIModels)
         viewModel.setSelectedAddons(addOnGroupUIModels)
     }
 
-    private fun onHelpClickListener(position: Int, addOnUIModel: AddOnUIModel) {
-        listener?.onAddonHelpClick(position, addOnUIModel)
-        RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${addOnUIModel.eduLink}")
+    private fun <E> MutableList<E>.addOrUpdate(index: Int, addonChild: E) {
+        if (getOrNull(index) == null) {
+            add(index, addonChild)
+        } else {
+            set(index, addonChild)
+        }
+    }
+
+    private fun onHelpClickListener(index: Int, indexChild: Int, addonGroups: List<AddOnGroupUIModel>, addonSelected: AddOnUIModel) {
+        listener?.onAddonHelpClick(index, indexChild, addonGroups)
+        RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${addonSelected.eduLink}")
+    }
+
+    private fun onItemImpressionListener(index: Int, indexChild: Int, addonGroups: List<AddOnGroupUIModel>) {
+        listener?.onAddOnItemImpression(index, indexChild, addonGroups)
     }
 
     fun setTitleText(text: String) {
@@ -172,16 +198,11 @@ class AddOnWidgetView : BaseCustomView {
         this.listener = listener
     }
 
-    /*
-    * Please use this function to show insurance addon data,
-    * otherwise it will not appeared, but still works for displaying installation addon data
-    */
     fun getAddonData(
         addOnParam: AddOnParam,
         isSimplified: Boolean = false
     ) {
         viewModel.getAddOn(addOnParam, isSimplified)
-        llSeeAll?.isVisible = isSimplified
     }
 
     fun setSelectedAddons(selectedAddonIds: List<String>) {
@@ -192,8 +213,12 @@ class AddOnWidgetView : BaseCustomView {
         viewModel.saveAddOnState(cartId, source)
     }
 
-    fun getAddOnAggregatedData(addOnIds: List<String>) {
-        viewModel.getAddOnAggregatedData(addOnIds)
+    fun getAddOnAggregatedData(
+        addOnIds: List<String>,
+        addOnTypes: List<String>,
+        addOnWidgetParam: AddOnParam
+    ) {
+        viewModel.getAddOnAggregatedData(addOnIds, addOnTypes, addOnWidgetParam)
     }
 
     fun setAutosaveAddon(cartId: Long, atcSource: String) {

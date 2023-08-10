@@ -18,7 +18,12 @@ import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
-fun showSummaryTransactionBottomsheet(summaryTransactionUiModel: SummaryTransactionUiModel, promoSummaryUiModel: PromoSummaryData?, fragmentManager: FragmentManager, context: Context) {
+fun showSummaryTransactionBottomsheet(
+    summaryTransactionUiModel: SummaryTransactionUiModel,
+    promoSummaryUiModel: PromoSummaryData?,
+    fragmentManager: FragmentManager,
+    context: Context
+) {
     val bottomSheet = BottomSheetUnify().apply {
         showKnob = true
         showCloseIcon = false

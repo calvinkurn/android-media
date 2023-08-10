@@ -584,9 +584,11 @@ class AtcVariantBottomSheet :
     }
 
     private fun getAtcActivity(): Activity {
-        return if (activity is AtcVariantActivity)
+        return if (activity is AtcVariantActivity) {
             context as AtcVariantActivity
-        else requireActivity()
+        } else {
+            requireActivity()
+        }
     }
 
     private fun onSuccessAtcTokoNow(successMessage: String?, cartId: String) {
@@ -645,7 +647,6 @@ class AtcVariantBottomSheet :
         postAtcLayoutId: String,
         cartData: DataModel
     ) {
-        dismiss()
         PostAtcHelper.start(
             context,
             productId,
@@ -659,6 +660,7 @@ class AtcVariantBottomSheet :
             },
             quantity = cartData.quantity
         )
+        dismiss()
     }
 
     private fun goToCheckout() {
