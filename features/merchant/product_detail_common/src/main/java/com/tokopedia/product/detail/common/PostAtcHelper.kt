@@ -8,25 +8,37 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 object PostAtcHelper {
 
     /**
-     * Copy of Param in PostAtcActivity.kt
+     * Additional Parameters for PostAtcActivity.kt
      */
-    private const val PARAM_CART_ID = "cartID"
-    private const val PARAM_LAYOUT_ID = "layoutID"
-    private const val PARAM_PAGE_SOURCE = "pageSource"
+    const val PARAM_LAYOUT_ID = "layoutID"
+    const val PARAM_CART_ID = "cartID"
+    const val PARAM_SELECTED_ADDONS_IDS = "selected_addons_ids"
+    const val PARAM_IS_FULFILLMENT = "is_fulfillment"
+    const val PARAM_PAGE_SOURCE = "pageSource"
+    const val PARAM_WAREHOUSE_ID = "warehouse_id"
+    const val PARAM_QUANTITY = "quantity"
 
     fun start(
         context: Context,
         productId: String,
-        layoutId: String = "",
         cartId: String = "",
-        pageSource: Source = Source.Default
+        isFulfillment: Boolean = false,
+        layoutId: String = "",
+        pageSource: Source = Source.Default,
+        selectedAddonsIds: List<String> = emptyList(),
+        warehouseId: String = "",
+        quantity: Int
     ) {
         val intent = getIntent(
             context,
             productId,
-            layoutId,
             cartId,
-            pageSource
+            isFulfillment,
+            layoutId,
+            pageSource,
+            selectedAddonsIds,
+            warehouseId,
+            quantity
         )
         context.startActivity(intent)
     }
@@ -34,9 +46,13 @@ object PostAtcHelper {
     fun getIntent(
         context: Context,
         productId: String,
-        layoutId: String = "",
         cartId: String = "",
-        pageSource: Source = Source.Default
+        isFulfillment: Boolean = false,
+        layoutId: String = "",
+        pageSource: Source = Source.Default,
+        selectedAddonsIds: List<String> = emptyList(),
+        warehouseId: String = "",
+        quantity: Int
     ): Intent {
         return RouteManager.getIntent(
             context,
@@ -44,8 +60,12 @@ object PostAtcHelper {
             productId
         ).apply {
             putExtra(PARAM_CART_ID, cartId)
+            putExtra(PARAM_IS_FULFILLMENT, isFulfillment)
             putExtra(PARAM_LAYOUT_ID, layoutId)
             putExtra(PARAM_PAGE_SOURCE, pageSource.name)
+            putExtra(PARAM_SELECTED_ADDONS_IDS, ArrayList(selectedAddonsIds))
+            putExtra(PARAM_WAREHOUSE_ID, warehouseId)
+            putExtra(PARAM_QUANTITY, quantity)
         }
     }
 

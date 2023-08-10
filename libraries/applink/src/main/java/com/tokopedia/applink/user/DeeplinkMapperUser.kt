@@ -1,7 +1,5 @@
 package com.tokopedia.applink.user
 
-import android.content.Context
-import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
@@ -45,9 +43,13 @@ object DeeplinkMapperUser {
     }
 
     private fun isRollenceGotoKycActivated(): Boolean {
-        return getAbTestPlatform()
-            .getString(ROLLENCE_GOTO_KYC)
-            .isNotEmpty()
+        val rollence = getAbTestPlatform()
+            .getFilteredKeyByKeyName(ROLLENCE_GOTO_KYC)
+        return if (rollence.isNotEmpty()) {
+            getAbTestPlatform().getString(ROLLENCE_GOTO_KYC).isNotEmpty()
+        } else {
+            true
+        }
     }
 
     private fun getApplinkPrivacyCenter(): String {
