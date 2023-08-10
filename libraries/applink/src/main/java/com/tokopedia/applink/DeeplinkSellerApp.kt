@@ -20,19 +20,13 @@ import com.tokopedia.applink.statistic.DeepLinkMapperStatistic
 object DeeplinkSellerApp {
     val deeplinkPatternTokopediaSchemeListv2: Map<String, MutableList<DLP>> = mapOf(
         "browser" to mutableListOf(
-            DLP.goTo(ApplinkConstInternalGlobal.BROWSER)
+            DLP.goToLink { ApplinkConstInternalGlobal.BROWSER }
         ),
         "campaign-list" to mutableListOf(
-            DLP.goTo(ApplinkConstInternalSellerapp.CAMPAIGN_LIST)
+            DLP.goToLink { ApplinkConstInternalSellerapp.CAMPAIGN_LIST }
         ),
         "centralized-promo" to mutableListOf(
-            DLP.goTo(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO)
-        ),
-        "create-voucher" to mutableListOf(
-            DLP.matchPattern("", DeeplinkMapperMerchant.getRegisteredNavigationForCreateShopVoucher())
-        ),
-        "create-voucher-product" to mutableListOf(
-            DLP.matchPattern("", DeeplinkMapperMerchant.getRegisteredNavigationForCreateVoucherProduct())
+            DLP.goToLink { ApplinkConstInternalSellerapp.CENTRALIZED_PROMO }
         ),
         "chatsettings" to mutableListOf(
             DLP.matchPattern("bubble-activation") { _, _, deeplink, _ ->
@@ -41,25 +35,39 @@ object DeeplinkSellerApp {
                 )
             }
         ),
-        "home" to mutableListOf(
-            DLP.goTo(ApplinkConstInternalSellerapp.SELLER_HOME)
+        "create-voucher" to mutableListOf(
+            DLP.matchPattern("") { _: String ->
+                DeeplinkMapperMerchant.getRegisteredNavigationForCreateShopVoucher()
+            }
+        ),
+        "create-voucher-product" to mutableListOf(
+            DLP.matchPattern("") { _: String ->
+                DeeplinkMapperMerchant.getRegisteredNavigationForCreateVoucherProduct()
+            }
         ),
         "gold-merchant-statistic-dashboard" to mutableListOf(
             DLP.matchPattern("") { _, uri, _, _ ->
                 DeepLinkMapperStatistic.getStatisticAppLink(uri)
             }
         ),
+        "home" to mutableListOf(
+            DLP.goToLink { ApplinkConstInternalSellerapp.SELLER_HOME }
+        ),
         "play-broadcaster" to mutableListOf(
-            DLP.goTo(ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
+            DLP.goToLink { ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER }
         ),
         "power_merchant" to mutableListOf(
             DLP.matchPattern("subscribe") { ctx, uri, _, _ ->
                 PowerMerchantDeepLinkMapper.getPowerMerchantAppLink(ctx, uri)
             },
-            DLP.matchPattern("benefit-package", ApplinkConstInternalMarketplace.PM_BENEFIT_PACKAGE)
+            DLP.matchPattern("benefit-package") { _: String ->
+                ApplinkConstInternalMarketplace.PM_BENEFIT_PACKAGE
+            }
         ),
         "product" to mutableListOf(
-            DLP.matchPattern("add", ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW),
+            DLP.matchPattern("add") { _: String ->
+                ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW
+            },
             DLP.matchPattern("manage") { _, _, deeplink, _ ->
                 DeepLinkMapperProductManage.getProductListInternalAppLink(
                     deeplink
@@ -67,7 +75,7 @@ object DeeplinkSellerApp {
             }
         ),
         "review-reminder" to mutableListOf(
-            DLP.goTo(ApplinkConstInternalSellerapp.REVIEW_REMINDER)
+            DLP.goToLink { ApplinkConstInternalSellerapp.REVIEW_REMINDER }
         ),
         "seller-mvc" to mutableListOf(
             DLP.matchPattern("create/{voucher_type}") { _, _, deeplink, _ ->
@@ -80,25 +88,43 @@ object DeeplinkSellerApp {
                     deeplink
                 )
             },
-            DLP.matchPattern("intro", DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcIntro()),
-            DLP.matchPattern("list", ApplinkConstInternalSellerapp.SELLER_MVC_LIST),
-            DLP.matchPattern("list/active", ApplinkConstInternalSellerapp.SELLER_MVC_LIST_ACTIVE),
-            DLP.matchPattern("list/history", ApplinkConstInternalSellerapp.SELLER_MVC_LIST_HISTORY),
-            DLP.matchPattern("list/upcoming", ApplinkConstInternalSellerapp.SELLER_MVC_LIST_UPCOMING),
-            DLP.matchPattern("list/ongoing", ApplinkConstInternalSellerapp.SELLER_MVC_LIST_ONGOING),
-            DLP.matchPattern("redirection-page", ApplinkConstInternalSellerapp.SELLER_MVC_REDIRECTION_PAGE)
+            DLP.matchPattern("intro") { _: String ->
+                DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcIntro()
+            },
+            DLP.matchPattern("list") { _: String ->
+                ApplinkConstInternalSellerapp.SELLER_MVC_LIST
+            },
+            DLP.matchPattern("list/active") { _: String ->
+                ApplinkConstInternalSellerapp.SELLER_MVC_LIST_ACTIVE
+            },
+            DLP.matchPattern("list/history") { _: String ->
+                ApplinkConstInternalSellerapp.SELLER_MVC_LIST_HISTORY
+            },
+            DLP.matchPattern("list/upcoming") { _: String ->
+                ApplinkConstInternalSellerapp.SELLER_MVC_LIST_UPCOMING
+            },
+            DLP.matchPattern("list/ongoing") { _: String ->
+                ApplinkConstInternalSellerapp.SELLER_MVC_LIST_ONGOING
+            },
+            DLP.matchPattern("redirection-page") { _: String ->
+                ApplinkConstInternalSellerapp.SELLER_MVC_REDIRECTION_PAGE
+            }
         ),
         "seller-persona" to mutableListOf(
-            DLP.goTo(ApplinkConstInternalSellerapp.SELLER_PERSONA)
+            DLP.goToLink { ApplinkConstInternalSellerapp.SELLER_PERSONA }
         ),
         "seller-search" to mutableListOf(
-            DLP.goTo(ApplinkConstInternalSellerapp.SELLER_SEARCH)
+            DLP.goToLink { ApplinkConstInternalSellerapp.SELLER_SEARCH }
         ),
         "setting" to mutableListOf(
-            DLP.matchPattern("shipping-editor", ApplinkConstInternalMarketplace.SHOP_SETTINGS_SHIPPING)
+            DLP.matchPattern("shipping-editor") { _: String ->
+                ApplinkConstInternalMarketplace.SHOP_SETTINGS_SHIPPING
+            }
         ),
         "shop" to mutableListOf(
-            DLP.matchPattern("operational-hours", ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS),
+            DLP.matchPattern("operational-hours") { _: String ->
+                ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS
+            },
             DLP.matchPattern("{shop_id}/feed") { _, _, deeplink, _ ->
                 DeeplinkMapperMerchant.getRegisteredNavigationShopFeed(
                     deeplink
@@ -116,16 +142,20 @@ object DeeplinkSellerApp {
             }
         ),
         "shop-admin" to mutableListOf(
-            DLP.matchPattern("invitation-page", ApplinkConstInternalMarketplace.ADMIN_INVITATION),
+            DLP.matchPattern("invitation-page") { _: String ->
+                ApplinkConstInternalMarketplace.ADMIN_INVITATION
+            },
             DLP.matchPattern("accepted-page") { _, uri, _, _ ->
                 ShopAdminDeepLinkMapper.getInternalAppLinkAdminAccepted(
                     uri
                 )
             },
-            DLP.matchPattern("redirection-page", ApplinkConstInternalMarketplace.ADMIN_REDIRECTION)
+            DLP.matchPattern("redirection-page") { _: String ->
+                ApplinkConstInternalMarketplace.ADMIN_REDIRECTION
+            }
         ),
         "shop-discount" to mutableListOf(
-            DLP.goTo(ApplinkConstInternalSellerapp.SHOP_DISCOUNT)
+            DLP.goToLink { ApplinkConstInternalSellerapp.SHOP_DISCOUNT }
         ),
         "shop-flash-sale" to mutableListOf(
             DLP.goTo { _, _, deeplink, _ ->
@@ -135,7 +165,7 @@ object DeeplinkSellerApp {
             }
         ),
         "shop-nib" to mutableListOf(
-            DLP.goTo(DeeplinkMapperMerchant.getRegisteredNavigationForSellerShopNib())
+            DLP.goToLink { DeeplinkMapperMerchant.getRegisteredNavigationForSellerShopNib() }
         ),
         "shop-score-detail" to mutableListOf(
             DLP.goTo { _, uri, _, _ ->
@@ -152,44 +182,90 @@ object DeeplinkSellerApp {
             }
         ),
         "tokomember" to mutableListOf(
-            DLP.matchPattern("", ApplinkConstInternalSellerapp.TOKOMEMBER),
-            DLP.matchPattern("program-list", ApplinkConstInternalSellerapp.TOKOMEMBER_PROGRAM_LIST),
-            DLP.matchPattern("coupon-list", ApplinkConstInternalSellerapp.TOKOMEMBER_COUPON_LIST),
-            DLP.matchPattern("program-creation", ApplinkConstInternalSellerapp.TOKOMEMBER_PROGRAM_CREATION),
+            DLP.matchPattern("") { _: String ->
+                ApplinkConstInternalSellerapp.TOKOMEMBER
+            },
+            DLP.matchPattern("program-list") { _: String ->
+                ApplinkConstInternalSellerapp.TOKOMEMBER_PROGRAM_LIST
+            },
+            DLP.matchPattern("coupon-list") { _: String ->
+                ApplinkConstInternalSellerapp.TOKOMEMBER_COUPON_LIST
+            },
+            DLP.matchPattern("program-creation") { _: String ->
+                ApplinkConstInternalSellerapp.TOKOMEMBER_PROGRAM_CREATION
+            },
             DLP.matchPattern("program-extension") { _, uri, deeplink, _ ->
                 val trimmedDeeplink = UriUtil.trimDeeplink(uri, deeplink)
                 val trimmedUri = Uri.parse(trimmedDeeplink)
                 DeeplinkMapperPromo.getDeeplinkForProgramExtension(trimmedUri)
             },
-            DLP.matchPattern("coupon-creation", ApplinkConstInternalSellerapp.TOKOMEMBER_COUPON_CREATION)
+            DLP.matchPattern("coupon-creation") { _: String ->
+                ApplinkConstInternalSellerapp.TOKOMEMBER_COUPON_CREATION
+            }
         ),
         "tokopedia-flash-sale" to mutableListOf(
-            DLP.matchPattern("", DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSale()),
+            DLP.matchPattern("") { _: String ->
+                DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSale()
+            },
             DLP.matchPattern("campaign-detail/{campaign_id}") { _, _, deeplink, _ ->
                 DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSaleCampaignDetail(
                     deeplink
                 )
             },
-            DLP.matchPattern("upcoming", DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSaleUpcoming()),
-            DLP.matchPattern("registered", DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSaleRegistered()),
-            DLP.matchPattern("ongoing", DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSaleOngoing()),
-            DLP.matchPattern("finished", DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSaleFinished())
+            DLP.matchPattern("upcoming") { _: String ->
+                DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSaleUpcoming()
+            },
+            DLP.matchPattern("registered") { _: String ->
+                DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSaleRegistered()
+            },
+            DLP.matchPattern("ongoing") { _: String ->
+                DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSaleOngoing()
+            },
+            DLP.matchPattern("finished") { _: String ->
+                DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSaleFinished()
+            }
 
         ),
         "topads" to mutableListOf(
-            DLP.matchPattern("", ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL),
-            DLP.matchPattern("history-credit", ApplinkConstInternalTopAds.TOPADS_HISTORY_CREDIT),
-            DLP.matchPattern("buy", ApplinkConstInternalTopAds.TOPADS_BUY_CREDIT),
-            DLP.matchPattern("add-credit", ApplinkConstInternalTopAds.TOP_ADS_ADD_CREDIT),
-            DLP.matchPattern("create-autoads", ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE),
-            DLP.matchPattern("create-ads", ApplinkConstInternalTopAds.TOPADS_CREATE_ADS),
-            DLP.matchPattern("creation-onboard", ApplinkConstInternalTopAds.TOPADS_CREATION_ONBOARD),
-            DLP.matchPattern("topads-onboarding", ApplinkConstInternalTopAds.TOPADS_ONBOARDING),
-            DLP.matchPattern("headline-ad-creation", ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_CREATION),
-            DLP.matchPattern("headline-ad-detail", ApplinkConstInternalTopAds.TOPADS_HEADLINE_DETAIL),
-            DLP.matchPattern("edit-autoads", ApplinkConstInternalTopAds.TOPADS_EDIT_AUTOADS),
-            DLP.matchPattern("auto-topup", ApplinkConstInternalTopAds.TOPADS_AUTO_TOPUP),
-            DLP.matchPattern("ad-picker", ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER)
+            DLP.matchPattern("") { _: String ->
+                ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
+            },
+            DLP.matchPattern("history-credit") { _: String ->
+                ApplinkConstInternalTopAds.TOPADS_HISTORY_CREDIT
+            },
+            DLP.matchPattern("buy") { _: String ->
+                ApplinkConstInternalTopAds.TOPADS_BUY_CREDIT
+            },
+            DLP.matchPattern("add-credit") { _: String ->
+                ApplinkConstInternalTopAds.TOP_ADS_ADD_CREDIT
+            },
+            DLP.matchPattern("create-autoads") { _: String ->
+                ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE
+            },
+            DLP.matchPattern("create-ads") { _: String ->
+                ApplinkConstInternalTopAds.TOPADS_CREATE_ADS
+            },
+            DLP.matchPattern("creation-onboard") { _: String ->
+                ApplinkConstInternalTopAds.TOPADS_CREATION_ONBOARD
+            },
+            DLP.matchPattern("topads-onboarding") { _: String ->
+                ApplinkConstInternalTopAds.TOPADS_ONBOARDING
+            },
+            DLP.matchPattern("headline-ad-creation") { _: String ->
+                ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_CREATION
+            },
+            DLP.matchPattern("headline-ad-detail") { _: String ->
+                ApplinkConstInternalTopAds.TOPADS_HEADLINE_DETAIL
+            },
+            DLP.matchPattern("edit-autoads") { _: String ->
+                ApplinkConstInternalTopAds.TOPADS_EDIT_AUTOADS
+            },
+            DLP.matchPattern("auto-topup") { _: String ->
+                ApplinkConstInternalTopAds.TOPADS_AUTO_TOPUP
+            },
+            DLP.matchPattern("ad-picker") { _: String ->
+                ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER
+            }
         ),
         "voucher-detail" to mutableListOf(
             DLP.matchPattern("") { _, _, deeplink, _ ->
@@ -199,9 +275,15 @@ object DeeplinkSellerApp {
             }
         ),
         "voucher-list" to mutableListOf(
-            DLP.matchPattern("", ApplinkConstInternalSellerapp.SELLER_MVC_REDIRECTION_PAGE),
-            DLP.matchPattern("active", ApplinkConstInternalSellerapp.SELLER_MVC_LIST_ACTIVE),
-            DLP.matchPattern("history", ApplinkConstInternalSellerapp.SELLER_MVC_LIST_HISTORY)
+            DLP.matchPattern("") { _: String ->
+                ApplinkConstInternalSellerapp.SELLER_MVC_REDIRECTION_PAGE
+            },
+            DLP.matchPattern("active") { _: String ->
+                ApplinkConstInternalSellerapp.SELLER_MVC_LIST_ACTIVE
+            },
+            DLP.matchPattern("history") { _: String ->
+                ApplinkConstInternalSellerapp.SELLER_MVC_LIST_HISTORY
+            }
         ),
         "voucher-product-list" to mutableListOf(
             DLP.matchPattern("") { _, _, deeplink, _ ->
@@ -211,10 +293,10 @@ object DeeplinkSellerApp {
             }
         ),
         "webview" to mutableListOf(
-            DLP.goTo(ApplinkConstInternalGlobal.WEBVIEW_BASE)
+            DLP.goToLink { ApplinkConstInternalGlobal.WEBVIEW_BASE }
         ),
         "welcome" to mutableListOf(
-            DLP.goTo(ApplinkConstInternalSellerapp.WELCOME)
+            DLP.goToLink { ApplinkConstInternalSellerapp.WELCOME }
         )
     )
 }
