@@ -2194,6 +2194,11 @@ internal fun <T, R> List<T>.firstOrNullInstanceOf(kClass: Class<R>): R? {
     return item as? R
 }
 
+internal fun List<CheckoutItem>.errorTicker(): CheckoutTickerErrorModel? {
+    val item = getOrNull(0)
+    return item as? CheckoutTickerErrorModel
+}
+
 internal fun List<CheckoutItem>.address(): CheckoutAddressModel? {
     val item = getOrNull(2)
     return item as? CheckoutAddressModel

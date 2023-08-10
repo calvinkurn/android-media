@@ -3,6 +3,7 @@ package com.tokopedia.checkout.revamp.view.processor
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnProductServiceMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.EpharmacyData
+import com.tokopedia.checkout.revamp.view.epharmacy
 import com.tokopedia.checkout.revamp.view.firstOrNullInstanceOf
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
@@ -74,7 +75,7 @@ class CheckoutAddOnProcessor @Inject constructor(
     ): List<CheckoutItem>? {
         val checkoutItems = listData.toMutableList()
         val uploadPrescriptionUiModel =
-            listData.firstOrNullInstanceOf(CheckoutEpharmacyModel::class.java)?.epharmacy ?: return null
+            listData.epharmacy()?.epharmacy?.copy() ?: return null
         if (ePharmacyPrepareProductsGroupResponse.detailData != null) {
             val groupsData = ePharmacyPrepareProductsGroupResponse.detailData!!.groupsData
             if (groupsData?.epharmacyGroups != null) {
@@ -84,128 +85,135 @@ class CheckoutAddOnProcessor @Inject constructor(
                 val shopIds = ArrayList<String>()
                 val cartIds = ArrayList<String>()
                 var hasInvalidPrescription = false
-                val orders = listData.filterIsInstance(CheckoutOrderModel::class.java)
-                for (shipmentCartItemModel in orders) {
-                    if (shipmentCartItemModel.hasEthicalProducts) {
-                        shopIds.add(shipmentCartItemModel.shopId.toString())
-                        enablerNames.add(shipmentCartItemModel.enablerLabel)
-                        for (cartItemModel in shipmentCartItemModel.products) {
-                            if (cartItemModel.ethicalDrugDataModel.needPrescription) {
-                                cartIds.add(cartItemModel.cartId.toString())
+                var tempProductMap: HashMap<Int, CheckoutProductModel> = hashMapOf()
+                for ((index, item) in checkoutItems.withIndex()) {
+                    if (item is CheckoutProductModel) {
+                        tempProductMap[index] = item
+                    }
+                    if (item is CheckoutOrderModel) {
+                        var shipmentCartItemModel = item.copy()
+                        if (shipmentCartItemModel.hasEthicalProducts) {
+                            shopIds.add(shipmentCartItemModel.shopId.toString())
+                            enablerNames.add(shipmentCartItemModel.enablerLabel)
+                            for (cartItemModel in shipmentCartItemModel.products) {
+                                if (cartItemModel.ethicalDrugDataModel.needPrescription) {
+                                    cartIds.add(cartItemModel.cartId.toString())
+                                }
                             }
                         }
-                    }
-                    if (!shipmentCartItemModel.isError && shipmentCartItemModel.hasEthicalProducts) {
-                        var updated = false
-                        var shouldResetCourier = false
-                        var productErrorCount = 0
-                        var firstProductErrorIndex = -1
-//                        val position =
-//                            view?.getShipmentCartItemModelAdapterPositionByCartStringGroup(
-//                                shipmentCartItemModel.cartStringGroup
-//                            ) ?: 0
-//                        if (position > 0) {
-                        for (epharmacyGroup in groupsData.epharmacyGroups!!) {
-                            if (updated) {
-                                break
-                            }
-                            if (epharmacyGroup?.shopInfo != null) {
-                                epharmacyGroupIds.add(epharmacyGroup.epharmacyGroupId!!)
-                                for (productsInfo in epharmacyGroup.shopInfo!!) {
-                                    if (updated) {
-                                        break
-                                    }
-                                    if (productsInfo?.shopId != null &&
-                                        productsInfo.shopId!!.isNotBlankOrZero() &&
-                                        shipmentCartItemModel.shopId == productsInfo.shopId!!.toLong()
-                                    ) {
-                                        if (productsInfo.products != null) {
-                                            for (product in productsInfo.products!!) {
-                                                if (updated) {
-                                                    break
-                                                }
-                                                if (product?.productId != null) {
-                                                    for (i in shipmentCartItemModel.products.indices.reversed()) {
-                                                        // todo check this
-                                                        val cartItemModel =
-                                                            shipmentCartItemModel.products[i]
-                                                        if (product.productId == cartItemModel.productId && !cartItemModel.isError) {
-                                                            if (epharmacyGroup.consultationData != null && epharmacyGroup.consultationData!!.consultationStatus != null && epharmacyGroup.consultationData!!.consultationStatus == EPHARMACY_CONSULTATION_STATUS_REJECTED) {
-                                                                shipmentCartItemModel.tokoConsultationId =
-                                                                    ""
-                                                                shipmentCartItemModel.partnerConsultationId =
-                                                                    ""
-                                                                shipmentCartItemModel.consultationDataString =
-                                                                    ""
-                                                                hasInvalidPrescription = true
-                                                                if (shipmentCartItemModel.hasNonEthicalProducts) {
-                                                                    cartItemModel.isError = true
-                                                                    cartItemModel.errorMessage =
-                                                                        uploadPrescriptionUiModel.rejectedWording
-                                                                    shouldResetCourier = true
-                                                                } else {
-                                                                    shipmentCartItemModel.firstProductErrorIndex =
-                                                                        0
-                                                                    shipmentCartItemModel.isError =
-                                                                        true
-                                                                    shipmentCartItemModel.isAllItemError =
-                                                                        true
-                                                                    for (itemModel in shipmentCartItemModel.products) {
-                                                                        itemModel.isError = true
-                                                                        itemModel.isShopError =
+                        if (!shipmentCartItemModel.isError && shipmentCartItemModel.hasEthicalProducts) {
+                            var updated = false
+                            var shouldResetCourier = false
+                            var productErrorCount = 0
+                            var firstProductErrorIndex = -1
+                            for (epharmacyGroup in groupsData.epharmacyGroups!!) {
+                                if (updated) {
+                                    break
+                                }
+                                if (epharmacyGroup?.shopInfo != null) {
+                                    epharmacyGroupIds.add(epharmacyGroup.epharmacyGroupId!!)
+                                    for (productsInfo in epharmacyGroup.shopInfo!!) {
+                                        if (updated) {
+                                            break
+                                        }
+                                        if (productsInfo?.shopId != null &&
+                                            productsInfo.shopId!!.isNotBlankOrZero() &&
+                                            shipmentCartItemModel.shopId == productsInfo.shopId!!.toLong()
+                                        ) {
+                                            if (productsInfo.products != null) {
+                                                for (product in productsInfo.products!!) {
+                                                    if (updated) {
+                                                        break
+                                                    }
+                                                    if (product?.productId != null) {
+                                                        for ((i, cartItemModel) in tempProductMap) {
+                                                            // todo check this
+                                                            if (product.productId == cartItemModel.productId && !cartItemModel.isError) {
+                                                                if (epharmacyGroup.consultationData != null && epharmacyGroup.consultationData!!.consultationStatus != null && epharmacyGroup.consultationData!!.consultationStatus == EPHARMACY_CONSULTATION_STATUS_REJECTED) {
+                                                                    shipmentCartItemModel.tokoConsultationId =
+                                                                        ""
+                                                                    shipmentCartItemModel.partnerConsultationId =
+                                                                        ""
+                                                                    shipmentCartItemModel.consultationDataString =
+                                                                        ""
+                                                                    hasInvalidPrescription = true
+                                                                    if (shipmentCartItemModel.hasNonEthicalProducts) {
+                                                                        checkoutItems[i] =
+                                                                            cartItemModel.copy(
+                                                                                isError = true,
+                                                                                errorMessage =
+                                                                                uploadPrescriptionUiModel.rejectedWording
+                                                                            )
+                                                                        shouldResetCourier = true
+                                                                    } else {
+                                                                        shipmentCartItemModel.firstProductErrorIndex =
+                                                                            0
+                                                                        shipmentCartItemModel.isError =
                                                                             true
+                                                                        shipmentCartItemModel.isAllItemError =
+                                                                            true
+                                                                        for (itemModel in shipmentCartItemModel.products) {
+                                                                            itemModel.isError = true
+                                                                            itemModel.isShopError =
+                                                                                true
+                                                                        }
+                                                                        shipmentCartItemModel.errorTitle =
+                                                                            "Yaah, ada ${shipmentCartItemModel.products.size} barang tidak bisa diproses. Kamu tetap bisa lanjut bayar yang lain."
+                                                                        shipmentCartItemModel.isCustomEpharmacyError =
+                                                                            true
+                                                                        shipmentCartItemModel.spId =
+                                                                            0
+                                                                        shipmentCartItemModel =
+                                                                            shipmentCartItemModel.copy(
+                                                                                shipment = shipmentCartItemModel.shipment.copy(
+                                                                                    courierItemData = null
+                                                                                )
+                                                                            )
+                                                                        updated = true
+                                                                        break
                                                                     }
-//                                                                        shipmentCartItemModel.errorTitle =
-//                                                                            view?.getStringResourceWithArgs(
-//                                                                                R.string.checkout_error_unblocking_message,
-//                                                                                shipmentCartItemModel.products.size
-//                                                                            ) ?: ""
-                                                                    shipmentCartItemModel.isCustomEpharmacyError =
-                                                                        true
-                                                                    shipmentCartItemModel.spId =
-                                                                        0
-//                                                                        view?.updateShipmentCartItemGroup(
-//                                                                            shipmentCartItemModel
-//                                                                        )
-//                                                                        view?.resetCourier(
-//                                                                            shipmentCartItemModel
-//                                                                        )
+                                                                } else if (epharmacyGroup.consultationData != null && epharmacyGroup.consultationData!!.consultationStatus != null && epharmacyGroup.consultationData!!.consultationStatus == EPHARMACY_CONSULTATION_STATUS_APPROVED) {
+                                                                    shipmentCartItemModel.tokoConsultationId =
+                                                                        epharmacyGroup.consultationData!!.tokoConsultationId!!
+                                                                    shipmentCartItemModel.partnerConsultationId =
+                                                                        epharmacyGroup.consultationData!!.partnerConsultationId!!
+                                                                    shipmentCartItemModel.consultationDataString =
+                                                                        epharmacyGroup.consultationData!!.consultationString!!
+                                                                    mapPrescriptionCount[epharmacyGroup.epharmacyGroupId] =
+                                                                        1
+                                                                    updated = true
+                                                                    break
+                                                                } else if (epharmacyGroup.prescriptionImages != null && epharmacyGroup.prescriptionImages!!.isNotEmpty()) {
+                                                                    val prescriptionIds =
+                                                                        ArrayList<String>()
+                                                                    for (prescriptionImage in epharmacyGroup.prescriptionImages!!) {
+                                                                        if (prescriptionImage != null && !prescriptionImage.prescriptionId.isNullOrEmpty()
+                                                                        ) {
+                                                                            prescriptionIds.add(
+                                                                                prescriptionImage.prescriptionId!!
+                                                                            )
+                                                                        }
+                                                                    }
+                                                                    shipmentCartItemModel.prescriptionIds =
+                                                                        prescriptionIds
+                                                                    mapPrescriptionCount[epharmacyGroup.epharmacyGroupId] =
+                                                                        prescriptionIds.size
                                                                     updated = true
                                                                     break
                                                                 }
-                                                            } else if (epharmacyGroup.consultationData != null && epharmacyGroup.consultationData!!.consultationStatus != null && epharmacyGroup.consultationData!!.consultationStatus == EPHARMACY_CONSULTATION_STATUS_APPROVED) {
-                                                                shipmentCartItemModel.tokoConsultationId =
-                                                                    epharmacyGroup.consultationData!!.tokoConsultationId!!
-                                                                shipmentCartItemModel.partnerConsultationId =
-                                                                    epharmacyGroup.consultationData!!.partnerConsultationId!!
-                                                                shipmentCartItemModel.consultationDataString =
-                                                                    epharmacyGroup.consultationData!!.consultationString!!
-                                                                mapPrescriptionCount[epharmacyGroup.epharmacyGroupId] =
-                                                                    1
-                                                                updated = true
-                                                                break
-                                                            } else if (epharmacyGroup.prescriptionImages != null && epharmacyGroup.prescriptionImages!!.isNotEmpty()) {
-                                                                val prescriptionIds =
-                                                                    ArrayList<String>()
-                                                                for (prescriptionImage in epharmacyGroup.prescriptionImages!!) {
-                                                                    if (prescriptionImage != null && !prescriptionImage.prescriptionId.isNullOrEmpty()
-                                                                    ) {
-                                                                        prescriptionIds.add(
-                                                                            prescriptionImage.prescriptionId!!
+                                                            }
+                                                            if (cartItemModel.isError) {
+                                                                productErrorCount += 1
+                                                                firstProductErrorIndex =
+                                                                    if (firstProductErrorIndex < 0) {
+                                                                        i
+                                                                    } else {
+                                                                        minOf(
+                                                                            i,
+                                                                            firstProductErrorIndex
                                                                         )
                                                                     }
-                                                                }
-                                                                shipmentCartItemModel.prescriptionIds =
-                                                                    prescriptionIds
-                                                                mapPrescriptionCount[epharmacyGroup.epharmacyGroupId] =
-                                                                    prescriptionIds.size
-                                                                updated = true
-                                                                break
                                                             }
-                                                        }
-                                                        if (cartItemModel.isError) {
-                                                            productErrorCount += 1
-                                                            firstProductErrorIndex = i
                                                         }
                                                     }
                                                 }
@@ -214,22 +222,24 @@ class CheckoutAddOnProcessor @Inject constructor(
                                     }
                                 }
                             }
+                            if (shouldResetCourier) {
+                                shipmentCartItemModel.isHasUnblockingError = true
+                                shipmentCartItemModel.firstProductErrorIndex =
+                                    firstProductErrorIndex
+                                shipmentCartItemModel.unblockingErrorMessage =
+                                    "Yaah, ada $productErrorCount barang tidak bisa diproses. Kamu tetap bisa lanjut bayar yang lain."
+                                shipmentCartItemModel.spId = 0
+                                shipmentCartItemModel.shouldResetCourier = true
+                                shipmentCartItemModel = shipmentCartItemModel.copy(
+                                    shipment = shipmentCartItemModel.shipment.copy(courierItemData = null)
+                                )
+                            }
                         }
-                        if (shouldResetCourier) {
-                            shipmentCartItemModel.isHasUnblockingError = true
-                            shipmentCartItemModel.firstProductErrorIndex =
-                                firstProductErrorIndex
-//                                shipmentCartItemModel.unblockingErrorMessage =
-//                                    view?.getStringResourceWithArgs(
-//                                        R.string.checkout_error_unblocking_message,
-//                                        productErrorCount
-//                                    ) ?: ""
-                            shipmentCartItemModel.spId = 0
-                            shipmentCartItemModel.shouldResetCourier = true
-//                                view?.updateShipmentCartItemGroup(shipmentCartItemModel)
-//                                view?.resetCourier(shipmentCartItemModel)
-                        }
-//                        }
+                        checkoutItems[index] = shipmentCartItemModel
+                        tempProductMap = hashMapOf()
+                    }
+                    if (item is CheckoutEpharmacyModel) {
+                        break
                     }
                 }
                 var totalPrescription = 0
@@ -243,8 +253,8 @@ class CheckoutAddOnProcessor @Inject constructor(
                 uploadPrescriptionUiModel.enablerNames = ArrayList(enablerNames)
                 uploadPrescriptionUiModel.shopIds = shopIds
                 uploadPrescriptionUiModel.cartIds = cartIds
-//                view?.updateUploadPrescription(uploadPrescriptionUiModel)
-//                view?.showCoachMarkEpharmacy(uploadPrescriptionUiModel)
+                checkoutItems[checkoutItems.size - 5] =
+                    CheckoutEpharmacyModel(epharmacy = uploadPrescriptionUiModel)
                 return checkoutItems
             }
         }

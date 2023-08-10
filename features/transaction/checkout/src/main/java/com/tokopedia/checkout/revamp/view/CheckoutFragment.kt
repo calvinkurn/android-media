@@ -49,6 +49,7 @@ import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapter
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutDiffUtilCallback
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
@@ -98,6 +99,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.view.Shippi
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
@@ -277,6 +279,65 @@ class CheckoutFragment :
         }
     }
 
+    private fun sendErrorAnalytics() {
+        val checkoutItems = viewModel.listData.value
+        val errorTicker = checkoutItems.errorTicker() ?: return
+        if (errorTicker.isError) {
+            onViewTickerPaymentError(errorTicker.errorMessage, checkoutItems)
+        }
+        for (shipmentCartItemModel in checkoutItems) {
+            if (shipmentCartItemModel is CheckoutOrderModel && shipmentCartItemModel.isError && shipmentCartItemModel.errorTitle.isNotEmpty()) {
+                onViewTickerOrderError(
+                    shipmentCartItemModel.shopId.toString(),
+                    shipmentCartItemModel.errorTitle
+                )
+            } else if (shipmentCartItemModel is CheckoutOrderModel && (
+                    !shipmentCartItemModel.isError && shipmentCartItemModel.isHasUnblockingError &&
+                        shipmentCartItemModel.unblockingErrorMessage.isNotEmpty()
+                    ) && shipmentCartItemModel.firstProductErrorIndex > 0
+            ) {
+                onViewTickerOrderError(
+                    shipmentCartItemModel.shopId.toString(),
+                    shipmentCartItemModel.unblockingErrorMessage
+                )
+            }
+            if (shipmentCartItemModel is CheckoutProductModel && shipmentCartItemModel.isError && !TextUtils.isEmpty(
+                    shipmentCartItemModel.errorMessage
+                )
+            ) {
+                onViewTickerProductError(
+                    shipmentCartItemModel.shopId,
+                    shipmentCartItemModel.errorMessage
+                )
+            }
+        }
+    }
+
+    private fun onViewTickerPaymentError(errorMessage: String, checkoutItems: List<CheckoutItem>) {
+        for (shipmentCartItemModel in checkoutItems) {
+            if (shipmentCartItemModel is CheckoutOrderModel) {
+                checkoutAnalyticsCourierSelection.eventViewTickerPaymentLevelErrorInCheckoutPage(
+                    shipmentCartItemModel.shopId.toString(),
+                    errorMessage
+                )
+            }
+        }
+    }
+
+    private fun onViewTickerProductError(shopId: String, errorMessage: String) {
+        checkoutAnalyticsCourierSelection.eventViewTickerProductLevelErrorInCheckoutPage(
+            shopId,
+            errorMessage
+        )
+    }
+
+    private fun onViewTickerOrderError(shopId: String, errorMessage: String?) {
+        checkoutAnalyticsCourierSelection.eventViewTickerOrderLevelErrorInCheckoutPage(
+            shopId,
+            errorMessage!!
+        )
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -454,6 +515,8 @@ class CheckoutFragment :
                         showPopUp(popUpData)
                     }
                     stopTrace()
+                    sendErrorAnalytics()
+                    // todo improve first load shipping
                     if (it.cartShipmentAddressFormData.epharmacyData.showImageUpload) {
                         val uploadPrescriptionUiModel =
                             viewModel.listData.value.firstOrNullInstanceOf(CheckoutEpharmacyModel::class.java)?.epharmacy
@@ -987,7 +1050,11 @@ class CheckoutFragment :
         bindingAdapterPosition: Int
     ) {
         viewModel.setAddon(isChecked, addOnProductDataItemModel, product, bindingAdapterPosition)
-        checkoutAnalyticsCourierSelection.eventClickAddOnsProductServiceWidget(addOnProductDataItemModel.type, product.productId.toString(), isChecked)
+        checkoutAnalyticsCourierSelection.eventClickAddOnsProductServiceWidget(
+            addOnProductDataItemModel.type,
+            product.productId.toString(),
+            isChecked
+        )
     }
 
     override fun onClickAddonProductInfoIcon(addOnDataInfoLink: String) {
@@ -1014,12 +1081,16 @@ class CheckoutFragment :
             discountedPrice = product.price
         }
 
-        val applinkAddon = ApplinkConst.ADDON.replace(AddOnConstant.QUERY_PARAM_ADDON_PRODUCT, productId.toString())
+        val applinkAddon = ApplinkConst.ADDON.replace(
+            AddOnConstant.QUERY_PARAM_ADDON_PRODUCT,
+            productId.toString()
+        )
         val applink = UriUtil.buildUriAppendParams(
             applinkAddon,
             mapOf(
                 AddOnConstant.QUERY_PARAM_CART_ID to cartId,
-                AddOnConstant.QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds.toString().replace("[", "").replace("]", ""),
+                AddOnConstant.QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds.toString().replace("[", "")
+                    .replace("]", ""),
                 AddOnConstant.QUERY_PARAM_PAGE_ATC_SOURCE to AddOnConstant.SOURCE_NORMAL_CHECKOUT,
                 ApplinkConstInternalMechant.QUERY_PARAM_WAREHOUSE_ID to product.warehouseId,
                 AddOnConstant.QUERY_PARAM_IS_TOKOCABANG to product.isTokoCabang,
@@ -1027,7 +1098,8 @@ class CheckoutFragment :
                 AddOnConstant.QUERY_PARAM_SHOP_ID to product.shopId,
                 AddOnConstant.QUERY_PARAM_QUANTITY to product.quantity,
                 AddOnConstant.QUERY_PARAM_PRICE to price.toString().removeSingleDecimalSuffix(),
-                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toString().removeSingleDecimalSuffix()
+                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toString()
+                    .removeSingleDecimalSuffix()
             )
         )
 
@@ -1047,13 +1119,19 @@ class CheckoutFragment :
 
     private fun onResultFromAddOnProductBottomSheet(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
-            val addOnProductDataResult = data?.getParcelableExtra(AddOnExtraConstant.EXTRA_ADDON_PAGE_RESULT) ?: AddOnPageResult()
+            val addOnProductDataResult =
+                data?.getParcelableExtra(AddOnExtraConstant.EXTRA_ADDON_PAGE_RESULT)
+                    ?: AddOnPageResult()
             if (addOnProductDataResult.aggregatedData.isGetDataSuccess) {
                 val cartIdAddOn = addOnProductDataResult.cartId
                 viewModel.setAddonResult(cartIdAddOn, addOnProductDataResult)
             } else {
                 view?.let { v ->
-                    Toaster.build(v, addOnProductDataResult.aggregatedData.getDataErrorMessage, type = Toaster.TYPE_ERROR).show()
+                    Toaster.build(
+                        v,
+                        addOnProductDataResult.aggregatedData.getDataErrorMessage,
+                        type = Toaster.TYPE_ERROR
+                    ).show()
                 }
             }
         }
@@ -1352,13 +1430,18 @@ class CheckoutFragment :
                 ShippingDurationBottomsheet.show(
                     fragmentManager = parentFragmentManager,
                     shippingDurationBottomsheetListener = this,
-                    ratesParam = viewModel.generateRatesParam(order, order.shipment.courierItemData?.selectedShipper?.logPromoCode ?: ""),
-                    selectedSpId = order.shipment.courierItemData?.selectedShipper?.shipperProductId ?: -1,
+                    ratesParam = viewModel.generateRatesParam(
+                        order,
+                        order.shipment.courierItemData?.selectedShipper?.logPromoCode ?: ""
+                    ),
+                    selectedSpId = order.shipment.courierItemData?.selectedShipper?.shipperProductId
+                        ?: -1,
 //                    shipmentDetailData = generateShippingBottomsheetParam(
 //                        order,
 //                        recipientAddressModel
 //                    ),
-                    selectedServiceId = order.shipment.courierItemData?.selectedShipper?.serviceId ?: -1,
+                    selectedServiceId = order.shipment.courierItemData?.selectedShipper?.serviceId
+                        ?: -1,
 //                    shopShipmentList = order.shopShipmentList,
 //                    recipientAddressModel = recipientAddressModel,
 //                    cartPosition = cartPosition,
@@ -1433,9 +1516,9 @@ class CheckoutFragment :
                     (
                         recipientAddressModel!!.latitude == null ||
                             recipientAddressModel.latitude.equals(
-                                    "0",
-                                    ignoreCase = true
-                                ) || recipientAddressModel.longitude == null ||
+                                "0",
+                                ignoreCase = true
+                            ) || recipientAddressModel.longitude == null ||
                             recipientAddressModel.longitude.equals("0", ignoreCase = true)
                         )
                 ) {
@@ -1643,13 +1726,13 @@ class CheckoutFragment :
             isCod
         )
         if (isNeedPinpoint || courierItemData.isUsePinPoint && (
-            recipientAddressModel!!.latitude == null ||
-                recipientAddressModel.latitude.equals(
+                recipientAddressModel!!.latitude == null ||
+                    recipientAddressModel.latitude.equals(
                         "0",
                         ignoreCase = true
                     ) || recipientAddressModel.longitude == null ||
-                recipientAddressModel.longitude.equals("0", ignoreCase = true)
-            )
+                    recipientAddressModel.longitude.equals("0", ignoreCase = true)
+                )
         ) {
             setPinpoint(cartPosition)
         } else {
@@ -1875,7 +1958,10 @@ class CheckoutFragment :
         }
         checkoutAnalyticsCourierSelection.eventClickCheckboxDonation(checked)
         if (isTradeIn) {
-            checkoutTradeInAnalytics.eventTradeInClickDonationOption(viewModel.isTradeInByDropOff, checked)
+            checkoutTradeInAnalytics.eventTradeInClickDonationOption(
+                viewModel.isTradeInByDropOff,
+                checked
+            )
         }
     }
 

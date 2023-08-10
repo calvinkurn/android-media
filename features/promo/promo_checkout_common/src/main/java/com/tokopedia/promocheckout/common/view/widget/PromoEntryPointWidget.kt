@@ -261,7 +261,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         activeViewWording?.visibility = View.VISIBLE
         if (animate && switcherView?.visibility == View.VISIBLE) {
             activeViewLeftImage?.setImageUrl(leftImageUrl)
-            activeViewRightIcon?.setImage(rightIcon)
+            activeViewRightIcon?.setImage(rightIcon, )
             if (switcherView?.displayedChild != 0) {
                 // only trigger view switch animation if currently showing different view
                 activeViewWording?.setCurrentText(HtmlLinkHelper(context, wording).spannedString)
