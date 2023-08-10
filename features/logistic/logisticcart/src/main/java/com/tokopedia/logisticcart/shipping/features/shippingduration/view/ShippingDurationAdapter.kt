@@ -3,10 +3,12 @@ package com.tokopedia.logisticcart.shipping.features.shippingduration.view
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.logisticcart.databinding.ItemProductShipmentDetailBinding
 import com.tokopedia.logisticcart.shipping.model.DividerModel
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.NotifierModel
 import com.tokopedia.logisticcart.shipping.model.PreOrderModel
+import com.tokopedia.logisticcart.shipping.model.ProductShipmentDetailModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 
@@ -45,6 +47,7 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         is LogisticPromoUiModel -> ArmyViewHolder.LAYOUT
         is NotifierModel -> NotifierViewHolder.LAYOUT
         is DividerModel -> DividerViewHolder.LAYOUT
+        is ProductShipmentDetailModel -> ProductShipmentDetailViewHolder.LAYOUT
         else -> ShippingDurationViewHolder.ITEM_VIEW_SHIPMENT_DURATION
     }
 
@@ -55,6 +58,7 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
             ArmyViewHolder.LAYOUT -> ArmyViewHolder(view)
             NotifierViewHolder.LAYOUT -> NotifierViewHolder(view)
             DividerViewHolder.LAYOUT -> DividerViewHolder(view)
+            ProductShipmentDetailViewHolder.LAYOUT -> ProductShipmentDetailViewHolder(ItemProductShipmentDetailBinding.bind(view))
             else -> ShippingDurationViewHolder(view, cartPosition)
         }
     }
@@ -65,6 +69,7 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
             is ShippingDurationViewHolder -> holder.bindData(mData[position] as ShippingDurationUiModel, shippingDurationAdapterListener, isDisableOrderPrioritas)
             is ArmyViewHolder -> holder.bindData(mData[position] as LogisticPromoUiModel, shippingDurationAdapterListener)
             is NotifierViewHolder -> holder.bindData(mData[position] as NotifierModel)
+            is ProductShipmentDetailViewHolder -> holder.bindData(mData[position] as ProductShipmentDetailModel)
         }
     }
 

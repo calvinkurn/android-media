@@ -422,6 +422,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                     iconURL
                 }
                 isShown
+                additionalData
             }
             reviewImage{
               list{

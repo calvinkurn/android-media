@@ -11,6 +11,7 @@ data class TokoNowCategoryMenuUiModel(
     val title: String = String.EMPTY,
     val seeAllAppLink: String = String.EMPTY,
     val categoryListUiModel: List<Visitable<*>>? = null,
+    val source: String = String.EMPTY,
     @TokoNowLayoutState val state: Int = TokoNowLayoutState.LOADING
 ): Visitable<TokoNowCategoryMenuTypeFactory>, ImpressHolder() {
     override fun type(typeFactory: TokoNowCategoryMenuTypeFactory): Int {

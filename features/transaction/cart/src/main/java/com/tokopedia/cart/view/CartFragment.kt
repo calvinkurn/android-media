@@ -832,7 +832,7 @@ class CartFragment :
             context?.let { context ->
                 fragmentManager?.let { fragmentManager ->
                     val promoSummaryUiModel = dPresenter.getPromoSummaryUiModel()
-                    dPresenter.getSummaryTransactionUiModel()?.let { summaryTransactionUiModel ->
+                    dPresenter.getSummaryTransactionUiModel(cartAdapter.selectedCartItemData)?.let { summaryTransactionUiModel ->
                         showSummaryTransactionBottomsheet(
                             summaryTransactionUiModel,
                             promoSummaryUiModel,
@@ -4591,8 +4591,6 @@ class CartFragment :
             )
         )
 
-        println("++ applink = $applink")
-
         activity?.let {
             val intent = RouteManager.getIntent(it, applink)
             startActivityForResult(intent, NAVIGATION_ADDON)
@@ -4604,13 +4602,13 @@ class CartFragment :
             val addOnProductDataResult = data?.getParcelableExtra(AddOnExtraConstant.EXTRA_ADDON_PAGE_RESULT) ?: AddOnPageResult()
 
             if (addOnProductDataResult.aggregatedData.isGetDataSuccess) {
-                val cartId = addOnProductDataResult.cartId
                 var newAddOnWording = ""
                 if (addOnProductDataResult.aggregatedData.title.isNotEmpty()) {
-                    newAddOnWording = "${addOnProductDataResult.aggregatedData.title} <b>(${addOnProductDataResult.aggregatedData.price})</b>"
+                    newAddOnWording = "${addOnProductDataResult.aggregatedData.title} <b>(Rp${addOnProductDataResult.aggregatedData.price})</b>"
                 }
 
                 cartAdapter.updateAddOnByCartId(addOnProductDataResult.cartId.toString(), newAddOnWording, addOnProductDataResult.aggregatedData.selectedAddons)
+                onNeedToRecalculate()
             } else {
                 showToastMessageRed(addOnProductDataResult.aggregatedData.getDataErrorMessage)
             }

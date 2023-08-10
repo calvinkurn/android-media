@@ -1,49 +1,66 @@
 package com.tokopedia.logisticcart.shipping.features.shippingcourier.view
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.res.Resources
 import android.os.Bundle
 import android.text.TextUtils
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.LinearLayout
+import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.logisticCommon.data.constant.CourierConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticcart.R
+import com.tokopedia.logisticcart.databinding.FragmentShipmentCourierChoiceBinding
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.di.DaggerShippingCourierComponent
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.di.ShippingCourierModule
 import com.tokopedia.logisticcart.shipping.model.NotifierModel
-import com.tokopedia.logisticcart.shipping.model.PreOrderModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 
 /**
  * Created by Irfan Khoirul on 06/08/18.
  */
-class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourierAdapterListener {
+class ShippingCourierBottomsheet : ShippingCourierAdapterListener, BottomSheetUnify() {
 
-    private var llContent: LinearLayout? = null
-    private var rvCourier: RecyclerView? = null
-    private var llNetworkErrorView: LinearLayout? = null
-    private var pbLoading: LoaderUnify? = null
+    companion object {
+        private const val INSTAN_VIEW_TYPE = "Instan"
+        private const val SAME_DAY_VIEW_TYPE = "Same Day"
+        private const val TAG = "Shipping Courier Bottom Sheet"
 
-    private var activity: Activity? = null
-    private var bottomSheet: BottomSheetUnify? = null
-    private var bundle: Bundle? = null
+        fun show(
+            fragmentManager: FragmentManager,
+            shippingCourierBottomsheetListener: ShippingCourierBottomsheetListener,
+            shippingCourierUiModels: List<ShippingCourierUiModel>?,
+            recipientAddressModel: RecipientAddressModel?,
+            cartPosition: Int,
+            isOcc: Boolean
+        ) {
+            val bottomSheet = ShippingCourierBottomsheet()
+            bottomSheet.shippingCourierBottomsheetListener = shippingCourierBottomsheetListener
+            bottomSheet.isOcc = isOcc
+            bottomSheet.mCourierModelList = shippingCourierUiModels ?: listOf()
+            bottomSheet.mRecipientAddress = recipientAddressModel
+            bottomSheet.cartPosition = cartPosition
+            fragmentManager.apply {
+                bottomSheet.show(this, TAG)
+            }
+        }
+    }
+
     private var shippingCourierBottomsheetListener: ShippingCourierBottomsheetListener? = null
 
     private var mCourierModelList: List<ShippingCourierUiModel> = ArrayList()
-    private var mPreOrderModel: PreOrderModel? = null
     private var mRecipientAddress: RecipientAddressModel? = null
+    private var cartPosition: Int = 0
     private var isOcc: Boolean = false
+
+    private var binding by autoCleared<FragmentShipmentCourierChoiceBinding>()
 
     @Inject
     lateinit var shippingCourierAdapter: ShippingCourierAdapter
@@ -51,47 +68,37 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
     @Inject
     lateinit var courierConverter: ShippingCourierConverter
 
-    fun show(
-        activity: Activity,
-        fragmentManager: FragmentManager,
-        shippingCourierBottomsheetListener: ShippingCourierBottomsheetListener,
-        shippingCourierUiModels: List<ShippingCourierUiModel>?,
-        recipientAddressModel: RecipientAddressModel?,
-        cartPosition: Int,
-        isOcc: Boolean
-    ) {
-        this.activity = activity
-        this.shippingCourierBottomsheetListener = shippingCourierBottomsheetListener
-        this.isOcc = isOcc
-        initData(shippingCourierUiModels, recipientAddressModel, cartPosition)
-        initBottomSheet(activity)
-        initView(activity)
-        bottomSheet?.show(fragmentManager, this.javaClass.simpleName)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initializeInjector()
     }
 
-    private fun initData(shippingCourierUiModels: List<ShippingCourierUiModel>?, recipientAddressModel: RecipientAddressModel?, cartPosition: Int) {
-        bundle = Bundle()
-        if (shippingCourierUiModels != null) {
-            bundle?.putParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST, ArrayList(shippingCourierUiModels))
-            bundle?.putParcelable(ARGUMENT_PRE_ORDER_MODEL, shippingCourierUiModels[0].preOrderModel)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        initBottomSheet()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun initBottomSheet() {
+        showCloseIcon = true
+        context?.let {
+            setTitle(it.getString(R.string.title_shipment_courier_bottomsheet))
         }
-        bundle?.putParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL, recipientAddressModel)
-        bundle?.putInt(ARGUMENT_CART_POSITION, cartPosition)
-    }
-
-    private fun initBottomSheet(activity: Activity) {
-        bottomSheet = BottomSheetUnify()
-        bottomSheet?.showCloseIcon = true
-        bottomSheet?.setTitle(activity.getString(R.string.title_shipment_courier_bottomsheet))
-        bottomSheet?.clearContentPadding = true
-        bottomSheet?.customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
-        bottomSheet?.isDragable = true
-        bottomSheet?.isHideable = true
-        bottomSheet?.setCloseClickListener {
+        clearContentPadding = true
+        customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
+        isDragable = true
+        isHideable = true
+        setShowListener {
+            setupRecyclerView()
+        }
+        setCloseClickListener {
             shippingCourierBottomsheetListener?.onCourierShipmentRecommendationCloseClicked()
-            bottomSheet?.dismiss()
+            dismiss()
         }
-        bottomSheet?.setOnDismissListener { bottomSheet = null }
+        initView()
     }
 
     private fun initializeInjector() {
@@ -102,47 +109,35 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
     }
 
     @SuppressLint("InflateParams")
-    private fun initView(activity: Activity) {
-        val inflater = activity.layoutInflater
-        val view = inflater.inflate(R.layout.fragment_shipment_courier_choice, null)
-        llContent = view.findViewById(R.id.ll_content)
-        rvCourier = view.findViewById(R.id.rv_courier)
-        llNetworkErrorView = view.findViewById(R.id.ll_network_error_view)
-        pbLoading = view.findViewById(R.id.pb_loading)
-        bottomSheet?.setChild(view)
-        initializeInjector()
-        loadData()
+    private fun initView() {
+        binding =
+            FragmentShipmentCourierChoiceBinding.inflate(LayoutInflater.from(context), null, false)
+        setChild(binding.root)
     }
 
-    private fun loadData() {
-        bundle?.let {
-            mRecipientAddress = it.getParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL)
-            val cartPosition = it.getInt(ARGUMENT_CART_POSITION)
-            val shippingCourierUiModels: ArrayList<ShippingCourierUiModel>? = it.getParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST)
-            mPreOrderModel = it.getParcelable(ARGUMENT_PRE_ORDER_MODEL)
-            if (shippingCourierUiModels != null) {
-                mCourierModelList = shippingCourierUiModels
-                setupRecyclerView(cartPosition)
-            } else if (activity != null) {
-                showErrorPage(activity!!.getString(R.string.message_error_shipping_general))
-            }
-        }
-    }
-
-    private fun setupRecyclerView(cartPosition: Int) {
+    private fun setupRecyclerView() {
         shippingCourierAdapter.setShippingCourierAdapterListener(this)
-        shippingCourierAdapter.setShippingCourierViewModels(convertCourierListToUiModel(mCourierModelList, mPreOrderModel, isOcc))
+        shippingCourierAdapter.setShippingCourierViewModels(
+            convertCourierListToUiModel(
+                mCourierModelList,
+                isOcc
+            )
+        )
         shippingCourierAdapter.setCartPosition(cartPosition)
         val linearLayoutManager = LinearLayoutManager(
             activity,
             LinearLayoutManager.VERTICAL,
             false
         )
-        rvCourier?.layoutManager = linearLayoutManager
-        rvCourier?.adapter = shippingCourierAdapter
+        binding.rvCourier.layoutManager = linearLayoutManager
+        binding.rvCourier.adapter = shippingCourierAdapter
     }
 
-    override fun onCourierChoosen(shippingCourierUiModel: ShippingCourierUiModel, cartPosition: Int, isNeedPinpoint: Boolean) {
+    override fun onCourierChoosen(
+        shippingCourierUiModel: ShippingCourierUiModel,
+        cartPosition: Int,
+        isNeedPinpoint: Boolean
+    ) {
         val productData = shippingCourierUiModel.productData
         val spId = shippingCourierUiModel.productData.shipperProductId
         if (!isOcc) {
@@ -156,7 +151,7 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
             }
         }
         val courierItemData = courierConverter.convertToCourierItemData(shippingCourierUiModel)
-        val isCod = productData.codProductData != null && productData.codProductData.isCodAvailable == 1
+        val isCod = productData.codProductData.isCodAvailable == 1
         shippingCourierBottomsheetListener?.onCourierChoosen(
             shippingCourierUiModel,
             courierItemData,
@@ -167,41 +162,26 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
             isNeedPinpoint,
             mCourierModelList
         )
-        bottomSheet?.dismiss()
+        dismiss()
     }
 
-    override fun showLoading() {
-        llContent?.visibility = View.GONE
-        llNetworkErrorView?.visibility = View.GONE
-        pbLoading?.visibility = View.VISIBLE
-    }
-
-    override fun hideLoading() {
-        pbLoading?.visibility = View.GONE
-        llNetworkErrorView?.visibility = View.GONE
-        llContent?.visibility = View.VISIBLE
-    }
-
-    private fun showErrorPage(message: String) {
-        pbLoading?.visibility = View.GONE
-        llContent?.visibility = View.GONE
-        llNetworkErrorView?.visibility = View.VISIBLE
-        NetworkErrorHelper.showEmptyState(activity, llNetworkErrorView, message) {
-            showLoading()
-        }
-    }
-
-    private fun convertCourierListToUiModel(shippingCourierUiModels: List<ShippingCourierUiModel>, preOrderModel: PreOrderModel?, isOcc: Boolean): MutableList<RatesViewModelType> {
-        val eligibleCourierList = shippingCourierUiModels.filter { courier -> !courier.productData.isUiRatesHidden }.toMutableList()
+    private fun convertCourierListToUiModel(
+        shippingCourierUiModels: List<ShippingCourierUiModel>,
+        isOcc: Boolean
+    ): MutableList<RatesViewModelType> {
+        val eligibleCourierList =
+            shippingCourierUiModels.filter { courier -> !courier.productData.isUiRatesHidden }
+                .toMutableList()
         val uiModel: MutableList<RatesViewModelType> = mutableListOf()
         uiModel.addAll(eligibleCourierList)
-        eligibleCourierList.getOrNull(0)?.let {
-                firstCourier ->
+        eligibleCourierList.getOrNull(0)?.let { firstCourier ->
             setNotifierModel(uiModel, firstCourier, isOcc)
-        }
-
-        if (preOrderModel?.display == true) {
-            preOrderModel.let { uiModel.add(0, it) }
+            firstCourier.productShipmentDetailModel?.let { productShipmentDetailModel ->
+                uiModel.add(
+                    0,
+                    productShipmentDetailModel
+                )
+            }
         }
         return uiModel
     }
@@ -218,14 +198,5 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
         } else if (shippingCourierUiModel.serviceData.serviceName == SAME_DAY_VIEW_TYPE) {
             uiModel.add(0, NotifierModel(NotifierModel.TYPE_SAMEDAY))
         }
-    }
-
-    companion object {
-        private const val INSTAN_VIEW_TYPE = "Instan"
-        private const val SAME_DAY_VIEW_TYPE = "Same Day"
-        const val ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST = "ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST"
-        const val ARGUMENT_CART_POSITION = "ARGUMENT_CART_POSITION"
-        const val ARGUMENT_RECIPIENT_ADDRESS_MODEL = "ARGUMENT_RECIPIENT_ADDRESS_MODEL"
-        const val ARGUMENT_PRE_ORDER_MODEL = "ARGUMENT_PRE_ORDER_MODEL"
     }
 }

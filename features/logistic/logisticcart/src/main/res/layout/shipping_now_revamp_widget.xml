@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/shipment_time_option_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_label_scheduled_delivery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="divider_scheduled_delivery,icon_label_scheduled_delivery,tv_label_schedule" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider_scheduled_delivery"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/shipment_time_option_view" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icon_label_scheduled_delivery"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="12dp"
+        app:icon_color_light_enable="@color/Unify_NN500"
+        app:icon_name="COURIER_FAST"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider_scheduled_delivery" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/shimmer_change_schedule"
+        android:layout_width="0dp"
+        android:layout_height="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginHorizontal="12dp"
+        android:visibility="gone"
+        app:loader_type="rect"
+        app:loader_corner_radius="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/icon_label_scheduled_delivery"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/icon_label_scheduled_delivery"
+        app:layout_constraintTop_toTopOf="@id/icon_label_scheduled_delivery"
+        tools:visibility="visible"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_label_schedule"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="12dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="@id/icon_label_scheduled_delivery"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/icon_label_scheduled_delivery"
+        app:layout_constraintTop_toTopOf="@id/icon_label_scheduled_delivery"
+        app:typographyType="display_3"
+        tools:text="Belanja min. Rp50.000 untuk gratis ongkir" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

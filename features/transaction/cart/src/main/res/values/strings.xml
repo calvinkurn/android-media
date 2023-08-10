@@ -51,9 +51,27 @@
     <string name="label_tokonow_show_more">Lihat Selengkapnya</string>
     <string name="cart_default_wording_show_more">Tampilkan Semua</string>
     <string name="cart_default_wording_show_less">Tampilkan Lebih Sedikit</string>
+    <string name="cart_new_default_wording_show_more">Lihat Semua</string>
+    <string name="cart_new_default_wording_show_less">Lihat Lebih Sedikit</string>
     <string name="message_toaster_cart_change_bundle_success">Paket Bundling berhasil diubah.</string>
     <string name="label_cart_bundle_product_quantity">Paket isi %s</string>
     <string name="content_desc_iv_addon">Icon left addon</string>
     <string name="label_collapsed_product_quantity">%d barang</string>
     <string name="label_collapsed_product_bundle_quantity">%d paket</string>
+    <string name="cart_label_all">Semua</string>
+    <string name="cart_label_selected_amount">%d product dipilih</string>
+    <string name="cart_label_change">Ganti</string>
+    <string name="cart_label_packet">Paket</string>
+    <string name="cart_label_product_name_with_quantity">%s x %s</string>
+    <string name="cart_label_discount_percentage">-%s</string>
+    <string name="label_delete_with_amount">Hapus (%d)</string>
+    <string name="label_cannot_be_processed_no_value">Tidak bisa diproses</string>
+    <string name="cart_label_dialog_message_remove_cart_multiple_item">Produk yang kamu pilih akan dihapus dari Keranjang.</string>
+    <string name="cart_label_dialog_action_cancel_simple">Batal</string>
+    <string name="cart_label_disabled_reason_with_counter">%s (%d)</string>
+    <string name="content_desc_note_save">button save</string>
+    <string name="cart_action_save">Simpan</string>
+    <string name="cart_label_add_note">Tambah Catatan</string>
+    <string name="cart_max_quantity_error">Maks. beli %d</string>
+    <string name="cart_min_quantity_error">Min. beli %d</string>
 </resources>

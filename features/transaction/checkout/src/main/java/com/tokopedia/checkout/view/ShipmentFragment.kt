@@ -164,7 +164,9 @@ import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_DATA_RE
 import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.PRODUCT_PROTECTION_INSURANCE_TYPE
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.SOURCE_NORMAL_CHECKOUT
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_NEW_USER
@@ -239,7 +241,6 @@ class ShipmentFragment :
 
     private var binding by autoClearedNullable<FragmentShipmentBinding>()
     private var progressDialogNormal: AlertDialog? = null
-    private var shippingCourierBottomsheet: ShippingCourierBottomsheet? = null
     private var shipmentTracePerformance: PerformanceMonitoring? = null
     private var isShipmentTraceStopped = false
 
@@ -367,7 +368,6 @@ class ShipmentFragment :
     override fun onDestroyView() {
         super.onDestroyView()
         toasterThrottleSubscription?.unsubscribe()
-        shippingCourierBottomsheet = null
         val countDownTimer = binding?.partialCountdown?.countDown?.timer
         countDownTimer?.cancel()
         shipmentViewModel.detachView()
@@ -877,6 +877,7 @@ class ShipmentFragment :
             isInitialRender,
             isReloadAfterPriceChangeHigher
         )
+        shipmentAdapter.updateInsuranceTncVisibility()
     }
 
     fun stopTrace() {
@@ -981,7 +982,6 @@ class ShipmentFragment :
         } else {
             val shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(position)
             if (shipmentCartItemModel != null) {
-                shippingCourierBottomsheet = null
                 val recipientAddressModel = shipmentViewModel.recipientAddressModel
                 onChangeShippingDuration(shipmentCartItemModel, recipientAddressModel, position)
             }
@@ -2239,7 +2239,11 @@ class ShipmentFragment :
 
     override fun onProcessToPayment() {
         showLoading()
-        shipmentViewModel.saveAddOnsProductBeforeCheckout()
+        if (shipmentViewModel.isAnyProductHasAddOnsProduct) {
+            shipmentViewModel.saveAddOnsProductBeforeCheckout()
+        } else {
+            shipmentAdapter.checkDropshipperValidation()
+        }
     }
 
     private fun onResultFromPayment(resultCode: Int, data: Intent?) {
@@ -2864,8 +2868,7 @@ class ShipmentFragment :
             if (activity != null) {
                 val pslCode = getLogisticPromoCode(shipmentCartItemModel)
                 val products = shipmentViewModel.getProductForRatesRequest(shipmentCartItemModel)
-                val shippingDurationBottomsheet = ShippingDurationBottomsheet()
-                shippingDurationBottomsheet.show(
+                ShippingDurationBottomsheet.show(
                     activity,
                     parentFragmentManager,
                     this,
@@ -2914,9 +2917,7 @@ class ShipmentFragment :
             }
             val activity: Activity? = activity
             if (activity != null) {
-                shippingCourierBottomsheet = ShippingCourierBottomsheet()
-                shippingCourierBottomsheet!!.show(
-                    activity,
+                ShippingCourierBottomsheet.show(
                     fragmentManager!!,
                     this,
                     shippingCourierUiModels,
@@ -3139,6 +3140,9 @@ class ShipmentFragment :
                                 if (shipmentCartItemModel.voucherLogisticItemUiModel != null) {
                                     // remove previous logistic promo code
                                     order.codes.remove(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)
+                                } else if (courierItemData.selectedShipper.logPromoCode != null) {
+                                    // remove previous logistic promo code
+                                    order.codes.remove(courierItemData.selectedShipper.logPromoCode)
                                 }
                                 order.codes.add(selectedShipper.logPromoCode!!)
                                 order.boCode = selectedShipper.logPromoCode!!
@@ -3898,6 +3902,8 @@ class ShipmentFragment :
         shipmentViewModel.saveAddOnsProduct(cartItemModel)
         shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
         shipmentAdapter.updateSubtotal()
+
+        checkoutAnalyticsCourierSelection.eventClickAddOnsProductServiceWidget(addOnProductDataItemModel.type, cartItemModel.productId.toString(), isChecked)
     }
 
     override fun onClickAddonProductInfoIcon(addOnDataInfoLink: String) {
@@ -3915,8 +3921,8 @@ class ShipmentFragment :
             }
         }
 
-        var price: Double
-        var discountedPrice: Double
+        val price: Double
+        val discountedPrice: Double
         if (cartItemModel.campaignId == 0) {
             price = cartItemModel.price
             discountedPrice = cartItemModel.price
@@ -3942,6 +3948,7 @@ class ShipmentFragment :
             )
         )
 
+        checkoutAnalyticsCourierSelection.eventClickLihatSemuaAddOnsProductServiceWidget()
         activity?.let {
             val intent = RouteManager.getIntent(it, applink)
             startActivityForResult(intent, REQUEST_CODE_ADD_ON_PRODUCT_SERVICE_BOTTOMSHEET)
@@ -4300,40 +4307,49 @@ class ShipmentFragment :
         checkoutAnalyticsCourierSelection.eventViewAddOnsProductServiceWidget(addOnType, productId)
     }
 
-    override fun onClickAddOnProductServiceWidgetItem(addOnType: Int, productId: String, isChecked: Boolean) {
-        checkoutAnalyticsCourierSelection.eventClickAddOnsProductServiceWidget(addOnType, productId, isChecked)
-    }
-
-    override fun onClickLihatSemuaAddOnProductServiceWidget() {
-        checkoutAnalyticsCourierSelection.eventClickLihatSemuaAddOnsProductServiceWidget()
-    }
-
     private fun onResultFromAddOnProductBottomSheet(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             val addOnProductDataResult = data?.getParcelableExtra(AddOnExtraConstant.EXTRA_ADDON_PAGE_RESULT) ?: AddOnPageResult()
 
+            var isProteksiProdukUpdated = false
             if (addOnProductDataResult.aggregatedData.isGetDataSuccess) {
                 val cartIdAddOn = addOnProductDataResult.cartId
                 val needUpdateAddOnItem = shipmentAdapter.getAddOnProductServicePosition(cartIdAddOn)
+                var updatedCartItemModel = needUpdateAddOnItem.second
+                needUpdateAddOnItem.second?.addOnProduct?.listAddOnProductData?.forEach { addOnExisting ->
+                    for (addOnUiModel in addOnProductDataResult.aggregatedData.selectedAddons) {
+                        if (addOnExisting.type == addOnUiModel.addOnType) {
+                            addOnExisting.apply {
+                                id = addOnUiModel.id.toLongOrZero()
+                                uniqueId = addOnUiModel.uniqueId
+                                price = addOnUiModel.price.toDouble()
+                                infoLink = addOnUiModel.eduLink
+                                name = addOnUiModel.name
+                                type = addOnUiModel.addOnType
+                                status = addOnUiModel.getSaveAddonSelectedStatus().value
+                            }
+                        }
 
-                run loopAddOnProduct@{
-                    needUpdateAddOnItem.second?.addOnProduct?.listAddOnProductData?.forEach { addOnExisting ->
-                        for (addOnUiModel in addOnProductDataResult.aggregatedData.selectedAddons) {
-                            if (addOnUiModel.addOnType == addOnExisting.type) {
-                                addOnExisting.apply {
-                                    id = addOnUiModel.id.toLongOrZero()
-                                    uniqueId = addOnUiModel.uniqueId
-                                    price = addOnUiModel.price.toDouble()
-                                    infoLink = addOnUiModel.eduLink
-                                    name = addOnUiModel.name
-                                    status = addOnUiModel.getSelectedStatus().value
-                                    type = addOnUiModel.addOnType
-                                }
-                                onNeedUpdateViewItem(needUpdateAddOnItem.first)
-                                return@loopAddOnProduct
+                        if (addOnUiModel.addOnType == PRODUCT_PROTECTION_INSURANCE_TYPE) {
+                            isProteksiProdukUpdated = true
+                            if (addOnUiModel.getSaveAddonSelectedStatus().value == ADD_ON_PRODUCT_STATUS_CHECK ||
+                                addOnUiModel.getSaveAddonSelectedStatus().value == ADD_ON_PRODUCT_STATUS_MANDATORY
+                            ) {
+                                updatedCartItemModel = needUpdateAddOnItem.second?.copy(
+                                    isProtectionOptIn = true
+                                )
+                            } else {
+                                updatedCartItemModel = needUpdateAddOnItem.second?.copy(
+                                    isProtectionOptIn = false
+                                )
                             }
                         }
                     }
+                }
+                if (isProteksiProdukUpdated) {
+                    updatedCartItemModel?.let { shipmentAdapter.onCheckPurchaseProtection(needUpdateAddOnItem.first, it) }
+                } else {
+                    onNeedUpdateViewItem(needUpdateAddOnItem.first)
                 }
                 updateCost()
                 shipmentAdapter.updateSubtotal()
@@ -4354,8 +4370,8 @@ class ShipmentFragment :
         const val REQUEST_CODE_MINI_CONSULTATION = 10022
         const val REQUEST_CODE_ADD_ON_PRODUCT_SERVICE_BOTTOMSHEET = 10033
         private const val REQUEST_CODE_UPSELL = 777
-        private const val ADD_ON_STATUS_ACTIVE = 1
-        private const val ADD_ON_STATUS_DISABLE = 2
+        const val ADD_ON_STATUS_ACTIVE = 1
+        const val ADD_ON_STATUS_DISABLE = 2
         private const val SHIPMENT_TRACE = "mp_shipment"
         private const val PLATFORM_FEE_CODE = "platform_fee"
         private const val KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA = "epharmacy_prescription_ids"

@@ -52,6 +52,7 @@ import com.tokopedia.search.result.product.cpm.BannerAdsPresenterDelegate
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterPresenter
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
+import com.tokopedia.search.result.product.grid.ProductGridType
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselPresenter
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselPresenterDelegate
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenter
@@ -177,6 +178,7 @@ class ProductListPresenter @Inject constructor(
         )
         private const val RESPONSE_CODE_RELATED = "3"
         private const val RESPONSE_CODE_SUGGESTION = "6"
+        private const val REQUEST_TIMEOUT_RESPONSE_CODE = "15"
     }
 
     private var compositeSubscription: CompositeSubscription? = CompositeSubscription()
@@ -629,6 +631,7 @@ class ProductListPresenter @Inject constructor(
 
         view.setAutocompleteApplink(productDataView.autocompleteApplink)
         view.setDefaultLayoutType(productDataView.defaultView)
+        view.setProductGridType(ProductGridType.getProductGridType(productDataView.gridType))
 
         if (!productDataView.isQuerySafe) view.showAdultRestriction()
 
@@ -924,6 +927,8 @@ class ProductListPresenter @Inject constructor(
             view.addLoading()
 
         view.updateScrollListener()
+
+        checkShouldShowViewTypeOnBoarding(productListType)
     }
 
     private fun getFirstProductPositionWithBOELabel(list: List<Visitable<*>>): Int {
@@ -1084,8 +1089,7 @@ class ProductListPresenter @Inject constructor(
 
         val afProdIds = JSONArray()
         val moengageTrackingCategory = HashMap<String?, String?>()
-        val categoryIdMapping = HashSet<String?>()
-        val categoryNameMapping = HashSet<String?>()
+        val categoryIdNameMapping = mutableMapOf<String, String>()
         val prodIdArray = ArrayList<String?>()
         val allProdIdArray = ArrayList<String?>()
 
@@ -1101,8 +1105,7 @@ class ProductListPresenter @Inject constructor(
                 moengageTrackingCategory[categoryIdString] = categoryName
             }
 
-            categoryIdMapping.add(categoryIdString)
-            categoryNameMapping.add(categoryName)
+            categoryIdNameMapping[categoryIdString] = categoryName
         }
 
         view.sendTrackingEventAppsFlyerViewListingSearch(afProdIds, query, prodIdArray, allProdIdArray)
@@ -1113,8 +1116,8 @@ class ProductListPresenter @Inject constructor(
                 createGeneralSearchTrackingEventLabel(productDataView, query),
                 userId,
                 productDataView.productList.isNotEmpty().toString(),
-                StringUtils.join(categoryIdMapping, ","),
-                StringUtils.join(categoryNameMapping, ","),
+                categoryIdNameMapping.keys.joinToString(","),
+                categoryIdNameMapping.values.joinToString(","),
                 createGeneralSearchTrackingRelatedKeyword(productDataView),
                 dimension90,
                 productDataView.backendFilters,
@@ -1135,12 +1138,18 @@ class ProductListPresenter @Inject constructor(
                 SearchEventTracking.Label.GENERAL_SEARCH_EVENT_LABEL,
                 query,
                 getKeywordProcess(productDataView),
-                productDataView.responseCode,
+                getResponseCode(productDataView),
                 source,
                 getNavSourceForGeneralSearchTracking(),
                 getPageTitleForGeneralSearchTracking(),
                 productDataView.totalData
         )
+    }
+
+    private fun getResponseCode(productDataView: ProductDataView): String? {
+        return if(productDataView.productList.isEmpty() && productDataView.responseCode.equals("0")){
+             REQUEST_TIMEOUT_RESPONSE_CODE
+        } else productDataView.responseCode
     }
 
     private fun getTopNavSource(globalNavDataView: GlobalNavDataView?): String {
@@ -1288,6 +1297,16 @@ class ProductListPresenter @Inject constructor(
 
     private fun shouldShowBoeCoachmark(): Boolean {
         return searchCoachMarkLocalCache.shouldShowBoeCoachmark()
+    }
+
+    private fun checkShouldShowViewTypeOnBoarding(productListType: String) {
+        if (productListType == SearchConstant.ProductListType.LIST_VIEW
+            && shouldShowViewTypeCoachmark())
+            view.enableProductViewTypeOnBoarding()
+    }
+
+    private fun shouldShowViewTypeCoachmark(): Boolean {
+        return searchCoachMarkLocalCache.shouldShowViewTypeCoachmark()
     }
 
     override fun onProductClick(item: ProductItemDataView?, adapterPosition: Int) {

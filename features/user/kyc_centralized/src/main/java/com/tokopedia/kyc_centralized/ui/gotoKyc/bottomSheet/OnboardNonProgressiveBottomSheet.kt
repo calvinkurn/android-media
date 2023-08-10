@@ -22,9 +22,9 @@ import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.databinding.LayoutGotoKycOnboardNonProgressiveBinding
 import com.tokopedia.kyc_centralized.di.DaggerGoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.analytics.GotoKycAnalytics
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainActivity
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainParam
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycRouterFragment
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.router.GotoKycMainActivity
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.router.GotoKycMainParam
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.router.GotoKycRouterFragment
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.BottomSheetUnify

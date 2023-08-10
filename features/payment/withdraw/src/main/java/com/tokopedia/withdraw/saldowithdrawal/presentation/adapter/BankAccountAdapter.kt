@@ -55,6 +55,12 @@ class BankAccountAdapter(private val withdrawAnalytics: WithdrawAnalytics,
             val coachMarchView = holder.getPowerMerchantImageView()
             listener.showCoachMarkOnRPIcon(coachMarchView)
         }
+
+        val position = holder.absoluteAdapterPosition
+        val isGopay = bankAccountList[position].isGopay()
+        if (holder is BankAccountViewHolder && isGopay) {
+            listener.showCoachMarkOnGopayBank(holder.itemView, bankAccountList[position])
+        }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -74,7 +80,6 @@ class BankAccountAdapter(private val withdrawAnalytics: WithdrawAnalytics,
         this.checkEligible = checkEligible
         bankAccountList.clear()
         bankAccountList.addAll(updateDefaultBankList(newBankList))
-        bankAccountList.add(bankSetting)
     }
 
     private fun updateDefaultBankList(newBankList: ArrayList<BankAccount>): ArrayList<BankAccount> {
@@ -89,6 +94,8 @@ class BankAccountAdapter(private val withdrawAnalytics: WithdrawAnalytics,
     }
 
     private fun onBankAccountSelected(newSelectedBankAccount: BankAccount) {
+        if (newSelectedBankAccount.isGopay() && !newSelectedBankAccount.isGopayEligible()) return
+
         if (::currentSelectedBankAccount.isInitialized) {
             if (currentSelectedBankAccount == newSelectedBankAccount) {
                 return
@@ -114,13 +121,14 @@ class BankAccountAdapter(private val withdrawAnalytics: WithdrawAnalytics,
     }
 
     fun getSelectedBankAccount(): BankAccount? {
-        return if (!::currentSelectedBankAccount.isInitialized)
+        return if (!::currentSelectedBankAccount.isInitialized || !bankAccountList.contains(currentSelectedBankAccount))
             null
         else
             currentSelectedBankAccount
     }
 
     interface BankAdapterListener {
+        fun onButtonClicked(applink: String)
         fun onBankAccountChanged()
 
         fun openAddBankAccount()
@@ -128,6 +136,8 @@ class BankAccountAdapter(private val withdrawAnalytics: WithdrawAnalytics,
         fun openBankAccountSetting()
 
         fun showCoachMarkOnRPIcon(iconView: View)
+
+        fun showCoachMarkOnGopayBank(view: View, bankAccount: BankAccount)
 
         fun showPremiumAccountDialog(bankAccount: BankAccount)
 

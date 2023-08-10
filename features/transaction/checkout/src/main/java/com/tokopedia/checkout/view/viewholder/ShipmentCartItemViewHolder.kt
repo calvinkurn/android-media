@@ -21,6 +21,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.PRODUCT_PROTECTION_INSURANCE_TYPE
 import com.tokopedia.purchase_platform.common.databinding.ItemProductInfoAddOnBinding
 import com.tokopedia.purchase_platform.common.databinding.ItemShipmentAddonProductItemBinding
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
@@ -54,8 +56,6 @@ class ShipmentCartItemViewHolder(
     }
 
     private val binding: ItemShipmentProductBinding = ItemShipmentProductBinding.bind(itemView)
-
-    private val listSelectedAddOnId: ArrayList<Long> = arrayListOf()
 
     private var delayChangeCheckboxAddOnState: Job? = null
 
@@ -241,6 +241,7 @@ class ShipmentCartItemViewHolder(
             binding.textItemPerProduct.text = CurrencyFormatUtil
                 .convertPriceValueToIdrFormat(cartItem.protectionPricePerProduct.toLong(), false)
                 .removeDecimalSuffix()
+            binding.checkboxPpp.setOnCheckedChangeListener { _, _ -> }
             if (cartItem.isProtectionCheckboxDisabled) {
                 binding.checkboxPpp.isEnabled = false
                 binding.checkboxPpp.isChecked = true
@@ -442,7 +443,6 @@ class ShipmentCartItemViewHolder(
                     tvSeeAllAddonProduct.setOnClickListener {
                         listener?.onClickSeeAllAddOnProductService(cartItemModel)
                     }
-                    listener?.onClickLihatSemuaAddOnProductWidget()
                 } else {
                     tvSeeAllAddonProduct.gone()
                 }
@@ -459,14 +459,38 @@ class ShipmentCartItemViewHolder(
                         tvShipmentAddOnPrice.text = CurrencyFormatUtil
                             .convertPriceValueToIdrFormat(addon.price.toLong(), false)
                             .removeDecimalSuffix()
-                        cbAddonItem.isChecked = (addon.status == ADD_ON_PRODUCT_STATUS_CHECK)
+                        when (addon.status) {
+                            ADD_ON_PRODUCT_STATUS_CHECK -> {
+                                cbAddonItem.isChecked = true
+                                cbAddonItem.isEnabled = true
+                            }
+                            ADD_ON_PRODUCT_STATUS_MANDATORY -> {
+                                cbAddonItem.isChecked = true
+                                cbAddonItem.isEnabled = false
+                            }
+                            else -> {
+                                cbAddonItem.isChecked = false
+                                cbAddonItem.isEnabled = true
+                            }
+                        }
+                        if (addon.type == PRODUCT_PROTECTION_INSURANCE_TYPE) {
+                            cbAddonItem.isChecked = cartItemModel.isProtectionOptIn
+                        }
                         cbAddonItem.setOnCheckedChangeListener { compoundButton, isChecked ->
-                            delayChangeCheckboxAddOnState?.cancel()
-                            delayChangeCheckboxAddOnState = GlobalScope.launch(Dispatchers.Main) {
-                                delay(DEBOUNCE_TIME_ADDON)
-                                if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
-                                    listener?.onCheckboxAddonProductListener(isChecked, addon, cartItemModel, bindingAdapterPosition)
-                                    listener?.onClickAddOnsProductWidget(addon.type, cartItemModel.productId.toString(), isChecked)
+                            if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
+                                delayChangeCheckboxAddOnState?.cancel()
+                                delayChangeCheckboxAddOnState = GlobalScope.launch(Dispatchers.Main) {
+                                    delay(DEBOUNCE_TIME_ADDON)
+                                    if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
+                                        listener?.onCheckboxAddonProductListener(isChecked, addon, cartItemModel, bindingAdapterPosition)
+                                    }
+                                }
+
+                                if (addon.type == PRODUCT_PROTECTION_INSURANCE_TYPE) {
+                                    val updatedCartItemModel = cartItemModel.copy(
+                                        isProtectionOptIn = isChecked
+                                    )
+                                    listener?.onCheckPurchaseProtection(bindingAdapterPosition, updatedCartItemModel)
                                 }
                             }
                         }
@@ -526,6 +550,7 @@ class ShipmentCartItemViewHolder(
                         .convertPriceValueToIdrFormat(addon.price.toLong(), false)
                         .removeDecimalSuffix()
                     binding.itemShipmentAddonProductBundling.llAddonProductItems.addView(addOnView.root)
+                    listener?.onImpressionAddOnProductService(addon.type, cartItemModel.productId.toString())
                 }
             }
         }
@@ -552,9 +577,5 @@ class ShipmentCartItemViewHolder(
         fun onClickSeeAllAddOnProductService(cartItemModel: CartItemModel)
 
         fun onImpressionAddOnProductService(addonType: Int, productId: String)
-
-        fun onClickAddOnsProductWidget(addonType: Int, productId: String, isChecked: Boolean)
-
-        fun onClickLihatSemuaAddOnProductWidget()
     }
 }

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="0dp"
+    app:card_type="border">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/group_shipment_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="icon_product_shipment_info, tv_weight_origin"
+            tools:visibility="gone"/>
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/group_preorder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="icon_preorder, tv_preorder_info"
+            tools:visibility="gone"/>
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/icon_product_shipment_info"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:icon_color_light_enable="@color/Unify_NN900"
+            app:icon_name="PRODUCT_INFO"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_weight_origin"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:textColor="@color/Unify_NN600"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@id/icon_product_shipment_info"
+            app:layout_constraintTop_toTopOf="@id/icon_product_shipment_info"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:typographyType="display_3"
+            tools:text="Dikirim dari Tangerang • Berat 5 kg" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/icon_preorder"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"
+            app:icon_color_light_enable="@color/Unify_NN900"
+            app:icon_name="CALENDAR_TIME"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/icon_product_shipment_info" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_preorder_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:textColor="@color/Unify_NN600"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@id/icon_preorder"
+            app:layout_constraintTop_toTopOf="@id/icon_preorder"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:typographyType="display_3"
+            tools:text="Barang dikirim 17 Jan (PreOrder 25 hari)" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</com.tokopedia.unifycomponents.CardUnify2>

@@ -16,7 +16,6 @@ import com.tokopedia.checkout.databinding.ItemTickerShippingCompletionBinding
 import com.tokopedia.checkout.databinding.ItemUpsellBinding
 import com.tokopedia.checkout.databinding.ViewItemShipmentCostDetailsBinding
 import com.tokopedia.checkout.databinding.ViewItemShipmentRecipientAddressBinding
-import com.tokopedia.checkout.utils.ShipmentRollenceUtil
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.converter.RatesDataConverter
 import com.tokopedia.checkout.view.uimodel.CrossSellModel
@@ -44,7 +43,6 @@ import com.tokopedia.checkout.view.viewholder.ShipmentDonationViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentEmasViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentInsuranceTncViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentNewUpsellImprovementViewHolder
-import com.tokopedia.checkout.view.viewholder.ShipmentNewUpsellViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentRecipientAddressViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentTickerAnnouncementViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentTickerErrorViewHolder
@@ -195,11 +193,7 @@ class ShipmentAdapter @Inject constructor(
             }
 
             is ShipmentNewUpsellModel -> {
-                return if (ShipmentRollenceUtil.enableCheckoutNewUpsellImprovement()) {
-                    ShipmentNewUpsellImprovementViewHolder.LAYOUT
-                } else {
-                    ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL
-                }
+                return ShipmentNewUpsellImprovementViewHolder.LAYOUT
             }
 
             is ShipmentCartItemTopModel -> {
@@ -318,10 +312,6 @@ class ShipmentAdapter @Inject constructor(
                 )
             }
 
-            ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL -> {
-                return ShipmentNewUpsellViewHolder(view, shipmentAdapterActionListener)
-            }
-
             ShipmentNewUpsellImprovementViewHolder.LAYOUT -> {
                 return ShipmentNewUpsellImprovementViewHolder(view, shipmentAdapterActionListener)
             }
@@ -417,10 +407,6 @@ class ShipmentAdapter @Inject constructor(
 
             ShipmentUpsellViewHolder.ITEM_VIEW_UPSELL -> {
                 (holder as ShipmentUpsellViewHolder).bind(data as ShipmentUpsellModel)
-            }
-
-            ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL -> {
-                (holder as ShipmentNewUpsellViewHolder).bind(data as ShipmentNewUpsellModel)
             }
 
             ShipmentNewUpsellImprovementViewHolder.LAYOUT -> {
@@ -1277,24 +1263,25 @@ class ShipmentAdapter @Inject constructor(
     override fun onCheckPurchaseProtection(position: Int, cartItem: CartItemModel) {
         val (shipmentCartItemPosition, shipmentCartItem) =
             getShipmentCartItemByCartString(cartItem.cartStringGroup)
+        val index = shipmentCartItem.cartItemModels.indexOfFirst { it.productId == cartItem.productId }
         if (cartItem.isProtectionOptIn && shipmentCartItem.selectedShipmentDetailData?.useDropshipper == true) {
             shipmentCartItem.selectedShipmentDetailData?.useDropshipper = false
             shipmentCartItem.cartItemModels =
                 shipmentCartItem.cartItemModels.toMutableList().apply {
-                    set(position + shipmentCartItem.cartItemModels.size - shipmentCartItemPosition, cartItem)
+                    set(index, cartItem)
                 }
             shipmentDataList[shipmentCartItemPosition] = shipmentCartItem
-            notifyItemChanged(shipmentCartItemPosition)
+            shipmentAdapterActionListener.onNeedUpdateViewItem(shipmentCartItemPosition)
             shipmentDataList[position] = cartItem
-            notifyItemChanged(position)
+            shipmentAdapterActionListener.onNeedUpdateViewItem(position)
             shipmentAdapterActionListener.onPurchaseProtectionLogicError()
         } else {
             shipmentCartItem.cartItemModels =
                 shipmentCartItem.cartItemModels.toMutableList().apply {
-                    set(position + shipmentCartItem.cartItemModels.size - shipmentCartItemPosition, cartItem)
+                    set(index, cartItem)
                 }
             shipmentDataList[shipmentCartItemPosition] = shipmentCartItem
-            notifyItemChanged(shipmentCartItemPosition)
+            shipmentAdapterActionListener.onNeedUpdateViewItem(shipmentCartItemPosition)
             shipmentDataList[position] = cartItem
         }
         shipmentAdapterActionListener.onPurchaseProtectionChangeListener(position)
@@ -1318,14 +1305,6 @@ class ShipmentAdapter @Inject constructor(
 
     override fun onImpressionAddOnProductService(addonType: Int, productId: String) {
         shipmentAdapterActionListener.addOnProductServiceImpression(addonType, productId)
-    }
-
-    override fun onClickAddOnsProductWidget(addonType: Int, productId: String, isChecked: Boolean) {
-        shipmentAdapterActionListener.onClickAddOnProductServiceWidgetItem(addonType, productId, isChecked)
-    }
-
-    override fun onClickLihatSemuaAddOnProductWidget() {
-        shipmentAdapterActionListener.onClickLihatSemuaAddOnProductServiceWidget()
     }
 
     override fun onClickCollapseGroupProduct(

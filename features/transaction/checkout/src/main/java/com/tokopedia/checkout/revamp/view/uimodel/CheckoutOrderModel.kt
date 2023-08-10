@@ -1,0 +1,250 @@
+package com.tokopedia.checkout.revamp.view.uimodel
+
+import android.os.Parcelable
+import com.tokopedia.logisticcart.shipping.model.CourierItemData
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
+import com.tokopedia.logisticcart.shipping.model.ShopShipment
+import com.tokopedia.logisticcart.shipping.model.ShopTypeInfoData
+import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel
+import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
+import kotlinx.parcelize.Parcelize
+
+data class CheckoutOrderModel(
+    override val cartStringGroup: String,
+    var isAllItemError: Boolean = false,
+    var isError: Boolean = false,
+    var errorTitle: String = "",
+    val errorDescription: String = "",
+    var isHasUnblockingError: Boolean = false,
+    var unblockingErrorMessage: String = "",
+    var firstProductErrorIndex: Int = -1,
+    val isTriggerScrollToErrorProduct: Boolean = false,
+    var isCustomEpharmacyError: Boolean = false,
+
+    val shipment: CheckoutOrderShipment = CheckoutOrderShipment(),
+
+    // Shop data
+    val shopId: Long = 0,
+    val shopName: String = "",
+    val orderNumber: Int = 0,
+    val preOrderInfo: String = "",
+    val freeShippingBadgeUrl: String = "",
+    val isFreeShippingPlus: Boolean = false, // flag for plus badge tracker
+    var shopLocation: String = "",
+    val shopAlertMessage: String = "",
+    val shopTypeInfoData: ShopTypeInfoData = ShopTypeInfoData(),
+    val shopShipmentList: List<ShopShipment> = emptyList(),
+    val isTokoNow: Boolean = false,
+    val shopTickerTitle: String = "",
+    var shopTicker: String = "",
+    val enablerLabel: String = "",
+
+    // AddOns
+    val addOnsOrderLevelModel: AddOnGiftingDataModel = AddOnGiftingDataModel(),
+    val addOnWordingModel: AddOnGiftingWordingModel = AddOnGiftingWordingModel(),
+    val addOnDefaultFrom: String = "",
+    val addOnDefaultTo: String = "",
+
+    // Cart item state
+    val shippingId: Int = 0,
+    var spId: Int = 0,
+    var boCode: String = "",
+    var boUniqueId: String = "",
+    var dropshiperName: String = "",
+    var dropshiperPhone: String = "",
+    val isInsurance: Boolean = false,
+    val isSaveStateFlag: Boolean = false,
+
+    val weightUnit: Int = 0,
+    val isProductFinsurance: Boolean = false,
+    val isProductFcancelPartial: Boolean = false,
+    val isProductIsPreorder: Boolean = false,
+
+    // todo check this usage
+    var products: List<CheckoutProductModel> = ArrayList(),
+    var preOrderDurationDay: Int = 0,
+
+    // View state
+    var isStateDetailSubtotalViewExpanded: Boolean = false,
+    var isStateAllItemViewExpanded: Boolean = true,
+    val isStateDropshipperDetailExpanded: Boolean = false,
+    var isStateDropshipperHasError: Boolean = false,
+    var isStateLoadingCourierState: Boolean = false,
+    var isStateHasLoadCourierState: Boolean = false,
+    var isStateHasLoadCourierTradeInDropOffState: Boolean = false,
+    val isStateHasExtraMarginTop: Boolean = false,
+
+    // Flag for courier recommendation
+    private val useCourierRecommendation: Boolean = false,
+    val isHidingCourier: Boolean = false,
+
+    // for robinhood III
+    val isBlackbox: Boolean = false,
+    val addressId: String = "",
+
+    val isFulfillment: Boolean = false,
+    val fulfillmentBadgeUrl: String = "",
+    val fulfillmentId: Long = 0,
+
+    val postalCode: String = "",
+    val latitude: String = "",
+    val longitude: String = "",
+    val districtId: String = "",
+    val keroToken: String = "",
+    val keroUnixTime: String = "",
+    val boMetadata: BoMetadata = BoMetadata(),
+
+    // promo stacking
+    var hasPromoList: Boolean = false,
+    var voucherLogisticItemUiModel: VoucherLogisticItemUiModel? = null,
+
+    val isLeasingProduct: Boolean = false,
+    val bookingFee: Int = 0,
+    val listPromoCodes: List<String> = emptyList(),
+
+    val isHasSetDropOffLocation: Boolean = false,
+
+    // Shipping experiance
+    val isEligibleNewShippingExperience: Boolean = false,
+    var isTriggerShippingVibrationAnimation: Boolean = false,
+    var isShippingBorderRed: Boolean = false,
+    val isDisableChangeCourier: Boolean = false,
+    val isAutoCourierSelection: Boolean = false,
+    val hasGeolocation: Boolean = false,
+
+    // regular shipment service but do not show change courier card
+    var isHideChangeCourierCard: Boolean = false,
+    var durationCardDescription: String = "",
+
+    // Courier Selection Error
+    val courierSelectionErrorTitle: String = "",
+    val courierSelectionErrorDescription: String = "",
+
+    // Flag for tracking
+    var isHasShownCourierError: Boolean = false,
+
+    // Schedule delivery
+    var isShowScheduleDelivery: Boolean = false,
+    var scheduleDate: String = "",
+    var timeslotId: Long = 0L,
+    var validationMetadata: String = "",
+    val ratesValidationFlow: Boolean = false,
+    var hasSentScheduleDeliveryAnalytics: Boolean = false,
+
+    // Multiple Order Plus Coachmark
+    var coachmarkPlus: CoachmarkPlusData = CoachmarkPlusData(),
+
+    // Epharmacy
+    var hasEthicalProducts: Boolean = false,
+    var hasNonEthicalProducts: Boolean = false,
+    var prescriptionIds: List<String> = emptyList(),
+    var tokoConsultationId: String = "",
+    var partnerConsultationId: String = "",
+    var consultationDataString: String = "",
+    var shouldResetCourier: Boolean = false,
+
+    // new owoc
+    val groupType: Int = 0,
+    val uiGroupType: Int = 0,
+    val groupInfoName: String = "",
+    val groupInfoBadgeUrl: String = "",
+    val groupInfoDescription: String = "",
+    val groupInfoDescriptionBadgeUrl: String = "",
+
+    // add ons subtotal
+    var subtotalAddOnMap: HashMap<Int, String> = hashMapOf()
+) : CheckoutItem {
+
+    val isCustomPinpointError: Boolean
+        get() = isDisableChangeCourier && !hasGeolocation
+
+    val cartItemModelsGroupByOrder: Map<String, List<CheckoutProductModel>>
+        get() = products.filter { !it.isError }
+            .groupBy { it.cartStringOrder }
+}
+
+@Parcelize
+data class CoachmarkPlusData(
+    val isShown: Boolean = false,
+    val title: String = "",
+    val content: String = ""
+) : Parcelable
+
+data class CheckoutOrderShipment(
+    val isLoading: Boolean = false,
+    val courierItemData: CourierItemData? = null,
+    val shippingCourierUiModels: List<ShippingCourierUiModel> = emptyList(),
+    val logisticPromoViewModel: LogisticPromoUiModel? = null,
+    val logisticPromoShipping: ShippingCourierUiModel? = null,
+    val isApplyLogisticPromo: Boolean = false,
+    val insurance: CheckoutOrderInsurance = CheckoutOrderInsurance(),
+    val isHideChangeCourierCard: Boolean = false,
+
+    // Analytics
+    var hasTriggerViewMessageTracking: Boolean = false
+) {
+//    fun isValid(): Boolean {
+//        return getRealShipperProductId() > 0 && !serviceName.isNullOrEmpty()
+//    }
+//
+//    fun getRealServiceId(): Int {
+//        return logisticPromoShipping?.serviceData?.serviceId
+//            ?: serviceId.toZeroIfNull()
+//    }
+//
+//    fun getRealShipperProductId(): Int {
+//        return logisticPromoShipping?.productData?.shipperProductId
+//            ?: shipperProductId.toZeroIfNull()
+//    }
+//
+//    fun getRealShipperId(): Int {
+//        return logisticPromoShipping?.productData?.shipperId ?: shipperId.toZeroIfNull()
+//    }
+//
+//    fun getRealRatesId(): String {
+//        return logisticPromoShipping?.ratesId ?: ratesId ?: ""
+//    }
+//
+//    fun getRealUt(): String {
+//        return logisticPromoShipping?.productData?.unixTime ?: ut ?: ""
+//    }
+//
+//    fun getRealChecksum(): String {
+//        return logisticPromoShipping?.productData?.checkSum ?: checksum ?: ""
+//    }
+//
+//    fun getRealOriginalPrice(): Int {
+//        return if (isApplyLogisticPromo && logisticPromoShipping != null && logisticPromoViewModel != null) {
+//            logisticPromoViewModel.shippingRate
+//        } else {
+//            shippingPrice ?: 0
+//        }
+//    }
+//
+//    fun getRealShippingPrice(): Int {
+//        return if (isApplyLogisticPromo && logisticPromoShipping != null && logisticPromoViewModel != null) {
+//            logisticPromoViewModel.discountedRate
+//        } else {
+//            shippingPrice ?: 0
+//        }
+//    }
+//
+//    fun isUseInsurance(): Boolean {
+//        return insurance.isCheckInsurance && insurance.insuranceData != null
+//    }
+//
+//    fun getRealInsurancePrice(): Int {
+//        return if (insurance.isCheckInsurance && insurance.insuranceData != null) {
+//            insurance.insuranceData.insurancePrice.roundToInt()
+//        } else {
+//            0
+//        }
+//    }
+}
+
+data class CheckoutOrderInsurance(
+    var isCheckInsurance: Boolean = false
+)

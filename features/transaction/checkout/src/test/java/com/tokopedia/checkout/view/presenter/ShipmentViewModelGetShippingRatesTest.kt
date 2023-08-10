@@ -267,10 +267,11 @@ class ShipmentViewModelGetShippingRatesTest : BaseShipmentViewModelTest() {
         // Given
         val response = DataProvider.provideRatesV3Response()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
-        shippingRecommendationData.shippingDurationUiModels[3].shippingCourierViewModelList.first { it.productData.shipperProductId == 1 }.apply {
-            productData.isUiRatesHidden = true
-            serviceData.selectedShipperProductId = 0
-        }
+        shippingRecommendationData.shippingDurationUiModels[3].shippingCourierViewModelList.first { it.productData.shipperProductId == 1 }
+            .apply {
+                productData = productData.copy(isUiRatesHidden = true)
+                serviceData = serviceData.copy(selectedShipperProductId = 0)
+            }
 
         every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
 
@@ -322,7 +323,11 @@ class ShipmentViewModelGetShippingRatesTest : BaseShipmentViewModelTest() {
         // Then
         verify {
             view.renderCourierStateFailed(itemPosition, isTradeInDropOff, any())
-            view.logOnErrorLoadCourier(match { it.message == "rates ui hidden but no promo" }, any(), any())
+            view.logOnErrorLoadCourier(
+                match { it.message == "rates ui hidden but no promo" },
+                any(),
+                any()
+            )
         }
     }
 
@@ -532,7 +537,8 @@ class ShipmentViewModelGetShippingRatesTest : BaseShipmentViewModelTest() {
         val isTradeInByDropOff = false
         every { view.isTradeInByDropOff } returns isTradeInByDropOff
         viewModel.recipientAddressModel = RecipientAddressModel()
-        viewModel.shipmentCartItemModelList = listOf(ShipmentCartItemTopModel(cartStringGroup = "111"), shipmentCartItemModel)
+        viewModel.shipmentCartItemModelList =
+            listOf(ShipmentCartItemTopModel(cartStringGroup = "111"), shipmentCartItemModel)
 
         // When
         viewModel.processGetCourierRecommendation(
@@ -729,10 +735,14 @@ class ShipmentViewModelGetShippingRatesTest : BaseShipmentViewModelTest() {
         viewModel.isBoUnstackEnabled = true
         val response = DataProvider.provideRatesV3EnabledBoPromoResponse()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
-        shippingRecommendationData.shippingDurationUiModels.first().shippingCourierViewModelList.first { it.productData.shipperProductId == 28 }.productData.error =
-            ErrorProductData().apply {
+        val courier =
+            shippingRecommendationData.shippingDurationUiModels.first().shippingCourierViewModelList.first { it.productData.shipperProductId == 28 }
+        courier.productData = courier.productData.copy(
+            error = ErrorProductData().apply {
                 errorMessage = "error"
             }
+        )
+
         every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
 
         val shipperId = 1
@@ -803,10 +813,14 @@ class ShipmentViewModelGetShippingRatesTest : BaseShipmentViewModelTest() {
         // Given
         val response = DataProvider.provideRatesV3EnabledBoPromoResponse()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
-        shippingRecommendationData.shippingDurationUiModels[3].shippingCourierViewModelList.first { it.productData.shipperProductId == 1 }.productData.error =
-            ErrorProductData().apply {
+        val courier =
+            shippingRecommendationData.shippingDurationUiModels[3].shippingCourierViewModelList.first { it.productData.shipperProductId == 1 }
+        courier.productData = courier.productData.copy(
+            error = ErrorProductData().apply {
                 errorMessage = "error"
             }
+        )
+
         every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
 
         val shipperId = 1
@@ -943,10 +957,11 @@ class ShipmentViewModelGetShippingRatesTest : BaseShipmentViewModelTest() {
         // Given
         val response = DataProvider.provideRatesV3apiResponse()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
-        shippingRecommendationData.shippingDurationUiModels.first().shippingCourierViewModelList.first().apply {
-            productData.isUiRatesHidden = true
-            serviceData.selectedShipperProductId = 0
-        }
+        shippingRecommendationData.shippingDurationUiModels.first().shippingCourierViewModelList.first()
+            .apply {
+                productData = productData.copy(isUiRatesHidden = true)
+                serviceData = serviceData.copy(selectedShipperProductId = 0)
+            }
 
         every { getRatesApiUseCase.execute(any()) } returns Observable.just(
             shippingRecommendationData
@@ -1006,7 +1021,11 @@ class ShipmentViewModelGetShippingRatesTest : BaseShipmentViewModelTest() {
         // Then
         verify {
             view.renderCourierStateFailed(itemPosition, isTradeInDropOff, any())
-            view.logOnErrorLoadCourier(match { it.message == "rates ui hidden but no promo" }, any(), any())
+            view.logOnErrorLoadCourier(
+                match { it.message == "rates ui hidden but no promo" },
+                any(),
+                any()
+            )
         }
     }
 
@@ -1213,10 +1232,14 @@ class ShipmentViewModelGetShippingRatesTest : BaseShipmentViewModelTest() {
         // Given
         val response = DataProvider.provideRatesV3apiResponse()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
-        shippingRecommendationData.shippingDurationUiModels.first().shippingCourierViewModelList.first().productData.error =
+        val courier =
+            shippingRecommendationData.shippingDurationUiModels.first().shippingCourierViewModelList.first()
+        courier.productData = courier.productData.copy(
+            error =
             ErrorProductData().apply {
                 errorMessage = "error"
             }
+        )
 
         every { getRatesApiUseCase.execute(any()) } returns Observable.just(
             shippingRecommendationData
@@ -1353,10 +1376,11 @@ class ShipmentViewModelGetShippingRatesTest : BaseShipmentViewModelTest() {
 
         val response = DataProvider.provideRatesV3Response()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
-        shippingRecommendationData.shippingDurationUiModels[3].shippingCourierViewModelList.first { it.productData.shipperProductId == 1 }.apply {
-            productData.isUiRatesHidden = true
-            serviceData.selectedShipperProductId = 0
-        }
+        shippingRecommendationData.shippingDurationUiModels[3].shippingCourierViewModelList.first { it.productData.shipperProductId == 1 }
+            .apply {
+                productData = productData.copy(isUiRatesHidden = true)
+                serviceData = serviceData.copy(selectedShipperProductId = 0)
+            }
 
         every { getRatesUseCase.execute(any()) } returns Observable.just(
             shippingRecommendationData
@@ -1408,7 +1432,11 @@ class ShipmentViewModelGetShippingRatesTest : BaseShipmentViewModelTest() {
         // Then
         verify {
             view.renderCourierStateFailed(itemPosition, isTradeInDropOff, any())
-            view.logOnErrorLoadCourier(match { it.message == "rates ui hidden but no promo" }, any(), any())
+            view.logOnErrorLoadCourier(
+                match { it.message == "rates ui hidden but no promo" },
+                any(),
+                any()
+            )
         }
     }
 
@@ -1422,8 +1450,12 @@ class ShipmentViewModelGetShippingRatesTest : BaseShipmentViewModelTest() {
 
         val response = DataProvider.provideRatesV3Response()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
-        shippingRecommendationData.shippingDurationUiModels[3].shippingCourierViewModelList.first { it.productData.shipperProductId == 1 }.productData.error =
+        val courier =
+            shippingRecommendationData.shippingDurationUiModels[3].shippingCourierViewModelList.first { it.productData.shipperProductId == 1 }
+        courier.productData = courier.productData.copy(
+            error =
             ErrorProductData().apply { errorMessage = "error" }
+        )
 
         every { getRatesUseCase.execute(any()) } returns Observable.just(
             shippingRecommendationData
@@ -1740,10 +1772,11 @@ class ShipmentViewModelGetShippingRatesTest : BaseShipmentViewModelTest() {
 
         val response = DataProvider.provideRatesV3apiResponse()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
-        shippingRecommendationData.shippingDurationUiModels.first().shippingCourierViewModelList.first().apply {
-            productData.isUiRatesHidden = true
-            serviceData.selectedShipperProductId = 0
-        }
+        shippingRecommendationData.shippingDurationUiModels.first().shippingCourierViewModelList.first()
+            .apply {
+                productData = productData.copy(isUiRatesHidden = true)
+                serviceData = serviceData.copy(selectedShipperProductId = 0)
+            }
 
         every { getRatesApiUseCase.execute(any()) } returns Observable.just(
             shippingRecommendationData
@@ -1795,7 +1828,11 @@ class ShipmentViewModelGetShippingRatesTest : BaseShipmentViewModelTest() {
         // Then
         verify {
             view.renderCourierStateFailed(any(), isTradeInDropOff, false)
-            view.logOnErrorLoadCourier(match { it.message == "rates ui hidden but no promo" }, any(), any())
+            view.logOnErrorLoadCourier(
+                match { it.message == "rates ui hidden but no promo" },
+                any(),
+                any()
+            )
         }
     }
 
@@ -1809,8 +1846,12 @@ class ShipmentViewModelGetShippingRatesTest : BaseShipmentViewModelTest() {
 
         val response = DataProvider.provideRatesV3apiResponse()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
-        shippingRecommendationData.shippingDurationUiModels.first().shippingCourierViewModelList.first().productData.error =
+        val courier =
+            shippingRecommendationData.shippingDurationUiModels.first().shippingCourierViewModelList.first()
+        courier.productData = courier.productData.copy(
+            error =
             ErrorProductData().apply { errorMessage = "error" }
+        )
 
         every { getRatesApiUseCase.execute(any()) } returns Observable.just(
             shippingRecommendationData
@@ -2120,7 +2161,8 @@ class ShipmentViewModelGetShippingRatesTest : BaseShipmentViewModelTest() {
 
         val ratesResponse = DataProvider.provideRatesV3Response()
         val ratesScheduleDeliveryResponse = DataProvider.provideScheduleDeliveryRatesResponse()
-        val shippingRecommendationData = shippingDurationConverter.convertModel(ratesResponse.ratesData)
+        val shippingRecommendationData =
+            shippingDurationConverter.convertModel(ratesResponse.ratesData)
         shippingRecommendationData.scheduleDeliveryData =
             ratesScheduleDeliveryResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
 
@@ -2154,7 +2196,8 @@ class ShipmentViewModelGetShippingRatesTest : BaseShipmentViewModelTest() {
                 isFulfillment = false
             )
         }
-        val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = "", ratesValidationFlow = true)
+        val shipmentCartItemModel =
+            ShipmentCartItemModel(cartStringGroup = "", ratesValidationFlow = true)
         val shopShipmentList = ArrayList<ShopShipment>()
         val products = ArrayList<Product>()
         val cartString = "123-abc"
@@ -2186,7 +2229,9 @@ class ShipmentViewModelGetShippingRatesTest : BaseShipmentViewModelTest() {
                 .mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
 
         val exception = AkamaiErrorException("akamai")
-        every { getRatesWithScheduleUseCase.execute(any(), any()) } returns Observable.error(exception)
+        every { getRatesWithScheduleUseCase.execute(any(), any()) } returns Observable.error(
+            exception
+        )
 
         val shipperId = 1
         val spId = 1
@@ -2214,7 +2259,8 @@ class ShipmentViewModelGetShippingRatesTest : BaseShipmentViewModelTest() {
                 isFulfillment = false
             )
         }
-        val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = "", ratesValidationFlow = true)
+        val shipmentCartItemModel =
+            ShipmentCartItemModel(cartStringGroup = "", ratesValidationFlow = true)
         val shopShipmentList = ArrayList<ShopShipment>()
         val products = ArrayList<Product>()
         val cartString = "123-abc"

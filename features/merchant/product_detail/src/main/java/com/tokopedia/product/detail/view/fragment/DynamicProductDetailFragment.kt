@@ -17,6 +17,7 @@ import android.util.Log
 import android.util.SparseIntArray
 import android.view.KeyEvent
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
@@ -98,11 +99,14 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.network.utils.URLGenerator.generateURLSessionLogin
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.pdp.fintech.view.PdpFintechWidget.Companion.ACTIVATION_LINKINING_FLOW
+import com.tokopedia.pdp.fintech.view.PdpFintechWidget.Companion.PARAM_CATEGORY_ID
+import com.tokopedia.pdp.fintech.view.PdpFintechWidget.Companion.PARAM_PARENT_ID
 import com.tokopedia.pdp.fintech.view.bottomsheet.GopayLinkBenefitBottomSheet.Companion.ACTIVATION_BOTTOMSHEET_DETAIl
 import com.tokopedia.pdp.fintech.view.bottomsheet.GopayLinkBenefitBottomSheet.Companion.ACTIVATION_WEBVIEW_LINK
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
@@ -163,6 +167,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomLayoutBasicData
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
@@ -1027,11 +1032,6 @@ open class DynamicProductDetailFragment :
                         }
                     }
                 )
-            }
-            MvcView.REQUEST_CODE -> {
-                if (resultCode == MvcView.RESULT_CODE_OK && doActivityResult) {
-                    onSwipeRefresh()
-                }
             }
             REQUEST_CODE_ADD_WISHLIST_COLLECTION -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
@@ -2007,18 +2007,25 @@ open class DynamicProductDetailFragment :
         goToRecommendation()
     }
 
-    override fun onMerchantVoucherSummaryClicked(shopId: String, source: Int, productId: String) {
-        context?.let {
-            startActivityForResult(
-                TransParentActivity.getIntent(
-                    it,
-                    shopId,
-                    source,
-                    productId = productId
-                ),
-                MvcView.REQUEST_CODE
-            )
+    private val mvcLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == MvcView.RESULT_CODE_OK && doActivityResult) {
+            onSwipeRefresh()
         }
+    }
+
+    override fun onMerchantVoucherSummaryClicked(
+        @MvcSource source: Int,
+        uiModel: ProductMerchantVoucherSummaryDataModel.UiModel
+    ) {
+        val mContext = context ?: return
+        val intent = TransParentActivity.getIntent(
+            context = mContext,
+            shopId = uiModel.shopId,
+            source = source,
+            productId = uiModel.productIdMVC,
+            additionalParamJson = uiModel.additionalData
+        )
+        mvcLauncher.launch(intent)
     }
 
     override fun isOwner(): Boolean = viewModel.isShopOwner()
@@ -2043,6 +2050,8 @@ open class DynamicProductDetailFragment :
             startActivityForResult(bottomsheetIntent, RQUEST_CODE_ACTIVATE_GOPAY)
         } else {
             val intent = RouteManager.getIntent(context, redirectionUrl)
+            intent.putExtra(PARAM_PARENT_ID, fintechRedirectionWidgetDataClass.parentId)
+            intent.putExtra(PARAM_CATEGORY_ID, fintechRedirectionWidgetDataClass.categoryId)
             startActivityForResult(intent, RQUEST_CODE_UPDATE_FINTECH_WIDGET)
         }
     }

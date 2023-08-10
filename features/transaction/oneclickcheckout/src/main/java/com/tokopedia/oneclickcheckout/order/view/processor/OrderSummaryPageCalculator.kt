@@ -3,7 +3,6 @@ package com.tokopedia.oneclickcheckout.order.view.processor
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
-import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.CHANGE_PAYMENT_METHOD_MESSAGE
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.MAXIMUM_AMOUNT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.MINIMUM_AMOUNT_ERROR_MESSAGE
@@ -21,6 +20,8 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY
 import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.model.AddOnsProductDataModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
@@ -482,7 +483,10 @@ class OrderSummaryPageCalculator @Inject constructor(
                         totalAddOnPrice += addOnProductLevel.addOnPrice
                         hasAddOn = true
                     }
-                    product.addOnsProductData.data.filter {it.status == ADD_ON_PRODUCT_STATUS_CHECK }.forEach { addOnProductChecked ->
+                    product.addOnsProductData.data.filter {
+                        it.status == ADD_ON_PRODUCT_STATUS_CHECK ||
+                            it.status == ADD_ON_PRODUCT_STATUS_MANDATORY
+                    }.forEach { addOnProductChecked ->
                         totalAddOnProductPrice += addOnProductChecked.price * product.orderQuantity
                         addOnsProductSelectedList.add(addOnProductChecked.copy(productQuantity = product.orderQuantity))
                     }
