@@ -105,7 +105,7 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
     private fun initViews() {
         tabLayout = view?.findViewById<TabLayout>(R.id.tab_layout_specs)
         viewPager = view?.findViewById<ViewPager2>(R.id.view_pager_specs)
-        val closeButton = view?.findViewById<ImageView>(com.tokopedia.design.R.id.close_button)
+        val closeButton = view?.findViewById<ImageView>(R.id.close_button)
         activity?.let {
             setTitle(it.resources.getString(R.string.catalog_detail_product))
             val session = UserSession(it)
