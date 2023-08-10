@@ -12,8 +12,18 @@ class BmgmCommonDataUiModel(
     val offerMessage: String = "",
     val offerDiscount: Double = 0.0,
     val hasReachMaxDiscount: Boolean = false,
-    val products: List<BmgmMiniCartVisitable> = emptyList()
+    val showCartFooter: Boolean = false,
+    val bundledProducts: List<BundledProductUiModel> = emptyList(),
+    val nonBundledProducts: List<SingleProductUiModel> = emptyList(),
 ) {
+
+    companion object {
+        const val PARAM_KEY_BMGM_DATA = "bmgm_data"
+    }
+
+    fun geProducts(): List<BmgmMiniCartVisitable> {
+        return bundledProducts + nonBundledProducts
+    }
 
     data class BundledProductUiModel(
         val tierId: Long = 0L,

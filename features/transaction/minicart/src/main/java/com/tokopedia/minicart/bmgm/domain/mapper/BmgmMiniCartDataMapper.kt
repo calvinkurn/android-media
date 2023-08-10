@@ -21,7 +21,7 @@ class BmgmMiniCartDataMapper @Inject constructor() {
             offerMessage = "Yay, kamu dapat <b>potongan Rp120 rb!</b>",
             offerDiscount = 50000.0,
             hasReachMaxDiscount = false,
-            products = listOf(
+            bundledProducts = listOf(
                 BmgmCommonDataUiModel.BundledProductUiModel(
                     tierId = 1,
                     tierDiscountStr = "diskon 25%",
@@ -32,7 +32,7 @@ class BmgmMiniCartDataMapper @Inject constructor() {
                             productId = "111",
                             warehouseId = "12",
                             productName = "cyp - tetra",
-                            productImage = "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/3/5/70588522/70588522_c5cf67db-92a6-4d3d-8c99-de0d2a79bbd7_760_760",
+                            productImage = "https://images.tokopedia.net/img/cache/500-square/VqbcmM/2022/9/21/f1237076-4c15-46cf-9359-388cf79d8bc9.jpg.webp?ect=4g",
                             productPrice = 50000001.0,
                             productPriceFmt = "Rp50.000",
                             quantity = 1
@@ -41,7 +41,7 @@ class BmgmMiniCartDataMapper @Inject constructor() {
                             productId = "111",
                             warehouseId = "12",
                             productName = "cyp - tetra",
-                            productImage = "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/3/5/70588522/70588522_c5cf67db-92a6-4d3d-8c99-de0d2a79bbd7_760_760",
+                            productImage = "https://images.tokopedia.net/img/cache/500-square/VqbcmM/2022/9/21/f1237076-4c15-46cf-9359-388cf79d8bc9.jpg.webp?ect=4g",
                             productPrice = 50000001.0,
                             productPriceFmt = "Rp50.000",
                             quantity = 1
@@ -50,7 +50,7 @@ class BmgmMiniCartDataMapper @Inject constructor() {
                             productId = "111",
                             warehouseId = "12",
                             productName = "cyp - tetra",
-                            productImage = "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/3/5/70588522/70588522_c5cf67db-92a6-4d3d-8c99-de0d2a79bbd7_760_760",
+                            productImage = "https://images.tokopedia.net/img/cache/500-square/VqbcmM/2022/9/21/f1237076-4c15-46cf-9359-388cf79d8bc9.jpg.webp?ect=4g",
                             productPrice = 50000001.0,
                             productPriceFmt = "Rp50.000",
                             quantity = 1
@@ -67,7 +67,7 @@ class BmgmMiniCartDataMapper @Inject constructor() {
                             productId = "111",
                             warehouseId = "12",
                             productName = "cyp - tetra",
-                            productImage = "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/3/5/70588522/70588522_c5cf67db-92a6-4d3d-8c99-de0d2a79bbd7_760_760",
+                            productImage = "https://images.tokopedia.net/img/cache/500-square/VqbcmM/2022/9/21/f1237076-4c15-46cf-9359-388cf79d8bc9.jpg.webp?ect=4g",
                             productPrice = 50000001.0,
                             productPriceFmt = "Rp50.000",
                             quantity = 1
@@ -76,18 +76,20 @@ class BmgmMiniCartDataMapper @Inject constructor() {
                             productId = "111",
                             warehouseId = "12",
                             productName = "cyp - tetra",
-                            productImage = "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/3/5/70588522/70588522_c5cf67db-92a6-4d3d-8c99-de0d2a79bbd7_760_760",
+                            productImage = "https://images.tokopedia.net/img/cache/500-square/VqbcmM/2022/9/21/f1237076-4c15-46cf-9359-388cf79d8bc9.jpg.webp?ect=4g",
                             productPrice = 50000001.0,
                             productPriceFmt = "Rp50.000",
                             quantity = 1
                         )
                     )
-                ),
+                )
+            ),
+            nonBundledProducts = listOf(
                 BmgmCommonDataUiModel.SingleProductUiModel(
                     productId = "111",
                     warehouseId = "12",
                     productName = "cyp - tetra",
-                    productImage = "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/3/5/70588522/70588522_c5cf67db-92a6-4d3d-8c99-de0d2a79bbd7_760_760",
+                    productImage = "https://images.tokopedia.net/img/cache/500-square/VqbcmM/2022/9/21/f1237076-4c15-46cf-9359-388cf79d8bc9.jpg.webp?ect=4g",
                     productPrice = 50000001.0,
                     productPriceFmt = "Rp50.000",
                     quantity = 1

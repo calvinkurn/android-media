@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.minicart.bmgm.domain.model.BmgmParamModel
 import com.tokopedia.minicart.bmgm.domain.usecase.GetBmgmMiniCartDataUseCase
@@ -34,9 +35,14 @@ class BmgmMiniCartViewModel @Inject constructor(
             val data = withContext(dispatchers.io) {
                 getMiniCartDataUseCase.invoke(userSession.shopId, param)
             }
+            storeCartDataToLocalCache(data)
             _cartData.value = Success(data)
         }, onError = {
             _cartData.value = Fail(it)
         })
+    }
+
+    private fun storeCartDataToLocalCache(data: BmgmCommonDataUiModel) {
+        PersistentCacheManager.instance.put(BmgmCommonDataUiModel.PARAM_KEY_BMGM_DATA, data)
     }
 }

@@ -56,7 +56,6 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener,
             viewModelFactory
         )[BmgmMiniCartViewModel::class.java]
     }
-    private var data: BmgmCommonDataUiModel? = null
 
     init {
         binding = FragmentBmgmMiniCartWidgetBinding.inflate(
@@ -69,24 +68,21 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener,
     override fun onCreate(owner: LifecycleOwner) {
         super.onCreate(owner)
         initInjector()
-        fetchMiniCartData()
     }
 
     override fun onStart(owner: LifecycleOwner) {
         super.onStart(owner)
         observeCartData()
+        fetchMiniCartData()
     }
 
     override fun onDestroy(owner: LifecycleOwner) {
         super.onDestroy(owner)
         binding = null
-        data = null
     }
 
     override fun setOnItemClickedListener() {
-        data?.let {
-            RouteManager.route(context, ApplinkConstInternalGlobal.BMGM_MINI_CART)
-        }
+        RouteManager.route(context, ApplinkConstInternalGlobal.BMGM_MINI_CART)
     }
 
     fun fetchMiniCartData() {
@@ -116,10 +112,9 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener,
     private fun getLifecycleOwner() = (context as? LifecycleOwner)
 
     private fun setOnSuccessGetCartData(data: BmgmCommonDataUiModel) {
-        this.data = data
         binding?.run {
             val checkoutView = ViewBmgmMiniCartSubTotalBinding.bind(root)
-            if (data.products.isNotEmpty()) {
+            if (data.geProducts().isNotEmpty()) {
                 tvBmgmCartDiscount.text = data.offerMessage.parseAsHtml()
                 tvBmgmCartDiscount.visible()
                 rvBmgmMiniCart.visible()
@@ -131,7 +126,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener,
             }
 
             miniCartAdapter.data.clear()
-            miniCartAdapter.data.addAll(data.products)
+            miniCartAdapter.data.addAll(data.geProducts())
             val lastIndex = miniCartAdapter.itemCount.minus(Int.ONE)
             miniCartAdapter.notifyItemRangeChanged(Int.ZERO, lastIndex)
         }
