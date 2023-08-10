@@ -88,4 +88,8 @@ object RollenceKey {
     // Share affiliate
     const val AFFILIATE_SHARE_ICON = "ShareAff_pdpshop"
 
+    //New Universal Share BottomSheet in Shop
+    const val NEW_UNIVERSAL_SHARE_BOTTOM_SHEET = "shop_sharing"
+
+
 }
