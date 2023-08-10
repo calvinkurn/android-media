@@ -56,7 +56,7 @@ class ShopProductCarouselViewModel @Inject constructor(
                 val products = response.data.map {  product ->
                     Product(
                         product.productId,
-                        product.primaryImage.original,
+                        product.primaryImage.thumbnail,
                         product.name,
                         product.price.textIdr,
                         product.campaign.originalPriceFmt,
