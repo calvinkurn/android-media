@@ -198,6 +198,7 @@ class ThematicWidgetViewHolder (
     private fun setupRecyclerView() {
         restoreInstanceStateToLayoutManager()
         setHeightRecyclerView()
+        rvProduct?.isNestedScrollingEnabled = false
         rvProduct?.adapter = adapter
     }
 

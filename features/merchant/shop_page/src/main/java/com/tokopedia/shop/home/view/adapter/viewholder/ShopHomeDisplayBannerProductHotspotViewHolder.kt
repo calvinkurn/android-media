@@ -157,6 +157,7 @@ class ShopHomeDisplayBannerProductHotspotViewHolder(
         layoutManager.removeOnItemSelectionListener(itemSelectListener)
         layoutManager.addOnItemSelectionListener(itemSelectListener)
         recyclerViewProductHotspot?.apply {
+            isNestedScrollingEnabled = false
             (this@apply.layoutParams as? ConstraintLayout.LayoutParams)?.dimensionRatio = ratio
             this.layoutManager = layoutManager
             this.setHasFixedSize(true)
