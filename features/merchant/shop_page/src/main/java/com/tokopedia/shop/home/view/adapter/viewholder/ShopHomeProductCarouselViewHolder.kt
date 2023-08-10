@@ -98,7 +98,7 @@ class ShopHomeProductCarouselViewHolder(
         val pages = mutableListOf<Pair<String, Fragment>>()
 
         tabs.forEachIndexed { _, currentTab ->
-            val fragment = ShopProductCarouselFragment.newInstance(currentTab.components)
+            val fragment = ShopProductCarouselFragment.newInstance("6553224", currentTab.components)
             fragment.setOnMainBannerClick { mainBanner -> listener.onMainBannerClick(mainBanner) }
             fragment.setOnProductClick { selectedShowcase -> listener.onProductClick(selectedShowcase) }
 
