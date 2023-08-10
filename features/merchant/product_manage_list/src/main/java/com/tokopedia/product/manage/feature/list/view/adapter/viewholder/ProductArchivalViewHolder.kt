@@ -72,7 +72,7 @@ class ProductArchivalViewHolder(
         binding?.tvInfoProductArchival?.setCompoundDrawables(
             ContextCompat.getDrawable(
                 view.context,
-                R.drawable.ic_archival
+                R.drawable.iconunify_product_info
             ), null, null, null
         )
     }

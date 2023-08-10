@@ -14,20 +14,33 @@
         android:layout_marginBottom="12dp"
         app:layout_constraintBottom_toTopOf="@id/imageProduct"
         app:layout_constraintTop_toTopOf="parent">
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvInfoProductArchival"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_outline_nn200"
-            android:drawablePadding="10dp"
+            android:orientation="horizontal"
             android:paddingVertical="10dp"
             android:paddingHorizontal="16dp"
             android:gravity="center_vertical"
-            android:text="@string/text_product_have_archived_by_tokopedia"
-            android:textColor="@color/Unify_NN950"
-            android:textSize="12sp"
-            app:typographyType="body_3"
-            app:typographyWeight="reguler" />
+            android:background="@drawable/bg_outline_nn200">
+            <com.tokopedia.iconunify.IconUnify
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:icon_name="PRODUCT_INFO"
+                app:icon_color_light_enable="@color/Unify_NN900"
+                app:icon_color_night_enable="@color/Unify_NN900"
+                />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvInfoProductArchival"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/text_product_have_archived_by_tokopedia"
+                android:textColor="@color/Unify_NN950"
+                android:textSize="12sp"
+                android:layout_marginStart="8dp"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler" />
+        </LinearLayout>
 
         <com.tokopedia.unifycomponents.ticker.Ticker
             android:id="@+id/ticker_product_manage_violation"
@@ -37,7 +50,7 @@
             app:descriptionText="@string/product_manage_violation_ticker_message"
             app:tickerShapeType="loose"
             app:tickerType="warning"
-            tools:visibility="visible" />
+            tools:visibility="gone" />
     </RelativeLayout>
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
