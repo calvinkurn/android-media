@@ -621,6 +621,7 @@ object DeeplinkDFMapper : CoroutineScope {
                 (it.startsWith(SETTING_PROFILE)
                     || it.startsWith(ADD_PHONE)
                     || it.startsWith(NEW_ADD_PHONE)
+                    || it.startsWith(ApplinkConstInternalUserPlatform.PROFILE_MANAGEMENT)
                     || it.startsWith(ADD_EMAIL)
                     || it.startsWith(ADD_BOD)
                     || it.startsWithPattern(CHANGE_NAME)
@@ -632,8 +633,6 @@ object DeeplinkDFMapper : CoroutineScope {
                     || it.startsWith(ApplinkConstInternalUserPlatform.ADD_PIN_COMPLETE)
                     )
             }, DF_USER_SETTINGS, R.string.applink_profile_completion_title, { DFWebviewFallbackUrl.USER_PROFILE_SETTINGS }))
-            add(DFP({ it.startsWith(ApplinkConstInternalUserPlatform.PROFILE_MANAGEMENT) },
-                DF_USER_SETTINGS, R.string.applink_profile_completion_title, { DFWebviewFallbackUrl.USER_PROFILE_SETTINGS }))
             add(DFP({ it.startsWith(ApplinkConstInternalUserPlatform.PROFILE_COMPLETION) }, DF_USER_SETTINGS, R.string.applink_profile_completion_title))
 
             add(DFP({ it.startsWith(CHANGE_PHONE_NUMBER) }, DF_BASE, R.string.applink_change_phone_number))
