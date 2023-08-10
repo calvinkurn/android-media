@@ -7,10 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.ViewSwitcher
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.get
+import androidx.core.view.updateLayoutParams
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.setTextColorCompat
 import com.tokopedia.promocheckout.common.R
 import com.tokopedia.promocheckout.common.view.uimodel.PromoEntryPointSummaryItem
@@ -48,6 +51,8 @@ class PromoEntryPointWidget @JvmOverloads constructor(
     private var inActiveViewWording: TextFlipper? = null
     private var inActiveViewRightIcon: IconUnify? = null
     private var errorView: View? = null
+
+    private var isRounded: Boolean = false
 
     init {
         inflate(context, getLayout(), this)
@@ -96,7 +101,9 @@ class PromoEntryPointWidget @JvmOverloads constructor(
     private fun setupViewBackgrounds(attrs: AttributeSet?) {
         val styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.PromoEntryPointWidget)
         try {
-            if (styledAttributes.getBoolean(R.styleable.PromoEntryPointWidget_rounded, false)) {
+            isRounded =
+                styledAttributes.getBoolean(R.styleable.PromoEntryPointWidget_rounded, false)
+            if (isRounded) {
                 loadingView?.background = ResourcesCompat.getDrawable(resources, R.drawable.background_promo_checkout_teal_rounded, null)
                 activeView?.background = ResourcesCompat.getDrawable(resources, R.drawable.background_promo_checkout_active_teal_rounded, null)
                 val inActiveBackground = ResourcesCompat.getDrawable(
@@ -113,6 +120,13 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                 )
                 (errorBackground as? GradientDrawable)?.setColor(ResourcesCompat.getColor(resources, com.tokopedia.unifyprinciples.R.color.Unify_YN50, null))
                 errorView?.background = errorBackground
+
+                activeViewRightIcon?.updateLayoutParams<MarginLayoutParams> {
+                    marginEnd = 16.dpToPx(context.resources.displayMetrics)
+                }
+                findViewById<View>(R.id.ic_error_promo_checkout)?.updateLayoutParams<MarginLayoutParams> {
+                    marginEnd = 0
+                }
             } else {
                 val loadingBackground = ResourcesCompat.getDrawable(
                     resources,
@@ -166,6 +180,13 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                     )
                 )
                 errorView?.background = errorBackground
+
+                activeViewRightIcon?.updateLayoutParams<MarginLayoutParams> {
+                    marginEnd = 28.dpToPx(context.resources.displayMetrics)
+                }
+                findViewById<View>(R.id.ic_error_promo_checkout)?.updateLayoutParams<MarginLayoutParams> {
+                    marginEnd = 12.dpToPx(context.resources.displayMetrics)
+                }
             }
         } finally {
             styledAttributes.recycle()
@@ -261,7 +282,8 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         activeViewWording?.visibility = View.VISIBLE
         if (animate && switcherView?.visibility == View.VISIBLE) {
             activeViewLeftImage?.setImageUrl(leftImageUrl)
-            activeViewRightIcon?.setImage(rightIcon, )
+            val color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN500)
+            activeViewRightIcon?.setImage(rightIcon, color, null, color, null)
             if (switcherView?.displayedChild != 0) {
                 // only trigger view switch animation if currently showing different view
                 activeViewWording?.setCurrentText(HtmlLinkHelper(context, wording).spannedString)
@@ -275,7 +297,8 @@ class PromoEntryPointWidget @JvmOverloads constructor(
             switcherView?.reset()
             activeViewLeftImage?.setImageUrl(leftImageUrl)
             activeViewWording?.setCurrentText(HtmlLinkHelper(context, wording).spannedString)
-            activeViewRightIcon?.setImage(rightIcon)
+            val color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN500)
+            activeViewRightIcon?.setImage(rightIcon, color, null, color, null)
             switcherView?.displayedChild = 0
             switcherView?.visibility = View.VISIBLE
             errorView?.visibility = View.GONE
@@ -409,22 +432,24 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                     }
                 }
             }
+            val color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
             if (isExpanded) {
-                activeViewRightIcon?.setImage(IconUnify.CHEVRON_UP)
+                activeViewRightIcon?.setImage(IconUnify.CHEVRON_UP, color, null, color, null)
                 activeViewSummaryLayout?.visibility = View.VISIBLE
                 activeViewDivider?.visibility = View.VISIBLE
             } else {
-                activeViewRightIcon?.setImage(IconUnify.CHEVRON_DOWN)
+                activeViewRightIcon?.setImage(IconUnify.CHEVRON_DOWN, color, null, color, null)
                 activeViewSummaryLayout?.visibility = View.GONE
                 activeViewDivider?.visibility = View.GONE
             }
             activeViewRightIcon?.setOnClickListener {
+                val color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
                 if (activeViewSummaryLayout?.visibility == View.VISIBLE) {
-                    activeViewRightIcon?.setImage(IconUnify.CHEVRON_DOWN)
+                    activeViewRightIcon?.setImage(IconUnify.CHEVRON_DOWN, color, null, color, null)
                     activeViewSummaryLayout?.visibility = View.GONE
                     activeViewDivider?.visibility = View.GONE
                 } else {
-                    activeViewRightIcon?.setImage(IconUnify.CHEVRON_UP)
+                    activeViewRightIcon?.setImage(IconUnify.CHEVRON_UP, color, null, color, null)
                     activeViewSummaryLayout?.visibility = View.VISIBLE
                     activeViewDivider?.visibility = View.VISIBLE
                 }
@@ -456,7 +481,12 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         switcherView?.reset()
         activeViewLeftImage?.setImageUrl(PROMO_COUPON_ICON)
         activeViewWording?.setCurrentText(HtmlLinkHelper(context, wording).spannedString)
-        activeViewRightIcon?.setImage(rightIcon)
+        val color = if (isRounded) {
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+        } else {
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN500)
+        }
+        activeViewRightIcon?.setImage(rightIcon, color, null, color, null)
         switcherView?.displayedChild = 0
         switcherView?.visibility = View.VISIBLE
         errorView?.visibility = View.GONE
@@ -504,7 +534,8 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         if (wordings.size > 1) {
             activeViewWording?.startFlipping(wordings)
         }
-        activeViewRightIcon?.setImage(rightIcon)
+        val color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+        activeViewRightIcon?.setImage(rightIcon, color, null, color, null)
         switcherView?.displayedChild = 0
         switcherView?.visibility = View.VISIBLE
         errorView?.visibility = View.GONE
@@ -521,7 +552,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
     fun showApplied(
         title: String,
         desc: String,
-        rightIcon: Int?,
+        rightIcon: Int,
         summaries: List<PromoEntryPointSummaryItem>,
         showConfetti: Boolean = false,
         onClickListener: () -> Unit = {}
@@ -534,12 +565,13 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         activeViewWording?.visibility = View.GONE
         activeViewTitleWording?.visibility = View.VISIBLE
         activeViewDescWording?.visibility = View.VISIBLE
-        if (rightIcon == null) {
-            activeViewRightIcon?.visibility = View.INVISIBLE
+        activeViewRightIcon?.visibility = View.VISIBLE
+        val color = if (isRounded) {
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
         } else {
-            activeViewRightIcon?.visibility = View.VISIBLE
-            activeViewRightIcon?.setImage(rightIcon)
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN500)
         }
+        activeViewRightIcon?.setImage(rightIcon, color, null, color, null)
         switcherView?.displayedChild = 0
         switcherView?.visibility = View.VISIBLE
         errorView?.visibility = View.GONE
