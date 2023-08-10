@@ -4,10 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -23,6 +23,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.common.util.reduceDragSensitivity
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.analytics.FeedAnalytics
@@ -34,11 +35,7 @@ import com.tokopedia.feedplus.presentation.activityresultcontract.RouteContract
 import com.tokopedia.feedplus.presentation.adapter.FeedPagerAdapter
 import com.tokopedia.feedplus.presentation.adapter.bottomsheet.FeedContentCreationTypeBottomSheet
 import com.tokopedia.feedplus.presentation.customview.UploadInfoView
-import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
-import com.tokopedia.feedplus.presentation.model.CreateContentType
-import com.tokopedia.feedplus.presentation.model.FeedDataModel
-import com.tokopedia.feedplus.presentation.model.FeedMainEvent
-import com.tokopedia.feedplus.presentation.model.MetaModel
+import com.tokopedia.feedplus.presentation.model.*
 import com.tokopedia.feedplus.presentation.onboarding.ImmersiveFeedOnboarding
 import com.tokopedia.feedplus.presentation.receiver.FeedMultipleSourceUploadReceiver
 import com.tokopedia.feedplus.presentation.receiver.UploadStatus
@@ -62,7 +59,7 @@ import javax.inject.Inject
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
-import com.tokopedia.feedcomponent.R as feedComponentR
+import com.tokopedia.content.common.R as contentCommonR
 
 /**
  * Created By : Muhammad Furqan on 02/02/23
@@ -95,6 +92,10 @@ class FeedBaseFragment :
     lateinit var feedNavigationAnalytics: FeedNavigationAnalytics
 
     private var mCoachMarkJob: Job? = null
+
+    private val toasterBottomMargin by lazy {
+        resources.getDimensionPixelOffset(R.dimen.feed_toaster_bottom_margin)
+    }
 
     private val adapter by lazy {
         FeedPagerAdapter(
@@ -148,15 +149,13 @@ class FeedBaseFragment :
     private val onNonLoginGoToFollowingTab =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (userSession.isLoggedIn) {
-                Toaster.build(
-                    binding.root,
-                    getString(
+                showNormalToaster(
+                    text = getString(
                         R.string.feed_report_login_success_toaster_text,
                         userSession.name
                     ),
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL
-                ).show()
+                    duration = Toaster.LENGTH_LONG
+                )
 
                 feedMainViewModel.changeCurrentTabByType(TAB_TYPE_FOLLOWING)
             } else {
@@ -222,6 +221,10 @@ class FeedBaseFragment :
         return true
     }
 
+    override fun isForceDarkModeNavigationBar(): Boolean {
+        return true
+    }
+
     override fun initInjector() {
         FeedMainInjector.get(requireContext()).inject(this)
     }
@@ -253,7 +256,7 @@ class FeedBaseFragment :
                     )
                     putExtra(
                         BundleData.TITLE,
-                        getString(feedComponentR.string.feed_post_sebagai)
+                        getString(contentCommonR.string.feed_post_sebagai)
                     )
                     putExtra(
                         BundleData.APPLINK_FOR_GALLERY_PROCEED,
@@ -275,7 +278,7 @@ class FeedBaseFragment :
 
     @OptIn(ExperimentalTime::class)
     fun showSwipeOnboarding() {
-        lifecycleScope.launchWhenResumed {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             delay(COACHMARK_START_DELAY_IN_SEC.toDuration(DurationUnit.SECONDS))
             binding.viewVerticalSwipeOnboarding.showAnimated()
         }
@@ -290,44 +293,45 @@ class FeedBaseFragment :
         }
         isJustLoggedIn = false
 
+        binding.vpFeedTabItemsContainer.reduceDragSensitivity(3)
         binding.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
-            OnPageChangeCallback() {
+                OnPageChangeCallback() {
 
-            var shouldSendSwipeTracker = false
+                var shouldSendSwipeTracker = false
 
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-                if (feedMainViewModel.getTabType(position) == TAB_TYPE_FOLLOWING && !userSession.isLoggedIn) {
-                    onNonLoginGoToFollowingTab.launch(
-                        RouteManager.getIntent(
-                            context,
-                            ApplinkConst.LOGIN
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
+                ) {
+                    if (feedMainViewModel.getTabType(position) == TAB_TYPE_FOLLOWING && !userSession.isLoggedIn) {
+                        onNonLoginGoToFollowingTab.launch(
+                            RouteManager.getIntent(
+                                context,
+                                ApplinkConst.LOGIN
+                            )
                         )
-                    )
-                }
-
-                if (shouldSendSwipeTracker) {
-                    if (THRESHOLD_OFFSET_HALF > positionOffset) {
-                        feedNavigationAnalytics.eventSwipeFollowingTab()
-                    } else {
-                        feedNavigationAnalytics.eventSwipeForYouTab()
                     }
-                    shouldSendSwipeTracker = false
+
+                    if (shouldSendSwipeTracker) {
+                        if (THRESHOLD_OFFSET_HALF > positionOffset) {
+                            feedNavigationAnalytics.eventSwipeFollowingTab()
+                        } else {
+                            feedNavigationAnalytics.eventSwipeForYouTab()
+                        }
+                        shouldSendSwipeTracker = false
+                    }
                 }
-            }
 
-            override fun onPageSelected(position: Int) {
-                feedMainViewModel.changeCurrentTabByIndex(position)
-                appLinkTabPosition = position
-            }
+                override fun onPageSelected(position: Int) {
+                    feedMainViewModel.changeCurrentTabByIndex(position)
+                    appLinkTabPosition = position
+                }
 
-            override fun onPageScrollStateChanged(state: Int) {
-                shouldSendSwipeTracker = state == ViewPager2.SCROLL_STATE_DRAGGING
-            }
-        })
+                override fun onPageScrollStateChanged(state: Int) {
+                    shouldSendSwipeTracker = state == ViewPager2.SCROLL_STATE_DRAGGING
+                }
+            })
 
         binding.viewVerticalSwipeOnboarding.setText(
             getString(R.string.feed_check_next_content)
@@ -348,6 +352,8 @@ class FeedBaseFragment :
 
         feedMainViewModel.updateUserInfo()
         feedMainViewModel.fetchFeedMetaData()
+
+        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     private fun onPauseInternal() {
@@ -355,6 +361,10 @@ class FeedBaseFragment :
 
         mOnboarding?.dismiss()
         mOnboarding = null
+
+        Toaster.toasterCustomBottomHeight = 0
+
+        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     private fun observeFeedTabData() {
@@ -435,68 +445,67 @@ class FeedBaseFragment :
     }
 
     private fun observeUpload() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                val uploadReceiver = uploadReceiverFactory.create(this@FeedBaseFragment)
-                uploadReceiver
-                    .observe()
-                    .collect { info ->
-                        when (val status = info.status) {
-                            is UploadStatus.Progress -> {
-                                binding.uploadView.show()
-                                binding.uploadView.setProgress(status.progress)
-                                binding.uploadView.setThumbnail(status.thumbnailUrl)
-                            }
-                            is UploadStatus.Finished -> {
-                                binding.uploadView.hide()
+        // we don't use repeatOnLifecycle here as we want to listen to upload receivers even when the page is not fully resumed
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            val uploadReceiver = uploadReceiverFactory.create(this@FeedBaseFragment)
+            uploadReceiver
+                .observe()
+                .collect { info ->
+                    when (val status = info.status) {
+                        is UploadStatus.Progress -> {
+                            binding.uploadView.show()
+                            binding.uploadView.setProgress(status.progress)
+                            binding.uploadView.setThumbnail(status.thumbnailUrl)
+                        }
+                        is UploadStatus.Finished -> {
+                            binding.uploadView.hide()
 
-                                if (info.type == UploadType.Shorts) {
-                                    showNormalToaster(
-                                        getString(R.string.feed_upload_content_success),
-                                        duration = Toaster.LENGTH_LONG,
-                                        actionText = getString(R.string.feed_upload_shorts_see_video),
-                                        actionListener = {
-                                            playShortsUploadAnalytic.clickRedirectToChannelRoom(
-                                                status.authorId,
-                                                status.authorType,
-                                                status.contentId
-                                            )
-                                            router.route(
-                                                requireContext(),
-                                                ApplinkConst.PLAY_DETAIL,
-                                                status.contentId
-                                            )
-                                        }
-                                    )
-                                } else {
-                                    showNormalToaster(
-                                        getString(R.string.feed_upload_content_success),
-                                        duration = Toaster.LENGTH_LONG
-                                    )
-                                }
-                            }
-                            is UploadStatus.Failed -> {
-                                binding.uploadView.setFailed()
-                                binding.uploadView.setListener(object : UploadInfoView.Listener {
-                                    override fun onRetryClicked(view: UploadInfoView) {
-                                        status.onRetry()
+                            if (info.type == UploadType.Shorts) {
+                                showNormalToaster(
+                                    getString(R.string.feed_upload_content_success),
+                                    duration = Toaster.LENGTH_LONG,
+                                    actionText = getString(R.string.feed_upload_shorts_see_video),
+                                    actionListener = {
+                                        playShortsUploadAnalytic.clickRedirectToChannelRoom(
+                                            status.authorId,
+                                            status.authorType,
+                                            status.contentId
+                                        )
+                                        router.route(
+                                            requireContext(),
+                                            ApplinkConst.PLAY_DETAIL,
+                                            status.contentId
+                                        )
                                     }
-
-                                    override fun onCloseWhenFailedClicked(view: UploadInfoView) {
-                                        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-                                            uploadReceiver.releaseCurrent()
-                                            binding.uploadView.hide()
-                                        }
-
-                                        if (info.type == UploadType.Post) {
-                                            feedMainViewModel.deletePostCache()
-                                        }
-                                    }
-                                })
+                                )
+                            } else {
+                                showNormalToaster(
+                                    getString(R.string.feed_upload_content_success),
+                                    duration = Toaster.LENGTH_LONG
+                                )
                             }
                         }
+                        is UploadStatus.Failed -> {
+                            binding.uploadView.setFailed()
+                            binding.uploadView.setListener(object : UploadInfoView.Listener {
+                                override fun onRetryClicked(view: UploadInfoView) {
+                                    status.onRetry()
+                                }
+
+                                override fun onCloseWhenFailedClicked(view: UploadInfoView) {
+                                    launch {
+                                        uploadReceiver.releaseCurrent()
+                                        binding.uploadView.hide()
+                                    }
+
+                                    if (info.type == UploadType.Post) {
+                                        feedMainViewModel.deletePostCache()
+                                    }
+                                }
+                            })
+                        }
                     }
-            }
+                }
         }
     }
 
@@ -540,7 +549,7 @@ class FeedBaseFragment :
             }
         }
 
-        if (meta.isCreationActive) {
+        if (meta.isCreationActive && userSession.isLoggedIn) {
             binding.btnFeedCreatePost.show()
         } else {
             binding.btnFeedCreatePost.hide()
@@ -601,7 +610,10 @@ class FeedBaseFragment :
 
             mOnboarding = ImmersiveFeedOnboarding.Builder(requireContext())
                 .setCreateContentView(
-                    if (meta.isCreationActive && !feedMainViewModel.hasShownCreateContent()) {
+                    if (meta.isCreationActive &&
+                        !feedMainViewModel.hasShownCreateContent() &&
+                        feedMainViewModel.isShortEntryPointShowed
+                    ) {
                         binding.btnFeedCreatePost
                     } else {
                         null
@@ -640,34 +652,11 @@ class FeedBaseFragment :
     }
 
     private fun onChangeTab(position: Int) {
-        val newTabView = if (position == TAB_FIRST_INDEX) {
-            binding.tyFeedFirstTab
+        if (position == TAB_FIRST_INDEX) {
+            binding.root.transitionToStart()
         } else {
-            binding.tyFeedSecondTab
+            binding.root.transitionToEnd()
         }
-
-        val newConstraintSet = ConstraintSet()
-        newConstraintSet.clone(binding.root)
-        newConstraintSet.connect(
-            binding.viewFeedTabIndicator.id,
-            ConstraintSet.TOP,
-            newTabView.id,
-            ConstraintSet.BOTTOM
-        )
-        newConstraintSet.connect(
-            binding.viewFeedTabIndicator.id,
-            ConstraintSet.START,
-            newTabView.id,
-            ConstraintSet.START
-        )
-        newConstraintSet.connect(
-            binding.viewFeedTabIndicator.id,
-            ConstraintSet.END,
-            newTabView.id,
-            ConstraintSet.END
-        )
-
-        newConstraintSet.applyTo(binding.root)
     }
 
     private fun onCreatePostClicked() {
@@ -702,8 +691,10 @@ class FeedBaseFragment :
         actionText: String = "",
         actionListener: View.OnClickListener = View.OnClickListener {}
     ) {
+        Toaster.toasterCustomBottomHeight = toasterBottomMargin
+
         Toaster.build(
-            binding.layoutToaster,
+            binding.root,
             text,
             duration,
             Toaster.TYPE_NORMAL,
@@ -732,6 +723,7 @@ class FeedBaseFragment :
 
         const val TAB_TYPE_FOR_YOU = "foryou"
         const val TAB_TYPE_FOLLOWING = "following"
+        const val CDP = "cdp"
 
         private const val EXTRAS_UTM_MEDIUM = "utm_medium"
         private const val PARAM_PUSH_NOTIFICATION = "push"

@@ -29,14 +29,14 @@ class AnchorTabsViewHolder(itemView: View, val fragment: Fragment) :
     private var linearLayoutManager: LinearLayoutManager =
         LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
     private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
-    lateinit var viewModel: AnchorTabsViewModel
+    var viewModel: AnchorTabsViewModel? = null
 
     val observer = Observer<ScrollData> { data ->
         data?.let {
-            if (::viewModel.isInitialized) {
-                if (viewModel.pauseDispatchChanges && !data.isAutoScroll) {
-                    viewModel.pauseDispatchChanges = false
-                    viewModel.updateSelectedSection(viewModel.selectedSectionId, false)
+            viewModel?.let { anchorTabsViewModel ->
+                if (anchorTabsViewModel.pauseDispatchChanges && !data.isAutoScroll) {
+                    anchorTabsViewModel.pauseDispatchChanges = false
+                    anchorTabsViewModel.updateSelectedSection(anchorTabsViewModel.selectedSectionId, false)
                 }
             }
         }
@@ -49,12 +49,11 @@ class AnchorTabsViewHolder(itemView: View, val fragment: Fragment) :
 
         override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics?): Float {
             return if (displayMetrics != null) {
-                return MILLI_SECONDS_PER_INCH/displayMetrics.densityDpi
-            } else
+                return MILLI_SECONDS_PER_INCH / displayMetrics.densityDpi
+            } else {
                 super.calculateSpeedPerPixel(displayMetrics)
-
+            }
         }
-
     }
 
     init {
@@ -66,74 +65,79 @@ class AnchorTabsViewHolder(itemView: View, val fragment: Fragment) :
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         viewModel = discoveryBaseViewModel as AnchorTabsViewModel
-        getSubComponent().inject(viewModel)
+        viewModel?.let {
+            getSubComponent().inject(it)
+        }
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            viewModel.getCarouselItemsListData().observe(it, { item ->
-                if(fragment.view != null) {
-                    mDiscoveryRecycleAdapter.addDataList(item)
-                    anchorRV.post {
-                        if (viewModel.selectedSectionPos < viewModel.getListSize()) {
-                            if (viewModel.wasSectionDeleted()) {
-                                linearLayoutManager.scrollToPositionWithOffset(
-                                    viewModel.selectedSectionPos,
-                                    0
-                                )
-                            } else {
-                                smoothScroller.targetPosition = viewModel.selectedSectionPos
-                                linearLayoutManager.startSmoothScroll(smoothScroller)
+            viewModel?.let { viewModel ->
+                viewModel.getCarouselItemsListData().observe(it) { item ->
+                    if (fragment.view != null) {
+                        mDiscoveryRecycleAdapter.addDataList(item)
+                        anchorRV.post {
+                            if (viewModel.selectedSectionPos < viewModel.getListSize()) {
+                                if (viewModel.wasSectionDeleted()) {
+                                    linearLayoutManager.scrollToPositionWithOffset(
+                                        viewModel.selectedSectionPos,
+                                        0
+                                    )
+                                } else {
+                                    smoothScroller.targetPosition = viewModel.selectedSectionPos
+                                    linearLayoutManager.startSmoothScroll(smoothScroller)
+                                }
                             }
                         }
                     }
                 }
-            })
 
-            viewModel.getUpdatePositionsLD().observe(it, { shouldUpdate ->
-                if (shouldUpdate)
-                    updatePositionChanged()
-            })
-
-            (fragment as DiscoveryFragment).getScrollLiveData().observe(it, observer)
-
-            viewModel.shouldShowMissingSectionToaster().observe(it, { shouldShowToast ->
-                if (shouldShowToast) {
-                    fragment.activity?.let { activity ->
-                        SnackbarManager.getContentView(activity)
-                    }?.let { contentView ->
-                        Toaster.build(
-                            contentView,
-                            itemView.context.getString(R.string.discovery_this_section_is_still_empty),
-                            Toast.LENGTH_SHORT,
-                            Toaster.TYPE_ERROR
-                        ).show()
+                viewModel.getUpdatePositionsLD().observe(it) { shouldUpdate ->
+                    if (shouldUpdate) {
+                        updatePositionChanged()
                     }
                 }
-            })
 
+                (fragment as DiscoveryFragment).getScrollLiveData().observe(it, observer)
+
+                viewModel.shouldShowMissingSectionToaster().observe(it) { shouldShowToast ->
+                    if (shouldShowToast) {
+                        fragment.activity?.let { activity ->
+                            SnackbarManager.getContentView(activity)
+                        }?.let { contentView ->
+                            Toaster.build(
+                                contentView,
+                                itemView.context.getString(R.string.discovery_this_section_is_still_empty),
+                                Toast.LENGTH_SHORT,
+                                Toaster.TYPE_ERROR
+                            ).show()
+                        }
+                    }
+                }
+            }
         }
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            viewModel.getCarouselItemsListData().removeObservers(it)
-            viewModel.getUpdatePositionsLD().removeObservers(it)
-            viewModel.shouldShowMissingSectionToaster().removeObservers(it)
+            viewModel?.getCarouselItemsListData()?.removeObservers(it)
+            viewModel?.getUpdatePositionsLD()?.removeObservers(it)
+            viewModel?.shouldShowMissingSectionToaster()?.removeObservers(it)
             (fragment as DiscoveryFragment).getScrollLiveData().removeObserver(observer)
         }
     }
 
-    private fun updatePositionChanged(){
-        mDiscoveryRecycleAdapter.submitList(ArrayList(viewModel.components.getComponentsItem()!!))
-        anchorRV.postDelayed({
-            if (viewModel.selectedSectionPos < viewModel.getListSize()) {
-                smoothScroller.targetPosition = viewModel.selectedSectionPos
-                linearLayoutManager.startSmoothScroll(smoothScroller)
-            }
-        }, DELAY_FOR_DEBOUNCE)
+    private fun updatePositionChanged() {
+        mDiscoveryRecycleAdapter.submitList(ArrayList(viewModel?.components?.getComponentsItem()!!))
+        viewModel?.let { viewModel ->
+            anchorRV.postDelayed({
+                if (viewModel.selectedSectionPos < viewModel.getListSize()) {
+                    smoothScroller.targetPosition = viewModel.selectedSectionPos
+                    linearLayoutManager.startSmoothScroll(smoothScroller)
+                }
+            }, DELAY_FOR_DEBOUNCE)
+        }
     }
-
 }

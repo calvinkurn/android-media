@@ -19,16 +19,15 @@ import com.tokopedia.troubleshooter.notification.data.service.notification.Notif
 import com.tokopedia.troubleshooter.notification.data.service.ringtone.RingtoneModeService
 import com.tokopedia.troubleshooter.notification.di.module.TroubleshootModule.Companion.KEY_SELLER_SETTING
 import com.tokopedia.troubleshooter.notification.di.module.TroubleshootModule.Companion.KEY_USER_SETTING
+import com.tokopedia.troubleshooter.notification.data.service.googleplay.PlayServicesManager
 import com.tokopedia.troubleshooter.notification.ui.state.DeviceSettingState
 import com.tokopedia.troubleshooter.notification.ui.state.RingtoneState
-import com.tokopedia.troubleshooter.notification.ui.state.StatusState
 import com.tokopedia.troubleshooter.notification.ui.uiview.TickerItemUIView
 import com.tokopedia.troubleshooter.notification.ui.uiview.UserSettingUIView
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
@@ -41,6 +40,7 @@ interface TroubleshootContract {
     fun userSetting()
     fun deviceSetting()
     fun soundNotification()
+    fun playServicesSetting()
     fun troubleshoot()
     fun getNewToken()
     fun updateToken(newToken: String)
@@ -58,7 +58,8 @@ class TroubleshootViewModel @Inject constructor(
     private val instanceManager: FirebaseInstanceManager,
     private val ringtoneMode: RingtoneModeService,
     private val userSession: UserSessionInterface,
-    private val dispatcher: CoroutineDispatchers
+    private val dispatcher: CoroutineDispatchers,
+    private val playServicesManager: PlayServicesManager
 ) : BaseViewModel(dispatcher.io), TroubleshootContract, LifecycleObserver {
 
     private val _notificationStatus = MutableLiveData<Boolean>()
@@ -72,6 +73,9 @@ class TroubleshootViewModel @Inject constructor(
 
     private val _notificationRingtoneUri = MutableLiveData<Pair<Uri?, RingtoneState>>()
     val notificationRingtoneUri: LiveData<Pair<Uri?, RingtoneState>> get() = _notificationRingtoneUri
+
+    private val _playServicesSetting = MutableLiveData<Result<Boolean>>()
+    val playServicesSetting: LiveData<Result<Boolean>> get() = _playServicesSetting
 
     private val _troubleshoot = MutableLiveData<NotificationSendTroubleshoot>()
     val troubleshootSuccess: LiveData<NotificationSendTroubleshoot> get() = _troubleshoot
@@ -185,6 +189,15 @@ class TroubleshootViewModel @Inject constructor(
         val ringtoneUri = getRingtoneUri(TYPE_NOTIFICATION)
         val isRinging = ringtoneMode.isRing()
         _notificationRingtoneUri.value = Pair(ringtoneUri, isRinging)
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    override fun playServicesSetting() {
+        if (playServicesManager.isPlayServiceExist()) {
+            _playServicesSetting.value = Success(true)
+        } else {
+            _playServicesSetting.value = Fail(Throwable(""))
+        }
     }
 
     override fun updateToken(newToken: String) {

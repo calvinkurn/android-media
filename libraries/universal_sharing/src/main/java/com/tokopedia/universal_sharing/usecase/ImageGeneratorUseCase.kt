@@ -1,6 +1,7 @@
 package com.tokopedia.universal_sharing.usecase
 
 import android.text.TextUtils
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -9,9 +10,10 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.universal_sharing.model.ImageGeneratorModel
 import com.tokopedia.universal_sharing.model.ImageGeneratorRequestData
+import javax.inject.Inject
 
-class ImageGeneratorUseCase constructor(
-    private val graphqlRepository: GraphqlRepository
+class ImageGeneratorUseCase @Inject constructor(
+    @ApplicationContext private val graphqlRepository: GraphqlRepository
 ): GraphqlUseCase<ImageGeneratorModel>(graphqlRepository) {
 
     var params: HashMap<String, Any> = HashMap()

@@ -39,7 +39,7 @@ internal class SearchProductEmptySearchTest: ProductListPresenterTestFixtures() 
         `When load data`()
 
         `Then verify empty search product by keyword`()
-        `Then verify empty search recommendation use case is called`()
+        `Then verify empty search recommendation use case is not called`()
         `Then verify not showing quick filter`()
     }
 
@@ -80,11 +80,11 @@ internal class SearchProductEmptySearchTest: ProductListPresenterTestFixtures() 
         val emptyStateDataView = visitableList.filterIsInstance<EmptyStateKeywordDataView>().first()
 
         emptyStateDataView.keyword shouldBe keyword
-        emptyStateDataView.verticalSeparator.hasBottomSeparator shouldBe false
+        emptyStateDataView.verticalSeparator.hasBottomSeparator shouldBe true
     }
 
-    private fun `Then verify empty search recommendation use case is called`() {
-        verify {
+    private fun `Then verify empty search recommendation use case is not called`() {
+        verify(exactly = 0) {
             recommendationUseCase.execute(any(), any())
         }
 

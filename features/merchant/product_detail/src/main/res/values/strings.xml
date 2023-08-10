@@ -2,14 +2,12 @@
 <resources>
     <string name="app_name">product_detail</string>
 
-    <string name="product_detail_courier">Pengiriman</string>
     <string name="label_product_info">Informasi Produk</string>
     <string name="merchant_product_detail_label_product_detail">Detail produk</string>
     <string name="merchant_product_detail_shipping">Detail pengiriman</string>
     <string name="label_read_detail">Baca Selengkapnya</string>
     <string name="pdp_product_info_description_title">Deskripsi produk</string>
     <string name="merchant_product_detail_label_selengkapnya">Selengkapnya</string>
-    <string name="label_image_preview_pdp">Gambar produk</string>
     <string name="title_activity_product_detail">Rincian Produk</string>
     <string name="template_price">%1$s%2$s</string>
     <string name="ticker_atc_done_some_store">Barang dikirim dari toko yang sama</string>
@@ -33,7 +31,6 @@
     <string name="label_favorited">Following</string>
     <string name="campaign_expired_title">Waktu sudah berakhir</string>
     <string name="campaign_expired_descr">Periode promo telah selesai. Harga produk kembali menjadi harga normal</string>
-    <string name="courier_title">Kurir</string>
     <string name="title_buyer_review">Ulasan Pembeli</string>
     <string name="title_other_product">Produk Lainnya dari Toko Ini</string>
     <string name="title_other_toppers">Toppers lain juga lihat ini, lho!</string>
@@ -72,8 +69,6 @@
         <item>@string/ft_label_with_credit_card</item>
     </string-array>
 
-    <string name="image_preview_add_wishlist">Tambahkan ke Wishlist</string>
-    <string name="image_preview_remove_wishlist">Hapus dari Wishlist</string>
     <string name="image_preview_add_wishlist_success">Berhasil menambahkan ke Wishlist</string>
     <string name="image_preview_remove_wishlist_success">Berhasil menghapus dari Wishlist</string>
     <string name="on_error_p1_string_builder">Error getPdpLayout. userId: %1$s | %2$s</string>
@@ -150,10 +145,11 @@
 
     <string name="pdp_tradein_text_permission_description">Izinkan Tokopedia mengakses IMEI, WiFi, dan lainnya untuk tes fungsi HP</string>
     <string name="pdp_tradein_text_request_access">Izin akses ke HP-mu</string>
+    <string name="pdp_tradein_allow">Beri Akses</string>
+    <string name="pdp_tradein_back">Kembali</string>
 
     <string name="recom_filter_chip_click_error_network">Silahkan cek kondisi jaringan</string>
 
-    <string name="content_desc_btnAddToWishlist">button tambahkan ke wishlist</string>
     <string name="content_desc_txt_main_price">text harga %1f</string>
     <string name="content_desc_fab_detail_pdp">button wishlist</string>
     <string name="content_desc_product_name">text nama produk %1s</string>
@@ -202,5 +198,4 @@
     <string name="pdp_selly_time_format">&#160;• %s</string>
     <string name="pdp_selly_button_expand">Jadwal Lainnya</string>
     <string name="pdp_selly_button_collapse">Tampilkan lebih sedikit</string>
-
 </resources>

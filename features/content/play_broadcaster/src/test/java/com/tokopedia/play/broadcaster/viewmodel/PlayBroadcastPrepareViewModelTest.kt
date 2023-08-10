@@ -52,7 +52,7 @@ class PlayBroadcastPrepareViewModelTest {
     private lateinit var mockHydraDataStore: HydraConfigStore
     private lateinit var mockBroadcastSetupDataStore: PlayBroadcastSetupDataStore
 
-    private val playBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer(), TestUriParser())
+    private val playBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer(), TestUriParser(), mockk(relaxed = true))
 
     private lateinit var createLiveStreamChannelUseCase: CreateLiveStreamChannelUseCase
 
@@ -128,6 +128,38 @@ class PlayBroadcastPrepareViewModelTest {
     }
 
     @Test
+    fun `when max title chars is set, then it should return the correct number`() {
+        val maxTitleChars = 25
+        mockHydraDataStore.setMaxTitleChars(maxTitleChars)
+
+        Assertions
+            .assertThat(viewModel.maxTitleChars)
+            .isEqualTo(maxTitleChars)
+    }
+
+    @Test
+    fun `when max title chars is not set, then it should return 38`() {
+        Assertions
+            .assertThat(viewModel.maxTitleChars)
+            .isEqualTo(38)
+    }
+
+    @Test
+    fun `when isFromSwitchAccount is changed, it should emit the updated value`() {
+        viewModel.setFromSwitchAccount(true)
+
+        Assertions
+            .assertThat(viewModel.isFromSwitchAccount)
+            .isEqualTo(true)
+
+        viewModel.setFromSwitchAccount(false)
+
+        Assertions
+            .assertThat(viewModel.isFromSwitchAccount)
+            .isEqualTo(false)
+    }
+
+    @Test
     fun `when setup data store is overwritten and then fetched, it should return the new setup data store detail`() {
         val newDataStore = mockk<PlayBroadcastSetupDataStore>(relaxed = true)
         viewModel.setDataFromSetupDataStore(newDataStore)
@@ -138,7 +170,7 @@ class PlayBroadcastPrepareViewModelTest {
     }
 
     @Test
-    fun `when create livestream with no product, it should return error`() {
+    fun `when create livestream with no title, it should return error`() {
         viewModel.createLiveStream()
 
         val result = viewModel.observableCreateLiveStream.value
@@ -168,7 +200,31 @@ class PlayBroadcastPrepareViewModelTest {
     }
 
     @Test
-    fun `when create livestream with products and valid cover, it should return success`() {
+    fun `given cover validation before livestream, when cover setup state is GeneratedCover and its exists, it should return true`() {
+        coverDataStore.setFullCover(
+            PlayCoverUiModel(
+                croppedCover = CoverSetupState.GeneratedCover(coverImage = "coverImage"),
+                state = SetupDataState.Uploaded
+            )
+        )
+
+        viewModel.isCoverAvailable().assertTrue()
+    }
+
+    @Test
+    fun `given cover validation before livestream, when cover setup state is GeneratedCover and its exists, it should return false`() {
+        coverDataStore.setFullCover(
+            PlayCoverUiModel(
+                croppedCover = CoverSetupState.GeneratedCover(coverImage = ""),
+                state = SetupDataState.Uploaded
+            )
+        )
+
+        viewModel.isCoverAvailable().assertFalse()
+    }
+
+    @Test
+    fun `when create livestream with title and valid cover, it should return success`() {
         coverDataStore.setFullCover(PlayCoverUiModel(
                 croppedCover = CoverSetupState.Cropped.Uploaded(null, mockk(relaxed = true), CoverSource.Camera),
                 state = SetupDataState.Uploaded
@@ -184,6 +240,48 @@ class PlayBroadcastPrepareViewModelTest {
         Assertions
                 .assertThat(result)
                 .isInstanceOf(NetworkResult.Success::class.java)
+    }
+
+    @Test
+    fun `when create livestream with title and generated cover, it should return success`() {
+        coverDataStore.setFullCover(
+            PlayCoverUiModel(
+                croppedCover = CoverSetupState.GeneratedCover(coverImage = "coverImage"),
+                state = SetupDataState.Uploaded
+            )
+        )
+        titleDataStore.setTitle("any title")
+
+        coEvery { createLiveStreamChannelUseCase.executeOnBackground() } returns modelBuilder.buildCreateLiveStreamGetMedia()
+
+        viewModel.createLiveStream()
+
+        val result = viewModel.observableCreateLiveStream.value
+
+        Assertions
+            .assertThat(result)
+            .isInstanceOf(NetworkResult.Success::class.java)
+    }
+
+    @Test
+    fun `when create livestream with title and no cover, it should return success`() {
+        coverDataStore.setFullCover(
+            PlayCoverUiModel(
+                croppedCover = CoverSetupState.Blank,
+                state = SetupDataState.Draft,
+            )
+        )
+        titleDataStore.setTitle("any title")
+
+        coEvery { createLiveStreamChannelUseCase.executeOnBackground() } returns modelBuilder.buildCreateLiveStreamGetMedia()
+
+        viewModel.createLiveStream()
+
+        val result = viewModel.observableCreateLiveStream.value
+
+        Assertions
+            .assertThat(result)
+            .isInstanceOf(NetworkResult.Fail::class.java)
     }
 
     /** Setup Title */
@@ -207,5 +305,18 @@ class PlayBroadcastPrepareViewModelTest {
         val result = viewModel.observableUploadTitleEvent.getOrAwaitValue()
 
         result.getContentIfNotHandled()?.assertEqualTo(NetworkResult.Fail(mockException))
+    }
+
+    @Test
+    fun `when user failed upload title because of exception, it should emit network result fail`() {
+        coEvery { mockTitleDataStore.uploadTitle(any(), any(), any()) } throws mockException
+
+        viewModel.uploadTitle(authorId, "Test Title")
+
+        val result = viewModel.observableUploadTitleEvent.getOrAwaitValue()
+
+        Assertions
+            .assertThat(result.getContentIfNotHandled())
+            .isInstanceOf(NetworkResult.Fail::class.java)
     }
 }

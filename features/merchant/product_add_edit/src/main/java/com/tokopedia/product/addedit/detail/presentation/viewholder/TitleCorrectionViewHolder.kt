@@ -19,10 +19,10 @@ class TitleCorrectionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVi
     private var viewUnderline: DividerUnify = itemView.findViewById(R.id.view_underline)
 
     fun bindData(productName: String, mode: Mode) {
-        val solidRedColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_R600)
-        val redColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_R600_20)
-        val yellowColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Y300_20)
-        val blackColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+        val solidRedColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_RN500)
+        val redColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_RN500_20)
+        val yellowColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_YN300_20)
+        val blackColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)
         tvTitle.text = productName
         viewUnderline.show()
 

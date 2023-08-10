@@ -8,6 +8,6 @@ class TokoChatMarkAsReadUseCase @Inject constructor(
     @TokoChatQualifier private val repository: TokoChatRepository
 ) {
     operator fun invoke(channelUrl: String) {
-        repository.getConversationRepository().markAllMessagesAsRead(channelUrl)
+        repository.getConversationRepository()?.markAllMessagesAsRead(channelUrl)
     }
 }

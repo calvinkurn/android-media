@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class TokoFoodPurchaseConsentViewModel @Inject constructor(
+open class TokoFoodPurchaseConsentViewModel @Inject constructor(
     private val agreeConsentUseCase: Lazy<AgreeConsentUseCase>,
     val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {

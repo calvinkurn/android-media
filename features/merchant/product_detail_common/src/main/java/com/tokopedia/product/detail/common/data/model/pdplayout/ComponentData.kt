@@ -98,6 +98,13 @@ data class ComponentData(
     val variants: List<Variant> = listOf(),
     @SerializedName("children")
     val children: List<VariantChild> = listOf(),
+    /**
+     * used when landing on pdp, if it is empty use hardcode FE
+     * and if there’s a user activity for choosing the variant, use children.subText below
+     * Details: https://tokopedia.atlassian.net/wiki/spaces/PDP/pages/2245002923/PDP+P1+Product+Variant+Partial+OOS
+     */
+    @SerializedName("landingSubText")
+    val landingSubText: String = "",
     //endregioncopy
 
     //region one liners data
@@ -149,14 +156,15 @@ data class ComponentData(
     // endregion
 
     @SerializedName("variantCampaign")
-    val variantCampaign: VariantCampaign = VariantCampaign()
+    val variantCampaign: VariantCampaign = VariantCampaign(),
+    @SerializedName("text")
+    val text: String = "",
+    @SerializedName("chevronPos")
+    val chevronPos: String = ""
 ) {
     companion object {
         private const val PRODUCT_IMAGE_TYPE = "image"
     }
-
-    val hasWholesale: Boolean
-        get() = wholesale != null && wholesale.isNotEmpty()
 
     fun getFirstProductImage(): String? {
         if (media.isEmpty()) return null
@@ -182,31 +190,6 @@ data class ComponentData(
         return media.find {
             it.type == PRODUCT_IMAGE_TYPE
         }?.uRLThumbnail
-    }
-
-    fun getImagePathExceptVideo(): ArrayList<String>? {
-        val imageData =
-            media.filter { it.type == PRODUCT_IMAGE_TYPE && it.uRLOriginal.isNotEmpty() }
-                .map { it.uRLOriginal }
-        val arrayList = arrayListOf<String>()
-        return if (imageData.isEmpty()) {
-            null
-        } else {
-            arrayList.addAll(imageData)
-            arrayList
-        }
-    }
-
-    fun getImagePath(): ArrayList<String> {
-        return ArrayList(
-            media.map {
-                if (it.type == PRODUCT_IMAGE_TYPE) {
-                    it.uRLOriginal
-                } else {
-                    it.uRLThumbnail
-                }
-            }
-        )
     }
 
     fun getGalleryItems(): List<ProductDetailGallery.Item> {

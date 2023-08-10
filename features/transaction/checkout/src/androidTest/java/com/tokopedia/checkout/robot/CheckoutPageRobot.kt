@@ -17,7 +17,8 @@ import com.tokopedia.checkout.R
 import com.tokopedia.checkout.ShipmentActivity
 import com.tokopedia.checkout.view.viewholder.PromoCheckoutViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentButtonPaymentViewHolder
-import com.tokopedia.checkout.view.viewholder.ShipmentItemViewHolder
+import com.tokopedia.checkout.view.viewholder.ShipmentCartItemBottomViewHolder
+import com.tokopedia.checkout.view.viewholder.ShipmentCartItemViewHolder
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.unifyprinciples.Typography
@@ -35,7 +36,7 @@ class CheckoutPageRobot {
         Thread.sleep(2000)
     }
 
-    private fun scrollRecyclerViewToFirstOrder(activityRule: IntentsTestRule<ShipmentActivity>): Int {
+    private fun scrollRecyclerViewToFirstShipmentCartItemBottom(activityRule: IntentsTestRule<ShipmentActivity>): Int {
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_shipment)
         val itemCount = recyclerView.adapter?.itemCount ?: 0
 
@@ -43,7 +44,7 @@ class CheckoutPageRobot {
         for (i in 0 until itemCount) {
             scrollRecyclerViewToPosition(activityRule, recyclerView, i)
             when (recyclerView.findViewHolderForAdapterPosition(i)) {
-                is ShipmentItemViewHolder -> {
+                is ShipmentCartItemBottomViewHolder -> {
                     position = i
                     break
                 }
@@ -53,7 +54,26 @@ class CheckoutPageRobot {
         return position
     }
 
-    private fun scrollRecyclerViewToChoosePaymentButton(activityRule: IntentsTestRule<ShipmentActivity>): Int {
+    private fun scrollRecyclerViewToShipmentCartItem(activityRule: IntentsTestRule<ShipmentActivity>, productIndex: Int): Int {
+        val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_shipment)
+        val itemCount = recyclerView.adapter?.itemCount ?: 0
+
+        var position = RecyclerView.NO_POSITION
+        var currentIndex = 0
+        for (i in 0 until itemCount) {
+            scrollRecyclerViewToPosition(activityRule, recyclerView, i)
+            when (recyclerView.findViewHolderForAdapterPosition(i)) {
+                is ShipmentCartItemViewHolder -> {
+                    position = i
+                    if (currentIndex == productIndex) break else currentIndex += 1
+                }
+            }
+        }
+
+        return position
+    }
+
+    fun scrollRecyclerViewToChoosePaymentButton(activityRule: IntentsTestRule<ShipmentActivity>): Int {
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_shipment)
         val itemCount = recyclerView.adapter?.itemCount ?: 0
 
@@ -107,7 +127,7 @@ class CheckoutPageRobot {
     }
 
     fun clickChooseDuration(activityRule: IntentsTestRule<ShipmentActivity>) {
-        val position = scrollRecyclerViewToFirstOrder(activityRule)
+        val position = scrollRecyclerViewToFirstShipmentCartItemBottom(activityRule)
         if (position != RecyclerView.NO_POSITION) {
             onView(ViewMatchers.withId(R.id.rv_shipment))
                 .perform(
@@ -170,7 +190,7 @@ class CheckoutPageRobot {
         eta: String,
         message: String? = null
     ) {
-        val position = scrollRecyclerViewToFirstOrder(activityRule)
+        val position = scrollRecyclerViewToFirstShipmentCartItemBottom(activityRule)
         if (position != RecyclerView.NO_POSITION) {
             onView(ViewMatchers.withId(R.id.rv_shipment))
                 .perform(
@@ -197,6 +217,28 @@ class CheckoutPageRobot {
                                 } else {
                                     assertEquals(View.GONE, view.findViewById<Typography>(R.id.label_single_shipping_message).visibility)
                                 }
+                            }
+                        }
+                    )
+                )
+        }
+    }
+
+    fun assertNewUiGroupType(activityRule: IntentsTestRule<ShipmentActivity>, productIndex: Int) {
+        val position = scrollRecyclerViewToShipmentCartItem(activityRule, productIndex)
+        if (position != RecyclerView.NO_POSITION) {
+            onView(ViewMatchers.withId(R.id.rv_shipment))
+                .perform(
+                    RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                        position,
+                        object : ViewAction {
+                            override fun getConstraints(): Matcher<View>? = null
+
+                            override fun getDescription(): String = "Assert New UI Group Type"
+
+                            override fun perform(uiController: UiController?, view: View) {
+                                assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.tv_shop_name).visibility)
+                                assertEquals(true, view.findViewById<Typography>(R.id.tv_shop_name).text.isNotBlank())
                             }
                         }
                     )

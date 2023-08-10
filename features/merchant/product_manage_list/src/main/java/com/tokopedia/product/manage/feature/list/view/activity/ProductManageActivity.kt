@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
-import com.tokopedia.config.GlobalConfig
+import com.tokopedia.product.manage.common.util.ProductManageConfig
 import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
 import com.tokopedia.product.manage.feature.list.di.ProductManageListInstance
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment
@@ -46,7 +46,7 @@ open class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductMan
 
         initInjector()
 
-        if (!GlobalConfig.isSellerApp()) {
+        if (!ProductManageConfig.IS_SELLER_APP) {
             window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         }
     }
@@ -78,7 +78,7 @@ open class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductMan
     }
 
     private fun goToSellerAppDashboard() {
-        if (GlobalConfig.isSellerApp()) {
+        if (ProductManageConfig.IS_SELLER_APP) {
             RouteManager.route(this, ApplinkConstInternalMarketplace.SELLER_APP_DASHBOARD)
         }
     }

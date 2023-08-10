@@ -1,12 +1,13 @@
 package com.tokopedia.search.result.product.broadmatch
 
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.product.detail.common.extensions.ifNullOrBlank
 import com.tokopedia.search.result.domain.model.SearchProductModel.OtherRelatedProduct
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
+import com.tokopedia.search.result.presentation.model.LabelGroupDataView.Companion.hasFulfillment
 import com.tokopedia.search.result.presentation.model.StockBarDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option.Product
@@ -65,6 +66,7 @@ data class BroadMatchItemDataView(
             "dimension115", labelGroupDataList.getFormattedPositionName(),
             "dimension131", externalReference.orNone(),
             "dimension56", warehouseID.ifNullOrBlank { "0" },
+            "dimension58", hasFulfillment(labelGroupDataList).toString(),
         )
     }
 

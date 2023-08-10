@@ -42,9 +42,9 @@ object GeneralSettingMenuLabel {
                 .getString(R.string.title_dark_mode)
 
         if (title == notificationTitle || title == darkModeTitle) {
-            return R.color.Unify_R400
+            return R.color.Unify_RN400
         } else if (title == mediaTitle) {
-             return R.color.Unify_R500
+             return R.color.Unify_RN500
         }
 
         return -1
@@ -68,7 +68,7 @@ object GeneralSettingMenuLabel {
                     context,
                     4,
                     boxColor,
-                    R.color.Unify_N0
+                    R.color.Unify_NN0
             )
             spannable.setSpan(
                     RelativeSizeSpan(0.57f),

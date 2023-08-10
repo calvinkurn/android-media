@@ -6,4 +6,8 @@
     <string name="title_applink_toko_chat">Toko Chat</string>
     <string name="path_toko_chat">/tokochat</string>
 
+    <!--Universal Inbox-->
+    <string name="title_applink_universal_inbox">Universal Inbox</string>
+    <string name="path_universal_inbox">/universal-inbox</string>
+
 </resources>

@@ -12,7 +12,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Unify_N0">
+            android:background="@color/Unify_NN0">
 
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/topTicker"
@@ -69,7 +69,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing_lvl3"
                 android:layout_marginTop="@dimen/spacing_lvl4"
-                android:background="@color/Unify_NN50"
                 app:layout_constraintTop_toBottomOf="@+id/tvDeadlineTime" />
 
 
@@ -145,7 +144,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl1"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="@+id/tvDeadlineTime"
                 app:layout_constraintTop_toBottomOf="@+id/tvAccountNumber"
@@ -176,7 +175,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/tvAccountNumber"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tvAccountNumber"
-                app:icon_color_light_enable="@color/Unify_G500"/>
+                app:icon_color_light_enable="@color/Unify_GN500"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvTotalAmountLabel"
@@ -213,7 +212,7 @@
                 app:layout_constraintTop_toTopOf="@id/tvTotalAmount"
                 app:layout_constraintStart_toEndOf="@id/tvTotalAmount"
                 android:layout_marginEnd="@dimen/unify_font_16"
-                app:icon_color_light_enable="@color/Unify_G500"
+                app:icon_color_light_enable="@color/Unify_GN500"
                 android:layout_width="@dimen/unify_font_16"
                 android:layout_height="@dimen/unify_space_16"/>
 
@@ -276,7 +275,6 @@
                 android:layout_width="0dp"
                 android:layout_height="@dimen/spacing_lvl3"
                 android:layout_marginTop="@dimen/spacing_lvl4"
-                android:background="@color/Unify_NN50"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvSeePaymentMethods" />
@@ -334,7 +332,6 @@
                 android:layout_width="0dp"
                 android:layout_height="@dimen/spacing_lvl3"
                 android:layout_marginTop="@dimen/spacing_lvl4"
-                android:background="@color/Unify_N50"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btnCheckPaymentStatus" />

@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.tokopedianow.R
@@ -47,11 +48,12 @@ class TokoNowRepurchaseProductViewHolder(
     }
 
     private fun goToProductDetail(data: TokoNowRepurchaseProductUiModel) {
-        RouteManager.route(
-            itemView.context,
+        val uri = UriUtil.buildUri(
             ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
             data.productId
         )
+        val appLink = listener?.createAffiliateLink(uri)
+        RouteManager.route(itemView.context, appLink)
     }
 
     interface TokoNowRepurchaseProductListener {
@@ -59,5 +61,6 @@ class TokoNowRepurchaseProductViewHolder(
         fun onProductCardImpressed(position: Int, data: TokoNowRepurchaseProductUiModel)
         fun onProductCardClicked(position: Int, data: TokoNowRepurchaseProductUiModel)
         fun onAddVariantClicked(data: TokoNowRepurchaseProductUiModel)
+        fun createAffiliateLink(url: String): String
     }
 }

@@ -89,7 +89,7 @@
         <activity
             android:name="com.tokopedia.tkpd.redirect.RedirectCreateShopActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3"
+            android:theme="@style/Theme.WhiteUnify"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

@@ -74,6 +74,7 @@ object ProductMapper {
                 isEmptyStock = it.isEmptyStock,
                 isStockGuaranteed = it.manageProductData.isStockGuaranteed,
                 isTobacco = it.manageProductData.isTobacco,
+                isDTInbound = it.manageProductData.isDTInbound,
                 isArchived = it.manageProductData.isArchived,
                 isInGracePeriod = it.manageProductData.isInGracePeriod
             )

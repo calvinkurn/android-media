@@ -20,6 +20,7 @@ internal object QueryRecommendationFilterChips {
         "                 templateName +\n" +
         "                 isActivated +\n" +
         "                 value +\n" +
+        "                 ncpRank + \n" +
         "                 options { +\n" +
         "                   name +\n" +
         "                   icon +\n" +

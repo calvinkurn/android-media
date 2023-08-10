@@ -49,21 +49,27 @@ class AffiliateRecommendedProductFragment :
     private var listSize = 0
 
     @Inject
-    lateinit var viewModelProvider: ViewModelProvider.Factory
+    @JvmField
+    var viewModelProvider: ViewModelProvider.Factory? = null
 
     private val viewModelFragmentProvider by lazy {
-        ViewModelProvider(
-            requireParentFragment(),
-            viewModelProvider
-        )
+        viewModelProvider?.let { viewModelProvider ->
+            parentFragment?.let { parentFragment ->
+                ViewModelProvider(
+                    parentFragment,
+                    viewModelProvider
+                )
+            }
+        }
     }
-    private lateinit var affiliatePromoSharedViewModel: AffiliatePromoViewModel
+    private var affiliatePromoSharedViewModel: AffiliatePromoViewModel? = null
 
     @Inject
-    lateinit var userSessionInterface: UserSessionInterface
+    @JvmField
+    var userSessionInterface: UserSessionInterface? = null
     private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
 
-    private lateinit var affiliateRecommendedProductViewModel: AffiliateRecommendedProductViewModel
+    private var affiliateRecommendedProductViewModel: AffiliateRecommendedProductViewModel? = null
     private val adapter: AffiliateAdapter =
         AffiliateAdapter(AffiliateAdapterFactory(promotionClickInterface = this))
     private var affiliatePromoInterface: AffiliatePromoInterface? = null
@@ -101,14 +107,14 @@ class AffiliateRecommendedProductFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         affiliatePromoSharedViewModel =
-            viewModelFragmentProvider[AffiliatePromoViewModel::class.java]
+            viewModelFragmentProvider?.get(AffiliatePromoViewModel::class.java)
         setObservers()
     }
 
     private fun afterViewCreated() {
         setUpRecyclerView()
         setUpEmptyState()
-        affiliateRecommendedProductViewModel.getAffiliateRecommendedProduct(identifier, PAGE_ZERO)
+        affiliateRecommendedProductViewModel?.getAffiliateRecommendedProduct(identifier, PAGE_ZERO)
     }
 
     private fun setUpEmptyState() {
@@ -157,7 +163,7 @@ class AffiliateRecommendedProductFragment :
                 listSize = 0
                 adapter.resetList()
                 loadMoreTriggerListener?.resetState()
-                affiliateRecommendedProductViewModel.getAffiliateRecommendedProduct(
+                affiliateRecommendedProductViewModel?.getAffiliateRecommendedProduct(
                     identifier,
                     PAGE_ZERO
                 )
@@ -175,7 +181,7 @@ class AffiliateRecommendedProductFragment :
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if (recommendationHasNextPage) {
                     sendImpressionEvent()
-                    affiliateRecommendedProductViewModel.getAffiliateRecommendedProduct(
+                    affiliateRecommendedProductViewModel?.getAffiliateRecommendedProduct(
                         identifier,
                         currentPageNumber + 1
                     )
@@ -217,7 +223,7 @@ class AffiliateRecommendedProductFragment :
                 AffiliateAnalytics.EventKeys.VIEW_ITEM_LIST,
                 action,
                 AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
-                userSessionInterface.userId,
+                userSessionInterface?.userId.orEmpty(),
                 itemID,
                 listSize,
                 itemName,
@@ -228,11 +234,11 @@ class AffiliateRecommendedProductFragment :
     }
 
     private fun setObservers() {
-        affiliatePromoSharedViewModel.getValidateUserType().observe(viewLifecycleOwner) {
+        affiliatePromoSharedViewModel?.getValidateUserType()?.observe(viewLifecycleOwner) {
             onGetValidateUserType(it)
         }
-        affiliateRecommendedProductViewModel.getShimmerVisibility()
-            .observe(viewLifecycleOwner) { visibility ->
+        affiliateRecommendedProductViewModel?.getShimmerVisibility()
+            ?.observe(viewLifecycleOwner) { visibility ->
                 if (visibility != null) {
                     if (visibility) {
                         adapter.addShimmer(true)
@@ -242,8 +248,8 @@ class AffiliateRecommendedProductFragment :
                 }
             }
 
-        affiliateRecommendedProductViewModel.getAffiliateDataItems()
-            .observe(viewLifecycleOwner) { dataList ->
+        affiliateRecommendedProductViewModel?.getAffiliateDataItems()
+            ?.observe(viewLifecycleOwner) { dataList ->
                 adapter.removeShimmer(listSize)
                 if (isSwipeRefresh) {
                     recommendedBinding?.swipeRefreshLayout?.isRefreshing = false
@@ -263,13 +269,13 @@ class AffiliateRecommendedProductFragment :
                 }
             }
 
-        affiliateRecommendedProductViewModel.getAffiliateItemCount()
-            .observe(viewLifecycleOwner) { pageInfo ->
+        affiliateRecommendedProductViewModel?.getAffiliateItemCount()
+            ?.observe(viewLifecycleOwner) { pageInfo ->
                 currentPageNumber = pageInfo.currentPage ?: 0
                 recommendationHasNextPage = pageInfo.hasNext ?: false
             }
 
-        affiliateRecommendedProductViewModel.getErrorMessage().observe(viewLifecycleOwner) {
+        affiliateRecommendedProductViewModel?.getErrorMessage()?.observe(viewLifecycleOwner) {
             recommendedBinding?.swipeRefreshLayout?.hide()
             showErrorGroup()
             showEmptyState()
@@ -303,7 +309,7 @@ class AffiliateRecommendedProductFragment :
         recommendedBinding?.affiliateNoProductSeenIv?.hide()
     }
 
-    override fun getVMFactory(): ViewModelProvider.Factory {
+    override fun getVMFactory(): ViewModelProvider.Factory? {
         return viewModelProvider
     }
 
@@ -385,7 +391,7 @@ class AffiliateRecommendedProductFragment :
             AffiliateAnalytics.EventKeys.SELECT_CONTENT,
             eventAction,
             AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
-            userSessionInterface.userId,
+            userSessionInterface?.userId.orEmpty(),
             productId,
             position + 1,
             productName,

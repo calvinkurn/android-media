@@ -2,6 +2,7 @@ package com.tokopedia.recommendation_widget_common.data
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.model.ImpressHolder
 
 /**
  * Created by Lukas on 04/08/20.
@@ -53,8 +54,11 @@ data class RecommendationFilterChipsEntity(
         @SerializedName("search")
         var search: Search = Search(),
         @SerializedName("options")
-        val options: List<Option> = listOf()
-    ) {
+        val options: List<Option> = listOf(),
+        @SerializedName("ncpRank")
+        val ncpRank: Int = 0,
+        var position: Int = 0,
+    ): ImpressHolder() {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other !is RecommendationFilterChip) return false

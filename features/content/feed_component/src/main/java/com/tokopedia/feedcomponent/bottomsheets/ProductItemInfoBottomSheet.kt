@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.bottomsheet.ProductBottomSheetData
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.databinding.ItemPosttagBinding
@@ -41,7 +40,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
     private var viewModel: FeedProductItemInfoViewModel? = null
     private var customMvcTracker: MvcTrackerImpl? = null
 
-    private lateinit var listProducts: List<FeedXProduct>
+    private var listProducts: List<FeedXProduct> = emptyList()
     private var listener: Listener? = null
     private var postId: String = "0"
     private val adapter by lazy {
@@ -70,7 +69,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = ItemPosttagBinding.inflate(inflater, container, false)
-        setTitle(getString(R.string.content_product_bs_title))
+        setTitle(getString(com.tokopedia.content.common.R.string.content_product_bs_title))
         setChild(binding.root)
 //        setChild(generateDynamicView())
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -213,7 +212,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
     private fun mapPostTag(postTagItemList: List<FeedXProduct>): List<ProductPostTagModelNew> {
         var postDescription = ""
         var adClickUrl = ""
-        val desc = context?.getString(R.string.feed_share_default_text)
+        val desc = context?.getString(com.tokopedia.content.common.R.string.feed_share_default_text)
         val itemList: MutableList<ProductPostTagModelNew> = mutableListOf()
         for (postTagItem in postTagItemList) {
             postDescription = desc?.replace("%s", postTagItem.authorName).toString()

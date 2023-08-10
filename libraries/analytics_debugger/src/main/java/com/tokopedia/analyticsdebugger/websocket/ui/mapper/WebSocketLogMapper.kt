@@ -22,7 +22,8 @@ class WebSocketLogMapper @Inject constructor() {
                 source = it.source.ifEmpty { "-" },
                 channelId = it.channelId.ifEmpty { "-" },
                 gcToken = it.gcToken.ifEmpty { "-" },
-                warehouseId = it.warehouseId.ifEmpty { "-" }
+                warehouseId = it.warehouseId.ifEmpty { "-" },
+                header = it.header.ifEmpty { "-" },
             ),
             event = it.event,
             message = it.message,

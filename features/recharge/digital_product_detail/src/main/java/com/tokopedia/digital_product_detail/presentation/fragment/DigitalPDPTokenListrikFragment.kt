@@ -878,8 +878,9 @@ class DigitalPDPTokenListrikFragment :
             userSession.userId,
             title
         )
-        fragmentManager?.let {
-            MoreInfoPDPBottomsheet(listInfo, title).show(it, "")
+        childFragmentManager?.let {
+            val moreInfoPDPBottomsheet = MoreInfoPDPBottomsheet.newInstance(ArrayList(listInfo), title)
+            moreInfoPDPBottomsheet.show(it, "")
         }
     }
 

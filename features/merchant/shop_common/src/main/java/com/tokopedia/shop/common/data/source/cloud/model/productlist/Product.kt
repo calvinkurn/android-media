@@ -88,6 +88,9 @@ data class Product(
         @SerializedName("isTobacco")
         val isTobacco: Boolean = false,
         @Expose
+        @SerializedName("isDTInbound")
+        val isDTInbound: Boolean = false,
+        @Expose
         @SerializedName("isArchived")
         val isArchived: Boolean = false,
         @Expose

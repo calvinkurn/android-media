@@ -771,6 +771,28 @@
       ],
       "sessionIris": ".*",
       "userId": ".*"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "view - cart button bottom sheet",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - (live|vod)",
+      "trackerId": "42863",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - cart button bottom sheet",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - (live|vod)",
+      "trackerId": "42864",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
     }
   ]
 }

@@ -40,6 +40,7 @@ import com.tokopedia.product.manage.feature.list.data.model.FeaturedProductRespo
 import com.tokopedia.product.manage.feature.list.data.model.GetTargetedTickerResponse
 import com.tokopedia.product.manage.feature.list.data.model.GoldManageFeaturedProductV2
 import com.tokopedia.product.manage.feature.list.data.model.Header
+import com.tokopedia.product.manage.feature.list.data.model.ShopWarehouseResponse
 import com.tokopedia.product.manage.feature.list.data.repository.MockedUploadStatusRepository
 import com.tokopedia.product.manage.feature.list.data.repository.MockedUploadStatusRepositoryException
 import com.tokopedia.product.manage.feature.list.view.model.DeleteProductDialogType
@@ -109,7 +110,6 @@ import io.mockk.mockk
 import io.mockk.verifyAll
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -595,7 +595,6 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         verifyFilterOptionWrapperEquals(filterOptionWrapper)
     }
 
-
     @Test
     fun `setFeaturedProduct should execute expected use case`() {
         runBlocking {
@@ -647,7 +646,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
                 createProduct(
                     name = "Tolak Angin Madu",
                     price = Price(10000, 100000),
-                    pictures = pictures,
+                    pictures = pictures
                 )
             )
             val productListData = ProductListData(ProductList(header = null, data = productList))
@@ -701,7 +700,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
                 createProduct(
                     name = "Tolak Angin Madu",
                     price = Price(10000, 100000),
-                    pictures = pictures,
+                    pictures = pictures
                 )
             )
             val productListData = ProductListData(ProductList(header = null, data = productList))
@@ -1435,14 +1434,29 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             MultiEditProductResult(productID = "1", result = Result(isSuccess = true))
         val failedResponse =
             MultiEditProductResult(productID = "2", result = Result(isSuccess = false))
-        val response = MultiEditProduct(listOf(successResponse, failedResponse))
 
+        val response = MultiEditProduct(listOf(successResponse, failedResponse))
+        val shopWarehouseResponse = ShopWarehouseResponse(
+            ShopWarehouseResponse.KeroWarehouseShop(
+                data = ShopWarehouseResponse.KeroWarehouseShop.Data(
+                    listOf()
+                )
+            )
+        )
+        onShopWarehouse_thenReturn(shopWarehouseResponse)
         onMultiEditProducts_thenReturn(response)
 
-        viewModel.editProductsByStatus(listOf("1", "2"), status)
+        viewModel.editProductsByStatus(productIds = listOf("1", "2"), status = status)
 
         val expectedResult =
-            Success(EditByStatus(status, listOf(successResponse), listOf(failedResponse)))
+            Success(
+                EditByStatus(
+                    status,
+                    listOf(successResponse),
+                    listOf(failedResponse),
+                    listOf()
+                )
+            )
 
         viewModel.multiEditProductResult
             .verifySuccessEquals(expectedResult)
@@ -1453,11 +1467,19 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         val status = ProductStatus.ACTIVE
         val response = MultiEditProduct()
 
+        val shopWarehouseResponse = ShopWarehouseResponse(
+            ShopWarehouseResponse.KeroWarehouseShop(
+                data = ShopWarehouseResponse.KeroWarehouseShop.Data(
+                    listOf()
+                )
+            )
+        )
+        onShopWarehouse_thenReturn(shopWarehouseResponse)
         onMultiEditProducts_thenReturn(response)
 
-        viewModel.editProductsByStatus(listOf(anyString(), anyString()), status)
+        viewModel.editProductsByStatus(productIds = listOf(anyString(), anyString()), status = status)
 
-        val expectedResult = Success(EditByStatus(status, listOf(), listOf()))
+        val expectedResult = Success(EditByStatus(status, listOf(), listOf(), listOf()))
 
         viewModel.multiEditProductResult
             .verifySuccessEquals(expectedResult)
@@ -1468,9 +1490,17 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         val status = ProductStatus.ACTIVE
         val exception = NullPointerException()
 
+        val shopWarehouseResponse = ShopWarehouseResponse(
+            ShopWarehouseResponse.KeroWarehouseShop(
+                data = ShopWarehouseResponse.KeroWarehouseShop.Data(
+                    listOf()
+                )
+            )
+        )
+        onShopWarehouse_thenReturn(shopWarehouseResponse)
         onMultiEditProducts_thenError(exception)
 
-        viewModel.editProductsByStatus(listOf("1", "2"), status)
+        viewModel.editProductsByStatus(productIds = listOf("1", "2"), status = status)
 
         val expectedError = Fail(exception)
 
@@ -1486,6 +1516,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             MultiEditProductResult(productID = "1", result = Result(isSuccess = true))
         val failedResponse =
             MultiEditProductResult(productID = "2", result = Result(isSuccess = false))
+
         val response = MultiEditProduct(listOf(successResponse, failedResponse))
 
         onMultiEditProducts_thenReturn(response)
@@ -2465,7 +2496,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             )
             onGetIsMultiLocationShop_thenReturn(true)
             onGetTickerList_thenReturn(
-              tickerResponse
+                tickerResponse
             )
             onGetTickerData_thenReturn(tickerData, tickerResponse)
 
@@ -2481,7 +2512,6 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
             verifyTickerDataEquals(tickerData)
         }
-
     }
 
     @Test
@@ -2494,7 +2524,6 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             viewModel.getTickerData()
             viewModel.shopStatus.verifyValueEquals(statusShop)
         }
-
     }
 
     @Test
@@ -2507,7 +2536,6 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             viewModel.getTickerData()
             viewModel.shopStatus.verifyValueEquals(statusShop)
         }
-
     }
 
     @Test
@@ -2604,6 +2632,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             getMaxStockThresholdUseCase,
             getStatusShopUseCase,
             getTickerUseCase,
+            getShopWarehouse,
             tickerStaticDataProvider,
             CoroutineTestDispatchersProvider
         )
@@ -2613,7 +2642,6 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         viewModel.uploadStatus
             .verifyValueEquals(model)
     }
-
 
     @Test
     fun `when clearUploadStatusUseCase is called should return null data`() {
@@ -2652,6 +2680,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             getMaxStockThresholdUseCase,
             getStatusShopUseCase,
             getTickerUseCase,
+            getShopWarehouse,
             tickerStaticDataProvider,
             CoroutineTestDispatchersProvider
         )
@@ -2694,6 +2723,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             getMaxStockThresholdUseCase,
             getStatusShopUseCase,
             getTickerUseCase,
+            getShopWarehouse,
             tickerStaticDataProvider,
             CoroutineTestDispatchersProvider
         )
@@ -2746,6 +2776,10 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
     private fun verifyGetVariantsCalled() {
         coVerify { getProductVariantUseCase.execute(any()) }
+    }
+
+    private fun onShopWarehouse_thenReturn(response: ShopWarehouseResponse) {
+        coEvery { getShopWarehouse.execute(any()) } returns response
     }
 
     private fun onMultiEditProducts_thenError(exception: NullPointerException) {

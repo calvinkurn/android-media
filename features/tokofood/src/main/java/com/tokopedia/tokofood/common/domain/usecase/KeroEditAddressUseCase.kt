@@ -6,7 +6,7 @@ import com.tokopedia.tokofood.common.domain.response.KeroEditAddressResponse
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.query.KeroEditAddressQuery
 import javax.inject.Inject
 
-class KeroEditAddressUseCase @Inject constructor(
+open class KeroEditAddressUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository,
     private val keroGetAddressUseCase: KeroGetAddressUseCase
 ) : GraphqlUseCase<KeroEditAddressResponse>(graphqlRepository) {

@@ -25,7 +25,7 @@ class CustomizedViewFinderView(context: Context, attrs: AttributeSet) : Viewfind
 
         //initialize new paint in the constructor
         val borderPaint = Paint(ANTI_ALIAS_FLAG)
-        borderPaint.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        borderPaint.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
 
         //inside onDraw
         val framingRect = cameraPreview?.framingRect

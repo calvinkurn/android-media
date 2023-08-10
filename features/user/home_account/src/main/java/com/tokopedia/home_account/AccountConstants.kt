@@ -248,6 +248,7 @@ object AccountConstants {
         const val OVO = "ovo"
         const val GOPAY = "gopay"
         const val GOPAYLATER = "gopaylater"
+        const val GOPAYLATERCICIL = "gopaylatercicil"
         const val TOKOPOINT = "tokopoints"
         const val SALDO = "saldo"
         const val CO_BRAND_CC = "cobrandcc"

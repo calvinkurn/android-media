@@ -2,7 +2,9 @@ package com.tokopedia.home_component.util
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.PaintDrawable
 import android.util.TypedValue
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
@@ -58,6 +60,8 @@ object ChannelWidgetUtil {
     }
 }
 
+const val DEFAULT_ROUNDED_CORNER = 12f
+
 fun View.setGradientBackground(colorArray: ArrayList<String>) {
     try {
         if (colorArray.size > 1) {
@@ -75,12 +79,30 @@ fun View.setGradientBackground(colorArray: ArrayList<String>) {
     }
 }
 
+fun View.setGradientBackgroundRounded(colorArray: ArrayList<String>, cornerRadius: Float = DEFAULT_ROUNDED_CORNER) {
+    try {
+        val drawable: Drawable
+        if (colorArray.size > 1) {
+            val colors = IntArray(colorArray.size)
+            for (i in 0 until colorArray.size) {
+                colors[i] = Color.parseColor(colorArray[i])
+            }
+            drawable = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors)
+            drawable.cornerRadius = cornerRadius.toDpFloat()
+        } else {
+            drawable = PaintDrawable(Color.parseColor(colorArray[0]))
+            drawable.setCornerRadius(cornerRadius.toDpFloat())
+        }
+        this.background = drawable
+    } catch (_: Exception) { }
+}
+
 // function check is gradient all white, if empty default color is white
 fun getGradientBackgroundViewAllWhite(colorArray: ArrayList<String>, context: Context): Boolean {
     val colorWhite = getHexColorFromIdColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
     if (colorArray.isNotEmpty()) {
         if (colorArray.size > 1) {
-            val colorArrayNotWhite = colorArray.filter { it != colorWhite }
+            val colorArrayNotWhite = colorArray.filter { it.uppercase().take(7) != colorWhite }
             if (colorArrayNotWhite.isNotEmpty()) {
                 return false
             }

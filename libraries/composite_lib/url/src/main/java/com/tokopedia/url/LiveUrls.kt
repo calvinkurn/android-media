@@ -51,5 +51,7 @@ internal val live = Url(
     SSE = "https://sse.tokopedia.com/",
     ONE_TRUST = "https://app-apac.onetrust.com/",
     TOKOCHAT = "https://chat.tokopedia.com/tokochat/",
-    AFFILIATE = "https://affiliate.tokopedia.com"
+    AFFILIATE = "https://affiliate.tokopedia.com",
+    ONE_KYC_CLICKSTREAM = "https://toko-raccoon.gojekapi.com",
+    GOTO_ACCOUNTS = "https://accounts.goto-products.com"
 )

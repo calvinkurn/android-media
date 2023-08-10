@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocWhitelist
+import com.tokopedia.logisticCommon.data.response.shoplocation.KeroGetRolloutEligibility
 import com.tokopedia.logisticCommon.domain.usecase.ShopMultilocWhitelistUseCase
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
@@ -126,8 +126,8 @@ class ShopPageSettingViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getShopMultiLocationEligibility(shopId: String?): ShopLocWhitelist {
-        return shopMultiLocationWhitelistUseCase.invoke(shopId.toLongOrZero()).shopLocWhitelist
+    private suspend fun getShopMultiLocationEligibility(shopId: String?): KeroGetRolloutEligibility {
+        return shopMultiLocationWhitelistUseCase.invoke(shopId.toLongOrZero()).keroGetRolloutEligibility
     }
 
     private suspend fun getShopInfo(shopId: Int, shopDomain: String?, isRefresh: Boolean): ShopInfo {

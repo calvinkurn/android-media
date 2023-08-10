@@ -19,7 +19,8 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStat
 
 class QuickEditVariantStockBottomSheet(
     private val onSaveVariantsStock: (EditVariantResult) -> Unit = {},
-    private val onClickProductCampaignType: (List<ProductCampaignType>) -> Unit = {}
+    private val onClickProductCampaignType: (List<ProductCampaignType>) -> Unit = {},
+    private val onClickDilayaniTokopediaIdentifier: () -> Unit
 ) : QuickEditVariantBottomSheet(), ProductVariantStockViewHolder.ProductVariantStockListener,
     ProductCampaignInfoListener {
 
@@ -30,11 +31,13 @@ class QuickEditVariantStockBottomSheet(
             productId: String,
             isBundling: Boolean = false,
             onClickCampaignInfo: (List<ProductCampaignType>) -> Unit,
-            onSaveVariantsStock: (EditVariantResult) -> Unit
+            onClickDilayaniTokopediaIdentifier: () -> Unit,
+            onSaveVariantsStock: (EditVariantResult) -> Unit,
         ): QuickEditVariantStockBottomSheet {
             return QuickEditVariantStockBottomSheet(
                 onSaveVariantsStock,
-                onClickCampaignInfo
+                onClickCampaignInfo,
+                onClickDilayaniTokopediaIdentifier
             ).apply {
                 val bundle = Bundle()
                 bundle.putString(EXTRA_PRODUCT_ID, productId)
@@ -45,7 +48,13 @@ class QuickEditVariantStockBottomSheet(
     }
 
     private val variantStockAdapter by lazy {
-        ProductVariantAdapter(ProductVariantStockAdapterFactoryImpl(this, this))
+        ProductVariantAdapter(
+            ProductVariantStockAdapterFactoryImpl(
+                this,
+                this,
+                onClickDilayaniTokopediaIdentifier
+            )
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -88,7 +97,7 @@ class QuickEditVariantStockBottomSheet(
 
     private fun observeViewState() {
         observe(viewModel.tickerList) { data ->
-            if(data.isNotEmpty()) {
+            if (data.isNotEmpty()) {
                 val tickerList = mapToTickerData(context, data)
                 variantStockAdapter.showTicker(tickerList)
             } else {
@@ -96,7 +105,7 @@ class QuickEditVariantStockBottomSheet(
             }
         }
         observe(viewModel.showStockInfo) { showStockInfo ->
-            if(showStockInfo) {
+            if (showStockInfo) {
                 variantStockAdapter.showStockInfo()
             } else {
                 variantStockAdapter.hideStockInfo()

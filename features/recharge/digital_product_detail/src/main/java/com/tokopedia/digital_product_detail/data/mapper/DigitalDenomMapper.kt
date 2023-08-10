@@ -221,15 +221,16 @@ class DigitalDenomMapper @Inject constructor() {
                 isSpecialPromo = true,
                 title = it.title,
                 price = it.price,
-                pricePlain = it.pricePlain.toInt()
-                ,
+                pricePlain = it.pricePlain.toInt(),
                 slashPrice = it.slashedPrice,
                 slashPricePlain = it.slashedPricePlain.toInt(),
                 isShowChevron = !it.descriptions.isNullOrEmpty(),
                 quotaInfo = it.label1,
                 expiredDays = it.label2,
                 discountLabel = it.discount,
-                productDescriptions = it.descriptions
+                productDescriptions = it.descriptions,
+                itemType = it.trackingData.itemType,
+                specialLabel = it.campaignLabelText
             )
         }
     }

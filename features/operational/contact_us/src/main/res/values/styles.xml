@@ -19,7 +19,7 @@
         <item name="footerIndicatorStyle">underline</item>
         <item name="selectedBold">true</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/contact_us_dms_detail_view_txn</item>
+        <item name="android:textColor">@color/Unify_GN500</item>
         <item name="android:textSize">@dimen/font_micro</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:background">@color/Unify_Static_White</item>

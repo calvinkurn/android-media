@@ -163,7 +163,7 @@ open class ProductAttachmentViewHolder(
                 strokeWidth.toInt(),
                 ContextCompat.getColor(
                     itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N100
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN200
                 )
             )
         }
@@ -349,7 +349,7 @@ open class ProductAttachmentViewHolder(
         if (element.isWishListed()) {
             val color = ContextCompat.getColor(
                 itemView.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_R500
+                com.tokopedia.unifyprinciples.R.color.Unify_RN500
             )
             ivWishList?.setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
         } else {

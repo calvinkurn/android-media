@@ -1,123 +1,224 @@
 package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
-import com.tokopedia.tokopedianow.searchcategory.assertBannerDataView
-import com.tokopedia.tokopedianow.searchcategory.assertCategoryFilterDataView
-import com.tokopedia.tokopedianow.searchcategory.assertChooseAddressDataView
-import com.tokopedia.tokopedianow.searchcategory.assertProductCountDataView
-import com.tokopedia.tokopedianow.searchcategory.assertQuickFilterDataView
-import com.tokopedia.tokopedianow.searchcategory.jsonToObject
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryTitle
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
-import com.tokopedia.tokopedianow.searchcategory.verifyProductItemDataViewList
-import org.hamcrest.CoreMatchers.instanceOf
-import org.junit.Assert
-import org.junit.Assert.assertThat
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToCategoryTitle
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToChooseAddress
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToHeaderSpace
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToTicker
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryNavigationMapper.mapToCategoryNavigation
+import com.tokopedia.tokopedianow.category.domain.mapper.ProductRecommendationMapper
+import com.tokopedia.tokopedianow.category.presentation.model.CategoryOpenScreenTrackerModel
+import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
+import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Test
-import org.hamcrest.CoreMatchers.`is` as shouldBe
 
-class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
-
-    @Test
-    fun `test first page is last page`() {
-        val categoryModel = "category/first-page-8-products.json".jsonToObject<CategoryModel>()
-        `Given get category first page use case will be successful`(categoryModel, requestParamsSlot)
-
-        `When view created`()
-
-        val visitableList = tokoNowCategoryViewModel.visitableListLiveData.value!!
-
-        `Then assert request params map`(createExpectedMandatoryTokonowQueryParams(1))
-        `Then assert first page visitables`(visitableList, categoryModel)
-        `Then assert visitable list footer`(visitableList, categoryModel.categoryDetail.data.navigation)
-        `Then assert has next page value`(false)
-        `Then assert get first page success interactions`(categoryModel)
-    }
-
-    private fun `Then assert first page visitables`(
-            visitableList: List<Visitable<*>>,
-            categoryModel: CategoryModel,
-    ) {
-        `Then assert visitable list header`(visitableList, categoryModel)
-        `Then assert visitable list contents`(visitableList, categoryModel)
-    }
-
-    private fun `Then assert visitable list header`(
-            visitableList: List<Visitable<*>>,
-            categoryModel: CategoryModel,
-    ) {
-        val categoryTitle = categoryModel.categoryDetail.data.name
-        val mapParameter = tokoNowCategoryViewModel.queryParam
-
-        visitableList[0].assertChooseAddressDataView()
-        visitableList[1].assertBannerDataView()
-        visitableList[2].assertTitleDataView(categoryTitle)
-        visitableList[3].assertCategoryFilterDataView(categoryModel.categoryFilter)
-        visitableList[4].assertQuickFilterDataView(categoryModel.quickFilter, mapParameter)
-        visitableList[5].assertProductCountDataView(categoryModel.searchProduct.header.totalDataText)
-    }
-
-    private fun Visitable<*>.assertTitleDataView(title: String) {
-        assertThat(this, instanceOf(TitleDataView::class.java))
-
-        val titleDataView = this as TitleDataView
-        assertThat(titleDataView.hasSeeAllCategoryButton, shouldBe(true))
-        assertThat(titleDataView.titleType, instanceOf(CategoryTitle::class.java))
-
-        val categoryTitle = titleDataView.titleType as CategoryTitle
-        assertThat(categoryTitle.categoryName, shouldBe(title))
-    }
-
-    private fun `Then assert visitable list contents`(
-            visitableList: List<Visitable<*>>,
-            categoryModel: CategoryModel,
-    ) {
-        val expectedProductList = categoryModel.searchProduct.data.productList
-        val actualProductItemDataViewList = visitableList.filterIsInstance<ProductItemDataView>()
-
-        verifyProductItemDataViewList(expectedProductList, actualProductItemDataViewList, 1)
-    }
-
-    private fun `Then assert get first page success interactions`(categoryModel: CategoryModel) {
-        `Then assert auto complete applink from API`(categoryModel)
-        `Then assert header background is shown`()
-        `Then assert content is not loading`()
-    }
-
-    private fun `Then assert auto complete applink from API`(categoryModel: CategoryModel) {
-        val expectedApplink = categoryModel.searchProduct.data.autocompleteApplink
-
-        assertThat(tokoNowCategoryViewModel.autoCompleteApplink, shouldBe(expectedApplink))
-    }
-
-    private fun `Then assert header background is shown`() {
-        assertThat(tokoNowCategoryViewModel.isHeaderBackgroundVisibleLiveData.value, shouldBe(true))
-    }
-
-    private fun `Then assert content is not loading`() {
-        assertThat(tokoNowCategoryViewModel.isContentLoadingLiveData.value, shouldBe(false))
-    }
-
-    private fun `Then assert product feedback loop not visible`(){
-        Assert.assertEquals(tokoNowCategoryViewModel.isProductFeedbackLoopVisible(),false)
-    }
+class CategoryFirstPageTest: TokoNowCategoryMainViewModelTestFixture() {
 
     @Test
-    fun `test first page has next page`() {
-        val categoryModel = "category/first-page-16-products.json".jsonToObject<CategoryModel>()
-        `Given get category first page use case will be successful`(categoryModel, requestParamsSlot)
+    fun `getFirstPage should return result with first 3 showcases for the first page of pagination`() {
+        val isLoggedIn = true
+        val userId = "12223"
+        val deviceId = "11111"
 
-        `When view created`()
+        setAddressData(
+            warehouseId = warehouseId,
+            warehouses = getLocalWarehouseModelList(),
+            shopId = shopId
+        )
+        onUserSession_thenReturns(
+            isLoggedIn = isLoggedIn,
+            userId = userId,
+            deviceId = deviceId
+        )
+        onCategoryDetail_thenReturns()
+        onTargetedTicker_thenReturns()
+        onCategoryProduct_thenReturns(
+            uniqueId = getUniqueId(
+                isLoggedIn = isLoggedIn,
+                userId = userId,
+                deviceId = deviceId
+            )
+        )
 
-        val visitableList = tokoNowCategoryViewModel.visitableListLiveData.value!!
+        viewModel.onViewCreated(
+            navToolbarHeight = navToolbarHeight
+        )
+        viewModel.getFirstPage()
 
-        `Then assert request params map`(createExpectedMandatoryTokonowQueryParams(1))
-        `Then assert first page visitables`(visitableList, categoryModel)
-        `Then assert visitable list end with loading more model`(visitableList)
-        `Then assert has next page value`(true)
-        `Then assert get first page success interactions`(categoryModel)
-        `Then assert product feedback loop not visible`()
+        // map header space
+        val headerSpaceUiModel = categoryDetailResponse
+            .mapToHeaderSpace(
+                space = navToolbarHeight
+            )
+
+        // map choose address
+        val chooseAddressUiModel = categoryDetailResponse
+            .mapToChooseAddress()
+
+        // map ticker
+        val tickerDataList = TickerMapper.mapTickerData(
+            tickerList = targetedTickerResponse
+        )
+        val tickerUiModel = categoryDetailResponse
+            .mapToTicker(
+                tickerData = tickerDataList
+            )
+        val hasBlockedAddToCart = tickerDataList.first
+
+        // map title
+        val titleUiModel = categoryDetailResponse
+            .mapToCategoryTitle()
+
+        // map category navigation
+        val categoryNavigationUiModel = categoryDetailResponse
+            .mapToCategoryNavigation()
+
+        // map product recommendation
+        val productRecommendationUiModel = ProductRecommendationMapper.createProductRecommendation(
+            categoryIds = listOf(categoryIdL1)
+        )
+
+        val resultList = mutableListOf(
+            headerSpaceUiModel,
+            chooseAddressUiModel,
+            tickerUiModel,
+            titleUiModel,
+            categoryNavigationUiModel,
+            productRecommendationUiModel,
+        )
+
+        val categoryNavigationList = categoryNavigationUiModel.categoryListUiModel.toMutableList()
+        mapShowcaseProduct(
+            hasAdded = true,
+            categoryNavigationList = categoryNavigationList,
+            resultList = resultList,
+            hasBlockedAddToCart = hasBlockedAddToCart
+        )
+
+        verifyCategoryDetail()
+        verifyTargetedTicker()
+        viewModel.openScreenTracker
+            .verifyValueEquals(
+                CategoryOpenScreenTrackerModel(
+                    id = categoryDetailResponse.categoryDetail.data.id,
+                    name= categoryDetailResponse.categoryDetail.data.name,
+                    url=categoryDetailResponse.categoryDetail.data.url
+                )
+            )
+        viewModel.categoryPage
+            .verifyValueEquals(resultList)
+    }
+
+    @Test
+    fun `getFirstPage should return result even though one of showcases failed to be fetched`() {
+        val isLoggedIn = false
+        val userId = "12223"
+        val deviceId = "11111"
+        val expectedCategoryIdL2Failed = categoryProductResponseMap.keys.elementAt(1)
+
+        setAddressData(
+            warehouseId = warehouseId,
+            warehouses = getLocalWarehouseModelList(),
+            shopId = shopId
+        )
+        onUserSession_thenReturns(
+            isLoggedIn = isLoggedIn,
+            userId = userId,
+            deviceId = deviceId
+        )
+        onCategoryDetail_thenReturns()
+        onTargetedTicker_thenReturns()
+        onCategoryProduct_thenThrows(
+            uniqueId = getUniqueId(
+                isLoggedIn = isLoggedIn,
+                userId = userId,
+                deviceId = deviceId
+            ),
+            expectedCategoryIdL2Failed = expectedCategoryIdL2Failed
+        )
+
+        viewModel.onViewCreated(
+            navToolbarHeight = navToolbarHeight
+        )
+        viewModel.getFirstPage()
+
+        // map header space
+        val headerSpaceUiModel = categoryDetailResponse
+            .mapToHeaderSpace(
+                space = navToolbarHeight
+            )
+
+        // map choose address
+        val chooseAddressUiModel = categoryDetailResponse
+            .mapToChooseAddress()
+
+        // map ticker
+        val tickerDataList = TickerMapper.mapTickerData(
+            tickerList = targetedTickerResponse
+        )
+        val tickerUiModel = categoryDetailResponse
+            .mapToTicker(
+                tickerData = tickerDataList
+            )
+        val hasBlockedAddToCart = tickerDataList.first
+
+        // map title
+        val titleUiModel = categoryDetailResponse
+            .mapToCategoryTitle()
+
+        // map category navigation
+        val categoryNavigationUiModel = categoryDetailResponse
+            .mapToCategoryNavigation()
+
+        // map product recommendation
+        val productRecommendationUiModel = ProductRecommendationMapper.createProductRecommendation(
+            categoryIds = listOf(categoryIdL1)
+        )
+
+        val resultList = mutableListOf(
+            headerSpaceUiModel,
+            chooseAddressUiModel,
+            tickerUiModel,
+            titleUiModel,
+            categoryNavigationUiModel,
+            productRecommendationUiModel,
+        )
+
+        val categoryNavigationList = categoryNavigationUiModel.categoryListUiModel.toMutableList()
+        mapShowcaseProduct(
+            expectedCategoryIdL2Failed = expectedCategoryIdL2Failed,
+            hasAdded = true,
+            categoryNavigationList = categoryNavigationList,
+            resultList = resultList,
+            hasBlockedAddToCart = hasBlockedAddToCart
+        )
+
+        verifyCategoryDetail()
+        verifyTargetedTicker()
+        viewModel.openScreenTracker
+            .verifyValueEquals(
+                CategoryOpenScreenTrackerModel(
+                    id = categoryDetailResponse.categoryDetail.data.id,
+                    name= categoryDetailResponse.categoryDetail.data.name,
+                    url=categoryDetailResponse.categoryDetail.data.url
+                )
+            )
+        viewModel.categoryPage
+            .verifyValueEquals(resultList)
+    }
+
+    @Test
+    fun `modify layout while its value is null should make getFirstPage error and do nothing`() {
+        val privateFieldNameLayout = "layout"
+
+        viewModel.mockPrivateField(
+            name = privateFieldNameLayout,
+            value = null
+        )
+
+        viewModel.getFirstPage()
+
+        viewModel.categoryPage
+            .verifyValueEquals(null)
     }
 }

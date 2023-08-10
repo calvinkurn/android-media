@@ -24,9 +24,10 @@
             android:orientation="vertical"
             android:visibility="gone">
 
-            <include
+            <com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.widget.CardAddressPinpointWidget
                 android:id="@+id/card_address_discom"
-                layout="@layout/card_address_new_loc" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
             <com.tokopedia.unifycomponents.TextFieldUnify
                 android:id="@+id/et_kodepos"
@@ -62,7 +63,7 @@
             android:layout_marginTop="16dp"
             android:layout_below="@id/search_page_input"
             app:typographyType="body_3"
-            android:textColor="@color/Unify_N700"
+            android:textColor="@color/Unify_NN950"
             android:visibility="gone" />
 
         <com.tokopedia.unifycomponents.EmptyState
@@ -123,7 +124,7 @@
             android:layout_height="1dp"
             android:visibility="gone"
             android:layout_below="@id/layout_use_current_loc"
-            android:background="@color/Unify_N100" />
+            android:background="@color/Unify_NN200" />
 
         <LinearLayout
             android:id="@+id/ll_popular_city"

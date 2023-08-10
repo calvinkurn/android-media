@@ -8,15 +8,11 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 class ShipmentDetailData(
-    var shipmentItemData: List<ShipmentItemData>? = null,
     var totalQuantity: Int = 0,
-    var shipmentTickerInfo: String? = null,
     var shipmentCartData: ShipmentCartData? = null,
-    var selectedShipment: ShipmentItemData? = null,
     var selectedCourier: CourierItemData? = null,
     var selectedCourierTradeInDropOff: CourierItemData? = null,
     var useInsurance: Boolean? = null,
-    var usePartialOrder: Boolean = false,
     var useDropshipper: Boolean? = null,
     var dropshipperName: String? = null,
     var dropshipperPhone: String? = null,

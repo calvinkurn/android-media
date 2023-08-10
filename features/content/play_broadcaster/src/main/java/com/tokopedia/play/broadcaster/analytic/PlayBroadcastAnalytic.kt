@@ -1,6 +1,9 @@
 package com.tokopedia.play.broadcaster.analytic
 
+import com.tokopedia.content.analytic.BusinessUnit
+import com.tokopedia.content.analytic.Key
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
+import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalytic
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalytic
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
 import com.tokopedia.play.broadcaster.analytic.pinproduct.PlayBroadcastPinProductAnalytic
@@ -14,7 +17,6 @@ import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalytic
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
-
 
 /**
  * Created by mzennis on 13/07/20.
@@ -36,6 +38,7 @@ class PlayBroadcastAnalytic(
     private val accountAnalytic: PlayBroadcastAccountAnalytic,
     private val shortsEntryPointAnalytic: PlayShortsEntryPointAnalytic,
     private val playPerformanceDashboardEntryPointAnalytic: PlayPerformanceDashboardEntryPointAnalytic,
+    private val beautificationAnalytic: PlayBroadcastBeautificationAnalytic
 ) : PlayBroadcastInteractiveAnalytic by interactiveAnalytic,
     PlayBroSetupMenuAnalytic by setupMenuAnalytic,
     PlayBroSetupTitleAnalytic by setupTitleAnalytic,
@@ -46,7 +49,8 @@ class PlayBroadcastAnalytic(
     PlayBroadcastPinProductAnalytic by pinProductAnalytic,
     PlayBroadcastAccountAnalytic by accountAnalytic,
     PlayShortsEntryPointAnalytic by shortsEntryPointAnalytic,
-    PlayPerformanceDashboardEntryPointAnalytic by playPerformanceDashboardEntryPointAnalytic {
+    PlayPerformanceDashboardEntryPointAnalytic by playPerformanceDashboardEntryPointAnalytic,
+    PlayBroadcastBeautificationAnalytic by beautificationAnalytic {
 
     /**
      * View Camera and Microphone Permission Page
@@ -67,7 +71,7 @@ class PlayBroadcastAnalytic(
      */
     fun clickCloseOnSetupPage() {
         clickGeneralEvent(
-                action = "close onboarding"
+            action = "close onboarding"
         )
     }
 
@@ -76,8 +80,8 @@ class PlayBroadcastAnalytic(
      */
     fun viewErrorOnFinalSetupPage(errorMessage: String) {
         viewCustomGeneralEvent(
-                action = "error state on preparation page",
-                label = "- $errorMessage"
+            action = "error state on preparation page",
+            label = "- $errorMessage"
         )
     }
 
@@ -93,8 +97,8 @@ class PlayBroadcastAnalytic(
      */
     fun clickProductTagOnLivePage(channelId: String, titleChannel: String) {
         clickGeneralEvent(
-                "product tag live",
-                "- $channelId - $titleChannel"
+            "product tag live",
+            "- $channelId - $titleChannel"
         )
     }
 
@@ -103,8 +107,8 @@ class PlayBroadcastAnalytic(
      */
     fun clickShareIconOnLivePage(channelId: String, titleChannel: String) {
         clickGeneralEvent(
-                "share link live",
-                "- $channelId - $titleChannel"
+            "share link live",
+            "- $channelId - $titleChannel"
         )
     }
 
@@ -113,8 +117,8 @@ class PlayBroadcastAnalytic(
      */
     fun clickSwitchCameraOnLivePage(channelId: String, titleChannel: String) {
         clickGeneralEvent(
-                "camera switch live",
-                "- $channelId - $titleChannel"
+            "camera switch live",
+            "- $channelId - $titleChannel"
         )
     }
 
@@ -163,8 +167,8 @@ class PlayBroadcastAnalytic(
      */
     fun viewDialogExitOnLivePage(channelId: String, titleChannel: String) {
         viewGeneralEvent(
-                "popup message exit",
-                "- $channelId - $titleChannel"
+            "popup message exit",
+            "- $channelId - $titleChannel"
         )
     }
 
@@ -173,8 +177,8 @@ class PlayBroadcastAnalytic(
      */
     fun clickDialogExitOnLivePage(channelId: String, titleChannel: String) {
         clickGeneralEvent(
-                "keluar live room",
-                "- $channelId - $titleChannel"
+            "keluar live room",
+            "- $channelId - $titleChannel"
         )
     }
 
@@ -183,8 +187,8 @@ class PlayBroadcastAnalytic(
      */
     fun viewDialogSeeReportOnLivePage(channelId: String, titleChannel: String) {
         viewGeneralEvent(
-                "lihat laporan message",
-                "- $channelId - $titleChannel"
+            "lihat laporan message",
+            "- $channelId - $titleChannel"
         )
     }
 
@@ -193,8 +197,8 @@ class PlayBroadcastAnalytic(
      */
     fun clickDialogSeeReportOnLivePage(channelId: String, titleChannel: String) {
         clickGeneralEvent(
-                "lihat laporan",
-                "- $channelId - $titleChannel"
+            "lihat laporan",
+            "- $channelId - $titleChannel"
         )
     }
 
@@ -203,8 +207,8 @@ class PlayBroadcastAnalytic(
      */
     fun viewErrorOnLivePage(channelId: String, titleChannel: String, errorMessage: String) {
         viewCustomGeneralEvent(
-                "error state on live room",
-                "- $channelId - $titleChannel - $errorMessage"
+            "error state on live room",
+            "- $channelId - $titleChannel - $errorMessage"
         )
     }
 
@@ -213,8 +217,8 @@ class PlayBroadcastAnalytic(
      */
     fun viewDialogContinueBroadcastOnLivePage(channelId: String, titleChannel: String) {
         viewGeneralEvent(
-                "lanjutkan siaran message",
-                "- $channelId - $titleChannel"
+            "lanjutkan siaran message",
+            "- $channelId - $titleChannel"
         )
     }
 
@@ -223,8 +227,8 @@ class PlayBroadcastAnalytic(
      */
     fun clickDialogContinueBroadcastOnLivePage(channelId: String, titleChannel: String) {
         clickGeneralEvent(
-                "lanjutkan siaran",
-                "- $channelId - $titleChannel"
+            "lanjutkan siaran",
+            "- $channelId - $titleChannel"
         )
     }
 
@@ -233,8 +237,8 @@ class PlayBroadcastAnalytic(
      */
     fun viewDialogViolation(channelId: String) {
         viewGeneralEvent(
-                "device violation popup message",
-                "- $channelId"
+            "device violation popup message",
+            "- $channelId"
         )
     }
 
@@ -243,8 +247,8 @@ class PlayBroadcastAnalytic(
      */
     fun viewErrorOnReportPage(channelId: String, titleChannel: String, errorMessage: String) {
         viewCustomGeneralEvent(
-                "error state on report page",
-                "- $channelId - $titleChannel - $errorMessage"
+            "error state on report page",
+            "- $channelId - $titleChannel - $errorMessage"
         )
     }
 
@@ -253,7 +257,7 @@ class PlayBroadcastAnalytic(
      */
     fun clickSaveScheduleOnFinalSetupPage() {
         clickGeneralEvent(
-                "simpan jadwal"
+            "simpan jadwal"
         )
     }
 
@@ -266,20 +270,20 @@ class PlayBroadcastAnalytic(
         }
 
         viewCustomGeneralEvent(
-                action = eventAction.toString(),
-                label = label
+            action = eventAction.toString(),
+            label = label
         )
     }
 
     private fun viewCustomGeneralEvent(action: String, label: String = "") {
         sendGeneralEvent(
-                event = KEY_TRACK_VIEW_EVENT,
-                action = action,
-                label = label
+            event = KEY_TRACK_VIEW_EVENT,
+            action = action,
+            label = label
         )
     }
 
-    private fun clickGeneralEvent(action: String, label: String =  "") {
+    private fun clickGeneralEvent(action: String, label: String = "") {
         val eventAction = StringBuilder()
         eventAction.append(KEY_TRACK_CLICK)
         if (action.isNotBlank()) {
@@ -288,13 +292,13 @@ class PlayBroadcastAnalytic(
         }
 
         sendGeneralEvent(
-                event = KEY_TRACK_CLICK_EVENT,
-                action = eventAction.toString(),
-                label = label
+            event = KEY_TRACK_CLICK_EVENT,
+            action = eventAction.toString(),
+            label = label
         )
     }
 
-    private fun impressionGeneralEvent(action: String, label: String =  "") {
+    private fun impressionGeneralEvent(action: String, label: String = "") {
         val eventAction = StringBuilder()
         eventAction.append(KEY_TRACK_IMPRESSION)
         if (action.isNotBlank()) {
@@ -309,7 +313,7 @@ class PlayBroadcastAnalytic(
         )
     }
 
-    private fun scrollGeneralEvent(action: String, label: String =  "") {
+    private fun scrollGeneralEvent(action: String, label: String = "") {
         val eventAction = StringBuilder()
         eventAction.append(KEY_TRACK_SCROLL)
         if (action.isNotBlank()) {
@@ -333,26 +337,26 @@ class PlayBroadcastAnalytic(
         }
 
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                mapOf(
-                        KEY_EVENT to event,
-                        KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY,
-                        KEY_EVENT_ACTION to action,
-                        KEY_EVENT_LABEL to eventLabel,
-                        KEY_CURRENT_SITE to currentSite,
-                        KEY_SHOP_ID to userSession.shopId,
-                        KEY_USER_ID to userSession.userId,
-                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
-                )
+            mapOf(
+                Key.event to event,
+                Key.eventCategory to KEY_TRACK_CATEGORY,
+                Key.eventAction to action,
+                Key.eventLabel to eventLabel,
+                Key.currentSite to currentSite,
+                Key.shopId to userSession.shopId,
+                Key.userId to userSession.userId,
+                Key.businessUnit to BusinessUnit.play
+            )
         )
     }
 
     private fun sendScreen(screenName: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(
-                screenName,
-                hashMapOf(
-                        KEY_CURRENT_SITE to currentSite,
-                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
-                )
+            screenName,
+            hashMapOf(
+                Key.currentSite to currentSite,
+                Key.businessUnit to BusinessUnit.play
+            )
         )
     }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.contactus.inboxtickets.data
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.common.network.data.model.CacheType
 import com.tokopedia.common.network.data.model.RequestType
@@ -32,6 +33,7 @@ class ContactUsRepository @Inject constructor() : BaseRepository() {
                 .build()
             return restRepository.getResponse(restRequest).getData()
         } catch (t: Throwable) {
+            FirebaseCrashlytics.getInstance().recordException(t)
             throw t
         }
     }

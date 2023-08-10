@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/toolbar_penalty_page"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:theme="?toolbarTheme"
+        app:layout_constraintTop_toTopOf="parent"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetStartWithNavigation="0dp"
+        app:subtitleTextAppearance="?subtitleTextAppearance"
+        app:titleTextAppearance="?titleTextAppearance" />
+
+    <com.tokopedia.unifycomponents.TabsUnify
+        android:id="@+id/tabs_penalty_page"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_penalty_page">
+        
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tab_penalty_latest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_penalty_tab_latest"/>
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tab_penalty_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_penalty_tab_history"/>
+        
+    </com.tokopedia.unifycomponents.TabsUnify>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/vp_penalty_page"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toBottomOf="@id/tabs_penalty_page"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.appcompat.widget.LinearLayoutCompat>

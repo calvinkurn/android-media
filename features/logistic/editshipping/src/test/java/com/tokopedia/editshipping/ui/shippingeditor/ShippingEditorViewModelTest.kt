@@ -20,8 +20,8 @@ import com.tokopedia.logisticCommon.data.response.shippingeditor.GetShipperTicke
 import com.tokopedia.logisticCommon.data.response.shippingeditor.SaveShippingEditorResponse
 import com.tokopedia.logisticCommon.data.response.shippingeditor.SaveShippingResponse
 import com.tokopedia.logisticCommon.data.response.shippingeditor.ValidateShippingEditorResponse
-import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocWhitelist
-import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocationWhitelistResponse
+import com.tokopedia.logisticCommon.data.response.shoplocation.KeroGetRolloutEligibility
+import com.tokopedia.logisticCommon.data.response.shoplocation.KeroGetRolloutEligibilityResponse
 import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.verify
@@ -48,7 +48,7 @@ class ShippingEditorViewModelTest {
 
     private lateinit var shippingEditorViewModel: ShippingEditorViewModel
 
-    private val shopWhitelistObserver: Observer<ShippingEditorState<ShopLocWhitelist>> =
+    private val shopWhitelistObserver: Observer<ShippingEditorState<KeroGetRolloutEligibility>> =
         mockk(relaxed = true)
     private val shipperListObserver: Observer<ShippingEditorState<ShipperListModel>> =
         mockk(relaxed = true)
@@ -83,7 +83,7 @@ class ShippingEditorViewModelTest {
 
     @Test
     fun `Get shop location whitelist success`() {
-        coEvery { shopRepo.getShopLocationWhitelist(any()) } returns ShopLocationWhitelistResponse()
+        coEvery { shopRepo.getShopLocationWhitelist(any()) } returns KeroGetRolloutEligibilityResponse()
         shippingEditorViewModel.getWhitelistData(1234)
         verify { shopWhitelistObserver.onChanged(match { it is ShippingEditorState.Success }) }
     }

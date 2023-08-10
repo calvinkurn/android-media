@@ -78,6 +78,10 @@ class ShippingScheduleWidget : ConstraintLayout {
     ): List<ShippingScheduleWidgetModel> {
         val shippingScheduleWidgets: ArrayList<ShippingScheduleWidgetModel> = arrayListOf()
 
+        scheduleDeliveryUiModel?.apply {
+            shippingScheduleWidgets.add(createOtherOptionWidget())
+        }
+
         shippingScheduleWidgets.add(
             create2HWidget(
                 titleNow2H = titleNow2H,
@@ -86,10 +90,6 @@ class ShippingScheduleWidget : ConstraintLayout {
                 scheduleDeliveryUiModel = scheduleDeliveryUiModel
             )
         )
-
-        scheduleDeliveryUiModel?.apply {
-            shippingScheduleWidgets.add(createOtherOptionWidget())
-        }
 
         return shippingScheduleWidgets
     }
@@ -132,7 +132,7 @@ class ShippingScheduleWidget : ConstraintLayout {
             isEnable = available,
             title = getTitleOtherOption(),
             description = if (available) deliveryProduct.textEta else text,
-            label = deliveryProduct.promoText,
+            label = deliveryProduct.promoText.convertToSpannedString(),
             isSelected = isSelected,
             isShowCoachMark = scheduleDeliveryPreferences?.isDisplayedCoachmark?.not() ?: true,
             onSelectedWidgetListener = {
@@ -145,14 +145,21 @@ class ShippingScheduleWidget : ConstraintLayout {
     }
 
     private fun ScheduleDeliveryUiModel.getTitleOtherOption(): CharSequence {
-        val text = StringBuilder().apply {
+        val textTitle = StringBuilder().apply {
             appendHtmlBoldText(title)
             if (available) {
                 append(deliveryProduct.getFormattedPrice())
             }
         }.toString()
 
-        return HtmlLinkHelper(context, text).spannedString ?: ""
+        return textTitle.convertToSpannedString()
+    }
+
+    private fun String.convertToSpannedString(): CharSequence {
+        return HtmlLinkHelper(
+            context,
+            this
+        ).spannedString ?: ""
     }
 
     private fun openScheduleDeliveryBottomSheet(scheduleDeliveryUiModel: ScheduleDeliveryUiModel?) {
@@ -206,7 +213,7 @@ class ShippingScheduleWidget : ConstraintLayout {
                     shippingNowTimeOption.onSelectedWidgetListener
                 )
                 setTitle(shippingNowTimeOption.title ?: "")
-                setDescription(shippingNowTimeOption.description)
+                setDescription(shippingNowTimeOption.description?.convertToSpannedString())
                 setLabel(shippingNowTimeOption.label, shippingNowTimeOption.isSelected)
                 showRightIcon(shippingNowTimeOption.onClickIconListener)
                 setTimeOptionEnable(shippingNowTimeOption.isEnable)
@@ -267,7 +274,7 @@ class ShippingScheduleWidget : ConstraintLayout {
                 ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
             )
             tvLabelShipment.setTextColor(
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N600)
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN800)
             )
         } else {
             rbShipment.isEnabled = false
@@ -297,7 +304,7 @@ class ShippingScheduleWidget : ConstraintLayout {
         tvTitleShipment.text = title
     }
 
-    private fun ItemShipmentNowTimeOptionBinding.setDescription(subtitle: String?) {
+    private fun ItemShipmentNowTimeOptionBinding.setDescription(subtitle: CharSequence?) {
         if (subtitle?.isNotBlank() == true) {
             tvDescriptionShipment.visible()
             tvDescriptionShipment.text = subtitle
@@ -324,12 +331,14 @@ class ShippingScheduleWidget : ConstraintLayout {
 
     private fun ItemShipmentNowTimeOptionBinding.showRightIcon(onClickIconListener: (() -> Unit)?) {
         if (onClickIconListener != null) {
-            rightIcon.visible()
-            rightIcon.setOnClickListener {
+            guideline.setGuidelinePercent(GUIDELINE_PERCENT_WITH_ICON)
+            iconArea.visible()
+            iconArea.setOnClickListener {
                 onClickIconListener.invoke()
             }
         } else {
-            rightIcon.invisible()
+            guideline.setGuidelinePercent(GUIDELINE_PERCENT_WITHOUT_ICON)
+            iconArea.invisible()
         }
     }
 
@@ -346,5 +355,7 @@ class ShippingScheduleWidget : ConstraintLayout {
 
     companion object {
         private const val DELAY_SHOWING_COACHMARK: Long = 500
+        private const val GUIDELINE_PERCENT_WITH_ICON = 0.75F
+        private const val GUIDELINE_PERCENT_WITHOUT_ICON = 0.99F
     }
 }

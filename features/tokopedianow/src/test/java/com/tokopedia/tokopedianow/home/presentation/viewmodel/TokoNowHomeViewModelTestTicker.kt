@@ -47,7 +47,8 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
 
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
-            removeAbleWidgets = listOf()
+            removeAbleWidgets = listOf(),
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(
             localCacheModel = LocalCacheModel()
@@ -131,7 +132,8 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
 
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
-            removeAbleWidgets = listOf()
+            removeAbleWidgets = listOf(),
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(
             localCacheModel = LocalCacheModel()

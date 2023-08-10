@@ -1,0 +1,14 @@
+{
+  "remove_from_cart": {
+    "error_message": [
+      "1 barang telah dihapus."
+    ],
+    "status": "OK",
+    "data": {
+      "message": [
+        "1 barang telah dihapus."
+      ],
+      "success": 1
+    }
+  }
+}

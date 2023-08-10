@@ -54,6 +54,7 @@ internal object GetProductList {
                 manageProductData {
                    isStockGuaranteed
                    isTobacco
+                   isDTInbound
                    isArchived
                    isInGracePeriod
                 }

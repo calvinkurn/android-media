@@ -35,7 +35,13 @@ class PlayBroadcaster(
             callback: Callback,
             remoteConfig: RemoteConfig,
         ): PlayBroadcaster {
-            return PlayBroadcaster(activityContext, handler, broadcaster, callback, remoteConfig)
+            return PlayBroadcaster(
+                activityContext,
+                handler,
+                broadcaster,
+                callback,
+                remoteConfig,
+            )
         }
     }
 
@@ -85,8 +91,9 @@ class PlayBroadcaster(
     override fun create(
         holder: SurfaceHolder,
         surfaceSize: Broadcaster.Size,
+        withByteplus: Boolean,
     ) {
-        broadcaster.create(holder, surfaceSize)
+        broadcaster.create(holder, surfaceSize, withByteplus)
         updateAspectFrameSize()
     }
 

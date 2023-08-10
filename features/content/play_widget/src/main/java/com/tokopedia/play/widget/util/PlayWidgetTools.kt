@@ -20,12 +20,12 @@ import kotlin.coroutines.CoroutineContext
  * Created by jegul on 08/10/20
  */
 class PlayWidgetTools @Inject constructor(
-        private val useCase: PlayWidgetUseCase,
-        private val lazyReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
-        private val lazyUpdateChannelUseCase: Lazy<PlayWidgetUpdateChannelUseCase>,
-        private val mapper: PlayWidgetUiMapper,
-        private val connectionUtil: PlayWidgetConnectionUtil,
-){
+    private val useCase: PlayWidgetUseCase,
+    private val lazyReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
+    private val lazyUpdateChannelUseCase: Lazy<PlayWidgetUpdateChannelUseCase>,
+    private val mapper: PlayWidgetUiMapper,
+    private val connectionUtil: PlayWidgetConnectionUtil,
+) {
 
     private val reminderUseCase: PlayWidgetReminderUseCase
         get() = lazyReminderUseCase.get()
@@ -42,16 +42,20 @@ class PlayWidgetTools @Inject constructor(
         }
     }
 
-    suspend fun mapWidgetToModel(widgetResponse: PlayWidget, prevState: PlayWidgetState? = null, coroutineContext: CoroutineContext = Dispatchers.Default): PlayWidgetState {
+    suspend fun mapWidgetToModel(
+        widgetResponse: PlayWidget,
+        prevState: PlayWidgetState? = null,
+        coroutineContext: CoroutineContext = Dispatchers.Default,
+        extraInfo: PlayWidgetUiMapper.ExtraInfo = PlayWidgetUiMapper.ExtraInfo(),
+    ): PlayWidgetState {
         return withContext(coroutineContext) {
-            val model = mapper.mapWidget(widgetResponse, prevState)
+            val model = mapper.mapWidget(widgetResponse, prevState, extraInfo)
             PlayWidgetState(
                 model = model,
                 widgetType = PlayWidgetType.getByTypeString(widgetResponse.meta.template),
                 isLoading = false,
             )
         }
-
     }
 
     suspend fun updateToggleReminder(channelId: String,

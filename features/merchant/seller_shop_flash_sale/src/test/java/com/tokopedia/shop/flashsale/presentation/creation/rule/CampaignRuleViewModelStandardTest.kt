@@ -2,19 +2,13 @@ package com.tokopedia.shop.flashsale.presentation.creation.rule
 
 import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
 import com.tokopedia.shop.flashsale.util.CampaignDataGenerator
-import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.unit.test.rule.StandardTestRule
-import com.tokopedia.usecase.coroutines.Success
-import io.mockk.coEvery
 import io.mockk.verify
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert
 import org.junit.Test
-import java.util.concurrent.TimeUnit
 
-class CampaignRuleViewModelStandardTest: CampaignRuleViewModelTestFixture() {
+class CampaignRuleViewModelStandardTest : CampaignRuleViewModelTestFixture() {
 
     override fun provideTestRule() = StandardTestRule()
 
@@ -24,6 +18,7 @@ class CampaignRuleViewModelStandardTest: CampaignRuleViewModelTestFixture() {
             viewModel.setPrivateProperty("initialPaymentType", PaymentType.INSTANT)
             viewModel.setPrivateProperty("initialUniqueBuyer", true)
             viewModel.setPrivateProperty("initialCampaignRelation", true)
+            viewModel.setPrivateProperty("initialOosState", false)
             viewModel.setPrivateProperty(
                 "initialCampaignRelations",
                 CampaignDataGenerator.generateRelatedCampaigns()
@@ -32,6 +27,7 @@ class CampaignRuleViewModelStandardTest: CampaignRuleViewModelTestFixture() {
             viewModel.onInstantPaymentMethodSelected()
             viewModel.onNotRequireUniqueAccountSelected()
             viewModel.onAllowCampaignRelation()
+            viewModel.setOosStatus(isEnableTransaction = false)
             viewModel.onRelatedCampaignsChanged(CampaignDataGenerator.generateRelatedCampaigns())
             advanceUntilIdle()
             val method =
@@ -55,5 +51,4 @@ class CampaignRuleViewModelStandardTest: CampaignRuleViewModelTestFixture() {
         T::class.java.getDeclaredField(name)
             .apply { isAccessible = true }
             .get(this) as R
-
 }

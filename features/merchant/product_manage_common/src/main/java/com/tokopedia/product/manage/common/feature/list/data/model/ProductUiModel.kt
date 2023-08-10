@@ -38,6 +38,7 @@ data class ProductUiModel(
     val isEmptyStock: Boolean,
     val isStockGuaranteed: Boolean,
     val isTobacco: Boolean,
+    val isDTInbound: Boolean,
     val isArchived: Boolean,
     val isInGracePeriod: Boolean,
 ) : Visitable<ProductManageAdapterFactory> {

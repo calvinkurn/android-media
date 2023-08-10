@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_NN0"
     android:id="@+id/digital_homepage_search_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -15,7 +15,7 @@
             android:id="@+id/digital_homepage_search_view_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Unify_N0"
+            android:background="@color/Unify_NN0"
             android:minHeight="?attr/actionBarSize"
             app:contentInsetLeft="@dimen/layout_lvl0"
             app:contentInsetStart="@dimen/layout_lvl0"

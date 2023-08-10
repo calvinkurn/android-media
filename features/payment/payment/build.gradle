@@ -16,6 +16,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.payment'
+    testNamespace 'com.tokopedia.payment.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.fingerprint)

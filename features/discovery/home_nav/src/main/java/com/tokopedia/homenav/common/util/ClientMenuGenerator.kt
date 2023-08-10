@@ -36,7 +36,6 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         const val IDENTIFIER_TITLE_ALL_CATEGORIES = 101
         const val IDENTIFIER_TITLE_HELP_CENTER = 102
         const val IDENTIFIER_TITLE_WISHLIST = 103
-        const val IDENTIFIER_TITLE_FAVORITE_SHOP = 104
         const val IDENTIFIER_TITLE_ORDER_HISTORY = 105
         const val IDENTIFIER_TITLE_REVIEW = 106
         const val IDENTIFIER_TITLE_ACTIVITY_REVAMP = 107
@@ -73,7 +72,6 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
                 IDENTIFIER_TITLE_ALL_CATEGORIES -> context.getString(com.tokopedia.homenav.R.string.title_all_category_section)
                 IDENTIFIER_TITLE_HELP_CENTER -> context.getString(R.string.title_helpcenter_section)
                 IDENTIFIER_TITLE_WISHLIST -> context.getString(R.string.title_wishlist_section)
-                IDENTIFIER_TITLE_FAVORITE_SHOP -> context.getString(R.string.title_favorite_shop_section)
                 IDENTIFIER_TITLE_ORDER_HISTORY -> context.getString(R.string.menu_transaction_menu_all_transaction)
                 IDENTIFIER_TITLE_REVIEW -> context.getString(R.string.menu_transaction_menu_review)
                 IDENTIFIER_TITLE_ACTIVITY_REVAMP -> context.getString(com.tokopedia.homenav.R.string.title_activity_revamp)
@@ -81,14 +79,12 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
             },
             actionIconId = when (identifier) {
                 IDENTIFIER_TITLE_WISHLIST,
-                IDENTIFIER_TITLE_FAVORITE_SHOP,
                 IDENTIFIER_TITLE_ORDER_HISTORY,
                 IDENTIFIER_TITLE_REVIEW -> IconUnify.CHEVRON_RIGHT
                 else -> null
             },
             applink = when (identifier) {
                 IDENTIFIER_TITLE_WISHLIST -> ApplinkConst.WISHLIST.needLoginValidation()
-                IDENTIFIER_TITLE_FAVORITE_SHOP -> ApplinkConst.FAVORITE.needLoginValidation()
                 IDENTIFIER_TITLE_ORDER_HISTORY -> ApplinkConst.PURCHASE_ORDER.needLoginValidation()
                 IDENTIFIER_TITLE_REVIEW -> getReputationApplink().needLoginValidation()
                 else -> ""

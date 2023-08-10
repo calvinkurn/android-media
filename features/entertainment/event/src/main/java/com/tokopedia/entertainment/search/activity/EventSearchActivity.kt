@@ -2,50 +2,75 @@ package com.tokopedia.entertainment.search.activity
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.View.OnFocusChangeListener
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.databinding.EntSearchActivityBinding
 import com.tokopedia.entertainment.search.analytics.EventSearchPageTracking
 import com.tokopedia.entertainment.search.di.DaggerEventSearchComponent
 import com.tokopedia.entertainment.search.di.EventSearchComponent
 import com.tokopedia.entertainment.search.fragment.EventSearchFragment
-import kotlinx.android.synthetic.main.ent_search_activity.*
-
+import com.tokopedia.entertainment.search.listener.EventSearchBarActionListener
+import com.tokopedia.entertainment.search.listener.EventSearchBarDataListener
 
 /**
  * Author errysuprayogi on 27,February,2020
  */
-class EventSearchActivity : BaseSimpleActivity(), HasComponent<EventSearchComponent> {
+class EventSearchActivity : BaseSimpleActivity(), HasComponent<EventSearchComponent>, EventSearchBarDataListener {
 
     companion object {
         val EXTRAS_QUERY = "query_text"
     }
 
+    var binding: EntSearchActivityBinding? = null
+    var eventSearchBarActionListener: EventSearchBarActionListener? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        txt_search.searchBarTextField.setText(getExtrasQuery())
-        txt_search.searchBarTextField.onFocusChangeListener = OnFocusChangeListener { v, hasFocus ->
-            txt_search.searchBarTextField.post(Runnable {
-                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.showSoftInput(txt_search.searchBarTextField, InputMethodManager.SHOW_IMPLICIT)
-            })
-        }
-        txt_search.searchBarTextField.requestFocus()
-        txt_search.searchBarTextField.setOnClickListener { EventSearchPageTracking.getInstance().clickSearchBarOnSearchActivity() }
-        txt_search.searchBarTextField.setOnEditorActionListener { view, i, keyEvent ->
-            if(i == EditorInfo.IME_ACTION_SEARCH || keyEvent.action == KeyEvent.KEYCODE_ENTER){
-                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(view.windowToken, 0)
-                return@setOnEditorActionListener true
+        binding = EntSearchActivityBinding.inflate(layoutInflater)
+        setContentView(binding?.root)
+
+        setSupportActionBar(binding?.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+
+        binding?.txtSearch?.run {
+            searchBarTextField.setText(getExtrasQuery())
+            searchBarTextField.onFocusChangeListener = OnFocusChangeListener { v, hasFocus ->
+                searchBarTextField.post(Runnable {
+                    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.showSoftInput(searchBarTextField, InputMethodManager.SHOW_IMPLICIT)
+                })
             }
-            return@setOnEditorActionListener false
+            searchBarTextField.requestFocus()
+            searchBarTextField.setOnClickListener { EventSearchPageTracking.getInstance().clickSearchBarOnSearchActivity() }
+            searchBarTextField.setOnEditorActionListener { view, i, keyEvent ->
+                if(i == EditorInfo.IME_ACTION_SEARCH || keyEvent.action == KeyEvent.KEYCODE_ENTER){
+                    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(view.windowToken, 0)
+                    return@setOnEditorActionListener true
+                }
+                return@setOnEditorActionListener false
+            }
+            searchBarTextField.addTextChangedListener(object : TextWatcher {
+                    override fun afterTextChanged(p0: Editable?) {
+                    }
+
+                    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    }
+
+                    override fun onTextChanged(keyword: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                        eventSearchBarActionListener?.afterSearchBarTextChanged(keyword)
+                    }
+                })
         }
     }
 
@@ -59,7 +84,9 @@ class EventSearchActivity : BaseSimpleActivity(), HasComponent<EventSearchCompon
     }
 
     override fun getNewFragment(): Fragment? {
-        return EventSearchFragment.newInstance()
+        val fragment = EventSearchFragment.newInstance()
+        fragment.setListener(this)
+        return fragment
     }
 
     override fun getToolbarResourceID(): Int {
@@ -77,4 +104,12 @@ class EventSearchActivity : BaseSimpleActivity(), HasComponent<EventSearchCompon
     override fun getComponent(): EventSearchComponent = DaggerEventSearchComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
 
+    override fun onDestroy() {
+        super.onDestroy()
+        binding = null
+    }
+
+    override fun getKeyWord(): Editable? {
+        return binding?.txtSearch?.searchBarTextField?.text
+    }
 }

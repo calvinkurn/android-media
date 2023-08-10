@@ -27,7 +27,8 @@ import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 
 class VariantDetailFieldsViewHolder(
     itemView: View?,
-    private val variantDetailFieldsViewHolderListener: VariantDetailFieldsViewHolderListener
+    private val variantDetailFieldsViewHolderListener: VariantDetailFieldsViewHolderListener,
+    private val enableVariantStatusChange: Boolean
 ) : AbstractViewHolder<VariantDetailFieldsUiModel>(itemView) {
 
     interface VariantDetailFieldsViewHolderListener {
@@ -37,6 +38,8 @@ class VariantDetailFieldsViewHolder(
         fun onSkuInputTextChanged(skuInput: String, adapterPosition: Int)
         fun onWeightInputTextChanged(weightInput: String, adapterPosition: Int): VariantDetailInputLayoutModel
         fun onCoachmarkDismissed()
+        fun onDisablingVariantDT(position: Int)
+        fun onDisablingVariantCampaign(position: Int)
     }
 
     private var unitValueLabel: AppCompatTextView? = null
@@ -48,6 +51,8 @@ class VariantDetailFieldsViewHolder(
 
     private var visitablePosition = 0
     private var isPriceFieldEdited = false
+    private var hasDTStock = false
+    private var isCampaignActive = false
 
     init {
         unitValueLabel = itemView?.findViewById(R.id.tv_unit_value_label)
@@ -137,7 +142,18 @@ class VariantDetailFieldsViewHolder(
     private fun setupStatusSwitchListener(variantDetailFieldsViewHolderListener: VariantDetailFieldsViewHolderListener) {
         statusSwitch?.setOnClickListener {
             val isChecked = statusSwitch?.isChecked ?: false
-            variantDetailFieldsViewHolderListener.onStatusSwitchChanged(isChecked, visitablePosition)
+            if (isCampaignActive) {
+                statusSwitch?.isChecked = true
+                variantDetailFieldsViewHolderListener.onDisablingVariantCampaign(visitablePosition)
+                return@setOnClickListener
+            }
+            // put back last state if isChecked value
+            if (!isChecked && !enableVariantStatusChange && hasDTStock) {
+                statusSwitch?.isChecked = true
+                variantDetailFieldsViewHolderListener.onDisablingVariantDT(visitablePosition)
+            } else {
+                variantDetailFieldsViewHolderListener.onStatusSwitchChanged(isChecked, visitablePosition)
+            }
         }
     }
 
@@ -180,6 +196,8 @@ class VariantDetailFieldsViewHolder(
                 showCoachmark()
                 displayWeightCoachmark = false
             }
+            hasDTStock = variantDetailInputLayoutModel.hasDTStock
+            isCampaignActive = variantDetailInputLayoutModel.isCampaignActive
         }
     }
 

@@ -28,7 +28,6 @@ object ProductTrackingConstant {
         const val KEY_ECOMMERCE = "ecommerce"
         const val KEY_PROMOTIONS = "promotions"
         const val KEY_USER_ID = "user_id"
-        const val KEY_PROMO_ID = "promoId"
         const val USER_NON_LOGIN = "non login"
         const val KEY_BUSINESS_UNIT = "businessUnit"
         const val KEY_CURRENT_SITE = "currentSite"
@@ -65,7 +64,6 @@ object ProductTrackingConstant {
         const val PROMO_NAME = "name"
         const val PROMO_POSITION = "position"
         const val PROMO_ID = "promo_id"
-        const val PROMO_CODE = "promo_id"
         const val CREATIVE = "creative"
         const val POSITION = "position"
         const val PROMO_CLICK = "promoClick"
@@ -120,6 +118,7 @@ object ProductTrackingConstant {
         const val KEY_DIMENSION_40 = "dimension40"
         const val KEY_DIMENSION_45 = "dimension45"
         const val KEY_DIMENSION_54 = "dimension54"
+        const val KEY_DIMENSION_56 = "dimension56"
         const val KEY_DIMENSION_79 = "dimension79"
         const val KEY_DIMENSION_80 = "dimension80"
         const val KEY_DIMENSION_81 = "dimension81"
@@ -166,7 +165,6 @@ object ProductTrackingConstant {
         const val CLICK_FOLLOW = "click - follow shop"
         const val CLICK_EDIT_PRODUCT = "click - edit product button"
         const val CLICK_CHOOSE_PRODUCT_VARIANT = "click - choose product variant"
-        const val CLICK_VARIANT_GUIDELINE = "click - lihat panduan on size chart"
         const val CLICK_VARIANT_BOTTOMSHEET_GUIDELINE = "click - lihat panduan on variant level ukuran"
         const val IMPRESSION_CHOOSE_VARIANT_NOTIFICATION = "impression - choose variant notification"
         const val VIEW_CHOOSE_VARIANT_ERROR = "view error when add to cart"
@@ -227,7 +225,6 @@ object ProductTrackingConstant {
         const val CLICK_BUTTON_SHIPMENT_ERROR_BOTTOM_SHEET_CHAT = "click - chat penjual on bottomsheet error"
         const val CLICK_BUTTON_SHIPMENT_ERROR_BOTTOM_SHEET_CHOOSE_ADDRESS = "click - ganti alamat on bottomsheet error"
         const val CLICK_MODULAR_COMPONENT = "click - modular component"
-        const val CLICK_VARIANT_BUY_BUTTON = "click - Beli Langsung on pdp - to global variant bottomsheet"
         const val CLICK_VARIANT_ATC_BUTTON = "click - tambah ke keranjang on pdp - to global variant bottomsheet"
 
         const val CLICK_VARIANT_QUANTITY_EDITOR = "click - quantity editor"
@@ -248,6 +245,9 @@ object ProductTrackingConstant {
         const val VIEW_ITEM = "view_item"
         const val PROMO_VIEW = "promoView"
         const val PROMOTIONS = "promotions"
+
+        const val CLICK_SHARE_REGULER = "general"
+        const val CLICK_SHARE_AFFILIATE_ICON = "affiliate"
     }
 
     object Label {
@@ -276,12 +276,6 @@ object ProductTrackingConstant {
         const val EVENT_LABEL_FLOW_CHOOSE_VARIANT = "flow:%s;parent_id:%s;child_id:%s"
     }
 
-    object Report {
-        const val EVENT = "clickReport"
-        const val EVENT_LABEL = "Report"
-        const val NOT_LOGIN_EVENT_LABEL = "Report - Not Login"
-    }
-
     object PDP {
         const val EVENT_CLICK_PDP = "clickPDP"
         const val EVENT_CLICK_PG = "clickPG"
@@ -291,13 +285,6 @@ object ProductTrackingConstant {
         const val EVENT_VIEW_PG_IRIS = "viewPGiris"
         const val EVENT_CLICK_COURIER = "clickCourier"
         const val EVENT_CLICK_COMMUNICATION = "clickCommunication"
-    }
-
-    object Affiliate {
-        const val CLICK_AFFILIATE = "clickAffiliate"
-        const val CATEGORY = "product detail page tokopedia by.me"
-        const val ACTION = "click tambah ke by.me"
-        const val ACTION_CLICK_WISHLIST = "click wishlist"
     }
 
     object ImageReview {

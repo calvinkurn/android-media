@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:text="@string/kamus_affiliate"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:layout_constraintStart_toEndOf="@id/icon_text"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="display_2" />
@@ -65,7 +65,7 @@
             android:layout_marginStart="12dp"
             android:layout_marginTop="2dp"
             android:text="@string/istilah_dalam_affiliate"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:layout_constraintStart_toEndOf="@id/icon_text"
             app:layout_constraintTop_toBottomOf="@id/learn_dictionary_title"
             app:typographyType="display_3" />
@@ -98,7 +98,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:text="@string/affiliate_bantuan"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:layout_constraintStart_toEndOf="@id/icon_help"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="display_2" />
@@ -110,7 +110,7 @@
             android:layout_marginStart="12dp"
             android:layout_marginTop="2dp"
             android:text="@string/bantuan_seputar_tokopedia_affiliate"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:layout_constraintStart_toEndOf="@id/icon_help"
             app:layout_constraintTop_toBottomOf="@id/learn_help_title"
             app:typographyType="display_3" />
@@ -142,7 +142,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:text="@string/affiliate_kebijakan_privasi"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:layout_constraintStart_toEndOf="@id/icon_privacy"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="display_2" />

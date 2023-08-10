@@ -17,7 +17,7 @@
         android:text="@string/ent_event_checkout_summary_title"
         app:typographyType="body_1"
         app:typographyWeight="bold"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         />
 
 
@@ -39,7 +39,7 @@
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/Unify_N100"
+        android:background="@color/Unify_NN200"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -47,7 +47,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/tg_event_checkout_summary_price_title"
         android:text="@string/ent_event_checkout_summary_total"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         app:typographyWeight="bold"
         app:typographyType="body_2"
         android:layout_marginTop="@dimen/spacing_lvl4"
@@ -62,7 +62,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/tg_event_checkout_summary_price_price"
         tools:text="Rp 12,698,400"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyWeight="bold"
         app:typographyType="body_2"
         android:layout_marginTop="@dimen/spacing_lvl4"
@@ -94,7 +94,7 @@
         app:typographyWeight="reguler"
         app:typographyType="body_3"
         android:layout_marginTop="@dimen/dimen_dp_20"
-        android:textColorLink="@color/Unify_G500"
+        android:textColorLink="@color/Unify_GN500"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
