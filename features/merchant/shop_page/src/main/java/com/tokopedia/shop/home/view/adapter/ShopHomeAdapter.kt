@@ -172,12 +172,6 @@ open class ShopHomeAdapter(
         submitList(newList)
     }
 
-    fun setShopShowcaseBanner(shopHomeShowcaseUiModel: ShopHomeShowcaseUiModel) {
-        val newList = getNewVisitableItems()
-        newList.setElement(1, shopHomeShowcaseUiModel)
-        submitList(newList)
-    }
-
     fun setProductComparisonData(uiModel: ShopHomePersoProductComparisonUiModel) {
         val newList = getNewVisitableItems()
         newList.indexOfFirst { it is ShopHomePersoProductComparisonUiModel }.let { index ->
