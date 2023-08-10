@@ -5,8 +5,8 @@ import com.tokopedia.shop.home.view.model.Product
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel
 
 interface ShopHomeProductCarouselListener {
-    fun onMainBannerClick(mainBanner: ShopHomeProductCarouselUiModel.Tab.Component)
-    fun onProductClick(selectedProduct: Product)
+    fun onProductCarouselMainBannerClick(mainBanner: ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild)
+    fun onProductCarouselProductClick(selectedProduct: Product)
 
     val fragment: Fragment
 

@@ -60,7 +60,7 @@ class ShopHomeShowCaseAdapter(
         fun bind(showcase: ShopHomeShowcaseUiModel.Tab.Showcase) {
             binding.tpgBannerTitle.text = showcase.name
             binding.imgBanner.loadShowcaseImage(showcase.imageUrl, widgetStyle)
-            binding.root.setOnClickListener { listener.onShowcaseClick(showcase) }
+            binding.root.setOnClickListener { listener.onNavigationBannerShowcaseClick(showcase) }
         }
 
         private fun ImageUnify.loadShowcaseImage(imageUrl: String, widgetStyle: ShopHomeShowcaseUiModel.WidgetStyle) {

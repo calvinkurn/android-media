@@ -63,7 +63,8 @@ class ShopProductCarouselViewModel @Inject constructor(
                         product.campaign.originalPriceFmt,
                         product.campaign.discountedPercentage.toIntOrZero(),
                         product.stats.averageRating,
-                        1
+                        1,
+                        product.appLink
                     )
                 }
                 _products.postValue(Success(products))

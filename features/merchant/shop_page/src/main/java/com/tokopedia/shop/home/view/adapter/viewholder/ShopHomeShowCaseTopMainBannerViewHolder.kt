@@ -33,7 +33,7 @@ class ShopHomeShowCaseTopMainBannerViewHolder(
         viewBinding?.tpgTitle?.text = model.showcaseHeader.title
         viewBinding?.tpgTitle?.isVisible =
             model.showcaseHeader.title.isNotEmpty() && model.tabs.isNotEmpty()
-        viewBinding?.iconChevron?.setOnClickListener { listener.onViewAllShowcaseClick(model.showcaseHeader) }
+        viewBinding?.iconChevron?.setOnClickListener { listener.onNavigationBannerViewAllShowcaseClick(model.showcaseHeader) }
 
         val showcases = model.tabs.getOrNull(0)?.showcases ?: emptyList()
 
@@ -55,8 +55,8 @@ class ShopHomeShowCaseTopMainBannerViewHolder(
             viewBinding?.imgFirstBanner?.visible()
             viewBinding?.tpgFirstBannerTitle?.visible()
 
-            viewBinding?.imgFirstBanner?.setOnClickListener { listener.onShowcaseClick(firstShowcase) }
-            viewBinding?.tpgFirstBannerTitle?.setOnClickListener { listener.onShowcaseClick(firstShowcase)  }
+            viewBinding?.imgFirstBanner?.setOnClickListener { listener.onNavigationBannerShowcaseClick(firstShowcase) }
+            viewBinding?.tpgFirstBannerTitle?.setOnClickListener { listener.onNavigationBannerShowcaseClick(firstShowcase)  }
         }
     }
 

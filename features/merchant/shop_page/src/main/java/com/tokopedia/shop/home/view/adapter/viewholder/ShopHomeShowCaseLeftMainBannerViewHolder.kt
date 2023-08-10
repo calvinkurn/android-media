@@ -46,7 +46,7 @@ class ShopHomeShowCaseLeftMainBannerViewHolder(
         viewBinding?.tpgTitle?.text = model.showcaseHeader.title
         viewBinding?.tpgTitle?.isVisible = model.showcaseHeader.title.isNotEmpty() && model.tabs.isNotEmpty()
 
-        viewBinding?.iconChevron?.setOnClickListener { listener.onViewAllShowcaseClick(model.showcaseHeader) }
+        viewBinding?.iconChevron?.setOnClickListener { listener.onNavigationBannerViewAllShowcaseClick(model.showcaseHeader) }
         val showcases = model.tabs.getOrNull(0)?.showcases ?: emptyList()
         viewBinding?.iconChevron?.isVisible = showcases.size > SHOW_VIEW_ALL_SHOWCASE_THRESHOLD
     }
@@ -105,7 +105,7 @@ class ShopHomeShowCaseLeftMainBannerViewHolder(
         tabs.forEachIndexed { _, currentTab ->
             val fragment = ShopShowcaseFragment.newInstance(currentTab.showcases)
             fragment.setOnShowcaseClick { selectedShowcase ->
-                listener.onShowcaseClick(selectedShowcase)
+                listener.onNavigationBannerShowcaseClick(selectedShowcase)
             }
 
             val displayedTabName = currentTab.text

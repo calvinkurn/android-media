@@ -5039,21 +5039,28 @@ open class ShopPageHomeFragment :
         }
     }
 
-    override fun onViewAllShowcaseClick(selectedShowcaseHeader: ShopHomeShowcaseUiModel.ShowcaseHeader) {
+    override fun onNavigationBannerViewAllShowcaseClick(selectedShowcaseHeader: ShopHomeShowcaseUiModel.ShowcaseHeader) {
         RouteManager.route(activity ?: return, selectedShowcaseHeader.ctaLink)
     }
 
-    override fun onShowcaseClick(
+    override fun onNavigationBannerShowcaseClick(
         selectedShowcase: ShopHomeShowcaseUiModel.Tab.Showcase
     ) {
         RouteManager.route(activity ?: return, selectedShowcase.ctaLink)
     }
 
-    override fun onMainBannerClick(mainBanner: ShopHomeProductCarouselUiModel.Tab.Component) {
-
+    override fun onProductCarouselMainBannerClick(mainBanner: ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild) {
+        try {
+            RouteManager.route(activity ?: return, mainBanner.ctaLink)
+        } catch (_: Exception) {
+        }
     }
 
-    override fun onProductClick(selectedProduct: Product) {
+    override fun onProductCarouselProductClick(selectedProduct: Product) {
+        try {
+            RouteManager.route(activity ?: return, selectedProduct.appLink)
+        } catch (_: Exception) {
+        }
 
     }
 

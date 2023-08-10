@@ -8,5 +8,6 @@ data class Product(
     val slashedPrice: String,
     val slashedPricePercent: Int,
     val rating: String,
-    val soldCount: Int
+    val soldCount: Int,
+    val appLink: String
 )

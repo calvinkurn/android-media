@@ -62,7 +62,7 @@ class ShopProductCarouselFragment : BaseDaggerFragment() {
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider[ShopProductCarouselViewModel::class.java] }
 
-    private var onMainBannerClick : (ShopHomeProductCarouselUiModel.Tab.Component) -> Unit = {}
+    private var onMainBannerClick : (ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild) -> Unit = {}
     private var onProductClick : (Product) -> Unit = {}
 
     private var binding by autoClearedNullable<FragmentShopProductCarouselBinding>()
@@ -99,14 +99,18 @@ class ShopProductCarouselFragment : BaseDaggerFragment() {
     }
 
     private fun setupMainBanner() {
-        val mainBanner = widgets.firstOrNull { widget -> widget.type == ShopHomeProductCarouselUiModel.ComponentType.BANNER_SINGLE }
+        val singleBanners = widgets.firstOrNull { widget -> widget.type == ShopHomeProductCarouselUiModel.ComponentType.BANNER_SINGLE }
 
-        val hasMainBanner = mainBanner != null
+        val hasMainBanner = singleBanners != null
         if (hasMainBanner) {
-            val mainBannerImageUrl = mainBanner?.componentChild?.getOrNull(0)?.imageUrl.orEmpty()
+            val mainBanner = singleBanners?.componentChild?.getOrNull(0)
+            val mainBannerImageUrl = mainBanner?.imageUrl.orEmpty()
             if (mainBannerImageUrl.isNotEmpty()) {
                 binding?.imgMainBanner?.visible()
                 binding?.imgMainBanner?.loadImage(mainBannerImageUrl)
+                binding?.imgMainBanner?.setOnClickListener {
+                    onMainBannerClick(mainBanner ?: return@setOnClickListener)
+                }
             }
         }
     }
@@ -161,7 +165,7 @@ class ShopProductCarouselFragment : BaseDaggerFragment() {
         productAdapter.submit(products)
     }
 
-    fun setOnMainBannerClick(onMainBannerClick: (ShopHomeProductCarouselUiModel.Tab.Component) -> Unit) {
+    fun setOnMainBannerClick(onMainBannerClick: (ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild) -> Unit) {
         this.onMainBannerClick = onMainBannerClick
     }
 

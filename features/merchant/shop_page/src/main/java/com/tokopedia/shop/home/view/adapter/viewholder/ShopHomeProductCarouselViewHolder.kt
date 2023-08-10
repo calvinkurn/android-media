@@ -98,8 +98,8 @@ class ShopHomeProductCarouselViewHolder(
 
         tabs.forEachIndexed { _, currentTab ->
             val fragment = ShopProductCarouselFragment.newInstance(listener.currentShopId, currentTab.components)
-            fragment.setOnMainBannerClick { mainBanner -> listener.onMainBannerClick(mainBanner) }
-            fragment.setOnProductClick { selectedShowcase -> listener.onProductClick(selectedShowcase) }
+            fragment.setOnMainBannerClick { mainBanner -> listener.onProductCarouselMainBannerClick(mainBanner) }
+            fragment.setOnProductClick { selectedShowcase -> listener.onProductCarouselProductClick(selectedShowcase) }
 
             val displayedTabName = currentTab.name
             pages.add(Pair(displayedTabName, fragment))
