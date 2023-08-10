@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setLayoutHeight
@@ -65,7 +66,7 @@ class BMGMWidget @JvmOverloads constructor(
     // endregion
 
     // region expose function
-    fun setData(uiState: BMGMWidgetUiState, router: BMGMWidgetRouter) {
+    fun setData(uiState: BMGMWidgetUiState, router: BMGMWidgetRouter, tracker: BMGMWidgetTracker) {
         when (uiState) {
             is BMGMWidgetUiState.Loading -> {
                 // no - ops
@@ -76,7 +77,7 @@ class BMGMWidget @JvmOverloads constructor(
             }
 
             is BMGMWidgetUiState.Show -> {
-                showContent(uiModel = uiState.uiModel, router = router)
+                showContent(uiModel = uiState.uiModel, router = router, tracker = tracker)
             }
         }
     }
@@ -91,12 +92,15 @@ class BMGMWidget @JvmOverloads constructor(
     // endregion
 
     // region show content
-    private fun showContent(uiModel: BMGMWidgetUiModel, router: BMGMWidgetRouter) {
+    private fun showContent(uiModel: BMGMWidgetUiModel, router: BMGMWidgetRouter, tracker: BMGMWidgetTracker) {
         binding.root.setLayoutHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
+        binding.root.addOnImpressionListener(tracker.getImpressionHolder()) {
+            tracker.onImpressed()
+        }
 
         binding.bmgmImageLeft.loadImage(url = uiModel.iconUrl)
         setTitle(title = uiModel.title, color = uiModel.titleColor)
-        setEvent(action = uiModel.action, router = router)
+        setEvent(uiModel = uiModel, router = router, tracker = tracker)
         setBackgroundGradient(colors = uiModel.backgroundColor)
         setProductList(uiModel = uiModel, router = router)
     }
@@ -144,9 +148,10 @@ class BMGMWidget @JvmOverloads constructor(
     // endregion
 
     // region event
-    private fun setEvent(action: BMGMWidgetUiModel.Action, router: BMGMWidgetRouter) {
+    private fun setEvent(uiModel: BMGMWidgetUiModel, router: BMGMWidgetRouter, tracker: BMGMWidgetTracker) {
         binding.bmgmComponent.setOnClickListener {
-            setRouting(action = action, router = router)
+            setRouting(action = uiModel.action, router = router)
+            tracker.onClick(data = uiModel)
         }
     }
 

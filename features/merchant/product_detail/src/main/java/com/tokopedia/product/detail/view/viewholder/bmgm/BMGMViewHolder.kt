@@ -1,14 +1,15 @@
 package com.tokopedia.product.detail.view.viewholder.bmgm
 
 import android.view.View
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.databinding.ItemDynamicProductBmgmBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
-import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMWidgetUiState
+import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMWidgetUiModel
 import com.tokopedia.product.detail.view.viewholder.bmgm.widget.BMGMWidgetRouter
+import com.tokopedia.product.detail.view.viewholder.bmgm.widget.BMGMWidgetTracker
 
 /**
  * Created by yovi.putra on 27/07/23"
@@ -39,13 +40,21 @@ class BMGMViewHolder(
                 override fun goToWebView(url: String) {
                     listener.goToWebView(url)
                 }
+            },
+            tracker = object : BMGMWidgetTracker {
+                override fun getImpressionHolder(): ImpressHolder = element.impressHolder
+
+                override fun onImpressed() {
+                    listener.onImpressComponent(getComponentTrackData(element))
+                }
+
+                override fun onClick(data: BMGMWidgetUiModel) {
+                    listener.onBMGMClicked(
+                        title = data.title,
+                        component = getComponentTrackData(element)
+                    )
+                }
             }
         )
-
-        if (element.state is BMGMWidgetUiState.Show) {
-            binding.root.addOnImpressionListener(element.impressHolder) {
-                listener.onImpressComponent(getComponentTrackData(element))
-            }
-        }
     }
 }
