@@ -238,5 +238,6 @@
 
     <string name="shop_page_dot_character">•</string>
 
-    <string name="shop_page_placeholder_sold">Terjual %s</string>
+    <string name="shop_page_placeholder_sold">Terjual %d</string>
+    <string name="shop_page_placeholder_discount_percentage">%s%%</string>
 </resources>

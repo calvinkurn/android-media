@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.media.loader.loadImage
@@ -118,6 +119,13 @@ class ShopProductCarouselFragment : BaseDaggerFragment() {
         productAdapter.setOnProductClick { selectedProduct ->
             onProductClick(selectedProduct)
         }
+
+        val showProductInfo = widgets
+            .filter { widget -> widget.type == ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITH_PRODUCT_INFO }
+            .size
+            .isMoreThanZero()
+
+        productAdapter.setShowProductInfo(showProductInfo)
     }
 
     private fun observeProducts() {

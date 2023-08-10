@@ -759,7 +759,7 @@ open class ShopPageHomeFragment :
                                             componentChild = listOf(
                                                 ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild(
                                                     imageId = 45,
-                                                    imageUrl = "https://images.tokopedia.net/img/android/shop/ic_showcase_sample.png",
+                                                    imageUrl = "https://images.tokopedia.net/img/misiseru/BANNERUNICHARMAUG23.jpg",
                                                     ctaLink = "https://tokopedia.com/etalase/10",
                                                     linkId = 0,
                                                     linkType = ""
@@ -780,22 +780,7 @@ open class ShopPageHomeFragment :
                                                     linkType = "terbaru"
                                                 )
                                             )
-                                        ),
-                                        ShopHomeProductCarouselUiModel.Tab.Component(
-                                            id = 2345,
-                                            name = "product card without product info",
-                                            type = ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITHOUT_PRODUCT_INFO,
-                                            ratio = "",
-                                            componentChild = listOf(
-                                                ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild(
-                                                    imageId = 0,
-                                                    imageUrl = "",
-                                                    ctaLink = "",
-                                                    linkId = 0,
-                                                    linkType = ""
-                                                )
-                                            )
-                                        ),
+                                        )
                                     )
                                 ),
                                 ShopHomeProductCarouselUiModel.Tab(
@@ -811,25 +796,10 @@ open class ShopPageHomeFragment :
                                             componentChild = listOf(
                                                 ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild(
                                                     imageId = 45,
-                                                    imageUrl = "https://images.tokopedia.net/img/android/shop/ic_showcase_sample.png",
+                                                    imageUrl = "https://images.tokopedia.net/img/misiseru/BANNERTUDUNGAUG23.jpg",
                                                     ctaLink = "https://tokopedia.com/etalase/10",
                                                     linkId = 0,
                                                     linkType = ""
-                                                )
-                                            )
-                                        ),
-                                        ShopHomeProductCarouselUiModel.Tab.Component(
-                                            id = 2345,
-                                            name = "product card with product info",
-                                            type = ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITH_PRODUCT_INFO,
-                                            ratio = "",
-                                            componentChild = listOf(
-                                                ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild(
-                                                    imageId = 0,
-                                                    imageUrl = "https://images.tokopedia.net/img/hitjabnco.jpg",
-                                                    ctaLink = "",
-                                                    linkId = 983,
-                                                    linkType = "terbaru"
                                                 )
                                             )
                                         ),

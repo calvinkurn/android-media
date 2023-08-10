@@ -4,16 +4,18 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.strikethrough
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.databinding.ItemShopHomeProductInfoCardBinding
 import com.tokopedia.shop.home.view.model.Product
+import com.tokopedia.shop.R
 
-class ShopHomeProductCarouselAdapter :
-    RecyclerView.Adapter<ShopHomeProductCarouselAdapter.ProductViewHolder>() {
+class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<ShopHomeProductCarouselAdapter.ProductViewHolder>() {
 
     private var products = mutableListOf<Product>()
     private var onProductClick: (Product) -> Unit = {}
+    private var showProductInfo : Boolean = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         val binding =
@@ -35,22 +37,34 @@ class ShopHomeProductCarouselAdapter :
         private val binding: ItemShopHomeProductInfoCardBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-
         fun bind(product: Product) {
             binding.imgProduct.loadImage(product.imageUrl)
+
             binding.tpgProductName.text = product.name
+            binding.tpgProductName.isVisible = showProductInfo
 
             binding.tpgProductPrice.text = product.price
+            binding.tpgProductPrice.isVisible = showProductInfo
+
             binding.tpgSlashedProductPrice.text = product.slashedPrice
             binding.tpgSlashedProductPrice.strikethrough()
-            binding.labelDiscount.setLabel(product.slashedPricePercent)
+            binding.tpgSlashedProductPrice.isVisible = showProductInfo
+
+            val discountPercentage = binding.labelDiscount.context.getString(R.string.shop_page_placeholder_discount_percentage, product.slashedPricePercent)
+            binding.labelDiscount.setLabel(discountPercentage)
+            binding.labelDiscount.isVisible = showProductInfo
 
             binding.tpgRating.text = product.rating
-            binding.tpgProductSoldCount.text = "Terjual " + product.soldCount
+            binding.tpgRating.isVisible = showProductInfo
+
+            binding.tpgProductSoldCount.text = binding.tpgProductSoldCount.context.getString(R.string.shop_page_placeholder_sold, product.soldCount)
+            binding.tpgProductSoldCount.isVisible = showProductInfo
+
+            binding.imgStar.isVisible = showProductInfo
+            binding.tpgBullet.isVisible = showProductInfo
 
             binding.root.setOnClickListener { onProductClick(product) }
         }
-
     }
 
     inner class DiffCallback(
@@ -69,6 +83,10 @@ class ShopHomeProductCarouselAdapter :
             return oldItems[oldItemPosition] == newItems[newItemPosition]
         }
 
+    }
+
+    fun setShowProductInfo(showProductInfo: Boolean) {
+        this.showProductInfo = showProductInfo
     }
 
     fun submit(newProducts: List<Product>) {
