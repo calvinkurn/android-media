@@ -119,7 +119,8 @@ class FeedPostLiveViewHolder(
         if (feedPayloads == null) {
             bind(item.data as FeedCardLivePreviewContentModel, payloads)
         } else {
-            val newPayloads = mutableListOf(*payloads.toTypedArray()).apply {
+            val newPayloads = mutableListOf<Any>().apply {
+                addAll(payloads)
                 if (feedPayloads.payloads.contains(FEED_POST_SELECTED_CHANGED)) add(selectedPayload)
                 if (feedPayloads.payloads.contains(FEED_POST_SCROLLING_CHANGED)) add(scrollingPayload)
             }

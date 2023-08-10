@@ -262,7 +262,8 @@ class FeedPostVideoViewHolder(
         if (feedPayloads == null) {
             bind(item.data as FeedCardVideoContentModel, payloads)
         } else {
-            val newPayloads = mutableListOf(*payloads.toTypedArray()).apply {
+            val newPayloads = mutableListOf<Any>().apply {
+                addAll(payloads)
                 if (feedPayloads.payloads.contains(FEED_POST_SELECTED_CHANGED)) add(selectedPayload)
                 if (feedPayloads.payloads.contains(FEED_POST_SCROLLING_CHANGED)) add(scrollingPayload)
             }
