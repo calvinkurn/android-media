@@ -1212,4 +1212,24 @@ class AddressFormViewModelTest {
             Assert.assertEquals(phone, defaultPhone)
         }
     }
+
+    @Test
+    fun `verify removeUnprintableCharacter is correct contain `() {
+        val valueContainUnprintable = "jalan abc, Cilandak Timur. Kec Pasar Minggu Jakarta\u200E 12560 Indonesia"
+        val valueNotContainUnprintable = "jalan abc, Cilandak Timur. Kec Pasar Minggu Jakarta 12560 Indonesia"
+
+        val result = addressFormViewModel.removeUnprintableCharacter(valueContainUnprintable)
+
+        Assert.assertEquals(result, valueNotContainUnprintable)
+    }
+
+    @Test
+    fun `verify removeUnprintableCharacter is correct same value`() {
+        val valueContainUnprintable = "Karet Kuningan, Setia Budi, Kota Jakarta Selatan, Dki Jakarta"
+        val valueNotContainUnprintable = "Karet Kuningan, Setia Budi, Kota Jakarta Selatan, Dki Jakarta"
+
+        val result = addressFormViewModel.removeUnprintableCharacter(valueContainUnprintable)
+
+        Assert.assertEquals(result, valueNotContainUnprintable)
+    }
 }

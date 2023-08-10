@@ -320,8 +320,10 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
 
     private fun KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse.toSaveAddressDataModel(): SaveAddressDataModel {
         val addressData = this.chosenAddressData
+
         val tokonowData = this.tokonow
-        val warehouses = tokonowData.warehouses.map { WarehouseDataModel(warehouseId = it.warehouseId, serviceType = it.serviceType) }
+        val warehouses =
+            tokonowData.warehouses.map { WarehouseDataModel(warehouseId = it.warehouseId, serviceType = it.serviceType) }
         return SaveAddressDataModel(
             id = addressData.addressId,
             addressName = addressData.addressName,
@@ -336,5 +338,11 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
             serviceType = tokonowData.serviceType,
             warehouses = warehouses
         )
+    }
+
+    fun removeUnprintableCharacter(text: String): String {
+        return text.filter {
+            !it.isIdentifierIgnorable()
+        }
     }
 }

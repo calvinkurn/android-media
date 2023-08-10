@@ -1320,7 +1320,7 @@ class AddressFormFragment :
             viewModel.updateDataSaveModel(
                 receiverName = formAccountWidget.receiverName,
                 phoneNo = formAccountWidget.phoneNumber,
-                address1 = address1,
+                address1 = viewModel.removeUnprintableCharacter(address1),
                 address1Notes = address1Notes,
                 addressName = addressName,
                 isAnaPositive = isAnaPositive,
@@ -1431,21 +1431,21 @@ class AddressFormFragment :
     private fun setUserConsent() {
         binding?.userConsentWidget?.visible()
 
-            binding?.userConsentWidget?.apply {
-                setBtnSaveAddressEnable(addressUiState.isEdit())
-                setOnCheckedChangeListener { isChecked ->
-                    setBtnSaveAddressEnable(isChecked)
-                }
-                setOnFailedGetCollectionListener {
-                    setBtnSaveAddressEnable(true)
-                }
-            }?.load(
-                viewLifecycleOwner,
-                this,
-                ConsentCollectionParam(
-                    collectionId = collectionId
-                )
+        binding?.userConsentWidget?.apply {
+            setBtnSaveAddressEnable(addressUiState.isEdit())
+            setOnCheckedChangeListener { isChecked ->
+                setBtnSaveAddressEnable(isChecked)
+            }
+            setOnFailedGetCollectionListener {
+                setBtnSaveAddressEnable(true)
+            }
+        }?.load(
+            viewLifecycleOwner,
+            this,
+            ConsentCollectionParam(
+                collectionId = collectionId
             )
+        )
     }
 
     private fun setBtnSaveAddressEnable(isEnabled: Boolean) {
