@@ -456,7 +456,7 @@ class CheckoutFragment :
                     stopTrace()
                     if (it.cartShipmentAddressFormData.epharmacyData.showImageUpload) {
                         val uploadPrescriptionUiModel =
-                            (viewModel.listData.value.firstOrNullInstanceOf(CheckoutEpharmacyModel::class.java) as? CheckoutEpharmacyModel)?.epharmacy
+                            viewModel.listData.value.firstOrNullInstanceOf(CheckoutEpharmacyModel::class.java)?.epharmacy
                         delayEpharmacyProcess(uploadPrescriptionUiModel)
                     }
                     setCampaignTimer()
@@ -478,6 +478,10 @@ class CheckoutFragment :
                 is CheckoutPageState.Prompt -> {
                     hideLoading()
                     renderPrompt(it.prompt)
+                }
+
+                is CheckoutPageState.EpharmacyCoachMark -> {
+                    showCoachMarkEpharmacy()
                 }
             }
         }
@@ -2027,8 +2031,9 @@ class CheckoutFragment :
         }
     }
 
-    fun showCoachMarkEpharmacy(uploadPrescriptionUiModel: UploadPrescriptionUiModel) {
-        if (activity != null && !CoachMarkPreference.hasShown(
+    fun showCoachMarkEpharmacy() {
+        val uploadPrescriptionUiModel = viewModel.listData.value.epharmacy()?.epharmacy
+        if (uploadPrescriptionUiModel != null && activity != null && !CoachMarkPreference.hasShown(
                 activity!!,
                 KEY_PREFERENCE_COACHMARK_EPHARMACY
             )
@@ -2041,7 +2046,7 @@ class CheckoutFragment :
                         binding?.rvCheckout?.findViewHolderForAdapterPosition(
                             uploadPrescriptionPosition
                         )
-                    if (viewHolder is UploadPrescriptionViewHolder) {
+                    if (viewHolder is CheckoutEpharmacyViewHolder) {
                         val item = CoachMark2Item(
                             viewHolder.itemView,
                             activity!!.getString(R.string.checkout_epharmacy_coachmark_title),

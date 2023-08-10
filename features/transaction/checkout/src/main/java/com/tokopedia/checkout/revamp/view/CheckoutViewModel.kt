@@ -666,7 +666,12 @@ class CheckoutViewModel @Inject constructor(
 
     fun fetchEpharmacyData() {
         viewModelScope.launch(dispatchers.immediate) {
-            addOnProcessor.fetchEpharmacyData(listData.value)
+            addOnProcessor.fetchEpharmacyData(listData.value) {
+                if (it != null) {
+                    listData.value = it
+                    pageState.value = CheckoutPageState.EpharmacyCoachMark
+                }
+            }
         }
     }
 

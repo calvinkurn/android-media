@@ -60,9 +60,9 @@ class CheckoutAddOnProcessor @Inject constructor(
         }
     }
 
-    fun fetchEpharmacyData(listData: List<CheckoutItem>) {
+    fun fetchEpharmacyData(listData: List<CheckoutItem>, callback: (List<CheckoutItem>?) -> Unit) {
         epharmacyUseCase.getEPharmacyPrepareProductsGroup({ ePharmacyPrepareProductsGroupResponse: EPharmacyPrepareProductsGroupResponse ->
-            processEpharmacyData(ePharmacyPrepareProductsGroupResponse, listData)
+            callback.invoke(processEpharmacyData(ePharmacyPrepareProductsGroupResponse, listData))
         }) { throwable: Throwable? ->
             Timber.d(throwable)
         }
@@ -71,9 +71,10 @@ class CheckoutAddOnProcessor @Inject constructor(
     private fun processEpharmacyData(
         ePharmacyPrepareProductsGroupResponse: EPharmacyPrepareProductsGroupResponse,
         listData: List<CheckoutItem>
-    ) {
+    ): List<CheckoutItem>? {
+        val checkoutItems = listData.toMutableList()
         val uploadPrescriptionUiModel =
-            listData.firstOrNullInstanceOf(CheckoutEpharmacyModel::class.java)?.epharmacy ?: return
+            listData.firstOrNullInstanceOf(CheckoutEpharmacyModel::class.java)?.epharmacy ?: return null
         if (ePharmacyPrepareProductsGroupResponse.detailData != null) {
             val groupsData = ePharmacyPrepareProductsGroupResponse.detailData!!.groupsData
             if (groupsData?.epharmacyGroups != null) {
@@ -244,8 +245,10 @@ class CheckoutAddOnProcessor @Inject constructor(
                 uploadPrescriptionUiModel.cartIds = cartIds
 //                view?.updateUploadPrescription(uploadPrescriptionUiModel)
 //                view?.showCoachMarkEpharmacy(uploadPrescriptionUiModel)
+                return checkoutItems
             }
         }
+        return null
     }
 
     fun setPrescriptionIds(prescriptionIds: ArrayList<String>, listData: List<CheckoutItem>) {
