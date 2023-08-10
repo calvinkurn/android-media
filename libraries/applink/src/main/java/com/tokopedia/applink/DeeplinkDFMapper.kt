@@ -631,7 +631,6 @@ object DeeplinkDFMapper : CoroutineScope {
                     || it.startsWith(ApplinkConstInternalUserPlatform.ADD_PIN_ONBOARDING)
                     || it.startsWith(ADD_PIN)
                     || it.startsWith(ApplinkConstInternalUserPlatform.ADD_PIN_COMPLETE)
-                    || it.startsWith(ApplinkConstInternalUserPlatform.SETTING_PROFILE)
                     )
             }, DF_USER_SETTINGS, R.string.applink_profile_completion_title, { DFWebviewFallbackUrl.USER_PROFILE_SETTINGS }))
             add(DFP({ it.startsWith(ApplinkConstInternalUserPlatform.PROFILE_COMPLETION) }, DF_USER_SETTINGS, R.string.applink_profile_completion_title))
