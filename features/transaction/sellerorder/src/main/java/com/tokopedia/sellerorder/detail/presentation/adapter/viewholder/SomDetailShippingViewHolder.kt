@@ -63,8 +63,9 @@ class SomDetailShippingViewHolder(
                         if (courierInfo.isNotEmpty()) {
                             tvCourierInfo.text = courierInfo
                             tvCourierInfo.visible()
+                        } else {
+                            tvCourierInfo.gone()
                         }
-
                     } else {
                         tvShippingName.text = item.dataObject.shippingName
                         tvShippingName.setTextColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
