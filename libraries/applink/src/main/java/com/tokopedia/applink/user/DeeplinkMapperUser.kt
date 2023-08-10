@@ -25,7 +25,8 @@ object DeeplinkMapperUser {
             deeplink == ApplinkConst.ADD_PIN_ONBOARD -> ApplinkConstInternalUserPlatform.ADD_PIN_ONBOARDING
             deeplink.startsWith(ApplinkConstInternalGlobal.ADVANCED_SETTING) -> ApplinkConstInternalUserPlatform.NEW_HOME_ACCOUNT
             deeplink.startsWith(ApplinkConstInternalGlobal.GENERAL_SETTING) -> ApplinkConstInternalUserPlatform.NEW_HOME_ACCOUNT
-            deeplink == ApplinkConst.SETTING_PROFILE || deeplink == ApplinkConstInternalUserPlatform.SETTING_PROFILE -> getProfileApplink()
+            deeplink == ApplinkConst.SETTING_PROFILE -> getProfileApplink()
+            deeplink == ApplinkConstInternalUserPlatform.SETTING_PROFILE -> getProfileApplink()
             deeplink == ApplinkConst.INPUT_INACTIVE_NUMBER -> ApplinkConstInternalUserPlatform.INPUT_OLD_PHONE_NUMBER
             deeplink == ApplinkConst.ADD_PHONE -> ApplinkConstInternalUserPlatform.ADD_PHONE
             deeplink == ApplinkConst.PRIVACY_CENTER -> getApplinkPrivacyCenter()
