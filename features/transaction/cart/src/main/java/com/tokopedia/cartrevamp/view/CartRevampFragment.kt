@@ -62,6 +62,7 @@ import com.tokopedia.cartrevamp.data.model.response.promo.LastApplyPromoData
 import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.LocalizationChooseAddress
+import com.tokopedia.cartrevamp.util.CartRevampRollenceUtil
 import com.tokopedia.cartrevamp.view.adapter.cart.CartAdapter
 import com.tokopedia.cartrevamp.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cartrevamp.view.bottomsheet.CartBundlingBottomSheet
@@ -131,6 +132,8 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
+import com.tokopedia.promousage.domain.entity.PromoPageEntryPoint
+import com.tokopedia.promousage.view.bottomsheet.PromoUsageBottomSheet
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics
@@ -3672,17 +3675,32 @@ class CartRevampFragment :
         }
     }
 
+    private fun useNewPromoPage() : Boolean {
+        return true
+    }
+
     private fun routeToPromoCheckoutMarketplacePage() {
         activity?.let {
-            val intent =
-                RouteManager.getIntent(it, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
-            val promoRequest = generateParamsCouponList()
-            val validateUseRequest = generateParamGetLastApplyPromo()
-            intent.putExtra(ARGS_PAGE_SOURCE, PAGE_CART)
-            intent.putExtra(ARGS_PROMO_REQUEST, promoRequest)
-            intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequest)
+            if (useNewPromoPage()) {
+                val bottomSheetPromo = PromoUsageBottomSheet.newInstance(
+                    entryPoint = PromoPageEntryPoint.CART_PAGE,
+                    promoRequest = generateParamsCouponList(),
+                    validateUsePromoRequest = generateParamGetLastApplyPromo(),
+                    boPromoCodes = emptyList(),
+                    totalAmount = 1_000_000.0 // TODO: Get data from cart
+                )
+                bottomSheetPromo.show(childFragmentManager)
+            } else {
+                val intent =
+                    RouteManager.getIntent(it, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
+                val promoRequest = generateParamsCouponList()
+                val validateUseRequest = generateParamGetLastApplyPromo()
+                intent.putExtra(ARGS_PAGE_SOURCE, PAGE_CART)
+                intent.putExtra(ARGS_PROMO_REQUEST, promoRequest)
+                intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequest)
 
-            promoActivityResult.launch(intent)
+                promoActivityResult.launch(intent)
+            }
         }
     }
 
