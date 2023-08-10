@@ -174,9 +174,43 @@ data class ShopLayoutWidget(
                 @SerializedName("timeInfo")
                 val timeInfo: TimeInfo = TimeInfo(),
                 @SerializedName("text")
-                val text: String = ""
+                val text: String = "",
+                @SerializedName("componentTabID")
+                val componentTabID: Long = 0,
+                @SerializedName("componentTabLabel")
+                val componentTabLabel: String = "",
+                @SerializedName("componentTabName")
+                val componentTabName: String = "",
+                @SerializedName("componentList")
+                val componentList: List<Component> = emptyList()
 
         ) {
+            data class Component(
+                @SerializedName("componentID")
+                val componentID: Long = 0,
+                @SerializedName("componentName")
+                val componentName: String = "",
+                @SerializedName("componentType")
+                val componentType: String = "",
+                @SerializedName("ratio")
+                val ratio: String = "",
+                @SerializedName("data")
+                val componentChild : List<ComponentChild> = emptyList()
+            ) {
+                data class ComponentChild(
+                    @SerializedName("imageID")
+                    val imageID: Long = 0,
+                    @SerializedName("imageUrl")
+                    val imageUrl: String = "",
+                    @SerializedName("ctaLink")
+                    val ctaLink: String = "",
+                    @SerializedName("linkID")
+                    val linkID: Long = 0,
+                    @SerializedName("linkType")
+                    val linkType: String = ""
+                )
+            }
+
             data class ShowcaseList(
                 @SerializedName("showcaseID")
                 val showcaseID: String = "",

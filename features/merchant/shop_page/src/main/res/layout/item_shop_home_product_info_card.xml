@@ -7,7 +7,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/imageUnify"
+        android:id="@+id/imgProduct"
         android:layout_width="0dp"
         android:layout_height="132dp"
         android:background="@color/Unify_NN950"
@@ -24,9 +24,9 @@
         android:maxLines="2"
         android:ellipsize="end"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="@+id/imageUnify"
-        app:layout_constraintStart_toStartOf="@+id/imageUnify"
-        app:layout_constraintTop_toBottomOf="@+id/imageUnify"
+        app:layout_constraintEnd_toEndOf="@+id/imgProduct"
+        app:layout_constraintStart_toStartOf="@+id/imgProduct"
+        app:layout_constraintTop_toBottomOf="@+id/imgProduct"
         tools:text="Samsung Galaxy S23 - 512 GB" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -36,8 +36,8 @@
         app:typographyType="display_2"
         app:typographyWeight="bold"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="@+id/imageUnify"
-        app:layout_constraintStart_toStartOf="@+id/imageUnify"
+        app:layout_constraintEnd_toEndOf="@+id/imgProduct"
+        app:layout_constraintStart_toStartOf="@+id/imgProduct"
         app:layout_constraintTop_toBottomOf="@+id/tpgProductName"
         tools:text="Rp18.849.000" />
 
@@ -47,7 +47,7 @@
         android:layout_height="wrap_content"
         app:labelType="general_light_red"
         android:layout_marginTop="4dp"
-        app:layout_constraintStart_toStartOf="@+id/imageUnify"
+        app:layout_constraintStart_toStartOf="@+id/imgProduct"
         app:layout_constraintTop_toBottomOf="@id/tpgProductPrice"
         tools:text="20%" />
 
@@ -58,7 +58,7 @@
         android:layout_marginStart="4dp"
         android:textColor="@color/Unify_NN400"
         app:layout_constraintBottom_toBottomOf="@+id/labelDiscount"
-        app:layout_constraintEnd_toEndOf="@+id/imageUnify"
+        app:layout_constraintEnd_toEndOf="@+id/imgProduct"
         app:layout_constraintStart_toEndOf="@+id/labelDiscount"
         app:layout_constraintTop_toTopOf="@+id/labelDiscount"
         app:typographyType="display_3"

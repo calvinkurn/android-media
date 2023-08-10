@@ -7,9 +7,11 @@ import com.tokopedia.shop.campaign.view.model.ShopCampaignWidgetCarouselProductU
 import com.tokopedia.shop.campaign.view.model.ShopWidgetDisplaySliderBannerHighlightUiModel
 import com.tokopedia.shop.common.data.model.DynamicRule
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
+import com.tokopedia.shop.home.ComponentType
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.data.model.ShopPageWidgetRequestModel
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
+import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
@@ -212,9 +214,55 @@ object ShopPageWidgetMapper {
             type = response.type
         )
     }
+    fun mapToHomeProductCarouselWidget(response: ShopLayoutWidget.Widget): ShopHomeProductCarouselUiModel {
+        val tabs = response.data.map { tab ->
+            val tabComponents = tab.componentList.map { component ->
+                val componentType = when (component.componentType) {
+                    ComponentType.BANNER_SINGLE -> {
+                        ShopHomeProductCarouselUiModel.ComponentType.BANNER_SINGLE
+                    }
+                    ComponentType.PRODUCT_CARD_WITH_INFO -> {
+                        ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITH_PRODUCT_INFO
+                    }
+                    ComponentType.PRODUCT_CARD_WITHOUT_INFO -> {
+                        ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITHOUT_PRODUCT_INFO
+                    }
+                    else -> {
+                        ShopHomeProductCarouselUiModel.ComponentType.BANNER_SINGLE
+                    }
+                }
 
-    fun mapToProductCarouselWidget() {
+                val componentChild = component.componentChild.map { componentChild ->
+                    ShopHomeProductCarouselUiModel.Tab.Component.ComponentChild(
+                        componentChild.imageID,
+                        componentChild.imageUrl,
+                        componentChild.ctaLink,
+                        componentChild.linkID,
+                        componentChild.linkType
+                    )
+                }
 
+                ShopHomeProductCarouselUiModel.Tab.Component(
+                    component.componentID,
+                    component.componentName,
+                    componentType,
+                    component.ratio,
+                    componentChild
+                )
+            }
+
+            ShopHomeProductCarouselUiModel.Tab(
+                tab.componentTabID,
+                tab.componentTabLabel,
+                tab.componentTabName,
+                tabComponents
+            )
+        }
+
+        return ShopHomeProductCarouselUiModel(
+            title = response.header.title,
+            tabs = tabs
+        )
     }
 
     private fun Int?.mapToStatusCampaign(): StatusCampaign {
