@@ -645,7 +645,7 @@ private fun Label.determineOverlayLabelType(labelGroupType: String) {
 private fun Label.setCustomOverlayLabelType(colorHexString: String) {
     unlockFeature = true
 
-    setLabelType(colorHexString)
+    try { setLabelType(colorHexString) } catch (_: Exception) { }
 }
 
 private fun Label.trySetCustomOverlayLabelType(labelGroupType: String) {

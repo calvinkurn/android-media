@@ -23,6 +23,7 @@ import com.tokopedia.play.broadcaster.domain.model.interactive.quiz.GetInteracti
 import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessageResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.PostInteractiveCreateQuizUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.livetovod.GetTickerBottomSheetResponse
 import com.tokopedia.play.broadcaster.pusher.statistic.PlayBroadcasterMetric
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.ChannelInfoUiModel
@@ -43,6 +44,7 @@ import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
@@ -144,4 +146,6 @@ interface PlayBroadcastMapper {
     fun mapAuthorList(response: GetCheckWhitelistResponse): List<ContentAccountUiModel>
 
     fun mapGeneratedCover(response: GetGeneratedImageCoverResponse): GeneratedCoverUiModel
+
+    fun mapTickerBottomSheetConfig(response: GetTickerBottomSheetResponse): TickerBottomSheetUiModel
 }

@@ -1097,8 +1097,7 @@ class ProductListPresenter @Inject constructor(
 
         val afProdIds = JSONArray()
         val moengageTrackingCategory = HashMap<String?, String?>()
-        val categoryIdMapping = HashSet<String?>()
-        val categoryNameMapping = HashSet<String?>()
+        val categoryIdNameMapping = mutableMapOf<String, String>()
         val prodIdArray = ArrayList<String?>()
         val allProdIdArray = ArrayList<String?>()
 
@@ -1114,8 +1113,7 @@ class ProductListPresenter @Inject constructor(
                 moengageTrackingCategory[categoryIdString] = categoryName
             }
 
-            categoryIdMapping.add(categoryIdString)
-            categoryNameMapping.add(categoryName)
+            categoryIdNameMapping[categoryIdString] = categoryName
         }
 
         view.sendTrackingEventAppsFlyerViewListingSearch(afProdIds, query, prodIdArray, allProdIdArray)
@@ -1126,8 +1124,8 @@ class ProductListPresenter @Inject constructor(
                 createGeneralSearchTrackingEventLabel(productDataView, query),
                 userId,
                 productDataView.productList.isNotEmpty().toString(),
-                StringUtils.join(categoryIdMapping, ","),
-                StringUtils.join(categoryNameMapping, ","),
+                categoryIdNameMapping.keys.joinToString(","),
+                categoryIdNameMapping.values.joinToString(","),
                 createGeneralSearchTrackingRelatedKeyword(productDataView),
                 dimension90,
                 productDataView.backendFilters,
@@ -1300,15 +1298,6 @@ class ProductListPresenter @Inject constructor(
                 view.showOnBoarding(firstProductPositionWithBOELabel)
     }
 
-    private fun checkShouldShowViewTypeOnBoarding(productListType: String) {
-        if (isViewAttached
-            && productListType == SearchConstant.ProductListType.LIST_VIEW
-            && shouldShowViewTypeCoachmark()
-        ) {
-            view.enableProductViewTypeOnBoarding()
-        }
-    }
-
     private fun checkProductWithBOELabel(position: Int): Boolean {
         return firstProductPositionWithBOELabel >= 0
                 && firstProductPositionWithBOELabel == position
@@ -1316,6 +1305,12 @@ class ProductListPresenter @Inject constructor(
 
     private fun shouldShowBoeCoachmark(): Boolean {
         return searchCoachMarkLocalCache.shouldShowBoeCoachmark()
+    }
+
+    private fun checkShouldShowViewTypeOnBoarding(productListType: String) {
+        if (productListType == SearchConstant.ProductListType.LIST_VIEW
+            && shouldShowViewTypeCoachmark())
+            view.enableProductViewTypeOnBoarding()
     }
 
     private fun shouldShowViewTypeCoachmark(): Boolean {
