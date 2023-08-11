@@ -30,6 +30,12 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
     }
 
+    buildTypes {
+        release {
+            debuggable = true
+        }
+    }
+
     // Specifies 4 flavor dimensions.
     flavorDimensions "tier", "client"
 
@@ -50,7 +56,7 @@ android {
 
     buildTypes {
         release {
-            debuggable = rootProject.hasProperty('enableDebug') && rootProject.property("enableDebug") == "true"
+            debuggable = true
         }
     }
 }

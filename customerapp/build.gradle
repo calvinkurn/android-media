@@ -187,7 +187,7 @@ android {
             if (devMode()) {
                 signingConfig signingConfigs.debug
             }
-            debuggable = rootProject.hasProperty('enableDebug') && rootProject.property("enableDebug") == "true"
+            debuggable = true
             ext.enableHansel = !project.hasProperty('hanselDisableRelease')
 
             if (isFirebasePerformanceLogEnabled().toBoolean()) {
@@ -218,7 +218,7 @@ android {
             initWith buildTypes.release
             signingConfig signingConfigs.debug
             matchingFallbacks = ['release']
-            debuggable false
+            debuggable true
             proguardFiles('benchmark-rules.pro')
         }
     }

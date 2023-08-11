@@ -30,7 +30,7 @@ android {
 
     buildTypes {
         release {
-            debuggable = rootProject.hasProperty('enableDebug') && rootProject.property("enableDebug") == "true"
+            debuggable = true
         }
     }
 
