@@ -10,6 +10,7 @@ class TokoNowEmptyStateNoResultUiModel(
     val activeFilterList: List<Option>? = null,
     val defaultTitle: String = "",
     val defaultDescription: String = "",
+    val excludeFilter: Option? = null,
     @StringRes val defaultTitleResId: Int? = null,
     @StringRes val defaultDescriptionResId: Int? = null,
     @StringRes val globalSearchBtnTextResId: Int? = null

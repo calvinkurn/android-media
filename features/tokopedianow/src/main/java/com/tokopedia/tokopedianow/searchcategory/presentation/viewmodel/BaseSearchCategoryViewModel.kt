@@ -165,6 +165,7 @@ abstract class BaseSearchCategoryViewModel(
     protected var feedbackFieldToggle = false
     private var isFeedbackFieldVisible = false
     private var getFilterJob: Job? = null
+    private var excludeFilter: Option? = null
 
     val queryParam: Map<String, String> = queryParamMutable
     val hasGlobalMenu: Boolean
@@ -519,10 +520,14 @@ abstract class BaseSearchCategoryViewModel(
 
     protected open fun createVisitableListWithEmptyProduct() {
         val activeFilterList = filterController.getActiveFilterOptionList()
+        val newActiveFilterList = activeFilterList.filter { queryParamMutable.containsValue(it.value) }
         isEmptyResult = true
 
         visitableList.add(chooseAddressDataView)
-        visitableList.add(TokoNowEmptyStateNoResultUiModel(activeFilterList = activeFilterList))
+        visitableList.add(TokoNowEmptyStateNoResultUiModel(
+            activeFilterList = newActiveFilterList,
+            excludeFilter = excludeFilter
+        ))
         visitableList.add(
             TokoNowProductRecommendationUiModel(
                 requestParam = createProductRecommendationRequestParam(
@@ -639,8 +644,8 @@ abstract class BaseSearchCategoryViewModel(
         val sortFilterItem = SortFilterItem(filter.title, chipType)
         sortFilterItem.typeUpdated = false
 
+        val option = filter.options.firstOrNull() ?: Option()
         if (filter.options.size == 1) {
-            val option = filter.options.firstOrNull() ?: Option()
             sortFilterItem.listener = {
                 sendQuickFilterTrackingEvent(option, isSelected)
                 filter(option, !isSelected)
@@ -651,6 +656,9 @@ abstract class BaseSearchCategoryViewModel(
             }
             sortFilterItem.chevronListener = listener
             sortFilterItem.listener = listener
+            if (option.key.startsWith(OptionHelper.EXCLUDE_PREFIX)) {
+                excludeFilter = option
+            }
         }
 
         return sortFilterItem
