@@ -22,7 +22,6 @@ import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager2.widget.ViewPager2
@@ -63,7 +62,6 @@ import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.model.LinkerData
-import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.utils.AffiliateLinkType
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
@@ -81,7 +79,6 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
@@ -110,7 +107,6 @@ import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstan
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.data.model.HomeLayoutData
 import com.tokopedia.shop.common.data.model.ShopAffiliateData
-import com.tokopedia.shop.common.data.model.ShopPageGetDynamicTabResponse
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestResult
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
@@ -121,6 +117,7 @@ import com.tokopedia.shop.common.util.ShopUtil.getShopPageWidgetUserAddressLocal
 import com.tokopedia.shop.common.view.ShopPageCountDrawable
 import com.tokopedia.shop.common.view.model.ShopPageFabConfig
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
+import com.tokopedia.shop.common.view.viewmodel.ShopHeaderDynamicUspSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopPageFeedTabSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopPageFeedTabSharedViewModel.Companion.FAB_ACTION_HIDE
 import com.tokopedia.shop.common.view.viewmodel.ShopPageFeedTabSharedViewModel.Companion.FAB_ACTION_SETUP
@@ -286,6 +283,7 @@ class ShopPageHeaderFragmentV2 :
         private const val WEBVIEW_ALLOW_OVERRIDE_FORMAT = "%s?allow_override=%b&url=%s"
         private const val AFFILIATE_SITE_ID = "1"
         private const val AFFILIATE_VERTICAL_ID = "1"
+        private const val CYCLE_DURATION = 5000L
 
         @JvmStatic
         fun createInstance() = ShopPageHeaderFragmentV2()
@@ -359,6 +357,7 @@ class ShopPageHeaderFragmentV2 :
     private var shopPageMiniCartSharedViewModel: ShopPageMiniCartSharedViewModel? = null
     private var shopPageFollowingStatusSharedViewModel: ShopPageFollowingStatusSharedViewModel? = null
     private var shopPageFeedTabSharedViewModel: ShopPageFeedTabSharedViewModel? = null
+    private var shopHeaderDynamicUspSharedViewModel: ShopHeaderDynamicUspSharedViewModel? = null
     private var sharedPreferences: SharedPreferences? = null
     private var isGeneralShareBottomSheet = false
     var selectedPosition = -1
@@ -383,6 +382,9 @@ class ShopPageHeaderFragmentV2 :
     private var queryParamTab: String = ""
     private var shopPageHeaderP1Data: ShopPageHeaderP1HeaderData? = null
     private var isAlreadyGetShopPageP2Data: Boolean = false
+    private var timer : Timer? = null
+    private var currentIndexUspDynamicValue = 0
+
     override fun getComponent() = activity?.run {
         DaggerShopPageHeaderComponent.builder().shopPageHeaderModule(ShopPageHeaderModule())
             .shopComponent(ShopComponentHelper().getComponent(application, this)).build()
@@ -438,6 +440,7 @@ class ShopPageHeaderFragmentV2 :
         shopHeaderViewModel?.flush()
         removeTemporaryShopImage(shopImageFilePath)
         SharingUtil.clearState(screenShotDetector)
+        clearTimerDynamicUsp()
         super.onDestroy()
     }
 
@@ -1066,6 +1069,7 @@ class ShopPageHeaderFragmentV2 :
         )
         shopPageFollowingStatusSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopPageFollowingStatusSharedViewModel::class.java)
         shopPageFeedTabSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopPageFeedTabSharedViewModel::class.java)
+        shopHeaderDynamicUspSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopHeaderDynamicUspSharedViewModel::class.java)
         context?.let {
             remoteConfig = FirebaseRemoteConfigImpl(it)
             cartLocalCacheHandler = LocalCacheHandler(it, CART_LOCAL_CACHE_NAME)
@@ -1924,6 +1928,7 @@ class ShopPageHeaderFragmentV2 :
 
     override fun refreshData() {
         hideShopPageFab()
+        clearTimerDynamicUsp()
         val shopProductListFragment: Fragment? = viewPagerAdapterHeader?.getRegisteredFragment(if (shopPageHeaderDataModel?.isOfficial == true) TAB_POSITION_HOME + 1 else TAB_POSITION_HOME)
         if (shopProductListFragment is ShopPageProductListFragment) {
             shopProductListFragment.clearCache()
@@ -1941,6 +1946,13 @@ class ShopPageHeaderFragmentV2 :
         getInitialData()
         setViewState(VIEW_LOADING)
         stickyLoginView?.loadContent()
+    }
+
+    private fun clearTimerDynamicUsp() {
+        timer?.cancel()
+        timer = null
+        currentIndexUspDynamicValue = Int.ZERO
+        shopHeaderDynamicUspSharedViewModel?.updateSharedDynamicUspValue("")
     }
 
     private fun resetShopProductFilterParameterSharedViewModel() {
@@ -3008,5 +3020,38 @@ class ShopPageHeaderFragmentV2 :
 
     override fun onTabFragmentWrapperFinishLoad() {
         getShopPageP2Data()
+    }
+
+    override fun startDynamicUspCycle() {
+        val listDynamicUspValue = shopPageHeaderP1Data?.listShopPageHeaderWidget?.getDynamicUspComponent()?.text?.map { it.textHtml }.orEmpty()
+        if (timer == null && listDynamicUspValue.isNotEmpty()) {
+            timer = Timer()
+            timer?.scheduleAtFixedRate(object : TimerTask() {
+                override fun run() {
+                    if (currentIndexUspDynamicValue == listDynamicUspValue.size - Int.ONE) {
+                        currentIndexUspDynamicValue = Int.ZERO
+                    } else {
+                        ++currentIndexUspDynamicValue
+                    }
+                    val currentValue = listDynamicUspValue[currentIndexUspDynamicValue]
+                    shopHeaderDynamicUspSharedViewModel?.updateSharedDynamicUspValue(currentValue)
+                }
+            }, CYCLE_DURATION, CYCLE_DURATION)
+        }
+    }
+
+    override fun getCurrentDynamicUspValue(): String {
+        val listDynamicUspValue = shopPageHeaderP1Data?.listShopPageHeaderWidget?.getDynamicUspComponent()?.text?.map { it.textHtml }.orEmpty()
+        return shopHeaderDynamicUspSharedViewModel?.sharedDynamicUspValue?.value.orEmpty().ifEmpty {
+            return listDynamicUspValue.firstOrNull().orEmpty()
+        }
+    }
+
+    private fun List<ShopPageHeaderWidgetUiModel>?.getDynamicUspComponent(): ShopPageHeaderBadgeTextValueComponentUiModel? {
+        return this?.firstOrNull {
+            it.type == ShopPageHeaderWidgetUiModel.WidgetType.SHOP_BASIC_INFO
+        }?.componentPages?.firstOrNull {
+            it.name == BaseShopPageHeaderComponentUiModel.ComponentName.SHOP_DYNAMIC_USP
+        } as? ShopPageHeaderBadgeTextValueComponentUiModel
     }
 }

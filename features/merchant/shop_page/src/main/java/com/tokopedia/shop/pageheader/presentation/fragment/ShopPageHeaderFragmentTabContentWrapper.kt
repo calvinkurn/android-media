@@ -8,10 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -50,6 +50,7 @@ import com.tokopedia.shop.common.data.model.ShopPageGetDynamicTabResponse
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
 import com.tokopedia.shop.common.view.listener.InterfaceShopPageClickScrollToTop
+import com.tokopedia.shop.common.view.viewmodel.ShopHeaderDynamicUspSharedViewModel
 import com.tokopedia.shop.databinding.ShopHeaderFragmentTabContentBinding
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
@@ -134,6 +135,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
     private var iconShareId: Int = IconList.ID_SHARE
     private var shopFollowButtonUiModel: ShopFollowButtonUiModel= ShopFollowButtonUiModel()
     private var tabFragment: Fragment? = null
+    private var shopHeaderDynamicUspSharedViewModel: ShopHeaderDynamicUspSharedViewModel? = null
 
     override fun getComponent() = activity?.run {
         DaggerShopPageHeaderComponent.builder().shopPageHeaderModule(ShopPageHeaderModule())
@@ -227,9 +229,26 @@ class ShopPageHeaderFragmentTabContentWrapper :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initViewModel()
+        observeShopHeaderDynamicUspSharedViewModel()
         initViews(view)
         iniSwipeRefreshLayout()
         isLoadInitialData = true
+    }
+
+    private fun observeShopHeaderDynamicUspSharedViewModel() {
+        shopHeaderDynamicUspSharedViewModel?.sharedDynamicUspValue?.observe(viewLifecycleOwner){
+            shopPageHeaderFragmentHeaderViewHolder?.cycleDynamicUspText(it.orEmpty())
+        }
+    }
+
+    private fun initViewModel() {
+        shopHeaderDynamicUspSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopHeaderDynamicUspSharedViewModel::class.java)
+    }
+
+    override fun onDestroy() {
+        shopHeaderDynamicUspSharedViewModel?.sharedDynamicUspValue?.removeObservers(this)
+        super.onDestroy()
     }
 
     private fun iniSwipeRefreshLayout() {
@@ -239,7 +258,15 @@ class ShopPageHeaderFragmentTabContentWrapper :
     }
 
     private fun setShopHeaderData() {
-        shopPageHeaderFragmentHeaderViewHolder?.setupShopHeader(shopPagePageHeaderWidgetList, shopFollowButtonUiModel)
+        shopPageHeaderFragmentHeaderViewHolder?.setupShopHeader(
+            shopPagePageHeaderWidgetList,
+            shopFollowButtonUiModel,
+            getCurrentDynamicUspValue()
+        )
+    }
+
+    private fun getCurrentDynamicUspValue(): String {
+        return (parentFragment as? InterfaceShopPageHeader)?.getCurrentDynamicUspValue().orEmpty()
     }
 
     private fun setupTabFragment() {
@@ -384,6 +411,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
 
     private fun renderPageAfterOnViewCreated() {
         if (isLoadInitialData) {
+            startDynamicUspCycle()
             setupToolbar()
             setupAppBarLayout()
             setupChooseAddressWidget()
@@ -395,6 +423,10 @@ class ShopPageHeaderFragmentTabContentWrapper :
             getShopP2Data()
             isLoadInitialData = false
         }
+    }
+
+    private fun startDynamicUspCycle() {
+        (parentFragment as? InterfaceShopPageHeader)?.startDynamicUspCycle()
     }
 
     private fun setupTabBackgroundColor() {
