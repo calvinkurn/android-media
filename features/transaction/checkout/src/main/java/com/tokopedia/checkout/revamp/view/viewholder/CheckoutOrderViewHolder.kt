@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.revamp.view.viewholder
 
-import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.FragmentManager
@@ -10,7 +9,6 @@ import com.tokopedia.checkout.databinding.ItemCheckoutOrderBinding
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutAddressModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
-import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
@@ -447,17 +445,12 @@ class CheckoutOrderViewHolder(
         recipientAddressModel: RecipientAddressModel?
     ): Boolean {
         return recipientAddressModel != null && (
-            recipientAddressModel.isTradeIn && recipientAddressModel.selectedTabIndex != 0 && shipmentCartItemModel.shippingId != 0 && shipmentCartItemModel.spId != 0 && !TextUtils.isEmpty(
-                recipientAddressModel.dropOffAddressName
-            ) || recipientAddressModel.isTradeIn && recipientAddressModel.selectedTabIndex == 0 && shipmentCartItemModel.shippingId != 0 && shipmentCartItemModel.spId != 0 && !TextUtils.isEmpty(
-                recipientAddressModel.provinceName
-            ) || !recipientAddressModel.isTradeIn && shipmentCartItemModel.shippingId != 0 && shipmentCartItemModel.spId != 0 && !TextUtils.isEmpty(
-                recipientAddressModel.provinceName
-            ) || !recipientAddressModel.isTradeIn && shipmentCartItemModel.boCode.isNotEmpty() && !TextUtils.isEmpty(
-                recipientAddressModel.provinceName
-            ) || // normal address auto apply BO
-                shipmentCartItemModel.isAutoCourierSelection
-            ) // tokopedia now
+            (recipientAddressModel.isTradeIn && recipientAddressModel.selectedTabIndex != 0 && shipmentCartItemModel.shippingId != 0 && shipmentCartItemModel.spId != 0 && !recipientAddressModel.dropOffAddressName.isNullOrEmpty()) ||
+                (recipientAddressModel.isTradeIn && recipientAddressModel.selectedTabIndex == 0 && shipmentCartItemModel.shippingId != 0 && shipmentCartItemModel.spId != 0 && !recipientAddressModel.provinceName.isNullOrEmpty()) ||
+                (!recipientAddressModel.isTradeIn && shipmentCartItemModel.shippingId != 0 && shipmentCartItemModel.spId != 0 && !recipientAddressModel.provinceName.isNullOrEmpty()) ||
+                (!recipientAddressModel.isTradeIn && shipmentCartItemModel.boCode.isNotEmpty() && !recipientAddressModel.provinceName.isNullOrEmpty()) || // normal address auto apply BO
+                shipmentCartItemModel.isAutoCourierSelection // tokopedia now
+            )
     }
 
     private fun renderErrorPinpointCourier() {

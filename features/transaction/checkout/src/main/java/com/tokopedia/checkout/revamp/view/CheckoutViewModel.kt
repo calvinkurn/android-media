@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.revamp.view
 
-import android.text.TextUtils
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -578,6 +577,60 @@ class CheckoutViewModel @Inject constructor(
         mTrackerShipment.flushEnhancedECommerceCheckout()
     }
 
+    suspend fun prepareFullCheckoutPage() {
+        withContext(dispatchers.immediate) {
+            val checkoutItems = listData.value
+            var recipientAddressModel: RecipientAddressModel? = null
+            for ((index, checkoutItem) in checkoutItems.withIndex()) {
+                if (checkoutItem is CheckoutAddressModel) {
+                    recipientAddressModel = checkoutItem.recipientAddressModel
+                }
+                if (checkoutItem is CheckoutOrderModel) {
+                    if (loadCourierState(checkoutItem, recipientAddressModel)) {
+                        if (pageState.value != CheckoutPageState.Loading) {
+                            pageState.value = CheckoutPageState.Loading
+                        }
+                        loadShippingSuspend(checkoutItem, index)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun shouldAutoLoadCourier(
+        shipmentCartItemModel: CheckoutOrderModel,
+        recipientAddressModel: RecipientAddressModel?
+    ): Boolean {
+        return recipientAddressModel != null && (
+            (recipientAddressModel.isTradeIn && recipientAddressModel.selectedTabIndex != 0 && shipmentCartItemModel.shippingId != 0 && shipmentCartItemModel.spId != 0 && !recipientAddressModel.dropOffAddressName.isNullOrEmpty()) ||
+                (recipientAddressModel.isTradeIn && recipientAddressModel.selectedTabIndex == 0 && shipmentCartItemModel.shippingId != 0 && shipmentCartItemModel.spId != 0 && !recipientAddressModel.provinceName.isNullOrEmpty()) ||
+                (!recipientAddressModel.isTradeIn && shipmentCartItemModel.shippingId != 0 && shipmentCartItemModel.spId != 0 && !recipientAddressModel.provinceName.isNullOrEmpty()) ||
+                (!recipientAddressModel.isTradeIn && shipmentCartItemModel.boCode.isNotEmpty() && !recipientAddressModel.provinceName.isNullOrEmpty()) || // normal address auto apply BO
+                shipmentCartItemModel.isAutoCourierSelection // tokopedia now
+            )
+    }
+
+    private fun loadCourierState(
+        shipmentCartItemModel: CheckoutOrderModel,
+        recipientAddressModel: RecipientAddressModel?
+    ): Boolean {
+        if (!shipmentCartItemModel.isCustomPinpointError && shouldAutoLoadCourier(
+                shipmentCartItemModel,
+                recipientAddressModel
+            )
+        ) {
+            if (!shipmentCartItemModel.isStateHasLoadCourierState) {
+                shipmentCartItemModel.isStateHasLoadCourierState = true
+                return true
+            } else {
+                return false
+            }
+        } else {
+            Log.i("qwertyuiop", "no auto")
+        }
+        return false
+    }
+
     fun changeAddress(
         newRecipientAddressModel: RecipientAddressModel?,
         chosenAddressModel: ChosenAddressModel?,
@@ -854,14 +907,16 @@ class CheckoutViewModel @Inject constructor(
     }
 
     fun loadShipping(order: CheckoutOrderModel, cartPosition: Int) {
+        viewModelScope.launch(dispatchers.immediate) {
+            loadShippingSuspend(order, cartPosition)
+        }
+    }
+
+    private suspend fun loadShippingSuspend(order: CheckoutOrderModel, cartPosition: Int) {
         if (order.ratesValidationFlow) {
-            viewModelScope.launch(dispatchers.immediate) {
-                loadShippingWithSelly(cartPosition, order)
-            }
+            loadShippingWithSelly(cartPosition, order)
         } else {
-            viewModelScope.launch(dispatchers.immediate) {
-                loadShippingNormal(cartPosition, order)
-            }
+            loadShippingNormal(cartPosition, order)
         }
     }
 
