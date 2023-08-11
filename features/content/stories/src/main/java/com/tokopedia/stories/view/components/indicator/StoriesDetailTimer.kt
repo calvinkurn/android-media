@@ -100,6 +100,7 @@ internal fun StoriesDetailTimerPreview() {
     StoriesDetailTimer(
         itemCount = 3,
         data = StoriesDetailUiModel(
+            id = "1",
             selected = 1,
             isPause = false,
             imageContent = "",

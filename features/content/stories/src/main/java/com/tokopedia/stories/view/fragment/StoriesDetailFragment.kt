@@ -9,16 +9,20 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showToast
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.stories.databinding.FragmentStoriesDetailBinding
 import com.tokopedia.stories.utils.withCache
+import com.tokopedia.stories.view.adapter.StoriesGroupAdapter
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimerEvent.NEXT_DETAIL
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimerEvent.NEXT_GROUP
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
+import com.tokopedia.stories.view.model.StoriesGroupUiModel
 import com.tokopedia.stories.view.utils.TouchEventStories
 import com.tokopedia.stories.view.utils.onTouchEventStories
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
@@ -40,6 +44,18 @@ class StoriesDetailFragment @Inject constructor(
         get() = _binding!!
 
     private val viewModel by activityViewModels<StoriesViewModel> { viewModelFactory }
+
+    private val mAdapter: StoriesGroupAdapter by lazyThreadSafetyNone {
+        StoriesGroupAdapter(object : StoriesGroupAdapter.Listener {
+            override fun onClickGroup(position: Int) {
+                viewModelAction(StoriesUiAction.SelectGroup(position))
+            }
+        })
+    }
+
+    private val mLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
+        LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+    }
 
     override fun getScreenName(): String {
         return TAG
@@ -68,9 +84,18 @@ class StoriesDetailFragment @Inject constructor(
     private fun setupObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.uiState.withCache().collectLatest { (prevState, state) ->
+                renderStoriesGroup(prevState?.storiesGroup, state.storiesGroup)
                 renderStoriesDetail(prevState?.storiesDetail, state.storiesDetail)
             }
         }
+    }
+
+    private fun renderStoriesGroup(
+        prevState: List<StoriesGroupUiModel>?,
+        state: List<StoriesGroupUiModel>,
+    ) {
+        if (prevState == state) return
+        mAdapter.setItems(state)
     }
 
     private fun renderStoriesDetail(
@@ -102,16 +127,29 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun setupStoriesView() = with(binding) {
+        icClose.setOnClickListener {
+            activity?.finish()
+        }
+
+        rvStoriesCategory.apply {
+            adapter = mAdapter
+            layoutManager = mLayoutManager
+        }
+
         flStoriesPrev.onTouchEventStories { event ->
             when (event) {
                 TouchEventStories.PAUSE -> {
-                    viewModelAction(PauseStories)
+                    icClose.hide()
+                    rvStoriesCategory.hide()
                     cvStoriesDetailTimer.hide()
+                    viewModelAction(PauseStories)
                 }
 
                 TouchEventStories.RESUME -> {
-                    viewModelAction(ResumeStories)
+                    icClose.show()
+                    rvStoriesCategory.show()
                     cvStoriesDetailTimer.show()
+                    viewModelAction(ResumeStories)
                 }
 
                 TouchEventStories.NEXT_PREV -> {
