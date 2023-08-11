@@ -3,8 +3,8 @@ package com.tokopedia.product.detail.view.viewholder.bmgm
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
-import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMWidgetUiState
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
+import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMWidgetUiState
 
 /**
  * Created by yovi.putra on 27/07/23"
@@ -15,7 +15,7 @@ data class BMGMDataModel(
     val type: String = "",
     val name: String = "",
     var state: BMGMWidgetUiState = BMGMWidgetUiState.Loading
-): DynamicPdpDataModel {
+) : DynamicPdpDataModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()
 
