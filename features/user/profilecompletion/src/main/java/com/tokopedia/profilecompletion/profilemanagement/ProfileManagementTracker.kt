@@ -8,6 +8,7 @@ object ProfileManagementTracker {
     private const val LABEL_M1 = "m1"
     private const val LABEL_M2 = "m2"
     private const val EVENT_VIEW_ACCOUNT_IRIS = "viewAccountIris"
+    private const val EVENT_CLICK_ACCOUNT_IRIS = "clickAccountIris"
     private const val ACTION_LOAD_SUCCESS = "success load goto profile page"
     private const val ACTION_LOAD_FAILED = "failed load goto profile page"
     private const val ACTION_CLICK_COBA_LAGI = "click on coba lagi button"
@@ -58,7 +59,7 @@ object ProfileManagementTracker {
     // Tracker ID: 45933
     fun sendClickOnCobaLagiButtonEvent() {
         Tracker.Builder()
-            .setEvent(EVENT_VIEW_ACCOUNT_IRIS)
+            .setEvent(EVENT_CLICK_ACCOUNT_IRIS)
             .setEventAction(ACTION_CLICK_COBA_LAGI)
             .setEventCategory(CATEGORY_GOTO_PROFILE_LOAD_FAILED_PAGE)
             .setEventLabel(getLabelExperiment())

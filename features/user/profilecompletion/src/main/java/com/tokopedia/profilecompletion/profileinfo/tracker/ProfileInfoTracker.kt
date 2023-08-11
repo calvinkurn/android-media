@@ -414,7 +414,7 @@ class ProfileInfoTracker @Inject constructor() {
     // Tracker ID: 45929
     fun sendViewOnInfoProfilePageEvent (eventLabel: String) {
         Tracker.Builder()
-            .setEvent(EVENT_CLICK_ACCOUNT_IRIS)
+            .setEvent(EVENT_VIEW_ACCOUNT_IRIS)
             .setEventAction(ACTION_VIEW_ON_INFO_PROFILE_PAGE)
             .setEventCategory(CATEGORY_INFO_PROFILE)
             .setEventLabel(eventLabel)
@@ -432,6 +432,7 @@ class ProfileInfoTracker @Inject constructor() {
     }
 
     companion object {
+        const val EVENT_VIEW_ACCOUNT_IRIS = "viewAccountIris"
         const val EVENT_CLICK_ACCOUNT_IRIS = "clickAccountIris"
         const val EVENT_CLICK_ACCOUNT = "clickAccount"
         const val CATEGORY_CHANGE_PROFILE = "account setting - change profile"
