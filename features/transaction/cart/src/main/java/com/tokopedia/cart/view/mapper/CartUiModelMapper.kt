@@ -607,6 +607,7 @@ object CartUiModelMapper {
 
     private fun mapCartAddOnData(addOn: AddOn): CartAddOnData {
         val arrayListAddOnProduct = ArrayList<CartAddOnProductData>()
+        val deselectedArrayListAddOnProduct = ArrayList<CartAddOnProductData>()
         addOn.addOnData.forEach {
             val cartAddOnProductData = CartAddOnProductData(
                 id = it.addonId,
@@ -616,6 +617,10 @@ object CartUiModelMapper {
                 price = it.price
             )
             arrayListAddOnProduct.add(cartAddOnProductData)
+
+            if (it.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK) {
+                deselectedArrayListAddOnProduct.add(cartAddOnProductData)
+            }
         }
         return CartAddOnData().apply {
             listData = arrayListAddOnProduct
@@ -624,6 +629,7 @@ object CartUiModelMapper {
                 leftIconUrl = addOn.addOnWidget.leftIconUrl,
                 rightIconUrl = addOn.addOnWidget.rightIconUrl
             )
+            deselectListData = deselectedArrayListAddOnProduct
         }
     }
 
