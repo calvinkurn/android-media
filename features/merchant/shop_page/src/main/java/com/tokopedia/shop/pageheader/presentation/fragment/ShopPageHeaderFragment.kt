@@ -333,8 +333,8 @@ class ShopPageHeaderFragment :
         private const val IMG_GENERATOR_SHOP_INFO_MAX_SIZE = 3
         private const val PARTIAL_SHOP_HEADER_MARGIN_BOTTOM_FOLDABLE = 8
         private const val WEBVIEW_ALLOW_OVERRIDE_FORMAT = "%s?allow_override=%b&url=%s"
-        private const val AFFILIATE_SITE_ID = "1"
-        private const val AFFILIATE_VERTICAL_ID = "1"
+        const val AFFILIATE_SITE_ID = "1"
+        const val AFFILIATE_VERTICAL_ID = "1"
         private const val CHIPS_NAME_CAMPAIGN = "Launching Eksklusif"
         private const val CHIPS_NAME_TOKO_PAGE = "Halaman Toko"
         private const val VALUE_ROLLENCE_NEW_SHOP_SHARE = "control_variant"

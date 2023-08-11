@@ -50,6 +50,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.utils.AffiliateLinkType
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
@@ -106,6 +107,7 @@ import com.tokopedia.shop.common.view.model.ShopSharingInShowCaseUiModel
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.shop.databinding.FragmentShopProductListResultNewBinding
+import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
@@ -134,10 +136,15 @@ import com.tokopedia.shop.search.view.fragment.ShopSearchProductFragment
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.universal_sharing.tracker.PageType
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.LinkProperties
+import com.tokopedia.universal_sharing.view.model.PageDetail
+import com.tokopedia.universal_sharing.view.model.Product
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.universal_sharing.view.model.Shop
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -2198,6 +2205,24 @@ class ShopPageProductListResultFragment :
         shopPageEtalaseTracking?.clickShareEtalase(shopId.orEmpty(),
             selectedEtalaseId,isAffiliate,userId)
 
-        viewModel.getShopShareData(shopId.orEmpty(), shopDomain)
+        val inputAffiliate = AffiliateInput().apply {
+            pageDetail = PageDetail(
+                pageId = shopId.orEmpty(),
+                pageType = PageType.SHOP.value,
+                siteId = ShopPageHeaderFragment.AFFILIATE_SITE_ID,
+                verticalId = ShopPageHeaderFragment.AFFILIATE_VERTICAL_ID
+            )
+            pageType = PageType.SHOP.value
+            product = Product()
+            shop = Shop(
+                shopID = shopId,
+                shopStatus = shopSharingInShowCaseUiModel?.shopStatus,
+                isOS = shopSharingInShowCaseUiModel?.isOfficial == true,
+                isPM = shopSharingInShowCaseUiModel?.isGoldMerchant == true
+            )
+            affiliateLinkType = AffiliateLinkType.SHOP
+        }
+
+        viewModel.getShopShareData(shopId.orEmpty(), shopDomain, inputAffiliate)
     }
 }

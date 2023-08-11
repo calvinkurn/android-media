@@ -801,7 +801,7 @@ class ShopPageProductListResultViewModel @Inject constructor(
         }) {}
     }
 
-    fun getShopShareData(shopId: String, shopDomain: String) {
+    fun getShopShareData(shopId: String, shopDomain: String, affiliateInput: AffiliateInput) {
         launchCatchError(dispatcherProvider.io, block = {
             val shopInfoData = asyncCatchError(
                 dispatcherProvider.io,
@@ -815,6 +815,23 @@ class ShopPageProductListResultViewModel @Inject constructor(
                     null
                 }
             )
+
+            val affiliate = asyncCatchError(
+                dispatcherProvider.io,
+                block = {
+                    AffiliateEligibilityCheckUseCase.createParam(affiliateInput)
+                    affiliateEligibilityCheckUseCase.get().executeOnBackground()
+                },
+                onError = {
+                    null
+                }
+            )
+
+
+            affiliate.await()?.let {
+                _resultAffiliate.value = Success(it)
+            }
+
             shopInfoData.await()?.let { shopInfo ->
                 _shopPageShopShareData.postValue(Success(shopInfo))
             }
@@ -842,18 +859,5 @@ class ShopPageProductListResultViewModel @Inject constructor(
             )
         )
         return gqlGetShopInfoForHeaderUseCase.get().executeOnBackground()
-    }
-
-    fun checkAffiliate(affiliateInput: AffiliateInput) {
-        launch {
-            try {
-                val result = affiliateEligibilityCheckUseCase.get().apply {
-                    params = AffiliateEligibilityCheckUseCase.createParam(affiliateInput)
-                }.executeOnBackground()
-                _resultAffiliate.value = Success(result)
-            } catch (e: Exception) {
-                _resultAffiliate.value = Fail(e)
-            }
-        }
     }
 }

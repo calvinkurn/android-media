@@ -1702,60 +1702,40 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
     }
 
     @Test
-    fun `check whether shopPageTickerData and shopPageShopShareData post success value`() {
+    fun `check whether shopPageShopShareData post success value`() {
         val mockShopId = "123"
         val mockShopDomain = "mock domain"
+        val affiliateInput =  AffiliateInput()
         coEvery {
             gqlGetShopInfoForHeaderUseCase.get().executeOnBackground()
         } returns ShopInfo()
 
-        shopPageProductListResultViewModel.getShopShareData(mockShopId, mockShopDomain)
+        coEvery {
+            eligibilityCheckUseCase.get().executeOnBackground()
+        } returns GenerateAffiliateLinkEligibility()
+
+        shopPageProductListResultViewModel.getShopShareData(mockShopId, mockShopDomain, affiliateInput)
         assert(shopPageProductListResultViewModel.shopPageShopShareData.value is Success)
+        assert(shopPageProductListResultViewModel.resultAffiliate.value is Success)
+
     }
 
     @Test
     fun `check whether shopPageShopShareData value is null if error when get shopInfo data`() {
         val mockShopId = "123"
         val mockShopDomain = "mock domain"
+        val affiliateInput =  AffiliateInput()
+
         coEvery {
             gqlGetShopInfoForHeaderUseCase.get().executeOnBackground()
         } throws Exception()
 
-        shopPageProductListResultViewModel.getShopShareData(mockShopId, mockShopDomain)
+        coEvery {
+            eligibilityCheckUseCase.get().executeOnBackground()
+        } throws Exception()
+
+        shopPageProductListResultViewModel.getShopShareData(mockShopId, mockShopDomain, affiliateInput)
+        assert(shopPageProductListResultViewModel.resultAffiliate.value == null)
         assert(shopPageProductListResultViewModel.shopPageShopShareData.value == null)
-    }
-
-    @Test
-    fun `when check affiliate is success`() {
-        val mockData = GenerateAffiliateLinkEligibility()
-        val mockParam = AffiliateInput()
-
-        coEvery {
-            eligibilityCheckUseCase.get().executeOnBackground()
-        } returns mockData
-
-        shopPageProductListResultViewModel.checkAffiliate(mockParam)
-        coVerify {
-            eligibilityCheckUseCase.get().executeOnBackground()
-        }
-        Assert.assertTrue(shopPageProductListResultViewModel.resultAffiliate.value is Success)
-    }
-
-    @Test
-    fun `when check affiliate throws error`() {
-        val mockError = Exception()
-        val mockParam = AffiliateInput()
-        coEvery {
-            eligibilityCheckUseCase.get().executeOnBackground()
-        } throws mockError
-
-        shopPageProductListResultViewModel.checkAffiliate(mockParam)
-        coVerify {
-            eligibilityCheckUseCase.get().executeOnBackground()
-        }
-        coVerify {
-            eligibilityCheckUseCase.get().executeOnBackground()
-        }
-        Assert.assertTrue(shopPageProductListResultViewModel.resultAffiliate.value is Fail)
     }
 }
