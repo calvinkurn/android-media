@@ -3955,12 +3955,10 @@ class ShipmentFragment :
                 AddOnConstant.QUERY_PARAM_CATEGORY_ID to cartItemModel.productCatId,
                 AddOnConstant.QUERY_PARAM_SHOP_ID to cartItemModel.shopId,
                 AddOnConstant.QUERY_PARAM_QUANTITY to cartItemModel.quantity,
-                AddOnConstant.QUERY_PARAM_PRICE to price.toString().removeSingleDecimalSuffix(),
-                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toString().removeSingleDecimalSuffix()
+                AddOnConstant.QUERY_PARAM_PRICE to price.toBigDecimal().toPlainString().removeSingleDecimalSuffix(),
+                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toBigDecimal().toPlainString().removeSingleDecimalSuffix()
             )
         )
-
-        println("++ applink = $applink")
 
         checkoutAnalyticsCourierSelection.eventClickLihatSemuaAddOnsProductServiceWidget()
         activity?.let {

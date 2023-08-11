@@ -1640,12 +1640,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     QUERY_PARAM_CATEGORY_ID to product.categoryId,
                     QUERY_PARAM_SHOP_ID to shop.shopId,
                     QUERY_PARAM_QUANTITY to product.orderQuantity,
-                    QUERY_PARAM_PRICE to price.toString().removeSingleDecimalSuffix(),
-                    QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toString().removeSingleDecimalSuffix()
+                    QUERY_PARAM_PRICE to price.toBigDecimal().toPlainString().removeSingleDecimalSuffix(),
+                    QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toBigDecimal().toPlainString().removeSingleDecimalSuffix()
                 )
             )
-
-            println("++ applink = $applink")
 
             activity?.let {
                 val intent = RouteManager.getIntent(it, applink)
