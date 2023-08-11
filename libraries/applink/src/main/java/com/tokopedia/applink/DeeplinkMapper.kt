@@ -203,10 +203,6 @@ object DeeplinkMapper {
 
         val appLinkContent = DeeplinkMapperContent.getNavContentFromHttp(uri, deeplink)
         if (appLinkContent.isNotBlank()) return appLinkContent
-//
-//        val appLinkFeed =
-//            DeeplinkMapperContent.getRegisteredNavigationFeedVideoFromHttp(uri, deeplink)
-//        if (appLinkFeed.isNotBlank()) return appLinkFeed
 
         val applinkDigital =
             DeeplinkMapperDigital.getRegisteredNavigationFromHttpDigital(context, deeplink)
