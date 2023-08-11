@@ -16,7 +16,8 @@ import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.stories.databinding.FragmentStoriesDetailBinding
 import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
-import com.tokopedia.stories.view.components.indicator.StoriesDetailTimerEvent
+import com.tokopedia.stories.view.components.indicator.StoriesDetailTimerEvent.NEXT_DETAIL
+import com.tokopedia.stories.view.components.indicator.StoriesDetailTimerEvent.NEXT_GROUP
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
 import com.tokopedia.stories.view.utils.TouchEventStories
 import com.tokopedia.stories.view.utils.onTouchEventStories
@@ -73,30 +74,30 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun renderStoriesDetail(
-        prevState: List<StoriesDetailUiModel>?,
-        state: List<StoriesDetailUiModel>,
+        prevState: StoriesDetailUiModel?,
+        state: StoriesDetailUiModel,
     ) {
-        if (prevState == state || state.isEmpty()) return
+        if (prevState == state) return
 
+        storiesDetailsTimer(state)
+    }
+
+    private fun storiesDetailsTimer(state: StoriesDetailUiModel) {
         with(binding.cvStoriesDetailTimer) {
             apply {
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                 setContent {
                     StoriesDetailTimer(
-                        itemCount = state.size,
-                        data = state.first(),
+                        itemCount = 3,
+                        data = state,
                     ) { event ->
-                        storiesDetailTimerEventAction(event)
+                        when (event) {
+                            NEXT_DETAIL -> viewModelAction(NextDetail)
+                            NEXT_GROUP -> viewModelAction(NextGroup)
+                        }
                     }
                 }
             }
-        }
-    }
-
-    private fun storiesDetailTimerEventAction(event: StoriesDetailTimerEvent) {
-        when (event) {
-            StoriesDetailTimerEvent.NEXT_DETAIL -> viewModelAction(NextDetail)
-            StoriesDetailTimerEvent.NEXT_GROUP -> viewModelAction(NextGroup)
         }
     }
 

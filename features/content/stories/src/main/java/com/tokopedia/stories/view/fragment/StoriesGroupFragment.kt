@@ -90,7 +90,7 @@ class StoriesGroupFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
                 when (event) {
-                    is StoriesUiEvent.SelectCategories -> manageNextPageEvent(event.position)
+                    is StoriesUiEvent.SelectGroup -> manageNextPageEvent(event.position)
                 }
             }
         }

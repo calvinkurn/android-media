@@ -26,7 +26,7 @@ class StoriesViewModel @Inject constructor(
     var mGroupPosition = 0
 
     private var _storiesGroup = MutableStateFlow(listOf<StoriesGroupUiModel>())
-    private var _storiesDetail = MutableStateFlow(listOf<StoriesDetailUiModel>())
+    private var _storiesDetail = MutableStateFlow(StoriesDetailUiModel.Empty)
 
     private val _uiEvent = MutableSharedFlow<StoriesUiEvent>(extraBufferCapacity = 100)
     val uiEvent: Flow<StoriesUiEvent>
@@ -44,7 +44,7 @@ class StoriesViewModel @Inject constructor(
 
     init {
         val response = repository.getStoriesData()
-        _storiesGroup.update { response.group }
+        _storiesGroup.update { response.groups }
     }
 
     fun submitAction(action: StoriesUiAction) {
@@ -68,55 +68,44 @@ class StoriesViewModel @Inject constructor(
     private fun handleSelectGroup(selectedGroup: Int) {
         mGroupPosition = selectedGroup
         _storiesDetail.update {
-            _storiesGroup.value[selectedGroup].stories
+            val currentDetail = _storiesGroup.value[selectedGroup]
+            currentDetail.details[currentDetail.selectedDetail]
         }
     }
 
     private fun handleNextGroup() {
         viewModelScope.launch {
-            _uiEvent.emit(StoriesUiEvent.SelectCategories(mGroupPosition + 1))
+            _uiEvent.emit(StoriesUiEvent.SelectGroup(mGroupPosition + 1))
         }
     }
 
     private fun handlePreviousGroup() {
         viewModelScope.launch {
-            _uiEvent.emit(StoriesUiEvent.SelectCategories(mGroupPosition - 1))
+            _uiEvent.emit(StoriesUiEvent.SelectGroup(mGroupPosition - 1))
         }
     }
 
     private fun handleNextDetail() {
         _storiesDetail.update { data ->
-            data.mapIndexed { index, item ->
-                if (index == mGroupPosition) item.copy(position = item.position + 1)
-                else item
-            }
+            data.copy(selected = data.selected + 1)
         }
     }
 
     private fun handlePreviousDetail() {
         _storiesDetail.update { data ->
-            data.mapIndexed { index, item ->
-                if (index == mGroupPosition) item.copy(position = item.position - 1)
-                else item
-            }
+            data.copy(selected = data.selected - 1)
         }
     }
 
     private fun handleOnPauseStories() {
         _storiesDetail.update { data ->
-            data.mapIndexed { index, item ->
-                if (mGroupPosition == index) item.copy(isPause = true)
-                else item
-            }
+            data.copy(isPause = true)
         }
     }
 
     private fun handleOnResumeStories() {
         _storiesDetail.update { data ->
-            data.mapIndexed { index, item ->
-                if (mGroupPosition == index) item.copy(isPause = false)
-                else item
-            }
+            data.copy(isPause = false)
         }
     }
 

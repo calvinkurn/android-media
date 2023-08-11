@@ -45,14 +45,14 @@ fun StoriesDetailTimer(
             )
             anim.snapTo(0F)
             event.invoke(
-                if (data.position >= itemCount) NEXT_GROUP
+                if (data.selected >= itemCount) NEXT_GROUP
                 else NEXT_DETAIL
             )
         }
     }
     StoriesDetailTimerContent(
         count = itemCount,
-        currentPosition = data.position,
+        currentPosition = data.selected,
         progress = anim.value,
     )
 }
@@ -100,8 +100,7 @@ internal fun StoriesDetailTimerPreview() {
     StoriesDetailTimer(
         itemCount = 3,
         data = StoriesDetailUiModel(
-            position = 0,
-            selected = false,
+            selected = 1,
             isPause = false,
             imageContent = "",
         )
