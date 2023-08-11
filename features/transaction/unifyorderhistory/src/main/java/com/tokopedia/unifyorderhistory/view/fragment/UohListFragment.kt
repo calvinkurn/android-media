@@ -76,7 +76,6 @@ import com.tokopedia.remoteconfig.RemoteConfigKey.SCP_REWARDS_MEDALI_TOUCH_POINT
 import com.tokopedia.scp_rewards_touchpoints.common.Error
 import com.tokopedia.scp_rewards_touchpoints.common.ORDER_LIST_HISTORY_PAGE
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.ScpToasterHelper
-import com.tokopedia.scp_rewards_touchpoints.touchpoints.analytics.ScpRewardsToasterAnalytics.sendViewToasterEvent
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.model.AnalyticsData
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.model.ScpToasterModel
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response.ScpRewardsMedalTouchPointResponse
@@ -857,15 +856,11 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                                 data = ScpToasterModel(
                                     analyticsData = AnalyticsData(
                                         orderId = finishOrderResult.orderId,
-                                        pagePath = ORDER_LIST_HISTORY_PAGE
+                                        pagePath = ORDER_LIST_HISTORY_PAGE,
+                                        pageType = ORDER_LIST_HISTORY_PAGE
                                     ),
                                     responseData = data
                                 )
-                            )
-                            sendViewToasterEvent(
-                                badgeId = data.scpRewardsMedaliTouchpointOrder.medaliTouchpointOrder.medaliID.toString(),
-                                orderId = finishOrderResult.orderId,
-                                pagePath = ORDER_LIST_HISTORY_PAGE
                             )
                         }
                     } else {

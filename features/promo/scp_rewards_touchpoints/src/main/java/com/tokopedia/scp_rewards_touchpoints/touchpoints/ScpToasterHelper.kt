@@ -38,6 +38,12 @@ object ScpToasterHelper {
                 )
                 withContext(Dispatchers.Main) {
                     ScpRewardsToaster.toasterCustomBottomHeight = customBottomHeight
+                    ScpRewardsToasterAnalytics.sendViewToasterEvent(
+                        badgeId = medaliID.toString(),
+                        orderId = data.analyticsData.orderId,
+                        pagePath = data.analyticsData.pagePath,
+                        pageType = data.analyticsData.pageType
+                    )
                     ScpRewardsToaster.build(
                         view = view,
                         toasterData = toasterData,

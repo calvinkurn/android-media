@@ -82,7 +82,6 @@ import com.tokopedia.scp_rewards_touchpoints.common.Error
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.ScpToasterHelper
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.adapter.viewholder.ScpRewardsMedalTouchPointWidgetViewHolder
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.analytics.ScpRewardsCelebrationWidgetAnalytics
-import com.tokopedia.scp_rewards_touchpoints.touchpoints.analytics.ScpRewardsToasterAnalytics
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.model.AnalyticsData
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.model.ScpToasterModel
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response.ScpRewardsMedalTouchPointResponse
@@ -474,7 +473,8 @@ open class BuyerOrderDetailFragment :
                                     data = ScpToasterModel(
                                         AnalyticsData(
                                             orderId = viewModel.getOrderId(),
-                                            pagePath = BUYER_ORDER_DETAIL_PAGE
+                                            pagePath = BUYER_ORDER_DETAIL_PAGE,
+                                            pageType = BUYER_ORDER_DETAIL_PAGE
                                         ),
                                         responseData = data
                                     ),
@@ -483,16 +483,12 @@ open class BuyerOrderDetailFragment :
                                         viewModel.hideScpRewardsMedalTouchPointWidget()
                                     }
                                 )
-                                ScpRewardsToasterAnalytics.sendViewToasterEvent(
-                                    badgeId = data.scpRewardsMedaliTouchpointOrder.medaliTouchpointOrder.medaliID.toString(),
-                                    orderId = viewModel.getOrderId(),
-                                    pagePath = BUYER_ORDER_DETAIL_PAGE
-                                )
                             }
                             ScpRewardsCelebrationWidgetAnalytics.impressionCelebrationWidget(
                                 badgeId = data.scpRewardsMedaliTouchpointOrder.medaliTouchpointOrder.medaliID.toString(),
                                 orderId = viewModel.getOrderId(),
-                                pagePath = BUYER_ORDER_DETAIL_PAGE
+                                pagePath = BUYER_ORDER_DETAIL_PAGE,
+                                pageType = BUYER_ORDER_DETAIL_PAGE
                             )
                             viewModel.updateScpRewardsMedalTouchPointWidgetState(
                                 data = data.scpRewardsMedaliTouchpointOrder.medaliTouchpointOrder,
@@ -947,7 +943,8 @@ open class BuyerOrderDetailFragment :
         ScpRewardsCelebrationWidgetAnalytics.clickCelebrationWidget(
             badgeId = data.scpRewardsMedaliTouchpointOrder.medaliTouchpointOrder.medaliID.toString(),
             orderId = viewModel.getOrderId(),
-            pagePath = BUYER_ORDER_DETAIL_PAGE
+            pagePath = BUYER_ORDER_DETAIL_PAGE,
+            pageType = BUYER_ORDER_DETAIL_PAGE
         )
         viewModel.hideScpRewardsMedalTouchPointWidget()
         context?.let {
