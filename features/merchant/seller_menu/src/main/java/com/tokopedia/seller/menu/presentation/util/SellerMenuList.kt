@@ -117,12 +117,10 @@ object SellerMenuList {
                         iconUnify = IconUnify.CALL_CENTER),
                 SellerMenuItemUiModel(
                         context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_setting),
-                        clickApplink = null,
+                        clickApplink = ApplinkConstInternalSellerapp.SELLER_SETTINGS,
                         type = MenuItemType.SHOP_SETTINGS,
                         eventActionSuffix = SettingTrackingConstant.SETTINGS,
-                        iconUnify = IconUnify.SETTING) {
-                    checkAccessPermissionIfNotShopOwner(context, isShopOwner, mapper, AdminFeature.MANAGE_SHOP)
-                }
+                        iconUnify = IconUnify.SETTING)
         )
     }
 
