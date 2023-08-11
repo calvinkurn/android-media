@@ -41,6 +41,7 @@ import com.tokopedia.shop.home.WidgetName.TRENDING
 import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.WidgetName.VOUCHER_STATIC
 import com.tokopedia.shop.home.WidgetName.PERSO_PRODUCT_COMPARISON
+import com.tokopedia.shop.home.util.ShopHomeProductCarouselTabDataProvider
 import com.tokopedia.shop.home.view.adapter.viewholder.CarouselPlayWidgetViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ProductGridListPlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeCardDonationViewHolder
@@ -118,6 +119,7 @@ open class ShopHomeAdapterTypeFactory(
     private val shopHomeDisplayBannerTimerWidgetListener: ShopHomeDisplayBannerTimerWidgetListener,
     private val shopHomeShowcaseListener: ShopHomeShowcaseListener,
     private val shopHomeProductCarouselListener: ShopHomeProductCarouselListener,
+    private val shopHomeProductCarouselTabDataProvider: ShopHomeProductCarouselTabDataProvider,
     private val fragment: Fragment
 ) : BaseAdapterTypeFactory(), TypeFactoryShopHome, ThematicWidgetTypeFactory, ShopWidgetTypeFactory {
     var productCardType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
@@ -378,7 +380,7 @@ open class ShopHomeAdapterTypeFactory(
                 ShopHomeShowCaseLeftMainBannerViewHolder(parent, fragment, shopHomeShowcaseListener)
             }
             ShopHomeProductCarouselViewHolder.LAYOUT -> {
-                ShopHomeProductCarouselViewHolder(parent, shopHomeProductCarouselListener)
+                ShopHomeProductCarouselViewHolder(parent, shopHomeProductCarouselListener, shopHomeProductCarouselTabDataProvider)
             }
             ShopHomeShowCaseTopMainBannerViewHolder.LAYOUT -> {
                 ShopHomeShowCaseTopMainBannerViewHolder(parent, shopHomeShowcaseListener)

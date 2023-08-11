@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopHomeProductCarouselViewpagerBinding
+import com.tokopedia.shop.home.util.ShopHomeProductCarouselTabDataProvider
 import com.tokopedia.shop.home.view.fragment.ShopProductCarouselFragment
 import com.tokopedia.shop.home.view.listener.ShopHomeProductCarouselListener
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel
@@ -22,7 +23,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHomeProductCarouselViewHolder(
     itemView: View,
-    private val listener: ShopHomeProductCarouselListener
+    private val listener: ShopHomeProductCarouselListener,
+    private val provider: ShopHomeProductCarouselTabDataProvider
 ) : AbstractViewHolder<ShopHomeProductCarouselUiModel>(itemView) {
 
     companion object {
@@ -47,7 +49,7 @@ class ShopHomeProductCarouselViewHolder(
 
     private fun setupTabs(tabs: List<ShopHomeProductCarouselUiModel.Tab>) {
         val fragments = createFragments(tabs)
-        val pagerAdapter = TabPagerAdapter(listener.fragment, fragments)
+        val pagerAdapter = TabPagerAdapter(provider.fragment, fragments)
 
         viewBinding?.run {
             viewPager.adapter = pagerAdapter
@@ -96,7 +98,7 @@ class ShopHomeProductCarouselViewHolder(
         val pages = mutableListOf<Pair<String, Fragment>>()
 
         tabs.forEachIndexed { _, currentTab ->
-            val fragment = ShopProductCarouselFragment.newInstance(listener.currentShopId, currentTab.componentList)
+            val fragment = ShopProductCarouselFragment.newInstance(provider.currentShopId, currentTab.componentList)
             fragment.setOnMainBannerClick { mainBanner -> listener.onProductCarouselMainBannerClick(mainBanner) }
             fragment.setOnProductClick { selectedShowcase -> listener.onProductCarouselProductClick(selectedShowcase) }
             fragment.setOnVerticalBannerClick { verticalBanner -> listener.onProductCarouselVerticalBannerClick(verticalBanner) }

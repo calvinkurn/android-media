@@ -154,6 +154,7 @@ import com.tokopedia.shop.home.WidgetType.PROMO
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.util.CheckCampaignNplException
+import com.tokopedia.shop.home.util.ShopHomeProductCarouselTabDataProvider
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
@@ -248,7 +249,8 @@ open class ShopPageHomeFragment :
     ShopHomeProductListSellerEmptyListener,
     ShopHomeListener,
     ShopHomePersoProductComparisonViewHolder.ShopHomePersoProductComparisonViewHolderListener,
-    ShopHomeDisplayBannerTimerWidgetListener, ShopHomeShowcaseListener, ShopHomeProductCarouselListener {
+    ShopHomeDisplayBannerTimerWidgetListener, ShopHomeShowcaseListener, ShopHomeProductCarouselListener,
+    ShopHomeProductCarouselTabDataProvider {
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -406,7 +408,8 @@ open class ShopPageHomeFragment :
             shopHomeDisplayBannerTimerWidgetListener = this,
             fragment = this,
             shopHomeShowcaseListener = this,
-            shopHomeProductCarouselListener = this
+            shopHomeProductCarouselListener = this,
+            shopHomeProductCarouselTabDataProvider = this
         )
     }
 
