@@ -2,7 +2,6 @@ package com.tokopedia.promousage.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -12,12 +11,13 @@ import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.promousage.data.request.GetCouponListRecommendationParam
 import com.tokopedia.promousage.data.request.ValidateUsePromoUsageParam
-import com.tokopedia.promousage.data.response.CouponListRecommendation
 import com.tokopedia.promousage.data.response.GetCouponListRecommendationResponse
+import com.tokopedia.promousage.data.response.TickerInfo
 import com.tokopedia.promousage.domain.entity.BoAdditionalData
 import com.tokopedia.promousage.domain.entity.PromoCta
 import com.tokopedia.promousage.domain.entity.PromoItemState
 import com.tokopedia.promousage.domain.entity.PromoPageEntryPoint
+import com.tokopedia.promousage.domain.entity.PromoPageTickerInfo
 import com.tokopedia.promousage.domain.entity.PromoSavingInfo
 import com.tokopedia.promousage.domain.entity.list.PromoAccordionHeaderItem
 import com.tokopedia.promousage.domain.entity.list.PromoAccordionViewAllItem
@@ -28,7 +28,6 @@ import com.tokopedia.promousage.domain.usecase.GetCouponListRecommendationUseCas
 import com.tokopedia.promousage.domain.usecase.ValidateUsePromoUsageUseCase
 import com.tokopedia.promousage.util.analytics.PromoUsageAnalytics
 import com.tokopedia.promousage.util.composite.DelegateAdapterItem
-import com.tokopedia.promousage.util.logger.PromoErrorException
 import com.tokopedia.promousage.util.logger.PromoUsageLogger
 import com.tokopedia.promousage.util.test.PromoUsageIdlingResource
 import com.tokopedia.promousage.view.mapper.PromoUsageClearCacheAutoApplyStackMapper
@@ -159,7 +158,7 @@ internal class PromoUsageViewModel @Inject constructor(
 
         _promoRecommendationUiAction.postValue(
             PromoRecommendationUiAction(
-                promoRecommendationItem = items.getRecommendationItem()
+                recommendationItem = items.getRecommendationItem()
             )
         )
         if (attemptedPromoCodeError.code.isNotBlank() && attemptedPromoCodeError.message.isNotBlank()) {
@@ -172,7 +171,7 @@ internal class PromoUsageViewModel @Inject constructor(
         }
         _promoPageUiState.postValue(
             PromoPageUiState.Success(
-                tickerInfo = tickerInfo,
+                tickerInfo = PromoPageTickerInfo(),
                 items = items,
                 savingInfo = savingInfo
             )

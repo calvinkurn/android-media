@@ -77,7 +77,7 @@ class PromoAccordionItemDelegateAdapter(
                         NORMAL_MARGIN_BOTTOM_IN_DP.toPx()
                     )
                 }
-                root.setOnClickListener {
+                vcvPromo.setOnClickListener {
                     when (item.state) {
                         is PromoItemState.Normal, is PromoItemState.Selected -> {
                             onClickPromo(item)
@@ -91,11 +91,6 @@ class PromoAccordionItemDelegateAdapter(
                 vcvPromo.bind(item)
                 vcvPromo.isVisible = item.isExpanded && item.isVisible
             }
-        }
-
-        private fun startPromoRecommendationSelectedAnimation() {
-            val animation = AnimationUtils.loadAnimation(binding.clPromoBackground.context, R.anim.zoom_in)
-            binding.clPromoBackground.startAnimation(animation)
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.promousage.data
 
+import com.tokopedia.promousage.domain.entity.PromoCta
 import com.tokopedia.promousage.domain.entity.PromoItemBenefitDetail
 import com.tokopedia.promousage.domain.entity.PromoItemCardDetail
 import com.tokopedia.promousage.domain.entity.PromoItemClashingInfo
@@ -597,7 +598,13 @@ object DummyData {
                 state = PromoItemState.Normal,
                 isAttempted = false,
                 isExpanded = false,
-                isVisible = true
+                isVisible = true,
+                cta = PromoCta(
+                    type = "register_gpl_cicil",
+                    text = "Registrasi GPL Cicil",
+                    appLink = "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Fpaylater%2Fswitcher%3Ffrom%3Dpromo"
+                ),
+                couponType = listOf("gpl_cicil")
             ),
             PromoItem(
                 id = "14",
@@ -902,7 +909,6 @@ object DummyData {
                 messageSelected = "Kamu hemat Rp30.000 dari 2 promo!",
                 backgroundUrl = "",
                 animationUrl = "https://assets.tokopedia.net/asts/android/shop_page/shop_campaign_tab_confetti.json",
-                promos = recommendedPromos
             )
         )
         items.add(
@@ -1001,7 +1007,7 @@ object DummyData {
                 messageSelected = "Kamu hemat Rp30.000 dari 2 promo!",
                 backgroundUrl = "",
                 animationUrl = "https://assets.tokopedia.net/asts/android/shop_page/shop_campaign_tab_confetti.json",
-                promos = recommendedPromos
+                selectedCodes = recommendedPromos.filter { it.isSelected }.map { it.code }
             )
         )
         items.addAll(recommendedPromos)

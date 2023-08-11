@@ -8,7 +8,7 @@ data class LoadingUiAction(
 )
 
 data class PromoRecommendationUiAction(
-    val promoRecommendationItem: PromoRecommendationItem? = null
+    val recommendationItem: PromoRecommendationItem? = null
 )
 
 data class PromoListUiAction(

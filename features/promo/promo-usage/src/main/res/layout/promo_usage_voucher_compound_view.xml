@@ -131,8 +131,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:typographyType="display_3"
-                tools:text="Disesuaikan jika pilih Bebas Ongkir" />
-
+                tools:text="Disesuaikan jika pilih Bebas Ongkir\nDisesuaikan jika pilih Bebas Ongkir\nDisesuaikan jika pilih Bebas Ongkir\nDisesuaikan jika pilih Bebas Ongkir" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tpgPromoExpiryInfo"

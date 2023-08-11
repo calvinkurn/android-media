@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,7 +22,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -35,7 +35,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageBottomsheetBinding
 import com.tokopedia.promousage.di.DaggerPromoUsageComponent
@@ -51,7 +50,7 @@ import com.tokopedia.promousage.util.BottomSheetUtil
 import com.tokopedia.promousage.util.analytics.PromoUsageAnalytics
 import com.tokopedia.promousage.util.composite.CompositeAdapter
 import com.tokopedia.promousage.util.composite.DelegateAdapterItem
-import com.tokopedia.promousage.util.logger.PromoErrorException
+import com.tokopedia.promousage.util.extension.getErrorMessage
 import com.tokopedia.promousage.view.adapter.PromoAccordionHeaderDelegateAdapter
 import com.tokopedia.promousage.view.adapter.PromoAccordionItemDelegateAdapter
 import com.tokopedia.promousage.view.adapter.PromoAccordionViewAllDelegateAdapter
@@ -125,12 +124,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     var listener: Listener? = null
     private val recyclerViewAdapter by lazy {
         CompositeAdapter.Builder()
-            .add(
-                PromoRecommendationDelegateAdapter(
-                    onClickPromoItem,
-                    onClickApplyPromoRecommendation
-                )
-            )
+            .add(PromoRecommendationDelegateAdapter(onClickApplyPromoRecommendation))
             .add(PromoAccordionHeaderDelegateAdapter(onClickPromoAccordionHeader))
             .add(PromoAccordionItemDelegateAdapter(onClickPromoItem))
             .add(PromoAccordionViewAllDelegateAdapter(onClickPromoAccordionViewAll))
@@ -139,10 +133,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             .build()
     }
     private var loaderDialog: LoaderDialog? = null
-    private val defaultErrorMessage: String
-        get() = binding.root.context.getString(R.string.promo_usage_global_error_promo)
 
-    @Suppress("DEPRECATION")
     private val registerGopayLaterCicilLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             val promoCode = result.data?.getStringExtra(BUNDLE_KEY_PROMO_CODE)
@@ -171,6 +162,10 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
+    fun show(manager: FragmentManager) {
+        super.show(manager, PromoUsageBottomSheet::class.java.simpleName)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupDependencyInjection()
@@ -186,13 +181,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = PromoUsageBottomsheetBinding.inflate(inflater, container, false)
-
-        binding.tpgBottomSheetHeaderTitle.text = context?.getString(R.string.promo_voucher_promo)
-        binding.btnBottomSheetHeaderClose.setOnClickListener { dismissAllowingStateLoss() }
-//        binding.clBottomSheetHeader.foregroundDrawable(R.drawable.promo_usage_bg_confetti)
-
         dialog?.setOnShowListener { applyBottomSheetMaxHeightRule() }
-
         return binding.root
     }
 
@@ -211,7 +200,6 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         bottomSheetBehavior.peekHeight = maxPeekHeight
     }
 
-    @Suppress("DEPRECATION")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
@@ -238,8 +226,6 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         hideContent()
         showShimmer()
 
-        binding.clBottomSheetContent.background =
-            BottomSheetUtil.generateBackgroundDrawableWithColor(binding.root.context)
         val entryPoint = arguments?.getParcelable(BUNDLE_KEY_ENTRY_POINT)
             ?: PromoPageEntryPoint.CART_PAGE
         val totalAmount = arguments?.getDouble(BUNDLE_KEY_TOTAL_AMOUNT) ?: 0.0
@@ -248,9 +234,12 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         val boPromoCodes: List<String> = arguments?.getStringArrayList(BUNDLE_KEY_BO_PROMO_CODES)
             ?: emptyList()
 
+        binding.tpgBottomSheetHeaderTitle.text = context?.getString(R.string.promo_voucher_promo)
         binding.btnBottomSheetHeaderClose.setOnClickListener {
             dismiss()
         }
+        binding.clBottomSheetContent.background =
+            BottomSheetUtil.generateBackgroundDrawableWithColor(binding.root.context)
         binding.rvPromo.itemAnimator = null
         binding.rvPromo.layoutManager = LinearLayoutManager(context)
         binding.rvPromo.adapter = recyclerViewAdapter
@@ -326,15 +315,19 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 scrollY = max(scrollY, 0f)
 
                 if (scrollY > 0) {
-                    useWhiteHeaderColor()
+                    renderWhiteHeader()
                 } else {
-                    useGradientHeaderColor()
+                    renderTransparentHeader()
                 }
             }
         })
     }
 
-    private fun useWhiteHeaderColor() {
+    private fun clearHeaderScrollListener() {
+        binding.rvPromo.clearOnScrollListeners()
+    }
+
+    private fun renderWhiteHeader() {
         with(binding) {
             clBottomSheetHeader.background = BottomSheetUtil
                 .generateBackgroundDrawableWithColor(
@@ -367,7 +360,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
-    private fun useGradientHeaderColor() {
+    private fun renderTransparentHeader() {
         with(binding) {
             clBottomSheetHeader.background = null
             tpgBottomSheetHeaderTitle
@@ -423,13 +416,13 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
     private fun observePromoRecommendationUiAction() {
         viewModel.promoRecommendationUiAction.observe(viewLifecycleOwner) { uiAction ->
-            val hasRecommendedItems = uiAction.promoRecommendationItem != null
-                && uiAction.promoRecommendationItem.promos.isNotEmpty()
+            val hasRecommendedItems = uiAction.recommendationItem != null
             if (hasRecommendedItems) {
                 addHeaderScrollListener()
-                useGradientHeaderColor()
+                renderTransparentHeader()
             } else {
-                useWhiteHeaderColor()
+                clearHeaderScrollListener()
+                renderWhiteHeader()
             }
         }
     }
@@ -490,19 +483,14 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     private fun renderPromoRecommendationBackground(promoRecommendation: PromoRecommendationItem) {
         with(binding) {
             clBottomSheetContent.background = BottomSheetUtil
-                .generateBackgroundDrawableWithColor(root.context, "#763BD7")
-//            iuBottomSheetBackground
-//                .setImageDrawable(
-//                    ContextCompat.getDrawable(root.context, R.drawable.promo_usage_bg_bottomsheet_voucher_recommendation)
-//                )
+                .generateBackgroundDrawableWithColor(root.context, promoRecommendation.backgroundColor)
         }
     }
 
     private fun renderTickerInfo(tickerInfo: PromoPageTickerInfo) {
         with(binding) {
-            // TODO: Remove hardcoded ticker info
             val hasTickerInfo = tickerInfo.message.isNotBlank() && tickerInfo.iconUrl.isNotBlank()
-            //&& tickerInfo.backgroundUrl.isNotBlank()
+                && tickerInfo.backgroundUrl.isNotBlank()
             if (hasTickerInfo) {
                 if (tickerInfo.backgroundUrl.isNotBlank()) {
                     iuTickerInfoBackground.setImageUrl(tickerInfo.backgroundUrl)
@@ -514,14 +502,15 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 }
                 iuTickerInfoIcon.loadImage(tickerInfo.iconUrl)
                 tpgTickerInfoMessage.text = tickerInfo.message
+                clTickerInfo.visible()
             } else {
                 val layoutParams =
-                    clBottomSheetHeader.layoutParams as? RelativeLayout.LayoutParams
+                    clBottomSheetContent.layoutParams as? RelativeLayout.LayoutParams
                 layoutParams?.setMargins(0, 0, 0, 0)
-                clBottomSheetHeader.layoutParams = layoutParams
-                clBottomSheetHeader.requestLayout()
+                clBottomSheetContent.layoutParams = layoutParams
+                clBottomSheetContent.requestLayout()
+                clTickerInfo.gone()
             }
-            clTickerInfo.isVisible = hasTickerInfo
         }
     }
 
@@ -702,22 +691,11 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun showToastMessage(throwable: Throwable) {
-        showToastMessage(getErrorMessage(throwable))
+        context?.let { showToastMessage(throwable.getErrorMessage(it)) }
     }
 
     private fun showToastMessage(message: String) {
         Toaster.build(binding.root, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
-    }
-
-    private fun getErrorMessage(throwable: Throwable): String {
-        var errorMessage = throwable.message
-        if (throwable !is PromoErrorException && throwable !is AkamaiErrorException) {
-            errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-        }
-        if (errorMessage.isNullOrBlank()) {
-            errorMessage = getString(R.string.promo_usage_global_error_promo)
-        }
-        return errorMessage
     }
 
     interface Listener {

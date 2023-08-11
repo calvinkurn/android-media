@@ -46,11 +46,10 @@ internal class PromoUsageGetCouponListRecommendationMapper @Inject constructor()
     ): PromoPageTickerInfo {
         // TODO: Remove dummy data
         return DummyData.promoPageTickerInfo
-        val tickerInfo = response.couponListRecommendation.data.tickerInfo
         return PromoPageTickerInfo(
-            message = tickerInfo.message,
-            iconUrl = tickerInfo.iconUrl,
-            backgroundUrl = tickerInfo.backgroundUrl,
+            message = response.couponListRecommendation.data.tickerInfo.message,
+            iconUrl = response.couponListRecommendation.data.tickerInfo.iconUrl,
+            backgroundUrl = response.couponListRecommendation.data.tickerInfo.backgroundUrl,
         )
     }
 
@@ -80,6 +79,17 @@ internal class PromoUsageGetCouponListRecommendationMapper @Inject constructor()
                             selectedPromoCodes = selectedPromoCodes
                         )
                     )
+                    couponSection.coupons.forEachIndexed { index, coupon ->
+                        items.add(
+                            mapCouponToPromo(
+                                index = index,
+                                couponSection = couponSection,
+                                coupon = coupon,
+                                recommendedPromoCodes = recommendedPromoCodes,
+                                selectedPromoCodes = selectedPromoCodes
+                            )
+                        )
+                    }
                 }
 
                 PromoPageSection.SECTION_INPUT_PROMO_CODE -> {
@@ -135,16 +145,7 @@ internal class PromoUsageGetCouponListRecommendationMapper @Inject constructor()
             message = promoRecommendation.message,
             messageSelected = promoRecommendation.messageSelected,
             backgroundUrl = promoRecommendation.backgroundUrl,
-            animationUrl = promoRecommendation.animationUrl,
-            promos = couponSection.coupons.mapIndexed { index, coupon ->
-                mapCouponToPromo(
-                    index = index,
-                    couponSection = couponSection,
-                    coupon = coupon,
-                    recommendedPromoCodes = recommendedPromoCodes,
-                    selectedPromoCodes = selectedPromoCodes
-                )
-            }
+            animationUrl = promoRecommendation.animationUrl
         )
     }
 

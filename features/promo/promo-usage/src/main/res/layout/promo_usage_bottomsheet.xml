@@ -86,12 +86,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:background="@color/black"
-            tools:visibility="visible">
+            tools:background="@color/black">
 
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/btnBottomSheetHeaderClose"
@@ -149,7 +147,6 @@
             tools:itemCount="3"
             tools:listitem="@layout/promo_usage_item_promo_accordion_header" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
     <!--Total Savings-->
     <androidx.constraintlayout.widget.ConstraintLayout
