@@ -40,9 +40,15 @@ class BestSellerMapper (
                 name = recommendationWidget.title,
                 subtitle = recommendationWidget.subtitle,
                 applink = recommendationWidget.seeMoreAppLink,
-                useHeaderRevamp = HomeChannelHeaderRollenceController.isHeaderUsingRollenceVariant(),
+                headerType = getHeaderType(),
             )
         )
+    }
+
+    private fun getHeaderType(): ChannelHeader.HeaderType {
+        return if(HomeChannelHeaderRollenceController.isHeaderUsingRollenceVariant()) {
+            ChannelHeader.HeaderType.REVAMP
+        } else ChannelHeader.HeaderType.CONTROL
     }
 
     private fun mappingProductCards(recommendationList: List<RecommendationItem>, cardInteraction: Boolean = false): List<ProductCardModel> {

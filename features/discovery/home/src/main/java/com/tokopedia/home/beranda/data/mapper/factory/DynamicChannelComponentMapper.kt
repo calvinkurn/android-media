@@ -39,7 +39,7 @@ object DynamicChannelComponentMapper {
                 channel.header.backColor,
                 channel.header.backImage,
                 channel.header.textColor,
-                HomeChannelHeaderRollenceController.isHeaderUsingRollenceVariant(),
+                getHeaderType(),
             ),
             channelBanner = ChannelBanner(
                 id = channel.banner.id,
@@ -186,7 +186,7 @@ object DynamicChannelComponentMapper {
                 channel.header.backColor,
                 channel.header.backImage,
                 channel.header.textColor,
-                HomeChannelHeaderRollenceController.isHeaderUsingRollenceVariant(),
+                getHeaderType(),
             ),
             channelBanner = ChannelBanner(
                 id = channel.banner.id,
@@ -289,5 +289,11 @@ object DynamicChannelComponentMapper {
                 )
             }
         )
+    }
+
+    private fun getHeaderType(): ChannelHeader.HeaderType {
+        return if(HomeChannelHeaderRollenceController.isHeaderUsingRollenceVariant()) {
+            ChannelHeader.HeaderType.REVAMP
+        } else ChannelHeader.HeaderType.CONTROL
     }
 }

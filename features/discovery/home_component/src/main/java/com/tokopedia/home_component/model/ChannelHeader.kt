@@ -14,12 +14,17 @@ data class ChannelHeader(
         val backColor: String = "",
         val backImage: String = "",
         val textColor: String = "",
-        val useHeaderRevamp: Boolean = false,
+        val headerType: HeaderType = HeaderType.CONTROL,
 ) {
-    internal val layoutStrategy: HeaderLayoutStrategy = HeaderLayoutStrategyFactory.create(useHeaderRevamp)
+    internal val layoutStrategy: HeaderLayoutStrategy = HeaderLayoutStrategyFactory.create(headerType)
 
     fun getTitleSubtitle(defaultTitle: String, defaultSubtitle: String): Pair<String, String> {
         return if (name.isEmpty()) defaultTitle to defaultSubtitle
         else name to subtitle
+    }
+
+    enum class HeaderType {
+        CONTROL,
+        REVAMP
     }
 }
