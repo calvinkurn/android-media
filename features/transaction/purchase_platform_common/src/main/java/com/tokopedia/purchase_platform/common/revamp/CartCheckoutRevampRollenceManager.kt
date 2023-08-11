@@ -8,10 +8,10 @@ class CartCheckoutRevampRollenceManager @Inject constructor(private val abTestPl
 
     private var currentValue: String? = null
 
-    fun getValue(): String {
+    fun isRevamp(): Boolean {
         if (currentValue == null) {
             currentValue = abTestPlatform.getString(RollenceKey.CART_CHECKOUT_REVAMP)
         }
-        return currentValue ?: ""
+        return currentValue ?: "" == ""
     }
 }
