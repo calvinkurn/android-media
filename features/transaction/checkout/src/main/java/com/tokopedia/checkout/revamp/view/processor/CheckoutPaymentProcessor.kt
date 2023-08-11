@@ -60,7 +60,7 @@ class CheckoutPaymentProcessor @Inject constructor(
                     checkoutAnalyticsCourierSelection.eventViewPlatformFeeInCheckoutPage(
                         userSessionInterface.userId,
                         CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                            platformFeeModel.fee.toLong(),
+                            platformFee.fee.toLong(),
                             false
                         ).removeDecimalSuffix()
                     )

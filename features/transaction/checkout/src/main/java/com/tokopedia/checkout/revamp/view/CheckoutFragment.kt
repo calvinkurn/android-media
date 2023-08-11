@@ -126,7 +126,6 @@ import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnPro
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionViewHolder
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnMetadata
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnNote
@@ -1990,7 +1989,9 @@ class CheckoutFragment :
                 publicKey = FingerPrintUtil.getPublicKey(fpk)
             }
         }
-        viewModel.checkout(publicKey) {
+        viewModel.checkout(publicKey, { showEpharmacyToaster ->
+            sendAnalyticsEpharmacyClickPembayaran(showEpharmacyToaster)
+        }) {
             val paymentPassData = PaymentPassData()
             paymentPassData.redirectUrl = it.checkoutData!!.redirectUrl
             paymentPassData.transactionId = it.checkoutData.transactionId
@@ -2238,17 +2239,21 @@ class CheckoutFragment :
 //        adapter.updateShipmentCartItemGroup(shipmentCartItemModel)
 //    }
 
-    private fun sendAnalyticsEpharmacyClickPembayaran() {
+    private fun sendAnalyticsEpharmacyClickPembayaran(showErrorToaster: Boolean) {
         val viewHolder =
             binding.rvCheckout.findViewHolderForAdapterPosition(adapter.uploadPrescriptionPosition)
         val epharmacyItem = viewModel.listData.value.getOrNull(adapter.uploadPrescriptionPosition)
-        if (viewHolder is UploadPrescriptionViewHolder && epharmacyItem is CheckoutEpharmacyModel) {
+        if (viewHolder is CheckoutEpharmacyViewHolder && epharmacyItem is CheckoutEpharmacyModel) {
             if (epharmacyItem.epharmacy.consultationFlow && epharmacyItem.epharmacy.showImageUpload) {
                 ePharmacyAnalytics.clickPilihPembayaran(
                     viewHolder.getButtonNotes(),
                     epharmacyItem.epharmacy.epharmacyGroupIds,
                     false,
-                    "success"
+                    if (showErrorToaster) {
+                        activity?.getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_message_error_prescription_or_consultation_not_found) ?: ""
+                    } else {
+                        "success"
+                    }
                 )
             }
         }
@@ -2356,15 +2361,15 @@ class CheckoutFragment :
                         }
                     }
 //                    shipmentViewModel.setLastValidateUseRequest(validateUsePromoRequest)
-                    if (!stillHasPromo) {
+//                    if (!stillHasPromo) {
 //                        doResetButtonPromoCheckout()
-                    }
+//                    }
                 }
                 val validateUsePromoRevampUiModel =
                     data.getParcelableExtra<ValidateUsePromoRevampUiModel>(
                         ARGS_VALIDATE_USE_DATA_RESULT
                     )
-                var reloadedUniqueIds = ArrayList<String>()
+//                var reloadedUniqueIds = ArrayList<String>()
                 if (validateUsePromoRevampUiModel != null) {
 //                    val messageInfo =
 //                        validateUsePromoRevampUiModel.promoUiModel.additionalInfoUiModel.errorDetailUiModel.message

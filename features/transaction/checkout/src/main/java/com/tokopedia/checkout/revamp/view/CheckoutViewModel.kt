@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.revamp.view
 
+import android.text.TextUtils
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -1512,13 +1513,16 @@ class CheckoutViewModel @Inject constructor(
     }
     // endregion
 
-    fun checkout(fingerprintPublicKey: String?, onSuccessCheckout: (CheckoutResult) -> Unit) {
+    fun checkout(fingerprintPublicKey: String?, triggerEpharmacyTracker: (Boolean) -> Unit, onSuccessCheckout: (CheckoutResult) -> Unit) {
         viewModelScope.launch(dispatchers.immediate) {
             pageState.value = CheckoutPageState.Loading
             val items = listData.value.toMutableList()
             var firstErrorIndex = -1
             var continueCheckout = true
             var hasValidOrder = false
+            var hasUnselectedCourier = false
+            var isPrescriptionFrontEndValidationError = false
+            val checkoutEpharmacy = items.epharmacy()
             items.forEachIndexed { index, checkoutItem ->
                 if (checkoutItem is CheckoutOrderModel) {
                     if (!checkoutItem.isError && checkoutItem.shipment.courierItemData == null) {
@@ -1529,21 +1533,54 @@ class CheckoutViewModel @Inject constructor(
                         if (firstErrorIndex == -1) {
                             firstErrorIndex = index
                         }
+                        hasUnselectedCourier = true
                     } else if (!checkoutItem.isError) {
                         hasValidOrder = true
+                    }
+                    if (checkoutEpharmacy?.epharmacy?.showImageUpload == true && checkoutEpharmacy.epharmacy.frontEndValidation && checkoutItem.hasEthicalProducts && !checkoutItem.isError) {
+                        for (cartItemModel in getOrderProducts(checkoutItem.cartStringGroup)) {
+                            if (!cartItemModel.isError && cartItemModel.ethicalDrugDataModel.needPrescription) {
+                                val prescriptionIdsEmpty =
+                                    checkoutItem.prescriptionIds.isEmpty()
+                                val consultationEmpty =
+                                    checkoutItem.tokoConsultationId.isEmpty() ||
+                                        checkoutItem.partnerConsultationId.isEmpty() ||
+                                        checkoutItem.tokoConsultationId == "0" ||
+                                        checkoutItem.partnerConsultationId == "0" ||
+                                        checkoutItem.consultationDataString.isEmpty()
+                                if (prescriptionIdsEmpty && consultationEmpty) {
+                                    isPrescriptionFrontEndValidationError = true
+                                    if (firstErrorIndex == -1) {
+                                        firstErrorIndex = index
+                                    }
+                                    break
+                                }
+                            }
+                        }
+                    }
+                }
+                if (checkoutItem is CheckoutEpharmacyModel) {
+                    if (isPrescriptionFrontEndValidationError) {
+                        items[index] = checkoutItem.copy(epharmacy = checkoutItem.epharmacy.copy(isError = true))
                     }
                 }
             }
             if (firstErrorIndex > -1) {
-                commonToaster.emit(
-                    CheckoutPageToaster(
-                        Toaster.TYPE_NORMAL,
-                        "Pilih pengiriman dulu yuk sebelum lanjut bayar."
-                    )
-                )
                 pageState.value = CheckoutPageState.Normal
                 listData.value = items
                 pageState.value = CheckoutPageState.ScrollTo(firstErrorIndex)
+                if (hasUnselectedCourier) {
+                    commonToaster.emit(
+                        CheckoutPageToaster(
+                            Toaster.TYPE_NORMAL,
+                            "Pilih pengiriman dulu yuk sebelum lanjut bayar."
+                        )
+                    )
+                    mTrackerShipment.eventClickBuyCourierSelectionClickPilihMetodePembayaranCourierNotComplete()
+                }
+                if (isPrescriptionFrontEndValidationError && checkoutEpharmacy?.epharmacy?.consultationFlow == true) {
+                    triggerEpharmacyTracker.invoke(true)
+                }
                 return@launch
             }
             val errorToaster =
@@ -1586,7 +1623,7 @@ class CheckoutViewModel @Inject constructor(
                         notEligiblePromoHolderdataList.add(notEligiblePromoHolderdata)
                     }
                 }
-//                sendAnalyticsEpharmacyClickPembayaran()
+                triggerEpharmacyTracker.invoke(false)
                 if (notEligiblePromoHolderdataList.size > 0) {
                     if (promoProcessor.cancelNotEligiblePromo(
                             notEligiblePromoHolderdataList,

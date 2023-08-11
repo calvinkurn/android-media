@@ -10,6 +10,7 @@ import com.tokopedia.checkout.databinding.ItemCheckoutOrderBinding
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutAddressModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
@@ -47,17 +48,21 @@ class CheckoutOrderViewHolder(
             binding.buttonGiftingAddonOrderLevel.visibility = View.GONE
         } else {
             if (statusAddOn == 1) {
-                binding.buttonGiftingAddonOrderLevel.state =
-                    com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView.State.ACTIVE
+                if (addOnsDataModel.addOnsDataItemModelList.isNotEmpty()) {
+                    binding.buttonGiftingAddonOrderLevel.showActive(
+                        addOnsButton.title,
+                        addOnsButton.description
+                    )
+                } else {
+                    binding.buttonGiftingAddonOrderLevel.showEmptyState(
+                        addOnsButton.title,
+                        addOnsButton.description.ifEmpty { "(opsional)" }
+                    )
+                }
             } else if (statusAddOn == 2) {
-                binding.buttonGiftingAddonOrderLevel.state =
-                    com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView.State.INACTIVE
+                binding.buttonGiftingAddonOrderLevel.showInactive(addOnsButton.title, addOnsButton.description)
             }
             binding.buttonGiftingAddonOrderLevel.visibility = View.VISIBLE
-            binding.buttonGiftingAddonOrderLevel.title = addOnsButton.title
-            binding.buttonGiftingAddonOrderLevel.desc = addOnsButton.description
-            binding.buttonGiftingAddonOrderLevel.urlLeftIcon = addOnsButton.leftIconUrl
-            binding.buttonGiftingAddonOrderLevel.urlRightIcon = addOnsButton.rightIconUrl
             binding.buttonGiftingAddonOrderLevel.setOnClickListener {
                 listener.openAddOnGiftingOrderLevelBottomSheet(
                     order
