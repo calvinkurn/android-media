@@ -291,7 +291,7 @@ object DynamicChannelComponentMapper {
         )
     }
 
-    private fun getHeaderType(): ChannelHeader.HeaderType {
+    fun getHeaderType(): ChannelHeader.HeaderType {
         return if(HomeChannelHeaderRollenceController.isHeaderUsingRollenceVariant()) {
             ChannelHeader.HeaderType.REVAMP
         } else ChannelHeader.HeaderType.CONTROL

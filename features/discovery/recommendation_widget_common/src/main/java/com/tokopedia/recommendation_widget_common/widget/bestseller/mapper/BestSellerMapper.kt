@@ -45,12 +45,6 @@ class BestSellerMapper (
         )
     }
 
-    private fun getHeaderType(): ChannelHeader.HeaderType {
-        return if(HomeChannelHeaderRollenceController.isHeaderUsingRollenceVariant()) {
-            ChannelHeader.HeaderType.REVAMP
-        } else ChannelHeader.HeaderType.CONTROL
-    }
-
     private fun mappingProductCards(recommendationList: List<RecommendationItem>, cardInteraction: Boolean = false): List<ProductCardModel> {
         return recommendationList.map { recommendationItem ->
             recommendationItem.toProductCardModel(hasThreeDots = true, cardInteraction = cardInteraction)
@@ -63,5 +57,13 @@ class BestSellerMapper (
             coroutineDispatcher = Dispatchers.IO,
             productImageWidth = context.resources.getDimensionPixelSize(R.dimen.product_card_carousel_item_width)
         )
+    }
+
+    companion object {
+        fun getHeaderType(): ChannelHeader.HeaderType {
+            return if(HomeChannelHeaderRollenceController.isHeaderUsingRollenceVariant()) {
+                ChannelHeader.HeaderType.REVAMP
+            } else ChannelHeader.HeaderType.CONTROL
+        }
     }
 }

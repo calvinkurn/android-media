@@ -18,8 +18,8 @@ import com.tokopedia.home_component.util.ChannelStyleUtil.parseDividerSize
 import com.tokopedia.home_component.visitable.*
 import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampDataModel
 import com.tokopedia.home_component_header.model.ChannelHeader
-import com.tokopedia.home_component_header.util.HomeChannelHeaderRollenceController
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
+import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -403,9 +403,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
                         serverTimeOffset = ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(
                             channel.header.serverTimeUnix
                         ),
-                        headerType = if(HomeChannelHeaderRollenceController.isHeaderUsingRollenceVariant()) {
-                            ChannelHeader.HeaderType.REVAMP
-                        } else ChannelHeader.HeaderType.CONTROL
+                        headerType = BestSellerMapper.getHeaderType()
                     )
                 )
             )
