@@ -33,6 +33,7 @@ import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getHeadli
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getRoleUser
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getShopIdTracker
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getVariantTracker
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.shouldRefreshProductRecommendation
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil
 import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
 import com.tokopedia.inbox.universalinbox.view.adapter.UniversalInboxAdapter
@@ -831,11 +832,14 @@ class UniversalInboxFragment @Inject constructor(
     }
 
     private fun refreshRecommendations() {
-        binding?.inboxRv?.post {
-            endlessRecyclerViewScrollListener?.resetState()
-            recommendationWidgetViewModel?.refresh()
-            adapter.removeAllProductRecommendation()
-            loadTopAdsAndRecommendation()
+        // Refresh controlled by rollence
+        if (shouldRefreshProductRecommendation(abTestPlatform)) {
+            binding?.inboxRv?.post {
+                endlessRecyclerViewScrollListener?.resetState()
+                recommendationWidgetViewModel?.refresh()
+                adapter.removeAllProductRecommendation()
+                loadTopAdsAndRecommendation()
+            }
         }
     }
 
