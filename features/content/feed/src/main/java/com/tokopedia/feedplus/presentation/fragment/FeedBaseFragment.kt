@@ -12,6 +12,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
@@ -371,13 +372,14 @@ class FeedBaseFragment :
 
     private fun observeFeedTabData() {
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                feedMainViewModel.feedTabs.collectLatest { result ->
-                    when (result) {
+            feedMainViewModel.feedTabs
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.RESUMED)
+                .collectLatest { state ->
+                    when (state) {
                         NetworkResult.Loading -> showLoading()
                         is NetworkResult.Success -> {
                             hideLoading()
-                            initTabsView(result.data)
+                            initTabsView(state.data)
                         }
                         is NetworkResult.Error -> {
                             hideLoading()
@@ -387,15 +389,12 @@ class FeedBaseFragment :
                         }
                     }
                 }
-            }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                feedMainViewModel.metaData.collectLatest { result ->
-                    initMetaView(result)
-                }
-            }
+            feedMainViewModel.metaData
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.RESUMED)
+                .collectLatest { initMetaView(it) }
         }
     }
 
