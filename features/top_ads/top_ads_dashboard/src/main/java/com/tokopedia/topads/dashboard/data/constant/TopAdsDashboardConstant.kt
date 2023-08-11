@@ -126,6 +126,7 @@ object TopAdsDashboardConstant {
     const val CONST_PENGELURAN = 4
     const val CONST_EFECTIVITAS_IKLAN = 5
     const val DATE_PICKER_DEFAULT_INDEX = 2
+    const val QUERY_PARAM_TAB= "tab"
 
     object TopAdsCreditTopUpConstant {
         const val TOP_UP_FREQUENCY_FOUR = 4
