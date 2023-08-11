@@ -531,6 +531,7 @@ abstract class BaseSearchCategoryViewModel(
         visitableList.add(
             TokoNowEmptyStateNoResultUiModel(
                 activeFilterList = newActiveFilterList,
+                excludeFilter = excludeFilter,
                 defaultTitle = violation.headerText,
                 defaultDescription = violation.descriptionText,
                 defaultImage = violation.imageUrl,

@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.common.model
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowEmptyStateNoResultTypeFactory
 
 class TokoNowEmptyStateNoResultUiModel(
