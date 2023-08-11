@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
-import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnProductServiceMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
@@ -118,7 +117,6 @@ class CheckoutViewModel @Inject constructor(
     private val toasterProcessor: CheckoutToasterProcessor,
     private val dataConverter: CheckoutDataConverter,
     private val mTrackerShipment: CheckoutAnalyticsCourierSelection,
-    private val mTrackerPurchaseProtection: CheckoutAnalyticsPurchaseProtection,
     private val mTrackerTradeIn: CheckoutTradeInAnalytics,
     private val helper: CheckoutDataHelper,
     private val userSessionInterface: UserSessionInterface,
@@ -277,11 +275,13 @@ class CheckoutViewModel @Inject constructor(
                         consultationFlow = saf.cartShipmentAddressFormData.epharmacyData.consultationFlow,
                         rejectedWording = saf.cartShipmentAddressFormData.epharmacyData.rejectedWording
                     )
-                    addOnProcessor.fetchPrescriptionIds(
-                        saf.cartShipmentAddressFormData.epharmacyData,
-                        items,
-                        uploadPrescriptionUiModel
-                    )
+                    if (!tickerError.isError) {
+                        addOnProcessor.fetchPrescriptionIds(
+                            saf.cartShipmentAddressFormData.epharmacyData,
+                            items,
+                            uploadPrescriptionUiModel
+                        )
+                    }
                     val epharmacy = CheckoutEpharmacyModel(
                         epharmacy = uploadPrescriptionUiModel
                     )
@@ -293,27 +293,34 @@ class CheckoutViewModel @Inject constructor(
                     val cost = CheckoutCostModel()
 
                     val crossSellList = arrayListOf<CheckoutCrossSellItem>()
-                    crossSellList.addAll(
-                        saf.cartShipmentAddressFormData.crossSell.mapIndexed { index, crossSellModel ->
-                            CheckoutCrossSellModel(
-                                crossSellModel,
-                                crossSellModel.isChecked,
-                                crossSellModel.checkboxDisabled,
-                                index
+                    if (!tickerError.isError) {
+                        crossSellList.addAll(
+                            saf.cartShipmentAddressFormData.crossSell.mapIndexed { index, crossSellModel ->
+                                CheckoutCrossSellModel(
+                                    crossSellModel,
+                                    crossSellModel.isChecked,
+                                    crossSellModel.checkboxDisabled,
+                                    index
+                                )
+                            }
+                        )
+                        if (saf.cartShipmentAddressFormData.egoldAttributes != null && saf.cartShipmentAddressFormData.egoldAttributes!!.isEnabled && saf.cartShipmentAddressFormData.egoldAttributes!!.isEligible) {
+                            crossSellList.add(
+                                CheckoutEgoldModel(
+                                    saf.cartShipmentAddressFormData.egoldAttributes!!,
+                                    saf.cartShipmentAddressFormData.egoldAttributes!!.isChecked,
+                                    saf.cartShipmentAddressFormData.egoldAttributes!!.buyEgoldValue
+                                )
                             )
                         }
-                    )
-                    if (saf.cartShipmentAddressFormData.egoldAttributes != null && saf.cartShipmentAddressFormData.egoldAttributes!!.isEnabled && saf.cartShipmentAddressFormData.egoldAttributes!!.isEligible) {
-                        crossSellList.add(
-                            CheckoutEgoldModel(
-                                saf.cartShipmentAddressFormData.egoldAttributes!!,
-                                saf.cartShipmentAddressFormData.egoldAttributes!!.isChecked,
-                                saf.cartShipmentAddressFormData.egoldAttributes!!.buyEgoldValue
-                            )
-                        )
-                    }
-                    if (saf.cartShipmentAddressFormData.donation != null && saf.cartShipmentAddressFormData.donation!!.title.isNotEmpty() && saf.cartShipmentAddressFormData.donation!!.nominal != 0) {
-                        crossSellList.add(CheckoutDonationModel(saf.cartShipmentAddressFormData.donation!!))
+                        if (saf.cartShipmentAddressFormData.donation != null && saf.cartShipmentAddressFormData.donation!!.title.isNotEmpty() && saf.cartShipmentAddressFormData.donation!!.nominal != 0) {
+                            crossSellList.add(CheckoutDonationModel(saf.cartShipmentAddressFormData.donation!!))
+                            if (saf.cartShipmentAddressFormData.donation!!.isChecked) {
+                                mTrackerShipment.eventViewAutoCheckDonation(
+                                    userSessionInterface.userId
+                                )
+                            }
+                        }
                     }
                     val crossSellGroup = CheckoutCrossSellGroupModel(crossSellList = crossSellList)
 
@@ -694,7 +701,8 @@ class CheckoutViewModel @Inject constructor(
     fun editAddressPinpoint(
         latitude: String,
         longitude: String,
-        locationPass: LocationPass?
+        locationPass: LocationPass?,
+        onError: (message: String, locationPass: LocationPass?) -> Unit
     ) {
         viewModelScope.launch(dispatchers.immediate) {
             pageState.value = CheckoutPageState.Loading
@@ -702,13 +710,13 @@ class CheckoutViewModel @Inject constructor(
                 logisticProcessor.editAddressPinpoint(latitude, longitude, recipientAddressModel)
             pageState.value = CheckoutPageState.Normal
             if (editAddressResult.isSuccess) {
-//                if (listData.value.indexOfFirst { it is CheckoutOrderModel && it.isDisableChangeCourier } != -1) {
                 loadSAF(
                     isReloadData = true,
                     skipUpdateOnboardingState = true,
                     isReloadAfterPriceChangeHigher = false
                 )
-//                }
+            } else if (editAddressResult.errorMessage.isNotEmpty()) {
+                onError.invoke(editAddressResult.errorMessage, locationPass)
             } else {
                 commonToaster.emit(
                     CheckoutPageToaster(
@@ -2282,6 +2290,16 @@ class CheckoutViewModel @Inject constructor(
             GlobalScope.launch {
                 hitClearAllBo()
             }
+        }
+    }
+
+    fun cancelAutoApplyPromoStackLogistic(
+        position: Int,
+        promoCode: String,
+        order: CheckoutOrderModel
+    ) {
+        viewModelScope.launch {
+            // todo
         }
     }
 

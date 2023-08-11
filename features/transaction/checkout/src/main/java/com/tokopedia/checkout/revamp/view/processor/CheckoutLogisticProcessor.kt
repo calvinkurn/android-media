@@ -109,32 +109,15 @@ class CheckoutLogisticProcessor @Inject constructor(
                     recipientAddressModel.longitude = longitude
                     EditAddressResult(isSuccess = true)
                 } else {
-//                    if (messageError.isEmpty()) {
-//                        messageError =
-//                            view?.getStringResource(com.tokopedia.abstraction.R.string.default_request_error_unknown)
-//                                ?: ""
-//                    }
-//                    view?.navigateToSetPinpoint(messageError, locationPass)
                     EditAddressResult(
                         isSuccess = false,
                         errorMessage = messageError.ifEmpty { "Terjadi kesalahan. Ulangi beberapa saat lagi" }
                     )
                 }
-//            }
             } catch (t: Throwable) {
                 val exception = getActualThrowableForRx(t)
                 Timber.d(exception)
                 EditAddressResult(isSuccess = false, throwable = t)
-//            if (view != null) {
-//                view!!.setHasRunningApiCall(false)
-//                view!!.hideLoading()
-//                view!!.showToastError(
-//                    ErrorHandler.getErrorMessage(
-//                        view!!.activity,
-//                        exception
-//                    )
-//                )
-//            }
             }
         }
     }

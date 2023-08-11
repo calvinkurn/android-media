@@ -102,6 +102,7 @@ import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.analytics.EPharmacyAnalytics
@@ -168,6 +169,9 @@ class CheckoutFragment :
 
     @Inject
     lateinit var checkoutAnalyticsCourierSelection: CheckoutAnalyticsCourierSelection
+
+    @Inject
+    lateinit var checkoutAnalyticsChangeAddress: CheckoutAnalyticsChangeAddress
 
     @Inject
     lateinit var ePharmacyAnalytics: EPharmacyAnalytics
@@ -827,7 +831,9 @@ class CheckoutFragment :
                     locationPass.latitude,
                     locationPass.longitude,
                     locationPass
-                )
+                ) { message, locationPass ->
+                    navigateToSetPinpoint(message, locationPass)
+                }
             }
         } else {
 //            shipmentAdapter.lastServiceId = 0
@@ -881,7 +887,9 @@ class CheckoutFragment :
     }
 
     fun navigateToSetPinpoint(message: String, locationPass: LocationPass?) {
-//        sendAnalyticsOnClickEditPinPointErrorValidation(message)
+        checkoutAnalyticsChangeAddress.eventViewShippingCartChangeAddressViewValidationErrorTandaiLokasi(
+            message
+        )
         if (view != null) {
             val toastRectangleBinding = ToastRectangleBinding.inflate(layoutInflater, null, false)
             toastRectangleBinding.tvMessage.text = message
@@ -988,6 +996,11 @@ class CheckoutFragment :
 
     override fun onChangeAddress() {
         if (!viewModel.isLoading()) {
+            checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickGantiAlamatAtauKirimKeBeberapaAlamat()
+            checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickPilihAlamatLain()
+            if (viewModel.isTradeIn) {
+                checkoutTradeInAnalytics.eventTradeInClickChangeAddress()
+            }
             val intent =
                 RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
             intent.putExtra(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS, true)
@@ -1422,6 +1435,10 @@ class CheckoutFragment :
 
     override fun onChangeShippingDuration(order: CheckoutOrderModel, position: Int) {
         if (!viewModel.isLoading()) {
+            checkoutAnalyticsCourierSelection.eventClickCourierCourierSelectionClickUbahDurasi()
+            if (viewModel.isTradeIn) {
+                checkoutTradeInAnalytics.eventTradeInClickCourierOption(viewModel.isTradeInByDropOff)
+            }
             showShippingDurationBottomsheet(
                 order,
                 viewModel.listData.value.address()!!.recipientAddressModel,
@@ -1683,6 +1700,23 @@ class CheckoutFragment :
         }
     }
 
+    override fun onShippingDurationButtonCloseClicked() {
+        checkoutAnalyticsCourierSelection.eventClickCourierCourierSelectionClickXPadaDurasiPengiriman()
+    }
+
+    override fun onShowDurationListWithCourierPromo(isCourierPromo: Boolean, duration: String?) {
+        checkoutAnalyticsCourierSelection.eventViewDuration(isCourierPromo, duration)
+    }
+
+    override fun onShowLogisticPromo(listLogisticPromo: List<LogisticPromoUiModel>) {
+        for (logisticPromo in listLogisticPromo) {
+            checkoutAnalyticsCourierSelection.eventViewPromoLogisticTicker(logisticPromo.promoCode)
+            if (logisticPromo.disabled) {
+                checkoutAnalyticsCourierSelection.eventViewPromoLogisticTickerDisable(logisticPromo.promoCode)
+            }
+        }
+    }
+
     private fun sendAnalyticsOnClickChangeCourierShipmentRecommendation(order: CheckoutOrderModel) {
         var label = ""
         if (order.shipment.courierItemData != null && order.shipment.courierItemData.selectedShipper.ontimeDelivery != null) {
@@ -1812,6 +1846,19 @@ class CheckoutFragment :
 
     override fun onClickRefreshErrorLoadCourier() {
         checkoutAnalyticsCourierSelection.eventClickRefreshWhenErrorLoadCourier()
+    }
+
+    override fun onCancelVoucherLogisticClicked(
+        promoCode: String,
+        position: Int,
+        order: CheckoutOrderModel
+    ) {
+        checkoutAnalyticsCourierSelection.eventCancelPromoStackingLogistic()
+        viewModel.cancelAutoApplyPromoStackLogistic(
+            position,
+            promoCode,
+            order
+        )
     }
 
     override fun getHostFragmentManager(): FragmentManager {

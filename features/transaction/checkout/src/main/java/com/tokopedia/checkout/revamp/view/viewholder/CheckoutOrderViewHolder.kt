@@ -195,6 +195,13 @@ class CheckoutOrderViewHolder(
                         currentAddress = RecipientAddressModel()
                     )
                 )
+                if (order.isError) {
+                    listener.onCancelVoucherLogisticClicked(
+                        courierItemData.logPromoCode!!,
+                        bindingAdapterPosition,
+                        order
+                    )
+                }
                 binding.shippingWidget.renderFreeShippingCourier(
                     ShippingWidgetUiModel(
                         courierErrorTitle = order.courierSelectionErrorTitle,

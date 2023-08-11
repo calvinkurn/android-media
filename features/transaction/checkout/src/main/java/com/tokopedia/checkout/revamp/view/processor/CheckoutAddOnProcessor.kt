@@ -127,7 +127,6 @@ class CheckoutAddOnProcessor @Inject constructor(
                                                     }
                                                     if (product?.productId != null) {
                                                         for ((i, cartItemModel) in tempProductMap) {
-                                                            // todo check this
                                                             if (product.productId == cartItemModel.productId && !cartItemModel.isError) {
                                                                 if (epharmacyGroup.consultationData != null && epharmacyGroup.consultationData!!.consultationStatus != null && epharmacyGroup.consultationData!!.consultationStatus == EPHARMACY_CONSULTATION_STATUS_REJECTED) {
                                                                     shipmentCartItemModel.tokoConsultationId =
@@ -329,7 +328,6 @@ class CheckoutAddOnProcessor @Inject constructor(
                                             }
                                             if (product?.productId != null) {
                                                 for ((i, cartItemModel) in tempProductMap) {
-                                                    // todo check this
                                                     if (product.productId == cartItemModel.productId && !cartItemModel.isError) {
                                                         if (epharmacyGroup.consultationStatus != null && epharmacyGroup.consultationStatus == EPHARMACY_CONSULTATION_STATUS_REJECTED) {
                                                             shipmentCartItemModel.tokoConsultationId =
