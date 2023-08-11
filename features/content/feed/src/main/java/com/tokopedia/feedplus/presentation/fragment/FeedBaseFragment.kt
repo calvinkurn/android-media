@@ -133,18 +133,6 @@ class FeedBaseFragment :
             )
         }
 
-//    private var activeTabPosition: Int
-//        get() = arguments?.getString(
-//            ApplinkConstInternalContent.EXTRA_FEED_TAB_POSITION
-//        )?.toIntOrZero() ?: TAB_FIRST_INDEX
-//        set(value) {
-//            val arguments = getOrCreateArguments()
-//            arguments.putString(
-//                ApplinkConstInternalContent.EXTRA_FEED_TAB_POSITION,
-//                value.toString()
-//            )
-//        }
-
     private val openCreateShorts =
         registerForActivityResult(OpenCreateShortsContract()) { isCreatingNewShorts ->
             if (!isCreatingNewShorts) return@registerForActivityResult
@@ -335,8 +323,6 @@ class FeedBaseFragment :
                 }
 
                 override fun onPageSelected(position: Int) {
-//                    feedMainViewModel.changeCurrentTabByIndex(position)
-//                    activeTabPosition = position
                 }
 
                 override fun onPageScrollStateChanged(state: Int) {
@@ -610,17 +596,6 @@ class FeedBaseFragment :
         setupActiveTab(tab)
     }
 
-//    private fun scrollToDefaultTabPosition() {
-//        feedMainViewModel.changeCurrentTabByIndex(activeTabPosition)
-//    }
-//
-//    private fun onChangeTab(position: Int) {
-//        if (position == TAB_FIRST_INDEX) {
-//            binding.root.transitionToStart()
-//        } else {
-//            binding.root.transitionToEnd()
-//        }
-//    }
     private fun setupActiveTab(tab: FeedTabModel) {
         val source = tab.activeTabSource
         when {

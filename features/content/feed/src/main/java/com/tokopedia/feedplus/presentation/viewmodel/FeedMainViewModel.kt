@@ -87,12 +87,6 @@ class FeedMainViewModel @AssistedInject constructor(
     val feedCreateContentBottomSheetData: LiveData<Result<List<ContentCreationTypeItem>>>
         get() = _feedCreateContentBottomSheetData
 
-//    private val _activeTabSource = MutableLiveData(ActiveTabSource.Default)
-
-//    private val _activeTab = MutableSharedFlow<Int>()
-//    val activeTab: SharedFlow<Int>
-//        get() = _activeTab
-
     private val _swipeOnboardingState = MutableStateFlow(
         SwipeOnboardingStateModel.Empty.copy(
             hasShown = onboardingPreferences.hasShownSwipeOnboarding() && userSession.isLoggedIn
@@ -176,22 +170,6 @@ class FeedMainViewModel @AssistedInject constructor(
         uiEventManager.emitEvent(FeedMainEvent.SelectTab(data, position))
     }
 
-//    fun changeCurrentTabByIndex(index: Int) {
-//        _activeTab.value = index
-//    }
-//
-//    fun changeCurrentTabByType(type: String) {
-//        feedTabs.value?.let {
-//            if (it is Success) {
-//                it.data.forEachIndexed { index, tab ->
-//                    if (tab.type == type && tab.isActive) {
-//                        _activeTab.value = index
-//                    }
-//                }
-//            }
-//        }
-//    }
-
     fun scrollCurrentTabToTop() {
         viewModelScope.launch {
             val feedTabsValue = feedTabs.value
@@ -204,17 +182,6 @@ class FeedMainViewModel @AssistedInject constructor(
             }
         }
     }
-
-//    fun getCurrentTabType() =
-//        feedTabs.value?.let {
-//            if (it is Success) {
-//                activeTab.value?.let { idx ->
-//                    it.data.getOrNull(idx)?.type.orEmpty()
-//                }.orEmpty()
-//            } else {
-//                ""
-//            }
-//        }.orEmpty()
 
     fun consumeEvent(event: FeedMainEvent) {
         viewModelScope.launch {
@@ -281,9 +248,6 @@ class FeedMainViewModel @AssistedInject constructor(
                 feedXHeaderUseCase.executeOnBackground()
             }
             val mappedData = MapperFeedTabs.transform(response.feedXHeaderData, activeTabSource)
-//            if (mappedData.meta.selectedIndex >= 0 && mappedData.meta.selectedIndex < mappedData.data.size) {
-//                _activeTab.value = mappedData.meta.selectedIndex
-//            }
             _metaData.value = Success(mappedData.meta)
 
             handleCreationData(
@@ -296,15 +260,6 @@ class FeedMainViewModel @AssistedInject constructor(
             _feedCreateContentBottomSheetData.value = Fail(it)
         }
     }
-
-//    fun getTabType(index: Int): String =
-//        feedTabs.value?.let {
-//            if (it is Success && it.data.size > index) {
-//                it.data[index].type
-//            } else {
-//                ""
-//            }
-//        } ?: ""
 
     /**
      * Creation Button Position is Static :

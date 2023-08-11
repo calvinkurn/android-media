@@ -20,11 +20,6 @@ abstract class FeedMainViewModelModule {
     @Binds
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
-//    @Binds
-//    @IntoMap
-//    @ViewModelKey(FeedMainViewModel::class)
-//    internal abstract fun feedMainViewModel(viewModel: FeedMainViewModel): ViewModel
-
     @Binds
     @IntoMap
     @ViewModelKey(FeedProductItemInfoViewModel::class)

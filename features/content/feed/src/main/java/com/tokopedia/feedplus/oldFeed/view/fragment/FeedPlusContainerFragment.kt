@@ -353,9 +353,6 @@ class FeedPlusContainerFragment :
         addDataToArgument()
         registerNewFeedReceiver()
         setActiveTab()
-//        if (hasFeedTabParam()) {
-//            openTabAsPerParamValue()
-//        }
         feedFloatingButton.checkFabMenuStatusWithTimer {
             fabFeed.menuOpen
         }
@@ -749,12 +746,6 @@ class FeedPlusContainerFragment :
         viewPager?.visibility = View.VISIBLE
 
         setActiveTab()
-//        if (hasCategoryIdParam()) {
-//            goToExplore()
-//        }
-//        if (hasFeedTabParam()) {
-//            openTabAsPerParamValue()
-//        }
 
         viewModel.getWhitelist()
         if (!userSession.isLoggedIn) {
@@ -784,13 +775,6 @@ class FeedPlusContainerFragment :
         setActiveTabByTabName()
         setActiveTabByPosition()
     }
-
-//    private fun openTabAsPerParamValue() {
-//        when (arguments?.getString(ARGS_FEED_TAB_POSITION) ?: UPDATE_TAB_POSITION) {
-//            EXPLORE_TAB_POSITION -> goToExplore()
-//            VIDEO_TAB_POSITION -> goToVideo()
-//        }
-//    }
 
     private fun handleWhitelistData(whitelistDomain: WhitelistDomain) {
         authorList.clear()
@@ -942,14 +926,6 @@ class FeedPlusContainerFragment :
         viewPager?.adapter = pagerAdapter
         viewPager?.let { tab_layout.setupWithViewPager(it) }
     }
-
-//    private fun hasCategoryIdParam(): Boolean {
-//        return !arguments?.getString(ContentExploreFragment.PARAM_CATEGORY_ID).isNullOrBlank()
-//    }
-//
-//    private fun hasFeedTabParam(): Boolean {
-//        return !arguments?.getString(ARGS_FEED_TAB_POSITION).isNullOrBlank()
-//    }
 
     private fun canGoToExplore(): Boolean {
         return pagerAdapter.isContextExploreExist()

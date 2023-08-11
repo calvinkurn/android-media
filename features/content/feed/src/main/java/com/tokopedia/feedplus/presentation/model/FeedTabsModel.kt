@@ -41,7 +41,6 @@ data class FeedDataModel(
 }
 
 data class MetaModel(
-//    val selectedIndex: Int,
     val profileApplink: String,
     val profilePhotoUrl: String,
     val showMyProfile: Boolean,
