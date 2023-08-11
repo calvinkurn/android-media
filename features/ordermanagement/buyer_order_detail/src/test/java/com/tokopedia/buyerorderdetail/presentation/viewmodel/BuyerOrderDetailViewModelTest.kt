@@ -769,6 +769,29 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     }
 
     @Test
+    fun `after failure with finishing order then dont update medal touch point state`() {
+        runCollectingUiState { buyerOrderDetailUiStateList ->
+            val orderStatusShowingState = mockk<OrderStatusUiState.HasData.Showing>(relaxed = true) {
+                every { data.orderStatusHeaderUiModel.orderStatusId } returns "600"
+                every { data.orderStatusHeaderUiModel.orderId } returns orderId
+            }
+            createSuccessGetBuyerOrderDetailDataResult()
+            createFailedFinishOrderResult()
+
+            mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
+                getBuyerOrderDetailData()
+                viewModel.finishOrder()
+                advanceUntilIdle()
+                assertTrue(viewModel.finishOrderResult.value is Fail)
+                assertEquals(
+                    ScpRewardsMedalTouchPointWidgetUiState.HasData.Hidden,
+                    buyerOrderDetailUiStateList.filterIsInstance(BuyerOrderDetailUiState.HasData.Showing::class.java).last().scpRewardsMedalTouchPointWidgetUiState
+                )
+            }
+        }
+    }
+
+    @Test
     fun `after success with finishing order but medal touch point state not updated`() {
         runCollectingUiState { buyerOrderDetailUiStateList ->
             val orderStatusShowingState = mockk<OrderStatusUiState.HasData.Showing>(relaxed = true) {

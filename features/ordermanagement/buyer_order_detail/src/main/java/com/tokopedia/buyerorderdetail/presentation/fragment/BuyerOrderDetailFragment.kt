@@ -77,10 +77,14 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.SCP_REWARDS_MEDALI_TOUCH_POINT
+import com.tokopedia.scp_rewards_touchpoints.common.BUYER_ORDER_DETAIL_PAGE
 import com.tokopedia.scp_rewards_touchpoints.common.Error
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.ScpToasterHelper
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.adapter.viewholder.ScpRewardsMedalTouchPointWidgetViewHolder
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.analytics.ScpRewardsCelebrationWidgetAnalytics
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.analytics.ScpRewardsToasterAnalytics
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.model.AnalyticsData
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.model.ScpToasterModel
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response.ScpRewardsMedalTouchPointResponse
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.viewmodel.ScpRewardsMedalTouchPointViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -467,16 +471,29 @@ open class BuyerOrderDetailFragment :
                             if (!it.initialLoad) {
                                 ScpToasterHelper.showToaster(
                                     view = view,
-                                    data = data,
+                                    data = ScpToasterModel(
+                                        AnalyticsData(
+                                            orderId = viewModel.getOrderId(),
+                                            pagePath = BUYER_ORDER_DETAIL_PAGE
+                                        ),
+                                        responseData = data
+                                    ),
                                     customBottomHeight = getStickyActionButtonHeight(),
                                     ctaClickListener = {
                                         viewModel.hideScpRewardsMedalTouchPointWidget()
                                     }
                                 )
                                 ScpRewardsToasterAnalytics.sendViewToasterEvent(
-                                    badgeId = data.scpRewardsMedaliTouchpointOrder.medaliTouchpointOrder.medaliID.toString()
+                                    badgeId = data.scpRewardsMedaliTouchpointOrder.medaliTouchpointOrder.medaliID.toString(),
+                                    orderId = viewModel.getOrderId(),
+                                    pagePath = BUYER_ORDER_DETAIL_PAGE
                                 )
                             }
+                            ScpRewardsCelebrationWidgetAnalytics.impressionCelebrationWidget(
+                                badgeId = data.scpRewardsMedaliTouchpointOrder.medaliTouchpointOrder.medaliID.toString(),
+                                orderId = viewModel.getOrderId(),
+                                pagePath = BUYER_ORDER_DETAIL_PAGE
+                            )
                             viewModel.updateScpRewardsMedalTouchPointWidgetState(
                                 data = data.scpRewardsMedaliTouchpointOrder.medaliTouchpointOrder,
                                 marginLeft = resources.getDimension(R.dimen.buyer_order_detail_scp_rewards_medal_touch_point_margin_left).toIntSafely(),
@@ -926,6 +943,12 @@ open class BuyerOrderDetailFragment :
     }
 
     override fun onClickWidgetListener(appLink: String) {
+        val data = ((scpMedalTouchPointViewModel.medalTouchPointData.value?.result as? com.tokopedia.scp_rewards_touchpoints.common.Success<*>)?.data as ScpRewardsMedalTouchPointResponse)
+        ScpRewardsCelebrationWidgetAnalytics.clickCelebrationWidget(
+            badgeId = data.scpRewardsMedaliTouchpointOrder.medaliTouchpointOrder.medaliID.toString(),
+            orderId = viewModel.getOrderId(),
+            pagePath = BUYER_ORDER_DETAIL_PAGE
+        )
         viewModel.hideScpRewardsMedalTouchPointWidget()
         context?.let {
             RouteManager.route(it, appLink)
