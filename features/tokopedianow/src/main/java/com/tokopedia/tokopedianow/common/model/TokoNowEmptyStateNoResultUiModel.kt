@@ -10,11 +10,14 @@ class TokoNowEmptyStateNoResultUiModel(
     val activeFilterList: List<Option>? = null,
     val defaultTitle: String = "",
     val defaultDescription: String = "",
+    val defaultImage: String = "",
+    val defaultTextPrimaryButton: String = "",
+    val defaultUrlPrimaryButton: String = "",
     val excludeFilter: Option? = null,
     @StringRes val defaultTitleResId: Int? = null,
     @StringRes val defaultDescriptionResId: Int? = null,
     @StringRes val globalSearchBtnTextResId: Int? = null
-): Visitable<TokoNowEmptyStateNoResultTypeFactory> {
+): Visitable<TokoNowEmptyStateNoResultTypeFactory>, ImpressHolder() {
 
     override fun type(typeFactory: TokoNowEmptyStateNoResultTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0

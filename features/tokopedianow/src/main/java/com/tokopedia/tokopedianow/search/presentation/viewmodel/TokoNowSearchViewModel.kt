@@ -119,11 +119,13 @@ class TokoNowSearchViewModel @Inject constructor (
         headerList.updateSuggestionDataView(suggestionModel, suggestionDataViewIndex)
     }
 
-    override fun createVisitableListWithEmptyProduct() {
+    override fun createVisitableListWithEmptyProduct(
+        violation: AceSearchProductModel.Violation
+    ) {
         if (isShowBroadMatch())
             createVisitableListWithEmptyProductBroadmatch()
         else
-            super.createVisitableListWithEmptyProduct()
+            super.createVisitableListWithEmptyProduct(violation)
     }
 
     override fun getKeywordForGeneralSearchTracking() = query

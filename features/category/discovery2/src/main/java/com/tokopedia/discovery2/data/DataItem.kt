@@ -574,6 +574,9 @@ data class DataItem(
     var itemWeight: Float? = 1.0f,
 
     var typeProductHighlightComponentCard: String? = "",
+
+    @SerializedName("warehouse_id")
+    var warehouseId: Long? = null
 ) {
     val leftMargin: Int
         get() {

@@ -40,6 +40,7 @@ import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.Ca
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
+import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.domain.usecase.GetFilterUseCase
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryTitle
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
@@ -213,9 +214,10 @@ class TokoNowCategoryViewModel @Inject constructor(
         )
     }
 
-    override fun createVisitableListWithEmptyProduct() {
-        super.createVisitableListWithEmptyProduct()
-
+    override fun createVisitableListWithEmptyProduct(
+        violation: AceSearchProductModel.Violation
+    ) {
+        super.createVisitableListWithEmptyProduct(violation)
         val categoryMenuIndex = minOf(visitableList.size, 2)
         val categoryMenuUIModel = TokoNowCategoryMenuUiModel(
             state = TokoNowLayoutState.LOADING

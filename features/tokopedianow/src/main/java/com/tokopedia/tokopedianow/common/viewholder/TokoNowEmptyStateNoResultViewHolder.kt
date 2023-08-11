@@ -8,22 +8,29 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper.EXCLUDE_PREFIX
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper.combinePriceFilterIfExists
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowSearchCategoryEmptyProductBinding
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowSearchCategoryEmptyStateChipBinding
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoNowEmptyStateNoResultViewHolder(
         itemView: View,
         private val tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultListener? = null,
+        private val tokoNowEmptyStateNoResultTrackerListener: TokoNowEmptyStateNoResultTrackerListener? = null
 ): AbstractViewHolder<TokoNowEmptyStateNoResultUiModel>(itemView) {
 
     companion object {
@@ -44,11 +51,19 @@ class TokoNowEmptyStateNoResultViewHolder(
 
         val hasActiveFilter = !element.activeFilterList.isNullOrEmpty()
 
+        bindImage(element)
         bindTitle(hasActiveFilter, element)
         bindDescription(hasActiveFilter, element)
         bindFilterList(hasActiveFilter, element)
-        bindGoToGlobalSearchButton(hasActiveFilter, element)
-        bindChangeKeywordButton(hasActiveFilter)
+        bindPrimaryButton(hasActiveFilter, element)
+        bindSecondaryButton(hasActiveFilter, element)
+        impressRoot(element)
+    }
+
+    private fun bindImage(element: TokoNowEmptyStateNoResultUiModel) {
+        if (element.defaultImage.isNotBlank()) {
+            binding?.tokonowEmptyProductImage?.loadImage(element.defaultImage)
+        }
     }
 
     private fun bindTitle(hasActiveFilter: Boolean, element: TokoNowEmptyStateNoResultUiModel) {
@@ -107,33 +122,55 @@ class TokoNowEmptyStateNoResultViewHolder(
         }
     }
 
-    private fun bindGoToGlobalSearchButton(
+    private fun bindPrimaryButton(
         hasActiveFilter: Boolean,
         element: TokoNowEmptyStateNoResultUiModel
     ) {
-        bindGlobalSearchBtnText(element)
-        binding?.tokonowEmptyProductGlobalSearchButton?.showWithCondition(!hasActiveFilter)
-        binding?.tokonowEmptyProductGlobalSearchButton?.setOnClickListener {
-            tokoNowEmptyStateNoResultListener?.onFindInTokopediaClick()
+        binding?.apply {
+            tokonowEmptyProductPrimaryButton.showIfWithBlock(
+                predicate = !hasActiveFilter || element.defaultTextPrimaryButton.isNotBlank()
+            ) {
+                if (element.defaultTextPrimaryButton.isNotBlank()) {
+                    text = element.defaultTextPrimaryButton
+                    buttonType = UnifyButton.Type.MAIN
+                    setOnClickListener {
+                        tokoNowEmptyStateNoResultTrackerListener?.trackClickDefaultPrimaryButton()
+                        RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${element.defaultUrlPrimaryButton}")
+                    }
+                } else {
+                    element.globalSearchBtnTextResId?.let { text = getString(it) }
+                    buttonType = UnifyButton.Type.ALTERNATE
+                    setOnClickListener {
+                        tokoNowEmptyStateNoResultListener?.onFindInTokopediaClick()
+                    }
+                }
+            }
         }
     }
 
-    private fun bindGlobalSearchBtnText(element: TokoNowEmptyStateNoResultUiModel) {
-        element.globalSearchBtnTextResId?.let {
-            binding?.tokonowEmptyProductGlobalSearchButton?.text = getString(it)
+    private fun bindSecondaryButton(
+        hasActiveFilter: Boolean,
+        element: TokoNowEmptyStateNoResultUiModel
+    ) {
+        binding?.apply {
+            tokonowEmptyProductSecondaryButton.showWithCondition(
+                shouldShow = !hasActiveFilter && element.defaultTextPrimaryButton.isBlank()
+            )
+            tokonowEmptyProductSecondaryButton.setOnClickListener {
+                tokoNowEmptyStateNoResultListener?.goToTokopediaNowHome()
+            }
         }
     }
 
-    private fun bindChangeKeywordButton(hasActiveFilter: Boolean) {
-        binding?.tokonowEmptyProductExploreTokopediaNow?.showWithCondition(!hasActiveFilter)
-        binding?.tokonowEmptyProductExploreTokopediaNow?.setOnClickListener {
-            tokoNowEmptyStateNoResultListener?.goToTokopediaNowHome()
+    private fun impressRoot(element: TokoNowEmptyStateNoResultUiModel) {
+        binding?.root?.addOnImpressionListener(element) {
+            tokoNowEmptyStateNoResultTrackerListener?.trackImpressEmptyStateNoResult()
         }
     }
 
     private class Adapter(
             private val optionList: List<Option>,
-            private val tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener?,
+            private val tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultListener?,
     ): RecyclerView.Adapter<ViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val view = LayoutInflater
@@ -154,7 +191,7 @@ class TokoNowEmptyStateNoResultViewHolder(
 
     private class ViewHolder(
             itemView: View,
-            private val tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener?,
+            private val tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultListener?,
     ): RecyclerView.ViewHolder(itemView) {
 
         companion object {
@@ -188,11 +225,16 @@ class TokoNowEmptyStateNoResultViewHolder(
     }
 
     interface TokoNowEmptyStateNoResultListener {
-
         fun onFindInTokopediaClick()
 
         fun goToTokopediaNowHome()
 
         fun onRemoveFilterClick(option: Option)
+    }
+
+    interface TokoNowEmptyStateNoResultTrackerListener {
+        fun trackImpressEmptyStateNoResult()
+
+        fun trackClickDefaultPrimaryButton()
     }
 }
