@@ -7,6 +7,8 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.Constant.NAVIGATION
+import com.tokopedia.discovery2.Constant.REDIRECTION
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.BannerAction
@@ -44,6 +46,7 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     private val refreshPage: MutableLiveData<Boolean> = MutableLiveData()
     private val _hideShimmer = SingleLiveEvent<Boolean>()
     private val _showErrorState = SingleLiveEvent<Boolean>()
+    private val _redirectionToTab = SingleLiveEvent<String?>()
     private var isDarkMode: Boolean = false
 
     @JvmField
@@ -75,6 +78,7 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     fun getBannerUrlWidth() = Utils.extractDimension(bannerData.value?.data?.firstOrNull()?.imageUrlDynamicMobile, "width")
     fun checkApplink(): LiveData<String> = applinkCheck
     fun isPageRefresh(): LiveData<Boolean> = refreshPage
+    val redirectedTab: LiveData<String?> = _redirectionToTab
     val hideShimmer: LiveData<Boolean> = _hideShimmer
     val showErrorState: LiveData<Boolean> = _showErrorState
 
@@ -117,11 +121,31 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     fun onBannerClicked(position: Int, context: Context) {
         bannerData.value?.data.checkForNullAndSize(position)?.let { listItem ->
             when (listItem[position].action) {
-                BannerAction.APPLINK.name -> navigation(position, context)
+                BannerAction.APPLINK.name -> {
+                    pageRedirection(position, context)
+                }
                 BannerAction.CODE.name -> copyCodeToClipboard(position)
                 BannerAction.PUSH_NOTIFIER.name -> subscribeUserForPushNotification(position)
                 BannerAction.LOGIN.name -> loginUser(position, context)
                 else -> navigation(position, context)
+            }
+        }
+    }
+
+    private fun pageRedirection(position: Int, context: Context) {
+        bannerData.value?.data.checkForNullAndSize(position)?.let { listItem ->
+            when (listItem[position].moveAction?.type) {
+                REDIRECTION -> {
+                    if (!listItem[position].moveAction?.value.isNullOrEmpty()) {
+                        navigate(context, listItem[position].moveAction?.value)
+                    }
+                }
+                NAVIGATION -> {
+                    _redirectionToTab.value = listItem[position].moveAction?.value
+                }
+                else -> {
+                    navigation(position, context)
+                }
             }
         }
     }
