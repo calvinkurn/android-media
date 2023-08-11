@@ -26,6 +26,7 @@ import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 
+@Deprecated("Please use com.tokopedia.home_component_header.view.HomeChannelHeaderView")
 class DynamicChannelHeaderView : FrameLayout {
     private val itemView: View
 
@@ -66,6 +67,7 @@ class DynamicChannelHeaderView : FrameLayout {
         }
     }
 
+    @Deprecated("Please use com.tokopedia.home_component_header.view.HomeChannelHeaderView.bind()")
     fun setChannel(
         channelModel: ChannelModel,
         listener: HeaderListener,
