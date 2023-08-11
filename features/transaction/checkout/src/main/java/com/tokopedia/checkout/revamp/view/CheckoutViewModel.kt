@@ -670,6 +670,7 @@ class CheckoutViewModel @Inject constructor(
                 if (it != null) {
                     listData.value = it
                     pageState.value = CheckoutPageState.EpharmacyCoachMark
+                    calculateTotal()
                 }
             }
         }
@@ -680,7 +681,13 @@ class CheckoutViewModel @Inject constructor(
     }
 
     fun setMiniConsultationResult(results: ArrayList<EPharmacyMiniConsultationResult>) {
-        addOnProcessor.setMiniConsultationResult(results, listData.value)
+        pageState.value = CheckoutPageState.Loading
+        val result = addOnProcessor.setMiniConsultationResult(results, listData.value)
+        if (result != null) {
+            listData.value = result
+            pageState.value = CheckoutPageState.Normal
+            calculateTotal()
+        }
     }
 
     internal fun calculateTotal() {
