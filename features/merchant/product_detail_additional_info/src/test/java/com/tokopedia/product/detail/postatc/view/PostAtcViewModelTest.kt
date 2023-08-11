@@ -1,6 +1,8 @@
 package com.tokopedia.product.detail.postatc.view
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.product.detail.common.postatc.PostAtcParams
 import com.tokopedia.product.detail.postatc.data.model.PostAtcComponentData
 import com.tokopedia.product.detail.postatc.data.model.PostAtcLayout
 import com.tokopedia.product.detail.postatc.usecase.GetPostAtcLayoutUseCase
@@ -51,10 +53,8 @@ class PostAtcViewModelTest {
         val cartId = ""
         val layoutId = ""
         val pageSource = ""
-        val isFulfillment = false
-        val selectedAddonsIds = emptyList<String>()
-        val warehouseId = ""
-        val quantity = 1
+        val session = ""
+        val localCacheModel = LocalCacheModel()
         val response = PostAtcLayout(
             components = listOf(
                 PostAtcLayout.Component(
@@ -67,19 +67,22 @@ class PostAtcViewModelTest {
             )
         )
 
+        val postAtcParams = PostAtcParams(
+            cartId = cartId,
+            layoutId = layoutId,
+            pageSource = PostAtcParams.Source.Default,
+            session = session,
+            addons = null
+        )
+
         coEvery {
-            getPostAtcLayoutUseCase.execute(productId, cartId, layoutId, pageSource)
+            getPostAtcLayoutUseCase.execute(productId, cartId, layoutId, pageSource, session, any())
         } returns response
 
         viewModel.initializeParameters(
             productId,
-            cartId,
-            isFulfillment,
-            layoutId,
-            pageSource,
-            selectedAddonsIds,
-            warehouseId,
-            quantity
+            postAtcParams,
+            localCacheModel
         )
 
         Assert.assertTrue(viewModel.layouts.value is Success)
@@ -93,15 +96,13 @@ class PostAtcViewModelTest {
         val productId = "111"
         val cartId = "222"
         val layoutId = "333"
-        val pageSource = "pdp"
+        val pageSource = "product detail page"
+        val session = ""
+        val localCacheModel = LocalCacheModel()
         val layoutName = "post atc layout"
         val shopId = "444"
         val categoryId = "555"
         val categoryName = "elektronik"
-        val isFulfillment = false
-        val selectedAddonsIds = emptyList<String>()
-        val warehouseId = ""
-        val quantity = 1
         val response = PostAtcLayout(
             name = layoutName,
             basicInfo = PostAtcLayout.BasicInfo(
@@ -113,19 +114,29 @@ class PostAtcViewModelTest {
             )
         )
 
+        val postAtcParams = PostAtcParams(
+            cartId = cartId,
+            layoutId = layoutId,
+            pageSource = PostAtcParams.Source.PDP,
+            session = session,
+            addons = null
+        )
+
         coEvery {
-            getPostAtcLayoutUseCase.execute(productId, cartId, layoutId, pageSource)
+            getPostAtcLayoutUseCase.execute(
+                productId,
+                cartId,
+                layoutId,
+                pageSource,
+                session,
+                any()
+            )
         } returns response
 
         viewModel.initializeParameters(
             productId,
-            cartId,
-            isFulfillment,
-            layoutId,
-            pageSource,
-            selectedAddonsIds,
-            warehouseId,
-            quantity
+            postAtcParams,
+            localCacheModel
         )
 
         val atcInfo = viewModel.postAtcInfo
@@ -145,26 +156,27 @@ class PostAtcViewModelTest {
         val cartId = ""
         val layoutId = ""
         val pageSource = ""
-        val isFulfillment = false
-        val selectedAddonsIds = emptyList<String>()
-        val warehouseId = ""
-        val quantity = 1
+        val session = ""
+        val localCacheModel = LocalCacheModel()
 
         val errorMessage = "something wrong"
 
+        val postAtcParams = PostAtcParams(
+            cartId = cartId,
+            layoutId = layoutId,
+            pageSource = PostAtcParams.Source.Default,
+            session = session,
+            addons = null
+        )
+
         coEvery {
-            getPostAtcLayoutUseCase.execute(productId, cartId, layoutId, pageSource)
+            getPostAtcLayoutUseCase.execute(productId, cartId, layoutId, pageSource, session, any())
         } throws Throwable(errorMessage)
 
         viewModel.initializeParameters(
             productId,
-            cartId,
-            isFulfillment,
-            layoutId,
-            pageSource,
-            selectedAddonsIds,
-            warehouseId,
-            quantity
+            postAtcParams,
+            localCacheModel
         )
 
         Assert.assertTrue(viewModel.layouts.value is Fail)
@@ -176,25 +188,30 @@ class PostAtcViewModelTest {
         val cartId = ""
         val layoutId = ""
         val pageSource = ""
+        val session = ""
+        val localCacheModel = LocalCacheModel()
         val isFulfillment = false
         val selectedAddonsIds = emptyList<String>()
         val warehouseId = ""
         val quantity = 1
         val response = PostAtcLayout()
 
+        val postAtcParams = PostAtcParams(
+            cartId = cartId,
+            layoutId = layoutId,
+            pageSource = PostAtcParams.Source.Default,
+            session = session,
+            addons = null
+        )
+
         coEvery {
-            getPostAtcLayoutUseCase.execute(productId, cartId, layoutId, pageSource)
+            getPostAtcLayoutUseCase.execute(productId, cartId, layoutId, pageSource, session, any())
         } returns response
 
         viewModel.initializeParameters(
             productId,
-            cartId,
-            isFulfillment,
-            layoutId,
-            pageSource,
-            selectedAddonsIds,
-            warehouseId,
-            quantity
+            postAtcParams,
+            localCacheModel
         )
 
         Assert.assertTrue(viewModel.layouts.value is Fail)
