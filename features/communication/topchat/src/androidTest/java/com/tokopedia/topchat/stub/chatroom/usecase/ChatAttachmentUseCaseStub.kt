@@ -60,22 +60,6 @@ class ChatAttachmentUseCaseStub @Inject constructor(
     val upComingCampaignProduct: ChatAttachmentResponse
         get() = alterResponseOf(upcomingCampaignPath) { response -> }
 
-    val notUpComingCampaignProductAndInactive: ChatAttachmentResponse
-        get() = alterResponseOf(upcomingCampaignPath) { response ->
-            alterAttachmentAttributesAt(
-                position = 0,
-                responseObj = response,
-                attachmentAltercation = { },
-                attributesAltercation = { attr ->
-                    val productProfile = attr.getAsJsonObject(product_profile)
-                    productProfile.let {
-                        it.addProperty(is_upcoming_campaign_product, false)
-                        it.addProperty(status, ProductAttachmentUiModel.statusDeleted)
-                    }
-                }
-            )
-        }
-
     val notUpComingCampaignProductAndActive: ChatAttachmentResponse
         get() = alterResponseOf(upcomingCampaignPath) { response ->
             alterAttachmentAttributesAt(
