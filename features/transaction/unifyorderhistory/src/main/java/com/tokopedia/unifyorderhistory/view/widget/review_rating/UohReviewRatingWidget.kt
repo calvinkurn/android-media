@@ -34,6 +34,7 @@ import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.nest.components.card.NestCard
 import com.tokopedia.nest.components.card.NestCardType
@@ -221,7 +222,7 @@ private fun formatLabel(label: String): CharSequence {
 private fun composeAppLink(rating: Int, appLink: String): String {
     return UriUtil.appendDiffDeeplinkWithQuery(
         deeplink = appLink,
-        query = "${ApplinkConstInternalMarketplace.CREATE_REVIEW_APP_LINK_PARAM_RATING}=$rating"
+        query = "${ApplinkConstInternalMarketplace.CREATE_REVIEW_APP_LINK_PARAM_RATING}=$rating&${DeeplinkMapperMerchant.PARAM_UTM_SOURCE}=uoh_orders"
     )
 }
 

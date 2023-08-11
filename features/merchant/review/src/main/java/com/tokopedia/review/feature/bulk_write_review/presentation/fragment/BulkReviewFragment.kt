@@ -31,6 +31,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -109,7 +110,6 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
         private const val GLOBAL_ERROR_MAX_ALPHA = 1f
 
         private const val APP_LINK_PARAM_INVOICE = "invoice"
-        private const val APP_LINK_PARAM_UTM_SOURCE = "utm_source"
     }
 
     @Inject
@@ -813,7 +813,7 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
         }
 
         fun getUtmSource(): String {
-            return getQueryParameter(APP_LINK_PARAM_UTM_SOURCE)
+            return getQueryParameter(DeeplinkMapperMerchant.PARAM_UTM_SOURCE)
         }
 
         fun getRating(): String {
