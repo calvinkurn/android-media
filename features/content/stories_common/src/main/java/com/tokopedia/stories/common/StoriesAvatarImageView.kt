@@ -26,28 +26,34 @@ class StoriesAvatarImageView : AppCompatImageView {
         defStyleAttr
     )
 
-    private val gradientPaint = Paint()
+    private val gradientStoriesPaint = Paint()
+    private val seenStoriesPaint = Paint()
     private val circleImagePath = Path()
     private val circleBorderPath = Path()
 
-    private val borderWidth = 2.dpToPx(resources.displayMetrics)
+    private var mStoriesStatus = StoriesStatus.NoStories
+
+    private val gradientStoriesBorderWidth = 2.dpToPx(resources.displayMetrics)
+    private val seenStoriesBorderWidth = 1.dpToPx(resources.displayMetrics)
     private val imageToBorderMargin = 4.dpToPx(resources.displayMetrics)
+
+    init {
+        seenStoriesPaint.color = Color.parseColor("#FFD6DFEB")
+    }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
-        setupImagePath(w, h)
-        setupBorderPath(w, h)
         setupShader(w, h)
     }
 
     override fun onDraw(canvas: Canvas) {
         canvas.save()
-        canvas.clipOutPathCompat(circleBorderPath)
-        drawBackground(canvas)
+        canvas.clipStoriesBorderPath()
+        canvas.drawStoriesBorder()
         canvas.restore()
 
         canvas.save()
-        canvas.clipPath(circleImagePath)
+        canvas.clipImagePath()
         super.onDraw(canvas)
         canvas.restore()
     }
@@ -57,7 +63,7 @@ class StoriesAvatarImageView : AppCompatImageView {
         circleBorderPath.addCircle(
             width / 2f,
             height / 2f,
-            width / 2f - borderWidth,
+            width / 2f - getBorderWidth(),
             Path.Direction.CW
         )
     }
@@ -67,7 +73,7 @@ class StoriesAvatarImageView : AppCompatImageView {
         circleImagePath.addCircle(
             width / 2f,
             height / 2f,
-            width / 2f - imageToBorderMargin,
+            width / 2f - getImageMargin(),
             Path.Direction.CW
         )
     }
@@ -82,21 +88,53 @@ class StoriesAvatarImageView : AppCompatImageView {
             Color.parseColor("#FF00AA5B"),
             Shader.TileMode.CLAMP
         )
-        gradientPaint.shader = shader
+        gradientStoriesPaint.shader = shader
     }
 
-    private fun drawBackground(canvas: Canvas) {
-        canvas.drawCircle(
+    private fun Canvas.clipStoriesBorderPath() {
+        setupBorderPath(width, height)
+        clipOutPathCompat(circleBorderPath)
+    }
+
+    private fun Canvas.drawStoriesBorder() {
+        drawCircle(
             width / 2f,
             height / 2f,
             width / 2f,
-            gradientPaint
+            getStoriesBorderPaint()
         )
+    }
+
+    private fun Canvas.clipImagePath() {
+        setupImagePath(width, height)
+        clipPath(circleImagePath)
+    }
+
+    private fun getBorderWidth(): Int {
+        return when (mStoriesStatus) {
+            StoriesStatus.AllStoriesSeen -> seenStoriesBorderWidth
+            StoriesStatus.HasUnseenStories -> gradientStoriesBorderWidth
+            else -> 0
+        }
+    }
+
+    private fun getImageMargin(): Int {
+        return when (mStoriesStatus) {
+            StoriesStatus.NoStories -> 0
+            else -> imageToBorderMargin
+        }
+    }
+
+    private fun getStoriesBorderPaint(): Paint {
+        return when (mStoriesStatus) {
+            StoriesStatus.HasUnseenStories -> gradientStoriesPaint
+            else -> seenStoriesPaint
+        }
     }
 
     private fun Canvas.clipOutPathCompat(path: Path) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            clipOutPath(path);
+            clipOutPath(path)
         } else {
             clipPath(path, Region.Op.DIFFERENCE)
         }
