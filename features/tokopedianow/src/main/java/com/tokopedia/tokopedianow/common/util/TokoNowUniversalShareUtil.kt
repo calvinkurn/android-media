@@ -71,8 +71,6 @@ object TokoNowUniversalShareUtil {
     ) {
         val linkerShareData = linkerDataMapper(shareTokoNowData)
         linkerShareData.linkerData.apply {
-            id = ShopIdProvider.getShopId()
-            type = LinkerData.SHOP_TYPE
             feature = shareModel.feature
             channel = shareModel.channel
             campaign = shareModel.campaign

@@ -40,7 +40,6 @@ object UnifyComponentsList {
             DATE_PICKER_UNIFY to UnifyMapping(LinterConstants.UnifyClasses.DATE_TIME_PICKER_UNIFY),
             DIALOG_CLASS_NAME to UnifyMapping(DIALOG),
             SNACK_BAR to UnifyMapping(TOASTER)
-
         )
     }
 

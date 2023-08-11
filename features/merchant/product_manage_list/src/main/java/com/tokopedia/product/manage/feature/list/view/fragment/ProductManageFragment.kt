@@ -1461,10 +1461,14 @@ open class ProductManageFragment :
         val keyword = searchBar?.searchBarTextField?.text?.toString().orEmpty()
         val selectedFilter = viewModel.selectedFilterAndSort.value
         val filterOptions = createFilterOptions(page, keyword)
-        val sortOption = selectedFilter?.sortOption
+        var sortOption = selectedFilter?.sortOption
 
         filterTab?.getSelectedFilter()?.let {
-            filterOptions.add(FilterByStatus(it))
+            if (it.name == FilterTabUiModel.FilterId.isProductArchival.name){
+                filterOptions.add(FilterByCondition.ProductArchival)
+            }else{
+                filterOptions.add(FilterByStatus(it))
+            }
         }
         if (isRefreshFromSortFilter) {
             tabSortFilter?.show()
@@ -2117,6 +2121,9 @@ open class ProductManageFragment :
 
     override fun onClickContactCsButton(product: ProductUiModel) {
         when {
+            product.isArchived || product.isInGracePeriod  -> {
+                showProductArchivalBottomSheet(product.id, product.isInGracePeriod, product.isArchived)
+            }
             product.isViolation() -> {
                 goToProductViolationHelpPage()
             }
@@ -3359,6 +3366,16 @@ open class ProductManageFragment :
 
     open fun showSuspendReasonBottomSheet(productId: String) {
         SuspendReasonBottomSheet.createInstance(productId, this).show(childFragmentManager)
+    }
+
+    private fun showProductArchivalBottomSheet(
+        productId: String,
+        inGracePeriod: Boolean,
+        archived: Boolean
+    ) {
+        ProductArchivalBottomSheet.createInstance(productId,archived, inGracePeriod) {
+            showErrorToast(it)
+        }.show(childFragmentManager)
     }
 
     private fun showToaster(message: String) {
