@@ -779,7 +779,7 @@ open class ShopPageHomeFragment :
                                             data = listOf(
                                                 ShopHomeProductCarouselUiModel.Tab.ComponentList.Data(
                                                     imageId = 0,
-                                                    imageUrl = "",
+                                                    imageUrl = "https://images.tokopedia.net/img/fintech/adapundi/adapundi.png",
                                                     ctaLink = "",
                                                     linkId = 983,
                                                     linkType = "terbaru",
