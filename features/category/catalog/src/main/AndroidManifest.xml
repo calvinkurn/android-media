@@ -3,7 +3,7 @@
 
     <application>
         <activity
-            android:name="com.tokopedia.oldcatalog.ui.activity.CatalogDetailPageActivity"
+            android:name="com.tokopedia.catalog.ui.activity.CatalogDetailPageActivity"
             android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait"
             android:exported="false">
@@ -19,6 +19,13 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.tokopedia.oldcatalog.ui.activity.CatalogDetailPageActivity"
+            android:theme="@style/Theme.WhiteUnify"
+            android:screenOrientation="portrait"
+            android:exported="false"/>
+
         <activity
             android:name="com.tokopedia.oldcatalog.ui.activity.CatalogGalleryActivity"
             android:theme="@style/Theme.WhiteUnify"
