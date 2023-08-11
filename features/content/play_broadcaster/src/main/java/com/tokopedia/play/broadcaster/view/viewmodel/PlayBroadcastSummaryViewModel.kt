@@ -16,6 +16,7 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagItem
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
 import com.tokopedia.play.broadcaster.ui.state.LiveReportUiState
@@ -103,9 +104,10 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
                 NetworkResult.Success(
                     TagUiState(
                         tags = tags.data.map {
-                            PlayTagUiModel(
+                            PlayTagItem(
                                 tag = it,
-                                isChosen = selectedTags.contains(it)
+                                isChosen = selectedTags.contains(it),
+                                isActive = true,
                             )
                         }
                     )
@@ -214,7 +216,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleToggleTag(tagUiModel: PlayTagUiModel) {
+    private fun handleToggleTag(tagUiModel: PlayTagItem) {
         viewModelScope.launchCatchError(context = dispatcher.main, block = {
             val newSelectedTag = _selectedTags.value.toMutableSet().apply {
                 with(tagUiModel) {

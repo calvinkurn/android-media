@@ -33,6 +33,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
@@ -180,6 +181,8 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
     private var userType: String = KEY_GENERAL_USER
     private var isAffiliateCommissionEnabled = false
     private var chipListData: List<ChipProperties>? = null
+    private var currentGenerateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility? = null
+    private var currentDeeplinkRegistrationBanner: String = ""
 
     private var showLoader: Boolean = false
     private var handler: Handler? = null
@@ -443,6 +446,23 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
     fun enableAffiliateCommission(affiliateInput: AffiliateInput) {
         isAffiliateCommissionEnabled = true
         affiliateInputTemp = affiliateInput
+    }
+
+    /**
+     * this function is used when the bottomsheet already shown and hide the affiliate ticker
+     */
+    fun hideAffiliateTicker() {
+        affiliateRegisterContainer?.gone()
+        affiliateCommissionTextView?.gone()
+    }
+
+    /**
+     * this function is used when the bottomsheet already shown and show the affiliate ticker
+     */
+    fun showAffiliateTicker() {
+        currentGenerateAffiliateLinkEligibility?.let {
+            showAffiliateTicker(it, currentDeeplinkRegistrationBanner)
+        }
     }
 
     fun isAffiliateCommissionEnabled() = isAffiliateCommissionEnabled
@@ -1035,9 +1055,11 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                 val generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility = affiliateUsecase.apply {
                     params = AffiliateEligibilityCheckUseCase.createParam(affiliateInput!!)
                 }.executeOnBackground()
+                currentGenerateAffiliateLinkEligibility = generateAffiliateLinkEligibility
                 var deeplink = ""
                 if (isExecuteExtractBranchLink(generateAffiliateLinkEligibility)) {
                     deeplink = executeExtractBranchLink(generateAffiliateLinkEligibility)
+                    currentDeeplinkRegistrationBanner = deeplink
                 }
                 withContext(Dispatchers.Main) {
                     showAffiliateTicker(generateAffiliateLinkEligibility, deeplink)
@@ -1076,7 +1098,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         clearLoader()
         removeHandlerTimeout()
         if (isShowAffiliateComission(generateAffiliateLinkEligibility)) {
-            showAffiliateCommission(generateAffiliateLinkEligibility)
+            showAffiliateTicker(generateAffiliateLinkEligibility)
         } else if (isShowAffiliateRegister(generateAffiliateLinkEligibility)) {
             showAffiliateRegister(generateAffiliateLinkEligibility, deeplink)
         }
@@ -1101,7 +1123,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
             userSession.shopId != affiliateInput?.shop?.shopID
     }
 
-    private fun showAffiliateCommission(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility) {
+    private fun showAffiliateTicker(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility) {
         val commissionMessage = generateAffiliateLinkEligibility.eligibleCommission?.message ?: ""
         if (!TextUtils.isEmpty(commissionMessage)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

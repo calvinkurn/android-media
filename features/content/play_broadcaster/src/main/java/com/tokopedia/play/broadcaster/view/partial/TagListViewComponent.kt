@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.databinding.LayoutTagRecommendationBinding
 import com.tokopedia.play.broadcaster.ui.itemdecoration.TagItemDecoration
+import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagItem
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.TagViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.TagRecommendationListAdapter
@@ -38,11 +39,11 @@ class TagListViewComponent(
         }
     }
 
-    override fun onTagClicked(tag: PlayTagUiModel) {
+    override fun onTagClicked(tag: PlayTagItem) {
         listener.onTagClicked(this, tag)
     }
 
-    fun setTags(tags: List<PlayTagUiModel>) {
+    fun setTags(tags: List<PlayTagItem>) {
         binding.localLoadTagError.hide()
         binding.tvBroSelectTagTitle.showWithCondition(tags.isNotEmpty())
         binding.clEmptyStateTag.showWithCondition(tags.isEmpty())
@@ -68,7 +69,7 @@ class TagListViewComponent(
 
     interface Listener {
 
-        fun onTagClicked(view: TagListViewComponent, tag: PlayTagUiModel)
+        fun onTagClicked(view: TagListViewComponent, tag: PlayTagItem)
         fun onTagRefresh(view: TagListViewComponent)
     }
 }
