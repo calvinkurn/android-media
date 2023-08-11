@@ -73,6 +73,7 @@ import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.fingerprint.util.FingerPrintUtil
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressTokonow
@@ -447,7 +448,11 @@ class CheckoutFragment :
                         errorMessage =
                             getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_error_global_message)
                     }
-                    Toaster.build(binding.root, errorMessage, type = Toaster.TYPE_ERROR).show()
+                    if (binding.rvCheckout.isVisible) {
+                        Toaster.build(binding.root, errorMessage, type = Toaster.TYPE_ERROR).show()
+                    } else {
+                        showErrorPage(errorMessage)
+                    }
                     stopTrace()
                 }
 
@@ -505,6 +510,7 @@ class CheckoutFragment :
                 is CheckoutPageState.Success -> {
                     hideLoading()
                     updateLocalCacheAddressData(it.cartShipmentAddressFormData.groupAddress.first().userAddress)
+                    binding.globalErrorCheckout.isVisible = false
                     binding.rvCheckout.isVisible = true
                     if (it.cartShipmentAddressFormData.popUpMessage.isNotEmpty()) {
                         showToastNormal(it.cartShipmentAddressFormData.popUpMessage)
@@ -844,6 +850,24 @@ class CheckoutFragment :
         }
         return locationPass
     }
+
+    private fun showErrorPage(errorMessage: String) {
+        binding.rvCheckout.isVisible = false
+        binding.tvCountDown.isVisible = false
+        binding.countDown.isVisible = false
+        binding.globalErrorCheckout.isVisible = true
+        binding.globalErrorCheckout.setType(GlobalError.SERVER_ERROR)
+        binding.globalErrorCheckout.errorDescription.text = errorMessage
+        binding.globalErrorCheckout.setActionClickListener {
+            viewModel.loadSAF(
+                isReloadData = false,
+                skipUpdateOnboardingState = true,
+                isReloadAfterPriceChangeHigher = false
+            )
+        }
+    }
+
+
 
     fun showLoading() {
         if (context != null && loader?.dialog?.isShowing != true) {
