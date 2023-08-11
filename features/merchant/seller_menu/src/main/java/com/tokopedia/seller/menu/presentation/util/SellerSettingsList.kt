@@ -1,7 +1,6 @@
 package com.tokopedia.seller.menu.presentation.util
 
 import android.content.Context
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
@@ -43,7 +42,7 @@ object SellerSettingsList {
                 ),
                 SellerMenuItemUiModel(
                     context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_basic_info),
-                    clickApplink = ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO,
+                    clickApplink = null,
                     settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
                     type = MenuItemType.BASIC_INFO,
                     clickAction = {
@@ -57,7 +56,7 @@ object SellerSettingsList {
                 ),
                 SellerMenuItemUiModel(
                     context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_notes),
-                    clickApplink = ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES,
+                    clickApplink = null,
                     settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
                     type = MenuItemType.NOTES,
                     clickAction = {
@@ -71,7 +70,7 @@ object SellerSettingsList {
                 ),
                 SellerMenuItemUiModel(
                     context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_working_hours),
-                    clickApplink = ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS,
+                    clickApplink = null,
                     settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
                     type = MenuItemType.SCHEDULE,
                     clickAction = {
@@ -87,7 +86,7 @@ object SellerSettingsList {
                 IndentedSettingTitleUiModel(context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_location_and_shipment)),
                 SellerMenuItemUiModel(
                     context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_add_and_shop_location),
-                    clickApplink = ApplinkConstInternalMarketplace.SHOP_SETTINGS_ADDRESS,
+                    clickApplink = null,
                     settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
                     type = MenuItemType.LOCATION,
                     clickAction = {
@@ -101,7 +100,7 @@ object SellerSettingsList {
                 ),
                 SellerMenuItemUiModel(
                     context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_set_shipment_method),
-                    clickApplink = ApplinkConst.SELLER_SHIPPING_EDITOR,
+                    clickApplink = null,
                     settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
                     trackingAlias = trackingAliasMap[context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_set_shipment_method)],
                     type = MenuItemType.SHIPPING,
@@ -137,7 +136,7 @@ object SellerSettingsList {
                 ),
                 SellerMenuItemUiModel(
                     context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_basic_info),
-                    clickApplink = ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO,
+                    clickApplink = null,
                     settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
                     type = MenuItemType.BASIC_INFO,
                     clickAction = {
@@ -151,7 +150,7 @@ object SellerSettingsList {
                 ),
                 SellerMenuItemUiModel(
                     context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_notes),
-                    clickApplink = ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES,
+                    clickApplink = null,
                     settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
                     type = MenuItemType.NOTES,
                     clickAction = {
@@ -165,7 +164,7 @@ object SellerSettingsList {
                 ),
                 SellerMenuItemUiModel(
                     context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_working_hours),
-                    clickApplink = ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS,
+                    clickApplink = null,
                     settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
                     type = MenuItemType.SCHEDULE,
                     clickAction = {
@@ -181,7 +180,7 @@ object SellerSettingsList {
                 IndentedSettingTitleUiModel(context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_location_and_shipment)),
                 SellerMenuItemUiModel(
                     context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_set_shipment_method),
-                    clickApplink = ApplinkConst.SELLER_SHIPPING_EDITOR,
+                    clickApplink = null,
                     settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
                     trackingAlias = trackingAliasMap[context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_set_shipment_method)],
                     type = MenuItemType.SHIPPING,
