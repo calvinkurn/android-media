@@ -1,4 +1,4 @@
-package com.tokopedia.oldcatalog.di
+package com.tokopedia.catalog.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.oldcatalog.ui.fragment.CatalogAllReviewFragment

@@ -19,12 +19,11 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.catalog.R
-import com.tokopedia.oldcatalog.adapter.CatalogDetailAdapter
 import com.tokopedia.oldcatalog.adapter.CatalogDetailDiffUtil
 import com.tokopedia.oldcatalog.adapter.factory.CatalogDetailAdapterFactoryImpl
 import com.tokopedia.oldcatalog.analytics.CatalogDetailAnalytics
-import com.tokopedia.oldcatalog.di.CatalogComponent
-import com.tokopedia.oldcatalog.di.DaggerCatalogComponent
+import com.tokopedia.catalog.di.CatalogComponent
+import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.oldcatalog.listener.CatalogDetailListener
 import com.tokopedia.oldcatalog.model.datamodel.BaseCatalogDataModel
 import com.tokopedia.oldcatalog.model.util.CatalogConstant

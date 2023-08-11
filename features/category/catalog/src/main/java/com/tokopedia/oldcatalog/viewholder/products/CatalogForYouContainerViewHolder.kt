@@ -14,7 +14,7 @@ import com.tokopedia.catalog.R
 import com.tokopedia.oldcatalog.adapter.CatalogDetailAdapter
 import com.tokopedia.oldcatalog.adapter.CatalogDetailDiffUtil
 import com.tokopedia.oldcatalog.adapter.factory.CatalogDetailAdapterFactoryImpl
-import com.tokopedia.oldcatalog.di.DaggerCatalogComponent
+import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.oldcatalog.listener.CatalogDetailListener
 import com.tokopedia.oldcatalog.listener.CatalogProductCardListener
 import com.tokopedia.oldcatalog.model.datamodel.BaseCatalogDataModel

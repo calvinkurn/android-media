@@ -1,4 +1,4 @@
-package com.tokopedia.oldcatalog.di
+package com.tokopedia.catalog.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

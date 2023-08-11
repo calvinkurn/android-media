@@ -23,8 +23,8 @@ import com.tokopedia.oldcatalog.adapter.CatalogProductNavListAdapter
 import com.tokopedia.oldcatalog.adapter.factory.CatalogTypeFactory
 import com.tokopedia.oldcatalog.adapter.factory.CatalogTypeFactoryImpl
 import com.tokopedia.oldcatalog.analytics.CatalogDetailAnalytics
-import com.tokopedia.oldcatalog.di.CatalogComponent
-import com.tokopedia.oldcatalog.di.DaggerCatalogComponent
+import com.tokopedia.catalog.di.CatalogComponent
+import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.oldcatalog.listener.CatalogProductCardListener
 import com.tokopedia.oldcatalog.model.datamodel.CatalogForYouModel
 import com.tokopedia.oldcatalog.model.raw.CatalogComparisonProductsResponse

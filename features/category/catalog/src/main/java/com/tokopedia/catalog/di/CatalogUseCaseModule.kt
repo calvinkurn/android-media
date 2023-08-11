@@ -1,4 +1,4 @@
-package com.tokopedia.oldcatalog.di
+package com.tokopedia.catalog.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
