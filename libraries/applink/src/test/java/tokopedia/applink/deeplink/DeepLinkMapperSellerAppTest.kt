@@ -9,8 +9,8 @@ import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-import com.tokopedia.applink.model.Always
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
+import com.tokopedia.applink.model.Always
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.config.GlobalConfig
 import io.mockk.every
@@ -26,7 +26,7 @@ class DeepLinkMapperSellerAppTest : DeepLinkMapperTestFixture() {
         // This a reminder to developer.
         // If this size is modified, please also add unit test for the added deeplink.
         const val SIZE_HOST = 31
-        const val SIZE_PATH = 70
+        const val SIZE_PATH = 71
     }
 
     @Throws(RuntimeException::class)
