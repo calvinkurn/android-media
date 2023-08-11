@@ -109,10 +109,12 @@ class ProfileManagementActivity: BaseSimpleWebViewActivity(), HasComponent<Profi
                     setupLayout(it)
                 }
                 is GetUrlProfileManagementResult.Success -> {
+                    ProfileManagementTracker.sendSuccessLoadGotoProfilePageEvent()
                     setupLayout(it)
                     setupFragment(savedInstance = null)
                 }
                 is GetUrlProfileManagementResult.Failed -> {
+                    ProfileManagementTracker.sendFailedLoadGotoProfilePageEvent()
                     setupErrorLayout(it.throwable)
                     setupLayout(it)
                 }
@@ -125,6 +127,7 @@ class ProfileManagementActivity: BaseSimpleWebViewActivity(), HasComponent<Profi
             if (binding?.globalError?.getErrorType() == GlobalError.PAGE_NOT_FOUND) {
                 finish()
             } else {
+                ProfileManagementTracker.sendClickOnCobaLagiButtonEvent()
                 viewModel.getProfileManagementData()
             }
         }

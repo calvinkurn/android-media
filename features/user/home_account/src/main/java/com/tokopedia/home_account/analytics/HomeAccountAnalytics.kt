@@ -29,6 +29,7 @@ import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_TOKOPOINTS
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_IMPRESSION_PRODUCT_RECOMMENDATION
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_SIMPAN_THEME_SELECTION
+import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_VIEW_ON_ACCOUNT_SAYA_PAGE
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_VIEW_OVO_HOMEPAGE
 import com.tokopedia.home_account.AccountConstants.Analytics.BusinessUnit.HOME_AND_BROWSE
 import com.tokopedia.home_account.AccountConstants.Analytics.BusinessUnit.USER_PLATFORM_UNIT
@@ -66,9 +67,11 @@ import com.tokopedia.home_account.AccountConstants.Analytics.Event.EVENT_CLICK_H
 import com.tokopedia.home_account.AccountConstants.Analytics.Event.EVENT_CLICK_SETTING
 import com.tokopedia.home_account.AccountConstants.Analytics.Event.EVENT_PRODUCT_CLICK
 import com.tokopedia.home_account.AccountConstants.Analytics.Event.EVENT_PRODUCT_VIEW
+import com.tokopedia.home_account.AccountConstants.Analytics.Event.EVENT_VIEW_ACCOUNT_IRIS
 import com.tokopedia.home_account.AccountConstants.Analytics.Event.EVENT_VIEW_DANA_IRIS
 import com.tokopedia.home_account.AccountConstants.Analytics.IDR
 import com.tokopedia.home_account.AccountConstants.Analytics.IMPRESSIONS
+import com.tokopedia.home_account.AccountConstants.Analytics.KEY_TRACKER_ID
 import com.tokopedia.home_account.AccountConstants.Analytics.LIST
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_ABOUT_TOKOPEDIA
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_ACCOUNT_SECURITY
@@ -112,11 +115,13 @@ import com.tokopedia.home_account.AccountConstants.Analytics.USER
 import com.tokopedia.home_account.AccountConstants.Analytics.VALUE_BEBAS_ONGKIR
 import com.tokopedia.home_account.AccountConstants.Analytics.VALUE_PRODUCT_RECOMMENDATION_LIST
 import com.tokopedia.home_account.AccountConstants.Analytics.VALUE_PRODUCT_TOPADS
+import com.tokopedia.home_account.AccountConstants.Analytics.VALUE_TRACKER_ID_45930
 import com.tokopedia.home_account.AccountConstants.Analytics.VALUE_WISHLIST_PRODUCT
 import com.tokopedia.loginfingerprint.tracker.BiometricTracker
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.track.builder.Tracker
 import com.tokopedia.track.interfaces.Analytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
@@ -282,13 +287,29 @@ class HomeAccountAnalytics @Inject constructor(val userSession: UserSessionInter
         )
     }
 
-    fun eventClickProfile() {
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4103
+    // Tracker ID: 45930
+    fun sendViewOnAkunSayaPageEvent (eventLabel: String) {
+        Tracker.Builder()
+            .setEvent(EVENT_VIEW_ACCOUNT_IRIS)
+            .setEventAction(ACTION_VIEW_ON_ACCOUNT_SAYA_PAGE)
+            .setEventCategory(CATEGORY_ACCOUNT_BUYER)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_45930)
+            .setBusinessUnit(USER_PLATFORM_UNIT)
+            .setCurrentSite(TOKOPEDIA_MARKETPLACE_SITE)
+            .build()
+            .send()
+    }
+
+    fun eventClickProfile(label: String) {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
             EVENT_CLICK_ACCOUNT,
             CATEGORY_ACCOUNT_BUYER,
             ACTION_CLICK_PROFILE,
-            LABEL_EMPTY
+            label
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE

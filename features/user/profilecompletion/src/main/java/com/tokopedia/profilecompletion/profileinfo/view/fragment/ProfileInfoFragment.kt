@@ -173,6 +173,14 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         )
 
         val isProfileManagementM1Activated = isProfileManagementM1Activated()
+
+        val label = if (isProfileManagementM1Activated) {
+            ProfileInfoTracker.LABEL_M1
+        } else {
+            ""
+        }
+        tracker.sendViewOnInfoProfilePageEvent(label)
+
         binding?.itemProfileManagement?.root?.showWithCondition(isProfileManagementM1Activated)
         binding?.fragmentInfoDivider2?.showWithCondition(isProfileManagementM1Activated)
     }
@@ -184,6 +192,7 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         }
 
         binding?.itemProfileManagement?.root?.setOnClickListener {
+            tracker.sendClickOnGotoProfileEntryPointEvent()
             goToProfileManagement()
         }
     }

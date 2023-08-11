@@ -44,7 +44,7 @@ object DeeplinkMapperUser {
         }
     }
 
-    private fun isProfileManagementM2Activated(): Boolean {
+    fun isProfileManagementM2Activated(): Boolean {
         return RemoteConfigInstance.getInstance()
             .abTestPlatform
             .getString(KEY_ROLLENCE_PROFILE_MANAGEMENT_M2)

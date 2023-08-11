@@ -2,6 +2,7 @@ package com.tokopedia.profilecompletion.profileinfo.tracker
 
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.track.builder.Tracker
 import javax.inject.Inject
 
 class ProfileInfoTracker @Inject constructor() {
@@ -392,6 +393,38 @@ class ProfileInfoTracker @Inject constructor() {
         )
     }
 
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4103
+    // Tracker ID: 45544
+    fun sendClickOnGotoProfileEntryPointEvent() {
+        Tracker.Builder()
+            .setEvent(EVENT_CLICK_ACCOUNT_IRIS)
+            .setEventAction(ACTION_CLICK_GOTO_PROFILE_ENTRY_POINT)
+            .setEventCategory(CATEGORY_INFO_PROFILE)
+            .setEventLabel("")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_45544)
+            .setBusinessUnit(BUSSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
+            .build()
+            .send()
+    }
+
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4103
+    // Tracker ID: 45929
+    fun sendViewOnInfoProfilePageEvent (eventLabel: String) {
+        Tracker.Builder()
+            .setEvent(EVENT_CLICK_ACCOUNT_IRIS)
+            .setEventAction(ACTION_VIEW_ON_INFO_PROFILE_PAGE)
+            .setEventCategory(CATEGORY_INFO_PROFILE)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_45929)
+            .setBusinessUnit(BUSSINESS_UNIT)
+            .setCurrentSite(CURRENT_SITE)
+            .build()
+            .send()
+    }
+
     private fun track(data: MutableMap<String, Any>) {
         data[BUSSINESS_UNIT] = BUSSINESS_UNIT
         data[CURRENT_SITE] = CURRENT_SITE
@@ -399,6 +432,7 @@ class ProfileInfoTracker @Inject constructor() {
     }
 
     companion object {
+        const val EVENT_CLICK_ACCOUNT_IRIS = "clickAccountIris"
         const val EVENT_CLICK_ACCOUNT = "clickAccount"
         const val CATEGORY_CHANGE_PROFILE = "account setting - change profile"
         const val CATEGORY_CHANGE_NAME = "account setting - change name"
@@ -411,6 +445,8 @@ class ProfileInfoTracker @Inject constructor() {
         const val CATEGORY_INFO_PROFILE = "account setting - info profile"
 
 
+        const val ACTION_VIEW_ON_INFO_PROFILE_PAGE = "view on info profile page"
+        const val ACTION_CLICK_GOTO_PROFILE_ENTRY_POINT = "click on goto profile entry point"
         const val ACTION_CLICK_INFORMATION = "click information"
         const val ACTION_CLICK_BACK = "click on button back"
         const val ACTION_CLICK_BACK_USERNAME = "click on button back username"
@@ -423,6 +459,7 @@ class ProfileInfoTracker @Inject constructor() {
         const val ACTION_CLOSE_BOTTOM_SHEET_CHANGE_BIRTHDAY = "close bottomsheet change birthday"
         const val ACTION_CLICK_LIHAT_HALAMAN = "click on button lihat halaman"
 
+        const val LABEL_M1 = "m1"
         const val LABEL_CLICK = "click"
         const val LABEL_SUCCESS = "success"
         const val LABEL_FAILED = "failed"
@@ -442,5 +479,9 @@ class ProfileInfoTracker @Inject constructor() {
 
         const val BUSSINESS_UNIT = "user platform"
         const val CURRENT_SITE = "tokopediamarketplace"
+
+        const val KEY_TRACKER_ID = "trackerId"
+        const val VALUE_TRACKER_ID_45544 = "45544"
+        const val VALUE_TRACKER_ID_45929 = "45929"
     }
 }

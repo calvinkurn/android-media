@@ -37,6 +37,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.applink.user.DeeplinkMapperUser
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.util.ViewHelper
@@ -277,6 +278,9 @@ open class HomeAccountUserFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val label = getLabelProfileManagement()
+        homeAccountAnalytic.sendViewOnAkunSayaPageEvent(label)
+
         binding?.homeAccountUserToolbar?.let {
             it.setIcon(
                 IconBuilder(
@@ -367,8 +371,17 @@ open class HomeAccountUserFragment :
         }
     }
 
+    private fun getLabelProfileManagement(): String {
+        return if (DeeplinkMapperUser.isProfileManagementM2Activated()) {
+            AccountConstants.Analytics.Label.LABEL_M2
+        } else {
+            AccountConstants.Analytics.Label.LABEL_EMPTY
+        }
+    }
+
     override fun onProfileClicked() {
-        homeAccountAnalytic.eventClickProfile()
+        val label = getLabelProfileManagement()
+        homeAccountAnalytic.eventClickProfile(label)
     }
 
     override fun onIconWarningClicked(profile: ProfileDataView) {
@@ -376,7 +389,8 @@ open class HomeAccountUserFragment :
     }
 
     override fun onEditProfileClicked() {
-        homeAccountAnalytic.eventClickProfile()
+        val label = getLabelProfileManagement()
+        homeAccountAnalytic.eventClickProfile(label)
         goToApplink(ApplinkConstInternalUserPlatform.SETTING_PROFILE)
     }
 
