@@ -210,7 +210,6 @@ object SellerSettingsList {
                 }
             )
         }
-
     }
 
     private fun trackingAliasMap(context: Context): Map<String, String?> {
@@ -220,14 +219,15 @@ object SellerSettingsList {
         )
     }
 
-    private fun checkAccessPermissionIfNotShopOwner(context: Context, isShopOwner: Boolean, mapper: AdminPermissionMapper, @AdminFeature feature: String) {
-        val intent =
-            if (isShopOwner) {
-                mapper.mapFeatureToDestination(context, feature)
-            } else {
-                RouteManager.getIntent(context, ApplinkConstInternalSellerapp.ADMIN_AUTHORIZE, feature)
-            }
-        context.startActivity(intent)
+    private fun checkAccessPermissionIfNotShopOwner(context: Context?, isShopOwner: Boolean, mapper: AdminPermissionMapper, @AdminFeature feature: String) {
+        if (context != null) {
+            val intent =
+                if (isShopOwner) {
+                    mapper.mapFeatureToDestination(context, feature)
+                } else {
+                    RouteManager.getIntent(context, ApplinkConstInternalSellerapp.ADMIN_AUTHORIZE, feature)
+                }
+            context.startActivity(intent)
+        }
     }
-
 }
