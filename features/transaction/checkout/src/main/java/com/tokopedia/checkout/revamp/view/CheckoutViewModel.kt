@@ -302,13 +302,17 @@ class CheckoutViewModel @Inject constructor(
                     val crossSellList = arrayListOf<CheckoutCrossSellItem>()
                     if (!tickerError.isError) {
                         crossSellList.addAll(
-                            saf.cartShipmentAddressFormData.crossSell.mapIndexed { index, crossSellModel ->
-                                CheckoutCrossSellModel(
-                                    crossSellModel,
-                                    crossSellModel.isChecked,
-                                    crossSellModel.checkboxDisabled,
-                                    index
-                                )
+                            saf.cartShipmentAddressFormData.crossSell.mapIndexedNotNull { index, crossSellModel ->
+                                if (!crossSellModel.checkboxDisabled) {
+                                    CheckoutCrossSellModel(
+                                        crossSellModel,
+                                        crossSellModel.isChecked,
+                                        crossSellModel.checkboxDisabled,
+                                        index
+                                    )
+                                } else {
+                                    null
+                                }
                             }
                         )
                         if (saf.cartShipmentAddressFormData.egoldAttributes != null && saf.cartShipmentAddressFormData.egoldAttributes!!.isEnabled && saf.cartShipmentAddressFormData.egoldAttributes!!.isEligible) {
