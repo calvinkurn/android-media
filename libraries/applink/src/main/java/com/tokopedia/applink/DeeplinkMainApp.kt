@@ -93,6 +93,11 @@ object DeeplinkMainApp {
                 ApplinkConstInternalUserPlatform.MANAGE_NAME
             }
         ),
+        "addon" to mutableListOf(
+            DLP.matchPattern("{addon_id}") { _, _, _, idList ->
+                UriUtil.buildUri(ApplinkConstInternalMechant.MERCHANT_ADDON, idList?.getOrNull(0))
+            }
+        ),
         "affiliate" to mutableListOf(
             DLP.matchPattern("") { deeplink: String ->
                 DeeplinkMapperCategory.getRegisteredNavigationAffiliate(deeplink)
