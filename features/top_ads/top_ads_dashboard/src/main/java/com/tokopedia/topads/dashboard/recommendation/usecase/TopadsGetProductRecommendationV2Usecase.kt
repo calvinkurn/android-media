@@ -3,7 +3,7 @@ package com.tokopedia.topads.dashboard.recommendation.usecase
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.topads.dashboard.data.constant.TopAdsProductRecommendationConstants.SHOP_Id_KEY
+import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.SHOP_Id_KEY
 import com.tokopedia.topads.dashboard.data.model.ProductRecommendationModel
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject

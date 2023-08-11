@@ -617,4 +617,5 @@
     <string name="topads_dashboard_saran_ads_info_sheet_desc">Kumpulan rekomendasi untuk iklanmu yang masih bisa dimaksimalkan.</string>
     <string name="topads_insight_centre_choose_potential_products_with_count">Pilih Produk Berpotensi (%d)</string>
     <string name="topads_insight_centre_choose_product">Pilih Produk</string>
+    <string name="topads_insight_centre_product_item_description"><![CDATA[<font size="13">Dicari sebanyak: <b>%s kali</b></font>]]></string>
 </resources>
