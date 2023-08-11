@@ -4,7 +4,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.databinding.ItemCheckoutPromoBinding
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promocheckout.common.view.uimodel.PromoEntryPointSummaryItem
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 
@@ -13,8 +16,21 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
 
     private var isApplied = false
 
-    fun bind(promo: LastApplyUiModel) {
+    fun bind(promoModel: CheckoutPromoModel) {
+        if (!promoModel.isEnable) {
+            binding.root.gone()
+//            binding.root.layoutParams = RecyclerView.LayoutParams(0, 0)
+            return
+        } else {
+            binding.root.visible()
+//            binding.root.layoutParams = RecyclerView.LayoutParams(
+//                ViewGroup.LayoutParams.MATCH_PARENT,
+//                ViewGroup.LayoutParams.WRAP_CONTENT
+//            )
+        }
+
         val titleValue: String
+        val promo = promoModel.promo
 
         when {
             promo.additionalInfo.messageInfo.message.isNotEmpty() -> {

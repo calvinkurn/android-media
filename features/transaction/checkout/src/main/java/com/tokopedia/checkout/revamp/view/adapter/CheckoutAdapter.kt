@@ -190,7 +190,7 @@ class CheckoutAdapter(
             }
 
             is CheckoutPromoModel -> {
-                (holder as CheckoutPromoViewHolder).bind(item.promo)
+                (holder as CheckoutPromoViewHolder).bind(item)
             }
 
             is CheckoutCostModel -> {

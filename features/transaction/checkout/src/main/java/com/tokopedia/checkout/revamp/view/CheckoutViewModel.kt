@@ -62,6 +62,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
+import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout
@@ -266,29 +267,35 @@ class CheckoutViewModel @Inject constructor(
                         userSessionInterface.name
                     )
 
-                    val uploadPrescriptionUiModel = UploadPrescriptionUiModel(
-                        showImageUpload = saf.cartShipmentAddressFormData.epharmacyData.showImageUpload,
-                        uploadImageText = saf.cartShipmentAddressFormData.epharmacyData.uploadText,
-                        leftIconUrl = saf.cartShipmentAddressFormData.epharmacyData.leftIconUrl,
-                        checkoutId = saf.cartShipmentAddressFormData.epharmacyData.checkoutId,
-                        frontEndValidation = saf.cartShipmentAddressFormData.epharmacyData.frontEndValidation,
-                        consultationFlow = saf.cartShipmentAddressFormData.epharmacyData.consultationFlow,
-                        rejectedWording = saf.cartShipmentAddressFormData.epharmacyData.rejectedWording
-                    )
+                    var uploadPrescriptionUiModel = UploadPrescriptionUiModel()
                     if (!tickerError.isError) {
+                        uploadPrescriptionUiModel = UploadPrescriptionUiModel(
+                            showImageUpload = saf.cartShipmentAddressFormData.epharmacyData.showImageUpload,
+                            uploadImageText = saf.cartShipmentAddressFormData.epharmacyData.uploadText,
+                            leftIconUrl = saf.cartShipmentAddressFormData.epharmacyData.leftIconUrl,
+                            checkoutId = saf.cartShipmentAddressFormData.epharmacyData.checkoutId,
+                            frontEndValidation = saf.cartShipmentAddressFormData.epharmacyData.frontEndValidation,
+                            consultationFlow = saf.cartShipmentAddressFormData.epharmacyData.consultationFlow,
+                            rejectedWording = saf.cartShipmentAddressFormData.epharmacyData.rejectedWording
+                        )
                         addOnProcessor.fetchPrescriptionIds(
                             saf.cartShipmentAddressFormData.epharmacyData,
                             items,
                             uploadPrescriptionUiModel
                         )
                     }
+
                     val epharmacy = CheckoutEpharmacyModel(
                         epharmacy = uploadPrescriptionUiModel
                     )
 
                     val promo = CheckoutPromoModel(
+                        isEnable = !tickerError.isError,
                         promo = saf.cartShipmentAddressFormData.lastApplyData
                     )
+                    if (promo.isEnable && saf.cartShipmentAddressFormData.lastApplyData.additionalInfo.errorDetail.message.isNotEmpty()) {
+                        PromoRevampAnalytics.eventCartViewPromoMessage(saf.cartShipmentAddressFormData.lastApplyData.additionalInfo.errorDetail.message)
+                    }
 
                     val cost = CheckoutCostModel()
 
