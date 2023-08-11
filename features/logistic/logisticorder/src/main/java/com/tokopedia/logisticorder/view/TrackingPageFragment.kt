@@ -258,11 +258,15 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
     private fun setTextInfo(model: TrackOrderModel) {
         binding?.let {
             it.referenceNumber.text = model.shippingRefNum.toHyphenIfEmptyOrNull()
+
             it.storeName.text = model.detail.shipperName.toHyphenIfEmptyOrNull()
-            it.storeAddress.text = model.detail.shipperCity.toHyphenIfEmptyOrNull()
+            it.storeAddress.text = model.detail.shipperCity
+
             it.serviceCode.text = model.detail.serviceCode.toHyphenIfEmptyOrNull()
+
             it.buyerName.text = model.detail.receiverName.toHyphenIfEmptyOrNull()
-            it.buyerLocation.text = model.detail.receiverCity.toHyphenIfEmptyOrNull()
+            it.buyerLocation.text = model.detail.receiverCity
+
             it.currentStatus.text = model.status.toHyphenIfEmptyOrNull()
         }
     }

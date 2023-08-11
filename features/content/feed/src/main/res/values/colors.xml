@@ -30,6 +30,9 @@
 
     <color name="feed_dms_overlay">#B32E3137</color>
 
+    <color name="feed_dms_bottom_action_background">#121212</color>
+    <color name="feed_dms_bottom_action_text">#6D7588</color>
+
     <!--other-->
     <color name="feed_dms_tag_product_background">#2E3137</color>
     <color name="feed_dms_tag_product_icon_background">#FFA617</color>

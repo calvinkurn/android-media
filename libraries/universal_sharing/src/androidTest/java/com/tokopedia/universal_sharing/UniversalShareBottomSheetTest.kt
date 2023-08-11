@@ -4,8 +4,10 @@ import android.content.Context
 import android.content.Intent
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
@@ -15,7 +17,12 @@ import com.tokopedia.common.di.DaggerAppStubComponent
 import com.tokopedia.common.stub.GraphqlRepositoryStub
 import com.tokopedia.common.stub.UniversalShareBottomSheetStub
 import com.tokopedia.common.view.UniversalShareTestActivity
+import com.tokopedia.test.application.matcher.RecyclerViewMatcher
+import com.tokopedia.test.application.matcher.hasViewHolderOf
+import com.tokopedia.universal_sharing.view.bottomsheet.viewholder.ChipViewHolder
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
+import com.tokopedia.universal_sharing.view.model.ChipProperties
+import com.tokopedia.universal_sharing.view.model.LinkProperties
 import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
@@ -75,6 +82,57 @@ class UniversalShareBottomSheetTest {
         }
     }
 
+    @Test
+    fun `bottom-sheet_able_click_the_chip_and_get_the_properties_on_listener`() {
+        val chips = chipComponentList()
+        var onTitleChipPropertiesSelected = ""
+
+        runTest(
+            UniversalShareBottomSheetStub().apply {
+                setChipList(chips)
+                onChipChangedListener {
+                    onTitleChipPropertiesSelected = it.title
+                }
+            }
+        ) {
+            Espresso.onView(withId(R.id.lst_chip)).check(matches(isDisplayed()))
+            Espresso.onView(RecyclerViewMatcher(R.id.lst_chip).atPosition(0)).perform(ViewActions.click())
+            assert(onTitleChipPropertiesSelected.isNotEmpty())
+        }
+    }
+
+    @Test
+    fun `bottom-sheet_show_chip_component_with_default_selection_state`() {
+        val chips = chipComponentList()
+            .toMutableList()
+            .also {
+                it.last().isSelected = true
+            }
+
+        runTest(
+            UniversalShareBottomSheetStub().apply {
+                setChipList(chips)
+            }
+        ) {
+            Espresso.onView(RecyclerViewMatcher(R.id.lst_chip).atPosition(0))
+                .check(matches(hasDescendant(withId(R.id.view_chip))))
+
+            Espresso.onView(withId(R.id.lst_chip)).check(matches(isDisplayed()))
+        }
+    }
+
+    @Test
+    fun `bottom-sheet_show_chip_component_with_first_item_as_default_selection_state`() {
+        runTest(
+            UniversalShareBottomSheetStub().apply {
+                setChipList(chipComponentList())
+            }
+        ) {
+            Espresso.onView(withId(R.id.lst_chip)).check(matches(isDisplayed()))
+            Espresso.onView(withId(R.id.lst_chip)).check(matches(hasViewHolderOf(ChipViewHolder::class.java)))
+        }
+    }
+
     private fun runTest(bottomSheet: UniversalShareBottomSheetStub, block: () -> Unit) {
         activityTestRule.launchActivity(Intent())
         activityTestRule.activity.getShareFragment().showUniversalBottomSheet(bottomSheet)
@@ -88,4 +146,17 @@ class UniversalShareBottomSheetTest {
     private fun setMockParam(param: GraphqlRepositoryStub.MockParam) {
         repositoryStub.mockParam = param
     }
+
+    private fun chipComponentList() = listOf(
+        ChipProperties(
+            id = 1,
+            title = "Foo",
+            properties = LinkProperties()
+        ),
+        ChipProperties(
+            id = 2,
+            title = "Bar",
+            properties = LinkProperties()
+        ),
+    )
 }

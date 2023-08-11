@@ -15,8 +15,9 @@ import com.tokopedia.notifications.common.PersistentEvent;
 import com.tokopedia.notifications.factory.custom_notifications.TokoChatBubbleChatNotification;
 import com.tokopedia.notifications.factory.custom_notifications.ReplyChatNotification;
 import com.tokopedia.notifications.model.BaseNotificationModel;
-import com.tokopedia.remoteconfig.RemoteConfigInstance;
-import com.tokopedia.remoteconfig.RollenceKey;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,7 +57,7 @@ public class CMNotificationFactory {
                     return new ReviewNotification(context.getApplicationContext(), baseNotificationModel);
                 } else if (baseNotificationModel.isReplyChat()) {
                     return new ReplyChatNotification(context.getApplicationContext(), baseNotificationModel, getTopChatNotificationModelList(baseNotificationModelList));
-                } else if (isEnableTokoChatBubble(baseNotificationModel)) {
+                } else if (isEnableTokoChatBubble(context, baseNotificationModel)) {
                     return new TokoChatBubbleChatNotification(context.getApplicationContext(), baseNotificationModel, getTokoChatNotificationModelList(baseNotificationModelList), null);
                 } else {
                     return new RichDefaultNotification(context.getApplicationContext(), baseNotificationModel, baseNotificationModelList);
@@ -112,9 +113,10 @@ public class CMNotificationFactory {
         }
         return topChatNotificationModelList;
     }
-    private static boolean isEnableTokoChatBubble(BaseNotificationModel baseNotificationModel) {
+    private static boolean isEnableTokoChatBubble(Context context,
+                                                  BaseNotificationModel baseNotificationModel) {
         boolean isEnableBubble = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R;
-        return isEnableBubble && getIsBubbleRollenceEnabled() && isTokoChatPNIdExist(baseNotificationModel);
+        return isEnableBubble && getIsBubbleEnabled(context) && isTokoChatPNIdExist(baseNotificationModel);
     }
 
     private static boolean isTokoChatPNIdExist(BaseNotificationModel baseNotificationModel) {
@@ -128,16 +130,18 @@ public class CMNotificationFactory {
         return !tokoChatPNId.isBlank();
     }
 
-    private static boolean getIsBubbleRollenceEnabled() {
-        boolean isRollenceEnabled;
+    private static boolean getIsBubbleEnabled(Context context) {
+        boolean isRemoteConfigEnabled;
         try {
-            isRollenceEnabled = RemoteConfigInstance.getInstance().getABTestPlatform().getString(
-                    RollenceKey.TOKOCHAT_BUBBLES, ""
-            ).equals(RollenceKey.TOKOCHAT_BUBBLES);
+            isRemoteConfigEnabled = getRemoteConfig(context).getBoolean(RemoteConfigKey.IS_TOKOCHAT_BUBBLES_ENABLED, Boolean.TRUE);
         } catch (Exception exception) {
-            isRollenceEnabled = true;
+            isRemoteConfigEnabled = true;
         }
-        return isRollenceEnabled;
+        return isRemoteConfigEnabled;
+    }
+
+    private static RemoteConfig getRemoteConfig(Context context) {
+        return new FirebaseRemoteConfigImpl(context);
     }
 
     private static List<BaseNotificationModel> getTokoChatNotificationModelList(List<BaseNotificationModel> baseNotificationModelList) {

@@ -64,6 +64,7 @@ object QueryListProductRecommendation {
         "                          isGold\n" +
         "                          isOfficial\n" +
         "                        }\n" +
+        "                        warehouseID\n" +
         "                        departmentId\n" +
         "                        labels {\n" +
         "                          title\n" +
