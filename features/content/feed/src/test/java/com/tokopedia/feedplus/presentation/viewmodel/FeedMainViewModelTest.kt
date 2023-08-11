@@ -1,29 +1,17 @@
 package com.tokopedia.feedplus.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.content.common.model.AuthorItem
-import com.tokopedia.content.common.model.Authors
-import com.tokopedia.content.common.model.Creation
-import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
-import com.tokopedia.content.common.model.FeedXHeader
-import com.tokopedia.content.common.model.FeedXHeaderData
-import com.tokopedia.content.common.model.FeedXHeaderResponse
-import com.tokopedia.content.common.model.Items
-import com.tokopedia.content.common.model.Live
-import com.tokopedia.content.common.model.MetaData
-import com.tokopedia.content.common.model.Tab
-import com.tokopedia.content.common.model.UserProfile
-import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
-import com.tokopedia.content.common.usecase.FeedXHeaderUseCase
+import com.tokopedia.content.common.producttag.view.uimodel.NetworkResult
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.createpost.common.domain.usecase.cache.DeleteMediaPostCacheUseCase
+import com.tokopedia.feedplus.data.FeedTabsModelBuilder
+import com.tokopedia.feedplus.domain.repository.FeedRepository
 import com.tokopedia.feedplus.presentation.model.CreateContentType
+import com.tokopedia.feedplus.presentation.model.CreatorType
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.onboarding.OnboardingPreferences
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -47,7 +35,7 @@ class FeedMainViewModelTest {
     @get:Rule
     val coroutineTestRule = UnconfinedTestRule()
 
-    private val feedXHeaderUseCase: FeedXHeaderUseCase = mockk()
+    private val repository: FeedRepository = mockk()
     private val deletePostCacheUseCase: DeleteMediaPostCacheUseCase = mockk()
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -61,6 +49,8 @@ class FeedMainViewModelTest {
 
     private lateinit var viewModel: FeedMainViewModel
 
+    private val tabsModelBuilder = FeedTabsModelBuilder()
+
     @Before
     fun setUp() {
         coEvery {
@@ -71,9 +61,8 @@ class FeedMainViewModelTest {
         } returns false
 
         viewModel = FeedMainViewModel(
-            feedXHeaderUseCase,
+            repository,
             deletePostCacheUseCase,
-            testDispatcher,
             onBoardingPreferences,
             userSession,
             uiEventManager
@@ -91,9 +80,8 @@ class FeedMainViewModelTest {
 
         // when
         val mViewModel = FeedMainViewModel(
-            feedXHeaderUseCase,
+            repository,
             deletePostCacheUseCase,
-            testDispatcher,
             onBoardingPreferences,
             userSession,
             uiEventManager
@@ -129,54 +117,45 @@ class FeedMainViewModelTest {
     @Test
     fun onFetchFeedTabs_whenSuccess_shouldChangeFeedTabsValue() {
         // given
-        val dummyResponse = getDummyFeedXHeaderData()
+        val expectedValue = tabsModelBuilder.buildUiModel()
 
-        coEvery { feedXHeaderUseCase.setRequestParams(any()) } coAnswers {}
-        coEvery { feedXHeaderUseCase.executeOnBackground() } returns dummyResponse
+        coEvery { repository.getTabs() } returns expectedValue
 
         // when
         viewModel.fetchFeedTabs()
 
         // then
         val feedTabs = viewModel.feedTabs.value
-        assert(feedTabs is Success)
-
-        val successFeedTabsData = (feedTabs as Success).data
-        assert(successFeedTabsData.size == dummyResponse.feedXHeaderData.data.tab.items.size)
-
-        dummyResponse.feedXHeaderData.data.tab.items.forEachIndexed { index, items ->
-            assert(successFeedTabsData[index].isActive == items.isActive)
-            assert(successFeedTabsData[index].title == items.title)
-            assert(successFeedTabsData[index].key == items.key)
-            assert(successFeedTabsData[index].type == items.type)
-            assert(successFeedTabsData[index].position == items.position)
-        }
+        assert(feedTabs is NetworkResult.Success)
     }
 
     @Test
     fun onFetchFeedTabs_whenFail_shouldChangeFeedTabsValue() {
         // given
-        coEvery { feedXHeaderUseCase.setRequestParams(any()) } coAnswers {}
-        coEvery { feedXHeaderUseCase.executeOnBackground() } throws MessageErrorException("Failed to fetch")
+        val expectedValue = MessageErrorException("Failed to fetch")
+
+        coEvery { repository.getTabs() } throws expectedValue
 
         // when
         viewModel.fetchFeedTabs()
 
         // then
         val feedTabsData = viewModel.feedTabs.value
-        assert(feedTabsData is Fail)
+        assert(feedTabsData is NetworkResult.Error)
 
-        val failedTabsData = feedTabsData as Fail
-        assert(failedTabsData.throwable is MessageErrorException)
-        assert(failedTabsData.throwable.message == "Failed to fetch")
+        val failedTabsData = feedTabsData as NetworkResult.Error
+
+        assert(failedTabsData.error is MessageErrorException)
+        assert(failedTabsData.error.message == expectedValue.message)
     }
 
     @Test
     fun onChangeCurrentTabByType_whenTabsSuccess_shouldChangeCurrentTabsIndex() {
         // given
-        val dummyResponse = getDummyFeedXHeaderData()
-        coEvery { feedXHeaderUseCase.setRequestParams(any()) } coAnswers {}
-        coEvery { feedXHeaderUseCase.executeOnBackground() } returns dummyResponse
+        val mockValue = tabsModelBuilder.buildUiModel(
+            data = tabsModelBuilder.buildDefaultTabsModel()
+        )
+        coEvery { repository.getTabs() } returns mockValue
         viewModel.fetchFeedTabs()
 
         // when 1
@@ -210,9 +189,7 @@ class FeedMainViewModelTest {
         // given
         val currentTabIndex = viewModel.currentTabIndex.value
 
-        coEvery { feedXHeaderUseCase.setRequestParams(any()) } coAnswers {}
-        coEvery { feedXHeaderUseCase.executeOnBackground() } throws MessageErrorException("")
-        viewModel.fetchFeedTabs()
+        coEvery { repository.getTabs() } throws Exception()
 
         // when
         viewModel.changeCurrentTabByType("foryou")
@@ -223,8 +200,7 @@ class FeedMainViewModelTest {
     @Test
     fun onScrollCurrentTabToTop_whenTabIsNotSuccess_shouldNotEmitEvent() {
         // given
-        coEvery { feedXHeaderUseCase.setRequestParams(any()) } coAnswers {}
-        coEvery { feedXHeaderUseCase.executeOnBackground() } throws MessageErrorException("")
+        coEvery { repository.getTabs() } throws Exception()
         viewModel.fetchFeedTabs()
 
         // when
@@ -237,36 +213,10 @@ class FeedMainViewModelTest {
     @Test
     fun onScrollCurrentTabToTop_whenTabIsSuccessWithOneActiveTab_shouldEmitEventOnce() {
         // given
-        val dummyResponse = FeedXHeaderResponse(
-            feedXHeaderData = FeedXHeader(
-                data = FeedXHeaderData(
-                    tab = Tab(
-                        isActive = true,
-                        items = listOf(
-                            Items(
-                                isActive = false,
-                                position = 1,
-                                type = "foryou",
-                                title = "Untuk Kamu",
-                                key = "foryou"
-                            ),
-                            Items(
-                                isActive = true,
-                                position = 2,
-                                type = "following",
-                                title = "Following",
-                                key = "following"
-                            )
-                        ),
-                        meta = MetaData(
-                            selectedIndex = 0
-                        )
-                    )
-                )
-            )
+        val mockValue = tabsModelBuilder.buildUiModel(
+            data = tabsModelBuilder.buildCustomTabsModel()
         )
-        coEvery { feedXHeaderUseCase.setRequestParams(any()) } coAnswers {}
-        coEvery { feedXHeaderUseCase.executeOnBackground() } returns dummyResponse
+        coEvery { repository.getTabs() } returns mockValue
         viewModel.fetchFeedTabs()
 
         // when
@@ -280,9 +230,10 @@ class FeedMainViewModelTest {
     @Test
     fun onScrollCurrentTabToTop_whenTabIsSuccessWithTwoActiveTabs_shouldEmitEventTwice() {
         // given
-        val dummyResponse = getDummyFeedXHeaderData()
-        coEvery { feedXHeaderUseCase.setRequestParams(any()) } coAnswers {}
-        coEvery { feedXHeaderUseCase.executeOnBackground() } returns dummyResponse
+        val mockValue = tabsModelBuilder.buildUiModel(
+            data = tabsModelBuilder.buildDefaultTabsModel()
+        )
+        coEvery { repository.getTabs() } returns mockValue
         viewModel.fetchFeedTabs()
 
         coEvery { uiEventManager.emitEvent(any()) } coAnswers {}
@@ -303,9 +254,10 @@ class FeedMainViewModelTest {
         assert(currentTabByIndex.isEmpty())
 
         // prepare feed tabs data
-        val dummyResponse = getDummyFeedXHeaderData()
-        coEvery { feedXHeaderUseCase.setRequestParams(any()) } coAnswers {}
-        coEvery { feedXHeaderUseCase.executeOnBackground() } returns dummyResponse
+        val mockValue = tabsModelBuilder.buildUiModel(
+            data = tabsModelBuilder.buildDefaultTabsModel()
+        )
+        coEvery { repository.getTabs() } returns mockValue
         viewModel.fetchFeedTabs()
 
         // get current tab type
@@ -330,8 +282,7 @@ class FeedMainViewModelTest {
     @Test
     fun onGetCurrentType_whenFailed_shouldReturnEmpty() {
         // given
-        coEvery { feedXHeaderUseCase.setRequestParams(any()) } coAnswers {}
-        coEvery { feedXHeaderUseCase.executeOnBackground() } throws MessageErrorException("")
+        coEvery { repository.getTabs() } throws Exception()
         viewModel.fetchFeedTabs()
 
         // when 2
@@ -340,201 +291,40 @@ class FeedMainViewModelTest {
     }
 
     @Test
-    fun onFetchMetaData_whenFailed_shouldChangeValueToFail() {
-        // given
-        coEvery { feedXHeaderUseCase.setRequestParams(any()) } coAnswers {}
-        coEvery { feedXHeaderUseCase.executeOnBackground() } throws MessageErrorException("Failed")
-
-        // when
-        viewModel.fetchFeedMetaData()
-
-        assert(viewModel.metaData.value is Fail)
-        val errorMetaData = viewModel.metaData.value as Fail
-        assert(errorMetaData.throwable is MessageErrorException)
-        assert(errorMetaData.throwable.message == "Failed")
-
-        assert(viewModel.feedCreateContentBottomSheetData.value is Fail)
-        val errorBottomSheetData = viewModel.feedCreateContentBottomSheetData.value as Fail
-        assert(errorBottomSheetData.throwable is MessageErrorException)
-        assert(errorBottomSheetData.throwable.message == "Failed")
-        assert(!viewModel.isShortEntryPointShowed)
-    }
-
-    @Test
     fun onFetchMetaData_whenSuccess_shouldChangeValueToSuccess() {
         // given
-        val dummyData = getDummyFeedXHeaderData()
-        coEvery { feedXHeaderUseCase.setRequestParams(any()) } coAnswers {}
-        coEvery { feedXHeaderUseCase.executeOnBackground() } returns dummyData
+        val expectedValue = tabsModelBuilder.buildUiModel().meta
+        coEvery { repository.getMeta() } returns expectedValue
 
         // when
         viewModel.fetchFeedMetaData()
 
         // then
-        assert(viewModel.metaData.value is Success)
-        val successData = (viewModel.metaData.value as Success).data
-        assert(successData.selectedIndex == 0)
-        assert(successData.profileApplink == dummyData.feedXHeaderData.data.userProfile.applink)
-        assert(successData.profilePhotoUrl == dummyData.feedXHeaderData.data.userProfile.image)
-        assert(successData.showMyProfile == dummyData.feedXHeaderData.data.userProfile.isShown)
-        assert(successData.isCreationActive == dummyData.feedXHeaderData.data.creation.isActive)
-        assert(successData.showLive == dummyData.feedXHeaderData.data.live.isActive)
-        assert(successData.liveApplink == dummyData.feedXHeaderData.data.live.applink)
+        assert(viewModel.metaData.value == expectedValue)
+        assert(!viewModel.isShortEntryPointShowed) // no eligible creation entry points
+    }
 
-        val creationData = (viewModel.feedCreateContentBottomSheetData.value as Success).data
-        assert(creationData[0].type == CreateContentType.CREATE_SHORT_VIDEO)
-        assert(creationData[1].type == CreateContentType.CREATE_POST)
-        assert(creationData[2].type == CreateContentType.CREATE_LIVE)
+    @Test
+    fun onFetchMetaData_whenSuccessWithShortsCreation_isShortEntryPointShowedShouldBeTrue() {
+        // given
+        val expectedValue = tabsModelBuilder.buildUiModel(
+            tabsModelBuilder.buildDefaultMetaModel(
+                eligibleCreationEntryPoints = listOf(
+                    tabsModelBuilder.buildCreationEntryPointUiModel(
+                        authorType = CreatorType.USER,
+                        creationType = CreateContentType.ShortVideo
+                    )
+                )
+            )
+        ).meta
+        coEvery { repository.getMeta() } returns expectedValue
+
+        // when
+        viewModel.fetchFeedMetaData()
+
+        // then
+        assert(viewModel.metaData.value == expectedValue)
         assert(viewModel.isShortEntryPointShowed)
-    }
-
-    @Test
-    fun onFetchMetaData_whenSuccessWithoutShortsCreation_isShortEntryPointShowedShouldBeFalse() {
-        // given
-        val dummyData = getDummyFeedXHeaderData()
-        val dummyDataWithoutShortsCreation = dummyData.copy(
-            feedXHeaderData = dummyData.feedXHeaderData.copy(
-                data = dummyData.feedXHeaderData.data.copy(
-                    creation = dummyData.feedXHeaderData.data.creation.copy(
-                        authors = dummyData.feedXHeaderData.data.creation.authors.map { author ->
-                            author.copy(
-                                items = author.items.filter {
-                                    it.type != CreateContentType.CREATE_SHORT_VIDEO.value
-                                }
-                            )
-                        }
-                    )
-                )
-            )
-        )
-
-        coEvery { feedXHeaderUseCase.setRequestParams(any()) } coAnswers {}
-        coEvery { feedXHeaderUseCase.executeOnBackground() } returns dummyDataWithoutShortsCreation
-
-        // when
-        viewModel.fetchFeedMetaData()
-
-        // then
-        assert(viewModel.metaData.value is Success)
-        val successData = (viewModel.metaData.value as Success).data
-        assert(successData.selectedIndex == 0)
-        assert(successData.profileApplink == dummyData.feedXHeaderData.data.userProfile.applink)
-        assert(successData.profilePhotoUrl == dummyData.feedXHeaderData.data.userProfile.image)
-        assert(successData.showMyProfile == dummyData.feedXHeaderData.data.userProfile.isShown)
-        assert(successData.isCreationActive == dummyData.feedXHeaderData.data.creation.isActive)
-        assert(successData.showLive == dummyData.feedXHeaderData.data.live.isActive)
-        assert(successData.liveApplink == dummyData.feedXHeaderData.data.live.applink)
-
-        val creationData = (viewModel.feedCreateContentBottomSheetData.value as Success).data
-        assert(creationData[0].type == CreateContentType.CREATE_POST)
-        assert(creationData[1].type == CreateContentType.CREATE_LIVE)
-        assert(!viewModel.isShortEntryPointShowed)
-    }
-
-    @Test
-    fun onFetchMetaData_whenSuccessWithCreationAsUser_shouldChangeValueToSuccess() {
-        // given
-        val dummyData = FeedXHeaderResponse(
-            feedXHeaderData = FeedXHeader(
-                data = FeedXHeaderData(
-                    creation = Creation(
-                        isActive = true,
-                        image = "",
-                        authors = listOf(
-                            Authors(
-                                id = "123",
-                                name = "Nama Toko",
-                                type = "content-user",
-                                image = "https://images.tokopedia.com/...",
-                                hasUsername = false,
-                                hasAcceptTnC = false,
-                                items = listOf(
-                                    AuthorItem(
-                                        isActive = true,
-                                        type = "post",
-                                        title = "Buat Post",
-                                        image = "https://images.tokopedia.com/...",
-                                        weblink = "https://tokopedia.com/...",
-                                        applink = "tokopedia://content/..."
-                                    ),
-                                    AuthorItem(
-                                        isActive = true,
-                                        type = "livestream",
-                                        title = "Buat Livestream",
-                                        image = "https://images.tokopedia.com/...",
-                                        weblink = "https://tokopedia.com/...",
-                                        applink = "tokopedia://content/..."
-                                    ),
-                                    AuthorItem(
-                                        isActive = true,
-                                        type = "shortvideo",
-                                        title = "Buat Video",
-                                        image = "https://images.tokopedia.com/...",
-                                        weblink = "https://tokopedia.com/...",
-                                        applink = "tokopedia://content/..."
-                                    )
-                                )
-                            )
-                        )
-                    ),
-                    tab = Tab(
-                        isActive = true,
-                        items = listOf(
-                            Items(
-                                isActive = true,
-                                position = 1,
-                                type = "foryou",
-                                title = "Untuk Kamu",
-                                key = "foryou"
-                            ),
-                            Items(
-                                isActive = true,
-                                position = 2,
-                                type = "following",
-                                title = "Following",
-                                key = "following"
-                            )
-                        ),
-                        meta = MetaData(
-                            selectedIndex = 0
-                        )
-                    ),
-                    live = Live(
-                        isActive = true,
-                        title = "Following",
-                        image = "https://images.tokopedia.com/...",
-                        weblink = "https://tokopedia.com/...",
-                        applink = "tokopedia://content/..."
-                    ),
-                    userProfile = UserProfile(
-                        applink = "applink://dummy",
-                        image = "dummyimage",
-                        isShown = true
-                    )
-                )
-            )
-        )
-        coEvery { feedXHeaderUseCase.setRequestParams(any()) } coAnswers {}
-        coEvery { feedXHeaderUseCase.executeOnBackground() } returns dummyData
-
-        // when
-        viewModel.fetchFeedMetaData()
-
-        // then
-        assert(viewModel.metaData.value is Success)
-        val successData = (viewModel.metaData.value as Success).data
-        assert(successData.selectedIndex == 0)
-        assert(successData.profileApplink == dummyData.feedXHeaderData.data.userProfile.applink)
-        assert(successData.profilePhotoUrl == dummyData.feedXHeaderData.data.userProfile.image)
-        assert(successData.showMyProfile == dummyData.feedXHeaderData.data.userProfile.isShown)
-        assert(successData.isCreationActive == dummyData.feedXHeaderData.data.creation.isActive)
-        assert(successData.showLive == dummyData.feedXHeaderData.data.live.isActive)
-        assert(successData.liveApplink == dummyData.feedXHeaderData.data.live.applink)
-
-        val creationData = (viewModel.feedCreateContentBottomSheetData.value as Success).data
-        assert(creationData[0].type == CreateContentType.CREATE_SHORT_VIDEO)
-        assert(creationData[1].type == CreateContentType.CREATE_POST)
-        assert(creationData[2].type == CreateContentType.CREATE_LIVE)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -599,85 +389,4 @@ class FeedMainViewModelTest {
         viewModel.setReadyToShowOnboarding()
         coVerify(exactly = 1) { uiEventManager.emitEvent(FeedMainEvent.ShowSwipeOnboarding) }
     }
-
-    private fun getDummyFeedXHeaderData() = FeedXHeaderResponse(
-        feedXHeaderData = FeedXHeader(
-            data = FeedXHeaderData(
-                creation = Creation(
-                    isActive = true,
-                    image = "",
-                    authors = listOf(
-                        Authors(
-                            id = "123",
-                            name = "Nama Toko",
-                            type = "content-shop",
-                            image = "https://images.tokopedia.com/...",
-                            hasUsername = false,
-                            hasAcceptTnC = false,
-                            items = listOf(
-                                AuthorItem(
-                                    isActive = true,
-                                    type = "post",
-                                    title = "Buat Post",
-                                    image = "https://images.tokopedia.com/...",
-                                    weblink = "https://tokopedia.com/...",
-                                    applink = "tokopedia://content/..."
-                                ),
-                                AuthorItem(
-                                    isActive = true,
-                                    type = "livestream",
-                                    title = "Buat Livestream",
-                                    image = "https://images.tokopedia.com/...",
-                                    weblink = "https://tokopedia.com/...",
-                                    applink = "tokopedia://content/..."
-                                ),
-                                AuthorItem(
-                                    isActive = true,
-                                    type = "shortvideo",
-                                    title = "Buat Video",
-                                    image = "https://images.tokopedia.com/...",
-                                    weblink = "https://tokopedia.com/...",
-                                    applink = "tokopedia://content/..."
-                                )
-                            )
-                        )
-                    )
-                ),
-                tab = Tab(
-                    isActive = true,
-                    items = listOf(
-                        Items(
-                            isActive = true,
-                            position = 1,
-                            type = "foryou",
-                            title = "Untuk Kamu",
-                            key = "foryou"
-                        ),
-                        Items(
-                            isActive = true,
-                            position = 2,
-                            type = "following",
-                            title = "Following",
-                            key = "following"
-                        )
-                    ),
-                    meta = MetaData(
-                        selectedIndex = 0
-                    )
-                ),
-                live = Live(
-                    isActive = true,
-                    title = "Following",
-                    image = "https://images.tokopedia.com/...",
-                    weblink = "https://tokopedia.com/...",
-                    applink = "tokopedia://content/..."
-                ),
-                userProfile = UserProfile(
-                    applink = "applink://dummy",
-                    image = "dummyimage",
-                    isShown = true
-                )
-            )
-        )
-    )
 }
