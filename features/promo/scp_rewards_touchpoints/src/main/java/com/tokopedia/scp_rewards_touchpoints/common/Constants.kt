@@ -32,5 +32,5 @@ const val PRIMARY_STYLE = "primary"
 const val SECONDARY_STYLE = "secondary"
 
 // page paths
-const val BUYER_ORDER_DETAIL_PAGE = "buyer order detail"
-const val ORDER_LIST_HISTORY_PAGE = "order list history"
+const val BUYER_ORDER_DETAIL_PAGE = "Marketplace Order Detail"
+const val ORDER_LIST_HISTORY_PAGE = "Buyer Order List"
