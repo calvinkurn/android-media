@@ -80,13 +80,16 @@ class UserProfileContentViewModelTest {
     private val mockPlayVideoUpcoming = playVideoBuilder.buildModel(channelType = PlayWidgetChannelType.Upcoming, reminderType = PlayWidgetReminderType.NotReminded)
     private val mockPlayVideoChannel = mockPlayVideo.items.first()
 
-    private val robot = UserProfileViewModelRobot(
-        username = mockOwnUsername,
-        repo = mockRepo,
-        dispatcher = testDispatcher,
-        userSession = mockUserSession,
-        userProfileSharedPref = mockUserProfileSharedPref,
-    )
+    private val robot by lazy {
+        UserProfileViewModelRobot(
+            username = mockOwnUsername,
+            repo = mockRepo,
+            dispatcher = testDispatcher,
+            userSession = mockUserSession,
+            userProfileSharedPref = mockUserProfileSharedPref,
+            dispatchers = testDispatcher,
+        )
+    }
 
     @Before
     fun setUp() {
@@ -145,6 +148,7 @@ class UserProfileContentViewModelTest {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
             } andThen {
                 assert(profileTab is ProfileTabState.Error)
+                it.viewModel.profileTab equalTo mockProfileTabNotShown
             }
         }
     }
