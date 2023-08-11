@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.revamp.view.viewholder
 
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
@@ -391,7 +390,7 @@ class CheckoutOrderViewHolder(
 //                }
         if (shipmentCartItemModel.isCustomPinpointError) {
             renderErrorPinpointCourier()
-        } else if (shouldAutoLoadCourier(shipmentCartItemModel, recipientAddressModel)) {
+//        } else if (shouldAutoLoadCourier(shipmentCartItemModel, recipientAddressModel)) {
 //                if (!hasLoadCourier) {
 //                    val tmpShipmentDetailData = ratesDataConverter.getShipmentDetailData(
 //                        shipmentCartItemModel,
@@ -403,28 +402,28 @@ class CheckoutOrderViewHolder(
 //                        } else {
 //                            shipmentCartItemModel.isStateHasLoadCourierState
 //                        }
-            if (!order.isStateHasLoadCourierState) {
-                val position = bindingAdapterPosition
-                if (position != RecyclerView.NO_POSITION) {
-                    order.isStateHasLoadCourierState = true
-                    listener.onLoadShippingState(order, position)
+//            if (!order.isStateHasLoadCourierState) {
+//                val position = bindingAdapterPosition
+//                if (position != RecyclerView.NO_POSITION) {
+//                    order.isStateHasLoadCourierState = true
+//                    listener.onLoadShippingState(order, position)
 //                            loadCourierStateData(
 //                                shipmentCartItemModel,
 //                                saveStateType,
 //                                tmpShipmentDetailData,
 //                                position
 //                            )
-                }
-            } else {
+        }
+//            } else {
 //                        renderNoSelectedCourier(
 //                            shipmentCartItemModel,
 //                            recipientAddressModel,
 //                            saveStateType
 //                        )
-            }
-        } else {
-            Log.i("qwertyuiop", "no auto")
-        }
+//            }
+//        } else {
+//            Log.i("qwertyuiop", "no auto")
+    }
 //            } else {
 //                renderNoSelectedCourier(
 //                    shipmentCartItemModel,
@@ -437,7 +436,7 @@ class CheckoutOrderViewHolder(
 //                )
 //            }
 //        }
-    }
+//    }
 //    }
 
     private fun shouldAutoLoadCourier(

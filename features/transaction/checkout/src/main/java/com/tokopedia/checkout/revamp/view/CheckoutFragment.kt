@@ -100,7 +100,6 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.view.Shippi
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
@@ -292,9 +291,9 @@ class CheckoutFragment :
                     shipmentCartItemModel.errorTitle
                 )
             } else if (shipmentCartItemModel is CheckoutOrderModel && (
-                    !shipmentCartItemModel.isError && shipmentCartItemModel.isHasUnblockingError &&
-                        shipmentCartItemModel.unblockingErrorMessage.isNotEmpty()
-                    ) && shipmentCartItemModel.firstProductErrorIndex > 0
+                !shipmentCartItemModel.isError && shipmentCartItemModel.isHasUnblockingError &&
+                    shipmentCartItemModel.unblockingErrorMessage.isNotEmpty()
+                ) && shipmentCartItemModel.firstProductErrorIndex > 0
             ) {
                 onViewTickerOrderError(
                     shipmentCartItemModel.shopId.toString(),
@@ -522,12 +521,13 @@ class CheckoutFragment :
                     stopTrace()
                     sendErrorAnalytics()
                     // todo improve first load shipping
-                    if (it.cartShipmentAddressFormData.epharmacyData.showImageUpload) {
-                        val uploadPrescriptionUiModel =
-                            viewModel.listData.value.firstOrNullInstanceOf(CheckoutEpharmacyModel::class.java)?.epharmacy
-                        delayEpharmacyProcess(uploadPrescriptionUiModel)
-                    }
+//                    if (it.cartShipmentAddressFormData.epharmacyData.showImageUpload) {
+//                        val uploadPrescriptionUiModel =
+//                            viewModel.listData.value.firstOrNullInstanceOf(CheckoutEpharmacyModel::class.java)?.epharmacy
+//                        delayEpharmacyProcess(uploadPrescriptionUiModel)
+//                    }
                     setCampaignTimer()
+                    viewModel.prepareFullCheckoutPage()
                 }
 
                 is CheckoutPageState.Normal -> {
@@ -866,8 +866,6 @@ class CheckoutFragment :
             )
         }
     }
-
-
 
     fun showLoading() {
         if (context != null && loader?.dialog?.isShowing != true) {
@@ -1539,9 +1537,9 @@ class CheckoutFragment :
                     (
                         recipientAddressModel!!.latitude == null ||
                             recipientAddressModel.latitude.equals(
-                                "0",
-                                ignoreCase = true
-                            ) || recipientAddressModel.longitude == null ||
+                                    "0",
+                                    ignoreCase = true
+                                ) || recipientAddressModel.longitude == null ||
                             recipientAddressModel.longitude.equals("0", ignoreCase = true)
                         )
                 ) {
@@ -1749,13 +1747,13 @@ class CheckoutFragment :
             isCod
         )
         if (isNeedPinpoint || courierItemData.isUsePinPoint && (
-                recipientAddressModel!!.latitude == null ||
-                    recipientAddressModel.latitude.equals(
+            recipientAddressModel!!.latitude == null ||
+                recipientAddressModel.latitude.equals(
                         "0",
                         ignoreCase = true
                     ) || recipientAddressModel.longitude == null ||
-                    recipientAddressModel.longitude.equals("0", ignoreCase = true)
-                )
+                recipientAddressModel.longitude.equals("0", ignoreCase = true)
+            )
         ) {
             setPinpoint(cartPosition)
         } else {

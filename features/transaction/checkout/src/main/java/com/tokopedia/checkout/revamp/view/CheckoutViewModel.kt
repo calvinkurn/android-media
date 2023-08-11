@@ -100,6 +100,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -577,23 +578,31 @@ class CheckoutViewModel @Inject constructor(
         mTrackerShipment.flushEnhancedECommerceCheckout()
     }
 
-    suspend fun prepareFullCheckoutPage() {
-        withContext(dispatchers.immediate) {
+    fun prepareFullCheckoutPage() {
+        viewModelScope.launch(dispatchers.immediate) {
             val checkoutItems = listData.value
             var recipientAddressModel: RecipientAddressModel? = null
             for ((index, checkoutItem) in checkoutItems.withIndex()) {
-                if (checkoutItem is CheckoutAddressModel) {
-                    recipientAddressModel = checkoutItem.recipientAddressModel
-                }
-                if (checkoutItem is CheckoutOrderModel) {
-                    if (loadCourierState(checkoutItem, recipientAddressModel)) {
-                        if (pageState.value != CheckoutPageState.Loading) {
-                            pageState.value = CheckoutPageState.Loading
+                if (isActive) {
+                    if (checkoutItem is CheckoutAddressModel) {
+                        recipientAddressModel = checkoutItem.recipientAddressModel
+                    }
+                    if (checkoutItem is CheckoutOrderModel) {
+                        if (loadCourierState(checkoutItem, recipientAddressModel)) {
+//                            if (pageState.value != CheckoutPageState.Loading) {
+//                                pageState.value = CheckoutPageState.Loading
+//                            }
+                            loadShippingSuspend(checkoutItem, index)
                         }
-                        loadShippingSuspend(checkoutItem, index)
+                    }
+                    if (checkoutItem is CheckoutEpharmacyModel && checkoutItem.epharmacy.showImageUpload && checkoutItem.epharmacy.consultationFlow) {
+                        fetchEpharmacyData()
                     }
                 }
             }
+//            if (pageState.value == CheckoutPageState.Loading) {
+//                pageState.value = CheckoutPageState.Normal
+//            }
         }
     }
 
@@ -614,19 +623,13 @@ class CheckoutViewModel @Inject constructor(
         shipmentCartItemModel: CheckoutOrderModel,
         recipientAddressModel: RecipientAddressModel?
     ): Boolean {
-        if (!shipmentCartItemModel.isCustomPinpointError && shouldAutoLoadCourier(
+        if (!shipmentCartItemModel.isCustomPinpointError && !shipmentCartItemModel.isStateHasLoadCourierState && shouldAutoLoadCourier(
                 shipmentCartItemModel,
                 recipientAddressModel
             )
         ) {
-            if (!shipmentCartItemModel.isStateHasLoadCourierState) {
-                shipmentCartItemModel.isStateHasLoadCourierState = true
-                return true
-            } else {
-                return false
-            }
-        } else {
-            Log.i("qwertyuiop", "no auto")
+            shipmentCartItemModel.isStateHasLoadCourierState = true
+            return true
         }
         return false
     }
