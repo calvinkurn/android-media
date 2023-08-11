@@ -355,3 +355,7 @@ public static com.tokopedia.stability.ChangeDelegate *;
 
 # kyc ds sdk
 -keep class com.gojek.ojosdk.** {*;}
+
+# BCA Flazz Library
+-keep class com.tokopedia.emoney.integration.BCALibrary {*;}
+-keep class com.tokopedia.emoney.integration.data.CheckBalanceResult {*;}
