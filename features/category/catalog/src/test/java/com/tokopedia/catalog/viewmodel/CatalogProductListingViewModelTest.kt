@@ -1,18 +1,18 @@
-package com.tokopedia.catalog.viewmodel
+package com.tokopedia.oldcatalog.viewmodel
 
 import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.google.gson.JsonObject
-import com.tokopedia.catalog.CatalogTestUtils
-import com.tokopedia.catalog.model.raw.CatalogProductItem
-import com.tokopedia.catalog.model.raw.CatalogSearchProductResponse
-import com.tokopedia.catalog.model.raw.ProductListResponse
-import com.tokopedia.catalog.model.raw.SearchFilterResponse
-import com.tokopedia.catalog.usecase.listing.CatalogDynamicFilterUseCase
-import com.tokopedia.catalog.usecase.listing.CatalogGetProductListUseCase
-import com.tokopedia.catalog.usecase.listing.CatalogQuickFilterUseCase
+import com.tokopedia.oldcatalog.CatalogTestUtils
+import com.tokopedia.oldcatalog.model.raw.CatalogProductItem
+import com.tokopedia.oldcatalog.model.raw.CatalogSearchProductResponse
+import com.tokopedia.oldcatalog.model.raw.ProductListResponse
+import com.tokopedia.oldcatalog.model.raw.SearchFilterResponse
+import com.tokopedia.oldcatalog.usecase.listing.CatalogDynamicFilterUseCase
+import com.tokopedia.oldcatalog.usecase.listing.CatalogGetProductListUseCase
+import com.tokopedia.oldcatalog.usecase.listing.CatalogQuickFilterUseCase
 import com.tokopedia.common_category.model.filter.FilterResponse
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.common.data.DynamicFilterModel

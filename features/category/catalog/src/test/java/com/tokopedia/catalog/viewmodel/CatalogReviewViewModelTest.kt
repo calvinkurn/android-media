@@ -1,12 +1,12 @@
-package com.tokopedia.catalog.viewmodel
+package com.tokopedia.oldcatalog.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.google.gson.JsonObject
-import com.tokopedia.catalog.CatalogTestUtils
-import com.tokopedia.catalog.model.raw.CatalogProductReviewResponse
-import com.tokopedia.catalog.repository.CatalogAllReviewRepository
-import com.tokopedia.catalog.usecase.detail.CatalogAllReviewUseCase
+import com.tokopedia.oldcatalog.CatalogTestUtils
+import com.tokopedia.oldcatalog.model.raw.CatalogProductReviewResponse
+import com.tokopedia.catalog.Repository.CatalogAllReviewRepository
+import com.tokopedia.oldcatalog.usecase.detail.CatalogAllReviewUseCase
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.GraphqlError

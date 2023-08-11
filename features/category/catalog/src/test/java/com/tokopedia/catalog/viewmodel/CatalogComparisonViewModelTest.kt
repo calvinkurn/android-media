@@ -1,15 +1,16 @@
-package com.tokopedia.catalog.viewmodel
+package com.tokopedia.oldcatalog.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.google.gson.JsonObject
-import com.tokopedia.catalog.CatalogTestUtils
-import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
-import com.tokopedia.catalog.model.datamodel.CatalogStaggeredProductModel
-import com.tokopedia.catalog.model.raw.CatalogComparisonProductsResponse
-import com.tokopedia.catalog.model.util.CatalogConstant
-import com.tokopedia.catalog.repository.CatalogComparisonProductRepository
-import com.tokopedia.catalog.usecase.detail.CatalogComparisonProductUseCase
+import com.tokopedia.oldcatalog.CatalogTestUtils
+import com.tokopedia.oldcatalog.model.datamodel.BaseCatalogDataModel
+import com.tokopedia.oldcatalog.model.datamodel.CatalogStaggeredProductModel
+import com.tokopedia.oldcatalog.model.raw.CatalogComparisonProductsResponse
+import com.tokopedia.oldcatalog.model.util.CatalogConstant
+import com.tokopedia.catalog.Repository.CatalogComparisonProductRepository
+import com.tokopedia.catalog.viewmodel.CatalogForYouViewModelTest
+import com.tokopedia.oldcatalog.usecase.detail.CatalogComparisonProductUseCase
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.GraphqlError

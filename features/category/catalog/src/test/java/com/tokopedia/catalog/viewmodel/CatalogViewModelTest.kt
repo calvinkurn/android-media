@@ -1,17 +1,17 @@
-package com.tokopedia.catalog.viewmodel
+package com.tokopedia.oldcatalog.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.google.gson.JsonObject
-import com.tokopedia.catalog.CatalogTestUtils
-import com.tokopedia.catalog.model.datamodel.CatalogDetailDataModel
-import com.tokopedia.catalog.model.raw.CatalogProductItem
-import com.tokopedia.catalog.model.raw.CatalogResponseData
-import com.tokopedia.catalog.model.raw.CatalogSearchProductResponse
-import com.tokopedia.catalog.model.raw.ProductListResponse
-import com.tokopedia.catalog.repository.catalogdetail.CatalogDetailRepository
-import com.tokopedia.catalog.usecase.detail.CatalogDetailUseCase
-import com.tokopedia.catalog.usecase.listing.CatalogGetProductListUseCase
+import com.tokopedia.oldcatalog.CatalogTestUtils
+import com.tokopedia.oldcatalog.model.datamodel.CatalogDetailDataModel
+import com.tokopedia.oldcatalog.model.raw.CatalogProductItem
+import com.tokopedia.oldcatalog.model.raw.CatalogResponseData
+import com.tokopedia.oldcatalog.model.raw.CatalogSearchProductResponse
+import com.tokopedia.oldcatalog.model.raw.ProductListResponse
+import com.tokopedia.catalog.Repository.catalogdetail.CatalogDetailRepository
+import com.tokopedia.oldcatalog.usecase.detail.CatalogDetailUseCase
+import com.tokopedia.oldcatalog.usecase.listing.CatalogGetProductListUseCase
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.graphql.CommonUtils

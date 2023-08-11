@@ -4,16 +4,18 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.google.gson.JsonObject
 import com.tokopedia.catalog.CatalogTestUtils
-import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
-import com.tokopedia.catalog.model.datamodel.CatalogForYouModel
-import com.tokopedia.catalog.model.raw.CatalogComparisonProductsResponse
-import com.tokopedia.catalog.model.util.CatalogConstant
-import com.tokopedia.catalog.repository.CatalogComparisonProductRepository
-import com.tokopedia.catalog.usecase.detail.CatalogComparisonProductUseCase
+import com.tokopedia.oldcatalog.model.datamodel.BaseCatalogDataModel
+import com.tokopedia.oldcatalog.model.datamodel.CatalogForYouModel
+import com.tokopedia.oldcatalog.model.raw.CatalogComparisonProductsResponse
+import com.tokopedia.oldcatalog.model.util.CatalogConstant
+import com.tokopedia.oldcatalog.repository.CatalogComparisonProductRepository
+import com.tokopedia.oldcatalog.usecase.detail.CatalogComparisonProductUseCase
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.oldcatalog.viewmodel.CatalogForYouViewModel
+import com.tokopedia.oldcatalog.viewmodel.CatalogViewModelTest
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.*
 import junit.framework.Assert.assertEquals
@@ -133,7 +135,8 @@ class CatalogForYouViewModelTest {
 
     @Test
     fun `Get Catalog Comparison Response Fail`() {
-        val mockGqlResponse: GraphqlResponse  = CatalogViewModelTest.createMockGraphqlResponse(CatalogViewModelTest.getJsonObject("catalog_empty_dummy_response.json"))
+        val mockGqlResponse: GraphqlResponse  =
+            CatalogViewModelTest.createMockGraphqlResponse(CatalogViewModelTest.getJsonObject("catalog_empty_dummy_response.json"))
         runBlocking {
             coEvery { repository.getComparisonProducts(any(),any(), any(),any(),any(), any()) } returns mockGqlResponse
             viewModel.getComparisonProducts("", "", "", 10, 1, "")

@@ -1,8 +1,9 @@
 package com.tokopedia.catalog
 
 import android.os.Build
-import com.tokopedia.catalog.utils.CatalogUtilsTestCase
-import com.tokopedia.catalog.viewmodel.*
+import com.tokopedia.catalog.viewmodel.CatalogForYouViewModelTest
+import com.tokopedia.oldcatalog.utils.CatalogUtilsTestCase
+import com.tokopedia.oldcatalog.viewmodel.*
 import org.junit.runner.RunWith
 import org.junit.runners.Suite
 import org.robolectric.annotation.Config
