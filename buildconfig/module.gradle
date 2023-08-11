@@ -1,9 +1,8 @@
 def isDebuggable() {
-    return "true";
-//    if (rootProject.hasProperty('enableDebug') && rootProject.property("enableDebug") == "true") {
-//        return "true";
-//    }
-//    return "false";
+    if (rootProject.hasProperty('enableDebug') && rootProject.property("enableDebug") == "true") {
+        return "true";
+    }
+    return "false";
 }
 
 
