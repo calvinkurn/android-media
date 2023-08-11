@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -96,7 +97,7 @@ class ShopProductCarouselFragment : BaseDaggerFragment() {
         observeCarouselsWidgets()
         setupMainBanner()
         setupProductRecyclerView()
-        getProducts()
+        getCarouselWidgets()
     }
 
     private fun setupMainBanner() {
@@ -113,6 +114,8 @@ class ShopProductCarouselFragment : BaseDaggerFragment() {
                     onMainBannerClick(mainBanner ?: return@setOnClickListener)
                 }
             }
+        } else {
+            binding?.imgMainBanner?.gone()
         }
     }
 
@@ -147,10 +150,11 @@ class ShopProductCarouselFragment : BaseDaggerFragment() {
     }
 
 
-    private fun getProducts() {
+    private fun getCarouselWidgets() {
         val userAddress = ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
         viewModel.getCarouselWidgets(widgets, shopId, userAddress)
     }
+
     private fun renderCarouselWidgets(widgets: List<ShopHomeProductCarouselWidget>) {
         productAdapter.submit(widgets)
     }
