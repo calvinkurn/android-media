@@ -1,28 +1,22 @@
 package com.tokopedia.home_component.viewholders
 
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.home_component.HomeComponentRollenceController
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.HomeComponentDynamicIconBinding
 import com.tokopedia.home_component.decoration.CommonSpacingDecoration
 import com.tokopedia.home_component.listener.DynamicIconComponentListener
 import com.tokopedia.home_component.model.DynamicIconComponent
-import com.tokopedia.home_component.util.DynamicIconsMacroUtil
+import com.tokopedia.home_component.util.DynamicIconsUtil
 import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.toPx
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -37,35 +31,28 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
     AbstractViewHolder<DynamicIconComponentDataModel>(itemView), CoroutineScope {
 
     private var binding: HomeComponentDynamicIconBinding? by viewBinding()
-    private var isUsingMacroInteraction: Boolean = false
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_component_dynamic_icon
-        const val SCROLLABLE_ITEM = 5
-        const val SCROLLABLE_ITEM_MACRO = 6
-        const val SCROLLABLE_ITEM_MACRO_REVAMP = 3
-        private const val MARGIN_TOP_MACRO = 6
-        private const val MARGIN_BOTTOM_MACRO = 8
-        private const val MARGIN_VERTICAL_DEFAULT = 12
+        const val SCROLLABLE_ITEM = 6
+        const val SCROLLABLE_ITEM_REVAMP = 3
+        private const val MARGIN_TOP = 6
+        private const val MARGIN_BOTTOM = 8
         private const val MARGIN_TOP_REVAMP = 8
         private const val MARGIN_BOTTOM_REVAMP = 16
-        private const val MARGIN_HORIZONTAL_BETWEEN_CARD_MACRO = 0
-        private const val MARGIN_HORIZONTAL_BETWEEN_CARD = 8
+        private const val MARGIN_HORIZONTAL_BETWEEN_CARD = 0
         private const val PADDING_HORIZONTAL_REVAMP = 8
         private const val PADDING_HORIZONTAL_OLD = 12
     }
 
-    private val adapter = DynamicIconAdapter(listener)
-    private val adapterMacro = DynamicIconMacroAdapter(listener, isRevamp)
+    private val adapter = DynamicIconAdapter(listener, isRevamp)
     private var iconRecyclerView: RecyclerView? = null
     private val masterJob = SupervisorJob()
 
     override val coroutineContext: CoroutineContext = masterJob + Dispatchers.Main
 
     override fun bind(element: DynamicIconComponentDataModel) {
-        isUsingMacroInteraction =
-            HomeComponentRollenceController.isHomeComponentDynamicIconsUsingRollenceVariant()
         setupDynamicIcon(element)
         setupImpression(element)
     }
@@ -79,82 +66,59 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
             iconRecyclerView?.setPadding(PADDING_HORIZONTAL_OLD.toPx(), Int.ZERO, PADDING_HORIZONTAL_OLD.toPx(), Int.ZERO)
         }
         if (icons.isNotEmpty()) {
-            if (isUsingMacroInteraction || isRevamp) {
-                adapterMacro.updatePosition(absoluteAdapterPosition)
-                adapterMacro.setType(element.type)
-                setRecyclerView(icons)
-                launch {
-                    val maximalTitleHeight =
-                        if (isRevamp) {
-                            DynamicIconsMacroUtil.findMaxDynamicIconsMacroRevamp(
-                                icons,
-                                itemView.context
-                            )
-                        } else {
-                            DynamicIconsMacroUtil.findMaxDynamicIconsMacro(
-                                icons,
-                                itemView.context
-                            )
-                        }
-                    val layoutParams = iconRecyclerView?.layoutParams as ConstraintLayout.LayoutParams
-                    layoutParams.height = maximalTitleHeight
-                    iconRecyclerView?.layoutParams = layoutParams
-                }
-                adapterMacro.submitList(element)
+            adapter.updatePosition(absoluteAdapterPosition)
+            adapter.setType(element.type)
+            setRecyclerView(icons)
+            launch {
+                val maximalTitleHeight =
+                    if (isRevamp) {
+                        DynamicIconsUtil.findMaxDynamicIconsRevamp(
+                            icons,
+                            itemView.context
+                        )
+                    } else {
+                        DynamicIconsUtil.findMaxDynamicIcons(
+                            icons,
+                            itemView.context
+                        )
+                    }
                 val layoutParams = iconRecyclerView?.layoutParams as ConstraintLayout.LayoutParams
-                if (isRevamp) {
-                    layoutParams.setMargins(
-                        Int.ZERO,
-                        MARGIN_TOP_REVAMP.toPx(),
-                        Int.ZERO,
-                        MARGIN_BOTTOM_REVAMP.toPx()
-                    )
-                } else {
-                    layoutParams.setMargins(
-                        Int.ZERO,
-                        MARGIN_TOP_MACRO.toPx(),
-                        Int.ZERO,
-                        MARGIN_BOTTOM_MACRO.toPx()
-                    )
-                }
+                layoutParams.height = maximalTitleHeight
                 iconRecyclerView?.layoutParams = layoutParams
-
-                if (iconRecyclerView?.itemDecorationCount == Int.ZERO) {
-                    iconRecyclerView?.addItemDecoration(
-                        CommonSpacingDecoration(MARGIN_HORIZONTAL_BETWEEN_CARD_MACRO.toPx())
-                    )
-                }
-                iconRecyclerView?.adapter = adapterMacro
-            } else {
-                adapter.submitList(element)
-                adapter.updatePosition(absoluteAdapterPosition)
-                adapter.setType(element.type)
-                val layoutParams = iconRecyclerView?.layoutParams as ConstraintLayout.LayoutParams
+            }
+            adapter.submitList(element)
+            val layoutParams = iconRecyclerView?.layoutParams as ConstraintLayout.LayoutParams
+            if (isRevamp) {
                 layoutParams.setMargins(
                     Int.ZERO,
-                    MARGIN_VERTICAL_DEFAULT.toPx(),
+                    MARGIN_TOP_REVAMP.toPx(),
                     Int.ZERO,
-                    MARGIN_VERTICAL_DEFAULT.toPx()
+                    MARGIN_BOTTOM_REVAMP.toPx()
                 )
-                iconRecyclerView?.layoutParams = layoutParams
+            } else {
+                layoutParams.setMargins(
+                    Int.ZERO,
+                    MARGIN_TOP.toPx(),
+                    Int.ZERO,
+                    MARGIN_BOTTOM.toPx()
+                )
+            }
+            iconRecyclerView?.layoutParams = layoutParams
+
+            if (iconRecyclerView?.itemDecorationCount == Int.ZERO) {
                 iconRecyclerView?.addItemDecoration(
                     CommonSpacingDecoration(MARGIN_HORIZONTAL_BETWEEN_CARD.toPx())
                 )
-                iconRecyclerView?.adapter = adapter
-                setRecyclerView(icons)
             }
+            iconRecyclerView?.adapter = adapter
         }
     }
 
     private fun setRecyclerView(icons: List<DynamicIconComponent.DynamicIcon>) {
         val isScrollItem =
             icons.size > if (isRevamp) {
-                SCROLLABLE_ITEM_MACRO_REVAMP
-            } else if (isUsingMacroInteraction) {
-                SCROLLABLE_ITEM_MACRO
-            } else {
-                SCROLLABLE_ITEM
-            }
+                SCROLLABLE_ITEM_REVAMP
+            } else SCROLLABLE_ITEM
         setupLayoutManager(
             isScrollItem = isScrollItem,
             spanCount = icons.size
@@ -181,107 +145,6 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
         } else {
             binding?.dynamicIconRecyclerView?.layoutManager =
                 GridLayoutManager(itemView.context, spanCount, GridLayoutManager.VERTICAL, false)
-        }
-    }
-
-    internal inner class DynamicIconAdapter(private val listener: DynamicIconComponentListener) :
-        RecyclerView.Adapter<DynamicIconItemViewHolder>() {
-        private val categoryList = mutableListOf<DynamicIconComponent.DynamicIcon>()
-        private var position: Int = 0
-        private var type: Int = 1
-        private var isCache: Boolean = false
-
-        override fun onCreateViewHolder(
-            parent: ViewGroup,
-            viewType: Int
-        ): DynamicIconItemViewHolder {
-            return DynamicIconItemViewHolder(
-                LayoutInflater.from(parent.context)
-                    .inflate(DynamicIconItemViewHolder.LAYOUT, parent, false),
-                listener
-            )
-        }
-
-        override fun onBindViewHolder(holder: DynamicIconItemViewHolder, position: Int) {
-            categoryList.getOrNull(position)?.let {
-                holder.bind(
-                    it,
-                    categoryList.size > SCROLLABLE_ITEM,
-                    this.position,
-                    type,
-                    isCache
-                )
-            }
-        }
-
-        override fun getItemCount(): Int {
-            return categoryList.size
-        }
-
-        fun setType(type: Int) {
-            this.type = type
-        }
-
-        fun updatePosition(position: Int) {
-            this.position = position
-        }
-
-        fun submitList(list: DynamicIconComponentDataModel) {
-            categoryList.clear()
-            categoryList.addAll(list.dynamicIconComponent.dynamicIcon)
-            this.isCache = list.isCache
-        }
-    }
-
-    internal class DynamicIconItemViewHolder(
-        itemView: View,
-        private val listener: DynamicIconComponentListener
-    ) : RecyclerView.ViewHolder(itemView) {
-        var iconTvName: Typography? = null
-        var iconImageView: ImageUnify? = null
-        var iconContainer: LinearLayout? = null
-
-        companion object {
-            @LayoutRes
-            val LAYOUT = R.layout.home_component_dynamic_icon_item
-            private const val ONE_LINE = 1
-            private const val TWO_LINES = 2
-        }
-
-        fun bind(
-            item: DynamicIconComponent.DynamicIcon,
-            isScrollable: Boolean,
-            parentPosition: Int,
-            type: Int,
-            isCache: Boolean
-        ) {
-            iconTvName = itemView.findViewById(R.id.dynamic_icon_typography)
-            iconImageView = itemView.findViewById(R.id.dynamic_icon_image_view)
-            iconContainer = itemView.findViewById(R.id.dynamic_icon_container)
-
-            iconTvName?.text = item.name
-            iconImageView?.setImageUrl(item.imageUrl)
-            listener.onSuccessLoadImage()
-            iconContainer?.layoutParams = ViewGroup.LayoutParams(
-                if (isScrollable) ViewGroup.LayoutParams.WRAP_CONTENT else ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-            iconTvName?.maxLines = if (item.withBackground) TWO_LINES else ONE_LINE
-            itemView.setOnClickListener {
-                listener.onClickIcon(item, parentPosition, absoluteAdapterPosition, type)
-            }
-
-            if (!isCache) {
-                itemView.addOnImpressionListener(item) {
-                    listener.onImpressIcon(
-                        dynamicIcon = item,
-                        iconPosition = absoluteAdapterPosition,
-                        parentPosition = parentPosition,
-                        type = type,
-                        view = itemView
-                    )
-                }
-            }
         }
     }
 }

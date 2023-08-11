@@ -10,10 +10,8 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HolderTransactionPaymentBinding
-import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderPaymentModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -37,12 +35,10 @@ class OrderPaymentViewHolder(itemView: View, val mainNavListener: MainNavListene
         val context = itemView.context
 
         itemView.addOnImpressionListener(paymentModel)  {
-            mainNavListener.putEEToTrackingQueue(
-                    TrackingTransactionSection.getImpressionOnOrderStatus(
-                        userId = mainNavListener.getUserId(),
-                        orderLabel = paymentModel.navPaymentModel.statusText,
-                        position = adapterPosition,
-                        orderId = paymentModel.navPaymentModel.id)
+            mainNavListener.onOrderCardImpressed(
+                paymentModel.navPaymentModel.statusText,
+                paymentModel.navPaymentModel.id,
+                paymentModel.position
             )
         }
         //title
@@ -96,10 +92,10 @@ class OrderPaymentViewHolder(itemView: View, val mainNavListener: MainNavListene
         )
 
         itemView.setOnClickListener {
-            TrackingTransactionSection.clickOnOrderStatus(
-                    mainNavListener.getUserId(),
-                    binding?.orderPaymentStatus?.text.toString())
-            RouteManager.route(context, if(binding?.orderPaymentStatus?.text == context.getString(R.string.transaction_item_default_status)) ApplinkConst.PMS else paymentModel.navPaymentModel.applink)
+            val applink = if(binding?.orderPaymentStatus?.text == context.getString(R.string.transaction_item_default_status))
+                ApplinkConst.PMS
+            else paymentModel.navPaymentModel.applink
+            mainNavListener.onOrderCardClicked(applink, binding?.orderPaymentStatus?.text.toString())
         }
     }
 }

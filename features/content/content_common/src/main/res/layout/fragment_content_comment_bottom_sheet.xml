@@ -51,6 +51,7 @@
             android:id="@+id/iv_user_photo"
             android:layout_width="@dimen/content_common_space_40"
             android:layout_height="@dimen/content_common_space_40"
+            android:scaleType="fitCenter"
             app:unify_image_type="circle" />
 
         <androidx.appcompat.widget.AppCompatEditText
@@ -64,6 +65,7 @@
             android:layout_weight="1"
             android:background="@drawable/bg_et_comment"
             android:hint="@string/content_comment_edit_text_hint"
+            android:textColorHint="@color/Unify_NN600"
             android:inputType="textMultiLine"
             android:paddingStart="@dimen/unify_space_16"
             android:paddingTop="@dimen/content_common_space_6"

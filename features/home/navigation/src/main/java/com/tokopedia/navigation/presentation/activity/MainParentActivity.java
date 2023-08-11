@@ -65,7 +65,6 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker;
 import com.tokopedia.dynamicfeatures.DFInstaller;
-import com.tokopedia.graphql.interceptor.MockInterceptor;
 import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
@@ -268,7 +267,9 @@ public class MainParentActivity extends BaseActivity implements
             performanceTrace = new BlocksPerformanceTrace(
                     this.getContext().getApplicationContext(),
                     PERFORMANCE_TRACE_HOME,
-                    LifecycleOwnerKt.getLifecycleScope(this)
+                    LifecycleOwnerKt.getLifecycleScope(this),
+                    this,
+                    null
             );
         } catch (Exception e) {
             e.printStackTrace();

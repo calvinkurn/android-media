@@ -9,7 +9,6 @@ import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.entity.VoucherCreationMetadata
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
-import com.tokopedia.mvc.presentation.bottomsheet.OtherPeriodBottomSheet
 import com.tokopedia.mvc.presentation.detail.VoucherDetailFragment
 import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
 import com.tokopedia.mvc.util.StringHandler
@@ -62,8 +61,6 @@ class MoreMenuViewModel @Inject constructor(
                         getVoucherDetailEndedStoppedOptionsListMenu()
                     }
                 }
-        } else if (pageSource == OtherPeriodBottomSheet::class.java.simpleName) {
-            menuItem = getOtherScheduleListMenu()
         } else {
             if (voucher == null) {
                 return menuItem
@@ -106,6 +103,8 @@ class MoreMenuViewModel @Inject constructor(
         // return subsidy voucher menu, isVps is always false here
         else if (voucher.isSubsidy) {
             getOngoingVpsSubsidyMenu()
+        } else if (!voucher.isEditable) {
+            getOngoingVpsSubsidyMenu()
         } else {
             // return seller create voucher menu
             getOngoingOptionsListMenu()
@@ -119,6 +118,8 @@ class MoreMenuViewModel @Inject constructor(
         }
         // return subsidy voucher menu
         else if (voucher.isSubsidy) {
+            getUpcomingVpsSubsidyMenu()
+        } else if (!voucher.isEditable) {
             getUpcomingVpsSubsidyMenu()
         }
         // return seller created voucher menu
@@ -314,29 +315,6 @@ class MoreMenuViewModel @Inject constructor(
             ),
             MoreMenuUiModel.Clipboard(
                 StringHandler.ResourceString(R.string.voucher_bs_ubah_lihat_detail)
-            )
-        )
-    }
-
-    // Can be used from bottomsheet recurring period
-    private fun getOtherScheduleListMenu(): List<MoreMenuUiModel> {
-        return listOf(
-            MoreMenuUiModel.Coupon(
-                StringHandler.ResourceString(R.string.voucher_bs_ubah_kuota)
-            ),
-            MoreMenuUiModel.Clipboard(
-                StringHandler.ResourceString(R.string.voucher_bs_ubah_lihat_detail)
-            ),
-            MoreMenuUiModel.ItemDivider,
-            MoreMenuUiModel.Broadcast(
-                StringHandler.ResourceString(R.string.voucher_bs_ubah_broadcast_chat)
-            ),
-            MoreMenuUiModel.Download(
-                StringHandler.ResourceString(R.string.voucher_bs_ubah_download)
-            ),
-            MoreMenuUiModel.ItemDivider,
-            MoreMenuUiModel.Clear(
-                StringHandler.ResourceString(R.string.voucher_bs_ubah_batalkan)
             )
         )
     }

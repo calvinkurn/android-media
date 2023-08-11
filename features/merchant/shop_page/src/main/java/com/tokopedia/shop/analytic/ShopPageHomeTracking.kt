@@ -15,7 +15,6 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ACTION_SHOP_DECOR_CL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ACTION_SHOP_DECOR_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ADD
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ADD_TO_CART
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ALL_ETALASE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ALL_PRODUCT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.BOE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.BO_PRODUCT
@@ -90,11 +89,14 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CAMPAIGN
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CAMPAIGN_WIDGET_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CAMPAIGN_WIDGET_PRODUCT_CARD_CLICK
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CAMPAIGN_WIDGET_PRODUCT_CARD_IMPRESSION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_EXCLUSIVE_LAUNCH_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PERSONALIZATION_TRENDING_WIDGET_ITEM
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PERSO_PRODUCT_COMPARISON
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PRODUCT_ATC
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PRODUCT_ATC_QUANTITY
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PRODUCT_ATC_RESET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_REMIND_ME_EXCLUSIVE_LAUNCH_WIDGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_EXCLUSIVE_LAUNCH_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_PERSONALIZATION_TRENDING_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_PERSONALIZATION_TRENDING_WIDGET_ITEM
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_PERSO_PRODUCT_COMPARISON
@@ -198,12 +200,15 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CAMPAIGN_WIDGET_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CAMPAIGN_WIDGET_PRODUCT_CARD_CLICK
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CAMPAIGN_WIDGET_PRODUCT_CARD_IMPRESSION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_CTA_BANNER_TIMER_HOME_TAB
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_MULTIPLE_BUNDLE_PRODUCT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_PERSONALIZATION_TRENDING_WIDGET_ITEM
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_PRODUCT_SHOP_DECOR
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_REMIND_ME_BANNER_TIMER_HOME_TAB
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_SHOP_DECOR
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_SHOP_PERSO_PRODUCT_COMPARISON
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_SINGLE_BUNDLE_PRODUCT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_BANNER_TIMER_HOME_TAB
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_MULTIPLE_BUNDLING_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_PERSONALIZATION_TRENDING_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_PERSONALIZATION_TRENDING_WIDGET_ITEM
@@ -222,6 +227,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_FINISHED_CAMPA
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_HOME
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_MULTIPLE_BUNDLING
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_NO_SEE_CAMPAIGN
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_ONGOING
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_ONGOING_BANNER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_ONGOING_CAMPAIGN
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_SEE_CAMPAIGN
@@ -229,6 +235,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_SHOP_DECOR
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_SHOP_PAGE_THEMATIC
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_SINGLE_BUNDLING
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_STRING_ZERO
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_UPCOMING
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_UPCOMING_BANNER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_UPCOMING_CAMPAIGN
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VARIANT
@@ -259,6 +266,7 @@ import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
 import com.tokopedia.shop.home.view.model.NotifyMeAction
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
+import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
 import com.tokopedia.track.TrackApp
@@ -3226,5 +3234,141 @@ class ShopPageHomeTracking(
             putString(ITEM_VARIANT, "")
             putDouble(PRICE, formatPrice(trackerModel.productPrice).toDoubleOrZero())
         }
+    }
+
+    fun impressionDisplayBannerTimerWidget(
+        uiModel: ShopWidgetDisplayBannerTimerUiModel,
+        position: Int,
+        shopId: String,
+        userId: String
+    ) {
+        val widgetTitle = uiModel.header.title
+        val statusCampaignTrackerValue = getShopHomeBannerTimerStatusCampaignTrackerValue(
+            uiModel.data?.status?.name.orEmpty()
+        )
+        val eventLabelValue = joinDash(
+            uiModel.getCampaignId(),
+            statusCampaignTrackerValue,
+            position.toString()
+        )
+        val eventBundle = Bundle().apply {
+            putString(EVENT, VIEW_ITEM)
+            putString(EVENT_ACTION, IMPRESSION_EXCLUSIVE_LAUNCH_WIDGET)
+            putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
+            putString(EVENT_LABEL, eventLabelValue)
+            putString(TRACKER_ID, TRACKER_ID_IMPRESSION_BANNER_TIMER_HOME_TAB)
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putParcelableArrayList(
+                PROMOTIONS,
+                arrayListOf(
+                    createBannerTimerHomePromotions(
+                        uiModel,
+                        position,
+                        widgetTitle
+                    )
+                )
+            )
+            putString(SHOP_ID, shopId)
+            putString(USER_ID, userId)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventBundle)
+    }
+
+    private fun createBannerTimerHomePromotions(
+        uiModel: ShopWidgetDisplayBannerTimerUiModel,
+        position: Int,
+        widgetTitle: String
+    ): Bundle {
+        val creativeNameValue = getShopHomeBannerTimerStatusCampaignTrackerValue(
+            uiModel.data?.status?.name.orEmpty()
+        )
+        return Bundle().apply {
+            putString(CREATIVE_NAME, creativeNameValue)
+            putInt(CREATIVE_SLOT, position)
+            putString(ITEM_ID, uiModel.getCampaignId())
+            putString(ITEM_NAME, widgetTitle)
+        }
+    }
+
+    private fun getShopHomeBannerTimerStatusCampaignTrackerValue(statusCampaign: String): String {
+        return when (statusCampaign.lowercase()) {
+            StatusCampaign.UPCOMING.statusCampaign.lowercase() -> {
+                VALUE_UPCOMING
+            }
+            StatusCampaign.ONGOING.statusCampaign.toLowerCase() -> {
+                VALUE_ONGOING
+            }
+            else -> {
+                ""
+            }
+        }
+    }
+
+    fun clickRemindMeBannerTimerWidget(
+        uiModel: ShopWidgetDisplayBannerTimerUiModel,
+        position: Int,
+        shopId: String,
+        userId: String
+    ) {
+        val statusCampaignTrackerValue = getShopHomeBannerTimerStatusCampaignTrackerValue(
+            uiModel.data?.status?.name.orEmpty()
+        )
+        val eventLabelValue = joinDash(
+            uiModel.getCampaignId(),
+            statusCampaignTrackerValue,
+            position.toString()
+        )
+        val event = mapOf(
+            EVENT to CLICK_PG,
+            EVENT_ACTION to CLICK_REMIND_ME_EXCLUSIVE_LAUNCH_WIDGET,
+            EVENT_CATEGORY to SHOP_PAGE_BUYER,
+            EVENT_LABEL to eventLabelValue,
+            TRACKER_ID to TRACKER_ID_CLICK_REMIND_ME_BANNER_TIMER_HOME_TAB,
+            BUSINESS_UNIT to PHYSICAL_GOODS,
+            CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+            SHOP_ID to shopId,
+            USER_ID to userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(event)
+    }
+
+    fun clickCtaShopHomeBannerTimerWidget(
+        uiModel: ShopWidgetDisplayBannerTimerUiModel,
+        position: Int,
+        shopId: String,
+        userId: String
+    ) {
+        val widgetTitle = uiModel.header.title
+        val statusCampaignTrackerValue = getShopHomeBannerTimerStatusCampaignTrackerValue(
+            uiModel.data?.status?.name.orEmpty()
+        )
+        val eventLabelValue = joinDash(
+            uiModel.getCampaignId(),
+            statusCampaignTrackerValue,
+            position.toString()
+        )
+        val eventBundle = Bundle().apply {
+            putString(EVENT, SELECT_CONTENT)
+            putString(EVENT_ACTION, CLICK_EXCLUSIVE_LAUNCH_WIDGET)
+            putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
+            putString(EVENT_LABEL, eventLabelValue)
+            putString(TRACKER_ID, TRACKER_ID_CLICK_CTA_BANNER_TIMER_HOME_TAB)
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putParcelableArrayList(
+                PROMOTIONS,
+                arrayListOf(
+                    createBannerTimerHomePromotions(
+                        uiModel,
+                        position,
+                        widgetTitle
+                    )
+                )
+            )
+            putString(SHOP_ID, shopId)
+            putString(USER_ID, userId)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventBundle)
     }
 }

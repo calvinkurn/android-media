@@ -17,6 +17,7 @@ import android.util.Log
 import android.util.SparseIntArray
 import android.view.KeyEvent
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
@@ -63,6 +64,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParam
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.common_tradein.utils.TradeInPDPHelper
@@ -97,11 +99,14 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.network.utils.URLGenerator.generateURLSessionLogin
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.pdp.fintech.view.PdpFintechWidget.Companion.ACTIVATION_LINKINING_FLOW
+import com.tokopedia.pdp.fintech.view.PdpFintechWidget.Companion.PARAM_CATEGORY_ID
+import com.tokopedia.pdp.fintech.view.PdpFintechWidget.Companion.PARAM_PARENT_ID
 import com.tokopedia.pdp.fintech.view.bottomsheet.GopayLinkBenefitBottomSheet.Companion.ACTIVATION_BOTTOMSHEET_DETAIl
 import com.tokopedia.pdp.fintech.view.bottomsheet.GopayLinkBenefitBottomSheet.Companion.ACTIVATION_WEBVIEW_LINK
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
@@ -162,6 +167,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomLayoutBasicData
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
@@ -207,6 +213,7 @@ import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.tracking.CommonTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracking
+import com.tokopedia.product.detail.tracking.DynamicOneLinerTracking
 import com.tokopedia.product.detail.tracking.GeneralInfoTracker
 import com.tokopedia.product.detail.tracking.GeneralInfoTracking
 import com.tokopedia.product.detail.tracking.OneLinersTracking
@@ -283,8 +290,10 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.shop.common.constant.ShopStatusDef
@@ -1023,11 +1032,6 @@ open class DynamicProductDetailFragment :
                         }
                     }
                 )
-            }
-            MvcView.REQUEST_CODE -> {
-                if (resultCode == MvcView.RESULT_CODE_OK && doActivityResult) {
-                    onSwipeRefresh()
-                }
             }
             REQUEST_CODE_ADD_WISHLIST_COLLECTION -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
@@ -2003,18 +2007,25 @@ open class DynamicProductDetailFragment :
         goToRecommendation()
     }
 
-    override fun onMerchantVoucherSummaryClicked(shopId: String, source: Int, productId: String) {
-        context?.let {
-            startActivityForResult(
-                TransParentActivity.getIntent(
-                    it,
-                    shopId,
-                    source,
-                    productId = productId
-                ),
-                MvcView.REQUEST_CODE
-            )
+    private val mvcLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == MvcView.RESULT_CODE_OK && doActivityResult) {
+            onSwipeRefresh()
         }
+    }
+
+    override fun onMerchantVoucherSummaryClicked(
+        @MvcSource source: Int,
+        uiModel: ProductMerchantVoucherSummaryDataModel.UiModel
+    ) {
+        val mContext = context ?: return
+        val intent = TransParentActivity.getIntent(
+            context = mContext,
+            shopId = uiModel.shopId,
+            source = source,
+            productId = uiModel.productIdMVC,
+            additionalParamJson = uiModel.additionalData
+        )
+        mvcLauncher.launch(intent)
     }
 
     override fun isOwner(): Boolean = viewModel.isShopOwner()
@@ -2039,6 +2050,8 @@ open class DynamicProductDetailFragment :
             startActivityForResult(bottomsheetIntent, RQUEST_CODE_ACTIVATE_GOPAY)
         } else {
             val intent = RouteManager.getIntent(context, redirectionUrl)
+            intent.putExtra(PARAM_PARENT_ID, fintechRedirectionWidgetDataClass.parentId)
+            intent.putExtra(PARAM_CATEGORY_ID, fintechRedirectionWidgetDataClass.categoryId)
             startActivityForResult(intent, RQUEST_CODE_UPDATE_FINTECH_WIDGET)
         }
     }
@@ -3195,7 +3208,7 @@ open class DynamicProductDetailFragment :
             }
             ProductDetailCommonConstant.ATC_BUTTON -> {
                 sendTrackingATC(cartId)
-                showAddToCartDoneBottomSheet(result.data.cartId)
+                showAddToCartDoneBottomSheet(result.data)
             }
             ProductDetailCommonConstant.TRADEIN_AFTER_DIAGNOSE -> {
                 // Same with OCS but should send devideId
@@ -3640,27 +3653,33 @@ open class DynamicProductDetailFragment :
         return singleVariant.mapOfSelectedVariant
     }
 
-    private fun showAddToCartDoneBottomSheet(cartId: String) {
+    private fun showAddToCartDoneBottomSheet(cartDataModel: DataModel) {
         val productInfo = viewModel.getDynamicProductInfoP1 ?: return
         val basicInfo = productInfo.basic
         val postATCLayoutId = basicInfo.postAtcLayout.layoutId
 
         val remoteNewATC = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_POST_ATC_PDP, true)
         if (postATCLayoutId.isNotBlank() && remoteNewATC) {
-            showGlobalPostATC(cartId, basicInfo)
+            showGlobalPostATC(cartDataModel, basicInfo)
         } else {
-            showOldPostATC(cartId)
+            showOldPostATC(cartDataModel.cartId)
         }
     }
 
-    private fun showGlobalPostATC(cartId: String, basicInfo: BasicInfo) {
+    private fun showGlobalPostATC(cartDataModel: DataModel, basicInfo: BasicInfo) {
         val context = context ?: return
         PostAtcHelper.start(
             context,
             basicInfo.productID,
-            cartId = cartId,
+            layoutId = basicInfo.postAtcLayout.layoutId,
+            cartId = cartDataModel.cartId,
+            selectedAddonsIds = cartDataModel.addOns.mapNotNull { item ->
+                item.id.takeIf { item.status == 1 }
+            },
+            isFulfillment = cartDataModel.isFulfillment,
             pageSource = PostAtcHelper.Source.PDP,
-            layoutId = basicInfo.postAtcLayout.layoutId
+            warehouseId = cartDataModel.warehouseId,
+            quantity = cartDataModel.quantity
         )
     }
 
@@ -4354,7 +4373,7 @@ open class DynamicProductDetailFragment :
             )
 
             setIcon(
-                IconBuilder()
+                IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.PDP))
                     .addIcon(IconList.ID_SEARCH, disableRouteManager = true) {
                         goToApplink(getLocalSearchApplink())
                     }
@@ -6009,6 +6028,15 @@ open class DynamicProductDetailFragment :
             productInfo = productInfo,
             trackDataModel = trackData,
             eventLabel = eventLabel
+        )
+    }
+
+    override fun onClickDynamicOneLiner(title: String, component: ComponentTrackDataModel) {
+        val commonTracker = generateCommonTracker() ?: return
+        DynamicOneLinerTracking.onClickDynamicOneliner(
+            title,
+            commonTracker,
+            component
         )
     }
 }

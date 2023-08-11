@@ -223,9 +223,9 @@ class TokoNowCategoryViewModel @Inject constructor(
         launchCatchError(block = {
             val params = GetProductAdsParam(
                 categoryId = categoryIdL1,
-                warehouseIds = addressData.getWarehouseIds(),
                 src = SRC_DIRECTORY_TOKONOW,
-                userId = getUserId()
+                userId = getUserId(),
+                addressData = getAddressData()
             )
 
             val response = getProductAdsUseCase.execute(params)
@@ -345,7 +345,7 @@ class TokoNowCategoryViewModel @Inject constructor(
                 }
 
                 val detailResponse = getCategoryDetailUseCase.execute(
-                    warehouseId = getWarehouseId(),
+                    warehouses = addressData.getWarehousesData(),
                     categoryIdL1 = categoryIdL1
                 )
 

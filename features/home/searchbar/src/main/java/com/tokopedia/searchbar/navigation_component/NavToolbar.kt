@@ -477,7 +477,10 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         return layoutCustomView
     }
 
-    fun setBackButtonType(newBackType: Int? = null) {
+    fun setBackButtonType(
+        newBackType: Int? = null,
+        onClick: () -> Unit = { }
+    ) {
         newBackType?.let { backType = newBackType }
 
         if (backType != BACK_TYPE_NONE) {
@@ -491,6 +494,7 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
                         componentName = IconList.NAME_BACK_BUTTON,
                         userId = getUserId()
                     )
+                    onClick.invoke()
                     (context as? Activity)?.onBackPressed()
                 }
             }
