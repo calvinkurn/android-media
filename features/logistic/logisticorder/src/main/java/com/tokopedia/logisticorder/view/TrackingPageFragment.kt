@@ -236,8 +236,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
                     setImageDrawable(
                         getIconUnifyDrawable(
                             context,
-                            IconUnify.CALL_CENTER,
-                            assetColor = com.tokopedia.unifyprinciples.R.color.Unify_NN900
+                            IconUnify.CALL_CENTER
                         )
                     )
 
