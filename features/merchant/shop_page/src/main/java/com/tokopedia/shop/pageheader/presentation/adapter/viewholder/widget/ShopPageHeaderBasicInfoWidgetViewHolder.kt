@@ -17,6 +17,7 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopPage
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderBadgeTextValueComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderImageOnlyComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel
+import com.tokopedia.stories.common.StoriesAvatarImageView
 import com.tokopedia.stories.common.StoriesAvatarManager
 import com.tokopedia.stories.common.StoriesAvatarView
 import com.tokopedia.unifyprinciples.Typography
@@ -45,7 +46,7 @@ class ShopPageHeaderBasicInfoWidgetViewHolder(
     }
 
     private val viewBinding: LayoutShopHeaderBasicInfoWidgetBinding? by viewBinding()
-    private val shopLogoImageView: StoriesAvatarView? = viewBinding?.imageShopLogo
+    private val shopLogoImageView: StoriesAvatarImageView? = viewBinding?.imageShopLogo
     private val shopBadgeImageView: ImageView? = viewBinding?.imageShopBadge
     private val shopChevronImageView: ImageView? = viewBinding?.shopPageChevronShopInfo
     private val shopNameTextView: Typography? = viewBinding?.textShopName
@@ -54,9 +55,9 @@ class ShopPageHeaderBasicInfoWidgetViewHolder(
     private var shopPageHeaderWidgetUiModel: ShopPageHeaderWidgetUiModel? = null
 
     init {
-        shopLogoImageView?.updateSizeConfig {
-            it.copy(imageToBorderGap = 6.dp)
-        }
+//        shopLogoImageView?.updateSizeConfig {
+//            it.copy(imageToBorderGap = 6.dp)
+//        }
     }
 
     override fun bind(modelPage: ShopPageHeaderWidgetUiModel) {
@@ -80,11 +81,11 @@ class ShopPageHeaderBasicInfoWidgetViewHolder(
     private fun setShopLogo(component: ShopPageHeaderImageOnlyComponentUiModel?) {
         val shopLogoUrl = component?.image.orEmpty()
         val shopId = component?.shopId.orEmpty()
-//        shopLogoImageView?.loadImageCircle(shopLogoUrl)
-        shopLogoImageView?.run {
-            storiesAvatarManager.manage(this, shopId)
-        }
-        shopLogoImageView?.setImageUrl(shopLogoUrl)
+        shopLogoImageView?.loadImageCircle(shopLogoUrl)
+//        shopLogoImageView?.run {
+//            storiesAvatarManager.manage(this, shopId)
+//        }
+//        shopLogoImageView?.setImageUrl(shopLogoUrl)
     }
 
     private fun setShopNameAndInfoSection(component: ShopPageHeaderBadgeTextValueComponentUiModel?) {
