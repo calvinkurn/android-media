@@ -39,7 +39,23 @@ class ShopHomeProductCarouselViewHolder(
 
     override fun bind(model: ShopHomeProductCarouselUiModel) {
         setupTitle(model)
+        setupViewAllChevron(model)
         setupTabs(model.tabs)
+    }
+
+    private fun setupViewAllChevron(model: ShopHomeProductCarouselUiModel) {
+        val productTabs = model.tabs.filter {
+            it.componentList.any { component -> component.componentType == ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITH_PRODUCT_INFO || component.componentType == ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITHOUT_PRODUCT_INFO }
+        }
+        val matchedProductTab = productTabs.getOrNull(0)
+        val firstProductComponent = matchedProductTab?.componentList?.firstOrNull { component -> component.componentType == ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITH_PRODUCT_INFO || component.componentType == ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITHOUT_PRODUCT_INFO }
+        val verticalBanner = firstProductComponent?.data?.firstOrNull { it.bannerType == "vertical" }
+        val hasVerticalBanner = verticalBanner != null
+
+        viewBinding?.iconChevron?.isVisible = hasVerticalBanner
+        viewBinding?.iconChevron?.setOnClickListener {
+            listener.onProductCarouselChevronViewAllClick(verticalBanner?.ctaLink.orEmpty())
+        }
     }
 
     private fun setupTitle(model: ShopHomeProductCarouselUiModel) {

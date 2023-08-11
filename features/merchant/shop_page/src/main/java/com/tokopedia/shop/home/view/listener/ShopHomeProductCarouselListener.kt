@@ -8,4 +8,5 @@ interface ShopHomeProductCarouselListener {
     fun onProductCarouselMainBannerClick(mainBanner: ShopHomeProductCarouselUiModel.Tab.ComponentList.Data)
     fun onProductCarouselProductClick(selectedProduct: ProductCard)
     fun onProductCarouselVerticalBannerClick(verticalBanner: VerticalBanner)
+    fun onProductCarouselChevronViewAllClick(ctaLink: String)
 }

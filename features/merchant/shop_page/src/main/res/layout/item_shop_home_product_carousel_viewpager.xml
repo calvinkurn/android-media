@@ -19,6 +19,19 @@
         app:typographyWeight="bold"
         tools:text="All time favorite" />
 
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iconChevron"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:icon_color_light_enable="@color/Unify_NN900"
+        app:icon_color_night_enable="@color/Unify_NN900"
+        app:icon_name="CHEVRON_RIGHT"
+        app:layout_constraintBottom_toBottomOf="@+id/tpgTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tpgTitle" />
+
     <com.tokopedia.unifycomponents.TabsUnify
         android:id="@+id/tabsUnify"
         android:layout_width="match_parent"

@@ -5081,6 +5081,13 @@ open class ShopPageHomeFragment :
         }
     }
 
+    override fun onProductCarouselChevronViewAllClick(ctaLink: String) {
+        try {
+            RouteManager.route(activity ?: return, ctaLink)
+        } catch (_: Exception) {
+        }
+    }
+
     override val fragment: Fragment
         get() = this
     override val currentShopId: String
