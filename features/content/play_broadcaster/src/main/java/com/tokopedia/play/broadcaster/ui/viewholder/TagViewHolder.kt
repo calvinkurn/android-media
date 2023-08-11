@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.play.broadcaster.databinding.ItemTagBinding
 import com.tokopedia.play.broadcaster.databinding.ItemTagPlaceholderBinding
-import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
+import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagItem
 import com.tokopedia.unifycomponents.ChipsUnify
 
 /**
@@ -18,10 +18,18 @@ class TagViewHolder private constructor() {
         private val listener: Listener
     ) : BaseViewHolder(binding.root) {
 
-        fun bind(item: PlayTagUiModel) {
+        fun bind(item: PlayTagItem) {
             binding.chipsTag.chipText = item.tag
 
-            binding.chipsTag.chipType = if (item.isChosen) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
+            binding.chipsTag.chipType = when {
+                item.isActive -> {
+                    if (item.isChosen)
+                        ChipsUnify.TYPE_SELECTED
+                    else
+                        ChipsUnify.TYPE_NORMAL
+                }
+                else -> ChipsUnify.TYPE_DISABLE
+            }
 
             binding.chipsTag.setOnClickListener {
                 listener.onTagClicked(item)
@@ -46,7 +54,7 @@ class TagViewHolder private constructor() {
 
         interface Listener {
 
-            fun onTagClicked(tag: PlayTagUiModel)
+            fun onTagClicked(tag: PlayTagItem)
         }
     }
 
