@@ -5,7 +5,7 @@ import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.stories.databinding.ActivityStoriesBinding
 import com.tokopedia.stories.di.StoriesInjector
-import com.tokopedia.stories.view.fragment.StoriesFragment
+import com.tokopedia.stories.view.fragment.StoriesGroupFragment
 import javax.inject.Inject
 
 class StoriesActivity : BaseActivity() {
@@ -53,18 +53,18 @@ class StoriesActivity : BaseActivity() {
 
     private fun openFragment() {
         supportFragmentManager.executePendingTransactions()
-        val existingFragment = supportFragmentManager.findFragmentByTag(StoriesFragment.TAG)
-        if (existingFragment is StoriesFragment && existingFragment.isVisible) return
+        val existingFragment = supportFragmentManager.findFragmentByTag(StoriesGroupFragment.TAG)
+        if (existingFragment is StoriesGroupFragment && existingFragment.isVisible) return
 
         supportFragmentManager.beginTransaction().apply {
             add(
                 binding.fragmentContainer.id,
-                StoriesFragment.getFragment(
+                StoriesGroupFragment.getFragment(
                     fragmentManager = supportFragmentManager,
                     classLoader = classLoader,
                     bundle = bundle ?: Bundle(),
                 ),
-                StoriesFragment.TAG,
+                StoriesGroupFragment.TAG,
             )
         }.commit()
     }

@@ -10,28 +10,28 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.stories.databinding.FragmentStoriesBinding
+import com.tokopedia.stories.databinding.FragmentStoriesGroupBinding
 import com.tokopedia.stories.utils.withCache
-import com.tokopedia.stories.view.adapter.StoriesPagerAdapter
-import com.tokopedia.stories.view.model.StoriesUiModel
+import com.tokopedia.stories.view.adapter.StoriesGroupPagerAdapter
+import com.tokopedia.stories.view.model.StoriesGroupUiModel
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
-class StoriesFragment @Inject constructor(
+class StoriesGroupFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
 ) : TkpdBaseV4Fragment() {
 
-    private var _binding: FragmentStoriesBinding? = null
-    private val binding: FragmentStoriesBinding
+    private var _binding: FragmentStoriesGroupBinding? = null
+    private val binding: FragmentStoriesGroupBinding
         get() = _binding!!
 
     private val viewModel by activityViewModels<StoriesViewModel> { viewModelFactory }
 
-    private val pagerAdapter: StoriesPagerAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        StoriesPagerAdapter(
+    private val pagerAdapter: StoriesGroupPagerAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        StoriesGroupPagerAdapter(
             childFragmentManager,
             requireActivity(),
             lifecycle,
@@ -47,7 +47,7 @@ class StoriesFragment @Inject constructor(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentStoriesBinding.inflate(inflater, container, false)
+        _binding = FragmentStoriesGroupBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -63,11 +63,11 @@ class StoriesFragment @Inject constructor(
         viewModel.submitAction(event)
     }
 
-    private fun setupViewPager() = with(binding.storiesViewPager) {
+    private fun setupViewPager() = with(binding.storiesGroupViewPager) {
         adapter = pagerAdapter
         registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                viewModelAction(StoriesUiAction.SelectCategories(position))
+                viewModelAction(StoriesUiAction.SelectGroup(position))
                 super.onPageSelected(position)
             }
         })
@@ -80,8 +80,8 @@ class StoriesFragment @Inject constructor(
 
     private fun setupUiStateObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.uiState.withCache().collectLatest { (prevValue, value) ->
-                renderStoriesCategories(prevValue, value)
+            viewModel.uiState.withCache().collectLatest { (prevState, state) ->
+                renderStoriesGroup(prevState?.storiesGroup, state.storiesGroup)
             }
         }
     }
@@ -96,16 +96,16 @@ class StoriesFragment @Inject constructor(
         }
     }
 
-    private fun renderStoriesCategories(
-        prevValue: StoriesUiModel?,
-        value: StoriesUiModel
+    private fun renderStoriesGroup(
+        prevState: List<StoriesGroupUiModel>?,
+        state: List<StoriesGroupUiModel>,
     ) {
-        if (prevValue == StoriesUiModel.Empty || prevValue == value) return
+        if (prevState == state) return
 
-        pagerAdapter.setStoriesData(value)
+        pagerAdapter.setStoriesGroup(state)
     }
 
-    private fun manageNextPageEvent(position: Int) = with(binding.storiesViewPager) {
+    private fun manageNextPageEvent(position: Int) = with(binding.storiesGroupViewPager) {
         currentItem = position
     }
 
@@ -115,20 +115,20 @@ class StoriesFragment @Inject constructor(
     }
 
     companion object {
-        const val TAG = "StoriesFragment"
+        const val TAG = "StoriesGroupFragment"
 
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
             bundle: Bundle,
-        ): StoriesFragment {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? StoriesFragment
+        ): StoriesGroupFragment {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? StoriesGroupFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
-                StoriesFragment::class.java.name
+                StoriesGroupFragment::class.java.name
             ).apply {
                 arguments = bundle
-            } as StoriesFragment
+            } as StoriesGroupFragment
         }
     }
 

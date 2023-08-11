@@ -13,24 +13,29 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showToast
-import com.tokopedia.stories.databinding.FragmentStoriesContentBinding
+import com.tokopedia.stories.databinding.FragmentStoriesDetailBinding
 import com.tokopedia.stories.utils.withCache
-import com.tokopedia.stories.view.components.indicator.StoriesIndicator
-import com.tokopedia.stories.view.components.indicator.StoriesIndicatorEvent
-import com.tokopedia.stories.view.model.StoriesDataUiModel
+import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
+import com.tokopedia.stories.view.components.indicator.StoriesDetailTimerEvent
+import com.tokopedia.stories.view.model.StoriesDetailUiModel
 import com.tokopedia.stories.view.utils.TouchEventStories
 import com.tokopedia.stories.view.utils.onTouchEventStories
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
+import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.NextDetail
+import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.NextGroup
+import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.PauseStories
+import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.PreviousDetail
+import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.ResumeStories
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
-class StoriesContentFragment @Inject constructor(
+class StoriesDetailFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
 ) : TkpdBaseV4Fragment() {
 
-    private var _binding: FragmentStoriesContentBinding? = null
-    private val binding: FragmentStoriesContentBinding
+    private var _binding: FragmentStoriesDetailBinding? = null
+    private val binding: FragmentStoriesDetailBinding
         get() = _binding!!
 
     private val viewModel by activityViewModels<StoriesViewModel> { viewModelFactory }
@@ -44,51 +49,54 @@ class StoriesContentFragment @Inject constructor(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentStoriesContentBinding.inflate(inflater, container, false)
+        _binding = FragmentStoriesDetailBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupStoriesView()
-        setupObserver()
     }
 
     override fun onResume() {
         super.onResume()
-        binding.tvCounter.text = "${viewModel.mCounter.plus(1)}"
+        binding.tvCounter.text = "Categories ${viewModel.mGroupPosition.plus(1)}"
+        setupObserver()
     }
 
     private fun setupObserver() {
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.storiesSelectedCategories.withCache().collectLatest { (prevState, state) ->
-                renderStoriesIndicator(prevState, state)
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.uiState.withCache().collectLatest { (prevState, state) ->
+                renderStoriesDetail(prevState?.storiesDetail, state.storiesDetail)
             }
         }
     }
 
-    private fun renderStoriesIndicator(
-        prevState: StoriesDataUiModel?,
-        state: StoriesDataUiModel,
+    private fun renderStoriesDetail(
+        prevState: List<StoriesDetailUiModel>?,
+        state: List<StoriesDetailUiModel>,
     ) {
-        if (prevState == state) return
+        if (prevState == state || state.isEmpty()) return
 
-        with(binding.cvStoriesIndicator) {
+        with(binding.cvStoriesDetailTimer) {
             apply {
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                 setContent {
-                    StoriesIndicator(data = state) { event ->
-                        storiesEventAction(event)
+                    StoriesDetailTimer(
+                        itemCount = state.size,
+                        data = state.first(),
+                    ) { event ->
+                        storiesDetailTimerEventAction(event)
                     }
                 }
             }
         }
     }
 
-    private fun storiesEventAction(event: StoriesIndicatorEvent) {
+    private fun storiesDetailTimerEventAction(event: StoriesDetailTimerEvent) {
         when (event) {
-            StoriesIndicatorEvent.NEXT_STORIES -> viewModelAction(StoriesUiAction.NextStories)
-            StoriesIndicatorEvent.NEXT_CATEGORIES -> viewModelAction(StoriesUiAction.NextCategories)
+            StoriesDetailTimerEvent.NEXT_DETAIL -> viewModelAction(NextDetail)
+            StoriesDetailTimerEvent.NEXT_GROUP -> viewModelAction(NextGroup)
         }
     }
 
@@ -96,30 +104,34 @@ class StoriesContentFragment @Inject constructor(
         flStoriesPrev.onTouchEventStories { event ->
             when (event) {
                 TouchEventStories.PAUSE -> {
-                    viewModelAction(StoriesUiAction.PauseStories)
-                    cvStoriesIndicator.hide()
+                    viewModelAction(PauseStories)
+                    cvStoriesDetailTimer.hide()
                 }
+
                 TouchEventStories.RESUME -> {
-                    viewModelAction(StoriesUiAction.ResumeStories)
-                    cvStoriesIndicator.show()
+                    viewModelAction(ResumeStories)
+                    cvStoriesDetailTimer.show()
                 }
+
                 TouchEventStories.NEXT_PREV -> {
-                    viewModelAction(StoriesUiAction.PreviousStories)
+                    viewModelAction(PreviousDetail)
                 }
             }
         }
         flStoriesNext.onTouchEventStories { event ->
             when (event) {
                 TouchEventStories.PAUSE -> {
-                    viewModelAction(StoriesUiAction.PauseStories)
-                    cvStoriesIndicator.hide()
+                    viewModelAction(PauseStories)
+                    cvStoriesDetailTimer.hide()
                 }
+
                 TouchEventStories.RESUME -> {
-                    viewModelAction(StoriesUiAction.ResumeStories)
-                    cvStoriesIndicator.show()
+                    viewModelAction(ResumeStories)
+                    cvStoriesDetailTimer.show()
                 }
+
                 TouchEventStories.NEXT_PREV -> {
-                    viewModelAction(StoriesUiAction.NextStories)
+                    viewModelAction(NextDetail)
                 }
             }
         }
@@ -142,17 +154,17 @@ class StoriesContentFragment @Inject constructor(
     }
 
     companion object {
-        private const val TAG = "StoriesContentFragment"
+        private const val TAG = "StoriesDetailFragment"
 
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-        ): StoriesContentFragment {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? StoriesContentFragment
+        ): StoriesDetailFragment {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? StoriesDetailFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
-                StoriesContentFragment::class.java.name
-            ) as StoriesContentFragment
+                StoriesDetailFragment::class.java.name
+            ) as StoriesDetailFragment
         }
     }
 

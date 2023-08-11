@@ -4,8 +4,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.fragment.FragmentKey
 import com.tokopedia.abstraction.base.view.fragment.TkpdFragmentFactory
-import com.tokopedia.stories.view.fragment.StoriesContentFragment
-import com.tokopedia.stories.view.fragment.StoriesFragment
+import com.tokopedia.stories.view.fragment.StoriesDetailFragment
+import com.tokopedia.stories.view.fragment.StoriesGroupFragment
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -18,12 +18,12 @@ abstract class StoriesFragmentModule {
 
     @Binds
     @IntoMap
-    @FragmentKey(StoriesFragment::class)
-    abstract fun bindStoriesFragment(fragment: StoriesFragment): Fragment
+    @FragmentKey(StoriesGroupFragment::class)
+    abstract fun bindStoriesFragment(fragment: StoriesGroupFragment): Fragment
 
     @Binds
     @IntoMap
-    @FragmentKey(StoriesContentFragment::class)
-    abstract fun bindStoriesContentFragment(fragment: StoriesContentFragment): Fragment
+    @FragmentKey(StoriesDetailFragment::class)
+    abstract fun bindStoriesContentFragment(fragment: StoriesDetailFragment): Fragment
 
 }

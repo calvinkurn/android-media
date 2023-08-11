@@ -7,7 +7,7 @@
     android:background="@color/stories_background_dms">
 
     <androidx.compose.ui.platform.ComposeView
-        android:id="@+id/cv_stories_indicator"
+        android:id="@+id/cv_stories_detail_timer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -22,7 +22,7 @@
         app:layout_constraintBottom_toTopOf="@id/guideline_top"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cv_stories_indicator"
+        app:layout_constraintTop_toBottomOf="@id/cv_stories_detail_timer"
         tools:listitem="2" />
 
     <com.tokopedia.unifyprinciples.Typography

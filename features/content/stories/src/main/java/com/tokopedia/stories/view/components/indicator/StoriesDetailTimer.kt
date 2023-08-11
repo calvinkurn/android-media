@@ -22,12 +22,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.tokopedia.stories.view.model.StoriesDataUiModel
+import com.tokopedia.stories.view.components.indicator.StoriesDetailTimerEvent.NEXT_DETAIL
+import com.tokopedia.stories.view.components.indicator.StoriesDetailTimerEvent.NEXT_GROUP
+import com.tokopedia.stories.view.model.StoriesDetailUiModel
 
 @Composable
-fun StoriesIndicator(
-    data: StoriesDataUiModel,
-    event: (StoriesIndicatorEvent) -> Unit,
+fun StoriesDetailTimer(
+    itemCount: Int,
+    data: StoriesDetailUiModel,
+    event: (StoriesDetailTimerEvent) -> Unit,
 ) {
     val anim = remember { Animatable(0F) }
     LaunchedEffect(data) {
@@ -36,28 +39,28 @@ fun StoriesIndicator(
             anim.animateTo(
                 targetValue = 1f,
                 animationSpec = tween(
-                    durationMillis = (7000 * (1f - anim.value)).toInt(),
+                    durationMillis = (3000 * (1f - anim.value)).toInt(),
                     easing = LinearEasing,
                 )
             )
-            event.invoke(
-                if (data.selected >= data.count) StoriesIndicatorEvent.NEXT_CATEGORIES
-                else StoriesIndicatorEvent.NEXT_STORIES
-            )
             anim.snapTo(0F)
+            event.invoke(
+                if (data.position >= itemCount) NEXT_GROUP
+                else NEXT_DETAIL
+            )
         }
     }
-    StoriesIndicatorBar(
-        count = data.count,
-        position = data.selected,
+    StoriesDetailTimerContent(
+        count = itemCount,
+        currentPosition = data.position,
         progress = anim.value,
     )
 }
 
 @Composable
-private fun StoriesIndicatorBar(
+private fun StoriesDetailTimerContent(
     count: Int,
-    position: Int,
+    currentPosition: Int,
     progress: Float,
 ) {
     Row(
@@ -79,8 +82,8 @@ private fun StoriesIndicatorBar(
                         .background(Color.White)
                         .fillMaxHeight().let {
                             when (index) {
-                                position -> it.fillMaxWidth(progress)
-                                in 0..position -> it.fillMaxWidth(1f)
+                                currentPosition -> it.fillMaxWidth(progress)
+                                in 0..currentPosition -> it.fillMaxWidth(1f)
                                 else -> it
                             }
                         },
@@ -93,11 +96,18 @@ private fun StoriesIndicatorBar(
 
 @Preview(showSystemUi = true)
 @Composable
-internal fun StoriesIndicatorPreview() {
-    StoriesIndicator(data = StoriesDataUiModel.Empty) { }
+internal fun StoriesDetailTimerPreview() {
+    StoriesDetailTimer(
+        itemCount = 3,
+        data = StoriesDetailUiModel(
+            position = 0,
+            selected = false,
+            isPause = false,
+            imageContent = "",
+        )
+    ) { }
 }
 
-enum class StoriesIndicatorEvent {
-    NEXT_STORIES,
-    NEXT_CATEGORIES,
+enum class StoriesDetailTimerEvent {
+    NEXT_DETAIL, NEXT_GROUP,
 }
