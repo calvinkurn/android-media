@@ -11,12 +11,16 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopHomeProductCarouselProductInfoCardBinding
 import com.tokopedia.shop.databinding.ItemShopHomeProductCarouselVerticalBannerCardBinding
-import com.tokopedia.shop.home.view.model.Product
+import com.tokopedia.shop.home.view.model.ProductCard
+import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselWidget
+import com.tokopedia.shop.home.view.model.VerticalBanner
 
 class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var items = mutableListOf<Product>()
-    private var onProductClick: (Product) -> Unit = {}
+    private var items = mutableListOf<ShopHomeProductCarouselWidget>()
+    private var onProductClick: (ProductCard) -> Unit = {}
+    private var onVerticalBannerClick: (VerticalBanner) -> Unit = {}
+
     private var showProductInfo : Boolean = false
 
     companion object {
@@ -46,7 +50,7 @@ class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<RecyclerView.ViewHol
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = items[position]
-        if (item.bannerType == "vertical") {
+        if (item is VerticalBanner) {
             (holder as VerticalBannerViewHolder).bind(item)
         } else {
             (holder as ProductViewHolder).bind(item)
@@ -56,7 +60,7 @@ class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<RecyclerView.ViewHol
     override fun getItemViewType(position: Int): Int {
         val item = items[position]
 
-        if (item.bannerType == "vertical") {
+        if (item is VerticalBanner) {
             return VIEW_TYPE_VERTICAL_BANNER
         }
 
@@ -67,38 +71,42 @@ class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<RecyclerView.ViewHol
         private val binding: ItemShopHomeProductCarouselProductInfoCardBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(product: Product) {
-            binding.imgProduct.loadImage(product.imageUrl)
+        fun bind(item: ShopHomeProductCarouselWidget) {
+            val product = item as? ProductCard
 
-            binding.tpgProductName.text = product.name
-            binding.tpgProductName.isVisible = showProductInfo
+            product?.let {
+                binding.imgProduct.loadImage(product.imageUrl)
 
-            binding.tpgProductPrice.text = product.price
-            binding.tpgProductPrice.isVisible = showProductInfo
+                binding.tpgProductName.text = product.name
+                binding.tpgProductName.isVisible = showProductInfo
 
-            val isDiscounted = product.slashedPricePercent.isMoreThanZero()
+                binding.tpgProductPrice.text = product.price
+                binding.tpgProductPrice.isVisible = showProductInfo
 
-            binding.tpgSlashedProductPrice.text = product.slashedPrice
-            binding.tpgSlashedProductPrice.strikethrough()
-            binding.tpgSlashedProductPrice.isVisible = showProductInfo && isDiscounted
+                val isDiscounted = product.slashedPricePercent.isMoreThanZero()
 
-            val discountPercentage = binding.labelDiscount.context.getString(R.string.shop_page_placeholder_discount_percentage, product.slashedPricePercent)
-            binding.labelDiscount.setLabel(discountPercentage)
-            binding.labelDiscount.isVisible = showProductInfo && isDiscounted
+                binding.tpgSlashedProductPrice.text = product.slashedPrice
+                binding.tpgSlashedProductPrice.strikethrough()
+                binding.tpgSlashedProductPrice.isVisible = showProductInfo && isDiscounted
 
-            val hasRating = product.rating.isNotEmpty()
+                val discountPercentage = binding.labelDiscount.context.getString(R.string.shop_page_placeholder_discount_percentage, product.slashedPricePercent)
+                binding.labelDiscount.setLabel(discountPercentage)
+                binding.labelDiscount.isVisible = showProductInfo && isDiscounted
 
-            binding.imgStar.isVisible = showProductInfo && hasRating
-            binding.tpgBullet.isVisible = showProductInfo && hasRating
+                val hasRating = product.rating.isNotEmpty()
 
-            binding.tpgRating.text = product.rating
-            binding.tpgRating.isVisible = showProductInfo && hasRating
+                binding.imgStar.isVisible = showProductInfo && hasRating
+                binding.tpgBullet.isVisible = showProductInfo && hasRating
 
-            val hasBeenPurchased = product.soldCount.isMoreThanZero()
-            binding.tpgProductSoldCount.text = binding.tpgProductSoldCount.context.getString(R.string.shop_page_placeholder_sold, product.soldCount)
-            binding.tpgProductSoldCount.isVisible = showProductInfo && hasBeenPurchased
+                binding.tpgRating.text = product.rating
+                binding.tpgRating.isVisible = showProductInfo && hasRating
 
-            binding.root.setOnClickListener { onProductClick(product) }
+                val hasBeenPurchased = product.soldCount.isMoreThanZero()
+                binding.tpgProductSoldCount.text = binding.tpgProductSoldCount.context.getString(R.string.shop_page_placeholder_sold, product.soldCount)
+                binding.tpgProductSoldCount.isVisible = showProductInfo && hasBeenPurchased
+
+                binding.root.setOnClickListener { onProductClick(product) }
+            }
         }
     }
 
@@ -106,16 +114,19 @@ class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<RecyclerView.ViewHol
         private val binding: ItemShopHomeProductCarouselVerticalBannerCardBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(product: Product) {
-            binding.imgVerticalBanner.loadImage(product.imageUrl)
+        fun bind(item: ShopHomeProductCarouselWidget) {
+            val banner = item as? VerticalBanner
 
-            binding.root.setOnClickListener { onProductClick(product) }
+            banner?.let {
+                binding.imgVerticalBanner.loadImage(banner.imageUrl)
+                binding.root.setOnClickListener { onVerticalBannerClick(banner) }
+            }
         }
     }
 
     inner class DiffCallback(
-        private val oldItems: List<Product>,
-        private val newItems: List<Product>
+        private val oldItems: List<ShopHomeProductCarouselWidget>,
+        private val newItems: List<ShopHomeProductCarouselWidget>
     ) : DiffUtil.Callback() {
 
         override fun getOldListSize() = oldItems.size
@@ -135,7 +146,7 @@ class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<RecyclerView.ViewHol
         this.showProductInfo = showProductInfo
     }
 
-    fun submit(newProducts: List<Product>) {
+    fun submit(newProducts: List<ShopHomeProductCarouselWidget>) {
         val diffCallback = DiffCallback(this.items, newProducts)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
 
@@ -145,7 +156,11 @@ class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<RecyclerView.ViewHol
         diffResult.dispatchUpdatesTo(this)
     }
 
-    fun setOnProductClick(onProductClick: (Product) -> Unit) {
+    fun setOnProductClick(onProductClick: (ProductCard) -> Unit) {
         this.onProductClick = onProductClick
+    }
+
+    fun setOnVerticalBannerClick(onVerticalBannerClick: (VerticalBanner) -> Unit) {
+        this.onVerticalBannerClick = onVerticalBannerClick
     }
 }

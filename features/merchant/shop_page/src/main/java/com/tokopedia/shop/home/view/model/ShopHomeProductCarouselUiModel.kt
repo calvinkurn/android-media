@@ -32,22 +32,22 @@ data class ShopHomeProductCarouselUiModel(
 
         @Parcelize
         data class ComponentList(
-            val id: Long,
-            val name: String,
-            val type: ComponentType,
+            val componentId: Long,
+            val componentName: String,
+            val componentType: ComponentType,
             val ratio: String,
             val data: List<Data>
         ) : Parcelable {
 
             @Parcelize
             data class Data(
-                val imageId: Long,  //For main banner
-                val imageUrl: String,  //For main banner
-                val ctaLink: String, //For main banner
-                val linkId: Long,  //For product info reference
-                val linkType: String, //For product info reference
-                val isShowProductInfo: Boolean, //For product info reference
-                val bannerType: String //For product info reference
+                val imageId: Long,
+                val imageUrl: String,
+                val ctaLink: String,
+                val linkId: Long,
+                val linkType: String,
+                val isShowProductInfo: Boolean,
+                val bannerType: String
             ) : Parcelable
 
         }

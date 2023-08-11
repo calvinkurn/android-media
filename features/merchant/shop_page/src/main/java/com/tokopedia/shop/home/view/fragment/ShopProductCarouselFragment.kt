@@ -17,8 +17,10 @@ import com.tokopedia.shop.databinding.FragmentShopProductCarouselBinding
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.view.adapter.ShopHomeProductCarouselAdapter
-import com.tokopedia.shop.home.view.model.Product
+import com.tokopedia.shop.home.view.model.ProductCard
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselWidget
+import com.tokopedia.shop.home.view.model.VerticalBanner
 import com.tokopedia.shop.home.view.viewmodel.ShopProductCarouselViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -31,8 +33,6 @@ class ShopProductCarouselFragment : BaseDaggerFragment() {
     companion object {
         private const val BUNDLE_KEY_SHOP_ID = "shop_id"
         private const val BUNDLE_KEY_WIDGETS = "widgets"
-        private const val SORT_ID_MOST_SOLD = 8
-        private const val SORT_ID_NEWEST = 2
 
         @JvmStatic
         fun newInstance(
@@ -63,8 +63,8 @@ class ShopProductCarouselFragment : BaseDaggerFragment() {
     private val viewModel by lazy { viewModelProvider[ShopProductCarouselViewModel::class.java] }
 
     private var onMainBannerClick : (ShopHomeProductCarouselUiModel.Tab.ComponentList.Data) -> Unit = {}
-    private var onProductClick : (Product) -> Unit = {}
-    private var onVerticalBannerClick : (Product) -> Unit = {}
+    private var onProductClick : (ProductCard) -> Unit = {}
+    private var onVerticalBannerClick : (VerticalBanner) -> Unit = {}
 
     private var binding by autoClearedNullable<FragmentShopProductCarouselBinding>()
     private val productAdapter = ShopHomeProductCarouselAdapter()
@@ -93,14 +93,14 @@ class ShopProductCarouselFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        observeProducts()
+        observeCarouselsWidgets()
         setupMainBanner()
         setupProductRecyclerView()
         getProducts()
     }
 
     private fun setupMainBanner() {
-        val singleBanners = widgets.firstOrNull { widget -> widget.type == ShopHomeProductCarouselUiModel.ComponentType.BANNER_SINGLE }
+        val singleBanners = widgets.firstOrNull { widget -> widget.componentType == ShopHomeProductCarouselUiModel.ComponentType.BANNER_SINGLE }
 
         val hasMainBanner = singleBanners != null
         if (hasMainBanner) {
@@ -125,18 +125,22 @@ class ShopProductCarouselFragment : BaseDaggerFragment() {
             onProductClick(selectedProduct)
         }
 
+        productAdapter.setOnVerticalBannerClick { verticalBanner ->
+            onVerticalBannerClick(verticalBanner)
+        }
+
         val showProductInfo = widgets
-            .filter { widget -> widget.type == ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITH_PRODUCT_INFO }
+            .filter { widget -> widget.componentType == ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITH_PRODUCT_INFO }
             .size
             .isMoreThanZero()
 
         productAdapter.setShowProductInfo(showProductInfo)
     }
 
-    private fun observeProducts() {
-        viewModel.products.observe(viewLifecycleOwner) { result ->
+    private fun observeCarouselsWidgets() {
+        viewModel.carouselWidgets.observe(viewLifecycleOwner) { result ->
             when(result) {
-                is Success -> renderProducts(result.data)
+                is Success -> renderCarouselWidgets(result.data)
                 is Fail -> {}
             }
         }
@@ -144,54 +148,22 @@ class ShopProductCarouselFragment : BaseDaggerFragment() {
 
 
     private fun getProducts() {
-        val products = widgets.takeWhile { widgets ->
-            widgets.type == ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITH_PRODUCT_INFO
-                ||
-                widgets.type == ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITHOUT_PRODUCT_INFO
-        }
-
-        val firstProduct = products.getOrNull(0)?.data
-        val firstProductLinkType = firstProduct?.getOrNull(0)?.linkType.orEmpty()
-
-        val sortId = when (firstProductLinkType) {
-            "terlaris" -> SORT_ID_MOST_SOLD
-            "terbaru" -> SORT_ID_NEWEST
-            else -> SORT_ID_MOST_SOLD
-        }
-
         val userAddress = ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
-        viewModel.getShopProduct(sortId, shopId, userAddress)
+        viewModel.getCarouselWidgets(widgets, shopId, userAddress)
     }
-    private fun renderProducts(products: List<Product>) {
-        val f = widgets.filter { widgets ->
-            widgets.type == ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITH_PRODUCT_INFO
-                ||
-                widgets.type == ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITHOUT_PRODUCT_INFO
-        }
-
-        val firstProduct = f.getOrNull(0)?.data
-        val firstProductBannerType = firstProduct?.getOrNull(0)?.bannerType.orEmpty()
-
-        val shouldDisplayVerticalBanner = firstProductBannerType == "vertical"
-
-        val adjustedProduct = if (shouldDisplayVerticalBanner) {
-            listOf(Product("", "https://images.tokopedia.net/img/fintech/adapundi/adapundi.png", "Samsung Galaxy", "", "", 0, "", 0, "", "vertical")) + products
-        } else {
-            products
-        }
-
-        productAdapter.submit(adjustedProduct)
+    private fun renderCarouselWidgets(widgets: List<ShopHomeProductCarouselWidget>) {
+        productAdapter.submit(widgets)
     }
 
     fun setOnMainBannerClick(onMainBannerClick: (ShopHomeProductCarouselUiModel.Tab.ComponentList.Data) -> Unit) {
         this.onMainBannerClick = onMainBannerClick
     }
 
-    fun setOnVerticalBannerClick(onVerticalBannerClick: (Product) -> Unit) {
+    fun setOnVerticalBannerClick(onVerticalBannerClick: (VerticalBanner) -> Unit) {
         this.onVerticalBannerClick = onVerticalBannerClick
     }
 
-    fun setOnProductClick(onProductClick: (Product) -> Unit) {
+    fun setOnProductClick(onProductClick: (ProductCard) -> Unit) {
         this.onProductClick = onProductClick
     }
 

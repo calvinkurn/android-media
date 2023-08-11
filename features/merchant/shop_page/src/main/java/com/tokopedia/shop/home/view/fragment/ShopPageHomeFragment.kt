@@ -179,7 +179,7 @@ import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
 import com.tokopedia.shop.home.view.model.CheckCampaignNotifyMeUiModel
 import com.tokopedia.shop.home.view.model.GetCampaignNotifyMeUiModel
 import com.tokopedia.shop.home.view.model.NotifyMeAction
-import com.tokopedia.shop.home.view.model.Product
+import com.tokopedia.shop.home.view.model.ProductCard
 import com.tokopedia.shop.home.view.model.ShopHomeCardDonationUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
@@ -194,6 +194,7 @@ import com.tokopedia.shop.home.view.model.ShopPageLayoutUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseUiModel
+import com.tokopedia.shop.home.view.model.VerticalBanner
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
@@ -754,9 +755,9 @@ open class ShopPageHomeFragment :
                                     name = "All Time",
                                     componentList = listOf(
                                         ShopHomeProductCarouselUiModel.Tab.ComponentList(
-                                            id = 2345,
-                                            name = "banner single",
-                                            type = ShopHomeProductCarouselUiModel.ComponentType.BANNER_SINGLE,
+                                            componentId = 2345,
+                                            componentName = "banner single",
+                                            componentType = ShopHomeProductCarouselUiModel.ComponentType.BANNER_SINGLE,
                                             ratio = "3:1",
                                             data = listOf(
                                                 ShopHomeProductCarouselUiModel.Tab.ComponentList.Data(
@@ -771,9 +772,9 @@ open class ShopPageHomeFragment :
                                             )
                                         ),
                                         ShopHomeProductCarouselUiModel.Tab.ComponentList(
-                                            id = 2345,
-                                            name = "product card with product info",
-                                            type = ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITH_PRODUCT_INFO,
+                                            componentId = 2345,
+                                            componentName = "product card with product info",
+                                            componentType = ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITH_PRODUCT_INFO,
                                             ratio = "",
                                             data = listOf(
                                                 ShopHomeProductCarouselUiModel.Tab.ComponentList.Data(
@@ -794,9 +795,9 @@ open class ShopPageHomeFragment :
                                     name = "Trending Today",
                                     componentList = listOf(
                                         ShopHomeProductCarouselUiModel.Tab.ComponentList(
-                                            id = 2345,
-                                            name = "banner single",
-                                            type = ShopHomeProductCarouselUiModel.ComponentType.BANNER_SINGLE,
+                                            componentId = 2345,
+                                            componentName = "banner single",
+                                            componentType = ShopHomeProductCarouselUiModel.ComponentType.BANNER_SINGLE,
                                             ratio = "3:1",
                                             data = listOf(
                                                 ShopHomeProductCarouselUiModel.Tab.ComponentList.Data(
@@ -811,9 +812,9 @@ open class ShopPageHomeFragment :
                                             )
                                         ),
                                         ShopHomeProductCarouselUiModel.Tab.ComponentList(
-                                            id = 2345,
-                                            name = "product card without product info",
-                                            type = ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITHOUT_PRODUCT_INFO,
+                                            componentId = 2345,
+                                            componentName = "product card without product info",
+                                            componentType = ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITHOUT_PRODUCT_INFO,
                                             ratio = "",
                                             data = listOf(
                                                 ShopHomeProductCarouselUiModel.Tab.ComponentList.Data(
@@ -5065,7 +5066,7 @@ open class ShopPageHomeFragment :
         }
     }
 
-    override fun onProductCarouselProductClick(selectedProduct: Product) {
+    override fun onProductCarouselProductClick(selectedProduct: ProductCard) {
         try {
             RouteManager.route(activity ?: return, selectedProduct.appLink)
         } catch (_: Exception) {
@@ -5073,7 +5074,7 @@ open class ShopPageHomeFragment :
 
     }
 
-    override fun onProductCarouselVerticalBannerClick(verticalBanner: Product) {
+    override fun onProductCarouselVerticalBannerClick(verticalBanner: VerticalBanner) {
         try {
             RouteManager.route(activity ?: return, verticalBanner.appLink)
         } catch (_: Exception) {

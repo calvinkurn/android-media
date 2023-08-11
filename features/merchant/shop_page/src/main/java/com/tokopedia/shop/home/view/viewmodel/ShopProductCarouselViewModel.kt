@@ -8,7 +8,10 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.shop.common.constant.ShopPageConstant
-import com.tokopedia.shop.home.view.model.Product
+import com.tokopedia.shop.home.view.model.ProductCard
+import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselWidget
+import com.tokopedia.shop.home.view.model.VerticalBanner
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -25,54 +28,103 @@ class ShopProductCarouselViewModel @Inject constructor(
     companion object {
         private const val FIRST_PAGE = 1
         private const val PRODUCT_COUNT_TO_FETCH = 5
+        private const val SORT_ID_MOST_SOLD = 8
+        private const val SORT_ID_NEWEST = 2
     }
 
-    private val _products = MutableLiveData<Result<List<Product>>>()
-    val products: LiveData<Result<List<Product>>>
-        get() = _products
+    private val _carouselWidgets = MutableLiveData<Result<List<ShopHomeProductCarouselWidget>>>()
+    val carouselWidgets: LiveData<Result<List<ShopHomeProductCarouselWidget>>>
+        get() = _carouselWidgets
 
-    fun getShopProduct(
-        sortId: Int,
+    fun getCarouselWidgets(
+        widgets: List<ShopHomeProductCarouselUiModel.Tab.ComponentList>,
         shopId: String,
         userAddress: LocalCacheModel
     ) {
+        val firstProductWidget = getProductWidgets(widgets) ?: return
+
         launchCatchError(
             context = dispatcherProvider.io,
             block = {
-                getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(
-                    shopId,
-                    ShopProductFilterInput().apply {
-                        etalaseMenu = ShopPageConstant.ALL_SHOWCASE_ID
-                        this.page = FIRST_PAGE
-                        sort = sortId
-                        perPage = PRODUCT_COUNT_TO_FETCH
-                        userDistrictId = userAddress.district_id
-                        userCityId = userAddress.city_id
-                        userLat = userAddress.lat
-                        userLong = userAddress.long
-                    }
-                )
-                val response = getShopProductUseCase.executeOnBackground()
+                val verticalBanner = getVerticalBanner(firstProductWidget)
+                val products = getProducts(shopId, userAddress, firstProductWidget)
 
-                val products = response.data.map {  product ->
-                    Product(
-                        product.productId,
-                        product.primaryImage.thumbnail,
-                        product.name,
-                        product.price.textIdr,
-                        product.campaign.originalPriceFmt,
-                        product.campaign.discountedPercentage.toIntOrZero(),
-                        product.stats.averageRating,
-                        1,
-                        product.appLink,
-                        bannerType = ""
-                    )
+                val hasVerticalBanner = firstProductWidget.bannerType == "vertical"
+                val carouselWidgets = if (hasVerticalBanner) {
+                    verticalBanner + products
+                } else {
+                    products
                 }
-                _products.postValue(Success(products))
+
+                _carouselWidgets.postValue(Success(carouselWidgets))
             } ,
             onError = { throwable ->
-                _products.postValue(Fail(throwable))
+                _carouselWidgets.postValue(Fail(throwable))
             }
+        )
+    }
+
+    private fun getProductWidgets(widgets: List<ShopHomeProductCarouselUiModel.Tab.ComponentList>): ShopHomeProductCarouselUiModel.Tab.ComponentList.Data? {
+        val productWidgets = widgets
+            .filter { widget ->
+                widget.componentType == ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITH_PRODUCT_INFO
+                    ||
+                    widget.componentType == ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITHOUT_PRODUCT_INFO
+            }
+
+        val firstComponent = productWidgets.getOrNull(0)
+        val firstWidget = firstComponent?.data?.getOrNull(0)
+        return firstWidget
+    }
+
+    private suspend fun getProducts(
+        shopId: String,
+        userAddress: LocalCacheModel,
+        firstWidget: ShopHomeProductCarouselUiModel.Tab.ComponentList.Data
+    ): List<ProductCard> {
+        val productLinkType = firstWidget.linkType
+
+        val sortId = when (productLinkType) {
+            "terlaris" -> SORT_ID_MOST_SOLD
+            "terbaru" -> SORT_ID_NEWEST
+            else -> SORT_ID_MOST_SOLD
+        }
+
+        getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(
+            shopId,
+            ShopProductFilterInput().apply {
+                etalaseMenu = ShopPageConstant.ALL_SHOWCASE_ID
+                this.page = FIRST_PAGE
+                sort = sortId
+                perPage = PRODUCT_COUNT_TO_FETCH
+                userDistrictId = userAddress.district_id
+                userCityId = userAddress.city_id
+                userLat = userAddress.lat
+                userLong = userAddress.long
+            }
+        )
+        val response = getShopProductUseCase.executeOnBackground()
+
+        val products = response.data.map { product ->
+            ProductCard(
+                product.productId,
+                product.primaryImage.thumbnail,
+                product.name,
+                product.price.textIdr,
+                product.campaign.originalPriceFmt,
+                product.campaign.discountedPercentage.toIntOrZero(),
+                product.stats.averageRating,
+                1,
+                product.appLink
+            )
+        }
+
+        return products
+    }
+
+    private fun getVerticalBanner(widget: ShopHomeProductCarouselUiModel.Tab.ComponentList.Data): List<VerticalBanner> {
+        return listOf(
+            VerticalBanner(widget.imageUrl, widget.bannerType, widget.ctaLink, widget.imageUrl)
         )
     }
 }
