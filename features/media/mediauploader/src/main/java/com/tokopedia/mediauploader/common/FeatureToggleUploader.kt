@@ -10,7 +10,6 @@ object FeatureToggleUploader {
         return RemoteConfigInstance
             .getInstance()
             .abTestPlatform
-            .getString(VOD_COMPRESSION_KEY, "")
-            .isNotEmpty()
+            .getString(VOD_COMPRESSION_KEY) == VOD_COMPRESSION_KEY
     }
 }
