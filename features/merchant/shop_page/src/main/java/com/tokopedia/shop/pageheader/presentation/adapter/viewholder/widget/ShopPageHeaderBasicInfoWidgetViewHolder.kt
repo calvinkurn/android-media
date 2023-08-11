@@ -17,9 +17,9 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopPage
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderBadgeTextValueComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderImageOnlyComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel
-import com.tokopedia.stories.common.StoriesAvatarImageView
 import com.tokopedia.stories.common.StoriesAvatarManager
 import com.tokopedia.stories.common.StoriesAvatarView
+import com.tokopedia.stories.common.StoriesBorderLayout
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -46,7 +46,8 @@ class ShopPageHeaderBasicInfoWidgetViewHolder(
     }
 
     private val viewBinding: LayoutShopHeaderBasicInfoWidgetBinding? by viewBinding()
-    private val shopLogoImageView: StoriesAvatarImageView? = viewBinding?.imageShopLogo
+    private val shopLogoContainer: StoriesBorderLayout? = viewBinding?.imageShopContainer
+    private val shopLogoImageView: ImageView? = viewBinding?.imageShopLogo
     private val shopBadgeImageView: ImageView? = viewBinding?.imageShopBadge
     private val shopChevronImageView: ImageView? = viewBinding?.shopPageChevronShopInfo
     private val shopNameTextView: Typography? = viewBinding?.textShopName
@@ -82,6 +83,8 @@ class ShopPageHeaderBasicInfoWidgetViewHolder(
         val shopLogoUrl = component?.image.orEmpty()
         val shopId = component?.shopId.orEmpty()
         shopLogoImageView?.loadImageCircle(shopLogoUrl)
+        shopLogoContainer?.startAnimation()
+
 //        shopLogoImageView?.run {
 //            storiesAvatarManager.manage(this, shopId)
 //        }

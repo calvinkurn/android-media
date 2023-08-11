@@ -11,23 +11,37 @@
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent">
 
-    <com.tokopedia.stories.common.StoriesAvatarImageView
-        android:id="@+id/image_shop_logo"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:contentDescription="@string/content_desc_shop_page_main_profile_image"
+    <com.tokopedia.stories.common.StoriesBorderLayout
+        android:id="@+id/image_shop_container"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        />
+        >
 
-<!--    <com.tokopedia.stories.common.StoriesAvatarView-->
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/image_shop_logo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:background="@drawable/bg_shop_page_profile"
+            android:contentDescription="@string/content_desc_shop_page_main_profile_image"
+            android:scaleType="centerCrop"
+            app:unify_image_type="circle" />
+
+    </com.tokopedia.stories.common.StoriesBorderLayout>
+
+<!--    <androidx.appcompat.widget.AppCompatImageView-->
 <!--        android:id="@+id/image_shop_logo"-->
-<!--        android:layout_width="64dp"-->
-<!--        android:layout_height="64dp"-->
+<!--        android:layout_width="56dp"-->
+<!--        android:layout_height="56dp"-->
+<!--        android:adjustViewBounds="true"-->
+<!--        android:background="@drawable/bg_shop_page_profile"-->
 <!--        android:contentDescription="@string/content_desc_shop_page_main_profile_image"-->
+<!--        android:scaleType="centerCrop"-->
 <!--        app:layout_constraintStart_toStartOf="parent"-->
 <!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        />-->
+<!--        app:unify_image_type="circle" />-->
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/image_shop_badge"
@@ -42,7 +56,7 @@
         app:layout_constraintBottom_toBottomOf="@id/text_shop_name"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintLeft_toRightOf="@id/image_shop_logo"
+        app:layout_constraintLeft_toRightOf="@id/image_shop_container"
         app:layout_constraintRight_toLeftOf="@id/text_shop_name"
         app:layout_constraintTop_toTopOf="@id/text_shop_name"
         app:layout_constraintVertical_bias="0.5"
@@ -56,11 +70,11 @@
         android:lines="1"
         android:textColor="@color/Unify_NN950_96"
         app:layout_constrainedWidth="true"
-        app:layout_constraintBottom_toBottomOf="@id/image_shop_logo"
+        app:layout_constraintBottom_toBottomOf="@id/image_shop_container"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintLeft_toRightOf="@id/image_shop_badge"
         app:layout_constraintRight_toLeftOf="@id/shop_page_chevron_shop_info"
-        app:layout_constraintTop_toTopOf="@id/image_shop_logo"
+        app:layout_constraintTop_toTopOf="@id/image_shop_container"
         app:layout_constraintVertical_bias="0.2"
         app:layout_goneMarginLeft="12dp"
         app:typographyType="heading_4"
@@ -89,7 +103,7 @@
         android:layout_marginEnd="4dp"
         app:layout_constraintBottom_toBottomOf="@id/text_shop_basic_info_additional_info"
         app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintLeft_toRightOf="@id/image_shop_logo"
+        app:layout_constraintLeft_toRightOf="@id/image_shop_container"
         app:layout_constraintRight_toLeftOf="@id/text_shop_basic_info_additional_info"
         app:layout_constraintTop_toTopOf="@id/text_shop_basic_info_additional_info"
         app:layout_constraintHorizontal_chainStyle="packed"
@@ -106,7 +120,7 @@
         android:lines="1"
         android:textColor="@color/Unify_NN950_68"
         app:layout_constrainedWidth="true"
-        app:layout_constraintBottom_toBottomOf="@id/image_shop_logo"
+        app:layout_constraintBottom_toBottomOf="@id/image_shop_container"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintLeft_toRightOf="@id/iv_online_icon"
         app:layout_constraintRight_toRightOf="parent"
