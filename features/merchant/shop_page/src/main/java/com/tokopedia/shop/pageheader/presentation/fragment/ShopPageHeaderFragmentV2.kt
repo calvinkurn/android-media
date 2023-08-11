@@ -1420,6 +1420,7 @@ class ShopPageHeaderFragmentV2 :
         refreshCartCounterData()
         // Add delay update mini cart when on resume, to prevent race condition with cart page's update cart
         updateMiniCartWidget(delay = DELAY_MINI_CART_RESUME)
+        startDynamicUspCycle()
     }
 
     private fun checkIfChooseAddressWidgetDataUpdated() {
@@ -1665,6 +1666,12 @@ class ShopPageHeaderFragmentV2 :
     override fun onPause() {
         super.onPause()
         shopPageTracking?.sendAllTrackingQueue()
+        pauseTimerDynamicUspCycle()
+    }
+
+    private fun pauseTimerDynamicUspCycle() {
+        timer?.cancel()
+        timer = null
     }
 
     private fun setupTabs() {
