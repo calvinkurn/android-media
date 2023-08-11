@@ -12,7 +12,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
-import com.tokopedia.shop.databinding.ItemShopHomeProductCarouselWidgetBinding
+import com.tokopedia.shop.databinding.ItemShopHomeProductCarouselViewpagerBinding
 import com.tokopedia.shop.home.view.fragment.ShopProductCarouselFragment
 import com.tokopedia.shop.home.view.listener.ShopHomeProductCarouselListener
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel
@@ -27,12 +27,12 @@ class ShopHomeProductCarouselViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_shop_home_product_carousel_widget
+        val LAYOUT = R.layout.item_shop_home_product_carousel_viewpager
         private const val ONE_TAB = 1
         private const val TWO_TAB = 2
     }
 
-    private val viewBinding: ItemShopHomeProductCarouselWidgetBinding? by viewBinding()
+    private val viewBinding: ItemShopHomeProductCarouselViewpagerBinding? by viewBinding()
 
 
     override fun bind(model: ShopHomeProductCarouselUiModel) {

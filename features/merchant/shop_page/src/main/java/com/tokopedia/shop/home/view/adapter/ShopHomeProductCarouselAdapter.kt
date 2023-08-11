@@ -8,10 +8,10 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.strikethrough
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.shop.databinding.ItemShopHomeProductInfoCardBinding
-import com.tokopedia.shop.home.view.model.Product
 import com.tokopedia.shop.R
-import com.tokopedia.shop.databinding.ItemShopHomeProductVerticalBannerCardBinding
+import com.tokopedia.shop.databinding.ItemShopHomeProductCarouselProductInfoCardBinding
+import com.tokopedia.shop.databinding.ItemShopHomeProductCarouselVerticalBannerCardBinding
+import com.tokopedia.shop.home.view.model.Product
 
 class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -25,14 +25,14 @@ class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<RecyclerView.ViewHol
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == VIEW_TYPE_VERTICAL_BANNER) {
-            val binding = ItemShopHomeProductVerticalBannerCardBinding.inflate(
+            val binding = ItemShopHomeProductCarouselVerticalBannerCardBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
             VerticalBannerViewHolder(binding)
         } else {
-            val binding = ItemShopHomeProductInfoCardBinding.inflate(
+            val binding = ItemShopHomeProductCarouselProductInfoCardBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -64,7 +64,7 @@ class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     inner class ProductViewHolder(
-        private val binding: ItemShopHomeProductInfoCardBinding
+        private val binding: ItemShopHomeProductCarouselProductInfoCardBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(product: Product) {
@@ -103,13 +103,11 @@ class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     inner class VerticalBannerViewHolder(
-        private val binding: ItemShopHomeProductVerticalBannerCardBinding
+        private val binding: ItemShopHomeProductCarouselVerticalBannerCardBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(product: Product) {
             binding.imgVerticalBanner.loadImage(product.imageUrl)
-            binding.tpgCtaText.text = binding.tpgCtaText.context.getString(R.string.shop_page_view_all)
-            binding.tpgBannerTitle.text = product.name
 
             binding.root.setOnClickListener { onProductClick(product) }
         }
