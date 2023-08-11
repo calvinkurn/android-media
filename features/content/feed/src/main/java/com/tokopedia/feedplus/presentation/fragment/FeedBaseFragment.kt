@@ -24,6 +24,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.content.common.producttag.view.uimodel.NetworkResult
 import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.common.util.isUserNetworkError
 import com.tokopedia.content.common.util.reduceDragSensitivity
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
 import com.tokopedia.feedplus.R
@@ -42,10 +43,12 @@ import com.tokopedia.feedplus.presentation.receiver.FeedMultipleSourceUploadRece
 import com.tokopedia.feedplus.presentation.receiver.UploadStatus
 import com.tokopedia.feedplus.presentation.receiver.UploadType
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.play_common.shortsuploader.analytic.PlayShortsUploadAnalytic
 import com.tokopedia.unifycomponents.Toaster
@@ -376,13 +379,18 @@ class FeedBaseFragment :
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.RESUMED)
                 .collectLatest { state ->
                     when (state) {
-                        NetworkResult.Loading -> showLoading()
+                        NetworkResult.Loading -> {
+                            hideErrorView()
+                            showLoading()
+                        }
                         is NetworkResult.Success -> {
+                            hideErrorView()
                             hideLoading()
                             initTabsView(state.data)
                         }
                         is NetworkResult.Error -> {
                             hideLoading()
+                            showErrorView(state.error)
                         }
                         else -> {
                             // nothing
@@ -695,6 +703,22 @@ class FeedBaseFragment :
 
     private fun hideLoading() {
         binding.feedLoading.hide()
+    }
+
+    private fun showErrorView(error: Throwable) {
+        if (error.isUserNetworkError) {
+            binding.feedError.visible()
+            binding.feedError.setIcon(IconUnify.RELOAD)
+            binding.feedError.setTitle(getString(R.string.feed_label_error_fetch_title))
+            binding.feedError.setDescription(getString(R.string.feed_label_error_fetch_subtitle))
+            binding.feedError.setButton(getString(R.string.feed_label_error_fetch_button)) {
+                feedMainViewModel.fetchFeedTabs()
+            }
+        }
+    }
+
+    private fun hideErrorView() {
+        binding.feedError.hide()
     }
 
     companion object {
