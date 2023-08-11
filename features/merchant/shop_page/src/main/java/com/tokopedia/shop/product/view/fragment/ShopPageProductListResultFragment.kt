@@ -2137,6 +2137,8 @@ class ShopPageProductListResultFragment :
     }
 
     private fun showUniversalShareBottomSheet() {
+        shopPageEtalaseTracking?.clickShareEtalase(shopId.orEmpty(),
+            selectedEtalaseId,isAffiliate,userId)
 
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance(view).apply {
             init(this@ShopPageProductListResultFragment)
@@ -2202,9 +2204,6 @@ class ShopPageProductListResultFragment :
     }
 
     fun clickShopShare() {
-        shopPageEtalaseTracking?.clickShareEtalase(shopId.orEmpty(),
-            selectedEtalaseId,isAffiliate,userId)
-
         val inputAffiliate = AffiliateInput().apply {
             pageDetail = PageDetail(
                 pageId = shopId.orEmpty(),
