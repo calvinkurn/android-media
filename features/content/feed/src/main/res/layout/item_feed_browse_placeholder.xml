@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/feed_browse_placeholder"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!-- todo: placeholder ui here -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="PLACEHOLDER"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+</FrameLayout>
