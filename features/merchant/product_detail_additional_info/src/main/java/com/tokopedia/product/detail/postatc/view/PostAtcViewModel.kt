@@ -5,12 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
-import com.tokopedia.product.detail.common.postatc.PostAtc
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.product.detail.common.postatc.PostAtcParams
 import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
 import com.tokopedia.product.detail.postatc.data.model.PostAtcInfo
 import com.tokopedia.product.detail.postatc.data.model.PostAtcLayout
 import com.tokopedia.product.detail.postatc.mapper.mapToUiModel
+import com.tokopedia.product.detail.postatc.mapper.toUserLocationRequest
 import com.tokopedia.product.detail.postatc.usecase.GetPostAtcLayoutUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
@@ -40,21 +41,21 @@ class PostAtcViewModel @Inject constructor(
      */
     fun initializeParameters(
         productId: String,
-        postAtc: PostAtc,
-        userLocationRequest: UserLocationRequest
+        postAtcParams: PostAtcParams,
+        localCacheModel: LocalCacheModel
     ) {
-        val addons = postAtc.addons?.let {
+        val addons = postAtcParams.addons?.let {
             PostAtcInfo.Addons.parse(it)
         }
 
         postAtcInfo = postAtcInfo.copy(
             addons = addons,
-            cartId = postAtc.cartId,
-            layoutId = postAtc.layoutId,
-            pageSource = postAtc.pageSource.name,
+            cartId = postAtcParams.cartId,
+            layoutId = postAtcParams.layoutId,
+            pageSource = postAtcParams.pageSource.name,
             productId = productId,
-            session = postAtc.session,
-            userLocationRequest = userLocationRequest
+            session = postAtcParams.session,
+            userLocationRequest = localCacheModel.toUserLocationRequest()
         )
 
         fetchLayout()
@@ -99,8 +100,8 @@ class PostAtcViewModel @Inject constructor(
 
             _recommendations.value = uniqueId to widget.asSuccess()
         }, onError = {
-            _recommendations.value = uniqueId to it.asFail()
-        })
+                _recommendations.value = uniqueId to it.asFail()
+            })
     }
 
     private fun updateInfo(data: PostAtcLayout) {

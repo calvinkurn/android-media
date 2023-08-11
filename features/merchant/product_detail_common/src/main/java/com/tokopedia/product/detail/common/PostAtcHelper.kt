@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.product.detail.common.postatc.PostAtc
+import com.tokopedia.product.detail.common.postatc.PostAtcParams
 
 object PostAtcHelper {
 
@@ -16,23 +16,26 @@ object PostAtcHelper {
     fun start(
         context: Context,
         productId: String,
-        postAtc: PostAtc
+        postAtcParams: PostAtcParams
     ) {
-        val intent = getIntent(context, productId, postAtc)
-        context.startActivity(intent)
+        getIntent(context, productId, postAtcParams) { intent ->
+            context.startActivity(intent)
+        }
     }
 
     fun getIntent(
         context: Context,
         productId: String,
-        postAtc: PostAtc
-    ): Intent {
-        return RouteManager.getIntent(
+        postAtcParams: PostAtcParams,
+        onIntent: (Intent) -> Unit
+    ) {
+        val intent = RouteManager.getIntent(
             context,
             ApplinkConstInternalMarketplace.POST_ATC,
             productId
         ).apply {
-            putExtra(PARAM_POST_ATC, postAtc)
+            putExtra(PARAM_POST_ATC, postAtcParams)
         }
+        onIntent.invoke(intent)
     }
 }

@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.PostAtcHelper.PARAM_POST_ATC
-import com.tokopedia.product.detail.common.postatc.PostAtc
+import com.tokopedia.product.detail.common.postatc.PostAtcParams
 import com.tokopedia.product.detail.common.showImmediately
 
 /**
@@ -34,9 +34,9 @@ class PostAtcActivity : BaseSimpleActivity() {
         adjustOrientation()
 
         val pathSegments = intent.data?.pathSegments ?: emptyList()
-        val productId = pathSegments.getOrNull(PATH_INDEX_PRODUCT_ID) ?: return
+        val productId = pathSegments.getOrNull(PATH_INDEX_PRODUCT_ID) ?: return finish()
 
-        val extras = intent.extras ?: return
+        val extras = intent.extras ?: return finish()
         val postAtc = generatePostAtc(extras)
 
         showImmediately(supportFragmentManager, PostAtcBottomSheet.TAG) {
@@ -50,17 +50,17 @@ class PostAtcActivity : BaseSimpleActivity() {
         }
     }
 
-    private fun generatePostAtc(extras: Bundle): PostAtc {
-        val postAtc = extras.getParcelable(PARAM_POST_ATC) ?: PostAtc()
+    private fun generatePostAtc(extras: Bundle): PostAtcParams {
+        val postAtcParams = extras.getParcelable(PARAM_POST_ATC) ?: PostAtcParams()
 
         val pageSource = extras.getString(PARAM_PAGE_SOURCE)?.let {
-            PostAtc.Source.Custom(it)
+            PostAtcParams.Source.parse(it)
         }
 
-        return postAtc.copy(
-            layoutId = extras.getString(PARAM_LAYOUT_ID, postAtc.layoutId),
-            cartId = extras.getString(PARAM_CART_ID, postAtc.cartId),
-            pageSource = pageSource ?: postAtc.pageSource
+        return postAtcParams.copy(
+            layoutId = extras.getString(PARAM_LAYOUT_ID, postAtcParams.layoutId),
+            cartId = extras.getString(PARAM_CART_ID, postAtcParams.cartId),
+            pageSource = pageSource ?: postAtcParams.pageSource
         )
     }
 }

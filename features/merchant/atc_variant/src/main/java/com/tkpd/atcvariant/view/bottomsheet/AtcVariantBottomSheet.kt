@@ -66,7 +66,7 @@ import com.tokopedia.product.detail.common.data.model.carttype.PostAtcLayout
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.mapper.AtcVariantMapper
-import com.tokopedia.product.detail.common.postatc.PostAtc
+import com.tokopedia.product.detail.common.postatc.PostAtcParams
 import com.tokopedia.product.detail.common.showToasterError
 import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.product.detail.common.view.AtcVariantListener
@@ -712,7 +712,7 @@ class AtcVariantBottomSheet :
             valueTransform = { it.id }
         )
 
-        val addons = PostAtc.Addons(
+        val addons = PostAtcParams.Addons(
             deselectedAddonsIds = addonsIds[2] ?: emptyList(),
             isFulfillment = cartData.isFulfillment,
             selectedAddonsIds = addonsIds[1] ?: emptyList(),
@@ -722,12 +722,12 @@ class AtcVariantBottomSheet :
 
         val variantPageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
         val pageSource = if (variantPageSource == VariantPageSource.PDP_PAGESOURCE.source) {
-            PostAtc.Source.PDP
+            PostAtcParams.Source.PDP
         } else {
-            PostAtc.Source.Default
+            PostAtcParams.Source.Default
         }
 
-        val postAtc = PostAtc(
+        val postAtcParams = PostAtcParams(
             cartId = cartData.cartId,
             layoutId = postAtcLayout.layoutId,
             pageSource = pageSource,
@@ -738,7 +738,7 @@ class AtcVariantBottomSheet :
         PostAtcHelper.start(
             context,
             productId,
-            postAtc
+            postAtcParams
         )
         dismiss()
     }

@@ -1,7 +1,7 @@
 package com.tokopedia.product.detail.postatc.data.model
 
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
-import com.tokopedia.product.detail.common.postatc.PostAtc
+import com.tokopedia.product.detail.common.postatc.PostAtcParams
 
 data class PostAtcInfo(
     val addons: Addons? = null,
@@ -39,7 +39,7 @@ data class PostAtcInfo(
         val quantity: Int
     ) {
         companion object {
-            fun parse(addons: PostAtc.Addons) = Addons(
+            fun parse(addons: PostAtcParams.Addons) = Addons(
                 deselectedAddonsIds = addons.deselectedAddonsIds,
                 isFulfillment = addons.isFulfillment,
                 selectedAddonsIds = addons.selectedAddonsIds,

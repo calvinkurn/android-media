@@ -18,7 +18,7 @@ import com.tokopedia.kotlin.extensions.view.getStringArg
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.postatc.PostAtc
+import com.tokopedia.product.detail.common.postatc.PostAtcParams
 import com.tokopedia.product.detail.databinding.PostAtcBottomSheetBinding
 import com.tokopedia.product.detail.databinding.ViewPostAtcFooterBinding
 import com.tokopedia.product.detail.postatc.base.PostAtcAdapter
@@ -28,7 +28,6 @@ import com.tokopedia.product.detail.postatc.base.PostAtcLayoutManager
 import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
 import com.tokopedia.product.detail.postatc.di.DaggerPostAtcComponent
 import com.tokopedia.product.detail.postatc.di.PostAtcModule
-import com.tokopedia.product.detail.postatc.mapper.generateUserLocationRequest
 import com.tokopedia.product.detail.postatc.tracker.PostAtcTracking
 import com.tokopedia.product.detail.postatc.view.component.error.ErrorUiModel
 import com.tokopedia.product.detail.postatc.view.component.fallback.FallbackUiModel
@@ -56,11 +55,11 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
 
         fun instance(
             productId: String,
-            postAtc: PostAtc
+            postAtcParams: PostAtcParams
         ) = PostAtcBottomSheet().apply {
             arguments = Bundle().apply {
                 putString(ARG_PRODUCT_ID, productId)
-                putParcelable(ARG_POST_ATC, postAtc)
+                putParcelable(ARG_POST_ATC, postAtcParams)
             }
         }
     }
@@ -82,7 +81,7 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
     override val adapter by lazy { PostAtcAdapter(callback) }
 
     private val argProductId: String by getStringArg(ARG_PRODUCT_ID)
-    private val argPostAtc: PostAtc by getParcelableArg(ARG_POST_ATC, PostAtc())
+    private val argPostAtcParams: PostAtcParams by getParcelableArg(ARG_POST_ATC, PostAtcParams())
 
     override var binding: PostAtcBottomSheetBinding? = null
         private set
@@ -217,7 +216,7 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
         if (it is SocketTimeoutException || it is UnknownHostException || it is ConnectException) {
             adapter.replaceComponents(listOf(ErrorUiModel(errorType = GlobalError.NO_CONNECTION)))
         } else {
-            adapter.replaceComponents(listOf(FallbackUiModel(cartId = argPostAtc.cartId)))
+            adapter.replaceComponents(listOf(FallbackUiModel(cartId = argPostAtcParams.cartId)))
         }
     }
 
@@ -228,8 +227,8 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
         adapter.replaceComponents(listOf(LoadingUiModel()))
         viewModel.initializeParameters(
             productId = argProductId,
-            postAtc = argPostAtc,
-            userLocationRequest = localCacheModel.generateUserLocationRequest()
+            postAtcParams = argPostAtcParams,
+            localCacheModel = localCacheModel
         )
     }
 

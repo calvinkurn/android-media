@@ -153,7 +153,7 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
-import com.tokopedia.product.detail.common.postatc.PostAtc
+import com.tokopedia.product.detail.common.postatc.PostAtcParams
 import com.tokopedia.product.detail.common.showImmediately
 import com.tokopedia.product.detail.common.showToasterError
 import com.tokopedia.product.detail.common.showToasterSuccess
@@ -3655,15 +3655,12 @@ open class DynamicProductDetailFragment :
     }
 
     private fun showAddToCartDoneBottomSheet(cartDataModel: DataModel) {
-        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
-        val basicInfo = productInfo.basic
-
-        val cartData = viewModel.p2Data.value?.cartRedirection?.getOrDefault(basicInfo.productID, null)
-        val postAtcLayout = cartData?.postAtcLayout
+        val cartRedirData = viewModel.p2Data.value?.cartRedirection?.get(cartDataModel.productId)
+        val postAtcLayout = cartRedirData?.postAtcLayout
 
         val remoteNewATC = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_POST_ATC_PDP, true)
         if (postAtcLayout?.showPostAtc == true && remoteNewATC) {
-            showGlobalPostATC(cartDataModel, basicInfo.productID, postAtcLayout)
+            showGlobalPostATC(cartDataModel, cartDataModel.productId, postAtcLayout)
         } else {
             showOldPostATC(cartDataModel.cartId)
         }
@@ -3681,7 +3678,7 @@ open class DynamicProductDetailFragment :
             valueTransform = { it.id }
         )
 
-        val addons = PostAtc.Addons(
+        val addons = PostAtcParams.Addons(
             deselectedAddonsIds = addonsIds[2] ?: emptyList(),
             isFulfillment = cartDataModel.isFulfillment,
             selectedAddonsIds = addonsIds[1] ?: emptyList(),
@@ -3689,10 +3686,10 @@ open class DynamicProductDetailFragment :
             quantity = cartDataModel.quantity
         )
 
-        val postAtc = PostAtc(
+        val postAtcParams = PostAtcParams(
             cartId = cartDataModel.cartId,
             layoutId = postAtcLayout.layoutId,
-            pageSource = PostAtc.Source.PDP,
+            pageSource = PostAtcParams.Source.PDP,
             session = postAtcLayout.postAtcSession,
             addons = addons
         )
@@ -3700,7 +3697,7 @@ open class DynamicProductDetailFragment :
         PostAtcHelper.start(
             context,
             productId,
-            postAtc
+            postAtcParams
         )
     }
 

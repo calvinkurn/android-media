@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class PostAtc(
+data class PostAtcParams(
     val cartId: String = "",
     val layoutId: String = "",
     val pageSource: Source = Source.Default,
@@ -29,5 +29,14 @@ data class PostAtc(
         object Default : Source("")
 
         class Custom(override val name: String) : Source(name)
+
+        companion object {
+            fun parse(name: String): Source? {
+                val matchingSubclass = Source::class.sealedSubclasses.find {
+                    it.objectInstance?.name == name
+                }
+                return matchingSubclass?.objectInstance
+            }
+        }
     }
 }
