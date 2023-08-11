@@ -306,7 +306,7 @@ open class ShopHomeAdapter(
         }
         listSliderBannerViewModel.forEach {
             (recyclerView?.findViewHolderForAdapterPosition(visitables.indexOf(it)) as? ShopHomeSliderBannerViewHolder)?.pauseTimer()
-            (recyclerView?.findViewHolderForAdapterPosition(visitables.indexOf(it)) as? ShopHomeSliderBannerViewHolder)?.pauseTimer()
+            (recyclerView?.findViewHolderForAdapterPosition(visitables.indexOf(it)) as? ShopHomeAdvanceCarouselBannerViewHolder)?.pauseTimer()
         }
     }
 
