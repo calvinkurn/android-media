@@ -133,16 +133,7 @@ class FeedFollowRecommendationViewHolder(
         when (model.status) {
             FeedFollowRecommendationModel.Status.Loading,
             FeedFollowRecommendationModel.Status.Success -> {
-                if (model.data.isEmpty()) {
-                    profileAdapter.setItemsAndAnimateChanges(List(5) { FeedFollowProfileAdapter.Model.Loading })
-                    binding.rvFollowRecommendation.suppressLayout(true)
-                }
-                else {
-                    setupProfileList(model, selectedPosition, isViewHolderSelected)
-                }
-
-                binding.clMain.showWithCondition(true)
-                binding.feedNoContent.root.showWithCondition(false)
+                setupProfileList(model, selectedPosition, isViewHolderSelected)
             }
             FeedFollowRecommendationModel.Status.Error -> {
                 binding.feedNoContent.iconFeedNoContent.setImage(IconUnify.RELOAD)
@@ -185,41 +176,49 @@ class FeedFollowRecommendationViewHolder(
     ) {
         if (model == null) return
 
-        binding.rvFollowRecommendation.suppressLayout(false)
+        if (model.data.isEmpty() && model.isLoading) {
+            profileAdapter.setItemsAndAnimateChanges(List(5) { FeedFollowProfileAdapter.Model.Loading })
+            binding.rvFollowRecommendation.suppressLayout(true)
 
-        var isNeedForceScroll = false
-        val finalSelectedPosition = if (selectedPosition >= model.data.size) {
-            isNeedForceScroll = true
-            (model.data.size - 1).coerceAtLeast(0)
+            binding.clMain.showWithCondition(true)
+            binding.feedNoContent.root.showWithCondition(false)
         } else {
-            selectedPosition
+            binding.rvFollowRecommendation.suppressLayout(false)
+
+            var isNeedForceScroll = false
+            val finalSelectedPosition = if (selectedPosition >= model.data.size) {
+                isNeedForceScroll = true
+                (model.data.size - 1).coerceAtLeast(0)
+            } else {
+                selectedPosition
+            }
+
+            val mappedList = model.data.mapIndexed { idx, item ->
+                FeedFollowProfileAdapter.Model.Profile(
+                    data = item,
+                    isSelected = if (isViewHolderSelected) idx == finalSelectedPosition else false,
+                )
+            }
+
+            val finalList = if (model.hasNext)
+                mappedList + listOf(FeedFollowProfileAdapter.Model.Loading)
+            else
+                mappedList
+
+            val isDataAvailable = finalList.isNotEmpty()
+
+            profileAdapter.setItemsAndAnimateChanges(finalList)
+
+            if (isNeedForceScroll)
+                binding.rvFollowRecommendation.smoothScrollToPosition(finalSelectedPosition)
+
+            binding.feedNoContent.btnShowOtherContent.setOnClickListener {
+                listener.onClickViewOtherContent()
+            }
+
+            binding.clMain.showWithCondition(isDataAvailable)
+            binding.feedNoContent.root.showWithCondition(!isDataAvailable)
         }
-
-        val mappedList = model.data.mapIndexed { idx, item ->
-            FeedFollowProfileAdapter.Model.Profile(
-                data = item,
-                isSelected = if (isViewHolderSelected) idx == finalSelectedPosition else false,
-            )
-        }
-
-        val finalList = if (model.hasNext)
-            mappedList + listOf(FeedFollowProfileAdapter.Model.Loading)
-        else
-            mappedList
-
-        val isDataAvailable = finalList.isNotEmpty()
-
-        profileAdapter.setItemsAndAnimateChanges(finalList)
-
-        if (isNeedForceScroll)
-            binding.rvFollowRecommendation.smoothScrollToPosition(finalSelectedPosition)
-
-        binding.feedNoContent.btnShowOtherContent.setOnClickListener {
-            listener.onClickViewOtherContent()
-        }
-
-        binding.clMain.showWithCondition(isDataAvailable)
-        binding.feedNoContent.root.showWithCondition(!isDataAvailable)
     }
 
     private fun getSelectedPosition(): Int {
