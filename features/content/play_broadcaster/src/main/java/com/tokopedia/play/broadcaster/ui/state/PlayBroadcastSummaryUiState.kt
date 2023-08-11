@@ -1,9 +1,8 @@
 package com.tokopedia.play.broadcaster.ui.state
 
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagItem
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play_common.model.result.NetworkResult
 
@@ -27,7 +26,14 @@ data class ChannelSummaryUiState(
     fun isEmpty() = title.isEmpty() && coverUrl.isEmpty() && date.isEmpty() && duration.isEmpty() && !isEligiblePostVideo
 
     companion object {
-        fun empty() = ChannelSummaryUiState("", "", "", "", false, ContentAccountUiModel.Empty)
+        fun empty() = ChannelSummaryUiState(
+            title = "",
+            coverUrl = "",
+            date = "",
+            duration = "",
+            isEligiblePostVideo = false,
+            author = ContentAccountUiModel.Empty,
+        )
     }
 }
 
@@ -36,5 +42,5 @@ data class LiveReportUiState(
 )
 
 data class TagUiState(
-    val tags: List<PlayTagUiModel>,
+    val tags: List<PlayTagItem>,
 )

@@ -14,15 +14,19 @@ import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateAtcSource
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.content.common.comment.usecase.GetCountCommentsUseCase
+import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.report_content.model.UserReportOptions
 import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
+import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.usecase.GetUserReportListUseCase
 import com.tokopedia.content.common.usecase.PostUserReportUseCase
 import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.feed.component.product.FeedTaggedProductUiModel
+import com.tokopedia.feedcomponent.domain.mapper.ProductMapper
+import com.tokopedia.feedcomponent.domain.usecase.FeedXGetActivityProductsUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
 import com.tokopedia.feedcomponent.people.usecase.ProfileFollowUseCase
 import com.tokopedia.feedcomponent.presentation.utils.FeedResult
@@ -106,9 +110,11 @@ class FeedPostViewModel @Inject constructor(
     private val affiliateCookieHelper: AffiliateCookieHelper,
     private val trackVisitChannelUseCase: TrackVisitChannelBroadcasterUseCase,
     private val trackReportTrackViewerUseCase: BroadcasterReportTrackViewerUseCase,
+    private val submitReportUseCase: FeedComplaintSubmitReportUseCase,
     private val getReportUseCase: GetUserReportListUseCase,
     private val postReportUseCase: PostUserReportUseCase,
     private val uiEventManager: UiEventManager<FeedPostEvent>,
+    private val feedXGetActivityProductsUseCase: FeedXGetActivityProductsUseCase,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
@@ -132,6 +138,10 @@ class FeedPostViewModel @Inject constructor(
     val reminderResult: LiveData<Result<FeedReminderResultModel>>
         get() = _reminderResult
 
+    private val _feedTagProductList = MutableLiveData<Result<List<FeedTaggedProductUiModel>>?>()
+    val feedTagProductList: LiveData<Result<List<FeedTaggedProductUiModel>>?>
+        get() = _feedTagProductList
+
     private val _suspendedFollowData = MutableLiveData<FollowShopModel>()
     private val _suspendedLikeData = MutableLiveData<LikeFeedDataModel>()
 
@@ -149,8 +159,9 @@ class FeedPostViewModel @Inject constructor(
         get() = uiEventManager.event
 
     private val _userReport = MutableLiveData<Result<List<PlayUserReportReasoningUiModel>>>()
-    val userReportList get() =
-        _userReport.value ?: Success(emptyList())
+    val userReportList
+        get() =
+            _userReport.value ?: Success(emptyList())
 
     private val _selectedReport = MutableLiveData<PlayUserReportReasoningUiModel.Reasoning>()
     val selectedReport get() = _selectedReport.value
@@ -825,8 +836,8 @@ class FeedPostViewModel @Inject constructor(
     /**
      * Merchant Voucher
      */
-    private val _merchantVoucherLiveData = MutableLiveData<Result<TokopointsCatalogMVCSummary>>()
-    val merchantVoucherLiveData: LiveData<Result<TokopointsCatalogMVCSummary>>
+    private val _merchantVoucherLiveData = MutableLiveData<Result<TokopointsCatalogMVCSummary>?>()
+    val merchantVoucherLiveData: LiveData<Result<TokopointsCatalogMVCSummary>?>
         get() = _merchantVoucherLiveData
 
     fun getMerchantVoucher(shopId: String) {
@@ -851,6 +862,10 @@ class FeedPostViewModel @Inject constructor(
         }) {
             _merchantVoucherLiveData.value = Fail(it)
         }
+    }
+
+    fun clearMerchantVoucher() {
+        _merchantVoucherLiveData.value = null
     }
 
     fun getReport() {
@@ -934,6 +949,64 @@ class FeedPostViewModel @Inject constructor(
                 )
             }.executeOnBackground()
         }) {
+        }
+    }
+
+    /**
+     * Report
+     */
+    private val _reportResponse = MutableLiveData<Result<FeedComplaintSubmitReportResponse>>()
+    val reportResponse: LiveData<Result<FeedComplaintSubmitReportResponse>>
+        get() = _reportResponse
+
+    fun reportContent(feedReportRequestParamModel: FeedComplaintSubmitReportUseCase.Param) {
+        viewModelScope.launchCatchError(block = {
+            val response = withContext(dispatchers.io) {
+                submitReportUseCase(feedReportRequestParamModel)
+            }
+            if (response.data.success.not()) {
+                throw MessageErrorException("Error in Reporting")
+            } else {
+                _reportResponse.value = Success(response)
+            }
+        }) {
+            _reportResponse.value = Fail(it)
+        }
+    }
+
+    fun fetchFeedProduct(
+        activityId: String,
+        products: List<FeedTaggedProductUiModel>,
+        sourceType: FeedTaggedProductUiModel.SourceType
+    ) {
+        viewModelScope.launch {
+            try {
+                _feedTagProductList.value = null
+
+                val currentList: List<FeedTaggedProductUiModel> = when {
+                    products.isNotEmpty() -> products
+                    else -> emptyList()
+                }
+
+                val response = withContext(dispatchers.io) {
+                    feedXGetActivityProductsUseCase(
+                        feedXGetActivityProductsUseCase.getFeedDetailParam(
+                            activityId,
+                            cursor
+                        )
+                    ).data
+                }
+
+                val mappedData = response.products.map {
+                    ProductMapper.transform(it, response.campaign, sourceType)
+                }
+                val distinctData = (currentList + mappedData).distinctBy {
+                    it.id
+                }
+                _feedTagProductList.value = Success(distinctData)
+            } catch (t: Throwable) {
+                _feedTagProductList.value = Fail(t)
+            }
         }
     }
 

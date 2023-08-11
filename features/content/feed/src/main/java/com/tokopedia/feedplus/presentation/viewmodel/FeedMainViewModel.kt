@@ -4,10 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
 import com.tokopedia.content.common.producttag.view.uimodel.NetworkResult
-import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.createpost.common.domain.usecase.cache.DeleteMediaPostCacheUseCase
 import com.tokopedia.feedplus.domain.repository.FeedRepository
@@ -18,10 +16,7 @@ import com.tokopedia.feedplus.presentation.model.MetaModel
 import com.tokopedia.feedplus.presentation.model.SwipeOnboardingStateModel
 import com.tokopedia.feedplus.presentation.onboarding.OnboardingPreferences
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,7 +26,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
@@ -40,9 +34,7 @@ import javax.inject.Inject
  */
 class FeedMainViewModel @Inject constructor(
     private val repository: FeedRepository,
-    private val submitReportUseCase: FeedComplaintSubmitReportUseCase,
     private val deletePostCacheUseCase: DeleteMediaPostCacheUseCase,
-    private val dispatchers: CoroutineDispatchers,
     private val onboardingPreferences: OnboardingPreferences,
     private val userSession: UserSessionInterface,
     private val uiEventManager: UiEventManager<FeedMainEvent>
@@ -208,22 +200,6 @@ class FeedMainViewModel @Inject constructor(
             ""
         }
     }
-
-    fun reportContent(feedReportRequestParamModel: FeedComplaintSubmitReportUseCase.Param) {
-        viewModelScope.launchCatchError(block = {
-            val response = withContext(dispatchers.io) {
-                submitReportUseCase(feedReportRequestParamModel)
-            }
-            if (response.data.success.not()) {
-                throw MessageErrorException("Error in Reporting")
-            } else {
-                _reportResponse.value = Success(response)
-            }
-        }) {
-            _reportResponse.value = Fail(it)
-        }
-    }
-
     private fun emitEvent(event: FeedMainEvent) {
         viewModelScope.launch {
             uiEventManager.emitEvent(event)

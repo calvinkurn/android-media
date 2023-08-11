@@ -17,7 +17,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_feed_see_darker_grey"
+        android:tint="@color/Unify_NN500"
+        app:srcCompat="@drawable/iconunify_visibility"
         />
 
     <com.tokopedia.unifyprinciples.Typography

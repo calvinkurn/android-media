@@ -16,6 +16,7 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagItem
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
 import com.tokopedia.play.broadcaster.ui.state.LiveReportUiState
@@ -46,7 +47,6 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     @Assisted("account") val account: ContentAccountUiModel,
     @Assisted("channelId") val channelId: String,
     @Assisted("channelTitle") val channelTitle: String,
-    @Assisted val productSectionList: List<ProductTagSectionUiModel>,
     private val dispatcher: CoroutineDispatchers,
     private val getLiveStatisticsUseCase: GetLiveStatisticsUseCase,
     private val getInteractiveSummaryLivestreamUseCase: GetInteractiveSummaryLivestreamUseCase,
@@ -57,7 +57,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     private val getRecommendedChannelTagsUseCase: GetRecommendedChannelTagsUseCase,
     private val setChannelTagsUseCase: SetChannelTagsUseCase,
     private val getChannelUseCase: GetChannelUseCase,
-    private val hydraConfigStore: HydraConfigStore
+    private val hydraConfigStore: HydraConfigStore,
 ) : ViewModel() {
 
     @AssistedFactory
@@ -66,7 +66,6 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
             @Assisted("account") account: ContentAccountUiModel,
             @Assisted("channelId") channelId: String,
             @Assisted("channelTitle") channelTitle: String,
-            productSectionList: List<ProductTagSectionUiModel>
         ): PlayBroadcastSummaryViewModel
     }
 
@@ -105,9 +104,10 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
                 NetworkResult.Success(
                     TagUiState(
                         tags = tags.data.map {
-                            PlayTagUiModel(
+                            PlayTagItem(
                                 tag = it,
-                                isChosen = selectedTags.contains(it)
+                                isChosen = selectedTags.contains(it),
+                                isActive = true,
                             )
                         }
                     )
@@ -131,9 +131,6 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     private val _uiEvent = MutableSharedFlow<PlayBroadcastSummaryEvent>()
     val uiEvent: Flow<PlayBroadcastSummaryEvent>
         get() = _uiEvent
-
-    val productList: List<ProductUiModel>
-        get() = productSectionList.flatMap { it.products }
 
     init {
         fetchLiveTraffic()
@@ -219,7 +216,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleToggleTag(tagUiModel: PlayTagUiModel) {
+    private fun handleToggleTag(tagUiModel: PlayTagItem) {
         viewModelScope.launchCatchError(context = dispatcher.main, block = {
             val newSelectedTag = _selectedTags.value.toMutableSet().apply {
                 with(tagUiModel) {

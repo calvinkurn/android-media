@@ -71,6 +71,7 @@ object WishlistV2Analytics {
     private const val FIELD_PRODUCTS = "products"
     private const val FIELD_PRODUCT_POSITION = "position"
     private const val SUBMIT_SEARCH_FROM_CARI_PRODUK = "submit search from cari produk"
+    private const val VIEW_PRODUCT_CARD_ON_WISHLIST_PAGE = "view product card on wishlist page"
     private const val CLICK_URUTKAN_FILTER_CHIPS = "click urutkan filter chips"
     private const val CLICK_OPTION_ON_URUTKAN_FILTER_CHIPS = "click option on urutkan filter chips"
     private const val CLICK_KATEGORI_FILTER_CHIPS = "click kategori filter chips"
@@ -335,6 +336,27 @@ object WishlistV2Analytics {
             putParcelableArrayList(ITEMS, arrayWishlistItems)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, bundle)
+    }
+
+    fun viewProductCard(trackingQueue: TrackingQueue, wishlistItem: WishlistV2UiModel.Item, userId: String, position: String) {
+        val map = DataLayer.mapOf(
+            EVENT, PRODUCT_VIEW,
+            EVENT_CATEGORY, WISHLIST_PAGE,
+            EVENT_ACTION, VIEW_PRODUCT_CARD_ON_WISHLIST_PAGE,
+            EVENT_LABEL, "${wishlistItem.id} - ${if (wishlistItem.available) "available" else "unavailable"}",
+            CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+            USER_ID, userId,
+            WISHLIST_ID, wishlistItem.id,
+            BUSINESS_UNIT, PURCHASE_PLATFORM,
+            ECOMMERCE,
+            DataLayer.mapOf(
+                CURRENCY_CODE,
+                IDR,
+                IMPRESSIONS,
+                convertOrderItemToDataImpressionObject(wishlistItem, position)
+            )
+        )
+        trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 
     private fun convertOrderItemToDataImpressionObject(wishlistItem: WishlistV2UiModel.Item, position: String): List<Any> {

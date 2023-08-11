@@ -512,13 +512,13 @@ class FeedBaseFragment :
     private fun initMetaView(meta: MetaModel) {
         showOnboarding(meta)
 
-        if (meta.showMyProfile) {
-            if (meta.profilePhotoUrl.isNotEmpty()) {
+        binding.feedUserProfileImage.show()
+        if (userSession.isLoggedIn) {
+            if (meta.showMyProfile && meta.profilePhotoUrl.isNotEmpty()) {
                 binding.feedUserProfileImage.setImageUrl(meta.profilePhotoUrl)
+            } else {
+                binding.feedUserProfileImage.hide()
             }
-            binding.feedUserProfileImage.show()
-        } else {
-            binding.feedUserProfileImage.hide()
         }
 
         binding.btnFeedCreatePost.setOnClickListener {
@@ -727,6 +727,7 @@ class FeedBaseFragment :
 
         const val TAB_TYPE_FOR_YOU = "foryou"
         const val TAB_TYPE_FOLLOWING = "following"
+        const val CDP = "cdp"
 
         private const val EXTRAS_UTM_MEDIUM = "utm_medium"
         private const val PARAM_PUSH_NOTIFICATION = "push"
