@@ -19,12 +19,11 @@ class CartCollapsedProductViewHolder(private val viewBinding: ItemCartCollapsedP
     companion object {
         var LAYOUT = R.layout.item_cart_collapsed_product_revamp
 
-        private const val TOKONOW_WIDTH = 80
-        private const val ERROR_WIDTH = 64
+        private const val PRODUCT_WIDTH = 64
     }
 
     fun bind(cartItemHolderData: CartItemHolderData) {
-        validateContainerWidth(cartItemHolderData)
+        validateContainerWidth()
         renderImage(cartItemHolderData)
         renderBundlingIcon(cartItemHolderData)
         renderVariant(cartItemHolderData)
@@ -32,13 +31,9 @@ class CartCollapsedProductViewHolder(private val viewBinding: ItemCartCollapsedP
         renderQuantity(cartItemHolderData)
     }
 
-    private fun validateContainerWidth(cartItemHolderData: CartItemHolderData) {
+    private fun validateContainerWidth() {
         val layoutParams = viewBinding.containerCollapsedProduct.layoutParams
-        if (cartItemHolderData.isError) {
-            layoutParams.width = ERROR_WIDTH.dpToPx(itemView.resources.displayMetrics)
-        } else {
-            layoutParams.width = TOKONOW_WIDTH.dpToPx(itemView.resources.displayMetrics)
-        }
+        layoutParams.width = PRODUCT_WIDTH.dpToPx(itemView.resources.displayMetrics)
         viewBinding.containerCollapsedProduct.layoutParams = layoutParams
     }
 
@@ -72,7 +67,9 @@ class CartCollapsedProductViewHolder(private val viewBinding: ItemCartCollapsedP
                 if (cartItemHolderData.isError) {
                     actionListener.onToggleUnavailableItemAccordion()
                 }
-                actionListener.onCollapsedProductClicked(position, cartItemHolderData)
+                else {
+                    actionListener.onCollapsedProductClicked(position, cartItemHolderData)
+                }
             }
         }
     }

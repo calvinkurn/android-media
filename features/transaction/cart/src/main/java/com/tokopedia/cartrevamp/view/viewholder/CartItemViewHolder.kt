@@ -854,7 +854,7 @@ class CartItemViewHolder constructor(
             qtyEditorProduct.editText.removeTextChangedListener(qtyTextWatcher)
         }
         qtyEditorProduct.minValue = 0
-        qtyEditorProduct.maxValue = data.maxOrder
+        qtyEditorProduct.maxValue = data.maxOrder + 1
         if (data.isBundlingItem) {
             qtyEditorProduct.setValue(data.bundleQuantity)
         } else {
@@ -878,7 +878,7 @@ class CartItemViewHolder constructor(
                     val previousQuantity =
                         if (data.isBundlingItem) data.bundleQuantity else data.quantity
                     if (isActive && previousQuantity != newValue) {
-                        if (!qtyEditorProduct.hasFocus()) {
+                        if (!qtyEditorProduct.editText.hasFocus()) {
                             validateQty(newValue, data)
                         }
                         if (isActive && newValue != 0) {
@@ -895,6 +895,12 @@ class CartItemViewHolder constructor(
         qtyEditorProduct.editText.addTextChangedListener(qtyTextWatcher)
         qtyEditorProduct.setSubstractListener {
             if (!data.isError && bindingAdapterPosition != RecyclerView.NO_POSITION) {
+                val currentQuantity =
+                    if (data.isBundlingItem) data.bundleQuantity else data.quantity
+                if ((currentQuantity == 1 && data.minOrder == 1) || (currentQuantity == data.minOrder && data.isAlreadyShowMinimumQuantityPurchasedError)) {
+                    delayChangeQty?.cancel()
+                    actionListener?.onCartItemDeleteButtonClicked(data, false)
+                }
                 actionListener?.onCartItemQuantityMinusButtonClicked()
             }
         }
