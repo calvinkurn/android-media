@@ -83,13 +83,23 @@ object DeeplinkMapperOrder {
         }
     }
 
-    fun getRegisteredNavigationMainAppSellerNewOrder(queryParam: MutableMap<String, String>): String {
-        queryParam[QUERY_TAB_ACTIVE] = NEW_ORDER
+    fun getRegisteredNavigationMainAppSellerNewOrder(uri: Uri): String {
+        val coachMark = uri.getQueryParameter(QUERY_COACHMARK).orEmpty()
+        val queryParam = mutableMapOf(QUERY_TAB_ACTIVE to NEW_ORDER).apply {
+            if (coachMark.isNotBlank()) {
+                put(QUERY_COACHMARK, coachMark)
+            }
+        }.toMap()
         return UriUtil.buildUriAppendParam(ApplinkConstInternalOrder.NEW_ORDER, queryParam)
     }
 
-    fun getRegisteredNavigationMainAppSellerReadyToShip(queryParam: MutableMap<String, String>): String {
-        queryParam[QUERY_TAB_ACTIVE] = NEW_ORDER
+    fun getRegisteredNavigationMainAppSellerReadyToShip(uri: Uri): String {
+        val coachMark = uri.getQueryParameter(QUERY_COACHMARK).orEmpty()
+        val queryParam = mutableMapOf(QUERY_TAB_ACTIVE to CONFIRM_SHIPPING).apply {
+            if (coachMark.isNotBlank()) {
+                put(QUERY_COACHMARK, coachMark)
+            }
+        }.toMap()
         return UriUtil.buildUriAppendParam(ApplinkConstInternalOrder.READY_TO_SHIP, queryParam)
     }
 

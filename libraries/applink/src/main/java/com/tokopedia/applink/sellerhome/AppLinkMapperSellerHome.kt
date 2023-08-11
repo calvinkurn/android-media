@@ -26,8 +26,8 @@ object AppLinkMapperSellerHome {
     const val FILTER_ORDER_TYPE = "filter_order_type"
 
     fun getSomNewOrderAppLink(uri: Uri): String {
-        val param = mutableMapOf<String, String>()
         return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp(uri)) {
+            val param = mutableMapOf<String, String>()
             uri.queryParameterNames.forEach {
                 param[it] = uri.getQueryParameter(it).orEmpty()
             }
@@ -36,15 +36,13 @@ object AppLinkMapperSellerHome {
                 param
             )
         } else {
-            val coachMark = uri.getQueryParameter(DeeplinkMapperOrder.QUERY_COACHMARK).orEmpty()
-            if (coachMark.isNotBlank()) param[DeeplinkMapperOrder.QUERY_COACHMARK] = coachMark
-            getRegisteredNavigationMainAppSellerNewOrder(param)
+            getRegisteredNavigationMainAppSellerNewOrder(uri)
         }
     }
 
     fun getSomReadyToShipAppLink(uri: Uri): String {
-        val param = mutableMapOf<String, String>()
         return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp(uri)) {
+            val param = mutableMapOf<String, String>()
             uri.queryParameterNames.forEach {
                 param[it] = uri.getQueryParameter(it).orEmpty()
             }
@@ -53,9 +51,7 @@ object AppLinkMapperSellerHome {
                 param
             )
         } else {
-            val coachMark = uri.getQueryParameter(DeeplinkMapperOrder.QUERY_COACHMARK).orEmpty()
-            if (coachMark.isNotBlank()) param[DeeplinkMapperOrder.QUERY_COACHMARK] = coachMark
-            getRegisteredNavigationMainAppSellerReadyToShip(param)
+            getRegisteredNavigationMainAppSellerReadyToShip(uri)
         }
     }
 
