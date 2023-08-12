@@ -44,6 +44,7 @@ import com.tokopedia.cart.view.uimodel.PromoSummaryData
 import com.tokopedia.cart.view.uimodel.PromoSummaryDetailData
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant.QTY_ADDON_REPLACE
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EpharmacyConsultationInfoResponse
@@ -616,9 +617,10 @@ object CartUiModelMapper {
                 type = it.type,
                 price = it.price
             )
-            arrayListAddOnProduct.add(cartAddOnProductData)
 
-            if (it.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK) {
+            if (it.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK || it.status == ADD_ON_PRODUCT_STATUS_MANDATORY) {
+                arrayListAddOnProduct.add(cartAddOnProductData)
+            } else if (it.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK) {
                 deselectedArrayListAddOnProduct.add(cartAddOnProductData)
             }
         }

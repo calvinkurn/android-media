@@ -4328,8 +4328,10 @@ class ShipmentFragment :
                 val cartIdAddOn = addOnProductDataResult.cartId
                 val needUpdateAddOnItem = shipmentAdapter.getAddOnProductServicePosition(cartIdAddOn)
                 var updatedCartItemModel = needUpdateAddOnItem.second
-                needUpdateAddOnItem.second?.addOnProduct?.listAddOnProductData?.forEach { addOnExisting ->
-                    for (addOnUiModel in addOnProductDataResult.aggregatedData.selectedAddons) {
+                needUpdateAddOnItem.second?.addOnProduct?.listDeselectAddOnProductData?.clear()
+
+                for (addOnUiModel in addOnProductDataResult.aggregatedData.selectedAddons) {
+                    needUpdateAddOnItem.second?.addOnProduct?.listAddOnProductData?.forEach { addOnExisting ->
                         if (addOnExisting.type == addOnUiModel.addOnType) {
                             addOnExisting.apply {
                                 id = addOnUiModel.id.toLongOrZero()
@@ -4341,42 +4343,38 @@ class ShipmentFragment :
                                 status = addOnUiModel.getSaveAddonSelectedStatus().value
                             }
                         }
-
-                        if (addOnUiModel.addOnType == PRODUCT_PROTECTION_INSURANCE_TYPE) {
-                            isProteksiProdukUpdated = true
-                            updatedCartItemModel = if (addOnUiModel.getSaveAddonSelectedStatus().value == ADD_ON_PRODUCT_STATUS_CHECK ||
-                                addOnUiModel.getSaveAddonSelectedStatus().value == ADD_ON_PRODUCT_STATUS_MANDATORY
-                            ) {
-                                needUpdateAddOnItem.second?.copy(
-                                    isProtectionOptIn = true
-                                )
-                            } else {
-                                needUpdateAddOnItem.second?.copy(
-                                    isProtectionOptIn = false
-                                )
-                            }
-                        }
                     }
-                }
 
-                needUpdateAddOnItem.second?.addOnProduct?.listDeselectAddOnProductData?.clear()
-                if (addOnProductDataResult.changedAddons.isNotEmpty()) {
-                    addOnProductDataResult.changedAddons.forEach {
-                        if (it.getSaveAddonSelectedStatus().value == ADD_ON_PRODUCT_STATUS_UNCHECK) {
-                            needUpdateAddOnItem.second?.addOnProduct?.listDeselectAddOnProductData?.add(
-                                AddOnProductDataItemModel(
-                                    id = it.id.toLongOrZero(),
-                                    uniqueId = it.uniqueId,
-                                    price = it.price.toDouble(),
-                                    infoLink = it.eduLink,
-                                    name = it.name,
-                                    type = it.addOnType,
-                                    status = it.getSaveAddonSelectedStatus().value
-                                )
+                    if (addOnUiModel.addOnType == PRODUCT_PROTECTION_INSURANCE_TYPE) {
+                        isProteksiProdukUpdated = true
+                        updatedCartItemModel = if (addOnUiModel.getSaveAddonSelectedStatus().value == ADD_ON_PRODUCT_STATUS_CHECK ||
+                            addOnUiModel.getSaveAddonSelectedStatus().value == ADD_ON_PRODUCT_STATUS_MANDATORY
+                        ) {
+                            needUpdateAddOnItem.second?.copy(
+                                isProtectionOptIn = true
+                            )
+                        } else {
+                            needUpdateAddOnItem.second?.copy(
+                                isProtectionOptIn = false
                             )
                         }
                     }
+
+                    if (addOnUiModel.getSaveAddonSelectedStatus().value == ADD_ON_PRODUCT_STATUS_UNCHECK) {
+                        needUpdateAddOnItem.second?.addOnProduct?.listDeselectAddOnProductData?.add(
+                            AddOnProductDataItemModel(
+                                id = addOnUiModel.id.toLongOrZero(),
+                                uniqueId = addOnUiModel.uniqueId,
+                                price = addOnUiModel.price.toDouble(),
+                                infoLink = addOnUiModel.eduLink,
+                                name = addOnUiModel.name,
+                                type = addOnUiModel.addOnType,
+                                status = addOnUiModel.getSaveAddonSelectedStatus().value
+                            )
+                        )
+                    }
                 }
+
                 if (isProteksiProdukUpdated) {
                     updatedCartItemModel?.let { shipmentAdapter.onCheckPurchaseProtection(needUpdateAddOnItem.first, it) }
                 } else {

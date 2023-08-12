@@ -77,6 +77,7 @@ import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.address.AddressListBottomSheet
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.OCC_OVO_ACTIVATION_URL
+import com.tokopedia.oneclickcheckout.common.utils.removeAll
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.common.view.utils.animateGone
@@ -380,9 +381,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 val listProducts = adapter.products
                 for (index in listProducts.indices) {
                     if (listProducts[index].cartId == cartId) {
-                        listProducts[index].addOnsProductData.data.forEach { addOnExisting ->
-                            for (addOnUiModel in addOnProductDataResult.aggregatedData.selectedAddons) {
-                                // value 0 from selectedAddons means no changes
+                        listProducts[index].addOnsProductData.deselectedData.removeAll()
+                        for (addOnUiModel in addOnProductDataResult.aggregatedData.selectedAddons) {
+                            listProducts[index].addOnsProductData.data.forEach { addOnExisting ->
                                 if (addOnUiModel.addOnType == addOnExisting.type) {
                                     addOnExisting.apply {
                                         id = addOnUiModel.id
@@ -396,28 +397,23 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                                     }
                                 }
                             }
-                        }
-                        adapter.notifyItemChanged(adapter.getAddOnProductServiceIndex(cartId))
 
-                        listProducts[index].addOnsProductData.deselectedData.clear()
-                        if (addOnProductDataResult.changedAddons.isNotEmpty()) {
-                            addOnProductDataResult.changedAddons.forEach {
-                                if (it.getSaveAddonSelectedStatus().value == AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK) {
-                                    listProducts[index].addOnsProductData.deselectedData.add(
-                                        AddOnsProductDataModel.Data(
-                                            id = it.id,
-                                            uniqueId = it.uniqueId,
-                                            price = it.price,
-                                            infoLink = it.eduLink,
-                                            name = it.name,
-                                            status = it.getSaveAddonSelectedStatus().value,
-                                            type = it.addOnType,
-                                            productQuantity = listProducts[index].orderQuantity
-                                        )
+                            if (addOnUiModel.getSaveAddonSelectedStatus().value == AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK) {
+                                listProducts[index].addOnsProductData.deselectedData.plus(
+                                    AddOnsProductDataModel.Data(
+                                        id = addOnUiModel.id,
+                                        uniqueId = addOnUiModel.uniqueId,
+                                        price = addOnUiModel.price,
+                                        infoLink = addOnUiModel.eduLink,
+                                        name = addOnUiModel.name,
+                                        status = addOnUiModel.getSaveAddonSelectedStatus().value,
+                                        type = addOnUiModel.addOnType,
+                                        productQuantity = listProducts[index].orderQuantity
                                     )
-                                }
+                                )
                             }
                         }
+                        adapter.notifyItemChanged(adapter.getAddOnProductServiceIndex(cartId))
                     }
                 }
                 viewModel.calculateTotal()

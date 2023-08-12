@@ -8,6 +8,6 @@ data class AddOnProductDataModel(
     var iconUrl: String = "",
     var title: String = "",
     var bottomsheet: AddOnProductBottomSheetModel = AddOnProductBottomSheetModel(),
-    var listAddOnProductData: List<AddOnProductDataItemModel> = emptyList(),
+    var listAddOnProductData: ArrayList<AddOnProductDataItemModel> = arrayListOf(),
     var listDeselectAddOnProductData: ArrayList<AddOnProductDataItemModel> = arrayListOf()
 ) : Parcelable

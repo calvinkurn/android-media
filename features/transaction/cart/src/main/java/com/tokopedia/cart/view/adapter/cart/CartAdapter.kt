@@ -58,6 +58,8 @@ import com.tokopedia.cart.view.viewholder.DisabledAccordionViewHolder
 import com.tokopedia.cart.view.viewholder.DisabledItemHeaderViewHolder
 import com.tokopedia.cart.view.viewholder.DisabledReasonViewHolder
 import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
@@ -1465,18 +1467,19 @@ class CartAdapter constructor(
                     item.addOnsProduct.widget.wording = newAddOnWording
                     item.addOnsProduct.listData.clear()
                     addOnPageResult.aggregatedData.selectedAddons.forEach {
-                        item.addOnsProduct.listData.add(
-                            CartAddOnProductData(
-                                id = it.id,
-                                uniqueId = it.uniqueId,
-                                status = it.getSaveAddonSelectedStatus().value,
-                                type = it.addOnType,
-                                price = it.price.toDouble()
+                        if (it.getSaveAddonSelectedStatus().value == ADD_ON_PRODUCT_STATUS_CHECK ||
+                            it.getSaveAddonSelectedStatus().value == ADD_ON_PRODUCT_STATUS_MANDATORY
+                        ) {
+                            item.addOnsProduct.listData.add(
+                                CartAddOnProductData(
+                                    id = it.id,
+                                    uniqueId = it.uniqueId,
+                                    status = it.getSaveAddonSelectedStatus().value,
+                                    type = it.addOnType,
+                                    price = it.price.toDouble()
+                                )
                             )
-                        )
-                    }
-                    addOnPageResult.changedAddons.forEach {
-                        if (it.getSaveAddonSelectedStatus().value == ADD_ON_PRODUCT_STATUS_UNCHECK) {
+                        } else if (it.getSaveAddonSelectedStatus().value == ADD_ON_PRODUCT_STATUS_UNCHECK) {
                             item.addOnsProduct.deselectListData.add(
                                 CartAddOnProductData(
                                     id = it.id,

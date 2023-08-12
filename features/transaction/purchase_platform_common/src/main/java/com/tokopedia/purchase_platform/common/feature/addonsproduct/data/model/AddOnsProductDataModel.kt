@@ -6,7 +6,7 @@ data class AddOnsProductDataModel(
     var title: String = String.EMPTY,
     var bottomsheet: Bottomsheet = Bottomsheet(),
     var data: List<Data> = listOf(),
-    var deselectedData: ArrayList<Data> = arrayListOf()
+    var deselectedData: List<Data> = listOf()
 ) {
     data class Bottomsheet(
         var title: String = String.EMPTY,

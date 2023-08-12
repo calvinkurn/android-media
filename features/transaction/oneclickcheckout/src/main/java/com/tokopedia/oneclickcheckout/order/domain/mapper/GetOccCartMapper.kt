@@ -58,6 +58,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileShipment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.oneclickcheckout.order.view.model.ProductTrackerData
 import com.tokopedia.oneclickcheckout.order.view.model.WholesalePrice
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK
 import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.model.AddOnsProductDataModel
 import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.model.SummaryAddOnProductDataModel
 import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.response.SummaryAddOnProductResponse
@@ -577,6 +578,18 @@ class GetOccCartMapper @Inject constructor() {
             isShown = product.addOnsProduct.bottomsheet.isShown
         ),
         data = product.addOnsProduct.data.map { data ->
+            AddOnsProductDataModel.Data(
+                id = data.id,
+                uniqueId = data.uniqueId,
+                price = data.price,
+                infoLink = data.infoLink,
+                name = data.name,
+                status = data.status,
+                type = data.type,
+                productQuantity = product.productQuantity
+            )
+        },
+        deselectedData = product.addOnsProduct.data.filter { it.status == ADD_ON_PRODUCT_STATUS_UNCHECK }.map { data ->
             AddOnsProductDataModel.Data(
                 id = data.id,
                 uniqueId = data.uniqueId,
