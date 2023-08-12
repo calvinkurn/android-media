@@ -112,11 +112,11 @@ abstract class BaseDigitalPDPDataPlanTest {
     }
 
     protected fun clientNumberWidget_clickClearIcon() {
-        onView(withId(com.tokopedia.recharge_component.R.id.text_field_icon_close)).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_icon_close)).perform(click())
     }
 
     protected fun clientNumberWidget_clickContactIcon() {
-        onView(withId(com.tokopedia.recharge_component.R.id.text_field_icon_2)).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_icon_2)).perform(click())
     }
 
     protected fun favoriteChips_clickChip_withText(text: String) {

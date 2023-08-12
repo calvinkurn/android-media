@@ -161,7 +161,7 @@ class SmartBillsActivityTest {
         Thread.sleep(2000)
         onView(allOf(withId(R.id.btn_tooltip_sbm), withText("Pelajari Selengkapnya"))).perform(click())
         Thread.sleep(2000)
-        onView(withId(R.id.bottom_sheet_close)).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)).perform(click())
     }
 
     private fun validate_bill_selection() {
@@ -194,7 +194,7 @@ class SmartBillsActivityTest {
         onView(ViewMatchers.withText("Detail Air PDAM")).check(ViewAssertions.matches(isDisplayed()))
         onView(ViewMatchers.withText("13111516111")).check(ViewAssertions.matches(isDisplayed()))
         onView(ViewMatchers.withText("Rp 102.500")).check(ViewAssertions.matches(isDisplayed()))
-        onView(withId(R.id.bottom_sheet_close)).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)).perform(click())
     }
 
     private fun validate_click_bayar() {
@@ -227,7 +227,7 @@ class SmartBillsActivityTest {
         Thread.sleep(3000)
         onView(withId(R.id.tv_sbm_add_bills)).perform(click())
         Thread.sleep(3000)
-        onView(withId(R.id.bottom_sheet_close)).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)).perform(click())
         Thread.sleep(3000)
         onView(withId(R.id.tv_sbm_add_bills)).perform(click())
         Thread.sleep(3000)

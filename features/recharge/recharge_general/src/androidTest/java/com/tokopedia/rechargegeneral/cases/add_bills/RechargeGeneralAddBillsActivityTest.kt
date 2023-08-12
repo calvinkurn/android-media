@@ -133,7 +133,7 @@ class RechargeGeneralAddBillsActivityTest {
                 )
         )
         Thread.sleep(1000)
-        Espresso.onView(withId(R.id.bottom_sheet_close)).perform(click())
+        Espresso.onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)).perform(click())
         Thread.sleep(1000)
     }
 
