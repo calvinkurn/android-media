@@ -123,6 +123,7 @@ import com.tokopedia.product.addedit.tracking.ProductEditStepperTracking
 import com.tokopedia.product.addedit.tracking.ProductLimitationTracking
 import com.tokopedia.product.addedit.variant.presentation.activity.AddEditProductVariantActivity
 import com.tokopedia.product.addedit.variant.presentation.activity.AddEditProductVariantDetailActivity
+import com.tokopedia.product.addedit.variant.presentation.extension.getValueOrDefault
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantStockStatus
 import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
@@ -653,8 +654,14 @@ class AddEditProductPreviewFragment :
         )
         val isAddingOrDuplicating = isAdding() || viewModel.isDuplicate
         val mustFillParentWeight = viewModel.mustFillParentWeight.value.orFalse()
+        val isSingleProductVariant =
+            viewModel.productInputModel.value?.variantInputModel?.isSingleProductVariant().orFalse()
 
-        if (mustFillParentWeight) {
+        if (isSingleProductVariant) {
+            DialogUtil.showSingleProductVariantDialog(context ?: return) {
+                viewModel.productInputModel.getValueOrDefault().convertToNonVariant()
+            }
+        } else if (mustFillParentWeight) {
             Toaster.build(
                 view,
                 getString(R.string.error_weight_not_filled),
@@ -1009,11 +1016,11 @@ class AddEditProductPreviewFragment :
     }
 
     private fun observeProductVariant() {
-        viewModel.isVariantEmpty.observe(viewLifecycleOwner, {
+        viewModel.isVariantEmpty.observe(viewLifecycleOwner) {
             if (isDuplicate() || isEditing() || isDrafting()) {
                 showEmptyVariantState(it)
             }
-        })
+        }
     }
 
     private fun observeHasDTStock() {

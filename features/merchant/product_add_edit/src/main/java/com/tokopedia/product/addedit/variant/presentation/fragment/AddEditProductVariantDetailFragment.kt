@@ -34,6 +34,7 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_DETAIL_TRACE
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
+import com.tokopedia.product.addedit.common.util.DialogUtil
 import com.tokopedia.product.addedit.common.util.SharedPreferencesUtil.getFirstTimeWeightPerVariant
 import com.tokopedia.product.addedit.common.util.SharedPreferencesUtil.setFirstTimeWeightPerVariant
 import com.tokopedia.product.addedit.common.util.setFragmentToUnifyBgColor
@@ -55,6 +56,7 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.dialog.MultipleVariantEditListener
 import com.tokopedia.product.addedit.variant.presentation.dialog.MultipleVariantEditSelectBottomSheet
 import com.tokopedia.product.addedit.variant.presentation.dialog.SelectVariantMainBottomSheet
+import com.tokopedia.product.addedit.variant.presentation.extension.getValueOrDefault
 import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.OptionInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
@@ -415,7 +417,13 @@ class AddEditProductVariantDetailFragment :
                 buttonSave?.setOnClickListener {
                     invokeFieldsValidation()
                     if (viewModel.getInputDataValidStatus()) {
-                        showSingleProductVariantDialog()
+                        DialogUtil.showSingleProductVariantDialog(
+                            context ?: return@setOnClickListener
+                        ) {
+                            viewModel.updateProductInputModel()
+                            viewModel.productInputModel.getValueOrDefault().convertToNonVariant()
+                            sendResultData()
+                        }
                     }
                 }
             } else {
@@ -534,27 +542,6 @@ class AddEditProductVariantDetailFragment :
             setPrimaryCTAClickListener {
                 viewModel.updateSwitchStatus(false, position)
                 variantDetailFieldsAdapter?.deactivateVariantStatus(position)
-                dismiss()
-            }
-            setSecondaryCTAClickListener {
-                dismiss()
-            }
-        }
-        dialog.show()
-    }
-
-    private fun showSingleProductVariantDialog() {
-        val dialog = DialogUnify(context ?: return, DialogUnify.HORIZONTAL_ACTION, DialogUnify.WITH_ILLUSTRATION)
-        dialog.apply {
-            setTitle(getString(R.string.product_add_edit_single_product_variant_dialog_title))
-            setDescription(getString(R.string.product_add_edit_single_product_variant_dialog_desc))
-            setPrimaryCTAText(getString(R.string.product_add_edit_single_product_variant_dialog_delete))
-            setSecondaryCTAText(getString(R.string.action_back))
-            setImageUrl(TokopediaImageUrl.AEP_SINGLE_VARIANT_WARNING)
-            setPrimaryCTAClickListener {
-                viewModel.updateProductInputModel()
-                viewModel.convertToNonVariant()
-                sendResultData()
                 dismiss()
             }
             setSecondaryCTAClickListener {

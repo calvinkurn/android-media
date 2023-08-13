@@ -14,7 +14,6 @@ import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE
 import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_INACTIVE_STRING
 import com.tokopedia.product.addedit.common.util.IMSResourceProvider
 import com.tokopedia.product.addedit.common.util.InputPriceUtil
-import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.DEFAULT_IS_PRIMARY_INDEX
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_PRODUCT_WEIGHT_LIMIT
@@ -389,20 +388,6 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     fun setupMultiLocationValue() {
         isMultiLocationShop = userSession.run {
             isMultiLocationShop && (isShopAdmin || isShopOwner)
-        }
-    }
-
-    fun convertToNonVariant() {
-        productInputModel.getValueOrDefault().apply {
-            val variantProduct = variantInputModel.products.firstOrNull() ?: ProductVariantInputModel()
-            detailInputModel.price = variantProduct.price
-            detailInputModel.sku = variantProduct.sku
-            detailInputModel.stock = variantProduct.stock.orZero()
-            shipmentInputModel.weight = variantProduct.weight.orZero()
-            shipmentInputModel.weightUnit = ProductMapperConstants.getWeightUnitConstant(variantProduct.weightUnit)
-            shipmentInputModel.isUsingParentWeight = true
-            isRemovingSingleVariant = true
-            resetVariantData()
         }
     }
 }

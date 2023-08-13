@@ -2,9 +2,10 @@ package com.tokopedia.product.addedit.common.util
 
 import android.content.Context
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.product.addedit.R
 
-object DTDialogUtil {
+object DialogUtil {
 
     fun showDTStockDialog(context: Context, action: UserAction) {
         val dialog = DialogUnify(context, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
@@ -31,6 +32,25 @@ object DTDialogUtil {
             setPrimaryCTAText(context.getString(R.string.action_oke))
             setPrimaryCTAClickListener {
                 dialog.dismiss()
+            }
+        }
+        dialog.show()
+    }
+
+    fun showSingleProductVariantDialog(context: Context, onConfirmed: () -> Unit) {
+        val dialog = DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.WITH_ILLUSTRATION)
+        dialog.apply {
+            setTitle(context.getString(R.string.product_add_edit_single_product_variant_dialog_title))
+            setDescription(context.getString(R.string.product_add_edit_single_product_variant_dialog_desc))
+            setPrimaryCTAText(context.getString(R.string.product_add_edit_single_product_variant_dialog_delete))
+            setSecondaryCTAText(context.getString(R.string.action_back))
+            setImageUrl(TokopediaImageUrl.AEP_SINGLE_VARIANT_WARNING)
+            setPrimaryCTAClickListener {
+                onConfirmed.invoke()
+                dismiss()
+            }
+            setSecondaryCTAClickListener {
+                dismiss()
             }
         }
         dialog.show()
