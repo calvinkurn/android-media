@@ -8,7 +8,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.LayoutShopHomeV4TerlarisWidgetBinding
@@ -147,14 +146,6 @@ class ShopHomeV4TerlarisViewHolder(
             chunkedData.dropLast(chunkedData.lastIndex)
         } else {
             chunkedData
-        }
-    }
-
-    private fun getThreeDatas(productList: List<ShopHomeProductUiModel>): List<ShopHomeProductUiModel> {
-        return if (productList.isNotEmpty() && productList.size >= PRODUCT_THREE) {
-            productList.slice(0..2)
-        } else {
-            listOf()
         }
     }
 

@@ -5,7 +5,7 @@
     android:id="@+id/terlaris_widget_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/black"
+    android:background="@color/transparent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -36,7 +36,6 @@
         android:id="@+id/rv_terlaris_widget"
         app:layout_constraintLeft_toLeftOf="@+id/terlaris_widget_container"
         app:layout_constraintTop_toBottomOf="@+id/terlaris_widget_subtitle"
-        android:background="@color/yellow_1"
         android:visibility="gone"
         android:paddingBottom="16dp"
         android:layout_width="match_parent"
