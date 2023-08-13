@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.LayoutShopHomeV4TerlarisWidgetBinding
@@ -31,17 +32,15 @@ class ShopHomeV4TerlarisViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.layout_shop_home_v4_terlaris_widget
+
+        val PRODUCT_ZERO = 0
+        val PRODUCT_ONE = 1
+        val PRODUCT_THREE = 3
+        val PRODUCT_SIX = 6
+        val PRODUCT_NINE = 9
     }
 
-//    init {
-//        initView()
-//    }
-
     private val viewBinding: LayoutShopHomeV4TerlarisWidgetBinding? by viewBinding()
-    private val PRODUCT_ZERO = 0
-    private val PRODUCT_THREE = 3
-    private val PRODUCT_SIX = 6
-    private val PRODUCT_NINE = 9
     private var rvProductCarousel: RecyclerView? = viewBinding?.rvTerlarisWidget
     private var terlarisWidgetAdapter: ShopHomeV4TerlarisAdapter? = null
     private var widgetTitle: TextView? = viewBinding?.terlarisWidgetTitle
@@ -64,20 +63,56 @@ class ShopHomeV4TerlarisViewHolder(
     private var productPrice3: TextView? = viewBinding?.terlarisProductPrice3
     private var productRank3: TextView? = viewBinding?.terlarisProductRankNumber3
 
-//    private fun initView() {
-//        terlarisWidgetAdapter = ShopHomeV4TerlarisAdapter(listener)
-//        rvProductCarousel?.apply {
-//            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-//            adapter = terlarisWidgetAdapter
-//        }
-//    }
+    override fun bind(element: ShopHomeCarousellProductUiModel?) {
+        element?.let {
+            val linearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+            terlarisWidgetAdapter = ShopHomeV4TerlarisAdapter(listener)
+            rvProductCarousel?.apply {
+                isNestedScrollingEnabled = false
+                layoutManager = linearLayoutManager
+                adapter = terlarisWidgetAdapter
+            }
 
-    private fun hideTheContainer() {
-        // Hide the widget due to product list equals to 0
-        terlarisWidgetContainer?.visibility = View.GONE
+            if (it.productList.size.orZero() == PRODUCT_THREE) {
+                // Show product list with total 3
+                showThreeItemLayout(productList = it.productList)
+            } else if (it.productList.size.orZero() > PRODUCT_THREE) {
+                // Show product list with total 6 or 9
+                val productCarouselData = if (it.productList.size > 9) it.productList.take(PRODUCT_NINE) else it.productList
+                val sanitizedProductListCarouselData = getCarouselData(productCarouselData)
+                if (sanitizedProductListCarouselData.isNotEmpty()) {
+                    if (sanitizedProductListCarouselData.size == PRODUCT_ONE) {
+                        showThreeItemLayout(productList = sanitizedProductListCarouselData[0])
+                    } else if (sanitizedProductListCarouselData.size > PRODUCT_ONE) {
+                        showMoreThanThreeItemLayout(productList = sanitizedProductListCarouselData)
+                    }
+                } else {
+                    hideTheWidget()
+                }
+            } else {
+                hideTheWidget()
+            }
+
+        }
     }
-    private fun showTheContainer() {
-        terlarisWidgetContainer?.visibility = View.VISIBLE
+
+    private fun showThreeItemLayout(productList: List<ShopHomeProductUiModel>) {
+        showTheContainer()
+        showLayoutThreeItem(productList = productList)
+        hideHorizontalProductCarousel()
+    }
+
+    private fun showMoreThanThreeItemLayout(productList: List<List<ShopHomeProductUiModel>>) {
+        showTheContainer()
+        hideLayoutThreeItem()
+        showHorizontalProductCarousel()
+        terlarisWidgetAdapter?.updateData(productList = productList)
+    }
+
+    private fun hideTheWidget() {
+        hideTheContainer()
+        hideLayoutThreeItem()
+        hideHorizontalProductCarousel()
     }
 
     private fun showLayoutThreeItem(productList: List<ShopHomeProductUiModel>) {
@@ -106,16 +141,21 @@ class ShopHomeV4TerlarisViewHolder(
     }
 
     private fun getCarouselData(productList: List<ShopHomeProductUiModel>): List<List<ShopHomeProductUiModel>> {
-//        val chunkSize = 3
-//        return productList.chunked(chunkSize)
         val chunkSize = 3
         val chunkedData = productList.chunked(chunkSize)
-        val filteredChunkedData = chunkedData.map { _chunkedData ->
-            _chunkedData.takeIf {
-                it.size == PRODUCT_THREE
-            }.orEmpty()
+        return if (chunkedData[chunkedData.lastIndex].size != chunkSize) {
+            chunkedData.dropLast(chunkedData.lastIndex)
+        } else {
+            chunkedData
         }
-        return filteredChunkedData
+    }
+
+    private fun getThreeDatas(productList: List<ShopHomeProductUiModel>): List<ShopHomeProductUiModel> {
+        return if (productList.isNotEmpty() && productList.size >= PRODUCT_THREE) {
+            productList.slice(0..2)
+        } else {
+            listOf()
+        }
     }
 
     private fun hideLayoutThreeItem() {
@@ -130,12 +170,12 @@ class ShopHomeV4TerlarisViewHolder(
         rvProductCarousel?.visibility = View.GONE
     }
 
-    private fun getThreeDatas(productList: List<ShopHomeProductUiModel>): List<ShopHomeProductUiModel> {
-        return if (productList.isNotEmpty() && productList.size >= PRODUCT_THREE) {
-            productList.slice(0..2)
-        } else {
-            listOf()
-        }
+    private fun hideTheContainer() {
+        // Hide the widget due to product list equals to 0
+        terlarisWidgetContainer?.visibility = View.GONE
+    }
+    private fun showTheContainer() {
+        terlarisWidgetContainer?.visibility = View.VISIBLE
     }
 
     private fun setFontColor(fontColor: Int) {
@@ -145,67 +185,4 @@ class ShopHomeV4TerlarisViewHolder(
         productPrice1?.setTextColor(ContextCompat.getColor(itemView.context, fontColor))
     }
 
-    override fun bind(element: ShopHomeCarousellProductUiModel?) {
-        element?.let {
-            // Testing purpose
-            val linearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-            terlarisWidgetAdapter = ShopHomeV4TerlarisAdapter(listener)
-            rvProductCarousel?.apply {
-                isNestedScrollingEnabled = false
-                layoutManager = linearLayoutManager
-                adapter = terlarisWidgetAdapter
-            }
-            val _productListCarouselData = getCarouselData(it.productList)
-            terlarisWidgetAdapter?.updateData(productList = _productListCarouselData)
-
-            hideLayoutThreeItem()
-            showHorizontalProductCarousel()
-//            val _data = getThreeDatas(it.productList)
-//            val _productListCarouselData = getCarouselData(it.productList)
-//            terlarisWidgetAdapter?.updateData(productList = _productListCarouselData)
-
-//            if (_productListCarouselData.size.orZero() == PRODUCT_ZERO) {
-//                // Hide the widget if the product is empty
-//                hideTheContainer()
-//            } else if (_productListCarouselData.size.orZero() == PRODUCT_THREE) {
-//                // Show product list with total 3
-//                showTheContainer()
-//                showLayoutThreeItem(productList = _data)
-//                hideHorizontalProductCarousel()
-//            } else if (_productListCarouselData.size.orZero() == PRODUCT_SIX || _productListCarouselData.size.orZero() == PRODUCT_NINE) {
-//                // Show product list with total 6 or 9
-//                showTheContainer()
-//                hideLayoutThreeItem()
-//                showHorizontalProductCarousel()
-//                val productListCarouselData = getCarouselData(_data)
-//                terlarisWidgetAdapter?.updateData(productList = _productListCarouselData)
-//            } else {
-//                hideTheContainer()
-//                hideLayoutThreeItem()
-//                hideHorizontalProductCarousel()
-//            }
-            // Testing purpose
-
-//            if (it.productList.size.orZero() == PRODUCT_ZERO) {
-//                // Hide the widget if the product is empty
-//                hideTheContainer()
-//            } else if (it.productList.size.orZero() == PRODUCT_THREE) {
-//                // Show product list with total 3
-//                showTheContainer()
-//                showLayoutThreeItem(productList = it.productList)
-//                hideHorizontalProductCarousel()
-//            } else if (it.productList.size.orZero() == PRODUCT_SIX || it.productList.size.orZero() == PRODUCT_NINE) {
-//                // Show product list with total 6 or 9
-//                showTheContainer()
-//                hideLayoutThreeItem()
-//                showHorizontalProductCarousel()
-//                val productListCarouselData = getCarouselData(it.productList)
-//                terlarisWidgetAdapter?.updateData(productList = productListCarouselData)
-//            } else {
-//                hideTheContainer()
-//                hideLayoutThreeItem()
-//                hideHorizontalProductCarousel()
-//            }
-        }
-    }
 }

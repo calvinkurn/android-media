@@ -7,9 +7,11 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.inflateLayout
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.util.loadImageRounded
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeV4TerlarisViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeV4TerlarisViewHolder.Companion.PRODUCT_THREE
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeV4TerlarisUiModel
 import com.tokopedia.unifycomponents.ImageUnify
@@ -62,27 +64,29 @@ class ShopHomeV4TerlarisAdapter(
         }
 
         fun bindData(productListData: List<ShopHomeProductUiModel>) {
-//            productContainer1?.setOnClickListener {
-//                listener.onProductClick(productId = productListData[0].id)
-//            }
-//            productImg1?.loadImageRounded(url = productListData[0].imageUrl.orEmpty())
-//            productName1?.text = productListData[0].name
-//            productPrice1?.text = productListData[0].displayedPrice
-//            productRank1?.text = "1"
-//            productContainer2?.setOnClickListener {
-//                listener.onProductClick(productId = productListData[1].id)
-//            }
-//            productImg2?.loadImageRounded(url = productListData[1].imageUrl.orEmpty())
-//            productName2?.text = productListData[1].name
-//            productPrice2?.text = productListData[1].displayedPrice
-//            productRank2?.text = "2"
-//            productContainer3?.setOnClickListener {
-//                listener.onProductClick(productId = productListData[2].id)
-//            }
-//            productImg3?.loadImageRounded(url = productListData[2].imageUrl.orEmpty())
-//            productName3?.text = productListData[2].name
-//            productPrice3?.text = productListData[2].displayedPrice
-//            productRank3?.text = "3"
+            if (!productListData.size.isZero() && productListData.size == PRODUCT_THREE) {
+                productContainer1?.setOnClickListener {
+                    listener.onProductClick(productId = productListData[0].id)
+                }
+                productImg1?.loadImageRounded(url = productListData[0].imageUrl.orEmpty())
+                productName1?.text = productListData[0].name
+                productPrice1?.text = productListData[0].displayedPrice
+                productRank1?.text = "1"
+                productContainer2?.setOnClickListener {
+                    listener.onProductClick(productId = productListData[1].id)
+                }
+                productImg2?.loadImageRounded(url = productListData[1].imageUrl.orEmpty())
+                productName2?.text = productListData[1].name
+                productPrice2?.text = productListData[1].displayedPrice
+                productRank2?.text = "2"
+                productContainer3?.setOnClickListener {
+                    listener.onProductClick(productId = productListData[2].id)
+                }
+                productImg3?.loadImageRounded(url = productListData[2].imageUrl.orEmpty())
+                productName3?.text = productListData[2].name
+                productPrice3?.text = productListData[2].displayedPrice
+                productRank3?.text = "3"
+            }
         }
     }
 }
