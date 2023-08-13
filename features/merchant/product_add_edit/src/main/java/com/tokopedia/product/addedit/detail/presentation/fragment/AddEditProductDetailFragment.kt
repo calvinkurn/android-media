@@ -2350,7 +2350,7 @@ class AddEditProductDetailFragment :
             }
         }
         productCategoryManifestInputModel = CategoryMetadataInputModel(
-            recommendationRank = position.inc(),
+            recommendationRank = position,
             isFromRecommendation = true,
             recommendationList = items.map {
                 CategoryMetadataInputModel.Recommendation(
