@@ -3222,47 +3222,6 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
-    fun `when getTranslationYHeaderBackground should get the opposite of dy`() {
-        /**
-         * create data test
-         */
-        val dy = 10
-        val expectedResult = -dy.toFloat()
-
-        /**
-         * get translation y of header
-         */
-        val translationY = viewModel.getTranslationYHeaderBackground(dy)
-
-        /**
-         * verify the data test
-         */
-        assertEquals(expectedResult, translationY)
-    }
-
-    @Test
-    fun `when getTranslationYHeaderBackground should get zero as result`() {
-        /**
-         * create data test
-         */
-        val dy = -10
-        val expectedResult = 0f
-
-        /**
-         * get translation y of header
-         */
-        viewModel.getTranslationYHeaderBackground(dy)
-        viewModel.getTranslationYHeaderBackground(dy)
-        viewModel.getTranslationYHeaderBackground(dy)
-        val translationY = viewModel.getTranslationYHeaderBackground(dy)
-
-        /**
-         * verify the data test
-         */
-        assertEquals(expectedResult, translationY)
-    }
-
-    @Test
     fun `when fetching list of catalog coupons (single coupon) then receiving success result with show status`() {
         // create dummy data
         val warehouseId = "1"

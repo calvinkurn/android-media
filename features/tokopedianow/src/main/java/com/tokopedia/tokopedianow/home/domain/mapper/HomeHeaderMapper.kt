@@ -18,6 +18,7 @@ object HomeHeaderMapper {
             val shopDetails = it.data.shopDetails
             val shippingDetails = it.data.shippingDetails
             val locationDetails = it.data.locationDetails
+            val backgroundData = mapToHeaderBackgroundData(it)
 
             val title = shopDetails.title
             val logoUrl = shopDetails.logoURL
@@ -30,6 +31,7 @@ object HomeHeaderMapper {
                 shippingHint = shippingHint,
                 shopStatus = shopStatus,
                 logoUrl = logoUrl,
+                background = backgroundData,
                 state = HomeLayoutItemState.LOADED
             )
 
@@ -48,7 +50,7 @@ object HomeHeaderMapper {
         }
     }
 
-    fun mapToHeaderBackgroundUiModel(
+    private fun mapToHeaderBackgroundData(
         response: GetBuyerCommunicationResponse?
     ): HomeHeaderBackgroundData {
         val background = response?.data?.background

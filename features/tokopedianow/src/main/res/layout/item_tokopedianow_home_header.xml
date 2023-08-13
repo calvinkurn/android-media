@@ -2,22 +2,91 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingStart="16dp"
-    android:paddingTop="8dp"
-    android:paddingEnd="16dp"
-    android:paddingBottom="8dp"
-    tools:background="@color/Unify_GN500">
+    android:layout_height="wrap_content">
+
+    <View
+        android:id="@+id/view_top_spacing"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_height="48dp" />
+
+    <View
+        android:id="@+id/view_background"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:minHeight="176dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/image_header_supergraphic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:unify_image_corner_radius="0"
+        app:unify_image_type="rect" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_animation_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/view_bottom_rounded"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="false" />
+
+    <View
+        android:id="@+id/view_bottom_rounded"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:background="@drawable/tokopedianow_header_bottom_rounded"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/header_shimmer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:minHeight="176dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+        android:id="@+id/choose_address_widget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        app:layout_constraintTop_toBottomOf="@id/view_top_spacing"
+        tools:layout_height="5dp" />
+
+    <com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
+        android:id="@+id/layout_icon_pull_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:color_type="white"
+        app:layout_constraintTop_toBottomOf="@id/choose_address_widget" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/image_icon"
         android:layout_width="44dp"
         android:layout_height="44dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
         android:scaleType="centerCrop"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/view_bottom_rounded"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_icon_pull_refresh"
         app:unify_image_type="circle" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -61,12 +130,15 @@
         android:id="@+id/shimmer_icon"
         android:layout_width="44dp"
         android:layout_height="44dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/view_bottom_rounded"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_icon_pull_refresh"
         app:unify_image_placeholder="@color/Unify_Static_White"
-        app:unify_image_type="circle"
-        tools:visibility="gone" />
+        app:unify_image_type="circle" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/shimmer_title"

@@ -98,7 +98,6 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClai
 import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.HOME_HEADER
 import com.tokopedia.tokopedianow.home.domain.mapper.oldrepurchase.HomeRepurchaseMapper
-import com.tokopedia.tokopedianow.home.domain.model.GetBuyerCommunication.GetBuyerCommunicationResponse
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeHeaderUiModel
 import com.tokopedia.unifycomponents.ticker.TickerData
 
@@ -131,8 +130,13 @@ object HomeLayoutMapper {
     )
 
     fun MutableList<HomeLayoutItemUiModel?>.addLoadingIntoList() {
-        val loadingLayout = HomeLoadingStateUiModel(id = LOADING_STATE)
-        add(HomeLayoutItemUiModel(loadingLayout, HomeLayoutItemState.LOADED))
+        val headerUiModel = findHeaderUiModel()
+        val loadingLayout = HomeLayoutItemUiModel(
+            HomeLoadingStateUiModel(id = LOADING_STATE), HomeLayoutItemState.LOADED)
+
+        clearHomeLayoutItemList()
+        addHeader(headerUiModel)
+        add(loadingLayout)
     }
 
     fun MutableList<HomeLayoutItemUiModel?>.addEmptyStateIntoList(
@@ -174,14 +178,9 @@ object HomeLayoutMapper {
         tickerList: List<TickerData>,
         enableNewRepurchase: Boolean
     ) {
-        val chooseAddressUiModel = TokoNowChooseAddressWidgetUiModel(
-            id = CHOOSE_ADDRESS_WIDGET_ID,
-            isColorStatic = true
-        )
-        val headerUiModel = HomeHeaderUiModel(id = HOME_HEADER)
-
-        add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
-        add(HomeLayoutItemUiModel(headerUiModel, HomeLayoutItemState.NOT_LOADED))
+        val headerUiModel = findHeaderUiModel()
+        clearHomeLayoutItemList()
+        addHeader(headerUiModel)
 
         if (tickerList.isNotEmpty()) {
             val ticker = TokoNowTickerUiModel(id = TICKER_WIDGET_ID, tickers = tickerList)
@@ -196,17 +195,6 @@ object HomeLayoutMapper {
 
                 addSwitcherUiModel(layoutResponse, localCacheModel, isLoggedIn)
             }
-        }
-    }
-
-    private fun MutableList<HomeLayoutItemUiModel?>.addSwitcherUiModel(
-        response: HomeLayoutResponse,
-        localCacheModel: LocalCacheModel,
-        isLoggedIn: Boolean
-    ) {
-        if (response.layout == EDUCATIONAL_INFORMATION && isLoggedIn) {
-            val switcherUiModel = createSwitcherUiModel(localCacheModel)
-            switcherUiModel?.let { uiModel -> add(uiModel) }
         }
     }
 
@@ -471,6 +459,33 @@ object HomeLayoutMapper {
     ) {
         updateAllProductQuantity(miniCartData, CHIP_CAROUSEL)
         updateDeletedProductQuantity(miniCartData, CHIP_CAROUSEL)
+    }
+
+    private fun MutableList<HomeLayoutItemUiModel?>.findHeaderUiModel(): HomeLayoutItemUiModel? {
+        return firstOrNull { it?.layout is HomeHeaderUiModel }
+    }
+
+    private fun MutableList<HomeLayoutItemUiModel?>.addHeader(
+        headerUiModel: HomeLayoutItemUiModel?
+    ) {
+        if (headerUiModel == null) {
+            add(HomeLayoutItemUiModel(
+                HomeHeaderUiModel(id = HOME_HEADER), HomeLayoutItemState.NOT_LOADED
+            ))
+        } else {
+            add(headerUiModel)
+        }
+    }
+
+    private fun MutableList<HomeLayoutItemUiModel?>.addSwitcherUiModel(
+        response: HomeLayoutResponse,
+        localCacheModel: LocalCacheModel,
+        isLoggedIn: Boolean
+    ) {
+        if (response.layout == EDUCATIONAL_INFORMATION && isLoggedIn) {
+            val switcherUiModel = createSwitcherUiModel(localCacheModel)
+            switcherUiModel?.let { uiModel -> add(uiModel) }
+        }
     }
 
     // Update all product with quantity from cart
@@ -891,6 +906,8 @@ object HomeLayoutMapper {
             else -> null
         }
     }
+
+    private fun MutableList<HomeLayoutItemUiModel?>.clearHomeLayoutItemList() = clear()
 
     /**
      * Map dynamic channel layout response to ui model.

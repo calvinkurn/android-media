@@ -75,11 +75,7 @@ class TokoNowChooseAddressWidgetViewHolder(
                 }
 
                 override fun onChangeTextColor(): Int {
-                    return if (element.isColorStatic) {
-                        com.tokopedia.unifyprinciples.R.color.Unify_Static_White
-                    } else {
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
-                    }
+                    return com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
                 }
             })
         }
