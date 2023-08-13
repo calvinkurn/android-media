@@ -13,12 +13,14 @@ import android.graphics.Region
 import android.graphics.drawable.ColorDrawable
 import android.os.Handler
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.ViewConfiguration
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.unifyprinciples.UnifyMotion
+import timber.log.Timber
 
 
 class VoucherCardView @JvmOverloads constructor(
@@ -236,7 +238,6 @@ class VoucherCardView @JvmOverloads constructor(
 
                             override fun onAnimationEnd(animator: Animator) {
                                 animateScaling(1.01f, 1f, UnifyMotion.T1, UnifyMotion.EASE_IN_OUT)
-                                performClick()
                             }
                         })
 
@@ -267,7 +268,8 @@ class VoucherCardView @JvmOverloads constructor(
 
                 if (event.action == MotionEvent.ACTION_UP) {
                     if (!isLongPress) {
-                        performClick()
+                        val result = performClick()
+                        Timber.d("$result")
                     }
                     isLongPress = false
                 }

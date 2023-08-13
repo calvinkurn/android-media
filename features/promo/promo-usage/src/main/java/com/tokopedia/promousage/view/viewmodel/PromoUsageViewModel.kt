@@ -60,6 +60,10 @@ internal class PromoUsageViewModel @Inject constructor(
     val promoRecommendationUiAction: LiveData<PromoRecommendationUiAction>
         get() = _promoRecommendationUiAction
 
+    private val _promoRecommendationPerformClickAction = MutableLiveData<PromoRecommendationPerformClickAction>()
+    val promoRecommendationPerformClickAction: LiveData<PromoRecommendationPerformClickAction>
+        get() = _promoRecommendationPerformClickAction
+
     private val _promoAttemptUiAction = MutableLiveData<PromoAttemptUiAction>()
     val promoAttemptUiAction: LiveData<PromoAttemptUiAction>
         get() = _promoAttemptUiAction
@@ -171,7 +175,7 @@ internal class PromoUsageViewModel @Inject constructor(
         }
         _promoPageUiState.postValue(
             PromoPageUiState.Success(
-                tickerInfo = PromoPageTickerInfo(),
+                tickerInfo = tickerInfo,
                 items = items,
                 savingInfo = savingInfo
             )

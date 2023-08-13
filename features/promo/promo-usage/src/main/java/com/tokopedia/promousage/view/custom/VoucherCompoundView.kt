@@ -289,7 +289,6 @@ class VoucherCompoundView @JvmOverloads constructor(
             middleShimmer.visible()
             bottomShimmer.visible()
         }
-
     }
 
     private fun hideLoadingAppearance() {
@@ -316,5 +315,9 @@ class VoucherCompoundView @JvmOverloads constructor(
 
         binding?.cardView?.layoutParams = layoutParams
         binding?.cardView?.requestLayout()
+    }
+
+    override fun setOnClickListener(onClickListener: OnClickListener?) {
+        binding?.cardView?.setOnClickListener(onClickListener)
     }
 }

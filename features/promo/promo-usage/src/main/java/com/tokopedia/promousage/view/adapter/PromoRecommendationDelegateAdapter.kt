@@ -7,6 +7,7 @@ import android.view.animation.Animation.AnimationListener
 import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promousage.R
@@ -19,10 +20,6 @@ class PromoRecommendationDelegateAdapter(
 ) : DelegateAdapter<PromoRecommendationItem, PromoRecommendationDelegateAdapter.ViewHolder>(
     PromoRecommendationItem::class.java
 ) {
-
-    companion object {
-        private const val PADDING_BOTTOM_DP = 16
-    }
 
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
         val binding = PromoUsageItemVoucherRecommendationBinding
@@ -44,16 +41,23 @@ class PromoRecommendationDelegateAdapter(
             binding.tpgRecommendationTitle.text = item.title
             binding.btnRecommendationUseVoucher.setOnClickListener {
                 onButtonUseRecommendedVoucherClick(item)
-                binding.btnRecommendationUseVoucher.gone()
+                binding.btnRecommendationUseVoucher.invisible()
                 binding.ivCheckmark.visible()
                 binding.ivCheckmarkOutline.visible()
                 startButtonUseVoucherAnimation()
             }
-            binding.btnRecommendationUseVoucher.isVisible =
-                selectedRecommendedPromoCount < recommendedPromoCount
-            binding.ivCheckmark.isVisible = selectedRecommendedPromoCount == recommendedPromoCount
-            binding.ivCheckmarkOutline.isVisible =
-                selectedRecommendedPromoCount == recommendedPromoCount
+            if (selectedRecommendedPromoCount == recommendedPromoCount) {
+                binding.ivCheckmark.visible()
+                binding.ivCheckmarkOutline.invisible()
+            } else {
+                binding.ivCheckmark.invisible()
+                binding.ivCheckmarkOutline.invisible()
+            }
+            if (selectedRecommendedPromoCount < recommendedPromoCount) {
+                binding.btnRecommendationUseVoucher.visible()
+            } else {
+                binding.btnRecommendationUseVoucher.invisible()
+            }
         }
 
         private fun startButtonUseVoucherAnimation() {
@@ -65,7 +69,7 @@ class PromoRecommendationDelegateAdapter(
                 }
 
                 override fun onAnimationEnd(p0: Animation?) {
-                    binding.ivCheckmarkOutline.gone()
+                    binding.ivCheckmarkOutline.invisible()
                 }
 
                 override fun onAnimationRepeat(p0: Animation?) {

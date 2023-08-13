@@ -5,38 +5,30 @@
     android:id="@+id/rlBottomSheetWrapper"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bottomsheet_background"
     android:orientation="vertical"
     app:behavior_hideable="true"
     app:behavior_peekHeight="@dimen/bottom_sheet_default_peek"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
-
-    <include
-        android:id="@+id/layoutShimmer"
-        layout="@layout/promo_usage_shimmer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:visibility="gone" />
 
     <!--Ticker Info-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clTickerInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/bottomsheet_background"
         android:orientation="horizontal"
         android:visibility="gone"
         tools:visibility="visible">
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/iuTickerInfoBackground"
+        <ImageView
+            android:id="@+id/ivTickerInfoBackground"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:unify_image_type="rect"
-            tools:src="@drawable/promo_usage_bg_ticker_info" />
+            tools:src="@color/Unify_NN1000" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iuTickerInfoIcon"
@@ -57,16 +49,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginStart="4dp"
-            android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="24dp"
-            android:ellipsize="end"
-            android:maxLines="1"
             android:textColor="@color/Unify_Static_White"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/iuTickerInfoIcon"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iuTickerInfoIcon"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/iuTickerInfoIcon"
             app:typographyType="paragraph_3"
             tools:text="Kini Bebas Ongkir hanya bisa dipilih di Pengiriman." />
 
@@ -75,10 +63,18 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clBottomSheetContent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_above="@+id/layoutSavingInfo"
         android:layout_below="@id/clTickerInfo"
-        android:layout_marginTop="-16dp">
+        android:layout_marginTop="-12dp">
+
+        <ImageView
+            android:id="@+id/ivPromoRecommendationBackground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <!--Bottomsheet Header (Title, Close Icon)-->
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -89,7 +85,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:background="@color/black">
+            tools:background="@color/purple">
 
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/btnBottomSheetHeaderClose"
@@ -127,7 +123,7 @@
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/lottieAnimationView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:scaleType="centerCrop"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
@@ -147,6 +143,13 @@
             tools:itemCount="3"
             tools:listitem="@layout/promo_usage_item_promo_accordion_header" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <include
+        android:id="@+id/layoutShimmer"
+        layout="@layout/promo_usage_shimmer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:visibility="gone" />
 
     <!--Total Savings-->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -190,7 +193,7 @@
             app:layout_constraintStart_toEndOf="@+id/ivCheckmark"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="display_3"
-            tools:text="@string/promo_voucher_placeholder_total_savings" />
+            tools:text="Yay, kamu hemat Rp30.000!" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

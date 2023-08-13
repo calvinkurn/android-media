@@ -11,6 +11,10 @@ data class PromoRecommendationUiAction(
     val recommendationItem: PromoRecommendationItem? = null
 )
 
+data class PromoRecommendationPerformClickAction(
+    val itemIndex: List<Int> = emptyList()
+)
+
 data class PromoListUiAction(
     val action: Int = 0,
     val exception: Throwable? = null

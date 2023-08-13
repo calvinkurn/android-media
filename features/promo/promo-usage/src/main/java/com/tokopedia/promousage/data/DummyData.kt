@@ -23,7 +23,7 @@ object DummyData {
         get() = PromoPageTickerInfo(
             message = "Kini Bebas Ongkir tersedia saat pilih pengiriman, ya.",
             iconUrl = "https://images.tokopedia.net/img/bundling/icons/product_bundling_dark.png",
-            backgroundUrl = ""
+            backgroundUrl = "https://images.tokopedia.net/img/State=bgBO.png"
         )
 
     val promoAttemptItemError: PromoAttemptItem
@@ -907,7 +907,7 @@ object DummyData {
                 codes = listOf(recommendedPromos[0].code, recommendedPromos[1].code),
                 message = "Kamu bisa hemat Rp30.000 dari 2 promo!",
                 messageSelected = "Kamu hemat Rp30.000 dari 2 promo!",
-                backgroundUrl = "",
+                backgroundUrl = "https://images.tokopedia.net/img/Promo%20Recom%20Section@3x.png",
                 animationUrl = "https://assets.tokopedia.net/asts/android/shop_page/shop_campaign_tab_confetti.json",
             )
         )
@@ -1005,7 +1005,7 @@ object DummyData {
                 codes = listOf(recommendedPromos[0].code, recommendedPromos[1].code),
                 message = "Kamu bisa hemat Rp30.000 dari 2 promo!",
                 messageSelected = "Kamu hemat Rp30.000 dari 2 promo!",
-                backgroundUrl = "",
+                backgroundUrl = "https://images.tokopedia.net/img/Promo%20Recom%20Section@3x.png",
                 animationUrl = "https://assets.tokopedia.net/asts/android/shop_page/shop_campaign_tab_confetti.json",
                 selectedCodes = recommendedPromos.filter { it.isSelected }.map { it.code }
             )

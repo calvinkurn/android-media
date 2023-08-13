@@ -2,12 +2,18 @@ package com.tokopedia.promousage.view.bottomsheet
 
 import android.animation.Animator
 import android.graphics.Color
+import android.graphics.Outline
 import android.os.Bundle
+import android.os.Handler
+import android.os.SystemClock
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewOutlineProvider
 import android.widget.RelativeLayout
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.constraintlayout.widget.ConstraintSet.Motion
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -57,11 +63,11 @@ import com.tokopedia.promousage.view.adapter.PromoAccordionViewAllDelegateAdapte
 import com.tokopedia.promousage.view.adapter.PromoAttemptCodeDelegateAdapter
 import com.tokopedia.promousage.view.adapter.PromoRecommendationDelegateAdapter
 import com.tokopedia.promousage.view.adapter.PromoTncDelegateAdapter
+import com.tokopedia.promousage.view.custom.VoucherCompoundView
 import com.tokopedia.promousage.view.viewmodel.ApplyPromoUiAction
 import com.tokopedia.promousage.view.viewmodel.PromoAttemptUiAction
 import com.tokopedia.promousage.view.viewmodel.PromoPageUiState
 import com.tokopedia.promousage.view.viewmodel.PromoUsageViewModel
-import com.tokopedia.promousage.view.viewmodel.getRecommendationItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.unifycomponents.Toaster
@@ -71,6 +77,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
 import kotlin.math.max
+
 
 class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
@@ -210,6 +217,28 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             promoRequest = promoRequest,
             chosenAddress = chosenAddress
         )
+
+
+        Handler().postDelayed({
+            performTouchView()
+        }, 5_000L)
+    }
+
+    private fun performTouchView() {
+        val view = binding.rvPromo.findViewHolderForAdapterPosition(2)
+            ?.itemView
+            ?.findViewById<VoucherCompoundView>(R.id.vcvPromo)
+
+        if (view != null) {
+            var originalDownTime: Long = SystemClock.uptimeMillis()
+            var eventTime: Long = SystemClock.uptimeMillis() + 2000
+            view.dispatchTouchEvent(
+                MotionEvent.obtain(originalDownTime, eventTime, MotionEvent.ACTION_DOWN, 0f, 0f, 0))
+
+            eventTime = SystemClock.uptimeMillis() + 2000
+            view.dispatchTouchEvent(
+                MotionEvent.obtain(originalDownTime, eventTime, MotionEvent.ACTION_UP, 0f, 0f, 0))
+        }
     }
 
     private fun reloadUi() {
@@ -223,8 +252,8 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun setupView() {
-        hideContent()
-        showShimmer()
+        renderContent(false)
+        renderLoadingShimmer(true)
 
         val entryPoint = arguments?.getParcelable(BUNDLE_KEY_ENTRY_POINT)
             ?: PromoPageEntryPoint.CART_PAGE
@@ -238,8 +267,11 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         binding.btnBottomSheetHeaderClose.setOnClickListener {
             dismiss()
         }
-        binding.clBottomSheetContent.background =
-            BottomSheetUtil.generateBackgroundDrawableWithColor(binding.root.context)
+//        binding.clBottomSheetContent.background =
+//            BottomSheetUtil.generateBackgroundDrawableWithColor(
+//                binding.root.context,
+//                com.tokopedia.unifyprinciples.R.color.Unify_Background
+//            )
         binding.rvPromo.itemAnimator = null
         binding.rvPromo.layoutManager = LinearLayoutManager(context)
         binding.rvPromo.adapter = recyclerViewAdapter
@@ -416,8 +448,9 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
     private fun observePromoRecommendationUiAction() {
         viewModel.promoRecommendationUiAction.observe(viewLifecycleOwner) { uiAction ->
-            val hasRecommendedItems = uiAction.recommendationItem != null
-            if (hasRecommendedItems) {
+            if (uiAction.recommendationItem != null) {
+                prefetchPromoRecommendationAnimation(uiAction.recommendationItem)
+                renderPromoRecommendationBackground(uiAction.recommendationItem)
                 addHeaderScrollListener()
                 renderTransparentHeader()
             } else {
@@ -448,29 +481,25 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             when (state) {
 
                 is PromoPageUiState.Initial -> {
-                    showShimmer()
+                    renderLoadingShimmer(true)
                 }
 
                 is PromoPageUiState.Success -> {
-                    val promoRecommendation = state.items.getRecommendationItem()
-                    if (promoRecommendation != null) {
-                        renderPromoRecommendationBackground(promoRecommendation)
-                    }
                     renderTickerInfo(state.tickerInfo)
                     renderRecyclerView(state.items)
                     renderSavingInfo(state.savingInfo)
-                    setLoadingDialog(false)
-                    showContent()
+                    renderLoadingShimmer(false)
+                    renderLoadingDialog(false)
+                    renderContent(true)
                 }
 
                 is PromoPageUiState.Error -> {
-                    // TODO: Handle error state
-                    setLoadingDialog(false)
-                    hideContent()
+                    renderLoadingDialog(false)
+                    renderContent(false)
                 }
 
                 is PromoPageUiState.Loading -> {
-                    setLoadingDialog(true)
+                    renderLoadingDialog(true)
                 }
 
                 else -> {
@@ -483,7 +512,21 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     private fun renderPromoRecommendationBackground(promoRecommendation: PromoRecommendationItem) {
         with(binding) {
             clBottomSheetContent.background = BottomSheetUtil
-                .generateBackgroundDrawableWithColor(root.context, promoRecommendation.backgroundColor)
+                .generateBackgroundDrawableWithColor(
+                    root.context,
+                    promoRecommendation.backgroundColor
+                )
+            clBottomSheetContent.outlineProvider = object : ViewOutlineProvider() {
+                override fun getOutline(view: View?, outline: Outline?) {
+                    val cornerRadius = 16.toPx()
+                    val width = view?.width ?: 0
+                    val height = view?.height ?: 0
+                    outline?.setRoundRect(0, 0, width, height.plus(cornerRadius), cornerRadius.toFloat())
+                }
+            }
+            clBottomSheetContent.clipToOutline = true
+            clBottomSheetContent.clipChildren = true
+            ivPromoRecommendationBackground.loadImage(promoRecommendation.backgroundUrl)
         }
     }
 
@@ -492,14 +535,12 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             val hasTickerInfo = tickerInfo.message.isNotBlank() && tickerInfo.iconUrl.isNotBlank()
                 && tickerInfo.backgroundUrl.isNotBlank()
             if (hasTickerInfo) {
-                if (tickerInfo.backgroundUrl.isNotBlank()) {
-                    iuTickerInfoBackground.setImageUrl(tickerInfo.backgroundUrl)
-                } else {
-                    iuTickerInfoBackground.setImageDrawable(
-                        ContextCompat
-                            .getDrawable(root.context, R.drawable.promo_usage_bg_ticker_info)
-                    )
-                }
+                ivTickerInfoBackground.loadImage(
+                    url = tickerInfo.backgroundUrl,
+                    properties = {
+                        centerCrop()
+                    }
+                )
                 iuTickerInfoIcon.loadImage(tickerInfo.iconUrl)
                 tpgTickerInfoMessage.text = tickerInfo.message
                 clTickerInfo.visible()
@@ -518,26 +559,50 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         recyclerViewAdapter.submit(items)
     }
 
-    private fun showShimmer() {
-        binding.layoutShimmer.root.visible()
-        binding.rvPromo.gone()
-        binding.cvTotalAmount.gone()
+    private fun renderLoadingShimmer(isVisible: Boolean) {
+        with(binding) {
+            if (isVisible) {
+                rlBottomSheetWrapper.background =
+                    BottomSheetUtil.generateBackgroundDrawableWithColor(
+                        root.context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_Background
+                    )
+                rlBottomSheetWrapper.outlineProvider = object : ViewOutlineProvider() {
+                    override fun getOutline(view: View?, outline: Outline?) {
+                        val cornerRadius = 16.toPx()
+                        val width = view?.width ?: 0
+                        val height = view?.height ?: 0
+                        outline?.setRoundRect(0, 0, width, height.plus(cornerRadius), cornerRadius.toFloat())
+                    }
+                }
+                rlBottomSheetWrapper.clipToOutline = true
+                clBottomSheetContent.clipChildren = true
+            }
+            layoutShimmer.root.isVisible = isVisible
+        }
     }
 
-    private fun showContent() {
-        binding.layoutShimmer.root.gone()
-        binding.clTickerInfo.visible()
-        binding.clBottomSheetHeader.visible()
-        binding.rvPromo.visible()
-        binding.cvTotalAmount.visible()
-    }
-
-    private fun hideContent() {
-        binding.layoutShimmer.root.gone()
-        binding.clTickerInfo.gone()
-        binding.clBottomSheetHeader.gone()
-        binding.rvPromo.gone()
-        binding.cvTotalAmount.gone()
+    private fun renderContent(isVisible: Boolean) {
+        with(binding) {
+            rlBottomSheetWrapper.background =
+                BottomSheetUtil.generateBackgroundDrawableWithColor(
+                    binding.root.context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_Background
+                )
+            rlBottomSheetWrapper.outlineProvider = object : ViewOutlineProvider() {
+                override fun getOutline(view: View?, outline: Outline?) {
+                    val cornerRadius = 16.toPx()
+                    val width = view?.width ?: 0
+                    val height = view?.height ?: 0
+                    outline?.setRoundRect(0, 0, width, height.plus(cornerRadius), cornerRadius.toFloat())
+                }
+            }
+            rlBottomSheetWrapper.clipToOutline = true
+            clBottomSheetContent.clipChildren = true
+            clBottomSheetHeader.isVisible = isVisible
+            rvPromo.isVisible = isVisible
+            cvTotalAmount.isVisible = isVisible
+        }
     }
 
     private fun renderSavingInfo(promoSavingInfo: PromoSavingInfo) {
@@ -606,8 +671,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         { recommendationItem: PromoRecommendationItem ->
             viewModel.onApplyPromoRecommendation(
                 onSuccess = {
-                    setLoadingDialog(false)
-                    showLottieConfettiAnimation(recommendationItem)
+                    showPromoRecommendationAnimation(recommendationItem)
                 }
             )
         }
@@ -631,28 +695,35 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         registerGopayLaterCicilLauncher.launch(intent)
     }
 
-    private fun showLottieConfettiAnimation(item: PromoRecommendationItem) {
-        LottieCompositionFactory.fromUrl(context, item.animationUrl).addListener { result ->
-            binding.lottieAnimationView.visible()
-            binding.lottieAnimationView.setComposition(result)
-            binding.lottieAnimationView.playAnimation()
-            binding.lottieAnimationView.addAnimatorListener(object : Animator.AnimatorListener {
-                override fun onAnimationStart(animator: Animator) {
-                    // no-op
-                }
+    private fun prefetchPromoRecommendationAnimation(item: PromoRecommendationItem) {
+        if (item.animationUrl.isNotBlank()) {
+            LottieCompositionFactory.fromUrl(context, item.animationUrl, item.animationUrl)
+        }
+    }
 
-                override fun onAnimationEnd(animator: Animator) {
-                    binding.lottieAnimationView.gone()
-                }
+    private fun showPromoRecommendationAnimation(item: PromoRecommendationItem) {
+        LottieCompositionFactory.fromUrl(context, item.animationUrl, item.animationUrl).addListener { result ->
+            Handler().postDelayed({
+                binding.lottieAnimationView.setComposition(result)
+                binding.lottieAnimationView.addAnimatorListener(object : Animator.AnimatorListener {
+                    override fun onAnimationStart(animator: Animator) {
 
-                override fun onAnimationCancel(animator: Animator) {
-                    // no-op
-                }
+                    }
 
-                override fun onAnimationRepeat(animator: Animator) {
-                    // no-op
-                }
-            })
+                    override fun onAnimationEnd(animator: Animator) {
+                        binding.lottieAnimationView.gone()
+                    }
+
+                    override fun onAnimationCancel(animator: Animator) {
+                        // no-op
+                    }
+
+                    override fun onAnimationRepeat(animator: Animator) {
+                        // no-op
+                    }
+                })
+                binding.lottieAnimationView.playAnimation()
+            }, 300L)
         }
     }
 
@@ -676,8 +747,8 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         )
     }
 
-    private fun setLoadingDialog(isLoading: Boolean) {
-        if (isLoading) {
+    private fun renderLoadingDialog(isVisible: Boolean) {
+        if (isVisible) {
             if (loaderDialog == null) {
                 loaderDialog = LoaderDialog(requireContext())
                 loaderDialog?.show()
