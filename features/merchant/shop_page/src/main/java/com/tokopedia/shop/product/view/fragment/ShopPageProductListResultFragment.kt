@@ -1453,23 +1453,23 @@ class ShopPageProductListResultFragment :
             shopStickySortFilter.sortList.firstOrNull { it.value == sortId }?.name
                 ?: ""
 
-        val pathEtalase = RouteManager.getIntent(
-            requireContext(),
-            activity?.intent?.data.toString()
-        ).data
-        if (hasEtalaseIdFromUri(
-                pathEtalase,
-                pathEtalase?.pathSegments.orEmpty()
-            ) && selectedEtalaseId.isEmpty()
-        ) {
-            selectedEtalaseId = SEMUA_PRODUCT_ETALASE_ALIAS
-            selectedEtalaseName = SEMUA_PRODUCT_ETALASE_NAME
-            val shopEtalaseNotFound = ShopEtalaseNotFoundBottomSheet.createInstance {
-                context?.let {
+        context?.let {
+            val pathEtalase = RouteManager.getIntent(
+                it,
+                activity?.intent?.data.toString()
+            ).data
+            if (hasEtalaseIdFromUri(
+                    pathEtalase,
+                    pathEtalase?.pathSegments.orEmpty()
+                ) && selectedEtalaseId.isEmpty()
+            ) {
+                selectedEtalaseId = SEMUA_PRODUCT_ETALASE_ALIAS
+                selectedEtalaseName = SEMUA_PRODUCT_ETALASE_NAME
+                val shopEtalaseNotFound = ShopEtalaseNotFoundBottomSheet.createInstance {
                     RouteManager.route(it, UriUtil.buildUri(ApplinkConst.SHOP, shopId))
                 }
+                shopEtalaseNotFound.show(childFragmentManager)
             }
-            shopEtalaseNotFound.show(childFragmentManager)
         }
 
         shopProductSortFilterUiModel = ShopProductSortFilterUiModel(
