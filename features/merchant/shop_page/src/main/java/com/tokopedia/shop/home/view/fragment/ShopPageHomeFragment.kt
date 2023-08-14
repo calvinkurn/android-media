@@ -49,6 +49,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cachemanager.PersistentCacheManager
+import com.tokopedia.carousellayoutmanager.CarouselLayoutManager
+import com.tokopedia.carousellayoutmanager.CarouselZoomPostLayoutListener
+import com.tokopedia.carousellayoutmanager.CenterScrollListener
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
 import com.tokopedia.dialog.DialogUnify
@@ -131,6 +134,7 @@ import com.tokopedia.shop.common.util.getIndicatorCount
 import com.tokopedia.shop.common.view.interfaces.ShopPageSharedListener
 import com.tokopedia.shop.common.view.listener.InterfaceShopPageClickScrollToTop
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
+import com.tokopedia.shop.common.view.model.ImageHotspotData
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.view.viewmodel.ShopChangeProductGridSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopPageMiniCartSharedViewModel
@@ -157,6 +161,8 @@ import com.tokopedia.shop.home.util.CheckCampaignNplException
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
+import com.tokopedia.shop.home.view.adapter.ShopWidgetProductHotspotAdapter
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerProductHotspotViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductListSellerEmptyListener
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePersoProductComparisonViewHolder
@@ -186,6 +192,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListSliderUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.shop.home.view.model.ShopPageLayoutUiModel
+import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerProductHotspotUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
@@ -243,7 +250,8 @@ open class ShopPageHomeFragment :
     ShopHomeProductListSellerEmptyListener,
     ShopHomeListener,
     ShopHomePersoProductComparisonViewHolder.ShopHomePersoProductComparisonViewHolderListener,
-    ShopHomeDisplayBannerTimerWidgetListener {
+    ShopHomeDisplayBannerTimerWidgetListener,
+    ShopHomeDisplayBannerProductHotspotViewHolder.Listener {
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -399,6 +407,7 @@ open class ShopPageHomeFragment :
             shopHomeListener = this,
             shopPersoProductComparisonListener = this,
             shopHomeDisplayBannerTimerWidgetListener = this,
+            shopHomeDisplayBannerProductHotspotListener = this
         )
     }
 
@@ -4948,5 +4957,9 @@ open class ShopPageHomeFragment :
         } else {
             parentFragment
         }
+    }
+
+    override fun onHotspotBubbleClicked(uiModel: ShopWidgetDisplayBannerProductHotspotUiModel, imageBannerPosition: Int, bubblePosition: Int) {
+        RouteManager.route(context, uiModel.data.getOrNull(imageBannerPosition)?.listProductHotspot?.getOrNull(bubblePosition)?.productUrl.orEmpty())
     }
 }

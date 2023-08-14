@@ -16,6 +16,7 @@ import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiMode
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
 import com.tokopedia.shop.home.WidgetName.ADD_ONS
+import com.tokopedia.shop.home.WidgetName.BANNER_PRODUCT_HOTSPOT
 import com.tokopedia.shop.home.WidgetName.BANNER_TIMER
 import com.tokopedia.shop.home.WidgetName.BIG_CAMPAIGN_THEMATIC
 import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
@@ -429,6 +430,10 @@ object ShopPageHomeMapper {
                     }
                     BANNER_TIMER -> {
                         ShopPageWidgetMapper.mapToBannerTimerWidget(widgetResponse, widgetLayout)
+                    }
+
+                    BANNER_PRODUCT_HOTSPOT -> {
+                        ShopPageWidgetMapper.mapToBannerProductHotspotWidget(widgetResponse, widgetLayout)
                     }
                     else -> null
                 }
