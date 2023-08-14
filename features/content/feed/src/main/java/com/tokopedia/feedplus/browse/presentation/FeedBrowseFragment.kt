@@ -8,8 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.feedplus.browse.di.FeedBrowseComponent
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseAdapter
@@ -51,25 +51,24 @@ class FeedBrowseFragment : BaseDaggerFragment() {
 
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.uiState.collectLatest { state ->
+            viewModel.uiState
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+                .collectLatest { state ->
                     if (state == null) return@collectLatest
 
                     renderHeader(state.title)
                     renderContent(state.widgets)
                 }
-            }
         }
     }
 
     private fun observeUiEvent() {
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                viewModel.uiEvent.collect { event ->
+            viewModel.uiState
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.RESUMED)
+                .collect { event ->
                     if (event == null) return@collect
-
                 }
-            }
         }
     }
 
