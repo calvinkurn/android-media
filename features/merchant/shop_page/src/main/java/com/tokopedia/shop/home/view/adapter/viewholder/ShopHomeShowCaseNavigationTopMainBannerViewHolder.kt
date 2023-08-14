@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
-import com.tokopedia.shop.databinding.ItemShopHomeShowcaseTopMainBannerBinding
+import com.tokopedia.shop.databinding.ItemShopHomeShowcaseNavigationTopMainBannerBinding
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseNavigationListener
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationUiModel
 import com.tokopedia.utils.view.binding.viewBinding
@@ -20,13 +20,13 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_shop_home_showcase_top_main_banner
+        val LAYOUT = R.layout.item_shop_home_showcase_navigation_top_main_banner
         private const val SHOW_VIEW_ALL_SHOWCASE_THRESHOLD = 5
         private const val SECOND_SHOWCASE_INDEX = 1
         private const val TWELVE_SHOWCASE_INDEX = 12
     }
 
-    private val viewBinding: ItemShopHomeShowcaseTopMainBannerBinding? by viewBinding()
+    private val viewBinding: ItemShopHomeShowcaseNavigationTopMainBannerBinding? by viewBinding()
 
 
     override fun bind(model: ShopHomeShowcaseNavigationUiModel) {

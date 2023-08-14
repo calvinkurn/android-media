@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.shop.databinding.ItemShopHomeShowcaseBinding
+import com.tokopedia.shop.databinding.ItemShopHomeShowcaseNavigationBinding
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseNavigationListener
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationUiModel
 import com.tokopedia.unifycomponents.ImageUnify
@@ -18,16 +18,16 @@ class ShopHomeShowCaseNavigationAdapter(
 
     companion object {
         private const val SHOWCASE_CAROUSEL_SIZE_HEIGHT = 64
-        private const val SHOWCASE_CAROUSEL_CIRCLE_SIZE_WIDTH = 64
+        private const val SHOWCASE_CAROUSEL_SIZE_WIDTH = 64
         private const val SHOWCASE_DEFAULT_SIZE_HEIGHT = 72
-        private const val SHOWCASE_DEFAULT_CIRCLE_SIZE_WIDTH = 72
+        private const val SHOWCASE_DEFAULT_SIZE_WIDTH = 72
     }
 
     private var showcases = mutableListOf<ShopHomeShowcaseNavigationUiModel.Tab.Showcase>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShowCaseViewHolder {
         val binding =
-            ItemShopHomeShowcaseBinding.inflate(
+            ItemShopHomeShowcaseNavigationBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -42,17 +42,17 @@ class ShopHomeShowCaseNavigationAdapter(
     }
 
     inner class ShowCaseViewHolder(
-        private val binding: ItemShopHomeShowcaseBinding
+        private val binding: ItemShopHomeShowcaseNavigationBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         init {
             if (widgetStyle == ShopHomeShowcaseNavigationUiModel.WidgetStyle.CIRCLE) {
                 binding.imgBanner.layoutParams.height = SHOWCASE_CAROUSEL_SIZE_HEIGHT.toPx()
-                binding.imgBanner.layoutParams.width = SHOWCASE_CAROUSEL_CIRCLE_SIZE_WIDTH.toPx()
+                binding.imgBanner.layoutParams.width = SHOWCASE_CAROUSEL_SIZE_WIDTH.toPx()
                 binding.imgBanner.requestLayout()
             } else {
                 binding.imgBanner.layoutParams.height = SHOWCASE_DEFAULT_SIZE_HEIGHT.toPx()
-                binding.imgBanner.layoutParams.width = SHOWCASE_DEFAULT_CIRCLE_SIZE_WIDTH.toPx()
+                binding.imgBanner.layoutParams.width = SHOWCASE_DEFAULT_SIZE_WIDTH.toPx()
                 binding.imgBanner.requestLayout()
             }
         }

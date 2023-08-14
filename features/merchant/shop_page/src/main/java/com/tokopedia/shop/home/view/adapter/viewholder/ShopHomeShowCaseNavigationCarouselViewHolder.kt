@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.shop.R
-import com.tokopedia.shop.databinding.ItemShopHomeShowcaseCarouselBannerBinding
+import com.tokopedia.shop.databinding.ItemShopHomeShowcaseNavigationCarouselBannerBinding
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseNavigationListener
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationUiModel
 import com.tokopedia.utils.view.binding.viewBinding
@@ -19,11 +19,11 @@ class ShopHomeShowCaseNavigationCarouselViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_shop_home_showcase_carousel_banner
+        val LAYOUT = R.layout.item_shop_home_showcase_navigation_carousel_banner
         private const val SHOW_VIEW_ALL_SHOWCASE_THRESHOLD = 12
     }
 
-    private val viewBinding: ItemShopHomeShowcaseCarouselBannerBinding? by viewBinding()
+    private val viewBinding: ItemShopHomeShowcaseNavigationCarouselBannerBinding? by viewBinding()
 
 
     override fun bind(model: ShopHomeShowcaseNavigationUiModel) {

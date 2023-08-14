@@ -12,7 +12,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
-import com.tokopedia.shop.databinding.ItemShopHomeShowcaseLeftMainBannerBinding
+import com.tokopedia.shop.databinding.ItemShopHomeShowcaseNavigationLeftMainBannerBinding
 import com.tokopedia.shop.home.view.fragment.ShopShowcaseFragment
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseNavigationListener
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationUiModel
@@ -28,13 +28,13 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_shop_home_showcase_left_main_banner
+        val LAYOUT = R.layout.item_shop_home_showcase_navigation_left_main_banner
         private const val SHOW_VIEW_ALL_SHOWCASE_THRESHOLD = 5
         private const val ONE_TAB = 1
         private const val TWO_TAB = 2
     }
 
-    private val viewBinding: ItemShopHomeShowcaseLeftMainBannerBinding? by viewBinding()
+    private val viewBinding: ItemShopHomeShowcaseNavigationLeftMainBannerBinding? by viewBinding()
 
 
     override fun bind(model: ShopHomeShowcaseNavigationUiModel) {
