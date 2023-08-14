@@ -31,7 +31,7 @@ fun StoriesDetailTimer(
     data: StoriesDetailUiModel,
     event: (StoriesDetailTimerEvent) -> Unit,
 ) {
-    val anim = remember { Animatable(0F) }
+    val anim = remember(data) { Animatable(0F) }
 
     LaunchedEffect(data) {
         when (data.event) {
