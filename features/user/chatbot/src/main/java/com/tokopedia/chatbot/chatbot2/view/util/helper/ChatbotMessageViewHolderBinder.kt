@@ -8,6 +8,7 @@ import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.util.ChatTimeConverter
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
+import com.tokopedia.chatbot.chatbot2.view.uimodel.dynamicattachment.DynamicOwocInvoiceUiModel
 import com.tokopedia.chatbot.view.customview.CustomChatbotChatLayout
 import com.tokopedia.chatbot.view.customview.MessageBubbleLayout
 import com.tokopedia.kotlin.extensions.view.gone
@@ -43,6 +44,12 @@ object ChatbotMessageViewHolderBinder {
         chatLayout?.setHourTime(hourTime)
     }
 
+    fun getTime(
+        replyTime: String?
+    ): String {
+        return getHourTime(replyTime)
+    }
+
     fun bindHour(
         replyTime: String?,
         messageBubble: MessageBubbleLayout?
@@ -52,7 +59,7 @@ object ChatbotMessageViewHolderBinder {
     }
 
     fun bindHourTextView(
-        uiModel: MessageUiModel,
+        uiModel: DynamicOwocInvoiceUiModel,
         hour: TextView?
     ) {
         val hourTime = getHourTime(uiModel.replyTime)

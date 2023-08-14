@@ -3,7 +3,7 @@ package com.tokopedia.notifcenter.data.entity.orderlist
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
+import com.tokopedia.notifcenter.view.adapter.typefactory.NotificationTypeFactory
 
 data class NotifOrderListUiModel(
         @SerializedName("list")

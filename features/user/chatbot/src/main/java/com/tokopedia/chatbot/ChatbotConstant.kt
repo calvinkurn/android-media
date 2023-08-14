@@ -71,6 +71,7 @@ object ChatbotConstant {
         const val DYNAMIC_TEXT_SEND = 106
         const val DYNAMIC_REJECT_REASON = 107
         const val DYNAMIC_REJECT_REASON_SEND = 108
+        const val DYNAMIC_INVOICE_OWOC = 109
         const val DYNAMIC_REPLY_CSAT_YES = "csat-yes"
         const val DYNAMIC_REPLY_CSAT_NO = "csat-no"
         val ALLOWED_DYNAMIC_ATTACHMENT_TYPE = listOf<Int>(
@@ -85,7 +86,8 @@ object ChatbotConstant {
             DYNAMIC_STICKY_BUTTON_RECEIVE,
             DYNAMIC_TEXT_SEND,
             DYNAMIC_REJECT_REASON,
-            DYNAMIC_REJECT_REASON_SEND
+            DYNAMIC_REJECT_REASON_SEND,
+            DYNAMIC_INVOICE_OWOC
         )
     }
 

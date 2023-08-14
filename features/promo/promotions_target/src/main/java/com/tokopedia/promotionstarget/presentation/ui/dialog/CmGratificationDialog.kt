@@ -153,7 +153,7 @@ class CmGratificationDialog {
                 lp.addRule(RelativeLayout.RIGHT_OF, tvDialogTitle.id)
                 lp.addRule(RelativeLayout.END_OF, tvDialogTitle.id)
                 lp.addRule(RelativeLayout.CENTER_VERTICAL)
-                typographyTitle.setTextColor(ContextCompat.getColor(tvDialogTitle.context, R.color.t_promo_title_color))
+                typographyTitle.setTextColor(ContextCompat.getColor(tvDialogTitle.context, R.color.Unify_N700))
                 typographyTitle.layoutParams = lp
                 typographyTitle.setType(Typography.HEADING_3)
                 rlParent.addView(typographyTitle)

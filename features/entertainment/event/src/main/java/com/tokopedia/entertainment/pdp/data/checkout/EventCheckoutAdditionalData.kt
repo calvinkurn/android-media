@@ -2,7 +2,7 @@ package com.tokopedia.entertainment.pdp.data.checkout
 
 import android.os.Parcelable
 import com.tokopedia.entertainment.pdp.data.Form
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class EventCheckoutAdditionalData(
