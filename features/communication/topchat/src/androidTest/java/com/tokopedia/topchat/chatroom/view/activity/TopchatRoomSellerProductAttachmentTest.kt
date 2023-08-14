@@ -658,7 +658,7 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
     }
 
     @Test
-    fun should_not_show_label_empty_stock_button_update_stock_and_text_stock_when_product_is_deleted() {
+    fun should_not_show_label_empty_stock_button_update_stock_and_text_stock_when_product_is_archived() {
         // Given
         getChatUseCase.response = sellerProductChatReplies
         chatAttachmentUseCase.response = chatAttachmentUseCase.productArchivedAttachmentSeller

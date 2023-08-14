@@ -437,7 +437,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
     }
 
     @Test
-    fun should_not_show_label_empty_and_remind_button_when_product_is_deleted() {
+    fun should_not_show_label_empty_and_remind_button_when_product_is_archived() {
         // Given
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentUseCase.productArchivedAttachment

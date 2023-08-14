@@ -404,10 +404,10 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private fun bindSellerRemainingStock(product: ProductAttachmentUiModel) {
-        // Show only when user is seller, product is not upcoming product and not product deleted
+        // Show only when user is seller, product is not upcoming product and not product archived
         if (commonListener?.isSeller() == true &&
             !product.isUpcomingCampaign &&
-            !product.isProductDeleted()
+            !product.isProductArchived()
         ) {
             sellerStockContainer?.show()
             bindSellerStockCount(product)
@@ -444,11 +444,11 @@ class SingleProductAttachmentContainer : ConstraintLayout {
 
     private fun bindSellerUpdateStockBtn(product: ProductAttachmentUiModel) {
         // Only show button seller update stock when
-        // user is seller, product is not product campaign and not product deleted
+        // user is seller, product is not product campaign and not product archived
         // note: can show footer is for buyer
         if (product.canShowFooter || commonListener?.isSeller() == false ||
             product.isProductCampaign() || !enableUpdateStockSeller() ||
-            product.isProductDeleted()
+            product.isProductArchived()
         ) {
             btnUpdateStockContainer?.hide()
         } else {
@@ -607,9 +607,9 @@ class SingleProductAttachmentContainer : ConstraintLayout {
 
     private fun bindEmptyStockLabel(product: ProductAttachmentUiModel) {
         label?.apply {
-            // Show stok habis only when product is empty but not deleted and not upcoming product
+            // Show stok habis only when product is empty but not archived and not upcoming product
             if (product.hasEmptyStock() &&
-                !product.isProductDeleted() &&
+                !product.isProductArchived() &&
                 !product.isUpcomingCampaign
             ) {
                 show()
@@ -672,9 +672,9 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private fun bindWishList(product: ProductAttachmentUiModel) {
-        // Show wishlist only when product is empty but not deleted
+        // Show wishlist only when product is empty but not archived
         // or product is upcoming campaign (0 because campaign is not started)
-        if ((product.hasEmptyStock() && !product.isProductDeleted()) ||
+        if ((product.hasEmptyStock() && !product.isProductArchived()) ||
             product.isUpcomingCampaign
         ) {
             btnWishList?.show()

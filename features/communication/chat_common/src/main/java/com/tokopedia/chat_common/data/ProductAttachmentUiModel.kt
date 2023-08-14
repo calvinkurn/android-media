@@ -208,8 +208,8 @@ open class ProductAttachmentUiModel protected constructor(
         return wishList
     }
 
-    fun isProductDeleted(): Boolean {
-        return status == statusDeleted
+    fun isProductArchived(): Boolean {
+        return status == statusArchived
     }
 
     fun getStringProductId(): String {
@@ -320,6 +320,7 @@ open class ProductAttachmentUiModel protected constructor(
         const val statusDeleted = 0
         const val statusActive = 1
         const val statusWarehouse = 3
+        const val statusArchived = 99
 
         const val NO_PRODUCT_ID = "0"
     }
