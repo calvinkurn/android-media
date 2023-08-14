@@ -112,7 +112,7 @@ open class ProfileCompletionSettingModule(private val context: Context) {
 
     @Provides
     @ProfileCompletionSettingScope
-    fun provideOneTrustApi(retrofit: Retrofit): ProfileManagementApi {
+    fun provideProfileManagementApi(retrofit: Retrofit): ProfileManagementApi {
         return retrofit.create(ProfileManagementApi::class.java)
     }
 }
