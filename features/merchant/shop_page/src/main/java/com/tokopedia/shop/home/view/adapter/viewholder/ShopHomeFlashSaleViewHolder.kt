@@ -119,6 +119,16 @@ class ShopHomeFlashSaleViewHolder(
             endBackGroundColor = flashSaleItem?.secondBackgroundColor
         )
         configMarginNonFestivity()
+        setShopReimaginedContainerMargin()
+    }
+
+    private fun setShopReimaginedContainerMargin() {
+        rvContainer?.let {
+            it.clipToOutline = true
+            it.background = MethodChecker.getDrawable(itemView.context, com.tokopedia.shop_widget.R.drawable.bg_shop_reimagined_rounded)
+            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart = 16f.dpToPx().toInt()
+            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginEnd = 16f.dpToPx().toInt()
+        }
     }
 
     private fun configFestivity() {
