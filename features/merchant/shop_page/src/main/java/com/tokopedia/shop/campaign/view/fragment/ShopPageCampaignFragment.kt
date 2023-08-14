@@ -1118,7 +1118,7 @@ class ShopPageCampaignFragment :
             shopId,
             extParam,
             ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel(),
-            "CampaignTab"
+            getSelectedTabName()
         )
     }
 
