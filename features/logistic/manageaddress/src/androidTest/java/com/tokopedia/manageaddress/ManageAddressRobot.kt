@@ -55,7 +55,7 @@ class ManageAddressRobot {
 
     fun onClickSearch(keyword: String) {
         onView(withId(R.id.search_input_view)).perform(click())
-        onView(withId(R.id.searchbar_textfield)).perform(click(), typeText(keyword), closeSoftKeyboard())
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click(), typeText(keyword), closeSoftKeyboard())
         waitForData()
     }
 
