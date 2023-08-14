@@ -43,18 +43,18 @@ const val OPACITY_68 = 0.68f
 
 @Composable
 fun InitialSearchFragmentScreen(
-    uiState: InitialSearchUiState,
+    uiState: InitialSearchUiState?,
     uiEvent: (InitialSearchUiEvent) -> Unit
 ) {
     LazyColumn(Modifier.fillMaxSize()) {
-        itemsIndexed(uiState.initialStateList) { index, item ->
+        itemsIndexed(uiState?.initialStateList.orEmpty()) { index, item ->
             when (item) {
                 is SellerSearchNoHistoryUiModel -> {
                     NoHistoryState()
                 }
 
                 is ItemTitleInitialSearchUiModel -> {
-                    HistorySearchSectionTitle(uiState.titleList, uiEvent)
+                    HistorySearchSectionTitle(uiState?.titleList.orEmpty(), uiEvent)
                 }
 
                 is ItemInitialSearchUiModel -> {

@@ -12,6 +12,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -48,6 +49,8 @@ class InitialSearchComposeFragment : BaseDaggerFragment() {
         savedInstanceState: Bundle?
     ): View? {
         return context?.let { ComposeView(it) }?.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+
             setContent {
                 val isMonitoringStarted = remember { mutableStateOf(false) }
                 val isMonitoringFinished = remember { mutableStateOf(false) }
@@ -55,7 +58,7 @@ class InitialSearchComposeFragment : BaseDaggerFragment() {
                 val softwareKeyboardController = LocalSoftwareKeyboardController.current
 
                 val getActivity = LocalContext.current as? InitialSellerSearchComposeActivity
-                val sellerSearchResult = viewModel.uiState.collectAsStateWithLifecycle()
+                val sellerSearchResult by viewModel.uiState.collectAsStateWithLifecycle(null)
 
                 LaunchedEffect(sellerSearchResult) {
                     if (!isMonitoringStarted.value) {
@@ -70,13 +73,13 @@ class InitialSearchComposeFragment : BaseDaggerFragment() {
                         }
                     }
 
-                    if (sellerSearchResult.value.isDismissKeyboard) {
+                    if (sellerSearchResult?.isDismissKeyboard == true) {
                         softwareKeyboardController?.hide()
                     }
                 }
 
                 InitialSearchFragmentScreen(
-                    sellerSearchResult.value,
+                    sellerSearchResult,
                     ::onUiEvent
                 )
             }

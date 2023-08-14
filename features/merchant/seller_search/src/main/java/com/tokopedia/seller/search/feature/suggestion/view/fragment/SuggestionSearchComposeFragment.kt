@@ -12,6 +12,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -60,6 +61,8 @@ class SuggestionSearchComposeFragment : BaseDaggerFragment() {
         savedInstanceState: Bundle?
     ): View? {
         return context?.let { ComposeView(it) }?.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+
             setContent {
                 val isMonitoringStarted = remember { mutableStateOf(false) }
                 val isMonitoringFinished = remember { mutableStateOf(false) }
