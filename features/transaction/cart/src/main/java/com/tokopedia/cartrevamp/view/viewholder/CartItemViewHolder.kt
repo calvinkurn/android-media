@@ -58,6 +58,7 @@ class CartItemViewHolder constructor(
     private var delayChangeQty: Job? = null
     private var informationLabel: MutableList<String> = mutableListOf()
     private var qtyTextWatcher: TextWatcher? = null
+    private var lastQty: Int = 0
 
     @SuppressLint("ClickableViewAccessibility")
     fun clear() {
@@ -840,13 +841,23 @@ class CartItemViewHolder constructor(
         qtyEditorProduct.errorMessage.setType(Typography.DISPLAY_3)
 
         if (data.isAlreadyShowMinimumQuantityPurchasedError) {
-            binding.labelMinQuantityError.text = String.format(
+            binding.labelQuantityError.text = String.format(
                 itemView.context.getString(R.string.cart_min_quantity_error),
                 data.minOrder
             )
-            binding.labelMinQuantityError.visible()
-        } else {
-            binding.labelMinQuantityError.gone()
+            binding.labelQuantityError.visible()
+        }
+
+        if (data.isAlreadyShowMaximumQuantityPurchasedError) {
+            binding.labelQuantityError.text = String.format(
+                itemView.context.getString(R.string.cart_max_quantity_error),
+                data.maxOrder
+            )
+            binding.labelQuantityError.visible()
+        }
+
+        if (!data.isAlreadyShowMinimumQuantityPurchasedError && !data.isAlreadyShowMaximumQuantityPurchasedError) {
+            binding.labelQuantityError.gone()
         }
 
         if (qtyTextWatcher != null) {
@@ -854,7 +865,7 @@ class CartItemViewHolder constructor(
             qtyEditorProduct.editText.removeTextChangedListener(qtyTextWatcher)
         }
         qtyEditorProduct.minValue = 0
-        qtyEditorProduct.maxValue = data.maxOrder + 1
+        qtyEditorProduct.maxValue = data.maxOrder
         if (data.isBundlingItem) {
             qtyEditorProduct.setValue(data.bundleQuantity)
         } else {
@@ -868,6 +879,7 @@ class CartItemViewHolder constructor(
                 delayChangeQty?.cancel()
                 delayChangeQty = GlobalScope.launch(Dispatchers.Main) {
                     val newValue = s.toString().replace(".", "").toIntOrZero()
+                    lastQty = newValue
                     val minOrder = data.minOrder
                     if (newValue >= minOrder) {
                         delay(DEBOUNCE_TIME)
@@ -878,12 +890,12 @@ class CartItemViewHolder constructor(
                     val previousQuantity =
                         if (data.isBundlingItem) data.bundleQuantity else data.quantity
                     if (isActive && previousQuantity != newValue) {
-                        if (!qtyEditorProduct.editText.hasFocus()) {
+                        if (!qtyEditorProduct.editText.isFocused) {
                             validateQty(newValue, data)
-                        }
-                        if (isActive && newValue != 0) {
-                            actionListener?.onCartItemQuantityChanged(data, newValue)
-                            handleRefreshType(data, viewHolderListener)
+                            if (isActive && newValue != 0) {
+                                actionListener?.onCartItemQuantityChanged(data, newValue)
+                                handleRefreshType(data, viewHolderListener)
+                            }
                         }
                     }
                 }
@@ -920,6 +932,22 @@ class CartItemViewHolder constructor(
         qtyEditorProduct.editText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 KeyboardHandler.DropKeyboard(qtyEditorProduct.editText.context, itemView)
+                if (qtyEditorProduct.editText.text.toString() == "0") {
+                    actionListener?.onCartItemDeleteButtonClicked(data, true)
+                    true
+                }
+                if (lastQty > data.maxOrder) {
+                    binding.labelQuantityError.text = String.format(
+                        itemView.context.getString(R.string.cart_max_quantity_error),
+                        data.maxOrder
+                    )
+                    data.isAlreadyShowMaximumQuantityPurchasedError = true
+                    binding.labelQuantityError.show()
+                }
+                else if (lastQty > data.minOrder && lastQty < data.maxOrder) {
+                    data.isAlreadyShowMaximumQuantityPurchasedError = false
+                    binding.labelQuantityError.gone()
+                }
                 true
             } else {
                 false
@@ -934,19 +962,16 @@ class CartItemViewHolder constructor(
         if (newValue > element.minOrder) {
             element.isAlreadyShowMinimumQuantityPurchasedError = false
         }
-        if (newValue > element.maxOrder) {
-            qtyEditorCart.setValue(element.maxOrder)
-            qtyEditorCart.errorMessageText = String.format(
-                itemView.context.getString(R.string.cart_max_quantity_error),
-                element.maxOrder
-            )
-        } else if (newValue < element.minOrder) {
+        if (newValue < element.maxOrder) {
+            element.isAlreadyShowMaximumQuantityPurchasedError = false
+        }
+        if (newValue < element.minOrder) {
             if (element.minOrder <= 1) {
                 actionListener?.onCartItemDeleteButtonClicked(element, false)
                 return
             }
-            binding.labelMinQuantityError.show()
-            binding.labelMinQuantityError.text = String.format(
+            binding.labelQuantityError.show()
+            binding.labelQuantityError.text = String.format(
                 itemView.context.getString(R.string.cart_min_quantity_error),
                 element.minOrder
             )
@@ -955,13 +980,7 @@ class CartItemViewHolder constructor(
                 element.isAlreadyShowMinimumQuantityPurchasedError = true
             } else {
                 element.isAlreadyShowMinimumQuantityPurchasedError = false
-                qtyEditorCart.errorMessageText = String.EMPTY
                 actionListener?.onCartItemDeleteButtonClicked(element, false)
-            }
-        } else {
-            if (!element.isAlreadyShowMinimumQuantityPurchasedError) {
-                element.isAlreadyShowMinimumQuantityPurchasedError = false
-                qtyEditorCart.errorMessageText = String.EMPTY
             }
         }
         qtyEditorCart.addButton.isEnabled = true
