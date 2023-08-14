@@ -5,7 +5,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    tools:background="@color/play_dms_background">
+    tools:background="@color/Unify_Static_Black">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_icon"
@@ -14,7 +14,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:unify_image_placeholder="@color/play_dms_partner_icon_placeholder"
+        app:unify_image_placeholder="@color/content_dms_partner_icon_placeholder"
         app:unify_image_type="circle" />
 
     <com.tokopedia.unifycomponents.ImageUnify
@@ -51,8 +51,8 @@
         android:id="@+id/btn_follow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minWidth="@dimen/play_follow_button_width"
-        android:text="@string/play_follow"
+        android:minWidth="@dimen/content_follow_button_width"
+        android:text="@string/content_follow"
         android:layout_marginStart="@dimen/content_common_space_8"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

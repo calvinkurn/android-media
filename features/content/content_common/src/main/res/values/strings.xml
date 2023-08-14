@@ -433,4 +433,6 @@ produk eksklusif ini.</string>
     <!-- Product List Bottom Sheet-->
     <string name="feed_product_add_to_cart">+ Keranjang</string>
     <string name="feed_product_buy">Beli</string>
+
+    <string name="content_follow">Follow</string>
 </resources>
