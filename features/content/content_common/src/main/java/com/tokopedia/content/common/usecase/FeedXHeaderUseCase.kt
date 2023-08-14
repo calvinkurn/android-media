@@ -52,7 +52,7 @@ class FeedXHeaderUseCase @Inject constructor(
             ...FeedXHeaderUserProfile
             __typename
           }
-          brose {
+          browse {
             ...FeedXHeaderBrowse
             __typename
           }
