@@ -256,5 +256,7 @@ public class RemoteConfigKey {
 
     public static final String HOME_NEW_LEGO_TRACKING = "android_home_enable_new_lego_tracking";
 
+    public static final String CONTACT_US_DISABLE_FORCE_RELOAD_URLS = "android_contact_us_disable_force_reload_urls";
+
     public static final String SELLER_SEARCH_COMPOSE = "android_seller_search_compose";
 }

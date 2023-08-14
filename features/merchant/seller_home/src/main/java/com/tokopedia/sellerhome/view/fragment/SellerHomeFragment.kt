@@ -27,7 +27,6 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -969,13 +968,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun getWidgetLayout() {
-        lifecycleScope.launch(Dispatchers.IO) {
-            val deviceHeight = if (isLazyLoadEnabled) {
-                deviceDisplayHeight
-            } else {
-                null
-            }
-            sellerHomeViewModel.getWidgetLayout(deviceHeight, TRIGGER_INITIAL_LOAD)
+        sellerHomeViewModel.getWidgetLayout(getDeviceHeight(), TRIGGER_INITIAL_LOAD)
+    }
+
+    private fun getDeviceHeight(): Float? {
+        return if (isLazyLoadEnabled) {
+            deviceDisplayHeight
+        } else {
+            null
         }
     }
 
@@ -1190,12 +1190,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         sahGlobalError.gone()
         emptyState?.gone()
-        val deviceHeight = if (isLazyLoadEnabled) {
-            deviceDisplayHeight
-        } else {
-            null
-        }
-        sellerHomeViewModel.getWidgetLayout(deviceHeight, trigger)
+        sellerHomeViewModel.getWidgetLayout(getDeviceHeight(), trigger)
         sellerHomeViewModel.getTicker()
     }
 

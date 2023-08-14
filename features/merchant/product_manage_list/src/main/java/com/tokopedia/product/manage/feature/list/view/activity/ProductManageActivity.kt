@@ -29,7 +29,11 @@ open class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductMan
 
         return@lazy when {
             filterId.isNotBlank() || searchKeyword.isNotBlank() || tab.isNotBlank() -> {
-                ProductManageSellerFragment.newInstance(arrayListOf(filterId), tab, searchKeyword)
+                if (filterId.isEmpty()){
+                    ProductManageSellerFragment.newInstance(arrayListOf(), tab, searchKeyword)
+                }else{
+                    ProductManageSellerFragment.newInstance(arrayListOf(filterId), tab, searchKeyword)
+                }
             }
             else -> {
                 ProductManageSellerFragment()
