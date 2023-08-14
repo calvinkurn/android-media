@@ -109,29 +109,15 @@ class CheckoutLogisticProcessor @Inject constructor(
                     recipientAddressModel.longitude = longitude
                     EditAddressResult(isSuccess = true)
                 } else {
-//                    if (messageError.isEmpty()) {
-//                        messageError =
-//                            view?.getStringResource(com.tokopedia.abstraction.R.string.default_request_error_unknown)
-//                                ?: ""
-//                    }
-//                    view?.navigateToSetPinpoint(messageError, locationPass)
-                    EditAddressResult(isSuccess = false, errorMessage = messageError.ifEmpty { "Terjadi Kesalahan" })
+                    EditAddressResult(
+                        isSuccess = false,
+                        errorMessage = messageError.ifEmpty { "Terjadi kesalahan. Ulangi beberapa saat lagi" }
+                    )
                 }
-//            }
             } catch (t: Throwable) {
                 val exception = getActualThrowableForRx(t)
                 Timber.d(exception)
                 EditAddressResult(isSuccess = false, throwable = t)
-//            if (view != null) {
-//                view!!.setHasRunningApiCall(false)
-//                view!!.hideLoading()
-//                view!!.showToastError(
-//                    ErrorHandler.getErrorMessage(
-//                        view!!.activity,
-//                        exception
-//                    )
-//                )
-//            }
             }
         }
     }
@@ -314,7 +300,18 @@ class CheckoutLogisticProcessor @Inject constructor(
         return shippingParam
     }
 
-    fun getRatesParam(orderModel: CheckoutOrderModel, orderProducts: List<CheckoutProductModel>, address: RecipientAddressModel, isTradeIn: Boolean, isTradeInDropOff: Boolean, codData: CodModel?, cartDataForRates: String, pslCode: String, useMvc: Boolean, promo: CheckoutPromoModel): RatesParam {
+    fun getRatesParam(
+        orderModel: CheckoutOrderModel,
+        orderProducts: List<CheckoutProductModel>,
+        address: RecipientAddressModel,
+        isTradeIn: Boolean,
+        isTradeInDropOff: Boolean,
+        codData: CodModel?,
+        cartDataForRates: String,
+        pslCode: String,
+        useMvc: Boolean,
+        promo: CheckoutPromoModel
+    ): RatesParam {
         val shippingParam = getShippingParam(
             generateShippingBottomsheetParam(orderModel, orderProducts, address, isTradeIn),
             getProductForRatesRequest(orderProducts),
@@ -416,7 +413,11 @@ class CheckoutLogisticProcessor @Inject constructor(
                                                         shippingRecommendationData,
                                                         logisticPromo
                                                     )
-                                                return@withContext Triple(courierItemData, shippingCourierUiModel.productData.insurance, shippingDurationUiModel.shippingCourierViewModelList)
+                                                return@withContext Triple(
+                                                    courierItemData,
+                                                    shippingCourierUiModel.productData.insurance,
+                                                    shippingDurationUiModel.shippingCourierViewModelList
+                                                )
 //                                                val validateUsePromoRequest =
 //                                                    generateValidateUsePromoRequest().copy()
 //                                                for (ordersItem in validateUsePromoRequest.orders) {
@@ -620,7 +621,11 @@ class CheckoutLogisticProcessor @Inject constructor(
 //                                                itemToProcess = ratesQueue.peek()
 //                                                continue@loopProcess
                                             }
-                                            return@withContext Triple(courierItemData, shippingCourierUiModel.productData.insurance, shippingDurationUiModel.shippingCourierViewModelList)
+                                            return@withContext Triple(
+                                                courierItemData,
+                                                shippingCourierUiModel.productData.insurance,
+                                                shippingDurationUiModel.shippingCourierViewModelList
+                                            )
                                         }
                                     }
                                 }
@@ -708,7 +713,11 @@ class CheckoutLogisticProcessor @Inject constructor(
 //                                        itemToProcess = ratesQueue.peek()
 //                                        continue@loopProcess
                                     }
-                                    return@withContext Triple(courierItemData, shippingCourier.productData.insurance, shippingDuration.shippingCourierViewModelList)
+                                    return@withContext Triple(
+                                        courierItemData,
+                                        shippingCourier.productData.insurance,
+                                        shippingDuration.shippingCourierViewModelList
+                                    )
                                 }
                             }
                         }
@@ -878,7 +887,8 @@ class CheckoutLogisticProcessor @Inject constructor(
     ): Triple<CourierItemData, InsuranceData, List<ShippingCourierUiModel>>? {
         return withContext(dispatchers.io) {
             try {
-                var shippingRecommendationData = ratesWithScheduleUseCase(ratesParam to fullfilmentId)
+                var shippingRecommendationData =
+                    ratesWithScheduleUseCase(ratesParam to fullfilmentId)
                 shippingRecommendationData = ratesResponseStateConverter.fillState(
                     shippingRecommendationData,
                     shopShipments,
@@ -939,7 +949,11 @@ class CheckoutLogisticProcessor @Inject constructor(
                                                         shippingRecommendationData,
                                                         logisticPromo
                                                     )
-                                                return@withContext Triple(courierItemData, shippingCourierUiModel.productData.insurance, shippingDurationUiModel.shippingCourierViewModelList)
+                                                return@withContext Triple(
+                                                    courierItemData,
+                                                    shippingCourierUiModel.productData.insurance,
+                                                    shippingDurationUiModel.shippingCourierViewModelList
+                                                )
 //                                                val validateUsePromoRequest =
 //                                                    generateValidateUsePromoRequest().copy()
 //                                                for (ordersItem in validateUsePromoRequest.orders) {
@@ -1079,7 +1093,11 @@ class CheckoutLogisticProcessor @Inject constructor(
                                                 courierItemData.selectedShipper.logPromoCode != null && courierItemData.selectedShipper.logPromoCode!!.isNotEmpty()
                                             if (!shouldValidatePromo) {
                                                 shippingCourierUiModel.isSelected = true
-                                                return@withContext Triple(courierItemData, shippingCourierUiModel.productData.insurance, shippingDurationUiModel.shippingCourierViewModelList)
+                                                return@withContext Triple(
+                                                    courierItemData,
+                                                    shippingCourierUiModel.productData.insurance,
+                                                    shippingDurationUiModel.shippingCourierViewModelList
+                                                )
 //                                                setShippingCourierViewModelsState(
 //                                                    shippingDurationUiModel.shippingCourierViewModelList,
 //                                                    shipmentGetCourierHolderData.shipmentCartItemModel.orderNumber
@@ -1093,7 +1111,11 @@ class CheckoutLogisticProcessor @Inject constructor(
 //                                                itemToProcess = ratesQueue.peek()
 //                                                continue@loopProcess
                                             } else {
-                                                return@withContext Triple(courierItemData, shippingCourierUiModel.productData.insurance, shippingDurationUiModel.shippingCourierViewModelList)
+                                                return@withContext Triple(
+                                                    courierItemData,
+                                                    shippingCourierUiModel.productData.insurance,
+                                                    shippingDurationUiModel.shippingCourierViewModelList
+                                                )
 //                                                val validateUsePromoRequest =
 //                                                    generateValidateUsePromoRequest().copy()
 //                                                for (ordersItem in validateUsePromoRequest.orders) {
@@ -1175,7 +1197,11 @@ class CheckoutLogisticProcessor @Inject constructor(
                                         courierItemData.selectedShipper.logPromoCode != null && courierItemData.selectedShipper.logPromoCode!!.isNotEmpty()
                                     if (!shouldValidatePromo) {
                                         shippingCourier.isSelected = true
-                                        return@withContext Triple(courierItemData, shippingCourier.productData.insurance, shippingDuration.shippingCourierViewModelList)
+                                        return@withContext Triple(
+                                            courierItemData,
+                                            shippingCourier.productData.insurance,
+                                            shippingDuration.shippingCourierViewModelList
+                                        )
 //                                        view?.renderCourierStateSuccess(
 //                                            courierItemData,
 //                                            shipmentGetCourierHolderData.itemPosition,
@@ -1185,7 +1211,11 @@ class CheckoutLogisticProcessor @Inject constructor(
 //                                        itemToProcess = ratesQueue.peek()
 //                                        continue@loopProcess
                                     } else {
-                                        return@withContext Triple(courierItemData, shippingCourier.productData.insurance, shippingDuration.shippingCourierViewModelList)
+                                        return@withContext Triple(
+                                            courierItemData,
+                                            shippingCourier.productData.insurance,
+                                            shippingDuration.shippingCourierViewModelList
+                                        )
 //                                        val validateUsePromoRequest =
 //                                            generateValidateUsePromoRequest().copy()
 //                                        for (ordersItem in validateUsePromoRequest.orders) {
@@ -1456,7 +1486,11 @@ class CheckoutLogisticProcessor @Inject constructor(
                                                     shippingRecommendationData,
                                                     logisticPromo
                                                 )
-                                            return@withContext Triple(courierItemData, shippingCourierUiModel.productData.insurance, shippingDurationUiModel.shippingCourierViewModelList)
+                                            return@withContext Triple(
+                                                courierItemData,
+                                                shippingCourierUiModel.productData.insurance,
+                                                shippingDurationUiModel.shippingCourierViewModelList
+                                            )
 //                                            val validateUsePromoRequest =
 //                                                generateValidateUsePromoRequest().copy()
 //                                            for (ordersItem in validateUsePromoRequest.orders) {

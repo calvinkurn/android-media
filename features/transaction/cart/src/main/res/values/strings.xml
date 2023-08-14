@@ -74,4 +74,5 @@
     <string name="cart_label_add_note">Tambah Catatan</string>
     <string name="cart_max_quantity_error">Maks. beli %d</string>
     <string name="cart_min_quantity_error">Min. beli %d</string>
+    <string name="cart_text_buy">Beli</string>
 </resources>

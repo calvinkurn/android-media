@@ -4,5 +4,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply
 
 data class CheckoutPromoModel(
     override val cartStringGroup: String = "",
+    val isLoading: Boolean = false,
+    val isEnable: Boolean = true,
     val promo: LastApplyUiModel
 ) : CheckoutItem

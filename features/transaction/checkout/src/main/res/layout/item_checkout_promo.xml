@@ -15,8 +15,4 @@
         android:layout_height="wrap_content"
         app:rounded="false" />
 
-    <com.tokopedia.unifycomponents.DividerUnify
-        android:layout_width="match_parent"
-        android:layout_height="8dp" />
-
 </LinearLayout>

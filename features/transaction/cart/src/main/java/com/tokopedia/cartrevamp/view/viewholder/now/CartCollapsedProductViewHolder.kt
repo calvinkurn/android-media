@@ -19,12 +19,11 @@ class CartCollapsedProductViewHolder(private val viewBinding: ItemCartCollapsedP
     companion object {
         var LAYOUT = R.layout.item_cart_collapsed_product_revamp
 
-        private const val TOKONOW_WIDTH = 80
-        private const val ERROR_WIDTH = 64
+        private const val PRODUCT_WIDTH = 64
     }
 
     fun bind(cartItemHolderData: CartItemHolderData) {
-        validateContainerWidth(cartItemHolderData)
+        validateContainerWidth()
         renderImage(cartItemHolderData)
         renderBundlingIcon(cartItemHolderData)
         renderVariant(cartItemHolderData)
@@ -32,14 +31,9 @@ class CartCollapsedProductViewHolder(private val viewBinding: ItemCartCollapsedP
         renderQuantity(cartItemHolderData)
     }
 
-    private fun validateContainerWidth(cartItemHolderData: CartItemHolderData) {
+    private fun validateContainerWidth() {
         val layoutParams = viewBinding.containerCollapsedProduct.layoutParams
-        if (cartItemHolderData.isError) {
-            layoutParams.width = ERROR_WIDTH.dpToPx(itemView.resources.displayMetrics)
-        }
-        else {
-            layoutParams.width = TOKONOW_WIDTH.dpToPx(itemView.resources.displayMetrics)
-        }
+        layoutParams.width = PRODUCT_WIDTH.dpToPx(itemView.resources.displayMetrics)
         viewBinding.containerCollapsedProduct.layoutParams = layoutParams
     }
 
@@ -55,8 +49,7 @@ class CartCollapsedProductViewHolder(private val viewBinding: ItemCartCollapsedP
     private fun renderPrice(cartItemHolderData: CartItemHolderData) {
         if (cartItemHolderData.isError) {
             viewBinding.textProductPrice.gone()
-        }
-        else {
+        } else {
             viewBinding.textProductPrice.show()
             viewBinding.textProductPrice.text = if (cartItemHolderData.isBundlingItem) {
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItemHolderData.bundlePrice, false)
@@ -71,7 +64,12 @@ class CartCollapsedProductViewHolder(private val viewBinding: ItemCartCollapsedP
         viewBinding.imageProduct.setOnClickListener {
             val position = absoluteAdapterPosition
             if (position != RecyclerView.NO_POSITION) {
-                actionListener.onCollapsedProductClicked(position, cartItemHolderData)
+                if (cartItemHolderData.isError) {
+                    actionListener.onToggleUnavailableItemAccordion()
+                }
+                else {
+                    actionListener.onCollapsedProductClicked(position, cartItemHolderData)
+                }
             }
         }
     }
@@ -79,8 +77,7 @@ class CartCollapsedProductViewHolder(private val viewBinding: ItemCartCollapsedP
     private fun renderQuantity(cartItemHolderData: CartItemHolderData) {
         if (cartItemHolderData.isError) {
             viewBinding.textProductQuantity.gone()
-        }
-        else {
+        } else {
             viewBinding.textProductQuantity.show()
             viewBinding.textProductQuantity.text = if (cartItemHolderData.isBundlingItem) {
                 itemView.resources.getString(R.string.label_collapsed_product_bundle_quantity, cartItemHolderData.bundleQuantity)

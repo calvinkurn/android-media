@@ -68,6 +68,8 @@ interface CheckoutAdapterListener {
 
     fun onClickRefreshErrorLoadCourier()
 
+    fun onCancelVoucherLogisticClicked(promoCode: String, position: Int, order: CheckoutOrderModel)
+
     fun getHostFragmentManager(): FragmentManager
 
     fun onInsuranceCheckedForTrackingAnalytics()

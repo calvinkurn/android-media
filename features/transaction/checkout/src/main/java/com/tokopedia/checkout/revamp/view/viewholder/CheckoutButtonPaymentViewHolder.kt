@@ -42,6 +42,7 @@ class CheckoutButtonPaymentViewHolder(private val binding: ItemCheckoutButtonPay
             binding.tvCheckoutTerms.isVisible = false
         }
 
+        binding.btnCheckoutPay.isEnabled = buttonPayment.enable
         binding.btnCheckoutPay.setOnClickDebounceListener {
             listener.onProcessToPayment()
         }

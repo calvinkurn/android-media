@@ -19,6 +19,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.addon.presentation.uimodel.AddOnExtraConstant
+import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
@@ -47,6 +49,7 @@ import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapter
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutDiffUtilCallback
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
@@ -70,6 +73,7 @@ import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.fingerprint.util.FingerPrintUtil
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressTokonow
@@ -98,6 +102,7 @@ import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.analytics.EPharmacyAnalytics
@@ -122,7 +127,6 @@ import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnPro
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionViewHolder
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnMetadata
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnNote
@@ -167,6 +171,9 @@ class CheckoutFragment :
     lateinit var checkoutAnalyticsCourierSelection: CheckoutAnalyticsCourierSelection
 
     @Inject
+    lateinit var checkoutAnalyticsChangeAddress: CheckoutAnalyticsChangeAddress
+
+    @Inject
     lateinit var ePharmacyAnalytics: EPharmacyAnalytics
 
     @Inject
@@ -188,7 +195,8 @@ class CheckoutFragment :
         ViewModelProvider(this, viewModelFactory)[CheckoutViewModel::class.java]
     }
 
-    private var binding by autoCleared<FragmentCheckoutBinding>()
+    private var binding by autoCleared<FragmentCheckoutBinding>() {
+    }
 
     private var header by autoCleared<HeaderCheckoutBinding>()
 
@@ -274,6 +282,65 @@ class CheckoutFragment :
         }
     }
 
+    private fun sendErrorAnalytics() {
+        val checkoutItems = viewModel.listData.value
+        val errorTicker = checkoutItems.errorTicker() ?: return
+        if (errorTicker.isError) {
+            onViewTickerPaymentError(errorTicker.errorMessage, checkoutItems)
+        }
+        for (shipmentCartItemModel in checkoutItems) {
+            if (shipmentCartItemModel is CheckoutOrderModel && shipmentCartItemModel.isError && shipmentCartItemModel.errorTitle.isNotEmpty()) {
+                onViewTickerOrderError(
+                    shipmentCartItemModel.shopId.toString(),
+                    shipmentCartItemModel.errorTitle
+                )
+            } else if (shipmentCartItemModel is CheckoutOrderModel && (
+                !shipmentCartItemModel.isError && shipmentCartItemModel.isHasUnblockingError &&
+                    shipmentCartItemModel.unblockingErrorMessage.isNotEmpty()
+                ) && shipmentCartItemModel.firstProductErrorIndex > 0
+            ) {
+                onViewTickerOrderError(
+                    shipmentCartItemModel.shopId.toString(),
+                    shipmentCartItemModel.unblockingErrorMessage
+                )
+            }
+            if (shipmentCartItemModel is CheckoutProductModel && shipmentCartItemModel.isError && !TextUtils.isEmpty(
+                    shipmentCartItemModel.errorMessage
+                )
+            ) {
+                onViewTickerProductError(
+                    shipmentCartItemModel.shopId,
+                    shipmentCartItemModel.errorMessage
+                )
+            }
+        }
+    }
+
+    private fun onViewTickerPaymentError(errorMessage: String, checkoutItems: List<CheckoutItem>) {
+        for (shipmentCartItemModel in checkoutItems) {
+            if (shipmentCartItemModel is CheckoutOrderModel) {
+                checkoutAnalyticsCourierSelection.eventViewTickerPaymentLevelErrorInCheckoutPage(
+                    shipmentCartItemModel.shopId.toString(),
+                    errorMessage
+                )
+            }
+        }
+    }
+
+    private fun onViewTickerProductError(shopId: String, errorMessage: String) {
+        checkoutAnalyticsCourierSelection.eventViewTickerProductLevelErrorInCheckoutPage(
+            shopId,
+            errorMessage
+        )
+    }
+
+    private fun onViewTickerOrderError(shopId: String, errorMessage: String?) {
+        checkoutAnalyticsCourierSelection.eventViewTickerOrderLevelErrorInCheckoutPage(
+            shopId,
+            errorMessage!!
+        )
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -305,7 +372,7 @@ class CheckoutFragment :
                 super.onScrolled(recyclerView, dx, dy)
                 val linearLayoutManager = recyclerView.layoutManager as? LinearLayoutManager
                 if (recyclerView.isVisible &&
-                    (linearLayoutManager?.findFirstVisibleItemPosition() ?: -1) > 1
+                    (linearLayoutManager?.findFirstVisibleItemPosition() ?: -1) > 2
                 ) {
                     header.tvCheckoutHeaderText.animateGone()
                     header.tvCheckoutHeaderAddressHeader.animateShow()
@@ -384,7 +451,11 @@ class CheckoutFragment :
                         errorMessage =
                             getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_error_global_message)
                     }
-                    Toaster.build(binding.root, errorMessage, type = Toaster.TYPE_ERROR).show()
+                    if (binding.rvCheckout.isVisible) {
+                        Toaster.build(binding.root, errorMessage, type = Toaster.TYPE_ERROR).show()
+                    } else {
+                        showErrorPage(errorMessage)
+                    }
                     stopTrace()
                 }
 
@@ -442,6 +513,7 @@ class CheckoutFragment :
                 is CheckoutPageState.Success -> {
                     hideLoading()
                     updateLocalCacheAddressData(it.cartShipmentAddressFormData.groupAddress.first().userAddress)
+                    binding.globalErrorCheckout.isVisible = false
                     binding.rvCheckout.isVisible = true
                     if (it.cartShipmentAddressFormData.popUpMessage.isNotEmpty()) {
                         showToastNormal(it.cartShipmentAddressFormData.popUpMessage)
@@ -451,12 +523,15 @@ class CheckoutFragment :
                         showPopUp(popUpData)
                     }
                     stopTrace()
-                    if (it.cartShipmentAddressFormData.epharmacyData.showImageUpload) {
-                        val uploadPrescriptionUiModel =
-                            (viewModel.listData.value.firstOrNullInstanceOf(CheckoutEpharmacyModel::class.java) as? CheckoutEpharmacyModel)?.epharmacy
-                        delayEpharmacyProcess(uploadPrescriptionUiModel)
-                    }
+                    sendErrorAnalytics()
+                    // todo improve first load shipping
+//                    if (it.cartShipmentAddressFormData.epharmacyData.showImageUpload) {
+//                        val uploadPrescriptionUiModel =
+//                            viewModel.listData.value.firstOrNullInstanceOf(CheckoutEpharmacyModel::class.java)?.epharmacy
+//                        delayEpharmacyProcess(uploadPrescriptionUiModel)
+//                    }
                     setCampaignTimer()
+                    viewModel.prepareFullCheckoutPage()
                 }
 
                 is CheckoutPageState.Normal -> {
@@ -475,6 +550,10 @@ class CheckoutFragment :
                 is CheckoutPageState.Prompt -> {
                     hideLoading()
                     renderPrompt(it.prompt)
+                }
+
+                is CheckoutPageState.EpharmacyCoachMark -> {
+                    showCoachMarkEpharmacy()
                 }
             }
         }
@@ -606,6 +685,10 @@ class CheckoutFragment :
                 onUpdateResultAddOnProductLevelBottomSheet(data)
             }
 
+            ShipmentFragment.REQUEST_CODE_ADD_ON_PRODUCT_SERVICE_BOTTOMSHEET -> {
+                onResultFromAddOnProductBottomSheet(resultCode, data)
+            }
+
             CheckoutConstant.REQUEST_ADD_ON_ORDER_LEVEL_BOTTOMSHEET -> {
                 onUpdateResultAddOnOrderLevelBottomSheet(data)
             }
@@ -640,7 +723,7 @@ class CheckoutFragment :
             }
 
             Activity.RESULT_CANCELED -> if (activity != null && data == null && viewModel.listData.value.isEmpty()) {
-                activity!!.finish()
+                activity?.finish()
             }
 
             else -> viewModel.loadSAF(
@@ -748,7 +831,9 @@ class CheckoutFragment :
                     locationPass.latitude,
                     locationPass.longitude,
                     locationPass
-                )
+                ) { message, locationPass ->
+                    navigateToSetPinpoint(message, locationPass)
+                }
             }
         } else {
 //            shipmentAdapter.lastServiceId = 0
@@ -772,6 +857,22 @@ class CheckoutFragment :
         return locationPass
     }
 
+    private fun showErrorPage(errorMessage: String) {
+        binding.rvCheckout.isVisible = false
+        binding.tvCountDown.isVisible = false
+        binding.countDown.isVisible = false
+        binding.globalErrorCheckout.isVisible = true
+        binding.globalErrorCheckout.setType(GlobalError.SERVER_ERROR)
+        binding.globalErrorCheckout.errorDescription.text = errorMessage
+        binding.globalErrorCheckout.setActionClickListener {
+            viewModel.loadSAF(
+                isReloadData = false,
+                skipUpdateOnboardingState = true,
+                isReloadAfterPriceChangeHigher = false
+            )
+        }
+    }
+
     fun showLoading() {
         if (context != null && loader?.dialog?.isShowing != true) {
             loader = LoaderDialog(context!!)
@@ -786,7 +887,9 @@ class CheckoutFragment :
     }
 
     fun navigateToSetPinpoint(message: String, locationPass: LocationPass?) {
-//        sendAnalyticsOnClickEditPinPointErrorValidation(message)
+        checkoutAnalyticsChangeAddress.eventViewShippingCartChangeAddressViewValidationErrorTandaiLokasi(
+            message
+        )
         if (view != null) {
             val toastRectangleBinding = ToastRectangleBinding.inflate(layoutInflater, null, false)
             toastRectangleBinding.tvMessage.text = message
@@ -893,6 +996,11 @@ class CheckoutFragment :
 
     override fun onChangeAddress() {
         if (!viewModel.isLoading()) {
+            checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickGantiAlamatAtauKirimKeBeberapaAlamat()
+            checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickPilihAlamatLain()
+            if (viewModel.isTradeIn) {
+                checkoutTradeInAnalytics.eventTradeInClickChangeAddress()
+            }
             val intent =
                 RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
             intent.putExtra(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS, true)
@@ -976,7 +1084,11 @@ class CheckoutFragment :
         bindingAdapterPosition: Int
     ) {
         viewModel.setAddon(isChecked, addOnProductDataItemModel, product, bindingAdapterPosition)
-        checkoutAnalyticsCourierSelection.eventClickAddOnsProductServiceWidget(addOnProductDataItemModel.type, product.productId.toString(), isChecked)
+        checkoutAnalyticsCourierSelection.eventClickAddOnsProductServiceWidget(
+            addOnProductDataItemModel.type,
+            product.productId.toString(),
+            isChecked
+        )
     }
 
     override fun onClickAddonProductInfoIcon(addOnDataInfoLink: String) {
@@ -1003,12 +1115,16 @@ class CheckoutFragment :
             discountedPrice = product.price
         }
 
-        val applinkAddon = ApplinkConst.ADDON.replace(AddOnConstant.QUERY_PARAM_ADDON_PRODUCT, productId.toString())
+        val applinkAddon = ApplinkConst.ADDON.replace(
+            AddOnConstant.QUERY_PARAM_ADDON_PRODUCT,
+            productId.toString()
+        )
         val applink = UriUtil.buildUriAppendParams(
             applinkAddon,
             mapOf(
                 AddOnConstant.QUERY_PARAM_CART_ID to cartId,
-                AddOnConstant.QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds.toString().replace("[", "").replace("]", ""),
+                AddOnConstant.QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds.toString().replace("[", "")
+                    .replace("]", ""),
                 AddOnConstant.QUERY_PARAM_PAGE_ATC_SOURCE to AddOnConstant.SOURCE_NORMAL_CHECKOUT,
                 ApplinkConstInternalMechant.QUERY_PARAM_WAREHOUSE_ID to product.warehouseId,
                 AddOnConstant.QUERY_PARAM_IS_TOKOCABANG to product.isTokoCabang,
@@ -1016,7 +1132,8 @@ class CheckoutFragment :
                 AddOnConstant.QUERY_PARAM_SHOP_ID to product.shopId,
                 AddOnConstant.QUERY_PARAM_QUANTITY to product.quantity,
                 AddOnConstant.QUERY_PARAM_PRICE to price.toString().removeSingleDecimalSuffix(),
-                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toString().removeSingleDecimalSuffix()
+                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toString()
+                    .removeSingleDecimalSuffix()
             )
         )
 
@@ -1032,6 +1149,26 @@ class CheckoutFragment :
 
     override fun onImpressionAddOnProductService(addonType: Int, productId: String) {
         checkoutAnalyticsCourierSelection.eventViewAddOnsProductServiceWidget(addonType, productId)
+    }
+
+    private fun onResultFromAddOnProductBottomSheet(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            val addOnProductDataResult =
+                data?.getParcelableExtra(AddOnExtraConstant.EXTRA_ADDON_PAGE_RESULT)
+                    ?: AddOnPageResult()
+            if (addOnProductDataResult.aggregatedData.isGetDataSuccess) {
+                val cartIdAddOn = addOnProductDataResult.cartId
+                viewModel.setAddonResult(cartIdAddOn, addOnProductDataResult)
+            } else {
+                view?.let { v ->
+                    Toaster.build(
+                        v,
+                        addOnProductDataResult.aggregatedData.getDataErrorMessage,
+                        type = Toaster.TYPE_ERROR
+                    ).show()
+                }
+            }
+        }
     }
 
     override fun onClickAddOnGiftingProductLevel(
@@ -1298,6 +1435,10 @@ class CheckoutFragment :
 
     override fun onChangeShippingDuration(order: CheckoutOrderModel, position: Int) {
         if (!viewModel.isLoading()) {
+            checkoutAnalyticsCourierSelection.eventClickCourierCourierSelectionClickUbahDurasi()
+            if (viewModel.isTradeIn) {
+                checkoutTradeInAnalytics.eventTradeInClickCourierOption(viewModel.isTradeInByDropOff)
+            }
             showShippingDurationBottomsheet(
                 order,
                 viewModel.listData.value.address()!!.recipientAddressModel,
@@ -1327,13 +1468,18 @@ class CheckoutFragment :
                 ShippingDurationBottomsheet.show(
                     fragmentManager = parentFragmentManager,
                     shippingDurationBottomsheetListener = this,
-                    ratesParam = viewModel.generateRatesParam(order, order.shipment.courierItemData?.selectedShipper?.logPromoCode ?: ""),
-                    selectedSpId = order.shipment.courierItemData?.selectedShipper?.shipperProductId ?: -1,
+                    ratesParam = viewModel.generateRatesParam(
+                        order,
+                        order.shipment.courierItemData?.selectedShipper?.logPromoCode ?: ""
+                    ),
+                    selectedSpId = order.shipment.courierItemData?.selectedShipper?.shipperProductId
+                        ?: -1,
 //                    shipmentDetailData = generateShippingBottomsheetParam(
 //                        order,
 //                        recipientAddressModel
 //                    ),
-                    selectedServiceId = order.shipment.courierItemData?.selectedShipper?.serviceId ?: -1,
+                    selectedServiceId = order.shipment.courierItemData?.selectedShipper?.serviceId
+                        ?: -1,
 //                    shopShipmentList = order.shopShipmentList,
 //                    recipientAddressModel = recipientAddressModel,
 //                    cartPosition = cartPosition,
@@ -1554,6 +1700,23 @@ class CheckoutFragment :
         }
     }
 
+    override fun onShippingDurationButtonCloseClicked() {
+        checkoutAnalyticsCourierSelection.eventClickCourierCourierSelectionClickXPadaDurasiPengiriman()
+    }
+
+    override fun onShowDurationListWithCourierPromo(isCourierPromo: Boolean, duration: String?) {
+        checkoutAnalyticsCourierSelection.eventViewDuration(isCourierPromo, duration)
+    }
+
+    override fun onShowLogisticPromo(listLogisticPromo: List<LogisticPromoUiModel>) {
+        for (logisticPromo in listLogisticPromo) {
+            checkoutAnalyticsCourierSelection.eventViewPromoLogisticTicker(logisticPromo.promoCode)
+            if (logisticPromo.disabled) {
+                checkoutAnalyticsCourierSelection.eventViewPromoLogisticTickerDisable(logisticPromo.promoCode)
+            }
+        }
+    }
+
     private fun sendAnalyticsOnClickChangeCourierShipmentRecommendation(order: CheckoutOrderModel) {
         var label = ""
         if (order.shipment.courierItemData != null && order.shipment.courierItemData.selectedShipper.ontimeDelivery != null) {
@@ -1683,6 +1846,19 @@ class CheckoutFragment :
 
     override fun onClickRefreshErrorLoadCourier() {
         checkoutAnalyticsCourierSelection.eventClickRefreshWhenErrorLoadCourier()
+    }
+
+    override fun onCancelVoucherLogisticClicked(
+        promoCode: String,
+        position: Int,
+        order: CheckoutOrderModel
+    ) {
+        checkoutAnalyticsCourierSelection.eventCancelPromoStackingLogistic()
+        viewModel.cancelAutoApplyPromoStackLogistic(
+            position,
+            promoCode,
+            order
+        )
     }
 
     override fun getHostFragmentManager(): FragmentManager {
@@ -1850,7 +2026,10 @@ class CheckoutFragment :
         }
         checkoutAnalyticsCourierSelection.eventClickCheckboxDonation(checked)
         if (isTradeIn) {
-            checkoutTradeInAnalytics.eventTradeInClickDonationOption(viewModel.isTradeInByDropOff, checked)
+            checkoutTradeInAnalytics.eventTradeInClickDonationOption(
+                viewModel.isTradeInByDropOff,
+                checked
+            )
         }
     }
 
@@ -1879,7 +2058,9 @@ class CheckoutFragment :
                 publicKey = FingerPrintUtil.getPublicKey(fpk)
             }
         }
-        viewModel.checkout(publicKey) {
+        viewModel.checkout(publicKey, { showEpharmacyToaster ->
+            sendAnalyticsEpharmacyClickPembayaran(showEpharmacyToaster)
+        }) {
             val paymentPassData = PaymentPassData()
             paymentPassData.redirectUrl = it.checkoutData!!.redirectUrl
             paymentPassData.transactionId = it.checkoutData.transactionId
@@ -2006,8 +2187,9 @@ class CheckoutFragment :
         }
     }
 
-    fun showCoachMarkEpharmacy(uploadPrescriptionUiModel: UploadPrescriptionUiModel) {
-        if (activity != null && !CoachMarkPreference.hasShown(
+    fun showCoachMarkEpharmacy() {
+        val uploadPrescriptionUiModel = viewModel.listData.value.epharmacy()?.epharmacy
+        if (uploadPrescriptionUiModel != null && activity != null && !CoachMarkPreference.hasShown(
                 activity!!,
                 KEY_PREFERENCE_COACHMARK_EPHARMACY
             )
@@ -2020,7 +2202,7 @@ class CheckoutFragment :
                         binding?.rvCheckout?.findViewHolderForAdapterPosition(
                             uploadPrescriptionPosition
                         )
-                    if (viewHolder is UploadPrescriptionViewHolder) {
+                    if (viewHolder is CheckoutEpharmacyViewHolder) {
                         val item = CoachMark2Item(
                             viewHolder.itemView,
                             activity!!.getString(R.string.checkout_epharmacy_coachmark_title),
@@ -2126,17 +2308,21 @@ class CheckoutFragment :
 //        adapter.updateShipmentCartItemGroup(shipmentCartItemModel)
 //    }
 
-    private fun sendAnalyticsEpharmacyClickPembayaran() {
+    private fun sendAnalyticsEpharmacyClickPembayaran(showErrorToaster: Boolean) {
         val viewHolder =
             binding.rvCheckout.findViewHolderForAdapterPosition(adapter.uploadPrescriptionPosition)
         val epharmacyItem = viewModel.listData.value.getOrNull(adapter.uploadPrescriptionPosition)
-        if (viewHolder is UploadPrescriptionViewHolder && epharmacyItem is CheckoutEpharmacyModel) {
+        if (viewHolder is CheckoutEpharmacyViewHolder && epharmacyItem is CheckoutEpharmacyModel) {
             if (epharmacyItem.epharmacy.consultationFlow && epharmacyItem.epharmacy.showImageUpload) {
                 ePharmacyAnalytics.clickPilihPembayaran(
                     viewHolder.getButtonNotes(),
                     epharmacyItem.epharmacy.epharmacyGroupIds,
                     false,
-                    "success"
+                    if (showErrorToaster) {
+                        activity?.getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_message_error_prescription_or_consultation_not_found) ?: ""
+                    } else {
+                        "success"
+                    }
                 )
             }
         }
@@ -2244,15 +2430,15 @@ class CheckoutFragment :
                         }
                     }
 //                    shipmentViewModel.setLastValidateUseRequest(validateUsePromoRequest)
-                    if (!stillHasPromo) {
+//                    if (!stillHasPromo) {
 //                        doResetButtonPromoCheckout()
-                    }
+//                    }
                 }
                 val validateUsePromoRevampUiModel =
                     data.getParcelableExtra<ValidateUsePromoRevampUiModel>(
                         ARGS_VALIDATE_USE_DATA_RESULT
                     )
-                var reloadedUniqueIds = ArrayList<String>()
+//                var reloadedUniqueIds = ArrayList<String>()
                 if (validateUsePromoRevampUiModel != null) {
 //                    val messageInfo =
 //                        validateUsePromoRevampUiModel.promoUiModel.additionalInfoUiModel.errorDetailUiModel.message
