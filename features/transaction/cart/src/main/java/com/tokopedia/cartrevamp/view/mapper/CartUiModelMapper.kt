@@ -87,7 +87,7 @@ object CartUiModelMapper {
             title = context?.getString(R.string.checkout_module_keranjang_belanja_kosong_new)
                 ?: "",
             desc = context?.getString(R.string.checkout_empty_cart_sub_message_new) ?: "",
-            imgUrl = CartConstant.CART_EMPTY_DEFAULT_IMG_URL,
+            imgUrl = CartConstant.CART_EMPTY_NEW_DEFAULT_IMG_URL,
             btnText = context?.getString(R.string.checkout_module_mulai_belanja) ?: ""
         )
     }

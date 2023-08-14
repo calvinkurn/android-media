@@ -452,6 +452,7 @@
             android:id="@+id/iu_prescription"
             android:layout_width="14dp"
             android:layout_height="14dp"
+            android:layout_marginTop="4dp"
             android:layout_marginStart="12dp"
             app:layout_constraintStart_toEndOf="@+id/iu_image_product"
             app:layout_constraintTop_toBottomOf="@+id/barrier_unavailable_action" />
@@ -469,7 +470,7 @@
             app:layout_constraintTop_toTopOf="@+id/iu_prescription"
             app:typographyType="small"
             tools:text="Upload Resep di Pengiriman"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
 
         <View
             android:id="@+id/cart_add_on_separator"
