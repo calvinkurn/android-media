@@ -10,6 +10,7 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.model.Always
+import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.tokonow.DeeplinkMapperTokopediaNow
 import com.tokopedia.applink.user.DeeplinkMapperUser
@@ -595,10 +596,28 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check seller new order appLink with coachmark then should return tokopedia internal new order with coachmark in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://seller/new-order?tab_active=new_order&coachmark=disabled"
+        val queryParam = mapOf(DeeplinkMapperOrder.QUERY_COACHMARK to "disabled")
+        val appLink = UriUtil.buildUriAppendParam(ApplinkConst.SELLER_NEW_ORDER, queryParam)
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
     fun `check seller shipment appLink then should return tokopedia internal seller shipment in customerapp`() {
         val expectedDeepLink =
             "${DeeplinkConstant.SCHEME_INTERNAL}://seller/ready-to-ship?tab_active=confirm_shipping"
         assertEqualsDeepLinkMapper(ApplinkConst.SELLER_SHIPMENT, expectedDeepLink)
+    }
+
+    @Test
+    fun `check seller shipment appLink with coachmark then should return tokopedia internal seller shipment with coachmark in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://seller/ready-to-ship?tab_active=confirm_shipping&coachmark=disabled"
+        val queryParam = mapOf(DeeplinkMapperOrder.QUERY_COACHMARK to "disabled")
+        val appLink = UriUtil.buildUriAppendParam(ApplinkConst.SELLER_PURCHASE_READY_TO_SHIP, queryParam)
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 
     @Test
@@ -613,6 +632,15 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val expectedDeepLink =
             "${DeeplinkConstant.SCHEME_INTERNAL}://seller/history?tab_active=all_order"
         assertEqualsDeepLinkMapper(ApplinkConst.SELLER_HISTORY, expectedDeepLink)
+    }
+
+    @Test
+    fun `check seller history appLink with coachmark then should return tokopedia internal seller history with coachmark in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://seller/history?tab_active=all_order&coachmark=disabled"
+        val queryParam = mapOf(DeeplinkMapperOrder.QUERY_COACHMARK to "disabled")
+        val appLink = UriUtil.buildUriAppendParam(ApplinkConst.SELLER_HISTORY, queryParam)
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 
     @Test
