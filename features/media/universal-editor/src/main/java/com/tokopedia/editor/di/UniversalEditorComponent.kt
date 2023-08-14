@@ -7,6 +7,7 @@ import com.tokopedia.editor.di.module.EditorRepositoryModule
 import com.tokopedia.editor.di.module.EditorViewModelModule
 import com.tokopedia.editor.di.module.FragmentEditorModule
 import com.tokopedia.editor.ui.main.MainEditorActivity
+import com.tokopedia.editor.ui.text.InputTextActivity
 import dagger.Component
 
 @ActivityScope
@@ -22,4 +23,5 @@ import dagger.Component
 )
 interface UniversalEditorComponent {
     fun inject(activity: MainEditorActivity)
+    fun inject(activity: InputTextActivity)
 }

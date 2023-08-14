@@ -3,6 +3,7 @@ package com.tokopedia.editor.ui.main
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +16,8 @@ import com.tokopedia.editor.ui.EditorFragmentProvider
 import com.tokopedia.editor.ui.EditorFragmentProviderImpl
 import com.tokopedia.editor.ui.main.component.NavigationToolUiComponent
 import com.tokopedia.editor.ui.main.component.PagerContainerUiComponent
+import com.tokopedia.editor.ui.model.InputTextModel
+import com.tokopedia.editor.ui.text.InputTextActivity
 import com.tokopedia.editor.ui.widget.DynamicTextCanvasView
 import com.tokopedia.picker.common.EXTRA_UNIVERSAL_EDITOR_PARAM
 import com.tokopedia.picker.common.RESULT_UNIVERSAL_EDITOR
@@ -71,7 +74,10 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
     private val inputTextIntent = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
-        // TODO
+        val result = it.data?.getParcelableExtra<InputTextModel>(InputTextActivity.INPUT_TEXT_RESULT)
+
+        // TODO, bind input text result to ImageModel & VideoModel (re-implement previous pos detail / create new if no detail yet)
+        Toast.makeText(this, result?.text, Toast.LENGTH_LONG).show()
     }
 
     private val viewModel: MainEditorViewModel by viewModels { viewModelFactory }
@@ -124,9 +130,11 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
     private fun onToolClicked(@ToolType type: Int) {
         when (type) {
             ToolType.TEXT -> {
-                // TODO: Will remove it in the next branch
-                val content = getRandomString(10)
-                findViewById<DynamicTextCanvasView>(R.id.canvas).addText(content)
+                val intent = InputTextActivity.create(this)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                inputTextIntent.launch(intent)
+                this.overridePendingTransition(0,0)
             }
             ToolType.PLACEMENT -> {}
             ToolType.AUDIO_MUTE -> {}

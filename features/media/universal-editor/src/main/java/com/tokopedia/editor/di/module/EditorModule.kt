@@ -3,6 +3,8 @@ package com.tokopedia.editor.di.module
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.editor.ui.main.EditorParamFetcher
 import com.tokopedia.editor.ui.main.EditorParamFetcherImpl
+import com.tokopedia.editor.util.ColorProvider
+import com.tokopedia.editor.util.ColorProviderImp
 import dagger.Binds
 import dagger.Module
 
@@ -12,4 +14,8 @@ abstract class EditorModule {
     @Binds
     @ActivityScope
     internal abstract fun bindEditorParamFetcher(impl: EditorParamFetcherImpl): EditorParamFetcher
+
+    @Binds
+    @ActivityScope
+    internal abstract fun bindColorProvider(impl: ColorProviderImp): ColorProvider
 }

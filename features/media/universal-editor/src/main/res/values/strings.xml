@@ -11,4 +11,8 @@
     <string name="universal_editor_nav_tool_placement">Atur</string>
     <string name="universal_editor_nav_tool_audio_mute">Mute</string>
     <string name="universal_editor_nav_tool_trim">Trim</string>
+
+    <!-- Input Text -->
+    <string name="universal_editor_input_text_hint">Tambah teks</string>
+    <string name="universal_editor_input_text_style_text">Aa</string>
 </resources>
