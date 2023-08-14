@@ -41,6 +41,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.supportLibDependencies.design
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.icons

@@ -504,7 +504,7 @@ internal class PromoUsageViewModel @Inject constructor(
         _applyPromoUiAction.postValue(
             ApplyPromoUiAction.Failed(
                 throwable = throwable,
-                shouldReload = true
+                shouldReload = false
             )
         )
     }

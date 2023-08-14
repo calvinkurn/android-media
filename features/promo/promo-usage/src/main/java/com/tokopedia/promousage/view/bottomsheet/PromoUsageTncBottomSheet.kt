@@ -1,10 +1,12 @@
 package com.tokopedia.promousage.view.bottomsheet
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageTncBottomsheetBinding
+import com.tokopedia.promousage.domain.entity.PromoPageEntryPoint
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.webview.BaseSessionWebViewFragment
@@ -21,19 +23,31 @@ class PromoUsageTncBottomSheet : BottomSheetUnify() {
 
     companion object {
         private const val TAG = "PromoUsageTncBottomSheet"
-        private const val KEY_PROMO_CODES = "promo_codes"
+        private const val BUNDLE_KEY_PROMO_CODES = "promo_codes"
+        private const val BUNDLE_KEY_SOURCE = "source"
+        private const val BUNDLE_KEY_USER_ID = "user_id"
 
-        fun newInstance(promoCodes: List<String>): PromoUsageTncBottomSheet {
+        private const val PATH_PROMO_TNC = "promo-tnc"
+        private const val QUERY_CODES = "codes"
+        private const val QUERY_SOURCE = "source"
+        private const val QUERY_ID = "id"
+
+        fun newInstance(
+            promoCodes: List<String>,
+            source: PromoPageEntryPoint,
+            userId: String
+        ): PromoUsageTncBottomSheet {
             return PromoUsageTncBottomSheet().apply {
                 arguments = Bundle().apply {
-                    putStringArrayList(KEY_PROMO_CODES, ArrayList(promoCodes))
+                    putStringArrayList(BUNDLE_KEY_PROMO_CODES, ArrayList(promoCodes))
+                    putParcelable(BUNDLE_KEY_SOURCE, source)
+                    putString(BUNDLE_KEY_USER_ID, userId)
                 }
             }
         }
     }
 
     private var binding by autoClearedNullable<PromoUsageTncBottomsheetBinding>()
-    private var promoCodes: List<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,28 +55,59 @@ class PromoUsageTncBottomSheet : BottomSheetUnify() {
             .inflate(LayoutInflater.from(context), null, false)
         setChild(binding?.root)
 
-        promoCodes = arguments?.getStringArrayList(KEY_PROMO_CODES)
-        promoCodes?.let {
-            renderContent(it)
-        } ?: dismiss()
+        val promoCodes = arguments?.getStringArrayList(BUNDLE_KEY_PROMO_CODES) ?: emptyList()
+        val source = arguments?.getParcelable(BUNDLE_KEY_SOURCE)
+            ?: PromoPageEntryPoint.CART_PAGE
+        val userId = arguments?.getString(BUNDLE_KEY_USER_ID) ?: ""
+
+        if (promoCodes.isNotEmpty() && source.toSourceString().isNotBlank() && userId.isNotBlank()) {
+            renderContent(promoCodes, source.toSourceString(), userId)
+        } else {
+            dismiss()
+        }
     }
 
-    private fun renderContent(promoCodes: List<String>) {
+    private fun PromoPageEntryPoint.toSourceString(): String {
+        return when (this) {
+            PromoPageEntryPoint.CART_PAGE -> "cart"
+            PromoPageEntryPoint.CHECKOUT_PAGE -> "checkout"
+            PromoPageEntryPoint.ONE_CLICK_CHECKOUT_PAGE -> "occ"
+        }
+    }
+
+    private fun renderContent(
+        promoCodes: List<String>,
+        source: String,
+        userId: String
+    ) {
         if (promoCodes.isEmpty()) {
             dismiss()
         }
         setTitle(getString(R.string.promo_usage_tnc_title))
 
-        val tncUrl = generateTncUrl(promoCodes)
+        val tncUrl = generateTncUrl(promoCodes, source, userId)
         val webViewFragment = BaseSessionWebViewFragment.newInstance(tncUrl, true, false, false)
         childFragmentManager.beginTransaction()
             .replace(R.id.container_promo_tnc, webViewFragment)
             .commit()
     }
 
-    private fun generateTncUrl(promoCodes: List<String>): String {
-        // TODO: Generate new Promo T&C URL
-        return "https://www.tokopedia.com"
+    private fun generateTncUrl(
+        promoCodes: List<String>,
+        source: String,
+        userId: String
+    ): String {
+        // TODO: Replace using real tokopedia URL
+//        return Uri.parse(TokopediaUrl.getInstance().WEB)
+//            .buildUpon()
+        return Uri.parse("https://81-staging-feature.tokopedia.com/")
+            .buildUpon()
+            .path(PATH_PROMO_TNC)
+            .appendQueryParameter(QUERY_CODES, promoCodes.joinToString(","))
+            .appendQueryParameter(QUERY_SOURCE, source)
+            .appendQueryParameter(QUERY_ID, userId)
+            .build()
+            .toString()
     }
 
     fun show(fragmentManager: FragmentManager) {

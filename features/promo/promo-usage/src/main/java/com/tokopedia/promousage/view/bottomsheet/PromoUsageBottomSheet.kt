@@ -4,7 +4,6 @@ import android.animation.Animator
 import android.graphics.Color
 import android.graphics.Outline
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -76,6 +75,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
@@ -122,9 +122,14 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
-    private val isFlowMvcLockToCourrier: Boolean
+    private val isFlowMvcLockToCourier: Boolean
         get() = arguments?.getBoolean(BUNDLE_KEY_IS_FLOW_MVC_LOCK_TO_COURIER) ?: false
+    private val entryPoint: PromoPageEntryPoint
+        get() = arguments?.getParcelable(BUNDLE_KEY_ENTRY_POINT)
+            ?: PromoPageEntryPoint.CART_PAGE
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -242,8 +247,6 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         renderContent(false)
         renderLoadingShimmer(true)
 
-        val entryPoint = arguments?.getParcelable(BUNDLE_KEY_ENTRY_POINT)
-            ?: PromoPageEntryPoint.CART_PAGE
         val totalAmount = arguments?.getDouble(BUNDLE_KEY_TOTAL_AMOUNT) ?: 0.0
         val validateUsePromoRequest = arguments?.getParcelable(BUNDLE_KEY_VALIDATE_USE)
             ?: ValidateUsePromoRequest()
@@ -675,7 +678,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     listener?.onClearPromoSuccess(
                         clearPromo = uiAction.clearPromo,
                         lastValidateUsePromoRequest = uiAction.lastValidateUseRequest,
-                        isFlowMvcLockToCourrier = isFlowMvcLockToCourrier
+                        isFlowMvcLockToCourrier = isFlowMvcLockToCourier
                     )
                 }
 
@@ -709,9 +712,18 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun showPromoTncBottomSheet(item: PromoTncItem) {
-        PromoUsageTncBottomSheet.newInstance(item.selectedPromoCodes).also {
-            it.show(childFragmentManager)
-        }
+        // TODO: Replace using real codes
+//        val tncBottomSheet = PromoUsageTncBottomSheet.newInstance(
+//            promoCodes = item.selectedPromoCodes,
+//            source = entryPoint,
+//            userId = userSession.userId
+//        )
+        val tncBottomSheet = PromoUsageTncBottomSheet.newInstance(
+            promoCodes = listOf("TESMRDMP5EEW9QDPPKP", "TESMRDMP5EEW9QDPPKP"),
+            source = entryPoint,
+            userId = "9070569"
+        )
+        tncBottomSheet.show(childFragmentManager)
     }
 
     private val onClickApplyPromoRecommendation: () -> Unit = {
