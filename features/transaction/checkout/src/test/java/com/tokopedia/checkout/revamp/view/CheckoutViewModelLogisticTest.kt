@@ -18,7 +18,9 @@ import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
+import io.mockk.coEvery
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -27,6 +29,10 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
     @Test
     fun set_selected_courier() {
         // given
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200")
+
         viewModel.listData.value = listOf(
             CheckoutTickerErrorModel(errorMessage = ""),
             CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),

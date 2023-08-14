@@ -98,8 +98,7 @@ open class BaseCheckoutViewModelTest {
     @MockK(relaxed = true)
     lateinit var toasterProcessor: CheckoutToasterProcessor
 
-    @MockK
-    lateinit var helper: CheckoutDataHelper
+    var helper: CheckoutDataHelper = CheckoutDataHelper()
 
     @MockK
     lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCaseCoroutine
