@@ -128,7 +128,7 @@ class FlightOrderDetailActivityTest {
         onView(withId(R.id.btnFlightOrderDetailViewEticket)).perform(click())
         Thread.sleep(1000)
 
-        onView(withId(R.id.menu_webview_download)).perform(click())
+        onView(withId(com.tokopedia.webview.R.id.menu_webview_download)).perform(click())
         Thread.sleep(1000)
 
         ViewMatchers.assertThat(
