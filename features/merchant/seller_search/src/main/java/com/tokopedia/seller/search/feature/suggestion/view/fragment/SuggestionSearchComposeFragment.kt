@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -78,15 +79,17 @@ class SuggestionSearchComposeFragment : BaseDaggerFragment() {
                         isMonitoringStarted.value = true
                     }
 
+                    if (sellerSearchResult?.isDismissedKeyboard == true) {
+                        softwareKeyboardController?.hide()
+                    }
+                }
+
+                SideEffect {
                     sellerSearchResult?.let { result ->
                         if (!isMonitoringFinished.value) {
                             (getActivity as? GlobalSearchSellerPerformanceMonitoringListener)?.finishMonitoring()
                             isMonitoringFinished.value = true
                         }
-                    }
-
-                    if (sellerSearchResult?.isDismissedKeyboard == true) {
-                        softwareKeyboardController?.hide()
                     }
                 }
 

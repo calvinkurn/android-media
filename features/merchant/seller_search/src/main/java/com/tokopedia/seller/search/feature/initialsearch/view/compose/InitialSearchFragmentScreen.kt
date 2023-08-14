@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -141,7 +142,6 @@ fun ItemHistorySearch(
         NestImage(
             source = ImageSource.Painter(com.tokopedia.seller.search.R.drawable.ic_time_history),
             type = NestImageType.Rect(rounded = 0.dp),
-            contentDescription = null,
             modifier = Modifier
                 .constrainAs(ivHistoryTime) {
                     top.linkTo(parent.top)
@@ -167,7 +167,6 @@ fun ItemHistorySearch(
         NestImage(
             source = ImageSource.Painter(com.tokopedia.seller.search.R.drawable.ic_close_history),
             type = NestImageType.Rect(rounded = 0.dp),
-            contentDescription = null,
             modifier = Modifier
                 .constrainAs(ivCloseHistory) {
                     top.linkTo(parent.top)
@@ -219,14 +218,16 @@ fun ItemHighlightChips(
             .fillMaxWidth()
     ) {
         chips.forEachIndexed { index, item ->
-            NestChips(
-                text = item.title.orEmpty(),
-                size = NestChipsSize.Medium,
-                state = NestChipsState.Default,
-                onClick = {
-                    uiEvent(InitialSearchUiEvent.OnItemHighlightClicked(item, index))
-                }
-            )
+            key(item.id.orEmpty()) {
+                NestChips(
+                    text = item.title.orEmpty(),
+                    size = NestChipsSize.Medium,
+                    state = NestChipsState.Default,
+                    onClick = {
+                        uiEvent(InitialSearchUiEvent.OnItemHighlightClicked(item, index))
+                    }
+                )
+            }
         }
     }
 }
@@ -248,8 +249,7 @@ fun NoHistoryState() {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
                 },
-            source = ImageSource.Remote(source = GlobalSearchSellerConstant.IC_NO_HISTORY_URL),
-            contentDescription = null
+            source = ImageSource.Remote(source = GlobalSearchSellerConstant.IC_NO_HISTORY_URL)
         )
 
         NestTypography(

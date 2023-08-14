@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -65,7 +64,8 @@ fun GlobalSellerSearchView(
                         focusRequester.requestFocus()
                     }
                 },
-            uiState = uiState,
+            searchBarKeyword = uiState.searchBarKeyword,
+            searchBarPlaceholder = uiState.searchBarPlaceholder,
             uiEffect = uiEffect
         )
     }
@@ -74,18 +74,19 @@ fun GlobalSellerSearchView(
 @Composable
 private fun SearchBarUnify(
     modifier: Modifier,
-    uiState: GlobalSearchUiState,
+    searchBarKeyword: String,
+    searchBarPlaceholder: String,
     uiEffect: (GlobalSearchUiEvent) -> Unit
 ) {
     NestSearchBar(
-        value = TextFieldValue(text = uiState.searchBarKeyword, selection = TextRange(uiState.searchBarKeyword.length)),
-        placeholderText = uiState.searchBarPlaceholder.ifBlank { stringResource(id = R.string.placeholder_search_seller) },
+        value = TextFieldValue(text = searchBarKeyword, selection = TextRange(searchBarKeyword.length)),
+        placeholderText = searchBarPlaceholder.ifBlank { stringResource(id = R.string.placeholder_search_seller) },
         modifier = modifier,
         onSearchBarCleared = {
             uiEffect(GlobalSearchUiEvent.OnSearchBarCleared)
         },
         onKeyboardSearchAction = {
-            uiEffect(GlobalSearchUiEvent.OnKeyboardSearchSubmit(uiState.searchBarKeyword))
+            uiEffect(GlobalSearchUiEvent.OnKeyboardSearchSubmit(searchBarKeyword))
         },
         onTextChanged = {
             uiEffect(GlobalSearchUiEvent.OnKeywordTextChanged(it))

@@ -7,6 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
@@ -32,6 +35,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
+@OptIn(ExperimentalComposeUiApi::class)
 class InitialSellerSearchComposeActivity :
     AppCompatActivity(),
     HasComponent<InitialSearchComponent>,
@@ -76,6 +80,8 @@ class InitialSellerSearchComposeActivity :
                     fragmentManager.findFragmentById(initialStateContainerId) as? InitialSearchComposeFragment
                 }
 
+                val softwareKeyboardController = LocalSoftwareKeyboardController.current
+
                 val uiState = viewModel.globalSearchUiState.collectAsState()
 
                 val showSearchSuggestions = uiState.value.searchBarKeyword.isNotBlank()
@@ -90,13 +96,14 @@ class InitialSellerSearchComposeActivity :
                         showSearchSuggestions
                     )
 
-                    collectUiState(
+                    collectUiEffect(
                         showSearchSuggestions,
                         fragmentManager,
                         suggestionSearchFragment,
                         initialSearchFragment,
                         suggestionSearchContainerId,
-                        initialStateContainerId
+                        initialStateContainerId,
+                        softwareKeyboardController
                     )
                 })
 
@@ -105,7 +112,8 @@ class InitialSellerSearchComposeActivity :
                     uiState = uiState.value,
                     showSearchSuggestions = showSearchSuggestions,
                     initialStateContainerId = initialStateContainerId,
-                    suggestionSearchContainerId = suggestionSearchContainerId
+                    suggestionSearchContainerId = suggestionSearchContainerId,
+                    softwareKeyboardController = softwareKeyboardController
                 )
             }
         }
@@ -124,13 +132,14 @@ class InitialSellerSearchComposeActivity :
             .build()
     }
 
-    private suspend fun collectUiState(
+    private suspend fun collectUiEffect(
         showSearchSuggestions: Boolean,
         fragmentManager: FragmentManager?,
         suggestionSearchFragment: SuggestionSearchComposeFragment?,
         initialSearchFragment: InitialSearchComposeFragment?,
         suggestionSearchContainerId: Int,
-        initialStateContainerId: Int
+        initialStateContainerId: Int,
+        softwareKeyboardController: SoftwareKeyboardController?
     ) {
         viewModel.uiEffect.collectLatest {
             when (it) {
@@ -149,6 +158,7 @@ class InitialSellerSearchComposeActivity :
 
                 is GlobalSearchUiEvent.OnKeyboardSearchSubmit -> {
                     viewModel.setTypingSearch(it.searchBarKeyword)
+                    softwareKeyboardController?.hide()
                 }
 
                 is GlobalSearchUiEvent.OnSearchResultKeyword -> {

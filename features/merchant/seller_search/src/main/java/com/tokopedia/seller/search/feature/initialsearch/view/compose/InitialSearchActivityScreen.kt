@@ -11,7 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.fragment.app.FragmentContainerView
@@ -28,11 +28,10 @@ fun InitialSearchActivityScreen(
     uiEffect: (GlobalSearchUiEvent) -> Unit = {},
     showSearchSuggestions: Boolean,
     initialStateContainerId: Int,
-    suggestionSearchContainerId: Int
+    suggestionSearchContainerId: Int,
+    softwareKeyboardController: SoftwareKeyboardController?
 ) {
     val searchBarFocusRequester = remember { FocusRequester() }
-
-    val softwareKeyboardController = LocalSoftwareKeyboardController.current
 
     Surface(
         modifier = Modifier.fillMaxSize()
