@@ -11,8 +11,8 @@
         <!-- Product 1-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/terlaris_item_product_detail_1"
-        android:layout_width="284dp"
-        android:layout_height="92dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:paddingBottom="8dp"
         app:layout_constraintLeft_toLeftOf="@+id/terlaris_container_item_product"
         app:layout_constraintTop_toTopOf="@+id/terlaris_container_item_product">
