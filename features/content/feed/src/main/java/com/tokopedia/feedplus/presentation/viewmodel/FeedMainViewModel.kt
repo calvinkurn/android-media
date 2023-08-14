@@ -5,9 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
 import com.tokopedia.content.common.model.FeedXHeaderRequestFields
-import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.usecase.FeedXHeaderUseCase
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.createpost.common.domain.usecase.cache.DeleteMediaPostCacheUseCase
@@ -215,7 +213,8 @@ class FeedMainViewModel @Inject constructor(
                         listOf(
                             FeedXHeaderRequestFields.LIVE.value,
                             FeedXHeaderRequestFields.CREATION.value,
-                            FeedXHeaderRequestFields.USER.value
+                            FeedXHeaderRequestFields.USER.value,
+                            FeedXHeaderRequestFields.BROWSE.value
                         )
                     )
                 )

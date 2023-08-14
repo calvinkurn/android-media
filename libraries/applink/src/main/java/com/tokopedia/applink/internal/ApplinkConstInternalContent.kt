@@ -67,8 +67,6 @@ object ApplinkConstInternalContent {
 
     internal const val INTERNAL_FEATURE_PREVENTION = "$INTERNAL_CONTENT/content-prevention"
 
-    const val INTERNAL_FEED_BROWSE = "$INTERNAL_CONTENT/browse"
-
     private val tokopediaUrl = TokopediaUrl.getInstance().WEB
     private val performanceDashboardUrl = tokopediaUrl + PLAY_LIVE
     private const val PERFORMANCE_DASHBOARD_URL_WEB_VIEW_FORMAT = "" +

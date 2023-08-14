@@ -52,6 +52,10 @@ class FeedXHeaderUseCase @Inject constructor(
             ...FeedXHeaderUserProfile
             __typename
           }
+          brose {
+            ...FeedXHeaderBrowse
+            __typename
+          }
         }
         
         fragment FeedXHeaderCreation on FeedXHeaderCreation {
@@ -106,6 +110,13 @@ class FeedXHeaderUseCase @Inject constructor(
         fragment FeedXHeaderUserProfile on FeedXHeaderUserProfile {
           isShown
           image
+          weblink
+          applink
+          __typename
+        }
+        
+        fragment FeedXHeaderBrowse on FeedXHeaderBrowse {
+          isActive
           weblink
           applink
           __typename

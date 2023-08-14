@@ -21,7 +21,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
-import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_FEED_BROWSE
 import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.reduceDragSensitivity
@@ -45,6 +44,7 @@ import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.play_common.shortsuploader.analytic.PlayShortsUploadAnalytic
@@ -537,7 +537,7 @@ class FeedBaseFragment :
         }
 
         binding.btnFeedBrowse.setOnClickListener {
-            openAppLink.launch(INTERNAL_FEED_BROWSE)
+            openAppLink.launch(meta.browseApplink)
         }
 
         binding.btnFeedLive.setOnClickListener {
@@ -554,19 +554,10 @@ class FeedBaseFragment :
             }
         }
 
-        if (meta.isCreationActive && userSession.isLoggedIn) {
-            binding.btnFeedCreatePost.show()
-        } else {
-            binding.btnFeedCreatePost.hide()
-        }
-
-        if (meta.showLive) {
-            binding.btnFeedLive.show()
-            binding.labelFeedLive.show()
-        } else {
-            binding.btnFeedLive.hide()
-            binding.labelFeedLive.hide()
-        }
+        binding.btnFeedCreatePost.showWithCondition(meta.isCreationActive && userSession.isLoggedIn)
+        binding.btnFeedLive.showWithCondition(meta.showLive)
+        binding.labelFeedLive.showWithCondition(meta.showLive)
+        binding.btnFeedBrowse.showWithCondition(meta.showBrowse)
     }
 
     private fun initTabsView(data: List<FeedDataModel>) {
