@@ -41,7 +41,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:unify_image_placeholder="@color/play_dms_partner_icon_placeholder"
+            app:unify_image_placeholder="@color/content_dms_partner_icon_placeholder"
             app:unify_image_type="circle"
             tools:visibility="gone" />
 
