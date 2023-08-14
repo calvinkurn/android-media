@@ -42,8 +42,11 @@ import com.tokopedia.utils.view.binding.viewBinding
 /**
  * Created by nathan on 2/15/18.
  */
-class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopComponent?>,
-    OnShopProductListFragmentListener, ShopPageProductListResultFragmentListener,
+class ShopProductListResultActivity :
+    BaseSimpleActivity(),
+    HasComponent<ShopComponent?>,
+    OnShopProductListFragmentListener,
+    ShopPageProductListResultFragmentListener,
     ShareBottomsheetListener {
     private var component: ShopComponent? = null
     private var shopId: String? = null
@@ -70,14 +73,18 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
                 com.tokopedia.unifyprinciples.R.color.Unify_Background
             )
         )
-        shopSharingInShowCaseUiModel= intent.getParcelableExtra(EXTRA_FOR_SHOP_SHARING)
+        shopSharingInShowCaseUiModel = intent.getParcelableExtra(EXTRA_FOR_SHOP_SHARING)
         shopId = intent.getStringExtra(ShopParamConstant.EXTRA_SHOP_ID)
         shopRef = intent.getStringExtra(ShopParamConstant.EXTRA_SHOP_REF)
         etalaseId = intent.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID)
         sort =
-            if (intent.getStringExtra(ShopParamConstant.EXTRA_SORT_ID) == null) "" else intent.getStringExtra(
-                ShopParamConstant.EXTRA_SORT_ID
-            )
+            if (intent.getStringExtra(ShopParamConstant.EXTRA_SORT_ID) == null) {
+                ""
+            } else {
+                intent.getStringExtra(
+                    ShopParamConstant.EXTRA_SORT_ID
+                )
+            }
         attribution = intent.getStringExtra(ShopParamConstant.EXTRA_ATTRIBUTION)
         isNeedToReloadData =
             intent.getBooleanExtra(ShopCommonExtraConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
@@ -92,16 +99,28 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
             getShopIdOrDomainFromUri(data, pathSegments)
             getEtalaseIdFromUri(data, pathSegments)
             shopRef =
-                if (data?.getQueryParameter(QUERY_SHOP_REF) == null) "" else data.getQueryParameter(
-                    QUERY_SHOP_REF
+                if (data?.getQueryParameter(QUERY_SHOP_REF) == null) {
+                    ""
+                } else {
+                    data.getQueryParameter(
+                        QUERY_SHOP_REF
+                    )
+                }
+            sort = if (data?.getQueryParameter(QUERY_SORT) == null) {
+                ""
+            } else {
+                data.getQueryParameter(
+                    QUERY_SORT
                 )
-            sort = if (data?.getQueryParameter(QUERY_SORT) == null) "" else data.getQueryParameter(
-                QUERY_SORT
-            )
+            }
             attribution =
-                if (data?.getQueryParameter(QUERY_ATTRIBUTION) == null) "" else data.getQueryParameter(
-                    QUERY_ATTRIBUTION
-                )
+                if (data?.getQueryParameter(QUERY_ATTRIBUTION) == null) {
+                    ""
+                } else {
+                    data.getQueryParameter(
+                        QUERY_ATTRIBUTION
+                    )
+                }
         }
         if (shopRef == null) {
             shopRef = ""
@@ -188,7 +207,7 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
                 if (fragment is ShopPageProductListResultFragment) (fragment as? ShopPageProductListResultFragment?)?.clickShopShare()
             }
 
-            if (!GlobalConfig.isSellerApp()){
+            if (!GlobalConfig.isSellerApp()) {
                 iconBuilder.addIcon(IconList.ID_CART) {}
                 iconBuilder.addIcon(IconList.ID_NAV_GLOBAL) {}
             }
@@ -196,7 +215,6 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
             newNavigationToolbar = this
         }
     }
-
 
     override fun getNewFragment(): Fragment? {
         return createInstance(
@@ -298,9 +316,9 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
         private const val QUERY_SORT = "sort"
         private const val QUERY_ATTRIBUTION = "tracker_attribution"
         private const val QUERY_SEARCH = "search"
-        private const val SHOWCASE_APP_LINK_MINIMUM_PATH_SEGMENTS = 4
-        private const val SHOP_ID_OR_DOMAIN_PATH_SEGMENT = 1
-        private const val SHOWCASE_ID_POSITION_ON_APP_LINK = 3
+        const val SHOWCASE_APP_LINK_MINIMUM_PATH_SEGMENTS = 4
+        const val SHOP_ID_OR_DOMAIN_PATH_SEGMENT = 1
+        const val SHOWCASE_ID_POSITION_ON_APP_LINK = 3
         private const val KEY_QUERY_PARAM_EXTRA = "QUERY_PARAM"
         fun createIntent(
             context: Context?,
