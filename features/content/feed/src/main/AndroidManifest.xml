@@ -69,6 +69,17 @@
                     android:pathPattern="@string/path_content_browse"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_feed"
+                    android:pathPattern="@string/path_content_browse"
+                    android:scheme="@string/tokopedia_scheme" />
+            </intent-filter>
         </activity>
     </application>
 
