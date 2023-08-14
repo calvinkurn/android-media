@@ -15,10 +15,8 @@ import timber.log.Timber
 object DeeplinkMapperCommunication {
 
     private const val CHAT_SETTINGS = "chatsettings"
-    const val KEY_ROLLENCE_UNIVERSAL_INBOX = "inbox_universal"
-    const val ROLLENCE_TYPE_A = "inbox_varA"
-    const val ROLLENCE_TYPE_B = "inbox_varB"
 
+    const val UNIVERSAL_INBOX_REMOVE_CONFIG = "android_enable_inbox_universal"
     const val TOKOCHAT_REMOTE_CONFIG = "android_enable_tokochat"
 
     /**
@@ -98,8 +96,11 @@ object DeeplinkMapperCommunication {
      */
     fun getRegisteredNavigationInbox(context: Context, deeplink: String): String {
         return if (isUserLoggedIn(context)) {
-            val useUnivInbox = isABTestActive(KEY_ROLLENCE_UNIVERSAL_INBOX) == ROLLENCE_TYPE_A ||
-                isABTestActive(KEY_ROLLENCE_UNIVERSAL_INBOX) == ROLLENCE_TYPE_B
+            val useUnivInbox = isRemoteConfigActive(
+                context,
+                UNIVERSAL_INBOX_REMOVE_CONFIG,
+                true
+            )
             return if (useUnivInbox) {
                 ApplinkConstInternalCommunication.UNIVERSAL_INBOX
             } else {
