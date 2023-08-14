@@ -4,9 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ResolveInfo
 import android.net.Uri
+import android.text.TextUtils
 import android.util.Base64
 import android.webkit.WebView
-import android.text.TextUtils
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.tokopedia.config.GlobalConfig
@@ -18,16 +18,17 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.track.TrackApp
-import com.tokopedia.webview.data.model.WhiteListedDisableGalleryImagePick
-import com.tokopedia.webview.data.model.WhiteListedFintechPath
+import com.tokopedia.webview.BaseWebViewFragment.TOKOPEDIA_COM
+import com.tokopedia.webview.data.model.WhiteListedPath
+import com.tokopedia.webview.data.model.WhiteListedUrl
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
 import com.tokopedia.webview.ext.encodeQueryNested
+import org.json.JSONArray
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
-import org.json.JSONArray
 
 /**
  * Created by Ade Fulki on 2019-06-21.
@@ -46,8 +47,9 @@ object WebViewHelper {
     private const val APP_WHITELISTED_DOMAINS_URL = "ANDROID_WEBVIEW_WHITELIST_DOMAIN"
     private const val APP_SCP_WHITELISTED_ROUTES = "android_scp_whitelisted_routes"
     var whiteListedDomains = WhiteListedDomains()
-    var whiteListedFintechPath = WhiteListedFintechPath()
-    var whiteListedDisableGalleryPickerUrl = WhiteListedDisableGalleryImagePick()
+    var whiteListedFintechPath = WhiteListedPath()
+    var whiteListedDisableGalleryPickerUrl = WhiteListedUrl()
+    var contactUsForceReloadUrl = WhiteListedPath()
 
     private const val ANDROID_WEBVIEW_JS_ENCODE = "android_webview_js_encode"
 
@@ -456,7 +458,7 @@ object WebViewHelper {
             if (whitelistedFintechPrefixes.isNotBlank()) {
                 whiteListedFintechPath = Gson().fromJson(
                     whitelistedFintechPrefixes,
-                    WhiteListedFintechPath::class.java
+                    WhiteListedPath::class.java
                 )
             }
         } catch (exception: Exception) {
@@ -474,18 +476,18 @@ object WebViewHelper {
     }
 
     @JvmStatic
-    fun isScpUrl(context: Context?, url: String): Boolean{
+    fun isScpUrl(context: Context?, url: String): Boolean {
         try {
             context?.let {
                 val firebaseRemoteConfig = FirebaseRemoteConfigImpl(it.applicationContext)
                 val whiteListedScpDomains = firebaseRemoteConfig.getString(APP_SCP_WHITELISTED_ROUTES)
-                if(!TextUtils.isEmpty(whiteListedScpDomains)){
+                if (!TextUtils.isEmpty(whiteListedScpDomains)) {
                     val domainArray = JSONArray(whiteListedScpDomains)
-                    if(domainArray.length() > 0 && !TextUtils.isEmpty(url)){
-                        for(i in 0 until domainArray.length()){
+                    if (domainArray.length() > 0 && !TextUtils.isEmpty(url)) {
+                        for (i in 0 until domainArray.length()) {
                             val domainObj = domainArray.get(i)
                             val domainStr = domainObj?.toString()
-                            if(!TextUtils.isEmpty(domainStr) && url.contains(domainStr.toString())){
+                            if (!TextUtils.isEmpty(domainStr) && url.contains(domainStr.toString())) {
                                 return true
                             }
                         }
@@ -493,7 +495,7 @@ object WebViewHelper {
                 }
             }
             return false
-        }catch (ex:Exception){
+        } catch (ex: Exception) {
             FirebaseCrashlytics.getInstance().recordException(ex)
             return false
         }
@@ -545,7 +547,7 @@ object WebViewHelper {
             if (data.isNotBlank()) {
                 whiteListedDisableGalleryPickerUrl = Gson().fromJson(
                     data,
-                    WhiteListedDisableGalleryImagePick::class.java
+                    WhiteListedUrl::class.java
                 )
             }
         } catch (exception: Exception) {
@@ -565,6 +567,39 @@ object WebViewHelper {
                     return true
                 }
             }
+        }
+
+        return false
+    }
+
+    @JvmStatic
+    fun shouldReloadContactUsUrl(context: Context, url: String): Boolean {
+        val uri = Uri.parse(url)
+        val path = uri.path?.removePrefix("/") ?: ""
+        if (uri.host?.endsWith(TOKOPEDIA_COM) == true && uri.pathSegments.isNotEmpty() && uri.pathSegments[0] == "help") {
+            try {
+                val remoteConfig: RemoteConfig =
+                    FirebaseRemoteConfigImpl(context.applicationContext)
+                val data = remoteConfig.getString(RemoteConfigKey.CONTACT_US_DISABLE_FORCE_RELOAD_URLS)
+                if (data.isNotBlank()) {
+                    contactUsForceReloadUrl = Gson().fromJson(
+                        data,
+                        WhiteListedPath::class.java
+                    )
+                }
+            } catch (exception: Exception) {
+                FirebaseCrashlytics.getInstance().recordException(exception)
+            }
+
+            if (contactUsForceReloadUrl.isEnabled) {
+                contactUsForceReloadUrl.path.forEach {
+                    if (path.startsWith(it)) {
+                        return false
+                    }
+                }
+            }
+
+            return true
         }
 
         return false

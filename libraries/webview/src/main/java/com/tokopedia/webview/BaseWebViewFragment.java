@@ -143,7 +143,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     public static final String CUST_OVERLAY_URL = "imgurl";
     private static final String CUST_HEADER = "header_text";
     private static final String HELP_URL = "tokopedia.com/help";
-    private static final String HELP_FORM_URL = "tokopedia.com/help/form";
     private static final String ANDROID_PRINT_JS_INTERFACE = "AndroidPrint";
 
     @NonNull
@@ -770,7 +769,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String requestUrl) {
-            if (hasCheckOverrideAtInitialization(requestUrl) && !isHelpUrlAndNotHelpFormUrl(requestUrl)) return false;
+            if (hasCheckOverrideAtInitialization(requestUrl) && !shouldReloadContactUsUrl(requestUrl)) return false;
             boolean overrideUrl = BaseWebViewFragment.this.shouldOverrideUrlLoading(view, requestUrl);
             checkActivityFinish();
             return overrideUrl;
@@ -857,12 +856,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         return url.contains(HELP_URL);
     }
 
-    private boolean isHelpFormUrl(String url){
-        return url.contains(HELP_FORM_URL);
-    }
-
-    public Boolean isHelpUrlAndNotHelpFormUrl(String url) {
-        return isHelpUrl(url) && !isHelpFormUrl(url);
+    public Boolean shouldReloadContactUsUrl(String url) {
+        if (getContext() != null) {
+            return WebViewHelper.shouldReloadContactUsUrl(getContext(), url);
+        }
+        return false;
     }
 
     // to be overridden
@@ -887,7 +885,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             return false;
         }
 
-        if(webView != null && isHelpUrlAndNotHelpFormUrl(url)){
+        if (webView != null && shouldReloadContactUsUrl(url)){
             launchWebviewForNewUrl(url);
             return true;
         }
@@ -1232,7 +1230,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (globalError != null) {
             globalError.setVisibility(View.GONE);
         }
-        if(isHelpUrlAndNotHelpFormUrl(url)){
+        if (shouldReloadContactUsUrl(url)){
             launchWebviewForNewUrl(url);
             return;
         }
