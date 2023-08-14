@@ -14,8 +14,6 @@ import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
 import com.tokopedia.play.broadcaster.ui.state.LiveReportUiState
@@ -46,7 +44,6 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     @Assisted("account") val account: ContentAccountUiModel,
     @Assisted("channelId") val channelId: String,
     @Assisted("channelTitle") val channelTitle: String,
-    @Assisted val productSectionList: List<ProductTagSectionUiModel>,
     private val dispatcher: CoroutineDispatchers,
     private val getLiveStatisticsUseCase: GetLiveStatisticsUseCase,
     private val getInteractiveSummaryLivestreamUseCase: GetInteractiveSummaryLivestreamUseCase,
@@ -57,7 +54,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     private val getRecommendedChannelTagsUseCase: GetRecommendedChannelTagsUseCase,
     private val setChannelTagsUseCase: SetChannelTagsUseCase,
     private val getChannelUseCase: GetChannelUseCase,
-    private val hydraConfigStore: HydraConfigStore
+    private val hydraConfigStore: HydraConfigStore,
 ) : ViewModel() {
 
     @AssistedFactory
@@ -66,7 +63,6 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
             @Assisted("account") account: ContentAccountUiModel,
             @Assisted("channelId") channelId: String,
             @Assisted("channelTitle") channelTitle: String,
-            productSectionList: List<ProductTagSectionUiModel>
         ): PlayBroadcastSummaryViewModel
     }
 
@@ -131,9 +127,6 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     private val _uiEvent = MutableSharedFlow<PlayBroadcastSummaryEvent>()
     val uiEvent: Flow<PlayBroadcastSummaryEvent>
         get() = _uiEvent
-
-    val productList: List<ProductUiModel>
-        get() = productSectionList.flatMap { it.products }
 
     init {
         fetchLiveTraffic()
@@ -287,7 +280,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
                                         channel.basic.coverUrl,
                                         convertDate(channel.basic.timestamp.publishedAt),
                                         reportChannelSummary.duration,
-                                        isEligiblePostVideo(reportChannelSummary.duration),
+                                        _channelSummary.value.isEligiblePostVideo,
                                         hydraConfigStore.getAuthor(),
                                     )
             getSellerLeaderboardUseCase.setRequestParams(GetSellerLeaderboardUseCase.createParams(channelId))
@@ -310,15 +303,9 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
             }.toList()
 
             _trafficMetric.value = NetworkResult.Success(metrics)
-
-            if (!isEligiblePostVideo(reportChannelSummary.duration)) {
-                _uiEvent.emit(PlayBroadcastSummaryEvent.VideoUnder60Seconds)
-            }
         }) {
             _channelSummary.value = ChannelSummaryUiModel.empty()
             _trafficMetric.value = NetworkResult.Fail(it) { fetchLiveTraffic() }
-
-            _uiEvent.emit(PlayBroadcastSummaryEvent.VideoUnder60Seconds)
         }
     }
 
@@ -359,27 +346,6 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     /** Helper */
     private fun convertDate(raw: String): String =
         PlayDateTimeFormatter.formatDate(raw, outputPattern = PlayDateTimeFormatter.dMMMMyyyy)
-
-    @Suppress("MagicNumber")
-    private fun isEligiblePostVideo(duration: String): Boolean {
-        return try {
-            val split = duration.split(":")
-
-            val (hour, minute) = when (split.size) {
-                /** HH:mm:ss */
-                3 -> Pair(split[0].toInt(), split[1].toInt())
-
-                /** mm:ss */
-                2 -> Pair(0, split[0].toInt())
-
-                else -> Pair(0, 0)
-            }
-
-            hour > 0 || minute > 0
-        } catch (e: Exception) {
-            false
-        }
-    }
 
     companion object {
         private const val LIVE_STATISTICS_DELAY = 300L

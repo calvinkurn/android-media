@@ -1,3 +1,4 @@
+/features/content/analytic/                             @tokopedia/android-minionlance-dev
 /features/content/content_common/                       @tokopedia/android-minionlance-dev
 /features/content/createpost/           				@tokopedia/android-minionlance-dev
 /features/content/createpost_common/           			@tokopedia/android-minionlance-dev
@@ -429,6 +430,7 @@
 /build.gradle                                           @tokopedia/android-core-dev
 /settings.gradle                                           @tokopedia/android-core-dev
 /buildproj.gradle                                       @tokopedia/android-core-dev
+/hansel.xml                                             @tokopedia/android-core-dev
 /gradle/                                                @tokopedia/android-core-dev
 /gradle.properties                                      @tokopedia/android-core-dev
 /wearosapp/                                        @tokopedia/android-core-dev

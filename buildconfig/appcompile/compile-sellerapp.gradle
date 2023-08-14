@@ -17,6 +17,7 @@ includeIfEnabled("features:category:common_tradein")
 
 includeIfEnabled("features:home:navigation-common")
 
+includeIfEnabled("features:content:analytic")
 includeIfEnabled("features:content:affiliate_common")
 includeIfEnabled("features:content:content_common")
 includeIfEnabled("features:content:feed_component")

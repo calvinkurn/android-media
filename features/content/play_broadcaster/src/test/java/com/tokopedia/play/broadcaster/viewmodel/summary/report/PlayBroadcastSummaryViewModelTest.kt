@@ -5,7 +5,8 @@ import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.domain.model.GetChannelResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetSellerLeaderboardSlotResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.quiz.GetInteractiveSummaryLivestreamResponse
-import com.tokopedia.play.broadcaster.domain.usecase.*
+import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.GetLiveStatisticsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveSummaryLivestreamUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetSellerLeaderboardUseCase
 import com.tokopedia.play.broadcaster.model.UiModelBuilder
@@ -13,7 +14,10 @@ import com.tokopedia.play.broadcaster.robot.PlayBroadcastSummaryViewModelRobot
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricType
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
-import com.tokopedia.play.broadcaster.util.*
+import com.tokopedia.play.broadcaster.util.TestHtmlTextTransformer
+import com.tokopedia.play.broadcaster.util.TestUriParser
+import com.tokopedia.play.broadcaster.util.assertEqualTo
+import com.tokopedia.play.broadcaster.util.assertFalse
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
@@ -85,7 +89,6 @@ class PlayBroadcastSummaryViewModelTest {
                 )
                 channelSummary.date.assertEqualTo(mockPublishedAtFormatted)
                 channelSummary.duration.assertEqualTo(mockLiveStats.duration)
-                channelSummary.isEligiblePostVideo.assertTrue()
             }
         }
     }
@@ -129,7 +132,6 @@ class PlayBroadcastSummaryViewModelTest {
                 )
                 channelSummary.date.assertEqualTo(mockPublishedAtFormatted)
                 channelSummary.duration.assertEqualTo(mockLiveStats.duration)
-                channelSummary.isEligiblePostVideo.assertTrue()
             }
         }
     }
@@ -161,34 +163,6 @@ class PlayBroadcastSummaryViewModelTest {
     }
 
     @Test
-    fun `when duration is less than 60 seconds, it wont be eligible to post video`() {
-        val mockLiveStatUnder60Second = mockLiveStats.copy(
-            duration = "00:00:59"
-        )
-
-        coEvery { mockGetChannelUseCase.executeOnBackground() } returns mockChannel
-        coEvery { mockGetLiveStatisticsUseCase.executeOnBackground() } returns mockLiveStatUnder60Second
-        coEvery { mockGetSellerLeaderboardUseCase.executeOnBackground() } returns mockSlotResponse
-        coEvery { mockGetInteractiveSummaryLivestreamUseCase.executeOnBackground() } returns mockParticipant
-        val robot = PlayBroadcastSummaryViewModelRobot(
-            dispatcher = testDispatcher,
-            getChannelUseCase = mockGetChannelUseCase,
-            getLiveStatisticsUseCase = mockGetLiveStatisticsUseCase,
-            getSellerLeaderboardUseCase = mockGetSellerLeaderboardUseCase,
-            getInteractiveSummaryLivestreamUseCase = mockGetInteractiveSummaryLivestreamUseCase
-        )
-
-        robot.use {
-            val state = it.recordState { }
-
-            with(state.channelSummary) {
-                duration.assertEqualTo(mockLiveStatUnder60Second.duration)
-                isEligiblePostVideo.assertFalse()
-            }
-        }
-    }
-
-    @Test
     fun `when duration is exactly 60 second, it should be eligible to post video`() {
         val mockLiveStat60Second = mockLiveStats.copy(
             duration = "00:01:00"
@@ -211,7 +185,6 @@ class PlayBroadcastSummaryViewModelTest {
 
             with(state.channelSummary) {
                 duration.assertEqualTo(mockLiveStat60Second.duration)
-                isEligiblePostVideo.assertTrue()
             }
         }
     }
@@ -239,7 +212,6 @@ class PlayBroadcastSummaryViewModelTest {
 
             with(state.channelSummary) {
                 duration.assertEqualTo(mockLiveStatExact1Hour.duration)
-                isEligiblePostVideo.assertTrue()
             }
         }
     }
