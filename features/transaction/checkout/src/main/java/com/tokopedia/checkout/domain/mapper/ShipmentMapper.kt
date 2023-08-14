@@ -596,7 +596,6 @@ class ShipmentMapper @Inject constructor() {
             title = addOn.title
             bottomsheet = mapAddOnProductBottomSheet(addOn.bottomsheet)
             listAddOnProductData = mapAddOnProductListData(addOn.addOnsDataList, productQuantity)
-            listDeselectAddOnProductData = mapDeselectedAddOnProductListData(addOn.addOnsDataList, productQuantity)
         }
     }
 
@@ -632,16 +631,16 @@ class ShipmentMapper @Inject constructor() {
         addOnsDataList.forEach { item ->
             if (item.status == ADD_ON_PRODUCT_STATUS_UNCHECK) {
                 listDeselectedAddOnDataItem.add(
-                    AddOnProductDataItemModel().apply {
-                        id = item.id
-                        price = item.price
-                        infoLink = item.infoLink
-                        name = item.name
-                        status = item.status
-                        type = item.type
-                        qty = productQuantity
+                    AddOnProductDataItemModel(
+                        id = item.id,
+                        price = item.price,
+                        infoLink = item.infoLink,
+                        name = item.name,
+                        status = item.status,
+                        type = item.type,
+                        qty = productQuantity,
                         uniqueId = item.uniqueId
-                    }
+                    )
                 )
             }
         }

@@ -3921,15 +3921,13 @@ class ShipmentFragment :
         val productId = cartItemModel.productId
         val cartId = cartItemModel.cartId
         val addOnIds = arrayListOf<Long>()
-        cartItemModel.addOnProduct.listAddOnProductData.forEach { addOnItem ->
-            if (addOnItem.status == ADD_ON_PRODUCT_STATUS_CHECK) {
-                addOnIds.add(addOnItem.id)
-            }
+        cartItemModel.addOnProduct.listAddOnProductData.filter { it.status == ADD_ON_PRODUCT_STATUS_CHECK }.forEach { addOnItem ->
+            addOnIds.add(addOnItem.id)
         }
 
-        val deselectAddOnIds = arrayListOf<String>()
-        cartItemModel.addOnProduct.listDeselectAddOnProductData.forEach {
-            deselectAddOnIds.add(it.id.toString())
+        val deselectAddOnIds = arrayListOf<Long>()
+        cartItemModel.addOnProduct.listAddOnProductData.filter { it.status == ADD_ON_PRODUCT_STATUS_UNCHECK }.forEach { addOnItem ->
+            deselectAddOnIds.add(addOnItem.id)
         }
 
         val price: Double
@@ -4328,7 +4326,6 @@ class ShipmentFragment :
                 val cartIdAddOn = addOnProductDataResult.cartId
                 val needUpdateAddOnItem = shipmentAdapter.getAddOnProductServicePosition(cartIdAddOn)
                 var updatedCartItemModel = needUpdateAddOnItem.second
-                needUpdateAddOnItem.second?.addOnProduct?.listDeselectAddOnProductData?.clear()
 
                 for (addOnUiModel in addOnProductDataResult.aggregatedData.selectedAddons) {
                     needUpdateAddOnItem.second?.addOnProduct?.listAddOnProductData?.forEach { addOnExisting ->
@@ -4358,20 +4355,6 @@ class ShipmentFragment :
                                 isProtectionOptIn = false
                             )
                         }
-                    }
-
-                    if (addOnUiModel.getSaveAddonSelectedStatus().value == ADD_ON_PRODUCT_STATUS_UNCHECK) {
-                        needUpdateAddOnItem.second?.addOnProduct?.listDeselectAddOnProductData?.add(
-                            AddOnProductDataItemModel(
-                                id = addOnUiModel.id.toLongOrZero(),
-                                uniqueId = addOnUiModel.uniqueId,
-                                price = addOnUiModel.price.toDouble(),
-                                infoLink = addOnUiModel.eduLink,
-                                name = addOnUiModel.name,
-                                type = addOnUiModel.addOnType,
-                                status = addOnUiModel.getSaveAddonSelectedStatus().value
-                            )
-                        )
                     }
                 }
 

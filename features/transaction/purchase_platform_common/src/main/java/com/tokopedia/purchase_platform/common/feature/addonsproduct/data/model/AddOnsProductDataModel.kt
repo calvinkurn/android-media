@@ -5,8 +5,7 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 data class AddOnsProductDataModel(
     var title: String = String.EMPTY,
     var bottomsheet: Bottomsheet = Bottomsheet(),
-    var data: List<Data> = listOf(),
-    var deselectedData: List<Data> = listOf()
+    var data: List<Data> = listOf()
 ) {
     data class Bottomsheet(
         var title: String = String.EMPTY,

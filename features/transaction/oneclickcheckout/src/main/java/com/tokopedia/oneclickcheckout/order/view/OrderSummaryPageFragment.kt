@@ -77,7 +77,6 @@ import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.address.AddressListBottomSheet
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.OCC_OVO_ACTIVATION_URL
-import com.tokopedia.oneclickcheckout.common.utils.removeAll
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.common.view.utils.animateGone
@@ -381,7 +380,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 val listProducts = adapter.products
                 for (index in listProducts.indices) {
                     if (listProducts[index].cartId == cartId) {
-                        listProducts[index].addOnsProductData.deselectedData.removeAll()
                         for (addOnUiModel in addOnProductDataResult.aggregatedData.selectedAddons) {
                             listProducts[index].addOnsProductData.data.forEach { addOnExisting ->
                                 if (addOnUiModel.addOnType == addOnExisting.type) {
@@ -396,21 +394,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                                         productQuantity = listProducts[index].orderQuantity
                                     }
                                 }
-                            }
-
-                            if (addOnUiModel.getSaveAddonSelectedStatus().value == AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK) {
-                                listProducts[index].addOnsProductData.deselectedData.plus(
-                                    AddOnsProductDataModel.Data(
-                                        id = addOnUiModel.id,
-                                        uniqueId = addOnUiModel.uniqueId,
-                                        price = addOnUiModel.price,
-                                        infoLink = addOnUiModel.eduLink,
-                                        name = addOnUiModel.name,
-                                        status = addOnUiModel.getSaveAddonSelectedStatus().value,
-                                        type = addOnUiModel.addOnType,
-                                        productQuantity = listProducts[index].orderQuantity
-                                    )
-                                )
                             }
                         }
                         adapter.notifyItemChanged(adapter.getAddOnProductServiceIndex(cartId))
@@ -1602,15 +1585,13 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             val cartId = product.cartId
 
             val addOnIds = arrayListOf<String>()
-            addOnsProductData.data.forEach { addOnItem ->
-                if (addOnItem.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK) {
-                    addOnIds.add(addOnItem.id)
-                }
+            addOnsProductData.data.filter { it.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK }.forEach { addOnItem ->
+                addOnIds.add(addOnItem.id)
             }
 
             val deselectAddOnIds = arrayListOf<String>()
-            addOnsProductData.deselectedData.forEach {
-                deselectAddOnIds.add(it.id)
+            addOnsProductData.data.filter { it.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK }.forEach { addOnItem ->
+                deselectAddOnIds.add(addOnItem.id)
             }
 
             val price: Double
