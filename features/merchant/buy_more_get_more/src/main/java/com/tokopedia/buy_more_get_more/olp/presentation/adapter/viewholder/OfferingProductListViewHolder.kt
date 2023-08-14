@@ -3,6 +3,7 @@ package com.tokopedia.buy_more_get_more.olp.presentation.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buy_more_get_more.R
 import com.tokopedia.buy_more_get_more.databinding.ItemOlpProductListBinding
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel
@@ -10,7 +11,10 @@ import com.tokopedia.buy_more_get_more.olp.presentation.listener.AtcProductListe
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-class OfferingProductListViewHolder(itemView: View, private val atcProductListener: AtcProductListener) : AbstractViewHolder<OfferProductListUiModel.Product>(itemView) {
+class OfferingProductListViewHolder(
+    itemView: View,
+    private val atcProductListener: AtcProductListener
+) : AbstractViewHolder<OfferProductListUiModel.Product>(itemView) {
 
     private val binding: ItemOlpProductListBinding? by viewBinding()
 
@@ -20,6 +24,12 @@ class OfferingProductListViewHolder(itemView: View, private val atcProductListen
     }
 
     override fun bind(element: OfferProductListUiModel.Product) {
+        itemView.setBackgroundColor(
+            MethodChecker.getColor(
+                itemView.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN0
+            )
+        )
         binding?.run {
             productCard.apply {
                 setProductModel(element.mapToProductCardModel())

@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -63,6 +62,7 @@ class OfferLandingPageFragment :
     }
 
     private var binding by autoClearedNullable<FragmentOfferLandingPageBinding>()
+
     private val olpAdapter: OlpAdapter?
         get() = adapter as? OlpAdapter
 
@@ -151,10 +151,6 @@ class OfferLandingPageFragment :
 
     private fun setupToolbar(offerInfoForBuyer: OfferInfoForBuyerUiModel) {
         binding?.apply {
-            val colorBackground = MethodChecker.getColor(
-                context,
-                com.tokopedia.unifyprinciples.R.color.Unify_GN500
-            )
             header.apply {
                 headerSubTitle = offerInfoForBuyer.offerings.firstOrNull()?.offerName
                     ?: "Offering name" // update this with real data
@@ -163,7 +159,6 @@ class OfferLandingPageFragment :
                 addRightIcon(com.tokopedia.iconunify.R.drawable.iconunify_menu_hamburger)
                     .apply { setOnClickListener { } }
                 setNavigationOnClickListener { activity?.finish() }
-                setBackgroundColor(colorBackground)
             }
         }
     }
@@ -177,13 +172,16 @@ class OfferLandingPageFragment :
         }
 
         activity?.let {
+            val transparent = MethodChecker.getColor(
+            context,
+            R.color.transparent
+        )
             it.window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-            it.window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            it.window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
             WindowCompat.getInsetsController(it.window, it.window.decorView).apply {
                 isAppearanceLightStatusBars = false
             }
-            it.window.statusBarColor =
-                ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+            it.window.statusBarColor = transparent
         }
     }
 
@@ -241,6 +239,7 @@ class OfferLandingPageFragment :
             VIEW_LOADING -> {
                 binding?.apply {
                     loadingStateOlp.root.visible()
+                    groupHeader.gone()
                     stickyContent.gone()
                     errorPageLarge.gone()
                 }
@@ -249,6 +248,7 @@ class OfferLandingPageFragment :
             VIEW_ERROR -> {
                 binding?.apply {
                     loadingStateOlp.root.gone()
+                    groupHeader.gone()
                     stickyContent.gone()
                     errorPageLarge.visible()
                 }
@@ -257,6 +257,7 @@ class OfferLandingPageFragment :
             else -> {
                 binding?.apply {
                     loadingStateOlp.root.gone()
+                    groupHeader.visible()
                     stickyContent.visible()
                     errorPageLarge.gone()
                 }
@@ -313,15 +314,18 @@ class OfferLandingPageFragment :
     }
 
     private fun addToCartProduct(product: OfferProductListUiModel.Product) {
+
     }
 
     private fun openAtcVariant(product: OfferProductListUiModel.Product) {
-        AtcVariantHelper.goToAtcVariant(
-            context = requireContext(),
-            productId = product.productId.toString(),
-            pageSource = VariantPageSource.BUY_MORE_GET_MORE,
-            shopId = shopId,
-            startActivitResult = this::startActivityForResult
-        )
+        context?.let {
+            AtcVariantHelper.goToAtcVariant(
+                context = it,
+                productId = product.productId.toString(),
+                pageSource = VariantPageSource.BUY_MORE_GET_MORE,
+                shopId = shopId,
+                startActivitResult = this::startActivityForResult
+            )
+        }
     }
 }

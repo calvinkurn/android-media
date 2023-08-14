@@ -30,7 +30,7 @@ data class GetOfferingInfoForBuyerRequestParam(
         @SerializedName("district_id")
         val districtId: Int = 0,
         @SerializedName("postal_code")
-        val postalCode: Int = 0,
+        val postalCode: String = "",
         @SerializedName("latitude")
         val latitude: String = "",
         @SerializedName("longitude")
