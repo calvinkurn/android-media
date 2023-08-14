@@ -2,7 +2,6 @@
 Product Detail Additional Info: Global Feature from Product Detail
 ---
 
-
 | **Status** | <!--start status:GREEN-->RELEASE<!--end status--> |
 | --- | --- |
 | Contributors | [Yehezkiel .](https://tokopedia.atlassian.net/wiki/people/5c94aa7a7792242c8613ad14?ref=confluence) [Kelvindo Sutan](https://tokopedia.atlassian.net/wiki/people/5ff2a8fe44065f013f93507c?ref=confluence)  |

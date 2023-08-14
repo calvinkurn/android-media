@@ -2,7 +2,6 @@
 Educational Bottom Sheet
 ---
 
-
 | Status | <!--start status:GREEN-->RELEASE<!--end status--> |
 | --- | --- |
 | Contributors | [Yehezkiel .](https://tokopedia.atlassian.net/wiki/people/5c94aa7a7792242c8613ad14?ref=confluence)  |
@@ -118,8 +117,6 @@ include `product_detail_common` module into your module,
 implementation projectOrAar(rootProject.ext.features.productDetailCommon)
 ```
 
-
-
 ```
 internal class Foo {
   fun bar(): Bar {
@@ -133,15 +130,11 @@ internal class Foo {
 }
 ```
 
-
-
 | **Param Name** | **Mandatory** | **Description** | **Example** |
 | --- | --- | --- | --- |
 | `url` | Yes | The educational bottom sheet applink, with type. | `tokopedia://product-edu/{type}` |
 | `product_id` | No | Additional param for Tracker | `12345` |
 | `shop_id` | No | Additional param for Tracker | `12345` |
-
-
 
 ---
 
