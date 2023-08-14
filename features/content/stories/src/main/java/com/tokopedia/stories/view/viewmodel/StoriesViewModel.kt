@@ -25,6 +25,8 @@ class StoriesViewModel @Inject constructor(
     private var shopId: String = ""
     private var storiesId: String = ""
     var mGroupPosition = 0
+    var mDetailMaxInGroup = 0
+    var mDetailPosition = 0
 
     private var _storiesGroup = MutableStateFlow(listOf<StoriesGroupUiModel>())
     private var _storiesDetail = MutableStateFlow(StoriesDetailUiModel.Empty)
@@ -45,17 +47,15 @@ class StoriesViewModel @Inject constructor(
 
     init {
         val response = repository.getStoriesData()
-        _storiesGroup.update { response.groups }
+        _storiesGroup.value = response.groups
     }
 
     fun submitAction(action: StoriesUiAction) {
         when (action) {
-            is StoriesUiAction.SetInitialData -> handleSetInitialData(action.data)
-            is StoriesUiAction.SelectGroup -> handleSelectGroup(action.selectedGroup)
-            StoriesUiAction.NextGroup -> handleNextGroup()
-            StoriesUiAction.PreviousGroup -> handlePreviousGroup()
-            StoriesUiAction.NextDetail -> handleNextDetail()
-            StoriesUiAction.PreviousDetail -> handlePreviousDetail()
+            is StoriesUiAction.SetArgumentsData -> handleSetInitialData(action.data)
+            is StoriesUiAction.SetGroupMainData -> handleGroupMainData(action.selectedGroup)
+            StoriesUiAction.NextDetail -> handleNext()
+            StoriesUiAction.PreviousDetail -> handlePrevious()
             StoriesUiAction.PauseStories -> handleOnPauseStories()
             StoriesUiAction.ResumeStories -> handleOnResumeStories()
         }
@@ -66,73 +66,78 @@ class StoriesViewModel @Inject constructor(
         storiesId = data?.getString(STORIES_ID, "").orEmpty()
     }
 
-    private fun handleSelectGroup(selectedGroup: Int) {
+    private fun handleGroupMainData(selectedGroup: Int) {
         viewModelScope.launch {
-            handleResetDetail()
-            mGroupPosition = selectedGroup
-            _storiesGroup.update { group ->
-                group.mapIndexed { index, storiesGroupUiModel ->
-                    if (index == selectedGroup) storiesGroupUiModel.copy(selected = true)
-                    else storiesGroupUiModel.copy(selected = false)
-                }
-            }
-            _storiesDetail.update {
-                val currentDetail = _storiesGroup.value[selectedGroup]
-                currentDetail.details[currentDetail.selectedDetail]
-            }
-            _uiEvent.emit(StoriesUiEvent.SelectGroup(mGroupPosition))
+            setGroupData(selectedGroup)
+            selectGroup(selectedGroup)
         }
     }
 
-    private fun handleNextGroup() {
-        viewModelScope.launch {
-            handleResetDetail()
-            _uiEvent.emit(StoriesUiEvent.SelectGroup(mGroupPosition + 1))
+    private fun handleNext() {
+        val newDetailPosition = mDetailPosition + 1
+        val newGroupPosition = mGroupPosition + 1
+
+        if (newDetailPosition < mDetailMaxInGroup) {
+            selectDetail(position = newDetailPosition)
+        } else {
+            selectGroup(newGroupPosition)
         }
     }
 
-    private fun handlePreviousGroup() {
-        viewModelScope.launch {
-            handleResetDetail()
-            _uiEvent.emit(StoriesUiEvent.SelectGroup(mGroupPosition - 1))
-        }
-    }
-
-    private fun handleResetDetail() {
-        _storiesDetail.update { data ->
-            data.copy(event = StoriesDetailUiEvent.RESTART)
-        }
-    }
-
-    private fun handleNextDetail() {
-        handleResetDetail()
-        _storiesDetail.update { data ->
-            data.copy(
-                selected = data.selected + 1,
-                event = StoriesDetailUiEvent.START,
-            )
-        }
-    }
-
-    private fun handlePreviousDetail() {
-        handleResetDetail()
-        _storiesDetail.update { data ->
-            data.copy(
-                selected = data.selected - 1,
-                event = StoriesDetailUiEvent.START,
-            )
-        }
+    private fun handlePrevious() {
+        updateStoriesDetailData(detailPosition = mDetailPosition - 1)
     }
 
     private fun handleOnPauseStories() {
-        _storiesDetail.update { data ->
-            data.copy(event = StoriesDetailUiEvent.PAUSE)
-        }
+        updateStoriesDetailData(event = StoriesDetailUiEvent.PAUSE)
     }
 
     private fun handleOnResumeStories() {
-        _storiesDetail.update { data ->
-            data.copy(event = StoriesDetailUiEvent.START)
+        updateStoriesDetailData(event = StoriesDetailUiEvent.START)
+    }
+
+    private fun setGroupData(groupPosition: Int) {
+        mGroupPosition = groupPosition
+        updateStoriesGroupSelectedIndicator(groupPosition)
+
+        val selectedDetail = _storiesGroup.value[groupPosition].selectedDetail
+        mDetailMaxInGroup = _storiesGroup.value[groupPosition].details.size
+        updateStoriesDetailData(
+            groupPosition = groupPosition,
+            detailPosition = selectedDetail,
+        )
+    }
+
+    private fun selectGroup(position: Int) {
+        viewModelScope.launch {
+            _uiEvent.emit(StoriesUiEvent.SelectGroup(position))
+        }
+    }
+
+    private fun selectDetail(position: Int) {
+        updateStoriesDetailData(detailPosition = position)
+    }
+
+    private fun updateStoriesGroupSelectedIndicator(position: Int) {
+        _storiesGroup.update { group ->
+            group.mapIndexed { index, storiesGroupUiModel ->
+                storiesGroupUiModel.copy(selected = index == position)
+            }
+        }
+    }
+
+    private fun updateStoriesDetailData(
+        groupPosition: Int = mGroupPosition,
+        detailPosition: Int = mDetailPosition,
+        event: StoriesDetailUiEvent = StoriesDetailUiEvent.START,
+    ) {
+        mDetailPosition = detailPosition
+        _storiesDetail.update {
+            val currentDetail = _storiesGroup.value[groupPosition]
+            currentDetail.details[mDetailPosition].copy(
+                selected = mDetailPosition + 1,
+                event = event,
+            )
         }
     }
 

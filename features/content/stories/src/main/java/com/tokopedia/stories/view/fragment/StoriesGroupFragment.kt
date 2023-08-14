@@ -53,7 +53,7 @@ class StoriesGroupFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModelAction(StoriesUiAction.SetInitialData(arguments))
+        viewModelAction(StoriesUiAction.SetArgumentsData(arguments))
 
         setupViewPager()
         setupObserver()
@@ -67,7 +67,7 @@ class StoriesGroupFragment @Inject constructor(
         adapter = pagerAdapter
         registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                viewModelAction(StoriesUiAction.SelectGroup(position))
+                viewModelAction(StoriesUiAction.SetGroupMainData(position))
                 super.onPageSelected(position)
             }
         })

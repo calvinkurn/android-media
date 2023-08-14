@@ -47,24 +47,6 @@ class StoriesRepositoryImpl @Inject constructor() : StoriesRepository {
                     selected = false,
                     details = listOf(
                         StoriesDetailUiModel(
-                            id = "1",
-                            selected = 1,
-                            event = StoriesDetailUiEvent.START,
-                            imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/12/30/e1ada065-5330-4952-940c-4ff17220a47f.jpg",
-                        ),
-                        StoriesDetailUiModel(
-                            id = "2",
-                            selected = 1,
-                            event = StoriesDetailUiEvent.START,
-                            imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/4/8/61592e1f-6c0d-408d-a535-57a4a6858bf0.jpg",
-                        ),
-                        StoriesDetailUiModel(
-                            id = "3",
-                            selected = 1,
-                            event = StoriesDetailUiEvent.START,
-                            imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
-                        ),
-                        StoriesDetailUiModel(
                             id = "4",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
@@ -78,6 +60,24 @@ class StoriesRepositoryImpl @Inject constructor() : StoriesRepository {
                         ),
                         StoriesDetailUiModel(
                             id = "6",
+                            selected = 1,
+                            event = StoriesDetailUiEvent.START,
+                            imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                        ),
+                        StoriesDetailUiModel(
+                            id = "7",
+                            selected = 1,
+                            event = StoriesDetailUiEvent.START,
+                            imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/12/30/e1ada065-5330-4952-940c-4ff17220a47f.jpg",
+                        ),
+                        StoriesDetailUiModel(
+                            id = "8",
+                            selected = 1,
+                            event = StoriesDetailUiEvent.START,
+                            imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/4/8/61592e1f-6c0d-408d-a535-57a4a6858bf0.jpg",
+                        ),
+                        StoriesDetailUiModel(
+                            id = "9",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
@@ -92,7 +92,13 @@ class StoriesRepositoryImpl @Inject constructor() : StoriesRepository {
                     selected = false,
                     details = listOf(
                         StoriesDetailUiModel(
-                            id = "1",
+                            id = "10",
+                            selected = 1,
+                            event = StoriesDetailUiEvent.START,
+                            imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                        ),
+                        StoriesDetailUiModel(
+                            id = "101",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
@@ -107,37 +113,37 @@ class StoriesRepositoryImpl @Inject constructor() : StoriesRepository {
                     selected = false,
                     details = listOf(
                         StoriesDetailUiModel(
-                            id = "1",
+                            id = "11",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/12/30/e1ada065-5330-4952-940c-4ff17220a47f.jpg",
                         ),
                         StoriesDetailUiModel(
-                            id = "2",
+                            id = "12",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/4/8/61592e1f-6c0d-408d-a535-57a4a6858bf0.jpg",
                         ),
                         StoriesDetailUiModel(
-                            id = "3",
+                            id = "13",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
                         ),
                         StoriesDetailUiModel(
-                            id = "4",
+                            id = "14",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/12/30/e1ada065-5330-4952-940c-4ff17220a47f.jpg",
                         ),
                         StoriesDetailUiModel(
-                            id = "5",
+                            id = "15",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/4/8/61592e1f-6c0d-408d-a535-57a4a6858bf0.jpg",
                         ),
                         StoriesDetailUiModel(
-                            id = "6",
+                            id = "16",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
@@ -152,13 +158,13 @@ class StoriesRepositoryImpl @Inject constructor() : StoriesRepository {
                     selected = false,
                     details = listOf(
                         StoriesDetailUiModel(
-                            id = "1",
+                            id = "17",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/12/30/e1ada065-5330-4952-940c-4ff17220a47f.jpg",
                         ),
                         StoriesDetailUiModel(
-                            id = "2",
+                            id = "18",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/12/30/e1ada065-5330-4952-940c-4ff17220a47f.jpg",
@@ -173,25 +179,25 @@ class StoriesRepositoryImpl @Inject constructor() : StoriesRepository {
                     selected = false,
                     details = listOf(
                         StoriesDetailUiModel(
-                            id = "1",
+                            id = "19",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/12/30/e1ada065-5330-4952-940c-4ff17220a47f.jpg",
                         ),
                         StoriesDetailUiModel(
-                            id = "2",
+                            id = "20",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/4/8/61592e1f-6c0d-408d-a535-57a4a6858bf0.jpg",
                         ),
                         StoriesDetailUiModel(
-                            id = "3",
+                            id = "21",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
                         ),
                         StoriesDetailUiModel(
-                            id = "4",
+                            id = "22",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/12/30/e1ada065-5330-4952-940c-4ff17220a47f.jpg",
@@ -206,19 +212,19 @@ class StoriesRepositoryImpl @Inject constructor() : StoriesRepository {
                     selected = false,
                     details = listOf(
                         StoriesDetailUiModel(
-                            id = "1",
+                            id = "23",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/12/30/e1ada065-5330-4952-940c-4ff17220a47f.jpg",
                         ),
                         StoriesDetailUiModel(
-                            id = "2",
+                            id = "24",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/4/8/61592e1f-6c0d-408d-a535-57a4a6858bf0.jpg",
                         ),
                         StoriesDetailUiModel(
-                            id = "3",
+                            id = "25",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/2/9/11c96da3-c58d-47d8-8d01-b0b4b6f01364.jpg",
@@ -233,7 +239,19 @@ class StoriesRepositoryImpl @Inject constructor() : StoriesRepository {
                     selected = false,
                     details = listOf(
                         StoriesDetailUiModel(
-                            id = "1",
+                            id = "26",
+                            selected = 1,
+                            event = StoriesDetailUiEvent.START,
+                            imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/4/8/61592e1f-6c0d-408d-a535-57a4a6858bf0.jpg",
+                        ),
+                        StoriesDetailUiModel(
+                            id = "266",
+                            selected = 1,
+                            event = StoriesDetailUiEvent.START,
+                            imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/4/8/61592e1f-6c0d-408d-a535-57a4a6858bf0.jpg",
+                        ),
+                        StoriesDetailUiModel(
+                            id = "267",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/4/8/61592e1f-6c0d-408d-a535-57a4a6858bf0.jpg",
@@ -248,13 +266,13 @@ class StoriesRepositoryImpl @Inject constructor() : StoriesRepository {
                     selected = false,
                     details = listOf(
                         StoriesDetailUiModel(
-                            id = "1",
+                            id = "27",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/12/30/e1ada065-5330-4952-940c-4ff17220a47f.jpg",
                         ),
                         StoriesDetailUiModel(
-                            id = "2",
+                            id = "27",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/4/8/61592e1f-6c0d-408d-a535-57a4a6858bf0.jpg",
@@ -269,31 +287,31 @@ class StoriesRepositoryImpl @Inject constructor() : StoriesRepository {
                     selected = false,
                     details = listOf(
                         StoriesDetailUiModel(
-                            id = "1",
+                            id = "28",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/12/30/e1ada065-5330-4952-940c-4ff17220a47f.jpg",
                         ),
                         StoriesDetailUiModel(
-                            id = "2",
+                            id = "29",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/4/8/61592e1f-6c0d-408d-a535-57a4a6858bf0.jpg",
                         ),
                         StoriesDetailUiModel(
-                            id = "3",
+                            id = "30",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
                         ),
                         StoriesDetailUiModel(
-                            id = "4",
+                            id = "31",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/12/30/e1ada065-5330-4952-940c-4ff17220a47f.jpg",
                         ),
                         StoriesDetailUiModel(
-                            id = "5",
+                            id = "32",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/4/8/61592e1f-6c0d-408d-a535-57a4a6858bf0.jpg",

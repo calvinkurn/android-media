@@ -4,12 +4,8 @@ import android.os.Bundle
 
 sealed interface StoriesUiAction {
 
-    data class SetInitialData(val data: Bundle?): StoriesUiAction
-    data class SelectGroup(val selectedGroup: Int): StoriesUiAction
-
-    object NextGroup: StoriesUiAction
-
-    object PreviousGroup: StoriesUiAction
+    data class SetArgumentsData(val data: Bundle?): StoriesUiAction
+    data class SetGroupMainData(val selectedGroup: Int): StoriesUiAction
 
     object NextDetail: StoriesUiAction
 

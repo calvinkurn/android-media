@@ -22,8 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.tokopedia.stories.view.components.indicator.StoriesDetailTimerEvent.NEXT_DETAIL
-import com.tokopedia.stories.view.components.indicator.StoriesDetailTimerEvent.NEXT_GROUP
+import com.tokopedia.stories.view.components.indicator.StoriesDetailTimerEvent.NEXT
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
 
 @Composable
@@ -45,13 +44,12 @@ fun StoriesDetailTimer(
                         easing = LinearEasing,
                     )
                 )
-
-                event.invoke(
-                    if (data.selected >= itemCount) NEXT_GROUP
-                    else NEXT_DETAIL
-                )
             }
-            StoriesDetailUiModel.StoriesDetailUiEvent.RESTART -> { anim.snapTo(0F) }
+        }
+
+        if (anim.value == anim.targetValue) {
+            anim.snapTo(0F)
+            event.invoke(NEXT)
         }
     }
 
@@ -114,5 +112,5 @@ internal fun StoriesDetailTimerPreview() {
 }
 
 enum class StoriesDetailTimerEvent {
-    NEXT_DETAIL, NEXT_GROUP,
+    NEXT,
 }
