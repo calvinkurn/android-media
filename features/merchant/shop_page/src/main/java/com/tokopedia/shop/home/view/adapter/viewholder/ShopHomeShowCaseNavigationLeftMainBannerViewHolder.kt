@@ -14,7 +14,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopHomeShowcaseNavigationLeftMainBannerBinding
 import com.tokopedia.shop.home.util.ShopHomeShowcaseNavigationDependencyProvider
-import com.tokopedia.shop.home.view.fragment.ShopShowcaseFragment
+import com.tokopedia.shop.home.view.fragment.ShopShowcaseNavigationTabWidgetFragment
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseNavigationListener
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationUiModel
 import com.tokopedia.unifycomponents.TabsUnifyMediator
@@ -104,7 +104,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
         val pages = mutableListOf<Pair<String, Fragment>>()
 
         tabs.forEachIndexed { _, currentTab ->
-            val fragment = ShopShowcaseFragment.newInstance(currentTab.showcases)
+            val fragment = ShopShowcaseNavigationTabWidgetFragment.newInstance(currentTab.showcases)
             fragment.setOnShowcaseClick { selectedShowcase ->
                 listener.onShowcaseClick(selectedShowcase)
             }
