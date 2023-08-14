@@ -11,6 +11,7 @@ import dagger.Module
 @Module
 abstract class FeedRepositoryModule {
 
+    @FeedMainScope
     @Binds
     abstract fun bindRepository(feedRepositoryImpl: FeedRepositoryImpl): FeedRepository
 }
