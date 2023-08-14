@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.stories.databinding.FragmentStoriesGroupBinding
 import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.adapter.StoriesGroupPagerAdapter
+import com.tokopedia.stories.view.animation.ZoomOutPageTransformer
 import com.tokopedia.stories.view.model.StoriesGroupUiModel
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
@@ -64,6 +65,7 @@ class StoriesGroupFragment @Inject constructor(
     }
 
     private fun setupViewPager() = with(binding.storiesGroupViewPager) {
+        setPageTransformer(ZoomOutPageTransformer())
         adapter = pagerAdapter
         registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
