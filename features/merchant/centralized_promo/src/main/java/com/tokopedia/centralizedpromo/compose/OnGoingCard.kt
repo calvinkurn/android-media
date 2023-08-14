@@ -41,10 +41,12 @@ fun OnGoingCard(
     title: String,
     counter: Int,
     counterTitle: String,
+    modifier: Modifier = Modifier,
     onTitleClicked: () -> Unit = {},
     onFooterClicked: () -> Unit = {}
 ) {
     OnGoingCardContainer(
+        modifier = modifier,
         headerContent = {
             NestTypography(
                 text = title.uppercase(),
@@ -88,10 +90,11 @@ fun OnGoingCard(
 @Composable
 private fun OnGoingCardContainer(
     headerContent: @Composable RowScope.() -> Unit,
-    footerContent: @Composable RowScope.() -> Unit
+    footerContent: @Composable RowScope.() -> Unit,
+    modifier: Modifier = Modifier
 ) {
     NestCard(
-        modifier = Modifier.wrapContentHeight().width(160.dp).padding(start = 1.dp), type = Shadow
+        modifier = modifier.wrapContentHeight().width(160.dp).padding(start = 1.dp), type = Shadow
     ) {
         Column(verticalArrangement = Arrangement.Center) {
             Row(modifier = Modifier.padding(8.dp)) {

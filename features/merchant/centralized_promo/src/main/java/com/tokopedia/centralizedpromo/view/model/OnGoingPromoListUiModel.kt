@@ -2,6 +2,7 @@ package com.tokopedia.centralizedpromo.view.model
 
 import com.tokopedia.centralizedpromo.view.adapter.CentralizedPromoAdapterTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.nest.principles.utils.ImpressionHolder
 
 data class OnGoingPromoListUiModel(
         val title: String,
@@ -15,6 +16,8 @@ data class OnGoingPromoUiModel(
         val footer: Footer
 ) : BaseUiListItemModel<CentralizedPromoAdapterTypeFactory> {
     override val impressHolder: ImpressHolder = ImpressHolder()
+
+    val impressHolderCompose: ImpressionHolder = ImpressionHolder()
 
     override fun type(typeFactory: CentralizedPromoAdapterTypeFactory): Int {
         return typeFactory.type(this)
