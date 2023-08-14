@@ -659,7 +659,7 @@ class AddEditProductPreviewFragment :
 
         if (isSingleProductVariant) {
             DialogUtil.showSingleProductVariantDialog(context ?: return) {
-                viewModel.productInputModel.getValueOrDefault().convertToNonVariant()
+                viewModel.convertToNonVariant()
             }
         } else if (mustFillParentWeight) {
             Toaster.build(

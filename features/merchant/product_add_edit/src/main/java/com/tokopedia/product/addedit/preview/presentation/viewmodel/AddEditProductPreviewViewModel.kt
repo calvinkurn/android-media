@@ -38,6 +38,7 @@ import com.tokopedia.product.addedit.productlimitation.domain.usecase.ProductLim
 import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
 import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
 import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
+import com.tokopedia.product.addedit.variant.presentation.extension.getValueOrDefault
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel.Result.*
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
@@ -694,5 +695,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     private fun isPictureFromInternet(urlOrPath: String): Boolean {
         return urlOrPath.contains(PREFIX_CACHE)
+    }
+
+    fun convertToNonVariant() {
+        productInputModel.getValueOrDefault().convertToNonVariant()
+        productInputModel.value = productInputModel.value // refresh and re-trigger livedata changes
     }
 }
