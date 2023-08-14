@@ -265,4 +265,5 @@
     <string name="tokopedianow_similar_product_bottom_sheet_title">Produk serupa</string>
     <string name="tokopedianow_product_ads_carousel_title">Penawaran spesial</string>
     <string name="tokopedianow_home_header_subtitle"><![CDATA[<b>%1$s &#8226;</b> %2$s]]></string>
+    <string name="tokopedianow_buyer_communication_title">Info Tokopedia NOW!</string>
 </resources>
