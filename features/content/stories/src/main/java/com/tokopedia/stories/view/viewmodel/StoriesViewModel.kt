@@ -93,7 +93,7 @@ class StoriesViewModel @Inject constructor(
     }
 
     private fun handleOnResumeStories() {
-        updateStoriesDetailData(event = StoriesDetailUiEvent.START)
+        updateStoriesDetailData(event = StoriesDetailUiEvent.RESUME)
     }
 
     private fun setGroupData(groupPosition: Int) {

@@ -36,7 +36,17 @@ fun StoriesDetailTimer(
     LaunchedEffect(data) {
         when (data.event) {
             StoriesDetailUiModel.StoriesDetailUiEvent.PAUSE -> anim.stop()
+            StoriesDetailUiModel.StoriesDetailUiEvent.RESUME -> {
+                anim.animateTo(
+                    targetValue = 1f,
+                    animationSpec = tween(
+                        durationMillis = (3000 * (1f - anim.value)).toInt(),
+                        easing = LinearEasing,
+                    )
+                )
+            }
             StoriesDetailUiModel.StoriesDetailUiEvent.START -> {
+                anim.snapTo(0F)
                 anim.animateTo(
                     targetValue = 1f,
                     animationSpec = tween(
