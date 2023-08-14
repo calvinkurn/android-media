@@ -19,14 +19,9 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
     fun bind(promoModel: CheckoutPromoModel) {
         if (!promoModel.isEnable) {
             binding.root.gone()
-//            binding.root.layoutParams = RecyclerView.LayoutParams(0, 0)
             return
         } else {
             binding.root.visible()
-//            binding.root.layoutParams = RecyclerView.LayoutParams(
-//                ViewGroup.LayoutParams.MATCH_PARENT,
-//                ViewGroup.LayoutParams.WRAP_CONTENT
-//            )
         }
 
         val titleValue: String

@@ -14,7 +14,7 @@ class CartCheckoutRevampRollenceManager @Inject constructor(private val abTestPl
             if (currentValue == null) {
                 currentValue = abTestPlatform.getString(RollenceKey.CART_CHECKOUT_REVAMP)
             }
-            return currentValue ?: "" == ""
+            return (currentValue ?: "") == RollenceKey.CART_CHECKOUT_NEW
         } catch (t: Throwable) {
             Timber.d(t)
             return getDefaultValue()
