@@ -3,11 +3,11 @@ package com.tokopedia.scp_rewards_touchpoints.touchpoints.domain
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.scp_rewards_touchpoints.touchpoints.model.ScpRewardsMedaliTouchPointModel
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response.ScpRewardsMedalTouchPointResponse
 import javax.inject.Inject
 
 @GqlQuery("scpRewardsMedaliTouchpointOrder", SCP_TOASTER_QUERY)
-class ScpRewardsMedaliTouchPointUseCase @Inject constructor() : GraphqlUseCase<ScpRewardsMedaliTouchPointModel>() {
+class ScpRewardsMedalTouchPointUseCase @Inject constructor() : GraphqlUseCase<ScpRewardsMedalTouchPointResponse>() {
 
     companion object {
         private const val API_VERSION_KEY = "apiVersion"
@@ -21,8 +21,8 @@ class ScpRewardsMedaliTouchPointUseCase @Inject constructor() : GraphqlUseCase<S
         orderId: Long,
         pageName: String,
         sourceName: String
-    ): ScpRewardsMedaliTouchPointModel {
-        setTypeClass(ScpRewardsMedaliTouchPointModel::class.java)
+    ): ScpRewardsMedalTouchPointResponse {
+        setTypeClass(ScpRewardsMedalTouchPointResponse::class.java)
         setGraphqlQuery(ScpRewardsMedaliTouchpointOrder())
         setRequestParams(getRequestParams(orderId, pageName, sourceName))
         val result = executeOnBackground()
@@ -55,6 +55,8 @@ query scpRewardsMedaliTouchpointOrder(${'$'}apiVersion: String, ${'$'}pageName: 
       medaliSlug
       medaliIconImageURL
       medaliSunburstImageURL
+      medaliIconImageURLWidget
+      backgroundImageURL
       infoMessage {
         title
         subtitle

@@ -16,9 +16,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_DRAGGING
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
@@ -240,7 +240,26 @@ class FeedFragment :
 
     private var feedFollowersOnlyBottomSheet: FeedFollowersOnlyBottomSheet? = null
 
-    private val layoutManager by lazy { FeedPostLayoutManager(context) }
+    private val layoutManager by lazy {
+        FeedPostLayoutManager(
+            context,
+            object : FeedPostLayoutManager.Listener {
+                override fun onScrolling(
+                    layoutManager: LinearLayoutManager,
+                    isOverScroll: Boolean
+                ) {
+                    if (isOverScroll) {
+                        adapter.stopScrolling()
+                        return
+                    }
+
+                    if (binding.rvFeedPost.scrollState == RecyclerView.SCROLL_STATE_IDLE) return
+                    adapter.onScrolling()
+                }
+            }
+        )
+    }
+
     private val contentScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             // update item state and send tracker
@@ -252,10 +271,8 @@ class FeedFragment :
 
                 val position = getCurrentPosition()
                 updateBottomActionView(position)
+
                 adapter.select(position)
-            } else if (newState == SCROLL_STATE_DRAGGING) {
-                val position = getCurrentPosition()
-                adapter.onScrolling(position)
             }
         }
     }

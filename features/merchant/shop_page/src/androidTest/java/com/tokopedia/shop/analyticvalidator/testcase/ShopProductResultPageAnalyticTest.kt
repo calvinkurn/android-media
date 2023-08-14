@@ -42,6 +42,8 @@ class ShopProductResultPageAnalyticTest {
         private const val SHOP_PAGE_PRODUCT_RESULT_PAGE_PRODUCT_CARD_TRACKER_MATCHER_PATH = "tracker/shop/shop_page_product_result_product_card_tracker.json"
         private const val SHOP_PAGE_PRODUCT_RESULT_PAGE_CLICK_SORT_TRACKER_MATCHER_PATH = "tracker/shop/shop_page_product_result_page_click_sort_tracker.json"
         private const val SAMPLE_SHOP_ID = "3418893"
+        private const val SAMPLE_ETALASE = "etalase"
+
     }
 
     @get:Rule
@@ -57,6 +59,7 @@ class ShopProductResultPageAnalyticTest {
         activityRule.launchActivity(
             Intent().apply {
                 putExtra(ShopParamConstant.EXTRA_SHOP_ID, SAMPLE_SHOP_ID)
+                putExtra(ShopParamConstant.EXTRA_ETALASE_ID,SAMPLE_ETALASE)
             }
         )
     }
@@ -71,7 +74,7 @@ class ShopProductResultPageAnalyticTest {
 
     private fun validateTracker() {
         activityRule.activity.finish()
-        waitForData(2000)
+        waitForData(5000)
         // click sort tracker
         doAnalyticDebuggerTest(SHOP_PAGE_PRODUCT_RESULT_PAGE_CLICK_SORT_TRACKER_MATCHER_PATH)
 
