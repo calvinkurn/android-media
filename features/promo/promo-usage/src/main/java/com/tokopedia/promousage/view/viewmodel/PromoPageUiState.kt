@@ -9,8 +9,6 @@ sealed class PromoPageUiState {
 
     object Initial : PromoPageUiState()
 
-    object Loading : PromoPageUiState()
-
     data class Success(
         val tickerInfo: PromoPageTickerInfo,
         val items: List<DelegateAdapterItem>,

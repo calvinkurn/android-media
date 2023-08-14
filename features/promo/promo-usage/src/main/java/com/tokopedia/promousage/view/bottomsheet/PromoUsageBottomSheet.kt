@@ -30,6 +30,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setTextColorCompat
@@ -253,6 +254,13 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         binding.btnBottomSheetHeaderClose.setOnClickListener {
             dismiss()
         }
+        binding.clTickerInfo.gone()
+        binding.clBottomSheetContent.background = BottomSheetUtil
+            .generateBackgroundDrawableWithColor(
+                binding.root.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_Background
+            )
+        binding.ivPromoRecommendationBackground.invisible()
         binding.rvPromo.itemAnimator = null
         binding.rvPromo.layoutManager = LinearLayoutManager(context)
         binding.rvPromo.adapter = recyclerViewAdapter
@@ -266,6 +274,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 binding.tpgTotalAmount.visible()
                 binding.cvTotalAmount.visible()
                 binding.buttonBuy.setOnClickListener {
+                    renderLoadingDialog(true)
                     viewModel.onClickBuy(
                         entryPoint = entryPoint,
                         validateUsePromoRequest = validateUsePromoRequest,
@@ -289,6 +298,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 )
                 binding.buttonBuy.setDrawable(icon)
                 binding.buttonBuy.setOnClickListener {
+                    renderLoadingDialog(true)
                     viewModel.onClickBuy(
                         entryPoint = entryPoint,
                         validateUsePromoRequest = validateUsePromoRequest,
@@ -482,6 +492,8 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             when (state) {
 
                 is PromoPageUiState.Initial -> {
+                    renderContent(false)
+                    renderLoadingDialog(false)
                     renderLoadingShimmer(true)
                 }
 
@@ -489,18 +501,14 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     renderTickerInfo(state.tickerInfo)
                     renderRecyclerView(state.items)
                     renderSavingInfo(state.savingInfo)
-                    renderLoadingShimmer(false)
                     renderLoadingDialog(false)
+                    renderLoadingShimmer(false)
                     renderContent(true)
                 }
 
                 is PromoPageUiState.Error -> {
-                    renderLoadingDialog(false)
-                    renderContent(false)
-                }
-
-                is PromoPageUiState.Loading -> {
-                    renderLoadingDialog(true)
+                    //renderLoadingDialog(false)
+                    //renderContent(false)
                 }
 
                 else -> {
@@ -534,6 +542,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             clBottomSheetContent.clipToOutline = true
             clBottomSheetContent.clipChildren = true
             ivPromoRecommendationBackground.loadImage(promoRecommendation.backgroundUrl)
+            ivPromoRecommendationBackground.visible()
         }
     }
 
@@ -618,6 +627,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             }
             rlBottomSheetWrapper.clipToOutline = true
             clBottomSheetContent.clipChildren = true
+            clSavingInfo.isVisible = isVisible
             clBottomSheetHeader.isVisible = isVisible
             rvPromo.isVisible = isVisible
             cvTotalAmount.isVisible = isVisible
@@ -641,7 +651,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 )
             }
             tpgTotalSavings.text = MethodChecker.fromHtml(text)
-            layoutSavingInfo.isVisible = promoSavingInfo.selectedPromoCount.isMoreThanZero()
+            clSavingInfo.isVisible = promoSavingInfo.selectedPromoCount.isMoreThanZero()
         }
     }
 

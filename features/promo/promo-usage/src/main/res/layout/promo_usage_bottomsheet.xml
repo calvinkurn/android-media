@@ -64,13 +64,13 @@
         android:id="@+id/clBottomSheetContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/layoutSavingInfo"
+        android:layout_above="@+id/clSavingInfo"
         android:layout_below="@id/clTickerInfo"
         android:layout_marginTop="-12dp">
 
         <ImageView
             android:id="@+id/ivPromoRecommendationBackground"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -153,7 +153,7 @@
 
     <!--Total Savings-->
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layoutSavingInfo"
+        android:id="@+id/clSavingInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/cvTotalAmount"

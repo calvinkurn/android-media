@@ -91,12 +91,7 @@ internal class PromoUsageViewModel @Inject constructor(
         attemptedPromoCode: String = "",
         onSuccess: (() -> Unit)? = null
     ) {
-        val currentState = _promoPageUiState.value
-        if (currentState is PromoPageUiState.Success) {
-            _promoPageUiState.postValue(PromoPageUiState.Loading)
-        } else {
-            _promoPageUiState.postValue(PromoPageUiState.Initial)
-        }
+        _promoPageUiState.postValue(PromoPageUiState.Initial)
 
         // Reset pre-selected promo param
         var newPromoRequest = promoRequest?.copy() ?: PromoRequest()
@@ -450,7 +445,6 @@ internal class PromoUsageViewModel @Inject constructor(
         validateUsePromoRequest: ValidateUsePromoRequest,
         boPromoCodes: List<String>
     ) {
-        _promoPageUiState.postValue(PromoPageUiState.Loading)
         if (entryPoint == PromoPageEntryPoint.CART_PAGE) {
             onApplyPromo(validateUsePromoRequest, boPromoCodes)
         } else if (entryPoint == PromoPageEntryPoint.ONE_CLICK_CHECKOUT_PAGE) {
@@ -935,50 +929,6 @@ internal class PromoUsageViewModel @Inject constructor(
             attemptedPromoCode = attemptedPromoCode,
             onSuccess = onSuccess
         )
-    }
-
-    private fun unselectAllSelectedPromo(
-        onSuccess: (() -> Unit)? = null
-    ) {
-        _promoPageUiState.ifSuccess { pageState ->
-            val currentItems = pageState.items
-            val updatedItems = currentItems.map { item ->
-                if (item is PromoItem) {
-                    item.copy(state = PromoItemState.Normal)
-                } else {
-                    item
-                }
-            }
-            val updatedSavingInfo = calculatePromoSavingInfo(updatedItems)
-            _promoPageUiState.postValue(
-                pageState.copy(
-                    items = updatedItems,
-                    savingInfo = updatedSavingInfo
-                )
-            )
-            onSuccess?.invoke()
-        }
-    }
-
-    private fun unselectAllSelectedPromoInSection(headerId: String) {
-        val pageState = _promoPageUiState.value
-        if (pageState is PromoPageUiState.Success) {
-            val currentItems = pageState.items
-            val updatedItems = currentItems.map { item ->
-                if (item is PromoItem && item.headerId == headerId) {
-                    item.copy(state = PromoItemState.Normal)
-                } else {
-                    item
-                }
-            }
-            val updatedSavingInfo = calculatePromoSavingInfo(updatedItems)
-            _promoPageUiState.postValue(
-                pageState.copy(
-                    items = updatedItems,
-                    savingInfo = updatedSavingInfo
-                )
-            )
-        }
     }
 }
 
