@@ -3,16 +3,15 @@ package com.tokopedia.editor.ui.text
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.FrameLayout
 import androidx.activity.viewModels
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.editor.R
+import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.editor.R as editorR
 import com.tokopedia.editor.di.ModuleInjector
 import com.tokopedia.editor.ui.EditorFragmentProvider
 import com.tokopedia.editor.ui.EditorFragmentProviderImpl
-import com.tokopedia.editor.ui.main.MainEditorViewModel
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
 import com.tokopedia.picker.common.component.ToolbarTheme
@@ -41,7 +40,7 @@ class InputTextActivity : BaseActivity(), NavToolbarComponent.Listener {
         supportFragmentManager.fragmentFactory = fragmentFactory
 
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_input_text)
+        setContentView(editorR.layout.activity_input_text)
 
         initFragment()
         initView()
@@ -80,14 +79,14 @@ class InputTextActivity : BaseActivity(), NavToolbarComponent.Listener {
     private fun setupToolbar() {
         toolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
         toolbar.showContinueButtonAs(true)
-        toolbar.setTitle(getString(R.string.universal_editor_nav_bar_add_text))
+        toolbar.setTitle(getString(editorR.string.universal_editor_nav_bar_add_text))
     }
 
     private fun initFragment() {
         val fragment = fragmentProvider().inputTextFragment()
 
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_view, fragment, "Tag")
+            .replace(editorR.id.fragment_view, fragment, "Tag")
             .commit()
     }
 
@@ -102,6 +101,29 @@ class InputTextActivity : BaseActivity(), NavToolbarComponent.Listener {
         ModuleInjector
             .get(this)
             .inject(this)
+    }
+
+    private fun showExitConfirmationDialog() {
+        DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+            setTitle(getString(editorR.string.universal_editor_input_tool_confirmation_title))
+            setDescription(getString(editorR.string.universal_editor_input_tool_confirmation_desc))
+
+            dialogPrimaryCTA.apply {
+                text = getString(editorR.string.universal_editor_input_tool_confirmation_primary_cta)
+                setOnClickListener {
+                    // TODO: implement function
+                }
+            }
+
+            dialogSecondaryLongCTA.apply {
+                text = getString(editorR.string.universal_editor_input_tool_confirmation_secondary_cta)
+                setOnClickListener {
+                    // TODO: implement function
+                }
+            }
+
+            show()
+        }
     }
 
     companion object {

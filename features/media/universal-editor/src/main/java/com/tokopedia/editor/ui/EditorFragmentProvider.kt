@@ -21,7 +21,7 @@ interface ImageFragmentProvider {
     /**
      * This tool allows user to scale, rotate, crop, nor resize the image within canvas.
      */
-    fun imagePlacementFragment(): Fragment
+    fun placementImageFragment(): Fragment
 }
 
 interface VideoFragmentProvider {

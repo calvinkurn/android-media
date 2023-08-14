@@ -17,6 +17,7 @@ import com.tokopedia.editor.ui.EditorFragmentProviderImpl
 import com.tokopedia.editor.ui.main.component.NavigationToolUiComponent
 import com.tokopedia.editor.ui.main.component.PagerContainerUiComponent
 import com.tokopedia.editor.ui.model.InputTextModel
+import com.tokopedia.editor.ui.placement.PlacementImageActivity
 import com.tokopedia.editor.ui.text.InputTextActivity
 import com.tokopedia.editor.ui.widget.DynamicTextCanvasView
 import com.tokopedia.picker.common.EXTRA_UNIVERSAL_EDITOR_PARAM
@@ -80,6 +81,12 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
         Toast.makeText(this, result?.text, Toast.LENGTH_LONG).show()
     }
 
+    private val placementIntent = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        // TODO, implement
+    }
+
     private val viewModel: MainEditorViewModel by viewModels { viewModelFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -136,7 +143,11 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
                 inputTextIntent.launch(intent)
                 this.overridePendingTransition(0,0)
             }
-            ToolType.PLACEMENT -> {}
+            ToolType.PLACEMENT -> {
+                val intent = PlacementImageActivity.create(this)
+                intent.putExtra(PLACEMENT_PARAM_KEY, "")
+                placementIntent.launch(intent)
+            }
             ToolType.AUDIO_MUTE -> {}
             ToolType.TRIM -> {}
             else -> Unit
@@ -178,5 +189,9 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
         return (1..length)
             .map { allowedChars.random() }
             .joinToString("")
+    }
+
+    companion object {
+        const val PLACEMENT_PARAM_KEY = "placement_param_key"
     }
 }

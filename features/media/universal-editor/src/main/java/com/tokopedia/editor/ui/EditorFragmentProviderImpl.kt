@@ -3,9 +3,9 @@ package com.tokopedia.editor.ui
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.editor.ui.main.fragment.image.main.ImageMainEditorFragment
-import com.tokopedia.editor.ui.main.fragment.image.placement.ImagePlacementFragment
 import com.tokopedia.editor.ui.text.InputTextFragment
 import com.tokopedia.editor.ui.main.fragment.video.VideoMainEditorFragment
+import com.tokopedia.editor.ui.placement.PlacementImageFragment
 
 internal class EditorFragmentProviderImpl constructor(
     private val fragmentManager: FragmentManager,
@@ -24,8 +24,8 @@ internal class EditorFragmentProviderImpl constructor(
         return create(ImageMainEditorFragment::class.java.name) as ImageMainEditorFragment
     }
 
-    override fun imagePlacementFragment(): Fragment {
-        return create(ImagePlacementFragment::class.java.name) as ImagePlacementFragment
+    override fun placementImageFragment(): Fragment {
+        return create(PlacementImageFragment::class.java.name) as PlacementImageFragment
     }
 
     // -- vod -- //
