@@ -159,7 +159,7 @@
         tools:text="Toko Adidas"
         tools:visibility="visible" />
 
-    <com.tokopedia.iconunify.IconUnify
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_checkout_bmgm_badge"
         android:layout_width="16dp"
         android:layout_height="16dp"
@@ -169,13 +169,13 @@
         android:layout_marginEnd="4dp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tv_checkout_bmgm_desc"
+        app:layout_constraintEnd_toStartOf="@id/tv_checkout_bmgm_title"
         app:layout_constraintTop_toBottomOf="@id/iv_checkout_shop_badge"
         app:unify_image_type="rect"
         tools:visibility="visible"/>
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_checkout_bmgm_desc"
+        android:id="@+id/tv_checkout_bmgm_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -203,7 +203,7 @@
         app:layout_constraintTop_toTopOf="@id/iv_checkout_bmgm_badge"
         app:layout_constraintBottom_toBottomOf="@id/iv_checkout_bmgm_badge"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/tv_checkout_bmgm_desc"
+        app:layout_constraintStart_toEndOf="@id/tv_checkout_bmgm_title"
         app:unify_image_type="rect"
         app:icon_name="INFORMATION"/>
 
@@ -217,7 +217,7 @@
         app:tickerShapeType="loose"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_checkout_bmgm_desc"
+        app:layout_constraintTop_toBottomOf="@id/tv_checkout_bmgm_title"
         app:tickerType="error" />
 
     <FrameLayout
@@ -229,6 +229,8 @@
         app:layout_constraintTop_toBottomOf="@id/checkout_ticker_product_error">
 
         <include layout="@layout/layout_checkout_product_bundle" />
+
+        <include layout="@layout/layout_checkout_product_bmgm" />
 
         <include layout="@layout/layout_checkout_product" />
 

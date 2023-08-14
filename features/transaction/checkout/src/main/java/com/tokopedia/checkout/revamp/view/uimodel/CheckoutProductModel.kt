@@ -84,6 +84,12 @@ data class CheckoutProductModel(
     val addOnProduct: AddOnProductDataModel = AddOnProductDataModel(),
     val addOnGiftingWording: AddOnGiftingWordingModel = AddOnGiftingWordingModel(),
 
+    // bmgm data
+    val isBMGMItem: Boolean = false,
+    val bmgmTitle: String = "",
+    val bmgmIconUrl: String = "",
+    val bmgmTotalDiscount: Double = 0.0,
+
     // shop data
     val shopId: String = "",
     val shopName: String = "",

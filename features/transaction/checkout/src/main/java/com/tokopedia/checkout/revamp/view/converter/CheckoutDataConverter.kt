@@ -521,7 +521,11 @@ class CheckoutDataConverter @Inject constructor() {
             groupPreOrderInfo = if (groupShop.shipmentInformationData.preorder.isPreorder) groupShop.shipmentInformationData.preorder.duration else "",
             freeShippingBadgeUrl = groupShop.shipmentInformationData.freeShippingGeneral.badgeUrl,
             isFreeShippingPlus = groupShop.shipmentInformationData.freeShippingGeneral.isBoTypePlus(),
-            shouldShowGroupInfo = index == 0
+            shouldShowGroupInfo = index == 0,
+            isBMGMItem = product.isBMGMItem,
+            bmgmTitle = product.bmgmTitle,
+            bmgmIconUrl = product.bmgmIconUrl,
+            bmgmTotalDiscount = product.bmgmTotalDiscount
         )
     }
 

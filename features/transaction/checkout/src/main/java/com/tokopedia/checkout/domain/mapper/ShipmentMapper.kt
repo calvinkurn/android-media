@@ -412,6 +412,24 @@ class ShipmentMapper @Inject constructor() {
                         isBundlingItem = false
                         bundleId = "0"
                     }
+                    if (cartDetail.cartDetailInfo.cartDetailType.lowercase() == CART_DETAIL_TYPE_BMGM) {
+                        isBMGMItem = true
+                        bmgmIconUrl = cartDetail.cartDetailInfo.bmgm.offerIcon
+                        for (tier in cartDetail.cartDetailInfo.bmgm.tiersApplied) {
+                            if (tier.listProduct.any { it.productId == productId }) {
+                                bmgmTitle = tier.tierMessage
+                            }
+                        }
+                        bmgmItemPosition = if (cartDetail.products.firstOrNull()?.productId == productId) {
+                            BMGM_ITEM_HEADER
+                        } else {
+                            BMGM_ITEM_DEFAULT
+                        }
+                        bmgmTotalDiscount = cartDetail.cartDetailInfo.bmgm.totalDiscount
+                        // TODO: [Misael] Map bmgm products
+                    } else {
+                        isBMGMItem = false
+                    }
                     addOnGiftingProduct = mapAddOnsGiftingData(product.addOns)
                     ethicalDrugs = mapEthicalDrugData(product.ethicalDrugResponse)
                     addOnProduct = mapAddOnsProductData(product.addOnsProduct, product.productQuantity)
@@ -1265,6 +1283,8 @@ class ShipmentMapper @Inject constructor() {
         private const val SHOP_TYPE_GOLD_MERCHANT = "gold_merchant"
         private const val SHOP_TYPE_REGULER = "reguler"
 
+        private const val CART_DETAIL_TYPE_BMGM = "bmgm"
+
         const val DISABLED_DROPSHIPPER = "dropshipper"
         const val DISABLED_ORDER_PRIORITY = "order_prioritas"
         const val DISABLED_EGOLD = "egold"
@@ -1275,5 +1295,8 @@ class ShipmentMapper @Inject constructor() {
         const val BUNDLING_ITEM_DEFAULT = 0
         const val BUNDLING_ITEM_HEADER = 1
         const val BUNDLING_ITEM_FOOTER = 2
+
+        const val BMGM_ITEM_DEFAULT = 0
+        const val BMGM_ITEM_HEADER = 1
     }
 }

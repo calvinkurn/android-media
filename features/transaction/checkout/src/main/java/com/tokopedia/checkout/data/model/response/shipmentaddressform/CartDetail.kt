@@ -7,6 +7,8 @@ data class CartDetail(
     val errors: List<String> = emptyList(),
     @SerializedName("bundle_detail")
     val bundleDetail: BundleDetail = BundleDetail(),
+    @SerializedName("cart_detail_info")
+    val cartDetailInfo: CartDetailInfo = CartDetailInfo(),
     @SerializedName("products")
     val products: List<Product> = emptyList()
 )

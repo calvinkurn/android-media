@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.databinding.ItemCheckoutProductBinding
 import com.tokopedia.checkout.databinding.LayoutCheckoutProductBinding
+import com.tokopedia.checkout.databinding.LayoutCheckoutProductBmgmBinding
 import com.tokopedia.checkout.databinding.LayoutCheckoutProductBundleBinding
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
@@ -23,12 +24,15 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.databinding.ItemAddOnProductBinding
 import com.tokopedia.purchase_platform.common.utils.getHtmlFormat
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -50,12 +54,17 @@ class CheckoutProductViewHolder(
     private val bundleBinding: LayoutCheckoutProductBundleBinding =
         LayoutCheckoutProductBundleBinding.bind(binding.root)
 
+    private val bmgmBinding: LayoutCheckoutProductBmgmBinding =
+        LayoutCheckoutProductBmgmBinding.bind(binding.root)
+
     private var delayChangeCheckboxAddOnState: Job? = null
 
     fun bind(product: CheckoutProductModel) {
         renderErrorAndWarningGroup(product)
         if (product.isBundlingItem) {
             renderBundleItem(product)
+        } else if (product.isBMGMItem) {
+            renderBMGMItem(product)
         } else {
             renderProductItem(product)
         }
@@ -65,6 +74,7 @@ class CheckoutProductViewHolder(
     @SuppressLint("SetTextI18n")
     private fun renderBundleItem(product: CheckoutProductModel) {
         hideProductViews()
+        hideBMGMViews()
         renderGroupInfo(product)
         renderShopInfo(product)
 
@@ -119,6 +129,28 @@ class CheckoutProductViewHolder(
         renderAddOnGiftingProductLevel(product)
     }
 
+    private fun renderBMGMItem(product: CheckoutProductModel) {
+        hideProductViews()
+        hideBundleViews()
+        renderGroupInfo(product)
+        renderShopInfo(product)
+
+        with(bmgmBinding) {
+//            ivProductBmgmImage.setImage()
+            tvProductBmgmName.text = "Product Name"
+            tvVariantBmgm.text = "Product Variant"
+            tvCheckoutBmgmPrice.text = "Rp 123.456.789"
+            tvProductBmgmNote.text = "Product Note"
+
+            if (product.variant.isNotBlank()) {
+                tvVariantBmgm.text = product.variant
+                tvVariantBmgm.isVisible = true
+            } else {
+                tvVariantBmgm.isVisible = false
+            }
+        }
+    }
+
     private fun hideProductViews() {
         productBinding.apply {
             ivProductImage.isVisible = false
@@ -135,6 +167,7 @@ class CheckoutProductViewHolder(
     @SuppressLint("SetTextI18n")
     private fun renderProductItem(product: CheckoutProductModel) {
         hideBundleViews()
+        hideBMGMViews()
         renderGroupInfo(product)
         renderShopInfo(product)
 
@@ -192,6 +225,27 @@ class CheckoutProductViewHolder(
         }
     }
 
+    // TODO: [Misael] taro fungsi render disini biar rapih
+
+    private fun hideBMGMViews() {
+        // TODO: [Misael] Maybe call this function on renderBundleItem and renderProductItem
+        with(bmgmBinding) {
+            tvCheckoutBmgm.hide()
+            tvCheckoutBmgmSeparator.hide()
+            tvProductBmgmName.hide()
+            tvCheckoutBmgmPrice.hide()
+            vBmgmProductSeparator.hide()
+            ivProductBmgmImage.hide()
+            tvProductBmgmName.hide()
+            tvVariantBmgm.hide()
+            tvProductBmgmNote.hide()
+            // TODO: [Misael] Check if need to delet
+            tvCheckoutBmgmAddons.hide()
+            tvCheckoutBmgmAddonsSeeAll.hide()
+            llAddonProductBmgmItems.hide()
+        }
+    }
+
     private fun renderGroupInfo(product: CheckoutProductModel) {
         if (product.shouldShowGroupInfo) {
             binding.vDividerOrder.isVisible = product.orderNumber > 1
@@ -235,6 +289,7 @@ class CheckoutProductViewHolder(
             } else {
                 binding.imgFreeShipping.isVisible = false
             }
+            renderBMGMGroupInfo(product)
         } else {
             binding.vDividerOrder.isVisible = false
             binding.tvCheckoutOrderNumber.isVisible = false
@@ -242,6 +297,26 @@ class CheckoutProductViewHolder(
             binding.ivCheckoutOrderBadge.isVisible = false
             binding.tvCheckoutOrderName.isVisible = false
             binding.imgFreeShipping.isVisible = false
+        }
+    }
+
+    private fun renderBMGMGroupInfo(product: CheckoutProductModel) {
+        with(binding) {
+            if (product.isBMGMItem) {
+                ivCheckoutBmgmBadge.setImageUrl(product.bmgmIconUrl)
+                tvCheckoutBmgmTitle.text = product.bmgmTitle
+                ivCheckoutBmgmDetail.setOnClickListener {
+                    // TODO: [Misael] Applink show mini cart detail punya ka Ilham
+                }
+
+                ivCheckoutBmgmBadge.show()
+                tvCheckoutBmgmTitle.show()
+                ivCheckoutBmgmDetail.show()
+            } else {
+                ivCheckoutBmgmBadge.hide()
+                tvCheckoutBmgmTitle.hide()
+                ivCheckoutBmgmDetail.hide()
+            }
         }
     }
 

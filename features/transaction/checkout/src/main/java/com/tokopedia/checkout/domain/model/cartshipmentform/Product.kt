@@ -62,10 +62,17 @@ data class Product(
     var ethicalDrugs: EthicalDrugDataModel = EthicalDrugDataModel(),
     var addOnProduct: AddOnProductDataModel = AddOnProductDataModel(),
 
+    // bmgm
+    var isBMGMItem: Boolean = false,
+    var bmgmIconUrl: String = "",
+    var bmgmTitle: String = "",
+    var bmgmItemPosition: Int = 0,
+    var bmgmTotalDiscount: Double = 0.0,
+
     // new
     val shouldShowShopInfo: Boolean = false,
     val shopName: String = "",
     val shopTypeInfoData: ShopTypeInfoData = ShopTypeInfoData(),
     val originWarehouseIds: List<Long> = emptyList(),
-    var campaignId: Int = -1
+    var campaignId: Int = -1,
 ) : Parcelable
