@@ -108,8 +108,7 @@ class CheckoutCartProcessor @Inject constructor(
                 return CheckoutPageState.Error(
                     MessageErrorException(
                         cartShipmentAddressFormData.errorMessage
-                    ),
-                    true
+                    )
                 )
             }
         } else {
@@ -117,14 +116,20 @@ class CheckoutCartProcessor @Inject constructor(
             val userAddress = groupAddressList.firstOrNull()?.userAddress
             return validateRenderCheckoutPage(
                 cartShipmentAddressFormData,
-                userAddress
+                userAddress,
+                isOneClickShipment,
+                isTradeIn,
+                isTradeInDropOff
             )
         }
     }
 
     private fun validateRenderCheckoutPage(
         cartShipmentAddressFormData: CartShipmentAddressFormData,
-        userAddress: UserAddress?
+        userAddress: UserAddress?,
+        isOneClickShipment: Boolean,
+        isTradeIn: Boolean,
+        isTradeInDropOff: Boolean
     ): CheckoutPageState {
         when (cartShipmentAddressFormData.errorCode) {
             CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADD_NEW_ADDRESS -> {
@@ -146,11 +151,17 @@ class CheckoutCartProcessor @Inject constructor(
             }
 
             else -> {
+                val exception = MessageErrorException(
+                    "unhandled error code ${cartShipmentAddressFormData.errorCode}"
+                )
+                CheckoutLogger.logOnErrorLoadCheckoutPage(
+                    exception,
+                    isOneClickShipment,
+                    isTradeIn,
+                    isTradeInDropOff
+                )
                 return CheckoutPageState.Error(
-                    MessageErrorException(
-                        cartShipmentAddressFormData.errorMessage
-                    ),
-                    true
+                    exception
                 )
             }
         }

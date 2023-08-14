@@ -6,7 +6,7 @@ import com.tokopedia.checkout.domain.model.checkout.PriceValidationData
 sealed class CheckoutPageState {
     object Loading : CheckoutPageState()
     data class CacheExpired(val errorMessage: String) : CheckoutPageState()
-    data class Error(val throwable: Throwable, val log: Boolean = false) : CheckoutPageState()
+    data class Error(val throwable: Throwable) : CheckoutPageState()
     data class CheckNoAddress(val cartShipmentAddressFormData: CartShipmentAddressFormData) : CheckoutPageState()
     data class NoAddress(val cartShipmentAddressFormData: CartShipmentAddressFormData, val eligible: Boolean) : CheckoutPageState()
     data class NoMatchedAddress(val state: Int) : CheckoutPageState()
