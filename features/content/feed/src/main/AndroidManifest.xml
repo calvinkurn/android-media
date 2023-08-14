@@ -56,8 +56,7 @@
         </activity>
         <activity
             android:name="com.tokopedia.feedplus.browse.presentation.FeedBrowseActivity"
-            android:exported="false"
-            android:screenOrientation="portrait">
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
