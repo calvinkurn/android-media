@@ -3,15 +3,18 @@ package com.tokopedia.shop_widget.thematicwidget.viewholder
 import android.annotation.SuppressLint
 import android.graphics.drawable.GradientDrawable
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.marginTop
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop_widget.R
@@ -66,6 +69,7 @@ class ThematicWidgetViewHolder (
     private var viewParallaxBackground: View? = null
     private var layoutManager: LinearLayoutManager? = null
     private var dynamicHeaderCustomView: DynamicHeaderCustomView? = null
+    private var containerMixLeft: View? = null
     private var uiModel: ThematicWidgetUiModel? = null
     private var isFirstAttached: Boolean = true
     private var trackerProductsModel = mutableListOf<ProductCardUiModel>()
@@ -89,6 +93,7 @@ class ThematicWidgetViewHolder (
             dynamicHeaderCustomView = it.dynamicHeaderCustomView
             ivParallaxImage = it.parallaxImage
             viewParallaxBackground = it.parallaxBackground
+            containerMixLeft = it.containerMixleft
         }
         rvProduct?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -111,8 +116,17 @@ class ThematicWidgetViewHolder (
         setupImage(
             imageBanner = element.imageBanner
         )
+        resetShopReimaginedContainerMargin()
         checkFestivity(element)
         checkTotalProduct(element)
+    }
+
+    private fun resetShopReimaginedContainerMargin() {
+        containerMixLeft?.let {
+            it.background = null
+            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart = 0
+            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginEnd = 0
+        }
     }
 
     private fun checkFestivity(uiModel: ThematicWidgetUiModel) {
@@ -130,6 +144,7 @@ class ThematicWidgetViewHolder (
             startBackGroundColor = uiModel.firstBackgroundColor,
             endBackGroundColor = uiModel.secondBackgroundColor
         )
+        setShopReimaginedContainerMargin()
     }
 
     private fun configFestivity(uiModel: ThematicWidgetUiModel) {
@@ -145,7 +160,17 @@ class ThematicWidgetViewHolder (
                     startBackGroundColor = uiModel.firstBackgroundColor,
                     endBackGroundColor = uiModel.secondBackgroundColor
                 )
+                setShopReimaginedContainerMargin()
             }
+        }
+    }
+
+    private fun setShopReimaginedContainerMargin() {
+        containerMixLeft?.let {
+            it.clipToOutline = true
+            it.background = MethodChecker.getDrawable(itemView.context, R.drawable.bg_shop_reimagined_rounded)
+            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart = 16f.dpToPx().toInt()
+            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginEnd = 16f.dpToPx().toInt()
         }
     }
 
