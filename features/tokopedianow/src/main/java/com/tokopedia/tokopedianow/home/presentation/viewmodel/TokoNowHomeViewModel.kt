@@ -988,7 +988,12 @@ class TokoNowHomeViewModel @Inject constructor(
     private suspend fun getPlayWidgetAsync(item: HomePlayWidgetUiModel): Deferred<Unit?> {
         return asyncCatchError(block = {
             val playWidgetUiModel = getPlayWidget(item, isAutoRefresh = false)
-            homeLayoutItemList.mapPlayWidgetData(playWidgetUiModel)
+
+            if(playWidgetUiModel.playWidgetState.model.items.isNotEmpty()) {
+                homeLayoutItemList.mapPlayWidgetData(playWidgetUiModel)
+            } else {
+                homeLayoutItemList.removeItem(item.id)
+            }
 
             val data = HomeLayoutListUiModel(
                 items = getHomeVisitableList(),
