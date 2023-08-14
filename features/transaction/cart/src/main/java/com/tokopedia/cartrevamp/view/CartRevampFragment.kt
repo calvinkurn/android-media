@@ -10,6 +10,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -567,7 +568,7 @@ class CartRevampFragment :
             if (isClickable) {
                 binding?.vDisabledGoToCourierPageButton?.setOnClickListener {
                     if (CartDataHelper.getAllAvailableCartItemData(viewModel.cartDataList.value)
-                            .isNotEmpty()
+                        .isNotEmpty()
                     ) {
                         showToastMessageGreen(getString(R.string.message_no_cart_item_selected))
                     }
@@ -1958,7 +1959,6 @@ class CartRevampFragment :
             }
 
             if (promoTranslationLength != 0f) {
-
                 if (dy < 0 && valueY < initialPromoButtonPosition) {
                     // Prevent scroll up move button exceed initial view position
                     animatePromoButtonToStartingPosition()
@@ -2782,6 +2782,7 @@ class CartRevampFragment :
             viewModel.removeProductByCartId(deletedCartIds, needRefresh, isFromGlobalCheckbox)
         removeLocalCartItem(updateListResult, forceExpandCollapsedUnavailableItems)
 
+        Log.d("<RESULT>", "onDeleteCartDataSuccess: ")
         hideProgressLoading()
 
         setTopLayoutVisibility()
@@ -3088,7 +3089,7 @@ class CartRevampFragment :
             CartDataHelper.getAllShopGroupDataList(updateListResult.third)
 
         // Check if cart list has exactly 1 shop, and it's a toko now
-        if (allShopGroupDataList[0].isTokoNow) {
+        if (allShopGroupDataList.size >= 1 && allShopGroupDataList[0].isTokoNow) {
             allShopGroupDataList[0].let {
                 val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(
                     it.cartString,
@@ -3394,7 +3395,7 @@ class CartRevampFragment :
 
             val onClickListener: (applied: Boolean) -> Unit = { applied ->
                 if (CartDataHelper.getSelectedCartItemData(viewModel.cartDataList.value)
-                        .isEmpty()
+                    .isEmpty()
                 ) {
                     showToastMessageGreen(getString(R.string.promo_choose_item_cart))
                     PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
@@ -3423,7 +3424,7 @@ class CartRevampFragment :
             } else {
                 isApplied = false
                 if (CartDataHelper.getSelectedCartItemData(viewModel.cartDataList.value)
-                        .isEmpty()
+                    .isEmpty()
                 ) {
                     binding?.promoCheckoutBtnCart?.showInactive(
                         getString(R.string.promo_desc_no_selected_item),
@@ -4050,17 +4051,11 @@ class CartRevampFragment :
     }
 
     private fun setTopLayoutVisibility(isShow: Boolean) {
-        var isShowToolbarShadow = binding?.topLayoutShadow?.visibility == View.VISIBLE
-
         if (isShow) {
             binding?.rlTopLayout?.show()
-            if (binding?.appBarLayout?.elevation == HAS_ELEVATION.toFloat()) {
-                isShowToolbarShadow = true
-            }
         } else {
             binding?.rlTopLayout?.invisible()
         }
-
     }
 
     private fun showBottomSheetSummaryTransaction() {
