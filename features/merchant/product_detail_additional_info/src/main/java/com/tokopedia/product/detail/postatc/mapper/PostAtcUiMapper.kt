@@ -46,6 +46,7 @@ private fun toAddonsUiModel(
     postAtcInfo: PostAtcInfo
 ): AddonsUiModel? {
     val data = component.data.firstOrNull() ?: return null
+    val addons = postAtcInfo.addons ?: return null
     return AddonsUiModel(
         name = component.name,
         type = component.type,
@@ -53,13 +54,13 @@ private fun toAddonsUiModel(
             cartId = postAtcInfo.cartId,
             title = data.title,
             productId = postAtcInfo.productId,
-            warehouseId = postAtcInfo.warehouseId,
-            isFulfillment = postAtcInfo.isFulfillment,
-            selectedAddonsIds = postAtcInfo.selectedAddonsIds,
-            deselectedAddonsIds = postAtcInfo.deselectedAddonsIds,
+            warehouseId = addons.warehouseId,
+            isFulfillment = addons.isFulfillment,
+            selectedAddonsIds = addons.selectedAddonsIds,
+            deselectedAddonsIds = addons.deselectedAddonsIds,
             categoryId = postAtcInfo.categoryId,
             shopId = postAtcInfo.shopId,
-            quantity = postAtcInfo.quantity.toLong(),
+            quantity = addons.quantity.toLong(),
             price = postAtcInfo.originalPrice,
             discountedPrice = postAtcInfo.price,
             condition = postAtcInfo.condition

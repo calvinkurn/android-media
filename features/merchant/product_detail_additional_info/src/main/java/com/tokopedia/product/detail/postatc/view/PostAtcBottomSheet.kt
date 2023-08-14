@@ -10,14 +10,16 @@ import androidx.core.view.updatePadding
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
-import com.tokopedia.kotlin.extensions.view.getBooleanArg
-import com.tokopedia.kotlin.extensions.view.getIntArg
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.getStringArg
-import com.tokopedia.kotlin.extensions.view.getStringArrayListArg
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.PostAtcHelper.POST_ATC_PARAMS
+import com.tokopedia.product.detail.common.postatc.PostAtcParams
 import com.tokopedia.product.detail.databinding.PostAtcBottomSheetBinding
 import com.tokopedia.product.detail.databinding.ViewPostAtcFooterBinding
 import com.tokopedia.product.detail.postatc.base.PostAtcAdapter
@@ -49,37 +51,16 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
     companion object {
         const val TAG = "post_atc_bs"
 
-        private const val ARG_PRODUCT_ID = "productId"
-        private const val ARG_CART_ID = "cartId"
-        private const val ARG_IS_FULFILLMENT = "is_fulfillment"
-        private const val ARG_LAYOUT_ID = "layoutId"
-        private const val ARG_PAGE_SOURCE = "pageSource"
-        private const val ARG_SELECTED_ADDONS_IDS = "selected_addons_ids"
-        private const val ARG_DESELECTED_ADDONS_IDS = "deselected_addons_ids"
-        private const val ARG_WAREHOUSE_ID = "warehouse_id"
-        private const val ARG_QUANTITY = "quantity"
+        private const val ARG_PRODUCT_ID = "post_atc_productId"
+        private const val ARG_CACHE_ID = "post_atc_cache_id"
 
         fun instance(
             productId: String,
-            cartId: String,
-            isFulfillment: Boolean,
-            layoutId: String,
-            pageSource: String,
-            selectedAddonsIds: List<String>,
-            deselectedAddonsIds: List<String>,
-            warehouseId: String,
-            quantity: Int
+            cacheId: String
         ) = PostAtcBottomSheet().apply {
             arguments = Bundle().apply {
                 putString(ARG_PRODUCT_ID, productId)
-                putString(ARG_CART_ID, cartId)
-                putBoolean(ARG_IS_FULFILLMENT, isFulfillment)
-                putString(ARG_LAYOUT_ID, layoutId)
-                putString(ARG_PAGE_SOURCE, pageSource)
-                putStringArrayList(ARG_SELECTED_ADDONS_IDS, ArrayList(selectedAddonsIds))
-                putStringArrayList(ARG_DESELECTED_ADDONS_IDS, ArrayList(deselectedAddonsIds))
-                putString(ARG_WAREHOUSE_ID, warehouseId)
-                putInt(ARG_QUANTITY, quantity)
+                putString(ARG_CACHE_ID, cacheId)
             }
         }
     }
@@ -94,20 +75,17 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val component by getComponent()
+    private val localCacheModel by getLocalCacheModel()
     override val viewModel by getViewModel()
 
     private val callback by lazy { PostAtcCallback(this) }
     override val adapter by lazy { PostAtcAdapter(callback) }
 
     private val argProductId: String by getStringArg(ARG_PRODUCT_ID)
-    private val argCartId: String by getStringArg(ARG_CART_ID)
-    private val argIsFulfillment: Boolean by getBooleanArg(ARG_IS_FULFILLMENT)
-    private val argLayoutId: String by getStringArg(ARG_LAYOUT_ID)
-    private val argPageSource by getStringArg(ARG_PAGE_SOURCE)
-    private val argSelectedAddonsIds: List<String> by getStringArrayListArg(ARG_SELECTED_ADDONS_IDS)
-    private val argDeselectedAddonsIds: List<String> by getStringArrayListArg(ARG_DESELECTED_ADDONS_IDS)
-    private val argWarehouseId: String by getStringArg(ARG_WAREHOUSE_ID)
-    private val argQuantity: Int by getIntArg(ARG_QUANTITY)
+    private val argPostAtcParams: PostAtcParams by getCacheManager(
+        POST_ATC_PARAMS,
+        PostAtcParams()
+    )
 
     override var binding: PostAtcBottomSheetBinding? = null
         private set
@@ -242,7 +220,7 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
         if (it is SocketTimeoutException || it is UnknownHostException || it is ConnectException) {
             adapter.replaceComponents(listOf(ErrorUiModel(errorType = GlobalError.NO_CONNECTION)))
         } else {
-            adapter.replaceComponents(listOf(FallbackUiModel(cartId = argCartId)))
+            adapter.replaceComponents(listOf(FallbackUiModel(cartId = argPostAtcParams.cartId)))
         }
     }
 
@@ -252,15 +230,9 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
          */
         adapter.replaceComponents(listOf(LoadingUiModel()))
         viewModel.initializeParameters(
-            argProductId,
-            argCartId,
-            argIsFulfillment,
-            argLayoutId,
-            argPageSource,
-            argSelectedAddonsIds,
-            argDeselectedAddonsIds,
-            argWarehouseId,
-            argQuantity
+            productId = argProductId,
+            postAtcParams = argPostAtcParams,
+            localCacheModel = localCacheModel
         )
     }
 
@@ -273,5 +245,20 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
 
     private fun getViewModel() = lazy {
         ViewModelProvider(this, viewModelFactory)[PostAtcViewModel::class.java]
+    }
+
+    private fun getLocalCacheModel() = lazy {
+        val context = context ?: return@lazy LocalCacheModel()
+        ChooseAddressUtils.getLocalizingAddressData(context)
+    }
+
+    private inline fun <reified T> getCacheManager(
+        customId: String,
+        default: T
+    ): Lazy<T> = lazy {
+        val context = context ?: return@lazy default
+        val cacheId = arguments?.getString(ARG_CACHE_ID) ?: ""
+        val cacheManager = SaveInstanceCacheManager(context, cacheId)
+        cacheManager.get(customId, T::class.java, default) ?: default
     }
 }
