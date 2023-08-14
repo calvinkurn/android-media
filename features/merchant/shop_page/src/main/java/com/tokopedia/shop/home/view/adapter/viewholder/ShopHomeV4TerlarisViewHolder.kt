@@ -8,14 +8,12 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.LayoutShopHomeV4TerlarisWidgetBinding
 import com.tokopedia.shop.home.util.loadImageRounded
 import com.tokopedia.shop.home.view.adapter.ShopHomeV4TerlarisAdapter
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeV4TerlarisUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -72,30 +70,21 @@ class ShopHomeV4TerlarisViewHolder(
                 adapter = terlarisWidgetAdapter
             }
 
-            if (it.productList.size.orZero() == PRODUCT_THREE) {
-                // Show product list with total 3
-                showThreeItemLayout(productList = it.productList)
-            } else if (it.productList.size.orZero() > PRODUCT_THREE) {
-                // Show product list with total 6 or 9
-                val productCarouselData = if (it.productList.size > 9) it.productList.take(PRODUCT_NINE) else it.productList
-                val sanitizedProductListCarouselData = getCarouselData(productCarouselData)
-                if (sanitizedProductListCarouselData.isNotEmpty()) {
-                    if (sanitizedProductListCarouselData.size == PRODUCT_ONE) {
-                        showThreeItemLayout(productList = sanitizedProductListCarouselData[0])
-                    } else if (sanitizedProductListCarouselData.size > PRODUCT_ONE) {
-                        showMoreThanThreeItemLayout(productList = sanitizedProductListCarouselData)
-                    }
+            val productCarouselData = getProductCarouselData(productList = it.productList)
+            productCarouselData?.let { carouselData ->
+                val sanitizedProductListCarouselData = getCarouselData(carouselData)
+                if (sanitizedProductListCarouselData.size == PRODUCT_ONE) {
+                    showThreeItemLayout(productList = sanitizedProductListCarouselData)
+                } else if (sanitizedProductListCarouselData.size > PRODUCT_ONE) {
+                    showMoreThanThreeItemLayout(productList = sanitizedProductListCarouselData)
                 } else {
                     hideTheWidget()
                 }
-            } else {
-                hideTheWidget()
             }
-
         }
     }
 
-    private fun showThreeItemLayout(productList: List<ShopHomeProductUiModel>) {
+    private fun showThreeItemLayout(productList: List<List<ShopHomeProductUiModel>>){
         showTheContainer()
         showLayoutThreeItem(productList = productList)
         hideHorizontalProductCarousel()
@@ -114,38 +103,53 @@ class ShopHomeV4TerlarisViewHolder(
         hideHorizontalProductCarousel()
     }
 
-    private fun showLayoutThreeItem(productList: List<ShopHomeProductUiModel>) {
-        containerThreeProducts?.visibility = View.VISIBLE
-        prodcutCard1?.setOnClickListener {
-            listener.onProductClick(productList[0].id)
+    private fun showLayoutThreeItem(productList: List<List<ShopHomeProductUiModel>>) {
+        if (productList.isNotEmpty() && productList[0].size == PRODUCT_THREE) {
+            containerThreeProducts?.visibility = View.VISIBLE
+            prodcutCard1?.setOnClickListener {
+                listener.onProductClick(productList[0][0].id)
+            }
+            productImg1?.loadImageRounded(url = productList[0][0].imageUrl.orEmpty())
+            productName1?.text = productList[0][0].name
+            productPrice1?.text = productList[0][0].displayedPrice
+            productRank1?.text = "1"
+            prodcutCard2?.setOnClickListener {
+                listener.onProductClick(productList[0][1].id)
+            }
+            productImg2?.loadImageRounded(url = productList[0][1].imageUrl.orEmpty())
+            productName2?.text = productList[0][1].name
+            productPrice2?.text = productList[0][1].displayedPrice
+            productRank2?.text = "2"
+            prodcutCard3?.setOnClickListener {
+                listener.onProductClick(productList[0][2].id)
+            }
+            productImg3?.loadImageRounded(url = productList[0][2].imageUrl.orEmpty())
+            productName3?.text = productList[0][2].name
+            productPrice3?.text = productList[0][2].displayedPrice
+            productRank3?.text = "3"
+
         }
-        productImg1?.loadImageRounded(url = productList[0].imageUrl.orEmpty())
-        productName1?.text = productList[0].name
-        productPrice1?.text = productList[0].displayedPrice
-        productRank1?.text = "1"
-        prodcutCard2?.setOnClickListener {
-            listener.onProductClick(productList[1].id)
-        }
-        productImg2?.loadImageRounded(url = productList[1].imageUrl.orEmpty())
-        productName2?.text = productList[1].name
-        productPrice2?.text = productList[1].displayedPrice
-        productRank2?.text = "2"
-        prodcutCard3?.setOnClickListener {
-            listener.onProductClick(productList[2].id)
-        }
-        productImg3?.loadImageRounded(url = productList[2].imageUrl.orEmpty())
-        productName3?.text = productList[2].name
-        productPrice3?.text = productList[2].displayedPrice
-        productRank3?.text = "3"
     }
 
     private fun getCarouselData(productList: List<ShopHomeProductUiModel>): List<List<ShopHomeProductUiModel>> {
         val chunkSize = 3
         val chunkedData = productList.chunked(chunkSize)
-        return if (chunkedData[chunkedData.lastIndex].size != chunkSize) {
-            chunkedData.dropLast(chunkedData.lastIndex)
+        return chunkedData
+    }
+
+    private fun getProductCarouselData(productList: List<ShopHomeProductUiModel>): List<ShopHomeProductUiModel>? {
+        return if (productList.size == PRODUCT_THREE ||
+            productList.size == PRODUCT_SIX ||
+            productList.size == PRODUCT_NINE) {
+            productList
+        } else if (productList.size in (PRODUCT_THREE + 1) until PRODUCT_SIX) {
+            productList.take(PRODUCT_THREE)
+        } else if (productList.size in (PRODUCT_SIX + 1) until PRODUCT_NINE) {
+            productList.take(PRODUCT_SIX)
+        } else if (productList.size > PRODUCT_NINE) {
+            productList.take(PRODUCT_NINE)
         } else {
-            chunkedData
+            null
         }
     }
 

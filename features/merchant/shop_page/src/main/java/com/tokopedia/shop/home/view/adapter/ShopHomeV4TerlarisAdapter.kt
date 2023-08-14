@@ -20,7 +20,6 @@ class ShopHomeV4TerlarisAdapter(
 ) : RecyclerView.Adapter<ShopHomeV4TerlarisAdapter.TerlarisWidgetViewHolder>() {
 
     private var productListData: List<List<ShopHomeProductUiModel>> = listOf()
-    private var rank: List<Int> = listOf(1, 2, 3, 4, 5, 6, 7, 8, 9)
 
     fun updateData(productList: List<List<ShopHomeProductUiModel>>) {
         productListData = productList

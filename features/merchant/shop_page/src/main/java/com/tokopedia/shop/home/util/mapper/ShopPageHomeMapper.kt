@@ -435,12 +435,15 @@ object ShopPageHomeMapper {
             }
             // Includes V4 Widgets: Terlaris widget
             PRODUCT.toLowerCase() -> {
+                // =========== For testing Purpose =========== //
                 mapToProducTerlaristWidgetUiModel(
                     widgetModel = widgetResponse,
                     isMyOwnProduct = isMyOwnProduct,
                     isEnableDirectPurchase = isEnableDirectPurchase,
                     widgetLayout = widgetLayout
                 )
+                // =========== For testing Purpose =========== //
+                // TODO: Enable codes below to dynamically map data from BE
 //                mapToProductWidgetUiModel(
 //                    widgetModel = widgetResponse,
 //                    isMyOwnProduct = isMyOwnProduct,
@@ -960,96 +963,96 @@ object ShopPageHomeMapper {
                 productUrl = "https://www.tokopedia.com/unilever/tresemme-shampoo-170ml-conditioner-170ml-spray-236ml-free-serum?extParam=whid%3D13056835"
                 this.isEnableDirectPurchase = false
             },
-//            ShopHomeProductUiModel().apply {
-//                id = "11416628"
-//                name = "TRESemme Shampoo 170ml + Conditio70ml + Spray 236ml FREE Serum"
-//                displayedPrice = "Rp 129.000"
-//                originalPrice = "Rp 760.000"
-//                discountPercentage = "15%"
-//                imageUrl = "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2023/7/25/4bd26fb3-4828-4e7f-8b87-e3af30a77f8c.jpg"
-//                productUrl = "https://www.tokopedia.com/unilever/tresemme-shampoo-170ml-conditioner-170ml-spray-236ml-free-serum?extParam=whid%3D13056835"
-//                this.isEnableDirectPurchase = false
-//            },
-//            ShopHomeProductUiModel().apply {
-//                id = "110628"
-//                name = "TRESemme Shampoo 170mlml + Spray 236ml FREE Serum"
-//                displayedPrice = "Rp 19.000"
-//                originalPrice = "Rp 20.000"
-//                discountPercentage = "5%"
-//                imageUrl = "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/7/31/a9928989-80ba-4ad6-87ed-5c9ea5f9ac26.jpg"
-//                productUrl = "https://www.tokopedia.com/unilever/tresemme-shampoo-170ml-conditioner-170ml-spray-236ml-free-serum?extParam=whid%3D13056835"
-//                this.isEnableDirectPurchase = false
-//            },
-//            ShopHomeProductUiModel().apply {
-//                id = "110141628"
-//                name = "TRESemme Shampoo 170ml +ml + Spray 236ml FREE Serum"
-//                displayedPrice = "Rp 39.000"
-//                originalPrice = "Rp 40.000"
-//                discountPercentage = "2%"
-//                imageUrl = "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/7/31/553dcf16-dfe8-4a0f-abc3-e29fc319f779.jpg"
-//                productUrl = "https://www.tokopedia.com/unilever/tresemme-shampoo-170ml-conditioner-170ml-spray-236ml-free-serum?extParam=whid%3D13056835"
-//                this.isEnableDirectPurchase = false
-//            },
-//            ShopHomeProductUiModel().apply {
-//                id = "11416628"
-//                name = "TRESemme Shampoo 170ml + Conditio70ml + Spray 236ml FREE Serum"
-//                displayedPrice = "Rp 129.000"
-//                originalPrice = "Rp 760.000"
-//                discountPercentage = "15%"
-//                imageUrl = "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2023/7/25/4bd26fb3-4828-4e7f-8b87-e3af30a77f8c.jpg"
-//                productUrl = "https://www.tokopedia.com/unilever/tresemme-shampoo-170ml-conditioner-170ml-spray-236ml-free-serum?extParam=whid%3D13056835"
-//                this.isEnableDirectPurchase = false
-//            },
-//            ShopHomeProductUiModel().apply {
-//                id = "110628"
-//                name = "TRESemme Shampoo 170mlml + Spray 236ml FREE Serum"
-//                displayedPrice = "Rp 19.000"
-//                originalPrice = "Rp 20.000"
-//                discountPercentage = "5%"
-//                imageUrl = "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/7/31/a9928989-80ba-4ad6-87ed-5c9ea5f9ac26.jpg"
-//                productUrl = "https://www.tokopedia.com/unilever/tresemme-shampoo-170ml-conditioner-170ml-spray-236ml-free-serum?extParam=whid%3D13056835"
-//                this.isEnableDirectPurchase = false
-//            },
-//            ShopHomeProductUiModel().apply {
-//                id = "110141628"
-//                name = "TRESemme Shampoo 170ml +ml + Spray 236ml FREE Serum"
-//                displayedPrice = "Rp 39.000"
-//                originalPrice = "Rp 40.000"
-//                discountPercentage = "2%"
-//                imageUrl = "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/7/31/553dcf16-dfe8-4a0f-abc3-e29fc319f779.jpg"
-//                productUrl = "https://www.tokopedia.com/unilever/tresemme-shampoo-170ml-conditioner-170ml-spray-236ml-free-serum?extParam=whid%3D13056835"
-//                this.isEnableDirectPurchase = false
-//            },
-//            ShopHomeProductUiModel().apply {
-//                id = "11416628"
-//                name = "TRESemme Shampoo 170ml + Conditio70ml + Spray 236ml FREE Serum"
-//                displayedPrice = "Rp 129.000"
-//                originalPrice = "Rp 760.000"
-//                discountPercentage = "15%"
-//                imageUrl = "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2023/7/25/4bd26fb3-4828-4e7f-8b87-e3af30a77f8c.jpg"
-//                productUrl = "https://www.tokopedia.com/unilever/tresemme-shampoo-170ml-conditioner-170ml-spray-236ml-free-serum?extParam=whid%3D13056835"
-//                this.isEnableDirectPurchase = false
-//            },
-//            ShopHomeProductUiModel().apply {
-//                id = "110628"
-//                name = "TRESemme Shampoo 170mlml + Spray 236ml FREE Serum"
-//                displayedPrice = "Rp 19.000"
-//                originalPrice = "Rp 20.000"
-//                discountPercentage = "5%"
-//                imageUrl = "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/7/31/a9928989-80ba-4ad6-87ed-5c9ea5f9ac26.jpg"
-//                productUrl = "https://www.tokopedia.com/unilever/tresemme-shampoo-170ml-conditioner-170ml-spray-236ml-free-serum?extParam=whid%3D13056835"
-//                this.isEnableDirectPurchase = false
-//            },
-//            ShopHomeProductUiModel().apply {
-//                id = "110141628"
-//                name = "TRESemme Shampoo 170ml +ml + Spray 236ml FREE Serum"
-//                displayedPrice = "Rp 39.000"
-//                originalPrice = "Rp 40.000"
-//                discountPercentage = "2%"
-//                imageUrl = "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/7/31/553dcf16-dfe8-4a0f-abc3-e29fc319f779.jpg"
-//                productUrl = "https://www.tokopedia.com/unilever/tresemme-shampoo-170ml-conditioner-170ml-spray-236ml-free-serum?extParam=whid%3D13056835"
-//                this.isEnableDirectPurchase = false
-//            }
+            ShopHomeProductUiModel().apply {
+                id = "11416628"
+                name = "TRESemme Shampoo 170ml + Conditio70ml + Spray 236ml FREE Serum"
+                displayedPrice = "Rp 129.000"
+                originalPrice = "Rp 760.000"
+                discountPercentage = "15%"
+                imageUrl = "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2023/7/25/4bd26fb3-4828-4e7f-8b87-e3af30a77f8c.jpg"
+                productUrl = "https://www.tokopedia.com/unilever/tresemme-shampoo-170ml-conditioner-170ml-spray-236ml-free-serum?extParam=whid%3D13056835"
+                this.isEnableDirectPurchase = false
+            },
+            ShopHomeProductUiModel().apply {
+                id = "110628"
+                name = "TRESemme Shampoo 170mlml + Spray 236ml FREE Serum"
+                displayedPrice = "Rp 19.000"
+                originalPrice = "Rp 20.000"
+                discountPercentage = "5%"
+                imageUrl = "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/7/31/a9928989-80ba-4ad6-87ed-5c9ea5f9ac26.jpg"
+                productUrl = "https://www.tokopedia.com/unilever/tresemme-shampoo-170ml-conditioner-170ml-spray-236ml-free-serum?extParam=whid%3D13056835"
+                this.isEnableDirectPurchase = false
+            },
+            ShopHomeProductUiModel().apply {
+                id = "110141628"
+                name = "TRESemme Shampoo 170ml +ml + Spray 236ml FREE Serum"
+                displayedPrice = "Rp 39.000"
+                originalPrice = "Rp 40.000"
+                discountPercentage = "2%"
+                imageUrl = "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/7/31/553dcf16-dfe8-4a0f-abc3-e29fc319f779.jpg"
+                productUrl = "https://www.tokopedia.com/unilever/tresemme-shampoo-170ml-conditioner-170ml-spray-236ml-free-serum?extParam=whid%3D13056835"
+                this.isEnableDirectPurchase = false
+            },
+            ShopHomeProductUiModel().apply {
+                id = "11416628"
+                name = "TRESemme Shampoo 170ml + Conditio70ml + Spray 236ml FREE Serum"
+                displayedPrice = "Rp 129.000"
+                originalPrice = "Rp 760.000"
+                discountPercentage = "15%"
+                imageUrl = "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2023/7/25/4bd26fb3-4828-4e7f-8b87-e3af30a77f8c.jpg"
+                productUrl = "https://www.tokopedia.com/unilever/tresemme-shampoo-170ml-conditioner-170ml-spray-236ml-free-serum?extParam=whid%3D13056835"
+                this.isEnableDirectPurchase = false
+            },
+            ShopHomeProductUiModel().apply {
+                id = "110628"
+                name = "TRESemme Shampoo 170mlml + Spray 236ml FREE Serum"
+                displayedPrice = "Rp 19.000"
+                originalPrice = "Rp 20.000"
+                discountPercentage = "5%"
+                imageUrl = "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/7/31/a9928989-80ba-4ad6-87ed-5c9ea5f9ac26.jpg"
+                productUrl = "https://www.tokopedia.com/unilever/tresemme-shampoo-170ml-conditioner-170ml-spray-236ml-free-serum?extParam=whid%3D13056835"
+                this.isEnableDirectPurchase = false
+            },
+            ShopHomeProductUiModel().apply {
+                id = "110141628"
+                name = "TRESemme Shampoo 170ml +ml + Spray 236ml FREE Serum"
+                displayedPrice = "Rp 39.000"
+                originalPrice = "Rp 40.000"
+                discountPercentage = "2%"
+                imageUrl = "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/7/31/553dcf16-dfe8-4a0f-abc3-e29fc319f779.jpg"
+                productUrl = "https://www.tokopedia.com/unilever/tresemme-shampoo-170ml-conditioner-170ml-spray-236ml-free-serum?extParam=whid%3D13056835"
+                this.isEnableDirectPurchase = false
+            },
+            ShopHomeProductUiModel().apply {
+                id = "11416628"
+                name = "TRESemme Shampoo 170ml + Conditio70ml + Spray 236ml FREE Serum"
+                displayedPrice = "Rp 129.000"
+                originalPrice = "Rp 760.000"
+                discountPercentage = "15%"
+                imageUrl = "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2023/7/25/4bd26fb3-4828-4e7f-8b87-e3af30a77f8c.jpg"
+                productUrl = "https://www.tokopedia.com/unilever/tresemme-shampoo-170ml-conditioner-170ml-spray-236ml-free-serum?extParam=whid%3D13056835"
+                this.isEnableDirectPurchase = false
+            },
+            ShopHomeProductUiModel().apply {
+                id = "110628"
+                name = "TRESemme Shampoo 170mlml + Spray 236ml FREE Serum"
+                displayedPrice = "Rp 19.000"
+                originalPrice = "Rp 20.000"
+                discountPercentage = "5%"
+                imageUrl = "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/7/31/a9928989-80ba-4ad6-87ed-5c9ea5f9ac26.jpg"
+                productUrl = "https://www.tokopedia.com/unilever/tresemme-shampoo-170ml-conditioner-170ml-spray-236ml-free-serum?extParam=whid%3D13056835"
+                this.isEnableDirectPurchase = false
+            },
+            ShopHomeProductUiModel().apply {
+                id = "110141628"
+                name = "TRESemme Shampoo 170ml +ml + Spray 236ml FREE Serum"
+                displayedPrice = "Rp 39.000"
+                originalPrice = "Rp 40.000"
+                discountPercentage = "2%"
+                imageUrl = "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/7/31/553dcf16-dfe8-4a0f-abc3-e29fc319f779.jpg"
+                productUrl = "https://www.tokopedia.com/unilever/tresemme-shampoo-170ml-conditioner-170ml-spray-236ml-free-serum?extParam=whid%3D13056835"
+                this.isEnableDirectPurchase = false
+            }
         )
         return _data
         // return listOf()

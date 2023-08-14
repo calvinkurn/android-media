@@ -129,7 +129,7 @@
                 android:background="@color/Unify_NN50"/>
 
             <com.tokopedia.unifyprinciples.Typography
-                android:layout_width="wrap_content"
+                android:layout_width="44dp"
                 android:layout_height="75dp"
                 android:id="@+id/terlaris_product_rank_number_1"
                 app:layout_constraintRight_toRightOf="@+id/terlaris_product_detail_1"
@@ -137,7 +137,7 @@
                 android:layout_marginLeft="12dp"
                 android:textSize="64sp"
                 android:letterSpacing="0"
-                android:textAlignment="center"
+                android:gravity="center"
                 android:textColor="@color/Unify_NN400_20"
                 tools:text="1" />
 
@@ -223,7 +223,7 @@
                 android:background="@color/Unify_NN50"/>
 
             <com.tokopedia.unifyprinciples.Typography
-                android:layout_width="wrap_content"
+                android:layout_width="44dp"
                 android:layout_height="75dp"
                 android:id="@+id/terlaris_product_rank_number_2"
                 app:layout_constraintRight_toRightOf="@+id/terlaris_product_detail_2"
@@ -231,7 +231,7 @@
                 android:layout_marginLeft="12dp"
                 android:textSize="64sp"
                 android:letterSpacing="0"
-                android:textAlignment="center"
+                android:gravity="center"
                 android:textColor="@color/Unify_NN400_20"
                 tools:text="2" />
 
@@ -317,7 +317,7 @@
                 android:background="@color/Unify_NN50"/>
 
             <com.tokopedia.unifyprinciples.Typography
-                android:layout_width="wrap_content"
+                android:layout_width="44dp"
                 android:layout_height="75dp"
                 android:id="@+id/terlaris_product_rank_number_3"
                 app:layout_constraintRight_toRightOf="@+id/terlaris_product_detail_3"
@@ -325,7 +325,7 @@
                 android:layout_marginLeft="12dp"
                 android:textSize="64sp"
                 android:letterSpacing="0"
-                android:layout_gravity="right"
+                android:gravity="center"
                 android:textColor="@color/Unify_NN400_20"
                 tools:text="3" />
 

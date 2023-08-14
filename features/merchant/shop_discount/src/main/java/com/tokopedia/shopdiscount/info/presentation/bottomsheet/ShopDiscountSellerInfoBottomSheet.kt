@@ -124,11 +124,6 @@ class ShopDiscountSellerInfoBottomSheet : BottomSheetUnify() {
         }
     }
 
-
-    // isVps = true
-    // packageId = -2
-    // expiredAtUnix = -1
-
     private fun setExpirySection(data: ShopDiscountSellerInfoUiModel) {
         expirySection?.apply {
             val title = getString(R.string.seller_info_bottom_sheet_expiry_title)
