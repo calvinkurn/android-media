@@ -47,6 +47,24 @@ object DeeplinkMapperContent {
     }
 
     /**
+     * tokopedia://content/
+     * tokopedia://feed/
+     */
+    fun getNavContentFromAppLink(deepLink: String): String {
+        val uri = Uri.parse(deepLink)
+        val pathSegments = uri.pathSegments.joinToString("/")
+        return if (pathSegments.startsWith("detail/", false)) {
+            goToAppLinkFeedDetailInternal(uri)
+        } else if (pathSegments.startsWith("creation-product-search", false)) {
+            INTERNAL_FEED_CREATION_PRODUCT_SEARCH
+        } else if (pathSegments.startsWith("creation-shop-search", false)) {
+            INTERNAL_FEED_CREATION_SHOP_SEARCH
+        } else {
+            goToAppLinkFeedHomeInternal(uri)
+        }
+    }
+
+    /**
      * /play
      * /play/{channelId}
      * /play/channel/{channelId}
@@ -79,7 +97,7 @@ object DeeplinkMapperContent {
                     put(UF_EXTRA_FEED_TAB_NAME, tabName)
                 }
 
-                val postId = uri.lastPathSegment ?: return@buildMap
+                val postId = uri.lastPathSegment?.toIntOrNull() ?: return@buildMap
                 put(UF_EXTRA_FEED_SOURCE_ID, postId)
             }
         )
@@ -120,16 +138,6 @@ object DeeplinkMapperContent {
                 if (sourceName != null) put(UF_EXTRA_FEED_SOURCE_NAME, sourceName)
             }
         )
-    }
-
-    fun getAppLinkFeedHomeInternal(deepLink: String): String {
-        val uri = Uri.parse(deepLink)
-        return goToAppLinkFeedHomeInternal(uri)
-    }
-
-    fun getAppLinkFeedDetailInternal(deepLink: String): String {
-        val uri = Uri.parse(deepLink)
-        return goToAppLinkFeedDetailInternal(uri)
     }
 
     fun getContentCreatePostDeepLink(deepLink: String): String {
