@@ -58,25 +58,31 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
 
             multiBannerViewModel.getPushNotificationBannerSubscription().observe(
                 fragment.viewLifecycleOwner
-            ) {
-                if (it.errorMessage.isNotEmpty()) {
-                    Toaster.build(customItemView, it.errorMessage, Toast.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+            ) { model ->
+                if (model.errorMessage.isNotEmpty()) {
+                    Toaster.build(
+                        customItemView,
+                        model.errorMessage,
+                        Toast.LENGTH_SHORT,
+                        Toaster.TYPE_ERROR
+                    ).show()
                 } else {
                     updateImage(
-                        position = it.position,
-                        isSubscribed = it.isSubscribed
+                        position = model.position,
+                        isSubscribed = model.isSubscribed
                     )
                 }
             }
 
-            multiBannerViewModel.getPushBannerSubscriptionData().observe(
+            multiBannerViewModel.getPushNotificationBannerSubscriptionInit().observe(
                 fragment.viewLifecycleOwner
-            ) {
+            ) { model ->
                 updateImage(
-                    position = it.position,
-                    isSubscribed = it.isSubscribed
+                    position = model.position,
+                    isSubscribed =  model.isSubscribed
                 )
             }
+
             multiBannerViewModel.getShowLoginData().observe(
                 fragment.viewLifecycleOwner,
                 Observer {
