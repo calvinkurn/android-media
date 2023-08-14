@@ -20,7 +20,7 @@ import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.view.adapter.ShopHomeProductCarouselAdapter
 import com.tokopedia.shop.home.view.model.ProductCard
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselWidget
+import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselItemType
 import com.tokopedia.shop.home.view.model.VerticalBanner
 import com.tokopedia.shop.home.view.viewmodel.ShopProductCarouselViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -155,7 +155,7 @@ class ShopProductCarouselFragment : BaseDaggerFragment() {
         viewModel.getCarouselWidgets(widgets, shopId, userAddress)
     }
 
-    private fun renderCarouselWidgets(widgets: List<ShopHomeProductCarouselWidget>) {
+    private fun renderCarouselWidgets(widgets: List<ShopHomeProductCarouselItemType>) {
         productAdapter.submit(widgets)
     }
 

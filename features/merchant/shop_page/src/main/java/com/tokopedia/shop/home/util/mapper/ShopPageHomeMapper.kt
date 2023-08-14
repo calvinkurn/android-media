@@ -476,7 +476,9 @@ object ShopPageHomeMapper {
                     }
                 }
             }
-            DYNAMIC_COMPONENT.toLowerCase(Locale.getDefault()) -> ShopPageWidgetMapper.mapToHomeProductCarouselWidget(widgetResponse)
+            DYNAMIC_COMPONENT.toLowerCase(Locale.getDefault()) -> {
+                ShopPageWidgetMapper.mapToHomeProductCarouselWidget(widgetResponse)
+            }
             DYNAMIC.toLowerCase(Locale.getDefault()) -> mapCarouselPlayWidget(widgetResponse, widgetLayout)
             PERSONALIZATION.toLowerCase(Locale.getDefault()) -> {
                 when (widgetResponse.name) {

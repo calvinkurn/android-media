@@ -264,8 +264,12 @@ object ShopPageWidgetMapper {
         }
 
         return ShopHomeProductCarouselUiModel(
+            widgetId = response.widgetID,
+            layoutOrder = response.layoutOrder,
             title = response.header.title,
-            tabs = tabs
+            tabs = tabs,
+            name = response.name,
+            type = response.type
         )
     }
 

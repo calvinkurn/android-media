@@ -10,7 +10,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.home.view.model.ProductCard
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselWidget
+import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselItemType
 import com.tokopedia.shop.home.view.model.VerticalBanner
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
@@ -32,8 +32,8 @@ class ShopProductCarouselViewModel @Inject constructor(
         private const val SORT_ID_NEWEST = 2
     }
 
-    private val _carouselWidgets = MutableLiveData<Result<List<ShopHomeProductCarouselWidget>>>()
-    val carouselWidgets: LiveData<Result<List<ShopHomeProductCarouselWidget>>>
+    private val _carouselWidgets = MutableLiveData<Result<List<ShopHomeProductCarouselItemType>>>()
+    val carouselWidgets: LiveData<Result<List<ShopHomeProductCarouselItemType>>>
         get() = _carouselWidgets
 
     fun getCarouselWidgets(

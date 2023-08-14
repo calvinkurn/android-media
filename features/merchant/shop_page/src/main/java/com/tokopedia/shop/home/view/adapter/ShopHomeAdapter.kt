@@ -177,9 +177,13 @@ open class ShopHomeAdapter(
         submitList(newList)
     }
 
-    fun setProductCarousel(productCarouselUiModel: ShopHomeProductCarouselUiModel) {
+    fun setProductCarousel(uiModel: ShopHomeProductCarouselUiModel) {
         val newList = getNewVisitableItems()
-        newList.setElement(0, productCarouselUiModel)
+        newList.indexOfFirst { it is ShopHomeProductCarouselUiModel }.let { index ->
+            if (index >= 0) {
+                newList.setElement(index, uiModel)
+            }
+        }
         submitList(newList)
     }
     fun setProductComparisonData(uiModel: ShopHomePersoProductComparisonUiModel) {
@@ -646,6 +650,10 @@ open class ShopHomeAdapter(
 
     fun getMvcWidgetUiModel(): ShopHomeVoucherUiModel? {
         return visitables.filterIsInstance<ShopHomeVoucherUiModel>().firstOrNull()
+    }
+
+    fun getProductCarouselModel(): ShopHomeProductCarouselUiModel? {
+        return visitables.filterIsInstance<ShopHomeProductCarouselUiModel>().firstOrNull()
     }
 
     fun getPersoProductComparisonWidgetUiModel(): ShopHomePersoProductComparisonUiModel? {

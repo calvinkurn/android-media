@@ -121,8 +121,15 @@ class ShopHomeViewModel @Inject constructor(
     private val gqlShopPageGetHomeType: GqlShopPageGetHomeType,
     private val getShopPageHomeLayoutV2UseCase: Provider<GetShopPageHomeLayoutV2UseCase>,
     private val getShopDynamicTabUseCase: Provider<GqlShopPageGetDynamicTabUseCase>,
-    private val getComparisonProductUseCase: Provider<GetRecommendationUseCase>,
+    private val getComparisonProductUseCase: Provider<GetRecommendationUseCase>
     ) : BaseViewModel(dispatcherProvider.main) {
+
+    companion object {
+        private const val FIRST_PAGE = 1
+        private const val PRODUCT_COUNT_TO_FETCH = 5
+        private const val SORT_ID_MOST_SOLD = 8
+        private const val SORT_ID_NEWEST = 2
+    }
 
     val productListData: LiveData<Result<GetShopHomeProductUiModel>>
         get() = _productListData
@@ -247,6 +254,10 @@ class ShopHomeViewModel @Inject constructor(
     private val _updatedBannerTimerUiModelData = MutableLiveData<ShopWidgetDisplayBannerTimerUiModel?>()
     val updatedBannerTimerUiModelData: LiveData<ShopWidgetDisplayBannerTimerUiModel?>
         get() = _updatedBannerTimerUiModelData
+
+    private val _productCarouselWidgetData = MutableLiveData<Result<ShopHomeProductCarouselUiModel>>()
+    val productCarouselWidgetData: LiveData<Result<ShopHomeProductCarouselUiModel>>
+        get() = _productCarouselWidgetData
 
     fun getNewProductList(
         shopId: String,
@@ -854,6 +865,8 @@ class ShopHomeViewModel @Inject constructor(
         isThematicWidgetShown: Boolean,
         isEnableDirectPurchase: Boolean
     ) {
+        println(listWidgetLayout)
+
         launchCatchError(block = {
             val responseWidgetContent = withContext(dispatcherProvider.io) {
                 val useCase = getShopPageHomeLayoutV2UseCase.get()
@@ -1401,6 +1414,61 @@ class ShopHomeViewModel @Inject constructor(
             _homeWidgetListVisitable.postValue(Success(newList))
         }) { throwable ->
             _homeWidgetListVisitable.postValue(Fail(throwable))
+        }
+    }
+
+    fun getProductCarousel(
+        shopId: String,
+        userAddress: LocalCacheModel,
+        uiModel: ShopHomeProductCarouselUiModel
+    ){
+        launchCatchError(dispatcherProvider.io, block = {
+            val productLinkType = ""
+
+            val sortId = when (productLinkType) {
+                "terlaris" -> SORT_ID_MOST_SOLD
+                "terbaru" -> SORT_ID_NEWEST
+                else -> SORT_ID_MOST_SOLD
+            }
+
+            getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(
+                shopId,
+                ShopProductFilterInput().apply {
+                    etalaseMenu = ShopPageConstant.ALL_SHOWCASE_ID
+                    this.page = FIRST_PAGE
+                    sort = sortId
+                    perPage = PRODUCT_COUNT_TO_FETCH
+                    userDistrictId = userAddress.district_id
+                    userCityId = userAddress.city_id
+                    userLat = userAddress.lat
+                    userLong = userAddress.long
+                }
+            )
+            val response = getShopProductUseCase.executeOnBackground()
+
+            val products = response.data.map { product ->
+                ProductCard(
+                    product.productId,
+                    product.primaryImage.thumbnail,
+                    product.name,
+                    product.price.textIdr,
+                    product.campaign.originalPriceFmt,
+                    product.campaign.discountedPercentage.toIntOrZero(),
+                    product.stats.averageRating,
+                    1,
+                    product.appLink
+                )
+            }
+
+            println(products)
+
+            val updatedProductCarouselUiModel = uiModel.copy()
+
+
+            _productCarouselWidgetData.postValue(Success(updatedProductCarouselUiModel))
+
+        }) { throwable ->
+            _productCarouselWidgetData.postValue(Fail(throwable))
         }
     }
 }

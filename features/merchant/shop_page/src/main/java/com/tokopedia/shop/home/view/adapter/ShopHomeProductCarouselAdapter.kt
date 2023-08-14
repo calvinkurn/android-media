@@ -12,12 +12,12 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopHomeProductCarouselProductInfoCardBinding
 import com.tokopedia.shop.databinding.ItemShopHomeProductCarouselVerticalBannerCardBinding
 import com.tokopedia.shop.home.view.model.ProductCard
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselWidget
+import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselItemType
 import com.tokopedia.shop.home.view.model.VerticalBanner
 
 class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var items = mutableListOf<ShopHomeProductCarouselWidget>()
+    private var items = mutableListOf<ShopHomeProductCarouselItemType>()
     private var onProductClick: (ProductCard) -> Unit = {}
     private var onVerticalBannerClick: (VerticalBanner) -> Unit = {}
 
@@ -71,7 +71,7 @@ class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<RecyclerView.ViewHol
         private val binding: ItemShopHomeProductCarouselProductInfoCardBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: ShopHomeProductCarouselWidget) {
+        fun bind(item: ShopHomeProductCarouselItemType) {
             val product = item as? ProductCard
 
             product?.let {
@@ -114,7 +114,7 @@ class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<RecyclerView.ViewHol
         private val binding: ItemShopHomeProductCarouselVerticalBannerCardBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: ShopHomeProductCarouselWidget) {
+        fun bind(item: ShopHomeProductCarouselItemType) {
             val banner = item as? VerticalBanner
 
             banner?.let {
@@ -125,8 +125,8 @@ class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     inner class DiffCallback(
-        private val oldItems: List<ShopHomeProductCarouselWidget>,
-        private val newItems: List<ShopHomeProductCarouselWidget>
+        private val oldItems: List<ShopHomeProductCarouselItemType>,
+        private val newItems: List<ShopHomeProductCarouselItemType>
     ) : DiffUtil.Callback() {
 
         override fun getOldListSize() = oldItems.size
@@ -146,7 +146,7 @@ class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<RecyclerView.ViewHol
         this.showProductInfo = showProductInfo
     }
 
-    fun submit(newProducts: List<ShopHomeProductCarouselWidget>) {
+    fun submit(newProducts: List<ShopHomeProductCarouselItemType>) {
         val diffCallback = DiffCallback(this.items, newProducts)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
 

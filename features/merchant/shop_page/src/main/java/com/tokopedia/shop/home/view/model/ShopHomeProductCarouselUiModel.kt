@@ -1,8 +1,10 @@
 package com.tokopedia.shop.home.view.model
 
 import android.os.Parcelable
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.WidgetType
+import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
 import kotlinx.parcelize.Parcelize
 
@@ -54,6 +56,10 @@ data class ShopHomeProductCarouselUiModel(
     }
 
     override fun type(typeFactory: ShopWidgetTypeFactory): Int {
-        return typeFactory.type(this)
+        return if (typeFactory is ShopHomeAdapterTypeFactory) {
+            typeFactory.type(this)
+        } else {
+            Int.ZERO
+        }
     }
 }

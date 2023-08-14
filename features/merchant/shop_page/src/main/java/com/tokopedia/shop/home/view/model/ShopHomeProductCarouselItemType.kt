@@ -1,6 +1,6 @@
 package com.tokopedia.shop.home.view.model
 
-sealed interface ShopHomeProductCarouselWidget {
+sealed interface ShopHomeProductCarouselItemType {
     val id: String
 }
 
@@ -15,11 +15,11 @@ data class ProductCard(
     val soldCount: Int,
     val appLink: String,
     override val id : String = productId
-) : ShopHomeProductCarouselWidget
+) : ShopHomeProductCarouselItemType
 
 data class VerticalBanner(
     val imageUrl: String,
     val bannerType: String,
     val appLink: String,
     override val id : String = imageUrl
-) : ShopHomeProductCarouselWidget
+) : ShopHomeProductCarouselItemType
