@@ -10,14 +10,15 @@ import androidx.core.view.updatePadding
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
-import com.tokopedia.kotlin.extensions.view.getParcelableArg
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.getStringArg
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.PostAtcHelper.POST_ATC_PARAMS
 import com.tokopedia.product.detail.common.postatc.PostAtcParams
 import com.tokopedia.product.detail.databinding.PostAtcBottomSheetBinding
 import com.tokopedia.product.detail.databinding.ViewPostAtcFooterBinding
@@ -50,16 +51,16 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
     companion object {
         const val TAG = "post_atc_bs"
 
-        private const val ARG_PRODUCT_ID = "productId"
-        private const val ARG_POST_ATC = "postAtc"
+        private const val ARG_PRODUCT_ID = "post_atc_productId"
+        private const val ARG_CACHE_ID = "post_atc_cache_id"
 
         fun instance(
             productId: String,
-            postAtcParams: PostAtcParams
+            cacheId: String
         ) = PostAtcBottomSheet().apply {
             arguments = Bundle().apply {
                 putString(ARG_PRODUCT_ID, productId)
-                putParcelable(ARG_POST_ATC, postAtcParams)
+                putString(ARG_CACHE_ID, cacheId)
             }
         }
     }
@@ -81,7 +82,10 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
     override val adapter by lazy { PostAtcAdapter(callback) }
 
     private val argProductId: String by getStringArg(ARG_PRODUCT_ID)
-    private val argPostAtcParams: PostAtcParams by getParcelableArg(ARG_POST_ATC, PostAtcParams())
+    private val argPostAtcParams: PostAtcParams by getCacheManager(
+        POST_ATC_PARAMS,
+        PostAtcParams()
+    )
 
     override var binding: PostAtcBottomSheetBinding? = null
         private set
@@ -246,5 +250,15 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
     private fun getLocalCacheModel() = lazy {
         val context = context ?: return@lazy LocalCacheModel()
         ChooseAddressUtils.getLocalizingAddressData(context)
+    }
+
+    private inline fun <reified T> getCacheManager(
+        customId: String,
+        default: T
+    ): Lazy<T> = lazy {
+        val context = context ?: return@lazy default
+        val cacheId = arguments?.getString(ARG_CACHE_ID) ?: ""
+        val cacheManager = SaveInstanceCacheManager(context, cacheId)
+        cacheManager.get(customId, T::class.java, default) ?: default
     }
 }

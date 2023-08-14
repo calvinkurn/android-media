@@ -70,7 +70,7 @@ class PostAtcViewModelTest {
         val postAtcParams = PostAtcParams(
             cartId = cartId,
             layoutId = layoutId,
-            pageSource = PostAtcParams.Source.Default,
+            pageSource = PostAtcParams.Source.Default.name,
             session = session,
             addons = null
         )
@@ -117,7 +117,7 @@ class PostAtcViewModelTest {
         val postAtcParams = PostAtcParams(
             cartId = cartId,
             layoutId = layoutId,
-            pageSource = PostAtcParams.Source.PDP,
+            pageSource = PostAtcParams.Source.PDP.name,
             session = session,
             addons = null
         )
@@ -164,7 +164,7 @@ class PostAtcViewModelTest {
         val postAtcParams = PostAtcParams(
             cartId = cartId,
             layoutId = layoutId,
-            pageSource = PostAtcParams.Source.Default,
+            pageSource = PostAtcParams.Source.Default.name,
             session = session,
             addons = null
         )
@@ -190,16 +190,12 @@ class PostAtcViewModelTest {
         val pageSource = ""
         val session = ""
         val localCacheModel = LocalCacheModel()
-        val isFulfillment = false
-        val selectedAddonsIds = emptyList<String>()
-        val warehouseId = ""
-        val quantity = 1
         val response = PostAtcLayout()
 
         val postAtcParams = PostAtcParams(
             cartId = cartId,
             layoutId = layoutId,
-            pageSource = PostAtcParams.Source.Default,
+            pageSource = PostAtcParams.Source.Default.name,
             session = session,
             addons = null
         )

@@ -730,7 +730,7 @@ class AtcVariantBottomSheet :
         val postAtcParams = PostAtcParams(
             cartId = cartData.cartId,
             layoutId = postAtcLayout.layoutId,
-            pageSource = pageSource,
+            pageSource = pageSource.name,
             session = postAtcLayout.postAtcSession,
             addons = addons
         )

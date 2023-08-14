@@ -3689,7 +3689,7 @@ open class DynamicProductDetailFragment :
         val postAtcParams = PostAtcParams(
             cartId = cartDataModel.cartId,
             layoutId = postAtcLayout.layoutId,
-            pageSource = PostAtcParams.Source.PDP,
+            pageSource = PostAtcParams.Source.PDP.name,
             session = postAtcLayout.postAtcSession,
             addons = addons
         )

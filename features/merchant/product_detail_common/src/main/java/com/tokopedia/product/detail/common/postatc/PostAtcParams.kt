@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 data class PostAtcParams(
     val cartId: String = "",
     val layoutId: String = "",
-    val pageSource: Source = Source.Default,
+    val pageSource: String = "",
     val session: String = "",
     val addons: Addons? = null
 ) : Parcelable {
@@ -27,16 +27,5 @@ data class PostAtcParams(
     ) : Parcelable {
         object PDP : Source("product detail page")
         object Default : Source("")
-
-        class Custom(override val name: String) : Source(name)
-
-        companion object {
-            fun parse(name: String): Source? {
-                val matchingSubclass = Source::class.sealedSubclasses.find {
-                    it.objectInstance?.name == name
-                }
-                return matchingSubclass?.objectInstance
-            }
-        }
     }
 }

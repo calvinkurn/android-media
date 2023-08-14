@@ -52,7 +52,7 @@ class PostAtcViewModel @Inject constructor(
             addons = addons,
             cartId = postAtcParams.cartId,
             layoutId = postAtcParams.layoutId,
-            pageSource = postAtcParams.pageSource.name,
+            pageSource = postAtcParams.pageSource,
             productId = productId,
             session = postAtcParams.session,
             userLocationRequest = localCacheModel.toUserLocationRequest()
