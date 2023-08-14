@@ -1,9 +1,13 @@
 package com.tokopedia.checkout.revamp.view.viewholder
 
 import android.annotation.SuppressLint
+import android.text.SpannableString
+import android.text.style.UnderlineSpan
 import android.widget.CompoundButton
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.databinding.ItemCheckoutCrossSellItemBinding
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
@@ -13,6 +17,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutDonationModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEgoldModel
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import java.util.*
 
 object CheckoutCrossSellItemView {
 
@@ -66,12 +71,21 @@ object CheckoutCrossSellItemView {
         listener: CheckoutAdapterListener
     ) {
         itemBinding.ivCheckoutCrossSellItem.setImageResource(R.drawable.ic_logam_mulia)
-        val text = "${egoldModel.egoldAttributeModel.titleText} (${
+        val text = if (egoldModel.egoldAttributeModel.isShowHyperlink) {
+            "${egoldModel.egoldAttributeModel.titleText ?: ""} ${egoldModel.egoldAttributeModel.hyperlinkText ?: ""} (${
             CurrencyFormatUtil.convertPriceValueToIdrFormat(
                 egoldModel.egoldAttributeModel.buyEgoldValue,
                 false
             ).removeDecimalSuffix()
-        })"
+            })"
+        } else {
+            "${egoldModel.egoldAttributeModel.titleText ?: ""} (${
+            CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                egoldModel.egoldAttributeModel.buyEgoldValue,
+                false
+            ).removeDecimalSuffix()
+            })"
+        }
         if (egoldModel.egoldAttributeModel.isEnabled) {
             itemBinding.cbCheckoutCrossSellItem.isEnabled = true
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
@@ -89,7 +103,30 @@ object CheckoutCrossSellItemView {
                 )
             }
         }
-        itemBinding.tvCheckoutCrossSellItem.text = text
+        itemBinding.tvCheckoutCrossSellItem.text = SpannableString(text).apply {
+            if (egoldModel.egoldAttributeModel.isShowHyperlink) {
+                val start = "${egoldModel.egoldAttributeModel.titleText ?: ""} ".length
+                setSpan(
+                    UnderlineSpan(),
+                    start,
+                    start + (egoldModel.egoldAttributeModel.hyperlinkText ?: "").length,
+                    SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
+        }
+        itemBinding.tvCheckoutCrossSellItem.setOnClickListener {
+            if (egoldModel.egoldAttributeModel.isShowHyperlink) {
+                RouteManager.route(
+                    itemBinding.root.context,
+                    String.format(
+                        Locale.getDefault(),
+                        "%s?url=%s",
+                        ApplinkConst.WEBVIEW,
+                        egoldModel.egoldAttributeModel.hyperlinkUrl
+                    )
+                )
+            }
+        }
         itemBinding.cbCheckoutCrossSellItem.setOnCheckedChangeListener { _, _ -> }
         itemBinding.cbCheckoutCrossSellItem.isChecked = egoldModel.egoldAttributeModel.isChecked
         itemBinding.cbCheckoutCrossSellItem.skipAnimation()
