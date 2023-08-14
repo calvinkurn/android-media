@@ -31,6 +31,7 @@ import com.tokopedia.buy_more_get_more.olp.utils.BundleConstant
 import com.tokopedia.buy_more_get_more.olp.utils.DataEndlessScrollListener
 import com.tokopedia.buy_more_get_more.sort.activity.ShopProductSortActivity
 import com.tokopedia.buy_more_get_more.sort.listener.ProductSortListener
+import com.tokopedia.campaign.helper.BuyMoreGetMoreHelper
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
@@ -48,10 +49,16 @@ class OfferLandingPageFragment :
 
     companion object {
         @JvmStatic
-        fun newInstance(shopId: String, offerId: String) = OfferLandingPageFragment().apply {
+        fun newInstance(shopId: String,
+                        offerId: String,
+                        warehouseIds: ArrayList<Int>? = arrayListOf(),
+                        productIds: ArrayList<Int>? = arrayListOf()
+        ) = OfferLandingPageFragment().apply {
             arguments = Bundle().apply {
                 putString(BundleConstant.BUNDLE_SHOP_ID, shopId)
                 putString(BundleConstant.BUNDLE_OFFER_ID, offerId)
+                putIntegerArrayList(BuyMoreGetMoreHelper.KEY_WAREHOUSE_IDS, warehouseIds)
+                putIntegerArrayList(BuyMoreGetMoreHelper.KEY_PRODUCT_IDS, productIds)
             }
         }
 
@@ -82,6 +89,8 @@ class OfferLandingPageFragment :
     lateinit var viewModel: OfferLandingPageViewModel
     private val shopId by lazy { arguments?.getString(BundleConstant.BUNDLE_SHOP_ID).orEmpty() }
     private val offerId by lazy { arguments?.getString(BundleConstant.BUNDLE_OFFER_ID).orEmpty() }
+    private val warehouseIds by lazy { arguments?.getIntegerArrayList(BuyMoreGetMoreHelper.KEY_WAREHOUSE_IDS).orEmpty() }
+    private val productIds by lazy { arguments?.getIntegerArrayList(BuyMoreGetMoreHelper.KEY_PRODUCT_IDS).orEmpty() }
 
     override fun getScreenName() = ""
 
@@ -120,6 +129,7 @@ class OfferLandingPageFragment :
                 StaggeredGridLayoutManager.VERTICAL
             )
         }
+        Log.d("Masuk", warehouseIds.toString())
     }
 
     private fun setupObservables() {
@@ -155,9 +165,18 @@ class OfferLandingPageFragment :
                 headerSubTitle = offerInfoForBuyer.offerings.firstOrNull()?.offerName
                     ?: "Offering name" // update this with real data
                 addRightIcon(com.tokopedia.iconunify.R.drawable.iconunify_cart)
-                    .apply { setOnClickListener { } }
+                    .apply {
+                        setOnClickListener {
+                            //Go to Cart
+                        }
+                    }
                 addRightIcon(com.tokopedia.iconunify.R.drawable.iconunify_menu_hamburger)
-                    .apply { setOnClickListener { } }
+                    .apply {
+                        setOnClickListener {
+                            //Go to setting
+                        }
+                    }
+
                 setNavigationOnClickListener { activity?.finish() }
             }
         }
@@ -173,9 +192,9 @@ class OfferLandingPageFragment :
 
         activity?.let {
             val transparent = MethodChecker.getColor(
-            context,
-            R.color.transparent
-        )
+                context,
+                R.color.transparent
+            )
             it.window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             it.window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
             WindowCompat.getInsetsController(it.window, it.window.decorView).apply {

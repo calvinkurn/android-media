@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName
 class GetOfferingProductListRequestParam(
     @SerializedName("request_header")
     val requestHeader: RequestHeader = RequestHeader(),
+    @SerializedName("product_anchor")
+    val productAnchor: ProductAnchor = ProductAnchor(),
     @SerializedName("offer_ids")
     val offerIds: List<Int> = emptyList(),
     @SerializedName("user_id")
@@ -23,6 +25,13 @@ class GetOfferingProductListRequestParam(
         @SerializedName("device")
         val device: String = "android"
     )
+
+    data class ProductAnchor(
+        @SerializedName("product_ids")
+        val productIds: List<Int> = emptyList(),
+        @SerializedName("warehouse_ids")
+        val warehouseIds: List<Int> = emptyList()
+        )
 
     data class UserLocation(
         @SerializedName("address_id")

@@ -31,7 +31,7 @@ class GetOfferProductListUseCase @Inject constructor(
         private val OPERATION_NAME = "getOfferingProductList"
         private val QUERY = """
               query $OPERATION_NAME(${'$'}input: GetOfferingProductListRequest!) {
-                  GetOfferingProductList(params: ${'$'}params) {
+                  GetOfferingProductList(input: ${'$'}input) {
                      response_header{
                           status
                           errorMessage

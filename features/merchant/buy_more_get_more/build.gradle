@@ -77,6 +77,7 @@ dependencies {implementation rootProject.ext.supportLibDependencies.recyclerView
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.accordion
     implementation rootProject.ext.unifyDependencies.carousel
+    implementation rootProject.ext.unifyDependencies.iconNotification
 
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.miscDependencies.flexBoxLayout
