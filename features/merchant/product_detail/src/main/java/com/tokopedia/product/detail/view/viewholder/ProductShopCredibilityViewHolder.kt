@@ -53,8 +53,6 @@ class ProductShopCredibilityViewHolder(
 
     private val context = view.context
 
-    private val Fragment.storiesAvatarManager by storiesManager(StoriesKey.ProductDetail)
-
     init {
         itemBinding.shopCredibilityMain.setOnInflateListener { _, view ->
             mainBinding = ViewShopCredibilityBinding.bind(view)

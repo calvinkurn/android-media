@@ -52,7 +52,6 @@ class ShopPageHeaderFragmentHeaderViewHolder(
     private val shopPagePlayWidgetListener: ShopPageHeaderPlayWidgetViewHolder.Listener,
     private val chooseAddressWidgetListener: ChooseAddressWidget.ChooseAddressWidgetListener,
     private val shopPageHeaderPerformanceWidgetImageTextListener: ShopPageHeaderPerformanceWidgetImageTextComponentViewHolder.Listener,
-    private val storiesAvatarManager: StoriesAvatarManager,
 ) {
     private var isShopFavorite = false
     private var isUserNeverFollow = false
@@ -99,7 +98,6 @@ class ShopPageHeaderFragmentHeaderViewHolder(
                 shopPageTrackingSGCPlayWidget,
                 shopPagePlayWidgetListener,
                 shopPageHeaderPerformanceWidgetImageTextListener,
-                storiesAvatarManager,
             )
         )
         rvShopPageHeaderWidget?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)

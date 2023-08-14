@@ -201,8 +201,8 @@ import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
 import com.tokopedia.shop_widget.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop_widget.mvc_locked_to_product.util.MvcLockedToProductUtil
 import com.tokopedia.shop_widget.note.view.bottomsheet.ShopNoteBottomSheet
+import com.tokopedia.stories.common.StoriesAvatarManager
 import com.tokopedia.stories.common.StoriesKey
-import com.tokopedia.stories.common.activityStoriesManager
 import com.tokopedia.stories.common.storiesManager
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.*
@@ -455,7 +455,7 @@ class ShopPageHeaderFragment :
     }
     private var queryParamTab: String = ""
 
-    private val storiesManager by storiesManager(StoriesKey.ShopPage)
+    private val storiesManager by storiesManager(StoriesKey.ShopPage) { viewBindingShopContentLayout?.appBarLayout?.parent as? View }
 
     override fun getComponent() = activity?.run {
         DaggerShopPageHeaderComponent.builder().shopPageHeaderModule(ShopPageHeaderModule())
@@ -581,7 +581,6 @@ class ShopPageHeaderFragment :
             this,
             this,
             this,
-            storiesManager
         )
         initToolbar()
         initAdapter()
@@ -1180,6 +1179,7 @@ class ShopPageHeaderFragment :
             )
         }
         shopLandingPageInitAffiliateCookie()
+        storiesManager.updateStories(listOf(shopId))
     }
 
     private fun checkAffiliateAppLink(uri: Uri) {
@@ -1342,7 +1342,6 @@ class ShopPageHeaderFragment :
     }
 
     private fun getInitialData() {
-        storiesManager.updateStories(listOf(shopId))
         hideMiniCartWidget()
         updateCurrentPageLocalCacheModelData()
         startMonitoringPltNetworkRequest()
@@ -2784,6 +2783,10 @@ class ShopPageHeaderFragment :
             componentModel,
             valueDisplayed
         )
+    }
+
+    override fun getStoriesAvatarManager(): StoriesAvatarManager {
+        return storiesManager
     }
 
     override fun onShopPerformanceWidgetBadgeTextValueItemClicked(

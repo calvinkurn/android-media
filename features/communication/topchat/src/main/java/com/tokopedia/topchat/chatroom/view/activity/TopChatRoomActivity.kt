@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.activity
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
@@ -42,7 +41,6 @@ import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.stories.common.StoriesAvatarView
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.domain.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.view.fragment.ChatListInboxFragment
@@ -63,7 +61,6 @@ import com.tokopedia.topchat.common.util.ViewUtil.FLAT_STATE
 import com.tokopedia.topchat.common.util.ViewUtil.HALF_OPEN_STATE
 import com.tokopedia.topchat.common.util.ViewUtil.getFoldingFeatureState
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 open class TopChatRoomActivity :

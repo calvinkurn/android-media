@@ -24,7 +24,6 @@ import com.tokopedia.utils.view.binding.viewBinding
 class ShopPageHeaderBasicInfoWidgetViewHolder(
     itemView: View,
     private val shopHeaderBasicInfoWidgetListener: Listener,
-    private val storiesAvatarManager: StoriesAvatarManager,
 ) : AbstractViewHolder<ShopPageHeaderWidgetUiModel>(itemView) {
 
     companion object {
@@ -41,6 +40,8 @@ class ShopPageHeaderBasicInfoWidgetViewHolder(
             componentModel: ShopPageHeaderBadgeTextValueComponentUiModel?,
             shopPageHeaderWidgetUiModel: ShopPageHeaderWidgetUiModel?
         )
+
+        fun getStoriesAvatarManager(): StoriesAvatarManager
     }
 
     private val viewBinding: LayoutShopHeaderBasicInfoWidgetBinding? by viewBinding()
@@ -76,7 +77,7 @@ class ShopPageHeaderBasicInfoWidgetViewHolder(
         val shopId = component?.shopId.orEmpty()
         shopLogoImageView?.loadImageCircle(shopLogoUrl)
         shopLogoContainer?.run {
-            storiesAvatarManager.manage(this, shopId)
+            shopHeaderBasicInfoWidgetListener.getStoriesAvatarManager().manage(this, shopId)
         }
 //        shopLogoContainer?.startAnimation()
     }

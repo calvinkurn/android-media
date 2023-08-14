@@ -577,7 +577,7 @@ open class DynamicProductDetailFragment :
 
     private val compositeSubscription by lazy { CompositeSubscription() }
 
-    private val mStoriesAvatarManager by storiesManager(StoriesKey.ProductDetail)
+    private val mStoriesAvatarManager by storiesManager(StoriesKey.ProductDetail) { binding?.rvPdp }
 
     private val scrollListener by lazy {
         navToolbar?.let {

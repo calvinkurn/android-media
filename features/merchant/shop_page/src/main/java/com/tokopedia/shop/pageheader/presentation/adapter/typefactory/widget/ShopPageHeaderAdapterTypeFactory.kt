@@ -29,7 +29,6 @@ class ShopPageHeaderAdapterTypeFactory(
     private val sgcPlayWidget: ShopPageTrackingSGCPlayWidget?,
     private val shopPagePlayWidgetListener: ShopPageHeaderPlayWidgetViewHolder.Listener,
     private val shopPageHeaderPerformanceWidgetImageTextListener: ShopPageHeaderPerformanceWidgetImageTextComponentViewHolder.Listener,
-    private val storiesAvatarManager: StoriesAvatarManager,
 ) : BaseAdapterTypeFactory() {
 
     private var adapterShopHeader: ShopPageHeaderAdapter? = null
@@ -52,8 +51,7 @@ class ShopPageHeaderAdapterTypeFactory(
         return when (type) {
             ShopPageHeaderBasicInfoWidgetViewHolder.LAYOUT -> ShopPageHeaderBasicInfoWidgetViewHolder(
                 parent,
-                shopPageHeaderBasicInfoWidgetListener,
-                storiesAvatarManager
+                shopPageHeaderBasicInfoWidgetListener
             )
             ShopHeaderPerformanceWidgetViewHolder.LAYOUT -> ShopHeaderPerformanceWidgetViewHolder(
                 parent,

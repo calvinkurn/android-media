@@ -137,7 +137,7 @@ class ChatListFragment :
     private var menu: Menu? = null
     private var broadCastButton: BroadcastButtonLayout? = null
 
-    private val mStoriesAvatarManager by storiesManager(StoriesKey.TopChatList)
+    private val mStoriesAvatarManager by storiesManager(StoriesKey.TopChatList) { rv }
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
     override fun getSwipeRefreshLayoutResourceId() = R.id.swipe_refresh_layout

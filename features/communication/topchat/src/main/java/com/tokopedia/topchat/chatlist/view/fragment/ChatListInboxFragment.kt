@@ -134,7 +134,7 @@ open class ChatListInboxFragment :
 
     private lateinit var performanceMonitoring: PerformanceMonitoring
 
-    private val mStoriesAvatarManager by storiesManager(StoriesKey.TopChatList)
+    private val mStoriesAvatarManager by storiesManager(StoriesKey.TopChatList) { rv }
 
     @RoleType
     private var role: Int = RoleType.BUYER

@@ -1,6 +1,8 @@
 package com.tokopedia.stories.common
 
 import android.content.Context
+import android.graphics.Rect
+import android.util.Log
 import android.view.View
 import android.view.View.OnAttachStateChangeListener
 import androidx.appcompat.app.AppCompatActivity
@@ -18,6 +20,8 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.stories.common.di.DaggerStoriesAvatarComponent
 import com.tokopedia.stories.common.di.StoriesAvatarComponent
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -28,13 +32,16 @@ class StoriesAvatarManager private constructor(
     private val key: StoriesKey,
     context: Context,
     private val lifecycleOwner: LifecycleOwner,
-    private val viewModelStoreOwner: ViewModelStoreOwner
+    private val viewModelStoreOwner: ViewModelStoreOwner,
+    parentScrollingView: View? = null,
 ) {
 
     private val component = createComponent(context)
     private val viewModelFactory = component.storiesViewModelFactory()
 
     private val viewToObserverMap = mutableMapOf<StoriesBorderLayout, StoriesAvatarMeta>()
+
+    private var showCoachMarkJob: Job? = null
 
     @Suppress("UNCHECKED_CAST")
     private val viewModelProvider by lazy {
@@ -50,6 +57,7 @@ class StoriesAvatarManager private constructor(
 
     private val coachMark = StoriesAvatarCoachMark(context) {
         getViewModel().onIntent(StoriesAvatarIntent.HasSeenCoachMark)
+        mShopIdCoachMarked = null
     }
 
     private var mShopIdCoachMarked: String? = null
@@ -87,6 +95,9 @@ class StoriesAvatarManager private constructor(
                 }
             }
         }
+
+        Log.d("StoriesBorderLayout", "parentScrollingView: $parentScrollingView")
+        parentScrollingView?.let { observeScrollingView(it) }
     }
 
     fun manage(storiesView: StoriesBorderLayout, shopId: String) {
@@ -117,7 +128,12 @@ class StoriesAvatarManager private constructor(
     }
 
     fun hideCoachMark() {
+        showCoachMarkJob?.cancel()
         coachMark.hide()
+    }
+
+    private fun requestShowCoachMark() {
+        getViewModel().onIntent(StoriesAvatarIntent.ShowCoachMark)
     }
 
     private fun getViewModel(): StoriesAvatarViewModel {
@@ -136,10 +152,32 @@ class StoriesAvatarManager private constructor(
     }
 
     private fun showCoachMarkOnView(view: StoriesBorderLayout) {
-        coachMark.show(
-            view,
-            "Ada update menarik dari toko ini"
-        )
+        if (showCoachMarkJob?.isActive == true) return
+        showCoachMarkJob = lifecycleOwner.lifecycleScope.launch {
+            delay(1000)
+            coachMark.show(
+                view,
+                "Ada update menarik dari toko ini"
+            )
+        }
+    }
+
+    private fun observeScrollingView(view: View) {
+        val vto = view.viewTreeObserver
+        vto.addOnScrollChangedListener {
+            val scrollBounds = Rect()
+            view.getHitRect(scrollBounds)
+
+            val shopId = mShopIdCoachMarked ?: return@addOnScrollChangedListener
+            val storiesLayout = getViewByShopId(shopId) ?: return@addOnScrollChangedListener
+            if (storiesLayout.getLocalVisibleRect(scrollBounds)) {
+                Log.d("StoriesBorderLayout", "Request Stories CoachMark")
+                requestShowCoachMark()
+            } else {
+                Log.d("StoriesBorderLayout", "Hide CoachMark")
+                hideCoachMark()
+            }
+        }
     }
 
     private fun StoriesBorderLayout.onAttached(shopId: String) {
@@ -147,9 +185,7 @@ class StoriesAvatarManager private constructor(
         observer.observe(shopId)
         assign(shopId, observer)
 
-        if (shopId == mShopIdCoachMarked) {
-            getViewModel().onIntent(StoriesAvatarIntent.ShowCoachMark)
-        }
+        if (shopId == mShopIdCoachMarked) requestShowCoachMark()
     }
 
     private fun StoriesBorderLayout.onDetached() {
@@ -201,21 +237,23 @@ class StoriesAvatarManager private constructor(
 
     companion object {
 
-        fun create(key: StoriesKey, fragment: Fragment): StoriesAvatarManager {
+        fun create(key: StoriesKey, fragment: Fragment, scrollingView: View? = null): StoriesAvatarManager {
             return StoriesAvatarManager(
                 key,
                 fragment.requireContext(),
                 fragment.viewLifecycleOwner,
-                fragment
+                fragment,
+                scrollingView
             )
         }
 
-        fun create(key: StoriesKey, activity: AppCompatActivity): StoriesAvatarManager {
+        fun create(key: StoriesKey, activity: AppCompatActivity, scrollingView: View? = null): StoriesAvatarManager {
             return StoriesAvatarManager(
                 key,
                 activity,
                 activity,
-                activity
+                activity,
+                scrollingView,
             )
         }
     }

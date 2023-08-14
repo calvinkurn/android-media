@@ -1,6 +1,7 @@
 package com.tokopedia.stories.common
 
 import android.content.Context
+import android.util.Log
 import android.view.View
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -17,7 +18,11 @@ internal class StoriesAvatarCoachMark(
 
     fun show(view: View, text: String) {
         val coachMark = getOrCreateCoachMark()
-        if (coachMark.isShowing) return
+        Log.d("StoriesBorderLayout", "Show CoachMark")
+        if (coachMark.isShowing) {
+            Log.d("StoriesBorderLayout", "Show CoachMark failed")
+            return
+        }
 
         coachMark.showCoachMark(
             arrayListOf(
@@ -30,12 +35,16 @@ internal class StoriesAvatarCoachMark(
         val coachMark = mCoachMark ?: return
 
         if (view == null) {
+            Log.d("StoriesBorderLayout", "Hide CoachMark - View is null")
             coachMark.hideInternal()
         } else {
             val items = coachMark.coachMarkItem
             val isSameAnchor = items.any { it.anchorView == view }
 
-            if (isSameAnchor) coachMark.hideInternal()
+            if (isSameAnchor) {
+                Log.d("StoriesBorderLayout", "Hide CoachMark - Same Anchor")
+                coachMark.hideInternal()
+            }
         }
     }
 
