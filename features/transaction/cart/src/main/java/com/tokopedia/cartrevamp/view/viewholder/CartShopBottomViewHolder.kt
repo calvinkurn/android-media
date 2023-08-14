@@ -30,8 +30,8 @@ class CartShopBottomViewHolder(
 
     private fun renderAccordion(cartShopBottomHolderData: CartShopBottomHolderData) {
         if (!cartShopBottomHolderData.shopData.isError && cartShopBottomHolderData.shopData.isCollapsible) {
-            val showMoreWording = itemView.context.getString(R.string.label_tokonow_show_more)
-            val showLessWording = itemView.context.getString(R.string.label_tokonow_show_less)
+            val showMoreWording = itemView.context.getString(R.string.cart_new_default_wording_show_more)
+            val showLessWording = itemView.context.getString(R.string.cart_new_default_wording_show_less)
             if (cartShopBottomHolderData.shopData.isCollapsed) {
                 binding.imageChevron.rotation = CHEVRON_ROTATION_0
                 binding.textAccordion.text = showMoreWording
@@ -41,7 +41,7 @@ class CartShopBottomViewHolder(
             }
 
             binding.layoutAccordion.setOnClickListener {
-                val position = adapterPosition
+                val position = absoluteAdapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     if (cartShopBottomHolderData.shopData.isCollapsed) {
                         actionListener.onExpandAvailableItem(position)
@@ -126,7 +126,7 @@ class CartShopBottomViewHolder(
                         cartShopTickerRightIcon.show()
                         layoutCartShopTicker.setBackgroundColor(MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN50))
                         layoutCartShopTicker.setOnClickListener {
-                            actionListener.onCartShopGroupTickerRefreshClicked(adapterPosition, cartShopBottomHolderData)
+                            actionListener.onCartShopGroupTickerRefreshClicked(absoluteAdapterPosition, cartShopBottomHolderData)
                         }
                         layoutCartShopTicker.show()
                     }

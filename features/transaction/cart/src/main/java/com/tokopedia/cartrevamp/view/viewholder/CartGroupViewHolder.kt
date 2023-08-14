@@ -5,22 +5,19 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.ItemGroupRevampBinding
 import com.tokopedia.cartrevamp.view.ActionListener
 import com.tokopedia.cartrevamp.view.adapter.collapsedproduct.CartCollapsedProductAdapter
 import com.tokopedia.cartrevamp.view.decorator.CartHorizontalItemDecoration
 import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.purchase_platform.common.prefs.PlusCoachmarkPrefs
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
@@ -40,10 +37,6 @@ class CartGroupViewHolder(
     private var plusCoachmark: CoachMark2?
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    private val localCacheHandler: LocalCacheHandler by lazy {
-        LocalCacheHandler(itemView.context, KEY_ONBOARDING_ICON_PIN)
-    }
-
     private val plusCoachmarkPrefs: PlusCoachmarkPrefs by lazy {
         PlusCoachmarkPrefs(itemView.context)
     }
@@ -52,60 +45,13 @@ class CartGroupViewHolder(
         renderDivider(cartGroupHolderData)
         renderGroupName(cartGroupHolderData)
         renderGroupBadge(cartGroupHolderData)
-//        renderIconPin(cartGroupHolderData)
-//        renderShopEnabler(cartGroupHolderData)
         renderCartItems(cartGroupHolderData)
         renderCheckBox(cartGroupHolderData)
         renderFulfillment(cartGroupHolderData)
         validateFulfillmentLayout(cartGroupHolderData)
-//        renderPreOrder(cartGroupHolderData)
-//        renderIncidentLabel(cartGroupHolderData)
         renderFreeShipping(cartGroupHolderData)
-//        renderEstimatedTimeArrival(cartGroupHolderData)
         renderMaximumWeight(cartGroupHolderData)
     }
-
-//    private fun renderIconPin(cartGroupHolderData: CartGroupHolderData) {
-//        if (cartGroupHolderData.isShowPin) {
-//            binding.iconPin.show()
-//            cartGroupHolderData.pinCoachmarkMessage.let {
-//                if (it.isNotBlank()) {
-//                    showIconPinOnboarding(it)
-//                }
-//            }
-//        } else {
-//            binding.iconPin.gone()
-//        }
-//    }
-
-//    private fun showIconPinOnboarding(coachmarkMessage: String) {
-//        val hasShownOnboarding = localCacheHandler.getBoolean(KEY_HAS_SHOWN_ICON_PIN_ONBOARDING, false)
-//        if (hasShownOnboarding) return
-//
-//        itemView.context.let {
-//            val onboardingItems = ArrayList<CoachMark2Item>().apply {
-//                add(CoachMark2Item(binding.iconPin, coachmarkMessage, ""))
-//            }
-//
-//            CoachMark2(it).apply {
-//                showCoachMark(onboardingItems)
-//            }
-//
-//            localCacheHandler.apply {
-//                putBoolean(KEY_HAS_SHOWN_ICON_PIN_ONBOARDING, true)
-//                applyEditor()
-//            }
-//        }
-//    }
-
-//    private fun renderShopEnabler(cartGroupHolderData: CartGroupHolderData) {
-//        if (cartGroupHolderData.enablerLabel.isNotBlank()) {
-//            binding.labelEpharmacy.text = cartGroupHolderData.enablerLabel
-//            binding.labelEpharmacy.visible()
-//        } else {
-//            binding.labelEpharmacy.gone()
-//        }
-//    }
 
     private fun renderDivider(cartGroupHolderData: CartGroupHolderData) {
         if (cartGroupHolderData.isError) {
@@ -177,10 +123,7 @@ class CartGroupViewHolder(
 
     private fun renderGroupBadge(cartGroupHolderData: CartGroupHolderData) {
         if (cartGroupHolderData.groupBadge.isNotBlank()) {
-            ImageHandler.loadImageWithoutPlaceholder(
-                binding.imageShopBadge,
-                cartGroupHolderData.groupBadge
-            )
+            binding.imageShopBadge.loadImageWithoutPlaceholder(cartGroupHolderData.groupBadge)
             val contentDescription =
                 if (cartGroupHolderData.isTypeOWOC()) cartGroupHolderData.groupName else cartGroupHolderData.productUiModelList.getOrNull(
                     0
@@ -208,8 +151,6 @@ class CartGroupViewHolder(
         binding.rvCartItem.layoutManager = layoutManager
         binding.rvCartItem.adapter = cartCartCollapsedProductAdapter
 
-        setCollapsedRecyclerViewHeight(cartItemDataList)
-
         val itemDecorationCount = binding.rvCartItem.itemDecorationCount
         if (itemDecorationCount > 0) {
             binding.rvCartItem.removeItemDecorationAt(0)
@@ -222,27 +163,6 @@ class CartGroupViewHolder(
                 paddingRight
             )
         )
-    }
-
-    private fun setCollapsedRecyclerViewHeight(cartItemDataList: List<CartItemHolderData>) {
-        var hasProductWithVariant = false
-        if (cartItemDataList.isNotEmpty()) {
-            val maxIndex = min(cartItemDataList.size, COLLAPSED_PRODUCTS_LIMIT)
-            loop@ for (cartItemData in cartItemDataList.subList(0, maxIndex)) {
-                if (cartItemData.variant.isNotBlank()) {
-                    hasProductWithVariant = true
-                    break@loop
-                }
-            }
-            if (hasProductWithVariant) {
-                binding.rvCartItem.layoutParams.height =
-                    itemView.context.resources.getDimensionPixelSize(R.dimen.cart_collapsed_inner_recycler_view_height_with_variant)
-            } else {
-                binding.rvCartItem.layoutParams.height =
-                    itemView.context.resources.getDimensionPixelSize(R.dimen.cart_collapsed_inner_recycler_view_height_without_variant)
-            }
-            binding.rvCartItem.requestLayout()
-        }
     }
 
     private fun renderCheckBox(cartGroupHolderData: CartGroupHolderData) {
@@ -327,20 +247,6 @@ class CartGroupViewHolder(
         }
     }
 
-//    private fun renderEstimatedTimeArrival(cartGroupHolderData: CartGroupHolderData) {
-//        val eta = cartGroupHolderData.estimatedTimeArrival
-//        with(binding) {
-//            if (eta.isNotBlank()) {
-//                textEstimatedTimeArrival.text = eta
-//                textEstimatedTimeArrival.show()
-//                separatorEstimatedTimeArrival.show()
-//            } else {
-//                textEstimatedTimeArrival.gone()
-//                separatorEstimatedTimeArrival.gone()
-//            }
-//        }
-//    }
-
     private fun cbSelectShopClickListener(cartGroupHolderData: CartGroupHolderData) {
         val isChecked: Boolean
         if (cartGroupHolderData.isPartialSelected) {
@@ -358,44 +264,15 @@ class CartGroupViewHolder(
             }
         }
         cartGroupHolderData.isAllSelected = isAllSelected
-        if (adapterPosition != RecyclerView.NO_POSITION) {
-            actionListener.onShopItemCheckChanged(adapterPosition, isChecked)
+        if (absoluteAdapterPosition != RecyclerView.NO_POSITION) {
+            actionListener.onShopItemCheckChanged(absoluteAdapterPosition, isChecked)
         }
     }
-
-//    private fun renderPreOrder(cartGroupHolderData: CartGroupHolderData) {
-//        with(binding) {
-//            if (cartGroupHolderData.preOrderInfo.isNotBlank()) {
-//                labelPreOrder.text = cartGroupHolderData.preOrderInfo
-//                labelPreOrder.show()
-//                separatorPreOrder.show()
-//            } else {
-//                labelPreOrder.gone()
-//                separatorPreOrder.gone()
-//            }
-//        }
-//    }
-
-//    private fun renderIncidentLabel(cartGroupHolderData: CartGroupHolderData) {
-//        with(binding) {
-//            if (cartGroupHolderData.incidentInfo.isNotBlank()) {
-//                labelIncident.text = cartGroupHolderData.incidentInfo
-//                labelIncident.show()
-//                separatorIncident.show()
-//            } else {
-//                labelIncident.gone()
-//                separatorIncident.gone()
-//            }
-//        }
-//    }
 
     private fun renderFreeShipping(cartGroupHolderData: CartGroupHolderData) {
         with(binding) {
             if (cartGroupHolderData.freeShippingBadgeUrl.isNotBlank()) {
-                ImageHandler.loadImageWithoutPlaceholderAndError(
-                    imgFreeShipping,
-                    cartGroupHolderData.freeShippingBadgeUrl
-                )
+                imgFreeShipping.loadImageWithoutPlaceholder(cartGroupHolderData.freeShippingBadgeUrl)
                 val contentDescriptionStringResource = if (cartGroupHolderData.isFreeShippingPlus) {
                     com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_plus
                 } else {
@@ -476,12 +353,8 @@ class CartGroupViewHolder(
         private const val COLLAPSED_PRODUCTS_LIMIT = 10
 
         const val CHECKBOX_WATCHER_DEBOUNCE_TIME = 500L
-        const val KEY_ONBOARDING_ICON_PIN = "KEY_ONBOARDING_ICON_PIN"
-//        const val KEY_HAS_SHOWN_ICON_PIN_ONBOARDING = "KEY_HAS_SHOWN_ICON_PIN_ONBOARDING"
 
         private const val AVAILABLE_DIVIDER_HEIGHT = 8
-        private const val DEFAULT_DIVIDER_HEIGHT = 2
-        private const val ERROR_DIVIDER_MARGIN_START = 114
 
         private const val ITEM_DECORATION_PADDING_LEFT = 48
         private const val SHOP_HEADER_PADDING_12 = 12

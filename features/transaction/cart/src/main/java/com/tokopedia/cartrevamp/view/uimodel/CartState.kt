@@ -9,6 +9,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
@@ -17,15 +18,6 @@ import com.tokopedia.wishlistcommon.data.response.GetWishlistV2Response
 sealed class CartState<out T : Any> {
     data class Success<out T : Any>(val data: T) : CartState<T>()
     data class Failed(val throwable: Throwable) : CartState<Nothing>()
-}
-
-sealed class Result<out T : Any> {
-
-    data class Success<out T : Any>(val data: T) : Result<T>()
-    data class Error(
-        val exception: Exception,
-        val errorMessage: String
-    ) : Result<Nothing>()
 }
 
 sealed class CartGlobalEvent {
@@ -61,6 +53,19 @@ sealed class CartGlobalEvent {
     ) : CartGlobalEvent()
 }
 
+sealed interface AddCartToWishlistV2Event {
+    data class Success(
+        val data: AddToWishlistV2Response.Data.WishlistAddV2,
+        val productId: String,
+        val isLastItem: Boolean,
+        val source: String,
+        val wishlistIcon: IconUnify,
+        val animatedWishlistImage: ImageView
+    ) : AddCartToWishlistV2Event
+
+    data class Failed(val throwable: Throwable) : AddCartToWishlistV2Event
+}
+
 sealed interface AddToCartEvent {
     data class Success(
         val addToCartDataModel: AddToCartDataModel,
@@ -68,6 +73,11 @@ sealed interface AddToCartEvent {
     ) : AddToCartEvent
 
     data class Failed(val throwable: Throwable) : AddToCartEvent
+}
+
+sealed interface AddToCartExternalEvent {
+    data class Success(val model: AddToCartExternalModel) : AddToCartExternalEvent
+    data class Failed(val throwable: Throwable) : AddToCartExternalEvent
 }
 
 sealed interface CartTrackerEvent {
@@ -96,43 +106,34 @@ sealed interface DeleteCartEvent {
     ) : DeleteCartEvent
 }
 
-sealed interface UndoDeleteEvent {
-    object Success : UndoDeleteEvent
-
-    data class Failed(val throwable: Throwable) : UndoDeleteEvent
+sealed interface FollowShopEvent {
+    data class Success(val dataFollowShop: DataFollowShop) : FollowShopEvent
+    data class Failed(val throwable: Throwable) : FollowShopEvent
 }
 
-sealed class UpdateCartCheckoutState {
+sealed interface LoadRecentReviewState {
+    data class Success(val recommendationWidgets: List<RecommendationWidget>) :
+        LoadRecentReviewState
+
+    data class Failed(val throwable: Throwable) : LoadRecentReviewState
+}
+
+sealed interface LoadRecommendationState {
+    data class Success(val recommendationWidgets: List<RecommendationWidget>) :
+        LoadRecommendationState
+
+    object Failed : LoadRecommendationState
+}
+
+sealed interface LoadWishlistV2State {
     data class Success(
-        val eeCheckoutData: Map<String, Any>,
-        val checkoutProductEligibleForCashOnDelivery: Boolean,
-        val condition: Int
-    ) : UpdateCartCheckoutState()
+        val wishlists: List<GetWishlistV2Response.Data.WishlistV2.Item>,
+        val forceReload: Boolean
+    ) : LoadWishlistV2State
 
-    data class ErrorOutOfService(val outOfService: OutOfService) : UpdateCartCheckoutState()
-
-    data class UnknownError(val message: String, val ctaText: String) : UpdateCartCheckoutState()
-
-    data class Failed(val throwable: Throwable) : UpdateCartCheckoutState()
+    object Failed : LoadWishlistV2State
 }
 
-sealed class UpdateCartAndGetLastApplyEvent {
-    data class Success(val promoUiModel: PromoUiModel) : UpdateCartAndGetLastApplyEvent()
-    data class Failed(val throwable: Throwable) : UpdateCartAndGetLastApplyEvent()
-}
-
-sealed interface AddCartToWishlistV2Event {
-    data class Success(
-        val data: AddToWishlistV2Response.Data.WishlistAddV2,
-        val productId: String,
-        val isLastItem: Boolean,
-        val source: String,
-        val wishlistIcon: IconUnify,
-        val animatedWishlistImage: ImageView
-    ) : AddCartToWishlistV2Event
-
-    data class Failed(val throwable: Throwable) : AddCartToWishlistV2Event
-}
 sealed interface RemoveFromWishlistEvent {
 
     data class RemoveWishlistFromCartSuccess(
@@ -155,27 +156,34 @@ sealed interface RemoveFromWishlistEvent {
     ) : RemoveFromWishlistEvent
 }
 
-sealed interface LoadWishlistV2State {
+sealed interface SeamlessLoginEvent {
+    data class Success(val url: String) : SeamlessLoginEvent
+    data class Failed(val msg: String) : SeamlessLoginEvent
+}
+
+sealed interface UndoDeleteEvent {
+    object Success : UndoDeleteEvent
+
+    data class Failed(val throwable: Throwable) : UndoDeleteEvent
+}
+
+sealed class UpdateCartAndGetLastApplyEvent {
+    data class Success(val promoUiModel: PromoUiModel) : UpdateCartAndGetLastApplyEvent()
+    data class Failed(val throwable: Throwable) : UpdateCartAndGetLastApplyEvent()
+}
+
+sealed class UpdateCartCheckoutState {
     data class Success(
-        val wishlists: List<GetWishlistV2Response.Data.WishlistV2.Item>,
-        val forceReload: Boolean
-    ) : LoadWishlistV2State
+        val eeCheckoutData: Map<String, Any>,
+        val checkoutProductEligibleForCashOnDelivery: Boolean,
+        val condition: Int
+    ) : UpdateCartCheckoutState()
 
-    object Failed : LoadWishlistV2State
-}
+    data class ErrorOutOfService(val outOfService: OutOfService) : UpdateCartCheckoutState()
 
-sealed interface LoadRecommendationState {
-    data class Success(val recommendationWidgets: List<RecommendationWidget>) :
-        LoadRecommendationState
+    data class UnknownError(val message: String, val ctaText: String) : UpdateCartCheckoutState()
 
-    object Failed : LoadRecommendationState
-}
-
-sealed interface LoadRecentReviewState {
-    data class Success(val recommendationWidgets: List<RecommendationWidget>) :
-        LoadRecentReviewState
-
-    data class Failed(val throwable: Throwable) : LoadRecentReviewState
+    data class Failed(val throwable: Throwable) : UpdateCartCheckoutState()
 }
 
 sealed interface UpdateCartPromoState {
@@ -184,15 +192,6 @@ sealed interface UpdateCartPromoState {
     data class Failed(val throwable: Throwable) : UpdateCartPromoState
 }
 
-sealed interface SeamlessLoginEvent {
-    data class Success(val url: String) : SeamlessLoginEvent
-    data class Failed(val msg: String) : SeamlessLoginEvent
-}
-
-sealed interface AddToCartExternalEvent {
-    data class Success(val model: AddToCartExternalModel) : AddToCartExternalEvent
-    data class Failed(val throwable: Throwable) : AddToCartExternalEvent
-}
 
 @Suppress("UNCHECKED_CAST")
 class CartMutableLiveData<T>(initialValue: T) : LiveData<T>(initialValue) {
