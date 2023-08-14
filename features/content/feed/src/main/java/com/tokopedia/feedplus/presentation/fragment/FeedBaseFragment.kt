@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_FEED_BROWSE
 import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.reduceDragSensitivity
@@ -533,6 +534,10 @@ class FeedBaseFragment :
         binding.btnFeedCreatePost.setOnClickListener {
             feedNavigationAnalytics.eventClickCreationButton(feedMainViewModel.getCurrentTabType())
             onCreatePostClicked()
+        }
+
+        binding.btnFeedBrowse.setOnClickListener {
+            openAppLink.launch(INTERNAL_FEED_BROWSE)
         }
 
         binding.btnFeedLive.setOnClickListener {
