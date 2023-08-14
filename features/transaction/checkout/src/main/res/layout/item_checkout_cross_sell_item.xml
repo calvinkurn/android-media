@@ -29,7 +29,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="display_3"
         app:typographyWeight="reguler"
-        tools:text="testing" />
+        tools:text="testing long wording testing long wording testing long wording" />
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
         android:id="@+id/cb_checkout_cross_sell_item"

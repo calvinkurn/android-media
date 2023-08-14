@@ -32,8 +32,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
             app:layout_constraintBottom_toBottomOf="@id/upload_icon"
             app:layout_constraintEnd_toStartOf="@id/iv_prescription_right"
             app:layout_constraintStart_toEndOf="@id/upload_icon"
@@ -58,6 +56,7 @@
                 android:layout_marginEnd="8dp"
                 android:textColor="@color/Unify_NN600"
                 app:typographyType="display_3"
+                android:visibility="gone"
                 app:typographyWeight="reguler"
                 tools:text="2 foto resep di-upload" />
 
@@ -68,7 +67,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="12dp"
             app:icon_color_light_enable="@color/Unify_NN500"
             app:icon_color_night_enable="@color/Unify_NN500"
             app:icon_name="CHEVRON_RIGHT"

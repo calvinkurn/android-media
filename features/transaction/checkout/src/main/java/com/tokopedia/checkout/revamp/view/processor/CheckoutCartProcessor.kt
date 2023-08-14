@@ -130,11 +130,13 @@ class CheckoutCartProcessor @Inject constructor(
             CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADD_NEW_ADDRESS -> {
                 return CheckoutPageState.CheckNoAddress(cartShipmentAddressFormData)
             }
+
             CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADDRESS_LIST -> {
                 return CheckoutPageState.NoMatchedAddress(
                     userAddress?.state ?: 0
                 )
             }
+
             CartShipmentAddressFormData.NO_ERROR -> {
                 return if (userAddress == null) {
                     CheckoutPageState.EmptyData
@@ -142,6 +144,7 @@ class CheckoutCartProcessor @Inject constructor(
                     CheckoutPageState.Success(cartShipmentAddressFormData)
                 }
             }
+
             else -> {
                 return CheckoutPageState.Error(
                     MessageErrorException(
@@ -206,12 +209,21 @@ class CheckoutCartProcessor @Inject constructor(
                 if (setShippingAddressData.isSuccess) {
                     return@withContext ChangeAddressResult(
                         isSuccess = true,
-                        toasterMessage = (setShippingAddressData.messages.firstOrNull() ?: "").ifEmpty { "Berhasil mengubah alamat" }
+                        toasterMessage = (
+                            setShippingAddressData.messages.firstOrNull()
+                                ?: ""
+                            ).ifEmpty { "Berhasil mengubah alamat" }
                     )
                 } else {
                     return@withContext ChangeAddressResult(
                         isSuccess = false,
-                        toasterMessage = if (setShippingAddressData.messages.isEmpty()) "Gagal mengubah alamat" else setShippingAddressData.messages.joinToString(" ")
+                        toasterMessage = if (setShippingAddressData.messages.isEmpty()) {
+                            "Gagal mengubah alamat"
+                        } else {
+                            setShippingAddressData.messages.joinToString(
+                                " "
+                            )
+                        }
                     )
                 }
             } catch (t: Throwable) {
@@ -221,11 +233,17 @@ class CheckoutCartProcessor @Inject constructor(
         }
     }
 
-    suspend fun processSaveShipmentState(shipmentCartItemModel: CheckoutOrderModel, recipientAddressModel: RecipientAddressModel) {
+    suspend fun processSaveShipmentState(
+        shipmentCartItemModel: CheckoutOrderModel,
+        recipientAddressModel: RecipientAddressModel
+    ) {
         withContext(dispatchers.io) {
             try {
                 val params =
-                    generateSaveShipmentStateRequestSingleAddress(listOf(shipmentCartItemModel), recipientAddressModel)
+                    generateSaveShipmentStateRequestSingleAddress(
+                        listOf(shipmentCartItemModel),
+                        recipientAddressModel
+                    )
                 if (params.requestDataList.first().shopProductDataList.isNotEmpty()) {
                     saveShipmentStateGqlUseCase(params)
                 }
@@ -235,7 +253,10 @@ class CheckoutCartProcessor @Inject constructor(
         }
     }
 
-    suspend fun processSaveShipmentState(listData: List<CheckoutItem>, recipientAddressModel: RecipientAddressModel) {
+    suspend fun processSaveShipmentState(
+        listData: List<CheckoutItem>,
+        recipientAddressModel: RecipientAddressModel
+    ) {
         withContext(dispatchers.io) {
             try {
                 val params = generateSaveShipmentStateRequestSingleAddress(
@@ -251,7 +272,10 @@ class CheckoutCartProcessor @Inject constructor(
         }
     }
 
-    private fun generateSaveShipmentStateRequestSingleAddress(shipmentCartItemModels: List<CheckoutOrderModel>, recipientAddressModel: RecipientAddressModel): SaveShipmentStateRequest {
+    private fun generateSaveShipmentStateRequestSingleAddress(
+        shipmentCartItemModels: List<CheckoutOrderModel>,
+        recipientAddressModel: RecipientAddressModel
+    ): SaveShipmentStateRequest {
         val shipmentStateShopProductDataList: MutableList<ShipmentStateShopProductData> =
             ArrayList()
         val shipmentStateRequestDataList: MutableList<ShipmentStateRequestData> =

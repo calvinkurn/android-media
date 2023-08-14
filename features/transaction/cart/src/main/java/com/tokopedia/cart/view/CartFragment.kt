@@ -2138,7 +2138,10 @@ class CartFragment :
         }
     }
 
-    override fun onCartGroupNameClicked(appLink: String) {
+    override fun onCartGroupNameClicked(appLink: String, shopId: String, shopName: String, isOWOC: Boolean) {
+        if (!isOWOC && shopId.isNotEmpty()) {
+            cartPageAnalytics.eventClickAtcCartClickShop(shopId, shopName)
+        }
         routeToApplink(appLink)
     }
 

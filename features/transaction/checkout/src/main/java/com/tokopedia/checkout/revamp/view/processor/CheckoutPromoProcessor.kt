@@ -5,6 +5,7 @@ import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.checkout.revamp.view.promo
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageToaster
 import com.tokopedia.checkout.view.CheckoutLogger
 import com.tokopedia.checkout.view.ShipmentViewModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
@@ -32,6 +33,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
@@ -40,11 +42,12 @@ class CheckoutPromoProcessor @Inject constructor(
     private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
     private val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
     private val mTrackerShipment: CheckoutAnalyticsCourierSelection,
+    private val toasterProcessor: CheckoutToasterProcessor,
     private val helper: CheckoutDataHelper,
     private val dispatchers: CoroutineDispatchers
 ) {
 
-//    private var lastValidateUseRequest: ValidateUsePromoRequest? = null
+    //    private var lastValidateUseRequest: ValidateUsePromoRequest? = null
     var bboPromoCodes: List<String> = emptyList()
     internal var validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel? = null
 
@@ -158,7 +161,6 @@ class CheckoutPromoProcessor @Inject constructor(
             promoRequest.isTradeIn = 1
             promoRequest.isTradeInDropOff = if (isTradeInByDropOff) 1 else 0
         }
-//        val lastApplyUiModel = listData.promo()!!.promo
         val globalPromoCodes = ArrayList<String>()
         if (lastApplyUiModel.codes.isNotEmpty()) {
             globalPromoCodes.addAll(lastApplyUiModel.codes)
@@ -260,10 +262,8 @@ class CheckoutPromoProcessor @Inject constructor(
         } else {
             validateUsePromoRequest.cartType = "default"
         }
-//        lastValidateUseRequest = validateUsePromoRequest
         this.bboPromoCodes = bboPromoCodes
         return validateUsePromoRequest
-//        }
     }
 
     private fun setValidateUseSpIdParam(
@@ -402,7 +402,16 @@ class CheckoutPromoProcessor @Inject constructor(
             // ignore this, because there is a new one in the queue
 //                continue@loopProcess
 //            }
-            return onValidatePromoError(t, cartString, promoCode, shipmentCartItemModelList, validateUsePromoRequest, isOneClickShipment, isTradeIn, isTradeInByDropOff)
+            return onValidatePromoError(
+                t,
+                cartString,
+                promoCode,
+                shipmentCartItemModelList,
+                validateUsePromoRequest,
+                isOneClickShipment,
+                isTradeIn,
+                isTradeInByDropOff
+            )
         }
     }
 
@@ -449,7 +458,7 @@ class CheckoutPromoProcessor @Inject constructor(
                 )
             )
             checkoutItems[checkoutItems.size - 4] = promo
-//                showErrorValidateUseIfAny(validateUsePromoRevampUiModel)
+            showErrorValidateUseIfAny(validateUsePromoRevampUiModel)
             return validateBBOWithSpecificOrder(
                 validateUsePromoRevampUiModel,
                 cartString,
@@ -471,8 +480,7 @@ class CheckoutPromoProcessor @Inject constructor(
             } else {
                 errMessage = CheckoutConstant.DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO
             }
-//                    view!!.showToastError(errMessage)
-//                    view!!.resetCourier(shipmentValidatePromoHolderData.cartPosition)
+            toasterProcessor.commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_ERROR, errMessage))
             val checkoutItems = shipmentCartItemModelList.toMutableList()
             for ((index, checkoutItem) in checkoutItems.withIndex()) {
                 if (checkoutItem is CheckoutOrderModel && checkoutItem.cartStringGroup == cartString) {
@@ -652,7 +660,13 @@ class CheckoutPromoProcessor @Inject constructor(
         val orderIndex =
             checkoutItems.indexOfFirst { it is CheckoutOrderModel && it.cartStringGroup == cartString }
         val orderModel = checkoutItems[orderIndex] as CheckoutOrderModel
-        var newOrderModel = orderModel.copy(shipment = orderModel.shipment.copy(isLoading = false, courierItemData = null), isShippingBorderRed = false)
+        var newOrderModel = orderModel.copy(
+            shipment = orderModel.shipment.copy(
+                isLoading = false,
+                courierItemData = null
+            ),
+            isShippingBorderRed = false
+        )
 //        if (view != null) {
 //            view!!.setStateLoadingCourierStateAtIndex(
 //                shipmentValidatePromoHolderData.cartPosition,
@@ -661,10 +675,21 @@ class CheckoutPromoProcessor @Inject constructor(
         mTrackerShipment.eventClickLanjutkanTerapkanPromoError(t.message)
         if (t is AkamaiErrorException) {
             clearAllPromo(validateUsePromoRequest)
-            checkoutItems[checkoutItems.size - 4] = checkoutItems.promo()!!.copy(promo = LastApplyUiModel())
-//                view!!.showToastError(t.message)
-//                view!!.resetAllCourier()
-//                view!!.doResetButtonPromoCheckout()
+            for ((index, checkoutItem) in checkoutItems.withIndex()) {
+                if (checkoutItem is CheckoutOrderModel && !checkoutItem.shipment.courierItemData?.selectedShipper?.logPromoCode.isNullOrEmpty()) {
+                    checkoutItems[index] =
+                        checkoutItem.copy(shipment = checkoutItem.shipment.copy(courierItemData = null))
+                }
+            }
+            checkoutItems[checkoutItems.size - 4] =
+                checkoutItems.promo()!!.copy(promo = LastApplyUiModel())
+            toasterProcessor.commonToaster.emit(
+                CheckoutPageToaster(
+                    Toaster.TYPE_ERROR,
+                    t.message ?: "",
+                    t
+                )
+            )
         } else {
 //            newOrderModel =
 //                newOrderModel.copy(shipment = newOrderModel.shipment.copy(courierItemData = null))
@@ -674,6 +699,13 @@ class CheckoutPromoProcessor @Inject constructor(
                 doClearBoSilently(orderModel)
                 newOrderModel = newOrderModel.copy(boCode = "", boUniqueId = "")
             }
+            toasterProcessor.commonToaster.emit(
+                CheckoutPageToaster(
+                    Toaster.TYPE_ERROR,
+                    t.message ?: "",
+                    t
+                )
+            )
         }
         CheckoutLogger.logOnErrorApplyBoNew(
             t,
@@ -802,7 +834,7 @@ class CheckoutPromoProcessor @Inject constructor(
         return bboCount
     }
 
-    private fun showErrorValidateUseIfAny(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel) {
+    private suspend fun showErrorValidateUseIfAny(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel) {
         val bboCount = getBBOCount(validateUsePromoRevampUiModel)
         if (bboCount == 1) {
             for (voucherOrder in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
@@ -814,6 +846,12 @@ class CheckoutPromoProcessor @Inject constructor(
                             ignoreCase = true
                         )
                 ) {
+                    toasterProcessor.commonToaster.emit(
+                        CheckoutPageToaster(
+                            Toaster.TYPE_ERROR,
+                            voucherOrder.messageUiModel.text
+                        )
+                    )
 //                    view?.showToastError(voucherOrder.messageUiModel.text)
                     return
                 }
@@ -822,13 +860,22 @@ class CheckoutPromoProcessor @Inject constructor(
         val messageInfo =
             validateUsePromoRevampUiModel.promoUiModel.additionalInfoUiModel.errorDetailUiModel.message
         if (messageInfo.isNotEmpty()) {
+            toasterProcessor.commonToaster.emit(
+                CheckoutPageToaster(
+                    Toaster.TYPE_NORMAL,
+                    messageInfo
+                )
+            )
 //            view?.showToastNormal(messageInfo)
         }
     }
 
     suspend fun validateUse(
         validateUsePromoRequest: ValidateUsePromoRequest,
-        checkoutItems: List<CheckoutItem>
+        checkoutItems: List<CheckoutItem>,
+        isOneClickShipment: Boolean,
+        isTradeIn: Boolean,
+        isTradeInByDropOff: Boolean
     ): List<CheckoutItem> {
         var items = checkoutItems.toMutableList()
         return withContext(dispatchers.io) {
@@ -841,7 +888,13 @@ class CheckoutPromoProcessor @Inject constructor(
                 this@CheckoutPromoProcessor.validateUsePromoRevampUiModel =
                     validateUsePromoRevampUiModel
                 showErrorValidateUseIfAny(validateUsePromoRevampUiModel)
-                validateBBO(validateUsePromoRevampUiModel, checkoutItems)
+                items = validateBBO(
+                    validateUsePromoRevampUiModel,
+                    checkoutItems,
+                    isOneClickShipment,
+                    isTradeIn,
+                    isTradeInByDropOff
+                ).toMutableList()
                 if (!validateUsePromoRevampUiModel.status.equals(
                         ShipmentViewModel.statusOK,
                         ignoreCase = true
@@ -859,9 +912,20 @@ class CheckoutPromoProcessor @Inject constructor(
                     items[items.size - 4] = newPromo
                     for ((index, checkoutItem) in items.withIndex()) {
                         if (checkoutItem is CheckoutOrderModel) {
-                            items[index] = checkoutItem.copy(shipment = checkoutItem.shipment.copy(isLoading = false, courierItemData = null))
+                            items[index] = checkoutItem.copy(
+                                shipment = checkoutItem.shipment.copy(
+                                    isLoading = false,
+                                    courierItemData = null
+                                )
+                            )
                         }
                     }
+                    toasterProcessor.commonToaster.emit(
+                        CheckoutPageToaster(
+                            Toaster.TYPE_ERROR,
+                            message
+                        )
+                    )
 //                        view!!.renderErrorCheckPromoShipmentData(message)
 //                        view!!.resetPromoBenefit()
 //                        view!!.resetAllCourier()
@@ -878,16 +942,10 @@ class CheckoutPromoProcessor @Inject constructor(
                     items[items.size - 4] = newPromo
                     if (validateUsePromoRevampUiModel.promoUiModel.messageUiModel.state == "red") {
                         mTrackerShipment.eventViewPromoAfterAdjustItem(validateUsePromoRevampUiModel.promoUiModel.messageUiModel.text)
-//                            analyticsActionListener.sendAnalyticsViewPromoAfterAdjustItem(
-//                                validateUsePromoRevampUiModel.promoUiModel.messageUiModel.text
-//                            )
                     } else {
                         for (voucherOrder in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
                             if (voucherOrder.messageUiModel.state == "red") {
                                 mTrackerShipment.eventViewPromoAfterAdjustItem(voucherOrder.messageUiModel.text)
-//                                    analyticsActionListener.sendAnalyticsViewPromoAfterAdjustItem(
-//                                        voucherOrder.messageUiModel.text
-//                                    )
                                 break
                             }
                         }
@@ -909,13 +967,42 @@ class CheckoutPromoProcessor @Inject constructor(
                     items[items.size - 4] = items.promo()!!.copy(promo = LastApplyUiModel())
                     for ((index, checkoutItem) in items.withIndex()) {
                         if (checkoutItem is CheckoutOrderModel) {
-                            items[index] = checkoutItem.copy(shipment = checkoutItem.shipment.copy(isLoading = false, courierItemData = null))
+                            items[index] = checkoutItem.copy(
+                                shipment = checkoutItem.shipment.copy(
+                                    isLoading = false,
+                                    courierItemData = null
+                                )
+                            )
                         }
                     }
+                    toasterProcessor.commonToaster.emit(
+                        CheckoutPageToaster(
+                            Toaster.TYPE_ERROR,
+                            t.message ?: "",
+                            t
+                        )
+                    )
 //                    view!!.showToastError(t.message)
 //                    view!!.resetAllCourier()
 //                    view!!.doResetButtonPromoCheckout()
                 } else {
+                    items[items.size - 4] = items.promo()!!.copy(promo = LastApplyUiModel())
+                    for ((index, checkoutItem) in items.withIndex()) {
+                        if (checkoutItem is CheckoutOrderModel) {
+                            items[index] = checkoutItem.copy(
+                                shipment = checkoutItem.shipment.copy(
+                                    isLoading = false,
+                                    courierItemData = null
+                                )
+                            )
+                        }
+                    }
+                    toasterProcessor.commonToaster.emit(
+                        CheckoutPageToaster(
+                            Toaster.TYPE_ERROR,
+                            throwable = t
+                        )
+                    )
 //                    view!!.renderErrorCheckPromoShipmentData(
 //                        ErrorHandler.getErrorMessage(
 //                            view!!.activity,
@@ -931,9 +1018,16 @@ class CheckoutPromoProcessor @Inject constructor(
         }
     }
 
-    private fun validateBBO(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel, checkoutItems: List<CheckoutItem>) {
-        val updatedCartStringGroup: ArrayList<String> = arrayListOf<String>()
-        voucherLoop@for (voucherOrder in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
+    private fun validateBBO(
+        validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel,
+        checkoutItems: List<CheckoutItem>,
+        isOneClickShipment: Boolean,
+        isTradeIn: Boolean,
+        isTradeInByDropOff: Boolean
+    ): List<CheckoutItem> {
+        val newCheckoutItems = checkoutItems.toMutableList()
+        val updatedCartStringGroup: ArrayList<String> = arrayListOf()
+        voucherLoop@ for (voucherOrder in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
             if (voucherOrder.type.equals(
                     "logistic",
                     ignoreCase = true
@@ -942,8 +1036,24 @@ class CheckoutPromoProcessor @Inject constructor(
                         ignoreCase = true
                     )
             ) {
-                for (shipmentCartItemModel in checkoutItems) {
+                for ((index, shipmentCartItemModel) in checkoutItems.withIndex()) {
                     if (shipmentCartItemModel is CheckoutOrderModel && shipmentCartItemModel.cartStringGroup == voucherOrder.cartStringGroup) {
+                        updatedCartStringGroup.add(voucherOrder.cartStringGroup)
+                        newCheckoutItems[index] = shipmentCartItemModel.copy(
+                            shipment = shipmentCartItemModel.shipment.copy(
+                                isLoading = false,
+                                courierItemData = null
+                            )
+                        )
+                        CheckoutLogger.logOnErrorApplyBoNew(
+                            MessageErrorException(voucherOrder.messageUiModel.text),
+                            shipmentCartItemModel,
+                            isOneClickShipment,
+                            isTradeIn,
+                            isTradeInByDropOff,
+                            voucherOrder.code
+                        )
+                        break@voucherLoop
 //                        if (view != null) {
 //                            updatedCartStringGroup.add(voucherOrder.cartStringGroup)
 //                            view!!.resetCourier(shipmentCartItemModel)
@@ -958,10 +1068,13 @@ class CheckoutPromoProcessor @Inject constructor(
 //                        }
                     }
                 }
-            } else if (voucherOrder.type.equals("logistic", ignoreCase = true) && voucherOrder.messageUiModel.state.equals(
-                    "green",
+            } else if (voucherOrder.type.equals(
+                    "logistic",
                     ignoreCase = true
-                )
+                ) && voucherOrder.messageUiModel.state.equals(
+                        "green",
+                        ignoreCase = true
+                    )
             ) {
                 updatedCartStringGroup.add(voucherOrder.cartStringGroup)
             }
@@ -969,10 +1082,24 @@ class CheckoutPromoProcessor @Inject constructor(
         // if not voucher order found for attempted apply BO order,
         // then should reset courier and not apply the BO
         // this should be a rare case
-        for (shipmentCartItemModel in checkoutItems) {
+        for ((index, shipmentCartItemModel) in checkoutItems.withIndex()) {
             if (shipmentCartItemModel is CheckoutOrderModel) {
                 val code = shipmentCartItemModel.voucherLogisticItemUiModel?.code
                 if (!code.isNullOrEmpty() && !updatedCartStringGroup.contains(shipmentCartItemModel.cartStringGroup)) {
+                    newCheckoutItems[index] = shipmentCartItemModel.copy(
+                        shipment = shipmentCartItemModel.shipment.copy(
+                            isLoading = false,
+                            courierItemData = null
+                        )
+                    )
+                    CheckoutLogger.logOnErrorApplyBoNew(
+                        MessageErrorException("voucher order not found"),
+                        shipmentCartItemModel,
+                        isOneClickShipment,
+                        isTradeIn,
+                        isTradeInByDropOff,
+                        code
+                    )
 //                    view!!.resetCourier(shipmentCartItemModel)
 //                    view!!.logOnErrorApplyBo(
 //                        MessageErrorException("voucher order not found"),
@@ -982,6 +1109,7 @@ class CheckoutPromoProcessor @Inject constructor(
                 }
             }
         }
+        return newCheckoutItems
     }
 
     suspend fun finalValidateUse(
@@ -1011,7 +1139,10 @@ class CheckoutPromoProcessor @Inject constructor(
         }
     }
 
-    suspend fun cancelNotEligiblePromo(notEligiblePromoHolderdataList: ArrayList<NotEligiblePromoHolderdata>, listData: List<CheckoutItem>): Boolean {
+    suspend fun cancelNotEligiblePromo(
+        notEligiblePromoHolderdataList: ArrayList<NotEligiblePromoHolderdata>,
+        listData: List<CheckoutItem>
+    ): Boolean {
         var hasPromo = false
         val globalPromoCodes = arrayListOf<String>()
         val clearOrders = arrayListOf<ClearPromoOrder>()
@@ -1050,7 +1181,6 @@ class CheckoutPromoProcessor @Inject constructor(
             }
         }
         if (hasPromo) {
-//            viewModelScope.launch(dispatchers.immediate) {
             try {
                 val response = clearCacheAutoApplyStackUseCase.setParams(
                     ClearPromoRequest(
@@ -1059,13 +1189,6 @@ class CheckoutPromoProcessor @Inject constructor(
                         ClearPromoOrderData(globalPromoCodes, clearOrders)
                     )
                 ).executeOnBackground()
-//                    if (response.successDataModel.tickerMessage.isNotBlank()) {
-//                        val ticker = tickerAnnouncementHolderData.value
-//                        ticker.title = ""
-//                        ticker.message =
-//                            response.successDataModel.tickerMessage
-//                        tickerAnnouncementHolderData.value = ticker
-//                    }
                 if (response.successDataModel.success) {
                     return true
                 }
@@ -1074,7 +1197,6 @@ class CheckoutPromoProcessor @Inject constructor(
                 return false
 //                    view?.removeIneligiblePromo()
             }
-//            }
         }
         return true
     }
@@ -1136,7 +1258,6 @@ class CheckoutPromoProcessor @Inject constructor(
                 }
             }
         }
-//        lastValidateUseRequest = validateUsePromoRequest
         validateUsePromoRevampUiModel = null
     }
 

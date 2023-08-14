@@ -559,7 +559,7 @@
             app:layout_constraintTop_toBottomOf="@+id/item_addon_cart" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/label_min_quantity_error"
+            android:id="@+id/label_quantity_error"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"

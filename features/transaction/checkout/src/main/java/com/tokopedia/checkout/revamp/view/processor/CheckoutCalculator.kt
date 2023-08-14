@@ -152,7 +152,7 @@ class CheckoutCalculator @Inject constructor(
                         }
                         if (cartItem.addOnProduct.listAddOnProductData.isNotEmpty()) {
                             for (addOnProductService in cartItem.addOnProduct.listAddOnProductData) {
-                                if (addOnProductService.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK || addOnProductService.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY) {
+                                if (addOnProductService.isChecked) {
                                     totalAddOnProductServicePrice += (addOnProductService.price * cartItem.quantity)
                                     if (countMapSummaries.containsKey(addOnProductService.type)) {
                                         qtyAddOn += cartItem.quantity
@@ -257,16 +257,17 @@ class CheckoutCalculator @Inject constructor(
         val listCheckedCrossModel = ArrayList<CheckoutCrossSellModel>()
         val crossSellGroup = listData.crossSellGroup() ?: CheckoutCrossSellGroupModel()
         val listCrossSellItem = arrayListOf<CheckoutCrossSellItem>()
-        for (crossSellModel in crossSellGroup.crossSellList.asReversed()) {
+        var egold: CheckoutEgoldModel? = null
+        var egoldIndex: Int = -1
+        for ((index, crossSellModel) in crossSellGroup.crossSellList.withIndex()) {
             when (crossSellModel) {
                 is CheckoutCrossSellModel -> {
                     if (crossSellModel.isChecked) {
                         listCheckedCrossModel.add(crossSellModel)
                         totalPrice += crossSellModel.crossSellModel.price
                         totalOtherFee += crossSellModel.crossSellModel.price
-                        shipmentCost = shipmentCost.copy(totalPrice = totalPrice)
                     }
-                    listCrossSellItem.add(0, crossSellModel)
+                    listCrossSellItem.add(index, crossSellModel)
                 }
 
                 is CheckoutDonationModel -> {
@@ -280,29 +281,12 @@ class CheckoutCalculator @Inject constructor(
                     }
                     totalPrice += shipmentCost.donation
                     totalOtherFee += shipmentCost.donation
-                    listCrossSellItem.add(0, crossSellModel)
+                    listCrossSellItem.add(index, crossSellModel)
                 }
 
                 is CheckoutEgoldModel -> {
-                    var egoldAttribute = crossSellModel.egoldAttributeModel
-                    if (egoldAttribute.isEligible) {
-                        egoldAttribute = updateEmasCostModel(totalPrice, egoldAttribute)
-                        if (egoldAttribute.isChecked) {
-                            totalPrice += egoldAttribute.buyEgoldValue.toDouble()
-                            shipmentCost = shipmentCost.copy(totalPrice = totalPrice)
-                            shipmentCost.emasPrice = egoldAttribute.buyEgoldValue.toDouble()
-                        } else if (shipmentCost.emasPrice > 0) {
-                            shipmentCost.emasPrice = 0.0
-                        }
-                    }
-                    totalOtherFee += shipmentCost.emasPrice
-                    listCrossSellItem.add(
-                        0,
-                        crossSellModel.copy(
-                            egoldAttributeModel = egoldAttribute,
-                            buyEgoldValue = egoldAttribute.buyEgoldValue
-                        )
-                    )
+                    egold = crossSellModel
+                    egoldIndex = index
                 }
             }
         }
@@ -311,20 +295,29 @@ class CheckoutCalculator @Inject constructor(
             totalPrice += upsellCost.crossSellModel.price
             totalOtherFee += upsellCost.crossSellModel.price
         }
+        if (egold != null && egoldIndex >= 0) {
+            var egoldAttribute = egold.egoldAttributeModel
+            if (egold.egoldAttributeModel.isEligible) {
+                egoldAttribute = updateEmasCostModel(totalPrice, egoldAttribute)
+                if (egoldAttribute.isChecked) {
+                    totalPrice += egoldAttribute.buyEgoldValue.toDouble()
+                    shipmentCost.emasPrice = egoldAttribute.buyEgoldValue.toDouble()
+                } else if (shipmentCost.emasPrice > 0) {
+                    shipmentCost.emasPrice = 0.0
+                }
+            }
+            totalOtherFee += shipmentCost.emasPrice
+            listCrossSellItem.add(
+                egoldIndex,
+                egold.copy(
+                    egoldAttributeModel = egoldAttribute,
+                    buyEgoldValue = egoldAttribute.buyEgoldValue
+                )
+            )
+        }
         shipmentCost = shipmentCost.copy(totalOtherFee = totalOtherFee)
         shipmentCost = shipmentCost.copy(totalPrice = totalPrice)
         shipmentCost.listCrossSell = listCheckedCrossModel
-//        val egoldAttribute = egoldAttributeModel.value
-//        if (egoldAttribute != null && egoldAttribute.isEligible) {
-//            egoldAttributeModel.value = updateEmasCostModel(shipmentCost, egoldAttribute)
-//            if (egoldAttribute.isChecked) {
-//                totalPrice += egoldAttribute.buyEgoldValue.toDouble()
-//                shipmentCost.totalPrice = totalPrice
-//                shipmentCost.emasPrice = egoldAttribute.buyEgoldValue.toDouble()
-//            } else if (shipmentCost.emasPrice > 0) {
-//                shipmentCost.emasPrice = 0.0
-//            }
-//        }
         shipmentCost.bookingFee = totalBookingFee
 
         for (entry in countMapSummaries) {
@@ -389,7 +382,7 @@ class CheckoutCalculator @Inject constructor(
                     val orderProducts =
                         helper.getOrderProducts(listData, shipmentCartItemModel.cartStringGroup)
                     for (cartItemModel in orderProducts) {
-                        if (cartItemModel.isProtectionOptIn) {
+                        if (cartItemModel.addOnProduct.listAddOnProductData.any { it.type == AddOnConstant.PRODUCT_PROTECTION_INSURANCE_TYPE && it.isChecked }) {
                             shouldShowInsuranceTnc = true
                         }
                     }
