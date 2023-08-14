@@ -2,7 +2,6 @@ package com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget
 
 import android.view.View
 import android.widget.ImageView
-import androidx.compose.ui.unit.dp
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
@@ -18,7 +17,6 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHead
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderImageOnlyComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel
 import com.tokopedia.stories.common.StoriesAvatarManager
-import com.tokopedia.stories.common.StoriesAvatarView
 import com.tokopedia.stories.common.StoriesBorderLayout
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
@@ -55,12 +53,6 @@ class ShopPageHeaderBasicInfoWidgetViewHolder(
     private val shopBasicInfoAdditionalInfoTextView: Typography? = viewBinding?.textShopBasicInfoAdditionalInfo
     private var shopPageHeaderWidgetUiModel: ShopPageHeaderWidgetUiModel? = null
 
-    init {
-//        shopLogoImageView?.updateSizeConfig {
-//            it.copy(imageToBorderGap = 6.dp)
-//        }
-    }
-
     override fun bind(modelPage: ShopPageHeaderWidgetUiModel) {
         shopPageHeaderWidgetUiModel = modelPage
         for (component in modelPage.componentPages) {
@@ -83,12 +75,10 @@ class ShopPageHeaderBasicInfoWidgetViewHolder(
         val shopLogoUrl = component?.image.orEmpty()
         val shopId = component?.shopId.orEmpty()
         shopLogoImageView?.loadImageCircle(shopLogoUrl)
-        shopLogoContainer?.startAnimation()
-
-//        shopLogoImageView?.run {
-//            storiesAvatarManager.manage(this, shopId)
-//        }
-//        shopLogoImageView?.setImageUrl(shopLogoUrl)
+        shopLogoContainer?.run {
+            storiesAvatarManager.manage(this, shopId)
+        }
+//        shopLogoContainer?.startAnimation()
     }
 
     private fun setShopNameAndInfoSection(component: ShopPageHeaderBadgeTextValueComponentUiModel?) {

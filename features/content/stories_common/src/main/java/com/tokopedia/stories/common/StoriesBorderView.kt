@@ -56,14 +56,20 @@ internal class StoriesBorderView : View {
     private val circleBorderPath = Path()
     private val ovalRect = RectF()
 
-    private val gradientStoriesBorderWidth = 2.dpToPx(resources.displayMetrics)
-    private val seenStoriesBorderWidth = 1.dpToPx(resources.displayMetrics)
+    private var mBorderConfig = BorderConfiguration(
+        unseenStoriesWidth = 2.dpToPx(resources.displayMetrics),
+        seenStoriesWidth = 1.dpToPx(resources.displayMetrics),
+    )
+    set(value) {
+        field = value
+        invalidate()
+    }
 
-    private var mStoriesStatus = StoriesStatus.HasUnseenStories
+    private var mStoriesStatus = StoriesStatus.NoStories
 
     init {
         setWillNotDraw(false)
-        seenStoriesPaint.color = Color.parseColor("#FFD6DFEB")
+        seenStoriesPaint.color = Color.parseColor("#80BFC9D9")
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -108,18 +114,20 @@ internal class StoriesBorderView : View {
         )
 
         canvas.restoreToCount(checkPoint)
-
-//        canvas.save()
-//        canvas.clipStoriesBorderPath()
-//        canvas.drawStoriesBorder()
-//        canvas.restore()
-//
-//        super.onDraw(canvas)
     }
 
-    fun startAnimation() {
+    internal fun startAnimation() {
         val animator = getAnimator()
         animator.start()
+    }
+
+    internal fun setBorderConfig(onNewConfig: (BorderConfiguration) -> BorderConfiguration) {
+        mBorderConfig = onNewConfig(mBorderConfig)
+    }
+
+    internal fun setStoriesStatus(status: StoriesStatus) {
+        mStoriesStatus = status
+        invalidate()
     }
 
     private fun setupBorderPath(width: Int, height: Int) {
@@ -134,8 +142,8 @@ internal class StoriesBorderView : View {
 
     private fun getBorderWidth(): Int {
         return when (mStoriesStatus) {
-            StoriesStatus.AllStoriesSeen -> seenStoriesBorderWidth
-            StoriesStatus.HasUnseenStories -> gradientStoriesBorderWidth
+            StoriesStatus.AllStoriesSeen -> mBorderConfig.seenStoriesWidth
+            StoriesStatus.HasUnseenStories -> mBorderConfig.unseenStoriesWidth
             else -> 0
         }
     }
@@ -146,7 +154,7 @@ internal class StoriesBorderView : View {
             0f,
             width.toFloat(),
             height.toFloat(),
-            Color.parseColor("#FF69F2E2"),
+            Color.parseColor("#FF83ECB2"),
             Color.parseColor("#FF00AA5B"),
             Shader.TileMode.CLAMP
         )
@@ -261,4 +269,9 @@ internal class StoriesBorderView : View {
             play(scaleOriginal2).after(scaleUpOver)
         }
     }
+
+    internal data class BorderConfiguration(
+        val unseenStoriesWidth: Int,
+        val seenStoriesWidth: Int,
+    )
 }

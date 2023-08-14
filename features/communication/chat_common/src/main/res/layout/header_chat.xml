@@ -15,19 +15,24 @@
         android:layout_height="40dp"
         android:layout_centerVertical="true">
 
-        <com.tokopedia.stories.common.StoriesAvatarView
-            android:id="@+id/user_avatar"
+        <com.tokopedia.stories.common.StoriesBorderLayout
+            android:id="@+id/stories_border"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:contentDescription="user_avatar"
-            tools:src="@color/Unify_YN500"
-            />
-<!--        <ImageView-->
-<!--            android:id="@+id/user_avatar"-->
-<!--            android:layout_width="40dp"-->
-<!--            android:layout_height="40dp"-->
-<!--            android:contentDescription="user_avatar"-->
-<!--            tools:src="@color/Unify_YN500" />-->
+            app:seen_stories_border_width="0.5dp"
+            app:unseen_stories_border_width="1.5dp"
+            >
+
+            <ImageView
+                android:id="@+id/user_avatar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="2dp"
+                android:contentDescription="user_avatar"
+                tools:src="@color/Unify_YN500"
+                />
+
+        </com.tokopedia.stories.common.StoriesBorderLayout>
 
         <ImageView
             android:id="@+id/online_status"

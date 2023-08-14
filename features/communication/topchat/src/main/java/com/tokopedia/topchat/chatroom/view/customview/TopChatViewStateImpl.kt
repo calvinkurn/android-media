@@ -24,7 +24,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
-import com.tokopedia.stories.common.StoriesAvatarView
+import com.tokopedia.stories.common.StoriesBorderLayout
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.view.widget.LongClickMenu
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
@@ -391,9 +391,9 @@ open class TopChatViewStateImpl constructor(
     }
 
     private fun bindStories(chatRoom: ChatroomViewModel) {
-        val avatar = toolbar.findViewById<StoriesAvatarView>(com.tokopedia.chat_common.R.id.user_avatar)
+        val storiesBorder = toolbar.findViewById<StoriesBorderLayout>(com.tokopedia.chat_common.R.id.stories_border)
         val manager = storiesAvatarListener.getStoriesAvatarManager()
-        manager.manage(avatar, chatRoom.headerModel.shopId)
+        manager.manage(storiesBorder, chatRoom.headerModel.shopId)
     }
 
     private fun showLastTimeOnline(viewModel: ChatroomViewModel) {

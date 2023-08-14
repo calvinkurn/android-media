@@ -13,7 +13,6 @@ import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.annotation.NonNull
 import androidx.appcompat.widget.Toolbar
-import androidx.compose.ui.unit.dp
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -31,7 +30,6 @@ import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.widget.AttachmentMenuRecyclerView
 import com.tokopedia.media.loader.loadImageCircle
-import com.tokopedia.stories.common.StoriesAvatarView
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.functions.Action1
@@ -128,7 +126,7 @@ abstract class BaseChatViewStateImpl(
 
         setLabel(chatroomViewModel.headerModel.label)
 
-        val avatar = toolbar.findViewById<StoriesAvatarView>(R.id.user_avatar)
+        val avatar = toolbar.findViewById<ImageView>(R.id.user_avatar)
 
         loadAvatar(chatroomViewModel.headerModel.image)
 
@@ -151,16 +149,11 @@ abstract class BaseChatViewStateImpl(
 
     @SuppressLint("ResourcePackage")
     override fun loadAvatar(avatarUrl: String) {
-        val avatar = toolbar.findViewById<StoriesAvatarView>(R.id.user_avatar)
-        avatar.updateSizeConfig {
-            it.copy(unseenStoriesBorder = 2.dp)
-        }
-        avatar.setImageUrl(avatarUrl)
-//        avatar.loadImageCircle(avatarUrl, properties = {
-//            setPlaceHolder(R.drawable.ic_loading_toped)
-//            setErrorDrawable(R.drawable.ic_loading_toped)
-//        })
-
+        val avatar = toolbar.findViewById<ImageView>(R.id.user_avatar)
+        avatar.loadImageCircle(avatarUrl, properties = {
+            setPlaceHolder(R.drawable.ic_loading_toped)
+            setErrorDrawable(R.drawable.ic_loading_toped)
+        })
     }
 
     @DrawableRes

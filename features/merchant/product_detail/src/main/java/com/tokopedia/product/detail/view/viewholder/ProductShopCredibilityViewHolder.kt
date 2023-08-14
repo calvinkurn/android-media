@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.extensions.getColorChecker
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -26,7 +27,6 @@ import com.tokopedia.product.detail.view.util.inflateWithBinding
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.stories.common.StoriesAvatarManager
 import com.tokopedia.stories.common.StoriesKey
-import com.tokopedia.stories.common.activityStoriesManager
 import com.tokopedia.stories.common.storiesManager
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
@@ -333,9 +333,8 @@ class ProductShopCredibilityViewHolder(
             showOldBadge(element.isOs, element.isPm, binding)
         }
 
-//        shopCredibilityAva.loadImageCircle(element.shopAva)
-        listener.getStoriesAvatarManager().manage(shopCredibilityAva, element.shopId)
-        shopCredibilityAva.setImageUrl(element.shopAva)
+        shopCredibilityAva.loadImageCircle(element.shopAva)
+        listener.getStoriesAvatarManager().manage(storiesBorder, element.shopId)
     }
 
     private fun isNewShopBadgeEnabled() = true

@@ -34,7 +34,7 @@ class StoriesAvatarManager private constructor(
     private val component = createComponent(context)
     private val viewModelFactory = component.storiesViewModelFactory()
 
-    private val viewToObserverMap = mutableMapOf<StoriesAvatarView, StoriesAvatarMeta>()
+    private val viewToObserverMap = mutableMapOf<StoriesBorderLayout, StoriesAvatarMeta>()
 
     @Suppress("UNCHECKED_CAST")
     private val viewModelProvider by lazy {
@@ -89,7 +89,7 @@ class StoriesAvatarManager private constructor(
         }
     }
 
-    fun manage(storiesView: StoriesAvatarView, shopId: String) {
+    fun manage(storiesView: StoriesBorderLayout, shopId: String) {
         val meta = storiesView.getMeta() ?: StoriesAvatarMeta.Empty
         meta.attachListener?.let {
             storiesView.removeOnAttachStateChangeListener(it)
@@ -135,14 +135,14 @@ class StoriesAvatarManager private constructor(
             ?.let(::showCoachMarkOnView)
     }
 
-    private fun showCoachMarkOnView(view: StoriesAvatarView) {
+    private fun showCoachMarkOnView(view: StoriesBorderLayout) {
         coachMark.show(
             view,
             "Ada update menarik dari toko ini"
         )
     }
 
-    private fun StoriesAvatarView.onAttached(shopId: String) {
+    private fun StoriesBorderLayout.onAttached(shopId: String) {
         val observer = getOrCreateObserver()
         observer.observe(shopId)
         assign(shopId, observer)
@@ -152,15 +152,15 @@ class StoriesAvatarManager private constructor(
         }
     }
 
-    private fun StoriesAvatarView.onDetached() {
+    private fun StoriesBorderLayout.onDetached() {
         coachMark.hide(this)
     }
 
-    private fun StoriesAvatarView.getObserver(): StoriesAvatarObserver? {
+    private fun StoriesBorderLayout.getObserver(): StoriesAvatarObserver? {
         return viewToObserverMap[this]?.observer
     }
 
-    private fun StoriesAvatarView.createObserver(): StoriesAvatarObserver {
+    private fun StoriesBorderLayout.createObserver(): StoriesAvatarObserver {
         return StoriesAvatarObserver(
             getViewModel(),
             lifecycleOwner,
@@ -168,11 +168,11 @@ class StoriesAvatarManager private constructor(
         )
     }
 
-    private fun StoriesAvatarView.getOrCreateObserver(): StoriesAvatarObserver {
+    private fun StoriesBorderLayout.getOrCreateObserver(): StoriesAvatarObserver {
         return getObserver() ?: createObserver()
     }
 
-    private fun StoriesAvatarView.assign(shopId: String, observer: StoriesAvatarObserver) {
+    private fun StoriesBorderLayout.assign(shopId: String, observer: StoriesAvatarObserver) {
         val meta = getOrCreateMeta().copy(
             shopId = shopId,
             observer = observer
@@ -180,22 +180,22 @@ class StoriesAvatarManager private constructor(
         viewToObserverMap[this] = meta
     }
 
-    private fun getViewByShopId(shopId: String): StoriesAvatarView? {
+    private fun getViewByShopId(shopId: String): StoriesBorderLayout? {
         val meta = viewToObserverMap.entries.firstOrNull {
             it.value.shopId == shopId
         } ?: return null
         return meta.key
     }
 
-    private fun StoriesAvatarView.getMeta(): StoriesAvatarMeta? {
+    private fun StoriesBorderLayout.getMeta(): StoriesAvatarMeta? {
         return viewToObserverMap[this]
     }
 
-    private fun StoriesAvatarView.getOrCreateMeta(): StoriesAvatarMeta {
+    private fun StoriesBorderLayout.getOrCreateMeta(): StoriesAvatarMeta {
         return getMeta() ?: StoriesAvatarMeta.Empty
     }
 
-    private fun StoriesAvatarView.setMeta(meta: StoriesAvatarMeta) {
+    private fun StoriesBorderLayout.setMeta(meta: StoriesAvatarMeta) {
         viewToObserverMap[this] = meta
     }
 

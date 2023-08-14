@@ -5,30 +5,24 @@ import android.graphics.Canvas
 import android.graphics.Path
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
+import androidx.core.view.children
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.stories.common.databinding.LayoutStoriesBorderBinding
+import kotlin.properties.Delegates
 
 /**
  * Created by kenny.hadisaputra on 11/08/23
  */
-class StoriesBorderLayout : FrameLayout {
-
-    constructor(context: Context) : super(context)
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
-    )
-
-    constructor(
-        context: Context,
-        attrs: AttributeSet?,
-        defStyleAttr: Int,
-        defStyleRes: Int
-    ) : super(context, attrs, defStyleAttr, defStyleRes)
+class StoriesBorderLayout @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0,
+    defStyleRes: Int = 0,
+) : FrameLayout(context, attrs, defStyleAttr, defStyleRes) {
 
     private val binding = LayoutStoriesBorderBinding.inflate(
         LayoutInflater.from(context),
@@ -37,25 +31,65 @@ class StoriesBorderLayout : FrameLayout {
 
     init {
         setWillNotDraw(false)
+        initAttrs(attrs)
+
+        super.setOnClickListener {
+            if (mState.status == StoriesStatus.NoStories) return@setOnClickListener
+            RouteManager.route(context, mState.appLink)
+        }
     }
 
     private val circleChildPath = Path()
 
     private val childMargin = 4.dpToPx(resources.displayMetrics)
 
-    private var mStoriesStatus = StoriesStatus.HasUnseenStories
+    private var mState by Delegates.observable(StoriesAvatarState.Default) { _, _, newProp ->
+        getChildBorderView()?.setStoriesStatus(newProp.status)
+    }
 
-    override fun drawChild(canvas: Canvas, child: View?, drawingTime: Long): Boolean {
-        if (child is StoriesBorderView) {
-            return super.drawChild(canvas, child, drawingTime)
+    private fun initAttrs(attrs: AttributeSet?) {
+        if (attrs == null) return
+        val attributeArray = context.obtainStyledAttributes(attrs, R.styleable.StoriesBorderLayout)
+        val seenBorderWidth = attributeArray.getDimensionPixelSize(R.styleable.StoriesBorderLayout_seen_stories_border_width, -1)
+        val unseenBorderWidth = attributeArray.getDimensionPixelSize(R.styleable.StoriesBorderLayout_unseen_stories_border_width, -1)
+
+        getChildBorderView()?.let {
+            it.setBorderConfig { config ->
+                config.copy(
+                    seenStoriesWidth = if (seenBorderWidth != -1) seenBorderWidth else config.seenStoriesWidth,
+                    unseenStoriesWidth = if (unseenBorderWidth != -1) unseenBorderWidth else config.unseenStoriesWidth,
+                )
+            }
         }
 
-        canvas.save()
-        canvas.clipChildPath()
-        val drawChild = super.drawChild(canvas, child, drawingTime)
-        canvas.restore()
+        attributeArray.recycle()
+    }
 
-        return drawChild
+    override fun setOnClickListener(l: OnClickListener?) {
+        error("You are not allowed to call setOnClickListener on StoriesBorderLayout")
+    }
+
+    override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
+        return mState.status != StoriesStatus.NoStories
+    }
+
+    override fun drawChild(canvas: Canvas, child: View?, drawingTime: Long): Boolean {
+//        if (child is StoriesBorderView) {
+//            return super.drawChild(canvas, child, drawingTime)
+//        }
+//
+//        canvas.save()
+//        canvas.clipChildPath()
+//        val drawChild = super.drawChild(canvas, child, drawingTime)
+//        canvas.restore()
+//
+//        return drawChild
+        return super.drawChild(canvas, child, drawingTime)
+    }
+
+    fun setState(onUpdate: (StoriesAvatarState) -> StoriesAvatarState) {
+        mState = onUpdate(mState)
+        invalidate()
     }
 
     fun startAnimation() {
@@ -78,9 +112,13 @@ class StoriesBorderLayout : FrameLayout {
     }
 
     private fun getChildMargin(): Int {
-        return when (mStoriesStatus) {
+        return when (mState.status) {
             StoriesStatus.NoStories -> 0
             else -> childMargin
         }
+    }
+
+    private fun getChildBorderView(): StoriesBorderView? {
+        return children.firstOrNull { it is StoriesBorderView } as? StoriesBorderView
     }
 }

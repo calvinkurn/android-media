@@ -6,6 +6,7 @@ import androidx.compose.ui.unit.dp
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.tokopedia.stories.common.databinding.ItemStoriesAvatarSampleBinding
 
 /**
@@ -38,14 +39,8 @@ class StoriesAvatarSampleAdapter(
         private val storiesAvatarManager: StoriesAvatarManager
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        init {
-            binding.root.updateSizeConfig {
-                it.copy(imageToBorderGap = 8.dp)
-            }
-        }
-
         fun bind(shopId: String) {
-            binding.root.setImageUrl("https://4.img-dpreview.com/files/p/E~TS590x0~articles/3925134721/0266554465.jpeg")
+            binding.imgAvatar.load("https://4.img-dpreview.com/files/p/E~TS590x0~articles/3925134721/0266554465.jpeg")
             storiesAvatarManager.manage(binding.root, shopId)
         }
 

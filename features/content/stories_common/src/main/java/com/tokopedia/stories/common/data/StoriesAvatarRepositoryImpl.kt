@@ -41,7 +41,7 @@ class StoriesAvatarRepositoryImpl @Inject constructor(
         val isEntryPointAllowed = isEntryPointAllowed(key)
         if (!isEntryPointAllowed) return@withContext emptyList()
 
-        delay(500)
+        delay(2000)
         shopIds.map { shopId ->
             val shopInt = shopId.toInt()
             ShopStoriesState(
