@@ -279,7 +279,6 @@ class CartRevampFragment :
         private const val SPAN_SIZE_ONE = 1
         private const val SPAN_SIZE_TWO = 2
 
-        const val HAS_ELEVATION = 9
         const val CART_TRACE = "mp_cart"
         const val CART_ALL_TRACE = "mp_cart_all"
         const val CART_PAGE = "cart"
@@ -2294,13 +2293,13 @@ class CartRevampFragment :
                 is CartState.Success -> {
                     renderLoadGetCartDataFinish()
                     renderInitialGetCartListDataSuccess(state.data)
-                    stopCartPerformanceTrace(true)
+                    stopCartPerformanceTrace()
                 }
 
                 is CartState.Failed -> {
                     renderLoadGetCartDataFinish()
                     renderErrorInitialGetCartListData(state.throwable)
-                    stopCartPerformanceTrace(false)
+                    stopCartPerformanceTrace()
                 }
             }
         }
@@ -3089,7 +3088,7 @@ class CartRevampFragment :
             CartDataHelper.getAllShopGroupDataList(updateListResult.third)
 
         // Check if cart list has exactly 1 shop, and it's a toko now
-        if (allShopGroupDataList.size >= 1 && allShopGroupDataList[0].isTokoNow) {
+        if (allShopGroupDataList.isNotEmpty() && allShopGroupDataList[0].isTokoNow) {
             allShopGroupDataList[0].let {
                 val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(
                     it.cartString,
@@ -3313,7 +3312,7 @@ class CartRevampFragment :
 
         if (!hasCalledOnSaveInstanceState) {
             context?.let { context ->
-                fragmentManager?.let { fragmentManager ->
+                parentFragmentManager?.let { fragmentManager ->
                     showGlobalErrorBottomsheet(fragmentManager, context, ::retryGoToShipment)
                 }
             }
@@ -4171,7 +4170,7 @@ class CartRevampFragment :
         showToastMessageRed("")
     }
 
-    private fun stopCartPerformanceTrace(isSuccessLoadCart: Boolean) {
+    private fun stopCartPerformanceTrace() {
         if (!isTraceCartStopped) {
             EmbraceMonitoring.stopMoments(EmbraceKey.KEY_MP_CART)
             cartPerformanceMonitoring?.stopTrace()
