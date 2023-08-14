@@ -52,5 +52,5 @@ object ApplinkConstInternalMechant {
 
     const val SHOP_NIB_CUSTOMER_APP = "$INTERNAL_MERCHANT/shop-nib"
 
-    const val BUY_MORE_GET_MORE_OLP = "$INTERNAL_MERCHANT/buy-more-get-more/{shop_id}/olp/{offer_id}/"
+    const val BUY_MORE_GET_MORE_OLP = "$INTERNAL_MERCHANT/belibanyaklebihuntung/{shop_id}/{offer_id}/"
 }

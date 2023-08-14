@@ -16,7 +16,7 @@ class OfferLandingPageActivity : BaseSimpleActivity() {
 
     private fun getOfferIdFromUri(): String {
         val data = RouteManager.getIntent(this, intent.data.toString()).data
-        return data?.pathSegments?.getOrNull(3) ?: ""
+        return data?.pathSegments?.getOrNull(2) ?: ""
     }
 
     private fun getWarehouseIds(): ArrayList<Int>? {

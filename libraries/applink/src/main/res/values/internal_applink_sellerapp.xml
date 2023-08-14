@@ -47,5 +47,5 @@
     <string name="path_seller_mvc_create" translatable="false">/seller-mvc/create/.*\\/</string>
     <string name="path_seller_mvc_detail" translatable="false">/seller-mvc/detail/.*\\/</string>
     <string name="path_seller_shop_nib" translatable="false">/shop-nib</string>
-    <string name="path_buy_more_get_more_olp" translatable="false">/buy-more-get-more/.*\\/olp/.*\\/</string>
+    <string name="path_buy_more_get_more_olp" translatable="false">/belibanyaklebihuntung/.*\\/.*\\/</string>
 </resources>
