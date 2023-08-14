@@ -39,6 +39,7 @@ import com.tokopedia.search.result.product.lastfilter.LastFilterPresenterDelegat
 import com.tokopedia.search.result.product.pagination.PaginationImpl
 import com.tokopedia.search.result.product.productfilterindicator.ProductFilterIndicator
 import com.tokopedia.search.result.product.recommendation.RecommendationPresenterDelegate
+import com.tokopedia.search.result.product.reimagine.ReimagineDelegate
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
 import com.tokopedia.search.result.product.responsecode.ResponseCodeImpl
 import com.tokopedia.search.result.product.safesearch.MutableSafeSearchPreference
@@ -263,6 +264,7 @@ internal open class ProductListPresenterTestFixtures {
             abTestRemoteConfig,
             responseCodeImpl,
             similarSearchOnBoardingPresenterDelegate,
+            ReimagineDelegate(abTestRemoteConfig),
         )
         productListPresenter.attachView(productListView)
     }

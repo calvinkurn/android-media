@@ -33,7 +33,6 @@ import com.tokopedia.unifyprinciples.Typography
 
 internal class KeywordFilterViewHolder(
     itemView: View,
-    isReimagine: Boolean,
     private val listener: KeywordFilterListener,
 ): AbstractViewHolder<KeywordFilterDataView>(itemView), KeywordFilterItemListener {
 
@@ -73,7 +72,7 @@ internal class KeywordFilterViewHolder(
         itemView.findViewById<RecyclerView?>(R.id.keywordFilterRecyclerView)
     }
 
-    private val keywordFilterItemAdapter = KeywordFilterItemAdapter(this, isReimagine)
+    private val keywordFilterItemAdapter = KeywordFilterItemAdapter(this)
     private var keywordFilterDataView: KeywordFilterDataView? = null
 
     init {
@@ -198,7 +197,6 @@ internal class KeywordFilterViewHolder(
 
     private class KeywordFilterItemAdapter(
         private val listener: KeywordFilterItemListener,
-        private val isReimagine: Boolean,
     ): ListAdapter<KeywordFilterItemDataView, KeywordFilterItemViewHolder>(
         KeywordFilterDiffUtilItemCallback(),
     ) {
@@ -217,7 +215,7 @@ internal class KeywordFilterViewHolder(
                 false,
             )
 
-            return KeywordFilterItemViewHolder(view, isReimagine, listener)
+            return KeywordFilterItemViewHolder(view, listener)
         }
 
         override fun onBindViewHolder(holder: KeywordFilterItemViewHolder, position: Int) {
@@ -241,7 +239,6 @@ internal class KeywordFilterViewHolder(
 
     private class KeywordFilterItemViewHolder(
         itemView: View,
-        private val isReimagine: Boolean,
         private val keywordFilterItemListener: KeywordFilterItemListener,
     ): RecyclerView.ViewHolder(itemView) {
 
@@ -262,8 +259,6 @@ internal class KeywordFilterViewHolder(
                 setOnRemoveListener {
                     keywordFilterItemListener.onRemoveItemClicked(keywordFilterItemDataView)
                 }
-
-                //TODO:: Add flag for reimagine
             }
         }
     }

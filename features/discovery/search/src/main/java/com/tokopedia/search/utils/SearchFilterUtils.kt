@@ -2,6 +2,7 @@ package com.tokopedia.search.utils
 
 import android.content.Context
 import android.os.Build
+import android.view.View
 import com.google.gson.Gson
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.MANUAL_FILTER
@@ -13,7 +14,7 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.sortfilter.SortFilter
 
-internal fun removeQuickFilterElevation(sortFilter: SortFilter?) {
+internal fun removeQuickFilterElevation(sortFilter: View?) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && sortFilter != null) {
         if (sortFilter.elevation > 0f) {
             sortFilter.elevation = 0f
@@ -21,7 +22,7 @@ internal fun removeQuickFilterElevation(sortFilter: SortFilter?) {
     }
 }
 
-internal fun applyQuickFilterElevation(context: Context?, sortFilter: SortFilter?) {
+internal fun applyQuickFilterElevation(context: Context?, sortFilter: View?) {
     if (context == null) return
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && sortFilter != null) {

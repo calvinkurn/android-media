@@ -21,7 +21,6 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 internal class PriceFilterViewHolder(
     itemView: View,
-    private val isReimagine: Boolean,
     private val priceFilterViewListener: PriceFilterViewListener,
 ) : AbstractViewHolder<PriceFilterViewModel>(itemView) {
 
@@ -117,7 +116,6 @@ internal class PriceFilterViewHolder(
     private fun bindPriceRangeRecyclerView(element: PriceFilterViewModel) {
         val priceRangeOptionAdapter = PriceRangeOptionAdapter(
             element,
-            isReimagine,
             priceFilterViewListener
         )
 
@@ -128,7 +126,6 @@ internal class PriceFilterViewHolder(
 
     private class PriceRangeOptionAdapter(
         val priceFilterViewModel: PriceFilterViewModel,
-        val isReimagine: Boolean,
         val priceFilterViewListener: PriceFilterViewListener,
     ): RecyclerView.Adapter<PriceRangeOptionViewHolder>() {
 
@@ -139,7 +136,6 @@ internal class PriceFilterViewHolder(
 
             return PriceRangeOptionViewHolder(
                 view,
-                isReimagine,
                 priceFilterViewModel,
                 priceFilterViewListener,
             )
@@ -154,7 +150,6 @@ internal class PriceFilterViewHolder(
 
     private class PriceRangeOptionViewHolder(
         itemView: View,
-        private val isReimagine: Boolean,
         private val priceFilterViewModel: PriceFilterViewModel,
         private val priceFilterViewListener: PriceFilterViewListener
     ): RecyclerView.ViewHolder(itemView) {
@@ -171,8 +166,6 @@ internal class PriceFilterViewHolder(
             sortFilterChipsUnify.setOnClickListener {
                 priceFilterViewListener.onPriceRangeClicked(priceFilterViewModel, optionViewModel)
             }
-
-            // TODO:: Reimagine
         }
     }
 }
