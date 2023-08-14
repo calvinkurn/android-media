@@ -18,4 +18,6 @@ sealed interface StoriesUiAction {
     object PauseStories: StoriesUiAction
 
     object ResumeStories: StoriesUiAction
+
+    object OpenKebabMenu : StoriesUiAction
 }

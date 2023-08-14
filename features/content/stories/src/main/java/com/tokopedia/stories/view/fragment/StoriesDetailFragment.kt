@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.stories.bottomsheet.StoriesThreeDotsBottomSheet
 import com.tokopedia.stories.databinding.FragmentStoriesDetailBinding
 import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.adapter.StoriesGroupAdapter
@@ -32,6 +33,7 @@ import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.NextGroup
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.PauseStories
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.PreviousDetail
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.ResumeStories
+import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -73,6 +75,7 @@ class StoriesDetailFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupStoriesView()
+        observeEvent()
     }
 
     override fun onResume() {
@@ -163,6 +166,9 @@ class StoriesDetailFragment @Inject constructor(
             // pause -> viewModelAction(StoriesUiAction.PauseStories)
             // resume -> viewModelAction(StoriesUiAction.ResumeStories)
         }
+        vStoriesKebabIcon.setOnClickListener {
+            viewModelAction(StoriesUiAction.OpenKebabMenu)
+        }
     }
 
     private fun pauseStories() = with(binding) {
@@ -181,6 +187,20 @@ class StoriesDetailFragment @Inject constructor(
 
     private fun viewModelAction(event: StoriesUiAction) {
         viewModel.submitAction(event)
+    }
+
+    private fun observeEvent() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiEvent.collectLatest { event ->
+                when (event) {
+                    StoriesUiEvent.OpenKebab -> StoriesThreeDotsBottomSheet
+                        .getOrCreateFragment(childFragmentManager, requireActivity().classLoader)
+                        .show(childFragmentManager)
+
+                    else -> {}
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {

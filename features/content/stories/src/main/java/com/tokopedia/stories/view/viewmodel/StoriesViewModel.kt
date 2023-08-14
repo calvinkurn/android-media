@@ -58,6 +58,7 @@ class StoriesViewModel @Inject constructor(
             StoriesUiAction.PreviousDetail -> handlePreviousDetail()
             StoriesUiAction.PauseStories -> handleOnPauseStories()
             StoriesUiAction.ResumeStories -> handleOnResumeStories()
+            StoriesUiAction.OpenKebabMenu -> handleOpenKebab()
         }
     }
 
@@ -133,6 +134,12 @@ class StoriesViewModel @Inject constructor(
     private fun handleOnResumeStories() {
         _storiesDetail.update { data ->
             data.copy(event = StoriesDetailUiEvent.START)
+        }
+    }
+
+    private fun handleOpenKebab() {
+        viewModelScope.launch {
+            _uiEvent.emit(StoriesUiEvent.OpenKebab)
         }
     }
 

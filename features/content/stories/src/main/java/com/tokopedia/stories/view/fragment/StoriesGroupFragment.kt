@@ -91,6 +91,7 @@ class StoriesGroupFragment @Inject constructor(
             viewModel.uiEvent.collect { event ->
                 when (event) {
                     is StoriesUiEvent.SelectGroup -> manageNextPageEvent(event.position)
+                    else -> {}
                 }
             }
         }
