@@ -121,8 +121,8 @@ abstract class BaseDigitalPDPDataPlanTest {
 
     protected fun favoriteChips_clickChip_withText(text: String) {
         onView(allOf(
-            withId(com.tokopedia.recharge_component.R.id.chip_text),
-            isDescendantOfA(withId(com.tokopedia.recharge_component.R.id.sort_filter_items)),
+            withId(com.tokopedia.analyticsdebugger.R.id.chip_text),
+            isDescendantOfA(withId(com.tokopedia.sortfilter.R.id.sort_filter_items)),
             withText(text))
         ).perform(click())
     }
@@ -179,8 +179,8 @@ abstract class BaseDigitalPDPDataPlanTest {
 
     protected fun filterChip_clickChip_withText(text: String) {
         onView(allOf(
-            withId(com.tokopedia.recharge_component.R.id.chip_text),
-            isDescendantOfA(withId(com.tokopedia.recharge_component.R.id.sort_filter_items)),
+            withId(com.tokopedia.analyticsdebugger.R.id.chip_text),
+            isDescendantOfA(withId(com.tokopedia.sortfilter.R.id.sort_filter_items)),
             withText(text))
         ).perform(click())
     }
