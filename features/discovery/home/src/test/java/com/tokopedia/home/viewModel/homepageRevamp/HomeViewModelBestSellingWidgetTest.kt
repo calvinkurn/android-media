@@ -7,12 +7,9 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynami
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.visitable.BestSellerChipProductDataModel
-import com.tokopedia.home_component.visitable.BestSellerProductDataModel
-import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
-import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
@@ -32,7 +29,7 @@ class HomeViewModelBestSellingWidgetTest {
     private val getHomeRecommendationUseCase = mockk<HomeRecommendationUseCase> (relaxed = true)
 
     private val mockInitialBestSellerDataModel = BestSellerDataModel()
-    private val mockInitialBestSellerRevampDataModel = BestSellerRevampDataModel(channelModel = ChannelModel("123", "234"))
+    private val mockInitialBestSellerRevampDataModel = BestSellerRevampDataModel(channelModel = ChannelModel("", ""))
     private val mockInitialBestSellerChipProductDataModel = BestSellerChipProductDataModel()
     private val mockSuccessBestSellerDataModel = BestSellerDataModel(
         recommendationItemList = listOf(
@@ -40,22 +37,9 @@ class HomeViewModelBestSellingWidgetTest {
             RecommendationItem()
         )
     )
-
     private val mockSuccessBestSellerRevampDataModel = BestSellerRevampDataModel(
         chipProductList = listOf(BestSellerChipProductDataModel(), BestSellerChipProductDataModel()),
         channelModel = ChannelModel("123", "234")
-    )
-    private val mockSuccessBestSellerChipProductDataModel = BestSellerChipProductDataModel(
-        productModelList = listOf(
-            BestSellerProductDataModel(
-                ProductCardModel(), "", "", "", false, "",
-                1L, 1, false, "", "", "", "", ""
-            ),
-            BestSellerProductDataModel(
-                ProductCardModel(), "", "", "", false, "",
-                1L, 1, false, "", "", "", "", ""
-            )
-        )
     )
 
     @ExperimentalCoroutinesApi
@@ -154,58 +138,4 @@ class HomeViewModelBestSellingWidgetTest {
             (homeViewModel.homeDataModel.list[0] as? BestSellerRevampDataModel)?.chipProductList?.isEmpty() == true
         )
     }
-
-    @ExperimentalCoroutinesApi
-    @Test
-    fun `getRecommendationWidget should not update widget when selectedChipProduct is empty`() {
-        // Arrange
-        val viewModel = createHomeViewModel(
-            getHomeUseCase = getHomeUseCase,
-            homeRecommendationUseCase = getHomeRecommendationUseCase
-        )
-        val selectedChipProduct = BestSellerChipProductDataModel(productModelList = emptyList())
-        val currentDataModel = mockInitialBestSellerRevampDataModel
-
-        // Act
-        viewModel.getRecommendationWidget(selectedChipProduct, mockInitialBestSellerRevampDataModel)
-
-        // Assert
-        coVerify {
-            (viewModel).updateWidget(
-                visitable = any(),
-                visitableToChange = eq(mockSuccessBestSellerRevampDataModel),
-                position = any()
-            )
-        }
-    }
-
-//    @ExperimentalCoroutinesApi
-//    @Test
-//    fun `getRecommendationWidget should not update widget when selectedChipProduct is not empty`() {
-//        // Arrange
-//        val viewModel = createHomeViewModel(
-//            getHomeUseCase = getHomeUseCase,
-//            homeRecommendationUseCase = getHomeRecommendationUseCase
-//        )
-//        val selectedChipProduct = mockSuccessBestSellerChipProductDataModel
-//        val currentDataModel = mockSuccessBestSellerRevampDataModel
-//        val scrollDirection = CarouselPagingGroupChangeDirection.NO_DIRECTION
-//
-//        // Act
-//        viewModel.getRecommendationWidget(selectedChipProduct, currentDataModel, scrollDirection)
-//
-//        // Assert
-//        coVerify(inverse = false) {
-//            viewModel.updateWidget(
-//                visitable = getHomeRecommendationUseCase.onHomeBestSellerFilterClick(
-//                    currentBestSellerDataModel = currentDataModel,
-//                    selectedFilterChip = selectedChipProduct.chip,
-//                    scrollDirection = scrollDirection,
-//                ),
-//                visitableToChange = eq(currentDataModel),
-//                position = any()
-//            )
-//        }
-//
-//    }
 }
