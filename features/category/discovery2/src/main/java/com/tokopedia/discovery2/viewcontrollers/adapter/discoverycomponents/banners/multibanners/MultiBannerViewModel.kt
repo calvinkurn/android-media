@@ -121,12 +121,19 @@ class MultiBannerViewModel(val application: Application, var components: Compone
         }
     }
 
-    fun onBannerClicked(position: Int, context: Context) {
+    fun onBannerClicked(
+        position: Int,
+        context: Context,
+        defaultErrorMessage: String
+    ) {
         bannerData.value?.data.checkForNullAndSize(position)?.let { listItem ->
             when (listItem[position].action) {
                 BannerAction.APPLINK.name -> navigation(position, context)
                 BannerAction.CODE.name -> copyCodeToClipboard(position)
-                BannerAction.PUSH_NOTIFIER.name -> subscribeUnsubscribeUserForPushNotification(position)
+                BannerAction.PUSH_NOTIFIER.name -> subscribeUnsubscribeUserForPushNotification(
+                    position = position,
+                    defaultErrorMessage = defaultErrorMessage
+                )
                 BannerAction.LOGIN.name -> loginUser(position, context)
                 else -> navigation(position, context)
             }
@@ -164,11 +171,11 @@ class MultiBannerViewModel(val application: Application, var components: Compone
         }
     }
 
-    private fun subscribeUnsubscribeUserForPushNotification(position: Int) {
+    private fun subscribeUnsubscribeUserForPushNotification(position: Int, defaultErrorMessage: String) {
         if (isUserLoggedIn()) {
+            val isSubscribed = pushNotificationBannerStatus[position] == BANNER_SUBSCRIPTION_REMINDED_STATUS
             launchCatchError(
                 block = {
-                    val isSubscribed = pushNotificationBannerStatus[position] == BANNER_SUBSCRIPTION_REMINDED_STATUS
                     if (isSubscribed) {
                         unsubscribeUserForPushNotification(position)
                     } else {
@@ -176,6 +183,11 @@ class MultiBannerViewModel(val application: Application, var components: Compone
                     }
                 },
                 onError = {
+                    pushNotificationBannerSubscriptionData.value = PushNotificationBannerSubscription(
+                        position = position,
+                        errorMessage = defaultErrorMessage,
+                        isSubscribed = isSubscribed
+                    )
                     it.printStackTrace()
                 }
             )
@@ -195,12 +207,15 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     ) {
         val pushSubscriptionResponse = subScribeToUseCase?.subscribeToPush(getCampaignId(position))
         if (pushSubscriptionResponse?.notifierSetReminder?.isSuccess == 1 || pushSubscriptionResponse?.notifierSetReminder?.isSuccess == 2) {
+            val errorMessage = pushSubscriptionResponse.notifierSetReminder.errorMessage.orEmpty()
             pushNotificationBannerSubscriptionData.value = PushNotificationBannerSubscription(
                 position = position,
-                errorMessage = pushSubscriptionResponse.notifierSetReminder.errorMessage.orEmpty(),
+                errorMessage = errorMessage,
                 isSubscribed = true
             )
-            pushNotificationBannerStatus[position] = BANNER_SUBSCRIPTION_REMINDED_STATUS
+            if (errorMessage.isEmpty()) {
+                pushNotificationBannerStatus[position] = BANNER_SUBSCRIPTION_REMINDED_STATUS
+            }
         }
     }
 
@@ -209,12 +224,15 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     ) {
         val pushSubscriptionResponse = subScribeToUseCase?.unSubscribeToPush(getCampaignId(position))
         if (pushSubscriptionResponse?.notifierSetReminder?.isSuccess == 1 || pushSubscriptionResponse?.notifierSetReminder?.isSuccess == 2) {
+            val errorMessage = pushSubscriptionResponse.notifierSetReminder.errorMessage.orEmpty()
             pushNotificationBannerSubscriptionData.value = PushNotificationBannerSubscription(
                 position = position,
-                errorMessage = pushSubscriptionResponse.notifierSetReminder.errorMessage.orEmpty(),
+                errorMessage = errorMessage,
                 isSubscribed = false
             )
-            pushNotificationBannerStatus[position] = BANNER_SUBSCRIPTION_UNREMINDED_STATUS
+            if (errorMessage.isEmpty()) {
+                pushNotificationBannerStatus[position] = BANNER_SUBSCRIPTION_UNREMINDED_STATUS
+            }
         }
     }
 

@@ -59,12 +59,13 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
             multiBannerViewModel.getPushNotificationBannerSubscription().observe(
                 fragment.viewLifecycleOwner
             ) {
-                updateImage(
-                    position = it.position,
-                    isSubscribed = it.isSubscribed
-                )
                 if (it.errorMessage.isNotEmpty()) {
                     Toaster.build(customItemView, it.errorMessage, Toast.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+                } else {
+                    updateImage(
+                        position = it.position,
+                        isSubscribed = it.isSubscribed
+                    )
                 }
             }
 
@@ -219,7 +220,11 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
 
     private fun setClickOnBanners(itemData: DataItem, index: Int) {
         bannersItemList[index].bannerImageView.setOnClickListener {
-            multiBannerViewModel?.onBannerClicked(index, context)
+            multiBannerViewModel?.onBannerClicked(
+                position = index,
+                context = context,
+                defaultErrorMessage = context.getString(R.string.discovery_push_notification_banner_subscription_error_toaster_message)
+            )
             if (itemData.action == BANNER_ACTION_CODE) {
                 (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
                     ?.trackPromoBannerClick(itemData, index)
