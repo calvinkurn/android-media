@@ -4607,7 +4607,7 @@ class CartFragment :
             if (addOnProductDataResult.aggregatedData.isGetDataSuccess) {
                 var newAddOnWording = ""
                 if (addOnProductDataResult.aggregatedData.title.isNotEmpty()) {
-                    newAddOnWording = "${addOnProductDataResult.aggregatedData.title} <b>(${CurrencyFormatUtil.convertPriceValueToIdrFormat(addOnProductDataResult.aggregatedData.price, false)})</b>"
+                    newAddOnWording = "${addOnProductDataResult.aggregatedData.title} <b>(${CurrencyFormatUtil.convertPriceValueToIdrFormat(addOnProductDataResult.aggregatedData.price, false).removeDecimalSuffix()})</b>"
                 }
 
                 cartAdapter.updateAddOnByCartId(addOnProductDataResult.cartId.toString(), newAddOnWording, addOnProductDataResult)
