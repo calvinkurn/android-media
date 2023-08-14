@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager.widget.ViewPager
+import androidx.work.WorkInfo
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -108,6 +109,7 @@ class FeedPlusContainerFragment :
     private var tabLayout: TabsUnify? = null
     private var mInProgress = false
     private var coachMarkOverlay: View? = null
+    private var playShortsObserver: Observer<List<WorkInfo>>? = null
 
     companion object {
         const val PARAM_SHOW_PROGRESS_BAR = "show_posting_progress_bar"
@@ -390,6 +392,11 @@ class FeedPlusContainerFragment :
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        playShortsObserver?.let { observer -> playShortsUploader.cancelObserve(observer) }
+    }
+
     override fun onDestroy() {
         viewModel.tabResp.removeObservers(this)
         viewModel.whitelistResp.removeObservers(this)
@@ -567,7 +574,7 @@ class FeedPlusContainerFragment :
             }
         )
 
-        playShortsUploader.observe(viewLifecycleOwner) { progress, uploadData ->
+        playShortsObserver = playShortsUploader.observe { progress, uploadData ->
             when (progress) {
                 PlayShortsUploadConst.PROGRESS_COMPLETED -> {
                     postProgressUpdateView?.hide()
