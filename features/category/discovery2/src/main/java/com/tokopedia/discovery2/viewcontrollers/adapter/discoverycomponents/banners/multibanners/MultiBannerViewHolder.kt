@@ -70,11 +70,13 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
             }
 
             multiBannerViewModel.getPushBannerSubscriptionData().observe(
-                fragment.viewLifecycleOwner,
-                Observer {
-                    updateImage(it.position, isSubscribed = it.isSubscribed)
-                }
-            )
+                fragment.viewLifecycleOwner
+            ) {
+                updateImage(
+                    position = it.position,
+                    isSubscribed = it.isSubscribed
+                )
+            }
             multiBannerViewModel.getShowLoginData().observe(
                 fragment.viewLifecycleOwner,
                 Observer {
