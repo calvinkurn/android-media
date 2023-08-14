@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.common.adapter
+package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater

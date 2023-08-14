@@ -32,3 +32,13 @@ fun String?.toAddressUiState(): AddressUiState {
         }
     } ?: AddressUiState.AddAddress
 }
+
+fun String?.toAddressUiStateOrNull(): AddressUiState? {
+    return this?.let { value ->
+        try {
+            AddressUiState.valueOf(value)
+        } catch (@Suppress("SwallowedException") e: IllegalArgumentException) {
+            null
+        }
+    }
+}

@@ -13,7 +13,7 @@
             android:name=".features.district_recommendation.DiscomActivity"
             android:label="@string/title_activity_search_address"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify"
+            android:theme="@style/Theme.AppCompat.Translucent"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
             android:exported="false">
             <intent-filter>

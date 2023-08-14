@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.common.adapter
+package com.tokopedia.logisticaddaddress.features.district_recommendation.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

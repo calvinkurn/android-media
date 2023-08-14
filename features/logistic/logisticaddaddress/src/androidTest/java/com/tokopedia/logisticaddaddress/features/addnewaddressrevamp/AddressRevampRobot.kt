@@ -131,7 +131,7 @@ class AddressRevampRobot {
     }
 
     infix fun submit(func: ResultRobot.() -> Unit): ResultRobot {
-        onView(allOf(isDisplayed(), withId(R.id.btn_save_address_new))).perform(nestedScrollTo(), click())
+        onView(withId(R.id.btn_save_address_new)).perform(nestedScrollTo(), click())
         return ResultRobot().apply(func)
     }
 }

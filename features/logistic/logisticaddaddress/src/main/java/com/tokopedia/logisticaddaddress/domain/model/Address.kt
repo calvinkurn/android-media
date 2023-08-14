@@ -1,9 +1,7 @@
 package com.tokopedia.logisticaddaddress.domain.model
 
 import android.os.Parcelable
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DistrictTypeFactory
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /**
  * Created by Irfan Khoirul on 17/11/17.
@@ -16,13 +14,10 @@ data class Address(
     var cityName: String = "",
     var provinceId: Long = 0,
     var provinceName: String = "",
-    var zipCodes: List<String> = arrayListOf()
-) : Parcelable, Visitable<DistrictTypeFactory?> {
-
-    override fun type(typeFactory: DistrictTypeFactory?): Int {
-        return typeFactory?.type(this)!!
-    }
-
+    var zipCodes: List<String> = arrayListOf(),
+    var lat: Double = 0.0,
+    var long: Double = 0.0
+) : Parcelable {
     override fun describeContents(): Int {
         return 0
     }

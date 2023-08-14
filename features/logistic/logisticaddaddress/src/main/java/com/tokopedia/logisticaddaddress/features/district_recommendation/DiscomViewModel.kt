@@ -22,12 +22,15 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class DiscomViewModel @Inject constructor(
-    private val executorDispatchers: CoroutineDispatchers,
+    executorDispatchers: CoroutineDispatchers,
     private val reverseGeocode: RevGeocodeCoroutineUseCase,
     private val getDistrictRecommendation: GetDistrictRecommendationCoroutineUseCase,
     private val mapper: DistrictRecommendationMapper
 ) : BaseViewModel(executorDispatchers.main) {
-    var isMapsAvailable: Boolean = true
+
+    companion object {
+        private const val DEFAULT_ERROR_CIRCUIT_BREAKER = "Oops, alamat gagal dipilih. Silakan coba lagi."
+    }
     private val _loading = MutableLiveData<Boolean>()
     val loading: LiveData<Boolean>
         get() = _loading
@@ -62,14 +65,14 @@ class DiscomViewModel @Inject constructor(
                 _loading.value = true
                 val param = ReverseGeocodeParam(latlng = "$lat,$long")
                 val response = reverseGeocode(param)
-                if (response.messageError.isEmpty()) {
-                    val model = AutofillUiModel(response.data, lat, long)
+                if (response.keroMapsAutofill.messageError.isEmpty()) {
+                    val model = AutofillUiModel(response.keroMapsAutofill.data, lat, long)
                     _loading.value = false
                     _autofill.value = Success(model)
-                } else if (response.errorCode == AddressConstants.CIRCUIT_BREAKER_ON_CODE) {
-                    throw Exception("Oops, alamat gagal dipilih. Silakan coba lagi.")
+                } else if (response.keroMapsAutofill.errorCode == AddressConstants.CIRCUIT_BREAKER_ON_CODE) {
+                    throw Exception(DEFAULT_ERROR_CIRCUIT_BREAKER)
                 } else {
-                    val msg = response.messageError[0]
+                    val msg = response.keroMapsAutofill.messageError[0]
                     when {
                         msg.contains(FOREIGN_COUNTRY_MESSAGE) -> {
                             throw Exception(FOREIGN_COUNTRY_MESSAGE)

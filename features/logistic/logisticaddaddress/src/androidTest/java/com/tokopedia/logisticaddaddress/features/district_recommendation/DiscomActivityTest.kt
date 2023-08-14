@@ -19,7 +19,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.containsMapOf
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract.Constant.Companion.INTENT_DISTRICT_RECOMMENDATION_ADDRESS
+import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity.Companion.INTENT_DISTRICT_RECOMMENDATION_ADDRESS
 import com.tokopedia.logisticaddaddress.interceptor.AddAddressInterceptor
 import com.tokopedia.logisticaddaddress.test.R
 import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
@@ -58,12 +58,12 @@ class DiscomActivityTest {
     @Test
     fun givenValidQueryReturnsRequiredResults() {
         val testQuery = "jak"
-        onView(withId(R.id.edit_text_search)).perform(typeText(testQuery), closeSoftKeyboard())
+        onView(withId(com.tokopedia.logisticaddaddress.R.id.search_page_input)).perform(click())
+        onView(withId(com.tokopedia.logisticaddaddress.R.id.searchbar_textfield))
+            .perform(click(), replaceText(testQuery), closeSoftKeyboard())
+        Thread.sleep(1000L)
 
-        // Bad, can't implement idling resource on baselistfragment's search delay
-        Thread.sleep(DiscomFragment.DEBOUNCE_DELAY_IN_MILIS)
-
-        onView(withId(R.id.recycler_view))
+        onView(withId(R.id.rv_list_district))
             .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
 
         assertThat(activityRule.activityResult, hasResultCode(Activity.RESULT_OK))

@@ -6,11 +6,10 @@ import android.text.InputFilter
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.clearImage
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.logisticaddaddress.R
@@ -98,8 +97,7 @@ class FormAccountWidget : ConstraintLayout {
                 it.setImageDrawable(
                     getIconUnifyDrawable(
                         context,
-                        IconUnify.CONTACT,
-                        assetColor = com.tokopedia.unifyprinciples.R.color.Unify_NN900
+                        IconUnify.CONTACT
                     )
                 )
                 it.show()

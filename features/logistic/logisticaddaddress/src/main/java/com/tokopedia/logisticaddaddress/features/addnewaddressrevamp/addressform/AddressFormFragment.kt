@@ -15,7 +15,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
@@ -43,7 +45,6 @@ import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_LONG
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_RESET_TO_SEARCH_PAGE
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_SAVE_DATA_UI_MODEL
 import com.tokopedia.logisticaddaddress.common.AddressConstants.KEY_SAVE_INSTANCE_SAVE_ADDRESS_DATA_MODEL
-import com.tokopedia.logisticaddaddress.common.adapter.LabelAlamatChipsAdapter
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUnmatchedBinding
 import com.tokopedia.logisticaddaddress.databinding.FragmentAddressFormBinding
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
@@ -54,7 +55,12 @@ import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.analytics.EditAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.widget.BaseFormAddressWidget
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.FieldType
+import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity.Companion.INTENT_DISTRICT_RECOMMENDATION_ADDRESS
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomBottomSheetRevamp
+import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.Companion.ARGUMENT_ADDRESS_STATE
+import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.Companion.ARGUMENT_IS_PINPOINT
+import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.Companion.INTENT_DISTRICT_RECOMMENDATION_ADDRESS_IS_PINPOINT
+import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.Companion.INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODE
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.PinpointNewPageActivity
 import com.tokopedia.logisticaddaddress.utils.AddEditAddressUtil
 import com.tokopedia.logisticaddaddress.utils.TextInputUtil.setWrapperError
@@ -73,8 +79,7 @@ import javax.inject.Inject
 
 class AddressFormFragment :
     BaseDaggerFragment(),
-    LabelAlamatChipsAdapter.ActionListener,
-    DiscomBottomSheetRevamp.DiscomRevampListener {
+    LabelAlamatChipsAdapter.ActionListener {
 
     companion object {
         private const val SOURCE_ADDRESS = "address"
@@ -213,6 +218,19 @@ class AddressFormFragment :
         }
     }
 
+    private val discomContract = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            val address = it.data?.getParcelableExtra<Address>(INTENT_DISTRICT_RECOMMENDATION_ADDRESS)
+            val postalCode = it.data?.getStringExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODE)
+            val isPinpoint = it.data?.getBooleanExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_IS_PINPOINT, false)
+            if (address != null && postalCode != null && isPinpoint != null) {
+                onChooseZipcode(address, postalCode, isPinpoint)
+            }
+        }
+    }
+
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -282,11 +300,7 @@ class AddressFormFragment :
         }
     }
 
-    override fun onGetDistrict(districtAddress: Address) {
-        districtBottomSheet?.getDistrict(districtAddress)
-    }
-
-    override fun onChooseZipcode(
+    private fun onChooseZipcode(
         districtAddress: Address,
         postalCode: String,
         isPinpoint: Boolean
@@ -1040,14 +1054,15 @@ class AddressFormFragment :
     }
 
     private fun showDistrictRecommendationBottomSheet(isPinpoint: Boolean) {
-        districtBottomSheet = DiscomBottomSheetRevamp()
-        districtBottomSheet?.setData(
-            isPinpoint = isPinpoint,
-            state = addressUiState,
-            gmsAvailable = isGmsAvailable
-        )
-        districtBottomSheet?.setListener(this)
-        districtBottomSheet?.show(this.childFragmentManager)
+        context?.let {
+            val bundle = Bundle()
+            bundle.putString(ARGUMENT_ADDRESS_STATE, addressUiState.name)
+            bundle.putBoolean(ARGUMENT_IS_PINPOINT, isPinpoint)
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.DISTRICT_RECOMMENDATION_SHOP_SETTINGS)
+            intent.putExtras(bundle)
+
+            discomContract.launch(intent)
+        }
     }
 
     private fun checkKotaKecamatan() {

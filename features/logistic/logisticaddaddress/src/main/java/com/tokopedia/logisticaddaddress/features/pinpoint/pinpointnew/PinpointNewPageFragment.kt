@@ -117,10 +117,6 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
         private const val RESULT_PERMISSION_CODE = 1234
         private const val REQUEST_CODE_PERMISSION = 9876
 
-        private const val REQUEST_ADDRESS_FORM_PAGE = 1599
-        private const val REQUEST_SEARCH_PAGE = 1995
-        private const val REQUEST_CODE_PINPOINT_LITE = 1986
-
         private const val ZOOM_LEVEL = 16f
         private const val MAP_BOUNDARY_STROKE_WIDTH = 3F
         private const val LOCATION_REQUEST_INTERVAL = 10000L

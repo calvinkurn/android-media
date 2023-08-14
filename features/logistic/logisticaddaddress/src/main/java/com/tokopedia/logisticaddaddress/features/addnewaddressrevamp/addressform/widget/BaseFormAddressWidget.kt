@@ -7,8 +7,8 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.ChipsItemDecoration
-import com.tokopedia.logisticaddaddress.common.adapter.LabelAlamatChipsAdapter
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormFragment
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.LabelAlamatChipsAdapter
 import com.tokopedia.logisticaddaddress.utils.TextInputUtil
 import com.tokopedia.logisticaddaddress.utils.TextInputUtil.setOnTouchLabelAddress
 import com.tokopedia.unifycomponents.TextFieldUnify

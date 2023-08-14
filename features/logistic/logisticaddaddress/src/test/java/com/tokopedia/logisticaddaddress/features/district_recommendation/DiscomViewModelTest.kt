@@ -2,6 +2,7 @@ package com.tokopedia.logisticaddaddress.features.district_recommendation
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.logisticCommon.data.entity.response.AutoFillResponse
 import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
 import com.tokopedia.logisticCommon.domain.usecase.RevGeocodeCoroutineUseCase
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictRecommendationMapper
@@ -90,7 +91,7 @@ class DiscomViewModelTest {
         // given
         val lat = 6.34434342
         val long = 27.3495023
-        val response = KeroMapsAutofill()
+        val response = AutoFillResponse()
         coEvery { reverseGeoCode(any()) } returns response
 
         // when
@@ -104,7 +105,7 @@ class DiscomViewModelTest {
                 match {
                     it == Success(
                         AutofillUiModel(
-                            response.data,
+                            response.keroMapsAutofill.data,
                             lat,
                             long
                         )
@@ -119,7 +120,7 @@ class DiscomViewModelTest {
         // given
         val lat = 6.34434342
         val long = 27.3495023
-        val response = KeroMapsAutofill(errorCode = 101, messageError = listOf("error"))
+        val response = AutoFillResponse(KeroMapsAutofill(errorCode = 101, messageError = listOf("error")))
         coEvery { reverseGeoCode(any()) } returns response
 
         // when
@@ -142,7 +143,7 @@ class DiscomViewModelTest {
         // given
         val lat = 6.34434342
         val long = 27.3495023
-        val response = KeroMapsAutofill(errorCode = 0, messageError = listOf("Lokasi di luar Indonesia."))
+        val response = AutoFillResponse(KeroMapsAutofill(errorCode = 0, messageError = listOf("Lokasi di luar Indonesia.")))
         coEvery { reverseGeoCode(any()) } returns response
 
         // when
@@ -165,7 +166,7 @@ class DiscomViewModelTest {
         // given
         val lat = 6.34434342
         val long = 27.3495023
-        val response = KeroMapsAutofill(errorCode = 0, messageError = listOf("Lokasi gagal ditemukan"))
+        val response = AutoFillResponse(KeroMapsAutofill(errorCode = 0, messageError = listOf("Lokasi gagal ditemukan")))
         coEvery { reverseGeoCode(any()) } returns response
 
         // when

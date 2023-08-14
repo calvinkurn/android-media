@@ -4,7 +4,6 @@ import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.domain.model.AddressResponse
 import com.tokopedia.logisticaddaddress.domain.model.district_recommendation.DistrictItem
 import com.tokopedia.logisticaddaddress.domain.model.district_recommendation.DistrictRecommendationResponse
-import java.util.ArrayList
 import javax.inject.Inject
 
 /**
@@ -19,7 +18,7 @@ class DistrictRecommendationMapper @Inject constructor() {
         }
     }
 
-    private fun List<DistrictItem>.mapToAddressResponse(): ArrayList<Address> {
+    private fun List<DistrictItem>.mapToAddressResponse(): List<Address> {
         return this.map {
             Address().apply {
                 districtId = it.districtId
@@ -30,6 +29,6 @@ class DistrictRecommendationMapper @Inject constructor() {
                 provinceName = it.provinceName
                 zipCodes = it.zipCode
             }
-        } as ArrayList<Address>
+        }
     }
 }
