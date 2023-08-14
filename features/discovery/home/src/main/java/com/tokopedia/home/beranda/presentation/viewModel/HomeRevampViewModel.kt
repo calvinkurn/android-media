@@ -54,6 +54,8 @@ import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
+import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
+import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleItemShimmerDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
@@ -800,5 +802,28 @@ open class HomeRevampViewModel @Inject constructor(
                 }
             } catch (_: Exception) { }
         }
+    }
+
+    fun getShopFlashSale(currentDataModel: ShopFlashSaleWidgetDataModel, shopId: String) {
+        findWidget<ShopFlashSaleWidgetDataModel>(
+            predicate = { it.visitableId() == currentDataModel.visitableId() },
+            actionOnFound = { _, index ->
+                launch {
+                    updateWidget(
+                        visitable = currentDataModel.copy(itemList = ShopFlashSaleItemShimmerDataModel.getAsList()),
+                        visitableToChange = currentDataModel,
+                        position = index
+                    )
+                    val newDataModel = homeRecommendationUseCase.get().onHomeShopFlashSaleTabClick(currentDataModel, shopId)
+                    if(newDataModel != currentDataModel) {
+                        updateWidget(
+                            visitable = newDataModel,
+                            visitableToChange = currentDataModel,
+                            position = index
+                        )
+                    }
+                }
+            }
+        )
     }
 }

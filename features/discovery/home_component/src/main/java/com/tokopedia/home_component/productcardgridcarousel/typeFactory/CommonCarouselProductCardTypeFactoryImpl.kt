@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.*
+import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.*
 import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampItemDataModel
 import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampItemViewHolder
@@ -13,10 +14,11 @@ import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampI
  * @author by yoasfs on 09/06/20
  */
 
-class CommonCarouselProductCardTypeFactoryImpl(
+open class CommonCarouselProductCardTypeFactoryImpl(
     @Deprecated("Please ignore passing this field to avoid re-instantiating everytime data changes. Only pass the necessary data on the respective models instead.")
     private val channels: ChannelModel = ChannelModel(id = "0", groupId = "0"),
     private val cardInteraction: Boolean = false,
+    private val listener: CommonProductCardCarouselListener? = null,
 ) : BaseAdapterTypeFactory(), CommonCarouselProductCardTypeFactory {
 
     override fun type(cardDataModelCarousel: CarouselEmptyCardDataModel): Int {
@@ -70,7 +72,7 @@ class CommonCarouselProductCardTypeFactoryImpl(
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*> {
         return when (viewType) {
             CarouselProductCardViewHolder.LAYOUT -> {
-                CarouselProductCardViewHolder(view, channels)
+                CarouselProductCardViewHolder(view, channels, listener)
             }
             CarouselSeeMorePdpViewHolder.LAYOUT -> {
                 CarouselSeeMorePdpViewHolder(view, channels, cardInteraction)

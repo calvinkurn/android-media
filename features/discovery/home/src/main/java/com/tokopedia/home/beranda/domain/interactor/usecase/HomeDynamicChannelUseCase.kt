@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.domain.interactor.usecase
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import androidx.core.os.bundleOf
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.datasource.local.HomeRoomDataSource
@@ -10,6 +11,7 @@ import com.tokopedia.home.beranda.data.datasource.local.entity.AtfCacheEntity
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.mapper.ReminderWidgetMapper
+import com.tokopedia.home.beranda.data.mapper.factory.DynamicChannelComponentMapper.mapToChannelGrid
 import com.tokopedia.home.beranda.data.model.*
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.interactor.repository.*
@@ -28,6 +30,7 @@ import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home.util.QueryParamUtils.convertToLocationParams
 import com.tokopedia.home_component.model.ReminderEnum
+import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselProductCardDataModel
 import com.tokopedia.home_component.usecase.featuredshop.DisplayHeadlineAdsEntity
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
 import com.tokopedia.home_component.usecase.missionwidget.GetMissionWidget
@@ -38,17 +41,20 @@ import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
+import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
+import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -325,9 +331,9 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         )
                     }
 
-                    getRecommendationWidget(dynamicChannelPlainResponse)
+                    getOldBestSellerData(dynamicChannelPlainResponse)
 
-                    getBestSellerData(dynamicChannelPlainResponse)
+                    getBestSellerRevampData(dynamicChannelPlainResponse)
 
                     dynamicChannelPlainResponse.getWidgetDataIfExist<
                         HomeTopAdsBannerDataModel,
@@ -418,6 +424,50 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             source = ReminderEnum.SALAM
                         )
                         newFindRechargeRecommendationViewModel
+                    }
+
+                    dynamicChannelPlainResponse.getWidgetDataIfExist<
+                        ReminderWidgetModel,
+                        RechargeRecommendation>(
+                        widgetRepository = homeRechargeRecommendationRepository,
+                        predicate = {
+                            it?.source == ReminderEnum.RECHARGE
+                        }
+                    ) { visitableFound, data, position ->
+                        val newFindRechargeRecommendationViewModel = visitableFound.copy(
+                            data = ReminderWidgetMapper.mapperRechargetoReminder(data),
+                            source = ReminderEnum.RECHARGE
+                        )
+                        newFindRechargeRecommendationViewModel
+                    }
+
+                    dynamicChannelPlainResponse.getWidgetDataIfExist<
+                        ShopFlashSaleWidgetDataModel,
+                        List<RecommendationWidget>>(
+                        widgetRepository = homeRecommendationRepository,
+                        bundleParam = {
+                            val shopId = it.tabList.firstOrNull { it.isActivated }?.channelGrid?.id.orEmpty()
+                            bundleOf(
+                                HomeRecommendationRepository.PAGE_NAME to it.channelModel.pageName,
+                                HomeRecommendationRepository.QUERY_PARAM to it.channelModel.widgetParam,
+                                HomeRecommendationRepository.SHOP_ID to shopId
+                            )
+                        },
+                    ) { visitableFound, data, position ->
+                        if(!recommendationListIsEmpty(data)) {
+                            val carouselProductCardList = data.first().recommendationItemList.mapIndexed { index, item ->
+                                CarouselProductCardDataModel(
+                                    productModel = item.toProductCardModel(cardType = CardUnify2.TYPE_BORDER),
+                                    grid = item.mapToChannelGrid(index),
+                                    applink = item.appUrl
+                                )
+                            }
+                            return@getWidgetDataIfExist visitableFound.copy(
+                                itemList = carouselProductCardList,
+                                endTime = data.first().endTime,
+                            )
+                        }
+                        visitableFound
                     }
 
                     emit(
@@ -544,7 +594,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
         }
     }
 
-    suspend fun getRecommendationWidget(homeDataModel: HomeDynamicChannelModel) {
+    suspend fun getOldBestSellerData(homeDataModel: HomeDynamicChannelModel) {
         findWidget<BestSellerDataModel>(homeDataModel) { bestSellerDataModel, index ->
             val recomFilterList = getRecommendationFilterChips(
                 bestSellerDataModel.pageName,
@@ -583,7 +633,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
         }
     }
 
-    private suspend fun getBestSellerData(homeDataModel: HomeDynamicChannelModel) {
+    private suspend fun getBestSellerRevampData(homeDataModel: HomeDynamicChannelModel) {
         findWidget<BestSellerRevampDataModel>(homeDataModel) { bestSellerDataModel, index ->
             val recommendationFilterList = getRecommendationFilterChips(
                 bestSellerDataModel.pageName,

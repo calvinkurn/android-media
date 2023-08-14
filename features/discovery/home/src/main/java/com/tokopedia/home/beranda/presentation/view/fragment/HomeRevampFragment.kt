@@ -129,6 +129,7 @@ import com.tokopedia.home.beranda.presentation.view.listener.RechargeBUWidgetCal
 import com.tokopedia.home.beranda.presentation.view.listener.RechargeRecommendationCallback
 import com.tokopedia.home.beranda.presentation.view.listener.RecommendationListCarouselComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.SalamWidgetCallback
+import com.tokopedia.home.beranda.presentation.view.listener.ShopFlashSaleCallback
 import com.tokopedia.home.beranda.presentation.view.listener.SpecialReleaseComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.SpecialReleaseRevampCallback
 import com.tokopedia.home.beranda.presentation.view.listener.TodoWidgetComponentCallback
@@ -148,6 +149,7 @@ import com.tokopedia.home_component.customview.pullrefresh.ParentIconSwipeRefres
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.toDpInt
+import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleListener
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
@@ -1472,6 +1474,7 @@ open class HomeRevampFragment :
             CarouselPlayWidgetCallback(getTrackingQueueObj(), userSession, this),
             BestSellerWidgetCallback(context, this, getHomeViewModel()),
             SpecialReleaseRevampCallback(this),
+            ShopFlashSaleCallback(this, getHomeViewModel())
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
             .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())

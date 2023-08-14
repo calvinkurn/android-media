@@ -12,7 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 /**
  * Created by frenzel
  */
-internal class CarouselListAdapter<T: Visitable<F>, F: AdapterTypeFactory>(
+internal class CarouselListAdapter<T: Visitable<in F>, F: AdapterTypeFactory>(
     private val typeFactory: F,
     diffUtil: DiffUtil.ItemCallback<T>,
 ): ListAdapter<T, AbstractViewHolder<in T>>(diffUtil) {

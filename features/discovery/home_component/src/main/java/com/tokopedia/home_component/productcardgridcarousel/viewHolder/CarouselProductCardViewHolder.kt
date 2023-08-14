@@ -6,13 +6,16 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselProductCardDataModel
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
-class CarouselProductCardViewHolder (view: View,
-                                     private val channels: ChannelModel):
-        AbstractViewHolder<CarouselProductCardDataModel>(view) {
+class CarouselProductCardViewHolder (
+    view: View,
+    private val channels: ChannelModel,
+    val listener: CommonProductCardCarouselListener? = null,
+): AbstractViewHolder<CarouselProductCardDataModel>(view) {
 
     companion object{
         val LAYOUT = R.layout.home_banner_item_flashsale_carousel
@@ -36,7 +39,7 @@ class CarouselProductCardViewHolder (view: View,
                             element.grid.imageUrl,
                             element.componentName)
                 }
-                element.listener.onProductCardImpressed(position = adapterPosition, channel = channels, channelGrid = element.grid)
+                listener?.onProductCardImpressed(position = adapterPosition, channel = channels, channelGrid = element.grid)
             }
             setOnClickListener {
                 if(element.grid.isTopads){
@@ -46,7 +49,7 @@ class CarouselProductCardViewHolder (view: View,
                             element.grid.imageUrl,
                             element.componentName)
                 }
-                element.listener.onProductCardClicked(position = adapterPosition, channel = channels, channelGrid = element.grid, applink = element.applink)
+                listener?.onProductCardClicked(position = adapterPosition, channel = channels, channelGrid = element.grid, applink = element.applink)
             }
         }
     }

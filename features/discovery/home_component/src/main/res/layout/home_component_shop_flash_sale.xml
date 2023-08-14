@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/home_component_shop_flash_sale_divider_header"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:background="@color/Unify_Static_Black"/>
+
+    <com.tokopedia.home_component_header.view.HomeChannelHeaderView
+        android:id="@+id/home_component_shop_flash_sale_header_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/home_component_shop_flash_sale_divider_header"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/home_component_shop_flash_sale_tab_rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/home_component_shop_flash_sale_header_view" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_shop_flash_sale_shop_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constrainedWidth="true"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:typographyType="paragraph_2"
+        app:typographyWeight="bold"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        tools:text="Rilakkuma Official Store dwdwdwdwdwdw"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/cta_shop_flash_sale_shop_name"
+        app:layout_constraintTop_toBottomOf="@id/home_component_shop_flash_sale_tab_rv"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/cta_shop_flash_sale_shop_name"
+        app:icon_name="CHEVRON_RIGHT"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintStart_toEndOf="@id/txt_shop_flash_sale_shop_name"
+        app:layout_constraintTop_toTopOf="@id/txt_shop_flash_sale_shop_name"
+        app:layout_constraintBottom_toBottomOf="@id/txt_shop_flash_sale_shop_name"
+        app:layout_constraintEnd_toStartOf="@id/timer_shop_flash_sale"
+        app:layout_constraintHorizontal_bias="0"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="16dp"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:contentDescription="@string/content_desc_header_cta"/>
+
+    <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+        android:id="@+id/timer_shop_flash_sale"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintStart_toEndOf="@id/txt_shop_flash_sale_shop_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/txt_shop_flash_sale_shop_name"
+        app:layout_constraintBottom_toBottomOf="@id/txt_shop_flash_sale_shop_name"
+        app:layout_constraintHorizontal_bias="1"
+        tools:layout_height="20dp"
+        tools:layout_width="97dp"
+        tools:visibility="visible" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/home_component_shop_flash_sale_item_rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:paddingBottom="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cta_shop_flash_sale_shop_name" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/home_component_shop_flash_sale_divider_footer"
+        app:layout_constraintTop_toBottomOf="@id/home_component_shop_flash_sale_item_rv"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:background="@color/Unify_Static_Black"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

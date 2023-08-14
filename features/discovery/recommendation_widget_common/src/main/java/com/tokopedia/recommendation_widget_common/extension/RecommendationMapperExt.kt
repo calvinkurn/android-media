@@ -14,6 +14,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationSpecificationLabelsBullet
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewItemData
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.UnifyButton
 
 /**
@@ -128,6 +129,7 @@ fun RecommendationItem.toProductCardModel(
     hasThreeDots: Boolean = false,
     cardInteraction: Boolean = false,
     productCardListType: ProductListType = ProductListType.CONTROL,
+    cardType: Int = CardUnify2.TYPE_SHADOW,
 ): ProductCardModel {
     var variant: ProductCardModel.Variant? = null
     var nonVariant: ProductCardModel.NonVariant? = null
@@ -166,6 +168,7 @@ fun RecommendationItem.toProductCardModel(
         variant = if (isProductHasParentID()) variant else null,
         nonVariant = if (isProductHasParentID()) null else nonVariant,
         cardInteraction = cardInteraction,
+        cardType = cardType,
         productListType = productCardListType,
     )
 }

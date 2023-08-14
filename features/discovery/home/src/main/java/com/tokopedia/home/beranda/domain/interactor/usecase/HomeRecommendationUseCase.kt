@@ -3,15 +3,21 @@ package com.tokopedia.home.beranda.domain.interactor.usecase
 import com.tokopedia.carouselproductcard.paging.CarouselPagingGroupChangeDirection
 import com.tokopedia.carouselproductcard.paging.CarouselPagingGroupChangeDirection.PREVIOUS
 import com.tokopedia.carouselproductcard.paging.CarouselPagingModel
+import com.tokopedia.home.beranda.data.mapper.factory.DynamicChannelComponentMapper.mapToChannelGrid
+import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselProductCardDataModel
 import com.tokopedia.home_component.visitable.BestSellerChipDataModel
 import com.tokopedia.home_component.visitable.BestSellerChipProductDataModel
 import com.tokopedia.home_component.visitable.BestSellerProductDataModel
+import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
+import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleItemShimmerDataModel
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
+import com.tokopedia.unifycomponents.CardUnify2
 import dagger.Lazy
 import java.lang.Exception
 import java.lang.Integer.min
@@ -193,6 +199,36 @@ class HomeRecommendationUseCase @Inject constructor(
                 it.copy(chip = it.chip.activate())
             else
                 it.copy(chip = it.chip.deactivate())
+        }
+    }
+
+    suspend fun onHomeShopFlashSaleTabClick(
+        currentDataModel: ShopFlashSaleWidgetDataModel,
+        shopId: String,
+    ): ShopFlashSaleWidgetDataModel {
+        return try {
+            val recomData = getRecommendationUseCase.getData(
+                GetRecommendationRequestParam(
+                    pageName = currentDataModel.channelModel.pageName,
+                    queryParam = currentDataModel.channelModel.widgetParam,
+                    shopIds = listOf(shopId),
+                )
+            )
+            if (recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()) {
+                val recomWidget = recomData.first()
+                val carouselProductCardList = recomWidget.recommendationItemList.mapIndexed { index, item ->
+                    CarouselProductCardDataModel(
+                        productModel = item.toProductCardModel(cardType = CardUnify2.TYPE_BORDER),
+                        grid = item.mapToChannelGrid(index),
+                        applink = item.appUrl
+                    )
+                }
+                currentDataModel.copy(itemList = carouselProductCardList, endTime = recomWidget.endTime)
+            } else {
+                currentDataModel
+            }
+        } catch (_: Exception) {
+            currentDataModel
         }
     }
 }

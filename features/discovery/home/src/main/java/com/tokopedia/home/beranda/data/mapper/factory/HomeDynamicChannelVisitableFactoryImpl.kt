@@ -5,6 +5,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.v2.LegoBannerTracking
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
+import com.tokopedia.home.beranda.data.mapper.factory.DynamicChannelComponentMapper.mapToChannelGrid
+import com.tokopedia.home.beranda.data.mapper.factory.DynamicChannelComponentMapper.mapToHomeComponentHeader
+import com.tokopedia.home.beranda.data.mapper.factory.DynamicChannelComponentMapper.mapToTrackingAttributionModel
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home_component.util.HomeComponentRemoteConfigController
@@ -16,6 +19,9 @@ import com.tokopedia.home_component.util.ChannelStyleUtil.BORDER_STYLE_PADDING
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseBorderStyle
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseDividerSize
 import com.tokopedia.home_component.visitable.*
+import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
+import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleItemShimmerDataModel
+import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopFlashSaleTabDataModel
 import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampDataModel
 import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
@@ -207,6 +213,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 }
                 DynamicHomeChannel.Channels.LAYOUT_SPECIAL_RELEASE_REVAMP -> {
                     createSpecialReleaseRevamp(channel, position)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_SPECIAL_SHOP_FLASH_SALE -> {
+                    createShopFlashSale(channel, position)
                 }
             }
         }
@@ -945,6 +954,30 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 verticalPosition
             )
         )
+    }
+
+    private fun createShopFlashSale(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
+        if(!isCache) {
+            visitableList.add(
+                ShopFlashSaleWidgetDataModel(
+                    id = channel.id,
+                    channelHeader = channel.header.mapToHomeComponentHeader(),
+                    channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
+                        channel,
+                        verticalPosition,
+                        mapGrids = false
+                    ),
+                    tabList = channel.grids.mapIndexed { index, grid ->
+                        ShopFlashSaleTabDataModel(
+                            grid.mapToChannelGrid(index),
+                            channel.mapToTrackingAttributionModel(verticalPosition),
+                            index == 0
+                        )
+                    },
+                    itemList = listOf(ShopFlashSaleItemShimmerDataModel())
+                )
+            )
+        }
     }
 
     override fun build(): List<Visitable<*>> = visitableList
