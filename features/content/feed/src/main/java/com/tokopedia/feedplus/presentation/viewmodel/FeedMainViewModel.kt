@@ -76,7 +76,7 @@ class FeedMainViewModel @Inject constructor(
     val isShortEntryPointShowed: Boolean
         get() {
             val feedCreateContentData = _metaData.value
-            return feedCreateContentData.eligibleCreationEntryPoints.find {
+            return feedCreateContentData.entryPoints.find {
                 it.type == CreateContentType.ShortVideo
             } != null
         }

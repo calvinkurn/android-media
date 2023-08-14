@@ -30,7 +30,7 @@ class FeedTabsModelBuilder {
         isCreationActive = false,
         showLive = false,
         liveApplink = "",
-        eligibleCreationEntryPoints = eligibleCreationEntryPoints
+        entryPoints = eligibleCreationEntryPoints
     )
 
     fun buildDefaultTabsModel() = listOf(

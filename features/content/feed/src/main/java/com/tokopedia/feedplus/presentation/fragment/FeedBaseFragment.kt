@@ -170,11 +170,11 @@ class FeedBaseFragment :
             when (fragment) {
                 is FeedContentCreationTypeBottomSheet -> {
                     fragment.setListener(this)
-                    fragment.setDataSource(object : FeedContentCreationTypeBottomSheet.DataSource {
-                        override fun creationItems(): List<ContentCreationTypeItem> {
-                            return feedMainViewModel.metaData.value.eligibleCreationEntryPoints
-                        }
-                    })
+                    fragment.setDataSource(
+                        FeedContentCreationTypeBottomSheet.DataSource(
+                            feedMainViewModel.metaData.value.entryPoints
+                        )
+                    )
                 }
             }
         }

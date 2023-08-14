@@ -59,7 +59,7 @@ class FeedContentCreationTypeBottomSheet : BottomSheetUnify() {
         binding.rvFeedContentCreation.adapter = adapter
 
         val dataSource = mDataSource ?: return
-        adapter.updateData(dataSource.creationItems())
+        adapter.updateData(dataSource.entryPoints)
     }
 
     fun setListener(listener: Listener?) {
@@ -93,7 +93,7 @@ class FeedContentCreationTypeBottomSheet : BottomSheetUnify() {
         fun onCreationItemClick(creationTypeItem: ContentCreationTypeItem)
     }
 
-    interface DataSource {
-        fun creationItems(): List<ContentCreationTypeItem>
-    }
+    data class DataSource(
+        val entryPoints: List<ContentCreationTypeItem>
+    )
 }

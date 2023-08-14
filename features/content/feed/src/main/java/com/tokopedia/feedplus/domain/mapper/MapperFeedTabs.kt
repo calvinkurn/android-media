@@ -25,7 +25,7 @@ object MapperFeedTabs {
             isCreationActive = header.data.creation.isActive,
             showLive = header.data.live.isActive,
             liveApplink = header.data.live.applink,
-            eligibleCreationEntryPoints = mapCreationItems(header.data.creation)
+            entryPoints = mapCreationItems(header.data.creation)
         ),
         data = header.data.tab.items
             .sortedBy { it.position }
