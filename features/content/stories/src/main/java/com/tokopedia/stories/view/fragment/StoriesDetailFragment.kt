@@ -82,7 +82,7 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun setupObserver() {
-        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.uiState.withCache().collectLatest { (prevState, state) ->
                 renderStoriesGroup(prevState?.storiesGroup, state.storiesGroup)
                 renderStoriesDetail(prevState?.storiesDetail, state.storiesDetail)

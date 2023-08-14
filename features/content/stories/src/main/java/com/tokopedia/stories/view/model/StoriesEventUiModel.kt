@@ -17,14 +17,18 @@ data class StoriesGroupUiModel(
 data class StoriesDetailUiModel(
     val id: String,
     val selected: Int,
-    val isPause: Boolean,
+    val event: StoriesDetailUiEvent,
     val imageContent: String,
 ) {
+
+    enum class StoriesDetailUiEvent {
+        PAUSE, START, RESTART
+    }
     companion object {
         val Empty = StoriesDetailUiModel(
             id = "0",
             selected = 1,
-            isPause = false,
+            event = StoriesDetailUiEvent.START,
             imageContent = "",
         )
     }

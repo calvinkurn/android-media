@@ -33,23 +33,28 @@ fun StoriesDetailTimer(
     event: (StoriesDetailTimerEvent) -> Unit,
 ) {
     val anim = remember { Animatable(0F) }
+
     LaunchedEffect(data) {
-        if (data.isPause) anim.stop()
-        else {
-            anim.animateTo(
-                targetValue = 1f,
-                animationSpec = tween(
-                    durationMillis = (3000 * (1f - anim.value)).toInt(),
-                    easing = LinearEasing,
+        when (data.event) {
+            StoriesDetailUiModel.StoriesDetailUiEvent.PAUSE -> anim.stop()
+            StoriesDetailUiModel.StoriesDetailUiEvent.START -> {
+                anim.animateTo(
+                    targetValue = 1f,
+                    animationSpec = tween(
+                        durationMillis = (3000 * (1f - anim.value)).toInt(),
+                        easing = LinearEasing,
+                    )
                 )
-            )
-            anim.snapTo(0F)
-            event.invoke(
-                if (data.selected >= itemCount) NEXT_GROUP
-                else NEXT_DETAIL
-            )
+
+                event.invoke(
+                    if (data.selected >= itemCount) NEXT_GROUP
+                    else NEXT_DETAIL
+                )
+            }
+            StoriesDetailUiModel.StoriesDetailUiEvent.RESTART -> { anim.snapTo(0F) }
         }
     }
+
     StoriesDetailTimerContent(
         count = itemCount,
         currentPosition = data.selected,
@@ -102,7 +107,7 @@ internal fun StoriesDetailTimerPreview() {
         data = StoriesDetailUiModel(
             id = "1",
             selected = 1,
-            isPause = false,
+            event = StoriesDetailUiModel.StoriesDetailUiEvent.START,
             imageContent = "",
         )
     ) { }

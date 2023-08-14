@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.stories.data.StoriesRepository
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
+import com.tokopedia.stories.view.model.StoriesDetailUiModel.StoriesDetailUiEvent
 import com.tokopedia.stories.view.model.StoriesGroupUiModel
 import com.tokopedia.stories.view.model.StoriesUiState
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
@@ -67,6 +68,7 @@ class StoriesViewModel @Inject constructor(
 
     private fun handleSelectGroup(selectedGroup: Int) {
         viewModelScope.launch {
+            handleResetDetail()
             mGroupPosition = selectedGroup
             _storiesGroup.update { group ->
                 group.mapIndexed { index, storiesGroupUiModel ->
@@ -84,37 +86,53 @@ class StoriesViewModel @Inject constructor(
 
     private fun handleNextGroup() {
         viewModelScope.launch {
+            handleResetDetail()
             _uiEvent.emit(StoriesUiEvent.SelectGroup(mGroupPosition + 1))
         }
     }
 
     private fun handlePreviousGroup() {
         viewModelScope.launch {
+            handleResetDetail()
             _uiEvent.emit(StoriesUiEvent.SelectGroup(mGroupPosition - 1))
         }
     }
 
-    private fun handleNextDetail() {
+    private fun handleResetDetail() {
         _storiesDetail.update { data ->
-            data.copy(selected = data.selected + 1)
+            data.copy(event = StoriesDetailUiEvent.RESTART)
+        }
+    }
+
+    private fun handleNextDetail() {
+        handleResetDetail()
+        _storiesDetail.update { data ->
+            data.copy(
+                selected = data.selected + 1,
+                event = StoriesDetailUiEvent.START,
+            )
         }
     }
 
     private fun handlePreviousDetail() {
+        handleResetDetail()
         _storiesDetail.update { data ->
-            data.copy(selected = data.selected - 1)
+            data.copy(
+                selected = data.selected - 1,
+                event = StoriesDetailUiEvent.START,
+            )
         }
     }
 
     private fun handleOnPauseStories() {
         _storiesDetail.update { data ->
-            data.copy(isPause = true)
+            data.copy(event = StoriesDetailUiEvent.PAUSE)
         }
     }
 
     private fun handleOnResumeStories() {
         _storiesDetail.update { data ->
-            data.copy(isPause = false)
+            data.copy(event = StoriesDetailUiEvent.START)
         }
     }
 
