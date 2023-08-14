@@ -433,7 +433,6 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         viewModel.getPromoRecommendationUiAction.observe(viewLifecycleOwner) { uiAction ->
             when (uiAction) {
                 is GetPromoRecommendationUiAction.NotEmpty -> {
-                    prefetchPromoRecommendationAnimation(uiAction.promoRecommendation)
                     renderPromoRecommendationBackground(uiAction.promoRecommendation)
                     addHeaderScrollListener()
                     renderTransparentHeader()
@@ -728,14 +727,8 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         registerGopayLaterCicilLauncher.launch(intent)
     }
 
-    private fun prefetchPromoRecommendationAnimation(item: PromoRecommendationItem) {
-        if (item.animationUrl.isNotBlank()) {
-            LottieCompositionFactory.fromUrl(context, item.animationUrl, item.animationUrl)
-        }
-    }
-
     private fun showPromoRecommendationAnimation(item: PromoRecommendationItem) {
-        LottieCompositionFactory.fromUrl(context, item.animationUrl, item.animationUrl)
+        LottieCompositionFactory.fromUrl(context, item.animationUrl)
             .addListener { result ->
                 binding.lottieAnimationView.visible()
                 binding.lottieAnimationView.setComposition(result)
