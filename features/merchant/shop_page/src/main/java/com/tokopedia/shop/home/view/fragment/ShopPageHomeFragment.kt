@@ -154,6 +154,7 @@ import com.tokopedia.shop.home.WidgetType.PROMO
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.util.CheckCampaignNplException
+import com.tokopedia.shop.home.util.ShopHomeShowcaseNavigationDependencyProvider
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
@@ -245,7 +246,8 @@ open class ShopPageHomeFragment :
     ShopHomeProductListSellerEmptyListener,
     ShopHomeListener,
     ShopHomePersoProductComparisonViewHolder.ShopHomePersoProductComparisonViewHolderListener,
-    ShopHomeDisplayBannerTimerWidgetListener, ShopHomeShowcaseNavigationListener {
+    ShopHomeDisplayBannerTimerWidgetListener, ShopHomeShowcaseNavigationListener,
+    ShopHomeShowcaseNavigationDependencyProvider {
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -401,8 +403,8 @@ open class ShopPageHomeFragment :
             shopHomeListener = this,
             shopPersoProductComparisonListener = this,
             shopHomeDisplayBannerTimerWidgetListener = this,
-            fragment = this,
-            shopHomeShowcaseNavigationListener = this
+            shopHomeShowcaseNavigationListener = this,
+            shopHomeShowcaseNavigationDependencyProvider = this
         )
     }
 
@@ -4963,4 +4965,7 @@ open class ShopPageHomeFragment :
     ) {
         RouteManager.route(activity ?: return, selectedShowcase.ctaLink)
     }
+
+    override val currentFragment: Fragment
+        get() = this
 }

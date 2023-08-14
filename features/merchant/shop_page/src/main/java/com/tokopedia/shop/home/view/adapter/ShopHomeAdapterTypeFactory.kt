@@ -40,6 +40,7 @@ import com.tokopedia.shop.home.WidgetName.TRENDING
 import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.WidgetName.VOUCHER_STATIC
 import com.tokopedia.shop.home.WidgetName.PERSO_PRODUCT_COMPARISON
+import com.tokopedia.shop.home.util.ShopHomeShowcaseNavigationDependencyProvider
 import com.tokopedia.shop.home.view.adapter.viewholder.CarouselPlayWidgetViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ProductGridListPlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeCardDonationViewHolder
@@ -115,7 +116,7 @@ open class ShopHomeAdapterTypeFactory(
     private val shopPersoProductComparisonListener: ShopHomePersoProductComparisonViewHolder.ShopHomePersoProductComparisonViewHolderListener,
     private val shopHomeDisplayBannerTimerWidgetListener: ShopHomeDisplayBannerTimerWidgetListener,
     private val shopHomeShowcaseNavigationListener: ShopHomeShowcaseNavigationListener,
-    private val fragment: Fragment
+    private val shopHomeShowcaseNavigationDependencyProvider: ShopHomeShowcaseNavigationDependencyProvider
 ) : BaseAdapterTypeFactory(), TypeFactoryShopHome, ThematicWidgetTypeFactory, ShopWidgetTypeFactory {
     var productCardType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
     private var showcaseWidgetLayoutType = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_LINEAR_HORIZONTAL
@@ -371,7 +372,11 @@ open class ShopHomeAdapterTypeFactory(
                 ShopHomeVoucherViewHolder(parent, onMerchantVoucherListWidgetListener)
             }
             ShopHomeShowCaseNavigationLeftMainBannerViewHolder.LAYOUT -> {
-                ShopHomeShowCaseNavigationLeftMainBannerViewHolder(parent, fragment, shopHomeShowcaseNavigationListener)
+                ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
+                    parent,
+                    shopHomeShowcaseNavigationListener,
+                    shopHomeShowcaseNavigationDependencyProvider
+                )
             }
             ShopHomeShowCaseNavigationTopMainBannerViewHolder.LAYOUT -> {
                 ShopHomeShowCaseNavigationTopMainBannerViewHolder(parent, shopHomeShowcaseNavigationListener)

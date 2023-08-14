@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopHomeShowcaseNavigationLeftMainBannerBinding
+import com.tokopedia.shop.home.util.ShopHomeShowcaseNavigationDependencyProvider
 import com.tokopedia.shop.home.view.fragment.ShopShowcaseFragment
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseNavigationListener
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationUiModel
@@ -22,8 +23,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
     itemView: View,
-    private val fragment: Fragment,
-    private val listener: ShopHomeShowcaseNavigationListener
+    private val listener: ShopHomeShowcaseNavigationListener,
+    private val provider: ShopHomeShowcaseNavigationDependencyProvider
 ) : AbstractViewHolder<ShopHomeShowcaseNavigationUiModel>(itemView) {
 
     companion object {
@@ -53,7 +54,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
 
     private fun setupTabs(tabs: List<ShopHomeShowcaseNavigationUiModel.Tab>) {
         val fragments = createFragments(tabs)
-        val pagerAdapter = TabPagerAdapter(fragment, fragments)
+        val pagerAdapter = TabPagerAdapter(provider.currentFragment, fragments)
 
         viewBinding?.run {
             viewPager.adapter = pagerAdapter
