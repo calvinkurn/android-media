@@ -21,6 +21,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.tokopoints.R
+import com.tokopedia.tokopoints.databinding.TpFragmentStackedCouponListingBinding
 import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
 import com.tokopedia.tokopoints.di.TokopointsQueryModule
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration
@@ -34,8 +35,7 @@ import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toPx
-import kotlinx.android.synthetic.main.tp_fragment_stacked_coupon_listing.*
-import kotlinx.android.synthetic.main.tp_fragment_stacked_coupon_listing.view.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedContract.View, View.OnClickListener, AdapterCallback, TokopointPerformanceMonitoringListener {
@@ -51,6 +51,8 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
     private var redeemMessage: String = ""
 
+    private var binding by autoClearedNullable<TpFragmentStackedCouponListingBinding>()
+
     override val activityContext: Context?
         get() = activity
 
@@ -64,13 +66,13 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.tp_fragment_stacked_coupon_listing, container, false)
-        initViews(view)
-        return view
+        binding = TpFragmentStackedCouponListingBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initViews()
         initListener()
         ToasterHelper.showCouponClaimToast(redeemMessage, view)
     }
@@ -81,13 +83,17 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
     }
 
     override fun showLoader() {
-        container?.displayedChild = CONTAINER_LOADER
-        swipe_refresh_layout?.isRefreshing = false
+        binding?.apply {
+            container.displayedChild = CONTAINER_LOADER
+            swipeRefreshLayout.isRefreshing = false
+        }
     }
 
     override fun hideLoader() {
-        container?.displayedChild = CONTAINER_DATA
-        swipe_refresh_layout?.isRefreshing = false
+        binding?.apply {
+            container.displayedChild = CONTAINER_DATA
+            swipeRefreshLayout.isRefreshing = false
+        }
     }
 
     override fun getScreenName(): String {
@@ -108,17 +114,19 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
         }
     }
 
-    private fun initViews(view: View) {
-        mItemDecoration = SpacesItemDecoration(
-            0,
-            activityContext!!.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
-            activityContext!!.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-        )
-        if (view.recycler_view_coupons.itemDecorationCount > 0) {
-            view.recycler_view_coupons.removeItemDecoration(mItemDecoration!!)
+    private fun initViews() {
+        binding?.apply {
+            mItemDecoration = SpacesItemDecoration(
+                0,
+                activityContext!!.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
+                activityContext!!.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+            )
+            if (recyclerViewCoupons.itemDecorationCount > 0) {
+                recyclerViewCoupons.removeItemDecoration(mItemDecoration!!)
+            }
+            recyclerViewCoupons.addItemDecoration(mItemDecoration!!)
+            recyclerViewCoupons.adapter = mAdapter
         }
-        view.recycler_view_coupons.addItemDecoration(mItemDecoration!!)
-        view.recycler_view_coupons.adapter = mAdapter
     }
 
     private fun initListener() {
@@ -136,7 +144,7 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
 
         stopPreparePagePerformanceMonitoring()
         startNetworkRequestPerformanceMonitoring()
-        swipe_refresh_layout.setOnRefreshListener {
+        binding?.swipeRefreshLayout?.setOnRefreshListener {
             val id = presenter.category
             id?.let { presenter.getCoupons(id) }
         }
@@ -191,7 +199,7 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
         }
         requireView().findViewById<View>(R.id.button_continue).visibility = View.VISIBLE
 
-        container.displayedChild = CONTAINER_EMPTY
+        binding?.container?.displayedChild = CONTAINER_EMPTY
     }
 
     override fun onRetryPageLoad(pageNumber: Int) {}
@@ -212,15 +220,17 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
     override fun onStartPageLoad(pageNumber: Int) {}
 
     override fun onFinishPageLoad(itemCount: Int, pageNumber: Int, rawObject: Any?) {
-        swipe_refresh_layout.isRefreshing = false
+        binding?.swipeRefreshLayout?.isRefreshing = false
     }
 
     override fun onError(pageNumber: Int) {
-        if (pageNumber == 1) {
-            container.displayedChild = CONTAINER_ERROR
-            server_error_view?.showErrorUi(NetworkDetector.isConnectedToInternet(appContext))
+        binding?.apply {
+            if (pageNumber == 1) {
+                container.displayedChild = CONTAINER_ERROR
+                serverErrorView.showErrorUi(NetworkDetector.isConnectedToInternet(appContext))
+            }
+            swipeRefreshLayout.isRefreshing = false
         }
-        swipe_refresh_layout.isRefreshing = false
     }
 
     fun showCouponInStackBottomSheet(data: TokoPointPromosEntity) {
@@ -354,16 +364,18 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
     }
 
     private fun setOnRecyclerViewLayoutReady() {
-        recycler_view_coupons?.viewTreeObserver
-            ?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    if (pageLoadTimePerformanceMonitoring != null) {
-                        stopRenderPerformanceMonitoring()
-                        stopPerformanceMonitoring()
+        binding?.apply {
+            recyclerViewCoupons.viewTreeObserver
+                ?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        if (pageLoadTimePerformanceMonitoring != null) {
+                            stopRenderPerformanceMonitoring()
+                            stopPerformanceMonitoring()
+                        }
+                        pageLoadTimePerformanceMonitoring = null
+                        recyclerViewCoupons?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                     }
-                    pageLoadTimePerformanceMonitoring = null
-                    recycler_view_coupons?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-                }
-            })
+                })
+        }
     }
 }

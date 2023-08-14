@@ -12,9 +12,9 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.Toolbar
@@ -25,20 +25,18 @@ import androidx.transition.Transition
 import androidx.transition.TransitionManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.tokopoints.R
+import com.tokopedia.tokopoints.databinding.TpItemDynamicActionBinding
+import com.tokopedia.tokopoints.databinding.TpToolbarBinding
 import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListItem
 import com.tokopedia.tokopoints.view.util.ImageUtil
 import com.tokopedia.tokopoints.view.util.convertDpToPixel
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
-import kotlinx.android.synthetic.main.tp_item_dynamic_action.view.*
-import kotlinx.android.synthetic.main.tp_toolbar.view.*
 
 class TokoPointToolbar : Toolbar {
     private var currentToolbarState = ToolbarState.TOOLBAR_TRANSPARENT
-    var tvToolbarTitle: TextView? = null
     var mContext: Context? = null
     var backArrowWhite: Drawable? = null
-    var view: View? = null
 
     constructor(context: Context) : super(context) {
         inflateResource(context)
@@ -52,10 +50,10 @@ class TokoPointToolbar : Toolbar {
         inflateResource(context)
     }
 
+    private val binding: TpToolbarBinding = TpToolbarBinding.inflate(LayoutInflater.from(context), this, true)
+
     private fun inflateResource(context: Context) {
         mContext = context
-        view = View.inflate(context, R.layout.tp_toolbar, this)
-        tvToolbarTitle = findViewById(R.id.tv_tpToolbar_title)
         initDrawableResources()
 
         //  setCouponCount(0, "");
@@ -70,7 +68,7 @@ class TokoPointToolbar : Toolbar {
             ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White),
             PorterDuff.Mode.SRC_ATOP
         )
-        tvToolbarTitle?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+        binding.tvTpToolbarTitle.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
     }
 
     private fun setNavIcon(context: Context) {
@@ -95,7 +93,7 @@ class TokoPointToolbar : Toolbar {
     override fun setTitle(title: CharSequence) {
         if (title == resources.getString(R.string.tp_title_tokopoints)) return
         super.setTitle(resources.getString(R.string.tp_title_tokopoints))
-        tvToolbarTitle?.text = resources.getString(R.string.tp_title_tokopoints)
+        binding.tvTpToolbarTitle.text = resources.getString(R.string.tp_title_tokopoints)
     }
 
 
@@ -110,7 +108,7 @@ class TokoPointToolbar : Toolbar {
                 MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600)
             toggleNavigationIconColor(whiteColor, greyColor)
             val colorAnim = ObjectAnimator.ofInt(
-                tvToolbarTitle, "textColor",
+                binding.tvTpToolbarTitle, "textColor",
                 whiteColor, greyColor
             )
             colorAnim.duration = 200
@@ -138,7 +136,7 @@ class TokoPointToolbar : Toolbar {
             val greyColor =
                 MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600)
             toggleNavigationIconColor(greyColor, whiteColor)
-            val colorAnim = ObjectAnimator.ofInt(tvToolbarTitle, "textColor", greyColor, whiteColor)
+            val colorAnim = ObjectAnimator.ofInt(binding.tvTpToolbarTitle, "textColor", greyColor, whiteColor)
             colorAnim.duration = 200
             colorAnim.setEvaluator(ArgbEvaluator())
             colorAnim.start()
@@ -183,26 +181,23 @@ class TokoPointToolbar : Toolbar {
     private fun toggle(show: Boolean) {
         val transition: Transition = Fade()
         transition.duration = 300
-        transition.addTarget(container_scrolledState)
+        transition.addTarget(binding.containerScrolledState)
         TransitionManager.beginDelayedTransition(this, transition)
-        container_scrolledState.visibility = if (show) View.VISIBLE else View.GONE
+        binding.containerScrolledState.visibility = if (show) View.VISIBLE else View.GONE
     }
 
-    fun addItem(dynamicActionItem: DynamicActionListItem) : View? {
-        view?.let {
-            val viewCntainer = View.inflate(context, R.layout.tp_item_dynamic_action, null)
-            val param = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1F)
-            param.rightMargin = convertDpToPixel(10,viewCntainer.context)
-            ImageUtil.loadImage(viewCntainer.iv_dynamic, dynamicActionItem.iconImageURLScrolled)
-            if (dynamicActionItem.counter?.isShowCounter != null && dynamicActionItem.counter.counterStr != null
-                    && dynamicActionItem.counter.counterStr.isNotEmpty() && dynamicActionItem.counter.counterStr != "0") {
-                viewCntainer.notif_dynamic.visibility = View.VISIBLE
-                viewCntainer.notif_dynamic.setNotification(dynamicActionItem.counter.counterStr, NotificationUnify.NONE_TYPE, NotificationUnify.COLOR_PRIMARY)
-            }
-            it.container_scrolledState.addView(viewCntainer, param)
-            return viewCntainer
+    fun addItem(dynamicActionItem: DynamicActionListItem) : TpItemDynamicActionBinding {
+        val viewCntainer = TpItemDynamicActionBinding.inflate(LayoutInflater.from(context), null, false)
+        val param = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1F)
+        param.rightMargin = convertDpToPixel(10,viewCntainer.root.context)
+        ImageUtil.loadImage(viewCntainer.ivDynamic, dynamicActionItem.iconImageURLScrolled)
+        if (dynamicActionItem.counter?.isShowCounter != null && dynamicActionItem.counter.counterStr != null
+            && dynamicActionItem.counter.counterStr.isNotEmpty() && dynamicActionItem.counter.counterStr != "0") {
+            viewCntainer.notifDynamic.visibility = View.VISIBLE
+            viewCntainer.notifDynamic.setNotification(dynamicActionItem.counter.counterStr, NotificationUnify.NONE_TYPE, NotificationUnify.COLOR_PRIMARY)
         }
-        return null
+        binding.containerScrolledState.addView(viewCntainer.root, param)
+        return viewCntainer
     }
 
     internal enum class ToolbarState {
