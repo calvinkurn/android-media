@@ -21,7 +21,6 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.PAGE_REFRESH_LOGIN
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifycomponents.Toaster
@@ -72,7 +71,7 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
             multiBannerViewModel.getPushBannerSubscriptionData().observe(
                 fragment.viewLifecycleOwner,
                 Observer {
-                    updateImage(it, isSubscribed = true)
+                    updateImage(it.position, isSubscribed = it.isSubscribed)
                 }
             )
             multiBannerViewModel.getShowLoginData().observe(
@@ -157,7 +156,7 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
         ) {
             (bannersItemList[position].bannerImageView as ImageUnify).apply {
                 scaleType = ImageView.ScaleType.FIT_CENTER
-                loadImage(if (isSubscribed) bannersItemList[position].bannerItemData.registeredImageApp else bannersItemList[position].bannerItemData.imageUrlDynamicMobile)
+                setImageUrl(if (isSubscribed) bannersItemList[position].bannerItemData.registeredImageApp.orEmpty() else bannersItemList[position].bannerItemData.imageUrlDynamicMobile.orEmpty())
             }
         }
     }
