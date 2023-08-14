@@ -185,10 +185,13 @@ class FeedMainViewModel @Inject constructor(
     }
 
     fun fetchFeedMetaData() {
-        viewModelScope.launchCatchError(block = {
-            val response = repository.getMeta()
-            _metaData.value = response
-        }) {
+        viewModelScope.launch {
+            try {
+                val response = repository.getMeta()
+                _metaData.value = response
+            } catch (_: Throwable) {
+                // ignored
+            }
         }
     }
 
