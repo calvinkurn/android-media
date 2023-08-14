@@ -459,7 +459,7 @@ class CMNotificationHandler : CoroutineScope {
         return null
     }
 
-    private fun isShareButtonClick(actionButton: ActionButton?): Boolean {
+    private fun isPdActionButtonClick(actionButton: ActionButton?): Boolean {
         actionButton?.pdActions?.let {
             return it.type == CMConstant.PreDefineActionType.ATC ||
                 it.type == CMConstant.PreDefineActionType.OCC
@@ -468,11 +468,14 @@ class CMNotificationHandler : CoroutineScope {
     }
 
     private fun includeEventSend(actionButton: ActionButton?): Boolean {
-        if (isShareButtonClick(actionButton)) {
+        if (isPdActionButtonClick(actionButton)) {
             return true
         } else {
+            actionButton?.pdActions?.let {
+                return false
+            }
             actionButton?.type?.let {
-                return it != CMConstant.PayloadKeys.ADD_TO_CART
+                return true
             }
             return false
         }
