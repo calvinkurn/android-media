@@ -140,40 +140,20 @@ class StoriesDetailFragment @Inject constructor(
 
         flStoriesPrev.onTouchEventStories { event ->
             when (event) {
-                TouchEventStories.PAUSE -> {
-                    icClose.hide()
-                    rvStoriesCategory.hide()
-                    cvStoriesDetailTimer.hide()
-                    viewModelAction(PauseStories)
-                }
+                TouchEventStories.PAUSE -> pauseStories()
 
-                TouchEventStories.RESUME -> {
-                    icClose.show()
-                    rvStoriesCategory.show()
-                    cvStoriesDetailTimer.show()
-                    viewModelAction(ResumeStories)
-                }
+                TouchEventStories.RESUME -> resumeStories()
 
-                TouchEventStories.NEXT_PREV -> {
-                    viewModelAction(PreviousDetail)
-                }
+                TouchEventStories.NEXT_PREV -> viewModelAction(PreviousDetail)
             }
         }
         flStoriesNext.onTouchEventStories { event ->
             when (event) {
-                TouchEventStories.PAUSE -> {
-                    viewModelAction(PauseStories)
-                    cvStoriesDetailTimer.hide()
-                }
+                TouchEventStories.PAUSE -> pauseStories()
 
-                TouchEventStories.RESUME -> {
-                    viewModelAction(ResumeStories)
-                    cvStoriesDetailTimer.show()
-                }
+                TouchEventStories.RESUME -> resumeStories()
 
-                TouchEventStories.NEXT_PREV -> {
-                    viewModelAction(NextDetail)
-                }
+                TouchEventStories.NEXT_PREV -> viewModelAction(NextDetail)
             }
         }
         flStoriesProduct.setOnClickListener {
@@ -183,6 +163,20 @@ class StoriesDetailFragment @Inject constructor(
             // pause -> viewModelAction(StoriesUiAction.PauseStories)
             // resume -> viewModelAction(StoriesUiAction.ResumeStories)
         }
+    }
+
+    private fun pauseStories() = with(binding) {
+        icClose.hide()
+        rvStoriesCategory.hide()
+        cvStoriesDetailTimer.hide()
+        viewModelAction(PauseStories)
+    }
+
+    private fun resumeStories() = with(binding) {
+        icClose.show()
+        rvStoriesCategory.show()
+        cvStoriesDetailTimer.show()
+        viewModelAction(ResumeStories)
     }
 
     private fun viewModelAction(event: StoriesUiAction) {
