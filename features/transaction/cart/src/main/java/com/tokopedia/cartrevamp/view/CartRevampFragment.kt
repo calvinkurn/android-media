@@ -10,7 +10,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -112,6 +111,8 @@ import com.tokopedia.cartrevamp.view.uimodel.UpdateCartCheckoutState
 import com.tokopedia.cartrevamp.view.uimodel.UpdateCartPromoState
 import com.tokopedia.cartrevamp.view.viewholder.CartRecommendationViewHolder
 import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.dialog.DialogUnify
@@ -262,6 +263,8 @@ class CartRevampFragment :
     private var hasCalledOnSaveInstanceState = false
     private var isCheckUncheckDirectAction = true
     private var plusCoachMark: CoachMark2? = null
+    private var mainFlowCoachMark: CoachMark2? = null
+    private var bulkActionCoachMark: Pair<CoachMark2?, ArrayList<CoachMark2Item>> = Pair(null, arrayListOf())
 
     private lateinit var editBundleActivityResult: ActivityResultLauncher<Intent>
     private lateinit var shipmentActivityResult: ActivityResultLauncher<Intent>
@@ -278,6 +281,8 @@ class CartRevampFragment :
         private const val SPAN_SIZE_ZERO = 0
         private const val SPAN_SIZE_ONE = 1
         private const val SPAN_SIZE_TWO = 2
+
+        private const val CART_BULK_ACTION_COACH_MARK = "cart_bulk_action_coach_mark"
 
         const val CART_TRACE = "mp_cart"
         const val CART_ALL_TRACE = "mp_cart_all"
@@ -369,6 +374,38 @@ class CartRevampFragment :
             cartAdapter.setCoachMark(it)
         }
 
+        mainFlowCoachMark = CoachMark2(requireContext())
+        val coachMarkItems = arrayListOf<CoachMark2Item>()
+        binding?.checkboxGlobal?.let {
+            coachMarkItems.add(
+                CoachMark2Item(
+                    it,
+                    "",
+                    "Kalau untuk pilih semua produk di Keranjang, bisa centang di sini. Biar nggak capek klik.",
+                    CoachMark2.POSITION_TOP
+                )
+            )
+        }
+        mainFlowCoachMark?.let {
+            cartAdapter.setMainCoachMark(it, coachMarkItems)
+        }
+
+        bulkActionCoachMark = Pair(CoachMark2(requireContext()), arrayListOf())
+        val bulkActionCoachMarkItems = arrayListOf<CoachMark2Item>()
+        binding?.navToolbar?.let {
+            bulkActionCoachMarkItems.add(
+                CoachMark2Item(
+                    it,
+                    "",
+                    "Kalau mau hapus produk yang kamu pilih, bisa langsung klik di sini, ya.",
+                    CoachMark2.POSITION_BOTTOM
+                )
+            )
+        }
+        bulkActionCoachMark.let {
+            cartAdapter.setBulkActionCoachMark(bulkActionCoachMark)
+        }
+
         // Check if currently not refreshing, not ATC external flow and not on error state
         if (refreshHandler?.isRefreshing == false && !isAtcExternalFlow() && binding?.layoutGlobalError?.visibility != View.VISIBLE) {
             if (!::cartAdapter.isInitialized || (::cartAdapter.isInitialized && cartAdapter.itemCount == 0)) {
@@ -379,6 +416,16 @@ class CartRevampFragment :
                 )
             }
         }
+    }
+
+    override fun onPause() {
+        plusCoachMark?.dismissCoachMark()
+        plusCoachMark = null
+
+        mainFlowCoachMark?.dismissCoachMark()
+        mainFlowCoachMark = null
+
+        super.onPause()
     }
 
     override fun onCreateView(
@@ -1885,6 +1932,10 @@ class CartRevampFragment :
 
     private fun handleCheckboxGlobalChangeEvent() {
         val isChecked = binding?.checkboxGlobal?.isChecked ?: return
+        if (isChecked) {
+            bulkActionCoachMark.first?.showCoachMark(bulkActionCoachMark.second)
+            CoachMarkPreference.setShown(requireContext(), CART_BULK_ACTION_COACH_MARK, true)
+        }
         if (isCheckUncheckDirectAction) {
             viewModel.setAllAvailableItemCheck(isChecked)
             viewModel.updateSelectedAmount()
@@ -2781,7 +2832,6 @@ class CartRevampFragment :
             viewModel.removeProductByCartId(deletedCartIds, needRefresh, isFromGlobalCheckbox)
         removeLocalCartItem(updateListResult, forceExpandCollapsedUnavailableItems)
 
-        Log.d("<RESULT>", "onDeleteCartDataSuccess: ")
         hideProgressLoading()
 
         setTopLayoutVisibility()
