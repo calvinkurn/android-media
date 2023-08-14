@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_ticker_bg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/bg_cart_bmgm"
+            android:layout_alignParentStart="true"/>
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/ic_bmgm_ticker"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="8dp"
+            app:srcCompat="@drawable/ic_bmgm_ticker"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"/>
+
+        <View
+            android:id="@+id/v_bmgm_product_separator"
+            android:layout_width="2dp"
+            android:layout_height="0dp"
+            android:background="@color/Unify_NN100"
+            android:layout_alignStart="@id/ic_bmgm_ticker"
+            android:layout_alignEnd="@id/ic_bmgm_ticker"
+            android:layout_below="@id/ic_bmgm_ticker"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@id/ic_bmgm_ticker"
+            android:text="@string/bmgm_ticker_text"
+            android:layout_centerVertical="true"/>
+
+        <com.tokopedia.iconunify.IconUnify
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentEnd="true"
+            app:icon_name="CHEVRON_RIGHT"
+            android:layout_centerVertical="true" />
+
+    </RelativeLayout>
