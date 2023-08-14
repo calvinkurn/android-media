@@ -1,48 +1,76 @@
 package com.tokopedia.promousage.view.viewmodel
 
+import com.tokopedia.promousage.data.response.PromoRecommendation
 import com.tokopedia.promousage.domain.entity.PromoCta
 import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 
-data class LoadingUiAction(
-    val isLoading: Boolean = false
-)
+sealed class GetPromoRecommendationUiAction {
 
-data class PromoRecommendationUiAction(
-    val recommendationItem: PromoRecommendationItem? = null
-)
+    data class NotEmpty(
+        val promoRecommendation: PromoRecommendationItem
+    ) : GetPromoRecommendationUiAction()
 
-data class PromoRecommendationPerformClickAction(
-    val itemIndex: List<Int> = emptyList()
-)
+    object Empty : GetPromoRecommendationUiAction()
+}
 
-data class PromoListUiAction(
-    val action: Int = 0,
+sealed class UsePromoRecommendationUiAction {
+
+    data class Success(
+        val promoRecommendation: PromoRecommendationItem
+    ) : UsePromoRecommendationUiAction()
+
+    object Failed : UsePromoRecommendationUiAction()
+}
+
+sealed class ClearPromoUiAction {
+
+    data class Success(
+        val clearPromo: ClearPromoUiModel,
+        val lastValidateUseRequest: ValidateUsePromoRequest
+    ) : ClearPromoUiAction()
+
+    data class Failed(
+        val throwable: Throwable
+    ) : ClearPromoUiAction()
+}
+
+sealed class GetPromoListUiAction(
     val exception: Throwable? = null
 ) {
-    companion object {
-        const val ACTION_SHOW_ERROR_TOAST = 1
-    }
+
+    object Success : GetPromoListUiAction()
+
+    data class Failed(
+        val throwable: Throwable
+    ) : GetPromoListUiAction()
 }
 
-data class PromoAttemptUiAction(
-    val state: State = State.NONE,
-    val errorMessage: String = ""
-) {
-    enum class State {
-        NONE, SHOW_ERROR_TOAST
-    }
+sealed class AttemptPromoUiAction {
+
+    object Success : AttemptPromoUiAction()
+
+    data class Failed(
+        val errorMessage: String
+    ) : AttemptPromoUiAction()
 }
 
-data class ApplyPromoUiAction(
-    val state: State = State.NONE,
-    val throwable: Throwable? = null
-) {
-    enum class State {
-        NONE, SHOW_ERROR_TOAST, SHOW_ERROR_TOAST_AND_RELOAD
-    }
+sealed class ApplyPromoUiAction {
+
+    data class Success(
+        val validateUse: ValidateUsePromoRevampUiModel
+    ) : ApplyPromoUiAction()
+
+    data class Failed(
+        val throwable: Throwable,
+        val shouldReload: Boolean = false
+    ) : ApplyPromoUiAction()
 }
 
-data class PromoCtaUiAction(
-    val promoCta: PromoCta? = null
-)
+sealed class PromoCtaUiAction {
+
+    data class RegisterGoPayLaterCicil(val cta: PromoCta) : PromoCtaUiAction()
+}
 

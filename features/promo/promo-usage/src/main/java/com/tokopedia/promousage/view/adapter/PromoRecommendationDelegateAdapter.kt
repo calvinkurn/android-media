@@ -16,7 +16,7 @@ import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 import com.tokopedia.promousage.util.composite.DelegateAdapter
 
 class PromoRecommendationDelegateAdapter(
-    private val onButtonUseRecommendedVoucherClick: (PromoRecommendationItem) -> Unit
+    private val onButtonUseRecommendedVoucherClick: () -> Unit
 ) : DelegateAdapter<PromoRecommendationItem, PromoRecommendationDelegateAdapter.ViewHolder>(
     PromoRecommendationItem::class.java
 ) {
@@ -40,7 +40,7 @@ class PromoRecommendationDelegateAdapter(
             val recommendedPromoCount = item.codes.size
             binding.tpgRecommendationTitle.text = item.title
             binding.btnRecommendationUseVoucher.setOnClickListener {
-                onButtonUseRecommendedVoucherClick(item)
+                onButtonUseRecommendedVoucherClick()
                 binding.btnRecommendationUseVoucher.invisible()
                 binding.ivCheckmark.visible()
                 binding.ivCheckmarkOutline.visible()

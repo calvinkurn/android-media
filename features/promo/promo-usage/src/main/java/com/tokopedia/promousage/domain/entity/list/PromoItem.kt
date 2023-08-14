@@ -40,7 +40,6 @@ data class PromoItem(
     val currentClashingSecondaryPromoCodes: List<String> = emptyList(),
     val isRecommended: Boolean = false,
     val isLastRecommended: Boolean = false,
-    val shouldShowRecommendedAnimation: Boolean = false,
     val isPreSelected: Boolean = false,
     val isSelected: Boolean = false,
     val isAttempted: Boolean = false,

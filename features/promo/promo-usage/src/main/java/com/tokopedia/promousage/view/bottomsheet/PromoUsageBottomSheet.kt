@@ -5,15 +5,12 @@ import android.graphics.Color
 import android.graphics.Outline
 import android.os.Bundle
 import android.os.Handler
-import android.os.SystemClock
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewOutlineProvider
 import android.widget.RelativeLayout
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.constraintlayout.widget.ConstraintSet.Motion
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -63,13 +60,18 @@ import com.tokopedia.promousage.view.adapter.PromoAccordionViewAllDelegateAdapte
 import com.tokopedia.promousage.view.adapter.PromoAttemptCodeDelegateAdapter
 import com.tokopedia.promousage.view.adapter.PromoRecommendationDelegateAdapter
 import com.tokopedia.promousage.view.adapter.PromoTncDelegateAdapter
-import com.tokopedia.promousage.view.custom.VoucherCompoundView
 import com.tokopedia.promousage.view.viewmodel.ApplyPromoUiAction
-import com.tokopedia.promousage.view.viewmodel.PromoAttemptUiAction
+import com.tokopedia.promousage.view.viewmodel.AttemptPromoUiAction
+import com.tokopedia.promousage.view.viewmodel.ClearPromoUiAction
+import com.tokopedia.promousage.view.viewmodel.GetPromoRecommendationUiAction
+import com.tokopedia.promousage.view.viewmodel.PromoCtaUiAction
 import com.tokopedia.promousage.view.viewmodel.PromoPageUiState
 import com.tokopedia.promousage.view.viewmodel.PromoUsageViewModel
+import com.tokopedia.promousage.view.viewmodel.UsePromoRecommendationUiAction
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
@@ -89,6 +91,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         private const val BUNDLE_KEY_VALIDATE_USE = "validate_use"
         private const val BUNDLE_KEY_BO_PROMO_CODES = "bo_promo_codes"
         private const val BUNDLE_KEY_PROMO_CODE = "promo_code"
+        private const val BUNDLE_KEY_IS_FLOW_MVC_LOCK_TO_COURIER = "is_flow_mvc_lock_to_courier"
 
         private const val BOTTOM_SHEET_MARGIN_TOP_IN_DP = 64
 
@@ -100,6 +103,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             boPromoCodes: List<String>,
             totalAmount: Double,
             chosenAddress: ChosenAddress? = null,
+            isFlowMvcLockToCourrier: Boolean = false,
             listener: Listener? = null
         ): PromoUsageBottomSheet {
             return PromoUsageBottomSheet().apply {
@@ -110,11 +114,15 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     putStringArrayList(BUNDLE_KEY_BO_PROMO_CODES, ArrayList(boPromoCodes))
                     putParcelable(BUNDLE_KEY_CHOSEN_ADDRESS, chosenAddress)
                     putDouble(BUNDLE_KEY_TOTAL_AMOUNT, totalAmount)
+                    putBoolean(BUNDLE_KEY_IS_FLOW_MVC_LOCK_TO_COURIER, isFlowMvcLockToCourrier)
                 }
                 this.listener = listener
             }
         }
     }
+
+    private val isFlowMvcLockToCourrier: Boolean
+        get() = arguments?.getBoolean(BUNDLE_KEY_IS_FLOW_MVC_LOCK_TO_COURIER) ?: false
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -129,6 +137,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     private val binding: PromoUsageBottomsheetBinding
         get() = _binding!!
     var listener: Listener? = null
+
     private val recyclerViewAdapter by lazy {
         CompositeAdapter.Builder()
             .add(PromoRecommendationDelegateAdapter(onClickApplyPromoRecommendation))
@@ -139,8 +148,6 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             .add(PromoAttemptCodeDelegateAdapter(onAttemptPromoCode))
             .build()
     }
-    private var loaderDialog: LoaderDialog? = null
-
     private val registerGopayLaterCicilLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             val promoCode = result.data?.getStringExtra(BUNDLE_KEY_PROMO_CODE)
@@ -156,6 +163,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 )
             }
         }
+    private var loaderDialog: LoaderDialog? = null
 
     private fun setupDependencyInjection() {
         activity?.let {
@@ -217,28 +225,6 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             promoRequest = promoRequest,
             chosenAddress = chosenAddress
         )
-
-
-        Handler().postDelayed({
-            performTouchView()
-        }, 5_000L)
-    }
-
-    private fun performTouchView() {
-        val view = binding.rvPromo.findViewHolderForAdapterPosition(2)
-            ?.itemView
-            ?.findViewById<VoucherCompoundView>(R.id.vcvPromo)
-
-        if (view != null) {
-            var originalDownTime: Long = SystemClock.uptimeMillis()
-            var eventTime: Long = SystemClock.uptimeMillis() + 2000
-            view.dispatchTouchEvent(
-                MotionEvent.obtain(originalDownTime, eventTime, MotionEvent.ACTION_DOWN, 0f, 0f, 0))
-
-            eventTime = SystemClock.uptimeMillis() + 2000
-            view.dispatchTouchEvent(
-                MotionEvent.obtain(originalDownTime, eventTime, MotionEvent.ACTION_UP, 0f, 0f, 0))
-        }
     }
 
     private fun reloadUi() {
@@ -267,11 +253,6 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         binding.btnBottomSheetHeaderClose.setOnClickListener {
             dismiss()
         }
-//        binding.clBottomSheetContent.background =
-//            BottomSheetUtil.generateBackgroundDrawableWithColor(
-//                binding.root.context,
-//                com.tokopedia.unifyprinciples.R.color.Unify_Background
-//            )
         binding.rvPromo.itemAnimator = null
         binding.rvPromo.layoutManager = LinearLayoutManager(context)
         binding.rvPromo.adapter = recyclerViewAdapter
@@ -441,36 +422,57 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     private fun setupObservers() {
         observePromoPageState()
         observePromoRecommendationUiAction()
+        observeUsePromoRecommendationUiAction()
         observePromoAttemptUiAction()
         observePromoCtaUiAction()
+        observeClearPromoUiAction()
         observeApplyPromoUiAction()
     }
 
     private fun observePromoRecommendationUiAction() {
-        viewModel.promoRecommendationUiAction.observe(viewLifecycleOwner) { uiAction ->
-            if (uiAction.recommendationItem != null) {
-                prefetchPromoRecommendationAnimation(uiAction.recommendationItem)
-                renderPromoRecommendationBackground(uiAction.recommendationItem)
-                addHeaderScrollListener()
-                renderTransparentHeader()
-            } else {
-                clearHeaderScrollListener()
-                renderWhiteHeader()
+        viewModel.getPromoRecommendationUiAction.observe(viewLifecycleOwner) { uiAction ->
+            when (uiAction) {
+                is GetPromoRecommendationUiAction.NotEmpty -> {
+                    prefetchPromoRecommendationAnimation(uiAction.promoRecommendation)
+                    renderPromoRecommendationBackground(uiAction.promoRecommendation)
+                    addHeaderScrollListener()
+                    renderTransparentHeader()
+                }
+
+                is GetPromoRecommendationUiAction.Empty -> {
+                    clearHeaderScrollListener()
+                    renderWhiteHeader()
+                }
+            }
+        }
+    }
+
+    private fun observeUsePromoRecommendationUiAction() {
+        viewModel.usePromoRecommendationUiAction.observe(viewLifecycleOwner) { uiAction ->
+            when (uiAction) {
+                is UsePromoRecommendationUiAction.Success -> {
+                    showPromoRecommendationAnimation(uiAction.promoRecommendation)
+                }
+
+                is UsePromoRecommendationUiAction.Failed -> {
+                    // no-op
+                }
             }
         }
     }
 
     private fun observePromoAttemptUiAction() {
-        viewModel.promoAttemptUiAction.observe(viewLifecycleOwner) { uiAction ->
-            when (uiAction.state) {
-                PromoAttemptUiAction.State.SHOW_ERROR_TOAST -> {
+        viewModel.attemptPromoUiAction.observe(viewLifecycleOwner) { uiAction ->
+            when (uiAction) {
+                is AttemptPromoUiAction.Success -> {
+                    renderLoadingDialog(false)
+                }
+
+                is AttemptPromoUiAction.Failed -> {
+                    renderLoadingDialog(false)
                     if (uiAction.errorMessage.isNotBlank()) {
                         showToastMessage(uiAction.errorMessage)
                     }
-                }
-
-                else -> {
-
                 }
             }
         }
@@ -521,7 +523,13 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     val cornerRadius = 16.toPx()
                     val width = view?.width ?: 0
                     val height = view?.height ?: 0
-                    outline?.setRoundRect(0, 0, width, height.plus(cornerRadius), cornerRadius.toFloat())
+                    outline?.setRoundRect(
+                        0,
+                        0,
+                        width,
+                        height.plus(cornerRadius),
+                        cornerRadius.toFloat()
+                    )
                 }
             }
             clBottomSheetContent.clipToOutline = true
@@ -572,7 +580,13 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                         val cornerRadius = 16.toPx()
                         val width = view?.width ?: 0
                         val height = view?.height ?: 0
-                        outline?.setRoundRect(0, 0, width, height.plus(cornerRadius), cornerRadius.toFloat())
+                        outline?.setRoundRect(
+                            0,
+                            0,
+                            width,
+                            height.plus(cornerRadius),
+                            cornerRadius.toFloat()
+                        )
                     }
                 }
                 rlBottomSheetWrapper.clipToOutline = true
@@ -594,7 +608,13 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     val cornerRadius = 16.toPx()
                     val width = view?.width ?: 0
                     val height = view?.height ?: 0
-                    outline?.setRoundRect(0, 0, width, height.plus(cornerRadius), cornerRadius.toFloat())
+                    outline?.setRoundRect(
+                        0,
+                        0,
+                        width,
+                        height.plus(cornerRadius),
+                        cornerRadius.toFloat()
+                    )
                 }
             }
             rlBottomSheetWrapper.clipToOutline = true
@@ -628,10 +648,32 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
     private fun observePromoCtaUiAction() {
         viewModel.promoCtaUiAction.observe(viewLifecycleOwner) { uiAction ->
-            if (uiAction.promoCta != null) {
-                val ctaAppLink = uiAction.promoCta.appLink
-                if (ctaAppLink.isNotBlank()) {
-                    goToRegisterGoPayLaterCicilRegistration(ctaAppLink)
+            when (uiAction) {
+                is PromoCtaUiAction.RegisterGoPayLaterCicil -> {
+                    if (uiAction.cta.appLink.isNotBlank()) {
+                        goToRegisterGoPayLaterCicilRegistration(uiAction.cta.appLink)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun observeClearPromoUiAction() {
+        viewModel.clearPromoUiAction.observe(viewLifecycleOwner) { uiAction ->
+            when (uiAction) {
+                is ClearPromoUiAction.Success -> {
+                    renderLoadingDialog(false)
+                    listener?.onClearPromoSuccess(
+                        clearPromo = uiAction.clearPromo,
+                        lastValidateUsePromoRequest = uiAction.lastValidateUseRequest,
+                        isFlowMvcLockToCourrier = isFlowMvcLockToCourrier
+                    )
+                }
+
+                is ClearPromoUiAction.Failed -> {
+                    renderLoadingDialog(false)
+                    showToastMessage(uiAction.throwable)
+                    listener?.onClearPromoFailed(uiAction.throwable)
                 }
             }
         }
@@ -639,23 +681,19 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
     private fun observeApplyPromoUiAction() {
         viewModel.applyPromoUiAction.observe(viewLifecycleOwner) { uiAction ->
-            when (uiAction.state) {
-
-                ApplyPromoUiAction.State.SHOW_ERROR_TOAST_AND_RELOAD -> {
-                    if (uiAction.throwable != null) {
-                        showToastMessage(uiAction.throwable)
-                    }
-                    reloadUi()
+            when (uiAction) {
+                is ApplyPromoUiAction.Success -> {
+                    renderLoadingDialog(false)
+                    listener?.onApplyPromoSuccess(uiAction.validateUse)
                 }
 
-                ApplyPromoUiAction.State.SHOW_ERROR_TOAST -> {
-                    if (uiAction.throwable != null) {
-                        showToastMessage(uiAction.throwable)
+                is ApplyPromoUiAction.Failed -> {
+                    renderLoadingDialog(false)
+                    if (uiAction.shouldReload) {
+                        reloadUi()
                     }
-                }
-
-                else -> {
-
+                    showToastMessage(uiAction.throwable)
+                    listener?.onApplyPromoFailed(uiAction.throwable)
                 }
             }
         }
@@ -667,14 +705,9 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
-    private val onClickApplyPromoRecommendation: (PromoRecommendationItem) -> Unit =
-        { recommendationItem: PromoRecommendationItem ->
-            viewModel.onApplyPromoRecommendation(
-                onSuccess = {
-                    showPromoRecommendationAnimation(recommendationItem)
-                }
-            )
-        }
+    private val onClickApplyPromoRecommendation: () -> Unit = {
+        viewModel.onUsePromoRecommendation()
+    }
 
     private val onClickPromoItem = { clickedItem: PromoItem ->
         viewModel.onClickPromo(clickedItem)
@@ -702,8 +735,9 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun showPromoRecommendationAnimation(item: PromoRecommendationItem) {
-        LottieCompositionFactory.fromUrl(context, item.animationUrl, item.animationUrl).addListener { result ->
-            Handler().postDelayed({
+        LottieCompositionFactory.fromUrl(context, item.animationUrl, item.animationUrl)
+            .addListener { result ->
+                binding.lottieAnimationView.visible()
                 binding.lottieAnimationView.setComposition(result)
                 binding.lottieAnimationView.addAnimatorListener(object : Animator.AnimatorListener {
                     override fun onAnimationStart(animator: Animator) {
@@ -723,8 +757,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     }
                 })
                 binding.lottieAnimationView.playAnimation()
-            }, 300L)
-        }
+            }
     }
 
     private val onClickPromoTnc: (PromoTncItem) -> Unit = { item ->
@@ -771,5 +804,16 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
     interface Listener {
 
+        fun onApplyPromoSuccess(validateUse: ValidateUsePromoRevampUiModel)
+
+        fun onApplyPromoFailed(throwable: Throwable)
+
+        fun onClearPromoSuccess(
+            clearPromo: ClearPromoUiModel,
+            lastValidateUsePromoRequest: ValidateUsePromoRequest,
+            isFlowMvcLockToCourrier: Boolean,
+        )
+
+        fun onClearPromoFailed(throwable: Throwable)
     }
 }

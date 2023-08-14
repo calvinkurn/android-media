@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
@@ -12,28 +13,31 @@ import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.promousage.data.request.GetCouponListRecommendationParam
 import com.tokopedia.promousage.data.request.ValidateUsePromoUsageParam
 import com.tokopedia.promousage.data.response.GetCouponListRecommendationResponse
-import com.tokopedia.promousage.data.response.TickerInfo
 import com.tokopedia.promousage.domain.entity.BoAdditionalData
 import com.tokopedia.promousage.domain.entity.PromoCta
 import com.tokopedia.promousage.domain.entity.PromoItemState
 import com.tokopedia.promousage.domain.entity.PromoPageEntryPoint
-import com.tokopedia.promousage.domain.entity.PromoPageTickerInfo
 import com.tokopedia.promousage.domain.entity.PromoSavingInfo
 import com.tokopedia.promousage.domain.entity.list.PromoAccordionHeaderItem
 import com.tokopedia.promousage.domain.entity.list.PromoAccordionViewAllItem
 import com.tokopedia.promousage.domain.entity.list.PromoItem
 import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 import com.tokopedia.promousage.domain.entity.list.PromoTncItem
+import com.tokopedia.promousage.domain.usecase.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promousage.domain.usecase.GetCouponListRecommendationUseCase
 import com.tokopedia.promousage.domain.usecase.ValidateUsePromoUsageUseCase
 import com.tokopedia.promousage.util.analytics.PromoUsageAnalytics
 import com.tokopedia.promousage.util.composite.DelegateAdapterItem
+import com.tokopedia.promousage.util.logger.PromoErrorException
 import com.tokopedia.promousage.util.logger.PromoUsageLogger
 import com.tokopedia.promousage.util.test.PromoUsageIdlingResource
 import com.tokopedia.promousage.view.mapper.PromoUsageClearCacheAutoApplyStackMapper
 import com.tokopedia.promousage.view.mapper.PromoUsageGetCouponListRecommendationMapper
 import com.tokopedia.promousage.view.mapper.PromoUsageValidateUseMapper
 import com.tokopedia.purchase_platform.common.constant.CartConstant
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrder
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrderData
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
@@ -45,6 +49,7 @@ internal class PromoUsageViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val chosenAddressRequestHelper: ChosenAddressRequestHelper,
     private val getCouponListRecommendationUseCase: GetCouponListRecommendationUseCase,
+    private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
     private val validateUsePromoUsageUseCase: ValidateUsePromoUsageUseCase,
     private val getCouponListRecommendationMapper: PromoUsageGetCouponListRecommendationMapper,
     private val validateUseMapper: PromoUsageValidateUseMapper,
@@ -56,21 +61,25 @@ internal class PromoUsageViewModel @Inject constructor(
     val promoPageUiState: LiveData<PromoPageUiState>
         get() = _promoPageUiState
 
-    private val _promoRecommendationUiAction = MutableLiveData<PromoRecommendationUiAction>()
-    val promoRecommendationUiAction: LiveData<PromoRecommendationUiAction>
-        get() = _promoRecommendationUiAction
+    private val _getPromoRecommendationUiAction = MutableLiveData<GetPromoRecommendationUiAction>()
+    val getPromoRecommendationUiAction: LiveData<GetPromoRecommendationUiAction>
+        get() = _getPromoRecommendationUiAction
 
-    private val _promoRecommendationPerformClickAction = MutableLiveData<PromoRecommendationPerformClickAction>()
-    val promoRecommendationPerformClickAction: LiveData<PromoRecommendationPerformClickAction>
-        get() = _promoRecommendationPerformClickAction
+    private val _usePromoRecommendationUiAction = MutableLiveData<UsePromoRecommendationUiAction>()
+    val usePromoRecommendationUiAction: LiveData<UsePromoRecommendationUiAction>
+        get() = _usePromoRecommendationUiAction
 
-    private val _promoAttemptUiAction = MutableLiveData<PromoAttemptUiAction>()
-    val promoAttemptUiAction: LiveData<PromoAttemptUiAction>
-        get() = _promoAttemptUiAction
+    private val _attemptPromoUiAction = MutableLiveData<AttemptPromoUiAction>()
+    val attemptPromoUiAction: LiveData<AttemptPromoUiAction>
+        get() = _attemptPromoUiAction
 
     private val _promoCtaUiAction = MutableLiveData<PromoCtaUiAction>()
     val promoCtaUiAction: LiveData<PromoCtaUiAction>
         get() = _promoCtaUiAction
+
+    private val _clearPromoUiAction = MutableLiveData<ClearPromoUiAction>()
+    val clearPromoUiAction: LiveData<ClearPromoUiAction>
+        get() = _clearPromoUiAction
 
     private val _applyPromoUiAction = MutableLiveData<ApplyPromoUiAction>()
     val applyPromoUiAction: LiveData<ApplyPromoUiAction>
@@ -116,11 +125,11 @@ internal class PromoUsageViewModel @Inject constructor(
                 PromoUsageIdlingResource.decrement()
 //                val response = getCouponListRecommendationUseCase(param)
 //                if (response.couponListRecommendation.status == CouponListRecommendation.STATUS_OK) {
-                    // TODO: Remove artificial delay
-                    delay(1_000)
-                    handleLoadPromoListSuccess(GetCouponListRecommendationResponse())
+                // TODO: Remove artificial delay
+                delay(1_000)
+                handleLoadPromoListSuccess(GetCouponListRecommendationResponse())
 //                    handleLoadPromoListSuccess(response)
-                    onSuccess?.invoke()
+                onSuccess?.invoke()
 //                } else {
 //                    PromoUsageLogger.logOnErrorLoadPromoUsagePage(
 //                        PromoErrorException(message = "response status error")
@@ -160,17 +169,17 @@ internal class PromoUsageViewModel @Inject constructor(
         val attemptedPromoCodeError = getCouponListRecommendationMapper
             .mapCouponListRecommendationResponseToAttemptedPromoCodeError(response)
 
-        _promoRecommendationUiAction.postValue(
-            PromoRecommendationUiAction(
-                recommendationItem = items.getRecommendationItem()
+        val promoRecommendation = items.getRecommendationItem()
+        if (promoRecommendation != null) {
+            _getPromoRecommendationUiAction.postValue(
+                GetPromoRecommendationUiAction.NotEmpty(promoRecommendation)
             )
-        )
+        } else {
+            _getPromoRecommendationUiAction.postValue(GetPromoRecommendationUiAction.Empty)
+        }
         if (attemptedPromoCodeError.code.isNotBlank() && attemptedPromoCodeError.message.isNotBlank()) {
-            _promoAttemptUiAction.postValue(
-                PromoAttemptUiAction(
-                    state = PromoAttemptUiAction.State.SHOW_ERROR_TOAST,
-                    errorMessage = attemptedPromoCodeError.message
-                )
+            _attemptPromoUiAction.postValue(
+                AttemptPromoUiAction.Failed(attemptedPromoCodeError.message)
             )
         }
         _promoPageUiState.postValue(
@@ -356,7 +365,7 @@ internal class PromoUsageViewModel @Inject constructor(
         val isRegisterGoPayLaterCicilPromo =
             clickedItem.cta.type == PromoCta.TYPE_REGISTER_GOPAY_LATER_CICIL
         if (isGoPayLaterCicilPromo && isRegisterGoPayLaterCicilPromo) {
-            _promoCtaUiAction.postValue(PromoCtaUiAction(promoCta = clickedItem.cta))
+            _promoCtaUiAction.postValue(PromoCtaUiAction.RegisterGoPayLaterCicil(clickedItem.cta))
         } else {
             val pageState = _promoPageUiState.value
             if (pageState is PromoPageUiState.Success) {
@@ -488,16 +497,20 @@ internal class PromoUsageViewModel @Inject constructor(
         }
     }
 
-    private fun handleValidateUseSuccess(validateUse: ValidateUsePromoRevampUiModel) {
-
+    private fun handleValidateUseSuccess(
+        validateUse: ValidateUsePromoRevampUiModel
+    ) {
+        _applyPromoUiAction.postValue(
+            ApplyPromoUiAction.Success(validateUse)
+        )
     }
 
     private fun handleValidateUseFailed(throwable: Throwable) {
         PromoUsageLogger.logOnErrorApplyPromo(throwable)
         _applyPromoUiAction.postValue(
-            ApplyPromoUiAction(
-                state = ApplyPromoUiAction.State.SHOW_ERROR_TOAST,
-                throwable = throwable
+            ApplyPromoUiAction.Failed(
+                throwable = throwable,
+                shouldReload = true
             )
         )
     }
@@ -664,38 +677,233 @@ internal class PromoUsageViewModel @Inject constructor(
         clearPromoRequest: ClearPromoRequest = ClearPromoRequest()
     ) {
         _promoPageUiState.ifSuccess { pageState ->
+            val tempToBeClearedPromoCodes = arrayListOf<String>()
 
+            val tempGlobalPromoCodes = arrayListOf<String>()
+            validateUsePromoRequest.codes.forEach { globalPromoCode ->
+                if (!boPromoCodes.contains(globalPromoCode) && !tempGlobalPromoCodes.contains(
+                        globalPromoCode
+                    )
+                ) {
+                    tempGlobalPromoCodes.add(globalPromoCode)
+                    tempToBeClearedPromoCodes.add(globalPromoCode)
+                }
+            }
+
+            var tempClearPromoOrders = mutableListOf<ClearPromoOrder>()
+            validateUsePromoRequest.orders.forEach { order ->
+                var newClearPromoOrder = tempClearPromoOrders
+                    .find { it.uniqueId == order.uniqueId }
+                    .ifNull {
+                        val newClearPromoOrder = ClearPromoOrder(
+                            uniqueId = order.uniqueId,
+                            boType = order.boType,
+                            shopId = order.shopId,
+                            isPo = order.isPo,
+                            poDuration = order.poDuration.toString(),
+                            warehouseId = order.warehouseId,
+                            cartStringGroup = order.cartStringGroup
+                        )
+                        tempClearPromoOrders.add(newClearPromoOrder)
+                        newClearPromoOrder
+                    }
+                order.codes.forEach { orderCode ->
+                    if (!boPromoCodes.contains(orderCode) && !newClearPromoOrder.codes.contains(
+                            orderCode
+                        )
+                    ) {
+                        val updatedCodes = newClearPromoOrder.codes.also {
+                            it.add(orderCode)
+                        }
+                        newClearPromoOrder = newClearPromoOrder.copy(
+                            codes = updatedCodes
+                        )
+                    }
+                }
+            }
+
+            val currentItems = pageState.items
+            currentItems.forEach { item ->
+                if (item is PromoItem && item.isBebasOngkir) {
+                    // Get orders in ClearPromo param that eligible for bo promo
+                    val boPromoUniqueIds = item.boAdditionalData.map { it.uniqueId }
+                    tempClearPromoOrders = tempClearPromoOrders
+                        .map { clearOrder ->
+                            if (boPromoUniqueIds.contains(clearOrder.uniqueId)) {
+                                // For each eligible order, get bo additional data
+                                val boData = item.boAdditionalData
+                                    .find { it.uniqueId == clearOrder.uniqueId }
+                                if (boData != null) {
+                                    // If code is not in clear orders code & is applied in previous page, then add bo code
+                                    if (clearOrder.codes.contains(boData.code)
+                                        && boPromoCodes.contains(boData.code)
+                                    ) {
+                                        tempToBeClearedPromoCodes.add(boData.code)
+                                        return@map clearOrder.copy(
+                                            codes = clearOrder.codes.also {
+                                                it.add(boData.code)
+                                            }
+                                        )
+                                    }
+                                }
+                            }
+                            return@map clearOrder
+                        }
+                        .toMutableList()
+                }
+            }
+
+            if (tempToBeClearedPromoCodes.isEmpty()) {
+                // If there are no promo to be removed, try removing pre-selected codes
+                currentItems.forEach { item ->
+                    if (item is PromoItem && item.isPreSelected) {
+                        if (item.isBebasOngkir) {
+                            item.boAdditionalData.forEach { boData ->
+                                tempClearPromoOrders = tempClearPromoOrders
+                                    .map { clearOrder ->
+                                        if (clearOrder.uniqueId == boData.uniqueId
+                                            && !clearOrder.codes.contains(boData.code)
+                                        ) {
+                                            tempToBeClearedPromoCodes.add(boData.code)
+                                            return@map clearOrder.copy(
+                                                codes = clearOrder.codes.also { it.add(boData.code) }
+                                            )
+                                        }
+                                        return@map clearOrder
+                                    }
+                                    .toMutableList()
+                            }
+                        } else if (item.shopId > 0) {
+                            tempClearPromoOrders = tempClearPromoOrders
+                                .map { clearOrder ->
+                                    if (!clearOrder.codes.contains(item.code)) {
+                                        tempToBeClearedPromoCodes.add(item.code)
+                                        return@map clearOrder.copy(
+                                            codes = clearOrder.codes.also { it.add(item.code) }
+                                        )
+                                    }
+                                    return@map clearOrder
+                                }
+                                .toMutableList()
+                        } else if (!tempGlobalPromoCodes.contains(item.code)) {
+                            tempGlobalPromoCodes.add(item.code)
+                            tempToBeClearedPromoCodes.add(item.code)
+                        }
+                    }
+                }
+            }
+
+            if (tempToBeClearedPromoCodes.isEmpty()) {
+                // if there are no promo to be removed, try removing attempted codes
+                currentItems.forEach { item ->
+                    if (item is PromoItem && !item.isBebasOngkir && item.isAttempted) {
+                        if (item.shopId > 0) {
+                            tempClearPromoOrders = tempClearPromoOrders.map { clearOrder ->
+                                if (clearOrder.uniqueId == item.uniqueId) {
+                                    return@map clearOrder.copy(
+                                        codes = clearOrder.codes.also {
+                                            it.add(item.code)
+                                        }
+                                    )
+                                }
+                                return@map clearOrder
+                            }.toMutableList()
+                        } else {
+                            tempGlobalPromoCodes.add(item.code)
+                        }
+                    }
+                }
+            }
+
+            PromoUsageIdlingResource.increment()
+            launchCatchError(
+                context = dispatchers.io,
+                block = {
+                    PromoUsageIdlingResource.decrement()
+                    val param = clearPromoRequest.copy(
+                        serviceId = ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                        isOcc = validateUsePromoRequest.cartType == CheckoutConstant.PARAM_OCC_MULTI,
+                        orderData = ClearPromoOrderData(
+                            codes = tempGlobalPromoCodes,
+                            orders = tempClearPromoOrders
+                        )
+                    )
+                    val response = clearCacheAutoApplyStackUseCase(param)
+                    val clearPromo = clearCacheAutoApplyStackMapper
+                        .mapClearCacheAutoApplyResponse(response)
+
+                    var updatedLastValidateUseRequest = validateUsePromoRequest.copy()
+                    if (clearPromo.successDataModel.success) {
+                        tempToBeClearedPromoCodes.forEach { code ->
+                            if (validateUsePromoRequest.codes.contains(code)) {
+                                updatedLastValidateUseRequest = updatedLastValidateUseRequest
+                                    .copy(
+                                        codes = updatedLastValidateUseRequest.codes.also {
+                                            it.remove(code)
+                                        }
+                                    )
+                            }
+                            updatedLastValidateUseRequest.orders.map { order ->
+                                if (order.codes.contains(code)) {
+                                    return@map order
+                                        .copy(codes = order.codes.also { it.remove(code) })
+                                }
+                                return@map order.copy()
+                            }
+                        }
+                    }
+
+                    _clearPromoUiAction.postValue(
+                        ClearPromoUiAction.Success(
+                            clearPromo = clearPromo,
+                            lastValidateUseRequest = updatedLastValidateUseRequest
+                        )
+                    )
+                },
+                onError = {
+                    PromoUsageIdlingResource.decrement()
+                    val throwable = PromoErrorException()
+                    _clearPromoUiAction.postValue(ClearPromoUiAction.Failed(throwable))
+                }
+            )
         }
     }
 
-    fun onApplyPromoRecommendation(
-        onSuccess: (() -> Unit)?
-    ) {
+    fun onUsePromoRecommendation() {
         launchCatchError(
             context = dispatchers.io,
             block = {
                 delay(1_000L)
-                unselectAllSelectedPromos()
-
-                _promoPageUiState.ifSuccess { state ->
-                    val currentItems = state.items
+                _promoPageUiState.ifSuccess { pageState ->
+                    val currentItems = pageState.items
                     val updatedItems = currentItems.map { item ->
-                        if (item is PromoItem && item.isRecommended) {
-                            item.copy(
-                                state = PromoItemState.Selected,
-                                shouldShowRecommendedAnimation = true
-                            )
+                        if (item is PromoItem) {
+                            if (item.isRecommended) {
+                                item.copy(state = PromoItemState.Selected)
+                            } else {
+                                item.copy(state = PromoItemState.Normal)
+                            }
                         } else {
                             item
                         }
                     }
-                    _promoPageUiState.postValue(state.copy(items = updatedItems))
+                    val updatedSavingInfo = calculatePromoSavingInfo(updatedItems)
+                    _promoPageUiState.postValue(
+                        pageState.copy(
+                            items = updatedItems,
+                            savingInfo = updatedSavingInfo
+                        )
+                    )
+                    val promoRecommendation = updatedItems.getRecommendationItem()
+                    if (promoRecommendation != null) {
+                        _usePromoRecommendationUiAction.postValue(
+                            UsePromoRecommendationUiAction.Success(promoRecommendation)
+                        )
+                    }
                 }
-
-                onSuccess?.invoke()
             },
             onError = {
-
+                _usePromoRecommendationUiAction.postValue(UsePromoRecommendationUiAction.Failed)
             }
         )
     }
@@ -729,9 +937,10 @@ internal class PromoUsageViewModel @Inject constructor(
         )
     }
 
-    private fun unselectAllSelectedPromos() {
-        val pageState = _promoPageUiState.value
-        if (pageState is PromoPageUiState.Success) {
+    private fun unselectAllSelectedPromo(
+        onSuccess: (() -> Unit)? = null
+    ) {
+        _promoPageUiState.ifSuccess { pageState ->
             val currentItems = pageState.items
             val updatedItems = currentItems.map { item ->
                 if (item is PromoItem) {
@@ -747,6 +956,7 @@ internal class PromoUsageViewModel @Inject constructor(
                     savingInfo = updatedSavingInfo
                 )
             )
+            onSuccess?.invoke()
         }
     }
 

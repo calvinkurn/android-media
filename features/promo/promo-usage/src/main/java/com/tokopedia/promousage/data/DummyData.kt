@@ -842,8 +842,7 @@ object DummyData {
                 isAttempted = false,
                 isExpanded = true,
                 isVisible = true,
-                isRecommended = true,
-                shouldShowRecommendedAnimation = false
+                isRecommended = true
             ),
             PromoItem(
                 headerId = PromoPageSection.SECTION_RECOMMENDATION,
@@ -893,8 +892,7 @@ object DummyData {
                 isExpanded = true,
                 isVisible = true,
                 isRecommended = true,
-                isLastRecommended = true,
-                shouldShowRecommendedAnimation = false
+                isLastRecommended = true
             )
         )
 
