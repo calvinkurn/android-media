@@ -56,9 +56,6 @@ class CartGroupViewHolder(
     private fun renderDivider(cartGroupHolderData: CartGroupHolderData) {
         if (cartGroupHolderData.isError) {
             binding.headerDivider.gone()
-//            layoutParams.leftMargin = DEFAULT_DIVIDER_HEIGHT.dpToPx(itemView.resources.displayMetrics)
-//            binding.headerDivider.layoutParams.height =
-//                DEFAULT_DIVIDER_HEIGHT.dpToPx(itemView.resources.displayMetrics)
         } else {
             binding.headerDivider.visible()
             binding.headerDivider.layoutParams.height =
@@ -125,9 +122,13 @@ class CartGroupViewHolder(
         if (cartGroupHolderData.groupBadge.isNotBlank()) {
             binding.imageShopBadge.loadImageWithoutPlaceholder(cartGroupHolderData.groupBadge)
             val contentDescription =
-                if (cartGroupHolderData.isTypeOWOC()) cartGroupHolderData.groupName else cartGroupHolderData.productUiModelList.getOrNull(
-                    0
-                )?.shopHolderData?.shopTypeInfo?.title
+                if (cartGroupHolderData.isTypeOWOC()) {
+                    cartGroupHolderData.groupName
+                } else {
+                    cartGroupHolderData.productUiModelList.getOrNull(
+                        0
+                    )?.shopHolderData?.shopTypeInfo?.title
+                }
             binding.imageShopBadge.contentDescription = itemView.context.getString(
                 com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type,
                 contentDescription
@@ -190,17 +191,17 @@ class CartGroupViewHolder(
         binding.cbSelectShop.let {
             compositeSubscription.add(
                 rxViewClickDebounce(it, CHECKBOX_WATCHER_DEBOUNCE_TIME).subscribe(object :
-                    Subscriber<Boolean>() {
-                    override fun onNext(isChecked: Boolean) {
-                        cbSelectShopClickListener(cartGroupHolderData)
-                    }
+                        Subscriber<Boolean>() {
+                        override fun onNext(isChecked: Boolean) {
+                            cbSelectShopClickListener(cartGroupHolderData)
+                        }
 
-                    override fun onCompleted() {
-                    }
+                        override fun onCompleted() {
+                        }
 
-                    override fun onError(e: Throwable?) {
-                    }
-                })
+                        override fun onError(e: Throwable?) {
+                        }
+                    })
             )
         }
     }

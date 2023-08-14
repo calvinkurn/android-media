@@ -76,7 +76,6 @@ class CartAdapter constructor(
 
     var cartWishlistAdapter: CartWishlistAdapter? = null
     private var cartRecentViewAdapter: CartRecentViewAdapter? = null
-    private var tmpAllUnavailableShop: MutableList<Any>? = null
 
     var plusCoachMark: CoachMark2? = null
 
