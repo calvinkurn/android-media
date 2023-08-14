@@ -21,6 +21,7 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.PAGE_REFRESH_LOGIN
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifycomponents.Toaster
@@ -56,20 +57,22 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
                 }
             )
 
-            multiBannerViewModel.getPushBannerStatusData().observe(
-                fragment.viewLifecycleOwner,
-                Observer {
-                    updateImage(it.first)
-                    if (it.second.isNotEmpty()) {
-                        Toaster.make(customItemView, it.second, Toast.LENGTH_SHORT, Toaster.TYPE_ERROR)
-                    }
+            multiBannerViewModel.getPushNotificationBannerSubscription().observe(
+                fragment.viewLifecycleOwner
+            ) {
+                updateImage(
+                    position = it.position,
+                    isSubscribed = it.isSubscribed
+                )
+                if (it.errorMessage.isNotEmpty()) {
+                    Toaster.build(customItemView, it.errorMessage, Toast.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
                 }
-            )
+            }
 
             multiBannerViewModel.getPushBannerSubscriptionData().observe(
                 fragment.viewLifecycleOwner,
                 Observer {
-                    updateImage(it)
+                    updateImage(it, isSubscribed = true)
                 }
             )
             multiBannerViewModel.getShowLoginData().observe(
@@ -145,13 +148,16 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
         constraintLayout.addView(emptyStateParentView)
     }
 
-    private fun updateImage(position: Int) {
+    private fun updateImage(
+        position: Int,
+        isSubscribed: Boolean
+    ) {
         if (bannersItemList.isNotEmpty() && position != Utils.BANNER_SUBSCRIPTION_DEFAULT_STATUS &&
             !bannersItemList[position].bannerItemData.registeredImageApp.isNullOrEmpty()
         ) {
             (bannersItemList[position].bannerImageView as ImageUnify).apply {
                 scaleType = ImageView.ScaleType.FIT_CENTER
-                setImageUrl(bannersItemList[position].bannerItemData.registeredImageApp ?: "")
+                loadImage(if (isSubscribed) bannersItemList[position].bannerItemData.registeredImageApp else bannersItemList[position].bannerItemData.imageUrlDynamicMobile)
             }
         }
     }

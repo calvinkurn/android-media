@@ -9,6 +9,9 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.Utils.Companion.BANNER_SUBSCRIPTION_DEFAULT_STATUS
+import com.tokopedia.discovery2.Utils.Companion.BANNER_SUBSCRIPTION_REMINDED_STATUS
+import com.tokopedia.discovery2.Utils.Companion.BANNER_SUBSCRIPTION_UNREMINDED_STATUS
 import com.tokopedia.discovery2.data.BannerAction
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
@@ -18,6 +21,7 @@ import com.tokopedia.discovery2.usecase.SubScribeToUseCase
 import com.tokopedia.discovery2.usecase.bannerusecase.BannerUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
@@ -37,14 +41,17 @@ private const val DOUBLE_PROMO_CODE = "double_promo_code"
 
 class MultiBannerViewModel(val application: Application, var components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
     private val bannerData: MutableLiveData<ComponentsItem> = MutableLiveData()
-    private val pushBannerStatus: MutableLiveData<Pair<Int, String>> = MutableLiveData()
     private val pushBannerSubscription: MutableLiveData<Int> = MutableLiveData()
     private val showLogin: MutableLiveData<Boolean> = MutableLiveData()
     private val applinkCheck: MutableLiveData<String> = MutableLiveData()
     private val refreshPage: MutableLiveData<Boolean> = MutableLiveData()
+    private val pushNotificationBannerSubscriptionData: MutableLiveData<PushNotificationBannerSubscription> = MutableLiveData()
+
     private val _hideShimmer = SingleLiveEvent<Boolean>()
     private val _showErrorState = SingleLiveEvent<Boolean>()
+
     private var isDarkMode: Boolean = false
+    private var pushNotificationBannerStatus: MutableMap<Int, Int> = mutableMapOf()
 
     @JvmField
     @Inject
@@ -63,12 +70,12 @@ class MultiBannerViewModel(val application: Application, var components: Compone
 
     init {
         bannerData.value = components
-        pushBannerStatus.value = Pair(Utils.BANNER_SUBSCRIPTION_DEFAULT_STATUS, "")
-        pushBannerSubscription.value = Utils.BANNER_SUBSCRIPTION_DEFAULT_STATUS
+        pushNotificationBannerSubscriptionData.value = PushNotificationBannerSubscription()
+        pushBannerSubscription.value = BANNER_SUBSCRIPTION_DEFAULT_STATUS
     }
 
     fun getComponentData(): LiveData<ComponentsItem> = bannerData
-    fun getPushBannerStatusData(): LiveData<Pair<Int, String>> = pushBannerStatus
+    fun getPushNotificationBannerSubscription(): LiveData<PushNotificationBannerSubscription> = pushNotificationBannerSubscriptionData
     fun getShowLoginData(): LiveData<Boolean> = showLogin
     fun getPushBannerSubscriptionData(): LiveData<Int> = pushBannerSubscription
     fun getBannerUrlHeight() = Utils.extractDimension(bannerData.value?.data?.firstOrNull()?.imageUrlDynamicMobile)
@@ -119,7 +126,7 @@ class MultiBannerViewModel(val application: Application, var components: Compone
             when (listItem[position].action) {
                 BannerAction.APPLINK.name -> navigation(position, context)
                 BannerAction.CODE.name -> copyCodeToClipboard(position)
-                BannerAction.PUSH_NOTIFIER.name -> subscribeUserForPushNotification(position)
+                BannerAction.PUSH_NOTIFIER.name -> subscribeUnsubscribeUserForPushNotification(position)
                 BannerAction.LOGIN.name -> loginUser(position, context)
                 else -> navigation(position, context)
             }
@@ -157,22 +164,57 @@ class MultiBannerViewModel(val application: Application, var components: Compone
         }
     }
 
-    private fun subscribeUserForPushNotification(position: Int) {
+    private fun subscribeUnsubscribeUserForPushNotification(position: Int) {
         if (isUserLoggedIn()) {
-            launchCatchError(block = {
-                val pushSubscriptionResponse = subScribeToUseCase?.subscribeToPush(getCampaignId(position))
-                if (pushSubscriptionResponse?.notifierSetReminder?.isSuccess == 1 || pushSubscriptionResponse?.notifierSetReminder?.isSuccess == 2) {
-                    pushBannerStatus.value = Pair(
-                        position,
-                        pushSubscriptionResponse.notifierSetReminder.errorMessage
-                            ?: ""
-                    )
-                }
-            }, onError = {
+            launchCatchError(
+                block = {
+                    val isSubscribed = pushNotificationBannerStatus[position] == BANNER_SUBSCRIPTION_REMINDED_STATUS
+                    if (isSubscribed) {
+                        unsubscribeUserForPushNotification(position)
+                    } else {
+                        subscribeUserForPushNotification(position)
+                    }
+                },
+                onError = {
                     it.printStackTrace()
-                })
+                }
+            )
         } else {
             showLogin.value = true
+        }
+    }
+
+    data class PushNotificationBannerSubscription(
+        val position: Int = BANNER_SUBSCRIPTION_DEFAULT_STATUS,
+        val errorMessage: String = String.EMPTY,
+        val isSubscribed: Boolean = false
+    )
+
+    private suspend fun subscribeUserForPushNotification(
+        position: Int
+    ) {
+        val pushSubscriptionResponse = subScribeToUseCase?.subscribeToPush(getCampaignId(position))
+        if (pushSubscriptionResponse?.notifierSetReminder?.isSuccess == 1 || pushSubscriptionResponse?.notifierSetReminder?.isSuccess == 2) {
+            pushNotificationBannerSubscriptionData.value = PushNotificationBannerSubscription(
+                position = position,
+                errorMessage = pushSubscriptionResponse.notifierSetReminder.errorMessage.orEmpty(),
+                isSubscribed = true
+            )
+            pushNotificationBannerStatus[position] = BANNER_SUBSCRIPTION_REMINDED_STATUS
+        }
+    }
+
+    private suspend fun unsubscribeUserForPushNotification(
+        position: Int
+    ) {
+        val pushSubscriptionResponse = subScribeToUseCase?.unSubscribeToPush(getCampaignId(position))
+        if (pushSubscriptionResponse?.notifierSetReminder?.isSuccess == 1 || pushSubscriptionResponse?.notifierSetReminder?.isSuccess == 2) {
+            pushNotificationBannerSubscriptionData.value = PushNotificationBannerSubscription(
+                position = position,
+                errorMessage = pushSubscriptionResponse.notifierSetReminder.errorMessage.orEmpty(),
+                isSubscribed = false
+            )
+            pushNotificationBannerStatus[position] = BANNER_SUBSCRIPTION_UNREMINDED_STATUS
         }
     }
 
@@ -196,6 +238,7 @@ class MultiBannerViewModel(val application: Application, var components: Compone
                 if (pushSubscriptionResponse?.notifierCheckReminder?.status == 1) {
                     pushBannerSubscription.value = position
                 }
+                pushNotificationBannerStatus[position] = pushSubscriptionResponse?.notifierCheckReminder?.status ?: BANNER_SUBSCRIPTION_DEFAULT_STATUS
             }, onError = {
                     it.printStackTrace()
                 })

@@ -67,6 +67,8 @@ class Utils {
         const val DEFAULT_BANNER_HEIGHT = 150
         const val DEFAULT_BANNER_WEIGHT = 1.0f
         const val BANNER_SUBSCRIPTION_DEFAULT_STATUS = -1
+        const val BANNER_SUBSCRIPTION_REMINDED_STATUS = 1
+        const val BANNER_SUBSCRIPTION_UNREMINDED_STATUS = 0
         const val SEARCH_DEEPLINK = "tokopedia://search-autocomplete"
         const val CART_CACHE_NAME = "CART"
         const val CART_TOTAL_CACHE_KEY = "CACHE_TOTAL_CART"
