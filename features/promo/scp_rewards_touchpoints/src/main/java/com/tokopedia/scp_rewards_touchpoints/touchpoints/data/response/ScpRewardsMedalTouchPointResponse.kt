@@ -1,10 +1,10 @@
-package com.tokopedia.scp_rewards_touchpoints.touchpoints.model
+package com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 
-data class ScpRewardsMedaliTouchPointModel(
+data class ScpRewardsMedalTouchPointResponse(
      @SerializedName("scpRewardsMedaliTouchpointOrder")
      val scpRewardsMedaliTouchpointOrder: ScpRewardsMedaliTouchpointOrder = ScpRewardsMedaliTouchpointOrder()
 ){
@@ -45,6 +45,12 @@ data class ScpRewardsMedaliTouchPointModel(
 
             @SerializedName("medaliSunburstImageURL")
             val medaliSunburstImageURL: String = String.EMPTY,
+
+            @SerializedName("medaliIconImageURLWidget")
+            val medaliIconImageURLWidget: String = String.EMPTY,
+
+            @SerializedName("backgroundImageURL")
+            val backgroundImageURL: String = String.EMPTY,
 
             @SerializedName("infoMessage")
             val infoMessage: InfoMessage = InfoMessage(),

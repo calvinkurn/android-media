@@ -5,10 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.product.detail.common.postatc.PostAtcParams
 import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
 import com.tokopedia.product.detail.postatc.data.model.PostAtcInfo
 import com.tokopedia.product.detail.postatc.data.model.PostAtcLayout
 import com.tokopedia.product.detail.postatc.mapper.mapToUiModel
+import com.tokopedia.product.detail.postatc.mapper.toUserLocationRequest
 import com.tokopedia.product.detail.postatc.usecase.GetPostAtcLayoutUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
@@ -38,23 +41,21 @@ class PostAtcViewModel @Inject constructor(
      */
     fun initializeParameters(
         productId: String,
-        cartId: String,
-        isFulfillment: Boolean,
-        layoutId: String,
-        pageSource: String,
-        selectedAddonsIds: List<String>,
-        warehouseId: String,
-        quantity: Int
+        postAtcParams: PostAtcParams,
+        localCacheModel: LocalCacheModel
     ) {
+        val addons = postAtcParams.addons?.let {
+            PostAtcInfo.Addons.parse(it)
+        }
+
         postAtcInfo = postAtcInfo.copy(
+            addons = addons,
+            cartId = postAtcParams.cartId,
+            layoutId = postAtcParams.layoutId,
+            pageSource = postAtcParams.pageSource,
             productId = productId,
-            cartId = cartId,
-            isFulfillment = isFulfillment,
-            layoutId = layoutId,
-            pageSource = pageSource,
-            selectedAddonsIds = selectedAddonsIds,
-            warehouseId = warehouseId,
-            quantity = quantity
+            session = postAtcParams.session,
+            userLocationRequest = localCacheModel.toUserLocationRequest()
         )
 
         fetchLayout()
@@ -66,7 +67,9 @@ class PostAtcViewModel @Inject constructor(
                 postAtcInfo.productId,
                 postAtcInfo.cartId,
                 postAtcInfo.layoutId,
-                postAtcInfo.pageSource
+                postAtcInfo.pageSource,
+                postAtcInfo.session,
+                postAtcInfo.userLocationRequest
             )
 
             updateInfo(result)
@@ -97,8 +100,8 @@ class PostAtcViewModel @Inject constructor(
 
             _recommendations.value = uniqueId to widget.asSuccess()
         }, onError = {
-            _recommendations.value = uniqueId to it.asFail()
-        })
+                _recommendations.value = uniqueId to it.asFail()
+            })
     }
 
     private fun updateInfo(data: PostAtcLayout) {
