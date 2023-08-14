@@ -3312,9 +3312,7 @@ class CartRevampFragment :
 
         if (!hasCalledOnSaveInstanceState) {
             context?.let { context ->
-                parentFragmentManager?.let { fragmentManager ->
-                    showGlobalErrorBottomsheet(fragmentManager, context, ::retryGoToShipment)
-                }
+                showGlobalErrorBottomsheet(parentFragmentManager, context, ::retryGoToShipment)
             }
         }
     }
