@@ -20,7 +20,6 @@ import com.tokopedia.shop.common.util.ShopUtil.setElement
 import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.view.adapter.viewholder.*
 import com.tokopedia.shop.home.view.model.*
-import com.tokopedia.shop.home.view.model.ShopHomeShowcaseUiModel
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
@@ -169,12 +168,6 @@ open class ShopHomeAdapter(
                 }
             }
         }
-        submitList(newList)
-    }
-
-    fun setShopShowcaseBanner(shopHomeShowcaseUiModel: ShopHomeShowcaseUiModel) {
-        val newList = getNewVisitableItems()
-        newList.setElement(1, shopHomeShowcaseUiModel)
         submitList(newList)
     }
 

@@ -172,7 +172,7 @@ import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.listener.ShopHomePlayWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseListWidgetListener
-import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseListener
+import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseNavigationListener
 import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
 import com.tokopedia.shop.home.view.model.CheckCampaignNotifyMeUiModel
 import com.tokopedia.shop.home.view.model.GetCampaignNotifyMeUiModel
@@ -185,11 +185,11 @@ import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiMode
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListSliderUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.shop.home.view.model.ShopPageLayoutUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
-import com.tokopedia.shop.home.view.model.ShopHomeShowcaseUiModel
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
@@ -245,7 +245,7 @@ open class ShopPageHomeFragment :
     ShopHomeProductListSellerEmptyListener,
     ShopHomeListener,
     ShopHomePersoProductComparisonViewHolder.ShopHomePersoProductComparisonViewHolderListener,
-    ShopHomeDisplayBannerTimerWidgetListener, ShopHomeShowcaseListener {
+    ShopHomeDisplayBannerTimerWidgetListener, ShopHomeShowcaseNavigationListener {
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -402,7 +402,7 @@ open class ShopPageHomeFragment :
             shopPersoProductComparisonListener = this,
             shopHomeDisplayBannerTimerWidgetListener = this,
             fragment = this,
-            shopHomeShowcaseListener = this
+            shopHomeShowcaseNavigationListener = this
         )
     }
 
@@ -4954,12 +4954,12 @@ open class ShopPageHomeFragment :
         }
     }
 
-    override fun onViewAllShowcaseClick(selectedShowcaseHeader: ShopHomeShowcaseUiModel.ShowcaseHeader) {
+    override fun onViewAllShowcaseClick(selectedShowcaseHeader: ShopHomeShowcaseNavigationUiModel.ShowcaseHeader) {
         RouteManager.route(activity ?: return, selectedShowcaseHeader.ctaLink)
     }
 
     override fun onShowcaseClick(
-        selectedShowcase: ShopHomeShowcaseUiModel.Tab.Showcase
+        selectedShowcase: ShopHomeShowcaseNavigationUiModel.Tab.Showcase
     ) {
         RouteManager.route(activity ?: return, selectedShowcase.ctaLink)
     }

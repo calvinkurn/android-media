@@ -12,7 +12,7 @@ import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.databinding.FragmentShopShowcaseBinding
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
-import com.tokopedia.shop.home.view.model.ShopHomeShowcaseUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationUiModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlin.collections.ArrayList
 
@@ -28,7 +28,7 @@ class ShopShowcaseFragment : BaseDaggerFragment() {
 
         @JvmStatic
         fun newInstance(
-            showcases: List<ShopHomeShowcaseUiModel.Tab.Showcase>
+            showcases: List<ShopHomeShowcaseNavigationUiModel.Tab.Showcase>
         ): ShopShowcaseFragment {
             return ShopShowcaseFragment().apply {
                 arguments = Bundle().apply {
@@ -40,10 +40,10 @@ class ShopShowcaseFragment : BaseDaggerFragment() {
     }
 
     private val showcases by lazy {
-        arguments?.getParcelableArrayList<ShopHomeShowcaseUiModel.Tab.Showcase>(BUNDLE_KEY_SHOWCASES)?.toList().orEmpty()
+        arguments?.getParcelableArrayList<ShopHomeShowcaseNavigationUiModel.Tab.Showcase>(BUNDLE_KEY_SHOWCASES)?.toList().orEmpty()
     }
 
-    private var onShowcaseClick : (ShopHomeShowcaseUiModel.Tab.Showcase) -> Unit = {}
+    private var onShowcaseClick : (ShopHomeShowcaseNavigationUiModel.Tab.Showcase) -> Unit = {}
 
     private var binding by autoClearedNullable<FragmentShopShowcaseBinding>()
 
@@ -76,7 +76,7 @@ class ShopShowcaseFragment : BaseDaggerFragment() {
     }
 
     private fun renderShowcase(
-        showcases: List<ShopHomeShowcaseUiModel.Tab.Showcase>
+        showcases: List<ShopHomeShowcaseNavigationUiModel.Tab.Showcase>
     ) {
         val firstShowcase = showcases.getOrNull(FIRST_SHOWCASE_INDEX)
         val secondShowcase = showcases.getOrNull(SECOND_SHOWCASE_INDEX)
@@ -135,7 +135,7 @@ class ShopShowcaseFragment : BaseDaggerFragment() {
         }
     }
 
-    fun setOnShowcaseClick(onShowcaseClick: (ShopHomeShowcaseUiModel.Tab.Showcase) -> Unit) {
+    fun setOnShowcaseClick(onShowcaseClick: (ShopHomeShowcaseNavigationUiModel.Tab.Showcase) -> Unit) {
         this.onShowcaseClick = onShowcaseClick
     }
 

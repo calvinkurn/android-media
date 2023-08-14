@@ -8,7 +8,7 @@ import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
 import kotlinx.parcelize.Parcelize
 
-data class ShopHomeShowcaseUiModel(
+data class ShopHomeShowcaseNavigationUiModel(
     val showcaseHeader: ShowcaseHeader,
     val tabs: List<Tab>,
     override val widgetId: String = "",
@@ -30,10 +30,9 @@ data class ShopHomeShowcaseUiModel(
         CIRCLE
     }
 
-    enum class MainBannerPosition {
-        LEFT,
-        TOP,
-        CAROUSEL
+    enum class MainBannerPosition(val id: String) {
+        LEFT("left"),
+        TOP("top")
     }
 
     data class Tab(

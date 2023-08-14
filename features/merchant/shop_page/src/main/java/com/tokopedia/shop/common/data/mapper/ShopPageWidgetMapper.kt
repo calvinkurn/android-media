@@ -10,9 +10,10 @@ import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.data.model.ShopPageWidgetRequestModel
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
-import com.tokopedia.shop.home.view.model.ShopHomeShowcaseUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
+import com.tokopedia.shop.home.view.model.ShowcaseNavigationBannerWidgetStyle
 import com.tokopedia.shop.home.view.model.StatusCampaign
 
 //TODO need to migrate all other shop widget mapper on home mapper to this mapper
@@ -167,16 +168,16 @@ object ShopPageWidgetMapper {
         )
     }
 
-    fun mapToHomeShowcaseWidget(response: ShopLayoutWidget.Widget): ShopHomeShowcaseUiModel {
-        val widgetStyle = if (response.header.widgetStyle == "rounded-corner") {
-            ShopHomeShowcaseUiModel.WidgetStyle.ROUNDED_CORNER
+    fun mapToHomeShowcaseWidget(response: ShopLayoutWidget.Widget): ShopHomeShowcaseNavigationUiModel {
+        val widgetStyle = if (response.header.widgetStyle == ShowcaseNavigationBannerWidgetStyle.ROUNDED_CORNER.id) {
+            ShopHomeShowcaseNavigationUiModel.WidgetStyle.ROUNDED_CORNER
         } else {
-            ShopHomeShowcaseUiModel.WidgetStyle.CIRCLE
+            ShopHomeShowcaseNavigationUiModel.WidgetStyle.CIRCLE
         }
 
         val tabs = response.data.map { tab ->
             val showcases = tab.showcaseList.map { showcase ->
-                ShopHomeShowcaseUiModel.Tab.Showcase(
+                ShopHomeShowcaseNavigationUiModel.Tab.Showcase(
                     showcase.showcaseID,
                     showcase.name,
                     showcase.imageURL,
@@ -185,13 +186,13 @@ object ShopPageWidgetMapper {
                 )
             }
 
-            val mainBannerPosition = if (tab.mainBannerPosition == "top") {
-                ShopHomeShowcaseUiModel.MainBannerPosition.TOP
+            val mainBannerPosition = if (tab.mainBannerPosition == ShopHomeShowcaseNavigationUiModel.MainBannerPosition.TOP.id) {
+                ShopHomeShowcaseNavigationUiModel.MainBannerPosition.TOP
             } else {
-                ShopHomeShowcaseUiModel.MainBannerPosition.LEFT
+                ShopHomeShowcaseNavigationUiModel.MainBannerPosition.LEFT
             }
 
-            ShopHomeShowcaseUiModel.Tab(
+            ShopHomeShowcaseNavigationUiModel.Tab(
                 text = tab.text,
                 imageUrl = tab.imageURL,
                 mainBannerPosition = mainBannerPosition,
@@ -199,8 +200,8 @@ object ShopPageWidgetMapper {
             )
         }
 
-        return ShopHomeShowcaseUiModel(
-            showcaseHeader = ShopHomeShowcaseUiModel.ShowcaseHeader(
+        return ShopHomeShowcaseNavigationUiModel(
+            showcaseHeader = ShopHomeShowcaseNavigationUiModel.ShowcaseHeader(
                 title = response.header.title,
                 ctaLink = response.header.ctaLink,
                 widgetStyle = widgetStyle
