@@ -103,7 +103,7 @@ abstract class BaseDigitalPDPPulsaTest {
     }
 
     protected fun clientNumberWidget_clickContactIcon() {
-        onView(withId(R.id.text_field_icon_2)).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_icon_2)).perform(click())
     }
 
     protected fun favoriteChips_clickChip_withText(text: String) {

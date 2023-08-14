@@ -36,7 +36,7 @@ class ManageAddressRobot {
     }
 
     fun typeEmailThenSubmit(s: String) {
-        onView(withId(R.id.text_field_input))
+        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input))
             .perform(typeText(s), closeSoftKeyboard())
 
         onView(withId(R.id.btn_share))
