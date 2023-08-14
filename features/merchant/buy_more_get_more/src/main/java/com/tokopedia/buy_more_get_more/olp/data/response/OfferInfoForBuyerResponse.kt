@@ -12,6 +12,10 @@ data class OfferInfoForBuyerResponse(
         val responseHeader: ResponseHeader = ResponseHeader(),
         @SerializedName("offering_json_data")
         val offeringJsonData: String = "",
+        @SerializedName("term_and_condition")
+        val tnc: List<String> = emptyList(),
+        @SerializedName("nearest_warehouse_ids")
+        val nearestWarehouseIds: List<Int> = emptyList(),
         @SerializedName("offering")
         val offerings: List<Offering> = emptyList()
     )
@@ -49,7 +53,7 @@ data class OfferInfoForBuyerResponse(
             @SerializedName("shop_name")
             val shopName: String = "",
             @SerializedName("badge")
-            val badge: String =""
+            val badge: String = ""
         )
 
         data class Tier(

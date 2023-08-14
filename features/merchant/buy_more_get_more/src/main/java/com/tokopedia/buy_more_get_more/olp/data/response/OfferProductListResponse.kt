@@ -3,11 +3,17 @@ package com.tokopedia.buy_more_get_more.olp.data.response
 import com.google.gson.annotations.SerializedName
 
 data class OfferProductListResponse(
-    @SerializedName("response_header")
-    val responseHeader: ResponseHeader = ResponseHeader(),
-    @SerializedName("products")
-    val productList: List<Product> = emptyList()
+    @SerializedName("GetOfferingProductList")
+    val offeringProductList: OfferProductList = OfferProductList()
 ) {
+
+    data class OfferProductList(
+        @SerializedName("response_header")
+        val responseHeader: ResponseHeader = ResponseHeader(),
+        @SerializedName("products")
+        val productList: List<Product> = emptyList()
+    )
+
     data class ResponseHeader(
         @SerializedName("success")
         val success: Boolean = true,

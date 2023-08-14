@@ -8,8 +8,8 @@ class GetOfferProductListMapper @Inject constructor() {
 
     fun map(response: OfferProductListResponse): OfferProductListUiModel {
         return OfferProductListUiModel(
-            responseHeader = response.responseHeader.toResponseHeaderModel(),
-            productList = response.productList.toProductListModel()
+            responseHeader = response.offeringProductList.responseHeader.toResponseHeaderModel(),
+            productList = response.offeringProductList.productList.toProductListModel()
         )
     }
 

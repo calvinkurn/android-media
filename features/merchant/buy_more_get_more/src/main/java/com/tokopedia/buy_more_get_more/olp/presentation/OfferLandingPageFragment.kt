@@ -49,10 +49,11 @@ class OfferLandingPageFragment :
 
     companion object {
         @JvmStatic
-        fun newInstance(shopId: String,
-                        offerId: String,
-                        warehouseIds: ArrayList<Int>? = arrayListOf(),
-                        productIds: ArrayList<Int>? = arrayListOf()
+        fun newInstance(
+            shopId: String,
+            offerId: String,
+            warehouseIds: ArrayList<Int>? = arrayListOf(),
+            productIds: ArrayList<Int>? = arrayListOf()
         ) = OfferLandingPageFragment().apply {
             arguments = Bundle().apply {
                 putString(BundleConstant.BUNDLE_SHOP_ID, shopId)
@@ -129,7 +130,6 @@ class OfferLandingPageFragment :
                 StaggeredGridLayoutManager.VERTICAL
             )
         }
-        Log.d("Masuk", warehouseIds.toString())
     }
 
     private fun setupObservables() {
@@ -167,13 +167,13 @@ class OfferLandingPageFragment :
                 addRightIcon(com.tokopedia.iconunify.R.drawable.iconunify_cart)
                     .apply {
                         setOnClickListener {
-                            //Go to Cart
+                            // Go to Cart
                         }
                     }
                 addRightIcon(com.tokopedia.iconunify.R.drawable.iconunify_menu_hamburger)
                     .apply {
                         setOnClickListener {
-                            //Go to setting
+                            // Go to setting
                         }
                     }
 
@@ -211,7 +211,13 @@ class OfferLandingPageFragment :
 
     override fun loadInitialData() {
         setViewState(VIEW_LOADING)
-        viewModel.getOfferingIndo(listOf(offerId.toIntOrZero()), shopId, localCacheModel)
+        viewModel.getOfferingInfo(
+            offerIds = listOf(offerId.toIntOrZero()),
+            shopId = shopId,
+            productIds = productIds,
+            warehouseIds = warehouseIds,
+            localCacheModel
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -333,7 +339,6 @@ class OfferLandingPageFragment :
     }
 
     private fun addToCartProduct(product: OfferProductListUiModel.Product) {
-
     }
 
     private fun openAtcVariant(product: OfferProductListUiModel.Product) {

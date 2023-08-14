@@ -2,7 +2,6 @@ package com.tokopedia.buy_more_get_more.olp.domain.usecase
 
 import com.tokopedia.buy_more_get_more.olp.data.mapper.GetOfferProductListMapper
 import com.tokopedia.buy_more_get_more.olp.data.request.GetOfferingProductListRequestParam
-import com.tokopedia.buy_more_get_more.olp.data.response.OfferInfoForBuyerResponse
 import com.tokopedia.buy_more_get_more.olp.data.response.OfferProductListResponse
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
@@ -87,7 +86,7 @@ class GetOfferProductListUseCase @Inject constructor(
 
         return GraphqlRequest(
             query,
-            OfferInfoForBuyerResponse::class.java,
+            OfferProductListResponse::class.java,
             params
         )
     }

@@ -13,6 +13,8 @@ class GetOfferInfoForBuyerMapper @Inject constructor() {
         return OfferInfoForBuyerUiModel(
             responseHeader = response.offeringInforBuyer.responseHeader.toResponseHeaderModel(),
             offeringJsonData = response.offeringInforBuyer.offeringJsonData,
+            tnc = response.offeringInforBuyer.tnc,
+            nearestWarehouseIds = response.offeringInforBuyer.nearestWarehouseIds,
             offerings = response.offeringInforBuyer.offerings.toOfferingUiModel()
         )
     }

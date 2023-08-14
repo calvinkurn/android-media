@@ -9,6 +9,8 @@ data class GetOfferingInfoForBuyerRequestParam(
     val offerIds: List<Int> = emptyList(),
     @SerializedName("shop_ids")
     val shopIds: List<Int> = emptyList(),
+    @SerializedName("product_anchor")
+    val productAnchor: ProductAnchor = ProductAnchor(),
     @SerializedName("user_location")
     val userLocation: UserLocation = UserLocation()
 
@@ -22,6 +24,13 @@ data class GetOfferingInfoForBuyerRequestParam(
         val version: String = "1.2",
         @SerializedName("device")
         val device: String = "android"
+    )
+
+    data class ProductAnchor(
+        @SerializedName("product_ids")
+        val productIds: List<Int> = emptyList(),
+        @SerializedName("warehouse_ids")
+        val warehouseIds: List<Int> = emptyList()
     )
 
     data class UserLocation(

@@ -12,7 +12,13 @@ class GetOfferingProductListRequestParam(
     @SerializedName("user_id")
     val userId: Int = 0,
     @SerializedName("user_location")
-    val userLocation: UserLocation = UserLocation()
+    val userLocation: UserLocation = UserLocation(),
+    @SerializedName("page")
+    val page: Int = 0,
+    @SerializedName("result_per_page")
+    val pageSize: Int = 0,
+    @SerializedName("order_by")
+    val orderBy: Int = 0
 
 ) {
     data class RequestHeader(
@@ -27,11 +33,9 @@ class GetOfferingProductListRequestParam(
     )
 
     data class ProductAnchor(
-        @SerializedName("product_ids")
-        val productIds: List<Int> = emptyList(),
         @SerializedName("warehouse_ids")
         val warehouseIds: List<Int> = emptyList()
-        )
+    )
 
     data class UserLocation(
         @SerializedName("address_id")
@@ -39,7 +43,7 @@ class GetOfferingProductListRequestParam(
         @SerializedName("district_id")
         val districtId: Int = 0,
         @SerializedName("postal_code")
-        val postalCode: Int = 0,
+        val postalCode: String = "",
         @SerializedName("latitude")
         val latitude: String = "",
         @SerializedName("longitude")
