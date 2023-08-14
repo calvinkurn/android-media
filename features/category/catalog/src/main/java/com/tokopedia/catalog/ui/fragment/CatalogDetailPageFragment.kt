@@ -54,4 +54,6 @@ class CatalogDetailPageFragment : BaseDaggerFragment() {
         catalogDetailPageViewModel.getA()
     }
 
+
+
 }
