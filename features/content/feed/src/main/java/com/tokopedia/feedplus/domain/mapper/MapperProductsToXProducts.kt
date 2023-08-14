@@ -1,6 +1,6 @@
 package com.tokopedia.feedplus.domain.mapper
 
-import com.tokopedia.feed.component.product.ContentTaggedProductUiModel
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
 

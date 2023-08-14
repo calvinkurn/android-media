@@ -1,12 +1,12 @@
-package com.tokopedia.feed.component.product
+package com.tokopedia.content.common.view
 
 import android.content.Context
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
-import com.tokopedia.feedcomponent.R
-import com.tokopedia.feedcomponent.databinding.ViewFeedTaggedProductBottomSheetCardBinding
+import com.tokopedia.content.common.R
+import com.tokopedia.content.common.databinding.ViewContentTaggedProductBottomSheetCardBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -21,7 +21,7 @@ class ContentTaggedProductBottomSheetItemView(
     attrs: AttributeSet?
 ) : CardUnify(context, attrs) {
 
-    private val binding = ViewFeedTaggedProductBottomSheetCardBinding.inflate(
+    private val binding = ViewContentTaggedProductBottomSheetCardBinding.inflate(
         LayoutInflater.from(context),
         this
     )
@@ -93,11 +93,11 @@ class ContentTaggedProductBottomSheetItemView(
             binding.pbStock.progressBarColor = intArrayOf(
                 ContextCompat.getColor(
                     context,
-                    R.color.feed_dms_asgc_progress_0_color
+                    R.color.content_dms_asgc_progress_0_color
                 ),
                 ContextCompat.getColor(
                     context,
-                    R.color.feed_dms_asgc_progress_100_color
+                    R.color.content_dms_asgc_progress_100_color
                 )
             )
             binding.tvStock.text = campaign.status.stockLabel

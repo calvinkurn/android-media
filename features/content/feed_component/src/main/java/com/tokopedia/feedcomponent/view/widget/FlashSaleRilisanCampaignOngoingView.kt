@@ -97,8 +97,8 @@ class FlashSaleRilisanCampaignOngoingView @JvmOverloads constructor(
     }
     private fun setGradientColorForProgressBar(){
         val progressBarColor: IntArray = intArrayOf(
-            MethodChecker.getColor(context, com.tokopedia.feedcomponent.R.color.feed_dms_asgc_progress_0_color),
-            MethodChecker.getColor(context, com.tokopedia.feedcomponent.R.color.feed_dms_asgc_progress_100_color)
+            MethodChecker.getColor(context, com.tokopedia.feedcomponent.R.color.content_dms_asgc_progress_0_color),
+            MethodChecker.getColor(context, com.tokopedia.feedcomponent.R.color.content_dms_asgc_progress_100_color)
         )
         stockProgressBar.progressBarColor = progressBarColor
 

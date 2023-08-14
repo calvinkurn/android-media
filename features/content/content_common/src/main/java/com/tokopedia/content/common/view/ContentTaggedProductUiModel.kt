@@ -1,4 +1,4 @@
-package com.tokopedia.feed.component.product
+package com.tokopedia.content.common.view
 
 /**
  * Created by meyta.taliti on 11/05/23.

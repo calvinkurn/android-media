@@ -1,7 +1,7 @@
 package feedcomponent.product
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.feed.component.product.ContentTaggedProductUiModel
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.feed.component.product.FeedTaggedProductViewModel
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXGQLResponse

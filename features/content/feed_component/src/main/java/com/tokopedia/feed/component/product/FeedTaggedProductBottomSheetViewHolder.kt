@@ -3,6 +3,8 @@ package com.tokopedia.feed.component.product
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.content.common.view.ContentTaggedProductBottomSheetItemView
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.feedcomponent.databinding.ItemFeedTaggedProductBinding
 
 /**
