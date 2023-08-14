@@ -205,6 +205,12 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         return binding.root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        renderLoadingDialog(false)
+        _binding = null
+    }
+
     private fun applyBottomSheetMaxHeightRule() {
         val frameDialogView = binding.rlBottomSheetWrapper.parent as View
         frameDialogView.setBackgroundColor(Color.TRANSPARENT)
