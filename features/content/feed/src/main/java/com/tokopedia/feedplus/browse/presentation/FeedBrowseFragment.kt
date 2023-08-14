@@ -10,8 +10,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.feedplus.browse.di.FeedBrowseComponent
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseAdapter
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel
 import com.tokopedia.feedplus.databinding.FragmentFeedBrowseBinding
@@ -22,14 +21,15 @@ import javax.inject.Inject
 /**
  * Created by meyta.taliti on 11/08/23.
  */
-class FeedBrowseFragment : BaseDaggerFragment() {
+class FeedBrowseFragment @Inject constructor(
+    viewModelFactory: ViewModelProvider.Factory
+) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentFeedBrowseBinding? = null
     private val binding get() = _binding!!
 
     private val adapter by lazy { FeedBrowseAdapter() }
 
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel: FeedBrowseViewModel by viewModels { viewModelFactory }
 
     override fun onCreateView(
@@ -89,10 +89,6 @@ class FeedBrowseFragment : BaseDaggerFragment() {
 
     override fun getScreenName(): String {
         return ""
-    }
-
-    override fun initInjector() {
-        getComponent(FeedBrowseComponent::class.java).inject(this)
     }
 
     override fun onDestroyView() {
