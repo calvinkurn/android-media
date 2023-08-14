@@ -19,6 +19,7 @@ class ShopCampaignFlashSaleProductCarouselAdapter(val listener: ShopHomeFlashSal
     var flashSaleProductList: List<ShopHomeProductUiModel> = listOf()
     var measureListener: HeightMeasureListener? = null
     var parentPosition: Int = -1
+    private var isFestivity: Boolean = false
 
     companion object {
         private const val SINGLE_PRODUCT = 1
@@ -51,7 +52,7 @@ class ShopCampaignFlashSaleProductCarouselAdapter(val listener: ShopHomeFlashSal
             }
             PRODUCT_CARD_BIG_GRID -> {
                 val itemView = parent.inflateLayout(R.layout.item_shop_home_flash_sale_product_card_grid_big)
-                ShopHomeFlashSaleProductCardBigGridViewHolder(itemView, listener, parentPosition)
+                ShopHomeFlashSaleProductCardBigGridViewHolder(itemView, listener, parentPosition, isFestivity)
             }
             else -> {
                 val itemView = parent.inflateLayout(R.layout.item_shop_home_flash_sale_product_card_grid)
@@ -101,7 +102,7 @@ class ShopCampaignFlashSaleProductCarouselAdapter(val listener: ShopHomeFlashSal
         this.flashSaleUiModel = flashSaleUiModel
     }
 
-    fun setHeightMeasureListener(listener: HeightMeasureListener) {
-        measureListener = listener
+    fun setIsFestivity(isFestivity: Boolean) {
+        this.isFestivity = isFestivity
     }
 }

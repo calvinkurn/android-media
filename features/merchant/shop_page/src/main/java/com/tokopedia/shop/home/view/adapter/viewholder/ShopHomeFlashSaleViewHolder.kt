@@ -19,7 +19,6 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.home.util.DateHelper
-import com.tokopedia.shop.home.view.adapter.HeightMeasureListener
 import com.tokopedia.shop.home.view.adapter.ShopCampaignFlashSaleProductCarouselAdapter
 import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
@@ -68,7 +67,6 @@ class ShopHomeFlashSaleViewHolder(
         private const val FORMAT_PREFIX_HEX_COLOR = "#"
         private const val VALUE_INT_HUNDREDS = 100
         private const val DELAY_IN_THREE_SECONDS = 3000L
-        private const val NOTIFY_ME_WRAPPER_BORDER_RADIUS = 16f
         private const val BOTTOM_MARGIN = 8f
         private const val CONTENT_CONTAINER_FESTIVITY_MARGIN_BOTTOM = 10f
         private const val CONTENT_CONTAINER_DEFAULT_MARGIN_BOTTOM = 12f
@@ -87,7 +85,7 @@ class ShopHomeFlashSaleViewHolder(
         val flashSaleItem = element.data?.firstOrNull()
         val productSize = flashSaleItem?.totalProduct.orZero()
         setupWidgetImpressionListener(uiModel)
-        setupHeader(element.header.title ?: "")
+        setupHeader(element.header.title)
         setupCtaSeeAll(productSize, element.data?.firstOrNull()?.statusCampaign)
         setupFlashSaleCountDownTimer(element)
         if (!GlobalConfig.isSellerApp())
@@ -177,7 +175,7 @@ class ShopHomeFlashSaleViewHolder(
             rvLayoutParams.leftMargin,
             12f.dpToPx().toInt(),
             rvLayoutParams.rightMargin,
-            rvLayoutParams.bottomMargin
+            12f.dpToPx().toInt(),
         )
         productCarouselView?.layoutParams = rvLayoutParams
         setContainerMarginDefault()
@@ -275,21 +273,13 @@ class ShopHomeFlashSaleViewHolder(
                 setBottomMarginOnMainContainer()
                 singleBackGroundView?.show()
             }
-            DOUBLE -> { setBackgroundViewHeightAndVisible(doubleBackGroundView) }
-            else -> { setBackgroundViewHeightAndVisible(multipleBackGroundView) }
-        }
-    }
-
-    private fun setBackgroundViewHeightAndVisible(view: View?){
-        productCarouselAdapter.setHeightMeasureListener( object : HeightMeasureListener {
-            override fun setHeightListener(height: Int) {
-                view?.show()
-                val layoutRv = productCarouselView?.layoutParams as? ViewGroup.MarginLayoutParams
-                val layout = view?.layoutParams
-                layout?.height = height + layoutRv?.topMargin.orZero()
-                view?.layoutParams = layout
+            DOUBLE -> {
+                doubleBackGroundView?.show()
             }
-        })
+            else -> {
+                multipleBackGroundView?.show()
+            }
+        }
     }
 
     private fun setBottomMarginOnMainContainer() {
@@ -406,6 +396,7 @@ class ShopHomeFlashSaleViewHolder(
                 }
             )
         }
+        productCarouselAdapter.setIsFestivity(model.isFestivity)
         // set flash sale ui model for click handling purpose
         productCarouselAdapter.setFsUiModel(model)
         // set product list to product carousel adapter
