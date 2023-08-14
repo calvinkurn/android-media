@@ -59,6 +59,8 @@ object DeeplinkMapperContent {
             INTERNAL_FEED_CREATION_PRODUCT_SEARCH
         } else if (pathSegments.startsWith("creation-shop-search", false)) {
             INTERNAL_FEED_CREATION_SHOP_SEARCH
+        } else if (pathSegments.startsWith("hashtag", false)) {
+            ""
         } else {
             goToAppLinkFeedHomeInternal(uri)
         }

@@ -30,7 +30,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         // This a reminder to developer.
         // If this size is modified, please also add unit test for the added deeplink.
         const val SIZE_HOST = 157
-        const val SIZE_PATH = 271
+        const val SIZE_PATH = 259
     }
 
     override fun setup() {
@@ -288,8 +288,11 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check feed hashtag appLink then should return tokopedia internal feed hashtag in customerapp`() {
-        val appLink = UriUtil.buildUri(ApplinkConst.FEED_HASHTAG, "baju")
-        assertEqualsDeepLinkMapper(appLink, "")
+        val inputAppLink = UriUtil.buildUri(
+            "tokopedia://feed/hashtag/{hashtag}",
+            "baju"
+        )
+        assertEqualsDeepLinkMapper(inputAppLink, "")
     }
 
     @Test
