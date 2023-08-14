@@ -15,11 +15,14 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutDonationModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEgoldModel
+import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import java.util.*
 
 object CheckoutCrossSellItemView {
+
+    private const val CROSS_SELL_UNDERLINE_TEXT = "isi pulsa"
 
     fun renderCrossSellItem(crossSellItem: CheckoutCrossSellItem, binding: ItemCheckoutCrossSellItemBinding, listener: CheckoutAdapterListener) {
         when (crossSellItem) {
@@ -44,9 +47,37 @@ object CheckoutCrossSellItemView {
         itemBinding: ItemCheckoutCrossSellItemBinding,
         listener: CheckoutAdapterListener
     ) {
+        itemBinding.cbCheckoutCrossSellItem.setOnCheckedChangeListener { _, _ -> }
         itemBinding.cbCheckoutCrossSellItem.isChecked = crossSellModel.isChecked
         itemBinding.cbCheckoutCrossSellItem.skipAnimation()
-        itemBinding.tvCheckoutCrossSellItem.text = MethodChecker.fromHtml(crossSellModel.crossSellModel.info.title)
+        var title = crossSellModel.crossSellModel.info.title
+        val startUnderline = title.indexOf(CROSS_SELL_UNDERLINE_TEXT, ignoreCase = true)
+        val underlineText = title.substring(startUnderline, CROSS_SELL_UNDERLINE_TEXT.length)
+        if (startUnderline >= 0) {
+            title = title.replaceRange(startUnderline, CROSS_SELL_UNDERLINE_TEXT.length, "<u>$underlineText</u>")
+        }
+        val text = MethodChecker.fromHtml(title)
+        itemBinding.ivCheckoutCrossSellItem.setImageUrl(crossSellModel.crossSellModel.info.iconUrl)
+        itemBinding.tvCheckoutCrossSellItem.text = text
+        itemBinding.tvCheckoutCrossSellItem.setOnClickListener {
+            if (startUnderline >= 0) {
+                GeneralBottomSheet().apply {
+                    setTitle(
+                        MethodChecker.fromHtml(crossSellModel.crossSellModel.bottomSheet.title)
+                            .toString()
+                    )
+                    setDesc(
+                        MethodChecker.fromHtml(crossSellModel.crossSellModel.bottomSheet.subtitle)
+                            .toString()
+                    )
+                    setButtonText(itemBinding.root.context.getString(com.tokopedia.purchase_platform.common.R.string.label_button_bottomsheet_close))
+                    setButtonOnClickListener { it.dismiss() }
+                }.show(itemBinding.root.context, listener.getHostFragmentManager())
+            }
+        }
+        itemBinding.cbCheckoutCrossSellItem.setOnCheckedChangeListener { _, isChecked ->
+            listener.onCrossSellItemChecked(isChecked, crossSellModel)
+        }
     }
 
     private fun renderDonation(
@@ -61,6 +92,8 @@ object CheckoutCrossSellItemView {
         itemBinding.cbCheckoutCrossSellItem.skipAnimation()
         itemBinding.cbCheckoutCrossSellItem.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
             listener.onDonationChecked(isChecked)
+        }
+        itemBinding.tvCheckoutCrossSellItem.setOnClickListener {
         }
     }
 

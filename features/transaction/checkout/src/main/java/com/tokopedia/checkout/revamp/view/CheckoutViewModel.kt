@@ -301,20 +301,17 @@ class CheckoutViewModel @Inject constructor(
 
                     val crossSellList = arrayListOf<CheckoutCrossSellItem>()
                     if (!tickerError.isError) {
-                        crossSellList.addAll(
-                            saf.cartShipmentAddressFormData.crossSell.mapIndexedNotNull { index, crossSellModel ->
-                                if (!crossSellModel.checkboxDisabled) {
-                                    CheckoutCrossSellModel(
-                                        crossSellModel,
-                                        crossSellModel.isChecked,
-                                        crossSellModel.checkboxDisabled,
-                                        index
-                                    )
-                                } else {
-                                    null
-                                }
-                            }
-                        )
+                        val crossSellModel = saf.cartShipmentAddressFormData.crossSell.firstOrNull()
+                        if (crossSellModel != null && !crossSellModel.checkboxDisabled) {
+                            crossSellList.add(
+                                CheckoutCrossSellModel(
+                                    crossSellModel,
+                                    crossSellModel.isChecked,
+                                    crossSellModel.checkboxDisabled,
+                                    0
+                                )
+                            )
+                        }
                         if (saf.cartShipmentAddressFormData.egoldAttributes != null && saf.cartShipmentAddressFormData.egoldAttributes!!.isEnabled && saf.cartShipmentAddressFormData.egoldAttributes!!.isEligible) {
                             crossSellList.add(
                                 CheckoutEgoldModel(
@@ -1848,6 +1845,29 @@ class CheckoutViewModel @Inject constructor(
                 isReloadAfterPriceChangeHigher = false
             )
         }
+    }
+
+    fun updateCrossSell(checked: Boolean, crossSellModel: CheckoutCrossSellModel) {
+        val checkoutItems = listData.value.toMutableList()
+        val crossSellGroup = checkoutItems.crossSellGroup()!!
+        val newList: MutableList<CheckoutCrossSellItem> = arrayListOf()
+        for (checkoutCrossSellItem in crossSellGroup.crossSellList) {
+            if (checkoutCrossSellItem is CheckoutCrossSellModel) {
+                newList.add(
+                    checkoutCrossSellItem.copy(
+                        crossSellModel = checkoutCrossSellItem.crossSellModel.copy(
+                            isChecked = checked
+                        ),
+                        isChecked = checked
+                    )
+                )
+            } else {
+                newList.add(checkoutCrossSellItem)
+            }
+        }
+        checkoutItems[checkoutItems.size - 2] = crossSellGroup.copy(crossSellList = newList)
+        listData.value = checkoutItems
+        calculateTotal()
     }
 
     fun updateEgold(checked: Boolean) {

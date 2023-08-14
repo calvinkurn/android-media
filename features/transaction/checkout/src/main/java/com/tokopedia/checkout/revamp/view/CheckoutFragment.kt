@@ -48,6 +48,7 @@ import com.tokopedia.checkout.revamp.di.DaggerCheckoutComponent
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapter
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutDiffUtilCallback
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
@@ -2007,6 +2008,23 @@ class CheckoutFragment :
 
     override fun getParentWidth(): Int {
         return binding.root.width
+    }
+
+    override fun onCrossSellItemChecked(checked: Boolean, crossSellModel: CheckoutCrossSellModel) {
+        val shipmentCartItemModels = viewModel.listData.value.filterIsInstance(CheckoutProductModel::class.java)
+        viewModel.updateCrossSell(checked, crossSellModel)
+        val digitalCategoryName = crossSellModel.crossSellModel.orderSummary.title
+        val digitalProductId = crossSellModel.crossSellModel.id
+        val eventLabel = "$digitalCategoryName - $digitalProductId"
+        val digitalProductName = crossSellModel.crossSellModel.info.title
+        checkoutAnalyticsCourierSelection.eventClickCheckboxCrossSell(
+            checked,
+            userSessionInterface.userId,
+            0.toString(),
+            eventLabel,
+            digitalProductName,
+            ArrayList(shipmentCartItemModels.map { it.productCatId })
+        )
     }
 
     override fun onEgoldChecked(checked: Boolean) {
