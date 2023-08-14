@@ -23,14 +23,12 @@ import com.airbnb.lottie.LottieCompositionFactory
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setTextColorCompat
 import com.tokopedia.kotlin.extensions.view.splitByThousand
@@ -72,6 +70,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.promoli
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
@@ -233,7 +232,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         )
     }
 
-    private fun reloadUi() {
+    private fun resetView() {
         setupView()
         val promoRequest: PromoRequest? = arguments?.getParcelable(BUNDLE_KEY_PROMO_REQUEST)
         val chosenAddress: ChosenAddress? = arguments?.getParcelable(BUNDLE_KEY_CHOSEN_ADDRESS)
@@ -503,10 +502,10 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 is PromoPageUiState.Success -> {
                     renderTickerInfo(state.tickerInfo)
                     renderRecyclerView(state.items)
-                    renderSavingInfo(state.savingInfo)
                     renderLoadingDialog(false)
                     renderLoadingShimmer(false)
                     renderContent(true)
+                    renderSavingInfo(state.savingInfo)
                 }
 
                 is PromoPageUiState.Error -> {
@@ -630,7 +629,6 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             }
             rlBottomSheetWrapper.clipToOutline = true
             clBottomSheetContent.clipChildren = true
-            clSavingInfo.isVisible = isVisible
             clBottomSheetHeader.isVisible = isVisible
             rvPromo.isVisible = isVisible
             cvTotalAmount.isVisible = isVisible
@@ -638,23 +636,14 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun renderSavingInfo(promoSavingInfo: PromoSavingInfo) {
-        binding.run {
+        with(binding) {
             val formattedTotalVoucherAmount =
                 promoSavingInfo.totalSelectedPromoBenefitAmount.splitByThousand()
-            val text = if (promoSavingInfo.selectedPromoCount > 1) {
-                context?.getString(
-                    R.string.promo_voucher_placeholder_total_savings_multi_voucher,
-                    formattedTotalVoucherAmount,
-                    promoSavingInfo.selectedPromoCount
-                )
-            } else {
-                context?.getString(
-                    R.string.promo_voucher_placeholder_total_savings,
-                    formattedTotalVoucherAmount
-                )
-            }
-            tpgTotalSavings.text = MethodChecker.fromHtml(text)
-            clSavingInfo.isVisible = promoSavingInfo.selectedPromoCount.isMoreThanZero()
+            val text = promoSavingInfo.message
+                .replace("{benefit_amount}", formattedTotalVoucherAmount)
+            tpgTotalSavings.text = HtmlLinkHelper(root.context, text).spannedString
+            clSavingInfo.isVisible = promoSavingInfo.selectedPromoCount > 0
+                && promoSavingInfo.totalSelectedPromoBenefitAmount > 0
         }
     }
 
@@ -702,7 +691,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 is ApplyPromoUiAction.Failed -> {
                     renderLoadingDialog(false)
                     if (uiAction.shouldReload) {
-                        reloadUi()
+                        resetView()
                     }
                     showToastMessage(uiAction.throwable)
                     listener?.onApplyPromoFailed(uiAction.throwable)
@@ -756,7 +745,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 binding.lottieAnimationView.setComposition(result)
                 binding.lottieAnimationView.addAnimatorListener(object : Animator.AnimatorListener {
                     override fun onAnimationStart(animator: Animator) {
-
+                        // no-op
                     }
 
                     override fun onAnimationEnd(animator: Animator) {
@@ -780,6 +769,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     }
 
     private val onAttemptPromoCode: (String) -> Unit = { attemptedPromoCode ->
+        renderLoadingDialog(true)
         val promoRequest: PromoRequest? = arguments?.getParcelable(BUNDLE_KEY_PROMO_REQUEST)
         val chosenAddress: ChosenAddress? = arguments?.getParcelable(BUNDLE_KEY_CHOSEN_ADDRESS)
         viewModel.onAttemptPromoCode(

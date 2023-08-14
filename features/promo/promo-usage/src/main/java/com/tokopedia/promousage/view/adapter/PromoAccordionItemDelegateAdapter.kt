@@ -3,12 +3,12 @@ package com.tokopedia.promousage.view.adapter
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.promousage.R
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promousage.databinding.PromoUsageItemPromoBinding
 import com.tokopedia.promousage.domain.entity.PromoItemState
 import com.tokopedia.promousage.domain.entity.list.PromoItem
@@ -26,6 +26,8 @@ class PromoAccordionItemDelegateAdapter(
         private const val NORMAL_MARGIN_BOTTOM_IN_DP = 6
         private const val NORMAL_MARGIN_START_END_IN_DP = 16
         private const val LAST_RECOMMENDED_MARGIN_BOTTOM_IN_DP = 16
+        private const val ATTEMPTED_MARGIN_TOP_IN_DP = 16
+        private const val ATTEMPTED_MARGIN_BOTTOM_IN_DP = 0
     }
 
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
@@ -64,6 +66,20 @@ class PromoAccordionItemDelegateAdapter(
                             NORMAL_MARGIN_BOTTOM_IN_DP.toPx()
                         )
                     }
+                    bottomDivider.gone()
+                } else if (item.isAttempted) {
+                    clPromoBackground.background = ColorDrawable(
+                        ContextCompat
+                            .getColor(root.context,
+                                com.tokopedia.unifyprinciples.R.color.Unify_Background)
+                    )
+                    vcvPromo.setMargin(
+                        NORMAL_MARGIN_START_END_IN_DP.toPx(),
+                        ATTEMPTED_MARGIN_TOP_IN_DP.toPx(),
+                        NORMAL_MARGIN_START_END_IN_DP.toPx(),
+                        ATTEMPTED_MARGIN_BOTTOM_IN_DP.toPx()
+                    )
+                    bottomDivider.visible()
                 } else {
                     clPromoBackground.background = ColorDrawable(
                         ContextCompat
@@ -76,6 +92,7 @@ class PromoAccordionItemDelegateAdapter(
                         NORMAL_MARGIN_START_END_IN_DP.toPx(),
                         NORMAL_MARGIN_BOTTOM_IN_DP.toPx()
                     )
+                    bottomDivider.gone()
                 }
                 vcvPromo.setOnClickListener {
                     when (item.state) {

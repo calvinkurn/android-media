@@ -1,7 +1,5 @@
 package com.tokopedia.promousage.domain.entity
 
-import com.tokopedia.promousage.domain.entity.list.PromoItem
-
 sealed class PromoItemState {
 
     object Loading : PromoItemState()

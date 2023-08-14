@@ -41,7 +41,6 @@ data class PromoItem(
     val isRecommended: Boolean = false,
     val isLastRecommended: Boolean = false,
     val isPreSelected: Boolean = false,
-    val isSelected: Boolean = false,
     val isAttempted: Boolean = false,
     val isBebasOngkir: Boolean = false,
     val isHighlighted: Boolean = false,

@@ -9,6 +9,7 @@ import com.tokopedia.promousage.databinding.PromoUsageTncBottomsheetBinding
 import com.tokopedia.promousage.domain.entity.PromoPageEntryPoint
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.webview.BaseSessionWebViewFragment
 
 class PromoUsageTncBottomSheet : BottomSheetUnify() {
@@ -28,9 +29,11 @@ class PromoUsageTncBottomSheet : BottomSheetUnify() {
         private const val BUNDLE_KEY_USER_ID = "user_id"
 
         private const val PATH_PROMO_TNC = "promo-tnc"
-        private const val QUERY_CODES = "codes"
-        private const val QUERY_SOURCE = "source"
-        private const val QUERY_ID = "id"
+        private const val QUERY_KEY_CODES = "codes"
+        private const val QUERY_KEY_SOURCE = "source"
+        private const val QUERY_KEY_ID = "id"
+        private const val QUERY_KEY_THEME = "theme"
+        private const val QUERY_VALUE_THEME_DARK = "dark"
 
         fun newInstance(
             promoCodes: List<String>,
@@ -100,14 +103,17 @@ class PromoUsageTncBottomSheet : BottomSheetUnify() {
         // TODO: Replace using real tokopedia URL
 //        return Uri.parse(TokopediaUrl.getInstance().WEB)
 //            .buildUpon()
-        return Uri.parse("https://81-staging-feature.tokopedia.com/")
+        val builder = Uri.parse("https://81-staging-feature.tokopedia.com/")
             .buildUpon()
             .path(PATH_PROMO_TNC)
-            .appendQueryParameter(QUERY_CODES, promoCodes.joinToString(","))
-            .appendQueryParameter(QUERY_SOURCE, source)
-            .appendQueryParameter(QUERY_ID, userId)
-            .build()
-            .toString()
+            .appendQueryParameter(QUERY_KEY_CODES, promoCodes.joinToString(","))
+            .appendQueryParameter(QUERY_KEY_SOURCE, source)
+            .appendQueryParameter(QUERY_KEY_ID, userId)
+        val isDarkMode = context?.isDarkMode() ?: false
+        if (isDarkMode) {
+            builder.appendQueryParameter(QUERY_KEY_THEME, QUERY_VALUE_THEME_DARK)
+        }
+        return builder.build().toString()
     }
 
     fun show(fragmentManager: FragmentManager) {

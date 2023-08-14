@@ -981,6 +981,7 @@ object DummyData {
 //        items.add(PromoAttemptItem(label = "Punya kode promo? Masukin di sini ✨"))
         // success attempt UI
         items.add(promoAttemptItemSuccess)
+        promoAttemptItemSuccess.promo?.let { items.add(it) }
         // failed attempt UI
 //        items.add(promoAttemptItemError)
 
@@ -1005,7 +1006,7 @@ object DummyData {
                 messageSelected = "Kamu hemat Rp30.000 dari 2 promo!",
                 backgroundUrl = "https://images.tokopedia.net/img/Promo%20Recom%20Section@3x.png",
                 animationUrl = "https://assets.tokopedia.net/asts/android/shop_page/shop_campaign_tab_confetti.json",
-                selectedCodes = recommendedPromos.filter { it.isSelected }.map { it.code }
+                selectedCodes = recommendedPromos.filter { it.state == PromoItemState.Selected }.map { it.code }
             )
         )
         items.addAll(recommendedPromos)
@@ -1078,9 +1079,13 @@ object DummyData {
 
         // attempt section
         // for normal attempt UI
-        items.add(PromoAttemptItem(label = "Punya kode promo? Masukin di sini ✨"))
+        // items.add(PromoAttemptItem(label = "Punya kode promo? Masukin di sini ✨"))
         // success attempt UI
-//        items.add(promoAttemptItemSuccess)
+        items.add(promoAttemptItemSuccess)
+        items.add(attemptedPromo.copy(
+            isExpanded = true,
+            isVisible = true
+        ))
         // failed attempt UI
 //        items.add(promoAttemptItemError)
 

@@ -23,15 +23,6 @@
         app:unify_text_field_label="@string/promo_voucher_input_promo_code_label"
         app:unify_text_field_label_static="false" />
 
-    <com.tokopedia.promousage.view.custom.VoucherCompoundView
-        android:id="@+id/userInputVoucherView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:visibility="gone" />
-
     <View
         android:id="@+id/bottomDivider"
         android:layout_width="match_parent"

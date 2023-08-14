@@ -20,6 +20,7 @@ import com.tokopedia.promousage.domain.entity.PromoItemInfo
 import com.tokopedia.promousage.domain.entity.PromoItemState
 import com.tokopedia.promousage.domain.entity.PromoPageSection
 import com.tokopedia.promousage.domain.entity.PromoPageTickerInfo
+import com.tokopedia.promousage.domain.entity.PromoSavingInfo
 import com.tokopedia.promousage.domain.entity.SecondaryPromoItem
 import com.tokopedia.promousage.domain.entity.list.PromoAccordionHeaderItem
 import com.tokopedia.promousage.domain.entity.list.PromoAccordionViewAllItem
@@ -50,6 +51,17 @@ internal class PromoUsageGetCouponListRecommendationMapper @Inject constructor()
             message = response.couponListRecommendation.data.tickerInfo.message,
             iconUrl = response.couponListRecommendation.data.tickerInfo.iconUrl,
             backgroundUrl = response.couponListRecommendation.data.tickerInfo.backgroundUrl,
+        )
+    }
+
+    fun mapCouponListRecommendationResponseToSavingInfo(
+        response: GetCouponListRecommendationResponse
+    ) : PromoSavingInfo {
+        return PromoSavingInfo(
+            message = "Yay, kamu hemat <b>Rp{benefit_amount}</b>"
+        )
+        return PromoSavingInfo(
+            message = response.couponListRecommendation.data.additionalMessage
         )
     }
 
@@ -245,7 +257,6 @@ internal class PromoUsageGetCouponListRecommendationMapper @Inject constructor()
             currentClashingSecondaryPromoCodes = secondaryClashingInfos.map { it.code },
             isRecommended = isRecommended,
             isPreSelected = isSelected,
-            isSelected = isSelected,
             isAttempted = coupon.isAttempted || secondaryCoupon.isAttempted,
             isBebasOngkir = coupon.isBebasOngkir || secondaryCoupon.isBebasOngkir,
             isHighlighted = coupon.isHighlighted || secondaryCoupon.isHighlighted,

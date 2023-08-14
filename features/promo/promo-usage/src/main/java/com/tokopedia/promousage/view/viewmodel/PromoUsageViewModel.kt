@@ -160,7 +160,12 @@ internal class PromoUsageViewModel @Inject constructor(
             .mapCouponListRecommendationResponseToPageTickerInfo(response)
         val items = getCouponListRecommendationMapper
             .mapCouponListRecommendationResponseToPromoSections(response)
-        val savingInfo = calculatePromoSavingInfo(items)
+        var savingInfo = calculatePromoSavingInfo(items)
+        savingInfo = savingInfo.copy(
+            message = getCouponListRecommendationMapper
+                .mapCouponListRecommendationResponseToSavingInfo(response)
+                .message
+        )
         val attemptedPromoCodeError = getCouponListRecommendationMapper
             .mapCouponListRecommendationResponseToAttemptedPromoCodeError(response)
 
@@ -387,7 +392,10 @@ internal class PromoUsageViewModel @Inject constructor(
                     updatedItems.add(tncItem.copy(selectedPromoCodes = selectedPromoCodes))
                 }
                 // Update SavingInfo section
-                val updatedSavingInfo = calculatePromoSavingInfo(updatedItems)
+                val updatedSavingInfo = calculatePromoSavingInfo(
+                    items = updatedItems,
+                    previousSavingInfo = pageState.savingInfo
+                )
                 _promoPageUiState.postValue(
                     pageState.copy(
                         items = updatedItems,
@@ -874,14 +882,19 @@ internal class PromoUsageViewModel @Inject constructor(
                         if (item is PromoItem) {
                             if (item.isRecommended) {
                                 item.copy(state = PromoItemState.Selected)
-                            } else {
+                            } else if (item.state == PromoItemState.Selected) {
                                 item.copy(state = PromoItemState.Normal)
+                            } else {
+                                item
                             }
                         } else {
                             item
                         }
                     }
-                    val updatedSavingInfo = calculatePromoSavingInfo(updatedItems)
+                    val updatedSavingInfo = calculatePromoSavingInfo(
+                        items = updatedItems,
+                        previousSavingInfo = pageState.savingInfo
+                    )
                     _promoPageUiState.postValue(
                         pageState.copy(
                             items = updatedItems,
@@ -908,12 +921,16 @@ internal class PromoUsageViewModel @Inject constructor(
         onSuccess?.invoke()
     }
 
-    private fun calculatePromoSavingInfo(items: List<DelegateAdapterItem>): PromoSavingInfo {
+    private fun calculatePromoSavingInfo(
+        items: List<DelegateAdapterItem>,
+        previousSavingInfo: PromoSavingInfo? = null
+    ): PromoSavingInfo {
         val selectedPromoCount = items.getSelectedPromoCodes().size
         val totalSelectedPromoBenefit = items.sumSelectedPromoBenefit()
         return PromoSavingInfo(
             selectedPromoCount = selectedPromoCount,
-            totalSelectedPromoBenefitAmount = totalSelectedPromoBenefit
+            totalSelectedPromoBenefitAmount = totalSelectedPromoBenefit,
+            message = previousSavingInfo?.message ?: ""
         )
     }
 

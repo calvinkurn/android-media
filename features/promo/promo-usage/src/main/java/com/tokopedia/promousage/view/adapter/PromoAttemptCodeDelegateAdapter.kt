@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
@@ -56,18 +57,13 @@ internal class PromoAttemptCodeDelegateAdapter(
                 if (item.attemptedPromoCode.isNotBlank()) {
                     tauVoucherCode.editText.setText(item.attemptedPromoCode)
                 }
-                if (item.promo != null && item.errorMessage.isBlank()) {
-                    userInputVoucherView.bind(item.promo)
-                    userInputVoucherView.visible()
-                } else {
-                    userInputVoucherView.gone()
-                }
+                bottomDivider.isVisible = item.promo == null
                 if (item.errorMessage.isNotBlank()) {
                     tauVoucherCode.isInputError = true
                     tauVoucherCode.setMessage(item.errorMessage)
                     showClearIcon()
                 }
-                hideUsePromoCodeCta()    
+                hideUsePromoCodeCta()
             }
         }
 
