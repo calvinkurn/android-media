@@ -3,9 +3,10 @@
 
     <application>
         <activity
-            android:name=".StoriesActivity"
+            android:name=".view.activity.StoriesActivity"
             android:exported="false"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/Stories.FullScreen">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
