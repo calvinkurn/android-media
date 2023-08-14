@@ -20,6 +20,7 @@ import com.tokopedia.discovery2.usecase.CheckPushStatusUseCase
 import com.tokopedia.discovery2.usecase.SubScribeToUseCase
 import com.tokopedia.discovery2.usecase.bannerusecase.BannerUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.model.PushNotificationBannerSubscription
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -196,12 +197,6 @@ class MultiBannerViewModel(val application: Application, var components: Compone
         }
     }
 
-    data class PushNotificationBannerSubscription(
-        val position: Int = BANNER_SUBSCRIPTION_DEFAULT_STATUS,
-        val errorMessage: String = String.EMPTY,
-        val isSubscribed: Boolean = false
-    )
-
     private suspend fun subscribeUserForPushNotification(
         position: Int
     ) {
@@ -256,7 +251,7 @@ class MultiBannerViewModel(val application: Application, var components: Compone
                 pushBannerSubscription.value = PushNotificationBannerSubscription(
                     position = position,
                     errorMessage = String.EMPTY,
-                    isSubscribed = pushSubscriptionResponse?.notifierCheckReminder?.status == 1
+                    isSubscribed = pushSubscriptionResponse?.notifierCheckReminder?.status == BANNER_SUBSCRIPTION_REMINDED_STATUS
                 )
                 pushNotificationBannerStatus[position] = pushSubscriptionResponse?.notifierCheckReminder?.status ?: BANNER_SUBSCRIPTION_DEFAULT_STATUS
             }, onError = {
@@ -281,7 +276,7 @@ class MultiBannerViewModel(val application: Application, var components: Compone
             pushBannerSubscription.value = PushNotificationBannerSubscription(
                 position = position,
                 errorMessage = String.EMPTY,
-                isSubscribed = pushSubscriptionResponse?.notifierCheckReminder?.status == 1
+                isSubscribed = pushSubscriptionResponse?.notifierCheckReminder?.status == BANNER_SUBSCRIPTION_REMINDED_STATUS
             )
             pushNotificationBannerStatus[position] = pushSubscriptionResponse?.notifierCheckReminder?.status ?: BANNER_SUBSCRIPTION_DEFAULT_STATUS
         }, onError = {
