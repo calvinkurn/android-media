@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 
 import android.view.GestureDetector;
+import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -13,6 +14,7 @@ import com.tokopedia.editor.ui.gesture.listener.OnGestureControl;
 import com.tokopedia.editor.ui.gesture.listener.OnMultiTouchListener;
 import com.tokopedia.editor.ui.model.AddTextModel;
 import com.tokopedia.editor.ui.widget.GridGuidelineView;
+import com.tokopedia.unifyprinciples.Typography;
 
 public class MultiTouchListener implements View.OnTouchListener {
 
@@ -34,14 +36,18 @@ public class MultiTouchListener implements View.OnTouchListener {
     private final GridGuidelineView gridGuidelineView;
     private final Button deleteView;
 
-    private float originalScaleX = 0f;
-    private float originalScaleY = 0f;
+    private float originalScaleX;
+    private float originalScaleY;
 
     boolean isSelectedViewDraggedToTrash = false;
     boolean isDragging = false;
 
-    public MultiTouchListener(Context context, GridGuidelineView guideline, Button deleteView) {
+    public MultiTouchListener(Context context, Typography view, GridGuidelineView guideline, Button deleteView) {
         this.deleteView = deleteView;
+
+        // @Workaround: for initiate state
+        originalScaleX = view.getScaleX();
+        originalScaleY = view.getScaleY();
 
         isTextPinchZoomable = true;
         scaleGestureDetector = new ScaleGestureDetector(new ScaleGestureListener(this));
@@ -68,12 +74,6 @@ public class MultiTouchListener implements View.OnTouchListener {
         scale = Math.max(info.getMinScale(), Math.min(info.getMaxScale(), scale));
         view.setScaleX(scale);
         view.setScaleY(scale);
-
-        // init state
-        if (originalScaleX == 0f && originalScaleY == 0f) {
-            originalScaleX = view.getScaleX();
-            originalScaleY = view.getScaleY();
-        }
 
         // this condition will update original scale value and
         // preventing the overlapping value while scale-down animation appear.
@@ -140,8 +140,29 @@ public class MultiTouchListener implements View.OnTouchListener {
                 if (pointerIndexMove != -1) {
                     float currX = event.getX(pointerIndexMove);
                     float currY = event.getY(pointerIndexMove);
+
                     if (!scaleGestureDetector.isInProgress()) {
                         adjustTranslation(view, currX - prevX, currY - prevY);
+                    }
+
+                    if (!isDragging) {
+                        isDragging = true;
+                        showDeletionButton();
+                    }
+
+                    if (isPointerContain(x, y)) {
+                        if (!isSelectedViewDraggedToTrash) {
+                            isSelectedViewDraggedToTrash = true;
+                            applyScaleAnimation(view, 0.3f, 0.3f);
+                            enableHapticFeedback(view);
+                            return true;
+                        }
+                    } else {
+                        if (isSelectedViewDraggedToTrash) {
+                            isSelectedViewDraggedToTrash = false;
+                            applyScaleAnimation(view, originalScaleX, originalScaleY);
+                            return true;
+                        }
                     }
 
                     // Calculate distances from the center of the parent
@@ -149,10 +170,10 @@ public class MultiTouchListener implements View.OnTouchListener {
                     float parentCenterY = ((View) view.getParent()).getHeight() / 2f;
 
                     // Check if the TextView is close to the vertical center of the parent
-                    boolean isAlignedWithCenterX = isAlignedWithCenterX(view);
+                    boolean isAlignedWithCenterX = isAlignedWithCenterX(view) && !isPointerContain(x, y);
 
                     // Check if the TextView is close to the horizontal center of the parent
-                    boolean isAlignedWithCenterY = isAlignedWithCenterY(view);
+                    boolean isAlignedWithCenterY = isAlignedWithCenterY(view) && !isPointerContain(x, y);
 
                     // Snap effect for horizontal alignment
                     if (isAlignedWithCenterX(view)) {
@@ -169,23 +190,6 @@ public class MultiTouchListener implements View.OnTouchListener {
                     // Show/hide vertical and horizontal guidelines based on alignment
                     gridGuidelineView.setShowVerticalLine(isAlignedWithCenterX);
                     gridGuidelineView.setShowHorizontalLine(isAlignedWithCenterY);
-
-                    if (!isDragging) {
-                        isDragging = true;
-                        showDeletionButton();
-                    }
-
-                    if (isPointerContain(x, y)) {
-                        if (!isSelectedViewDraggedToTrash) {
-                            isSelectedViewDraggedToTrash = true;
-                            applyScaleAnimation(view, 0.3f, 0.3f);
-                        }
-                    } else {
-                        if (isSelectedViewDraggedToTrash) {
-                            isSelectedViewDraggedToTrash = false;
-                            applyScaleAnimation(view, originalScaleX, originalScaleY);
-                        }
-                    }
                 }
                 break;
             case MotionEvent.ACTION_CANCEL:
@@ -229,6 +233,13 @@ public class MultiTouchListener implements View.OnTouchListener {
         return true;
     }
 
+    private void enableHapticFeedback(View view) {
+        view.performHapticFeedback(
+                HapticFeedbackConstants.VIRTUAL_KEY,
+                HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
+        );
+    }
+
     private boolean isPointerContain(float x, float y) {
         int[] location = new int[2];
         deleteView.getLocationOnScreen(location);
@@ -266,7 +277,7 @@ public class MultiTouchListener implements View.OnTouchListener {
         ObjectAnimator scaleYAnimator = ObjectAnimator.ofFloat(view, "scaleY", scaleY);
 
         // Set animation duration and interpolator
-        long duration = 300;
+        long duration = 200;
         scaleXAnimator.setDuration(duration);
         scaleYAnimator.setDuration(duration);
 
