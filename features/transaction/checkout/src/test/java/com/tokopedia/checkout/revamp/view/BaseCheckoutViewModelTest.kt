@@ -19,6 +19,7 @@ import com.tokopedia.checkout.revamp.view.processor.CheckoutPaymentProcessor
 import com.tokopedia.checkout.revamp.view.processor.CheckoutProcessor
 import com.tokopedia.checkout.revamp.view.processor.CheckoutPromoProcessor
 import com.tokopedia.checkout.revamp.view.processor.CheckoutToasterProcessor
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageToaster
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
@@ -38,6 +39,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.MockK
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.junit.Before
 import org.junit.Rule
 
@@ -79,7 +83,7 @@ open class BaseCheckoutViewModelTest {
     @MockK
     lateinit var shippingCourierConverter: ShippingCourierConverter
 
-    @MockK
+    @MockK(relaxed = true)
     lateinit var userSessionInterface: UserSessionInterface
 
     @MockK
@@ -118,8 +122,8 @@ open class BaseCheckoutViewModelTest {
     @MockK
     lateinit var shipmentDataRequestConverter: ShipmentDataRequestConverter
 
-    @MockK
-    lateinit var dataConverter: CheckoutDataConverter
+//    @MockK
+    var dataConverter: CheckoutDataConverter = CheckoutDataConverter()
 
     @MockK
     lateinit var mTrackerTradeIn: CheckoutTradeInAnalytics
@@ -128,9 +132,16 @@ open class BaseCheckoutViewModelTest {
 
     lateinit var viewModel: CheckoutViewModel
 
+    var latestToaster: CheckoutPageToaster? = null
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+        GlobalScope.launch {
+            toasterProcessor.commonToaster.collectLatest {
+                latestToaster = it
+            }
+        }
         viewModel = CheckoutViewModel(
             CheckoutCartProcessor(
                 getShipmentAddressFormV4UseCase,

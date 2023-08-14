@@ -2049,33 +2049,35 @@ class CheckoutFragment :
     }
 
     override fun onProcessToPayment() {
-        var publicKey: String? = null
-        if (CheckoutFingerprintUtil.getEnableFingerprintPayment(activity)) {
-            val fpk = CheckoutFingerprintUtil.getFingerprintPublicKey(
-                activity
-            )
-            if (fpk != null) {
-                publicKey = FingerPrintUtil.getPublicKey(fpk)
+        if (!viewModel.isLoading()) {
+            var publicKey: String? = null
+            if (CheckoutFingerprintUtil.getEnableFingerprintPayment(activity)) {
+                val fpk = CheckoutFingerprintUtil.getFingerprintPublicKey(
+                    activity
+                )
+                if (fpk != null) {
+                    publicKey = FingerPrintUtil.getPublicKey(fpk)
+                }
             }
-        }
-        viewModel.checkout(publicKey, { showEpharmacyToaster ->
-            sendAnalyticsEpharmacyClickPembayaran(showEpharmacyToaster)
-        }) {
-            val paymentPassData = PaymentPassData()
-            paymentPassData.redirectUrl = it.checkoutData!!.redirectUrl
-            paymentPassData.transactionId = it.checkoutData.transactionId
-            paymentPassData.paymentId = it.checkoutData.paymentId
-            paymentPassData.callbackSuccessUrl = it.checkoutData.callbackSuccessUrl
-            paymentPassData.callbackFailedUrl = it.checkoutData.callbackFailedUrl
-            paymentPassData.queryString = it.checkoutData.queryString
-            val intent =
-                RouteManager.getIntent(activity, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
-            intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
-            intent.putExtra(
-                PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT,
-                it.hasClearPromoBeforeCheckout
-            )
-            startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
+            viewModel.checkout(publicKey, { showEpharmacyToaster ->
+                sendAnalyticsEpharmacyClickPembayaran(showEpharmacyToaster)
+            }) {
+                val paymentPassData = PaymentPassData()
+                paymentPassData.redirectUrl = it.checkoutData!!.redirectUrl
+                paymentPassData.transactionId = it.checkoutData.transactionId
+                paymentPassData.paymentId = it.checkoutData.paymentId
+                paymentPassData.callbackSuccessUrl = it.checkoutData.callbackSuccessUrl
+                paymentPassData.callbackFailedUrl = it.checkoutData.callbackFailedUrl
+                paymentPassData.queryString = it.checkoutData.queryString
+                val intent =
+                    RouteManager.getIntent(activity, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
+                intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
+                intent.putExtra(
+                    PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT,
+                    it.hasClearPromoBeforeCheckout
+                )
+                startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
+            }
         }
     }
 

@@ -4,6 +4,9 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressF
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData.Companion.ERROR_CODE_TO_OPEN_ADDRESS_LIST
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData.Companion.ERROR_CODE_TO_OPEN_ADD_NEW_ADDRESS
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShopV2
+import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticCommon.data.response.EligibleForAddressFeature
@@ -165,6 +168,41 @@ class CheckoutViewModelLoadSafTest : BaseCheckoutViewModelTest() {
         assertEquals(
             response.errorMessage,
             (viewModel.pageState.value as CheckoutPageState.Error).throwable.message
+        )
+    }
+
+    @Test
+    fun load_SAF_success() {
+        // given
+        val response = CartShipmentAddressFormData(
+            isError = false,
+            groupAddress = listOf(
+                GroupAddress(
+                    groupShop = listOf(
+                        GroupShop(
+                            groupShopData = listOf(
+                                GroupShopV2(
+                                    products = listOf(
+                                        Product()
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+        coEvery {
+            getShipmentAddressFormV4UseCase.invoke(any())
+        } returns response
+
+        // when
+        viewModel.loadSAF(false, false, false)
+
+        // then
+        assertEquals(
+            CheckoutPageState.Success(response),
+            viewModel.pageState.value
         )
     }
 }
