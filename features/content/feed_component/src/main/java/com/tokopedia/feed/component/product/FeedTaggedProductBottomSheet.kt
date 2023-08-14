@@ -42,19 +42,19 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
     }
 
     private val mAdapterListener = object : FeedTaggedProductBottomSheetViewHolder.Listener {
-        override fun onProductCardClicked(product: FeedTaggedProductUiModel, itemPosition: Int) {
+        override fun onProductCardClicked(product: ContentTaggedProductUiModel, itemPosition: Int) {
             mListener?.onProductCardClicked(product, itemPosition)
         }
 
         override fun onAddToCartProductButtonClicked(
-            product: FeedTaggedProductUiModel,
+            product: ContentTaggedProductUiModel,
             itemPosition: Int
         ) {
             mListener?.onAddToCartProductButtonClicked(product, itemPosition)
         }
 
         override fun onBuyProductButtonClicked(
-            product: FeedTaggedProductUiModel,
+            product: ContentTaggedProductUiModel,
             itemPosition: Int
         ) {
             mListener?.onBuyProductButtonClicked(product, itemPosition)
@@ -138,8 +138,8 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         viewModelFactory: ViewModelProvider.Factory,
         manager: FragmentManager,
         tag: String,
-        products: List<FeedTaggedProductUiModel> = emptyList(),
-        sourceType: FeedTaggedProductUiModel.SourceType
+        products: List<ContentTaggedProductUiModel> = emptyList(),
+        sourceType: ContentTaggedProductUiModel.SourceType
     ) {
         this.isFirst = true
         this.activityId = activityId
@@ -207,17 +207,17 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
 
     interface Listener {
         fun onProductCardClicked(
-            product: FeedTaggedProductUiModel,
+            product: ContentTaggedProductUiModel,
             itemPosition: Int
         )
 
         fun onAddToCartProductButtonClicked(
-            product: FeedTaggedProductUiModel,
+            product: ContentTaggedProductUiModel,
             itemPosition: Int
         )
 
         fun onBuyProductButtonClicked(
-            product: FeedTaggedProductUiModel,
+            product: ContentTaggedProductUiModel,
             itemPosition: Int
         )
     }

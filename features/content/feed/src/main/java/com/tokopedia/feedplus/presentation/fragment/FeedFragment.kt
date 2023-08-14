@@ -41,7 +41,7 @@ import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feed.component.product.FeedTaggedProductBottomSheet
-import com.tokopedia.feed.component.product.FeedTaggedProductUiModel
+import com.tokopedia.feed.component.product.ContentTaggedProductUiModel
 import com.tokopedia.feedcomponent.bottomsheets.FeedFollowersOnlyBottomSheet
 import com.tokopedia.feedcomponent.presentation.utils.FeedResult
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
@@ -1375,7 +1375,7 @@ class FeedFragment :
         RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
     }
 
-    override fun onProductCardClicked(product: FeedTaggedProductUiModel, itemPosition: Int) {
+    override fun onProductCardClicked(product: ContentTaggedProductUiModel, itemPosition: Int) {
         if (product.appLink.isEmpty()) return
 
         currentTrackerData?.let { data ->
@@ -1393,15 +1393,15 @@ class FeedFragment :
     }
 
     override fun onAddToCartProductButtonClicked(
-        product: FeedTaggedProductUiModel,
+        product: ContentTaggedProductUiModel,
         itemPosition: Int
     ) {
         if (!checkForFollowerBottomSheet(
                 currentTrackerData?.activityId ?: "",
                 itemPosition,
                 when (product.campaign.status) {
-                    is FeedTaggedProductUiModel.CampaignStatus.Upcoming -> FeedCardCampaignModel.UPCOMING
-                    is FeedTaggedProductUiModel.CampaignStatus.Ongoing -> FeedCardCampaignModel.ONGOING
+                    is ContentTaggedProductUiModel.CampaignStatus.Upcoming -> FeedCardCampaignModel.UPCOMING
+                    is ContentTaggedProductUiModel.CampaignStatus.Ongoing -> FeedCardCampaignModel.ONGOING
                     else -> FeedCardCampaignModel.NO
                 },
                 product.campaign.isExclusiveForMember
@@ -1423,7 +1423,7 @@ class FeedFragment :
         }
     }
 
-    private fun checkAddToCartAction(product: FeedTaggedProductUiModel) {
+    private fun checkAddToCartAction(product: ContentTaggedProductUiModel) {
         when {
             userSession.isLoggedIn -> {
                 if (product.showGlobalVariant) {
@@ -1507,14 +1507,14 @@ class FeedFragment :
         if (hasVoucher && author?.type?.isShop == true) getMerchantVoucher(author.id)
     }
 
-    private fun convertToSourceType (type: String) : FeedTaggedProductUiModel.SourceType  =
+    private fun convertToSourceType (type: String) : ContentTaggedProductUiModel.SourceType  =
         when (type) {
         FeedXCard.TYPE_FEED_ASGC_RESTOCK, FeedXCard.TYPE_FEED_ASGC_NEW_PRODUCTS, FeedXCard.TYPE_FEED_ASGC_SHOP_DISCOUNT,
-        FeedXCard.TYPE_FEED_ASGC_SHOP_FLASH_SALE, FeedXCard.TYPE_FEED_ASGC_SPECIAL_RELEASE, TYPE_FEED_TOP_ADS -> FeedTaggedProductUiModel.SourceType.NonOrganic
-        else -> FeedTaggedProductUiModel.SourceType.Organic
+        FeedXCard.TYPE_FEED_ASGC_SHOP_FLASH_SALE, FeedXCard.TYPE_FEED_ASGC_SPECIAL_RELEASE, TYPE_FEED_TOP_ADS -> ContentTaggedProductUiModel.SourceType.NonOrganic
+        else -> ContentTaggedProductUiModel.SourceType.Organic
     }
 
-    private fun openVariantBottomSheet(product: FeedTaggedProductUiModel) {
+    private fun openVariantBottomSheet(product: ContentTaggedProductUiModel) {
         atcVariantViewModel.setAtcBottomSheetParams(
             ProductVariantBottomSheetParams(
                 trackerCdListName = currentTrackerData?.activityId.orEmpty(),
@@ -1541,13 +1541,13 @@ class FeedFragment :
         }
     }
 
-    override fun onBuyProductButtonClicked(product: FeedTaggedProductUiModel, itemPosition: Int) {
+    override fun onBuyProductButtonClicked(product: ContentTaggedProductUiModel, itemPosition: Int) {
         if (!checkForFollowerBottomSheet(
                 currentTrackerData?.activityId ?: "",
                 itemPosition,
                 when (product.campaign.status) {
-                    is FeedTaggedProductUiModel.CampaignStatus.Upcoming -> FeedCardCampaignModel.UPCOMING
-                    is FeedTaggedProductUiModel.CampaignStatus.Ongoing -> FeedCardCampaignModel.ONGOING
+                    is ContentTaggedProductUiModel.CampaignStatus.Upcoming -> FeedCardCampaignModel.UPCOMING
+                    is ContentTaggedProductUiModel.CampaignStatus.Ongoing -> FeedCardCampaignModel.ONGOING
                     else -> FeedCardCampaignModel.NO
                 },
                 product.campaign.isExclusiveForMember

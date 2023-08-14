@@ -22,7 +22,7 @@ import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
 import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.createpost.common.domain.entity.SubmitPostData
-import com.tokopedia.feed.component.product.FeedTaggedProductUiModel
+import com.tokopedia.feed.component.product.ContentTaggedProductUiModel
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
 import com.tokopedia.feedcomponent.people.usecase.ProfileFollowUseCase
 import com.tokopedia.feedcomponent.presentation.utils.FeedResult
@@ -748,14 +748,14 @@ class FeedPostViewModel @Inject constructor(
         get() = _observeBuyProduct
     private val _observeBuyProduct = MutableLiveData<Result<AddToCartDataModel>>()
 
-    private val _suspendedAddProductToCartData = MutableLiveData<FeedTaggedProductUiModel>()
-    private val _suspendedBuyProductData = MutableLiveData<FeedTaggedProductUiModel>()
+    private val _suspendedAddProductToCartData = MutableLiveData<ContentTaggedProductUiModel>()
+    private val _suspendedBuyProductData = MutableLiveData<ContentTaggedProductUiModel>()
 
-    fun suspendAddProductToCart(product: FeedTaggedProductUiModel) {
+    fun suspendAddProductToCart(product: ContentTaggedProductUiModel) {
         _suspendedAddProductToCartData.value = product
     }
 
-    fun suspendBuyProduct(product: FeedTaggedProductUiModel) {
+    fun suspendBuyProduct(product: ContentTaggedProductUiModel) {
         _suspendedBuyProductData.value = product
     }
 
@@ -771,7 +771,7 @@ class FeedPostViewModel @Inject constructor(
         }
     }
 
-    fun addProductToCart(product: FeedTaggedProductUiModel) {
+    fun addProductToCart(product: ContentTaggedProductUiModel) {
         viewModelScope.launchCatchError(block = {
             val response = addToCart(product)
             if (response.isDataError()) {
@@ -785,7 +785,7 @@ class FeedPostViewModel @Inject constructor(
         }
     }
 
-    fun buyProduct(product: FeedTaggedProductUiModel) {
+    fun buyProduct(product: ContentTaggedProductUiModel) {
         viewModelScope.launchCatchError(block = {
             val response = addToCart(product)
             if (response.isDataError()) {
@@ -799,7 +799,7 @@ class FeedPostViewModel @Inject constructor(
         }
     }
 
-    private suspend fun addToCart(product: FeedTaggedProductUiModel) = withContext(dispatchers.io) {
+    private suspend fun addToCart(product: ContentTaggedProductUiModel) = withContext(dispatchers.io) {
         product.affiliate.let { affiliate ->
             if (affiliate.id.isNotEmpty() && affiliate.channel.isNotEmpty()) {
                 affiliateCookieHelper.initCookie(

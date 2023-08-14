@@ -3,7 +3,7 @@ package com.tokopedia.feed.component.product
 /**
  * Created by meyta.taliti on 11/05/23.
  */
-data class FeedTaggedProductUiModel(
+data class ContentTaggedProductUiModel(
     val id: String,
     val parentID: String,
     val showGlobalVariant: Boolean,
