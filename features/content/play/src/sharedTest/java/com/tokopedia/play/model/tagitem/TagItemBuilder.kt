@@ -49,6 +49,7 @@ interface TagItemBuilder {
         isNumerationShown: Boolean = false,
         rating: String = "",
         soldQuantity: String = "",
+        label: PlayProductUiModel.Product.Label = PlayProductUiModel.Product.Label(rankColors = emptyList(), rankFmt = "", rankType = "")
     ): PlayProductUiModel.Product
 
     fun buildMerchantVoucher(

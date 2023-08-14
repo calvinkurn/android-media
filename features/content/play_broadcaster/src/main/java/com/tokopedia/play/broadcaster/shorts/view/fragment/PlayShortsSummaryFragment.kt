@@ -18,6 +18,7 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUploadUiState
 import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
+import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagItem
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.view.partial.TagListViewComponent
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
@@ -49,7 +50,7 @@ class PlayShortsSummaryFragment @Inject constructor(
         TagListViewComponent(
             it, binding.layoutTagRecommendation,
             object : TagListViewComponent.Listener {
-                override fun onTagClicked(view: TagListViewComponent, tag: PlayTagUiModel) {
+                override fun onTagClicked(view: TagListViewComponent, tag: PlayTagItem) {
                     analytic.clickContentTag(tag.tag, viewModel.selectedAccount)
 
                     viewModel.submitAction(PlayShortsAction.SelectTag(tag))
@@ -176,7 +177,7 @@ class PlayShortsSummaryFragment @Inject constructor(
 
         when (curr.tags) {
             is NetworkResult.Loading -> tagListView.setPlaceholder()
-            is NetworkResult.Success -> tagListView.setTags(curr.tags.data.toList())
+            is NetworkResult.Success -> tagListView.setTags(curr.tags.data.tags.toList())
             is NetworkResult.Fail -> tagListView.setError()
             else -> {}
         }
@@ -206,8 +207,8 @@ class PlayShortsSummaryFragment @Inject constructor(
                  */
                 val isButtonEnabled = when(curr.tags) {
                     is NetworkResult.Success -> {
-                        if(curr.tags.data.isEmpty()) true
-                        else curr.tags.data.firstOrNull { it.isChosen } != null
+                        if(curr.tags.data.tags.isEmpty()) true
+                        else curr.tags.data.tags.count { it.isChosen } in curr.tags.data.minTags..curr.tags.data.maxTags
                     }
                     is NetworkResult.Fail -> {
                         true
