@@ -1,11 +1,11 @@
-package com.tokopedia.tokopedianow.home.domain.usecase
+package com.tokopedia.tokopedianow.buyercomm.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
-import com.tokopedia.tokopedianow.home.domain.model.GetBuyerCommunication
-import com.tokopedia.tokopedianow.home.domain.model.GetBuyerCommunication.GetBuyerCommunicationResponse
-import com.tokopedia.tokopedianow.home.domain.query.GetBuyerCommunicationQuery
+import com.tokopedia.tokopedianow.buyercomm.domain.model.GetBuyerCommunication
+import com.tokopedia.tokopedianow.buyercomm.domain.model.GetBuyerCommunication.GetBuyerCommunicationResponse
+import com.tokopedia.tokopedianow.buyercomm.domain.query.GetBuyerCommunicationQuery
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 

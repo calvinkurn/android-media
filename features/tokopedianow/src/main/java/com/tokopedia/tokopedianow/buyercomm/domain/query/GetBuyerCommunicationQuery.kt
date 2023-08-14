@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.home.domain.query
+package com.tokopedia.tokopedianow.buyercomm.domain.query
 
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 

@@ -1,7 +1,6 @@
-package com.tokopedia.tokopedianow.home.domain.model
+package com.tokopedia.tokopedianow.buyercomm.domain.model
 
 import com.google.gson.annotations.SerializedName
-
 
 data class GetBuyerCommunication(
     @SerializedName("TokonowGetBuyerCommunication")

@@ -3,7 +3,7 @@ package com.tokopedia.tokopedianow.home.domain.mapper
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.updateItemById
-import com.tokopedia.tokopedianow.home.domain.model.GetBuyerCommunication.GetBuyerCommunicationResponse
+import com.tokopedia.tokopedianow.buyercomm.domain.model.GetBuyerCommunication.GetBuyerCommunicationResponse
 import com.tokopedia.tokopedianow.home.presentation.model.HomeHeaderBackgroundData
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeHeaderUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
