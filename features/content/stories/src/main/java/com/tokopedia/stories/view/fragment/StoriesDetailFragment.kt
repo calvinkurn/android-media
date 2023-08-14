@@ -75,7 +75,6 @@ class StoriesDetailFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-        binding.tvCounter.text = "Group ${viewModel.mGroupPosition.plus(1)}"
         setupObserver()
     }
 
@@ -104,6 +103,9 @@ class StoriesDetailFragment @Inject constructor(
         if (prevState == state || state == StoriesDetailUiModel.Empty) return
 
         storiesDetailsTimer(state)
+
+        binding.tvText.text = "Group ${viewModel.mGroupPosition.plus(1)} | Detail ${viewModel.mDetailPosition.plus(1)}"
+        binding.ivStoriesDetailContent.setImageUrl(state.imageContent)
     }
 
     private fun storiesDetailsTimer(state: StoriesDetailUiModel) {
