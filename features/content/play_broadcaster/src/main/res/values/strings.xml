@@ -238,7 +238,6 @@
     <!-- Post Video -->
     <string name="play_bro_add_tag_title">Tambah Tag</string>
     <string name="play_bro_select_tag_title">Pilih tag agar videomu mudah ditemukan</string>
-    <string name="play_bro_cant_post_video_message">Karena durasi kurang dari 60 detik, Live-mu tidak bisa di-posting jadi video.</string>
 
     <!-- Tag Recommendation -->
     <string name="play_bro_tag_recommendation_error_title">Tag ini gagal ditampilkan</string>
