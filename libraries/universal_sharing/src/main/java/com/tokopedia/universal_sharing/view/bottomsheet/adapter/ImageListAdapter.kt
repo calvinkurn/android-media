@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil.Companion.saveImageFromURLToStorage
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.viewholder.ImageViewHolder
 
 class ImageListAdapter(
@@ -36,7 +36,7 @@ class ImageListAdapter(
 
     fun updateSelectedPosition(currentSelectedPosition: Int, view: View) {
         selectedPosition = currentSelectedPosition
-        saveImageFromURLToStorage(context, imageList[currentSelectedPosition], imageSaved)
+        SharingUtil.saveImageFromURLToStorage(context, imageList[currentSelectedPosition], imageSaved)
         thumbNailUpdater(imageList[currentSelectedPosition])
         notifyDataSetChanged()
     }

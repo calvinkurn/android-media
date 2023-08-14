@@ -14,7 +14,7 @@ import com.tokopedia.deals.common.ui.dataview.DealsChipsDataView
 import com.tokopedia.deals.databinding.LayoutDealsCategoryFilterBottomSheetBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class DealsCategoryFilterBottomSheet(private val listener: DealsCategoryFilterBottomSheetListener) :
+class DealsCategoryFilterBottomSheet :
         BottomSheetUnify(), DealsChipListener {
 
     init {
@@ -25,8 +25,15 @@ class DealsCategoryFilterBottomSheet(private val listener: DealsCategoryFilterBo
 
     private val chipsAdapter = DealsChipsAdapter(this)
     private var chips: DealsChipsDataView? = null
+    private var listener: DealsCategoryFilterBottomSheetListener? = null
     private lateinit var binding :  LayoutDealsCategoryFilterBottomSheetBinding
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            chips = it.getParcelable(CHIP_DATA) ?: DealsChipsDataView()
+        }
+    }
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -45,6 +52,9 @@ class DealsCategoryFilterBottomSheet(private val listener: DealsCategoryFilterBo
         super.onViewCreated(view, savedInstanceState)
         binding.lstDealsCategoryFilter.apply {
             adapter = chipsAdapter
+            chips?.let { chips ->
+                chipsAdapter.chips = chips.chipList.toMutableList()
+            }
             layoutManager = ChipsLayoutManager.newBuilder(context)
                     .setOrientation(ChipsLayoutManager.HORIZONTAL)
                     .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
@@ -52,7 +62,7 @@ class DealsCategoryFilterBottomSheet(private val listener: DealsCategoryFilterBo
         }
         binding.btnDealsCategoryFilterApply.setOnClickListener {
             chips?.let { chips ->
-                listener.onFilterApplied(chips.copy(chipList = chipsAdapter.chips))
+                listener?.onFilterApplied(chips.copy(chipList = chipsAdapter.chips))
             }
             dismiss()
         }
@@ -62,9 +72,18 @@ class DealsCategoryFilterBottomSheet(private val listener: DealsCategoryFilterBo
         chipsAdapter.chips[position] = chip.copy(isSelected = !chip.isSelected)
         chipsAdapter.notifyItemChanged(position)
     }
+    fun setListener(listener: DealsCategoryFilterBottomSheetListener) {
+        this.listener = listener
+    }
 
-    fun showCategories(chips: DealsChipsDataView) {
-        this.chips = chips
-        chipsAdapter.chips = chips.chipList.toMutableList()
+    companion object {
+        private const val CHIP_DATA = "CHIP_DATA"
+        fun newInstance(chips: DealsChipsDataView): DealsCategoryFilterBottomSheet {
+            val bottomsheet = DealsCategoryFilterBottomSheet()
+            val bundle = Bundle()
+            bundle.putParcelable(CHIP_DATA, chips)
+            bottomsheet.arguments = bundle
+            return bottomsheet
+        }
     }
 }

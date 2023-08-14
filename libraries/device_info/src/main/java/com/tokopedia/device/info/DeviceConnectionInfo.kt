@@ -7,12 +7,15 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.wifi.WifiManager
 import android.os.Build
+import android.os.PowerManager
 import android.telephony.SubscriptionManager
 import android.telephony.TelephonyManager
 import android.text.TextUtils
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import java.net.NetworkInterface
 import java.util.*
+
 
 object DeviceConnectionInfo {
 
@@ -44,7 +47,8 @@ object DeviceConnectionInfo {
     const val CONN_IWLAN = "IWLAN"
     const val CONN_UNKNOWN = "unknown"
 
-    private const val NETWORK_TYPE_LTE_CA = 19 // @UnsupportedAppUsage: TelephonyManager.NETWORK_TYPE_LTE_CA
+    private const val NETWORK_TYPE_LTE_CA =
+        19 // @UnsupportedAppUsage: TelephonyManager.NETWORK_TYPE_LTE_CA
 
     /**
      * Return SSID device
@@ -152,8 +156,19 @@ object DeviceConnectionInfo {
 
     @JvmStatic
     fun getCarrierName(context: Context): String {
-        val manager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+        val manager =
+            context.applicationContext.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
         return manager.networkOperatorName
+    }
+
+    @Suppress("SwallowedException")
+    @JvmStatic
+    fun isPowerSaveMode(context: Context): Boolean {
+        return try {
+            (context.applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager).isPowerSaveMode
+        } catch (e: ClassCastException) {
+            false
+        }
     }
 
     @JvmStatic
@@ -222,7 +237,8 @@ object DeviceConnectionInfo {
     }
 
     private fun getConnectionTransportType(context: Context): Int {
-        val cm = context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val cm =
+            context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val capabilities = cm.getNetworkCapabilities(cm.activeNetwork)
             if (capabilities != null) {

@@ -24,6 +24,7 @@ import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_OOC_PARAM
 import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
@@ -96,7 +97,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
     getTargetedTickerUseCase: GetTargetedTickerUseCase,
     addressData: TokoNowLocalAddress,
     dispatchers: CoroutineDispatchers
-): BaseTokoNowViewModel(
+) : BaseTokoNowViewModel(
     addToCartUseCase,
     updateCartUseCase,
     deleteCartUseCase,
@@ -500,7 +501,8 @@ class TokoNowRepurchaseViewModel @Inject constructor(
                 state = TokoNowLayoutState.LOADING
             )
 
-            val response = getCategoryListUseCase.execute(getWarehouseId(), CATEGORY_LEVEL_DEPTH).data
+            val warehouses = AddressMapper.mapToWarehousesData(localCacheModel)
+            val response = getCategoryListUseCase.execute(warehouses, CATEGORY_LEVEL_DEPTH).data
             layoutList.mapCategoryMenuData(response, getWarehouseId())
 
             val layout = RepurchaseLayoutUiModel(
@@ -523,7 +525,8 @@ class TokoNowRepurchaseViewModel @Inject constructor(
 
     fun getCategoryMenu() {
         launchCatchError(block = {
-            val response = getCategoryListUseCase.execute(getWarehouseId(), CATEGORY_LEVEL_DEPTH).data
+            val warehouses = AddressMapper.mapToWarehousesData(localCacheModel)
+            val response = getCategoryListUseCase.execute(warehouses, CATEGORY_LEVEL_DEPTH).data
             layoutList.mapCategoryMenuData(response, getWarehouseId())
 
             val layout = RepurchaseLayoutUiModel(
@@ -544,13 +547,12 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         }
     }
 
-    fun onScrollProductList(index: IntArray?, itemCount: Int) {
+    fun onScrollProductList(index: Int?, itemCount: Int) {
         val lastItemIndex = itemCount - 1
-        val containsLastItemIndex = index?.contains(lastItemIndex)
-        val scrolledToLastItem = containsLastItemIndex == true
+        val isLastItemIndex = index == lastItemIndex
         val hasNextPage = productListMeta?.hasNext == true
 
-        if (scrolledToLastItem && hasNextPage) {
+        if (isLastItemIndex && hasNextPage) {
             loadMoreProduct()
         }
     }
@@ -631,6 +633,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
     }
 
     private fun createProductListRequestParam(page: Int): GetRepurchaseProductListParam {
+        val warehouses = AddressMapper.mapToWarehousesData(localCacheModel)
         val totalScan = productListMeta?.totalScan.orZero()
         val categoryIds = selectedCategoryFilter?.id
         val sort = selectedSortFilter
@@ -638,7 +641,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         val dateEnd = selectedDateFilter.endDate
 
         return GetRepurchaseProductListParam(
-            warehouseID = getWarehouseId(),
+            warehouses = warehouses,
             sort = sort,
             totalScan = totalScan,
             page = page,

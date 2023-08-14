@@ -4,9 +4,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.tokopedianow.oldcategory.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
-import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
+import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_LIST_DEPTH
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.dummyChooseAddressData
@@ -17,13 +18,13 @@ import org.junit.Assert.assertThat
 import org.junit.Test
 import org.hamcrest.CoreMatchers.`is` as shouldBe
 
-class CategoryGetCategoryGridTest: CategoryTestFixtures() {
+class CategoryGetCategoryGridTest : CategoryTestFixtures() {
 
     private val emptyProductCategoryModel = "oldcategory/emptyproduct/empty-product.json".jsonToObject<CategoryModel>()
     private val categoryList = "oldcategory/categorylist/category-list.json".jsonToObject<GetCategoryListResponse>()
 
-    private val warehouseIdSlot = slot<String>()
-    private val warehouseId by lazy { warehouseIdSlot.captured }
+    private val warehousesSlot = slot<List<WarehouseData>>()
+    private val warehouses by lazy { warehousesSlot.captured }
 
     private val depthSlot = slot<Int>()
     private val depth by lazy { depthSlot.captured }
@@ -36,24 +37,26 @@ class CategoryGetCategoryGridTest: CategoryTestFixtures() {
         `When view created`()
 
         `Then assert get category list params`()
-        `Then assert category menu ui model state show`(warehouseId)
+        `Then assert category menu ui model state show`()
     }
 
     private fun `Given get category list use case will return category list`() {
         coEvery {
-            getCategoryListUseCase.execute(capture(warehouseIdSlot), capture(depthSlot))
+            getCategoryListUseCase.execute(capture(warehousesSlot), capture(depthSlot))
         } returns categoryList.response
     }
 
     private fun `Then assert get category list params`() {
-        assertThat(warehouseId, shouldBe(dummyChooseAddressData.warehouse_id))
+        val expectedWarehouses = dummyChooseAddressData.warehouses
+            .map { WarehouseData(it.warehouse_id.toString(), it.service_type) }
+        assertThat(warehouses, shouldBe(expectedWarehouses))
         assertThat(depth, shouldBe(CATEGORY_LIST_DEPTH))
     }
 
-    private fun `Then assert category menu ui model state show`(warehouseId: String) {
+    private fun `Then assert category menu ui model state show`() {
         val expectedCategoryList = CategoryMenuMapper.mapToCategoryList(
             response = categoryList.response.data,
-            seeAllAppLink = ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY + CategoryMenuMapper.APPLINK_PARAM_WAREHOUSE_ID + warehouseId
+            seeAllAppLink = ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY
         )
         val visitableList = tokoNowCategoryViewModel.visitableListLiveData.value!!
         val categoryGridUiModel = visitableList.findIndexedCategoryMenuUIModel()
@@ -63,9 +66,9 @@ class CategoryGetCategoryGridTest: CategoryTestFixtures() {
     }
 
     private fun List<Visitable<*>>.findIndexedCategoryMenuUIModel() =
-            find { it is TokoNowCategoryMenuUiModel }
-                as? TokoNowCategoryMenuUiModel
-                ?: throw AssertionError("Cannot find category grid ui model")
+        find { it is TokoNowCategoryMenuUiModel }
+            as? TokoNowCategoryMenuUiModel
+            ?: throw AssertionError("Cannot find category grid ui model")
 
     @Test
     fun `do not show category grid if has product list`() {
@@ -80,7 +83,7 @@ class CategoryGetCategoryGridTest: CategoryTestFixtures() {
 
     private fun `Then verify get category list use case is not called`() {
         coVerify(exactly = 0) {
-            getCategoryListUseCase.execute(any<String>(), any<Int>())
+            getCategoryListUseCase.execute(any(), any<Int>())
         }
     }
 
@@ -96,7 +99,7 @@ class CategoryGetCategoryGridTest: CategoryTestFixtures() {
 
     private fun `Given get category list use case will throw exception`() {
         coEvery {
-            getCategoryListUseCase.execute(capture(warehouseIdSlot), capture(depthSlot))
+            getCategoryListUseCase.execute(capture(warehousesSlot), capture(depthSlot))
         } throws Exception()
     }
 
@@ -116,7 +119,7 @@ class CategoryGetCategoryGridTest: CategoryTestFixtures() {
 
         `When view retry load category grid`()
 
-        `Then assert category menu ui model state show`(warehouseId)
+        `Then assert category menu ui model state show`()
     }
 
     private fun `When view retry load category grid`() {

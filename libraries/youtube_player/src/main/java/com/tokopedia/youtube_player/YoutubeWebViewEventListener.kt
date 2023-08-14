@@ -22,8 +22,11 @@ object YoutubeWebViewEventListener {
         fun onVideoCued()
     }
 
-    interface EventPlayerReady{
+    interface EventPlayerReady {
         fun onPlayerReady()
     }
 
+    interface EventError {
+        fun onError(errorCode: Int)
+    }
 }

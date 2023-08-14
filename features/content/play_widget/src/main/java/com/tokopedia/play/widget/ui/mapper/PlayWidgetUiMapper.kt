@@ -32,9 +32,6 @@ import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
 import com.tokopedia.user.session.UserSessionInterface
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 /**
@@ -206,15 +203,7 @@ class PlayWidgetUiMapper @Inject constructor(
     private fun mapStartTime(time: String, widgetType: PlayWidgetType): String {
         return when (widgetType) {
             PlayWidgetType.Carousel -> {
-                val inputFormat = DateTimeFormatter.ISO_DATE_TIME
-                val inputDateTime = ZonedDateTime.parse(time, inputFormat)
-                val outputDateTime = inputDateTime.withZoneSameInstant(
-                    ZoneId.systemDefault()
-                )
-                val outputFormatter = DateTimeFormatter.ofPattern(
-                    "dd MMM yyyy | HH.mm"
-                )
-                outputFormatter.format(outputDateTime)
+                PlayDateTimeFormatter.formatDate(time, outputPattern = "dd MMM yyyy | HH.mm")
             }
             else -> {
                 PlayDateTimeFormatter.formatDate(time)

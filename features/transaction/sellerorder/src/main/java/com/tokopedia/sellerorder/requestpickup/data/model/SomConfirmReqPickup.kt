@@ -3,19 +3,21 @@ package com.tokopedia.sellerorder.requestpickup.data.model
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /**
  * Created by fwidjaja on 2019-11-12.
  */
-data class SomConfirmReqPickup (
+data class SomConfirmReqPickup(
     @SerializedName("data")
     @Expose
-    val data: Data = Data()) {
+    val data: Data = Data()
+) {
     data class Data(
         @SerializedName("mpLogisticPreShipInfo")
         @Expose
-        val mpLogisticPreShipInfo: MpLogisticPreShipInfo = MpLogisticPreShipInfo()) {
+        val mpLogisticPreShipInfo: MpLogisticPreShipInfo = MpLogisticPreShipInfo()
+    ) {
 
         @Parcelize
         data class MpLogisticPreShipInfo(
@@ -29,7 +31,8 @@ data class SomConfirmReqPickup (
 
             @SerializedName("data")
             @Expose
-            val dataSuccess: DataSuccess = DataSuccess()) : Parcelable {
+            val dataSuccess: DataSuccess = DataSuccess()
+        ) : Parcelable {
 
             @Parcelize
             data class DataSuccess(
@@ -51,7 +54,8 @@ data class SomConfirmReqPickup (
 
                 @SerializedName("ticker")
                 @Expose
-                val ticker: Ticker = Ticker(), ) : Parcelable {
+                val ticker: Ticker = Ticker()
+            ) : Parcelable {
 
                 @Parcelize
                 data class PickupLocation(
@@ -65,7 +69,8 @@ data class SomConfirmReqPickup (
 
                     @SerializedName("phone")
                     @Expose
-                    val phone: String = "") : Parcelable
+                    val phone: String = ""
+                ) : Parcelable
 
                 @Parcelize
                 data class Detail(
@@ -83,7 +88,8 @@ data class SomConfirmReqPickup (
 
                     @SerializedName("orchestra_partner")
                     @Expose
-                    val orchestraPartner: String = "") : Parcelable {
+                    val orchestraPartner: String = ""
+                ) : Parcelable {
 
                     @Parcelize
                     data class Shipper(
@@ -109,7 +115,8 @@ data class SomConfirmReqPickup (
 
                         @SerializedName("count")
                         @Expose
-                        val count: String = "") : Parcelable
+                        val count: String = ""
+                    ) : Parcelable
                 }
 
                 @Parcelize
@@ -120,14 +127,16 @@ data class SomConfirmReqPickup (
 
                     @SerializedName("list")
                     @Expose
-                    val listNotes: List<String> = listOf()) : Parcelable
+                    val listNotes: List<String> = listOf()
+                ) : Parcelable
 
                 @Parcelize
                 data class ScheduleTime(
                     @SerializedName("today")
                     val today: List<ScheduleResponse> = listOf(),
                     @SerializedName("tomorrow")
-                    val tomorrow: List<ScheduleResponse> = listOf()) : Parcelable {
+                    val tomorrow: List<ScheduleResponse> = listOf()
+                ) : Parcelable {
 
                     @Parcelize
                     data class ScheduleResponse(
@@ -136,8 +145,8 @@ data class SomConfirmReqPickup (
                         @SerializedName("start")
                         val start: String = "",
                         @SerializedName("end")
-                        val end: String = "") : Parcelable
-
+                        val end: String = ""
+                    ) : Parcelable
                 }
 
                 @Parcelize
@@ -151,7 +160,8 @@ data class SomConfirmReqPickup (
                     @SerializedName("action_key")
                     val actionKey: String = "",
                     @SerializedName("type")
-                    val type: String = "") : Parcelable
+                    val type: String = ""
+                ) : Parcelable
             }
         }
     }

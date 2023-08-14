@@ -1,0 +1,15 @@
+{
+  "readme": "TokoFood Promo - load",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "viewPGIris",
+      "eventCategory": "tokofood promo page",
+      "eventAction": "view tokofood promo page",
+      "eventLabel": "",
+      "currentSite": "tokopediamarketplace",
+      "businessUnit": "Physical Goods",
+      "sessionIris": ".*"
+    }
+  ]
+}

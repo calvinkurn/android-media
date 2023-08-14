@@ -188,7 +188,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             if (context != null) {
                 activity?.window?.statusBarColor = androidx.core.content.ContextCompat.getColor(
                     requireContext(),
-                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN0
                 )
             }
         }

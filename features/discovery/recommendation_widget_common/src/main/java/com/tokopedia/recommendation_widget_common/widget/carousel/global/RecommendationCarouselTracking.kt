@@ -4,12 +4,14 @@ import android.os.Bundle
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Action.PRODUCT_VIEW
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Action.SELECT_CONTENT
-import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Action.VIEW_ITEM_LIST
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.BUSINESS_UNIT_HOME
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.CURRENCY_CODE
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.CURRENT_SITE_MP
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.DEFAULT_VALUE
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.DIMENSION_40
+import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.DIMENSION_45
+import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.DIMENSION_56
+import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.DIMENSION_90
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ECOMMERCE
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.IDR
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.IMPRESSIONS
@@ -20,7 +22,12 @@ import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstant
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_NAME
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_VARIANT
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.KEY_INDEX
+import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.LIST
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.PRICE
+import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.QUANTITY
+import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.SHOP_ID
+import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.SHOP_NAME
+import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.SHOP_TYPE
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.TRACKER_ID
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.VALUE_IS_TOPADS
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.VALUE_NONE_OTHER
@@ -59,45 +66,46 @@ object RecommendationCarouselTracking {
         androidPageName: String = RecommendationWidgetSource.PDP.trackingValue // remove default value after recommendation carousel widget migration
     ) {
         val bundle = Bundle().apply {
-            putString(TrackerConstant.EVENT, RecommendationTrackingConstants.Action.ADD_TO_CART)
-            putString(TrackerConstant.EVENT_ACTION, EVENT_ACTION_ATC)
+            putString(EVENT, RecommendationTrackingConstants.Action.ADD_TO_CART)
+            putString(EVENT_ACTION, EVENT_ACTION_ATC)
 
-            putString(TrackerConstant.EVENT_CATEGORY, androidPageName)
+            putString(EVENT_CATEGORY, androidPageName)
 
-            putString(TrackerConstant.EVENT_LABEL, recomItem.productId.toString())
+            putString(EVENT_LABEL, recomItem.productId.toString())
 
-            putString(TrackerConstant.BUSINESS_UNIT, RecommendationTrackingConstants.Tracking.BUSINESS_UNIT_HOME)
-            putString(TrackerConstant.CURRENT_SITE, RecommendationTrackingConstants.Tracking.CURRENT_SITE_MP)
-            putString(TrackerConstant.TRACKER_ID, TRACKER_ID_ATC)
+            putString(BUSINESS_UNIT, BUSINESS_UNIT_HOME)
+            putString(CURRENT_SITE, CURRENT_SITE_MP)
+            putString(TRACKER_ID, TRACKER_ID_ATC)
 
             val bundleProduct = Bundle().apply {
                 putString(RecommendationTrackingConstants.Tracking.CATEGORY_ID, recomItem.departmentId.toString())
                 putString(
-                    RecommendationTrackingConstants.Tracking.DIMENSION_40,
+                    DIMENSION_40,
                     ATC_DIMENSION_40_FORMAT.format(
                         recomItem.pageName,
                         recomItem.recommendationType,
-                        if (recomItem.isTopAds) RecommendationTrackingConstants.Tracking.VALUE_IS_TOPADS else RecommendationTrackingConstants.Tracking.DEFAULT_VALUE,
+                        if (recomItem.isTopAds) VALUE_IS_TOPADS else DEFAULT_VALUE,
                         recomItem.type.convertToWidgetType(),
                         recomItem.anchorProductId
                     )
                 )
-                putString(RecommendationTrackingConstants.Tracking.DIMENSION_45, recomItem.cartId)
-                putString(RecommendationTrackingConstants.Tracking.DIMENSION_90, "%s.%s".format(androidPageName, recomItem.recommendationType))
-                putString(RecommendationTrackingConstants.Tracking.ITEM_BRAND, RecommendationTrackingConstants.Tracking.VALUE_NONE_OTHER)
-                putString(RecommendationTrackingConstants.Tracking.ITEM_CATEGORY, recomItem.categoryBreadcrumbs)
-                putString(RecommendationTrackingConstants.Tracking.ITEM_ID, recomItem.productId.toString())
-                putString(RecommendationTrackingConstants.Tracking.ITEM_NAME, recomItem.name)
-                putString(RecommendationTrackingConstants.Tracking.ITEM_VARIANT, RecommendationTrackingConstants.Tracking.VALUE_NONE_OTHER)
-                putDouble(RecommendationTrackingConstants.Tracking.PRICE, recomItem.priceInt.toDouble())
-                putLong(RecommendationTrackingConstants.Tracking.QUANTITY, quantity.toLong())
-                putString(RecommendationTrackingConstants.Tracking.SHOP_ID, recomItem.shopId.toString())
-                putString(RecommendationTrackingConstants.Tracking.SHOP_NAME, recomItem.shopName)
-                putString(RecommendationTrackingConstants.Tracking.SHOP_TYPE, recomItem.shopType)
+                putString(DIMENSION_45, recomItem.cartId)
+                putString(DIMENSION_56, recomItem.warehouseId.toString())
+                putString(DIMENSION_90, "%s.%s".format(androidPageName, recomItem.recommendationType))
+                putString(ITEM_BRAND, VALUE_NONE_OTHER)
+                putString(ITEM_CATEGORY, recomItem.categoryBreadcrumbs)
+                putString(ITEM_ID, recomItem.productId.toString())
+                putString(ITEM_NAME, recomItem.name)
+                putString(ITEM_VARIANT, VALUE_NONE_OTHER)
+                putDouble(PRICE, recomItem.priceInt.toDouble())
+                putLong(QUANTITY, quantity.toLong())
+                putString(SHOP_ID, recomItem.shopId.toString())
+                putString(SHOP_NAME, recomItem.shopName)
+                putString(SHOP_TYPE, recomItem.shopType)
             }
 
             val list = arrayListOf(bundleProduct)
-            putParcelableArrayList(RecommendationTrackingConstants.Tracking.ITEMS, list)
+            putParcelableArrayList(ITEMS, list)
 
             putString(RecommendationTrackingConstants.Tracking.PRODUCT_ID, recomItem.productId.toString())
             putString(TrackerConstant.USERID, userId)
@@ -121,13 +129,14 @@ object RecommendationCarouselTracking {
             CURRENT_SITE to CURRENT_SITE_MP,
             ECOMMERCE to mapOf(
                 CURRENCY_CODE to IDR,
-                IMPRESSIONS to listOf(mapOf(
-                    DIMENSION_40 to IMPRESSION_CLICK_DIMENSION_40_FORMAT.format(
+                IMPRESSIONS to arrayListOf(mapOf(
+                    LIST to IMPRESSION_CLICK_DIMENSION_40_FORMAT.format(
                         trackingModel.listPageName,
                         item.pageName,
                         item.recommendationType,
                         if (item.isTopAds) VALUE_IS_TOPADS else DEFAULT_VALUE,
                     ),
+                    DIMENSION_56 to item.warehouseId.toString(),
                     KEY_INDEX to item.position + 1,
                     ITEM_BRAND to VALUE_NONE_OTHER,
                     ITEM_CATEGORY to item.categoryBreadcrumbs,
@@ -148,7 +157,6 @@ object RecommendationCarouselTracking {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             SELECT_CONTENT,
             bundle {
-                putString(EVENT, VIEW_ITEM_LIST)
                 putString(EVENT_CATEGORY, trackingModel.androidPageName)
                 putString(EVENT_ACTION, trackingModel.eventActionClick)
                 putString(EVENT_LABEL, widget.title)
@@ -162,6 +170,7 @@ object RecommendationCarouselTracking {
                         item.recommendationType,
                         if (item.isTopAds) VALUE_IS_TOPADS else DEFAULT_VALUE,
                     ))
+                    putString(DIMENSION_56, item.warehouseId.toString())
                     putInt(KEY_INDEX, item.position + 1)
                     putString(ITEM_BRAND, VALUE_NONE_OTHER)
                     putString(ITEM_CATEGORY, item.categoryBreadcrumbs)

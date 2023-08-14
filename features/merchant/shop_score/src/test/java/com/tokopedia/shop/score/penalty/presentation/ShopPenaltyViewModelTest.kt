@@ -1,8 +1,10 @@
 package com.tokopedia.shop.score.penalty.presentation
 
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltyDetailResponse
+import com.tokopedia.shop.score.penalty.model.PenaltyFilterNoneUiModel
 import com.tokopedia.shop.score.penalty.presentation.adapter.filter.BaseFilterPenaltyPage
 import com.tokopedia.shop.score.penalty.presentation.fragment.ShopPenaltyPageType
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterDateUiModel
@@ -219,6 +221,34 @@ class ShopPenaltyViewModelTest : ShopPenaltyViewModelTestFixture() {
     }
 
     @Test
+    fun `when getFilterPenalty without date ui model should return Success`() {
+        runBlocking {
+            val sortBy = 1
+            val penaltyFilterList = mutableListOf<BaseFilterPenaltyPage>().apply {
+                add(
+                    PenaltyFilterUiModel(
+                        title = ShopScoreConstant.TITLE_SORT,
+                        isDividerVisible = true,
+                        chipsFilterList = penaltyMapper.mapToChipsSortFilter(sortBy)
+                    )
+                )
+                add(
+                    PenaltyFilterUiModel(
+                        title = ShopScoreConstant.TITLE_TYPE_PENALTY,
+                        chipsFilterList = mapToChipsTypePenaltyFilterDummy()
+                    )
+                )
+            }
+
+            penaltyViewModel.getFilterPenalty(penaltyFilterList)
+            val actualResult = penaltyViewModel.filterPenaltyData.observeAwaitValue()
+            assertTrue(actualResult is Success)
+            assertNotNull((actualResult as Success).data)
+            assertEquals(penaltyFilterList, actualResult.data)
+        }
+    }
+
+    @Test
     fun `when updateSortFilterSelected with chip type selected should return Success`() {
         runBlocking {
             val titleFilter = "Bersalah di Pusat Resolusi"
@@ -375,6 +405,79 @@ class ShopPenaltyViewModelTest : ShopPenaltyViewModelTestFixture() {
     @Test
     fun `when resetFilterSelected should return Success`() {
         runBlocking {
+            onGetShopPenaltyDetailMergeUseCase_thenReturn(
+                ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail(
+                    startDate = "2023-04-20",
+                    endDate = "2023-07-20"
+                )
+            )
+
+            onGetNotYetDeductedPenaltyUseCase_thenReturn()
+
+            onGetShopPenaltyTickerUseCase_thenReturn(ShopPenaltyPageType.ONGOING)
+
+            penaltyViewModel.getDataPenalty()
+
+            val sortBy = 1
+
+            val penaltyFilterList = mutableListOf<BaseFilterPenaltyPage>().apply {
+                add(
+                    PenaltyFilterUiModel(
+                        title = ShopScoreConstant.TITLE_SORT, isDividerVisible = true,
+                        chipsFilterList = penaltyMapper.mapToChipsSortFilter(sortBy),
+                        shownFilterList = penaltyMapper.mapToChipsSortFilter(sortBy)
+                    )
+                )
+                add(
+                    PenaltyFilterDateUiModel(
+                        startDate = "2023-04-20",
+                        endDate = "2023-07-20",
+                        defaultStartDate = "2023-04-20",
+                        defaultEndDate = "2023-07-20",
+                        initialStartDate = "2023-04-20",
+                        initialEndDate = "2023-07-20",
+                        completeDate = "20 April 2023 - 20 Juni 2023"
+                    )
+                )
+                add(
+                    PenaltyFilterUiModel(
+                        title = ShopScoreConstant.TITLE_TYPE_PENALTY,
+                        chipsFilterList = mapToChipsTypePenaltyFilterDummy(),
+                        shownFilterList = mapToChipsTypePenaltyFilterDummy()
+                    )
+                )
+                add(PenaltyFilterNoneUiModel())
+            }
+
+            val sortFilterItemWrapperList = penaltyMapper.mapToSortFilterItemFromPenaltyList(penaltyFilterList)
+
+            penaltyViewModel.setItemSortFilterWrapperList(
+                penaltyFilterList,
+                sortFilterItemWrapperList
+            )
+
+            penaltyViewModel.resetFilterSelected()
+            val actualResult = penaltyViewModel.resetFilterResult.observeAwaitValue()
+            assertTrue(actualResult is Success)
+        }
+    }
+
+    @Test
+    fun `when resetFilterSelected but date format incorrect should return empty complete date`() {
+        runBlocking {
+            onGetShopPenaltyDetailMergeUseCase_thenReturn(
+                ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail(
+                    startDate = "20 Juli 2023",
+                    endDate = "20 Agustus 2023"
+                )
+            )
+
+            onGetNotYetDeductedPenaltyUseCase_thenReturn()
+
+            onGetShopPenaltyTickerUseCase_thenReturn(ShopPenaltyPageType.ONGOING)
+
+            penaltyViewModel.getDataPenalty()
+
             val sortBy = 1
 
             val penaltyFilterList = mutableListOf<BaseFilterPenaltyPage>().apply {
@@ -414,7 +517,10 @@ class ShopPenaltyViewModelTest : ShopPenaltyViewModelTestFixture() {
 
             penaltyViewModel.resetFilterSelected()
             val actualResult = penaltyViewModel.resetFilterResult.observeAwaitValue()
-            assertTrue(actualResult is Success)
+            assertEquals(" - ",
+                (actualResult as? Success)?.data?.filterIsInstance<PenaltyFilterDateUiModel>()
+                    ?.firstOrNull()?.completeDate
+            )
         }
     }
 
@@ -479,6 +585,26 @@ class ShopPenaltyViewModelTest : ShopPenaltyViewModelTestFixture() {
     }
 
     @Test
+    fun `when getCurrentPageType with setting pageType should success`() {
+        onGetShopPenaltyDetailMergeUseCase_thenReturn()
+
+        onGetNotYetDeductedPenaltyUseCase_thenReturn()
+
+        onGetShopPenaltyTickerUseCase_thenReturn(ShopPenaltyPageType.ONGOING)
+        val shopScorePenaltyDetail = ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail()
+        onGetShopPenaltyDetailUseCase_thenReturn(shopScorePenaltyDetail)
+
+        penaltyViewModel.getDataPenalty()
+        penaltyViewModel.getPenaltyDetailListNext()
+
+        verifyGetShopPenaltyDetailUseCaseCaseCalled()
+        val actualResult =
+            (penaltyViewModel.shopPenaltyDetailData.observeAwaitValue() as Success).data
+        assertTrue(penaltyViewModel.shopPenaltyDetailData.observeAwaitValue() is Success)
+        assertNotNull(actualResult)
+    }
+
+    @Test
     fun `when getCurrentPageType without setting pageType should success`() {
         val shopScorePenaltyDetail = ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail()
         onGetShopPenaltyDetailUseCase_thenReturn(shopScorePenaltyDetail)
@@ -491,4 +617,12 @@ class ShopPenaltyViewModelTest : ShopPenaltyViewModelTestFixture() {
         assertTrue(penaltyViewModel.shopPenaltyDetailData.observeAwaitValue() is Success)
         assertNotNull(actualResult)
     }
+
+    @Test
+    fun `when setDateFilterData should update date filter result value to true`() {
+        penaltyViewModel.setDateFilterData(String.EMPTY, String.EMPTY, String.EMPTY)
+
+        assertEquals(true, penaltyViewModel.dateFilterResult.value)
+    }
+
 }

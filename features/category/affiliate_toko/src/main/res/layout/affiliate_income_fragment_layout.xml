@@ -70,8 +70,8 @@
                             <com.tokopedia.unifycomponents.ImageUnify
                                 android:id="@+id/affiliate_background_image"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                app:srcCompat="@drawable/affiliate_background" />
+                                android:layout_height="96dp"
+                                app:unify_image_url_src="https://images.tokopedia.net/img/android/res/singleDpi/affiliate/top_illustration.png"/>
 
                             <androidx.constraintlayout.widget.ConstraintLayout
                                 android:layout_width="match_parent"

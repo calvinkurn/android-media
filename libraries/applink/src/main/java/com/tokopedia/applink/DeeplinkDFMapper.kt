@@ -141,8 +141,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_PAGE_
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_PAGE_SETTING_CUSTOMER_APP_WITH_SHOP_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_SETTINGS_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.BRANDLIST
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.BRANDLIST_SEARCH
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_ADDON
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_GIFTING
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_PRODUCT_BUNDLE
@@ -266,6 +268,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_BASE_SELLER_APP = "df_base_sellerapp"
     const val DF_CATEGORY_TRADE_IN = "df_category_trade_in"
     const val DF_CATEGORY_EPHARMACY = "df_category_epharmacy"
+    const val DF_CATEGORY_CATALOG_LIBRARY = "df_category_catalog_library"
     const val DF_MERCHANT_SELLER = "df_merchant_seller"
     const val DF_MERCHANT_NONLOGIN = "df_merchant_nonlogin"
     const val DF_MERCHANT_PRODUCT_AR = "df_merchant_product_ar"
@@ -315,13 +318,15 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(INTERNAL_EXPLORE_CATEGORY) }, DF_BASE, R.string.applink_title_explore_category))
             add(DFP({ it.startsWith(INTERNAL_CATALOG) }, DF_BASE, R.string.applink_title_catalog))
             add(DFP({ it.startsWith(INTERNAL_E_PHARMACY) }, DF_CATEGORY_EPHARMACY, R.string.applink_title_e_pharmacy))
-            add(DFP({ it.startsWith(INTERNAL_CATALOG_LIBRARY) }, DF_BASE, R.string.applink_title_catalog_library))
+            add(DFP({ it.startsWith(INTERNAL_CATALOG_LIBRARY) }, DF_CATEGORY_CATALOG_LIBRARY, R.string.applink_title_catalog_library))
             add(DFP({ it.startsWith(INTERNAL_FIND) }, DF_BASE, R.string.applink_title_find_native))
             add(DFP({ it.startsWith(INTERNAL_CATEGORY) }, DF_BASE, R.string.label_category))
 
 
             // Content
-            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.PROFILE_DETAIL) }, DF_PEOPLE, R.string.applink_title_people))
+            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.PROFILE_DETAIL)
+                || it.startsWithPattern(ApplinkConstInternalContent.PROFILE_SETTINGS)
+            }, DF_PEOPLE, R.string.applink_title_people))
             add(DFP({ it.startsWithPattern(PLAY_DETAIL) }, DF_BASE, R.string.applink_title_play))
             add(DFP({ it.startsWithPattern(PLAY_RECOM) }, DF_BASE, R.string.applink_title_play))
             add(DFP({ it.startsWithPattern(COMMENT) }, DF_BASE, R.string.applink_kol_title_comment))
@@ -415,12 +420,18 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(OPEN_SHOP) }, DF_MERCHANT_LOGIN, R.string.title_open_shop))
             add(DFP({ it.startsWithPattern(MERCHANT_PRODUCT_BUNDLE) }, DF_MERCHANT_NONLOGIN, R.string.title_bundling_selection_page ))
             add(DFP({ it.startsWithPattern(MERCHANT_GIFTING) }, DF_MERCHANT_NONLOGIN, R.string.title_gifting_bottomsheet ))
+            add(DFP({ it.startsWithPattern(MERCHANT_ADDON) }, DF_MERCHANT_NONLOGIN, R.string.title_addon_bottomsheet ))
 
             add(DFP({ it.startsWith(FAVORITE) }, DF_MERCHANT_LOGIN, R.string.favorite_shop, { DFWebviewFallbackUrl.FAVORITE_SHOP }))
             add(DFP({ it.startsWithPattern(REPORT_PRODUCT) }, DF_MERCHANT_LOGIN, R.string.applink_report_title, ::getDefaultFallbackUrl))
             add(DFP({ it.startsWith(ATTACH_INVOICE) }, DF_MERCHANT_LOGIN, R.string.title_module_attachinvoice))
             add(DFP({ it.startsWith(ATTACH_VOUCHER) }, DF_MERCHANT_LOGIN, R.string.title_module_attachvoucher))
             add(DFP({ it.startsWith(ATTACH_PRODUCT) }, DF_MERCHANT_LOGIN, R.string.title_module_attachproduct))
+            add(DFP({
+                it.startsWith(ApplinkConst.SHOP_NIB_CUSTOMER_APP) || it.startsWith(
+                    ApplinkConstInternalMechant.SHOP_NIB_CUSTOMER_APP
+                )
+            }, DF_BASE, R.string.title_seller_shop_nib))
 
             add(DFP({ it.startsWith(INTERNAL_SELLER) }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.SELLER_ORDER }))
             add(DFP({
@@ -553,6 +564,8 @@ object DeeplinkDFMapper : CoroutineScope {
 
             add(DFP({ it.startsWith(ApplinkConstInternalGlobal.WITHDRAW) }, DF_BASE, R.string.payment_title_withdraw))
             add(DFP({ it.startsWith(ApplinkConstInternalGlobal.AUTO_WITHDRAW_SETTING) }, DF_BASE, R.string.payment_title_auto_withdraw))
+
+            add(DFP({ it.startsWith(ApplinkConstInternalPayment.PAYMENT_THANK_YOU_PAGE) }, DF_BASE, R.string.payment_title_thank_you))
 
             // Promo
             add(DFP({ it.startsWith(INTERNAL_TOKOPOINTS) }, DF_PROMO_TOKOPOINTS, R.string.title_tokopoints, { DFWebviewFallbackUrl.PROMO_TOKOPOINTS }))
@@ -731,6 +744,7 @@ object DeeplinkDFMapper : CoroutineScope {
                 it.startsWith(TokopediaNow.HOME) ||
                     it.startsWith(TokopediaNow.CATEGORY) ||
                     it.startsWith(TokopediaNow.OLD_CATEGORY) ||
+                    it.startsWith(TokopediaNow.SEE_ALL_CATEGORY) ||
                     it.startsWith(TokopediaNow.SEARCH) ||
                     it.startsWith(TokopediaNow.REPURCHASE) ||
                     it.startsWithPattern(TokopediaNow.RECIPE_DETAIL) ||
@@ -741,6 +755,7 @@ object DeeplinkDFMapper : CoroutineScope {
                     it.startsWith(ApplinkConstInternalTokopediaNow.HOME) ||
                     it.startsWith(ApplinkConstInternalTokopediaNow.CATEGORY) ||
                     it.startsWith(ApplinkConstInternalTokopediaNow.OLD_CATEGORY) ||
+                    it.startsWith(ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY) ||
                     it.startsWith(ApplinkConstInternalTokopediaNow.SEARCH) ||
                     it.startsWith(ApplinkConstInternalTokopediaNow.REPURCHASE) ||
                     it.startsWithPattern(ApplinkConstInternalTokopediaNow.RECIPE_DETAIL) ||
@@ -855,6 +870,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(CAMPAIGN_LIST) || it.startsWith(SellerApp.CAMPAIGN_LIST) }, DF_CAMPAIGN_LIST, R.string.title_campaign_list))
             add(DFP({ it.startsWith(ApplinkConstInternalSellerapp.SELLER_MVC_CREATE_PRODUCT_VOUCHER)}, DF_BASE_SELLER_APP, R.string.title_seller_mvc_create))
             add(DFP({ it.startsWith(ApplinkConstInternalSellerapp.SELLER_MVC_CREATE_SHOP_VOUCHER)}, DF_BASE_SELLER_APP, R.string.title_seller_mvc_create))
+
             add(DFP(
                 {
                     it.startsWith(ApplinkConst.SellerApp.SELLER_SHOP_NIB) ||
@@ -870,7 +886,14 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWithPattern(INTERNAL_CONTENT_POST_DETAIL) }, DF_BASE_SELLER_APP, R.string.applink_kol_title_post_detail))
             add(DFP({ it.startsWithPattern(CONTENT_REPORT) }, DF_BASE_SELLER_APP, R.string.applink_kol_title_content_report))
             add(DFP({ it.startsWithPattern(VIDEO_DETAIL) }, DF_BASE_SELLER_APP, R.string.applink_kol_title_video_detail))
-            add(DFP({ it.startsWithPattern(PLAY_BROADCASTER) || it.startsWithPattern(PLAY_SHORTS) }, DF_BASE_SELLER_APP, R.string.applink_title_play_broadcaster))
+            add(DFP({ it.startsWithPattern(PLAY_BROADCASTER)
+                || it.startsWith(ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
+                || it.startsWithPattern(PLAY_SHORTS)
+                || it.startsWith(ApplinkConstInternalContent.INTERNAL_PLAY_SHORTS)
+                || it.startsWithPattern(INTERNAL_MEDIA_PICKER)
+                || it.startsWith(INTERNAL_MEDIA_PICKER_ALBUM)
+                || it.startsWith(INTERNAL_MEDIA_PICKER_PREVIEW)
+            }, DF_CONTENT_PLAY_BROADCASTER, R.string.applink_title_play_broadcaster))
 
             // Logistic
             add(DFP({ it.startsWith(SELLER_COD_ACTIVATION) }, DF_BASE_SELLER_APP, R.string.path_shop_setting_cod_activation))

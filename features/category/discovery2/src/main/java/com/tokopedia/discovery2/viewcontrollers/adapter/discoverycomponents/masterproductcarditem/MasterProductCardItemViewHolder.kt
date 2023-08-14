@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem
 
 import android.content.res.Resources
+import android.os.SystemClock
 import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
@@ -38,12 +39,16 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     private var dataItem: DataItem? = null
     private var componentPosition: Int? = null
     private var buttonNotify: UnifyButton? = null
+    private var lastClickTime = 0L
+    private var interval: Int = 500
+    private var isFulFillment: Boolean = false
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         masterProductCardItemViewModel = discoveryBaseViewModel as MasterProductCardItemViewModel
         masterProductCardItemViewModel?.let {
             getSubComponent().inject(it)
         }
+        lastClickTime = 0L
         initView()
     }
 
@@ -52,6 +57,10 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             masterProductCardListView = itemView.findViewById(R.id.master_product_card_list)
             buttonNotify = masterProductCardListView?.getNotifyMeButton()
             masterProductCardListView?.setNotifyMeOnClickListener {
+                if (SystemClock.elapsedRealtime() - lastClickTime < interval) {
+                    return@setNotifyMeOnClickListener
+                }
+                lastClickTime = SystemClock.elapsedRealtime()
                 sentNotifyButtonEvent()
                 masterProductCardItemViewModel?.subscribeUser()
             }
@@ -76,6 +85,10 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             masterProductCardGridView = itemView.findViewById(R.id.master_product_card_grid)
             buttonNotify = masterProductCardGridView?.getNotifyMeButton()
             masterProductCardGridView?.setNotifyMeOnClickListener {
+                if (SystemClock.elapsedRealtime() - lastClickTime < interval) {
+                    return@setNotifyMeOnClickListener
+                }
+                lastClickTime = SystemClock.elapsedRealtime()
                 sentNotifyButtonEvent()
                 masterProductCardItemViewModel?.subscribeUser()
                 showNotificationReminderPrompt()
@@ -226,6 +239,14 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         setWishlist()
         set3DotsWishlistWithAtc(dataItem)
         setSimilarProductWishlist(dataItem)
+        checkProductIsFulfillment(productCardModel)
+    }
+    private fun checkProductIsFulfillment(productCardModel: ProductCardModel) {
+        productCardModel.labelGroupList.forEach {
+            if (it.position == IS_FULFILLMENT) {
+                isFulFillment = true
+            }
+        }
     }
 
     private fun setSimilarProductWishlist(dataItem: DataItem?) {
@@ -269,13 +290,13 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                 it.text = notifyText
                 if (notifyMeStatus == true) {
                     it.apply {
-                        setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                        setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
                         buttonVariant = UnifyButton.Variant.GHOST
                         buttonType = UnifyButton.Type.ALTERNATE
                     }
                 } else {
                     it.apply {
-                        setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                        setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500))
                         buttonVariant = UnifyButton.Variant.GHOST
                         buttonType = UnifyButton.Type.MAIN
                     }
@@ -315,7 +336,9 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             (fragment as DiscoveryFragment).getDiscoveryAnalytics()
                 .trackProductCardClick(
                     it.components,
-                    it.isUserLoggedIn()
+                    it.isUserLoggedIn(),
+                    isFulFillment,
+                    dataItem?.warehouseId ?: 0
                 )
         }
     }
@@ -327,7 +350,9 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             (fragment as DiscoveryFragment).getDiscoveryAnalytics()
                 .viewProductsList(
                     it.components,
-                    it.isUserLoggedIn()
+                    it.isUserLoggedIn(),
+                    isFulFillment,
+                    dataItem?.warehouseId ?: 0
                 )
         }
     }
@@ -380,5 +405,8 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                 (fragment as DiscoveryFragment).openLoginScreen()
             }
         }
+    }
+    companion object {
+        const val IS_FULFILLMENT = "fulfillment"
     }
 }

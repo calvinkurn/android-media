@@ -118,6 +118,7 @@ object ProductTrackingConstant {
         const val KEY_DIMENSION_40 = "dimension40"
         const val KEY_DIMENSION_45 = "dimension45"
         const val KEY_DIMENSION_54 = "dimension54"
+        const val KEY_DIMENSION_56 = "dimension56"
         const val KEY_DIMENSION_79 = "dimension79"
         const val KEY_DIMENSION_80 = "dimension80"
         const val KEY_DIMENSION_81 = "dimension81"
@@ -244,6 +245,9 @@ object ProductTrackingConstant {
         const val VIEW_ITEM = "view_item"
         const val PROMO_VIEW = "promoView"
         const val PROMOTIONS = "promotions"
+
+        const val CLICK_SHARE_REGULER = "general"
+        const val CLICK_SHARE_AFFILIATE_ICON = "affiliate"
     }
 
     object Label {

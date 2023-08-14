@@ -13,7 +13,6 @@ import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem.MiniCartItemProduct
@@ -62,6 +61,8 @@ open class BaseTokoNowViewModel(
         get() = _updateCartItem
     val miniCart: LiveData<Result<MiniCartSimplifiedData>>
         get() = _miniCart
+    val openLoginPage: LiveData<Unit>
+        get() = _openLoginPage
 
     protected var hasBlockedAddToCart: Boolean = false
     protected var miniCartData: MiniCartSimplifiedData? = null
@@ -73,7 +74,7 @@ open class BaseTokoNowViewModel(
     private val _addItemToCart = MutableLiveData<Result<AddToCartDataModel>>()
     private val _removeCartItem = MutableLiveData<Result<Pair<String, String>>>()
     private val _updateCartItem = MutableLiveData<Result<Triple<String, UpdateCartV2Data, Int>>>()
-
+    private val _openLoginPage = MutableLiveData<Unit>()
 
     private var changeQuantityJob: Job? = null
     private var getMiniCartJob: Job? = null
@@ -90,8 +91,6 @@ open class BaseTokoNowViewModel(
 
     fun getDeviceId(): String = userSession.deviceId
 
-    fun getTickerSourcePage(): String = String.EMPTY
-
     fun onCartQuantityChanged(
         productId: String,
         shopId: String,
@@ -103,26 +102,11 @@ open class BaseTokoNowViewModel(
         onSuccessDeleteCart: (MiniCartItemProduct, RemoveFromCartData) -> Unit = { _, _ -> },
         onError: (Throwable) -> Unit = {}
     ) {
-        if (hasBlockedAddToCart) {
-            // this only blocks add to cart when using repurchase widget
-            _blockAddToCart.value = Unit
+        if (userSession.isLoggedIn) {
+            val product = ProductCartItem(productId, shopId, quantity, stock, isVariant)
+            updateCartQuantity(product, onSuccessAddToCart, onSuccessUpdateCart, onSuccessDeleteCart, onError)
         } else {
-            changeQuantityJob?.cancel()
-
-            val miniCartItem = getMiniCartItem(productId)
-            val cartQuantity = miniCartItem.quantity
-            if (cartQuantity == quantity) return
-
-            launchWithDelay(block = {
-                val product = ProductCartItem(productId, shopId, quantity, stock, isVariant)
-                when {
-                    cartQuantity.isZero() -> addItemToCart(product, onSuccessAddToCart, onError)
-                    quantity.isZero() -> deleteCartItem(miniCartItem, onSuccessDeleteCart, onError)
-                    else -> updateCartItem(product, miniCartItem, onSuccessUpdateCart, onError)
-                }
-            }, delay = CHANGE_QUANTITY_DELAY).let {
-                changeQuantityJob = it
-            }
+            _openLoginPage.postValue(Unit)
         }
     }
 
@@ -228,6 +212,37 @@ open class BaseTokoNowViewModel(
 
     private fun updateMiniCartItemQuantity(miniCartItem: MiniCartItemProduct, quantity: Int) {
         miniCartItem.quantity = quantity
+    }
+
+    private fun updateCartQuantity(
+        product: ProductCartItem,
+        onSuccessAddToCart: (AddToCartDataModel) -> Unit,
+        onSuccessUpdateCart: (MiniCartItemProduct, UpdateCartV2Data) -> Unit,
+        onSuccessDeleteCart: (MiniCartItemProduct, RemoveFromCartData) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
+        if (hasBlockedAddToCart) {
+            // this only blocks add to cart when using repurchase widget
+            _blockAddToCart.postValue(Unit)
+        } else {
+            changeQuantityJob?.cancel()
+            val productId = product.id
+            val quantity = product.quantity
+
+            val miniCartItem = getMiniCartItem(productId)
+            val cartQuantity = miniCartItem.quantity
+            if (cartQuantity == quantity) return
+
+            launchWithDelay(block = {
+                when {
+                    cartQuantity.isZero() -> addItemToCart(product, onSuccessAddToCart, onError)
+                    quantity.isZero() -> deleteCartItem(miniCartItem, onSuccessDeleteCart, onError)
+                    else -> updateCartItem(product, miniCartItem, onSuccessUpdateCart, onError)
+                }
+            }, delay = CHANGE_QUANTITY_DELAY).let {
+                changeQuantityJob = it
+            }
+        }
     }
 
     private fun addItemToCart(

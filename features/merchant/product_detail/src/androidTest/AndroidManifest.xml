@@ -1,23 +1,22 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:versionCode="1"
-    android:versionName="1.0.0"
-    package="com.tokopedia.product.detail" >
+    android:versionName="1.0.0">
 
     <application
         android:label="PDP Test"
         tools:replace="android:label">
 
         <activity
-            android:name=".presentation.InstrumentTestProductDetailActivity"
+            android:name="com.tokopedia.product.detail.presentation.InstrumentTestProductDetailActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
         <activity
-            android:name=".ProductDetailActivityCommonTest"
+            android:name="com.tokopedia.product.detail.ProductDetailActivityCommonTest"
             android:theme="@style/Theme.White"/>
 
         <activity
-            android:name=".ui.base.ProductDetailActivityMock"
+            android:name="com.tokopedia.product.detail.ui.base.ProductDetailActivityMock"
             android:theme="@style/Theme.White"/>
     </application>
 </manifest>

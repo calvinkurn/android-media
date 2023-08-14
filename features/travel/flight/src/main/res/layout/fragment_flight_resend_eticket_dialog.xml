@@ -23,7 +23,7 @@
             android:id="@+id/tgResendETicketError"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_R500"
+            android:textColor="@color/Unify_RN500"
             android:visibility="gone"
             app:typographyType="body_3"
             tools:text="Error" />

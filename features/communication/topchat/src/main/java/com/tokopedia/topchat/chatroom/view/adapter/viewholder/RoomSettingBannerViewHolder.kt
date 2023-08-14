@@ -5,11 +5,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingBannerUiModel
+import com.tokopedia.topchat.databinding.ItemTopchatRoomSettingBannerBinding
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
-import kotlinx.android.synthetic.main.item_topchat_room_setting_banner.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class RoomSettingBannerViewHolder(itemView: View?) : AbstractViewHolder<RoomSettingBannerUiModel>(itemView) {
+
+    private val binding: ItemTopchatRoomSettingBannerBinding? by viewBinding()
 
     override fun bind(element: RoomSettingBannerUiModel?) {
         if (element == null) return
@@ -24,12 +27,12 @@ class RoomSettingBannerViewHolder(itemView: View?) : AbstractViewHolder<RoomSett
             RoomSettingBannerUiModel.TYPE_WARNING -> Ticker.TYPE_WARNING
             else -> Ticker.TYPE_ANNOUNCEMENT
         }
-        itemView.tkBanner?.tickerType = bannerType
+        binding?.tkrBanner?.tickerType = bannerType
     }
 
     private fun bindBannerText(element: RoomSettingBannerUiModel) {
-        itemView.tkBanner?.setHtmlDescription(element.text)
-        itemView.tkBanner?.setDescriptionClickEvent(object : TickerCallback {
+        binding?.tkrBanner?.setHtmlDescription(element.text)
+        binding?.tkrBanner?.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                 RouteManager.route(itemView.context, linkUrl.toString())
             }
@@ -38,12 +41,12 @@ class RoomSettingBannerViewHolder(itemView: View?) : AbstractViewHolder<RoomSett
         })
 
         // Workaround for ticker not wrapping multiline content correctly
-        itemView.tkBanner?.post {
-            itemView.tkBanner?.measure(
+        binding?.tkrBanner?.post {
+            binding?.tkrBanner?.measure(
                     View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
                     View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
             )
-            itemView.tkBanner?.requestLayout()
+            binding?.tkrBanner?.requestLayout()
         }
     }
 

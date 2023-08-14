@@ -10,11 +10,13 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.domain.model.TickerInfo
+import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_USER_MODE
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_AUTO_CANCELLED
@@ -54,7 +56,7 @@ class SomDetailHeaderViewHolder(
                         setLabel(getWarehouseLabelString(context))
                         show()
                         unlockFeature = true
-                        setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                        setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
                     }
                 } else {
                     warehouseLabel.hide()
@@ -65,9 +67,11 @@ class SomDetailHeaderViewHolder(
                 }
 
                 headerSeeHistory.setOnClickListener {
-                    binding?.root?.context?.startActivity(RouteManager.getIntent(it.context, ApplinkConstInternalOrder.TRACK, "")
+                    binding?.root?.context?.startActivity(
+                        RouteManager.getIntent(it.context, ApplinkConstInternalOrder.TRACK, "")
                             .putExtra(EXTRA_ORDER_ID, item.dataObject.orderId)
-                            .putExtra(EXTRA_USER_MODE, 2))
+                            .putExtra(EXTRA_USER_MODE, 2)
+                    )
                 }
 
                 if (item.dataObject.tickerInfo.text.isNotEmpty() || item.dataObject.awbUploadProofText.isNotEmpty()) {
@@ -93,18 +97,13 @@ class SomDetailHeaderViewHolder(
                 headerDateValue.text = item.dataObject.paymentDate
 
                 if (item.dataObject.deadlineText.isNotEmpty()) {
-                    val deadlineBackground = Utils.getColoredDeadlineBackground(
-                        context = root.context,
-                        colorHex = item.dataObject.deadlineColor,
-                        defaultColor = com.tokopedia.unifyprinciples.R.color.Unify_YN600
-                    )
                     if (item.dataObject.statusCode == STATUS_CODE_ORDER_DELIVERED || item.dataObject.statusCode == STATUS_CODE_ORDER_DELIVERED_DUE_LIMIT) {
                         headerDeadlineLabel.text = root.context.getString(R.string.som_deadline_done)
                     } else {
                         headerDeadlineLabel.text = root.context.getString(R.string.som_deadline)
                     }
                     tvSomDetailDeadline.text = item.dataObject.deadlineText
-                    layoutSomDetailDeadline.background = deadlineBackground
+                    setupDeadlineStyleFromRollence(item.dataObject)
                     headerDeadlineLabel.show()
                     layoutSomDetailDeadline.show()
                 } else {
@@ -134,15 +133,61 @@ class SomDetailHeaderViewHolder(
         }
     }
 
+    private fun DetailHeaderItemBinding.setupDeadlineStyleFromRollence(element: SomDetailHeader) {
+        if (Utils.isEnableOperationalGuideline()) {
+            setupDeadlineStyle(element.deadlineStyle)
+        } else {
+            val deadlineBackground = Utils.getColoredDeadlineBackground(
+                context = root.context,
+                colorHex = element.deadlineColor,
+                defaultColor = com.tokopedia.unifyprinciples.R.color.Unify_YN600
+            )
+            layoutSomDetailDeadline.background = deadlineBackground
+        }
+    }
+
+    private fun DetailHeaderItemBinding.setupDeadlineStyle(deadlineStyle: Int) {
+        when (deadlineStyle) {
+            SomConsts.DEADLINE_MORE_THAN_24_HOURS -> setDeadlineMoreThan24Hours()
+            SomConsts.DEADLINE_BETWEEN_12_TO_24_HOURS -> setDeadlineBetween12To24Hours()
+            SomConsts.DEADLINE_LOWER_THAN_12_HOURS -> setDeadlineLowerThan12Hours()
+            else -> setDeadlineMoreThan24Hours()
+        }
+    }
+
+    private fun DetailHeaderItemBinding.setDeadlineLowerThan12Hours() {
+        val bgDeadline = Utils.getDeadlineDrawable(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN600)
+        val colorDeadline = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        layoutSomDetailDeadline.background = bgDeadline
+        icSomDetailDeadline.setImage(newIconId = IconUnify.CLOCK, newLightEnable = colorDeadline)
+        tvSomDetailDeadline.setTextColor(colorDeadline)
+    }
+
+    private fun DetailHeaderItemBinding.setDeadlineBetween12To24Hours() {
+        val bgDeadline = Utils.getDeadlineDrawable(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN50)
+        val colorDeadline = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN600)
+        layoutSomDetailDeadline.background = bgDeadline
+        icSomDetailDeadline.setImage(newIconId = IconUnify.CLOCK, newLightEnable = colorDeadline)
+        tvSomDetailDeadline.setTextColor(colorDeadline)
+    }
+
+    private fun DetailHeaderItemBinding.setDeadlineMoreThan24Hours() {
+        val bgDeadline = Utils.getDeadlineDrawable(root.context, com.tokopedia.sellerorder.R.color._dms_som_operational_more_than_24_hour_color)
+        val colorDeadline = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        layoutSomDetailDeadline.background = bgDeadline
+        icSomDetailDeadline.setImage(newIconId = IconUnify.CLOCK, newLightEnable = colorDeadline)
+        tvSomDetailDeadline.setTextColor(colorDeadline)
+    }
+
     private fun setupOrderStatus(statusText: String, statusCode: Int) {
         binding?.headerTitle?.run {
             text = statusText
             val statusOrderColor = if (statusCode == STATUS_CODE_ORDER_CANCELLED ||
                 statusCode == STATUS_CODE_ORDER_AUTO_CANCELLED ||
                 statusCode == STATUS_CODE_ORDER_REJECTED) {
-                com.tokopedia.unifyprinciples.R.color.Unify_R600
+                com.tokopedia.unifyprinciples.R.color.Unify_RN500
             } else {
-                com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
             }
             setTextColor(MethodChecker.getColor(context, statusOrderColor))
         }

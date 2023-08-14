@@ -295,6 +295,7 @@
     <string name="label_draft_product_empty">Draft Produk Anda kosong</string>
     <string name="label_draft_product_add_product">Tambah Produk</string>
     <string name="label_draft_has_not_have_product_name_yet">Belum ada nama produk</string>
+    <string name="label_draft_product_corrupt">Draft product rusak</string>
 
     <!--network errors-->
     <string name="error_gql_failed">Terjadi kesalahan koneksi</string>
@@ -537,12 +538,14 @@
     <string name="error_max_weight">Maks. %s g</string>
     <string name="cpl_custom_label">Ubah Pengiriman Custom</string>
 
-    <!-- DT deletion error message -->
+    <!-- Product restiction -->
     <string name="label_ineligble_access_warning">Oops, fitur ini belum \ndapat diakses</string>
     <string name="label_body_ineligble_access_warning">Ini karena tokomu sedang ditangguhkan</string>
     <string name="label_back_to_list_product">Kembali ke Daftar Produk</string>
     <string name="label_learn_about_moderation">Pelajari Tentang Penangguhan</string>
     <string name="format_web_page">%s?url=%s</string>
+
+    <!-- DT deletion error message -->
     <string name="product_add_edit_text_product_dt_can_not_delete">Tidak bisa ubah untuk produk Dilayani Tokopedia</string>
     <string name="product_add_edit_text_description_product_dt_can_not_delete">Jika mau %s varian, tarik semua stok produk ini di gudang Dilayani Tokopedia &amp; buat Surat Penarikan lewat desktop.</string>
     <string name="product_add_edit_text_title_product_dt_cannot_deactivate">Varian ini terdaftar dalam gudang Dilayani Tokopedia</string>

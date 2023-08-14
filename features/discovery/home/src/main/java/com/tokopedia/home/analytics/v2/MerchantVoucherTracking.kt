@@ -1,6 +1,9 @@
 package com.tokopedia.home.analytics.v2
 
 import android.os.Bundle
+import com.tokopedia.home.analytics.v2.MerchantVoucherTracking.CustomAction.Companion.TRACKER_ID_PRODUCT_CLICK
+import com.tokopedia.home.analytics.v2.MerchantVoucherTracking.CustomAction.Companion.TRACKER_ID_PROMO_CLICK
+import com.tokopedia.home.analytics.v2.MerchantVoucherTracking.CustomAction.Companion.TRACKER_ID_PROMO_VIEW
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMerchantVoucherDataModel
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
@@ -27,6 +30,9 @@ object MerchantVoucherTracking : BaseTrackerConst() {
             const val VIEW_COUPON = "view coupon"
             const val CREATIVE_NAME_VIEW_COUPON_FORMAT = "%s - %s - %s"
             const val DEFAULT_VALUE = ""
+            const val TRACKER_ID_PROMO_VIEW = "26978"
+            const val TRACKER_ID_PROMO_CLICK = "26979"
+            const val TRACKER_ID_PRODUCT_CLICK = "26981"
         }
     }
 
@@ -41,14 +47,14 @@ object MerchantVoucherTracking : BaseTrackerConst() {
         bundle.putString(Label.KEY, element.shopId)
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
         bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
-
+        bundle.putString(TrackerId.KEY, TRACKER_ID_PROMO_CLICK)
         val promotion = Bundle()
         promotion.putString(
             Promotion.CREATIVE_NAME,
             CustomAction.CREATIVE_NAME_FORMAT.format(CustomAction.SHOP_DETAIL, element.shopName)
         )
         promotion.putString(Promotion.CREATIVE_SLOT, (horizontalPosition + 1).toString())
-        promotion.putString(Promotion.ITEM_ID, CustomAction.ITEM_ID_FORMAT.format(element.bannerId, element.shopId))
+        promotion.putString(Promotion.ITEM_ID, CustomAction.ITEM_ID_FORMAT.format(element.channelId, element.shopId))
         promotion.putString(Promotion.ITEM_NAME, CustomAction.ITEM_NAME_FORMAT.format(element.positionWidget, element.headerName))
         bundle.putParcelableArrayList(Promotion.KEY, arrayListOf(promotion))
         bundle.putString(UserId.KEY, element.userId)
@@ -70,6 +76,7 @@ object MerchantVoucherTracking : BaseTrackerConst() {
         )
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
         bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
+        bundle.putString(TrackerId.KEY, TRACKER_ID_PRODUCT_CLICK)
         bundle.putString(
             ItemList.KEY,
             CustomAction.ITEM_LIST_PRODUCT_DETAIL_FORMAT.format(
@@ -142,7 +149,7 @@ object MerchantVoucherTracking : BaseTrackerConst() {
         )
         val creativeSlot = (horizontalPosition + 1).toString()
         val itemId = CustomAction.ITEM_ID_FORMAT.format(
-            element.bannerId,
+            element.channelId,
             element.shopId
         )
         val itemName = CustomAction.ITEM_NAME_VOUCHER_DETAIL_FORMAT.format(
@@ -166,6 +173,7 @@ object MerchantVoucherTracking : BaseTrackerConst() {
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(element.userId)
+                .appendCustomKeyValue(TrackerId.KEY, TRACKER_ID_PROMO_VIEW)
                 .build()
     }
 }

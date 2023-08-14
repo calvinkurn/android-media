@@ -226,7 +226,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
             addFlags(FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             statusBarColor = ContextCompat.getColor(
                 this@BaseAutoCompleteActivity,
-                com.tokopedia.unifyprinciples.R.color.Unify_N0
+                com.tokopedia.unifyprinciples.R.color.Unify_NN0
             )
         }
     }
@@ -444,10 +444,10 @@ open class BaseAutoCompleteActivity: BaseActivity(),
     private fun getQueryOrHint(searchParameter: Map<String, String>) : String {
         val query = searchParameter.getSearchQuery()
 
-        return query.ifEmpty { searchParameter[HINT] as String }
+        return query.ifEmpty { searchParameter[HINT] ?: "" }
     }
     private fun getTrackingQueryOrHint(searchParameter: Map<String, String>) : String {
-        return searchParameter.getTrackingSearchQuery().ifEmpty { searchParameter[HINT] as String }
+        return searchParameter.getTrackingSearchQuery().ifEmpty { searchParameter.get(HINT) ?: "" }
     }
 
     private fun createSearchResultApplink(searchParameter: Map<String, String>): String {

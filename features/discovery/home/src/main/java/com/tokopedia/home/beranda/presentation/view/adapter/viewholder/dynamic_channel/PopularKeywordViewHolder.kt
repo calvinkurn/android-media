@@ -29,13 +29,13 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.popularkeyword.PopularKeywordAdapter
 import com.tokopedia.home.beranda.presentation.view.helper.HomeChannelWidgetUtil
-import com.tokopedia.home_component.HomeComponentRollenceController
 import com.tokopedia.home_component.customview.DynamicChannelHeaderView
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.home_component.util.invertIfDarkMode
 import com.tokopedia.home_component.util.toDpInt
+import com.tokopedia.home_component_header.util.HomeChannelHeaderRollenceController
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -81,7 +81,7 @@ class PopularKeywordViewHolder (val view: View,
     private val containerPopularKeyword = view.findViewById<ConstraintLayout>(R.id.container_popular_keyword)
     private val headerView: DynamicChannelHeaderView by lazy { view.findViewById(R.id.home_component_header_view) }
 
-    private val isUsingHeaderRevamp = HomeComponentRollenceController.isDynamicChannelHeaderUsingRollenceVariant()
+    private val isUsingHeaderRevamp = HomeChannelHeaderRollenceController.isHeaderUsingRollenceVariant()
 
     init{
         rotateAnimation.duration = ROTATE_DURATION
@@ -195,7 +195,7 @@ class PopularKeywordViewHolder (val view: View,
                         channelTitle?.visibility = View.VISIBLE
                         channelTitle?.setTextColor(
                             if(element.channel.header.textColor.isNotEmpty()) Color.parseColor(element.channel.header.textColor).invertIfDarkMode(itemView.context)
-                            else ContextCompat.getColor(view.context, R.color.Unify_N700).invertIfDarkMode(itemView.context)
+                            else ContextCompat.getColor(view.context, R.color.Unify_NN950).invertIfDarkMode(itemView.context)
                         )
                         loaderPopularKeywordTitle?.gone()
                         anchorReloadButtonTo(R.id.channel_pk_title)

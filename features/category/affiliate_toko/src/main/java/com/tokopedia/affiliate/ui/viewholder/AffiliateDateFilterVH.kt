@@ -23,7 +23,7 @@ class AffiliateDateFilterVH(
     companion object {
         @JvmField
         @LayoutRes
-        var LAYOUT = R.layout.affiliate_home_range_picker_item
+        var LAYOUT = R.layout.affiliate_adp_range_picker_item
     }
 
     private val tvDate = itemView.findViewById<Typography>(R.id.text)

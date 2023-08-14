@@ -8,6 +8,7 @@ import com.tokopedia.feedcomponent.di.FeedFragmentFactoryModule
 import com.tokopedia.feedcomponent.people.di.PeopleModule
 import com.tokopedia.feedcomponent.shoprecom.di.ShopRecomModule
 import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
+import com.tokopedia.people.views.activity.ProfileSettingsActivity
 import com.tokopedia.people.views.activity.UserProfileActivity
 import dagger.Component
 
@@ -31,4 +32,6 @@ interface UserProfileComponent {
 
     fun inject(activity: UserProfileActivity)
     fun inject(activity: FollowerFollowingListingActivity)
+
+    fun inject(activity: ProfileSettingsActivity)
 }

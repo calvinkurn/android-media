@@ -7,6 +7,7 @@ import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
+import com.tokopedia.chatbot.chatbot2.data.rejectreasons.DynamicAttachmentRejectReasons
 import com.tokopedia.chatbot.chatbot2.view.uimodel.chatactionbubble.ChatActionSelectionBubbleUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.csatoptionlist.CsatOptionsUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.helpfullquestion.HelpFullQuestionsUiModel
@@ -92,4 +93,14 @@ interface ChatbotViewState : BaseChatViewState {
     fun hideQuickReplyOnClick()
 
     fun removeDynamicStickyButton()
+
+    fun handleQuickReplyFromDynamicAttachment(
+        toShow: Boolean,
+        rejectReasons: DynamicAttachmentRejectReasons
+    )
+
+    fun handleQuickReplyFromDynamicAttachment(
+        toShow: Boolean,
+        quickReplyUiModel: List<QuickReplyUiModel>
+    )
 }

@@ -2,8 +2,8 @@ package com.tokopedia.mediauploader.video.domain
 
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.mediauploader.common.state.ProgressUploader
-import com.tokopedia.mediauploader.common.internal.MediaUploaderUrl
-import com.tokopedia.mediauploader.common.util.requestBody
+import com.tokopedia.mediauploader.common.MediaUploaderUrl
+import com.tokopedia.mediauploader.common.util.network.requestBody
 import com.tokopedia.mediauploader.video.data.VideoUploadServices
 import com.tokopedia.mediauploader.video.data.entity.SimpleUploader
 import com.tokopedia.mediauploader.video.data.params.SimpleUploadParam

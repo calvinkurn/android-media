@@ -129,7 +129,7 @@ class TalkReplyHeaderViewHolder(view: View,
     private fun showQuestionWithCondition(isMasked: Boolean, question: String, maskedContent: String, allowUnmask: Boolean, isSeller: Boolean) {
         binding.replyHeaderMessage.apply {
             if (isMasked) {
-                setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+                setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_32))
                 if (allowUnmask && isSeller) {
                     text = HtmlCompat.fromHtml(question, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
                     setType(Typography.HEADING_4)
@@ -144,7 +144,7 @@ class TalkReplyHeaderViewHolder(view: View,
             text = HtmlLinkHelper(context, question).spannedString
             setType(Typography.HEADING_4)
             setWeight(Typography.BOLD)
-            setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+            setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
             setCustomMovementMethod(fun(link: String): Boolean { return threadListener.onUrlClicked(link) })
         }
     }

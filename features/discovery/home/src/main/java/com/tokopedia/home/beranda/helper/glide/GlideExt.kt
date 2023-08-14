@@ -17,12 +17,10 @@ import com.tokopedia.home.R
 import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.listener.MediaListener
 import com.tokopedia.media.loader.loadAsGif
-import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.wrapper.MediaDataSource
 
 const val FPM_ATTRIBUTE_IMAGE_URL = "image_url"
-const val FPM_PRODUCT_ORGANIC_CHANNEL = "home_product_organic"
 const val FPM_THEMATIC_CARD_VIEW = "home_thematic_card"
 const val FPM_DYNAMIC_LEGO_BANNER = "home_lego_banner"
 const val FPM_CATEGORY_WIDGET_ITEM = "home_category_widget_item"
@@ -34,7 +32,7 @@ const val TRUNCATED_URL_PREFIX = "https://images.tokopedia.net/img/cache/"
 
 fun ImageView.loadGif(url: String) = loadAsGif(url)
 
-fun ImageView.loadImage(url: String, fpmItemLabel: String = "", listener: MediaListener? = null){
+fun ImageView.loadImage(url: String, fpmItemLabel: String = "", listener: MediaListener? = null) {
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     this.loadImage(url) {
         listener({ resource, dataSource ->
@@ -47,47 +45,47 @@ fun ImageView.loadImage(url: String, fpmItemLabel: String = "", listener: MediaL
     }
 }
 
-fun ImageView.loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: String = ""){
+fun ImageView.loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: String = "") {
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
 
     Glide.with(context)
-            .load(url)
-            .format(DecodeFormat.PREFER_ARGB_8888)
-            .centerCrop()
-            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            .transform(CenterCrop(), RoundedCorners(roundedRadius))
-            .listener(object : RequestListener<Drawable> {
-                override fun onLoadFailed(
-                        e: GlideException?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        isFirstResource: Boolean
-                ): Boolean {
-                    return false
-                }
+        .load(url)
+        .format(DecodeFormat.PREFER_ARGB_8888)
+        .centerCrop()
+        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+        .transform(CenterCrop(), RoundedCorners(roundedRadius))
+        .listener(object : RequestListener<Drawable> {
+            override fun onLoadFailed(
+                e: GlideException?,
+                model: Any?,
+                target: Target<Drawable>?,
+                isFirstResource: Boolean
+            ): Boolean {
+                return false
+            }
 
-                override fun onResourceReady(
-                        resource: Drawable?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        dataSource: DataSource?,
-                        isFirstResource: Boolean
-                ): Boolean {
-                    handleOnResourceReady(MediaDataSource.mapTo(dataSource), null, performanceMonitoring, fpmItemLabel)
-                    return false
-                }
-            })
-            .into(this)
+            override fun onResourceReady(
+                resource: Drawable?,
+                model: Any?,
+                target: Target<Drawable>?,
+                dataSource: DataSource?,
+                isFirstResource: Boolean
+            ): Boolean {
+                handleOnResourceReady(MediaDataSource.mapTo(dataSource), null, performanceMonitoring, fpmItemLabel)
+                return false
+            }
+        })
+        .into(this)
 }
 
 fun ImageView.loadMiniImage(
-        url: String,
-        width: Int,
-        height: Int,
-        fpmItemLabel: String = "",
-        onLoaded: () -> Unit,
-        onFailed: () -> Unit
-){
+    url: String,
+    width: Int,
+    height: Int,
+    fpmItemLabel: String = "",
+    onLoaded: () -> Unit,
+    onFailed: () -> Unit
+) {
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     this.loadImage(url) {
         setPlaceHolder(R.drawable.placeholder_grey)
@@ -101,17 +99,17 @@ fun ImageView.loadMiniImage(
     }
 }
 
-fun ImageView.loadImageNoRounded(url: String, placeholder: Int = -1){
+fun ImageView.loadImageNoRounded(url: String, placeholder: Int = -1) {
     this.loadImage(url) {
         centerCrop()
         setPlaceHolder(placeholder)
     }
 }
 
-fun getPerformanceMonitoring(url: String, fpmItemLabel: String = "") : PerformanceMonitoring? {
-    var performanceMonitoring : PerformanceMonitoring? = null
+fun getPerformanceMonitoring(url: String, fpmItemLabel: String = ""): PerformanceMonitoring? {
+    var performanceMonitoring: PerformanceMonitoring? = null
 
-    //FPM only allow max 100 chars, so the url needs to be truncated
+    // FPM only allow max 100 chars, so the url needs to be truncated
     val truncatedUrl = url.removePrefix(TRUNCATED_URL_PREFIX)
 
     if (fpmItemLabel.isNotEmpty()) {
@@ -121,10 +119,12 @@ fun getPerformanceMonitoring(url: String, fpmItemLabel: String = "") : Performan
     return performanceMonitoring
 }
 
-fun handleOnResourceReady(dataSource: MediaDataSource?,
-                          resource: Bitmap?,
-                          performanceMonitoring: PerformanceMonitoring?,
-                          fpmItemLabel: String) {
+fun handleOnResourceReady(
+    dataSource: MediaDataSource?,
+    resource: Bitmap?,
+    performanceMonitoring: PerformanceMonitoring?,
+    fpmItemLabel: String
+) {
     if (dataSource == MediaDataSource.REMOTE) {
         performanceMonitoring?.stopTrace()
     }

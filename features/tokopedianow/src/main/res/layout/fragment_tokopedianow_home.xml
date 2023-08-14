@@ -53,7 +53,7 @@
         android:id="@+id/status_bar_bg"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_25"
-        android:background="@color/Unify_G500"
+        android:background="@color/Unify_GN500"
         android:visibility="visible"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -73,7 +73,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         android:visibility="gone"
-        app:sticky_highlight_color="@color/Unify_G500"
+        app:sticky_highlight_color="@color/Unify_GN500"
         app:sticky_left_icon="@drawable/ic_toped_widget_login"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

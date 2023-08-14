@@ -12,7 +12,7 @@
         android:lineSpacingMultiplier="1.1"
         android:textColor="@color/chatbot_dms_message_text"
         android:textIsSelectable="true"
-        android:textColorLink="@color/Unify_G400"
+        android:textColorLink="@color/Unify_GN500"
         app:typographyType="body_1"
         tools:ignore="RtlHardcoded"
         android:ellipsize="end"

@@ -421,6 +421,13 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                         List<String> images = MediaPicker.INSTANCE.result(intent).getOriginalPaths();
                         if(!images.isEmpty()){
                             results = new Uri[]{Uri.parse(FILE_PREFIX + images.get(0))};
+                            Context context = getContext();
+                            if (context != null) {
+                                boolean isDisableGalleryPicker = WebViewHelper.isWhitelistDisableGalleryPicker(context, webView.getUrl());
+                                if (isDisableGalleryPicker) {
+                                    results = new Uri[]{Uri.parse(FILE_PREFIX + images.get(0)), Uri.parse("true")};
+                                }
+                            }
                         }
                     }
                 }
@@ -566,26 +573,34 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             }
             uploadMessageAfterLolipop = filePathCallback;
 
-            Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
-            contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
-            contentSelectionIntent.setType("*/*");
-            Intent[] intentArray = new Intent[0];
-            if(getContext() != null){
-                intentArray = new Intent[1];
+            if (getContext() != null) {
+                boolean disableGalleryPicker = WebViewHelper.isWhitelistDisableGalleryPicker(getContext(), webView.getUrl());
                 Intent mediaPickerIntent = WebViewHelper.INSTANCE.getMediaPickerIntent(
-                    getContext(),
-                    hasVideo(fileChooserParams)
+                        getContext(),
+                        hasVideo(fileChooserParams),
+                        disableGalleryPicker
                 );
-                intentArray[0] = mediaPickerIntent;
+
+                if (disableGalleryPicker) {
+                    startActivityForResult(mediaPickerIntent, ATTACH_FILE_REQUEST);
+                } else {
+                    Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                    contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
+                    contentSelectionIntent.setType("*/*");
+                    Intent[] intentArray = new Intent[0];
+                    if (getContext() != null) {
+                        intentArray = new Intent[1];
+                        intentArray[0] = mediaPickerIntent;
+                    }
+
+                    Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
+                    chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent);
+                    chooserIntent.putExtra(Intent.EXTRA_TITLE, "File Chooser");
+                    chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray);
+                    startActivityForResult(chooserIntent, ATTACH_FILE_REQUEST);
+                }
             }
-
-            Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
-            chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent);
-            chooserIntent.putExtra(Intent.EXTRA_TITLE, "File Chooser");
-            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray);
-            startActivityForResult(chooserIntent, ATTACH_FILE_REQUEST);
             return true;
-
         }
 
         private boolean hasVideo(WebChromeClient.FileChooserParams fileChooserParams) {
@@ -617,7 +632,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                     String decodedUrl = Uri.decode(url).toLowerCase();
                     if (!TextUtils.isEmpty(title)
                             && Uri.parse(title).getScheme() == null
-                            && (isKolUrl(decodedUrl) || isPrintAwbUrl(decodedUrl))) {
+                            && (isKolUrl(decodedUrl) || isPrintAwbUrl(decodedUrl) ||
+                            WebViewHelper.isScpUrl(getContext(), decodedUrl))) {
                         actionBar.setTitle(title);
                     } else if ((TextUtils.isEmpty(activityTitle) || activityTitle.equals(DEFAULT_TITLE))
                             && !isHelpUrl(decodedUrl)) {
@@ -753,7 +769,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String requestUrl) {
-            if (hasCheckOverrideAtInitialization(requestUrl) && !isHelpUrl(requestUrl)) return false;
+            if (hasCheckOverrideAtInitialization(requestUrl) && !shouldReloadContactUsUrl(requestUrl)) return false;
             boolean overrideUrl = BaseWebViewFragment.this.shouldOverrideUrlLoading(view, requestUrl);
             checkActivityFinish();
             return overrideUrl;
@@ -840,6 +856,13 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         return url.contains(HELP_URL);
     }
 
+    public Boolean shouldReloadContactUsUrl(String url) {
+        if (getContext() != null) {
+            return WebViewHelper.shouldReloadContactUsUrl(getContext(), url);
+        }
+        return false;
+    }
+
     // to be overridden
     protected void webViewClientShouldInterceptRequest(WebView view, WebResourceRequest request) {
         //noop
@@ -862,7 +885,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             return false;
         }
 
-        if(webView != null && isHelpUrl(url)){
+        if (webView != null && shouldReloadContactUsUrl(url)){
             launchWebviewForNewUrl(url);
             return true;
         }
@@ -1207,7 +1230,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (globalError != null) {
             globalError.setVisibility(View.GONE);
         }
-        if(isHelpUrl(url)){
+        if (shouldReloadContactUsUrl(url)){
             launchWebviewForNewUrl(url);
             return;
         }

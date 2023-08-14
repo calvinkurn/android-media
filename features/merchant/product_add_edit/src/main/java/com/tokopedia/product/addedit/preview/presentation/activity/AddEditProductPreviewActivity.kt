@@ -2,8 +2,13 @@ package com.tokopedia.product.addedit.preview.presentation.activity
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
+import android.graphics.PorterDuff
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
@@ -22,6 +27,7 @@ import com.tokopedia.product.addedit.tracking.ProductAddNotifTracking
 import com.tokopedia.product.addedit.tracking.ProductEditNotifTracking
 import com.tokopedia.shop.common.util.sellerfeedbackutil.SellerFeedbackUtil
 import com.tokopedia.user.session.UserSession
+import kotlinx.coroutines.launch
 
 open class AddEditProductPreviewActivity: TabletAdaptiveActivity() {
 
@@ -119,19 +125,31 @@ open class AddEditProductPreviewActivity: TabletAdaptiveActivity() {
     }
 
     private fun updateActivityToolbar() {
-        findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)?.let {
+        findViewById<androidx.appcompat.widget.Toolbar>(com.tokopedia.product.addedit.R.id.toolbar)?.let {
             setSupportActionBar(it)
+            // set to dark mode color support
+            val color = androidx.core.content.ContextCompat.getColor(
+                this,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950
+            )
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                it.navigationIcon?.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_IN)
+            } else {
+                it.navigationIcon?.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+            }
         }
     }
 
     private fun setupScreenShootGlobalFeedback() {
-        val isEditing = mode == ApplinkConstInternalMechant.MODE_EDIT_PRODUCT || mode == ApplinkConstInternalMechant.MODE_EDIT_DRAFT
+        val isEditing =
+            mode == ApplinkConstInternalMechant.MODE_EDIT_PRODUCT || mode == ApplinkConstInternalMechant.MODE_EDIT_DRAFT
         val currentPage = if (isEditing) {
             SellerFeedbackUtil.EDIT_PRODUCT
         } else {
             SellerFeedbackUtil.ADD_PRODUCT
         }
-        SellerFeedbackUtil(applicationContext)
-            .setSelectedPage(currentPage)
+        lifecycleScope.launch {
+            SellerFeedbackUtil(applicationContext).setSelectedPage(currentPage)
+        }
     }
 }

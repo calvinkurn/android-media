@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.media.editor.analytics.editorhome.EditorHomeAnalytics
 import com.tokopedia.media.editor.base.BaseEditorActivity
 import com.tokopedia.media.editor.di.EditorInjector
@@ -61,11 +62,11 @@ class EditorActivity : BaseEditorActivity() {
         )
 
         viewModel.editorResult.observe(this) { imageResultList ->
-            imageResultList?.let {
+            filteredEditorResult(imageResultList).let { filteredResult ->
                 val listImageEditState = viewModel.editStateList.values.toList()
                 val result = EditorResult(
                     originalPaths = listImageEditState.map { it.getOriginalUrl() },
-                    editedImages = imageResultList
+                    editedImages = filteredResult
                 )
 
                 editorHomeAnalytics.clickUpload()
@@ -73,9 +74,9 @@ class EditorActivity : BaseEditorActivity() {
                 val intent = Intent()
                 intent.putExtra(RESULT_INTENT_EDITOR, result)
                 setResult(Activity.RESULT_OK, intent)
-            }
 
-            finish()
+                finish()
+            }
         }
     }
 
@@ -168,9 +169,20 @@ class EditorActivity : BaseEditorActivity() {
         }
     }
 
+    // filter editor result, null -> failed to save image || "" (empty string) -> image not edited
+    private fun filteredEditorResult(editorResult: List<String?>): List<String> {
+        return editorResult.mapNotNull {
+            if (it == null) {
+                showErrorGeneralToaster(this, null)
+                String.EMPTY
+            } else {
+                it
+            }
+        }
+    }
+
     companion object {
         private const val CACHE_PARAM_INTENT_DATA = "intent_data.param_editor"
-        private const val PERMISSION_REQUEST_CODE = 197
     }
 
 }

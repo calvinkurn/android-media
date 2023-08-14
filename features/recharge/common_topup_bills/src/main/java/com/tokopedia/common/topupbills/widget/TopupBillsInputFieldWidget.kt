@@ -20,7 +20,12 @@ import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.databinding.ViewTopupBillsInputFieldBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.coroutines.*
+import kotlinx.android.synthetic.main.view_topup_bills_input_field.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.jetbrains.annotations.NotNull
 
 /**
@@ -32,8 +37,7 @@ class TopupBillsInputFieldWidget @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
     var actionListener: ActionListener? = null
-) :
-    FrameLayout(context, attrs, defStyleAttr) {
+) : FrameLayout(context, attrs, defStyleAttr) {
 
     val binding = ViewTopupBillsInputFieldBinding.inflate(LayoutInflater.from(context), this, true)
 
@@ -53,8 +57,6 @@ class TopupBillsInputFieldWidget @JvmOverloads constructor(
     private var delayTextChanged: Long = DEFAULT_DELAY_TEXT_CHANGED_MILLIS
 
     init {
-        View.inflate(context, getLayout(), this)
-
         if (attrs != null) {
             val styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.TopupBillsInputFieldWidget, 0, 0)
             try {

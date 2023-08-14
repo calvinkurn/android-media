@@ -117,7 +117,7 @@ class ShopHomeCarousellProductViewHolder(
         )
         val defaultCtaColor = MethodChecker.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_G500
+            com.tokopedia.unifyprinciples.R.color.Unify_GN500
         )
         textViewTitle?.setTextColor(defaultTitleColor)
         textViewCta?.setTextColor(defaultCtaColor)

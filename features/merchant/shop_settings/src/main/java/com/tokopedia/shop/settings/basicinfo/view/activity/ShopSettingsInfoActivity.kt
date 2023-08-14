@@ -60,7 +60,7 @@ class ShopSettingsInfoActivity : BaseSimpleActivity() {
             it.isShowShadow = true
             it.title = getString(R.string.shop_settings_info)
             // set to dark mode color support
-            val color = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700)
+            val color = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 it.navigationIcon?.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_IN)
             }else{

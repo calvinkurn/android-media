@@ -7,7 +7,10 @@ import androidx.test.espresso.action.ViewActions.clearText
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isEnabled
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.di.FakeActivityComponentFactory
@@ -19,7 +22,6 @@ import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterEmailActivity
 import com.tokopedia.loginregister.stub.FakeGraphqlRepository
 import com.tokopedia.loginregister.stub.usecase.GraphqlUseCaseStub
-import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.After
 import org.junit.Before
@@ -32,13 +34,12 @@ open class RegisterEmailBase : LoginRegisterBase() {
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
-        RegisterEmailActivity::class.java, false, false
+        RegisterEmailActivity::class.java,
+        false,
+        false
     )
 
     protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
-
-    @Inject
-    lateinit var generatePublicKeyUseCase: GeneratePublicKeyUseCase
 
     @Inject
     lateinit var registerCheckUseCase: GraphqlUseCaseStub<RegisterCheckPojo>
@@ -117,5 +118,4 @@ open class RegisterEmailBase : LoginRegisterBase() {
             )
         ).check(matches(isDisplayed())).perform(clearText(), typeText(value))
     }
-
 }

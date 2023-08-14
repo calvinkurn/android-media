@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    >
+    android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_search"
@@ -46,8 +43,8 @@
             android:imeOptions="actionSearch"
             android:inputType="textNoSuggestions"
             android:lines="1"
-            android:textColor="@color/Unify_N700_68"
-            android:textColorHint="@color/Unify_N700_32"
+            android:textColor="@color/Unify_NN950_68"
+            android:textColorHint="@color/Unify_NN950_32"
             android:textCursorDrawable="@drawable/ic_play_search_cursor"
             android:textSize="@dimen/fontSize_lvl3"
             app:layout_constraintBottom_toBottomOf="@id/iv_search"
@@ -56,7 +53,7 @@
             app:layout_constraintTop_toTopOf="@id/iv_search"
             />
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/iv_clear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -65,7 +62,11 @@
             app:layout_constraintBottom_toBottomOf="@id/iv_search"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/iv_search"
-            app:srcCompat="@drawable/ic_play_clear_input"
+            app:icon_color_light_enable="@color/Unify_NN400"
+            app:icon_color_light_disabled="@color/Unify_NN400"
+            app:icon_color_night_enable="@color/Unify_NN400"
+            app:icon_color_night_disabled="@color/Unify_NN400"
+            app:icon_name="CLEAR"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

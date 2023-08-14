@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.notifcenter.widget.NotificationConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.notifcenter.view.customview.widget.NotificationConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/notification_container"
@@ -72,7 +72,7 @@
         app:layout_constraintTop_toBottomOf="@+id/txt_notification_title"
         tools:visibility="visible">
 
-        <com.tokopedia.notifcenter.widget.OrderThumbnailImageView
+        <com.tokopedia.notifcenter.view.customview.widget.OrderThumbnailImageView
             android:id="@+id/iv_product_thumbnail"
             android:layout_width="@dimen/notif_dp_46"
             android:layout_height="@dimen/notif_dp_46"
@@ -89,7 +89,7 @@
             android:layout_marginStart="@dimen/unify_space_8"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toTopOf="@+id/tp_widget_desc"
             app:layout_constraintEnd_toStartOf="@+id/tp_cta"
@@ -108,7 +108,7 @@
             android:layout_marginStart="@dimen/unify_space_4"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             android:visibility="gone"
             app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toBottomOf="@+id/tp_widget_title"
@@ -127,7 +127,7 @@
             android:layout_marginStart="@dimen/unify_space_8"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/iv_product_thumbnail"
             app:layout_constraintEnd_toStartOf="@+id/tp_cta"
@@ -144,7 +144,7 @@
             android:gravity="center"
             android:paddingStart="@dimen/unify_space_12"
             android:paddingEnd="@dimen/unify_space_12"
-            android:textColor="@color/Unify_G500"
+            android:textColor="@color/Unify_GN500"
             app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -176,7 +176,7 @@
         android:id="@+id/view_bottom_line"
         android:layout_width="@dimen/notif_dp_1"
         android:layout_height="@dimen/unify_space_0"
-        android:background="@color/Unify_N100"
+        android:background="@color/Unify_NN200"
         app:layout_constraintBottom_toTopOf="@+id/rv_history"
         app:layout_constraintEnd_toEndOf="@+id/iv_mark_seen"
         app:layout_constraintStart_toStartOf="@+id/iv_mark_seen"
@@ -225,7 +225,7 @@
             android:paddingTop="@dimen/unify_space_12"
             android:paddingBottom="@dimen/unify_space_12"
             android:text="@string/cta_widget_notifcenter_see_previous"
-            android:textColor="@color/Unify_N500"
+            android:textColor="@color/Unify_NN600"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rv_history"
             app:typographyType="body_3"
@@ -237,7 +237,7 @@
             android:layout_height="match_parent"
             android:paddingStart="@dimen/notif_dp_4"
             android:paddingEnd="@dimen/notif_dp_8"
-            app:icon_color_light_enable="@color/Unify_N500"
+            app:icon_color_light_enable="@color/Unify_NN600"
             app:icon_name="CHEVRON_UP"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tp_history"
@@ -253,4 +253,4 @@
         tools:visibility="visible"
         tools:text="Di-pin sampai 2 Apr 2022" />
 
-</com.tokopedia.notifcenter.widget.NotificationConstraintLayout>
+</com.tokopedia.notifcenter.view.customview.widget.NotificationConstraintLayout>

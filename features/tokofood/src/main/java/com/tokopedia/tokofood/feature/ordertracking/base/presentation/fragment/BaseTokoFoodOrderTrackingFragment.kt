@@ -58,7 +58,7 @@ import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 
-class BaseTokoFoodOrderTrackingFragment :
+open class BaseTokoFoodOrderTrackingFragment :
     BaseDaggerFragment(),
     RecyclerViewPollerListener,
     OrderTrackingListener,
@@ -78,7 +78,7 @@ class BaseTokoFoodOrderTrackingFragment :
         OrderTrackingAdapterTypeFactoryImpl(this, this)
     }
 
-    private val orderTrackingAdapter by lazy {
+    open val orderTrackingAdapter by lazy {
         OrderTrackingAdapter(orderTrackingAdapterTypeFactory)
     }
 

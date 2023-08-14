@@ -15,6 +15,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.R
+import com.tokopedia.content.common.R as commonR
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.analytic.PlayAnalytic2
 import com.tokopedia.play.extensions.isAnyShown
@@ -28,7 +29,7 @@ import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.PlayMoreActionType
 import com.tokopedia.play.view.uimodel.PlayMoreActionUiModel
-import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
+import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.action.OpenFooterUserReport
 import com.tokopedia.play.view.uimodel.action.OpenUserReport
 import com.tokopedia.play.view.uimodel.action.SelectReason
@@ -49,7 +50,6 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.toDate
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import java.net.ConnectException
 import java.net.UnknownHostException
@@ -549,7 +549,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
     }
 
     override fun onFooterClicked(view: PlayUserReportSheetViewComponent) {
-        playViewModel.submitAction(OpenFooterUserReport(getString(R.string.play_user_report_footer_weblink)))
+        playViewModel.submitAction(OpenFooterUserReport(getString(commonR.string.content_user_report_footer_weblink)))
     }
 
     /***
@@ -566,7 +566,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
     }
 
     override fun onFooterClicked(view: PlayUserReportSubmissionViewComponent) {
-        playViewModel.submitAction(OpenFooterUserReport(getString(R.string.play_user_report_footer_weblink)))
+        playViewModel.submitAction(OpenFooterUserReport(getString(commonR.string.content_user_report_footer_weblink)))
     }
 
     override fun onShowVerificationDialog(
@@ -578,9 +578,9 @@ class PlayMoreActionBottomSheet @Inject constructor(
         analytic.clickUserReportSubmissionBtnSubmit(isUse)
 
         showDialog(
-            title = getString(R.string.play_user_report_verification_dialog_title),
-            description = getString(R.string.play_user_report_verification_dialog_desc),
-            primaryCTAText = getString(R.string.play_user_report_verification_dialog_btn_ok),
+            title = getString(commonR.string.play_user_report_verification_dialog_title),
+            description = getString(commonR.string.play_user_report_verification_dialog_desc),
+            primaryCTAText = getString(commonR.string.play_user_report_verification_dialog_btn_ok),
             secondaryCTAText = getString(R.string.play_pip_cancel),
             primaryAction = {
                 onSubmitUserReport(reasonId, description)

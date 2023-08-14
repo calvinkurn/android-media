@@ -102,6 +102,9 @@ import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase.Companio
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingDataProduct
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
+import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
+import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -156,10 +159,11 @@ class DynamicProductDetailViewModel @Inject constructor(
     private val updateCartUseCase: Lazy<UpdateCartUseCase>,
     private val deleteCartUseCase: Lazy<DeleteCartUseCase>,
     private val getTopadsIsAdsUseCase: Lazy<GetTopadsIsAdsUseCase>,
+    private val affiliateEligibilityUseCase: Lazy<AffiliateEligibilityCheckUseCase>,
     private val remoteConfig: RemoteConfig,
     val userSessionInterface: UserSessionInterface,
     private val affiliateCookieHelper: Lazy<AffiliateCookieHelper>,
-    productRecommSubViewModel: ProductRecommSubViewModel,
+    private val productRecommSubViewModel: ProductRecommSubViewModel,
     playWidgetSubViewModel: PlayWidgetSubViewModel
 ) : ParentSubViewModel(dispatcher.main, productRecommSubViewModel, playWidgetSubViewModel),
     IProductRecommSubViewModel by productRecommSubViewModel,
@@ -289,8 +293,6 @@ class DynamicProductDetailViewModel @Inject constructor(
     private var userLocationCache: LocalCacheModel = LocalCacheModel()
     private var forceRefresh: Boolean = false
     private var shopDomain: String? = null
-    private var alreadyHitRecom: MutableList<String> = mutableListOf()
-
     private var updateCartCounterSubscription: Subscription? = null
 
     fun hasShopAuthority(): Boolean = isShopOwner() || getShopInfo().allowManage
@@ -304,6 +306,11 @@ class DynamicProductDetailViewModel @Inject constructor(
     private val _productMediaRecomBottomSheetState = MutableLiveData<ProductMediaRecomBottomSheetState>()
     val productMediaRecomBottomSheetState: LiveData<ProductMediaRecomBottomSheetState>
         get() = _productMediaRecomBottomSheetState
+
+    private val _resultAffiliate = MutableLiveData<Result<GenerateAffiliateLinkEligibility>>()
+
+    val resultAffiliate: LiveData<Result<GenerateAffiliateLinkEligibility>>
+        get() = _resultAffiliate
 
     val userId: String
         get() = userSessionInterface.userId
@@ -493,14 +500,18 @@ class DynamicProductDetailViewModel @Inject constructor(
         data: ProductVariant,
         mapOfSelectedVariant: MutableMap<String, String>?
     ) {
-        launchCatchError(dispatcher.io, block = {
-            _singleVariantData.postValue(
+        launch(dispatcher.io) {
+            runCatching {
                 ProductDetailVariantLogic.determineVariant(
                     mapOfSelectedOptionIds = mapOfSelectedVariant.orEmpty(),
                     productVariant = data
                 )
-            )
-        }) {}
+            }.onSuccess {
+                launch(dispatcher.main) {
+                    _singleVariantData.postValue(it)
+                }
+            }
+        }
     }
 
     fun getProductP1(
@@ -513,7 +524,7 @@ class DynamicProductDetailViewModel @Inject constructor(
     ) {
         launch(context = dispatcher.io) {
             runCatching {
-                alreadyHitRecom = mutableListOf()
+                productRecommSubViewModel.onResetAlreadyRecomHit()
                 shopDomain = productParams.shopDomain
                 forceRefresh = refreshPage
                 userLocationCache = userLocationLocal
@@ -871,48 +882,56 @@ class DynamicProductDetailViewModel @Inject constructor(
     }
 
     fun toggleTeaserNotifyMe(isNotifyMeActive: Boolean, campaignId: Long, productId: Long) {
-        launchCatchError(block = {
-            val action = if (isNotifyMeActive) {
-                ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER
-            } else {
-                ProductDetailCommonConstant.VALUE_TEASER_ACTION_REGISTER
+        launch(context = coroutineContext) {
+            runCatching {
+                val action = if (isNotifyMeActive) {
+                    ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER
+                } else {
+                    ProductDetailCommonConstant.VALUE_TEASER_ACTION_REGISTER
+                }
+
+                action to toggleNotifyMeUseCase.get().executeOnBackground(
+                    ToggleNotifyMeUseCase.createParams(
+                        campaignId,
+                        productId,
+                        action,
+                        ProductDetailCommonConstant.VALUE_TEASER_SOURCE
+                    )
+                ).result
+            }.onSuccess { pair ->
+                updateNotifyMeData(productId.toString())
+                _toggleTeaserNotifyMe.value = NotifyMeUiData(
+                    pair.first,
+                    pair.second.isSuccess,
+                    pair.second.message
+                ).asSuccess()
+            }.onFailure {
+                _toggleTeaserNotifyMe.value = it.asFail()
             }
-
-            val result = toggleNotifyMeUseCase.get().executeOnBackground(
-                ToggleNotifyMeUseCase.createParams(
-                    campaignId,
-                    productId,
-                    action,
-                    ProductDetailCommonConstant.VALUE_TEASER_SOURCE
-                )
-            ).result
-
-            updateNotifyMeData(productId.toString())
-            _toggleTeaserNotifyMe.value = NotifyMeUiData(
-                action,
-                result.isSuccess,
-                result.message
-            ).asSuccess()
-        }) {
-            _toggleTeaserNotifyMe.value = it.asFail()
         }
     }
 
     fun getDiscussionMostHelpful(productId: String, shopId: String) {
-        launchCatchError(block = {
-            val response = withContext(dispatcher.io) {
-                discussionMostHelpfulUseCase.get().createRequestParams(productId, shopId)
-                discussionMostHelpfulUseCase.get().executeOnBackground()
+        launch(context = coroutineContext) {
+            runCatching {
+                withContext(dispatcher.io) {
+                    discussionMostHelpfulUseCase.get().createRequestParams(productId, shopId)
+                    discussionMostHelpfulUseCase.get().executeOnBackground()
+                }
+            }.onSuccess {
+                _discussionMostHelpful.postValue(it.asSuccess())
+            }.onFailure {
+                _discussionMostHelpful.postValue(it.asFail())
             }
-            _discussionMostHelpful.postValue(response.asSuccess())
-        }) {
-            _discussionMostHelpful.postValue(it.asFail())
         }
     }
 
     fun shouldHideFloatingButton(): Boolean {
-        return p2Data.value?.cartRedirection?.get(getDynamicProductInfoP1?.basic?.productID)
-            ?.hideFloatingButton.orFalse()
+        val cardRedirection = p2Data.value?.cartRedirection ?: return false
+        val p1 = getDynamicProductInfoP1 ?: return false
+        val pid = p1.basic.productID
+        val hideFloatingButton = cardRedirection[pid]?.shouldHideFloatingButtonInPdp.orFalse()
+        return hideFloatingButton && !isShopOwner()
     }
 
     fun onAtcRecomNonVariantQuantityChanged(
@@ -1301,6 +1320,19 @@ class DynamicProductDetailViewModel @Inject constructor(
 
     fun dismissProductMediaRecomBottomSheet() {
         _productMediaRecomBottomSheetState.value = ProductMediaRecomBottomSheetState.Dismissed
+    }
+
+    fun checkAffiliateEligibility(affiliatePDPInput: AffiliateInput) {
+        launch {
+            try {
+                val result = affiliateEligibilityUseCase.get().apply {
+                    params = AffiliateEligibilityCheckUseCase.createParam(affiliatePDPInput)
+                }.executeOnBackground()
+                _resultAffiliate.value = Success(result)
+            } catch (e: Exception) {
+                _resultAffiliate.value = Fail(e)
+            }
+        }
     }
 
     private suspend fun loadProductMediaRecomBottomSheetData(

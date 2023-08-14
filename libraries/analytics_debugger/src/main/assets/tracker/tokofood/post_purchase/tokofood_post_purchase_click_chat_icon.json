@@ -1,0 +1,32 @@
+{
+  "readme": "TokoFood Post Purchase - click chat icon",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "openScreen",
+      "eventAction": "view tokofood order detail page",
+      "eventCategory": "tokofood order detail page",
+      "businessUnit": ".*",
+      "currentSite": "tokopediamarketplace",
+      "isLoggedInStatus": "true|false",
+      "screenName": ".*",
+      "sessionIris": ".*",
+      "appsflyerId": ".*",
+      "clientId": ".*",
+      "theme": ".*",
+      "networkSpeed": ".*",
+      "shopId": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickCommunication",
+      "eventAction": "click chat from order detail",
+      "sessionIris": ".*",
+      "eventCategory": "tokochat order detail",
+      "eventLabel": ".*",
+      "trackerId": ".*",
+      "businessUnit": "communication",
+      "currentSite": "tokopediamarketplace"
+    }
+  ]
+}

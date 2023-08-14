@@ -84,6 +84,13 @@ object GqlQueryBuilder {
                 big_upload_max_concurrent
                 timeout_transcode
                 retry_interval
+                video_compression {
+                  enable_compression
+                  compress_threshold_mb
+                  max_bitrate_bps
+                  max_resolution
+                  max_fps
+                }
               }
             }
           }

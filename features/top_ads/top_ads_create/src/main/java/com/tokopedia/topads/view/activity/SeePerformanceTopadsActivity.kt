@@ -3,6 +3,8 @@ package com.tokopedia.topads.view.activity
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -85,6 +87,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         currentSite = intent.data?.getQueryParameter(CURRENT_SITE).orEmpty()
         openMainBottomSheet()
         firstFetch()
+        window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }
 
     private fun initInjector() {

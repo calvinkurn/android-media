@@ -21,7 +21,6 @@ import com.tokopedia.content.common.databinding.FragmentProductTagParentBinding
 import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.common.producttag.util.extension.currentSource
 import com.tokopedia.content.common.producttag.util.extension.isAutocomplete
-import com.tokopedia.content.common.producttag.util.extension.withCache
 import com.tokopedia.content.common.producttag.util.getAutocompleteApplink
 import com.tokopedia.content.common.producttag.util.preference.ProductTagPreference
 import com.tokopedia.content.common.producttag.view.bottomsheet.ProductTagSourceBottomSheet
@@ -43,6 +42,7 @@ import com.tokopedia.content.common.producttag.view.uimodel.state.ProductTagUiSt
 import com.tokopedia.content.common.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.content.common.producttag.view.viewmodel.factory.ProductTagViewModelFactory
 import com.tokopedia.content.common.util.getParentFragmentByInstance
+import com.tokopedia.content.common.util.withCache
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction

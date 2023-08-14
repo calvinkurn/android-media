@@ -60,10 +60,6 @@ class ChatFilterView : LinearLayout {
         rvFilterAdapter?.filterListener = filterListener
     }
 
-    fun reset() {
-        rvFilterAdapter?.reset()
-    }
-
     fun init(isSeller: Boolean) {
         this.isSeller = isSeller
         bindClickNavigation()
@@ -114,11 +110,6 @@ class ChatFilterView : LinearLayout {
     private fun bindView(view: View) {
         settingBtn = view.findViewById(R.id.iv_chat_setting)
         rvFilter = view.findViewById(R.id.rv_filter)
-    }
-
-    fun onRoleChanged(isSeller: Boolean) {
-        this.isSeller = isSeller
-        initFilterData()
     }
 
     fun updateIsWhiteListTopBot(whiteListTopBot: Boolean) {

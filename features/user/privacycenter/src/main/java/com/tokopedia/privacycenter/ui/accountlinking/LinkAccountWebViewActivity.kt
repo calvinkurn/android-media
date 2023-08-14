@@ -26,7 +26,7 @@ import com.tokopedia.webview.BaseSimpleWebViewActivity
 /**
  * Created by Yoris on 10/08/21.
  */
-
+@Deprecated("Remove this class after integrating SCP Login to Tokopedia")
 class LinkAccountWebViewActivity : BaseSimpleWebViewActivity(), HasComponent<PrivacyCenterComponent> {
 
     companion object {
@@ -131,7 +131,7 @@ class LinkAccountWebViewActivity : BaseSimpleWebViewActivity(), HasComponent<Pri
         val s = SpannableString(this.getString(R.string.account_linking_skip_for_now))
         s.setSpan(
             ForegroundColorSpan(
-                ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
             ),
             0, s.length, 0
         )
