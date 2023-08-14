@@ -73,7 +73,7 @@ class FlightOrderDetailActivityTest {
         onView(withId(R.id.tgFlightOrderTerminalNote)).perform(nestedScrollTo())
         onView(withId(R.id.btnFlightOrderDetailSendEticket)).perform(click())
         Thread.sleep(1000)
-        onView(withId(R.id.bottom_sheet_close)).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)).perform(click())
         Thread.sleep(2000)
 
         onView(withId(R.id.containerContentOrderDetail)).perform(swipeUp())
