@@ -3920,14 +3920,14 @@ class ShipmentFragment :
         // tokopedia://addon/2148784281/?cartId=123123&selectedAddonIds=111,222,333&source=cart&warehouseId=789789&isTokocabang=false
         val productId = cartItemModel.productId
         val cartId = cartItemModel.cartId
-        val addOnIds = arrayListOf<Long>()
-        cartItemModel.addOnProduct.listAddOnProductData.filter { it.status == ADD_ON_PRODUCT_STATUS_CHECK }.forEach { addOnItem ->
-            addOnIds.add(addOnItem.id)
-        }
 
+        val addOnIds = arrayListOf<Long>()
         val deselectAddOnIds = arrayListOf<Long>()
-        cartItemModel.addOnProduct.listAddOnProductData.filter { it.status == ADD_ON_PRODUCT_STATUS_UNCHECK }.forEach { addOnItem ->
-            deselectAddOnIds.add(addOnItem.id)
+
+        cartItemModel.addOnProduct.listAddOnProductData.forEach { addOnItem ->
+            if (addOnItem.status == ADD_ON_PRODUCT_STATUS_CHECK) {
+                addOnIds.add(addOnItem.id)
+            } else if (addOnItem.status == ADD_ON_PRODUCT_STATUS_UNCHECK) deselectAddOnIds.add(addOnItem.id)
         }
 
         val price: Double

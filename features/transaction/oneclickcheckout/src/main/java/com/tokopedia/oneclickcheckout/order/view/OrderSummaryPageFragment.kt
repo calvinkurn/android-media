@@ -1585,13 +1585,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             val cartId = product.cartId
 
             val addOnIds = arrayListOf<String>()
-            addOnsProductData.data.filter { it.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK }.forEach { addOnItem ->
-                addOnIds.add(addOnItem.id)
-            }
-
             val deselectAddOnIds = arrayListOf<String>()
-            addOnsProductData.data.filter { it.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK }.forEach { addOnItem ->
-                deselectAddOnIds.add(addOnItem.id)
+
+            addOnsProductData.data.forEach { addOnItem ->
+                if (addOnItem.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK) {
+                    addOnIds.add(addOnItem.id)
+                } else if (addOnItem.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK) deselectAddOnIds.add(addOnItem.id)
             }
 
             val price: Double
