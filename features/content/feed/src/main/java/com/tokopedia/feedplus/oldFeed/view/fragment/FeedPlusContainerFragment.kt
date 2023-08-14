@@ -754,26 +754,32 @@ class FeedPlusContainerFragment :
     }
 
     private fun setActiveTab() {
-        fun setActiveTabByTabName() {
-            val tabName =
-                arguments?.getString(ApplinkConstInternalContent.UF_EXTRA_FEED_TAB_NAME) ?: return
-            when (tabName) {
+        fun setActiveTabByName(name: String) {
+            when (name) {
                 "explore" -> goToExplore()
                 "video" -> goToVideo()
                 else -> {}
             }
         }
 
-        fun setActiveTabByPosition() {
-            val tabPosition = arguments?.getString(ARGS_FEED_TAB_POSITION) ?: return
-            when (tabPosition) {
+        fun setActiveTabByPosition(position: String) {
+            when (position) {
                 EXPLORE_TAB_POSITION -> goToExplore()
                 VIDEO_TAB_POSITION -> goToVideo()
             }
         }
 
-        setActiveTabByTabName()
-        setActiveTabByPosition()
+        val tabName = arguments?.getString(ApplinkConstInternalContent.UF_EXTRA_FEED_TAB_NAME)
+        if (tabName != null) {
+            setActiveTabByName(tabName)
+            return
+        }
+
+        val tabPosition = arguments?.getString(ARGS_FEED_TAB_POSITION)
+        if (tabPosition != null) {
+            setActiveTabByPosition(tabPosition)
+            return
+        }
     }
 
     private fun handleWhitelistData(whitelistDomain: WhitelistDomain) {
