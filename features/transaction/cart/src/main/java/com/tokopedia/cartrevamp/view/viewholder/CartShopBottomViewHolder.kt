@@ -3,7 +3,7 @@ package com.tokopedia.cartrevamp.view.viewholder
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cart.R
-import com.tokopedia.cart.databinding.ItemCartShopBottomBinding
+import com.tokopedia.cart.databinding.ItemCartShopBottomRevampBinding
 import com.tokopedia.cartrevamp.view.ActionListener
 import com.tokopedia.cartrevamp.view.uimodel.CartShopBottomHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartShopGroupTickerState
@@ -15,7 +15,7 @@ import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.utils.resources.isDarkMode
 
 class CartShopBottomViewHolder(
-    private val binding: ItemCartShopBottomBinding,
+    private val binding: ItemCartShopBottomRevampBinding,
     private val actionListener: ActionListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -144,7 +144,7 @@ class CartShopBottomViewHolder(
     }
 
     companion object {
-        val LAYOUT = R.layout.item_cart_shop_bottom
+        val LAYOUT = R.layout.item_cart_shop_bottom_revamp
 
         private const val CHEVRON_ROTATION_0 = 0f
         private const val CHEVRON_ROTATION_180 = 180f

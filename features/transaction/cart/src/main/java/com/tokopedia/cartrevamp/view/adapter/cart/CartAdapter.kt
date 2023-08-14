@@ -13,7 +13,7 @@ import com.tokopedia.cart.databinding.ItemCartProductRevampBinding
 import com.tokopedia.cart.databinding.ItemCartRecentViewBinding
 import com.tokopedia.cart.databinding.ItemCartRecommendationBinding
 import com.tokopedia.cart.databinding.ItemCartSectionHeaderBinding
-import com.tokopedia.cart.databinding.ItemCartShopBottomBinding
+import com.tokopedia.cart.databinding.ItemCartShopBottomRevampBinding
 import com.tokopedia.cart.databinding.ItemCartTopAdsHeadlineBinding
 import com.tokopedia.cart.databinding.ItemCartWishlistBinding
 import com.tokopedia.cart.databinding.ItemEmptyCartBinding
@@ -154,7 +154,7 @@ class CartAdapter constructor(
             }
 
             CartShopBottomViewHolder.LAYOUT -> {
-                val binding = ItemCartShopBottomBinding.inflate(
+                val binding = ItemCartShopBottomRevampBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
