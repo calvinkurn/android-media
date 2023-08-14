@@ -138,7 +138,7 @@ class RechargeGeneralLoginInstrumentTest {
                 isDescendantOfA(withId(R.id.promo_list_widget))
         )).check(matches(isDisplayed())).perform(
                 RecyclerViewActions.actionOnItemAtPosition<TopupBillsPromoListAdapter.PromoItemViewHolder>(
-                        0, CommonActions.clickChildViewWithId(R.id.btn_copy_promo)
+                        0, CommonActions.clickChildViewWithId(com.tokopedia.common.topupbills.R.id.btn_copy_promo)
                 )
         )
         Thread.sleep(1000)

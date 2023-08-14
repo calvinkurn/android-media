@@ -38,7 +38,7 @@ class TopupBillsSearchNumberActivityTest {
     @Test
     fun click_clear_on_search_number_view() {
         onView(withId(R.id.searchbar_textfield)).perform(ViewActions.typeText(VALID_PHONE_NUMBER), ViewActions.closeSoftKeyboard())
-        onView(AllOf.allOf(withText(VALID_PHONE_NUMBER), isDescendantOfA(withId(R.id.topupbills_search_number_rv)))).check(matches(isDisplayed()))
+        onView(AllOf.allOf(withText(VALID_PHONE_NUMBER), isDescendantOfA(withId(com.tokopedia.common.topupbills.R.id.topupbills_search_number_rv)))).check(matches(isDisplayed()))
         onView(withId(R.id.searchbar_icon)).perform(ViewActions.click())
         onView(withId(R.id.searchbar_textfield)).check(matches(withText("")))
     }
