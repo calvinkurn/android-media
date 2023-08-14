@@ -59,6 +59,7 @@ class StoriesViewModel @Inject constructor(
             StoriesUiAction.PauseStories -> handleOnPauseStories()
             StoriesUiAction.ResumeStories -> handleOnResumeStories()
             StoriesUiAction.OpenKebabMenu -> handleOpenKebab()
+            StoriesUiAction.OpenProduct -> handleOpenProduct()
         }
     }
 
@@ -140,6 +141,12 @@ class StoriesViewModel @Inject constructor(
     private fun handleOpenKebab() {
         viewModelScope.launch {
             _uiEvent.emit(StoriesUiEvent.OpenKebab)
+        }
+    }
+
+    private fun handleOpenProduct() {
+        viewModelScope.launch {
+            _uiEvent.emit(StoriesUiEvent.OpenProduct)
         }
     }
 

@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.stories.bottomsheet.StoriesProductBottomSheet
 import com.tokopedia.stories.bottomsheet.StoriesThreeDotsBottomSheet
 import com.tokopedia.stories.databinding.FragmentStoriesDetailBinding
 import com.tokopedia.stories.utils.withCache
@@ -169,6 +170,9 @@ class StoriesDetailFragment @Inject constructor(
         vStoriesKebabIcon.setOnClickListener {
             viewModelAction(StoriesUiAction.OpenKebabMenu)
         }
+        vStoriesProductIcon.root.setOnClickListener {
+            viewModelAction(StoriesUiAction.OpenProduct)
+        }
     }
 
     private fun pauseStories() = with(binding) {
@@ -195,6 +199,12 @@ class StoriesDetailFragment @Inject constructor(
                 when (event) {
                     StoriesUiEvent.OpenKebab -> StoriesThreeDotsBottomSheet
                         .getOrCreateFragment(childFragmentManager, requireActivity().classLoader)
+                        .show(childFragmentManager)
+
+                    StoriesUiEvent.OpenProduct -> StoriesProductBottomSheet.getOrCreateFragment(
+                        childFragmentManager,
+                        requireActivity().classLoader
+                    )
                         .show(childFragmentManager)
 
                     else -> {}

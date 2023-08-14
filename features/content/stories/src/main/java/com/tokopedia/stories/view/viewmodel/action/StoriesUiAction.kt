@@ -20,4 +20,6 @@ sealed interface StoriesUiAction {
     object ResumeStories: StoriesUiAction
 
     object OpenKebabMenu : StoriesUiAction
+
+    object OpenProduct : StoriesUiAction
 }
