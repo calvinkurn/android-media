@@ -1,27 +1,18 @@
 package com.tokopedia.editor.ui.gesture.java;
 
-import android.animation.Animator;
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.Rect;
-import android.util.Log;
+
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
-
-import androidx.annotation.NonNull;
 
 import com.tokopedia.editor.ui.gesture.listener.OnGestureControl;
 import com.tokopedia.editor.ui.gesture.listener.OnMultiTouchListener;
 import com.tokopedia.editor.ui.model.AddTextModel;
-import com.tokopedia.editor.ui.widget.DynamicTextCanvasView;
 import com.tokopedia.editor.ui.widget.GridGuidelineView;
-import com.tokopedia.unifyprinciples.Typography;
 
 public class MultiTouchListener implements View.OnTouchListener {
 
@@ -35,20 +26,19 @@ public class MultiTouchListener implements View.OnTouchListener {
     private int activePointerId = INVALID_POINTER_ID;
     private float prevX, prevY;
 
-    private ScaleGestureDetector scaleGestureDetector;
+    private final ScaleGestureDetector scaleGestureDetector;
     private OnMultiTouchListener onMultiTouchListener;
     private OnGestureControl onGestureControl;
     boolean isTextPinchZoomable;
 
-    private GridGuidelineView gridGuidelineView;
-    private Button deleteView;
-
-    boolean isSelectedViewDraggedToTrash = false;
-    boolean isWithinDeletionBounds = false;
-    boolean isDragging = false;
+    private final GridGuidelineView gridGuidelineView;
+    private final Button deleteView;
 
     private float originalScaleX = 0f;
     private float originalScaleY = 0f;
+
+    boolean isSelectedViewDraggedToTrash = false;
+    boolean isDragging = false;
 
     public MultiTouchListener(Context context, GridGuidelineView guideline, Button deleteView) {
         this.deleteView = deleteView;
@@ -79,8 +69,18 @@ public class MultiTouchListener implements View.OnTouchListener {
         view.setScaleX(scale);
         view.setScaleY(scale);
 
-        originalScaleX = scale;
-        originalScaleY = scale;
+        // init state
+        if (originalScaleX == 0f && originalScaleY == 0f) {
+            originalScaleX = view.getScaleX();
+            originalScaleY = view.getScaleY();
+        }
+
+        // this condition will update original scale value and
+        // preventing the overlapping value while scale-down animation appear.
+        if (!isSelectedViewDraggedToTrash) {
+            originalScaleX = view.getScaleX();
+            originalScaleY = view.getScaleY();
+        }
 
         float rotation = adjustAngle(view.getRotation() + info.getDeltaAngle());
         view.setRotation(rotation);
@@ -145,28 +145,23 @@ public class MultiTouchListener implements View.OnTouchListener {
                     }
 
                     // Calculate distances from the center of the parent
-                    float centerX = view.getX() + view.getWidth() / 2f;
-                    float centerY = view.getY() + view.getHeight() / 2f;
                     float parentCenterX = ((View) view.getParent()).getWidth() / 2f;
                     float parentCenterY = ((View) view.getParent()).getHeight() / 2f;
 
-                    Log.d("EDITOR-TEST", "width: " + view.getWidth() + ", height: " + view.getHeight());
-                    Log.d("EDITOR-TEST", "x: " + view.getX() + ", y: " + view.getY());
-
                     // Check if the TextView is close to the vertical center of the parent
-                    boolean isAlignedWithCenterX = Math.abs(centerX - parentCenterX) <= 20f;
+                    boolean isAlignedWithCenterX = isAlignedWithCenterX(view);
 
                     // Check if the TextView is close to the horizontal center of the parent
-                    boolean isAlignedWithCenterY = Math.abs(centerY - parentCenterY) <= 20f;
+                    boolean isAlignedWithCenterY = isAlignedWithCenterY(view);
 
                     // Snap effect for horizontal alignment
-                    if (isAlignedWithCenterX) {
+                    if (isAlignedWithCenterX(view)) {
                         float newX = parentCenterX - view.getWidth() / 2f;
                         view.setX(newX);
                     }
 
                     // Snap effect for vertical alignment
-                    if (isAlignedWithCenterY) {
+                    if (isAlignedWithCenterY(view)) {
                         float newY = parentCenterY - view.getHeight() / 2f;
                         view.setY(newY);
                     }
@@ -180,22 +175,17 @@ public class MultiTouchListener implements View.OnTouchListener {
                         showDeletionButton();
                     }
 
-                    // TODO: still doesn't work.
-//                    isWithinDeletionBounds = isViewWithinBounds(view, deleteView, 0);
-//                    Log.d("EDITOR", "UNIVERSAL-EDITOR: " + isWithinDeletionBounds);
-//
-//                    if (isWithinDeletionBounds) {
-//                        enterDeletionBoundsAnimation(view);
-//                        if (!isSelectedViewDraggedToTrash) {
-//                            isSelectedViewDraggedToTrash = true;
-//                            enterDeletionBoundsAnimation(view);
-//                        }
-//                    } else {
-//                        if (isSelectedViewDraggedToTrash) {
-//                            isSelectedViewDraggedToTrash = false;
-//                            exitDeletionBoundsAnimation(view);
-//                        }
-//                    }
+                    if (isPointerContain(x, y)) {
+                        if (!isSelectedViewDraggedToTrash) {
+                            isSelectedViewDraggedToTrash = true;
+                            applyScaleAnimation(view, 0.3f, 0.3f);
+                        }
+                    } else {
+                        if (isSelectedViewDraggedToTrash) {
+                            isSelectedViewDraggedToTrash = false;
+                            applyScaleAnimation(view, originalScaleX, originalScaleY);
+                        }
+                    }
                 }
                 break;
             case MotionEvent.ACTION_CANCEL:
@@ -218,6 +208,10 @@ public class MultiTouchListener implements View.OnTouchListener {
                 gridGuidelineView.setShowVerticalLine(false);
                 gridGuidelineView.setShowHorizontalLine(false);
 
+                if (isPointerContain(x, y)) {
+                    onMultiTouchListener.onRemoveView(view);
+                }
+
                 isDragging = false;
                 hideDeletionButton();
                 break;
@@ -235,16 +229,15 @@ public class MultiTouchListener implements View.OnTouchListener {
         return true;
     }
 
-    private boolean isViewWithinBounds(View view, View targetView, int threshold) {
-        Rect viewRect = new Rect();
-        Rect targetRect = new Rect();
-        view.getHitRect(viewRect);
-        targetView.getHitRect(targetRect);
+    private boolean isPointerContain(float x, float y) {
+        int[] location = new int[2];
+        deleteView.getLocationOnScreen(location);
 
-        // Inflate the targetRect to include the deletion button's area
-        targetRect.inset(-threshold, -threshold);
+        int buttonWidth = deleteView.getWidth();
+        int buttonHeight = deleteView.getHeight();
 
-        return Rect.intersects(viewRect, targetRect);
+        return ((x >= location[0]) && (x <= location[0] + buttonWidth)) &&
+                ((y >= location[1]) && (y <= location[1] + buttonHeight));
     }
 
     private void showDeletionButton() {
@@ -255,31 +248,36 @@ public class MultiTouchListener implements View.OnTouchListener {
         deleteView.setVisibility(View.GONE);
     }
 
-    private void animateScale(View view, float newScaleX, float newScaleY) {
-        view.setScaleX(newScaleX);
-        view.setScaleY(newScaleY);
-    }
-
-    private void enterDeletionBoundsAnimation(View view) {
-        animateScale(view, 0.8f, 0.8f);
-    }
-
-    private void exitDeletionBoundsAnimation(View view) {
-        animateScale(view, originalScaleX, originalScaleY);
-    }
-
     private boolean isAlignedWithCenterX(View view) {
-        float parentWidth = ((View) view.getParent()).getWidth();
-        float centerX = parentWidth / 2;
-        float viewX = (view.getX() + view.getWidth()) / 2;
-        return Math.abs(centerX - viewX) <= 20;
+        float centerX = view.getX() + view.getWidth() / 2f;
+        float parentCenterX = ((View) view.getParent()).getWidth() / 2f;
+        return Math.abs(centerX - parentCenterX) <= 20f;
     }
 
     private boolean isAlignedWithCenterY(View view) {
-        float parentHeight = ((View) view.getParent()).getHeight();
-        float centerY = parentHeight / 2;
-        float viewY = (view.getY() + view.getHeight()) / 2;
-        return Math.abs(centerY - viewY) <= 20;
+        float centerY = view.getY() + view.getHeight() / 2f;
+        float parentCenterY = ((View) view.getParent()).getHeight() / 2f;
+        return Math.abs(centerY - parentCenterY) <= 20f;
+    }
+
+    private void applyScaleAnimation(View view, float scaleX, float scaleY) {
+        // Create ObjectAnimator for scaleX and scaleY
+        ObjectAnimator scaleXAnimator = ObjectAnimator.ofFloat(view, "scaleX", scaleX);
+        ObjectAnimator scaleYAnimator = ObjectAnimator.ofFloat(view, "scaleY", scaleY);
+
+        // Set animation duration and interpolator
+        long duration = 300;
+        scaleXAnimator.setDuration(duration);
+        scaleYAnimator.setDuration(duration);
+
+        // Use an interpolator for smooth scaling
+        AccelerateDecelerateInterpolator interpolator = new AccelerateDecelerateInterpolator();
+        scaleXAnimator.setInterpolator(interpolator);
+        scaleYAnimator.setInterpolator(interpolator);
+
+        // Start the animations
+        scaleXAnimator.start();
+        scaleYAnimator.start();
     }
 
     public void setOnMultiTouchListener(OnMultiTouchListener onMultiTouchListener) {

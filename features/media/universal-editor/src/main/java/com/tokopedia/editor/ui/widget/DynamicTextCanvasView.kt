@@ -8,7 +8,6 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.util.AttributeSet
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.Button
@@ -17,7 +16,6 @@ import com.tokopedia.editor.ui.gesture.java.MultiTouchListener
 import com.tokopedia.editor.ui.gesture.listener.OnMultiTouchListener
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.image.ImageProcessingUtil
-import java.util.logging.Handler
 
 class DynamicTextCanvasView @JvmOverloads constructor(
     private val context: Context,
@@ -35,19 +33,11 @@ class DynamicTextCanvasView @JvmOverloads constructor(
         val textView = createTextView(content)
 
         val layoutParams = LayoutParams(
-            LayoutParams.MATCH_PARENT,
+            LayoutParams.WRAP_CONTENT,
             LayoutParams.WRAP_CONTENT
         )
 
         layoutParams.gravity = Gravity.CENTER
-
-        Log.d("EDITOR-TEST", "x: " + textView.getX() + ", y: " + textView.getY())
-
-        textView.translationX = 300f
-
-        android.os.Handler().postDelayed({
-            Log.d("EDITOR-TEST", "(after) x: " + textView.getX() + ", y: " + textView.getY())
-        }, 1000)
 
         addView(textView, layoutParams)
     }
@@ -103,6 +93,8 @@ class DynamicTextCanvasView @JvmOverloads constructor(
 
         addView(guideline, layoutParams)
     }
+
+    override fun parentView() = this
 
     override fun onRemoveView(view: View) {
         removeView(view)
