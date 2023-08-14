@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parent_id"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <ImageView
+        android:id="@+id/product_tag_top_pointer"
+        android:layout_width="28dp"
+        android:layout_height="8dp"
+        android:contentDescription="@string/feed_product_tag_up"
+        android:src="@drawable/ic_shop_bubble_up"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/product_tag_expanded_card"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintLeft_toLeftOf="@id/product_tag_expanded_card"
+        app:layout_constraintRight_toRightOf="@id/product_tag_expanded_card"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/product_tag_bottom_pointer"
+        android:layout_width="28dp"
+        android:layout_height="8dp"
+        android:layout_marginTop="-1dp"
+        android:contentDescription="@string/feed_product_tag_down"
+        android:src="@drawable/ic_shop_bubble_down"
+        android:visibility="gone"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintLeft_toLeftOf="@id/product_tag_expanded_card"
+        app:layout_constraintRight_toRightOf="@id/product_tag_expanded_card"
+        app:layout_constraintTop_toBottomOf="@id/product_tag_expanded_card"
+        tools:visibility="visible" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/product_tag_expanded_card"
+        android:layout_width="wrap_content"
+        android:layout_height="44dp"
+        app:cardElevation="0dp"
+        android:maxWidth="180dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/product_tag_top_pointer">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/image_product"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_margin="4dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintCircleRadius="8dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/product_name_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:ellipsize="marquee"
+                android:maxWidth="140dp"
+                android:singleLine="true"
+                android:textColor="@color/dms_static_Unify_NN950_light"
+                app:layout_constraintBottom_toBottomOf="@id/image_product"
+                app:layout_constraintLeft_toRightOf="@id/image_product"
+                app:layout_constraintTop_toTopOf="@id/image_product"
+                app:layout_constraintVertical_bias="0.25"
+                app:typographyType="small"
+                tools:text="Fellow - Stagg EKG Electric Pour Over Kett" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/product_price_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingEnd="8dp"
+                android:paddingBottom="8dp"
+                android:singleLine="true"
+                android:textColor="@color/dms_static_Unify_NN950_light"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@id/product_name_text"
+                app:layout_constraintTop_toBottomOf="@id/product_name_text"
+                app:typographyType="small"
+                app:typographyWeight="bold"
+                tools:text="Rp2.750.000" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/product_arrow"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginEnd="6dp"
+                app:icon_color_light_enable="@color/clr_dms_2E3137"
+                app:icon_color_night_enable="@color/clr_dms_2E3137"
+                app:icon_name="CHEVRON_RIGHT"
+                android:layout_marginStart="4dp"
+                app:layout_constraintBottom_toBottomOf="@id/image_product"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/product_name_text"
+                app:layout_constraintTop_toTopOf="@id/image_product"
+                app:unify_image_type="circle" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</merge>

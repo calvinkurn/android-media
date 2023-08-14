@@ -2,6 +2,7 @@ package com.tokopedia.shop.common.data.mapper
 
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.shop.campaign.view.model.ShopCampaignWidgetCarouselProductUiModel
 import com.tokopedia.shop.campaign.view.model.ShopWidgetDisplaySliderBannerHighlightUiModel
@@ -10,8 +11,11 @@ import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.data.model.ShopPageWidgetRequestModel
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
+import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationUiModel
+import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerProductHotspotUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
+import com.tokopedia.shop.home.view.model.ShowcaseNavigationBannerWidgetStyle
 import com.tokopedia.shop.home.view.model.StatusCampaign
 
 //TODO need to migrate all other shop widget mapper on home mapper to this mapper
@@ -165,12 +169,97 @@ object ShopPageWidgetMapper {
             campaignId = campaignId
         )
     }
+
+    fun mapToHomeShowcaseWidget(response: ShopLayoutWidget.Widget): ShopHomeShowcaseNavigationUiModel {
+        val widgetStyle = if (response.header.widgetStyle == ShowcaseNavigationBannerWidgetStyle.ROUNDED_CORNER.id) {
+            ShopHomeShowcaseNavigationUiModel.WidgetStyle.ROUNDED_CORNER
+        } else {
+            ShopHomeShowcaseNavigationUiModel.WidgetStyle.CIRCLE
+        }
+
+        val tabs = response.data.map { tab ->
+            val showcases = tab.showcaseList.map { showcase ->
+                ShopHomeShowcaseNavigationUiModel.Tab.Showcase(
+                    showcase.showcaseID,
+                    showcase.name,
+                    showcase.imageURL,
+                    showcase.ctaLink,
+                    showcase.isMainBanner
+                )
+            }
+
+            val mainBannerPosition = if (tab.mainBannerPosition == ShopHomeShowcaseNavigationUiModel.MainBannerPosition.TOP.id) {
+                ShopHomeShowcaseNavigationUiModel.MainBannerPosition.TOP
+            } else {
+                ShopHomeShowcaseNavigationUiModel.MainBannerPosition.LEFT
+            }
+
+            ShopHomeShowcaseNavigationUiModel.Tab(
+                text = tab.text,
+                imageUrl = tab.imageURL,
+                mainBannerPosition = mainBannerPosition,
+                showcases = showcases
+            )
+        }
+
+        return ShopHomeShowcaseNavigationUiModel(
+            showcaseHeader = ShopHomeShowcaseNavigationUiModel.ShowcaseHeader(
+                title = response.header.title,
+                ctaLink = response.header.ctaLink,
+                widgetStyle = widgetStyle
+            ),
+            tabs = tabs,
+            widgetId = response.widgetID,
+            layoutOrder = response.layoutOrder,
+            name = response.name,
+            type = response.type
+        )
+    }
     private fun Int?.mapToStatusCampaign(): StatusCampaign {
         return when (this) {
             0 -> StatusCampaign.UPCOMING
             1 -> StatusCampaign.ONGOING
             2 -> StatusCampaign.FINISHED
             else -> StatusCampaign.UPCOMING
+        }
+    }
+
+    fun mapToBannerProductHotspotWidget(
+        widgetResponse: ShopLayoutWidget.Widget,
+        widgetLayout: ShopPageWidgetUiModel?
+    )= ShopWidgetDisplayBannerProductHotspotUiModel(
+        widgetId = widgetResponse.widgetID,
+        layoutOrder = widgetResponse.layoutOrder,
+        name = widgetResponse.name,
+        type = widgetResponse.type,
+        header = ShopPageHomeMapper.mapToHeaderModel(widgetResponse.header, widgetLayout),
+        isFestivity = widgetLayout?.isFestivity.orFalse(),
+        data = mapToBannerProductHotspotItem(widgetResponse.data).toMutableList().apply {  }
+    )
+
+    private fun mapToBannerProductHotspotItem(
+        listData: List<ShopLayoutWidget.Widget.Data>
+    ): List<ShopWidgetDisplayBannerProductHotspotUiModel.Data> {
+        return listData.map {data ->
+            ShopWidgetDisplayBannerProductHotspotUiModel.Data(
+                appLink = data.appLink,
+                imageUrl = data.imageUrl,
+                linkType = data.linkType,
+                listProductHotspot = data.productHotspot.map {
+                    ShopWidgetDisplayBannerProductHotspotUiModel.Data.ProductHotspot(
+                        productId = it.productID,
+                        name = it.name,
+                        imageUrl = it.imageUrl,
+                        productUrl = it.productUrl,
+                        displayedPrice = it.displayPrice,
+                        isSoldOut = it.isSoldOut,
+                        hotspotCoordinate = ShopWidgetDisplayBannerProductHotspotUiModel.Data.ProductHotspot.Coordinate(
+                            x = it.coordinate.x.toFloatOrZero(),
+                            y = it.coordinate.y.toFloatOrZero()
+                        )
+                    )
+                }
+            )
         }
     }
 }

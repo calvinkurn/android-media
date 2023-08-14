@@ -10,4 +10,6 @@ interface InterfaceShopPageHeader {
     fun collapseAppBar()
     fun onTabFragmentWrapperFinishLoad(){}
     fun getCartCounterData(): Int{ return 0}
+    fun startDynamicUspCycle(){ return }
+    fun getCurrentDynamicUspValue(): String{ return ""}
 }

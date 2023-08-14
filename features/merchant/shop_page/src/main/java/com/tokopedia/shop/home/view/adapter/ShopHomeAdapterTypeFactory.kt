@@ -8,12 +8,15 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.shop.common.util.ShopProductViewGridType
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
 import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
 import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleListener
 import com.tokopedia.shop.home.WidgetName.ADD_ONS
+import com.tokopedia.shop.home.WidgetName.BANNER_PRODUCT_HOTSPOT
 import com.tokopedia.shop.home.WidgetName.BANNER_TIMER
 import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
+import com.tokopedia.shop.home.WidgetName.SHOWCASE_NAVIGATION_BANNER
 import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_TRIPLE_COLUMN
@@ -39,21 +42,20 @@ import com.tokopedia.shop.home.WidgetName.TERLARIS
 import com.tokopedia.shop.home.WidgetName.TRENDING
 import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.WidgetName.VOUCHER_STATIC
+import com.tokopedia.shop.home.util.ShopHomeShowcaseNavigationDependencyProvider
 import com.tokopedia.shop.home.view.adapter.viewholder.CarouselPlayWidgetViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ProductGridListPlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopCarouselProductWidgetPlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeCardDonationViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeCarouselProductPersonalizationViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeAdvanceCarouselBannerViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeCarousellProductViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerTimerPlaceholderViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerTimerViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerProductHotspotViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeFlashSaleViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeMultipleImageColumnPlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeMultipleImageColumnViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeNplCampaignPlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeNplCampaignViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePersoProductComparisonPlaceholderViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePersoProductComparisonViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductBundleParentWidgetViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductChangeGridSectionViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductEtalaseTitleViewHolder
@@ -73,6 +75,11 @@ import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeV4TerlarisViewHol
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVideoViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopLayoutLoadingShimmerViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePersoProductComparisonViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePersoProductComparisonPlaceholderViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerTimerViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerTimerPlaceholderViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowCaseNavigationCarouselViewHolder
 import com.tokopedia.shop.home.view.listener.*
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
@@ -82,6 +89,9 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductChangeGridSectionUiMode
 import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductListEmptyUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowCaseNavigationLeftMainBannerViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowCaseNavigationTopMainBannerViewHolder
+import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
 import com.tokopedia.shop_widget.common.util.WidgetState
@@ -111,7 +121,11 @@ open class ShopHomeAdapterTypeFactory(
     private val shopHomeListener: ShopHomeListener,
     private val shopPersoProductComparisonListener: ShopHomePersoProductComparisonViewHolder.ShopHomePersoProductComparisonViewHolderListener,
     private val shopHomeDisplayBannerTimerWidgetListener: ShopHomeDisplayBannerTimerWidgetListener,
+    private val shopHomeShowcaseNavigationListener: ShopHomeShowcaseNavigationListener,
+    private val shopHomeShowcaseNavigationDependencyProvider: ShopHomeShowcaseNavigationDependencyProvider,
+    private val shopHomeDisplayBannerProductHotspotListener: ShopHomeDisplayBannerProductHotspotViewHolder.Listener,
     private val shopHomeV4TerlarisViewHolderListener: ShopHomeV4TerlarisViewHolder.ShopHomeV4TerlarisViewHolderListener
+
 ) : BaseAdapterTypeFactory(), TypeFactoryShopHome, ThematicWidgetTypeFactory, ShopWidgetTypeFactory {
     var productCardType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
     private var showcaseWidgetLayoutType = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_LINEAR_HORIZONTAL
@@ -125,6 +139,7 @@ open class ShopHomeAdapterTypeFactory(
             VIDEO -> ShopHomeVideoViewHolder.LAYOUT_RES
             PRODUCT -> getShopHomeCarousellProductViewHolder(baseShopHomeWidgetUiModel)
             VOUCHER_STATIC -> ShopHomeVoucherViewHolder.LAYOUT
+            SHOWCASE_NAVIGATION_BANNER -> determineShowcaseWidgetAppearance(baseShopHomeWidgetUiModel)
             RECENT_ACTIVITY, BUY_AGAIN, REMINDER, ADD_ONS, TRENDING -> getShopHomeCarouselProductPersonalizationViewHolder(baseShopHomeWidgetUiModel)
             NEW_PRODUCT_LAUNCH_CAMPAIGN -> getShopHomeNplCampaignViewHolder(baseShopHomeWidgetUiModel)
             FLASH_SALE_TOKO -> getShopFlashSaleViewHolder(baseShopHomeWidgetUiModel)
@@ -153,11 +168,18 @@ open class ShopHomeAdapterTypeFactory(
             BANNER_TIMER -> {
                 getShopHomeDisplayBannerTimerViewHolder(baseShopHomeWidgetUiModel)
             }
+            BANNER_PRODUCT_HOTSPOT -> {
+                getShopHomeDisplayBannerProductHotspotViewHolder()
+            }
             // New widget for Shop Page Revamp V4
             TERLARIS -> getTerlarisViewHolder(baseShopHomeWidgetUiModel)
 
             else -> HideViewHolder.LAYOUT
         }
+    }
+
+    private fun getShopHomeDisplayBannerProductHotspotViewHolder(): Int {
+        return ShopHomeDisplayBannerProductHotspotViewHolder.LAYOUT
     }
 
     open fun getShopHomeNplCampaignViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
@@ -201,18 +223,26 @@ open class ShopHomeAdapterTypeFactory(
     }
 
     private fun getShopHomeSliderBannerViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
-        return if (isShowHomeWidgetPlaceHolder(baseShopHomeWidgetUiModel)) {
-            ShopHomeSliderBannerPlaceholderViewHolder.LAYOUT_RES
+        //        need to change isEnableShopPageReImagined() to use the one from BE
+        return if (ShopUtil.isEnableShopPageReImagined()) {
+            ShopHomeAdvanceCarouselBannerViewHolder.LAYOUT_RES
         } else {
-            ShopHomeSliderBannerViewHolder.LAYOUT_RES
+            if (isShowHomeWidgetPlaceHolder(baseShopHomeWidgetUiModel))
+                ShopHomeSliderBannerPlaceholderViewHolder.LAYOUT_RES
+            else
+                ShopHomeSliderBannerViewHolder.LAYOUT_RES
         }
     }
 
     private fun getShopHomeSliderSquareViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
-        return if (isShowHomeWidgetPlaceHolder(baseShopHomeWidgetUiModel)) {
-            ShopHomeSliderSquarePlaceholderViewHolder.LAYOUT_RES
+        //        need to change isEnableShopPageReImagined() to use the one from BE
+        return if (ShopUtil.isEnableShopPageReImagined()) {
+            ShopHomeAdvanceCarouselBannerViewHolder.LAYOUT_RES
         } else {
-            ShopHomeSliderSquareViewHolder.LAYOUT_RES
+            if (isShowHomeWidgetPlaceHolder(baseShopHomeWidgetUiModel))
+                ShopHomeSliderSquarePlaceholderViewHolder.LAYOUT_RES
+            else
+                ShopHomeSliderSquareViewHolder.LAYOUT_RES
         }
     }
 
@@ -246,6 +276,45 @@ open class ShopHomeAdapterTypeFactory(
 
     fun isShowHomeWidgetPlaceHolder(model: BaseShopHomeWidgetUiModel): Boolean {
         return model.widgetState == WidgetState.PLACEHOLDER || model.widgetState == WidgetState.LOADING
+    }
+
+    /**
+     * Showcase navigation banner widget has 3 appearance: left main banner, top main banner and carousel.
+     * It is controlled by Backend `widgetStyle` property
+     *
+     * widgetStyle == "rounded_corner"
+     *     - mainBannerPosition == "left" -> left main banner appearance
+     *          - showcaseList array size == 1 -> hide tab
+     *          - showcaseList array size == 2 -> show tab + fixed tab
+     *          - showcaseList array size >= 3 -> show tab + scrollable tab
+     *
+     *     - mainBannerPosition == "top" -> top main banner appearance
+     *
+     * widgetStyle == "circle" -> use carousel appearance
+     */
+    private fun determineShowcaseWidgetAppearance(model: BaseShopHomeWidgetUiModel): Int {
+        val uiModel = model as? ShopHomeShowcaseNavigationUiModel
+        val widgetStyle = uiModel?.showcaseHeader?.widgetStyle
+
+        return if (widgetStyle == ShopHomeShowcaseNavigationUiModel.WidgetStyle.ROUNDED_CORNER) {
+            val firstTab = uiModel.tabs.getOrNull(0)
+            val firstTabMainBannerPosition = firstTab?.mainBannerPosition
+
+            when (firstTabMainBannerPosition) {
+                ShopHomeShowcaseNavigationUiModel.MainBannerPosition.LEFT -> {
+                    ShopHomeShowCaseNavigationLeftMainBannerViewHolder.LAYOUT
+                }
+                ShopHomeShowcaseNavigationUiModel.MainBannerPosition.TOP -> {
+                    ShopHomeShowCaseNavigationTopMainBannerViewHolder.LAYOUT
+                }
+                else -> {
+                    ShopHomeShowCaseNavigationTopMainBannerViewHolder.LAYOUT
+                }
+            }
+
+        } else {
+            ShopHomeShowCaseNavigationCarouselViewHolder.LAYOUT
+        }
     }
 
     fun isShowThematicWidgetPlaceHolder(model: ThematicWidgetUiModel): Boolean {
@@ -351,6 +420,19 @@ open class ShopHomeAdapterTypeFactory(
             ShopHomeVoucherViewHolder.LAYOUT -> {
                 ShopHomeVoucherViewHolder(parent, onMerchantVoucherListWidgetListener)
             }
+            ShopHomeShowCaseNavigationLeftMainBannerViewHolder.LAYOUT -> {
+                ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
+                    parent,
+                    shopHomeShowcaseNavigationListener,
+                    shopHomeShowcaseNavigationDependencyProvider
+                )
+            }
+            ShopHomeShowCaseNavigationTopMainBannerViewHolder.LAYOUT -> {
+                ShopHomeShowCaseNavigationTopMainBannerViewHolder(parent, shopHomeShowcaseNavigationListener)
+            }
+            ShopHomeShowCaseNavigationCarouselViewHolder.LAYOUT -> {
+                ShopHomeShowCaseNavigationCarouselViewHolder(parent, shopHomeShowcaseNavigationListener)
+            }
             ShopLayoutLoadingShimmerViewHolder.LAYOUT -> {
                 ShopLayoutLoadingShimmerViewHolder(parent)
             }
@@ -382,9 +464,10 @@ open class ShopHomeAdapterTypeFactory(
             ShopHomePersoProductComparisonViewHolder.LAYOUT -> ShopHomePersoProductComparisonViewHolder(parent, shopPersoProductComparisonListener, shopHomeListener)
             ShopHomeDisplayBannerTimerPlaceholderViewHolder.LAYOUT -> ShopHomeDisplayBannerTimerPlaceholderViewHolder(parent)
             ShopHomeDisplayBannerTimerViewHolder.LAYOUT -> ShopHomeDisplayBannerTimerViewHolder(parent, shopHomeDisplayBannerTimerWidgetListener)
+            ShopHomeDisplayBannerProductHotspotViewHolder.LAYOUT -> ShopHomeDisplayBannerProductHotspotViewHolder(parent, shopHomeDisplayBannerProductHotspotListener)
+            ShopHomeAdvanceCarouselBannerViewHolder.LAYOUT_RES -> ShopHomeAdvanceCarouselBannerViewHolder(parent, listener)
             // ========= Shop Home Revamp V4 - New widgets ========= //
             ShopHomeV4TerlarisPlaceholderViewHolder.LAYOUT -> ShopHomeV4TerlarisPlaceholderViewHolder(parent)
-//            ShopHomeV4TerlarisViewHolderTest.LAYOUT -> ShopHomeV4TerlarisViewHolderTest(parent)
             ShopHomeV4TerlarisViewHolder.LAYOUT -> ShopHomeV4TerlarisViewHolder(parent, shopHomeV4TerlarisViewHolderListener)
             else -> return super.createViewHolder(parent, type)
         }

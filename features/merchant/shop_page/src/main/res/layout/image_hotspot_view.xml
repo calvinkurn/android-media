@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/hotspot_image_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/image_banner"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:unify_image_corner_radius="0"
+        app:unify_image_type="rect" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/image_shopping_bag"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="@dimen/unify_space_4"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/bg_circle_shopping_bag_image_hotspot"
+        android:padding="5dp"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_name="SHOPPING_BAG"
+        app:layout_constraintBottom_toBottomOf="@id/image_banner"
+        app:layout_constraintStart_toStartOf="@id/image_banner" />
+
+</merge>
+
+
