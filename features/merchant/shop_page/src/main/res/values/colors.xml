@@ -20,7 +20,8 @@
     <color name="dms_static_Unify_NN950_light">#212121</color>
     <color name="dms_static_Unify_BFC9D9_light">#BFC9D9</color>
     <color name="dms_static_Unify_NN600_light">#6D7588</color>
-
-
+    <color name="clr_dms_2E3137">#2E3137</color>
+    <color name="clr_dms_2E3137_70">#B32E3137</color>
+    <color name="clr_dms_121212_50">#80121212</color>
 
 </resources>

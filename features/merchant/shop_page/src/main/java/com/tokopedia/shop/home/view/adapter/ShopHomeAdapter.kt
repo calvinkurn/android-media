@@ -62,10 +62,16 @@ open class ShopHomeAdapter(
         if (holder is ShopHomeSliderBannerViewHolder) {
             holder.resumeTimer()
         }
+        else if (holder is ShopHomeAdvanceCarouselBannerViewHolder) {
+            holder.resumeTimer()
+        }
     }
 
     override fun onViewDetachedFromWindow(holder: AbstractViewHolder<out Visitable<*>>) {
         if (holder is ShopHomeSliderBannerViewHolder) {
+            holder.pauseTimer()
+        }
+        else if(holder is ShopHomeAdvanceCarouselBannerViewHolder){
             holder.pauseTimer()
         }
         super.onViewDetachedFromWindow(holder)
@@ -300,6 +306,7 @@ open class ShopHomeAdapter(
         }
         listSliderBannerViewModel.forEach {
             (recyclerView?.findViewHolderForAdapterPosition(visitables.indexOf(it)) as? ShopHomeSliderBannerViewHolder)?.pauseTimer()
+            (recyclerView?.findViewHolderForAdapterPosition(visitables.indexOf(it)) as? ShopHomeAdvanceCarouselBannerViewHolder)?.pauseTimer()
         }
     }
 
@@ -309,6 +316,7 @@ open class ShopHomeAdapter(
         }
         listSliderBannerViewModel.forEach {
             (recyclerView?.findViewHolderForAdapterPosition(visitables.indexOf(it)) as? ShopHomeSliderBannerViewHolder)?.resumeTimer()
+            (recyclerView?.findViewHolderForAdapterPosition(visitables.indexOf(it)) as? ShopHomeAdvanceCarouselBannerViewHolder)?.resumeTimer()
         }
     }
 

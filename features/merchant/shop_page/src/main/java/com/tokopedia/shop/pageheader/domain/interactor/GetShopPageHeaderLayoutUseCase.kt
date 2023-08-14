@@ -42,59 +42,59 @@ class GetShopPageHeaderLayoutUseCase @Inject constructor(
             query getShopPageGetHeaderLayout(${'$'}shopId: String!, ${'$'}districtID: Int, ${'$'}cityID: Int){
                 ShopPageGetHeaderLayout(shopID:${'$'}shopId, districtID:${'$'}districtID, cityID:${'$'}cityID){
                   widgets {
-                  widgetID
-                  name
-                  type
-                  component {
-                    name
-                    type
-                    data {
-                      __typename
-                      ... on ImageOnly{
-                        image
-                        imageLink
-                        isBottomSheet
-                      }
-                      ... on BadgeTextValue {
-                        ctaText
-                        ctaLink
-                        ctaIcon
-                        text {
-                          icon
-                          textLink
-                          textHtml
-                          isBottomSheet
-                        }
-                      }
-                      ... on ButtonComponent {
-                        icon
-                        buttonType
-                        link
-                        isBottomSheet
-                        label
-                      }
-                      ... on ImageText {
-                        images {
-                          style
-                          data {
+                      widgetID
+                      name
+                      type
+                      component {
+                        name
+                        type
+                        data {
+                          __typename
+                          ... on ImageOnly{
                             image
                             imageLink
                             isBottomSheet
                           }
-                        }
-                        textComponent {
-                          style
-                          data {
+                          ... on BadgeTextValue {
+                            ctaText
+                            ctaLink
+                            ctaIcon
+                            text {
+                              icon
+                              textLink
+                              textHtml
+                              isBottomSheet
+                            }
+                          }
+                          ... on ButtonComponent {
                             icon
-                            textLink
-                            textHtml
+                            buttonType
+                            link
                             isBottomSheet
+                            label
+                          }
+                          ... on ImageText {
+                            images {
+                              style
+                              data {
+                                image
+                                imageLink
+                                isBottomSheet
+                              }
+                            }
+                            textComponent {
+                              style
+                              data {
+                                icon
+                                textLink
+                                textHtml
+                                isBottomSheet
+                              }
+                            }
                           }
                         }
                       }
-                    }
                   }
-                }
             }
           }
         """
