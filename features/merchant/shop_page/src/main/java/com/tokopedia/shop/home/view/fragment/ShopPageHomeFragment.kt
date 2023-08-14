@@ -158,6 +158,7 @@ import com.tokopedia.shop.home.WidgetType.PROMO
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.util.CheckCampaignNplException
+import com.tokopedia.shop.home.util.ShopHomeShowcaseNavigationDependencyProvider
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
@@ -178,6 +179,7 @@ import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.listener.ShopHomePlayWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseListWidgetListener
+import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseNavigationListener
 import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
 import com.tokopedia.shop.home.view.model.CheckCampaignNotifyMeUiModel
 import com.tokopedia.shop.home.view.model.GetCampaignNotifyMeUiModel
@@ -190,6 +192,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiMode
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListSliderUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.shop.home.view.model.ShopPageLayoutUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerProductHotspotUiModel
@@ -251,7 +254,9 @@ open class ShopPageHomeFragment :
     ShopHomeListener,
     ShopHomePersoProductComparisonViewHolder.ShopHomePersoProductComparisonViewHolderListener,
     ShopHomeDisplayBannerTimerWidgetListener,
-    ShopHomeDisplayBannerProductHotspotViewHolder.Listener {
+    ShopHomeDisplayBannerProductHotspotViewHolder.Listener,
+    ShopHomeShowcaseNavigationListener,
+    ShopHomeShowcaseNavigationDependencyProvider {
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -407,7 +412,9 @@ open class ShopPageHomeFragment :
             shopHomeListener = this,
             shopPersoProductComparisonListener = this,
             shopHomeDisplayBannerTimerWidgetListener = this,
-            shopHomeDisplayBannerProductHotspotListener = this
+            shopHomeDisplayBannerProductHotspotListener = this,
+            shopHomeShowcaseNavigationListener = this,
+            shopHomeShowcaseNavigationDependencyProvider = this
         )
     }
 
@@ -4962,4 +4969,17 @@ open class ShopPageHomeFragment :
     override fun onHotspotBubbleClicked(uiModel: ShopWidgetDisplayBannerProductHotspotUiModel, imageBannerPosition: Int, bubblePosition: Int) {
         RouteManager.route(context, uiModel.data.getOrNull(imageBannerPosition)?.listProductHotspot?.getOrNull(bubblePosition)?.productUrl.orEmpty())
     }
+
+    override fun onViewAllShowcaseClick(selectedShowcaseHeader: ShopHomeShowcaseNavigationUiModel.ShowcaseHeader) {
+        RouteManager.route(activity ?: return, selectedShowcaseHeader.ctaLink)
+    }
+
+    override fun onShowcaseClick(
+        selectedShowcase: ShopHomeShowcaseNavigationUiModel.Tab.Showcase
+    ) {
+        RouteManager.route(activity ?: return, selectedShowcase.ctaLink)
+    }
+
+    override val currentFragment: Fragment
+        get() = this
 }

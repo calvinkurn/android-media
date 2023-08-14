@@ -31,6 +31,7 @@ import com.tokopedia.shop.home.WidgetName.PERSO_PRODUCT_COMPARISON
 import com.tokopedia.shop.home.WidgetName.PRODUCT
 import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
 import com.tokopedia.shop.home.WidgetName.REMINDER
+import com.tokopedia.shop.home.WidgetName.SHOWCASE_NAVIGATION_BANNER
 import com.tokopedia.shop.home.WidgetName.SHOWCASE_SLIDER_TWO_ROWS
 import com.tokopedia.shop.home.WidgetName.TRENDING
 import com.tokopedia.shop.home.WidgetName.SLIDER_BANNER
@@ -430,6 +431,9 @@ object ShopPageHomeMapper {
                     }
                     BANNER_TIMER -> {
                         ShopPageWidgetMapper.mapToBannerTimerWidget(widgetResponse, widgetLayout)
+                    }
+                    SHOWCASE_NAVIGATION_BANNER -> {
+                        ShopPageWidgetMapper.mapToHomeShowcaseWidget(widgetResponse)
                     }
 
                     BANNER_PRODUCT_HOTSPOT -> {

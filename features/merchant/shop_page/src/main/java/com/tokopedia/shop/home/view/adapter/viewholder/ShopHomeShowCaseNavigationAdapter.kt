@@ -1,0 +1,105 @@
+package com.tokopedia.shop.home.view.adapter.viewholder
+
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.shop.databinding.ItemShopHomeShowcaseNavigationBinding
+import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseNavigationListener
+import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationUiModel
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.toPx
+
+class ShopHomeShowCaseNavigationAdapter(
+    private val widgetStyle: ShopHomeShowcaseNavigationUiModel.WidgetStyle,
+    private val listener: ShopHomeShowcaseNavigationListener
+) : RecyclerView.Adapter<ShopHomeShowCaseNavigationAdapter.ShowCaseViewHolder>() {
+
+    companion object {
+        private const val SHOWCASE_CAROUSEL_SIZE_HEIGHT = 64
+        private const val SHOWCASE_CAROUSEL_SIZE_WIDTH = 64
+        private const val SHOWCASE_DEFAULT_SIZE_HEIGHT = 72
+        private const val SHOWCASE_DEFAULT_SIZE_WIDTH = 72
+    }
+
+    private var showcases = mutableListOf<ShopHomeShowcaseNavigationUiModel.Tab.Showcase>()
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShowCaseViewHolder {
+        val binding =
+            ItemShopHomeShowcaseNavigationBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        return ShowCaseViewHolder(binding)
+    }
+
+    override fun getItemCount() = showcases.size
+
+    override fun onBindViewHolder(holder: ShowCaseViewHolder, position: Int) {
+        holder.bind(showcases[position])
+    }
+
+    inner class ShowCaseViewHolder(
+        private val binding: ItemShopHomeShowcaseNavigationBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            if (widgetStyle == ShopHomeShowcaseNavigationUiModel.WidgetStyle.CIRCLE) {
+                binding.imgBanner.layoutParams.height = SHOWCASE_CAROUSEL_SIZE_HEIGHT.toPx()
+                binding.imgBanner.layoutParams.width = SHOWCASE_CAROUSEL_SIZE_WIDTH.toPx()
+                binding.imgBanner.requestLayout()
+            } else {
+                binding.imgBanner.layoutParams.height = SHOWCASE_DEFAULT_SIZE_HEIGHT.toPx()
+                binding.imgBanner.layoutParams.width = SHOWCASE_DEFAULT_SIZE_WIDTH.toPx()
+                binding.imgBanner.requestLayout()
+            }
+        }
+
+        fun bind(showcase: ShopHomeShowcaseNavigationUiModel.Tab.Showcase) {
+            binding.tpgBannerTitle.text = showcase.name
+            binding.imgBanner.loadShowcaseImage(showcase.imageUrl, widgetStyle)
+            binding.root.setOnClickListener { listener.onShowcaseClick(showcase) }
+        }
+
+        private fun ImageUnify.loadShowcaseImage(imageUrl: String, widgetStyle: ShopHomeShowcaseNavigationUiModel.WidgetStyle) {
+            type = if (widgetStyle == ShopHomeShowcaseNavigationUiModel.WidgetStyle.ROUNDED_CORNER) {
+                ImageUnify.TYPE_RECT
+            } else {
+                ImageUnify.TYPE_CIRCLE
+            }
+
+            loadImage(imageUrl)
+        }
+    }
+
+    inner class DiffCallback(
+        private val oldItems: List<ShopHomeShowcaseNavigationUiModel.Tab.Showcase>,
+        private val newItems: List<ShopHomeShowcaseNavigationUiModel.Tab.Showcase>
+    ) : DiffUtil.Callback() {
+
+        override fun getOldListSize() = oldItems.size
+        override fun getNewListSize() = newItems.size
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldItems[oldItemPosition].id == newItems[newItemPosition].id
+        }
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldItems[oldItemPosition] == newItems[newItemPosition]
+        }
+
+    }
+
+    fun submit(newShowcases: List<ShopHomeShowcaseNavigationUiModel.Tab.Showcase>) {
+        val diffCallback = DiffCallback(this.showcases, newShowcases)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+
+        this.showcases.clear()
+
+        this.showcases.addAll(newShowcases)
+        diffResult.dispatchUpdatesTo(this)
+    }
+
+}
