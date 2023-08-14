@@ -53,7 +53,7 @@ open class RewardContainerDaily @JvmOverloads constructor(
     var isTablet = false
     var cancelAutoScroll = false
 
-    private lateinit var listener: RewardContainerListener
+    private var listener: RewardContainerListener? = null
 
     open fun getLayoutId() = R.layout.view_reward_container_daily
 
@@ -121,7 +121,7 @@ open class RewardContainerDaily @JvmOverloads constructor(
         ))
 
         couponAdapter = CouponAdapter(sourceType, couponList, isTablet) {
-            listener.onTrigger(it)
+            listener?.onTrigger(it)
         }
         rvCoupons.adapter = couponAdapter
 
