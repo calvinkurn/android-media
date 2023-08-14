@@ -1430,7 +1430,9 @@ class CheckoutFragment :
     }
 
     override fun onLoadShippingState(order: CheckoutOrderModel, position: Int) {
-        viewModel.loadShipping(order, position)
+        if (!viewModel.isLoading()) {
+            viewModel.loadShipping(order, position)
+        }
     }
 
     override fun onChangeShippingDuration(order: CheckoutOrderModel, position: Int) {
