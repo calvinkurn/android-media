@@ -1022,7 +1022,7 @@
             android:value="/data/local/tmp/pre_install.appsflyer" />
         <meta-data
             android:name="firebase_performance_logcat_enabled"
-            android:value="true" />
+            android:value="${firebasePerformanceLogEnabled}" />
         <meta-data
             android:name="NOTIFICATION_ICON"
             android:value="@drawable/ic_stat_notify_white"
