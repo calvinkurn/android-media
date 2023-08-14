@@ -66,10 +66,19 @@ class StoriesViewModel @Inject constructor(
     }
 
     private fun handleSelectGroup(selectedGroup: Int) {
-        mGroupPosition = selectedGroup
-        _storiesDetail.update {
-            val currentDetail = _storiesGroup.value[selectedGroup]
-            currentDetail.details[currentDetail.selectedDetail]
+        viewModelScope.launch {
+            mGroupPosition = selectedGroup
+            _storiesGroup.update { group ->
+                group.mapIndexed { index, storiesGroupUiModel ->
+                    if (index == selectedGroup) storiesGroupUiModel.copy(selected = true)
+                    else storiesGroupUiModel.copy(selected = false)
+                }
+            }
+            _storiesDetail.update {
+                val currentDetail = _storiesGroup.value[selectedGroup]
+                currentDetail.details[currentDetail.selectedDetail]
+            }
+            _uiEvent.emit(StoriesUiEvent.SelectGroup(mGroupPosition))
         }
     }
 

@@ -77,7 +77,7 @@ class StoriesDetailFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-        binding.tvCounter.text = "Categories ${viewModel.mGroupPosition.plus(1)}"
+        binding.tvCounter.text = "Group ${viewModel.mGroupPosition.plus(1)}"
         setupObserver()
     }
 
@@ -96,6 +96,7 @@ class StoriesDetailFragment @Inject constructor(
     ) {
         if (prevState == state) return
         mAdapter.setItems(state)
+        binding.icClose.show()
     }
 
     private fun renderStoriesDetail(
@@ -113,7 +114,7 @@ class StoriesDetailFragment @Inject constructor(
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                 setContent {
                     StoriesDetailTimer(
-                        itemCount = 3,
+                        itemCount = 2,
                         data = state,
                     ) { event ->
                         when (event) {
@@ -127,6 +128,7 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun setupStoriesView() = with(binding) {
+        binding.icClose.hide()
         icClose.setOnClickListener {
             activity?.finish()
         }

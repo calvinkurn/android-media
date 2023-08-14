@@ -10,6 +10,7 @@ data class StoriesGroupUiModel(
     val image: String,
     val title: String,
     val selectedDetail: Int,
+    val selected: Boolean,
     val details: List<StoriesDetailUiModel>,
 )
 

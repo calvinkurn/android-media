@@ -70,9 +70,23 @@ class StoriesGroupViewHolder(
     fun bind(data: StoriesGroupUiModel) {
         binding.imgGroupImage.setImageUrl(data.image)
         binding.txtGroupTitle.text = data.title
+
+        if (data.selected) selectedView()
+        else unSelectedView()
+
         binding.root.setOnClickListener {
             listener.onClickGroup(bindingAdapterPosition)
         }
+    }
+
+    private fun selectedView() {
+        binding.imgGroupImage.alpha = 1F
+        binding.txtGroupTitle.alpha = 1F
+    }
+
+    private fun unSelectedView() {
+        binding.imgGroupImage.alpha = 0.5F
+        binding.txtGroupTitle.alpha = 0.5F
     }
 
     companion object {
