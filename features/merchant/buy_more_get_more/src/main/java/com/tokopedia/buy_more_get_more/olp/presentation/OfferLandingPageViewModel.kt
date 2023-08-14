@@ -40,13 +40,14 @@ class OfferLandingPageViewModel @Inject constructor(
                     userLocation = UserLocation(
                         addressId = localCacheModel?.address_id.toIntOrZero(),
                         districtId = localCacheModel?.district_id.toIntOrZero(),
-                        postalCode = localCacheModel?.postal_code.toIntOrZero(),
+                        postalCode = localCacheModel?.postal_code.orEmpty(),
                         latitude = localCacheModel?.lat.orEmpty(),
                         longitude = localCacheModel?.long.orEmpty(),
                         cityId = localCacheModel?.city_id.toIntOrZero()
                     )
                 )
-                _offeringInfo.postValue(getOfferInfoForBuyerUseCase.execute(param))
+                val result = getOfferInfoForBuyerUseCase.execute(param)
+                _offeringInfo.postValue(result)
             },
             onError = {
                 _error.postValue(it)
