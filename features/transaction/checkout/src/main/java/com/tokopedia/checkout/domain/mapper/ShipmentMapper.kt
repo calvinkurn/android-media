@@ -56,7 +56,6 @@ import com.tokopedia.logisticcart.shipping.model.CodModel
 import com.tokopedia.logisticcart.shipping.model.ShipProd
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.logisticcart.shipping.model.ShopTypeInfoData
-import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductBottomSheetModel
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataModel
@@ -625,28 +624,6 @@ class ShipmentMapper @Inject constructor() {
         }
         return listAddOnDataItem
     }
-
-    private fun mapDeselectedAddOnProductListData(addOnsDataList: List<AddOnsProduct.AddOnsData>, productQuantity: Int): ArrayList<AddOnProductDataItemModel> {
-        val listDeselectedAddOnDataItem = arrayListOf<AddOnProductDataItemModel>()
-        addOnsDataList.forEach { item ->
-            if (item.status == ADD_ON_PRODUCT_STATUS_UNCHECK) {
-                listDeselectedAddOnDataItem.add(
-                    AddOnProductDataItemModel(
-                        id = item.id,
-                        price = item.price,
-                        infoLink = item.infoLink,
-                        name = item.name,
-                        status = item.status,
-                        type = item.type,
-                        qty = productQuantity,
-                        uniqueId = item.uniqueId
-                    )
-                )
-            }
-        }
-        return listDeselectedAddOnDataItem
-    }
-
     private fun mapSubtotalAddOn(subtotalAddOns: List<SubtotalAddOn>): List<ShipmentSubtotalAddOnData> {
         val listSubtotal = arrayListOf<ShipmentSubtotalAddOnData>()
 
