@@ -112,6 +112,18 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                         ctaLink
                         isMainBanner
                       }
+                      productHotspot {
+                        productID
+                        name
+                        imageUrl
+                        productUrl
+                        displayPrice
+                        isSoldOut
+                        coordinate{
+                          x
+                          y
+                        }
+                      }
                     }
                     ... on EtalaseWidget {
                       imageUrl

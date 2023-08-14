@@ -5,29 +5,29 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.shop.databinding.ItemShopHomeShowcaseBinding
-import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseListener
-import com.tokopedia.shop.home.view.model.ShopHomeShowcaseUiModel
+import com.tokopedia.shop.databinding.ItemShopHomeShowcaseNavigationBinding
+import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseNavigationListener
+import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.toPx
 
-class ShopHomeShowCaseAdapter(
-    private val widgetStyle: ShopHomeShowcaseUiModel.WidgetStyle,
-    private val listener: ShopHomeShowcaseListener
-) : RecyclerView.Adapter<ShopHomeShowCaseAdapter.ShowCaseViewHolder>() {
+class ShopHomeShowCaseNavigationAdapter(
+    private val widgetStyle: ShopHomeShowcaseNavigationUiModel.WidgetStyle,
+    private val listener: ShopHomeShowcaseNavigationListener
+) : RecyclerView.Adapter<ShopHomeShowCaseNavigationAdapter.ShowCaseViewHolder>() {
 
     companion object {
         private const val SHOWCASE_CAROUSEL_SIZE_HEIGHT = 64
-        private const val SHOWCASE_CAROUSEL_CIRCLE_SIZE_WIDTH = 64
+        private const val SHOWCASE_CAROUSEL_SIZE_WIDTH = 64
         private const val SHOWCASE_DEFAULT_SIZE_HEIGHT = 72
-        private const val SHOWCASE_DEFAULT_CIRCLE_SIZE_WIDTH = 72
+        private const val SHOWCASE_DEFAULT_SIZE_WIDTH = 72
     }
 
-    private var showcases = mutableListOf<ShopHomeShowcaseUiModel.Tab.Showcase>()
+    private var showcases = mutableListOf<ShopHomeShowcaseNavigationUiModel.Tab.Showcase>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShowCaseViewHolder {
         val binding =
-            ItemShopHomeShowcaseBinding.inflate(
+            ItemShopHomeShowcaseNavigationBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -42,29 +42,29 @@ class ShopHomeShowCaseAdapter(
     }
 
     inner class ShowCaseViewHolder(
-        private val binding: ItemShopHomeShowcaseBinding
+        private val binding: ItemShopHomeShowcaseNavigationBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         init {
-            if (widgetStyle == ShopHomeShowcaseUiModel.WidgetStyle.CIRCLE) {
+            if (widgetStyle == ShopHomeShowcaseNavigationUiModel.WidgetStyle.CIRCLE) {
                 binding.imgBanner.layoutParams.height = SHOWCASE_CAROUSEL_SIZE_HEIGHT.toPx()
-                binding.imgBanner.layoutParams.width = SHOWCASE_CAROUSEL_CIRCLE_SIZE_WIDTH.toPx()
+                binding.imgBanner.layoutParams.width = SHOWCASE_CAROUSEL_SIZE_WIDTH.toPx()
                 binding.imgBanner.requestLayout()
             } else {
                 binding.imgBanner.layoutParams.height = SHOWCASE_DEFAULT_SIZE_HEIGHT.toPx()
-                binding.imgBanner.layoutParams.width = SHOWCASE_DEFAULT_CIRCLE_SIZE_WIDTH.toPx()
+                binding.imgBanner.layoutParams.width = SHOWCASE_DEFAULT_SIZE_WIDTH.toPx()
                 binding.imgBanner.requestLayout()
             }
         }
 
-        fun bind(showcase: ShopHomeShowcaseUiModel.Tab.Showcase) {
+        fun bind(showcase: ShopHomeShowcaseNavigationUiModel.Tab.Showcase) {
             binding.tpgBannerTitle.text = showcase.name
             binding.imgBanner.loadShowcaseImage(showcase.imageUrl, widgetStyle)
             binding.root.setOnClickListener { listener.onNavigationBannerShowcaseClick(showcase) }
         }
 
-        private fun ImageUnify.loadShowcaseImage(imageUrl: String, widgetStyle: ShopHomeShowcaseUiModel.WidgetStyle) {
-            type = if (widgetStyle == ShopHomeShowcaseUiModel.WidgetStyle.ROUNDED_CORNER) {
+        private fun ImageUnify.loadShowcaseImage(imageUrl: String, widgetStyle: ShopHomeShowcaseNavigationUiModel.WidgetStyle) {
+            type = if (widgetStyle == ShopHomeShowcaseNavigationUiModel.WidgetStyle.ROUNDED_CORNER) {
                 ImageUnify.TYPE_RECT
             } else {
                 ImageUnify.TYPE_CIRCLE
@@ -75,8 +75,8 @@ class ShopHomeShowCaseAdapter(
     }
 
     inner class DiffCallback(
-        private val oldItems: List<ShopHomeShowcaseUiModel.Tab.Showcase>,
-        private val newItems: List<ShopHomeShowcaseUiModel.Tab.Showcase>
+        private val oldItems: List<ShopHomeShowcaseNavigationUiModel.Tab.Showcase>,
+        private val newItems: List<ShopHomeShowcaseNavigationUiModel.Tab.Showcase>
     ) : DiffUtil.Callback() {
 
         override fun getOldListSize() = oldItems.size
@@ -92,7 +92,7 @@ class ShopHomeShowCaseAdapter(
 
     }
 
-    fun submit(newShowcases: List<ShopHomeShowcaseUiModel.Tab.Showcase>) {
+    fun submit(newShowcases: List<ShopHomeShowcaseNavigationUiModel.Tab.Showcase>) {
         val diffCallback = DiffCallback(this.showcases, newShowcases)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
 

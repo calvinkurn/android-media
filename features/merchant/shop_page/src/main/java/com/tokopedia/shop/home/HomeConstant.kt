@@ -42,6 +42,7 @@ object WidgetName {
     const val BIG_CAMPAIGN_THEMATIC = "big_campaign_thematic"
     const val PERSO_PRODUCT_COMPARISON = "comparison"
     const val BANNER_TIMER = "banner_timer"
+    const val BANNER_PRODUCT_HOTSPOT = "banner_product_hotspot"
     const val SLIDER_BANNER_HIGHLIGHT = "slider_banner_highlight"
     const val PRODUCT_HIGHLIGHT = "product_highlight"
     const val VOUCHER = "voucher"

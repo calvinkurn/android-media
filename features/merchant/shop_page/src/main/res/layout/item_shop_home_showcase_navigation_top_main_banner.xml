@@ -76,6 +76,6 @@
         app:layout_constraintStart_toStartOf="@+id/imgFirstBanner"
         app:layout_constraintTop_toBottomOf="@+id/imgFirstBanner"
         tools:itemCount="2"
-        tools:listitem="@layout/item_shop_home_showcase" />
+        tools:listitem="@layout/item_shop_home_showcase_navigation" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

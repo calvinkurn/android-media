@@ -49,6 +49,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cachemanager.PersistentCacheManager
+import com.tokopedia.carousellayoutmanager.CarouselLayoutManager
+import com.tokopedia.carousellayoutmanager.CarouselZoomPostLayoutListener
+import com.tokopedia.carousellayoutmanager.CenterScrollListener
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
 import com.tokopedia.dialog.DialogUnify
@@ -154,10 +157,12 @@ import com.tokopedia.shop.home.WidgetType.PROMO
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.util.CheckCampaignNplException
+import com.tokopedia.shop.home.util.ShopHomeShowcaseNavigationDependencyProvider
 import com.tokopedia.shop.home.util.ShopHomeProductCarouselTabDataProvider
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerProductHotspotViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductListSellerEmptyListener
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePersoProductComparisonViewHolder
@@ -174,7 +179,7 @@ import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.listener.ShopHomePlayWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeProductCarouselListener
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseListWidgetListener
-import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseListener
+import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseNavigationListener
 import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
 import com.tokopedia.shop.home.view.model.CheckCampaignNotifyMeUiModel
 import com.tokopedia.shop.home.view.model.GetCampaignNotifyMeUiModel
@@ -189,11 +194,12 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListSliderUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.shop.home.view.model.ShopPageLayoutUiModel
+import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerProductHotspotUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
-import com.tokopedia.shop.home.view.model.ShopHomeShowcaseUiModel
 import com.tokopedia.shop.home.view.model.VerticalBanner
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
@@ -250,8 +256,11 @@ open class ShopPageHomeFragment :
     ShopHomeProductListSellerEmptyListener,
     ShopHomeListener,
     ShopHomePersoProductComparisonViewHolder.ShopHomePersoProductComparisonViewHolderListener,
-    ShopHomeDisplayBannerTimerWidgetListener, ShopHomeShowcaseListener, ShopHomeProductCarouselListener,
-    ShopHomeProductCarouselTabDataProvider {
+    ShopHomeDisplayBannerTimerWidgetListener,
+    ShopHomeDisplayBannerProductHotspotViewHolder.Listener,
+    ShopHomeShowcaseNavigationListener,
+    ShopHomeShowcaseNavigationDependencyProvider,
+    ShopHomeProductCarouselTabDataProvider, ShopHomeProductCarouselListener {
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -407,8 +416,9 @@ open class ShopPageHomeFragment :
             shopHomeListener = this,
             shopPersoProductComparisonListener = this,
             shopHomeDisplayBannerTimerWidgetListener = this,
-            fragment = this,
-            shopHomeShowcaseListener = this,
+            shopHomeDisplayBannerProductHotspotListener = this,
+            shopHomeShowcaseNavigationListener = this,
+            shopHomeShowcaseNavigationDependencyProvider = this,
             shopHomeProductCarouselListener = this,
             shopHomeProductCarouselTabDataProvider = this
         )
@@ -5049,15 +5059,22 @@ open class ShopPageHomeFragment :
         }
     }
 
-    override fun onNavigationBannerViewAllShowcaseClick(selectedShowcaseHeader: ShopHomeShowcaseUiModel.ShowcaseHeader) {
+    override fun onHotspotBubbleClicked(uiModel: ShopWidgetDisplayBannerProductHotspotUiModel, imageBannerPosition: Int, bubblePosition: Int) {
+        RouteManager.route(context, uiModel.data.getOrNull(imageBannerPosition)?.listProductHotspot?.getOrNull(bubblePosition)?.productUrl.orEmpty())
+    }
+
+    override fun onNavigationBannerViewAllShowcaseClick(selectedShowcaseHeader: ShopHomeShowcaseNavigationUiModel.ShowcaseHeader) {
         RouteManager.route(activity ?: return, selectedShowcaseHeader.ctaLink)
     }
 
     override fun onNavigationBannerShowcaseClick(
-        selectedShowcase: ShopHomeShowcaseUiModel.Tab.Showcase
+        selectedShowcase: ShopHomeShowcaseNavigationUiModel.Tab.Showcase
     ) {
         RouteManager.route(activity ?: return, selectedShowcase.ctaLink)
     }
+
+    override val currentFragment: Fragment
+        get() = this
 
     override fun onProductCarouselMainBannerClick(mainBanner: ShopHomeProductCarouselUiModel.Tab.ComponentList.Data) {
         try {

@@ -31,4 +31,8 @@ abstract class BaseShopHomeWidgetUiModel : Visitable<ShopWidgetTypeFactory> {
             val link: String = ""
         )
     }
+
+    fun isWidgetShowPlaceholder(): Boolean {
+        return widgetState == WidgetState.PLACEHOLDER || widgetState == WidgetState.LOADING
+    }
 }
