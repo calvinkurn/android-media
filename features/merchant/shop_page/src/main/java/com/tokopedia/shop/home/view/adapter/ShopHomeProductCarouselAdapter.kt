@@ -101,8 +101,8 @@ class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<RecyclerView.ViewHol
                 binding.tpgRating.text = product.rating
                 binding.tpgRating.isVisible = showProductInfo && hasRating
 
-                val hasBeenPurchased = product.soldCount.isMoreThanZero()
-                binding.tpgProductSoldCount.text = binding.tpgProductSoldCount.context.getString(R.string.shop_page_placeholder_sold, product.soldCount)
+                val hasBeenPurchased = product.soldCount.isNotEmpty()
+                binding.tpgProductSoldCount.text = product.soldCount
                 binding.tpgProductSoldCount.isVisible = showProductInfo && hasBeenPurchased
 
                 binding.root.setOnClickListener { onProductClick(product) }

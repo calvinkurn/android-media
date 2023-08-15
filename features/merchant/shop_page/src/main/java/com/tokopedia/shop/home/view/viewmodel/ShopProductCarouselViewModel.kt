@@ -12,6 +12,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselProductCard
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerItemType
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerVerticalBanner
+import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -26,10 +27,12 @@ class ShopProductCarouselViewModel @Inject constructor(
 ) : BaseViewModel(dispatcherProvider.main) {
 
     companion object {
+        private const val FIRST_LABEL_INDEX = 0
         private const val FIRST_PAGE = 1
         private const val PRODUCT_COUNT_TO_FETCH = 5
         private const val SORT_ID_MOST_SOLD = 8
         private const val SORT_ID_NEWEST = 2
+        private const val LABEL_TITLE_PRODUCT_SOLD_COUNT = "Terjual"
     }
 
     private val _carouselWidgets = MutableLiveData<Result<List<ShopHomeProductCarouselVerticalBannerItemType>>>()
@@ -106,6 +109,8 @@ class ShopProductCarouselViewModel @Inject constructor(
         val response = getShopProductUseCase.executeOnBackground()
 
         val products = response.data.map { product ->
+            val soldLabel = product.soldCount()
+
             ShopHomeProductCarouselProductCard(
                 product.productId,
                 product.primaryImage.thumbnail,
@@ -114,7 +119,7 @@ class ShopProductCarouselViewModel @Inject constructor(
                 product.campaign.originalPriceFmt,
                 product.campaign.discountedPercentage.toIntOrZero(),
                 product.stats.averageRating,
-                1,
+                soldLabel,
                 product.appLink
             )
         }
@@ -122,9 +127,29 @@ class ShopProductCarouselViewModel @Inject constructor(
         return products
     }
 
-    private fun getVerticalBanner(widget: ShopHomeProductCarouselUiModel.Tab.ComponentList.Data): List<ShopHomeProductCarouselVerticalBannerVerticalBanner> {
+    private fun ShopProduct.soldCount() : String {
+        val soldLabels = labelGroupList
+            .filter { labelGroup ->
+                labelGroup.title.contains(
+                    LABEL_TITLE_PRODUCT_SOLD_COUNT,
+                    true
+                )
+            }
+        val soldLabel = soldLabels.getOrNull(FIRST_LABEL_INDEX)
+        val soldLabelTitle = soldLabel?.title.orEmpty()
+        return soldLabelTitle
+    }
+
+    private fun getVerticalBanner(
+        widget: ShopHomeProductCarouselUiModel.Tab.ComponentList.Data
+    ): List<ShopHomeProductCarouselVerticalBannerVerticalBanner> {
         return listOf(
-            ShopHomeProductCarouselVerticalBannerVerticalBanner(widget.imageUrl, widget.bannerType, widget.ctaLink, widget.imageUrl)
+            ShopHomeProductCarouselVerticalBannerVerticalBanner(
+                widget.imageUrl,
+                widget.bannerType,
+                widget.ctaLink,
+                widget.imageUrl
+            )
         )
     }
 }

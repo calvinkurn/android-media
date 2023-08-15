@@ -8,7 +8,7 @@ data class ShopHomeProductCarouselProductCard(
     val slashedPrice: String,
     val slashedPricePercent: Int,
     val rating: String,
-    val soldCount: Int,
+    val soldCount: String,
     val appLink: String,
     override val id : String = productId
 ) : ShopHomeProductCarouselVerticalBannerItemType
