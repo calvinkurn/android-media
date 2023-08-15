@@ -11,7 +11,10 @@ import com.gojek.kyc.sdk.config.KycSdkAnalyticsConfig
 import com.gojek.kyc.sdk.config.KycSdkClientConfig
 import com.gojek.kyc.sdk.config.KycSdkConfig
 import com.gojek.kyc.sdk.config.KycSdkUserInfo
+import com.gojek.kyc.sdk.config.parseDataFromString
 import com.gojek.kyc.sdk.core.constants.KycPlusNetworkConfig
+import com.gojek.kyc.sdk.core.model.UnifiedKycAuroraConfigs
+import com.gojek.kyc.sdk.core.model.UnifiedKycConfigs
 import com.gojek.kyc.sdk.core.utils.KycSdkPartner
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
@@ -23,13 +26,14 @@ import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycDefaultCard
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycErrorHandler
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycEventTrackingProvider
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycImageLoader
+import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycInterceptor
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.kyc_centralized.util.KycSharedPreferenceImpl
-import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycInterceptor
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -169,9 +173,24 @@ open class GoToKycModule {
     @ActivityScope
     fun provideDefaultRemoteConfigProvider(
         @ApplicationContext context: Context,
+        remoteConfigImpl: FirebaseRemoteConfigImpl,
         gson: Gson
     ): DefaultRemoteConfigProvider {
-        return DefaultRemoteConfigProvider(context, gson)
+
+        val kycConfigString = remoteConfigImpl.getString(RemoteConfigKey.GOTO_ONE_KYC_CONFIG)
+        val kycAuroraConfigString = remoteConfigImpl.getString(RemoteConfigKey.GOTO_ONE_KYC_AURORA)
+
+        val customKycConfigs = Gson().parseDataFromString(
+            kycConfigString,
+            UnifiedKycConfigs::class.java
+        )
+
+        val customAuroraConfigs = Gson().parseDataFromString(
+            kycAuroraConfigString,
+            UnifiedKycAuroraConfigs::class.java
+        )
+
+        return DefaultRemoteConfigProvider(context, gson, customKycConfigs, customAuroraConfigs)
     }
 
     @Provides
