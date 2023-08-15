@@ -15,7 +15,10 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
+import com.tokopedia.logisticcart.shipping.model.CashOnDeliveryProduct
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
+import com.tokopedia.logisticcart.shipping.model.MerchantVoucherProductModel
+import com.tokopedia.logisticcart.shipping.model.OntimeDelivery
 import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
@@ -196,11 +199,12 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             CheckoutButtonPaymentModel()
         )
 
+        val shippingCourierUiModel = ShippingCourierUiModel()
         coEvery { ratesUseCase.invoke(any()) } returns ShippingRecommendationData(
             shippingDurationUiModels = listOf(
                 ShippingDurationUiModel(
                     shippingCourierViewModelList = listOf(
-                        ShippingCourierUiModel()
+                        shippingCourierUiModel
                     )
                 )
             )
@@ -210,6 +214,34 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
         viewModel.loadShipping(CheckoutOrderModel("123"), 5)
 
         // then
-        assertEquals(CheckoutOrderShipment(courierItemData = CourierItemData()), (viewModel.listData.value[5] as CheckoutOrderModel).shipment)
+        assertEquals(
+            CheckoutOrderShipment(
+                courierItemData = CourierItemData(
+                    name = "",
+                    estimatedTimeDelivery = "",
+                    shipperFormattedPrice = "",
+                    insuranceUsedInfo = "",
+                    promoCode = "",
+                    checksum = "",
+                    ut = "",
+                    now = false,
+                    priorityInnactiveMessage = "",
+                    priorityFormattedPrice = "",
+                    priorityDurationMessage = "",
+                    priorityCheckboxMessage = "",
+                    priorityWarningboxMessage = "",
+                    priorityFeeMessage = "",
+                    priorityPdpMessage = "",
+                    ontimeDelivery = OntimeDelivery(textLabel = "", textDetail = "", urlDetail = ""),
+                    codProductData = CashOnDeliveryProduct(0, "", 0, "", "", ""),
+                    etaText = "",
+                    etaErrorCode = -1,
+                    merchantVoucherProductModel = MerchantVoucherProductModel(0),
+                    isSelected = true
+                ),
+                shippingCourierUiModels = listOf(shippingCourierUiModel)
+            ),
+            (viewModel.listData.value[5] as CheckoutOrderModel).shipment
+        )
     }
 }

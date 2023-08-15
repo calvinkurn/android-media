@@ -75,11 +75,9 @@ open class BaseCheckoutViewModelTest {
     @MockK
     lateinit var ratesWithScheduleUseCase: GetRatesWithScheduleDeliveryCoroutineUseCase
 
-    @MockK
-    lateinit var ratesResponseStateConverter: RatesResponseStateConverter
+    private val ratesResponseStateConverter: RatesResponseStateConverter = RatesResponseStateConverter()
 
-    @MockK
-    lateinit var shippingCourierConverter: ShippingCourierConverter
+    private val shippingCourierConverter: ShippingCourierConverter = ShippingCourierConverter()
 
     @MockK(relaxed = true)
     lateinit var userSessionInterface: UserSessionInterface
