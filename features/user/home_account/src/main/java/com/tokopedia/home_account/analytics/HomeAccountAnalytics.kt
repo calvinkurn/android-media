@@ -13,7 +13,6 @@ import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_BALANCE
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_HELP_LINK_ACC
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_LINK_ACC
-import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_LINK_ACC_GOJEK
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_LOGOUT
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_ON
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_ON_KONTEN_GAGAL
@@ -23,7 +22,6 @@ import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_PROFILE
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_REWARD_SECTION
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_SCREEN_RECORDER
-import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_SETTING_LINK_ACC
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_TOGGLE_ON_GEOLOCATION
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_TOKOPEDIA_PAY
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_TOKOPOINTS
@@ -37,7 +35,6 @@ import com.tokopedia.home_account.AccountConstants.Analytics.CURRENCY_CODE
 import com.tokopedia.home_account.AccountConstants.Analytics.Category.CATEGORY_ACCOUNT_BUYER
 import com.tokopedia.home_account.AccountConstants.Analytics.Category.CATEGORY_ACCOUNT_PAGE_BUYER
 import com.tokopedia.home_account.AccountConstants.Analytics.Category.CATEGORY_ACCOUNT_PAGE_SETTING_GOJEK
-import com.tokopedia.home_account.AccountConstants.Analytics.Category.CATEGORY_ACCOUNT_PAGE_SETTING_LINK
 import com.tokopedia.home_account.AccountConstants.Analytics.Category.CATEGORY_FUNDS_AND_INVESTMENT_PAGE
 import com.tokopedia.home_account.AccountConstants.Analytics.Category.CATEGORY_HOMEPAGE
 import com.tokopedia.home_account.AccountConstants.Analytics.Category.CATEGORY_OVO_HOMEPAGE
@@ -725,28 +722,6 @@ class HomeAccountAnalytics @Inject constructor(val userSession: UserSessionInter
                 CATEGORY_SETTING_PAGE,
                 ACTION_SIMPAN_THEME_SELECTION,
                 label
-            )
-        )
-    }
-
-    fun trackClickLinkAccount() {
-        track(
-            TrackAppUtils.gtmData(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_ACCOUNT_PAGE_SETTING_GOJEK,
-                ACTION_CLICK_LINK_ACC_GOJEK,
-                ""
-            )
-        )
-    }
-
-    fun trackClickSettingLinkAcc() {
-        track(
-            TrackAppUtils.gtmData(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_ACCOUNT_PAGE_SETTING_LINK,
-                ACTION_CLICK_SETTING_LINK_ACC,
-                LABEL_CONNECTED_ACC
             )
         )
     }

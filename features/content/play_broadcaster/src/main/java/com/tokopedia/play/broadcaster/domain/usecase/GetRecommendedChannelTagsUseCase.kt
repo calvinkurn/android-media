@@ -24,6 +24,8 @@ class GetRecommendedChannelTagsUseCase @Inject constructor(
         query GetRecommendedChannelTags(${'$'}$PARAM_CHANNEL_ID: String!) {
             broadcasterGetRecommendedTags(channelID: ${'$'}$PARAM_CHANNEL_ID) {
                 tags
+                minTags
+                maxTags
             }
         }
     """

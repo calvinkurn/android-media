@@ -24,6 +24,7 @@ import com.tokopedia.shop.product.domain.interactor.GetShopFeaturedProductUseCas
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import io.mockk.MockKAnnotations
@@ -89,7 +90,7 @@ abstract class ShopPageProductListViewModelTestFixture {
     lateinit var getFollowStatusUseCase: GetFollowStatusUseCase
 
     @RelaxedMockK
-    lateinit var gqlShopPageGetDynamicTabUseCase: GqlShopPageGetDynamicTabUseCase
+    lateinit var eligibilityCheckUseCase: Lazy<AffiliateEligibilityCheckUseCase>
 
     @RelaxedMockK
     lateinit var addToCartUseCase: AddToCartUseCase
@@ -101,10 +102,16 @@ abstract class ShopPageProductListViewModelTestFixture {
     lateinit var deleteCartUseCase: DeleteCartUseCase
 
     @RelaxedMockK
+    lateinit var gqlShopPageGetDynamicTabUseCase: GqlShopPageGetDynamicTabUseCase
+
+    @RelaxedMockK
     lateinit var sharedPreferences: SharedPreferences
 
     @RelaxedMockK
     lateinit var context: Context
+
+    @RelaxedMockK
+    lateinit var gqlGetShopInfoForHeaderUseCase: Lazy<GQLGetShopInfoUseCase>
 
     @RelaxedMockK
     lateinit var affiliateCookieHelper: AffiliateCookieHelper
@@ -145,7 +152,7 @@ abstract class ShopPageProductListViewModelTestFixture {
             shopProductSortMapper,
             addToCartUseCase,
             updateCartUseCase,
-            deleteCartUseCase
+            deleteCartUseCase,
         )
 
         shopPageProductListResultViewModel = ShopPageProductListResultViewModel(
@@ -165,7 +172,9 @@ abstract class ShopPageProductListViewModelTestFixture {
             addToCartUseCase,
             updateCartUseCase,
             deleteCartUseCase,
-            sharedPreferences
+            sharedPreferences,
+            gqlGetShopInfoForHeaderUseCase,
+            eligibilityCheckUseCase
         )
     }
 }

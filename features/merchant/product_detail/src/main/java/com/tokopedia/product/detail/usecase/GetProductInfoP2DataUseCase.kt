@@ -297,6 +297,11 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                   onboarding_message
                   show_recommendation
                 }
+                postATCLayout {
+                    layoutID
+                    postATCSession
+                    showPostATC
+                }
               }
             }
             upcomingCampaigns {

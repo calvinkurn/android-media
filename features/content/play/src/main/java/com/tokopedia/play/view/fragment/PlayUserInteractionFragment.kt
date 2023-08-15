@@ -715,7 +715,8 @@ class PlayUserInteractionFragment @Inject constructor(
                 ProductCarouselUiComponent(
                     binding = productFeaturedBinding,
                     bus = eventBus,
-                    scope = viewLifecycleOwner.lifecycleScope
+                    scope = viewLifecycleOwner.lifecycleScope,
+                    dispatchers = dispatchers,
                 )
             )
         }
