@@ -79,32 +79,32 @@ internal object TopAdsDashboardBerandaUtils {
         SummaryBeranda(
             context.resources.getString(R.string.label_top_ads_impression),
             TopAdsDashboardConstant.CONST_TAMPIL, impressionSum, impressionPercent.asPercentage(),
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_P400)
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_PN400)
         ),
         SummaryBeranda(
             context.resources.getString(R.string.label_top_ads_click),
             TopAdsDashboardConstant.CONST_KLIK, clickSum, clickPercent.asPercentage(),
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y400)
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN400)
         ),
         SummaryBeranda(
             context.resources.getString(R.string.label_top_ads_sold),
             TopAdsDashboardConstant.CONST_TERJUAL, totalSoldSum, totalSoldPercent.asPercentage(),
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_B400)
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_BN400)
         ),
         SummaryBeranda(
             context.resources.getString(com.tokopedia.topads.common.R.string.topads_common_pendapatan),
             TopAdsDashboardConstant.CONST_PENDAPATAN, incomeSum, incomePercent.asPercentage(),
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         ),
         SummaryBeranda(
             context.resources.getString(com.tokopedia.topads.common.R.string.topads_common_pengeluaran),
             TopAdsDashboardConstant.CONST_PENGELURAN, spendingSum, spendingPercent.asPercentage(),
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R400)
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_RN400)
         ),
         SummaryBeranda(
             context.resources.getString(R.string.topads_dashboard_efektivitas_iklan),
             TopAdsDashboardConstant.CONST_EFECTIVITAS_IKLAN, roasSum, roasPercent.asPercentage(),
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_T500)
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_TN500)
         ),
     )
 

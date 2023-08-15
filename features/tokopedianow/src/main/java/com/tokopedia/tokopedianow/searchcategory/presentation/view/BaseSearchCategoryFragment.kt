@@ -58,8 +58,10 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_NO_RESULT
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_CART
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_NAV_GLOBAL
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_SHARE
@@ -334,7 +336,7 @@ abstract class BaseSearchCategoryFragment:
             onClick = ::onNavToolbarShareClicked,
         )
 
-    protected open fun createNavToolbarIconBuilder() = IconBuilder()
+    protected open fun createNavToolbarIconBuilder() = IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.TOKONOW))
         .addCart()
         .addGlobalNav()
 
@@ -399,12 +401,18 @@ abstract class BaseSearchCategoryFragment:
 
     private fun configureSwipeRefreshLayout() {
         swipeRefreshLayout?.setOnRefreshListener {
-            refreshLayout()
+            refreshLayout(
+                needToResetQueryParams = false
+            )
         }
     }
 
-    protected open fun refreshLayout() {
-        getViewModel().onViewReloadPage()
+    protected open fun refreshLayout(
+        needToResetQueryParams: Boolean = true
+    ) {
+        getViewModel().onViewReloadPage(
+            needToResetQueryParams = needToResetQueryParams
+        )
         refreshProductRecommendation(TOKONOW_NO_RESULT)
     }
 
@@ -1166,7 +1174,8 @@ abstract class BaseSearchCategoryFragment:
             context = context,
             viewModel = getViewModel(),
             analytics = analytics,
-            startActivityResult = ::startActivityForResult
+            startActivityResult = ::startActivityForResult,
+            showToasterWhenAddToCartBlocked = ::showToasterWhenAddToCartBlocked
         )
     }
 

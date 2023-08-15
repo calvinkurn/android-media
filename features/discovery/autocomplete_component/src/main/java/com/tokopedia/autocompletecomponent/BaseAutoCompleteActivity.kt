@@ -226,7 +226,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
             addFlags(FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             statusBarColor = ContextCompat.getColor(
                 this@BaseAutoCompleteActivity,
-                com.tokopedia.unifyprinciples.R.color.Unify_N0
+                com.tokopedia.unifyprinciples.R.color.Unify_NN0
             )
         }
     }

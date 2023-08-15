@@ -17,6 +17,7 @@ import com.tokopedia.seller.menu.di.component.DaggerSellerMenuComponent
 import com.tokopedia.seller.menu.presentation.adapter.SellerMenuAdapter
 import com.tokopedia.seller.menu.presentation.adapter.SellerMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.presentation.util.SellerSettingsList
+import com.tokopedia.shopadmin.common.util.AdminPermissionMapper
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -28,6 +29,9 @@ class SellerSettingsFragment : Fragment(), SettingTrackingListener {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var adminPermissionMapper: AdminPermissionMapper
 
     private var binding by autoClearedNullable<FragmentSellerSettingsBinding>()
 
@@ -73,7 +77,12 @@ class SellerSettingsFragment : Fragment(), SettingTrackingListener {
 
     private fun setupSettingsList() {
         context?.let { context ->
-            val settingsList = SellerSettingsList.create(context)
+            val settingsList =
+                SellerSettingsList.create(
+                    context = context,
+                    userSession = userSession,
+                    adminPermissionMapper = adminPermissionMapper
+                )
 
             binding?.listSettings?.run {
                 this.adapter = sellerMenuAdapter
@@ -87,7 +96,14 @@ class SellerSettingsFragment : Fragment(), SettingTrackingListener {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun setupLocationSettings() {
-        val settingsList = context?.let { SellerSettingsList.create(it, true) }
+        val settingsList = context?.let {
+            SellerSettingsList.create(
+                it,
+                true,
+                userSession,
+                adminPermissionMapper
+            )
+        }
         sellerMenuAdapter.clearAllElements()
         sellerMenuAdapter.addElement(settingsList)
         sellerMenuAdapter.notifyDataSetChanged()

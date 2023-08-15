@@ -47,7 +47,7 @@ class ShopLocationRepository @Inject constructor(@ApplicationContext private val
         districtId: Long,
         latLon: String,
         addressDetail: String,
-        postalCode: String,
+        postalCode: String
     ): ShopLocationUpdateWarehouseResponse {
         val param = mapOf(
             "inputShopLocUpdateWarehouse" to mapOf(

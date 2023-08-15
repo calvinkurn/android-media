@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="@dimen/layout_lvl8" android:height="@dimen/layout_lvl2" android:viewportWidth="24.0" android:viewportHeight="24.0">
-    <path android:fillColor="@color/Unify_N200" android:pathData="M24 12v12l-11.5-5.7C6.2 15.1 1 12.3 1 12c0-0.3 5.2-3.1 11.5-6.3L24 0v12z" android:strokeColor="@color/Unify_N200"/>
+    <path android:fillColor="@color/Unify_NN500" android:pathData="M24 12v12l-11.5-5.7C6.2 15.1 1 12.3 1 12c0-0.3 5.2-3.1 11.5-6.3L24 0v12z" android:strokeColor="@color/Unify_NN500"/>
 </vector>

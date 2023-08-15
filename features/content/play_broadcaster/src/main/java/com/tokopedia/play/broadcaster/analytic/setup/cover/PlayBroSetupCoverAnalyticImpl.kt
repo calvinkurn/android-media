@@ -1,11 +1,10 @@
 package com.tokopedia.play.broadcaster.analytic.setup.cover
 
-import com.tokopedia.play.broadcaster.analytic.KEY_SESSION_IRIS
-import com.tokopedia.play.broadcaster.analytic.KEY_TRACKER_ID
-import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_BUSINESS_UNIT
+import com.tokopedia.content.analytic.BusinessUnit
+import com.tokopedia.content.analytic.Event
+import com.tokopedia.content.analytic.Key
 import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_CATEGORY_PLAY
 import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_CLICK_EVENT
-import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_CLICK_EVENT_SELLER
 import com.tokopedia.play.broadcaster.analytic.currentSite
 import com.tokopedia.play.broadcaster.analytic.getTrackerId
 import com.tokopedia.play.broadcaster.analytic.sessionIris
@@ -20,10 +19,10 @@ import javax.inject.Inject
  */
 class PlayBroSetupCoverAnalyticImpl @Inject constructor(
     private val userSession: UserSessionInterface,
-    private val hydraConfig: HydraConfigStore,
+    private val hydraConfig: HydraConfigStore
 ) : PlayBroSetupCoverAnalytic {
 
-    private  val userId = userSession.userId
+    private val userId = userSession.userId
     private val authorId: String
         get() = hydraConfig.getAuthorId()
     private val authorTypeName: String
@@ -35,11 +34,11 @@ class PlayBroSetupCoverAnalyticImpl @Inject constructor(
             .setEventAction("click - cover thumbnail to add cover")
             .setEventCategory(KEY_TRACK_CATEGORY_PLAY)
             .setEventLabel(userId)
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .setBusinessUnit(BusinessUnit.play)
             .setCurrentSite(currentSite)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
-            .setCustomProperty(KEY_TRACKER_ID, getTrackerId("30214", "26713"))
+            .setCustomProperty(Key.trackerId, getTrackerId("30214", "26713"))
             .build()
             .send()
     }
@@ -50,25 +49,25 @@ class PlayBroSetupCoverAnalyticImpl @Inject constructor(
             .setEventAction("click - edit cover")
             .setEventCategory(KEY_TRACK_CATEGORY_PLAY)
             .setEventLabel(userSession.userId)
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .setBusinessUnit(BusinessUnit.play)
             .setCurrentSite(currentSite)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
-            .setCustomProperty(KEY_TRACKER_ID, getTrackerId("30217", "26716"))
+            .setCustomProperty(Key.trackerId, getTrackerId("30217", "26716"))
             .build()
             .send()
     }
 
     override fun clickCloseTemplateTabCoachMark() {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_EVENT_SELLER)
+            .setEvent(Event.clickContent)
             .setEventAction("click - x template tab")
             .setEventCategory(KEY_TRACK_CATEGORY_PLAY)
-            .setCustomProperty(KEY_TRACKER_ID, getTrackerId("40737","40703"))
+            .setCustomProperty(Key.trackerId, getTrackerId("40737", "40703"))
             .setEventLabel("$authorId - $authorTypeName")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .setBusinessUnit(BusinessUnit.play)
             .setCurrentSite(currentSite)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -76,14 +75,14 @@ class PlayBroSetupCoverAnalyticImpl @Inject constructor(
 
     override fun clickCoverTab(tabName: String, entryPoint: String) {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_EVENT_SELLER)
+            .setEvent(Event.clickContent)
             .setEventAction("click - cover tab")
             .setEventCategory(KEY_TRACK_CATEGORY_PLAY)
-            .setCustomProperty(KEY_TRACKER_ID, getTrackerId("40738", "40704"))
+            .setCustomProperty(Key.trackerId, getTrackerId("40738", "40704"))
             .setEventLabel("$authorId - $authorTypeName - $tabName - $entryPoint")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .setBusinessUnit(BusinessUnit.play)
             .setCurrentSite(currentSite)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -91,14 +90,14 @@ class PlayBroSetupCoverAnalyticImpl @Inject constructor(
 
     override fun clickTemplateCoverAddProduct(entryPoint: String) {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_EVENT_SELLER)
+            .setEvent(Event.clickContent)
             .setEventAction("click - template tambah produk")
             .setEventCategory(KEY_TRACK_CATEGORY_PLAY)
-            .setCustomProperty(KEY_TRACKER_ID, getTrackerId("40739", "40705"))
+            .setCustomProperty(Key.trackerId, getTrackerId("40739", "40705"))
             .setEventLabel("$authorId - $authorTypeName - $entryPoint")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .setBusinessUnit(BusinessUnit.play)
             .setCurrentSite(currentSite)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -106,14 +105,14 @@ class PlayBroSetupCoverAnalyticImpl @Inject constructor(
 
     override fun clickCloseCoverBottomSheet(entryPoint: String) {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_EVENT_SELLER)
+            .setEvent(Event.clickContent)
             .setEventAction("click - x cover bottomsheet")
             .setEventCategory(KEY_TRACK_CATEGORY_PLAY)
-            .setCustomProperty(KEY_TRACKER_ID, getTrackerId("40740", "40706"))
+            .setCustomProperty(Key.trackerId, getTrackerId("40740", "40706"))
             .setEventLabel("$authorId - $authorTypeName - $entryPoint")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .setBusinessUnit(BusinessUnit.play)
             .setCurrentSite(currentSite)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -121,14 +120,14 @@ class PlayBroSetupCoverAnalyticImpl @Inject constructor(
 
     override fun clickTryAgainTemplateCoverBottomSheet(entryPoint: String) {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_EVENT_SELLER)
+            .setEvent(Event.clickContent)
             .setEventAction("click - coba lagi template cover")
             .setEventCategory(KEY_TRACK_CATEGORY_PLAY)
-            .setCustomProperty(KEY_TRACKER_ID, getTrackerId("40741", "40708"))
+            .setCustomProperty(Key.trackerId, getTrackerId("40741", "40708"))
             .setEventLabel("$authorId - $authorTypeName - $entryPoint")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .setBusinessUnit(BusinessUnit.play)
             .setCurrentSite(currentSite)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -136,17 +135,17 @@ class PlayBroSetupCoverAnalyticImpl @Inject constructor(
 
     override fun clickSaveGeneratedCover(
         coverData: AutoGeneratedCoverAnalyticModel,
-        entryPoint: String,
+        entryPoint: String
     ) {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_EVENT_SELLER)
+            .setEvent(Event.clickContent)
             .setEventAction("click - save generated cover")
             .setEventCategory(KEY_TRACK_CATEGORY_PLAY)
-            .setCustomProperty(KEY_TRACKER_ID, getTrackerId("40742", "40709"))
+            .setCustomProperty(Key.trackerId, getTrackerId("40742", "40709"))
             .setEventLabel("$authorId - $authorTypeName - ${coverData.coverId} - ${coverData.coverPosition + 1} - ${coverData.coverColor} - $entryPoint")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .setBusinessUnit(BusinessUnit.play)
             .setCurrentSite(currentSite)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -154,17 +153,17 @@ class PlayBroSetupCoverAnalyticImpl @Inject constructor(
 
     override fun clickDeleteGeneratedCover(
         coverData: AutoGeneratedCoverAnalyticModel,
-        entryPoint: String,
+        entryPoint: String
     ) {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_EVENT_SELLER)
+            .setEvent(Event.clickContent)
             .setEventAction("click - delete generated cover")
             .setEventCategory(KEY_TRACK_CATEGORY_PLAY)
-            .setCustomProperty(KEY_TRACKER_ID, getTrackerId("40743", "40710"))
+            .setCustomProperty(Key.trackerId, getTrackerId("40743", "40710"))
             .setEventLabel("$authorId - $authorTypeName - ${coverData.coverId} - ${coverData.coverPosition + 1} - ${coverData.coverColor} - $entryPoint")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .setBusinessUnit(BusinessUnit.play)
             .setCurrentSite(currentSite)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -172,17 +171,17 @@ class PlayBroSetupCoverAnalyticImpl @Inject constructor(
 
     override fun clickSelectGeneratedCover(
         coverData: AutoGeneratedCoverAnalyticModel,
-        entryPoint: String,
+        entryPoint: String
     ) {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_EVENT_SELLER)
+            .setEvent(Event.clickContent)
             .setEventAction("click - generated cover")
             .setEventCategory(KEY_TRACK_CATEGORY_PLAY)
-            .setCustomProperty(KEY_TRACKER_ID, getTrackerId("40744", "40711"))
+            .setCustomProperty(Key.trackerId, getTrackerId("40744", "40711"))
             .setEventLabel("$authorId - $authorTypeName - ${coverData.coverId} - ${coverData.coverPosition + 1} - ${coverData.coverColor} - $entryPoint")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .setBusinessUnit(BusinessUnit.play)
             .setCurrentSite(currentSite)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -190,20 +189,19 @@ class PlayBroSetupCoverAnalyticImpl @Inject constructor(
 
     override fun clickSaveGeneratedCoverOption(
         coverData: AutoGeneratedCoverAnalyticModel,
-        entryPoint: String,
+        entryPoint: String
     ) {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_EVENT_SELLER)
+            .setEvent(Event.clickContent)
             .setEventAction("click - save generated cover option")
             .setEventCategory(KEY_TRACK_CATEGORY_PLAY)
-            .setCustomProperty(KEY_TRACKER_ID, getTrackerId("40745", "40712"))
+            .setCustomProperty(Key.trackerId, getTrackerId("40745", "40712"))
             .setEventLabel("$authorId - $authorTypeName - ${coverData.coverId} - ${coverData.coverPosition + 1} - ${coverData.coverColor} - $entryPoint")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .setBusinessUnit(BusinessUnit.play)
             .setCurrentSite(currentSite)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
     }
-
 }

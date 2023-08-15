@@ -652,11 +652,11 @@ class ChatTabListFragment constructor() :
         private const val TITLE_LENGTH = 9
 
         // Text Color vals
-        private val SELECTED_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_G500
+        private val SELECTED_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_GN500
         private val UNSELECTED_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_NN600
 
         // Icon Color vals
-        private val SELECTED_ICON_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_G500
+        private val SELECTED_ICON_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_GN500
         private val UNSELECTED_ICON_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_NN500
 
         const val SELECTED_TAB_KEY = "selected_tab"

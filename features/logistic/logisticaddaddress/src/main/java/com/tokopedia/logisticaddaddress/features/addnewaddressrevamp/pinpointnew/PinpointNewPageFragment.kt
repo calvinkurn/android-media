@@ -942,25 +942,28 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 .addOnFailureListener(
                     context,
                     OnFailureListener { e ->
-                        when ((e as ApiException).statusCode) {
-                            LocationSettingsStatusCodes.RESOLUTION_REQUIRED ->
+                        if (e is ApiException) {
+                            when (e.statusCode) {
+                                LocationSettingsStatusCodes.RESOLUTION_REQUIRED ->
 
-                                try {
-                                    // Show the dialog by calling startResolutionForResult(), and check the
-                                    // result in onActivityResult().
-                                    val rae = e as ResolvableApiException
-                                    val intentSenderRequest = IntentSenderRequest.Builder(
-                                        rae.resolution.intentSender
-                                    ).build()
-                                    gpsResultResolutionContract.launch(intentSenderRequest)
-                                } catch (sie: IntentSender.SendIntentException) {
-                                    sie.printStackTrace()
+                                    try {
+                                        // Show the dialog by calling startResolutionForResult(), and check the
+                                        // result in onActivityResult().
+                                        if (e is ResolvableApiException) {
+                                            val intentSenderRequest = IntentSenderRequest.Builder(
+                                                e.resolution.intentSender
+                                            ).build()
+                                            gpsResultResolutionContract.launch(intentSenderRequest)
+                                        }
+                                    } catch (sie: IntentSender.SendIntentException) {
+                                        sie.printStackTrace()
+                                    }
+
+                                LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
+                                    val errorMessage =
+                                        "Location settings are inadequate, and cannot be " + "fixed here. Fix in Settings."
+                                    Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
                                 }
-
-                            LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
-                                val errorMessage =
-                                    "Location settings are inadequate, and cannot be " + "fixed here. Fix in Settings."
-                                Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
                             }
                         }
                     }

@@ -1,26 +1,20 @@
 package com.tokopedia.manageaddress.ui.manageaddress
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.databinding.ItemManagePeopleAddressBinding
 import com.tokopedia.unifycomponents.CardUnify
-import com.tokopedia.unifycomponents.toDp
 
 class ManageAddressItemAdapter : RecyclerView.Adapter<ManageAddressItemAdapter.ManageAddressViewHolder>() {
 
@@ -87,10 +81,8 @@ class ManageAddressItemAdapter : RecyclerView.Adapter<ManageAddressItemAdapter.M
     inner class ManageAddressViewHolder(
         private val binding: ItemManagePeopleAddressBinding,
         private val mainAddressItemAdapterListener: MainAddressItemAdapterListener? = null,
-        private val fromFriendItemAdapterListener: FromFriendAddressItemAdapterListener? = null,
+        private val fromFriendItemAdapterListener: FromFriendAddressItemAdapterListener? = null
     ) : RecyclerView.ViewHolder(binding.root) {
-        val assetMoreBtn = AppCompatResources.getDrawable(itemView.context, R.drawable.ic_more_horiz)
-
         @SuppressLint("SetTextI18n")
         fun bindData(data: RecipientAddressModel) {
             with(itemView) {
@@ -111,10 +103,14 @@ class ManageAddressItemAdapter : RecyclerView.Adapter<ManageAddressItemAdapter.M
                     binding.tokopediaNote.gone()
                     binding.addressDetail.text = data.street
                 }
-                val bitmap = assetMoreBtn?.toBitmap()
-                val d: Drawable = BitmapDrawable(resources, bitmap?.let { Bitmap.createScaledBitmap(it, 80.toDp(), 80.toDp(), true) })
-                binding.btnSecondary.setCompoundDrawablesWithIntrinsicBounds(d, null, null, null)
 
+                binding.btnSecondary.setDrawable(
+                    getIconUnifyDrawable(
+                        context,
+                        IconUnify.MENU_KEBAB_HORIZONTAL,
+                        ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN500)
+                    )
+                )
                 val cardSelected: Boolean
                 if (data.isStateChosenAddress && !isItemClicked && isMainAddressView()) {
                     cardSelected = true
@@ -188,11 +184,11 @@ class ManageAddressItemAdapter : RecyclerView.Adapter<ManageAddressItemAdapter.M
 
         private fun setVisibility(peopleAddress: RecipientAddressModel) {
             if (peopleAddress.latitude.isNullOrZero() || peopleAddress.longitude.isNullOrZero()) {
-                val colorGrey = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+                val colorGrey = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)
                 binding.imgLocationState.setImage(IconUnify.LOCATION_OFF, colorGrey, colorGrey)
                 binding.tvPinpointState.text = itemView.context.getString(R.string.no_pinpoint)
             } else {
-                val colorGreen = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                val colorGreen = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                 binding.imgLocationState.setImage(IconUnify.LOCATION, colorGreen, colorGreen)
                 binding.tvPinpointState.text = itemView.context.getString(R.string.pinpoint)
             }

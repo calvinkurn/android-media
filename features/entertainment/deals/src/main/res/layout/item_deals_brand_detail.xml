@@ -28,7 +28,7 @@
         android:ellipsize="end"
         android:id="@+id/tg_item_title_brand_detail"
         app:typographyType="body_2"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl2"
         />
@@ -53,7 +53,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tg_item_title_brand_detail"
         app:layout_constraintLeft_toRightOf="@+id/img_item_information"
         app:typographyType="body_3"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         android:text="@string/deals_brand_detail_item_valid_until"
         />
 
@@ -66,7 +66,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tg_item_title_brand_detail"
         app:layout_constraintLeft_toRightOf="@+id/tg_item_valid_until"
         app:typographyType="body_3"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:typographyWeight="bold"
         />
 
@@ -77,7 +77,7 @@
         app:layout_constraintTop_toBottomOf="@+id/img_item_information"
         android:id="@+id/tg_item_price_brand_detail"
         app:typographyType="body_2"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyWeight="bold"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl2"
@@ -100,7 +100,7 @@
         app:layout_constraintTop_toBottomOf="@+id/img_item_information"
         app:layout_constraintLeft_toRightOf="@+id/label_item_percentage_brand_detail"
         app:typographyType="small"
-        android:textColor="@color/Unify_N700_32"
+        android:textColor="@color/Unify_NN950_32"
         android:layout_marginLeft="@dimen/spacing_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:id="@+id/tg_slash_price_brand_detail"

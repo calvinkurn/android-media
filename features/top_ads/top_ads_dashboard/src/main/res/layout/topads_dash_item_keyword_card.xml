@@ -92,7 +92,7 @@
             android:layout_marginTop="4dp"
             android:includeFontPadding="false"
             android:text="@string/topads_dash_klik"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:layout_constraintStart_toEndOf="@id/price_bid"
             app:layout_constraintTop_toTopOf="@id/img_total"
             app:typographyType="small" />

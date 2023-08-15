@@ -74,14 +74,14 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         }
 
         val fontColor = if (data.disabled) {
-            ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32)
+            ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_32)
         } else {
-            ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+            ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68)
         }
         val boldFontColor = if (data.disabled) {
-            ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)
+            ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_44)
         } else {
-            ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+            ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)
         }
 
         tvInfo.setTextColor(fontColor)
@@ -93,7 +93,7 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             }
             flImageContainer.foreground = ContextCompat.getDrawable(itemView.context, R.drawable.fg_enabled_item)
         } else {
-            tvTitle.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+            tvTitle.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
             flImageContainer.foreground = ContextCompat.getDrawable(itemView.context, R.drawable.fg_disabled_item)
             itemView.setOnClickListener(null)
         }

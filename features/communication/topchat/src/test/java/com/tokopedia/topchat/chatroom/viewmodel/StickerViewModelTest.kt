@@ -43,23 +43,23 @@ class StickerViewModelTest {
 
     @Test
     fun should_get_sticker_list_when_successful_get_stickers() {
-        //Given
+        // Given
         val expectedResult = getExpectedResponse()
         every {
             cacheManager.loadCache<StickerResponse?>(any(), StickerResponse::class.java)
         } returns null
         every {
-            cacheManager.getPreviousState(any())
+            cacheManager.getPreviousState(any(), any())
         } returns false
 
         coEvery {
             chatListStickerUseCase(any())
         } returns expectedResult
-        
-        //When
+
+        // When
         viewModel.loadStickers(testStickerUUID, false)
 
-        //Then
+        // Then
         Assert.assertEquals(
             expectedResult.chatBundleSticker.list.first().stickerUUID,
             (viewModel.stickers.value as Success).data.first().stickerUUID
@@ -68,23 +68,23 @@ class StickerViewModelTest {
 
     @Test
     fun should_get_sticker_list_when_successful_get_stickers_and_need_update() {
-        //Given
+        // Given
         val expectedResult = getExpectedResponse()
         every {
             cacheManager.loadCache<StickerResponse?>(any(), StickerResponse::class.java)
         } returns null
         every {
-            cacheManager.getPreviousState(any())
+            cacheManager.getPreviousState(any(), any())
         } returns false
 
         coEvery {
             chatListStickerUseCase(any())
         } returns expectedResult
 
-        //When
+        // When
         viewModel.loadStickers(testStickerUUID, true)
 
-        //Then
+        // Then
         Assert.assertEquals(
             expectedResult.chatBundleSticker.list.first().stickerUUID,
             (viewModel.stickers.value as Success).data.first().stickerUUID
@@ -93,23 +93,23 @@ class StickerViewModelTest {
 
     @Test
     fun should_get_sticker_list_when_successful_get_stickers_and_fail_to_get_cache() {
-        //Given
+        // Given
         val expectedResult = getExpectedResponse()
         every {
             cacheManager.loadCache<StickerResponse?>(any(), StickerResponse::class.java)
         } throws expectedThrowable
         every {
-            cacheManager.getPreviousState(any())
+            cacheManager.getPreviousState(any(), any())
         } throws expectedThrowable
 
         coEvery {
             chatListStickerUseCase(any())
         } returns expectedResult
 
-        //When
+        // When
         viewModel.loadStickers(testStickerUUID, false)
 
-        //Then
+        // Then
         Assert.assertEquals(
             expectedResult.chatBundleSticker.list.first().stickerUUID,
             (viewModel.stickers.value as Success).data.first().stickerUUID
@@ -118,23 +118,23 @@ class StickerViewModelTest {
 
     @Test
     fun should_get_sticker_list_when_successful_get_stickers_from_cache() {
-        //Given
+        // Given
         val expectedResult = getExpectedResponse()
         every {
             cacheManager.loadCache<StickerResponse?>(any(), StickerResponse::class.java)
         } returns expectedResult
         every {
-            cacheManager.getPreviousState(any())
+            cacheManager.getPreviousState(any(), any())
         } returns true
 
         coEvery {
             chatListStickerUseCase(any())
         } returns expectedResult
 
-        //When
+        // When
         viewModel.loadStickers(testStickerUUID, false)
 
-        //Then
+        // Then
         Assert.assertEquals(
             expectedResult.chatBundleSticker.list.first().stickerUUID,
             (viewModel.stickers.value as Success).data.first().stickerUUID
@@ -143,23 +143,23 @@ class StickerViewModelTest {
 
     @Test
     fun should_get_sticker_list_when_successful_get_stickers_from_cache_but_need_update() {
-        //Given
+        // Given
         val expectedResult = getExpectedResponse()
         every {
             cacheManager.loadCache<StickerResponse?>(any(), StickerResponse::class.java)
         } returns expectedResult
         every {
-            cacheManager.getPreviousState(any())
+            cacheManager.getPreviousState(any(), any())
         } returns true
 
         coEvery {
             chatListStickerUseCase(any())
         } returns expectedResult
 
-        //When
+        // When
         viewModel.loadStickers(testStickerUUID, true)
 
-        //Then
+        // Then
         Assert.assertEquals(
             expectedResult.chatBundleSticker.list.first().stickerUUID,
             (viewModel.stickers.value as Success).data.first().stickerUUID
@@ -168,23 +168,23 @@ class StickerViewModelTest {
 
     @Test
     fun should_get_sticker_list_when_successful_get_stickers_from_cache_but_previous_false() {
-        //Given
+        // Given
         val expectedResult = getExpectedResponse()
         every {
             cacheManager.loadCache<StickerResponse?>(any(), StickerResponse::class.java)
         } returns expectedResult
         every {
-            cacheManager.getPreviousState(any())
+            cacheManager.getPreviousState(any(), any())
         } returns false
 
         coEvery {
             chatListStickerUseCase(any())
         } returns expectedResult
 
-        //When
+        // When
         viewModel.loadStickers(testStickerUUID, false)
 
-        //Then
+        // Then
         Assert.assertEquals(
             expectedResult.chatBundleSticker.list.first().stickerUUID,
             (viewModel.stickers.value as Success).data.first().stickerUUID
@@ -193,22 +193,22 @@ class StickerViewModelTest {
 
     @Test
     fun should_get_exception_when_error_get_stickers_and_not_cached() {
-        //Given
+        // Given
         every {
             cacheManager.loadCache<StickerResponse?>(any(), StickerResponse::class.java)
         } returns null
         every {
-            cacheManager.getPreviousState(any())
+            cacheManager.getPreviousState(any(), any())
         } returns false
 
         coEvery {
             chatListStickerUseCase(any())
         } throws expectedThrowable
 
-        //When
+        // When
         viewModel.loadStickers(testStickerUUID, false)
 
-        //Then
+        // Then
         Assert.assertEquals(
             expectedThrowable.message,
             (viewModel.stickers.value as Fail).throwable.message

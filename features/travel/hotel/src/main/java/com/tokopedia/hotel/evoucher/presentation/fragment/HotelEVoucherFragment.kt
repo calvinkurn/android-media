@@ -356,10 +356,10 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
             if(data.hotelTransportDetails.contactInfo.isNotEmpty()){
                 val telNum: String = (data.hotelTransportDetails.contactInfo.firstOrNull()?.number ?: 0).toString()
                 binding?.btnNhaPhone?.setDrawable(
-                    getIconUnifyDrawable(requireContext(), IconUnify.CALL, ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                    getIconUnifyDrawable(requireContext(), IconUnify.CALL, ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_GN500))
                 )
                 binding?.btnNhaPhone?.setTextColor(
-                    ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                    ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                 )
                 binding?.btnNhaPhone?.text = telNum
                 binding?.btnNhaPhone?.setOnClickListener {

@@ -7,6 +7,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_INPUT
 import com.tokopedia.sellerorder.list.domain.mapper.OrderListMapper
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.sellerorder.list.domain.model.SomListOrderListResponse
+import com.tokopedia.sellerorder.list.presentation.models.SomListEmptyStateUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
@@ -16,9 +17,11 @@ class SomListGetOrderListUseCase @Inject constructor(
     private val mapper: OrderListMapper
 ) {
 
-    suspend fun executeOnBackground(params: RequestParams): Pair<String, List<SomListOrderUiModel>> {
+    suspend fun executeOnBackground(params: RequestParams): Triple<String, List<SomListOrderUiModel>, SomListEmptyStateUiModel?> {
         val gqlRequest = GraphqlRequest(
-            QUERY, SomListOrderListResponse.Data::class.java, params.parameters
+            QUERY,
+            SomListOrderListResponse.Data::class.java,
+            params.parameters
         )
         val gqlResponse = gqlRepository.response(listOf(gqlRequest))
         val searchKeyword = getSearchKeyword(params)
@@ -27,9 +30,13 @@ class SomListGetOrderListUseCase @Inject constructor(
         if (errors.isNullOrEmpty()) {
             val response =
                 gqlResponse.getData<SomListOrderListResponse.Data>(SomListOrderListResponse.Data::class.java)
-            return response.orderList.cursorOrderId to mapper.mapResponseToUiModel(
-                response.orderList.list,
-                searchKeyword
+            return Triple(
+                response.orderList.cursorOrderId,
+                mapper.mapResponseToUiModel(
+                    response.orderList.list,
+                    searchKeyword
+                ),
+                mapper.mapToEmptyState(response.orderList.emptyState)
             )
         } else {
             throw RuntimeException(errors.joinToString(", ") { it.message })
@@ -57,6 +64,16 @@ class SomListGetOrderListUseCase @Inject constructor(
             query GetOrderList(${'$'}input: OrderListArgs!) {
               orderList(input: ${'$'}input) {
                 cursor_order_id
+                empty_state {
+                  title
+                  subtitle
+                  image_url
+                  cta {
+                    cta_text
+                    cta_action_type
+                    cta_action_value
+                  }
+                }
                 list {
                   order_id
                   status
@@ -66,6 +83,7 @@ class SomListGetOrderListUseCase @Inject constructor(
                   order_resi
                   deadline_text
                   deadline_color
+                  deadline_style
                   cancel_request
                   cancel_request_note
                   cancel_request_time

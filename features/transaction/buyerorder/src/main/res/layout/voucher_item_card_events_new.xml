@@ -20,7 +20,7 @@
             android:layout_height="@dimen/layout_lvl0"
             android:layout_alignBottom="@+id/divider1"
             android:layout_alignParentTop="true"
-            app:borderColor="@color/Unify_N50"
+            app:borderColor="@color/Unify_NN50"
             app:borderWidth="@dimen/deals_voucher_border_width"
             app:cornerRadius="@dimen/deals_voucher_corner_ticket_view"
             app:cornerType="roundedscallop"
@@ -45,7 +45,7 @@
             android:layout_height="@dimen/layout_lvl0"
             android:layout_alignTop="@+id/divider1"
             android:layout_alignBottom="@+id/progress_bar_layout"
-            app:borderColor="@color/Unify_N50"
+            app:borderColor="@color/Unify_NN50"
             app:borderWidth="@dimen/deals_voucher_border_width"
             app:cornerRadius="@dimen/deals_voucher_corner_ticket_view"
             app:cornerType="scalloprounded"
@@ -79,7 +79,7 @@
             android:layout_marginHorizontal="@dimen/unify_space_8"
             android:layout_toEndOf="@+id/iv_deal"
             android:fontFamily="sans-serif"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:typographyType="display_3"
             tools:text="1x kode booking"/>
 
@@ -95,7 +95,7 @@
             android:fontFamily="sans-serif-medium"
             android:lines="2"
             android:maxLines="2"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:typographyType="display_2"
             app:typographyWeight="bold"
             tools:text="Sentra Vaksinasi HIPPINDO - Kementerian Koperasi dan UKM" />
@@ -120,7 +120,7 @@
                 android:layout_gravity="center"
                 android:gravity="center_horizontal"
                 android:text="@string/tiket_kategori"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                app:typographyType="display_3" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -128,7 +128,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 android:layout_marginStart="@dimen/unify_space_2"
                 app:typographyType="display_3"
                 app:typographyWeight="bold"
@@ -147,7 +147,7 @@
             android:ellipsize="end"
             android:fontFamily="sans-serif"
             android:maxLines="2"
-            android:textColor="@color/Unify_N700_44"
+            android:textColor="@color/Unify_NN950_44"
             android:visibility="gone"
             app:typographyType="display_3"
             tools:text="Jl. Ahmad yani nomor 10" />
@@ -202,7 +202,7 @@
         android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginTop="@dimen/unify_space_8"
         android:text="@string/tanggal_events"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:typographyType="display_3"/>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -211,7 +211,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginTop="@dimen/unify_space_8"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyType="display_3"
         app:typographyWeight="bold"
         tools:text="13 Jul 2019, 15:00" />
@@ -223,7 +223,7 @@
         android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginTop="@dimen/unify_space_16"
         android:text="@string/location_events"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:typographyType="display_3"/>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -232,7 +232,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginTop="@dimen/unify_space_8"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyType="display_3"
         app:typographyWeight="bold"
         tools:text="IFI Thamrin - Venue level" />
@@ -243,7 +243,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginTop="@dimen/unify_space_8"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyType="display_3"
         tools:text=" Jl. M.H. Thamrin, No.20, RT.9 RW.4, Gondang (This is street level with Max 2 lines)…" />
 

@@ -3,14 +3,14 @@
     <item android:id="@android:id/background">
         <shape>
             <corners android:radius="8dp"/>
-            <solid android:color="@color/Unify_N100"/>
+            <solid android:color="@color/Unify_NN200"/>
         </shape>
     </item>
     <item android:id="@+id/progress_col">
         <scale android:scaleWidth="100%">
             <shape>
                 <corners android:radius="8dp"/>
-                <solid android:color="@color/Unify_G400"/>
+                <solid android:color="@color/Unify_GN500"/>
             </shape>
         </scale>
     </item>

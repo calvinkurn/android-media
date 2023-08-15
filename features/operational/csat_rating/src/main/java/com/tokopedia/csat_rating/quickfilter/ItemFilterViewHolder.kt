@@ -32,13 +32,13 @@ open class ItemFilterViewHolder(itemView: View, listener: QuickSingleFilterListe
         val drawableInside = layoutInside?.background?.current?.mutate() as GradientDrawable
         val drawableBorder = layoutBorder?.background?.current?.mutate() as GradientDrawable
         if (selected) {
-            layoutBorder?.context?.let { drawableBorder.setColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)) }
+            layoutBorder?.context?.let { drawableBorder.setColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_GN500)) }
             layoutInside?.context?.let { drawableInside.setColor(ContextCompat.getColor(it, R.color.csat_dms_reason_bg)) }
-            filterName?.context?.let { filterName?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)) }
+            filterName?.context?.let { filterName?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_GN500)) }
         } else {
-            layoutBorder?.context?.let { drawableBorder.setColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N100)) }
-            layoutInside?.context?.let { drawableInside.setColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
-            filterName?.context?.let { filterName?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)) }
+            layoutBorder?.context?.let { drawableBorder.setColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN200)) }
+            layoutInside?.context?.let { drawableInside.setColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN0)) }
+            filterName?.context?.let { filterName?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68)) }
         }
     }
 

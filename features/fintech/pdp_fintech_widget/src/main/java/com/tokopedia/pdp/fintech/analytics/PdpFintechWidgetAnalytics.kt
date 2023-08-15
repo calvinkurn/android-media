@@ -22,6 +22,7 @@ class PdpFintechWidgetAnalytics @Inject constructor(
                     analyticsEvent.partnerId, analyticsEvent.linkingStatus,
                     analyticsEvent.productId, analyticsEvent.userStatus, analyticsEvent.chipType,
                     analyticsEvent.promoName.orEmpty(),
+                    analyticsEvent.subtitle.orEmpty()
                 )
 
             is FintechWidgetAnalyticsEvent.ActivationBottomSheetClick -> sendActivationClick(
@@ -40,6 +41,7 @@ class PdpFintechWidgetAnalytics @Inject constructor(
                 analyticsEvent.partner,
                 analyticsEvent.redirectionUrl,
                 analyticsEvent.promoName,
+                analyticsEvent.subtitle
             )
         }
     }
@@ -54,12 +56,13 @@ class PdpFintechWidgetAnalytics @Inject constructor(
         partner: String?,
         redirectionUrl: String?,
         promoName: String?,
+        subtitle: String
     ) {
         val map = TrackAppUtils.gtmData(
             clickEvent,
             eventCategory,
             CLICK_FINTECH_PDP_WIDGET,
-            "$productId - true - $linkingStatus - $userStatus - $chipType - $installmentAmount - $tenure - $partner - $redirectionUrl - $promoName"
+            "$productId - true - $linkingStatus - $userStatus - $chipType - $installmentAmount - $tenure - $partner - $redirectionUrl - $promoName - $subtitle"
         )
         sendGeneralEvent(map)
 
@@ -98,12 +101,13 @@ class PdpFintechWidgetAnalytics @Inject constructor(
         userStatus: String,
         chipType: String,
         promoName: String,
+        subtitle: String,
     ) {
         val map = TrackAppUtils.gtmData(
             viewEvent,
             eventCategory,
             pdpBnplImpression,
-            "$productId - Yes - $linkingStatus - ${userSession.get().userId} - $userStatus - $chipType - $partnerId - $promoName"
+            "$productId - Yes - $linkingStatus - ${userSession.get().userId} - $userStatus - $chipType - $partnerId - $promoName - $subtitle"
 
         )
         sendGeneralEvent(map)

@@ -121,15 +121,7 @@ class ShopEditAddressViewModelTest {
         coEvery {
             shopRepo.saveEditShopLocation(any(), any(), any(), any(), any(), any(), any())
         } returns ShopLocationUpdateWarehouseResponse()
-        shopEditAddressViewModel.saveEditShopLocation(
-            12,
-            998,
-            "warehouse",
-            222,
-            "1231,4131",
-            "email@email",
-            "jakarta utara"
-        )
+        shopEditAddressViewModel.saveEditShopLocation(12, 998, "warehouse", 222, "1231,4131", "jakarta utara", "1123")
         verify { saveEditShopObserver.onChanged(match { it is ShopEditAddressState.Success }) }
     }
 
@@ -138,15 +130,7 @@ class ShopEditAddressViewModelTest {
         coEvery {
             shopRepo.saveEditShopLocation(any(), any(), any(), any(), any(), any(), any())
         } throws defaultThrowable
-        shopEditAddressViewModel.saveEditShopLocation(
-            12,
-            998,
-            "warehouse",
-            222,
-            "1231,4131",
-            "email@email",
-            "jakarta utara"
-        )
+        shopEditAddressViewModel.saveEditShopLocation(12, 998, "warehouse", 222, "1231,4131", "jakarta utara", "1123")
         verify { saveEditShopObserver.onChanged(match { it is ShopEditAddressState.Fail }) }
     }
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.recommendation_widget_common.widget.global
 
 import com.tokopedia.recommendation_widget_common.MainDispatcherRule
+import com.tokopedia.recommendation_widget_common.RecommendationTypeConst.PAGENAME_VERTICAL
 import com.tokopedia.recommendation_widget_common.RecommendationTypeConst.TYPE_COMPARISON_BPC_WIDGET
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -10,9 +11,9 @@ import com.tokopedia.recommendation_widget_common.jsonToObject
 import com.tokopedia.recommendation_widget_common.mvvm.ViewModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselModel
-import com.tokopedia.recommendation_widget_common.widget.comparison.RecommendationTrackingModel
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.RecommendationComparisonBpcModel
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetState
+import com.tokopedia.recommendation_widget_common.widget.vertical.RecommendationVerticalModel
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -151,6 +152,33 @@ class RecommendationWidgetViewModelTest {
         assertEquals(carouselWidget.metadata, metadata)
         assertEquals(carouselWidget.trackingModel, trackingModel)
         assertEquals(carouselWidget.widget, recommendationWidgetList.first())
+    }
+
+    @Test
+    fun `layout name vertical will render carousel vertical`() {
+        val viewModel = ViewModel()
+
+        val recommendationWidgetList = "recom_vertical.json".jsonToRecommendationWidgetList()
+        coEvery { getRecommendationWidgetUseCase.getData(any()) } returns recommendationWidgetList
+
+        val metadata = RecommendationWidgetMetadata(pageName = PAGENAME_VERTICAL)
+        val trackingModel = RecommendationWidgetTrackingModel(androidPageName = "pageName")
+        val model = RecommendationWidgetModel(metadata = metadata, trackingModel = trackingModel)
+
+        viewModel.bind(model)
+
+        assertEquals(1, viewModel.stateValue.widgetMap.size)
+
+        val expectedVisitableList = viewModel.stateValue.widgetMap[model.id]!!
+        assertThat(
+            expectedVisitableList.first(),
+            `is`(instanceOf(RecommendationVerticalModel::class.java))
+        )
+
+        val verticalWidget = expectedVisitableList.first() as RecommendationVerticalModel
+        assertEquals(verticalWidget.metadata, metadata)
+        assertEquals(verticalWidget.trackingModel, trackingModel)
+        assertEquals(verticalWidget.widget, recommendationWidgetList.first())
     }
 
     @Test

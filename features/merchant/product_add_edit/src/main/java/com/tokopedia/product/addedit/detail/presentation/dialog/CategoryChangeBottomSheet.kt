@@ -68,7 +68,7 @@ class CategoryChangeBottomSheet : BottomSheetUnify() {
 
                 override fun updateDrawState(ds: TextPaint) {
                     context?.run {
-                        ds.color = MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                        ds.color = MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) ds.underlineColor = 0
                     }
                 }

@@ -46,12 +46,12 @@ open class GMStatHeaderViewHelper(protected var itemView: View, private val isGm
             itemView.findViewById(com.tokopedia.review.R.id.calendar_icon)
         gredyColor = ResourcesCompat.getColor(
             itemView.resources,
-            com.tokopedia.unifyprinciples.R.color.Unify_N150,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN400,
             null
         )
         greenColor = ResourcesCompat.getColor(
             itemView.resources,
-            com.tokopedia.unifyprinciples.R.color.Unify_G400,
+            com.tokopedia.unifyprinciples.R.color.Unify_GN500,
             null
         )
     }

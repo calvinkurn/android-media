@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ConstraintSet android:id="@+id/start">
+        <Constraint
+            android:id="@+id/play_iv_ribbon"
+            android:layout_width="@dimen/layout_lvl1"
+            android:layout_height="19dp"
+            app:layout_constraintBottom_toBottomOf="@id/play_tv_ribbon"
+            app:layout_constraintStart_toStartOf="@id/play_tv_ribbon"
+            app:layout_constraintTop_toTopOf="@id/play_tv_ribbon"
+            app:layout_constraintVertical_bias="0.0" />
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/end">
+        <Constraint
+            android:id="@+id/play_iv_ribbon"
+            android:layout_width="0dp"
+            android:layout_height="19dp"
+            app:layout_constraintBottom_toBottomOf="@id/play_tv_ribbon"
+            app:layout_constraintEnd_toEndOf="@id/play_tv_ribbon"
+            app:layout_constraintStart_toStartOf="@id/play_tv_ribbon"
+            app:layout_constraintTop_toTopOf="@id/play_tv_ribbon"
+            app:layout_constraintVertical_bias="0.0" />
+    </ConstraintSet>
+
+    <Transition
+        app:constraintSetEnd="@id/end"
+        app:constraintSetStart="@+id/start"
+        app:duration="3000"
+        app:motionInterpolator="easeInOut">
+        <KeyFrameSet>
+            <KeyAttribute
+                android:alpha="0.0"
+                app:framePosition="0"
+                app:motionTarget="@+id/play_tv_ribbon" />
+            <KeyAttribute
+                android:alpha="1.0"
+                app:framePosition="100"
+                app:motionTarget="@+id/play_tv_ribbon" />
+            <KeyAttribute
+                android:translationX="-50dp"
+                app:framePosition="75"
+                app:motionTarget="@+id/glare" />
+            <KeyAttribute
+                android:translationX="100dp"
+                app:framePosition="100"
+                app:motionTarget="@+id/glare" />
+
+        </KeyFrameSet>
+    </Transition>
+</MotionScene>

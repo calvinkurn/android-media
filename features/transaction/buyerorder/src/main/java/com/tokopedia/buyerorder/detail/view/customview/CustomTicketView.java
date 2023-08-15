@@ -212,11 +212,11 @@ public class CustomTicketView extends View {
     private void init(AttributeSet attrs) {
         if (attrs != null) {
             TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.CustomTicketView);
-            mBackgroundColor = typedArray.getColor(R.styleable.CustomTicketView_backgroundColor, getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0));
+            mBackgroundColor = typedArray.getColor(R.styleable.CustomTicketView_backgroundColor, getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0));
             mScallopRadius = typedArray.getDimensionPixelSize(R.styleable.CustomTicketView_scallopRadius, dpToPx(20f, getContext()));
             mShowBorder = typedArray.getBoolean(R.styleable.CustomTicketView_showBorder, false);
             mBorderWidth = typedArray.getDimensionPixelSize(R.styleable.CustomTicketView_borderWidth, dpToPx(2f, getContext()));
-            mBorderColor = typedArray.getColor(R.styleable.CustomTicketView_borderColor, getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700));
+            mBorderColor = typedArray.getColor(R.styleable.CustomTicketView_borderColor, getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950));
             mCornerType = typedArray.getInt(R.styleable.CustomTicketView_cornerType, CornerType.NORMAL);
             mCornerRadius = typedArray.getDimensionPixelSize(R.styleable.CustomTicketView_cornerRadius, dpToPx(4f, getContext()));
             mShowTopShadow = typedArray.getBoolean(R.styleable.CustomTicketView_showTopShadow, false);
@@ -235,7 +235,7 @@ public class CustomTicketView extends View {
             typedArray.recycle();
         }
 
-        mShadowPaint.setColorFilter(new PorterDuffColorFilter(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G900), SRC_IN));
+        mShadowPaint.setColorFilter(new PorterDuffColorFilter(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_GN950), SRC_IN));
         mShadowPaint.setAlpha(51); // 20%
 
         initElements();

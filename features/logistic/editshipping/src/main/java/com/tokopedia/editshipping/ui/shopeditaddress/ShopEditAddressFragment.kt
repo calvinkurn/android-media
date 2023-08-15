@@ -34,7 +34,7 @@ import com.tokopedia.editshipping.util.EditShippingConstant.EXTRA_IS_FULL_FLOW
 import com.tokopedia.editshipping.util.EditShippingConstant.EXTRA_LAT
 import com.tokopedia.editshipping.util.EditShippingConstant.EXTRA_LONG
 import com.tokopedia.editshipping.util.EditShippingConstant.EXTRA_WAREHOUSE_DATA
-import com.tokopedia.editshipping.util.ShopEditAddressUtils
+import com.tokopedia.editshipping.util.ShopEditAddressLevenshteinUtils
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_WH_DISTRICT_ID
@@ -336,13 +336,13 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
             val latLong = "$currentLat,$currentLong"
             warehouseModel?.let {
                 viewModel.saveEditShopLocation(
-                    shopId = userSession.shopId.toLong(),
-                    warehouseId = it.warehouseId,
-                    warehouseName = binding?.etNamaLokasiShop?.text.toString(),
-                    districtId = it.districtId,
-                    latLon = latLong,
-                    addressDetail = binding?.etDetailAlamatShop?.text.toString(),
-                    postalCode = binding?.etKodePosShop?.text.toString()
+                    userSession.shopId.toLong(),
+                    it.warehouseId,
+                    binding?.etNamaLokasiShop?.text.toString(),
+                    it.districtId,
+                    latLong,
+                    binding?.etDetailAlamatShop?.text.toString(),
+                    binding?.etKodePosShop?.text.toString()
                 )
             }
         } else {

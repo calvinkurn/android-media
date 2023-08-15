@@ -10,17 +10,22 @@ import android.widget.CompoundButton
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.analytics.CheckoutScheduleDeliveryAnalytics
 import com.tokopedia.checkout.databinding.ItemShipmentGroupFooterBinding
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
+import com.tokopedia.checkout.view.adapter.ShipmentAddOnSubtotalAdapter
 import com.tokopedia.checkout.view.converter.RatesDataConverter
+import com.tokopedia.checkout.view.uimodel.ShipmentAddOnSubtotalModel
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.constant.InsuranceConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.shipping.features.shippingwidget.ShippingWidget
@@ -28,6 +33,9 @@ import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY
+import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.InsuranceBottomSheet
 import com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView
@@ -437,7 +445,7 @@ class ShipmentCartItemBottomViewHolder(
                     labelDropshipper.setTextColor(
                         ContextCompat.getColor(
                             itemView.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_N700_20
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN950_20
                         )
                     )
                     imgDropshipperInfo.setOnClickListener {
@@ -453,7 +461,7 @@ class ShipmentCartItemBottomViewHolder(
                     labelDropshipper.setTextColor(
                         ContextCompat.getColor(
                             itemView.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
                         )
                     )
                     llDropshipper.setOnClickListener {
@@ -706,7 +714,8 @@ class ShipmentCartItemBottomViewHolder(
             var additionalPrice = 0
             var subTotalPrice: Long = 0
             var totalItemPrice: Long = 0
-            var totalAddOnPrice = 0
+            var totalGiftingAddOnPrice = 0
+            var totalAddOnProductPrice = 0.0
             var hasAddOnSelected = false
             if (shipmentCartItemModel.isStateDetailSubtotalViewExpanded) {
                 rlShipmentCost.visibility = View.VISIBLE
@@ -731,11 +740,19 @@ class ShipmentCartItemBottomViewHolder(
                         totalPurchaseProtectionItem += cartItemModel.quantity
                         totalPurchaseProtectionPrice += cartItemModel.protectionPrice.toLong()
                     }
-                    if (cartItemModel.addOnProductLevelModel.status == 1) {
-                        if (cartItemModel.addOnProductLevelModel.addOnsDataItemModelList.isNotEmpty()) {
-                            for (addOnsData in cartItemModel.addOnProductLevelModel.addOnsDataItemModelList) {
-                                totalAddOnPrice += addOnsData.addOnPrice.toInt()
+                    if (cartItemModel.addOnGiftingProductLevelModel.status == 1) {
+                        if (cartItemModel.addOnGiftingProductLevelModel.addOnsDataItemModelList.isNotEmpty()) {
+                            for (addOnsData in cartItemModel.addOnGiftingProductLevelModel.addOnsDataItemModelList) {
+                                totalGiftingAddOnPrice += addOnsData.addOnPrice.toInt()
                                 hasAddOnSelected = true
+                            }
+                        }
+                    }
+                    if (cartItemModel.addOnProduct.listAddOnProductData.isNotEmpty()) {
+                        renderSubtotalAddOn(shipmentCartItemModel, itemView.context)
+                        cartItemModel.addOnProduct.listAddOnProductData.forEach {
+                            if (it.status == 1) {
+                                totalAddOnProductPrice += it.price * cartItemModel.quantity
                             }
                         }
                     }
@@ -745,7 +762,7 @@ class ShipmentCartItemBottomViewHolder(
             if (addOnsOrderLevelModel.status == 1) {
                 if (addOnsOrderLevelModel.addOnsDataItemModelList.isNotEmpty()) {
                     for (addOnsData in addOnsOrderLevelModel.addOnsDataItemModelList) {
-                        totalAddOnPrice += addOnsData.addOnPrice.toInt()
+                        totalGiftingAddOnPrice += addOnsData.addOnPrice.toInt()
                         hasAddOnSelected = true
                     }
                 }
@@ -802,7 +819,7 @@ class ShipmentCartItemBottomViewHolder(
             } else {
                 subTotalPrice = totalItemPrice
             }
-            subTotalPrice += totalAddOnPrice.toLong()
+            subTotalPrice += totalGiftingAddOnPrice.toLong() + totalAddOnProductPrice.toLong()
             tvSubTotalPrice.setTextAndContentDescription(
                 if (subTotalPrice == 0L) {
                     "-"
@@ -875,7 +892,7 @@ class ShipmentCartItemBottomViewHolder(
                 tvAddOnPrice.visibility = View.VISIBLE
                 tvAddOnPrice.text =
                     CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                        totalAddOnPrice,
+                        totalGiftingAddOnPrice,
                         false
                     )
                         .removeDecimalSuffix()
@@ -1185,6 +1202,56 @@ class ShipmentCartItemBottomViewHolder(
             )
             coachMark.showCoachMark(coachMarkItem, null, 0)
             plusCoachmarkPrefs.setPlusCoachmarkHasShown(true)
+        }
+    }
+
+    private fun renderSubtotalAddOn(shipmentCartItemModel: ShipmentCartItemModel, context: Context) {
+        val countMapSubtotal = hashMapOf<Int, Pair<Double, Int>>()
+        var qtyAddOn: Int
+        var totalPriceAddOn: Double
+        val listShipmentAddOnSubtotalModel = arrayListOf<ShipmentAddOnSubtotalModel>()
+
+        shipmentCartItemModel.cartItemModels.forEach { cartItemModel ->
+            cartItemModel.addOnProduct.listAddOnProductData.forEach { addOnProduct ->
+                if (addOnProduct.status == ADD_ON_PRODUCT_STATUS_CHECK || addOnProduct.status == ADD_ON_PRODUCT_STATUS_MANDATORY) {
+                    val addOnPrice = cartItemModel.quantity * addOnProduct.price
+                    qtyAddOn = if (countMapSubtotal.containsKey(addOnProduct.type)) {
+                        countMapSubtotal[addOnProduct.type]?.second?.plus(cartItemModel.quantity) ?: cartItemModel.quantity
+                    } else {
+                        cartItemModel.quantity
+                    }
+                    totalPriceAddOn = if (countMapSubtotal.containsKey(addOnProduct.type)) {
+                        countMapSubtotal[addOnProduct.type]?.first?.plus(addOnPrice) ?: addOnPrice
+                    } else {
+                        addOnPrice
+                    }
+                    countMapSubtotal[addOnProduct.type] = totalPriceAddOn to qtyAddOn
+                }
+            }
+        }
+
+        for ((key, value) in shipmentCartItemModel.subtotalAddOnMap) {
+            if (countMapSubtotal[key] != null) {
+                val subtotalLabel = value.replace(CartConstant.QTY_ADDON_REPLACE, countMapSubtotal[key]?.second.toString())
+                val subtotalPriceLabel = CurrencyFormatUtil.convertPriceValueToIdrFormat(countMapSubtotal[key]?.first ?: 0.0, false).removeDecimalSuffix()
+                val shipmentAddOnSubtotalModel = ShipmentAddOnSubtotalModel(
+                    wording = subtotalLabel,
+                    priceLabel = subtotalPriceLabel
+                )
+                listShipmentAddOnSubtotalModel.add(shipmentAddOnSubtotalModel)
+            }
+        }
+
+        if (listShipmentAddOnSubtotalModel.isNotEmpty()) {
+            val addOnSubtotalAdapter = ShipmentAddOnSubtotalAdapter(listShipmentAddOnSubtotalModel)
+            binding.containerSubtotal.rvSubtotalAddon.apply {
+                layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+                setHasFixedSize(true)
+                adapter = addOnSubtotalAdapter
+                visible()
+            }
+        } else {
+            binding.containerSubtotal.rvSubtotalAddon.gone()
         }
     }
 

@@ -12,7 +12,7 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:text="@string/product_add_edit_preview"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         android:gravity="center_vertical"
         app:typographyType="heading_5"
         app:typographyWeight="bold" />
@@ -31,7 +31,7 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:text="@string/label_add_product_detail"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         android:gravity="center_vertical"
         app:typographyType="heading_5"
         app:typographyWeight="bold" />
@@ -50,7 +50,7 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:text="@string/label_add_product_description"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         android:gravity="center_vertical"
         app:typographyType="heading_5"
         app:typographyWeight="bold" />
@@ -69,7 +69,7 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:text="@string/label_add_product_shipment"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         android:gravity="center_vertical"
         app:typographyType="heading_5"
         app:typographyWeight="bold" />

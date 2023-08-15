@@ -19,7 +19,7 @@ class UserReviewItemDecoration(
     private val dividerHeight = context.resources.getDimensionPixelOffset(R.dimen.user_profile_dp_1)
 
     private val mPaint = Paint().apply {
-        color = MethodChecker.getColor(context, unifyR.color.Unify_N75)
+        color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN50)
     }
 
     override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {

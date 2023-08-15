@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/npl_widget_parent_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/dp_minus12"
+    android:layout_marginTop="12dp"
+    android:layout_marginRight="@dimen/dp_minus12"
+    android:layout_marginBottom="8dp">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="8dp"
+        android:ellipsize="end"
+        android:maxLength="20"
+        android:maxLines="1"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/image_tnc"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_goneMarginBottom="12dp"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
+        tools:text="Koleksi Spesial" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/image_tnc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="2dp"
+        android:contentDescription="@string/npl_tnc_content_description"
+        app:layout_constraintBottom_toBottomOf="@id/text_title"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintLeft_toRightOf="@id/text_title"
+        app:layout_constraintTop_toTopOf="@id/text_title"
+        app:srcCompat="@drawable/ic_information" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/npl_timer_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_title"
+        app:layout_constraintVertical_chainStyle="spread"
+        app:typographyType="display_3"
+        app:typographyWeight="reguler"
+        tools:text="Berakhir dalam" />
+
+    <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+        android:id="@+id/npl_timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@id/npl_timer_description"
+        app:layout_constraintStart_toEndOf="@id/npl_timer_description"
+        app:layout_constraintTop_toTopOf="@id/npl_timer_description"
+        app:timer_unify_single_showClockIcon="true"
+        app:timer_unify_single_variant="main" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_timer_more_than_1_day"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/bg_shop_timer_red_rect"
+        android:paddingStart="8dp"
+        android:paddingTop="2dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="2dp"
+        android:textColor="@color/Unify_NN0"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/npl_timer_description"
+        app:layout_constraintStart_toEndOf="@id/npl_timer_description"
+        app:layout_constraintTop_toTopOf="@id/npl_timer_description"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        tools:text="2 Juli 2022" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_see_all"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:textColor="@color/Unify_GN500"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/npl_timer"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/npl_timer"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        tools:text="Lihat Semua"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/button_remind_me"
+        android:layout_width="wrap_content"
+        android:layout_height="26dp"
+        android:layout_marginEnd="12dp"
+        android:visibility="visible"
+        app:cardCornerRadius="20dp"
+        app:layout_constraintBottom_toBottomOf="@id/npl_timer"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/npl_timer">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="8dp">
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/loader_remind_me"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/iv_remind_me_bell"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                app:icon_name="BELL_RING"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_remind_me"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="@string/shop_page_label_remind_me"
+                android:textColor="@color/Unify_NN950_68"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@id/iv_remind_me_bell"
+                app:layout_constraintLeft_toRightOf="@id/iv_remind_me_bell"
+                app:layout_constraintTop_toTopOf="@id/iv_remind_me_bell"
+                app:typographyWeight="bold"
+                tools:text="Ingatkan" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify2>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_product_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/npl_timer_description"
+        app:layout_goneMarginTop="14dp">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/image_banner"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/shop_carousel_height"
+            android:adjustViewBounds="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHeight_min="wrap"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0"
+            app:unify_image_corner_radius="0"
+            app:layout_constraintDimensionRatio="2:1"
+            app:unify_image_type="rect" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
