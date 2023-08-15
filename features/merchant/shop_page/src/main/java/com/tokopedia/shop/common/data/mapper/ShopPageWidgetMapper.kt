@@ -19,6 +19,7 @@ import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
 import com.tokopedia.shop.home.view.model.ShowcaseNavigationBannerWidgetStyle
 import com.tokopedia.shop.home.view.model.StatusCampaign
+import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel.Tab.ComponentList.Data.BannerType
 
 //TODO need to migrate all other shop widget mapper on home mapper to this mapper
 object ShopPageWidgetMapper {
@@ -236,6 +237,12 @@ object ShopPageWidgetMapper {
                 }
 
                 val componentListChild = component.componentChild.map { componentChild ->
+                    val bannerType = if (componentChild.bannerType == BannerType.VERTICAL.id) {
+                        BannerType.VERTICAL
+                    } else {
+                        BannerType.NONE
+                    }
+
                     ShopHomeProductCarouselUiModel.Tab.ComponentList.Data(
                         componentChild.imageID,
                         componentChild.imageUrl,
@@ -243,7 +250,7 @@ object ShopPageWidgetMapper {
                         componentChild.linkID,
                         componentChild.linkType,
                         componentChild.isShowProductInfo,
-                        componentChild.bannerType
+                        bannerType
                     )
                 }
 

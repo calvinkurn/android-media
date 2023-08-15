@@ -49,7 +49,7 @@ class ShopHomeProductCarouselViewPagerViewHolder(
         }
         val matchedProductTab = productTabs.getOrNull(0)
         val firstProductComponent = matchedProductTab?.componentList?.firstOrNull { component -> component.componentType == ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITH_PRODUCT_INFO || component.componentType == ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITHOUT_PRODUCT_INFO }
-        val verticalBanner = firstProductComponent?.data?.firstOrNull { it.bannerType == "vertical" }
+        val verticalBanner = firstProductComponent?.data?.firstOrNull { it.bannerType == ShopHomeProductCarouselUiModel.Tab.ComponentList.Data.BannerType.VERTICAL }
         val hasVerticalBanner = verticalBanner != null
 
         viewBinding?.iconChevron?.isVisible = hasVerticalBanner
