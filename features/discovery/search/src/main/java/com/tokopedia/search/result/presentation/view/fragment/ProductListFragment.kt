@@ -423,6 +423,7 @@ class ProductListFragment: BaseDaggerFragment(),
             ),
             createProductListTypeFactory(),
             viewLifecycleOwner,
+            isReimagine()
         )
 
         recyclerViewUpdater.recyclerView?.let {
@@ -519,7 +520,7 @@ class ProductListFragment: BaseDaggerFragment(),
                 this,
                 this
             ),
-            isReimagine = presenter?.isReimagine().orFalse()
+            isReimagine = isReimagine()
         )
     }
 
