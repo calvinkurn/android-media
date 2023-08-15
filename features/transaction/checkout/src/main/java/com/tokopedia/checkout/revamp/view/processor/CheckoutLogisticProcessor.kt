@@ -117,7 +117,7 @@ class CheckoutLogisticProcessor @Inject constructor(
             } catch (t: Throwable) {
                 val exception = getActualThrowableForRx(t)
                 Timber.d(exception)
-                EditAddressResult(isSuccess = false, throwable = t)
+                EditAddressResult(isSuccess = false, throwable = exception)
             }
         }
     }

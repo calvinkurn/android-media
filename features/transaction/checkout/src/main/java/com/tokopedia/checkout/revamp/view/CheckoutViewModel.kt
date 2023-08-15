@@ -2262,7 +2262,7 @@ class CheckoutViewModel @Inject constructor(
         skipUpdateOnboardingState: Boolean,
         isReloadAfterPriceChangeHigher: Boolean
     ) {
-        viewModelScope.launch {
+        viewModelScope.launch(dispatchers.immediate) {
             pageState.value = CheckoutPageState.Loading
             hitClearAllBo()
             loadSAF(
@@ -2276,7 +2276,7 @@ class CheckoutViewModel @Inject constructor(
     fun clearAllBoOnTemporaryUpsell() {
         val upsell = listData.value.upsell()
         if (upsell != null && upsell.upsell.isShow && upsell.upsell.isSelected) {
-            GlobalScope.launch {
+            GlobalScope.launch(dispatchers.io) {
                 hitClearAllBo()
             }
         }
