@@ -13,20 +13,31 @@ import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewOutlineProvider
 import androidx.annotation.RequiresApi
+import androidx.fragment.app.Fragment
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tkpd.atcvariant.BuildConfig
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.MoveAction
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.QUERY_PARENT
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.minicart.common.domain.data.*
 import com.tokopedia.user.session.UserSession
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.plus
 import java.net.URLDecoder
 import java.net.URLEncoder
 import java.text.ParseException
@@ -556,6 +567,47 @@ class Utils {
 
         fun dpToPx(dp: Int): Float {
             return (dp * Resources.getSystem().displayMetrics.density)
+        }
+
+        fun setParameterMapUtil(queryParameterMap: String?, queryParameterMapWithRpc: MutableMap<String, String>, queryParameterMapWithoutRpc: MutableMap<String, String>) {
+            val queryMap =
+                URLParser(ApplinkConstInternalDiscovery.INTERNAL_DISCOVERY + "?" + queryParameterMap).paramKeyValueMapDecoded
+            for ((key, value) in queryMap) {
+                if (!value.isNullOrEmpty()) {
+                    if (key.startsWith(RPC_FILTER_KEY)) {
+                        val keyWithoutPrefix = key.removePrefix(RPC_FILTER_KEY)
+                        queryParameterMapWithRpc[keyWithoutPrefix] = value
+                    } else {
+                        queryParameterMapWithoutRpc[key] = value
+                    }
+                }
+            }
+        }
+
+        fun routingBasedOnMoveAction(moveAction : MoveAction, fragment : Fragment){
+            when (moveAction.type) {
+                Constant.REDIRECTION -> {
+                    if (!moveAction.value.isNullOrEmpty()) {
+                        RouteManager.route(fragment.activity, moveAction.value)
+                    }
+                }
+
+                Constant.NAVIGATION -> {
+                    if (!moveAction.value.isNullOrEmpty()) {
+                        (fragment as? DiscoveryFragment)?.redirectToOtherTab(moveAction.value)
+                    }
+                }
+            }
+        }
+
+        fun setTabSelectedBasedOnDataItem(componentItem: ComponentsItem, isSelected: Boolean){
+            componentItem.apply {
+                if (!data.isNullOrEmpty()) {
+                    data?.get(0)?.let { tabData ->
+                        tabData.isSelected = isSelected
+                    }
+                }
+            }
         }
     }
 }

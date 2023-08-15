@@ -111,11 +111,22 @@
             app:typographyWeight="reguler"
             tools:text="Rp10.000" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_subtotal_addon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_below="@id/tv_shipping_fee"
+            tools:itemCount="2"
+            tools:listitem="@layout/item_shipment_add_on_summary"
+            android:visibility="gone"/>
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_insurance_fee"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_shipping_fee"
+            android:layout_below="@id/rv_subtotal_addon"
             android:layout_marginBottom="16dp"
             android:text="@string/label_insurance_price"
             app:typographyType="body_3"
@@ -125,7 +136,7 @@
             android:id="@+id/tv_insurance_fee_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_shipping_fee"
+            android:layout_below="@id/rv_subtotal_addon"
             android:layout_alignParentEnd="true"
             android:gravity="end"
             app:typographyType="body_3"

@@ -47,6 +47,10 @@ import com.tokopedia.search.result.product.safesearch.SafeSearchPresenterDelegat
 import com.tokopedia.search.result.product.safesearch.SafeSearchView
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPreference
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordPresenterDelegate
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordView
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductView
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductPresenterDelegate
 import com.tokopedia.search.result.product.similarsearch.SimilarSearchOnBoardingPresenterDelegate
 import com.tokopedia.search.result.product.similarsearch.SimilarSearchOnBoardingView
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
@@ -135,6 +139,9 @@ internal open class ProductListPresenterTestFixtures {
     protected val abTestRemoteConfig = mockk<RemoteConfig>(relaxed = true)
     protected val similarSearchCoachMarkLocalCache = mockk<SimilarSearchCoachMarkLocalCache>(relaxed = true)
     protected val similarSearchOnBoardingView = mockk<SimilarSearchOnBoardingView>(relaxed = true)
+    protected val inspirationKeywordSeamlessView = mockk<InspirationKeywordView>(relaxed = true)
+    protected val inspirationProductSeamlessView =
+        mockk<InspirationProductView>(relaxed = true)
 
     private val dynamicFilterModel = MutableDynamicFilterModelProviderDelegate()
     private val pagination = PaginationImpl()
@@ -224,6 +231,17 @@ internal open class ProductListPresenterTestFixtures {
             similarSearchOnBoardingView,
         )
 
+        val inspirationKeywordPresenterDelegate = InspirationKeywordPresenterDelegate(
+            inspirationKeywordSeamlessView,
+            applinkModifier,
+        )
+
+        val inspirationProductPresenterDelegate = InspirationProductPresenterDelegate(
+            inspirationProductSeamlessView,
+            topAdsUrlHitter,
+            classNameProvider
+        )
+
         productListPresenter = ProductListPresenter(
             searchFirstPageUseCase,
             searchLoadMoreUseCase,
@@ -264,6 +282,8 @@ internal open class ProductListPresenterTestFixtures {
             abTestRemoteConfig,
             responseCodeImpl,
             similarSearchOnBoardingPresenterDelegate,
+            inspirationKeywordPresenterDelegate,
+            inspirationProductPresenterDelegate,
             ReimagineDelegate(abTestRemoteConfig),
         )
         productListPresenter.attachView(productListView)

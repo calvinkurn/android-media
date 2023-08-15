@@ -17,6 +17,8 @@ import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarous
 import com.tokopedia.search.result.product.pagination.Pagination
 import com.tokopedia.search.result.product.reimagine.Reimagine
 import com.tokopedia.search.result.product.safesearch.SafeSearchPresenter
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordPresenter
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductPresenter
 import com.tokopedia.search.result.product.ticker.TickerPresenter
 import com.tokopedia.search.result.product.wishlist.WishlistPresenter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -95,6 +97,8 @@ interface ProductListSectionContract {
         WishlistPresenter,
         BottomSheetFilterPresenter,
         InspirationCarouselPresenter,
+        InspirationKeywordPresenter,
+        InspirationProductPresenter,
         Reimagine {
 
         fun loadMoreData(searchParameter: Map<String, Any>)

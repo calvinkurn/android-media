@@ -113,7 +113,7 @@ ext {
     benchmarkTestVersion = '1.0.0'
     testCore = '1.4.0'
     fragmentTest = "1.4.1"
-    androidxFragment = '1.4.1'
+    androidxFragment = '1.5.7'
     debugToolsEnabled = true
 
     // Sort and categorize alphabetically by folder name
@@ -153,7 +153,7 @@ ext {
     unifyTotalAmountVersion = '1.0.7.2'
     unifyExplorePromoVersion = '1.0.3.2'
     unifyImageGalleryVersion = '1.0.8'
-    unifyViewAllCardVersion = '1.0.8'
+    unifyViewAllCardVersion = '1.0.12'
 
     gradlePlugin = [
             crashlytics   : "com.google.firebase:firebase-crashlytics-gradle:${crashlyticsGradleVersion}",
@@ -277,7 +277,7 @@ ext {
             chips                 : 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar',
             roundCornerProgressBar: 'com.akexorcist:RoundCornerProgressBar:2.0.3',
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
-            hansel                : "io.hansel.preprocessor:preprocessor:9.3.2",
+            hansel                : "io.hansel.preprocessor:preprocessor:10.0.0",
             protobuf              : "com.google.protobuf:protobuf-gradle-plugin:0.8.12",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
             flexBoxLayout         : "com.google.android:flexbox:0.3.2",

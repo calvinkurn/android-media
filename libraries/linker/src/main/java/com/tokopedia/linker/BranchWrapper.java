@@ -482,7 +482,7 @@ public class BranchWrapper implements WrapperInterface {
                 deeplinkPath = appendQueryParams(deeplinkPath, data.getAdditionalQueryParam());
             }
         } else if (LinkerData.SHOP_TYPE.equalsIgnoreCase(data.getType())) {
-            deeplinkPath = getApplinkPath(LinkerConstants.SHOP, data.getId());//"shop/" + data.getId();
+            deeplinkPath = data.getDeepLink();//"shop/" + data.getId();
         } else if (LinkerData.HOTLIST_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(LinkerConstants.DISCOVERY_HOTLIST_DETAIL, data.getId());//"hot/" + data.getId();
         } else if (LinkerData.CATALOG_TYPE.equalsIgnoreCase(data.getType())) {
