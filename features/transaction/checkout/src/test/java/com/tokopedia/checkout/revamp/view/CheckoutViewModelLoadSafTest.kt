@@ -8,11 +8,15 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShopV2
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerModel
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticCommon.data.response.EligibleForAddressFeature
 import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
+import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
+import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 import io.mockk.coEvery
 import io.mockk.every
+import io.mockk.verify
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.io.IOException
@@ -204,5 +208,50 @@ class CheckoutViewModelLoadSafTest : BaseCheckoutViewModelTest() {
             CheckoutPageState.Success(response),
             viewModel.pageState.value
         )
+    }
+
+    @Test
+    fun load_SAF_with_ticker() {
+        // given
+        val tickerData = TickerData(
+            id = "id",
+            message = "message",
+            page = "checkout",
+            title = "title"
+        )
+        val response = CartShipmentAddressFormData(
+            isError = false,
+            tickerData = tickerData,
+            groupAddress = listOf(
+                GroupAddress(
+                    groupShop = listOf(
+                        GroupShop(
+                            groupShopData = listOf(
+                                GroupShopV2(
+                                    products = listOf(
+                                        Product()
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+        coEvery {
+            getShipmentAddressFormV4UseCase.invoke(any())
+        } returns response
+
+        // when
+        viewModel.loadSAF(false, false, false)
+
+        // then
+        assertEquals(
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData(tickerData.id, tickerData.title, tickerData.message)),
+            viewModel.listData.value[1]
+        )
+        verify {
+            mTrackerShipment.eventViewInformationAndWarningTickerInCheckout(tickerData.id)
+        }
     }
 }

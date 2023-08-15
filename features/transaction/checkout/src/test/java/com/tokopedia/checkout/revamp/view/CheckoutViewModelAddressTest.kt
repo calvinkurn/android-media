@@ -8,6 +8,7 @@ import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.unifycomponents.Toaster
 import io.mockk.coEvery
 import io.mockk.coVerify
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.io.IOException
 
@@ -30,7 +31,12 @@ class CheckoutViewModelAddressTest : BaseCheckoutViewModelTest() {
         }
 
         coVerify {
-            toasterProcessor.commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_ERROR, throwable = exception))
+            toasterProcessor.commonToaster.emit(
+                CheckoutPageToaster(
+                    Toaster.TYPE_ERROR,
+                    throwable = exception
+                )
+            )
         }
     }
 
@@ -50,7 +56,12 @@ class CheckoutViewModelAddressTest : BaseCheckoutViewModelTest() {
         }
 
         coVerify {
-            toasterProcessor.commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_ERROR, toasterMessage = "Gagal mengubah alamat"))
+            toasterProcessor.commonToaster.emit(
+                CheckoutPageToaster(
+                    Toaster.TYPE_ERROR,
+                    toasterMessage = "Gagal mengubah alamat"
+                )
+            )
         }
     }
 
@@ -71,7 +82,12 @@ class CheckoutViewModelAddressTest : BaseCheckoutViewModelTest() {
         }
 
         coVerify {
-            toasterProcessor.commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_ERROR, toasterMessage = "error message"))
+            toasterProcessor.commonToaster.emit(
+                CheckoutPageToaster(
+                    Toaster.TYPE_ERROR,
+                    toasterMessage = "error message"
+                )
+            )
         }
     }
 
@@ -99,5 +115,12 @@ class CheckoutViewModelAddressTest : BaseCheckoutViewModelTest() {
                 )
             )
         }
+        assertEquals(
+            CheckoutPageToaster(
+                Toaster.TYPE_NORMAL,
+                toasterMessage = "Berhasil mengubah alamat"
+            ),
+            latestToaster
+        )
     }
 }

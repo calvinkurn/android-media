@@ -38,10 +38,8 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import io.mockk.MockKAnnotations
+import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import org.junit.Before
 import org.junit.Rule
 
@@ -92,7 +90,7 @@ open class BaseCheckoutViewModelTest {
     @MockK
     lateinit var validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase
 
-    @MockK
+    @MockK(relaxed = true)
     lateinit var mTrackerShipment: CheckoutAnalyticsCourierSelection
 
     @MockK(relaxed = true)
@@ -115,16 +113,15 @@ open class BaseCheckoutViewModelTest {
     @MockK
     lateinit var checkoutGqlUseCase: CheckoutUseCase
 
-    @MockK
+    @MockK(relaxed = true)
     lateinit var checkoutAnalyticsCourierSelection: CheckoutAnalyticsCourierSelection
 
     @MockK
     lateinit var shipmentDataRequestConverter: ShipmentDataRequestConverter
 
-//    @MockK
     var dataConverter: CheckoutDataConverter = CheckoutDataConverter()
 
-    @MockK
+    @MockK(relaxed = true)
     lateinit var mTrackerTradeIn: CheckoutTradeInAnalytics
 
     private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchers
@@ -136,10 +133,10 @@ open class BaseCheckoutViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        GlobalScope.launch {
-            toasterProcessor.commonToaster.collectLatest {
-                latestToaster = it
-            }
+        coEvery {
+            toasterProcessor.commonToaster.emit(any())
+        } answers {
+            latestToaster = it.invocation.args[0] as CheckoutPageToaster
         }
         viewModel = CheckoutViewModel(
             CheckoutCartProcessor(
