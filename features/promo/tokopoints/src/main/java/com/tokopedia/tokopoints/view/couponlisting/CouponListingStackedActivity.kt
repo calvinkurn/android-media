@@ -44,7 +44,7 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
     @Inject
     internal lateinit var factory: ViewModelFactory
 
-    private val binding: TpActivityStackedCouponListBinding? by viewBinding()
+    private var binding: TpActivityStackedCouponListBinding? by viewBinding()
 
     private val mPresenter: StackedCouponActivtyViewModel by lazy { ViewModelProviders.of(this, factory)[StackedCouponActivtyViewModel::class.java] }
 
@@ -102,6 +102,7 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
     override fun setupLayout(savedInstanceState: Bundle?) {
         // Intermittent crash on Marshmallow
         try {
+            binding = TpActivityStackedCouponListBinding.inflate(layoutInflater)
             setContentView(binding?.root)
         } catch (e: Exception) {
             finish()
