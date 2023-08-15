@@ -965,7 +965,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         prev: List<PlayBroadcastPreparationBannerModel>?,
         curr: List<PlayBroadcastPreparationBannerModel>
     ) {
-        if (prev == null || prev == curr) return
+        if (prev == curr) return
 
         adapterBanner.setItemsAndAnimateChanges(curr)
         if (curr.size > 1) binding.pcBannerPreparation.setIndicator(curr.size)
