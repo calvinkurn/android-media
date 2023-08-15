@@ -80,7 +80,6 @@ import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonito
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_TABLE_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_UNIFICATION_TRACE
 import com.tokopedia.sellerhome.common.SellerHomeConst
-import com.tokopedia.sellerhome.common.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.common.newrelic.SellerHomeNewRelic
 import com.tokopedia.sellerhome.data.SellerHomeSharedPref
@@ -172,7 +171,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageProcessingUtil
-import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -239,9 +237,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     lateinit var userSession: UserSessionInterface
 
     @Inject
-    lateinit var remoteConfig: SellerHomeRemoteConfig
-
-    @Inject
     lateinit var newRelic: SellerHomeNewRelic
 
     @Inject
@@ -277,8 +272,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private val notificationDotBadge by lazy {
         NotificationDotBadge()
     }
-    private val isNewLazyLoad by lazy {
-        Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1 && remoteConfig.isSellerHomeDashboardNewLazyLoad()
+    private val isLazyLoadEnabled by lazy {
+        Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1
     }
 
     private var notifCenterCount = 0
@@ -296,7 +291,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var shopShareData: ShopShareDataUiModel? = null
     private var shopImageFilePath: String = ""
-    private var binding by autoClearedNullable<FragmentSahBinding>()
+    private var binding: FragmentSahBinding? = null
     private var isNewSellerState: Boolean = false
 
     private val recyclerView: RecyclerView?
@@ -372,8 +367,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         shopShareHelper.removeTemporaryShopImage(shopImageFilePath)
+        binding = null
+        super.onDestroy()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -967,12 +963,15 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun getWidgetLayout() {
-        val deviceHeight = if (isNewLazyLoad) {
+        sellerHomeViewModel.getWidgetLayout(getDeviceHeight(), TRIGGER_INITIAL_LOAD)
+    }
+
+    private fun getDeviceHeight(): Float? {
+        return if (isLazyLoadEnabled) {
             deviceDisplayHeight
         } else {
             null
         }
-        sellerHomeViewModel.getWidgetLayout(deviceHeight, TRIGGER_INITIAL_LOAD)
     }
 
     private fun showUnificationWidgetCoachMark() {
@@ -1186,12 +1185,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         sahGlobalError.gone()
         emptyState?.gone()
-        val deviceHeight = if (isNewLazyLoad) {
-            deviceDisplayHeight
-        } else {
-            null
-        }
-        sellerHomeViewModel.getWidgetLayout(deviceHeight, trigger)
+        sellerHomeViewModel.getWidgetLayout(getDeviceHeight(), trigger)
         sellerHomeViewModel.getTicker()
     }
 
@@ -1564,7 +1558,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         var isWidgetHasError = false
         val newWidgetFromCache = widgets.firstOrNull()?.isFromCache ?: false
-        if (isNewLazyLoad) {
+        if (isLazyLoadEnabled) {
             startHomeLayoutRenderMonitoring()
             stopPltMonitoringIfNotCompleted(fromCache = newWidgetFromCache)
         }
@@ -1578,7 +1572,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 val newWidgets = arrayListOf<BaseWidgetUiModel<*>>()
                 widgets.forEach { newWidget ->
                     oldWidgets.find { isTheSameWidget(it, newWidget) }.let { oldWidget ->
-                        if (isNewLazyLoad) {
+                        if (isLazyLoadEnabled) {
                             // If there are card widgets exist in adapter data, set the previous value in the latest widget
                             // to enable animation after pull to refresh
                             if (newWidget is CardWidgetUiModel) {
@@ -1604,6 +1598,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                                                 newData.lastUpdated.needToUpdated
                                         }
                                     }
+                                    impressHolder = oldWidget.impressHolder
                                     isLoaded = oldWidget.isLoaded
                                     isLoading = oldWidget.isLoading
                                 }
@@ -1994,7 +1989,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
      * Load next unloaded indexed widget in adapter after the previous one is complete
      */
     private fun loadNextUnloadedWidget() {
-        if (isNewLazyLoad) {
+        if (isLazyLoadEnabled) {
             adapter.data?.find { it.isNeedToLoad() }?.let { newWidgets ->
                 getWidgetsData(listOf(newWidgets))
             }
@@ -2430,7 +2425,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun setRecyclerViewLayoutAnimation() {
-        if (isNewLazyLoad) {
+        if (isLazyLoadEnabled) {
             context?.let {
                 val animation: LayoutAnimationController = AnimationUtils.loadLayoutAnimation(
                     it, R.anim.seller_home_rv_layout_animation

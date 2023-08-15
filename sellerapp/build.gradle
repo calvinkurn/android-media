@@ -42,7 +42,8 @@ buildscript {
 }
 
 android {
-
+    namespace 'com.tokopedia.sellerapp'
+    testNamespace 'com.tokopedia.sellerapp.test'
     project.ext {
         defaultVersionCode = 220412500;
         defaultVersionName = "2.125-test";
@@ -192,7 +193,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.datePickerRange)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.baseListSeller)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.core_legacy)
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.libraries.coreNetwork)
@@ -277,6 +277,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.attachvoucher)
 
     implementation projectOrAar(rootProject.ext.features.playCommon)
+    implementation projectOrAar(rootProject.ext.features.contentAnalytic)
     implementation projectOrAar(rootProject.ext.features.filter)
 
     implementation projectOrAar(rootProject.ext.features.additional_check)

@@ -1,11 +1,13 @@
 package com.tokopedia.recommendation_widget_common.widget.global
 
+import com.tokopedia.recommendation_widget_common.RecommendationTypeConst.PAGENAME_VERTICAL
 import com.tokopedia.recommendation_widget_common.RecommendationTypeConst.TYPE_COMPARISON_BPC_WIDGET
 import com.tokopedia.recommendation_widget_common.mvvm.UiState
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselModel
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.RecommendationComparisonBpcModel
 import com.tokopedia.recommendation_widget_common.widget.loading.RecommendationCarouselShimmeringModel
+import com.tokopedia.recommendation_widget_common.widget.vertical.RecommendationVerticalModel
 
 data class RecommendationWidgetState(
     val widgetMap: Map<String, List<RecommendationVisitable>> = mapOf(),
@@ -26,6 +28,12 @@ data class RecommendationWidgetState(
     ): RecommendationVisitable =
         if (widget.layoutType == TYPE_COMPARISON_BPC_WIDGET) {
             RecommendationComparisonBpcModel.from(
+                metadata = model.metadata,
+                trackingModel = model.trackingModel,
+                recommendationWidget = widget,
+            )
+        } else if (widget.pageName == PAGENAME_VERTICAL) {
+            RecommendationVerticalModel.from(
                 metadata = model.metadata,
                 trackingModel = model.trackingModel,
                 recommendationWidget = widget,

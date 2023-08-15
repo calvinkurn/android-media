@@ -203,7 +203,7 @@ class ReportFormAdapter(private val item: ProductReportReason,
                 textInputLayoutReport.counterMaxLength = field.max
                 textInputLayoutReport.helperText = context.getString(R.string.product_helper_product_report,
                         field.min.toString())
-                textInputLayoutReport.setHelperTextColor(ContextCompat.getColorStateList(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                textInputLayoutReport.setHelperTextColor(ContextCompat.getColorStateList(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
                 editTextReport.filters = arrayOf(InputFilter.LengthFilter(field.max))
                 editTextReport.setText(input)
                 if (inputs[field.key] != null)

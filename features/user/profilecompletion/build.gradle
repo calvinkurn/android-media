@@ -19,6 +19,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.profilecompletion'
+    testNamespace 'com.tokopedia.profilecompletion.test'
     buildFeatures {
         viewBinding true
     }
@@ -40,7 +42,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.track)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.imagePickerCommon)
     implementation projectOrAar(rootProject.ext.libraries.imageuploader)
     implementation projectOrAar(rootProject.ext.features.sessioncommon)
@@ -48,6 +49,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.otp)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.webview)
+    implementation projectOrAar(rootProject.ext.libraries.interceptors)
 
     implementation rootProject.ext.playServicesDependencies.core
 

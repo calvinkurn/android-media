@@ -11,7 +11,7 @@
         android:id="@+id/inspirationCardSeparator"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_1"
-        android:background="@color/Unify_N75"
+        android:background="@color/Unify_NN50"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

@@ -14,6 +14,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.assertion.withItemCount
 import com.tokopedia.topchat.chatlist.activity.base.ChatListTest
 import com.tokopedia.topchat.chatlist.activity.robot.broadcast.BroadcastResult
+import com.tokopedia.topchat.chatlist.activity.robot.broadcastResult
 import com.tokopedia.topchat.chatlist.domain.pojo.whitelist.ChatWhitelistFeatureResponse
 import com.tokopedia.topchat.matchers.withIndex
 import com.tokopedia.topchat.matchers.withTotalItem
@@ -189,5 +190,67 @@ class ChatListActivityTest : ChatListTest() {
         // Then
         Thread.sleep(500)
         BroadcastResult.assertMVCVoucherVisible(isVisible = false)
+    }
+
+    @Test
+    fun should_show_broadcast_fab_with_label() {
+        // Given
+        chatListUseCase.response = exSize5ChatListPojo
+        userSession.setIsShopOwner(true)
+        setLastSeenTab(isSellerTab = true)
+        setLabelNew(true)
+        setRollenceLabelNew(true)
+
+        // When
+        startChatListActivity()
+
+        // Then
+        broadcastResult {
+            assertBroadcastFABLayout(true)
+            assertBroadcastFAB(true)
+            assertBroadcastFABLabel(true)
+        }
+
+        // Clean-up
+        setLabelNew(false)
+        setRollenceLabelNew(false)
+    }
+
+    @Test
+    fun should_show_broadcast_fab_without_label() {
+        // Given
+        chatListUseCase.response = exSize5ChatListPojo
+        userSession.setIsShopOwner(true)
+        setLastSeenTab(isSellerTab = true)
+        setLabelNew(false)
+        setRollenceLabelNew(true)
+
+        // When
+        startChatListActivity()
+
+        // Then
+        broadcastResult {
+            assertBroadcastFABLayout(true)
+            assertBroadcastFAB(true)
+            assertBroadcastFABLabel(false)
+        }
+    }
+
+    @Test
+    fun should_not_show_broadcast_fab() {
+        // Given
+        chatListUseCase.response = exSize5ChatListPojo
+        userSession.setIsShopOwner(false)
+        setLastSeenTab(isSellerTab = true)
+
+        // When
+        startChatListActivity()
+
+        // Then
+        broadcastResult {
+            assertBroadcastFABLayout(false)
+            assertBroadcastFAB(false)
+            assertBroadcastFABLabel(false)
+        }
     }
 }

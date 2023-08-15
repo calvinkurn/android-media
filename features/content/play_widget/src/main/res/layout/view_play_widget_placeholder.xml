@@ -34,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/play_widget_dp_20"
-        android:background="@color/Unify_N75"
+        android:background="@color/Unify_NN50"
         android:orientation="horizontal"
         android:paddingTop="@dimen/spacing_lvl3"
         android:paddingBottom="@dimen/play_widget_dp_12"

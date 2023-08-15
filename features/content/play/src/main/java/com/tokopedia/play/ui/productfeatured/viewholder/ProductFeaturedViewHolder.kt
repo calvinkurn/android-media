@@ -23,7 +23,6 @@ class ProductFeaturedViewHolder(
     private val binding: ItemPlayProductFeaturedBinding,
     private val listener: ProductBasicViewHolder.Listener
 ) : BaseViewHolder(binding.root) {
-
     private val context: Context
         get() = binding.root.context
 
@@ -54,15 +53,22 @@ class ProductFeaturedViewHolder(
             }
         }
 
-        binding.root.setOnClickListener {
+        binding.rclPlayCarouselCard.setOnClickListener {
             if (item.applink.isNullOrEmpty()) return@setOnClickListener
-            listener.onClickProductCard(item, adapterPosition)
+            listener.onClickProductCard(item, absoluteAdapterPosition)
         }
 
         binding.lblProductNumber.showWithCondition(item.isNumerationShown)
         binding.lblProductNumber.text = item.number
+
+        binding.layoutRibbon.showWithCondition(item.label.rankFmt.isNotBlank())
+        binding.layoutRibbon.rankFmt = item.label.rankFmt
+        binding.layoutRibbon.setRibbonColors(item.label.rankColors)
     }
 
+    fun startAnimation() {
+        binding.layoutRibbon.startAnimation()
+    }
     companion object {
         fun create(
             parent: ViewGroup,

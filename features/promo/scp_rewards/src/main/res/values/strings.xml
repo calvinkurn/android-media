@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">scp_rewards</string>
+    <string name="go_back_text">Kembali</string>
+    <string name="tnc_text">Cek S&amp;K</string>
+    <string name="goto_medali_cabinet_text">Lihat Koleksi Medali</string>
+    <string name="earned_medali_title">Medali Kamu</string>
+    <string name="progress_medali_title">Progres Medali</string>
+    <string name="goto_main_page_text">Ke halaman utama</string>
+    <string name="error_non_whitelisted_user_title">Medali-nya belum siap, nih</string>
+    <string name="error_non_whitelisted_user_description">Pantau aja terus, ya. Nanti kita bakal kabarin kalau sudah tersedia buat kamu!</string>
+    <string name="error_non_whitelisted_user_action">Ke Halaman Utama</string>
+</resources>

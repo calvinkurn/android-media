@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         app:typographyType="body_3"
         tools:text="Akses ke Rekening Premium, Saldo Prioritas, dan akses prioritas ke Modal Toko" />
 </LinearLayout>

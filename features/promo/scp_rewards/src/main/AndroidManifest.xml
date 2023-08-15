@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.scp_rewards">
+
+    <application>
+        <activity
+            android:name=".celebration.presentation.activity.MedalCelebrationActivity"
+            android:exported="false"
+            android:label="scp"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_scp_rewards"
+                    android:pathPattern="@string/path_scp_rewards_celebration"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".detail.presentation.ui.MedalDetailActivity"
+            android:exported="false"
+            android:label="scp"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_scp_rewards"
+                    android:pathPattern="@string/path_scp_rewards_medal_detail"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".cabinet.presentation.ui.MedalCabinetActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" >
+
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_scp_rewards"
+                    android:pathPattern="@string/path_scp_rewards_medal_cabinet"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_scp_rewards"
+                    android:pathPattern="@string/path_scp_rewards_medal_cabinet_see_more"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

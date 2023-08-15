@@ -1,19 +1,15 @@
 package com.tokopedia.play.view.viewcomponent
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImageWithEmptyTarget
-import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
@@ -22,10 +18,7 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListe
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
-import com.tokopedia.utils.image.ImageProcessingUtil
 import kotlinx.coroutines.*
-import java.io.File
-import java.lang.Exception
 
 /**
  * Created By : Jonathan Darwin on November 01, 2021
@@ -37,15 +30,10 @@ class ShareExperienceViewComponent(
     private val fragment: Fragment,
     private val listener: Listener,
     private val context: Context,
-    private val dispatchers: CoroutineDispatchers,
-    private val source: Source = Source.PlayRoom
+    source: Source = Source.PlayRoom
 ) : ViewComponent(container, idRes) {
 
     private val ivShareLink = rootView as IconUnify
-
-    private var imgSaveFilePath = ""
-    private var bitmap: Bitmap? = null
-    private val scope = CoroutineScope(dispatchers.computation)
 
     private val universalShareBottomSheet: UniversalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
         init(object : ShareBottomsheetListener {
@@ -77,70 +65,6 @@ class ShareExperienceViewComponent(
             listener.onShareIconImpressed(this)
         } else {
             ivShareLink.hide()
-        }
-    }
-
-    private fun isTemporaryImageAvailable(): Boolean {
-        if (imgSaveFilePath.isNotEmpty()) {
-            return File(imgSaveFilePath).exists()
-        }
-
-        return false
-    }
-
-    private fun deleteTemporaryImage() {
-        if (isTemporaryImageAvailable()) {
-            File(imgSaveFilePath).delete()
-        }
-    }
-
-    fun saveBitmap() {
-        val image = this.bitmap ?: return
-
-        scope.launch {
-            val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
-                image,
-                Bitmap.CompressFormat.PNG
-            )
-
-            if (savedFile != null) {
-                imgSaveFilePath = savedFile.absolutePath
-                universalShareBottomSheet.apply {
-                    imageSaved(imgSaveFilePath)
-                }
-                withContext(dispatchers.main) {
-                    listener.onShareOpenBottomSheet(this@ShareExperienceViewComponent)
-                }
-            } else {
-                withContext(dispatchers.main) {
-                    listener.onHandleShareFallback(this@ShareExperienceViewComponent)
-                }
-            }
-        }
-    }
-
-    fun saveTemporaryImage(imageUrl: String) {
-        try {
-            if (bitmap != null) {
-                saveBitmap()
-                return
-            }
-
-            loadImageWithEmptyTarget(
-                context,
-                imageUrl,
-                {
-                    fitCenter()
-                },
-                MediaBitmapEmptyTarget(
-                    onReady = {
-                        bitmap = it
-                        saveBitmap()
-                    }
-                )
-            )
-        } catch (ignore: Exception) {
-            listener.onHandleShareFallback(this@ShareExperienceViewComponent)
         }
     }
 
@@ -190,20 +114,12 @@ class ShareExperienceViewComponent(
         screenshotDetector = null
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun onDestroy() {
-        deleteTemporaryImage()
-        scope.cancel()
-    }
-
     interface Listener {
         fun onShareIconClick(view: ShareExperienceViewComponent)
-        fun onShareOpenBottomSheet(view: ShareExperienceViewComponent)
         fun onShareOptionClick(view: ShareExperienceViewComponent, shareModel: ShareModel)
         fun onShareOptionClosed(view: ShareExperienceViewComponent)
         fun onScreenshotTaken(view: ShareExperienceViewComponent)
         fun onSharePermissionAction(view: ShareExperienceViewComponent, label: String)
-        fun onHandleShareFallback(view: ShareExperienceViewComponent)
         fun onShareIconImpressed(view: ShareExperienceViewComponent)
     }
 

@@ -1,0 +1,72 @@
+{
+  "cart_general_promo_list": {
+    "data": {
+      "message": "",
+      "success": 1,
+      "data": {
+        "business_data": [
+          {
+            "business_id": "2fe98008-ac73-4cb9-ba7f-d8bf77eedcac",
+            "success": 1,
+            "message": "",
+            "custom_response": {
+              "available_section": {
+                "icon_url": "",
+                "is_enabled": true,
+                "sub_section": {
+                  "coupons": [
+                    {
+                      "additional_information": "",
+                      "expiry_info": "Persediaan terbatas",
+                      "is_selected": true,
+                      "title": "Diskon makanan 20%, maks. 40rb",
+                      "top_banner_title": "Keuntungan Terbaik"
+                    }
+                  ],
+                  "icon_url": "https://images.tokopedia.net/img/cartapp/coupon_icon.png",
+                  "is_enabled": true,
+                  "ticker_message": "",
+                  "title": "Kupon Otomatis"
+                },
+                "sub_title": "",
+                "title": ""
+              },
+              "change_restriction_message": "Kupon yang terpasang otomatis tidak bisa diubah.",
+              "empty_state": {
+                "description": "",
+                "image_url": "",
+                "title": ""
+              },
+              "error_page": {
+                "button": [],
+                "description": "",
+                "image": "",
+                "is_show_error_page": false,
+                "title": ""
+              },
+              "promo_summary": {
+                "title": "Kamu Bisa Hemat",
+                "total": 40000,
+                "total_fmt": "Rp40.000"
+              },
+              "title": "Pakai Promo",
+              "unavailable_section": {
+                "icon_url": "",
+                "is_enabled": false,
+                "sub_section": {
+                  "coupons": [],
+                  "icon_url": "https://images.tokopedia.net/img/cartapp/coupon_icon.png",
+                  "is_enabled": false,
+                  "ticker_message": "",
+                  "title": "Kupon Otomatis"
+                },
+                "sub_title": "",
+                "title": "Kupon yang tidak bisa dipakai"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

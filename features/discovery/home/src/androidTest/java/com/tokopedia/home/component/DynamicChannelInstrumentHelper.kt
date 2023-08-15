@@ -72,6 +72,8 @@ const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TODO_WIDGET = "tracker/home/todo_wi
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_FLASH_SALE_WIDGET = "tracker/home/flash_sale_widget.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BALANCE_WIDGET = "tracker/home/balance_widget.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_DYNAMIC_ICON = "tracker/home/home_icon.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_LOGIN_WIDGET = "tracker/home/login_widget.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_SPECIAL_RELEASE_REVAMP = "tracker/home/special_release_revamp.json"
 
 private const val CHOOSE_ADDRESS_PREFERENCE_NAME = "coahmark_choose_address"
 private const val CHOOSE_ADDRESS_EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK"
@@ -268,6 +270,11 @@ fun actionOnFlashSaleWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: I
     clickOnEachItemRecyclerView(viewHolder.itemView, R.id.carouselProductCardRecyclerView, 0)
 }
 
+fun actionOnSpecialReleaseRevampWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
+    clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
+    clickOnEachItemRecyclerViewSpecialRelease(viewHolder.itemView, R.id.home_component_special_release_rv, 0)
+}
+
 fun clickOnEachItemRecyclerViewMerchantVoucher(view: View, recyclerViewId: Int, fixedItemPositionLimit: Int) {
     val childRecyclerView: RecyclerView = view.findViewById(recyclerViewId)
 
@@ -285,6 +292,38 @@ fun clickOnEachItemRecyclerViewMerchantVoucher(view: View, recyclerViewId: Int, 
             )
         } catch (e: PerformException) {
             e.printStackTrace()
+        }
+    }
+    Espresso.onView(
+        allOf(
+            ViewMatchers.withId(recyclerViewId)
+        )
+    )
+        .perform(
+            actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                childItemCountExcludeViewAllCard,
+                ViewActions.click()
+            )
+        )
+}
+
+fun clickOnEachItemRecyclerViewSpecialRelease(view: View, recyclerViewId: Int, fixedItemPositionLimit: Int) {
+    val childRecyclerView: RecyclerView = view.findViewById(recyclerViewId)
+
+    var childItemCountExcludeViewAllCard = (childRecyclerView.adapter?.itemCount ?: 0) - 1
+    if (fixedItemPositionLimit > 0) {
+        childItemCountExcludeViewAllCard = fixedItemPositionLimit
+    }
+    for (i in 0 until childItemCountExcludeViewAllCard) {
+        try {
+            Espresso.onView(ViewMatchers.withId(recyclerViewId)).perform(
+                actionOnItemAtPosition<RecyclerView.ViewHolder>(i, clickOnViewChild(R.id.cta))
+            )
+            Espresso.onView(ViewMatchers.withId(recyclerViewId)).perform(
+                actionOnItemAtPosition<RecyclerView.ViewHolder>(i, clickOnViewChild(R.id.product_card))
+            )
+        } catch (e: PerformException) {
+            Log.e(TAG, "clickOnEachItemRecyclerViewSpecialRelease: ", e)
         }
     }
     Espresso.onView(

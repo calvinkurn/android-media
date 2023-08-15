@@ -2,6 +2,7 @@ package com.tokopedia.people.views.adapter
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.people.views.viewholder.UserReviewViewHolder
 import com.tokopedia.content.common.R as contentCommonR
@@ -12,6 +13,7 @@ import com.tokopedia.content.common.R as contentCommonR
 class UserReviewAdapterDelegate private constructor() {
 
     class Review(
+        private val lifecycleOwner: LifecycleOwner,
         private val listener: UserReviewViewHolder.Review.Listener,
     ) : TypedAdapterDelegate<UserReviewAdapter.Model.Review, UserReviewAdapter.Model, UserReviewViewHolder.Review>
     (contentCommonR.layout.view_cc_empty) {
@@ -27,6 +29,7 @@ class UserReviewAdapterDelegate private constructor() {
             basicView: View
         ): UserReviewViewHolder.Review {
             return UserReviewViewHolder.Review.create(
+                lifecycleOwner,
                 parent,
                 listener
             )

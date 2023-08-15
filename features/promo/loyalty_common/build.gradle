@@ -16,6 +16,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.loyalty.common'
+    testNamespace 'com.tokopedia.loyalty.common.test'
+}
+
 project.ext {
     artifactId = 'loyalty-common'
     groupId = 'com.tokopedia.promo'

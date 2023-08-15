@@ -21,6 +21,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.content.common'
+    testNamespace 'com.tokopedia.content.common.test'
     packagingOptions {
         exclude 'META-INF/**'
     }
@@ -70,7 +72,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.adapterDelegate)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.iris)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.usersession)

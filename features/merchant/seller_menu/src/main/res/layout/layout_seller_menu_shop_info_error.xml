@@ -31,6 +31,6 @@
         android:layout_height="@dimen/setting_divider_thick"
         android:layout_marginTop="16dp"
         app:layout_constraintTop_toBottomOf="@id/settingLocalLoad"
-        android:background="@color/Unify_N0"/>
+        android:background="@color/Unify_NN0"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

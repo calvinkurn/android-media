@@ -357,11 +357,9 @@ class ShipmentViewModelBoPromoTest : BaseShipmentViewModelTest() {
             orders = listOf(
                 OrdersItem().apply {
                     cartStringGroup = "111-111-111"
-                    codes = mutableListOf("TESTBO1")
                 },
                 OrdersItem().apply {
                     cartStringGroup = "222-222-222"
-                    codes = mutableListOf("TESTBO2")
                 }
             )
         }

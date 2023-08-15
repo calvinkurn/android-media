@@ -2,6 +2,7 @@ package com.tokopedia.home_component
 
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.BannerRevampDataModel
+import com.tokopedia.home_component.visitable.BestSellerDataModel
 import com.tokopedia.home_component.visitable.CampaignWidgetDataModel
 import com.tokopedia.home_component.visitable.CategoryWidgetDataModel
 import com.tokopedia.home_component.visitable.CategoryWidgetV2DataModel
@@ -24,6 +25,7 @@ import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import com.tokopedia.home_component.visitable.VpsDataModel
+import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampDataModel
 
 /**
  * Created by Devara on 2020-04-28
@@ -53,4 +55,6 @@ interface HomeComponentTypeFactory {
     fun type(todoWidgetListDataModel: TodoWidgetListDataModel): Int = 0
     fun type(dealsDataModel: DealsDataModel): Int = 0
     fun type(flashSaleDataModel: FlashSaleDataModel): Int = 0
+    fun type(bestSellerDataModel: BestSellerDataModel): Int = 0
+    fun type(specialReleaseDataModel: SpecialReleaseRevampDataModel): Int = 0
 }

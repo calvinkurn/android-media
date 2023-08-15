@@ -14,7 +14,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:id="@+id/account_user_item_profile_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,26 +32,14 @@
         android:layout_width="16dp"
         android:layout_height="16dp"
         android:visibility="gone"
-        app:icon_color_light_enable="@color/Unify_R500"
+        app:icon_color_light_enable="@color/Unify_RN500"
         app:icon_name="WARNING"
         app:layout_constraintLeft_toRightOf="@id/account_user_item_profile_name"
         app:layout_constraintTop_toTopOf="@id/account_user_item_profile_name"
         app:layout_constraintBottom_toBottomOf="@id/account_user_item_profile_name" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/account_user_item_profile_link_status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="visible"
-        android:layout_marginStart="4dp"
-        app:drawableStartCompat="@drawable/ic_linked_account"
-        app:labelType="general_light_grey"
-        app:layout_constraintLeft_toRightOf="@id/account_user_item_profile_icon_warning_name"
-        app:layout_constraintTop_toTopOf="@id/account_user_item_profile_icon_warning_name"
-        app:layout_constraintBottom_toBottomOf="@id/account_user_item_profile_icon_warning_name" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:id="@+id/account_user_item_profile_phone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -83,7 +71,7 @@
         android:layout_marginTop="@dimen/home_account_dp_2"
         android:layout_marginEnd="16dp"
         android:lineHeight="18dp"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:ellipsize="end"
         android:maxLines="1"
         android:lines="1"
@@ -98,7 +86,7 @@
         android:id="@+id/link_account_profile_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/link_account_label"
+        android:text="@string/text_add_phone"
         android:layout_marginTop="10dp"
         android:visibility="visible"
         app:unifyButtonLeftDrawable="@drawable/ic_gojek_outline"

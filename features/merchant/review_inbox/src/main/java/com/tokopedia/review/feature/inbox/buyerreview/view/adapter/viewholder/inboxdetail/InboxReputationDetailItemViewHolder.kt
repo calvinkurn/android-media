@@ -410,7 +410,7 @@ class InboxReputationDetailItemViewHolder(
                 IconUnify.CHEVRON_DOWN,
                 ContextCompat.getColor(
                     itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950
                 )
             )
         )

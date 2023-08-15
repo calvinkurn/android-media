@@ -8,8 +8,8 @@
         <item name="footerIndicatorHeight">@dimen/tm_dash_dp_4</item>
         <item name="footerIndicatorStyle">underline</item>
         <item name="android:textStyle">bold</item>
-        <item name="footerColor">@color/Unify_N0</item>
-        <item name="android:textColor">@color/Unify_N0</item>
+        <item name="footerColor">@color/Unify_NN0</item>
+        <item name="android:textColor">@color/Unify_NN0</item>
         <item name="android:textAllCaps">false</item>
         <item name="textAllCaps">false</item>
         <item name="android:textSize">@dimen/tm_dash_dp_12</item>

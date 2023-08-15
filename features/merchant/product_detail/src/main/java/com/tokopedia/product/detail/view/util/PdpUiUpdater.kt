@@ -25,6 +25,7 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.DynamicOneLinerDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaContainerType
@@ -71,6 +72,7 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.RECOM_VERTICAL
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.VIEW_TO_VIEW
 import com.tokopedia.recommendation_widget_common.extension.LAYOUTTYPE_HORIZONTAL_ATC
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
@@ -79,6 +81,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationC
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
+import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetMetadata
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetModel
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetSource
@@ -288,6 +291,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 }
             }
 
+            updateVerticalRecommendationWidget(productId, loadInitialData)
+
             if (loadInitialData) {
                 verticalRecommendationItems.clear()
             }
@@ -402,6 +407,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     idToPriceUrlMap = productIdToPriceURLMap
                     isLoggedIn = loggedIn
                     shopId = productDetail.basic.shopID
+                    parentId = variantData?.parentId ?: productId
                 }
             }
         }
@@ -487,10 +493,13 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
             updateData(ProductDetailConstant.MVC) {
                 mvcSummaryData?.run {
-                    animatedInfos = it.merchantVoucherSummary.animatedInfos
-                    isShown = it.merchantVoucherSummary.isShown
-                    shopId = it.shopInfo.shopCore.shopID
-                    productIdMVC = productId
+                    uiModel = uiModel.copy(
+                        animatedInfo = it.merchantVoucherSummary.animatedInfos,
+                        isShown = it.merchantVoucherSummary.isShown,
+                        shopId = it.shopInfo.shopCore.shopID,
+                        productIdMVC = productId,
+                        additionalData = it.merchantVoucherSummary.additionalData
+                    )
                 }
             }
 
@@ -569,6 +578,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             updateData(ProductDetailConstant.SHOP_REVIEW) {
                 updateReviewList(it)
             }
+            updateDynamicOneLiner(it)
         }
     }
 
@@ -1229,6 +1239,47 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    private fun updateVerticalRecommendationWidget(productId: String, loadInitialData: Boolean) {
+        if (mapOfData.containsKey(RECOM_VERTICAL)) {
+            updateData(RECOM_VERTICAL, loadInitialData) {
+                val globalRecomWidgetTrackingModel = RecommendationWidgetTrackingModel(
+                    androidPageName = RecommendationCarouselTrackingConst.Category.PDP,
+                    eventActionImpression = RecommendationCarouselTrackingConst.Action.IMPRESSION_ON_PRODUCT_RECOMMENDATION_PDP,
+                    eventActionClick = RecommendationCarouselTrackingConst.Action.CLICK_ON_PRODUCT_RECOMMENDATION_PDP,
+                    listPageName = RecommendationCarouselTrackingConst.List.PDP
+                )
+                val globalRecomWidgetMetadata = RecommendationWidgetMetadata(
+                    pageSource = RecommendationWidgetSource.PDP.xSourceValue,
+                    pageName = RECOM_VERTICAL,
+                    productIds = if (productId.isBlank()) listOf() else listOf(productId)
+                )
+                mapOfData[RECOM_VERTICAL] = PdpRecommendationWidgetDataModel(
+                    RecommendationWidgetModel(
+                        metadata = globalRecomWidgetMetadata,
+                        trackingModel = globalRecomWidgetTrackingModel
+                    )
+                )
+            }
+        }
+    }
+
+    private fun updateDynamicOneLiner(p2: ProductInfoP2UiData) {
+        val dynamicOneLiner = p2.dynamicOneLiner
+        dynamicOneLiner.forEach { item ->
+            val dataModel = mapOfData[item.name] as? DynamicOneLinerDataModel ?: return@forEach
+            mapOfData[item.name] = (dataModel.newInstance() as DynamicOneLinerDataModel).apply {
+                data = DynamicOneLinerDataModel.Data(
+                    text = item.text,
+                    applink = item.applink,
+                    separator = item.separator,
+                    icon = item.icon,
+                    status = item.status,
+                    chevronPos = item.chevronPos
+                )
             }
         }
     }

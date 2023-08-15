@@ -49,7 +49,7 @@
         android:paddingEnd="16dp"
         android:paddingRight="16dp"
         android:paddingBottom="8dp"
-        android:textColor="@color/Unify_N0"
+        android:textColor="@color/Unify_NN0"
         app:layout_constraintBottom_toTopOf="@+id/rv_image_list"
         app:layout_constraintStart_toStartOf="parent"
         app:typographyType="body_2" />
@@ -60,7 +60,7 @@
         android:layout_width="match_parent"
         android:layout_height="90dp"
         android:alpha="0.7"
-        android:background="@color/Unify_N700"
+        android:background="@color/Unify_NN950"
         android:clipToPadding="false"
         android:paddingStart="20dp"
         android:paddingLeft="12dp"

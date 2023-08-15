@@ -20,6 +20,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.home'
+    testNamespace 'com.tokopedia.home.test'
     buildFeatures {
         buildConfig true
         viewBinding true
@@ -80,6 +82,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.questWidget)
     implementation projectOrAar(rootProject.ext.features.cmHomeWidget)
     implementation projectOrAar(rootProject.ext.features.fintechHomeWidget)
+    implementation projectOrAar(rootProject.ext.features.carouselProductCard)
     implementation projectOrAar(rootProject.ext.features.homeComponentHeader)
 
     // Library
@@ -93,7 +96,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.imagePickerCommon)
     implementation projectOrAar(rootProject.ext.libraries.iris)
     implementation projectOrAar(rootProject.ext.libraries.irisSession)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.locationmanager)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_background"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/mdp_header_height"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_corner_radius="0"
+        app:unify_image_type="rect" />
+
+    <com.tokopedia.scp_rewards.widget.medalHeader.MedalLottieAnimation
+        android:id="@+id/lottie_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="1dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/iv_badge_base"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_medal_icon"
+        android:layout_width="@dimen/mdp_medal_width"
+        android:layout_height="@dimen/mdp_medal_height"
+        android:layout_marginBottom="@dimen/dp_6"
+        android:scaleType="centerInside"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/iv_badge_base"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_badge_base"
+        android:layout_width="@dimen/mdp_medal_base_width"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_height="wrap_content"
+        android:elevation="1dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="@id/iv_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <View
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/dp_20"
+        android:background="@drawable/scp_medal_detail_rounded_bg"
+        app:layout_constraintBottom_toBottomOf="@id/iv_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/iv_badge_base" />
+
+</merge>

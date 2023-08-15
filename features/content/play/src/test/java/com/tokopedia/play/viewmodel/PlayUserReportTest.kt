@@ -10,9 +10,8 @@ import com.tokopedia.play.robot.play.createPlayViewModelRobot
 import com.tokopedia.play.util.assertEqualTo
 import com.tokopedia.play.util.assertInstanceOf
 import com.tokopedia.play.util.assertTrue
-import com.tokopedia.play.util.assertType
 import com.tokopedia.play.view.type.PlayChannelType
-import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
+import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.action.OpenFooterUserReport
 import com.tokopedia.play.view.uimodel.action.OpenKebabAction
 import com.tokopedia.play.view.uimodel.action.OpenUserReport
@@ -21,7 +20,6 @@ import com.tokopedia.play.view.uimodel.event.OpenKebabEvent
 import com.tokopedia.play.view.uimodel.event.OpenPageEvent
 import com.tokopedia.play.view.uimodel.event.OpenUserReportEvent
 import com.tokopedia.play_common.model.result.ResultState
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk

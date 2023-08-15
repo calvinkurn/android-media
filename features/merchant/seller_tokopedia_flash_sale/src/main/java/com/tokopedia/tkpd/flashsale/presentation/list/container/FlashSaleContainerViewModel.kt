@@ -2,13 +2,15 @@ package com.tokopedia.tkpd.flashsale.presentation.list.container
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.campaign.entity.RemoteTicker
+import com.tokopedia.campaign.usecase.GetTargetedTickerUseCase
+import com.tokopedia.campaign.utils.constant.TickerConstant
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleProductSubmissionProgress
 import com.tokopedia.tkpd.flashsale.domain.entity.SellerEligibility
 import com.tokopedia.tkpd.flashsale.domain.entity.TabMetadata
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleListForSellerMetaUseCase
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleProductSubmissionProgressUseCase
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleSellerStatusUseCase
-import com.tokopedia.tkpd.flashsale.util.preference.PreferenceDataStore
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -23,7 +25,7 @@ class FlashSaleContainerViewModel @Inject constructor(
     private val getFlashSaleListForSellerMetaUseCase: GetFlashSaleListForSellerMetaUseCase,
     private val getFlashSaleSellerStatusUseCase: GetFlashSaleSellerStatusUseCase,
     private val getFlashSaleProductSubmissionProgressUseCase: GetFlashSaleProductSubmissionProgressUseCase,
-    private val preferenceDataStore: PreferenceDataStore
+    private val getTargetedTickerUseCase: GetTargetedTickerUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     data class UiState(
@@ -33,12 +35,12 @@ class FlashSaleContainerViewModel @Inject constructor(
         val targetTabPosition: Int = 0,
         val showTicker: Boolean = false,
         val error: Throwable? = null,
-        val isEligibleUsingFeature: Boolean = true
+        val isEligibleUsingFeature: Boolean = true,
+        val tickerList: List<RemoteTicker> = emptyList()
     )
 
     sealed class UiEvent {
         object GetPrerequisiteData : UiEvent()
-        object DismissMultiLocationTicker: UiEvent()
     }
 
     sealed class UiEffect {
@@ -53,31 +55,37 @@ class FlashSaleContainerViewModel @Inject constructor(
     private val _uiEffect = MutableSharedFlow<UiEffect>(replay = 1)
     val uiEffect = this._uiEffect.asSharedFlow()
 
-
-    fun processEvent(event : UiEvent) {
+    fun processEvent(event: UiEvent, rollenceValueList: List<String>) {
         when (event) {
             is UiEvent.GetPrerequisiteData -> {
                 _uiState.update { it.copy(isLoading = true, error = null) }
-                getPrerequisiteData()
-            }
-            UiEvent.DismissMultiLocationTicker -> {
-                preferenceDataStore.markMultiLocationTickerAsDismissed()
+                getPrerequisiteData(rollenceValueList)
             }
         }
     }
 
-    private fun getPrerequisiteData() {
+    private fun getPrerequisiteData(rollenceValueList: List<String>) {
         launchCatchError(
             dispatchers.io,
             block = {
                 val sellerEligibilityDeferred = async { getFlashSaleSellerStatusUseCase.execute() }
                 val tabMetadataDeferred = async { getFlashSaleListForSellerMetaUseCase.execute() }
 
+                val targetParams: List<GetTargetedTickerUseCase.Param.Target> = listOf(
+                    GetTargetedTickerUseCase.Param.Target(
+                        type = GetTargetedTickerUseCase.KEY_TYPE_ROLLENCE_NAME,
+                        values = rollenceValueList
+                    )
+                )
+                val tickerParams = GetTargetedTickerUseCase.Param(
+                    page = TickerConstant.REMOTE_TICKER_KEY_FLASH_SALE_TOKOPEDIA_CAMPAIGN_LIST,
+                    targets = targetParams
+                )
+                val tickersDeffered = async { getTargetedTickerUseCase.execute(tickerParams) }
+                val tickers = tickersDeffered.await()
+
                 val sellerEligibility = sellerEligibilityDeferred.await()
                 val tabMetadata = tabMetadataDeferred.await()
-
-                val isMultiLocationTickerPreviouslyDismissed = preferenceDataStore.isMultiLocationTickerDismissed()
-                val showTicker = !isMultiLocationTickerPreviouslyDismissed
 
                 val isEligibleUsingFeature = sellerEligibility.isEligibleUsingFeature()
 
@@ -86,8 +94,8 @@ class FlashSaleContainerViewModel @Inject constructor(
                         isLoading = false,
                         error = null,
                         tabs = tabMetadata.tabs,
-                        tickerMessage = tabMetadata.tickerNonMultiLocationMessage,
-                        showTicker = showTicker,
+                        showTicker = tickers.isNotEmpty(),
+                        tickerList = tickers,
                         isEligibleUsingFeature = isEligibleUsingFeature
                     )
                 }
@@ -95,14 +103,12 @@ class FlashSaleContainerViewModel @Inject constructor(
                 if (!isEligibleUsingFeature) {
                     _uiEffect.emit(UiEffect.ShowIneligibleAccessWarning)
                 }
-
             },
             onError = { error ->
                 _uiState.update { it.copy(isLoading = false, error = error) }
                 _uiEffect.emit(UiEffect.ErrorFetchTabsMetaData(error))
             }
         )
-
     }
 
     private fun SellerEligibility.isEligibleUsingFeature(): Boolean {
@@ -116,11 +122,13 @@ class FlashSaleContainerViewModel @Inject constructor(
     }
 
     fun getFlashSaleSubmissionProgress() {
-        launchCatchError(dispatchers.io,
+        launchCatchError(
+            dispatchers.io,
             block = {
                 val flashSaleSubmissionProgress = getFlashSaleProductSubmissionProgressResponse()
                 _uiEffect.emit(UiEffect.FlashSaleSubmissionProgress(flashSaleSubmissionProgress.listCampaign))
-            }) { }
+            }
+        ) { }
     }
 
     private suspend fun getFlashSaleProductSubmissionProgressResponse(): FlashSaleProductSubmissionProgress {

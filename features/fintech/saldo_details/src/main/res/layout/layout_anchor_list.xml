@@ -10,6 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="@dimen/unify_space_24"
-        android:textColor="@color/Unify_G500"
+        android:textColor="@color/Unify_GN500"
         app:typographyType="body_3" />
 </LinearLayout>

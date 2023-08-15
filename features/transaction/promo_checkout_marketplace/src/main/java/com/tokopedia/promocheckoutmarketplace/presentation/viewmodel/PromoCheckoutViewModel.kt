@@ -4,8 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.promocheckoutmarketplace.PromoCheckoutIdlingResource
+import com.tokopedia.promocheckoutmarketplace.data.response.AdditionalBoData
 import com.tokopedia.promocheckoutmarketplace.data.response.BoClashingInfo
 import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommendationResponse
 import com.tokopedia.promocheckoutmarketplace.data.response.ErrorPage
@@ -45,6 +47,9 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.Valid
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -57,6 +62,10 @@ class PromoCheckoutViewModel @Inject constructor(
     private val uiModelMapper: PromoCheckoutUiModelMapper,
     private val analytics: PromoCheckoutAnalytics
 ) : BaseViewModel(dispatcher) {
+
+    companion object {
+        private const val CLASH_LOADING_MILLISECONDS = 1_000L
+    }
 
     // Fragment UI Model. Store UI model and state on fragment level
     private val _fragmentUiModel = MutableLiveData<FragmentUiModel>()
@@ -135,6 +144,11 @@ class PromoCheckoutViewModel @Inject constructor(
     val getPromoSuggestionResponse: LiveData<GetPromoSuggestionAction>
         get() = _getPromoSuggestionResponse
 
+    // Live data to handle actionable CTA
+    private val _getActionableApplinkNavigation = MutableLiveData<String>()
+    val getActionableApplinkNavigation: LiveData<String>
+        get() = _getActionableApplinkNavigation
+
     // Page source : CART, CHECKOUT, OCC
     fun getPageSource(): Int {
         return fragmentUiModel.value?.uiData?.pageSource ?: 0
@@ -164,12 +178,19 @@ class PromoCheckoutViewModel @Inject constructor(
         _promoInputUiModel.value = value
     }
 
+    private var clashCalculationJob: Job? = null
+
     override fun onCleared() {
         super.onCleared()
+        cancelAllJobs()
+    }
+
+    fun cancelAllJobs() {
         getCouponListRecommendationUseCase.cancelJobs()
         validateUseUseCase.cancelJobs()
         clearCacheAutoApplyStackUseCase.cancelJobs()
         getPromoSuggestionUseCase.cancelJobs()
+        clashCalculationJob?.cancel()
     }
 
     // ---------------------------------------//
@@ -182,7 +203,7 @@ class PromoCheckoutViewModel @Inject constructor(
         chosenAddress: ChosenAddress? = null
     ) {
         // Set request data
-        prepareGetPromoRequestData(attemptedPromoCode, promoRequest, chosenAddress)
+        prepareGetPromoRequestData(attemptedPromoCode, promoRequest)
 
         // Get response data
         PromoCheckoutIdlingResource.increment()
@@ -202,8 +223,7 @@ class PromoCheckoutViewModel @Inject constructor(
 
     private fun prepareGetPromoRequestData(
         tmpPromoCode: String,
-        promoRequest: PromoRequest,
-        chosenAddress: ChosenAddress?
+        promoRequest: PromoRequest
     ) {
         val promoCode = tmpPromoCode.toUpperCase(Locale.getDefault())
 
@@ -223,18 +243,23 @@ class PromoCheckoutViewModel @Inject constructor(
     }
 
     private fun setPromoRequestDataFromSelectedPromoItem(
-        it: PromoListItemUiModel,
+        promoListItemUiModel: PromoListItemUiModel,
         order: Order,
         promoRequest: PromoRequest
     ) {
-        if (it.uiState.isSelected) {
+        val promoCode = if (promoListItemUiModel.uiData.useSecondaryPromo) {
+            promoListItemUiModel.uiData.secondaryCoupons.first().code
+        } else {
+            promoListItemUiModel.uiData.promoCode
+        }
+        if (promoListItemUiModel.uiState.isSelected) {
             // If coupon is selected, add to request param
             // If unique_id = 0, means it's a coupon global, else it's a coupon merchant
-            if (it.uiData.uniqueId == order.uniqueId && !order.codes.contains(it.uiData.promoCode)) {
-                order.codes.add(it.uiData.promoCode)
-            } else if (it.uiState.isBebasOngkir) {
+            if (promoListItemUiModel.uiData.uniqueId == order.uniqueId && !order.codes.contains(promoCode)) {
+                order.codes.add(promoCode)
+            } else if (promoListItemUiModel.uiState.isBebasOngkir) {
                 val boData =
-                    it.uiData.boAdditionalData.firstOrNull { order.uniqueId == it.uniqueId }
+                    promoListItemUiModel.uiData.boAdditionalData.firstOrNull { order.uniqueId == it.uniqueId }
                 boData?.let {
                     if (!order.codes.contains(boData.code)) {
                         // if code is not already in request param, then add bo additional data
@@ -243,18 +268,18 @@ class PromoCheckoutViewModel @Inject constructor(
                         order.codes.add(boData.code)
                     }
                 }
-            } else if (it.uiData.shopId == 0 && !promoRequest.codes.contains(it.uiData.promoCode)) {
-                promoRequest.codes.add(it.uiData.promoCode)
+            } else if (promoListItemUiModel.uiData.shopId == 0 && !promoRequest.codes.contains(promoCode)) {
+                promoRequest.codes.add(promoCode)
             }
         } else {
             // If coupon is unselected and exist on current promo request, remove from request param
             // If unique_id = 0, means it's a coupon global, else it's a coupon merchant
-            if (it.uiData.uniqueId == order.uniqueId && order.codes.contains(it.uiData.promoCode)) {
-                order.codes.remove(it.uiData.promoCode)
-            } else if (it.uiState.isBebasOngkir) {
+            if (promoListItemUiModel.uiData.uniqueId == order.uniqueId && order.codes.contains(promoCode)) {
+                order.codes.remove(promoCode)
+            } else if (promoListItemUiModel.uiState.isBebasOngkir) {
                 // if coupon is bebas ongkir promo, then remove code only
                 val boData =
-                    it.uiData.boAdditionalData.firstOrNull { order.uniqueId == it.uniqueId }
+                    promoListItemUiModel.uiData.boAdditionalData.firstOrNull { order.uniqueId == it.uniqueId }
                 if (boData != null) {
                     order.let {
                         if (it.codes.contains(boData.code)) {
@@ -262,8 +287,8 @@ class PromoCheckoutViewModel @Inject constructor(
                         }
                     }
                 }
-            } else if (it.uiData.shopId == 0 && promoRequest.codes.contains(it.uiData.promoCode)) {
-                promoRequest.codes.remove(it.uiData.promoCode)
+            } else if (promoListItemUiModel.uiData.shopId == 0 && promoRequest.codes.contains(promoCode)) {
+                promoRequest.codes.remove(promoCode)
             }
         }
     }
@@ -433,15 +458,18 @@ class PromoCheckoutViewModel @Inject constructor(
                 initPromoInput()
                 analytics.eventViewAvailablePromoListNoPromo(getPageSource())
             }
+
             STATUS_PHONE_NOT_VERIFIED -> {
                 emptyState.uiData.buttonText = LABEL_BUTTON_PHONE_VERIFICATION
                 emptyState.uiState.isShowButton = true
                 analytics.eventViewPhoneVerificationMessage(getPageSource())
             }
+
             STATUS_USER_BLACKLISTED -> {
                 emptyState.uiState.isShowButton = false
                 analytics.eventViewBlacklistErrorAfterApplyPromo(getPageSource())
             }
+
             else -> {
                 emptyState.uiState.isShowButton = true
                 emptyState.uiData.buttonText = LABEL_BUTTON_TRY_AGAIN
@@ -480,7 +508,12 @@ class PromoCheckoutViewModel @Inject constructor(
         val preSelectedPromoCodes = ArrayList<String>()
         promoListUiModel.value?.forEach { visitable ->
             if (visitable is PromoListItemUiModel && visitable.uiState.isSelected) {
-                preSelectedPromoCodes.add(visitable.uiData.promoCode)
+                val promoCode = if (visitable.uiData.useSecondaryPromo) {
+                    visitable.uiData.secondaryCoupons.first().code
+                } else {
+                    visitable.uiData.promoCode
+                }
+                preSelectedPromoCodes.add(promoCode)
             }
         }
 
@@ -579,6 +612,8 @@ class PromoCheckoutViewModel @Inject constructor(
 
             // Initialize promo list header
             val tmpIneligiblePromoList = ArrayList<Visitable<*>>()
+            val recommendedPromoList =
+                response.couponListRecommendation.data.promoRecommendation.codes
             couponSectionItem.subSections.forEach { couponSubSection ->
                 val promoHeader = uiModelMapper.mapPromoListHeaderUiModel(
                     couponSubSection,
@@ -603,6 +638,7 @@ class PromoCheckoutViewModel @Inject constructor(
                             couponSectionItem,
                             promoHeader.uiData.identifierId,
                             preSelectedPromoList,
+                            recommendedPromoList,
                             index
                         )
                         if (eligibilityHeader.uiState.isEnabled) {
@@ -637,6 +673,11 @@ class PromoCheckoutViewModel @Inject constructor(
                         if (coupon.isSelected) {
                             preSelectedPromoList.add(coupon.code)
                         }
+                        coupon.secondaryCoupons.forEach { secondaryCoupon ->
+                            if (secondaryCoupon.isSelected) {
+                                preSelectedPromoList.add(secondaryCoupon.code)
+                            }
+                        }
                     }
                 }
             }
@@ -658,10 +699,12 @@ class PromoCheckoutViewModel @Inject constructor(
             var selectedRecommendationCount = 0
             promoListUiModel.value?.forEach { visitable ->
                 if (visitable is PromoListItemUiModel) {
-                    if (visitable.uiState.isSelected && recommendationPromoCodeList.contains(
-                            visitable.uiData.promoCode
-                        )
-                    ) {
+                    val promoCode = if (visitable.uiData.useSecondaryPromo) {
+                        visitable.uiData.secondaryCoupons.first().code
+                    } else {
+                        visitable.uiData.promoCode
+                    }
+                    if (visitable.uiState.isSelected && recommendationPromoCodeList.contains(promoCode)) {
                         selectedRecommendationCount++
                     }
                 }
@@ -863,19 +906,32 @@ class PromoCheckoutViewModel @Inject constructor(
         order: OrdersItem,
         validateUsePromoRequest: ValidateUsePromoRequest
     ) {
+        val promoCode: String
+        val uniqueId: String
+        val shopId: Int
+        val additionalBoData: List<AdditionalBoData>
+        if (promoListItemUiModel.uiData.useSecondaryPromo) {
+            promoCode = promoListItemUiModel.uiData.secondaryCoupons.first().code
+            uniqueId = promoListItemUiModel.uiData.secondaryCoupons.first().uniqueId
+            shopId = promoListItemUiModel.uiData.secondaryCoupons.first().shopId.toIntOrZero()
+            additionalBoData = promoListItemUiModel.uiData.secondaryCoupons.first().additionalBoData
+        } else {
+            promoCode = promoListItemUiModel.uiData.promoCode
+            uniqueId = promoListItemUiModel.uiData.uniqueId
+            shopId = promoListItemUiModel.uiData.shopId
+            additionalBoData = promoListItemUiModel.uiData.boAdditionalData
+        }
         if (promoListItemUiModel.uiState.isSelected && !promoListItemUiModel.uiState.isDisabled &&
-            promoListItemUiModel.uiData.currentClashingPromo.isEmpty()
+            !promoListItemUiModel.uiData.hasClashingPromo
         ) {
             // If coupon is selected, not disabled, and not clashing, add to request param
             // If unique_id = 0, means it's a coupon global, else it's a coupon merchant
-            if (promoListItemUiModel.uiData.uniqueId == order.uniqueId &&
-                !order.codes.contains(promoListItemUiModel.uiData.promoCode)
-            ) {
-                order.codes.add(promoListItemUiModel.uiData.promoCode)
+            if (uniqueId == order.uniqueId && !order.codes.contains(promoCode)) {
+                order.codes.add(promoCode)
             } else if (promoListItemUiModel.uiState.isBebasOngkir) {
                 // if coupon is bebas ongkir promo, then set shipping id and sp id
                 val boData =
-                    promoListItemUiModel.uiData.boAdditionalData.firstOrNull { order.cartStringGroup == it.cartStringGroup }
+                    additionalBoData.firstOrNull { order.cartStringGroup == it.cartStringGroup }
                 if (boData != null) {
                     order.let {
                         if (!it.codes.contains(boData.code)) {
@@ -898,21 +954,16 @@ class PromoCheckoutViewModel @Inject constructor(
                         it.etaText = boData.etaText
                     }
                 }
-            } else if (promoListItemUiModel.uiData.shopId == 0 &&
-                !validateUsePromoRequest.codes.contains(promoListItemUiModel.uiData.promoCode)
-            ) {
-                validateUsePromoRequest.codes.add(promoListItemUiModel.uiData.promoCode)
+            } else if (shopId == 0 && !validateUsePromoRequest.codes.contains(promoCode)) {
+                validateUsePromoRequest.codes.add(promoCode)
             }
         } else {
             // If coupon is unselected, disabled, or clashing, remove from request param
             // If unique_id = 0, means it's a coupon global, else it's a coupon merchant
-            if (promoListItemUiModel.uiData.uniqueId == order.uniqueId &&
-                order.codes.contains(promoListItemUiModel.uiData.promoCode)
-            ) {
-                order.codes.remove(promoListItemUiModel.uiData.promoCode)
+            if (uniqueId == order.uniqueId && order.codes.contains(promoCode)) {
+                order.codes.remove(promoCode)
             } else if (promoListItemUiModel.uiState.isBebasOngkir) {
-                val boData =
-                    promoListItemUiModel.uiData.boAdditionalData.firstOrNull { order.uniqueId == it.uniqueId }
+                val boData = additionalBoData.firstOrNull { order.uniqueId == it.uniqueId }
                 if (boData != null) {
                     order.let {
                         if (it.codes.contains(boData.code)) {
@@ -929,10 +980,8 @@ class PromoCheckoutViewModel @Inject constructor(
                         }
                     }
                 }
-            } else if (promoListItemUiModel.uiData.shopId == 0 &&
-                validateUsePromoRequest.codes.contains(promoListItemUiModel.uiData.promoCode)
-            ) {
-                validateUsePromoRequest.codes.remove(promoListItemUiModel.uiData.promoCode)
+            } else if (shopId == 0 && validateUsePromoRequest.codes.contains(promoCode)) {
+                validateUsePromoRequest.codes.remove(promoCode)
             }
         }
     }
@@ -1355,6 +1404,9 @@ class PromoCheckoutViewModel @Inject constructor(
                         it.uiState.isDisabled = false
                     }
                 }
+                if (it.uiData.currentClashingSecondaryPromo.isNotEmpty()) {
+                    it.uiData.currentClashingSecondaryPromo.clear()
+                }
                 promoList.add(it)
             }
         }
@@ -1368,52 +1420,93 @@ class PromoCheckoutViewModel @Inject constructor(
         resetRecommendedPromo()
     }
 
+    fun handlePromoListAfterClickPromoItem(
+        element: PromoListItemUiModel,
+        position: Int
+    ) {
+        if (element.uiState.isContainActionableGopayCicilCTA) {
+            _getActionableApplinkNavigation.value = element.uiData.cta.applink
+            analytics.sendClickActivatedGopayCicilEvent(
+                getPageSource(),
+                element.uiData.promoCode,
+                element.uiData.benefitAmount,
+                position
+            )
+        } else {
+            updatePromoListAfterClickPromoItem(element)
+        }
+    }
+
     fun updatePromoListAfterClickPromoItem(element: PromoListItemUiModel) {
-        // Set to selected / un selected
-        val itemIndex = promoListUiModel.value?.indexOf(element)
-        if (itemIndex == -1) return
-        itemIndex?.let {
-            // Get the promo item data and set inverted selected value
-            val promoItem = promoListUiModel.value?.get(it) as PromoListItemUiModel
-            promoItem.uiState.isSelected = !promoItem.uiState.isSelected
-            promoItem.uiState.isUpdateSelectionStateAction = true
+        if (clashCalculationJob == null || clashCalculationJob?.isActive == false) {
+            clashCalculationJob = launch {
+                // Set to selected / un selected
+                val itemIndex = promoListUiModel.value?.indexOf(element)
+                if (itemIndex == -1) return@launch
+                itemIndex?.let {
+                    // Get the promo item data and set inverted selected value
+                    val promoItem = promoListUiModel.value?.get(it) as PromoListItemUiModel
+                    promoItem.uiState.isSelected = !promoItem.uiState.isSelected
+                    promoItem.uiState.isUpdateSelectionStateAction = true
 
-            if (!promoItem.uiState.isSelected && promoItem.uiState.isRecommended) {
-                resetRecommendedPromo()
-            }
+                    if (!promoItem.uiState.isSelected && promoItem.uiState.isRecommended) {
+                        resetRecommendedPromo()
+                    }
 
-            // Update view
-            _tmpUiModel.value = Update(promoItem)
+                    // Update view
+                    _tmpUiModel.value = Update(promoItem)
 
-            // Send tracker
-            if (promoItem.uiState.isSelected) {
-                analytics.eventClickSelectKupon(
-                    getPageSource(),
-                    promoItem.uiData.promoCode,
-                    promoItem.uiState.isCausingOtherPromoClash
-                )
-                if (promoItem.uiState.isAttempted) {
-                    analytics.eventClickSelectPromo(getPageSource(), promoItem.uiData.promoCode)
+                    // Update header sub total and sibling check uncheck state
+                    updateHeaderAndSiblingState(promoItem, element)
+
+                    // Show artificial loading for MVC section then calculate clash
+                    PromoCheckoutIdlingResource.increment()
+                    setLoadingMvcSection(promoItem).also { count ->
+                        if (count > 0) {
+                            delay(CLASH_LOADING_MILLISECONDS)
+                        }
+                    }
+                    PromoCheckoutIdlingResource.decrement()
+
+                    // Perform clash calculation
+                    calculateClash(promoItem, false)
+
+                    // Calculate total benefit
+                    calculateAndRenderTotalBenefit()
+
+                    // Send tracker
+                    val clickedPromoCode = if (promoItem.uiData.useSecondaryPromo) {
+                        promoItem.uiData.secondaryCoupons.first().code
+                    } else {
+                        promoItem.uiData.promoCode
+                    }
+                    if (promoItem.uiState.isSelected) {
+                        analytics.eventClickSelectKupon(
+                            getPageSource(),
+                            clickedPromoCode,
+                            promoItem.uiState.isCausingOtherPromoClash
+                        )
+                        if (promoItem.uiState.isAttempted) {
+                            analytics.eventClickSelectPromo(
+                                getPageSource(),
+                                promoItem.uiData.promoCode
+                            )
+                        }
+                    } else {
+                        analytics.eventClickDeselectKupon(
+                            getPageSource(),
+                            clickedPromoCode,
+                            promoItem.uiState.isCausingOtherPromoClash
+                        )
+                        if (promoItem.uiState.isAttempted) {
+                            analytics.eventClickDeselectPromo(
+                                getPageSource(),
+                                promoItem.uiData.promoCode
+                            )
+                        }
+                    }
                 }
-            } else {
-                analytics.eventClickDeselectKupon(
-                    getPageSource(),
-                    promoItem.uiData.promoCode,
-                    promoItem.uiState.isCausingOtherPromoClash
-                )
-                if (promoItem.uiState.isAttempted) {
-                    analytics.eventClickDeselectPromo(getPageSource(), promoItem.uiData.promoCode)
-                }
             }
-
-            // Update header sub total and sibling check uncheck state
-            updateHeaderAndSiblingState(promoItem, element)
-
-            // Perform clash calculation
-            calculateClash(promoItem)
-
-            // Calculate total benefit
-            calculateAndRenderTotalBenefit()
         }
     }
 
@@ -1506,7 +1599,7 @@ class PromoCheckoutViewModel @Inject constructor(
                                 }
                                 _tmpUiModel.value = Update(tmpPromoItem)
                                 // Calculate clash after uncheck
-                                calculateClash(tmpPromoItem)
+                                calculateClash(tmpPromoItem, false)
                                 break
                             }
                         }
@@ -1527,6 +1620,7 @@ class PromoCheckoutViewModel @Inject constructor(
             it.uiState.isButtonSelectEnabled = false
 
             val expandedParentIdentifierList = mutableSetOf<Int>()
+            // Apply recommended promo from primary
             promoListUiModel.value?.forEach {
                 if (it is PromoListItemUiModel) {
                     if (promoRecommendation.uiData.promoCodes.contains(it.uiData.promoCode)) {
@@ -1534,11 +1628,29 @@ class PromoCheckoutViewModel @Inject constructor(
                         it.uiState.isSelected = true
                         it.uiState.isRecommended = true
                         _tmpUiModel.value = Update(it)
-                        calculateClash(it)
+                        calculateClash(it, true)
                         expandedParentIdentifierList.add(it.uiData.parentIdentifierId)
                         analytics.eventClickPilihOnRecommendation(
                             getPageSource(),
                             it.uiData.promoCode,
+                            it.uiState.isCausingOtherPromoClash
+                        )
+                    }
+                }
+            }
+            // Apply recommended promo from secondary promo
+            promoListUiModel.value?.forEach {
+                if (it is PromoListItemUiModel) {
+                    if (it.uiData.useSecondaryPromo && promoRecommendation.uiData.promoCodes.contains(it.uiData.secondaryCoupons.first().code)) {
+                        uncheckSibling(it)
+                        it.uiState.isSelected = true
+                        it.uiState.isRecommended = true
+                        _tmpUiModel.value = Update(it)
+                        calculateClash(it, true)
+                        expandedParentIdentifierList.add(it.uiData.parentIdentifierId)
+                        analytics.eventClickPilihOnRecommendation(
+                            getPageSource(),
+                            it.uiData.secondaryCoupons.first().code,
                             it.uiState.isCausingOtherPromoClash
                         )
                     }
@@ -1594,12 +1706,17 @@ class PromoCheckoutViewModel @Inject constructor(
         } else {
             promoListUiModel.value?.forEach {
                 if (it is PromoListItemUiModel) {
+                    val promoCode = if (it.uiData.useSecondaryPromo) {
+                        it.uiData.secondaryCoupons.first().code
+                    } else {
+                        it.uiData.promoCode
+                    }
                     // CASE 1
-                    if (preAppliedPromoCodes.contains(it.uiData.promoCode) && !it.uiState.isSelected) {
+                    if (preAppliedPromoCodes.contains(promoCode) && !it.uiState.isSelected) {
                         return true
                     }
                     // CASE 2
-                    if (!preAppliedPromoCodes.contains(it.uiData.promoCode) && it.uiState.isSelected) {
+                    if (!preAppliedPromoCodes.contains(promoCode) && it.uiState.isSelected) {
                         return true
                     }
                 }
@@ -1642,11 +1759,16 @@ class PromoCheckoutViewModel @Inject constructor(
     private fun calculateAndRenderTotalBenefit() {
         var totalBenefit = 0
         var usedPromoCount = 0
-        promoListUiModel.value?.forEach {
-            if (it is PromoListItemUiModel && it.uiState.isParentEnabled &&
-                it.uiData.currentClashingPromo.isNullOrEmpty() && it.uiState.isSelected
+        promoListUiModel.value?.forEach { model ->
+            if (model is PromoListItemUiModel && model.uiState.isParentEnabled &&
+                !model.uiData.hasClashingPromo && model.uiState.isSelected
             ) {
-                totalBenefit += it.uiData.benefitAmount
+                val benefitAmount = if (model.uiData.useSecondaryPromo) {
+                    model.uiData.secondaryCoupons.first().benefitAmount
+                } else {
+                    model.uiData.benefitAmount
+                }
+                totalBenefit += benefitAmount
                 usedPromoCount++
             }
         }
@@ -1703,50 +1825,92 @@ class PromoCheckoutViewModel @Inject constructor(
         return hasAnyPromoSellected
     }
 
-    private fun calculateClash(selectedItem: PromoListItemUiModel) {
+    private fun setLoadingMvcSection(selectedItem: PromoListItemUiModel): Int {
+        var affectedPromoCount = 0
+        promoListUiModel.value?.forEach {
+            if (it is PromoListItemUiModel && it.uiData.promoCode != selectedItem.uiData.promoCode &&
+                it.uiData.shopId > 0 && !it.uiState.isDisabled
+            ) {
+                it.uiState.isLoading = true
+                _tmpUiModel.value = Update(it)
+                affectedPromoCount += 1
+            }
+        }
+        return affectedPromoCount
+    }
+
+    private fun calculateClash(
+        promo: PromoListItemUiModel,
+        isApplyRecommendedPromo: Boolean
+    ) {
         // Return clash result for analytics purpose
         var clashResult = false
-        if (selectedItem.uiState.isSelected) {
+        if (promo.uiState.isSelected) {
             // Calculate clash on selection event
             promoListUiModel.value?.forEach {
-                if (it is PromoListItemUiModel && it.uiData.promoCode != selectedItem.uiData.promoCode) {
+                if (it is PromoListItemUiModel && it.uiData.promoCode != promo.uiData.promoCode) {
                     if (it.uiData.clashingInfos.isNotEmpty()) {
-                        val tmpClashResult = checkAndSetClashOnSelectionEvent(it, selectedItem)
+                        val tmpClashResult =
+                            checkAndSetClashOnSelectionEvent(it, promo, isApplyRecommendedPromo)
                         if (!clashResult) clashResult = tmpClashResult
-                        _tmpUiModel.value = Update(it)
                     }
+                    it.uiState.isLoading = false
+                    _tmpUiModel.value = Update(it)
                 }
             }
         } else {
-            // Calculate clash on un selection event
+            // Calculate clash on un-selection event
             promoListUiModel.value?.forEach {
-                if (it is PromoListItemUiModel && it.uiData.promoCode != selectedItem.uiData.promoCode) {
+                if (it is PromoListItemUiModel && it.uiData.promoCode != promo.uiData.promoCode) {
                     if (it.uiData.clashingInfos.isNotEmpty()) {
-                        checkAndSetClashOnUnSelectionEvent(it, selectedItem)
-                        _tmpUiModel.value = Update(it)
+                        checkAndSetClashOnUnSelectionEvent(it, promo)
                     }
+                    it.uiState.isLoading = false
+                    _tmpUiModel.value = Update(it)
+                }
+            }
+
+            // Recalculate clash for adjusted selected promo after un-selection event
+            promoListUiModel.value?.forEach { adjustedPromo ->
+                if (adjustedPromo is PromoListItemUiModel &&
+                    adjustedPromo.uiData.secondaryCoupons.isNotEmpty() &&
+                    adjustedPromo.uiState.isSelected
+                ) {
+                    if (promo.uiData.clashingInfos.isNotEmpty()) {
+                        promoListUiModel.value?.forEach {
+                            if (it is PromoListItemUiModel) {
+                                checkAndSetClashOnSelectionEvent(it, adjustedPromo, isApplyRecommendedPromo)
+                            }
+                        }
+                    }
+                    _tmpUiModel.value = Update(promo)
                 }
             }
         }
 
         if (clashResult) {
-            selectedItem.uiState.isCausingOtherPromoClash = true
+            promo.uiState.isCausingOtherPromoClash = true
         }
 
         // update BO clashing state
-        updateBoClashingState(selectedItem)
+        updateBoClashingState(promo)
     }
 
     private fun checkAndSetClashOnUnSelectionEvent(
         promoListItemUiModel: PromoListItemUiModel,
         selectedItem: PromoListItemUiModel
     ) {
-        val clashingInfo =
+        val selectedPromoCode = if (selectedItem.uiData.useSecondaryPromo) {
+            selectedItem.uiData.secondaryCoupons.first().code
+        } else {
+            selectedItem.uiData.promoCode
+        }
+        val primaryClashingInfo =
             promoListItemUiModel.uiData.clashingInfos
-                .firstOrNull { clashingInfo -> clashingInfo.code == selectedItem.uiData.promoCode }
-        if (clashingInfo != null) {
-            if (promoListItemUiModel.uiData.currentClashingPromo.contains(selectedItem.uiData.promoCode)) {
-                promoListItemUiModel.uiData.currentClashingPromo.remove(selectedItem.uiData.promoCode)
+                .firstOrNull { clashingInfo -> clashingInfo.code == selectedPromoCode }
+        if (primaryClashingInfo != null) {
+            if (promoListItemUiModel.uiData.currentClashingPromo.contains(selectedPromoCode)) {
+                promoListItemUiModel.uiData.currentClashingPromo.remove(selectedPromoCode)
                 if (promoListItemUiModel.uiData.currentClashingPromo.isNotEmpty()) {
                     val errorMessageBuilder = StringBuilder()
                     promoListItemUiModel.uiData.currentClashingPromo.forEach { promoCode ->
@@ -1767,26 +1931,102 @@ class PromoCheckoutViewModel @Inject constructor(
                 }
             }
         }
+        // Check for secondary promo clashing when secondary promo is not empty
+        if (promoListItemUiModel.uiData.secondaryCoupons.isNotEmpty()) {
+            // Check whether secondary promo is clashing
+            val secondaryPromoWithClashing = promoListItemUiModel.uiData.secondaryCoupons
+                .firstOrNull { secondaryCoupon ->
+                    secondaryCoupon.clashingInfos.map { it.code }.contains(selectedPromoCode)
+                }
+            if (secondaryPromoWithClashing != null) {
+                if (promoListItemUiModel.uiData.currentClashingSecondaryPromo.contains(selectedPromoCode)) {
+                    promoListItemUiModel.uiData.currentClashingSecondaryPromo.remove(selectedPromoCode)
+                    if (promoListItemUiModel.uiData.currentClashingSecondaryPromo.isNotEmpty()) {
+                        val errorMessageBuilder = StringBuilder()
+                        promoListItemUiModel.uiData.currentClashingSecondaryPromo.forEach { promoCode ->
+                            val tmpClashingInfo =
+                                secondaryPromoWithClashing.clashingInfos
+                                    .firstOrNull { tmpClashingInfo -> tmpClashingInfo.code == promoCode }
+                            if (tmpClashingInfo != null) {
+                                errorMessageBuilder.append(tmpClashingInfo.message)
+                                return@forEach
+                            }
+                        }
+                        promoListItemUiModel.uiData.errorMessage = errorMessageBuilder.toString()
+                    } else {
+                        promoListItemUiModel.uiData.errorMessage = ""
+                        if (promoListItemUiModel.uiState.isParentEnabled) {
+                            promoListItemUiModel.uiState.isDisabled = false
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun checkAndSetClashOnSelectionEvent(
         promoListItemUiModel: PromoListItemUiModel,
-        selectedItem: PromoListItemUiModel
+        selectedItem: PromoListItemUiModel,
+        isApplyRecommendedPromo: Boolean
     ): Boolean {
         var clashResult = false
-        val clashingInfo =
+        val selectedPromoCode = if (selectedItem.uiData.useSecondaryPromo) {
+            selectedItem.uiData.secondaryCoupons.first().code
+        } else {
+            selectedItem.uiData.promoCode
+        }
+        val primaryClashingInfo =
             promoListItemUiModel.uiData.clashingInfos
-                .firstOrNull { clashingInfo -> clashingInfo.code == selectedItem.uiData.promoCode }
-        if (clashingInfo != null) {
-            if (!promoListItemUiModel.uiData.currentClashingPromo.contains(selectedItem.uiData.promoCode)) {
-                promoListItemUiModel.uiData.currentClashingPromo.add(selectedItem.uiData.promoCode)
-                val errorMessageBuilder = StringBuilder(promoListItemUiModel.uiData.errorMessage)
+                .firstOrNull { clashingInfo -> clashingInfo.code == selectedPromoCode }
+        if (primaryClashingInfo != null) {
+            if (!promoListItemUiModel.uiData.currentClashingPromo.contains(selectedPromoCode)) {
+                promoListItemUiModel.uiData.currentClashingPromo.add(selectedPromoCode)
+                val errorMessageBuilder =
+                    StringBuilder(promoListItemUiModel.uiData.errorMessage)
                 if (promoListItemUiModel.uiData.errorMessage.isNotBlank()) {
                     errorMessageBuilder.clear()
                 }
-                errorMessageBuilder.append(clashingInfo.message)
+                errorMessageBuilder.append(primaryClashingInfo.message)
                 promoListItemUiModel.uiData.errorMessage = errorMessageBuilder.toString()
                 clashResult = true
+            }
+        }
+        // Check for secondary promo clashing when secondary promo is not empty
+        if (promoListItemUiModel.uiData.secondaryCoupons.isNotEmpty()) {
+            // Check whether secondary promo is clashing
+            val secondaryPromoWithClashing = promoListItemUiModel.uiData.secondaryCoupons
+                .firstOrNull { it.clashingInfos.map { clashingInfo -> clashingInfo.code }.contains(selectedPromoCode) }
+            if (secondaryPromoWithClashing != null) {
+                // There's clashing in secondary promo, disable the promo
+                val secondaryClashingInfo = secondaryPromoWithClashing.clashingInfos
+                    .firstOrNull { clashingInfo -> clashingInfo.code == selectedPromoCode }
+                if (secondaryClashingInfo != null) {
+                    if (!promoListItemUiModel.uiData.currentClashingSecondaryPromo.contains(selectedPromoCode)) {
+                        promoListItemUiModel.uiData.currentClashingSecondaryPromo.add(selectedPromoCode)
+                        val errorMessageBuilder =
+                            StringBuilder(promoListItemUiModel.uiData.errorMessage)
+                        if (promoListItemUiModel.uiData.errorMessage.isNotBlank()) {
+                            errorMessageBuilder.clear()
+                        }
+                        errorMessageBuilder.append(secondaryClashingInfo.message)
+                        promoListItemUiModel.uiData.errorMessage = errorMessageBuilder.toString()
+                        clashResult = true
+                    }
+                }
+            } else {
+                // There's no clashing in secondary promo, adjust the promo and inform user
+                promoListItemUiModel.uiData.errorMessage = ""
+                if (promoListItemUiModel.uiState.isParentEnabled) {
+                    promoListItemUiModel.uiState.isDisabled = false
+                }
+                if (promoListItemUiModel.uiData.promoCode != selectedItem.uiData.promoCode && !isApplyRecommendedPromo) {
+                    fragmentUiModel.value?.let {
+                        it.uiData.benefitAdjustmentMessage =
+                            promoListItemUiModel.uiData.benefitAdjustmentMessage
+                        _fragmentUiModel.value = it
+                    }
+                }
+                clashResult = false
             }
         }
         return clashResult
@@ -1794,6 +2034,13 @@ class PromoCheckoutViewModel @Inject constructor(
 
     fun changeSelectedTab(promoTabUiModel: PromoTabUiModel) {
         _promoTabUiModel.value = promoTabUiModel
+    }
+
+    fun setShouldShowToasterBenefitAdjustmentMessage(shouldShow: Boolean) {
+        fragmentUiModel.value?.let {
+            it.uiState.shouldShowToasterBenefitAdjustmentMessage = shouldShow
+            _fragmentUiModel.value = it
+        }
     }
 
     // -------------------//
@@ -1858,7 +2105,11 @@ class PromoCheckoutViewModel @Inject constructor(
             this.intersect(promoListItemUiModel.uiData.boAdditionalData.map { it.code })
                 .isNotEmpty()
         } else {
-            this.contains(promoListItemUiModel.uiData.promoCode)
+            if (promoListItemUiModel.uiData.useSecondaryPromo) {
+                this.contains(promoListItemUiModel.uiData.secondaryCoupons.first().code)
+            } else {
+                this.contains(promoListItemUiModel.uiData.promoCode)
+            }
         }
     }
 
@@ -1868,7 +2119,11 @@ class PromoCheckoutViewModel @Inject constructor(
         if (promoListItemUiModel.uiState.isBebasOngkir) {
             this.addAll(promoListItemUiModel.uiData.boAdditionalData.map { it.code })
         } else {
-            this.add(promoListItemUiModel.uiData.promoCode)
+            if (promoListItemUiModel.uiData.useSecondaryPromo) {
+                this.add(promoListItemUiModel.uiData.secondaryCoupons.first().code)
+            } else {
+                this.add(promoListItemUiModel.uiData.promoCode)
+            }
         }
     }
 }

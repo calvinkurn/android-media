@@ -77,6 +77,7 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmer
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.BannerComponentListener
+import com.tokopedia.home_component.listener.BestSellerListener
 import com.tokopedia.home_component.listener.CampaignWidgetComponentListener
 import com.tokopedia.home_component.listener.CategoryWidgetV2Listener
 import com.tokopedia.home_component.listener.CueWidgetCategoryListener
@@ -144,6 +145,9 @@ import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import com.tokopedia.home_component.visitable.VpsDataModel
+import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampDataModel
+import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampListener
+import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampViewHolder
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.recharge_component.RechargeComponentTypeFactory
@@ -175,7 +179,7 @@ class HomeAdapterFactory(
     private val productHighlightListener: ProductHighlightListener,
     private val featuredShopListener: FeaturedShopListener,
     private val playWidgetCoordinator: PlayWidgetCoordinator,
-    private val bestSellerListener: RecommendationWidgetListener,
+    private val recommendationWidgetListener: RecommendationWidgetListener,
     private val rechargeBUWidgetListener: RechargeBUWidgetListener,
     private val bannerComponentListener: BannerComponentListener?,
     private val dynamicIconComponentListener: DynamicIconComponentListener,
@@ -192,7 +196,9 @@ class HomeAdapterFactory(
     private val legoProductListener: LegoProductListener,
     private val todoWidgetComponentListener: TodoWidgetComponentListener,
     private val flashSaleWidgetListener: FlashSaleWidgetListener,
-    private val carouselPlayWidgetCallback: CarouselPlayWidgetCallback
+    private val carouselPlayWidgetCallback: CarouselPlayWidgetCallback,
+    private val bestSellerListener: BestSellerListener,
+    private val specialReleaseRevampListener: SpecialReleaseRevampListener
 ) : BaseAdapterTypeFactory(),
     HomeTypeFactory,
     HomeComponentTypeFactory,
@@ -431,6 +437,14 @@ class HomeAdapterFactory(
         return FlashSaleViewHolder.LAYOUT
     }
 
+    override fun type(bestSellerDataModel: com.tokopedia.home_component.visitable.BestSellerDataModel): Int {
+        return com.tokopedia.home_component.viewholders.BestSellerViewHolder.LAYOUT
+    }
+
+    override fun type(specialReleaseDataModel: SpecialReleaseRevampDataModel): Int {
+        return SpecialReleaseRevampViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         val viewHolder: AbstractViewHolder<*>
         when (type) {
@@ -453,7 +467,7 @@ class HomeAdapterFactory(
             PopularKeywordViewHolder.LAYOUT -> viewHolder = PopularKeywordViewHolder(view, listener, popularKeywordListener, cardInteraction = true)
             CategoryWidgetViewHolder.LAYOUT -> viewHolder = CategoryWidgetViewHolder(view, listener)
             CategoryWidgetV2ViewHolder.LAYOUT -> viewHolder = CategoryWidgetV2ViewHolder(view, categoryWidgetV2Listener, cardInteraction = true)
-            BestSellerViewHolder.LAYOUT -> viewHolder = BestSellerViewHolder(view, bestSellerListener, cardInteraction = true)
+            BestSellerViewHolder.LAYOUT -> viewHolder = BestSellerViewHolder(view, recommendationWidgetListener, cardInteraction = true)
             ProductHighlightComponentViewHolder.LAYOUT -> viewHolder = ProductHighlightComponentViewHolder(
                 view,
                 homeComponentListener,
@@ -537,9 +551,6 @@ class HomeAdapterFactory(
             ErrorStateChannelThreeViewHolder.LAYOUT ->
                 viewHolder =
                     ErrorStateChannelThreeViewHolder(view, listener)
-            HomeInitialShimmerViewHolder.LAYOUT ->
-                viewHolder =
-                    HomeInitialShimmerViewHolder(view, listener)
             ShimmeringChannelViewHolder.LAYOUT ->
                 viewHolder =
                     ShimmeringChannelViewHolder(view, listener)
@@ -578,9 +589,9 @@ class HomeAdapterFactory(
                 homePayLaterWidgetListener
             )
             CueWidgetCategoryViewHolder.LAYOUT -> viewHolder = CueWidgetCategoryViewHolder(view, cueWidgetCategoryListener)
-            VpsWidgetViewHolder.LAYOUT -> viewHolder = VpsWidgetViewHolder(view, vpsWidgetListener, homeComponentListener, parentRecycledViewPool)
+            VpsWidgetViewHolder.LAYOUT -> viewHolder = VpsWidgetViewHolder(view, vpsWidgetListener, homeComponentListener)
             MissionWidgetViewHolder.LAYOUT -> viewHolder = MissionWidgetViewHolder(view, missionWidgetComponentListener, cardInteraction = true)
-            Lego4ProductViewHolder.LAYOUT -> viewHolder = Lego4ProductViewHolder(view, legoProductListener, homeComponentListener, parentRecycledViewPool, cardInteraction = true)
+            Lego4ProductViewHolder.LAYOUT -> viewHolder = Lego4ProductViewHolder(view, legoProductListener, homeComponentListener, cardInteraction = true)
             MixLeftPaddingComponentViewHolder.LAYOUT ->
                 viewHolder =
                     MixLeftPaddingComponentViewHolder(
@@ -598,17 +609,16 @@ class HomeAdapterFactory(
             BannerRevampViewHolder.LAYOUT ->
                 viewHolder =
                     BannerRevampViewHolder(view, bannerComponentListener, cardInteraction = true)
-            MixLeftPaddingComponentViewHolder.LAYOUT ->
-                viewHolder =
-                    MixLeftPaddingComponentViewHolder(
-                        view,
-                        mixLeftComponentListener,
-                        homeComponentListener,
-                        cardInteraction = true
-                    )
             DealsWidgetViewHolder.LAYOUT ->
-                viewHolder = DealsWidgetViewHolder(view, vpsWidgetListener, homeComponentListener, parentRecycledViewPool)
+                viewHolder = DealsWidgetViewHolder(view, vpsWidgetListener, homeComponentListener)
             FlashSaleViewHolder.LAYOUT -> viewHolder = FlashSaleViewHolder(view, flashSaleWidgetListener, homeComponentListener, parentRecycledViewPool)
+            com.tokopedia.home_component.viewholders.BestSellerViewHolder.LAYOUT ->
+                viewHolder = com.tokopedia.home_component.viewholders.BestSellerViewHolder(
+                    view,
+                    bestSellerListener,
+                    parentRecycledViewPool
+                )
+            SpecialReleaseRevampViewHolder.LAYOUT -> viewHolder = SpecialReleaseRevampViewHolder(view, specialReleaseRevampListener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

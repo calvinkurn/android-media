@@ -103,42 +103,42 @@ class CreateReviewProgressBar @JvmOverloads constructor(
     private fun WidgetCreateReviewProgressBarBinding.setEmptyProgress() {
         layoutProgressBar.reviewFormProgressBar.apply {
             setValue(EMPTY_PROGRESS)
-            progressBarColor = intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_Y400), ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_Y400))
+            progressBarColor = intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN400), ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN400))
         }
     }
 
     private fun WidgetCreateReviewProgressBarBinding.setPartiallyCompleteProgress() {
         layoutProgressBar.reviewFormProgressBar.apply {
             setValue(PARTIALLY_COMPLETE_PROGRESS)
-            progressBarColor = intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_Y300), ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_Y300))
+            progressBarColor = intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN300), ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN300))
         }
     }
 
     private fun WidgetCreateReviewProgressBarBinding.setCompleteProgress() {
         layoutProgressBar.reviewFormProgressBar.apply {
             setValue(COMPLETE_PROGRESS)
-            progressBarColor = intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_G400), ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_G400))
+            progressBarColor = intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500), ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
         }
     }
 
     private fun WidgetCreateReviewProgressBarBinding.setQuarterProgress() {
         layoutProgressBar.reviewFormProgressBar.apply {
             setValue(QUARTER_PROGRESS)
-            progressBarColor = intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_Y400), ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_Y400))
+            progressBarColor = intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN400), ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN400))
         }
     }
 
     private fun WidgetCreateReviewProgressBarBinding.setHalfProgress() {
         layoutProgressBar.reviewFormProgressBar.apply {
             setValue(HALF_PROGRESS)
-            progressBarColor = intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_Y300), ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_Y300))
+            progressBarColor = intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN300), ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN300))
         }
     }
 
     private fun WidgetCreateReviewProgressBarBinding.setThreeQuartersProgress() {
         layoutProgressBar.reviewFormProgressBar.apply {
             setValue(THREE_QUARTERS_PROGRESS)
-            progressBarColor = intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_Y300), ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_Y300))
+            progressBarColor = intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN300), ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN300))
         }
     }
 

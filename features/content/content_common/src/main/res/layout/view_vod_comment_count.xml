@@ -18,4 +18,4 @@
     app:typographyType="display_3"
     app:typographyWeight="bold"
     tools:text="123,5 rb"
-    tools:background="@color/Unify_N700_96"/>
+    tools:background="@color/Unify_NN950_96"/>

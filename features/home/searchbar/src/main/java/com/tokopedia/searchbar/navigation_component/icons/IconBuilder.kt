@@ -1,6 +1,7 @@
 package com.tokopedia.searchbar.navigation_component.icons
 
 import android.os.Bundle
+import com.tokopedia.searchbar.navigation_component.NavSource
 
 class IconBuilder(val builderFlags: IconBuilderFlag = IconBuilderFlag()) {
     private val listIcon = mutableListOf<IconToolbar>()
@@ -14,33 +15,33 @@ class IconBuilder(val builderFlags: IconBuilderFlag = IconBuilderFlag()) {
     fun addIcon(iconId: Int, disableRouteManager: Boolean = false, disableDefaultGtmTracker: Boolean = false, onClick: ()->Unit): IconBuilder {
         when(iconId) {
             //image
-            IconList.ID_MESSAGE -> listIcon.add(IconList.MessageIcon.get(builderFlags.pageSource, disableRouteManager, disableDefaultGtmTracker, onClick))
+            IconList.ID_MESSAGE -> listIcon.add(IconList.MessageIcon.get(builderFlags.pageSource, builderFlags.pageSourcePath, disableRouteManager, disableDefaultGtmTracker, onClick))
             IconList.ID_INBOX -> listIcon.add(
                     IconList.InboxIcon.get(
-                            builderFlags.pageSource, disableRouteManager,
+                            builderFlags.pageSource, builderFlags.pageSourcePath, disableRouteManager,
                             disableDefaultGtmTracker, onClick
                     )
             )
-            IconList.ID_WISHLIST -> listIcon.add(IconList.WishlistIcon.get(builderFlags.pageSource, disableRouteManager, disableDefaultGtmTracker, onClick))
-            IconList.ID_SHARE -> listIcon.add(IconList.ShareIcon.get(builderFlags.pageSource, disableRouteManager, disableDefaultGtmTracker, onClick))
-            IconList.ID_CART -> listIcon.add(IconList.CartIcon.get(builderFlags.pageSource, disableRouteManager, disableDefaultGtmTracker, onClick))
-            IconList.ID_NOTIFICATION -> listIcon.add(IconList.NotificationIcon.get(builderFlags.pageSource, disableRouteManager, disableDefaultGtmTracker, onClick))
-            IconList.ID_NAV_GLOBAL -> listIcon.add(IconList.NavGlobalIcon.get(builderFlags.pageSource, disableRouteManager, disableDefaultGtmTracker, onClick))
-            IconList.ID_SEARCH -> listIcon.add(IconList.SearchGlobalIcon.get(builderFlags.pageSource, disableRouteManager, disableDefaultGtmTracker, onClick))
-            IconList.ID_INFORMATION -> listIcon.add(IconList.InformationGlobalIcon.get(builderFlags.pageSource, disableRouteManager, disableDefaultGtmTracker, onClick))
-            IconList.ID_BILL -> listIcon.add(IconList.BillGlobalIcon.get(builderFlags.pageSource, disableRouteManager, disableDefaultGtmTracker, onClick))
-            IconList.ID_LIST_TRANSACTION -> listIcon.add(IconList.ListTransactionIcon.get(builderFlags.pageSource, disableRouteManager, disableDefaultGtmTracker, onClick))
-            IconList.ID_NOTEBOOK -> listIcon.add(IconList.NotebookIcon.get(builderFlags.pageSource, disableRouteManager, disableDefaultGtmTracker, onClick))
+            IconList.ID_WISHLIST -> listIcon.add(IconList.WishlistIcon.get(builderFlags.pageSource, builderFlags.pageSourcePath, disableRouteManager, disableDefaultGtmTracker, onClick))
+            IconList.ID_SHARE -> listIcon.add(IconList.ShareIcon.get(builderFlags.pageSource, builderFlags.pageSourcePath, disableRouteManager, disableDefaultGtmTracker, onClick))
+            IconList.ID_CART -> listIcon.add(IconList.CartIcon.get(builderFlags.pageSource, builderFlags.pageSourcePath, disableRouteManager, disableDefaultGtmTracker, onClick))
+            IconList.ID_NOTIFICATION -> listIcon.add(IconList.NotificationIcon.get(builderFlags.pageSource, builderFlags.pageSourcePath, disableRouteManager, disableDefaultGtmTracker, onClick))
+            IconList.ID_NAV_GLOBAL -> listIcon.add(IconList.NavGlobalIcon.get(builderFlags.pageSource, builderFlags.pageSourcePath, disableRouteManager, disableDefaultGtmTracker, onClick))
+            IconList.ID_SEARCH -> listIcon.add(IconList.SearchGlobalIcon.get(builderFlags.pageSource, builderFlags.pageSourcePath, disableRouteManager, disableDefaultGtmTracker, onClick))
+            IconList.ID_INFORMATION -> listIcon.add(IconList.InformationGlobalIcon.get(builderFlags.pageSource, builderFlags.pageSourcePath, disableRouteManager, disableDefaultGtmTracker, onClick))
+            IconList.ID_BILL -> listIcon.add(IconList.BillGlobalIcon.get(builderFlags.pageSource, builderFlags.pageSourcePath, disableRouteManager, disableDefaultGtmTracker, onClick))
+            IconList.ID_LIST_TRANSACTION -> listIcon.add(IconList.ListTransactionIcon.get(builderFlags.pageSource, builderFlags.pageSourcePath, disableRouteManager, disableDefaultGtmTracker, onClick))
+            IconList.ID_NOTEBOOK -> listIcon.add(IconList.NotebookIcon.get(builderFlags.pageSource, builderFlags.pageSourcePath, disableRouteManager, disableDefaultGtmTracker, onClick))
             //lottiee
-            IconList.ID_NAV_LOTTIE_WISHLIST -> listIcon.add(IconList.LottieWishlistIcon.get(builderFlags.pageSource, disableRouteManager, disableDefaultGtmTracker, onClick))
+            IconList.ID_NAV_LOTTIE_WISHLIST -> listIcon.add(IconList.LottieWishlistIcon.get(builderFlags.pageSource, builderFlags.pageSourcePath, disableRouteManager, disableDefaultGtmTracker, onClick))
 
             //Animated vector drawable
-            IconList.ID_NAV_ANIMATED_WISHLIST -> listIcon.add(IconList.AnimatedWishlistIcon.get(builderFlags.pageSource, disableRouteManager, disableDefaultGtmTracker, onClick))
+            IconList.ID_NAV_ANIMATED_WISHLIST -> listIcon.add(IconList.AnimatedWishlistIcon.get(builderFlags.pageSource, builderFlags.pageSourcePath, disableRouteManager, disableDefaultGtmTracker, onClick))
 
             // icon share for A/B testing
             IconList.ID_SHARE_AB_TEST -> listIcon.add(
                 IconList.ShareAbTestIcon.get(
-                    builderFlags.pageSource, disableRouteManager, disableDefaultGtmTracker, onClick
+                    builderFlags.pageSource, builderFlags.pageSourcePath, disableRouteManager, disableDefaultGtmTracker, onClick
                 )
             )
         }
@@ -63,4 +64,7 @@ internal data class IconToolbar(val id: Int, val name: String = "", val bundle: 
     }
 }
 
-data class IconBuilderFlag(val pageSource: String = "")
+data class IconBuilderFlag(
+    val pageSource: NavSource = NavSource.DEFAULT,
+    val pageSourcePath: String? = null
+)

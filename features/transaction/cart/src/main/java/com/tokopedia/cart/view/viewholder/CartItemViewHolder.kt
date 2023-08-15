@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.ProductInformationWithIcon
@@ -371,6 +372,7 @@ class CartItemViewHolder constructor(
         renderProductProperties(data)
         renderProductPropertyIncidentLabel(data)
         renderProductActionSection(data)
+        renderProductAddOns(data)
         sendAnalyticsInformationLabel(data)
     }
 
@@ -486,6 +488,25 @@ class CartItemViewHolder constructor(
         )
     }
 
+    private fun renderProductAddOns(data: CartItemHolderData) {
+        if (data.addOnsProduct.listData.isNotEmpty() && data.addOnsProduct.widget.wording.isNotEmpty()) {
+            binding.itemAddonCart.apply {
+                root.show()
+                this.descAddon.text = MethodChecker.fromHtml(data.addOnsProduct.widget.wording)
+                val addOnType = data.addOnsProduct.listData.firstOrNull()?.type ?: 0
+                root.setOnClickListener {
+                    actionListener?.onProductAddOnClicked(data)
+                    actionListener?.onClickAddOnsProductWidgetCart(addOnType, data.productId)
+                }
+                if (data.addOnsProduct.listData.isNotEmpty()) {
+                    actionListener?.onAddOnsProductWidgetImpression(addOnType, data.productId)
+                }
+            }
+        } else {
+            binding.itemAddonCart.root.gone()
+        }
+    }
+
     private fun sendAnalyticsInformationLabel(data: CartItemHolderData) {
         if (informationLabel.isNotEmpty()) {
             sendAnalyticsShowInformation(informationLabel, data.productId)
@@ -497,6 +518,7 @@ class CartItemViewHolder constructor(
         layoutProductInfo.gone()
 
         var isProductInformationExist = false
+
         val productInformationWithIcon = data.productInformationWithIcon
         if (productInformationWithIcon.isNotEmpty()) {
             isProductInformationExist = true
@@ -566,7 +588,7 @@ class CartItemViewHolder constructor(
             setTextColor(
                 ContextCompat.getColor(
                     itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
                 )
             )
             setType(Typography.BODY_3)
@@ -949,7 +971,7 @@ class CartItemViewHolder constructor(
             textMoveToWishlist.setTextColor(
                 ContextCompat.getColor(
                     itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_44
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_44
                 )
             )
             textMoveToWishlist.setOnClickListener { }
@@ -958,7 +980,7 @@ class CartItemViewHolder constructor(
             textMoveToWishlist.setTextColor(
                 ContextCompat.getColor(
                     itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
                 )
             )
             textMoveToWishlist.setOnClickListener {
@@ -1000,7 +1022,7 @@ class CartItemViewHolder constructor(
             setTextColor(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
                 )
             )
             actionListener?.onShowTickerTobacco()
@@ -1019,7 +1041,7 @@ class CartItemViewHolder constructor(
             setTextColor(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
                 )
             )
             actionListener?.onShowActionSeeOtherProduct(data.productId, data.errorType)
@@ -1038,7 +1060,7 @@ class CartItemViewHolder constructor(
             setTextColor(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 )
             )
             show()
@@ -1056,7 +1078,7 @@ class CartItemViewHolder constructor(
             setTextColor(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
                 )
             )
             show()

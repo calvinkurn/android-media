@@ -1,6 +1,11 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 
+android {
+    namespace 'com.tokopedia.locationmanager'
+    testNamespace 'com.tokopedia.locationmanager.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager

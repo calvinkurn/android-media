@@ -36,6 +36,8 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
+import com.tokopedia.addon.presentation.uimodel.AddOnExtraConstant
+import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.util.EmbraceKey
@@ -134,6 +136,7 @@ import com.tokopedia.purchase_platform.common.constant.ARGS_PAGE_SOURCE
 import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
 import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_DATA_RESULT
 import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_ERROR_GLOBAL
 import com.tokopedia.purchase_platform.common.constant.CartConstant.IS_TESTING_FLOW
@@ -155,9 +158,11 @@ import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashb
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.purchase_platform.common.utils.removeSingleDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.rxCompoundButtonCheckDebounce
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -300,6 +305,7 @@ class CartFragment :
         const val NAVIGATION_EDIT_BUNDLE = 789
         const val NAVIGATION_VERIFICATION = 890
         const val NAVIGATION_APPLINK = 809
+        const val NAVIGATION_ADDON = 808
         const val WISHLIST_SOURCE_AVAILABLE_ITEM = "WISHLIST_SOURCE_AVAILABLE_ITEM"
         const val WISHLIST_SOURCE_UNAVAILABLE_ITEM = "WISHLIST_SOURCE_UNAVAILABLE_ITEM"
         const val WORDING_GO_TO_HOMEPAGE = "Kembali ke Homepage"
@@ -511,6 +517,7 @@ class CartFragment :
             NAVIGATION_EDIT_BUNDLE -> onResultFromEditBundle(resultCode, data)
             NAVIGATION_VERIFICATION -> refreshCartWithSwipeToRefresh()
             NAVIGATION_APPLINK -> refreshCartWithSwipeToRefresh()
+            NAVIGATION_ADDON -> onResultFromAddOnBottomSheet(resultCode, data)
         }
     }
 
@@ -823,7 +830,7 @@ class CartFragment :
             context?.let { context ->
                 fragmentManager?.let { fragmentManager ->
                     val promoSummaryUiModel = dPresenter.getPromoSummaryUiModel()
-                    dPresenter.getSummaryTransactionUiModel()?.let { summaryTransactionUiModel ->
+                    dPresenter.getSummaryTransactionUiModel(cartAdapter.selectedCartItemData)?.let { summaryTransactionUiModel ->
                         showSummaryTransactionBottomsheet(
                             summaryTransactionUiModel,
                             promoSummaryUiModel,
@@ -1007,7 +1014,7 @@ class CartFragment :
                     backButtonClickListener = ::onBackPressed
                 )
                 setIcon(
-                    IconBuilder(IconBuilderFlag(pageSource = CART_PAGE)).addIcon(
+                    IconBuilder(IconBuilderFlag(pageSource = NavSource.CART)).addIcon(
                         iconId = IconList.ID_NAV_ANIMATED_WISHLIST,
                         disableDefaultGtmTracker = true,
                         onClick = ::onNavigationToolbarWishlistClicked
@@ -2131,7 +2138,10 @@ class CartFragment :
         }
     }
 
-    override fun onCartGroupNameClicked(appLink: String) {
+    override fun onCartGroupNameClicked(appLink: String, shopId: String, shopName: String, isOWOC: Boolean) {
+        if (!isOWOC && shopId.isNotEmpty()) {
+            cartPageAnalytics.eventClickAtcCartClickShop(shopId, shopName)
+        }
         routeToApplink(appLink)
     }
 
@@ -2433,7 +2443,7 @@ class CartFragment :
                 binding?.llCartContainer?.setBackgroundColor(
                     ContextCompat.getColor(
                         it,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N50
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN50
                     )
                 )
             }
@@ -2441,7 +2451,7 @@ class CartFragment :
             it.window.decorView.setBackgroundColor(
                 ContextCompat.getColor(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N50
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN50
                 )
             )
         }
@@ -4543,5 +4553,79 @@ class CartFragment :
             cartGroupHolderData.cartShopGroupTicker.state = CartShopGroupTickerState.LOADING
             dPresenter.checkCartShopGroupTicker(cartGroupHolderData)
         }
+    }
+
+    override fun onProductAddOnClicked(cartItemData: CartItemHolderData) {
+        // tokopedia://addon/2148784281/?cartId=123123&selectedAddonIds=111,222,333&source=cart&warehouseId=789789&isTokocabang=false
+        val productId = cartItemData.productId
+        val cartId = cartItemData.cartId
+        val addOnIds = arrayListOf<String>()
+        cartItemData.addOnsProduct.listData.forEach {
+            addOnIds.add(it.id)
+        }
+
+        val deselectAddOnIds = arrayListOf<String>()
+        cartItemData.addOnsProduct.deselectListData.forEach {
+            deselectAddOnIds.add(it.id)
+        }
+
+        val price: Double
+        val discountedPrice: Double
+        if (cartItemData.campaignId == "0") {
+            price = cartItemData.productPrice
+            discountedPrice = cartItemData.productPrice
+        } else {
+            price = cartItemData.productOriginalPrice
+            discountedPrice = cartItemData.productPrice
+        }
+
+        val applinkAddon = ApplinkConst.ADDON.replace(AddOnConstant.QUERY_PARAM_ADDON_PRODUCT, productId)
+        val applink = UriUtil.buildUriAppendParams(
+            applinkAddon,
+            mapOf(
+                AddOnConstant.QUERY_PARAM_CART_ID to cartId,
+                AddOnConstant.QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds.toString().replace("[", "").replace("]", ""),
+                AddOnConstant.QUERY_PARAM_DESELECTED_ADDON_IDS to deselectAddOnIds.toString().replace("[", "").replace("]", ""),
+                AddOnConstant.QUERY_PARAM_PAGE_ATC_SOURCE to AddOnConstant.SOURCE_NORMAL_CHECKOUT,
+                AddOnConstant.QUERY_PARAM_WAREHOUSE_ID to cartItemData.warehouseId,
+                AddOnConstant.QUERY_PARAM_IS_TOKOCABANG to cartItemData.isFulfillment,
+                AddOnConstant.QUERY_PARAM_CATEGORY_ID to cartItemData.categoryId,
+                AddOnConstant.QUERY_PARAM_SHOP_ID to cartItemData.shopHolderData.shopId,
+                AddOnConstant.QUERY_PARAM_QUANTITY to cartItemData.quantity,
+                AddOnConstant.QUERY_PARAM_PRICE to price.toBigDecimal().toPlainString().removeSingleDecimalSuffix(),
+                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toBigDecimal().toPlainString().removeSingleDecimalSuffix()
+            )
+        )
+
+        activity?.let {
+            val intent = RouteManager.getIntent(it, applink)
+            startActivityForResult(intent, NAVIGATION_ADDON)
+        }
+    }
+
+    private fun onResultFromAddOnBottomSheet(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            val addOnProductDataResult = data?.getParcelableExtra(AddOnExtraConstant.EXTRA_ADDON_PAGE_RESULT) ?: AddOnPageResult()
+
+            if (addOnProductDataResult.aggregatedData.isGetDataSuccess) {
+                var newAddOnWording = ""
+                if (addOnProductDataResult.aggregatedData.title.isNotEmpty()) {
+                    newAddOnWording = "${addOnProductDataResult.aggregatedData.title} <b>(${CurrencyFormatUtil.convertPriceValueToIdrFormat(addOnProductDataResult.aggregatedData.price, false).removeDecimalSuffix()})</b>"
+                }
+
+                cartAdapter.updateAddOnByCartId(addOnProductDataResult.cartId.toString(), newAddOnWording, addOnProductDataResult)
+                onNeedToRecalculate()
+            } else {
+                showToastMessageRed(addOnProductDataResult.aggregatedData.getDataErrorMessage)
+            }
+        }
+    }
+
+    override fun onAddOnsProductWidgetImpression(addOnType: Int, productId: String) {
+        cartPageAnalytics.eventViewAddOnsProductWidgetCart(addOnType, productId)
+    }
+
+    override fun onClickAddOnsProductWidgetCart(addOnType: Int, productId: String) {
+        cartPageAnalytics.eventClickAddOnsWidgetCart(addOnType, productId)
     }
 }

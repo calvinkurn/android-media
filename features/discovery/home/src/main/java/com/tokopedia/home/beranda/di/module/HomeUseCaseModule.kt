@@ -92,6 +92,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import dagger.Module
 import dagger.Provides
+import com.tokopedia.home.beranda.data.mapper.BestSellerMapper as BestSellerRevampMapper
 
 @Module(includes = [PlayWidgetModule::class, RecommendationCoroutineModule::class])
 class HomeUseCaseModule {
@@ -110,6 +111,7 @@ class HomeUseCaseModule {
     @Provides
     fun homeRevampUseCase(
         homeDataMapper: HomeDataMapper,
+        bestSellerRevampMapper: BestSellerRevampMapper,
         homeDynamicChannelsRepository: HomeDynamicChannelsRepository,
         homeDataRepository: HomeDataRepository,
         homeAtfRepository: HomeAtfRepository,
@@ -139,6 +141,7 @@ class HomeUseCaseModule {
         homeTodoWidgetRepository: HomeTodoWidgetRepository
     ) = HomeDynamicChannelUseCase(
         homeDataMapper = homeDataMapper,
+        bestSellerRevampMapper = bestSellerRevampMapper,
         homeDynamicChannelsRepository = homeDynamicChannelsRepository,
         atfDataRepository = homeAtfRepository,
         homeUserStatusRepository = homeUserStatusRepository,

@@ -14,6 +14,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.product.detail.common'
+    testNamespace 'com.tokopedia.product.detail.common.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.features.shopCommon)
     implementation projectOrAar(rootProject.ext.features.purchase_platform_common)
@@ -23,7 +28,6 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.track)

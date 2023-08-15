@@ -89,6 +89,9 @@
 
     <string name="search_product_similar_search_three_dots_onboarding_description">Mau cari produk lain yang lebih cocok? Lihat lebih banyak pilihan dengan klik ikon ini, yuk.</string>
 
+    <string name="search_product_view_type_onboarding_title">Kamu bisa ganti tampilan halaman ini, lho</string>
+    <string name="search_product_view_type_onboarding_description">Klik ikon ini buat ganti tampilan hasil pencarian sesuai keinginanmu. Biar belanja makin nyaman!</string>
+
     <string name="search_inspiration_card_title">Mungkin maksud kamu ini?</string>
     <string name="search_inspiration_card_option">putih</string>
     <string name="search_inspiration_card_curated_title">Fashion Pria</string>
@@ -143,4 +146,5 @@
     <string name="search_mps_empty_state_filter_description">Coba kurangi filter yang lagi aktif atau reset filter.</string>
     <string name="search_mps_empty_state_filter_reset_button_text">Reset Filter</string>
 
+    <string name="search_inspiration_keyword_match_title">Banyak juga yang mencari</string>
 </resources>

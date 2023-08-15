@@ -12,7 +12,7 @@
     <View
         android:visibility="invisible"
         android:id="@+id/statusbar"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_NN0"
         android:layout_width="match_parent"
         android:layout_height="24dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -65,7 +65,7 @@
         android:minHeight="32dp"
         android:maxHeight="64dp"
         app:tabMode="scrollable"
-        app:tabIndicatorColor="@color/Unify_P600"
+        app:tabIndicatorColor="@color/Unify_PN600"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/osDivider"/>

@@ -7,6 +7,7 @@
     <string name="path_product_draft" translatable="false">/product-draft</string>
     <string name="path_product_bundle" translatable="false">/product-bundle/.*\\/</string>
     <string name="path_gifting_bottomsheet" translatable="false">/gifting/.*\\/</string>
+    <string name="path_addon_bottomsheet" translatable="false">/addon/.*\\/</string>
     <string name="path_brandlist" translatable="false">/official-store/brand/.*\\/</string>
     <string name="path_brandlist_search" translatable="false">/official-store/brand/search</string>
 
@@ -18,4 +19,5 @@
 
     <string name="title_bundling_selection_page" translatable="false">Bundling Selection Page</string>
     <string name="title_gifting_bottomsheet" translatable="false">Gifting Bottomsheet</string>
+    <string name="title_addon_bottomsheet" translatable="false">Add On Bottomsheet</string>
 </resources>

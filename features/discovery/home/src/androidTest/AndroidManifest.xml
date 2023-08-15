@@ -1,8 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:versionCode="1"
-    android:versionName="1.0.0"
-    package="com.tokopedia.home">
+    android:versionName="1.0.0">
     <application
         android:label="Home Test"
         tools:ignore="HardcodedDebugMode"
@@ -13,18 +12,18 @@
         android:debuggable="true">
 
         <activity
-            android:name=".test.activity.HomeActivityTest"
+            android:name="com.tokopedia.home.test.activity.HomeActivityTest"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
         <activity
-            android:name=".environment.InstrumentationHomeTestActivity"
+            android:name="com.tokopedia.home.environment.InstrumentationHomeTestActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
         <activity
-            android:name=".environment.InstrumentationHomeRevampTestActivity"
+            android:name="com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
-            android:name=".environment.InstrumentationHomeEmptyActivity"
+            android:name="com.tokopedia.home.environment.InstrumentationHomeEmptyActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
     </application>

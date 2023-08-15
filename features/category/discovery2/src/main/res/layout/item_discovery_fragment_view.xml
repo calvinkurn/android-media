@@ -22,7 +22,7 @@
         android:layout_height="@dimen/dp_1"
         android:paddingTop="@dimen/dp_13"
         android:visibility="gone"
-        android:background="@color/Unify_N50"
+        android:background="@color/Unify_NN50"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/choose_address_widget"
         tools:visibility="visible"/>
@@ -101,7 +101,7 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_50"
         android:layout_gravity="bottom"
-        app:tabBackground="@color/Unify_N0"
+        app:tabBackground="@color/Unify_NN0"
         android:visibility="gone"
         app:tabPaddingEnd="0dp"
         app:tabMode="fixed"

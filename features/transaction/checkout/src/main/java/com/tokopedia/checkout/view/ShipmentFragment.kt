@@ -22,14 +22,19 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.addon.presentation.uimodel.AddOnExtraConstant
+import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring.stopMoments
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalFintech
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.checkout.R
@@ -96,6 +101,7 @@ import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CART_RESULT_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressTokonow
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper.mapWarehousesAddAddressModelToLocal
@@ -157,6 +163,11 @@ import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
 import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_DATA_RESULT
 import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.PRODUCT_PROTECTION_INSURANCE_TYPE
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.SOURCE_NORMAL_CHECKOUT
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_NEW_USER
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
@@ -170,13 +181,14 @@ import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.REQUEST_
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.REQUEST_ADD_ON_PRODUCT_LEVEL_BOTTOMSHEET
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.RESULT_CODE_COUPON_STATE_CHANGED
 import com.tokopedia.purchase_platform.common.constant.PAGE_CHECKOUT
+import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest.DynamicDataParam
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionListener
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionViewHolder
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AvailableBottomSheetData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
@@ -195,6 +207,7 @@ import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligib
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.purchase_platform.common.utils.removeSingleDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -210,6 +223,7 @@ import rx.Emitter
 import rx.Observable
 import rx.Subscription
 import rx.subjects.PublishSubject
+import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -225,7 +239,9 @@ class ShipmentFragment :
     ExpireTimeDialogListener,
     UploadPrescriptionListener {
 
-    private var binding by autoClearedNullable<FragmentShipmentBinding>()
+    private var binding by autoClearedNullable<FragmentShipmentBinding>() {
+        onDestroyViewBinding()
+    }
     private var progressDialogNormal: AlertDialog? = null
     private var shippingCourierBottomsheet: ShippingCourierBottomsheet? = null
     private var shipmentTracePerformance: PerformanceMonitoring? = null
@@ -270,6 +286,9 @@ class ShipmentFragment :
 
     @Inject
     lateinit var ePharmacyAnalytics: EPharmacyAnalytics
+
+    @Inject
+    lateinit var compositeSubscriptionAddOnCheckbox: CompositeSubscription
 
     private var toasterErrorAkamai: Snackbar? = null
 
@@ -349,12 +368,16 @@ class ShipmentFragment :
         hideLoading()
     }
 
+    private fun onDestroyViewBinding() {
+        val countDownTimer = binding?.partialCountdown?.countDown?.timer
+        countDownTimer?.cancel()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         toasterThrottleSubscription?.unsubscribe()
         shippingCourierBottomsheet = null
-        val countDownTimer = binding?.partialCountdown?.countDown?.timer
-        countDownTimer?.cancel()
+        onDestroyViewBinding()
         shipmentViewModel.detachView()
     }
 
@@ -509,6 +532,10 @@ class ShipmentFragment :
             REQUEST_CODE_UPSELL -> {
                 onResultFromUpsell(data)
             }
+
+            REQUEST_CODE_ADD_ON_PRODUCT_SERVICE_BOTTOMSHEET -> {
+                onResultFromAddOnProductBottomSheet(resultCode, data)
+            }
         }
     }
     // endregion
@@ -529,7 +556,7 @@ class ShipmentFragment :
         activity?.window?.decorView?.setBackgroundColor(
             ContextCompat.getColor(
                 activity,
-                com.tokopedia.unifyprinciples.R.color.Unify_N50
+                com.tokopedia.unifyprinciples.R.color.Unify_NN50
             )
         )
     }
@@ -858,6 +885,7 @@ class ShipmentFragment :
             isInitialRender,
             isReloadAfterPriceChangeHigher
         )
+        shipmentAdapter.updateInsuranceTncVisibility()
     }
 
     fun stopTrace() {
@@ -2220,7 +2248,11 @@ class ShipmentFragment :
 
     override fun onProcessToPayment() {
         showLoading()
-        shipmentAdapter.checkDropshipperValidation()
+        if (shipmentViewModel.isAnyProductHasAddOnsProduct) {
+            shipmentViewModel.saveAddOnsProductBeforeCheckout()
+        } else {
+            shipmentAdapter.checkDropshipperValidation()
+        }
     }
 
     private fun onResultFromPayment(resultCode: Int, data: Intent?) {
@@ -3120,6 +3152,9 @@ class ShipmentFragment :
                                 if (shipmentCartItemModel.voucherLogisticItemUiModel != null) {
                                     // remove previous logistic promo code
                                     order.codes.remove(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)
+                                } else if (courierItemData.selectedShipper.logPromoCode != null) {
+                                    // remove previous logistic promo code
+                                    order.codes.remove(courierItemData.selectedShipper.logPromoCode)
                                 }
                                 order.codes.add(selectedShipper.logPromoCode!!)
                                 order.boCode = selectedShipper.logPromoCode!!
@@ -3319,9 +3354,11 @@ class ShipmentFragment :
             binding?.partialCountdown?.tvCountDown?.text = timer.timerDescription
             binding?.partialCountdown?.countDown?.remainingMilliseconds = diff
             binding?.partialCountdown?.countDown?.onFinish = {
-                val dialog =
-                    newInstance(timer, checkoutAnalyticsCourierSelection, this@ShipmentFragment)
-                dialog.show(fragmentManager!!, "expired dialog")
+                fragmentManager?.let { fm ->
+                    val dialog =
+                        newInstance(timer, checkoutAnalyticsCourierSelection, this@ShipmentFragment)
+                    dialog.show(fm, "expired dialog")
+                }
             }
         }
     }
@@ -3543,7 +3580,7 @@ class ShipmentFragment :
             val saveAddOnStateResult =
                 data.getParcelableExtra<SaveAddOnStateResult>(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA_RESULT)
             if (saveAddOnStateResult != null) {
-                shipmentViewModel.updateAddOnProductLevelDataBottomSheet(saveAddOnStateResult)
+                shipmentViewModel.updateAddOnGiftingProductLevelDataBottomSheet(saveAddOnStateResult)
             }
         }
     }
@@ -3553,17 +3590,17 @@ class ShipmentFragment :
             val saveAddOnStateResult =
                 data.getParcelableExtra<SaveAddOnStateResult>(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA_RESULT)
             if (saveAddOnStateResult != null) {
-                shipmentViewModel.updateAddOnOrderLevelDataBottomSheet(saveAddOnStateResult)
+                shipmentViewModel.updateAddOnGiftingOrderLevelDataBottomSheet(saveAddOnStateResult)
             }
         }
     }
 
     override fun openAddOnProductLevelBottomSheet(
         cartItemModel: CartItemModel,
-        addOnWordingModel: AddOnWordingModel?
+        addOnWordingModel: AddOnGiftingWordingModel?
     ) {
         if (activity != null) {
-            val addOnsDataModel = cartItemModel.addOnProductLevelModel
+            val addOnsDataModel = cartItemModel.addOnGiftingProductLevelModel
             val addOnBottomSheetModel = addOnsDataModel.addOnsBottomSheetModel
 
             // No need to open add on bottom sheet if action = 0
@@ -3574,7 +3611,7 @@ class ShipmentFragment :
                 unavailableBottomSheetData =
                     mapUnavailableBottomSheetProductLevelData(addOnBottomSheetModel, cartItemModel)
             }
-            if (cartItemModel.addOnProductLevelModel.status == ADD_ON_STATUS_ACTIVE) {
+            if (cartItemModel.addOnGiftingProductLevelModel.status == ADD_ON_STATUS_ACTIVE) {
                 availableBottomSheetData = mapAvailableBottomSheetProductLevelData(
                     addOnWordingModel!!,
                     cartItemModel
@@ -3583,7 +3620,8 @@ class ShipmentFragment :
             val addOnProductData = mapAddOnBottomSheetParam(
                 addOnsDataModel,
                 availableBottomSheetData,
-                unavailableBottomSheetData
+                unavailableBottomSheetData,
+                isOneClickShipment
             )
             val intent =
                 RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.ADD_ON_GIFTING)
@@ -3596,7 +3634,7 @@ class ShipmentFragment :
 
     override fun openAddOnOrderLevelBottomSheet(
         cartItemModel: ShipmentCartItemModel,
-        addOnWordingModel: AddOnWordingModel?
+        addOnWordingModel: AddOnGiftingWordingModel?
     ) {
         if (activity != null) {
             val addOnsDataModel = cartItemModel.addOnsOrderLevelModel
@@ -3621,7 +3659,8 @@ class ShipmentFragment :
             val addOnProductData = mapAddOnBottomSheetParam(
                 addOnsDataModel,
                 availableBottomSheetData,
-                unavailableBottomSheetData
+                unavailableBottomSheetData,
+                isOneClickShipment
             )
             val intent =
                 RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.ADD_ON_GIFTING)
@@ -3860,6 +3899,77 @@ class ShipmentFragment :
     private fun addShippingCompletionTicker(isEligibleNewShippingExperience: Boolean) {
         if (isEligibleNewShippingExperience) {
             shipmentAdapter.updateShippingCompletionTickerVisibility()
+        }
+    }
+
+    override fun onCheckboxAddonProductListener(isChecked: Boolean, addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel, bindingAdapterPosition: Int) {
+        if (isChecked) {
+            addOnProductDataItemModel.status = ADD_ON_PRODUCT_STATUS_CHECK
+        } else {
+            addOnProductDataItemModel.status = ADD_ON_PRODUCT_STATUS_UNCHECK
+        }
+        cartItemModel.addOnProduct.listAddOnProductData.forEach {
+            if (it.uniqueId == addOnProductDataItemModel.uniqueId) {
+                it.status = addOnProductDataItemModel.status
+            }
+        }
+        shipmentViewModel.saveAddOnsProduct(cartItemModel)
+        shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
+        shipmentAdapter.updateSubtotal()
+
+        checkoutAnalyticsCourierSelection.eventClickAddOnsProductServiceWidget(addOnProductDataItemModel.type, cartItemModel.productId.toString(), isChecked)
+    }
+
+    override fun onClickAddonProductInfoIcon(addOnDataInfoLink: String) {
+        RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=$addOnDataInfoLink")
+    }
+
+    override fun onClickSeeAllAddOnProductService(cartItemModel: CartItemModel) {
+        // tokopedia://addon/2148784281/?cartId=123123&selectedAddonIds=111,222,333&source=cart&warehouseId=789789&isTokocabang=false
+        val productId = cartItemModel.productId
+        val cartId = cartItemModel.cartId
+
+        val addOnIds = arrayListOf<Long>()
+        val deselectAddOnIds = arrayListOf<Long>()
+
+        cartItemModel.addOnProduct.listAddOnProductData.forEach { addOnItem ->
+            if (addOnItem.status == ADD_ON_PRODUCT_STATUS_CHECK) {
+                addOnIds.add(addOnItem.id)
+            } else if (addOnItem.status == ADD_ON_PRODUCT_STATUS_UNCHECK) deselectAddOnIds.add(addOnItem.id)
+        }
+
+        val price: Double
+        val discountedPrice: Double
+        if (cartItemModel.campaignId == 0) {
+            price = cartItemModel.price
+            discountedPrice = cartItemModel.price
+        } else {
+            price = cartItemModel.originalPrice
+            discountedPrice = cartItemModel.price
+        }
+
+        val applinkAddon = ApplinkConst.ADDON.replace(AddOnConstant.QUERY_PARAM_ADDON_PRODUCT, productId.toString())
+        val applink = UriUtil.buildUriAppendParams(
+            applinkAddon,
+            mapOf(
+                AddOnConstant.QUERY_PARAM_CART_ID to cartId,
+                AddOnConstant.QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds.toString().replace("[", "").replace("]", ""),
+                AddOnConstant.QUERY_PARAM_DESELECTED_ADDON_IDS to deselectAddOnIds.toString().replace("[", "").replace("]", ""),
+                AddOnConstant.QUERY_PARAM_PAGE_ATC_SOURCE to SOURCE_NORMAL_CHECKOUT,
+                ApplinkConstInternalMechant.QUERY_PARAM_WAREHOUSE_ID to cartItemModel.warehouseId,
+                AddOnConstant.QUERY_PARAM_IS_TOKOCABANG to cartItemModel.isTokoCabang,
+                AddOnConstant.QUERY_PARAM_CATEGORY_ID to cartItemModel.productCatId,
+                AddOnConstant.QUERY_PARAM_SHOP_ID to cartItemModel.shopId,
+                AddOnConstant.QUERY_PARAM_QUANTITY to cartItemModel.quantity,
+                AddOnConstant.QUERY_PARAM_PRICE to price.toBigDecimal().toPlainString().removeSingleDecimalSuffix(),
+                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toBigDecimal().toPlainString().removeSingleDecimalSuffix()
+            )
+        )
+
+        checkoutAnalyticsCourierSelection.eventClickLihatSemuaAddOnsProductServiceWidget()
+        activity?.let {
+            val intent = RouteManager.getIntent(it, applink)
+            startActivityForResult(intent, REQUEST_CODE_ADD_ON_PRODUCT_SERVICE_BOTTOMSHEET)
         }
     }
     // endregion
@@ -4114,6 +4224,7 @@ class ShipmentFragment :
     }
     // endregion
 
+    // region platform fee
     override fun checkPlatformFee() {
         if (shipmentViewModel.getShipmentPlatformFeeData().isEnable) {
             val platformFeeModel = shipmentViewModel.shipmentCostModel.value.dynamicPlatformFee
@@ -4203,6 +4314,73 @@ class ShipmentFragment :
         hideLoaderTotalPayment()
         updateCost()
     }
+    // endregion
+
+    // region addons product service
+    fun handleOnSuccessSaveAddOnProduct() {
+        shipmentAdapter.checkDropshipperValidation()
+    }
+
+    override fun addOnProductServiceImpression(addOnType: Int, productId: String) {
+        checkoutAnalyticsCourierSelection.eventViewAddOnsProductServiceWidget(addOnType, productId)
+    }
+
+    private fun onResultFromAddOnProductBottomSheet(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            val addOnProductDataResult = data?.getParcelableExtra(AddOnExtraConstant.EXTRA_ADDON_PAGE_RESULT) ?: AddOnPageResult()
+
+            var isProteksiProdukUpdated = false
+            if (addOnProductDataResult.aggregatedData.isGetDataSuccess) {
+                val cartIdAddOn = addOnProductDataResult.cartId
+                val needUpdateAddOnItem = shipmentAdapter.getAddOnProductServicePosition(cartIdAddOn)
+                var updatedCartItemModel = needUpdateAddOnItem.second
+
+                for (addOnUiModel in addOnProductDataResult.aggregatedData.selectedAddons) {
+                    needUpdateAddOnItem.second?.addOnProduct?.listAddOnProductData?.forEach { addOnExisting ->
+                        if (addOnExisting.type == addOnUiModel.addOnType) {
+                            addOnExisting.apply {
+                                id = addOnUiModel.id.toLongOrZero()
+                                uniqueId = addOnUiModel.uniqueId
+                                price = addOnUiModel.price.toDouble()
+                                infoLink = addOnUiModel.eduLink
+                                name = addOnUiModel.name
+                                type = addOnUiModel.addOnType
+                                status = addOnUiModel.getSaveAddonSelectedStatus().value
+                            }
+                        }
+                    }
+
+                    if (addOnUiModel.addOnType == PRODUCT_PROTECTION_INSURANCE_TYPE) {
+                        isProteksiProdukUpdated = true
+                        updatedCartItemModel = if (addOnUiModel.getSaveAddonSelectedStatus().value == ADD_ON_PRODUCT_STATUS_CHECK ||
+                            addOnUiModel.getSaveAddonSelectedStatus().value == ADD_ON_PRODUCT_STATUS_MANDATORY
+                        ) {
+                            needUpdateAddOnItem.second?.copy(
+                                isProtectionOptIn = true
+                            )
+                        } else {
+                            needUpdateAddOnItem.second?.copy(
+                                isProtectionOptIn = false
+                            )
+                        }
+                    }
+                }
+
+                if (isProteksiProdukUpdated) {
+                    updatedCartItemModel?.let { shipmentAdapter.onCheckPurchaseProtection(needUpdateAddOnItem.first, it) }
+                } else {
+                    onNeedUpdateViewItem(needUpdateAddOnItem.first)
+                }
+                updateCost()
+                shipmentAdapter.updateSubtotal()
+            } else {
+                view?.let { v ->
+                    Toaster.build(v, addOnProductDataResult.aggregatedData.getDataErrorMessage, type = Toaster.TYPE_ERROR).show()
+                }
+            }
+        }
+    }
+    // endregion
 
     companion object {
         private const val REQUEST_CODE_EDIT_ADDRESS = 11
@@ -4210,6 +4388,7 @@ class ShipmentFragment :
         private const val REQUEST_CODE_PROMO = 954
         const val REQUEST_CODE_UPLOAD_PRESCRIPTION = 10021
         const val REQUEST_CODE_MINI_CONSULTATION = 10022
+        const val REQUEST_CODE_ADD_ON_PRODUCT_SERVICE_BOTTOMSHEET = 10033
         private const val REQUEST_CODE_UPSELL = 777
         private const val ADD_ON_STATUS_ACTIVE = 1
         private const val ADD_ON_STATUS_DISABLE = 2

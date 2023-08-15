@@ -109,7 +109,7 @@ class SearchBarView (
         binding.editText.setHintTextColor(
             ContextCompat.getColor(
                 context,
-                com.tokopedia.unifyprinciples.R.color.Unify_N700_32
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950_32
             )
         )
     }
