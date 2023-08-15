@@ -14,6 +14,7 @@ import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.TagViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.TagRecommendationListAdapter
 import com.tokopedia.play_common.viewcomponent.ViewComponent
+import com.tokopedia.play.broadcaster.R
 
 /**
  * Created by jegul on 18/02/21
@@ -41,6 +42,13 @@ class TagListViewComponent(
 
     override fun onTagClicked(tag: PlayTagItem) {
         listener.onTagClicked(this, tag)
+    }
+
+    fun setDescription(tag: PlayTagUiModel) {
+        binding.tvBroSelectTagDescription.text = getString(
+            R.string.play_shorts_content_tagging_description_template,
+            tag.maxTags
+        )
     }
 
     fun setTags(tags: List<PlayTagItem>) {
