@@ -63,7 +63,7 @@ data class Product(
     var addOnProduct: AddOnProductDataModel = AddOnProductDataModel(),
 
     // bmgm
-    var isBMGMItem: Boolean = false,
+    var isBmgmItem: Boolean = false,
     var bmgmIconUrl: String = "",
     var bmgmTitle: String = "",
     var bmgmItemPosition: Int = 0,

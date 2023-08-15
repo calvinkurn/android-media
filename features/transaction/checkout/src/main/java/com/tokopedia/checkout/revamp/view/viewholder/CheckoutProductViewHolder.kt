@@ -25,6 +25,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.getBitmapImageUrl
@@ -129,28 +130,6 @@ class CheckoutProductViewHolder(
         renderAddOnGiftingProductLevel(product)
     }
 
-    private fun renderBMGMItem(product: CheckoutProductModel) {
-        hideProductViews()
-        hideBundleViews()
-        renderGroupInfo(product)
-        renderShopInfo(product)
-
-        with(bmgmBinding) {
-//            ivProductBmgmImage.setImage()
-            tvProductBmgmName.text = "Product Name"
-            tvVariantBmgm.text = "Product Variant"
-            tvCheckoutBmgmPrice.text = "Rp 123.456.789"
-            tvProductBmgmNote.text = "Product Note"
-
-            if (product.variant.isNotBlank()) {
-                tvVariantBmgm.text = product.variant
-                tvVariantBmgm.isVisible = true
-            } else {
-                tvVariantBmgm.isVisible = false
-            }
-        }
-    }
-
     private fun hideProductViews() {
         productBinding.apply {
             ivProductImage.isVisible = false
@@ -225,24 +204,59 @@ class CheckoutProductViewHolder(
         }
     }
 
-    // TODO: [Misael] taro fungsi render disini biar rapih
+    private fun renderBMGMItem(product: CheckoutProductModel) {
+        hideProductViews()
+        hideBundleViews()
+        renderGroupInfo(product)
+        renderBMGMGroupInfo(product)
+        renderShopInfo(product)
+
+        with(bmgmBinding) {
+            ivBmgmProductImage.setImageUrl(product.imageUrl)
+            tvBmgmProductName.text = "Product Name"
+            tvBmgmProductPrice.text = "Rp 123.456.789"
+            tvBmgmOptionalNoteToSeller.text = "Product Note"
+
+            if (product.ethicalDrugDataModel.needPrescription && product.ethicalDrugDataModel.iconUrl.isNotEmpty()) {
+                product.ethicalDrugDataModel.iconUrl.getBitmapImageUrl(productBinding.root.context) {
+                    try {
+                        productBinding.tvProductName.text = SpannableStringBuilder("  ${product.name}").apply {
+                            setSpan(ImageSpan(productBinding.root.context, it, DynamicDrawableSpan.ALIGN_CENTER), 0, 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+                        }
+                    } catch (t: Throwable) {
+                        t.printStackTrace()
+                    }
+                }
+            }
+
+            val priceInRp =
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(product.price, false)
+                    .removeDecimalSuffix()
+            val qty = product.quantity
+            productBinding.tvProductPrice.text = "$qty x $priceInRp"
+
+            tvBmgmVariant.shouldShowWithAction(product.variant.isNotBlank()) {
+                tvBmgmVariant.text = "Product Variant"
+            }
+            tvBmgmOptionalNoteToSeller.shouldShowWithAction(product.noteToSeller.isNotEmpty()) {
+                tvBmgmOptionalNoteToSeller.text = "\"${product.noteToSeller}\""
+            }
+
+            renderAddOnBMGM(product)
+            renderAddOnGiftingProductLevel(product)
+        }
+    }
 
     private fun hideBMGMViews() {
-        // TODO: [Misael] Maybe call this function on renderBundleItem and renderProductItem
         with(bmgmBinding) {
-            tvCheckoutBmgm.hide()
-            tvCheckoutBmgmSeparator.hide()
-            tvProductBmgmName.hide()
-            tvCheckoutBmgmPrice.hide()
-            vBmgmProductSeparator.hide()
-            ivProductBmgmImage.hide()
-            tvProductBmgmName.hide()
-            tvVariantBmgm.hide()
-            tvProductBmgmNote.hide()
-            // TODO: [Misael] Check if need to delet
+            ivBmgmProductImage.hide()
+            tvBmgmProductName.hide()
+            tvBmgmVariant.hide()
+            tvBmgmProductPrice.hide()
+            tvBmgmOptionalNoteToSeller.hide()
             tvCheckoutBmgmAddons.hide()
             tvCheckoutBmgmAddonsSeeAll.hide()
-            llAddonProductBmgmItems.hide()
+            llAddonBmgmProductItems.hide()
         }
     }
 
@@ -289,7 +303,6 @@ class CheckoutProductViewHolder(
             } else {
                 binding.imgFreeShipping.isVisible = false
             }
-            renderBMGMGroupInfo(product)
         } else {
             binding.vDividerOrder.isVisible = false
             binding.tvCheckoutOrderNumber.isVisible = false
@@ -302,7 +315,7 @@ class CheckoutProductViewHolder(
 
     private fun renderBMGMGroupInfo(product: CheckoutProductModel) {
         with(binding) {
-            if (product.isBMGMItem) {
+            if (product.shouldShowBmgmInfo) {
                 ivCheckoutBmgmBadge.setImageUrl(product.bmgmIconUrl)
                 tvCheckoutBmgmTitle.text = product.bmgmTitle
                 ivCheckoutBmgmDetail.setOnClickListener {
@@ -493,6 +506,87 @@ class CheckoutProductViewHolder(
                         addon.type,
                         product.productId.toString()
                     )
+                }
+            }
+        }
+    }
+
+    private fun renderAddOnBMGM(product: CheckoutProductModel) {
+        with(bmgmBinding) {
+            val addOnProduct = product.addOnProduct
+            if (addOnProduct.listAddOnProductData.isEmpty()) {
+                tvCheckoutBmgmAddons.gone()
+                tvCheckoutBmgmAddonsSeeAll.gone()
+                llAddonBmgmProductItems.gone()
+            } else {
+                llAddonBmgmProductItems.removeAllViews()
+                if (addOnProduct.bottomsheet.isShown) {
+                    tvCheckoutBmgmAddons.text = addOnProduct.title
+                    tvCheckoutBmgmAddonsSeeAll.apply {
+                        visible()
+                        setOnClickListener {
+                            listener.onClickSeeAllAddOnProductService(product)
+                        }
+                    }
+                } else {
+                    tvCheckoutBmgmAddons.gone()
+                    tvCheckoutBmgmAddonsSeeAll.gone()
+                }
+                val layoutInflater = LayoutInflater.from(itemView.context)
+                addOnProduct.listAddOnProductData.forEach { addon ->
+                    if (addon.name.isNotEmpty()) {
+                        val addOnView =
+                            ItemAddOnProductBinding.inflate(layoutInflater, productBinding.llAddonProductItems, false)
+                        addOnView.apply {
+                            // TODO: [Misael ini sebelumnya di comment (ngga ada addon.iconUrl jg), tanya Hansen nnti
+                            icProductAddon.setImageUrl(addon.iconUrl)
+                            tvProductAddonName.text = SpannableString(addon.name).apply {
+                                setSpan(UnderlineSpan(), 0, addon.name.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+                            }
+                            tvProductAddonPrice.text = " (${CurrencyFormatUtil
+                                .convertPriceValueToIdrFormat(addon.price, false)
+                                .removeDecimalSuffix()})"
+                            cbProductAddon.setOnCheckedChangeListener { _, _ -> }
+                            when (addon.status) {
+                                AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK -> {
+                                    cbProductAddon.isChecked = true
+                                    cbProductAddon.isEnabled = true
+                                }
+                                AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY -> {
+                                    cbProductAddon.isChecked = true
+                                    cbProductAddon.isEnabled = false
+                                }
+                                else -> {
+                                    cbProductAddon.isChecked = false
+                                    cbProductAddon.isEnabled = true
+                                }
+                            }
+                            cbProductAddon.skipAnimation()
+                            cbProductAddon.setOnCheckedChangeListener { _, isChecked ->
+                                delayChangeCheckboxAddOnState?.cancel()
+                                delayChangeCheckboxAddOnState = GlobalScope.launch(Dispatchers.Main) {
+                                    delay(DEBOUNCE_TIME_ADDON)
+                                    if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
+                                        listener.onCheckboxAddonProductListener(
+                                            isChecked,
+                                            addon,
+                                            product,
+                                            bindingAdapterPosition
+                                        )
+                                    }
+                                }
+                            }
+                            tvProductAddonName.setOnClickListener {
+                                listener.onClickAddonProductInfoIcon(addon.infoLink)
+                            }
+                        }
+                        llAddonBmgmProductItems.addView(addOnView.root)
+                        llAddonBmgmProductItems.visible()
+                        listener.onImpressionAddOnProductService(
+                            addon.type,
+                            product.productId.toString()
+                        )
+                    }
                 }
             }
         }

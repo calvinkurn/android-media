@@ -413,22 +413,18 @@ class ShipmentMapper @Inject constructor() {
                         bundleId = "0"
                     }
                     if (cartDetail.cartDetailInfo.cartDetailType.lowercase() == CART_DETAIL_TYPE_BMGM) {
-                        isBMGMItem = true
+                        // TODO: [Misael] Map bmgm products
+                        isBmgmItem = true
                         bmgmIconUrl = cartDetail.cartDetailInfo.bmgm.offerIcon
-                        for (tier in cartDetail.cartDetailInfo.bmgm.tiersApplied) {
-                            if (tier.listProduct.any { it.productId == productId }) {
-                                bmgmTitle = tier.tierMessage
-                            }
-                        }
+                        bmgmTitle = cartDetail.cartDetailInfo.bmgm.offerName
                         bmgmItemPosition = if (cartDetail.products.firstOrNull()?.productId == productId) {
                             BMGM_ITEM_HEADER
                         } else {
                             BMGM_ITEM_DEFAULT
                         }
                         bmgmTotalDiscount = cartDetail.cartDetailInfo.bmgm.totalDiscount
-                        // TODO: [Misael] Map bmgm products
                     } else {
-                        isBMGMItem = false
+                        isBmgmItem = false
                     }
                     addOnGiftingProduct = mapAddOnsGiftingData(product.addOns)
                     ethicalDrugs = mapEthicalDrugData(product.ethicalDrugResponse)

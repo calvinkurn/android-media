@@ -522,10 +522,11 @@ class CheckoutDataConverter @Inject constructor() {
             freeShippingBadgeUrl = groupShop.shipmentInformationData.freeShippingGeneral.badgeUrl,
             isFreeShippingPlus = groupShop.shipmentInformationData.freeShippingGeneral.isBoTypePlus(),
             shouldShowGroupInfo = index == 0,
-            isBMGMItem = product.isBMGMItem,
+            isBMGMItem = product.isBmgmItem,
             bmgmTitle = product.bmgmTitle,
             bmgmIconUrl = product.bmgmIconUrl,
-            bmgmTotalDiscount = product.bmgmTotalDiscount
+            bmgmTotalDiscount = product.bmgmTotalDiscount,
+            shouldShowBmgmInfo = product.bmgmItemPosition == BMGM_ITEM_HEADER
         )
     }
 
@@ -540,5 +541,7 @@ class CheckoutDataConverter @Inject constructor() {
         private const val PRIME_ADDRESS = 2
         private const val MERCHANT_VOUCHER_TYPE = "merchant"
         private const val LOGISTIC_VOUCHER_TYPE = "logistic"
+
+        private const val BMGM_ITEM_HEADER = 1
     }
 }
