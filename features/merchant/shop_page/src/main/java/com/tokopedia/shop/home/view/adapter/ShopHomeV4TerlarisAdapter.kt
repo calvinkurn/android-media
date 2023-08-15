@@ -6,14 +6,15 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.shop.R
-import com.tokopedia.shop.home.util.loadImageRounded
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeV4TerlarisViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeV4TerlarisViewHolder.Companion.PRODUCT_THREE
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
 class ShopHomeV4TerlarisAdapter(
@@ -95,21 +96,21 @@ class ShopHomeV4TerlarisAdapter(
                 productContainer1?.setOnClickListener {
                     listener.onProductClick(productId = productListData[0].id)
                 }
-                productImg1?.loadImageRounded(url = productListData[0].imageUrl.orEmpty())
+                ImageHandler.loadImageRounded2(itemView.context, productImg1, productListData[0].imageUrl.orEmpty(), 8.toPx().toFloat())
                 productName1?.text = productListData[0].name
                 productPrice1?.text = productListData[0].displayedPrice
                 productRank1?.text = rank[0].toString()
                 productContainer2?.setOnClickListener {
                     listener.onProductClick(productId = productListData[1].id)
                 }
-                productImg2?.loadImageRounded(url = productListData[1].imageUrl.orEmpty())
+                ImageHandler.loadImageRounded2(itemView.context, productImg2, productListData[1].imageUrl.orEmpty(), 8.toPx().toFloat())
                 productName2?.text = productListData[1].name
                 productPrice2?.text = productListData[1].displayedPrice
                 productRank2?.text = rank[1].toString()
                 productContainer3?.setOnClickListener {
                     listener.onProductClick(productId = productListData[2].id)
                 }
-                productImg3?.loadImageRounded(url = productListData[2].imageUrl.orEmpty())
+                ImageHandler.loadImageRounded2(itemView.context, productImg3, productListData[2].imageUrl.orEmpty(), 8.toPx().toFloat())
                 productName3?.text = productListData[2].name
                 productPrice3?.text = productListData[2].displayedPrice
                 productRank3?.text = rank[2].toString()

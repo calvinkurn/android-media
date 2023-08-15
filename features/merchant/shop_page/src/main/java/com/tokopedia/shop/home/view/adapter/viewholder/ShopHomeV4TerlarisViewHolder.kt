@@ -8,13 +8,14 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.LayoutShopHomeV4TerlarisWidgetBinding
-import com.tokopedia.shop.home.util.loadImageRounded
 import com.tokopedia.shop.home.view.adapter.ShopHomeV4TerlarisAdapter
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHomeV4TerlarisViewHolder(
@@ -119,21 +120,21 @@ class ShopHomeV4TerlarisViewHolder(
             prodcutCard1?.setOnClickListener {
                 listener.onProductClick(productList[0][0].id)
             }
-            productImg1?.loadImageRounded(url = productList[0][0].imageUrl.orEmpty())
+            ImageHandler.loadImageRounded2(itemView.context, productImg1, productList[0][0].imageUrl.orEmpty(), 8.toPx().toFloat())
             productName1?.text = productList[0][0].name
             productPrice1?.text = productList[0][0].displayedPrice
             productRank1?.text = "1"
             prodcutCard2?.setOnClickListener {
                 listener.onProductClick(productList[0][1].id)
             }
-            productImg2?.loadImageRounded(url = productList[0][1].imageUrl.orEmpty())
+            ImageHandler.loadImageRounded2(itemView.context, productImg2, productList[0][1].imageUrl.orEmpty(), 8.toPx().toFloat())
             productName2?.text = productList[0][1].name
             productPrice2?.text = productList[0][1].displayedPrice
             productRank2?.text = "2"
             prodcutCard3?.setOnClickListener {
                 listener.onProductClick(productList[0][2].id)
             }
-            productImg3?.loadImageRounded(url = productList[0][2].imageUrl.orEmpty())
+            ImageHandler.loadImageRounded2(itemView.context, productImg3, productList[0][2].imageUrl.orEmpty(), 8.toPx().toFloat())
             productName3?.text = productList[0][2].name
             productPrice3?.text = productList[0][2].displayedPrice
             productRank3?.text = "3"
