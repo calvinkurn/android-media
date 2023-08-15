@@ -1,5 +1,6 @@
 package com.tokopedia.stories.view.utils
 
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
@@ -14,6 +15,7 @@ class StoriesSharingComponent (rootView: View) {
     private val sharingSheet = UniversalShareBottomSheet.createInstance(rootView).apply {
         init(object : ShareBottomsheetListener {
             override fun onShareOptionClicked(shareModel: ShareModel) {
+                Log.d("hello shareModel", shareModel.toString())
             }
 
             override fun onCloseOptionClicked() {
