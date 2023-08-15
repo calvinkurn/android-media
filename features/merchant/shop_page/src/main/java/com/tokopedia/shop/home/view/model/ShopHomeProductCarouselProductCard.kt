@@ -1,6 +1,6 @@
 package com.tokopedia.shop.home.view.model
 
-data class ShopHomeProductCarouselProductCardVerticalBanner(
+data class ShopHomeProductCarouselProductCard(
     val productId: String,
     val imageUrl: String,
     val name: String,

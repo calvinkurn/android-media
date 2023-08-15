@@ -11,14 +11,14 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopHomeProductCarouselProductInfoCardBinding
 import com.tokopedia.shop.databinding.ItemShopHomeProductCarouselVerticalBannerCardBinding
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselProductCardVerticalBanner
+import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselProductCard
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerItemType
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerVerticalBanner
 
 class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var items = mutableListOf<ShopHomeProductCarouselVerticalBannerItemType>()
-    private var onProductClick: (ShopHomeProductCarouselProductCardVerticalBanner) -> Unit = {}
+    private var onProductClick: (ShopHomeProductCarouselProductCard) -> Unit = {}
     private var onVerticalBannerClick: (ShopHomeProductCarouselVerticalBannerVerticalBanner) -> Unit = {}
 
     private var showProductInfo : Boolean = false
@@ -72,7 +72,7 @@ class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<RecyclerView.ViewHol
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: ShopHomeProductCarouselVerticalBannerItemType) {
-            val product = item as? ShopHomeProductCarouselProductCardVerticalBanner
+            val product = item as? ShopHomeProductCarouselProductCard
 
             product?.let {
                 binding.imgProduct.loadImage(product.imageUrl)
@@ -156,7 +156,7 @@ class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<RecyclerView.ViewHol
         diffResult.dispatchUpdatesTo(this)
     }
 
-    fun setOnProductClick(onProductClick: (ShopHomeProductCarouselProductCardVerticalBanner) -> Unit) {
+    fun setOnProductClick(onProductClick: (ShopHomeProductCarouselProductCard) -> Unit) {
         this.onProductClick = onProductClick
     }
 

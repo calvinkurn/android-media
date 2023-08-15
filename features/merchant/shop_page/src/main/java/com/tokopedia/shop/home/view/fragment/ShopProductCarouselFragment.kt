@@ -18,7 +18,7 @@ import com.tokopedia.shop.databinding.FragmentShopProductCarouselBinding
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.view.adapter.ShopHomeProductCarouselAdapter
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselProductCardVerticalBanner
+import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselProductCard
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerItemType
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerVerticalBanner
@@ -64,7 +64,7 @@ class ShopProductCarouselFragment : BaseDaggerFragment() {
     private val viewModel by lazy { viewModelProvider[ShopProductCarouselViewModel::class.java] }
 
     private var onMainBannerClick : (ShopHomeProductCarouselUiModel.Tab.ComponentList.Data) -> Unit = {}
-    private var onProductClick : (ShopHomeProductCarouselProductCardVerticalBanner) -> Unit = {}
+    private var onProductClick : (ShopHomeProductCarouselProductCard) -> Unit = {}
     private var onVerticalBannerClick : (ShopHomeProductCarouselVerticalBannerVerticalBanner) -> Unit = {}
 
     private var binding by autoClearedNullable<FragmentShopProductCarouselBinding>()
@@ -167,7 +167,7 @@ class ShopProductCarouselFragment : BaseDaggerFragment() {
         this.onVerticalBannerClick = onVerticalBannerClick
     }
 
-    fun setOnProductClick(onProductClick: (ShopHomeProductCarouselProductCardVerticalBanner) -> Unit) {
+    fun setOnProductClick(onProductClick: (ShopHomeProductCarouselProductCard) -> Unit) {
         this.onProductClick = onProductClick
     }
 

@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.shop.common.constant.ShopPageConstant
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselProductCardVerticalBanner
+import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselProductCard
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerItemType
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerVerticalBanner
@@ -81,7 +81,7 @@ class ShopProductCarouselViewModel @Inject constructor(
         shopId: String,
         userAddress: LocalCacheModel,
         firstWidget: ShopHomeProductCarouselUiModel.Tab.ComponentList.Data
-    ): List<ShopHomeProductCarouselProductCardVerticalBanner> {
+    ): List<ShopHomeProductCarouselProductCard> {
         val productLinkType = firstWidget.linkType
 
         val sortId = when (productLinkType) {
@@ -106,7 +106,7 @@ class ShopProductCarouselViewModel @Inject constructor(
         val response = getShopProductUseCase.executeOnBackground()
 
         val products = response.data.map { product ->
-            ShopHomeProductCarouselProductCardVerticalBanner(
+            ShopHomeProductCarouselProductCard(
                 product.productId,
                 product.primaryImage.thumbnail,
                 product.name,
