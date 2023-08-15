@@ -691,11 +691,19 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private fun autoScrollToPerformanceDashBoardBanner() {
         coachMark?.setStepListener(object : CoachMark2.OnStepListener {
             override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                if (coachMarkItem.title == getString(contentCommonR.string.performance_dashboard_coachmark_title)) {
+
+                val autoScrollPosition = if (coachMarkItem.title == getString(R.string.play_bro_banner_shorts_coachmark_title)) {
+                    val shortsEntryPointPosition = adapterBanner.getShortsEntryPointPosition()
+                    if (shortsEntryPointPosition != -1) shortsEntryPointPosition else return
+
+                } else if (coachMarkItem.title == getString(contentCommonR.string.performance_dashboard_coachmark_title)) {
                     val performanceDashboardPosition = adapterBanner.getPerformanceDashboardPosition()
-                    val autoScrollPosition = if (performanceDashboardPosition != -1) performanceDashboardPosition else return
-                    binding.rvBannerPreparation.smoothScrollToPosition(autoScrollPosition)
+                    if (performanceDashboardPosition != -1) performanceDashboardPosition else return
+                } else {
+                    return
                 }
+
+                binding.rvBannerPreparation.smoothScrollToPosition(autoScrollPosition)
             }
         })
     }
