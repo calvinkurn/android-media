@@ -1,27 +1,28 @@
 package com.tokopedia.promousage.view.custom
 
 import android.content.Context
+import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
-import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setTextColorCompat
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.promousage.R
-import com.tokopedia.promousage.databinding.PromoUsageVoucherCompoundViewBinding
-import com.tokopedia.promousage.domain.entity.list.PromoItem
+import com.tokopedia.promousage.databinding.PromoUsageItemPromoCompoundViewBinding
+import com.tokopedia.promousage.databinding.PromoUsageItemSubPromoInfoBinding
 import com.tokopedia.promousage.domain.entity.PromoItemBenefitDetail
+import com.tokopedia.promousage.domain.entity.PromoItemCardDetail
 import com.tokopedia.promousage.domain.entity.PromoItemInfo
 import com.tokopedia.promousage.domain.entity.PromoItemState
-import com.tokopedia.promousage.util.extension.grayscale
-import com.tokopedia.promousage.util.extension.removeGrayscale
+import com.tokopedia.promousage.domain.entity.list.PromoItem
+import com.tokopedia.promousage.util.extension.isGreyscale
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.toPx
 
@@ -31,293 +32,264 @@ class VoucherCompoundView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
-    private var binding: PromoUsageVoucherCompoundViewBinding? = null
+    private var binding: PromoUsageItemPromoCompoundViewBinding? = null
 
     init {
-        binding = PromoUsageVoucherCompoundViewBinding
+        binding = PromoUsageItemPromoCompoundViewBinding
             .inflate(LayoutInflater.from(context), this, true)
     }
 
     fun bind(promo: PromoItem) {
+        renderLoading(promo)
+        renderPromoBenefitType(promo)
+        renderPromoBenefitAmount(promo)
+        renderPromoQuota(promo)
+        renderPromoInfo(promo)
+        renderPromoBackground(promo)
+        renderPromoCheck(promo)
+        renderExpiryInfo(promo)
+        renderAdditionalInfo(promo)
+        renderPromoCode(promo)
+    }
+
+    private fun renderLoading(promo: PromoItem) {
         binding?.run {
-            handlePromoType(promo)
-            handleVoucherState(promo)
-            handleVoucherSource(promo)
-            handleVoucherQuota(promo.remainingPromoCount)
+            when (promo.state) {
+                is PromoItemState.Loading -> {
+                    topShimmer.visible()
+                    middleShimmer.visible()
+                    bottomShimmer.visible()
+                }
 
-            val promoItemInfos = promo.promoItemInfos.filter { it.type == PromoItemInfo.TYPE_PROMO_INFO }
-            if (promoItemInfos.size == 1) {
-                tpgPromoInfo.text = promoItemInfos.first().title
-            } else {
-                // TODO: Handle multiple promo info
+                else -> {
+                    topShimmer.gone()
+                    middleShimmer.gone()
+                    bottomShimmer.gone()
+                }
             }
+        }
+    }
 
-            val cardDetail = promo.cardDetails[0]
-            imgPromoIcon.loadImage(cardDetail.iconUrl)
-            imgPromoBackground.loadImage(cardDetail.backgroundUrl)
+    private fun renderPromoBenefitType(promo: PromoItem) {
+        binding?.run {
+            when (promo.state) {
+                is PromoItemState.Selected -> {
+                    val selectedResColorId = com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    tpgPromoBenefitType.setTextColorCompat(selectedResColorId)
+                }
 
-            imgCheckmark.isVisible = promo.state is PromoItemState.Selected
+                is PromoItemState.Disabled -> {
+                    val disabledResColorId = com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                    tpgPromoBenefitType.setTextColorCompat(disabledResColorId)
+                }
 
-            if (promo.expiryInfo.isNotBlank()) {
-                tpgPromoExpiryInfo.text = HtmlLinkHelper(context, promo.expiryInfo).spannedString
+                is PromoItemState.Ineligible -> {
+                    val ineligibleResColorId = com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                    tpgPromoBenefitType.setTextColorCompat(ineligibleResColorId)
+                }
+
+                else -> {
+                    val defaultTextColor = when (promo.benefitDetail.benefitType) {
+                        PromoItemBenefitDetail.BENEFIT_TYPE_CASHBACK -> com.tokopedia.unifyprinciples.R.color.Unify_BN500
+                        PromoItemBenefitDetail.BENEFIT_TYPE_DISCOUNT -> com.tokopedia.unifyprinciples.R.color.Unify_YN500
+                        PromoItemBenefitDetail.BENEFIT_TYPE_FREE_SHIPPING -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                        else -> com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                    }
+                    tpgPromoBenefitType.setTextColorCompat(defaultTextColor)
+                    val cardDetail = promo.cardDetails
+                        .firstOrNull { it.state == PromoItemCardDetail.TYPE_INITIAL }
+                    if (cardDetail != null && cardDetail.color.isNotBlank()) {
+                        val textColor = Color.parseColor(cardDetail.color)
+                        tpgPromoBenefitType.setTextColor(textColor)
+                    }
+                }
+            }
+            tpgPromoBenefitType.text = promo.benefitTypeStr
+            tpgPromoBenefitType.visible()
+        }
+    }
+
+    private fun renderPromoBenefitAmount(promo: PromoItem) {
+        binding?.run {
+            val defaultTextColorResId = when (promo.state) {
+                is PromoItemState.Disabled -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                is PromoItemState.Ineligible -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                else -> com.tokopedia.unifyprinciples.R.color.Unify_NN950
+            }
+            tpgPromoBenefitAmount.setTextColorCompat(defaultTextColorResId)
+            tpgPromoBenefitAmount.text = promo.benefitAmountStr
+            tpgPromoBenefitAmount.isVisible = promo.state !is PromoItemState.Loading
+        }
+    }
+
+    private fun renderPromoInfo(promo: PromoItem) {
+        binding?.run {
+            val promoItemInfos =
+                promo.promoItemInfos.filter { it.type == PromoItemInfo.TYPE_PROMO_INFO }
+            llPromoInfo.removeAllViews()
+            promoItemInfos.forEach { promoInfo ->
+                val promoInfoChildView = PromoUsageItemSubPromoInfoBinding
+                    .inflate(LayoutInflater.from(context))
+                promoInfoChildView.tpgPromoInfo.text =
+                    HtmlLinkHelper(context, promoInfo.title).spannedString
+                llPromoInfo.addView(promoInfoChildView.root)
+            }
+            llPromoInfo.isVisible = promo.state !is PromoItemState.Loading
+                && llPromoInfo.childCount.isMoreThanZero()
+        }
+    }
+
+    private fun renderPromoBackground(promo: PromoItem) {
+        binding?.run {
+            val cardDetail = when (promo.state) {
+                is PromoItemState.Selected -> {
+                    promo.cardDetails
+                        .firstOrNull { it.state == PromoItemCardDetail.TYPE_SELECTED }
+                }
+
+                else -> {
+                    promo.cardDetails
+                        .firstOrNull { it.state == PromoItemCardDetail.TYPE_INITIAL }
+                }
+            }
+            if (cardDetail != null) {
+                imgPromoIcon.loadImage(cardDetail.iconUrl)
+                imgPromoIcon.isGreyscale = promo.state is PromoItemState.Ineligible
+                    || promo.state is PromoItemState.Disabled
+                imgPromoIcon.visible()
+                imgPromoBackground.loadImage(cardDetail.backgroundUrl)
+                imgPromoBackground.isGreyscale = promo.state is PromoItemState.Ineligible
+                    || promo.state is PromoItemState.Disabled
+                imgPromoBackground.visible()
                 if (promo.state is PromoItemState.Selected) {
                     cardView.updateToSelectedState()
                 } else {
                     cardView.updateToNormalState()
                 }
-                tpgPromoExpiryInfo.isVisible = true
             } else {
-                tpgPromoExpiryInfo.isVisible = false
-            }
-
-            if (promo.state is PromoItemState.Ineligible) {
-                val clashingInfo = promo.clashingInfos.firstOrNull {
-                    promo.currentClashingPromoCodes.contains(it.code)
-                }
-                clashingInfo?.let {
-                    binding?.tpgPromoInfo?.text = it.message
-                    binding?.tpgPromoInfo?.isVisible = true
-                }
-            } else {
-                binding?.tpgPromoInfo?.isVisible = false
-            }
-
-            tpgPromoExpiryInfo.text = MethodChecker.fromHtml(
-                context?.getString(
-                    R.string.promo_voucher_placeholder_expired_date,
-                    promo.expiryInfo
-                )
-            )
-
-            if (promo.state is PromoItemState.Loading) {
-                tpgPromoBenefitAmount.gone()
-                tpgPromoInfo.gone()
-                topShimmer.visible()
-                middleShimmer.visible()
-                bottomShimmer.visible()
-            } else {
-                tpgPromoBenefitAmount.visible()
-                tpgPromoInfo.visible()
-                topShimmer.gone()
-                middleShimmer.gone()
-                bottomShimmer.gone()
+                imgPromoIcon.gone()
+                imgPromoBackground.gone()
             }
         }
     }
 
-    private fun handlePromoType(promo: PromoItem) {
-        when (promo.benefitDetail.benefitType) {
-            PromoItemBenefitDetail.BENEFIT_TYPE_CASHBACK -> handleCashback(promo)
-            PromoItemBenefitDetail.BENEFIT_TYPE_FREE_SHIPPING -> handleFreeShipping(promo)
-            PromoItemBenefitDetail.BENEFIT_TYPE_DISCOUNT -> handleDiscount(promo)
-        }
-    }
-
-    private fun handleCashback(promo: PromoItem) {
-        val voucherTypeTextColorResId = when(promo.state) {
-            is PromoItemState.Selected -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
-            is PromoItemState.Disabled -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
-            is PromoItemState.Ineligible -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
-            else -> com.tokopedia.unifyprinciples.R.color.Unify_BN500
-        }
-
+    private fun renderPromoCheck(promo: PromoItem) {
         binding?.run {
-            tpgPromoBenefitType.text = promo.benefitTypeStr
-            tpgPromoBenefitType.setTextColorCompat(voucherTypeTextColorResId)
-            tpgPromoBenefitAmount.text = promo.benefitAmountStr
-            tpgPromoBenefitAmount.setVoucherAmountTextColor(promo)
+            imgCheckmark.isVisible = promo.state is PromoItemState.Selected
         }
     }
 
-    private fun handleFreeShipping(promo: PromoItem) {
-        val voucherTypeTextColorResId = when(promo.state) {
-            is PromoItemState.Selected -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
-            is PromoItemState.Disabled -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
-            is PromoItemState.Ineligible -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
-            else -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
-        }
-
+    private fun renderExpiryInfo(promo: PromoItem) {
         binding?.run {
-            tpgPromoBenefitType.text = promo.benefitTypeStr
-            tpgPromoBenefitType.setTextColorCompat(voucherTypeTextColorResId)
-            tpgPromoBenefitAmount.text = promo.benefitAmountStr
-            tpgPromoBenefitAmount.setVoucherAmountTextColor(promo)
+            tpgPromoExpiryInfo.text = HtmlLinkHelper(context, promo.expiryInfo).spannedString
+            tpgPromoExpiryInfo.visible()
         }
     }
 
-    private fun handleDiscount(promo: PromoItem) {
-        val voucherTypeTextColorResId = when(promo.state) {
-            is PromoItemState.Selected -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
-            is PromoItemState.Disabled -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
-            is PromoItemState.Ineligible -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
-            else -> com.tokopedia.unifyprinciples.R.color.Unify_YN500
-        }
-
-        binding?.run {
-            tpgPromoBenefitType.text = promo.benefitTypeStr
-            tpgPromoBenefitType.setTextColorCompat(voucherTypeTextColorResId)
-            tpgPromoBenefitAmount.text = promo.benefitAmountStr
-            tpgPromoBenefitAmount.setVoucherAmountTextColor(promo)
-        }
-    }
-
-    private fun handleVoucherQuota(remainingQuota: Int) {
-        if (remainingQuota > 1) {
-            binding?.layoutRemainingQuotaRibbon?.visible()
-            binding?.tpgRemainingQuota?.text = context?.getString(
-                R.string.promo_voucher_placeholder_remaining_quota,
-                remainingQuota
-            )
-
-            updateVoucherTypeMarginTop(16.toPx())
-            updateCardViewMargin(5.toPx(), 8.toPx())
-        } else {
-            binding?.layoutRemainingQuotaRibbon?.gone()
-
-            updateVoucherTypeMarginTop(12.toPx())
-            updateCardViewMargin(0.toPx(), 0.toPx())
-        }
-    }
-
-    private fun handleVoucherSource(promo: PromoItem) {
-        binding?.run {
-            tpgPromoCode.text = if (promo.isAttempted) promo.code else ""
-            tpgPromoCode.isVisible = promo.isAttempted
-        }
-    }
-
-    private fun handleVoucherState(promo: PromoItem) {
+    private fun renderAdditionalInfo(promo: PromoItem) {
         binding?.run {
             when (promo.state) {
-                is PromoItemState.Loading -> {
-                    imgCheckmark.gone()
-                    imgPromoBackground.removeGrayscale()
-                    imgPromoIcon.removeGrayscale()
-
-                    tpgAdditionalInformation.gone()
-                    layoutActionable.gone()
-
-                    showLoadingAppearance()
-
-                    cardView.updateToNormalState()
+                is PromoItemState.Ineligible -> {
+                    val clashingInfo = promo.clashingInfos.firstOrNull {
+                        promo.currentClashingPromoCodes.contains(it.code)
+                    }
+                    if (clashingInfo != null && clashingInfo.message.isNotBlank()) {
+                        tpgAdditionalInfoMessage.text = clashingInfo.message
+                        tpgAdditionalInfoMessage
+                            .setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_YN600)
+                        iuAdditionalInfoIcon.gone()
+                        clAdditionalInfo.background = ContextCompat
+                            .getDrawable(
+                                context,
+                                R.drawable.promo_usage_shape_promo_bottom_info_clashing
+                            )
+                        clAdditionalInfo.visible()
+                    } else if (promo.message.isNotBlank()) {
+                        tpgAdditionalInfoMessage.text = promo.message
+                        tpgAdditionalInfoMessage
+                            .setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_YN600)
+                        iuAdditionalInfoIcon.gone()
+                        clAdditionalInfo.background = ContextCompat
+                            .getDrawable(
+                                context,
+                                R.drawable.promo_usage_shape_promo_bottom_info_clashing
+                            )
+                        clAdditionalInfo.visible()
+                    } else {
+                        clAdditionalInfo.gone()
+                    }
                 }
 
                 is PromoItemState.Normal -> {
-                    imgCheckmark.gone()
-                    imgPromoBackground.removeGrayscale()
-                    imgPromoIcon.removeGrayscale()
-
-                    tpgAdditionalInformation.gone()
-                    layoutActionable.gone()
-
-                    hideLoadingAppearance()
-
-                    cardView.updateToNormalState()
+                    if (promo.cta.text.isNotBlank()) {
+                        tpgAdditionalInfoMessage.text =
+                            HtmlLinkHelper(context, promo.cta.text).spannedString
+                        tpgAdditionalInfoMessage
+                            .setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+                        iuAdditionalInfoIcon.visible()
+                        clAdditionalInfo.background = ContextCompat
+                            .getDrawable(
+                                context,
+                                R.drawable.promo_usage_shape_promo_bottom_info_actionable
+                            )
+                        clAdditionalInfo.visible()
+                    }
                 }
 
-                is PromoItemState.Selected -> {
-                    imgCheckmark.visible()
-                    imgPromoBackground.removeGrayscale()
-                    imgPromoIcon.removeGrayscale()
-
-                    tpgAdditionalInformation.gone()
-                    layoutActionable.gone()
-
-                    hideLoadingAppearance()
-
-                    cardView.updateToSelectedState()
-                }
-
-                is PromoItemState.Disabled -> {
-                    imgCheckmark.gone()
-                    imgPromoBackground.grayscale()
-                    imgPromoIcon.grayscale()
-
-                    tpgAdditionalInformation.gone()
-                    layoutActionable.gone()
-
-                    hideLoadingAppearance()
-
-                    cardView.updateToNormalState()
-                }
-                
-                is PromoItemState.Ineligible -> {
-                    imgCheckmark.gone()
-                    imgPromoBackground.grayscale()
-                    imgPromoIcon.grayscale()
-
-                    tpgAdditionalInformation.text = promo.message
-                    tpgAdditionalInformation.visible()
-                    layoutActionable.gone()
-
-                    hideLoadingAppearance()
-
-                    cardView.updateToNormalState()
-                }
-                
-                is PromoItemState.Actionable -> {
-                    imgCheckmark.gone()
-                    imgPromoBackground.removeGrayscale()
-                    imgPromoIcon.removeGrayscale()
-
-                    tpgAdditionalInformation.gone()
-                    layoutActionable.visible()
-                    tpgActionableText.text = HtmlLinkHelper(context, promo.state.cta.text).spannedString
-
-                    hideLoadingAppearance()
-
-                    cardView.updateToNormalState()
+                else -> {
+                    clAdditionalInfo.gone()
                 }
             }
         }
     }
 
-    private fun TextView.setVoucherAmountTextColor(promo: PromoItem) {
-        val voucherAmountTextColorResId = when (promo.state) {
-            is PromoItemState.Disabled -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
-            is PromoItemState.Ineligible -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
-            else -> com.tokopedia.unifyprinciples.R.color.Unify_NN950
-        }
-        setTextColorCompat(voucherAmountTextColorResId)
-    }
-
-    private fun showLoadingAppearance() {
+    private fun renderPromoCode(promo: PromoItem) {
         binding?.run {
-            tpgPromoBenefitAmount.gone()
-            tpgPromoExpiryInfo.gone()
-            topShimmer.visible()
-            middleShimmer.visible()
-            bottomShimmer.visible()
+            tpgPromoCode.text = promo.code
+            tpgPromoCode.isVisible = promo.isAttempted && promo.code.isNotBlank()
         }
-    }
-
-    private fun hideLoadingAppearance() {
-        binding?.run {
-            tpgPromoBenefitAmount.visible()
-            tpgPromoExpiryInfo.visible()
-            topShimmer.gone()
-            middleShimmer.gone()
-            bottomShimmer.gone()
-        }
-    }
-
-    private fun updateVoucherTypeMarginTop(marginTop: Int) {
-        val layoutParams = binding?.tpgPromoBenefitType?.layoutParams as? ConstraintLayout.LayoutParams
-        layoutParams?.setMargins(0, marginTop, 0, 0)
-
-        binding?.tpgPromoBenefitType?.layoutParams = layoutParams
-        binding?.tpgPromoBenefitType?.requestLayout()
-    }
-
-    private fun updateCardViewMargin(marginStart: Int, marginTop: Int) {
-        val layoutParams = binding?.cardView?.layoutParams as? RelativeLayout.LayoutParams
-        layoutParams?.setMargins(marginStart, marginTop, 0, 0)
-
-        binding?.cardView?.layoutParams = layoutParams
-        binding?.cardView?.requestLayout()
     }
 
     override fun setOnClickListener(onClickListener: OnClickListener?) {
         binding?.cardView?.setOnClickListener(onClickListener)
+    }
+
+    private fun renderPromoQuota(promo: PromoItem) {
+        binding?.run {
+            if (promo.remainingPromoCount > 1) {
+                layoutRemainingQuotaRibbon.visible()
+                tpgRemainingQuota.text = context?.getString(
+                    R.string.promo_voucher_placeholder_remaining_quota,
+                    promo.remainingPromoCount
+                )
+                updatePromoBenefitTypeMargin(16.toPx())
+                updateCardViewMargin(5.toPx(), 8.toPx())
+            } else {
+                layoutRemainingQuotaRibbon.gone()
+                updatePromoBenefitTypeMargin(12.toPx())
+                updateCardViewMargin(0.toPx(), 0.toPx())
+            }
+        }
+    }
+
+    private fun updatePromoBenefitTypeMargin(marginTop: Int) {
+        binding?.run {
+            val layoutParams =
+                tpgPromoBenefitType.layoutParams as? ConstraintLayout.LayoutParams
+            layoutParams?.setMargins(0, marginTop, 0, 0)
+
+            tpgPromoBenefitType.layoutParams = layoutParams
+            tpgPromoBenefitType.requestLayout()
+        }
+    }
+
+    private fun updateCardViewMargin(marginStart: Int, marginTop: Int) {
+        binding?.run {
+            val layoutParams = cardView.layoutParams as? RelativeLayout.LayoutParams
+            layoutParams?.setMargins(marginStart, marginTop, 0, 0)
+
+            cardView.layoutParams = layoutParams
+            cardView.requestLayout()
+        }
     }
 }

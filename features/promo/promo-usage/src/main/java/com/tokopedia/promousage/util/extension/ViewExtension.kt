@@ -15,3 +15,13 @@ internal fun ImageView.grayscale() {
 internal fun ImageView.removeGrayscale() {
     this.colorFilter = null
 }
+
+internal var ImageView.isGreyscale: Boolean
+    get() = colorFilter != null
+    set(value) {
+        if (value) {
+            this.grayscale()
+        } else {
+            this.removeGrayscale()
+        }
+    }

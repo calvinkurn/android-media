@@ -591,6 +591,10 @@ object DummyData {
                     PromoItemInfo(
                         type = PromoItemInfo.TYPE_PROMO_INFO,
                         title = "Disesuaikan jika pilih Bebas Ongkir"
+                    ),
+                    PromoItemInfo(
+                        type = PromoItemInfo.TYPE_PROMO_INFO,
+                        title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
                 expiryInfo = "Berakhir dalam <a>3 jam</a>",
@@ -601,7 +605,7 @@ object DummyData {
                 isVisible = true,
                 cta = PromoCta(
                     type = "register_gpl_cicil",
-                    text = "Registrasi GPL Cicil",
+                    text = "<a href=\"\">Aktifkan GoPay Later Cicil</a> untuk pakai promo",
                     appLink = "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Fpaylater%2Fswitcher%3Ffrom%3Dpromo"
                 ),
                 couponType = listOf("gpl_cicil")
@@ -1006,7 +1010,7 @@ object DummyData {
                 messageSelected = "Kamu hemat Rp30.000 dari 2 promo!",
                 backgroundUrl = "https://images.tokopedia.net/img/Promo%20Recom%20Section@3x.png",
                 animationUrl = "https://assets.tokopedia.net/asts/android/shop_page/shop_campaign_tab_confetti.json",
-                selectedCodes = recommendedPromos.filter { it.state == PromoItemState.Selected }.map { it.code }
+                selectedCodes = recommendedPromos.filter { it.state == PromoItemState.Selected }.map { it.code },
             )
         )
         items.addAll(recommendedPromos)

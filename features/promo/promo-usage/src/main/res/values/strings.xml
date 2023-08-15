@@ -11,7 +11,6 @@
     <string name="promo_voucher_pay">Bayar</string>
     <string name="promo_voucher_back_to_shipment">Balik ke Pengiriman</string>
     <string name="promo_voucher_placeholder_buy">Beli (%d)</string>
-    <string name="promo_voucher_placeholder_expired_date">Berakhir dalam <![CDATA[<b>%s</b>]]></string>
     <string name="promo_voucher_placeholder_total_price">Rp%s</string>
     <string name="promo_voucher_placeholder_remaining_quota">Sisa %d</string>
     <string name="promo_voucher_placeholder_view_all_voucher">Lihat %d Promo Lainnya</string>
