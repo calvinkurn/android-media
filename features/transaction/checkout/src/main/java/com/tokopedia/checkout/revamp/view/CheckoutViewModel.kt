@@ -101,7 +101,7 @@ import javax.inject.Inject
 
 class CheckoutViewModel @Inject constructor(
     private val cartProcessor: CheckoutCartProcessor,
-    private val logisticProcessor: CheckoutLogisticProcessor,
+    internal val logisticProcessor: CheckoutLogisticProcessor,
     private val promoProcessor: CheckoutPromoProcessor,
     private val addOnProcessor: CheckoutAddOnProcessor,
     private val paymentProcessor: CheckoutPaymentProcessor,

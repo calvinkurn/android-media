@@ -7,6 +7,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellGroupModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderShipment
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageToaster
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerErrorModel
@@ -17,6 +18,7 @@ import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.logisticcart.shipping.model.CashOnDeliveryProduct
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.MerchantVoucherProductModel
 import com.tokopedia.logisticcart.shipping.model.OntimeDelivery
 import com.tokopedia.logisticcart.shipping.model.Product
@@ -30,8 +32,12 @@ import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.U
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.SuccessDataUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
+import com.tokopedia.unifycomponents.Toaster
 import io.mockk.coEvery
 import io.mockk.coVerify
 import org.junit.Assert.assertEquals
@@ -135,7 +141,8 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
         } returns ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200")
 
         coEvery {
-            clearCacheAutoApplyStackUseCase.setParams(match { it.orderData.orders.first().codes.size == 1 && it.orderData.orders.first().codes.first() == "promoBO" }).executeOnBackground()
+            clearCacheAutoApplyStackUseCase.setParams(match { it.orderData.orders.first().codes.size == 1 && it.orderData.orders.first().codes.first() == "promoBO" })
+                .executeOnBackground()
         } returns ClearPromoUiModel(
             SuccessDataUiModel(success = true)
         )
@@ -146,7 +153,10 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             CheckoutAddressModel(recipientAddressModel = RecipientAddressModel()),
             CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
             CheckoutProductModel("123"),
-            CheckoutOrderModel("123", shipment = CheckoutOrderShipment(courierItemData = CourierItemData(logPromoCode = "promoBO"))),
+            CheckoutOrderModel(
+                "123",
+                shipment = CheckoutOrderShipment(courierItemData = CourierItemData(logPromoCode = "promoBO"))
+            ),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
             CheckoutCostModel(),
@@ -232,7 +242,11 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
                     priorityWarningboxMessage = "",
                     priorityFeeMessage = "",
                     priorityPdpMessage = "",
-                    ontimeDelivery = OntimeDelivery(textLabel = "", textDetail = "", urlDetail = ""),
+                    ontimeDelivery = OntimeDelivery(
+                        textLabel = "",
+                        textDetail = "",
+                        urlDetail = ""
+                    ),
                     codProductData = CashOnDeliveryProduct(0, "", 0, "", "", ""),
                     etaText = "",
                     etaErrorCode = -1,
@@ -243,5 +257,184 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             ),
             (viewModel.listData.value[5] as CheckoutOrderModel).shipment
         )
+    }
+
+    @Test
+    fun load_shipping_normal_with_last_applied_bo_not_found() {
+        // given
+        val orderModel = CheckoutOrderModel("123", boCode = "boCode", boUniqueId = "12")
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123", cartStringOrder = "12"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        viewModel.logisticProcessor.isBoUnstackEnabled = true
+
+        val shippingCourierUiModel = ShippingCourierUiModel()
+        coEvery { ratesUseCase.invoke(any()) } returns ShippingRecommendationData(
+            shippingDurationUiModels = listOf(
+                ShippingDurationUiModel(
+                    shippingCourierViewModelList = listOf(
+                        shippingCourierUiModel
+                    )
+                )
+            )
+        )
+
+        coEvery {
+            clearCacheAutoApplyStackUseCase.setParams(match { it.orderData.orders.first().codes.size == 1 && it.orderData.orders.first().codes.first() == "boCode" })
+                .executeOnBackground()
+        } returns ClearPromoUiModel(
+            SuccessDataUiModel(success = true)
+        )
+
+        // when
+        viewModel.loadShipping(orderModel, 5)
+
+        // then
+        assertEquals(
+            CheckoutOrderShipment(
+                courierItemData = null,
+                shippingCourierUiModels = emptyList()
+            ),
+            (viewModel.listData.value[5] as CheckoutOrderModel).shipment
+        )
+
+        coVerify {
+            clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
+        }
+
+        assertEquals(
+            CheckoutPageToaster(
+                Toaster.TYPE_NORMAL,
+                "Bebas ongkir gagal diaplikasikan, silahkan coba lagi"
+            ),
+            latestToaster
+        )
+    }
+
+    @Test
+    fun load_shipping_normal_with_last_applied_bo_found() {
+        // given
+        val orderModel = CheckoutOrderModel("123", boCode = "boCode", boUniqueId = "12")
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123", cartStringOrder = "12"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        viewModel.logisticProcessor.isBoUnstackEnabled = true
+
+        val shippingCourierUiModel = ShippingCourierUiModel()
+        coEvery { ratesUseCase.invoke(any()) } returns ShippingRecommendationData(
+            shippingDurationUiModels = listOf(
+                ShippingDurationUiModel(
+                    shippingCourierViewModelList = listOf(
+                        shippingCourierUiModel
+                    )
+                )
+            ),
+            listLogisticPromo = listOf(
+                LogisticPromoUiModel("boCode")
+            )
+        )
+
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel(
+            status = "OK",
+            errorCode = "200",
+            promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        code = "boCode",
+                        uniqueId = "12",
+                        cartStringGroup = "123",
+                        type = "logistic",
+                        messageUiModel = MessageUiModel(state = "green")
+                    )
+                )
+            )
+        )
+
+        // when
+        viewModel.loadShipping(orderModel, 5)
+
+        // then
+        assertEquals(
+            CheckoutOrderShipment(
+                courierItemData = CourierItemData(
+                    name = "",
+                    estimatedTimeDelivery = "",
+                    shipperFormattedPrice = "",
+                    insuranceUsedInfo = "",
+                    promoCode = "",
+                    checksum = "",
+                    ut = "",
+                    now = false,
+                    priorityInnactiveMessage = "",
+                    priorityFormattedPrice = "",
+                    priorityDurationMessage = "",
+                    priorityCheckboxMessage = "",
+                    priorityWarningboxMessage = "",
+                    priorityFeeMessage = "",
+                    priorityPdpMessage = "",
+                    ontimeDelivery = OntimeDelivery(
+                        textLabel = "",
+                        textDetail = "",
+                        urlDetail = ""
+                    ),
+                    codProductData = CashOnDeliveryProduct(0, "", 0, "", "", ""),
+                    etaText = "",
+                    etaErrorCode = -1,
+                    merchantVoucherProductModel = MerchantVoucherProductModel(0),
+                    isSelected = true,
+                    logPromoCode = "boCode",
+                    promoTitle = "",
+                    shipperName = ""
+                ),
+                shippingCourierUiModels = emptyList()
+            ),
+            (viewModel.listData.value[5] as CheckoutOrderModel).shipment
+        )
+
+        coVerify {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        }
     }
 }
