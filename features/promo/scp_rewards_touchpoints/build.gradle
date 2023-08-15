@@ -38,6 +38,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation projectOrAar(rootProject.ext.libraries.baseList)
 
     //Unify Dependencies
     implementation rootProject.ext.unifyDependencies.principles

@@ -8,6 +8,7 @@ import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.core.content.ContextCompat
@@ -165,3 +166,13 @@ object ViewUtil {
 
     }
 }
+
+fun ViewGroup.setContainerBackground(bg: Drawable?) {
+    val pl = paddingLeft
+    val pt = paddingTop
+    val pr = paddingRight
+    val pb = paddingBottom
+    background = bg
+    setPadding(pl, pt, pr, pb)
+}
+

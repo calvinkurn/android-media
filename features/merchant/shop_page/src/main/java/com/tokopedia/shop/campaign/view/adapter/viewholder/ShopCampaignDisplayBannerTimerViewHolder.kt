@@ -79,7 +79,7 @@ class ShopCampaignDisplayBannerTimerViewHolder(
         private val STATIC_WHITE_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_Static_White
         private val UNIFY_NN950_DARK = R.color.dms_static_Unify_NN950_dark
         private val UNIFY_NN950_LIGHT = R.color.dms_static_Unify_NN950_light
-        private val TOTAL_NOTIFY_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+        private val TOTAL_NOTIFY_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
     }
 
     override fun bind(uiModel: ShopWidgetDisplayBannerTimerUiModel) {

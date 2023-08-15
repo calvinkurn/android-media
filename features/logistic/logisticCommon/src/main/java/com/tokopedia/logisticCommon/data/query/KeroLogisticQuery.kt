@@ -172,7 +172,7 @@ object KeroLogisticQuery {
                 latitude
                 longitude
                 postal_code
-                }
+              }
               tokonow {
                 shop_id
                 warehouse_id
@@ -181,7 +181,7 @@ object KeroLogisticQuery {
                     service_type
                 }
                 service_type
-                }
+              }
             }
             status
             config
@@ -335,6 +335,28 @@ object KeroLogisticQuery {
             data{
               is_success
               is_state_chosen_address_changed
+              chosen_address { 
+                addr_id
+                receiver_name
+                addr_name
+                district
+                city
+                city_name
+                district_name
+                status
+                latitude
+                longitude
+                postal_code
+              }
+              tokonow {
+                shop_id
+                warehouse_id
+                warehouses {
+                    warehouse_id
+                    service_type
+                }
+                service_type
+              }
             }
             status
             config

@@ -18,6 +18,7 @@
         "appLink": "",
         "webLink": "",
         "slashedPrice": "Rp50.000",
+        "campaignLabelText": "Special",
         "discount": "20%",
         "price": "Rp40.000",
         "descriptions": [
@@ -49,6 +50,7 @@
         "appLink": "",
         "webLink": "",
         "slashedPrice": "Rp150.000",
+        "campaignLabelText": "Special",
         "discount": "20%",
         "price": "Rp120.000",
         "descriptions": [
@@ -80,6 +82,7 @@
         "appLink": "",
         "webLink": "",
         "slashedPrice": "Rp75.000",
+        "campaignLabelText": "Special",
         "discount": "10%",
         "price": "Rp67.500",
         "descriptions": [
@@ -111,6 +114,7 @@
         "appLink": "",
         "webLink": "",
         "slashedPrice": "Rp75.000",
+        "campaignLabelText": "",
         "discount": "10%",
         "price": "Rp67.500",
         "descriptions": [
