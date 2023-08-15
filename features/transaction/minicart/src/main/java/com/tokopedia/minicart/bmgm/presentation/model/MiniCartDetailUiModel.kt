@@ -20,7 +20,9 @@ sealed interface MiniCartDetailUiModel : Visitable<BmgmMiniCartDetailAdapterFact
 
     data class Product(
         val isDiscountedProduct: Boolean,
-        val product: BmgmCommonDataUiModel.SingleProductUiModel
+        val product: BmgmCommonDataUiModel.ProductUiModel,
+        val showTopSpace: Boolean = false,
+        val showBottomSpace: Boolean = false
     ) : MiniCartDetailUiModel {
         override fun type(typeFactory: BmgmMiniCartDetailAdapterFactory): Int {
             return typeFactory.type(this)

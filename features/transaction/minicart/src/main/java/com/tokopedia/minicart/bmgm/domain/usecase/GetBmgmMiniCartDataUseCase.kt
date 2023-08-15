@@ -11,6 +11,7 @@ import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.minicart.bmgm.domain.mapper.BmgmMiniCartDataMapper
 import com.tokopedia.minicart.bmgm.domain.model.BmgmParamModel
 import com.tokopedia.minicart.bmgm.domain.model.GetMiniCartDataResponse
+import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartDataUiModel
 import com.tokopedia.purchase_platform.common.feature.bmgm.uimodel.BmgmCommonDataUiModel
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
@@ -31,7 +32,7 @@ class GetBmgmMiniCartDataUseCase @Inject constructor(
         setTypeClass(GetMiniCartDataResponse::class.java)
     }
 
-    suspend operator fun invoke(shopId: String, bmgmParam: BmgmParamModel): BmgmCommonDataUiModel {
+    suspend operator fun invoke(shopId: String, bmgmParam: BmgmParamModel): BmgmMiniCartDataUiModel {
         return mapper.getDummy()
         try {
             val requestParam = createRequestParam(shopId, bmgmParam)

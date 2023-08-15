@@ -67,7 +67,7 @@
 
     </com.tokopedia.buy_more_get_more.olp.view.widget.StickySingleHeaderView>
 
-    <com.tokopedia.minicart.bmgm.presentation.fragment.BmgmMiniCartView
+    <com.tokopedia.minicart.bmgm.presentation.customview.BmgmMiniCartView
         android:id="@+id/miniCartPlaceholder"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

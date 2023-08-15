@@ -2,17 +2,20 @@ package com.tokopedia.minicart.bmgm.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.minicart.bmgm.domain.model.BmgmParamModel
 import com.tokopedia.minicart.bmgm.domain.usecase.GetBmgmMiniCartDataUseCase
-import com.tokopedia.purchase_platform.common.feature.bmgm.uimodel.BmgmCommonDataUiModel
+import com.tokopedia.minicart.bmgm.domain.usecase.LocalCacheHelper
+import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartDataUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -21,28 +24,36 @@ import javax.inject.Inject
  */
 
 class BmgmMiniCartViewModel @Inject constructor(
-    private val getMiniCartDataUseCase: GetBmgmMiniCartDataUseCase,
-    private val userSession: UserSessionInterface,
+    private val getMiniCartDataUseCase: Lazy<GetBmgmMiniCartDataUseCase>,
+    private val localCacheHelper: Lazy<LocalCacheHelper>,
+    private val userSession: Lazy<UserSessionInterface>,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
-    private val _cartData = MutableLiveData<Result<BmgmCommonDataUiModel>>()
-    val cartData: LiveData<Result<BmgmCommonDataUiModel>>
+    private val _cartData = MutableLiveData<Result<BmgmMiniCartDataUiModel>>()
+    val cartData: LiveData<Result<BmgmMiniCartDataUiModel>>
         get() = _cartData
 
     fun getMiniCartData(param: BmgmParamModel) {
         launchCatchError(block = {
             val data = withContext(dispatchers.io) {
-                getMiniCartDataUseCase.invoke(userSession.shopId, param)
+                getMiniCartDataUseCase.get().invoke(userSession.get().shopId, param)
             }
-            storeCartDataToLocalCache(data)
             _cartData.value = Success(data)
+            storeCartDataToLocalCache()
         }, onError = {
             _cartData.value = Fail(it)
         })
     }
 
-    private fun storeCartDataToLocalCache(data: BmgmCommonDataUiModel) {
-        PersistentCacheManager.instance.put(BmgmCommonDataUiModel.PARAM_KEY_BMGM_DATA, data)
+    fun clearCartDataLocalCache() = launch {
+        localCacheHelper.get().clearLocalCache()
+    }
+
+    private fun storeCartDataToLocalCache() = launch {
+        val result = _cartData.value
+        if (result is Success) {
+            localCacheHelper.get().saveToLocalCache(result.data)
+        }
     }
 }

@@ -12,25 +12,39 @@
         android:text="@string/mini_cart_widget_label_total_price"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintBottom_toTopOf="@+id/bmgmTvTotalPrice"
-        app:layout_constraintEnd_toStartOf="@+id/bmgmBtnOpenCart"
+        app:layout_constraintEnd_toStartOf="@+id/btnBmgmOpenCart"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/bmgmBtnOpenCart"
+        app:layout_constraintTop_toTopOf="@+id/btnBmgmOpenCart"
         app:layout_constraintVertical_chainStyle="packed"
         app:typographyType="display_3" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/bmgmTvTotalPrice"
-        android:layout_width="0dp"
+        android:id="@+id/tvBmgmFinalPrice"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/mini_cart_widget_label_total_price_unavailable_default"
-        app:layout_constraintBottom_toBottomOf="@+id/bmgmBtnOpenCart"
-        app:layout_constraintEnd_toStartOf="@+id/bmgmBtnOpenCart"
+        app:layout_constraintBottom_toBottomOf="@+id/btnBmgmOpenCart"
         app:layout_constraintStart_toStartOf="@+id/bmgmLblTotalPrice"
         app:layout_constraintTop_toBottomOf="@+id/bmgmLblTotalPrice"
-        app:typographyType="display_3" />
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        tools:text="Rp3.435.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBmgmPriceBeforeDiscount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="@+id/tvBmgmFinalPrice"
+        app:layout_constraintEnd_toStartOf="@+id/btnBmgmOpenCart"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@+id/tvBmgmFinalPrice"
+        app:layout_constraintTop_toTopOf="@+id/tvBmgmFinalPrice"
+        app:typographyType="small"
+        tools:text="Rp4.300.000" />
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/bmgmBtnOpenCart"
+        android:id="@+id/btnBmgmOpenCart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"

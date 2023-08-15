@@ -1,5 +1,6 @@
 package com.tokopedia.minicart.bmgm.presentation.bottomsheet
 
+import android.graphics.Paint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.cachemanager.PersistentCacheManager
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.minicart.R
@@ -16,6 +19,7 @@ import com.tokopedia.minicart.databinding.BottomSheetBmgmMiniCartDetailBinding
 import com.tokopedia.minicart.databinding.ViewBmgmMiniCartSubTotalBinding
 import com.tokopedia.purchase_platform.common.feature.bmgm.uimodel.BmgmCommonDataUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 /**
  * Created by @ilhamsuaib on 31/07/23.
@@ -44,9 +48,7 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
     private val listAdapter = BmgmMiniCartDetailAdapter()
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         binding = BottomSheetBmgmMiniCartDetailBinding.inflate(inflater).apply {
             setChild(root)
@@ -71,34 +73,42 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
     }
 
     private fun showProducts() {
-        val data = PersistentCacheManager.instance.get<BmgmCommonDataUiModel>(
-            BmgmCommonDataUiModel.PARAM_KEY_BMGM_DATA,
-            BmgmCommonDataUiModel::class.java,
-            null
+        val commonData = PersistentCacheManager.instance.get<BmgmCommonDataUiModel>(
+            BmgmCommonDataUiModel.PARAM_KEY_BMGM_DATA, BmgmCommonDataUiModel::class.java, null
         )
-        data?.let {
-            val productList = getDiscountedProductList(data.bundledProducts).plus(
-                getNormalProductList(data.nonBundledProducts)
+
+        commonData?.let { data ->
+            val nonDiscountTier = data.tiersApplied.firstOrNull { it.isNonDiscountProducts() }
+            val productList = getDiscountedProductList(data.tiersApplied).plus(
+                getNormalProductList(nonDiscountTier)
             )
             listAdapter.clearAllElements()
             listAdapter.addElement(productList)
 
-            setupCartEntryPoint(it)
+            setupCartEntryPoint(data)
         }
     }
 
     private fun setupCartEntryPoint(model: BmgmCommonDataUiModel) {
-        binding?.run {
-            if (!model.showCartFooter) {
-                containerSubTotal.gone()
+        binding?.let {
+            if (!model.showMiniCartFooter) {
+                it.containerSubTotal.gone()
                 return
             }
-            containerSubTotal.visible()
-            val miniCartSubTotal = ViewBmgmMiniCartSubTotalBinding.bind(root)
+            it.containerSubTotal.visible()
+            val miniCartFooterView = ViewBmgmMiniCartSubTotalBinding.bind(it.root)
+            with(miniCartFooterView) {
+                tvBmgmFinalPrice.text =
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(model.finalPrice, false)
+                tvBmgmPriceBeforeDiscount.text =
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(model.priceBeforeBenefit, false)
+                tvBmgmPriceBeforeDiscount.paintFlags =
+                    tvBmgmPriceBeforeDiscount.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            }
         }
     }
 
-    private fun getDiscountedProductList(products: List<BmgmCommonDataUiModel.BundledProductUiModel>): List<MiniCartDetailUiModel> {
+    private fun getDiscountedProductList(products: List<BmgmCommonDataUiModel.TierUiModel>): List<MiniCartDetailUiModel> {
         val items = mutableListOf<MiniCartDetailUiModel>()
         products.forEach {
             items.add(getDiscountSectionText(it))
@@ -107,37 +117,43 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
         return items.toList()
     }
 
-    private fun getNormalProductList(products: List<BmgmCommonDataUiModel.SingleProductUiModel>): List<MiniCartDetailUiModel> {
+    private fun getNormalProductList(tier: BmgmCommonDataUiModel.TierUiModel?): List<MiniCartDetailUiModel> {
+        val products = tier?.products
+        if (products.isNullOrEmpty()) return emptyList()
+
         val items = mutableListOf<MiniCartDetailUiModel>()
-        items.add(getNormalSectionText())
-        products.forEach {
+        items.add(
+            MiniCartDetailUiModel.Section(
+                sectionText = tier.tierMessage,
+                isDiscountSection = false
+            )
+        )
+        tier.products.forEach { product ->
             items.add(
-                MiniCartDetailUiModel.Product(isDiscountedProduct = false, product = it)
+                MiniCartDetailUiModel.Product(isDiscountedProduct = false, product = product)
             )
         }
-        return items.toList()
+        return emptyList()
     }
 
-    private fun mapToProductList(products: List<BmgmCommonDataUiModel.SingleProductUiModel>): List<MiniCartDetailUiModel.Product> {
-        return products.map {
-            MiniCartDetailUiModel.Product(isDiscountedProduct = true, product = it)
+    private fun mapToProductList(products: List<BmgmCommonDataUiModel.ProductUiModel>): List<MiniCartDetailUiModel.Product> {
+        return products.mapIndexed { i, product ->
+            val isFirstItem = i == Int.ZERO
+            val isLastItem = i == products.size.minus(Int.ONE)
+            MiniCartDetailUiModel.Product(
+                isDiscountedProduct = true,
+                product = product,
+                showTopSpace = !isFirstItem,
+                showBottomSpace = !isLastItem
+            )
         }
     }
 
-    private fun getDiscountSectionText(model: BmgmCommonDataUiModel.BundledProductUiModel): MiniCartDetailUiModel {
+    private fun getDiscountSectionText(model: BmgmCommonDataUiModel.TierUiModel): MiniCartDetailUiModel {
         return MiniCartDetailUiModel.Section(
             sectionText = getString(
-                R.string.bmgm_mini_cart_detail_discount_section,
-                model.tierDiscountStr
-            ),
-            isDiscountSection = true
-        )
-    }
-
-    private fun getNormalSectionText(): MiniCartDetailUiModel {
-        return MiniCartDetailUiModel.Section(
-            sectionText = getString(R.string.bmgm_mini_cart_detail_normal_section),
-            isDiscountSection = false
+                R.string.bmgm_mini_cart_detail_discount_section, model.tierDiscountStr
+            ), isDiscountSection = true
         )
     }
 }

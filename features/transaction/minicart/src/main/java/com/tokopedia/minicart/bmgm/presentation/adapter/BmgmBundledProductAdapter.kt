@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartVisitable
 import com.tokopedia.minicart.databinding.ItemBmgmMiniCartItemProductBundleBinding
-import com.tokopedia.purchase_platform.common.feature.bmgm.uimodel.BmgmCommonDataUiModel
 import com.tokopedia.unifycomponents.CardUnify2
 
 /**
@@ -15,7 +15,7 @@ import com.tokopedia.unifycomponents.CardUnify2
  */
 
 class BmgmBundledProductAdapter(
-    private val items: List<BmgmCommonDataUiModel.SingleProductUiModel>,
+    private val items: List<BmgmMiniCartVisitable.ProductUiModel>,
     private val listener: BmgmMiniCartAdapter.Listener
 ) : Adapter<BmgmBundledProductAdapter.ViewHolder>() {
 
@@ -36,7 +36,7 @@ class BmgmBundledProductAdapter(
         private val binding: ItemBmgmMiniCartItemProductBundleBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: BmgmCommonDataUiModel.SingleProductUiModel) {
+        fun bind(item: BmgmMiniCartVisitable.ProductUiModel) {
             with(binding) {
                 cardBmgmProduct.cardType = CardUnify2.TYPE_SHADOW_DISABLED
                 cardBmgmProduct.radius = root.context.dpToPx(2)

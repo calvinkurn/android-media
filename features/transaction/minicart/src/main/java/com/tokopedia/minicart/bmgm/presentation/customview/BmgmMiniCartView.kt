@@ -1,4 +1,4 @@
-package com.tokopedia.minicart.bmgm.presentation.fragment
+package com.tokopedia.minicart.bmgm.presentation.customview
 
 import android.content.Context
 import android.util.AttributeSet
@@ -14,8 +14,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
@@ -24,10 +22,12 @@ import com.tokopedia.minicart.bmgm.common.di.DaggerBmgmComponent
 import com.tokopedia.minicart.bmgm.domain.model.BmgmParamModel
 import com.tokopedia.minicart.bmgm.presentation.adapter.BmgmMiniCartAdapter
 import com.tokopedia.minicart.bmgm.presentation.adapter.itemdecoration.BmgmMiniCartItemDecoration
+import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartDataUiModel
+import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartVisitable
+import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartVisitable.TierUiModel.Companion.NON_DISCOUNT_TIER_ID
 import com.tokopedia.minicart.bmgm.presentation.viewmodel.BmgmMiniCartViewModel
 import com.tokopedia.minicart.databinding.FragmentBmgmMiniCartWidgetBinding
 import com.tokopedia.minicart.databinding.ViewBmgmMiniCartSubTotalBinding
-import com.tokopedia.purchase_platform.common.feature.bmgm.uimodel.BmgmCommonDataUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -36,8 +36,7 @@ import javax.inject.Inject
  * Created by @ilhamsuaib on 31/07/23.
  */
 
-class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener,
-    DefaultLifecycleObserver {
+class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, DefaultLifecycleObserver {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -52,8 +51,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener,
     private val miniCartAdapter by lazy { BmgmMiniCartAdapter(this) }
     private val viewModel by lazy {
         ViewModelProvider(
-            ViewTreeViewModelStoreOwner.get(this)!!,
-            viewModelFactory
+            ViewTreeViewModelStoreOwner.get(this)!!, viewModelFactory
         )[BmgmMiniCartViewModel::class.java]
     }
 
@@ -77,8 +75,9 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener,
     }
 
     override fun onDestroy(owner: LifecycleOwner) {
-        super.onDestroy(owner)
+        viewModel.clearCartDataLocalCache()
         binding = null
+        super.onDestroy(owner)
     }
 
     override fun setOnItemClickedListener() {
@@ -111,25 +110,42 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener,
 
     private fun getLifecycleOwner() = (context as? LifecycleOwner)
 
-    private fun setOnSuccessGetCartData(data: BmgmCommonDataUiModel) {
+    private fun setOnSuccessGetCartData(data: BmgmMiniCartDataUiModel) {
         binding?.run {
             val checkoutView = ViewBmgmMiniCartSubTotalBinding.bind(root)
-            if (data.geProducts().isNotEmpty()) {
+            if (data.tiersApplied.isNotEmpty()) {
                 tvBmgmCartDiscount.text = data.offerMessage.parseAsHtml()
                 tvBmgmCartDiscount.visible()
                 rvBmgmMiniCart.visible()
-                checkoutView.bmgmBtnOpenCart.isEnabled = true
+                checkoutView.btnBmgmOpenCart.isEnabled = true
             } else {
                 tvBmgmCartDiscount.gone()
                 rvBmgmMiniCart.gone()
-                checkoutView.bmgmBtnOpenCart.isEnabled = false
+                checkoutView.btnBmgmOpenCart.isEnabled = false
             }
 
-            miniCartAdapter.data.clear()
-            miniCartAdapter.data.addAll(data.geProducts())
-            val lastIndex = miniCartAdapter.itemCount.minus(Int.ONE)
-            miniCartAdapter.notifyItemRangeChanged(Int.ZERO, lastIndex)
+            miniCartAdapter.clearAllElements()
+            miniCartAdapter.addElement(getProductList(data))
         }
+    }
+
+    private fun getProductList(data: BmgmMiniCartDataUiModel): List<BmgmMiniCartVisitable> {
+        val productList = mutableListOf<BmgmMiniCartVisitable>()
+        val hasReachMaxDiscount = data.hasReachMaxDiscount
+        data.tiersApplied.forEach { t ->
+            val isDiscountProducts = t.tierId != NON_DISCOUNT_TIER_ID
+            if (isDiscountProducts) {
+                productList.add(t)
+            } else {
+                t.products.forEach { p ->
+                    productList.add(p)
+                }
+                if (!hasReachMaxDiscount) {
+                    productList.add(BmgmMiniCartVisitable.PlaceholderUiModel)
+                }
+            }
+        }
+        return productList
     }
 
     private fun setupRecyclerView() {

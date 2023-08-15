@@ -1,7 +1,7 @@
 package com.tokopedia.minicart.bmgm.common.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.minicart.bmgm.presentation.fragment.BmgmMiniCartView
+import com.tokopedia.minicart.bmgm.presentation.customview.BmgmMiniCartView
 import dagger.Component
 
 /**
