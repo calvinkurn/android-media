@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import com.tokopedia.logisticorder.databinding.FragmentTippingDriverBinding
 import com.tokopedia.logisticorder.utils.TippingConstant.PARAM_ORDER_ID
 import com.tokopedia.logisticorder.view.bottomsheet.DriverTippingBottomSheet
 import com.tokopedia.utils.lifecycle.autoClearedNullable
