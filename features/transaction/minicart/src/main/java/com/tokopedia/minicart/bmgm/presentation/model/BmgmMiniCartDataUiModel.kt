@@ -1,11 +1,13 @@
 package com.tokopedia.minicart.bmgm.presentation.model
 
+import com.tokopedia.purchase_platform.common.feature.bmgm.data.uimodel.BmgmCommonDataModel
+
 /**
  * Created by @ilhamsuaib on 14/08/23.
  */
 
 data class BmgmMiniCartDataUiModel(
-    val offerId: Long = 0L,
+    val offerId: Long = BmgmCommonDataModel.NON_DISCOUNT_TIER_ID,
     val offerName: String = "",
     val offerMessage: String = "",
     val hasReachMaxDiscount: Boolean = false,

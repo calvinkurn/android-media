@@ -2,7 +2,7 @@ package com.tokopedia.minicart.bmgm.presentation.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.minicart.bmgm.presentation.adapter.factory.BmgmMiniCartDetailAdapterFactory
-import com.tokopedia.purchase_platform.common.feature.bmgm.uimodel.BmgmCommonDataUiModel
+import com.tokopedia.purchase_platform.common.feature.bmgm.data.uimodel.BmgmCommonDataModel
 
 /**
  * Created by @ilhamsuaib on 10/08/23.
@@ -20,7 +20,7 @@ sealed interface MiniCartDetailUiModel : Visitable<BmgmMiniCartDetailAdapterFact
 
     data class Product(
         val isDiscountedProduct: Boolean,
-        val product: BmgmCommonDataUiModel.ProductUiModel,
+        val product: BmgmCommonDataModel.ProductModel,
         val showTopSpace: Boolean = false,
         val showBottomSpace: Boolean = false
     ) : MiniCartDetailUiModel {

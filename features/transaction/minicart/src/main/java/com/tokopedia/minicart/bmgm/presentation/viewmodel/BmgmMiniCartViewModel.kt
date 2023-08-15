@@ -2,13 +2,12 @@ package com.tokopedia.minicart.bmgm.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.minicart.bmgm.domain.model.BmgmParamModel
 import com.tokopedia.minicart.bmgm.domain.usecase.GetBmgmMiniCartDataUseCase
-import com.tokopedia.minicart.bmgm.domain.usecase.LocalCacheHelper
+import com.tokopedia.minicart.bmgm.domain.usecase.LocalCacheUseCase
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartDataUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -25,7 +24,7 @@ import javax.inject.Inject
 
 class BmgmMiniCartViewModel @Inject constructor(
     private val getMiniCartDataUseCase: Lazy<GetBmgmMiniCartDataUseCase>,
-    private val localCacheHelper: Lazy<LocalCacheHelper>,
+    private val localCacheUseCase: Lazy<LocalCacheUseCase>,
     private val userSession: Lazy<UserSessionInterface>,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
@@ -47,13 +46,13 @@ class BmgmMiniCartViewModel @Inject constructor(
     }
 
     fun clearCartDataLocalCache() = launch {
-        localCacheHelper.get().clearLocalCache()
+        localCacheUseCase.get().clearLocalCache()
     }
 
     private fun storeCartDataToLocalCache() = launch {
         val result = _cartData.value
         if (result is Success) {
-            localCacheHelper.get().saveToLocalCache(result.data)
+            localCacheUseCase.get().saveToLocalCache(result.data)
         }
     }
 }

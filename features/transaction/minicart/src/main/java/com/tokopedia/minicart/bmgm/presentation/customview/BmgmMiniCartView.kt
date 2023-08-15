@@ -24,7 +24,6 @@ import com.tokopedia.minicart.bmgm.presentation.adapter.BmgmMiniCartAdapter
 import com.tokopedia.minicart.bmgm.presentation.adapter.itemdecoration.BmgmMiniCartItemDecoration
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartDataUiModel
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartVisitable
-import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartVisitable.TierUiModel.Companion.NON_DISCOUNT_TIER_ID
 import com.tokopedia.minicart.bmgm.presentation.viewmodel.BmgmMiniCartViewModel
 import com.tokopedia.minicart.databinding.FragmentBmgmMiniCartWidgetBinding
 import com.tokopedia.minicart.databinding.ViewBmgmMiniCartSubTotalBinding
@@ -133,8 +132,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
         val productList = mutableListOf<BmgmMiniCartVisitable>()
         val hasReachMaxDiscount = data.hasReachMaxDiscount
         data.tiersApplied.forEach { t ->
-            val isDiscountProducts = t.tierId != NON_DISCOUNT_TIER_ID
-            if (isDiscountProducts) {
+            if (t.isDiscountTier()) {
                 productList.add(t)
             } else {
                 t.products.forEach { p ->

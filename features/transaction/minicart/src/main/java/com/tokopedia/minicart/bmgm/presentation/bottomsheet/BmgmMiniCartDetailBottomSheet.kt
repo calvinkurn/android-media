@@ -17,7 +17,7 @@ import com.tokopedia.minicart.bmgm.presentation.adapter.BmgmMiniCartDetailAdapte
 import com.tokopedia.minicart.bmgm.presentation.model.MiniCartDetailUiModel
 import com.tokopedia.minicart.databinding.BottomSheetBmgmMiniCartDetailBinding
 import com.tokopedia.minicart.databinding.ViewBmgmMiniCartSubTotalBinding
-import com.tokopedia.purchase_platform.common.feature.bmgm.uimodel.BmgmCommonDataUiModel
+import com.tokopedia.purchase_platform.common.feature.bmgm.data.uimodel.BmgmCommonDataModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
@@ -73,8 +73,8 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
     }
 
     private fun showProducts() {
-        val commonData = PersistentCacheManager.instance.get<BmgmCommonDataUiModel>(
-            BmgmCommonDataUiModel.PARAM_KEY_BMGM_DATA, BmgmCommonDataUiModel::class.java, null
+        val commonData = PersistentCacheManager.instance.get<BmgmCommonDataModel>(
+            BmgmCommonDataModel.PARAM_KEY_BMGM_DATA, BmgmCommonDataModel::class.java, null
         )
 
         commonData?.let { data ->
@@ -89,7 +89,7 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun setupCartEntryPoint(model: BmgmCommonDataUiModel) {
+    private fun setupCartEntryPoint(model: BmgmCommonDataModel) {
         binding?.let {
             if (!model.showMiniCartFooter) {
                 it.containerSubTotal.gone()
@@ -108,7 +108,7 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun getDiscountedProductList(products: List<BmgmCommonDataUiModel.TierUiModel>): List<MiniCartDetailUiModel> {
+    private fun getDiscountedProductList(products: List<BmgmCommonDataModel.TierModel>): List<MiniCartDetailUiModel> {
         val items = mutableListOf<MiniCartDetailUiModel>()
         products.forEach {
             items.add(getDiscountSectionText(it))
@@ -117,7 +117,7 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
         return items.toList()
     }
 
-    private fun getNormalProductList(tier: BmgmCommonDataUiModel.TierUiModel?): List<MiniCartDetailUiModel> {
+    private fun getNormalProductList(tier: BmgmCommonDataModel.TierModel?): List<MiniCartDetailUiModel> {
         val products = tier?.products
         if (products.isNullOrEmpty()) return emptyList()
 
@@ -136,7 +136,7 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
         return emptyList()
     }
 
-    private fun mapToProductList(products: List<BmgmCommonDataUiModel.ProductUiModel>): List<MiniCartDetailUiModel.Product> {
+    private fun mapToProductList(products: List<BmgmCommonDataModel.ProductModel>): List<MiniCartDetailUiModel.Product> {
         return products.mapIndexed { i, product ->
             val isFirstItem = i == Int.ZERO
             val isLastItem = i == products.size.minus(Int.ONE)
@@ -149,7 +149,7 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun getDiscountSectionText(model: BmgmCommonDataUiModel.TierUiModel): MiniCartDetailUiModel {
+    private fun getDiscountSectionText(model: BmgmCommonDataModel.TierModel): MiniCartDetailUiModel {
         return MiniCartDetailUiModel.Section(
             sectionText = getString(
                 R.string.bmgm_mini_cart_detail_discount_section, model.tierDiscountStr

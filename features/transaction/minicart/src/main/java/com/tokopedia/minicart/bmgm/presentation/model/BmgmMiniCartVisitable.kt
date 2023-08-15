@@ -2,6 +2,7 @@ package com.tokopedia.minicart.bmgm.presentation.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.minicart.bmgm.presentation.adapter.factory.BmgmMiniCartAdapterFactory
+import com.tokopedia.purchase_platform.common.feature.bmgm.data.uimodel.BmgmCommonDataModel
 
 /**
  * Created by @ilhamsuaib on 14/08/23.
@@ -9,7 +10,7 @@ import com.tokopedia.minicart.bmgm.presentation.adapter.factory.BmgmMiniCartAdap
 sealed interface BmgmMiniCartVisitable : Visitable<BmgmMiniCartAdapterFactory> {
 
     data class TierUiModel(
-        val tierId: Long = NON_DISCOUNT_TIER_ID,
+        val tierId: Long = BmgmCommonDataModel.NON_DISCOUNT_TIER_ID,
         val tierMessage: String = "",
         val tierDiscountStr: String = "",
         val priceBeforeBenefit: Double = 0.0,
@@ -17,12 +18,12 @@ sealed interface BmgmMiniCartVisitable : Visitable<BmgmMiniCartAdapterFactory> {
         val products: List<ProductUiModel> = emptyList()
     ) : BmgmMiniCartVisitable {
 
-        companion object {
-            const val NON_DISCOUNT_TIER_ID = 0L
-        }
-
         override fun type(typeFactory: BmgmMiniCartAdapterFactory): Int {
             return typeFactory.type(this)
+        }
+
+        fun isDiscountTier(): Boolean {
+            return tierId != BmgmCommonDataModel.NON_DISCOUNT_TIER_ID
         }
     }
 

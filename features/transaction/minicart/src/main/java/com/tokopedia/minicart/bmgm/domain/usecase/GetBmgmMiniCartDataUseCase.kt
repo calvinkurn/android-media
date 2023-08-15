@@ -3,8 +3,6 @@ package com.tokopedia.minicart.bmgm.domain.usecase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.kotlin.extensions.view.toIntSafely
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toLongSafely
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper.Companion.KEY_CHOSEN_ADDRESS
@@ -12,7 +10,6 @@ import com.tokopedia.minicart.bmgm.domain.mapper.BmgmMiniCartDataMapper
 import com.tokopedia.minicart.bmgm.domain.model.BmgmParamModel
 import com.tokopedia.minicart.bmgm.domain.model.GetMiniCartDataResponse
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartDataUiModel
-import com.tokopedia.purchase_platform.common.feature.bmgm.uimodel.BmgmCommonDataUiModel
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 

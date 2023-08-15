@@ -3,7 +3,7 @@ package com.tokopedia.minicart.bmgm.domain.mapper
 import com.tokopedia.minicart.bmgm.domain.model.GetMiniCartDataResponse
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartDataUiModel
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartVisitable
-import com.tokopedia.purchase_platform.common.feature.bmgm.uimodel.BmgmCommonDataUiModel
+import com.tokopedia.purchase_platform.common.feature.bmgm.data.uimodel.BmgmCommonDataModel
 import javax.inject.Inject
 
 /**
@@ -16,8 +16,8 @@ class BmgmMiniCartDataMapper @Inject constructor() {
         return getDummy()
     }
 
-    fun mapToCommonDataModel(): BmgmCommonDataUiModel {
-        return BmgmCommonDataUiModel()
+    fun mapToCommonDataModel(): BmgmCommonDataModel {
+        return BmgmCommonDataModel()
     }
 
     fun getDummy(): BmgmMiniCartDataUiModel {
@@ -67,7 +67,7 @@ class BmgmMiniCartDataMapper @Inject constructor() {
                     )
                 ),
                 BmgmMiniCartVisitable.TierUiModel(
-                    tierId = BmgmMiniCartVisitable.TierUiModel.NON_DISCOUNT_TIER_ID,
+                    tierId = BmgmCommonDataModel.NON_DISCOUNT_TIER_ID,
                     tierDiscountStr = "diskon 25%",
                     priceBeforeBenefit = 1100000.0,
                     priceAfterBenefit = 1035000.0,
