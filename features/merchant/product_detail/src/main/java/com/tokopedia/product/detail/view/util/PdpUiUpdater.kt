@@ -33,7 +33,6 @@ import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OngoingCampaignDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpRecommendationWidgetDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
 import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoTitleDataModel
@@ -163,9 +162,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     val productDetailInfoData: ProductDetailInfoDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_DETAIL] as? ProductDetailInfoDataModel
-
-    val productBundlingData: ProductBundlingDataModel?
-        get() = mapOfData[ProductDetailConstant.PRODUCT_BUNDLING] as? ProductBundlingDataModel
 
     val topAdsProductBundlingData: TopadsHeadlineUiModel?
         get() = mapOfData[ProductDetailConstant.SHOPADS_CAROUSEL] as? TopadsHeadlineUiModel
@@ -537,10 +533,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 }
             }
 
-            updateData(ProductDetailConstant.PRODUCT_BUNDLING) {
-                productBundlingData?.bundleInfo = it.bundleInfoMap[productId]
-            }
-
             if (it.ticker.tickerInfo.isEmpty()) {
                 removeComponent(ProductDetailConstant.TICKER_INFO)
             } else {
@@ -820,10 +812,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         if (it.ratesEstimate.isEmpty()) {
             removeComponent(ProductDetailConstant.SHIPMENT_V2)
             removeComponent(ProductDetailConstant.SHIPMENT)
-        }
-
-        if (it.bundleInfoMap.isEmpty()) {
-            removeComponent(ProductDetailConstant.PRODUCT_BUNDLING)
         }
 
         if (!it.validateTradeIn.isEligible) {
@@ -1138,13 +1126,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     freeOngkirData.boType
                 )
             }
-        }
-    }
-
-    fun updateProductBundlingData(p2Data: ProductInfoP2UiData?, productId: String?) {
-        if (p2Data == null || productId == null) return
-        updateData(ProductDetailConstant.PRODUCT_BUNDLING) {
-            productBundlingData?.bundleInfo = p2Data.bundleInfoMap[productId]
         }
     }
 
