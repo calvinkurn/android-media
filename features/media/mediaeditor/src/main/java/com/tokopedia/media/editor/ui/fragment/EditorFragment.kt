@@ -217,8 +217,8 @@ class EditorFragment @Inject constructor(
             EditorToolType.CROP -> editorHomeAnalytics.clickCrop()
             EditorToolType.REMOVE_BACKGROUND -> editorHomeAnalytics.clickRemoveBackground()
             EditorToolType.WATERMARK -> editorHomeAnalytics.clickWatermark()
-            EditorToolType.ADD_LOGO -> editorHomeAnalytics.clickAddLogo()
-            EditorToolType.ADD_TEXT -> editorHomeAnalytics.clickAddText()
+            EditorToolType.ADD_LOGO -> editorHomeAnalytics.clickToolAddLogo()
+            EditorToolType.ADD_TEXT -> editorHomeAnalytics.clickToolAddText()
         }
     }
 

@@ -4,14 +4,18 @@ import com.tokopedia.buyerorderdetail.domain.models.FinishOrderParams
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataParams
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import com.tokopedia.buyerorderdetail.presentation.mapper.EpharmacyInfoUiStateMapper
+import com.tokopedia.buyerorderdetail.presentation.mapper.ScpRewardsMedalTouchPointWidgetMapper
+import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
+import com.tokopedia.buyerorderdetail.presentation.uistate.ScpRewardsMedalTouchPointWidgetUiState
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response.ScpRewardsMedalTouchPointResponse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coVerify
@@ -714,4 +718,157 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
 
             assertEquals("0", viewModel.getOrderId())
         }
+
+    @Test
+    fun `after success with finishing order then update medal touch point state`() {
+        runCollectingUiState { buyerOrderDetailUiStateList ->
+            val orderStatusShowingState = mockk<OrderStatusUiState.HasData.Showing>(relaxed = true) {
+                every { data.orderStatusHeaderUiModel.orderStatusId } returns "600"
+                every { data.orderStatusHeaderUiModel.orderId } returns orderId
+            }
+            val medalTouchPointData = ScpRewardsMedalTouchPointResponse.ScpRewardsMedaliTouchpointOrder.MedaliTouchpointOrder(
+                medaliID = 123312,
+                medaliIconImageURL = "http://tokopedia.com/medaliIconImage",
+                medaliIconImageURLWidget = "http://tokopedia.com/medaliIconImageURLWidget",
+                medaliSunburstImageURL = "http://tokopedia.com/medaliSunburstImageURL",
+                cta = ScpRewardsMedalTouchPointResponse.ScpRewardsMedaliTouchpointOrder.MedaliTouchpointOrder.CtaItem(
+                    appLink = "tokopedia://medali",
+                    isShown = true
+                )
+            )
+            val marginLeft = 16
+            val marginTop = 22
+            val marginRight = 16
+
+            createSuccessGetBuyerOrderDetailDataResult()
+            createSuccessFinishOrderResult()
+
+            mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
+                getBuyerOrderDetailData()
+                viewModel.finishOrder()
+                advanceUntilIdle()
+
+                viewModel.updateScpRewardsMedalTouchPointWidgetState(
+                    data = medalTouchPointData,
+                    marginLeft = marginLeft,
+                    marginTop = marginTop,
+                    marginRight = marginRight
+                )
+
+                assertTrue(viewModel.finishOrderResult.value is Success)
+                assertEquals(
+                    ScpRewardsMedalTouchPointWidgetMapper.map(
+                        data = medalTouchPointData,
+                        marginLeft = marginLeft,
+                        marginTop = marginTop,
+                        marginRight = marginRight
+                    ),
+                    buyerOrderDetailUiStateList.filterIsInstance(BuyerOrderDetailUiState.HasData.Showing::class.java).last().scpRewardsMedalTouchPointWidgetUiState
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `after failure with finishing order then dont update medal touch point state`() {
+        runCollectingUiState { buyerOrderDetailUiStateList ->
+            val orderStatusShowingState = mockk<OrderStatusUiState.HasData.Showing>(relaxed = true) {
+                every { data.orderStatusHeaderUiModel.orderStatusId } returns "600"
+                every { data.orderStatusHeaderUiModel.orderId } returns orderId
+            }
+            createSuccessGetBuyerOrderDetailDataResult()
+            createFailedFinishOrderResult()
+
+            mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
+                getBuyerOrderDetailData()
+                viewModel.finishOrder()
+                advanceUntilIdle()
+                assertTrue(viewModel.finishOrderResult.value is Fail)
+                assertEquals(
+                    ScpRewardsMedalTouchPointWidgetUiState.HasData.Hidden,
+                    buyerOrderDetailUiStateList.filterIsInstance(BuyerOrderDetailUiState.HasData.Showing::class.java).last().scpRewardsMedalTouchPointWidgetUiState
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `after success with finishing order but medal touch point state not updated`() {
+        runCollectingUiState { buyerOrderDetailUiStateList ->
+            val orderStatusShowingState = mockk<OrderStatusUiState.HasData.Showing>(relaxed = true) {
+                every { data.orderStatusHeaderUiModel.orderStatusId } returns "600"
+                every { data.orderStatusHeaderUiModel.orderId } returns orderId
+            }
+
+            createSuccessGetBuyerOrderDetailDataResult()
+            createSuccessFinishOrderResult()
+
+            mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
+                getBuyerOrderDetailData()
+                viewModel.finishOrder()
+                advanceUntilIdle()
+
+                assertTrue(viewModel.finishOrderResult.value is Success)
+                assertEquals(
+                    ScpRewardsMedalTouchPointWidgetUiState.HasData.Hidden,
+                    buyerOrderDetailUiStateList.filterIsInstance(BuyerOrderDetailUiState.HasData.Showing::class.java).last().scpRewardsMedalTouchPointWidgetUiState
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `hide medal touch point widget after successful finish order`() {
+        runCollectingUiState { buyerOrderDetailUiStateList ->
+            val orderStatusShowingState = mockk<OrderStatusUiState.HasData.Showing>(relaxed = true) {
+                every { data.orderStatusHeaderUiModel.orderStatusId } returns "600"
+                every { data.orderStatusHeaderUiModel.orderId } returns orderId
+            }
+            val medalTouchPointData = ScpRewardsMedalTouchPointResponse.ScpRewardsMedaliTouchpointOrder.MedaliTouchpointOrder(
+                medaliID = 123312,
+                medaliIconImageURL = "http://tokopedia.com/medaliIconImage",
+                medaliIconImageURLWidget = "http://tokopedia.com/medaliIconImageURLWidget",
+                medaliSunburstImageURL = "http://tokopedia.com/medaliSunburstImageURL",
+                cta = ScpRewardsMedalTouchPointResponse.ScpRewardsMedaliTouchpointOrder.MedaliTouchpointOrder.CtaItem(
+                    appLink = "tokopedia://medali",
+                    isShown = true
+                )
+            )
+            val marginLeft = 16
+            val marginTop = 22
+            val marginRight = 16
+
+            createSuccessGetBuyerOrderDetailDataResult()
+            createSuccessFinishOrderResult()
+
+            mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
+                getBuyerOrderDetailData()
+                viewModel.finishOrder()
+                advanceUntilIdle()
+
+                viewModel.updateScpRewardsMedalTouchPointWidgetState(
+                    data = medalTouchPointData,
+                    marginLeft = marginLeft,
+                    marginTop = marginTop,
+                    marginRight = marginRight
+                )
+
+                assertTrue(viewModel.finishOrderResult.value is Success)
+                assertEquals(
+                    ScpRewardsMedalTouchPointWidgetMapper.map(
+                        data = medalTouchPointData,
+                        marginLeft = marginLeft,
+                        marginTop = marginTop,
+                        marginRight = marginRight
+                    ),
+                    buyerOrderDetailUiStateList.filterIsInstance(BuyerOrderDetailUiState.HasData.Showing::class.java).last().scpRewardsMedalTouchPointWidgetUiState
+                )
+                viewModel.hideScpRewardsMedalTouchPointWidget()
+                assertEquals(
+                    ScpRewardsMedalTouchPointWidgetUiState.HasData.Hidden,
+                    buyerOrderDetailUiStateList.filterIsInstance(BuyerOrderDetailUiState.HasData.Showing::class.java).last().scpRewardsMedalTouchPointWidgetUiState
+                )
+            }
+        }
+    }
 }

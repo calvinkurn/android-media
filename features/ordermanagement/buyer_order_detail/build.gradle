@@ -55,6 +55,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.digitalRecommendation)
     implementation projectOrAar(rootProject.ext.features.logisticCommon)
+    implementation projectOrAar(rootProject.ext.features.scpRewardsTouchpoints)
 
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.applink)
@@ -67,6 +68,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.tokochat_common)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.features.orderManagementCommon)
 
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor

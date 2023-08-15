@@ -66,7 +66,7 @@ class ShopHomeDisplayBannerTimerViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_display_banner_timer
         private const val DURATION_TO_HIDE_REMIND_ME_WORDING = 5000L
-        private val TOTAL_NOTIFY_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+        private val TOTAL_NOTIFY_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
     }
 
     override fun bind(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
@@ -253,7 +253,7 @@ class ShopHomeDisplayBannerTimerViewHolder(
         )
         val defaultCtaColor = MethodChecker.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_G500
+            com.tokopedia.unifyprinciples.R.color.Unify_GN500
         )
         val defaultInformationIconColor = MethodChecker.getColor(
             itemView.context,
