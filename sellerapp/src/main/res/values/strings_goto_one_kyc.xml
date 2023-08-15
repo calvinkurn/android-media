@@ -38,8 +38,8 @@
     <string name="onekyc_zero_clicks_feedback_selfie_highlight">Terlalu terang. Atur lagi cahayanya, ya.</string>
     <string name="onekyc_zero_clicks_feedback_selfie_blurry">Buram, nih. Pegang HP yang stabil, ya.</string>
     <string name="onekyc_zero_clicks_feedback_selfie_motion_detected">Tahan dulu, jangan gerak.</string>
-    <string name="onekyc_zero_clicks_feedback_selfie_multiple_face_detected">The verification process can only be done by one person</string><!-- TODO -->
-    <string name="onekyc_zero_clicks_feedback_selfie_face_rotated">Look straight at the camera and fit your face in the frame</string><!-- TODO -->
+    <string name="onekyc_zero_clicks_feedback_selfie_multiple_face_detected">Verifikasi cuma bisa dilakukan 1 orang, ya</string>
+    <string name="onekyc_zero_clicks_feedback_selfie_face_rotated">Tatap kamera &amp; wajah pas di bingkai, ya</string>
     <string name="onekyc_zero_clicks_feedback_selfie_aurora_flashing">Tahan dulu, jangan gerak.</string>
     <string name="onekyc_zero_clicks_feedback_selfie_eyes_closed">Buka mata kamu, ya.</string>
     <string name="onekyc_zero_clicks_feedback_selfie_blink_eyes">Kedipkan mata kamu, ya.</string>
