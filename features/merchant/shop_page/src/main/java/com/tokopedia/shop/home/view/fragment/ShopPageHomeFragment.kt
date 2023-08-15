@@ -167,6 +167,7 @@ import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerProd
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductListSellerEmptyListener
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePersoProductComparisonViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeV4TerlarisViewHolder
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeFlashSaleTncBottomSheet
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeNplCampaignTncBottomSheet
 import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
@@ -256,7 +257,9 @@ open class ShopPageHomeFragment :
     ShopHomeDisplayBannerTimerWidgetListener,
     ShopHomeDisplayBannerProductHotspotViewHolder.Listener,
     ShopHomeShowcaseNavigationListener,
-    ShopHomeShowcaseNavigationDependencyProvider {
+    ShopHomeShowcaseNavigationDependencyProvider,
+    ShopHomeV4TerlarisViewHolder.ShopHomeV4TerlarisViewHolderListener
+{
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -414,7 +417,8 @@ open class ShopPageHomeFragment :
             shopHomeDisplayBannerTimerWidgetListener = this,
             shopHomeDisplayBannerProductHotspotListener = this,
             shopHomeShowcaseNavigationListener = this,
-            shopHomeShowcaseNavigationDependencyProvider = this
+            shopHomeShowcaseNavigationDependencyProvider = this,
+            shopHomeV4TerlarisViewHolderListener = this
         )
     }
 
@@ -4982,4 +4986,9 @@ open class ShopPageHomeFragment :
 
     override val currentFragment: Fragment
         get() = this
+
+    override fun onProductClick(productId: String) {
+        // TODO: Put tracker here
+        RouteManager.route(context, ApplinkConst.PRODUCT_INFO, productId)
+    }
 }
