@@ -21,6 +21,7 @@
             android:id="@+id/icShopGrade"
             android:layout_width="16dp"
             android:layout_height="16dp"
+            app:unify_image_corner_radius="0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/tvShopName"
             app:layout_constraintBottom_toBottomOf="@id/tvShopName" />
@@ -34,6 +35,7 @@
             app:layout_constraintStart_toEndOf="@id/icShopGrade"
             app:layout_constraintEnd_toStartOf="@id/tvOrderNumber"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/icShopGrade"
             android:textColor="@color/Unify_NN950"
             app:typographyType="display_3"
             app:typographyWeight="bold"
