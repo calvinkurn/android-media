@@ -1443,8 +1443,6 @@ class CartListPresenter @Inject constructor(
             )
             setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
             setQty(cartItemHolderData.quantity)
-            setShopType(cartItemHolderData.shopHolderData.shopTypeInfo.titleFmt)
-            setShopName(cartItemHolderData.shopHolderData.shopName)
             setCategoryId(cartItemHolderData.categoryId)
             setWarehouseId(cartItemHolderData.warehouseId)
             setProductWeight(cartItemHolderData.productWeight.toString())
