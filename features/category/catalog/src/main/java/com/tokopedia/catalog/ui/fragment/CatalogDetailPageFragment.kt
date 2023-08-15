@@ -13,6 +13,7 @@ import com.tokopedia.catalog.ui.viewmodel.CatalogDetailPageViewModel
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactoryImpl
 import com.tokopedia.catalogcommon.adapter.WidgetCatalogAdapter
 import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
+import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -73,6 +74,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment() {
             }
             widgets.add(TopFeaturesUiModel("dummy", TopFeaturesUiModel.dummyTopFeatures()))
             widgets.add(HeroBannerUiModel("bannercoy", "konten"))
+            widgets.add(DummyUiModel("dummybann", "konten"))
             widgetAdapter.addWidget(widgets)
         }
 
