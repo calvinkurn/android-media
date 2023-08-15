@@ -164,9 +164,9 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun pauseStories() = with(binding) {
-        icClose.hide()
-        rvStoriesCategory.hide()
-        cvStoriesDetailTimer.hide()
+//        icClose.hide()
+//        rvStoriesCategory.hide()
+//        cvStoriesDetailTimer.hide()
         viewModelAction(PauseStories)
     }
 

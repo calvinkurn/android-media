@@ -22,7 +22,7 @@ data class StoriesDetailUiModel(
 ) {
 
     enum class StoriesDetailUiEvent {
-        PAUSE, RESUME, START,
+        PAUSE, START,
     }
     companion object {
         val Empty = StoriesDetailUiModel(

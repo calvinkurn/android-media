@@ -74,8 +74,8 @@ class StoriesViewModel @Inject constructor(
     }
 
     private fun handleNext() {
-        val newDetailPosition = mDetailPosition + 1
-        val newGroupPosition = mGroupPosition + 1
+        val newDetailPosition = mDetailPosition.plus(1)
+        val newGroupPosition = mGroupPosition.plus(1)
 
         if (newDetailPosition < mDetailMaxInGroup) {
             selectDetail(position = newDetailPosition)
@@ -93,7 +93,7 @@ class StoriesViewModel @Inject constructor(
     }
 
     private fun handleOnResumeStories() {
-        updateStoriesDetailData(event = StoriesDetailUiEvent.RESUME)
+        updateStoriesDetailData(event = StoriesDetailUiEvent.START)
     }
 
     private fun setGroupData(groupPosition: Int) {
@@ -135,7 +135,7 @@ class StoriesViewModel @Inject constructor(
         _storiesDetail.update {
             val currentDetail = _storiesGroup.value[groupPosition]
             currentDetail.details[mDetailPosition].copy(
-                selected = mDetailPosition + 1,
+                selected = mDetailPosition,
                 event = event,
             )
         }

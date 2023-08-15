@@ -24,6 +24,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimerEvent.NEXT
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
+import com.tokopedia.stories.view.model.StoriesDetailUiModel.StoriesDetailUiEvent.PAUSE
+import com.tokopedia.stories.view.model.StoriesDetailUiModel.StoriesDetailUiEvent.START
 
 @Composable
 fun StoriesDetailTimer(
@@ -31,22 +33,12 @@ fun StoriesDetailTimer(
     data: StoriesDetailUiModel,
     event: (StoriesDetailTimerEvent) -> Unit,
 ) {
-    val anim = remember(data) { Animatable(0F) }
+    val anim = remember(data.selected) { Animatable(0F) }
 
     LaunchedEffect(data) {
         when (data.event) {
-            StoriesDetailUiModel.StoriesDetailUiEvent.PAUSE -> anim.stop()
-            StoriesDetailUiModel.StoriesDetailUiEvent.RESUME -> {
-                anim.animateTo(
-                    targetValue = 1f,
-                    animationSpec = tween(
-                        durationMillis = (3000 * (1f - anim.value)).toInt(),
-                        easing = LinearEasing,
-                    )
-                )
-            }
-            StoriesDetailUiModel.StoriesDetailUiEvent.START -> {
-                anim.snapTo(0F)
+            PAUSE -> anim.stop()
+            START -> {
                 anim.animateTo(
                     targetValue = 1f,
                     animationSpec = tween(
@@ -57,10 +49,7 @@ fun StoriesDetailTimer(
             }
         }
 
-        if (anim.value == anim.targetValue) {
-            anim.snapTo(0F)
-            event.invoke(NEXT)
-        }
+        if (anim.value == anim.targetValue) event.invoke(NEXT)
     }
 
     StoriesDetailTimerContent(
@@ -82,7 +71,7 @@ private fun StoriesDetailTimerContent(
             .padding(horizontal = 8.dp)
             .background(Color.Transparent),
     ) {
-        for (index in 1..count) {
+        for (index in 0 until count) {
             Row(
                 modifier = Modifier
                     .height(4.dp)
@@ -115,7 +104,7 @@ internal fun StoriesDetailTimerPreview() {
         data = StoriesDetailUiModel(
             id = "1",
             selected = 1,
-            event = StoriesDetailUiModel.StoriesDetailUiEvent.START,
+            event = START,
             imageContent = "",
         )
     ) { }
