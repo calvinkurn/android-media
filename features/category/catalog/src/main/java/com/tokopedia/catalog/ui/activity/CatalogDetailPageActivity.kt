@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.ui.fragment.CatalogDetailPageFragment
+import com.tokopedia.catalog.util.RollenceUtil
 import com.tokopedia.oldcatalog.ui.activity.CatalogDetailPageActivity as OldCatalogDetailPageActivity
 import com.tokopedia.core.analytics.AppScreen
 
@@ -53,8 +54,7 @@ class CatalogDetailPageActivity :  BaseSimpleActivity() {
     }
 
     private fun handleRollenceRoute(savedInstanceState: Bundle?, catalogId: String) {
-        val rollenceEnabled = true // TODO: implement rollence
-        if (rollenceEnabled) {
+        if (RollenceUtil.useCatalogReimagine()) {
             prepareView(savedInstanceState == null)
         } else {
             val intent = OldCatalogDetailPageActivity.createIntent(this, catalogId)

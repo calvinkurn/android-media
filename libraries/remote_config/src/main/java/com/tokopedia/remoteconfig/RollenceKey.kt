@@ -91,4 +91,8 @@ object RollenceKey {
     // Wishlist
     const val WISHLIST_AFFILIATE_TICKER = "aff_ticker_col"
 
+    // Catalog
+    const val USE_CATALOG_REIMAGINE = "dummy_key"
+    const val USE_CATALOG_REIMAGINE_ENABLED_VALUE = "dummy_val"
+
 }
