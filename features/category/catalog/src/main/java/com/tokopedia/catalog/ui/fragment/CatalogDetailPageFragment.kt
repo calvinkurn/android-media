@@ -4,11 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.catalog.databinding.FragmentCatalogReimagineDetailPageBinding
 import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.ui.viewmodel.CatalogDetailPageViewModel
+import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactoryImpl
+import com.tokopedia.catalogcommon.adapter.WidgetCatalogAdapter
+import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
+import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -18,6 +23,14 @@ class CatalogDetailPageFragment : BaseDaggerFragment() {
     lateinit var catalogDetailPageViewModel: CatalogDetailPageViewModel
 
     private var binding by autoClearedNullable<FragmentCatalogReimagineDetailPageBinding>()
+
+    private val widgetAdapter by lazy {
+        WidgetCatalogAdapter(CatalogAdapterFactoryImpl())
+    }
+
+    private val widgets by  lazy {
+        arrayListOf<BaseCatalogUiModel>()
+    }
 
     companion object {
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
@@ -52,6 +65,15 @@ class CatalogDetailPageFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         catalogDetailPageViewModel.getA()
+        context?.let {
+            binding?.rvContent?.apply {
+                layoutManager = LinearLayoutManager(it)
+                adapter = widgetAdapter
+            }
+            widgets.add(TopFeaturesUiModel("dummy",TopFeaturesUiModel.dummyTopFeatures()))
+            widgetAdapter.addWidget(widgets)
+        }
+
     }
 
 
