@@ -8,7 +8,6 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.checkout.R
 import com.tokopedia.checkout.databinding.ItemCheckoutCrossSellItemBinding
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellItem
@@ -85,7 +84,6 @@ object CheckoutCrossSellItemView {
         itemBinding: ItemCheckoutCrossSellItemBinding,
         listener: CheckoutAdapterListener
     ) {
-        itemBinding.ivCheckoutCrossSellItem.setImageResource(R.drawable.ic_donasi_lingkungan)
         itemBinding.tvCheckoutCrossSellItem.text = donationModel.donation.title
         itemBinding.cbCheckoutCrossSellItem.setOnCheckedChangeListener { _, _ -> }
         itemBinding.cbCheckoutCrossSellItem.isChecked = donationModel.donation.isChecked
@@ -103,7 +101,6 @@ object CheckoutCrossSellItemView {
         itemBinding: ItemCheckoutCrossSellItemBinding,
         listener: CheckoutAdapterListener
     ) {
-        itemBinding.ivCheckoutCrossSellItem.setImageResource(R.drawable.ic_logam_mulia)
         val text = if (egoldModel.egoldAttributeModel.isShowHyperlink) {
             "${egoldModel.egoldAttributeModel.titleText ?: ""} ${egoldModel.egoldAttributeModel.hyperlinkText ?: ""} (${
             CurrencyFormatUtil.convertPriceValueToIdrFormat(
