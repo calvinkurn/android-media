@@ -360,8 +360,8 @@ object CartUiModelMapper {
                     }
                     productUiModelList.lastOrNull()?.apply {
                         isFinalItem = true
-                        showErrorBottomDivider = sectionIndex != cartData.unavailableSections.lastIndex
-                            || (sectionIndex == cartData.unavailableSections.lastIndex && groupIndex != unavailableSection.unavailableGroups.lastIndex)
+                        showErrorBottomDivider = sectionIndex != cartData.unavailableSections.lastIndex ||
+                            (sectionIndex == cartData.unavailableSections.lastIndex && groupIndex != unavailableSection.unavailableGroups.lastIndex)
                         shouldDivideHalfErrorBottomDivider = showErrorBottomDivider && groupIndex != unavailableSection.unavailableGroups.lastIndex
                     }
                 }
@@ -606,6 +606,7 @@ object CartUiModelMapper {
             warehouseId = product.warehouseId
             bundleIds = product.bundleIds
             addOnsProduct = mapCartAddOnData(product.addOn)
+            isBmGm = isBmGmProduct(product)
         }
     }
 
@@ -861,5 +862,9 @@ object CartUiModelMapper {
                 ?: "0"
             enablerLabel = if (shop.enabler.showLabel) shop.enabler.labelName else ""
         }
+    }
+
+    private fun isBmGmProduct(product: Product): Boolean {
+        return true
     }
 }

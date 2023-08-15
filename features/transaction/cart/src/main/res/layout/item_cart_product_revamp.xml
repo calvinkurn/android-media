@@ -52,6 +52,8 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <include layout="@layout/item_cart_bmgm_ticker" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_product_information"
         android:layout_width="match_parent"
@@ -504,7 +506,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            android:src="@drawable/ic_add_note"
+            app:srcCompat="@drawable/ic_add_note"
             app:layout_constraintStart_toEndOf="@id/iu_image_product"
             app:layout_constraintTop_toBottomOf="@+id/item_addon_cart"
             tools:visibility="visible" />
