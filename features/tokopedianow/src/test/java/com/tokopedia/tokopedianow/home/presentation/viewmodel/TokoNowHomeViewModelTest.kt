@@ -18,6 +18,7 @@ import com.tokopedia.play.widget.domain.PlayWidgetUseCase.WidgetType.TokoNowMedi
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase.WidgetType.TokoNowSmallWidget
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
@@ -1688,6 +1689,16 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
+    fun `when getHomeLayoutJob is active should not set homeLayoutList value`() {
+        mockGetHomeLayoutJobActive()
+
+        viewModel.setProductAddToCartQuantity(MiniCartSimplifiedData())
+
+        viewModel.homeLayoutList
+            .verifyValueEquals(null)
+    }
+
+    @Test
     fun `when removeSharingEducationWidget throw exception should not set homeLayoutList value`() {
         onGetHomeLayoutItemList_returnNull()
 
@@ -2914,6 +2925,56 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         val homeLayoutItems = listOf(
             createHomeHeaderUiModel(),
             playWidgetUiModel
+        )
+
+        val expectedResult = Success(
+            HomeLayoutListUiModel(
+                items = homeLayoutItems,
+                state = TokoNowLayoutState.UPDATE
+            )
+        )
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+
+        viewModel.invalidatePlayImpression
+            .verifyValueEquals(true)
+    }
+
+    @Test
+    fun `given small play widget items empty when get small play widget success should NOT add small play widget to home layout list`() {
+        val id = "1001"
+        val title = "Small Play Widget"
+        val channelTag = "channel_tag"
+        val appLink = "tokopedia://now"
+        val playWidgetItems = emptyList<PlayWidgetChannelUiModel>()
+
+        val homeLayoutResponse = listOf(
+            HomeLayoutResponse(
+                id = id,
+                layout = "play_carousel_small",
+                header = Header(
+                    name = title,
+                    applink = appLink,
+                    serverTimeUnix = 0
+                ),
+                widgetParam = channelTag
+            )
+        )
+        val playWidgetState = createPlayWidgetState(items = playWidgetItems)
+
+        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+        onGetPlayWidget_thenReturn(playWidgetState)
+
+        viewModel.getHomeLayout(
+            localCacheModel = LocalCacheModel(),
+            removeAbleWidgets = listOf(),
+            enableNewRepurchase = true
+        )
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
+
+        val homeLayoutItems = listOf(
+            createHomeHeaderUiModel()
         )
 
         val expectedResult = Success(

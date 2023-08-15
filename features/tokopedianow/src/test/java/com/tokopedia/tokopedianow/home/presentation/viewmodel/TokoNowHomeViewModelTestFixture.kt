@@ -76,7 +76,12 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -646,6 +651,11 @@ abstract class TokoNowHomeViewModelTestFixture {
 
     protected fun onGetUserSession_returnNull() {
         viewModel.mockPrivateField("userSession", null)
+    }
+
+    protected fun mockGetHomeLayoutJobActive() {
+        val job = CoroutineScope(Dispatchers.IO).launch { delay(5000) }
+        viewModel.mockPrivateField("getHomeLayoutJob", job)
     }
 
     protected fun onGetReferralEvalute_thenReturn(response: ReferralEvaluateJoinResponse) {

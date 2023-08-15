@@ -18,7 +18,9 @@ import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 
 object PlayWidgetMapper {
 
-    fun createPlayWidgetState(): PlayWidgetState {
+    fun createPlayWidgetState(
+        items: List<PlayWidgetChannelUiModel> = createPlayWidgetChannelUiModels()
+    ): PlayWidgetState {
         return PlayWidgetState(
             model = PlayWidgetUiModel(
                 title = "",
@@ -27,32 +29,37 @@ object PlayWidgetMapper {
                 isActionVisible = false,
                 config = PlayWidgetConfigUiModel.Empty,
                 background = PlayWidgetBackgroundUiModel.Empty,
-                items = listOf(
-                    PlayWidgetChannelUiModel(
-                        "1",
-                        "",
-                        "",
-                        "",
-                        PlayWidgetTotalView("", false),
-                        PlayWidgetPromoType.Default("", false),
-                        PlayWidgetReminderType.NotReminded,
-                        PlayWidgetPartnerUiModel("", "", PartnerType.Unknown, "", "", ""),
-                        PlayWidgetVideoUiModel("", false, "", ""),
-                        PlayWidgetChannelType.Upcoming,
-                        false,
-                        PlayWidgetShareUiModel("", false),
-                        "",
-                        "",
-                        "",
-                        false,
-                        channelTypeTransition = PlayWidgetChannelTypeTransition(null, PlayWidgetChannelType.Upcoming),
-                        shouldShowPerformanceDashboard = false,
-                        products = emptyList(),
-                        gridType = PlayGridType.Unknown,
-                        extras = emptyMap(),
-                    )
-                )
+                items = items
             )
         )
     }
+
+    private fun createPlayWidgetChannelUiModels() = listOf(
+        PlayWidgetChannelUiModel(
+            "1",
+            "",
+            "",
+            "",
+            PlayWidgetTotalView("", false),
+            PlayWidgetPromoType.Default("", false),
+            PlayWidgetReminderType.NotReminded,
+            PlayWidgetPartnerUiModel("", "", PartnerType.Unknown, "", "", ""),
+            PlayWidgetVideoUiModel("", false, "", ""),
+            PlayWidgetChannelType.Upcoming,
+            false,
+            PlayWidgetShareUiModel("", false),
+            "",
+            "",
+            "",
+            false,
+            channelTypeTransition = PlayWidgetChannelTypeTransition(
+                null,
+                PlayWidgetChannelType.Upcoming
+            ),
+            shouldShowPerformanceDashboard = false,
+            products = emptyList(),
+            gridType = PlayGridType.Unknown,
+            extras = emptyMap(),
+        )
+    )
 }
