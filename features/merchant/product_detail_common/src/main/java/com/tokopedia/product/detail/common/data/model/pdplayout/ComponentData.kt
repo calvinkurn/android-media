@@ -3,7 +3,6 @@ package com.tokopedia.product.detail.common.data.model.pdplayout
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.detail.common.data.model.product.Cashback
-import com.tokopedia.product.detail.common.data.model.product.PostAtcLayout
 import com.tokopedia.product.detail.common.data.model.product.PreOrder
 import com.tokopedia.product.detail.common.data.model.product.Stock
 import com.tokopedia.product.detail.common.data.model.product.VariantBasic
@@ -90,14 +89,19 @@ data class ComponentData(
     val sizeChart: String = "",
     @SerializedName("maxFinalPrice")
     val maxFinalPrice: Float = 0F,
-    @SerializedName("postATCLayout")
-    val postAtcLayout: PostAtcLayout = PostAtcLayout(),
     @SerializedName("defaultChild")
     val defaultChild: String = "",
     @SerializedName("variants")
     val variants: List<Variant> = listOf(),
     @SerializedName("children")
     val children: List<VariantChild> = listOf(),
+    /**
+     * used when landing on pdp, if it is empty use hardcode FE
+     * and if there’s a user activity for choosing the variant, use children.subText below
+     * Details: https://tokopedia.atlassian.net/wiki/spaces/PDP/pages/2245002923/PDP+P1+Product+Variant+Partial+OOS
+     */
+    @SerializedName("landingSubText")
+    val landingSubText: String = "",
     //endregioncopy
 
     //region one liners data
@@ -149,7 +153,11 @@ data class ComponentData(
     // endregion
 
     @SerializedName("variantCampaign")
-    val variantCampaign: VariantCampaign = VariantCampaign()
+    val variantCampaign: VariantCampaign = VariantCampaign(),
+    @SerializedName("text")
+    val text: String = "",
+    @SerializedName("chevronPos")
+    val chevronPos: String = ""
 ) {
     companion object {
         private const val PRODUCT_IMAGE_TYPE = "image"

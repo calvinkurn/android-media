@@ -22,47 +22,51 @@ class BucketAlbumRepositoryImpl @Inject constructor(
 
     override operator fun invoke(): Flow<List<Album>> {
         return flow {
-            val cursor = setupMediaQuery(BUCKET_ALL_MEDIA_ID)
-            val albumMap = mutableMapOf<Long, Album>()
-            var mediaTotal = 1
+            try {
+                val cursor = setupMediaQuery(BUCKET_ALL_MEDIA_ID)
+                val albumMap = mutableMapOf<Long, Album>()
+                var mediaTotal = 1
 
-            if (cursor?.moveToFirst() == true) {
-                do {
-                    val media = createMedia(cursor)?: continue
-                    val bucketName = getOrSetBucketName(cursor, media)
-                    val bucketId = getBucketId(cursor)
+                if (cursor?.moveToFirst() == true) {
+                    do {
+                        val media = createMedia(cursor)?: continue
+                        val bucketName = getOrSetBucketName(cursor, media)
+                        val bucketId = getBucketId(cursor)
 
-                    val album = albumMap[bucketId]
+                        val album = albumMap[bucketId]
 
-                    if (album == null) {
-                        if (media.file.exists().not()) continue
+                        if (album == null) {
+                            if (media.file.exists().not()) continue
 
-                        albumMap[bucketId] = Album(
-                            bucketId,
-                            bucketName,
-                            media.uri
-                        )
-                    }
+                            albumMap[bucketId] = Album(
+                                bucketId,
+                                bucketName,
+                                media.uri
+                            )
+                        }
 
-                    if (album != null) {
-                        // media total by bucketId
-                        album.count++
+                        if (album != null) {
+                            // media total by bucketId
+                            album.count++
 
-                        // calculate all media items
-                        mediaTotal++
-                    }
-                } while (cursor.moveToNext())
-            }
-
-            cursor?.close()
-
-            val result = albumMap.values
-                .toMutableList()
-                .also {
-                    it.add(Int.ZERO, recentAlbumItem(it.firstOrNull()?.uri, mediaTotal))
+                            // calculate all media items
+                            mediaTotal++
+                        }
+                    } while (cursor.moveToNext())
                 }
 
-            emit(result)
+                cursor?.close()
+
+                val result = albumMap.values
+                    .toMutableList()
+                    .also {
+                        it.add(Int.ZERO, recentAlbumItem(it.firstOrNull()?.uri, mediaTotal))
+                    }
+
+                emit(result)
+            } catch (t: Throwable) {
+                emit(emptyList())
+            }
         }
     }
 

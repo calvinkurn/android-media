@@ -39,7 +39,7 @@ buildscript {
         classpath('net.sf.proguard:proguard-gradle:6.0.3') {
             force = true
         }
-        classpath("org.jfrog.buildinfo:build-info-extractor-gradle:4.18.2") {
+        classpath("org.jfrog.buildinfo:build-info-extractor-gradle:4.28.4") {
             exclude group: 'org.codehaus.groovy', module: 'groovy-all'
         }
         classpath 'com.google.firebase:perf-plugin:1.4.2'
@@ -48,8 +48,6 @@ buildscript {
         classpath "com.vanniktech:gradle-code-quality-tools-plugin:0.17.0"
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.7.1"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        classpath 'com.tokopedia.patch:preprocessor:2.0.9'
-        classpath 'com.tokopedia.patch:core:1.0.0'
         classpath 'org.javassist:javassist:3.20.0-GA'
         classpath "androidx.benchmark:benchmark-gradle-plugin:1.1.1"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.5.3"

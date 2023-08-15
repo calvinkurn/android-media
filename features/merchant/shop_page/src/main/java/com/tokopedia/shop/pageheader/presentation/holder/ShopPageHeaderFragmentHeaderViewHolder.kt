@@ -137,32 +137,27 @@ class ShopPageHeaderFragmentHeaderViewHolder(
     ) {
         when {
             shouldShowShopStatusTicker(headerTickerData.shopInfo.statusInfo.statusTitle, headerTickerData.shopInfo.statusInfo.statusMessage) -> {
-                showShopStatusTicker(headerTickerData.shopInfo, isMyShop)
+                showShopStatusTicker(headerTickerData.shopInfo, isMyShop, tickerVisibilityState)
             }
             shouldShowShopStatusTicker(headerTickerData.shopOperationalHourStatus.tickerTitle, headerTickerData.shopOperationalHourStatus.tickerMessage) -> {
-                showShopOperationalHourStatusTicker(headerTickerData.shopOperationalHourStatus, isMyShop)
+                showShopOperationalHourStatusTicker(headerTickerData.shopOperationalHourStatus, isMyShop, tickerVisibilityState)
             }
             else -> {
                 hideShopStatusTicker()
             }
         }
         tickerVisibilityState(tickerShopStatus?.visibility.orZero())
-        tickerShopStatus?.setDescriptionClickEvent(object : TickerCallback {
-
-            override fun onDescriptionViewClick(linkUrl: CharSequence) {
-            }
-
-            override fun onDismiss() {
-                tickerVisibilityState(tickerShopStatus.visibility.orZero())
-            }
-        })
     }
 
     private fun shouldShowShopStatusTicker(title: String, message: String): Boolean {
         return !(title.isEmpty() && message.isEmpty())
     }
 
-    private fun showShopOperationalHourStatusTicker(shopOperationalHourStatus: ShopOperationalHourStatus, isMyShop: Boolean = false) {
+    private fun showShopOperationalHourStatusTicker(
+        shopOperationalHourStatus: ShopOperationalHourStatus,
+        isMyShop: Boolean = false,
+        tickerVisibilityState: (tickerState: Int) -> Unit
+    ) {
         tickerShopStatus?.show()
         tickerShopStatus?.tickerType = if (isMyShop) {
             Ticker.TYPE_WARNING
@@ -176,7 +171,9 @@ class ShopPageHeaderFragmentHeaderViewHolder(
                 listenerHeader.onShopStatusTickerClickableDescriptionClicked(linkUrl)
             }
 
-            override fun onDismiss() {}
+            override fun onDismiss() {
+                tickerVisibilityState(tickerShopStatus.visibility.orZero())
+            }
         })
         if (isMyShop) {
             tickerShopStatus?.closeButtonVisibility = View.GONE
@@ -185,7 +182,11 @@ class ShopPageHeaderFragmentHeaderViewHolder(
         }
     }
 
-    private fun showShopStatusTicker(shopInfo: ShopInfo, isMyShop: Boolean = false) {
+    private fun showShopStatusTicker(
+        shopInfo: ShopInfo,
+        isMyShop: Boolean = false,
+        tickerVisibilityState: (tickerState: Int) -> Unit
+    ) {
         val statusTitle = shopInfo.statusInfo.statusTitle
         val shopStatus = shopInfo.statusInfo.shopStatus
         val shopTickerType = shopInfo.statusInfo.tickerType
@@ -246,7 +247,9 @@ class ShopPageHeaderFragmentHeaderViewHolder(
                 }
             }
 
-            override fun onDismiss() {}
+            override fun onDismiss() {
+                tickerVisibilityState(tickerShopStatus.visibility.orZero())
+            }
         })
 
         // special handling for shop status incubated

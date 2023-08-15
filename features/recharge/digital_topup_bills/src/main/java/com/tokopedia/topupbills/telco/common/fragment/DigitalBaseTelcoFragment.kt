@@ -1,11 +1,9 @@
 package com.tokopedia.topupbills.telco.common.fragment
 
 import android.app.Activity
-import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
-import android.provider.ContactsContract
 import android.text.InputType
 import android.text.TextUtils
 import android.view.View
@@ -28,7 +26,6 @@ import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoComponentName
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
-import com.tokopedia.common.topupbills.favoritepage.util.FavoriteNumberDataMapper
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity
 import com.tokopedia.common.topupbills.favoritepage.view.model.TopupBillsSavedNumber
 import com.tokopedia.common.topupbills.favoritepage.view.util.FavoriteNumberPageConfig
@@ -40,7 +37,6 @@ import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataModel
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
-import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
@@ -103,9 +99,12 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     }
 
     private fun subscribeUi() {
-        viewModel.selectedRecentNumber.observe(viewLifecycleOwner, Observer {
-            onClickItemRecentNumber(it)
-        })
+        viewModel.selectedRecentNumber.observe(
+            viewLifecycleOwner,
+            Observer {
+                onClickItemRecentNumber(it)
+            }
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -139,7 +138,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
             for (item in tickers) {
                 messages.add(
                     TickerData(
-                        item.name, item.content,
+                        item.name,
+                        item.content,
                         when (item.type) {
                             "warning" -> Ticker.TYPE_WARNING
                             "info" -> Ticker.TYPE_INFORMATION
@@ -157,7 +157,6 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         } else {
             tickerView.visibility = View.GONE
         }
-
     }
 
     protected fun navigateContact(
@@ -169,7 +168,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         topupAnalytics.eventClickOnContactPickerHomepage()
         val isDeniedOnce = localCacheHandler.getBoolean(TELCO_PERMISSION_CHECKER_IS_DENIED, false)
         if (!isDeniedOnce && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            permissionCheckerHelper.checkPermission(this,
+            permissionCheckerHelper.checkPermission(
+                this,
                 PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT,
                 object : PermissionCheckerHelper.PermissionCheckListener {
                     override fun onPermissionDenied(permissionText: String) {
@@ -186,12 +186,21 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
                     override fun onPermissionGranted() {
                         navigateSavedNumber(
-                            clientNumber, dgCategoryIds, categoryName, isSwitchChecked)
+                            clientNumber,
+                            dgCategoryIds,
+                            categoryName,
+                            isSwitchChecked
+                        )
                     }
-                })
+                }
+            )
         } else {
             navigateSavedNumber(
-                clientNumber, dgCategoryIds, categoryName, isSwitchChecked)
+                clientNumber,
+                dgCategoryIds,
+                categoryName,
+                isSwitchChecked
+            )
         }
     }
 
@@ -203,15 +212,15 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     ) {
         context?.let {
             val intent = TopupBillsPersoSavedNumberActivity.createInstance(
-                    it,
-                    clientNumber,
-                    dgCategoryIds,
-                    arrayListOf(),
-                    categoryName,
-                    isSwitchChecked,
-                    loyaltyStatus,
-                    FavoriteNumberPageConfig.TELCO,
-                )
+                it,
+                clientNumber,
+                dgCategoryIds,
+                arrayListOf(),
+                categoryName,
+                isSwitchChecked,
+                loyaltyStatus,
+                FavoriteNumberPageConfig.TELCO
+            )
             startActivityForResult(intent, REQUEST_CODE_DIGITAL_SAVED_NUMBER)
         }
     }
@@ -304,12 +313,15 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     }
 
     fun getPrefixOperatorData() {
-        viewModel.catalogPrefixSelect.observe(this, Observer {
-            when (it) {
-                is Success -> onSuccessCustomData()
-                is Fail -> onErrorCustomData()
+        viewModel.catalogPrefixSelect.observe(
+            this,
+            Observer {
+                when (it) {
+                    is Success -> onSuccessCustomData()
+                    is Fail -> onErrorCustomData()
+                }
             }
-        })
+        )
         viewModel.getPrefixOperator(CommonTopupBillsGqlQuery.prefixSelectTelco, getTelcoMenuId())
     }
 
@@ -428,11 +440,11 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     }
 
     override fun onEnquiryError(error: Throwable) {
-        //do nothing
+        // do nothing
     }
 
     override fun onCatalogPluginDataError(error: Throwable) {
-        //do nothing
+        // do nothing
     }
 
     override fun onFavoriteNumbersError(error: Throwable) {
@@ -526,7 +538,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         fadeOut.duration = FADE_OUT_DURATION
         fadeOut.fillAfter = true
 
-        //initial appBar state is expanded
+        // initial appBar state is expanded
         (activity as? BaseTelcoActivity)?.setupAppBar()
 
         appBarLayout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
@@ -539,22 +551,16 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                 lastOffset = verticalOffSet
                 if (abs(verticalOffSet) >= appBarLayout.totalScrollRange && !lastIsCollapsed) {
                     if (!getClientInputNumber().isErrorMessageShown()) {
-                        //Collapsed
+                        // Collapsed
                         lastIsCollapsed = true
-                        onCollapseAppBar()
                     }
                 } else if (verticalOffSet == 0 && lastIsCollapsed) {
-                    //Expanded
+                    // Expanded
                     lastIsCollapsed = false
-                    onExpandAppBar()
                 }
             }
         })
     }
-
-    abstract fun onCollapseAppBar()
-
-    abstract fun onExpandAppBar()
 
     abstract fun onBackPressed()
 

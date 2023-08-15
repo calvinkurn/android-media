@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.analytics.PayLaterAnalyticsBase
 import com.tokopedia.pdpsimulation.paylater.PdpSimulationCallback
@@ -36,7 +38,6 @@ class PayLaterInstallmentFeeInfo : BottomSheetUnify() {
             null, false
         )
         setChild(childView)
-
     }
 
     private fun initArguments() {
@@ -62,6 +63,14 @@ class PayLaterInstallmentFeeInfo : BottomSheetUnify() {
         rvInstallmentDetail.setHasFixedSize(true)
         simulationAdapter.addAllElements(installmentDetails?.content ?: listOf())
         sendEvent(impression)
+        setTicker()
+    }
+
+    private fun setTicker() {
+        groupTicker.shouldShowWithAction(installmentDetails?.ticker?.tickerWordings?.isNotEmpty() ?: false) {
+            tvTicker.text = installmentDetails?.ticker?.tickerWordings
+            ivTicker.setImageUrl(installmentDetails?.ticker?.image ?: String.EMPTY)
+        }
     }
 
     private fun sendEvent(impression: PayLaterAnalyticsBase?) {

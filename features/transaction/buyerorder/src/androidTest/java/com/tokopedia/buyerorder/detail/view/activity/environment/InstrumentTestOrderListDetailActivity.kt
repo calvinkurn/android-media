@@ -7,12 +7,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.buyerorder.detail.di.DaggerOrderDetailsComponent
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.buyerorder.detail.view.fragment.OmsDetailFragment as OldOms
 import com.tokopedia.buyerorder.detail.revamp.fragment.OmsDetailFragment as NewOms
 
 /**
@@ -25,10 +21,6 @@ class InstrumentTestOrderListDetailActivity: BaseSimpleActivity(), HasComponent<
     private var orderCategory = ""
     private var fromPayment = ""
     private var upstream = ""
-
-    private val remoteConfig: RemoteConfig by lazy {
-        FirebaseRemoteConfigImpl(this)
-    }
 
     private val userSession: UserSessionInterface by lazy {
         UserSession(this)
@@ -52,11 +44,8 @@ class InstrumentTestOrderListDetailActivity: BaseSimpleActivity(), HasComponent<
     }
 
     override fun getNewFragment(): Fragment {
-        return if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_BUYER_ORDER_DETAIL)) {
-            NewOms.getInstance(orderId, orderCategory, fromPayment, upstream)
-        } else {
-            OldOms.getInstance(orderId, orderCategory, fromPayment, upstream)
-        }
+        return NewOms.getInstance(orderId, orderCategory, fromPayment, upstream)
+
     }
 
     override fun getComponent(): OrderDetailsComponent {

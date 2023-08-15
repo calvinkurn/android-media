@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:background="@color/Unify_N700_32">
+    tools:background="@color/Unify_NN950_32">
 
     <LinearLayout
         android:id="@+id/ll_captured_image_action"
@@ -41,7 +41,7 @@
             android:paddingTop="@dimen/unify_space_12"
             android:paddingBottom="@dimen/unify_space_12"
             android:text="@string/hc_image_upload"
-            android:textColor="@color/Unify_G500"
+            android:textColor="@color/Unify_GN500"
             app:typographyType="body_2" />
 
     </LinearLayout>

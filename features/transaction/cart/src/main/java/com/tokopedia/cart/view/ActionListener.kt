@@ -2,10 +2,11 @@ package com.tokopedia.cart.view
 
 import androidx.fragment.app.Fragment
 import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
+import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
-import com.tokopedia.cart.view.uimodel.CartShopHolderData
+import com.tokopedia.cart.view.uimodel.CartShopBottomHolderData
 import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
@@ -21,17 +22,19 @@ interface ActionListener {
 
     fun getDefaultCartErrorMessage(): String
 
+    fun onCartGroupNameClicked(appLink: String, shopId: String, shopName: String, isOWOC: Boolean)
+
     fun onCartShopNameClicked(shopId: String?, shopName: String?, isTokoNow: Boolean)
 
     fun onShopItemCheckChanged(index: Int, checked: Boolean)
 
-    fun onCartShopGroupTickerClicked(cartShopHolderData: CartShopHolderData)
+    fun onCartShopGroupTickerClicked(cartGroupHolderData: CartGroupHolderData)
 
-    fun onCartShopGroupTickerRefreshClicked(index: Int, cartShopHolderData: CartShopHolderData)
+    fun onCartShopGroupTickerRefreshClicked(index: Int, cartShopBottomHolderData: CartShopBottomHolderData)
 
-    fun onViewCartShopGroupTicker(cartShopHolderData: CartShopHolderData)
+    fun onViewCartShopGroupTicker(cartGroupHolderData: CartGroupHolderData)
 
-    fun checkCartShopGroupTicker(cartShopHolderData: CartShopHolderData)
+    fun checkCartShopGroupTicker(cartGroupHolderData: CartGroupHolderData)
 
     fun onCartDataEnableToCheckout()
 

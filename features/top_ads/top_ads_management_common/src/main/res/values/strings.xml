@@ -35,8 +35,8 @@
     <string name="recommendated_bid_message">Biaya rata-rata kompetitor Rp %s</string>
     <string name="recommendated_bid_message_new">Rekomendasi Rp%s</string>
     <string name="min_bid_error">Biaya minimum Rp%s</string>
-    <string name="angarran_harrian_min_bid_error">Angaran harian min. Rp%s</string>
-    <string name="angarran_harrian_max_bid_error">Angaran harian maks. Rp%s</string>
+    <string name="topads_common_angarran_harrian_min_bid_error">Anggaran harian min. Rp%s</string>
+    <string name="topads_common_angarran_harrian_max_bid_error">Anggaran harian maks. Rp%s</string>
     <string name="max_bid_error">Biaya maksimum Rp%s</string>
     <string name="min_bid_error_new">Biaya min. Rp%s</string>
     <string name="max_bid_error_new">Biaya maks. Rp%s</string>
@@ -278,4 +278,5 @@
     <string name="topads_autoads_advantage_body_3">Kamu masih bisa atur sendiri produk yang ingin diiklankan dan anggaran harianmu.</string>
     <string name="topads_autoads_advantage_body_4">Dengan dukungan sistem pintar TopAds, produk tampil lebih sering &amp; tepat sasaran.</string>
     <string name="topads_autoads_advantage_cta">Ya, Aktifkan</string>
+    <string name="mp_ad_group_list_search_hint">Cari grup iklan di sini</string>
 </resources>

@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.BottomsheetEmptyProductItemBinding
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder

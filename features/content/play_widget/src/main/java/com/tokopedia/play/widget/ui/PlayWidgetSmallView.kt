@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.applink.RouteManager
@@ -22,7 +21,6 @@ import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.snaphelper.PlayWidgetSnapHelper
 import com.tokopedia.play.widget.ui.widget.small.adapter.PlayWidgetSmallAdapter
 import com.tokopedia.play.widget.ui.widget.small.adapter.PlayWidgetSmallViewHolder
-import com.tokopedia.play_common.util.extension.changeConstraint
 
 /**
  * Created by jegul on 07/10/20
@@ -79,7 +77,7 @@ class PlayWidgetSmallView : FrameLayout, IPlayWidgetView {
                 view = this@PlayWidgetSmallView,
                 item = item,
                 config = mModel.config,
-                channelPositionInList = position,
+                channelPositionInList = position
             )
         }
 
@@ -89,7 +87,7 @@ class PlayWidgetSmallView : FrameLayout, IPlayWidgetView {
                 view = this@PlayWidgetSmallView,
                 item = item,
                 config = mModel.config,
-                channelPositionInList = position,
+                channelPositionInList = position
             )
         }
     }
@@ -98,7 +96,7 @@ class PlayWidgetSmallView : FrameLayout, IPlayWidgetView {
 
     private val adapter = PlayWidgetSmallAdapter(
         cardChannelListener = cardChannelListener,
-        cardBannerListener = cardBannerListener,
+        cardBannerListener = cardBannerListener
     )
 
     init {
@@ -146,7 +144,7 @@ class PlayWidgetSmallView : FrameLayout, IPlayWidgetView {
         val isNewChannelAdded = isNewItemAdded(data.items)
 
         rvWidgetCardSmall.addOneTimeGlobalLayoutListener {
-            if(isNewChannelAdded && adapter.itemCount > 0) rvWidgetCardSmall.smoothScrollToPosition(0)
+            if (isNewChannelAdded && adapter.itemCount > 0) rvWidgetCardSmall.smoothScrollToPosition(0)
             mWidgetInternalListener?.onWidgetCardsScrollChanged(rvWidgetCardSmall)
         }
 
@@ -175,7 +173,7 @@ class PlayWidgetSmallView : FrameLayout, IPlayWidgetView {
 
     private fun setupHeader(
         prevData: PlayWidgetUiModel = PlayWidgetUiModel.Empty,
-        data: PlayWidgetUiModel,
+        data: PlayWidgetUiModel
     ) {
         val tvAction = getWidgetAction()
         val tvTitle = getWidgetTitle()

@@ -28,7 +28,7 @@
         android:layout_marginStart="7dp"
         android:layout_marginLeft="7dp"
         android:text="@string/shop_page_label_remind_me"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/image_notification_notified"

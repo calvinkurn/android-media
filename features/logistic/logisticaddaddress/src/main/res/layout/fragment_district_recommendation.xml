@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_marginBottom="24dp"
-        android:background="@color/Unify_N100" />
+        android:background="@color/Unify_NN200" />
 
     <RelativeLayout
         android:id="@+id/rl_discom_current_location"
@@ -52,7 +52,7 @@
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_marginBottom="16dp"
-        android:background="@color/Unify_N100" />
+        android:background="@color/Unify_NN200" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_message"

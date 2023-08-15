@@ -11,12 +11,10 @@ import com.tokopedia.homenav.mainnav.data.pojo.saldo.SaldoPojo
 import com.tokopedia.homenav.mainnav.data.pojo.tokopoint.TokopointsStatusFilteredPojo
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
 import com.tokopedia.homenav.mainnav.domain.model.AffiliateUserDetailData
-import com.tokopedia.homenav.mainnav.domain.model.NavFavoriteShopModel
 import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
 import com.tokopedia.homenav.mainnav.domain.model.NavWishlistModel
 import com.tokopedia.homenav.mainnav.domain.usecases.GetAffiliateUserUseCase
 import com.tokopedia.homenav.mainnav.domain.usecases.GetCategoryGroupUseCase
-import com.tokopedia.homenav.mainnav.domain.usecases.GetFavoriteShopsNavUseCase
 import com.tokopedia.homenav.mainnav.domain.usecases.GetNavNotification
 import com.tokopedia.homenav.mainnav.domain.usecases.GetPaymentOrdersNavUseCase
 import com.tokopedia.homenav.mainnav.domain.usecases.GetProfileDataUseCase
@@ -61,7 +59,6 @@ fun createViewModel(
     getShopInfoUseCase: GetShopInfoUseCase? = null,
     accountAdminInfoUseCase: AccountAdminInfoUseCase? = null,
     getAffiliateUserUseCase: GetAffiliateUserUseCase? = null,
-    getFavoriteShopsNavUseCase: GetFavoriteShopsNavUseCase? = null,
     getWishlistNavUseCase: GetWishlistNavUseCase? = null,
     getReviewProductUseCase: GetReviewProductUseCase? = null,
     getTokopediaPlusUseCase: TokopediaPlusUseCase? = null
@@ -104,18 +101,6 @@ fun createViewModel(
         coEvery { it.executeOnBackground() }.answers { Success(AffiliateUserDetailData()) }
     }
 
-    val getFavoriteShopUseCaseMock = getOrUseDefault(getFavoriteShopsNavUseCase) {
-        coEvery { it.executeOnBackground() }.answers { Pair(listOf(NavFavoriteShopModel()), true) }
-    }
-
-    val getWishlistUseCaseMock = getOrUseDefault(getWishlistNavUseCase) {
-        coEvery { it.executeOnBackground() }.answers { Triple(listOf(NavWishlistModel()), true, true) }
-    }
-
-    val getReviewProductUseCaseMock = getOrUseDefault(getReviewProductUseCase) {
-        coEvery { it.executeOnBackground() }.answers { listOf() }
-    }
-
     val getTokopediaPlusUseCaseMock = getOrUseDefault(getTokopediaPlusUseCase) {
         coEvery { it.invoke(any()) }.answers { TokopediaPlusResponseDataModel() }
     }
@@ -133,9 +118,6 @@ fun createViewModel(
             getShopInfoUseCase = getShopInfoUseCaseMock,
             accountAdminInfoUseCase = accountAdminInfoUseCaseMock,
             getAffiliateUserUseCase = getAffiliateUserUseCaseMock,
-            getFavoriteShopsNavUseCase = getFavoriteShopUseCaseMock,
-            getWishlistNavUseCase = getWishlistUseCaseMock,
-            getReviewProductUseCase = getReviewProductUseCaseMock,
             getTokopediaPlusUseCase = getTokopediaPlusUseCaseMock
         ),
         recordPrivateCalls = true

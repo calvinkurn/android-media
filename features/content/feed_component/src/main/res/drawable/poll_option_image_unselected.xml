@@ -1,14 +1,14 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@android:id/background">
         <shape>
-            <gradient android:angle="90" android:centerColor="@color/Unify_N700_44" android:centerY="0.75" android:endColor="@color/Unify_N700_44" android:startColor="@color/Unify_N700_44"/>
+            <gradient android:angle="90" android:centerColor="@color/Unify_NN950_44" android:centerY="0.75" android:endColor="@color/Unify_NN950_44" android:startColor="@color/Unify_NN950_44"/>
         </shape>
     </item>
     <item android:id="@android:id/progress">
         <scale android:scaleWidth="100%">
             <shape>
                 <corners android:bottomRightRadius="3dp" android:topRightRadius="3dp"/>
-                <gradient android:endColor="@color/Unify_N50" android:startColor="@color/Unify_N150"/>
+                <gradient android:endColor="@color/Unify_NN50" android:startColor="@color/Unify_NN400"/>
             </shape>
         </scale>
     </item>

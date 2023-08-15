@@ -57,4 +57,6 @@ object ConstantKey {
         const val KEY_BEAUTY_FEST = "KEY_BEAUTY_FEST"
         const val KEY_IS_BEAUTY_FEST ="KEY_IS_BEAUTY_FEST"
     }
+
+    const val CATEGORY_ID = "category_id"
 }

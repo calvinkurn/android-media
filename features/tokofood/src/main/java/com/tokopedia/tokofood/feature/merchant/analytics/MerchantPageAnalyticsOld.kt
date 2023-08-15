@@ -386,7 +386,7 @@ class MerchantPageAnalyticsOld @Inject constructor(private val userSession: User
         val promotionBundleList = arrayListOf(getMvcPromotionBundle(promoName))
 
         val eventDataLayer = Bundle().apply {
-            putString(TrackAppUtils.EVENT, TokoFoodAnalytics.EVENT_VIEW_ITEM)
+            putString(TrackAppUtils.EVENT, TokoFoodAnalytics.EVENT_PROMO_VIEW)
             putString(TrackAppUtils.EVENT_ACTION, TokoFoodAnalyticsConstants.IMPRESSION_ON_PROMO_BUTTON)
             putString(TrackAppUtils.EVENT_CATEGORY, TokoFoodAnalyticsConstants.TOKOFOOD_MERCHANT_PAGE)
             putString(TrackAppUtils.EVENT_LABEL, String.EMPTY)
@@ -399,14 +399,14 @@ class MerchantPageAnalyticsOld @Inject constructor(private val userSession: User
             putParcelableArrayList(TokoFoodAnalyticsConstants.KEY_EE_PROMOTIONS, promotionBundleList)
         }
 
-        tracker.sendEnhanceEcommerceEvent(TokoFoodAnalytics.EVENT_VIEW_ITEM, eventDataLayer)
+        tracker.sendEnhanceEcommerceEvent(TokoFoodAnalytics.EVENT_PROMO_VIEW, eventDataLayer)
     }
 
     fun clickPromoMvc(promoName: String, merchantId: String) {
         val promotionBundleList = arrayListOf(getMvcPromotionBundle(promoName))
 
         val eventDataLayer = Bundle().apply {
-            putString(TrackAppUtils.EVENT, TokoFoodAnalytics.EVENT_SELECT_CONTENT)
+            putString(TrackAppUtils.EVENT, TokoFoodAnalytics.EVENT_PROMO_CLICK)
             putString(TrackAppUtils.EVENT_ACTION, TokoFoodAnalyticsConstants.CLICK_ON_PROMO_BUTTON)
             putString(TrackAppUtils.EVENT_CATEGORY, TokoFoodAnalyticsConstants.TOKOFOOD_MERCHANT_PAGE)
             putString(TrackAppUtils.EVENT_LABEL, String.EMPTY)
@@ -419,7 +419,7 @@ class MerchantPageAnalyticsOld @Inject constructor(private val userSession: User
             putParcelableArrayList(TokoFoodAnalyticsConstants.KEY_EE_PROMOTIONS, promotionBundleList)
         }
 
-        tracker.sendEnhanceEcommerceEvent(TokoFoodAnalytics.EVENT_SELECT_CONTENT, eventDataLayer)
+        tracker.sendEnhanceEcommerceEvent(TokoFoodAnalytics.EVENT_PROMO_CLICK, eventDataLayer)
     }
 
     private fun getItemsBundle(

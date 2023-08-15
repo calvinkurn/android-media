@@ -2,28 +2,32 @@ package com.tokopedia.common.topupbills.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
+import android.view.LayoutInflater
 import android.widget.FrameLayout
-import com.tokopedia.common.topupbills.R
+import com.tokopedia.common.topupbills.databinding.ViewTopupBillsCheckoutBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.android.synthetic.main.view_topup_bills_checkout.view.*
 import org.jetbrains.annotations.NotNull
 
 /**
  * Created by nabillasabbaha on 17/05/19.
  */
-class TopupBillsCheckoutWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
-                                                         defStyleAttr: Int = 0)
-    : FrameLayout(context, attrs, defStyleAttr) {
+class TopupBillsCheckoutWidget @JvmOverloads constructor(
+    @NotNull context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) :
+    FrameLayout(context, attrs, defStyleAttr) {
+
+    private val binding = ViewTopupBillsCheckoutBinding.inflate(LayoutInflater.from(context), this, true)
 
     var listener: ActionListener? = null
         set(value) {
             field = value
             listener?.run {
-                btn_recharge_checkout_next.setOnClickListener {
+                binding.btnRechargeCheckoutNext.setOnClickListener {
                     onClickNextBuyButton()
                 }
             }
@@ -32,41 +36,40 @@ class TopupBillsCheckoutWidget @JvmOverloads constructor(@NotNull context: Conte
         set(value) {
             field = value
             promoListener?.run {
-                recharge_checkout_promo_ticker.actionListener = this
+                binding.rechargeCheckoutPromoTicker.actionListener = this
             }
         }
 
     init {
-        View.inflate(context, R.layout.view_topup_bills_checkout, this)
-        recharge_checkout_promo_ticker.enableView()
+        binding.rechargeCheckoutPromoTicker.enableView()
     }
 
     fun getPromoTicker(): TickerPromoStackingCheckoutView {
-        return recharge_checkout_promo_ticker
+        return binding.rechargeCheckoutPromoTicker
     }
 
     fun getCheckoutButton(): UnifyButton {
-        return btn_recharge_checkout_next
+        return binding.btnRechargeCheckoutNext
     }
 
     fun setTotalPrice(price: String) {
-        txt_recharge_checkout_price.text = price
+        binding.txtRechargeCheckoutPrice.text = price
     }
 
     fun setVisibilityLayout(show: Boolean) {
         if (show) {
-            buy_layout.show()
+            binding.buyLayout.show()
         } else {
-            buy_layout.hide()
+            binding.buyLayout.hide()
         }
     }
 
     fun setBuyButtonLabel(label: String) {
-        btn_recharge_checkout_next.text = label
+        binding.btnRechargeCheckoutNext.text = label
     }
 
     fun onBuyButtonLoading(isLoading: Boolean) {
-        btn_recharge_checkout_next.isLoading = isLoading
+        binding.btnRechargeCheckoutNext.isLoading = isLoading
     }
 
     interface ActionListener {

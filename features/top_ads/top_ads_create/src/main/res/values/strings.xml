@@ -170,7 +170,6 @@
     <string name="mp_ad_creation_group_list_header_text">Masukkan ke Grup Iklan</string>
     <string name="mp_ad_creation_grp_list_add_grp_text">Buat Grup Iklan Baru</string>
     <string name="mp_ad_creation_grp_list_cta">Simpan</string>
-    <string name="mp_ad_group_list_search_hint">Cari grup iklan di sini</string>
     <string name="mp_ad_creation_grp_list_infinite_reload_text">Beberapa grup gagal dimuat. Muat Ulang</string>
     <string name="ad_group_stats_bottomsheet_title">Statistik Grup Iklan</string>
     <string name="ad_group_stats_bottomsheet_text">Statistik yang ditampilkan adalah data performa grup 3 hari terakhir</string>

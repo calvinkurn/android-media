@@ -70,6 +70,9 @@ import com.tokopedia.shop.pageheader.util.ShopPageHeaderMapper
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
+import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
+import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -77,9 +80,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageProcessingUtil
 import dagger.Lazy
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
@@ -99,6 +102,7 @@ class ShopPageHeaderViewModel @Inject constructor(
     private val getFollowStatusUseCase: Lazy<GetFollowStatusUseCase>,
     private val updateFollowStatusUseCase: Lazy<UpdateFollowStatusUseCase>,
     private val gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>,
+    private val affiliateEligibilityCheckUseCase: Lazy<AffiliateEligibilityCheckUseCase>,
     private val sharedPreferences: SharedPreferences,
     private val dispatcherProvider: CoroutineDispatchers,
     private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig
@@ -157,6 +161,10 @@ class ShopPageHeaderViewModel @Inject constructor(
     val shopPageShopShareData: LiveData<Result<ShopInfo>>
         get() = _shopPageShopShareData
 
+    private val _resultAffiliate = MutableLiveData<Result<GenerateAffiliateLinkEligibility>>()
+    val resultAffiliate: LiveData<Result<GenerateAffiliateLinkEligibility>>
+        get() = _resultAffiliate
+
     /*
     Function getNewShopPageTabData is expected to perform faster than
     older version due to:
@@ -173,7 +181,8 @@ class ShopPageHeaderViewModel @Inject constructor(
         etalaseId: String,
         isRefresh: Boolean,
         widgetUserAddressLocalData: LocalCacheModel,
-        extParam: String
+        extParam: String,
+        tabName: String
     ) {
         launchCatchError(block = {
             val shopP1DataAsync = asyncCatchError(
@@ -184,7 +193,8 @@ class ShopPageHeaderViewModel @Inject constructor(
                         shopDomain = shopDomain,
                         isRefresh = isRefresh,
                         extParam = extParam,
-                        widgetUserAddressLocalData = widgetUserAddressLocalData
+                        widgetUserAddressLocalData = widgetUserAddressLocalData,
+                        tabName = tabName
                     )
                 },
                 onError = {
@@ -325,7 +335,8 @@ class ShopPageHeaderViewModel @Inject constructor(
         shopDomain: String,
         isRefresh: Boolean,
         extParam: String,
-        widgetUserAddressLocalData: LocalCacheModel
+        widgetUserAddressLocalData: LocalCacheModel,
+        tabName: String
     ): NewShopPageHeaderP1 {
         val useCase = getShopPageP1DataUseCase.get()
         useCase.isFromCacheFirst = !isRefresh
@@ -333,7 +344,8 @@ class ShopPageHeaderViewModel @Inject constructor(
             shopId = shopId,
             shopDomain = shopDomain,
             extParam = extParam,
-            widgetUserAddressLocalData = widgetUserAddressLocalData
+            widgetUserAddressLocalData = widgetUserAddressLocalData,
+            tabName = tabName
         )
         return useCase.executeOnBackground()
     }
@@ -589,5 +601,18 @@ class ShopPageHeaderViewModel @Inject constructor(
                 affiliateChannel
             ).apply()
         }) {}
+    }
+
+    fun checkAffiliate(affiliateInput: AffiliateInput) {
+        launch {
+            try {
+                val result = affiliateEligibilityCheckUseCase.get().apply {
+                    params = AffiliateEligibilityCheckUseCase.createParam(affiliateInput)
+                }.executeOnBackground()
+                _resultAffiliate.value = Success(result)
+            } catch (e: Exception) {
+                _resultAffiliate.value = Fail(e)
+            }
+        }
     }
 }

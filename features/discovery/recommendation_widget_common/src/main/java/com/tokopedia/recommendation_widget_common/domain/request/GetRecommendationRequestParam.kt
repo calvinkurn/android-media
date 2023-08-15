@@ -1,6 +1,7 @@
 package com.tokopedia.recommendation_widget_common.domain.request
 
 import android.text.TextUtils
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 data class GetRecommendationRequestParam(
         val pageNumber: Int = 1,
@@ -14,6 +15,7 @@ data class GetRecommendationRequestParam(
         val keywords: List<String> = listOf(),
         val isTokonow: Boolean = false,
         var userId: Int = 0,
+        val shopIds: List<String> = listOf()
 ) {
     fun toGqlRequest(): Map<String, Any?> {
         val requestMap = mutableMapOf<String, Any?>()
@@ -33,6 +35,8 @@ data class GetRecommendationRequestParam(
             requestMap[X_SOURCE] = xSource
         if(xDevice.isNotEmpty())
             requestMap[X_DEVICE] = xDevice
+        if (shopIds.isNotEmpty())
+            requestMap[SHOP_IDS] = TextUtils.join(",", shopIds)
         return requestMap
     }
 
@@ -65,5 +69,6 @@ data class GetRecommendationRequestParam(
         private const val KEYWORDS = "keywords"
         private const val PARAM_TOKONOW = "tokoNow"
         private const val USER_ID = "userID"
+        private const val SHOP_IDS = "shopIDs"
     }
 }

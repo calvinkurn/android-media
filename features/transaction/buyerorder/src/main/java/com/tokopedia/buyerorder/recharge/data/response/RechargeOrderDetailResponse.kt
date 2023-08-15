@@ -46,7 +46,9 @@ class RechargeOrderDetail(
         @field:SerializedName("additionalTickerInfo")
         val additionalTickerInfo: List<AdditionalTickerInfo> = emptyList(),
         @field:SerializedName("purchasedItems")
-        val purchasedItems: List<PurchasedItem> = emptyList()
+        val purchasedItems: List<PurchasedItem> = emptyList(),
+        @field:SerializedName("digitalPaymentInfoMessage")
+        val digitalPaymentInfoMessage: DigitalPaymentInfoMessage = DigitalPaymentInfoMessage()
 ) {
     class Response(
             @field:SerializedName("orderDetails")
@@ -221,4 +223,14 @@ class AdditionalTickerInfo(
         val urlDetail: String = "",
         @field:SerializedName("urlText")
         val urlText: String = ""
+)
+data class DigitalPaymentInfoMessage(
+    @field:SerializedName("message")
+    val message: String = "",
+    @field:SerializedName("urlText")
+    val urlText: String = "",
+    @field:SerializedName("appLink")
+    val appLink: String = "",
+    @field:SerializedName("webLink")
+    val webLink: String = "",
 )

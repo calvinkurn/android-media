@@ -2,7 +2,6 @@ package com.tokopedia.checkout.view
 
 import com.google.gson.Gson
 import com.tokopedia.checkout.UnitTestFileUtils
-import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormGqlResponse
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesApiGqlResponse
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesGqlResponse
@@ -18,9 +17,9 @@ object DataProvider {
         return GSON.fromJson(FILE_UTIL.getJsonFromAsset("assets/apply_promo_global_and_merchant_response_success.json"), ValidateUseResponse::class.java)
     }
 
-    fun provideSingleDataCheckoutRequest(): DataCheckoutRequest {
-        return GSON.fromJson(FILE_UTIL.getJsonFromAsset("assets/single_data_checkout_request.json"), DataCheckoutRequest::class.java)
-    }
+//    fun provideSingleDataCheckoutRequest(): DataCheckoutRequest {
+//        return GSON.fromJson(FILE_UTIL.getJsonFromAsset("assets/single_data_checkout_request.json"), DataCheckoutRequest::class.java)
+//    }
 
     fun provideShipmentAddressFormResponse(): ShipmentAddressFormGqlResponse {
         return GSON.fromJson(FILE_UTIL.getJsonFromAsset("assets/bundling_saf_with_all_feature.json"), ShipmentAddressFormGqlResponse::class.java)
@@ -50,11 +49,19 @@ object DataProvider {
         return GSON.fromJson(FILE_UTIL.getJsonFromAsset("assets/schedule_delivery_rates.json"), ScheduleDeliveryRatesResponse::class.java)
     }
 
+    fun provideScheduleDeliveryRecommendedRatesResponse(): ScheduleDeliveryRatesResponse {
+        return GSON.fromJson(FILE_UTIL.getJsonFromAsset("assets/schedule_delivery_recommended_rates.json"), ScheduleDeliveryRatesResponse::class.java)
+    }
+
     fun provideShipmentAddressFormWithPlatformFeeEnabledResponse(): ShipmentAddressFormGqlResponse {
         return GSON.fromJson(FILE_UTIL.getJsonFromAsset("assets/saf_with_platform_fee_enabled.json"), ShipmentAddressFormGqlResponse::class.java)
     }
 
     fun provideShipmentAddressFormWithPlatformFeeDisabledResponse(): ShipmentAddressFormGqlResponse {
         return GSON.fromJson(FILE_UTIL.getJsonFromAsset("assets/saf_with_platform_fee_disabled.json"), ShipmentAddressFormGqlResponse::class.java)
+    }
+
+    fun provideShipmentAddressFormWithAddOnsProductEnabledResponse(): ShipmentAddressFormGqlResponse {
+        return GSON.fromJson(FILE_UTIL.getJsonFromAsset("assets/saf_with_add_ons_product.json"), ShipmentAddressFormGqlResponse::class.java)
     }
 }

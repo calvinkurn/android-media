@@ -37,7 +37,11 @@ data class MPSModel(
         data class Header(
             @SerializedName("total_data")
             @Expose
-            val totalData: Long = 0
+            val totalData: Long = 0,
+
+            @SerializedName("treatment_code")
+            @Expose
+            val treatmentCode: String = "0",
         )
 
         data class Shop(

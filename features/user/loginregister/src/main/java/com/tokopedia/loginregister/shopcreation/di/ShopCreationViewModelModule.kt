@@ -4,7 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.loginregister.shopcreation.viewmodel.ShopCreationViewModel
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.loginregister.shopcreation.view.ShopCreationViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -18,7 +19,7 @@ import dagger.multibindings.IntoMap
 abstract class ShopCreationViewModelModule {
 
     @Binds
-    @ShopCreationScope
+    @ActivityScope
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds

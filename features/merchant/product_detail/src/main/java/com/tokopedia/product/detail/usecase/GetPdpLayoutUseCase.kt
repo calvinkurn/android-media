@@ -38,11 +38,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                 pdpSession
                 basicInfo {
                   shopMultilocation {
-                    isReroute
                     cityName
-                    eduLink {
-                        appLink
-                    }
                   }
                   isGiftable
                   isTokoNow
@@ -99,9 +95,6 @@ open class GetPdpLayoutUseCase @Inject constructor(
                     countReview
                     countTalk
                     rating
-                  }
-                  postATCLayout {
-                    layoutID
                   }
                 }
                 components {
@@ -316,9 +309,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                       defaultChild
                       sizeChart
                       maxFinalPrice
-                      postATCLayout {
-                        layoutID
-                      }
+                      landingSubText
                       variants {
                         productVariantID
                         variantID
@@ -337,6 +328,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                       }
                       children {
                         productID
+                        subText
                         price
                         priceFmt
                         sku
@@ -413,6 +405,15 @@ open class GetPdpLayoutUseCase @Inject constructor(
                     ... on pdpDataCustomInfoTitle {
                       title
                       status
+                    },
+                    ... on pdpDataDynamicOneLiner {
+                      name
+                      text
+                      applink
+                      separator
+                      icon
+                      status
+                      chevronPos
                     }
                   }
                 }

@@ -2,6 +2,7 @@
     <string name="internal_scheme" translatable="false">tokopedia-android-internal</string>
 
     <string name="main_nav_args_source_key">pageSource</string>
+    <string name="main_nav_args_source_path_key">pageSourcePath</string>
 
     <string name="content_desc_review">review star</string>
 
@@ -76,9 +77,7 @@
 
     <string name="empty_state_wishlist">Punya produk incaran? Tandai pakai ikon 💚, nanti akan muncul disini</string>
 
-    <string name="empty_state_favorite_shop">Follow toko yang kamu suka, biar bisa dicek lagi lewat sini!</string>
     <string name="content_desc_image_empty_wishlist">image empty wishlist</string>
-    <string name="content_desc_image_favorite_shop">image favorite shop</string>
     <string name="content_desc_image_wishlist">image wishlist</string>
     <string name="content_desc_image_shop_badge">image shop badge</string>
 
@@ -91,5 +90,4 @@
     <string name="transaction_view_all_desc">Transaksi lainnya</string>
     <string name="review_view_all_desc">Ulasan lainnya</string>
     <string name="wishlist_view_all_desc">Wishlist lainnya</string>
-    <string name="favorite_shop_view_all_desc">Toko lainnya</string>
 </resources>

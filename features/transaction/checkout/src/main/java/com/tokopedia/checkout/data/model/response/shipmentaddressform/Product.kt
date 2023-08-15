@@ -4,10 +4,12 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.checkout.domain.model.cartshipmentform.ProductVariantsResponse
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EthicalDrugResponse
-import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnGiftingResponse
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.PurchaseProtectionPlanDataResponse
 
 data class Product(
+    @SerializedName("origin_warehouse_ids")
+    val originWarehouseIds: List<Long> = emptyList(),
     @SerializedName("errors")
     val errors: List<String> = emptyList(),
     @SerializedName("product_id")
@@ -16,40 +18,24 @@ data class Product(
     val cartId: Long = 0,
     @SerializedName("product_name")
     val productName: String = "",
-    @SerializedName("product_price_fmt")
-    val productPriceFmt: String = "",
     @SerializedName("product_price")
     val productPrice: Double = 0.0,
     @SerializedName("product_original_price")
     val productOriginalPrice: Double = 0.0,
     @SerializedName("product_wholesale_price")
     val productWholesalePrice: Double = 0.0,
-    @SerializedName("product_wholesale_price_fmt")
-    val productWholesalePriceFmt: String = "",
     @SerializedName("product_weight_fmt")
     val productWeightFmt: String = "",
     @SerializedName("product_weight")
     val productWeight: Int = 0,
     @SerializedName("product_weight_actual")
     val productWeightActual: Int = 0,
-    @SerializedName("product_condition")
-    val productCondition: Int = 0,
-    @SerializedName("product_url")
-    val productUrl: String = "",
-    @SerializedName("product_returnable")
-    val productReturnable: Int = 0,
     @SerializedName("product_is_free_returns")
     val productIsFreeReturns: Int = 0,
     @SerializedName("product_is_preorder")
     val productIsPreorder: Int = 0,
     @SerializedName("product_cashback")
     val productCashback: String = "",
-    @SerializedName("product_min_order")
-    val productMinOrder: Int = 0,
-    @SerializedName("product_invenage_value")
-    val productInvenageValue: Int = 0,
-    @SerializedName("product_switch_invenage")
-    val productSwitchInvenage: Int = 0,
     @SerializedName("product_price_currency")
     val productPriceCurrency: Int = 0,
     @SerializedName("product_image_src_200_square")
@@ -95,7 +81,9 @@ data class Product(
     @SerializedName("variant_description_detail")
     val variantDescriptionDetail: VariantDescriptionDetail = VariantDescriptionDetail(),
     @SerializedName("add_ons")
-    val addOns: AddOnsResponse = AddOnsResponse(),
+    val addOns: AddOnGiftingResponse = AddOnGiftingResponse(),
     @SerializedName("ethical_drug")
-    val ethicalDrugResponse: EthicalDrugResponse = EthicalDrugResponse()
+    val ethicalDrugResponse: EthicalDrugResponse = EthicalDrugResponse(),
+    @SerializedName("add_ons_product")
+    val addOnsProduct: AddOnsProduct = AddOnsProduct()
 )

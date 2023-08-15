@@ -130,6 +130,7 @@ object SomGetOrderDetailResponseMapper {
             customer.name,
             deadline.text,
             deadline.color,
+            deadline.style,
             listLabelInfo,
             orderId,
             shipment.awbUploadUrl,
@@ -179,7 +180,8 @@ object SomGetOrderDetailResponseMapper {
             awbTextColor = shipment.awbTextColor,
             isShippingPrinted = flagOrderMeta.isShippingPrinted,
             logisticInfo = logisticInfo,
-            shipmentLogo = flagOrderMeta.shipmentLogo
+            shipmentLogo = flagOrderMeta.shipmentLogo,
+            courierInfo = shipment.courierInfo
         )
     }
 

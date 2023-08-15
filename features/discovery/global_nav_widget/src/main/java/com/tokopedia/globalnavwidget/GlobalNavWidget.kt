@@ -110,7 +110,7 @@ class GlobalNavWidget: BaseCustomView {
 
         val gd = GradientDrawable(
                 GradientDrawable.Orientation.TOP_BOTTOM,
-                intArrayOf(androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0), backgroundGradientColorList[backgroundIndex]))
+                intArrayOf(androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0), backgroundGradientColorList[backgroundIndex]))
         gd.cornerRadius = 0f
 
         globalNavContainerLayout?.background = gd

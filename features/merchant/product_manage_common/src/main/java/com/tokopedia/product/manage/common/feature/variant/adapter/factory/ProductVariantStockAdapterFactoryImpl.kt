@@ -12,16 +12,22 @@ import com.tokopedia.product.manage.common.feature.variant.adapter.viewholder.Pr
 
 class ProductVariantStockAdapterFactoryImpl(
     private val listener: ProductVariantStockViewHolder.ProductVariantStockListener,
-    private val campaignListener: ProductCampaignInfoListener
-): BaseAdapterTypeFactory(), ProductVariantAdapterFactory {
+    private val campaignListener: ProductCampaignInfoListener,
+    private val onClickDilayaniTokopediaIdentifier: () -> Unit
+) : BaseAdapterTypeFactory(), ProductVariantAdapterFactory {
 
     override fun type(viewModel: ProductVariant): Int = ProductVariantStockViewHolder.LAYOUT
 
     override fun type(viewModel: ProductVariantTicker): Int = ProductVariantTickerViewHolder.LAYOUT
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
-        return when(type) {
-            ProductVariantStockViewHolder.LAYOUT -> ProductVariantStockViewHolder(parent, listener, campaignListener)
+        return when (type) {
+            ProductVariantStockViewHolder.LAYOUT -> ProductVariantStockViewHolder(
+                parent,
+                listener,
+                campaignListener,
+                onClickDilayaniTokopediaIdentifier
+            )
             ProductVariantTickerViewHolder.LAYOUT -> ProductVariantTickerViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }

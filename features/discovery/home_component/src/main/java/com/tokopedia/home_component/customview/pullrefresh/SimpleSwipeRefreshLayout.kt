@@ -76,6 +76,7 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
     private val mParentScrollConsumed = IntArray(2)
     private val mParentOffsetInWindow = IntArray(2)
     private var mNestedScrollInProgress = false
+    private var enableSwipeRefreshDistance = 0
 
     companion object {
         private const val STICKY_FACTOR = 0.66F
@@ -152,7 +153,7 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
 
         fun checkIfScrolledFurther(ev: MotionEvent, dy: Float, dx: Float) =
             if (contentChildView?.view?.canScrollVertically(DIRECTION_TOP) == false) {
-                ev.y > downY && abs(dy) > abs(dx)
+                downY > enableSwipeRefreshDistance && ev.y > downY && abs(dy) > abs(dx)
             } else {
                 false
             }
@@ -477,5 +478,9 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
 
     fun setContentChildViewPullRefresh(view: LayoutIconPullRefreshView) {
         layoutIconPullRefreshView = view
+    }
+
+    fun setEnableSwipeRefreshDistancePx(distance: Int) {
+        enableSwipeRefreshDistance = distance
     }
 }

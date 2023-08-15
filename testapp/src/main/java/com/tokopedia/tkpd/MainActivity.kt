@@ -13,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.url.TokopediaUrl
@@ -179,6 +180,4 @@ class MainActivity : AppCompatActivity() {
         object DEVELOPER_OPTION : HomeDestination
         object APPLINK : HomeDestination
     }
-
 }
-

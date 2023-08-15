@@ -39,8 +39,8 @@ import javax.inject.Inject
 
 class TokoNowProductRecommendationViewModel @Inject constructor(
     private val getRecommendationUseCase: GetRecommendationUseCase,
-    private val userSession: UserSessionInterface,
     private val addressData: TokoNowLocalAddress,
+    userSession: UserSessionInterface,
     getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
     addToCartUseCase: AddToCartUseCase,
     updateCartUseCase: UpdateCartUseCase,
@@ -83,11 +83,6 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
         get() = _loadingState
     val updateToolbarNotification: LiveData<Boolean>
         get() = _updateToolbarNotification
-
-    val isLogin: Boolean
-        get() = userSession.isLoggedIn
-    val userId: String
-        get() = userSession.userId
 
     private fun updateProductQuantityBasedOnMiniCart(miniCartSimplifiedData: MiniCartSimplifiedData) {
         miniCartSimplifiedData.miniCartItems.values.forEach { miniCartItem ->
@@ -135,9 +130,9 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
         if (type !in productRecommendationPageNames) productRecommendationPageNames.add(type)
     }
 
-    fun getFirstRecommendationCarousel(requestParam: GetRecommendationRequestParam) {
+    fun getFirstRecommendationCarousel(requestParam: GetRecommendationRequestParam, tickerPageSource: String) {
         launch {
-            val tickerData = getTickerDataAsync(addressData.getWarehouseId().toString()).await()
+            val tickerData = getTickerDataAsync(addressData.getWarehouseId().toString(), tickerPageSource).await()
             hasBlockedAddToCart = tickerData?.first.orFalse()
             getRecommendationCarousel(requestParam)
         }

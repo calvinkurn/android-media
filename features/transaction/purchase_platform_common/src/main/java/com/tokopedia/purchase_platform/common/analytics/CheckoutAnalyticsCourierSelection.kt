@@ -610,7 +610,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         sendEnhancedEcommerce(data)
     }
 
-    fun sendCrossSellClickPilihPembayaran(eventLabel: String, userId: String, listProducts: List<Any?>?) {
+    fun sendCrossSellClickPilihPembayaran(eventLabel: String, userId: String, listProducts: List<Any>?) {
         val data = getGtmData(
             ConstantTransactionAnalytics.EventName.CHECKOUT,
             ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
@@ -622,7 +622,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         data[ExtraKey.USER_ID] = userId
         data[ConstantTransactionAnalytics.Key.E_COMMERCE] = mapOf(
             ConstantTransactionAnalytics.EventName.CHECKOUT to mapOf(
-                ConstantTransactionAnalytics.EventCategory.ACTION_FIELD to mapOf<String, Any?>(
+                ConstantTransactionAnalytics.EventCategory.ACTION_FIELD to mapOf<String, Any>(
                     ConstantTransactionAnalytics.EventCategory.OPTION to ConstantTransactionAnalytics.EventAction.CLICK_PAYMENT_OPTION_BUTTON,
                     ConstantTransactionAnalytics.EventCategory.STEP to "4"
                 ),
@@ -909,5 +909,51 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         gtmData[ConstantTransactionAnalytics.Key.PROMOTIONS] = listPromotions
         gtmData[ExtraKey.USER_ID] = userId
         sendEnhancedEcommerce(gtmData)
+    }
+
+    // addons product service
+    // tracker id : 45171
+    fun eventViewAddOnsProductServiceWidget(addonType: Int, productId: String) {
+        val gtmData = getGtmData(
+            ConstantTransactionAnalytics.EventName.VIEW_PP_IRIS,
+            ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+            ConstantTransactionAnalytics.EventAction.VIEW_ADD_ONS_PRODUCT_WIDGET,
+            "$addonType - $productId"
+        )
+        gtmData[ExtraKey.TRACKER_ID] =
+            ConstantTransactionAnalytics.TrackerId.VIEW_ADDONS_PRODUCT_WIDGET
+        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        sendGeneralEvent(gtmData)
+    }
+
+    // tracker id : 45173
+    fun eventClickAddOnsProductServiceWidget(addonType: Int, productId: String, isChecked: Boolean) {
+        val gtmData = getGtmData(
+            ConstantTransactionAnalytics.EventName.CLICK_PP,
+            ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+            ConstantTransactionAnalytics.EventAction.CLICK_ADD_ONS_PRODUCT_WIDGET,
+            "$addonType - $productId - $isChecked"
+        )
+        gtmData[ExtraKey.TRACKER_ID] =
+            ConstantTransactionAnalytics.TrackerId.CLICK_ADDONS_PRODUCT_WIDGET
+        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        sendGeneralEvent(gtmData)
+    }
+
+    // tracker id : 45174
+    fun eventClickLihatSemuaAddOnsProductServiceWidget() {
+        val gtmData = getGtmData(
+            ConstantTransactionAnalytics.EventName.CLICK_PP,
+            ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+            ConstantTransactionAnalytics.EventAction.CLICK_LIHAT_SEMUA_ON_ADDONS_PRODUCT_WIDGET,
+            ""
+        )
+        gtmData[ExtraKey.TRACKER_ID] =
+            ConstantTransactionAnalytics.TrackerId.CLICK_LIHAT_SEMUA_ADDONS_PRODUCT_WIDGET
+        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        sendGeneralEvent(gtmData)
     }
 }

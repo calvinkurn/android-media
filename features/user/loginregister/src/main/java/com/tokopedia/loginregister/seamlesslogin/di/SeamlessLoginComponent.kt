@@ -1,19 +1,18 @@
 package com.tokopedia.loginregister.seamlesslogin.di
 
-import com.tokopedia.loginregister.common.di.LoginRegisterComponent
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.loginregister.seamlesslogin.RemoteService
 import dagger.Component
 
 /**
  * @author by nisie on 10/25/18.
  */
-@SeamlessLoginScope
+@ActivityScope
 @Component(modules = [
     SeamlessLoginModule::class,
-    SeamlessLoginQueryModule::class,
-    SeamlessLoginUseCaseModule::class,
     SeamlessLoginViewModelModule::class
-], dependencies = [LoginRegisterComponent::class])
+], dependencies = [BaseAppComponent::class])
 interface SeamlessLoginComponent {
     fun inject(service: RemoteService)
 }

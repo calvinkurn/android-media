@@ -21,7 +21,7 @@
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
         android:layout_marginTop="10dp"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_NN0"
         >
        <androidx.constraintlayout.widget.ConstraintLayout
            android:layout_width="match_parent"

@@ -48,6 +48,7 @@
     <string name="view_network_log">View Network Log</string>
     <string name="device_id">DEVICE ID:</string>
     <string name="force_dark_mode">Force Dark Mode</string>
+    <string name="fpi_monitoring">Enable FPI Monitoring PopUp</string>
     <string name="enable_topads_notif">Enable TopAds Log on Notification</string>
     <string name="view_topads_log">View TopAds Log</string>
     <string name="enable_applink_notif">Enable Applink Log on Notification</string>
@@ -134,6 +135,8 @@
     <string name="enable_strict_mode_leak_publisher">Enable Strict Mode Leak Publihser</string>
     <string name="login_helper">Login Helper</string>
     <string name="deprecated_api_switcher_toaster">Show Deprecated API Switcher Toaster</string>
+    <string name="extract_branch_link">Extract Branch Link</string>
+    <string name="hint_branch_et">Put your Branch Link Here ex: https://tokopedia.link/5lT0NZpifAb</string>
     <string name="banner_environment">Enable Banner Environment</string>
 
 </resources>

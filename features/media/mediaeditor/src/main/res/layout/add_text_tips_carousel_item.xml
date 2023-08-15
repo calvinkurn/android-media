@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:background="@color/Unify_BN500"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="16dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/carousel_item_card"
+        app:card_type="border"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/carousel_item_img"
+            tools:background="@color/Unify_NN500"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </com.tokopedia.unifycomponents.CardUnify>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_marginTop="16dp"
+        android:textAlignment="center"
+        tools:text="Text sample"
+        android:id="@+id/carousel_item_text"
+        app:layout_constraintLeft_toLeftOf="@id/carousel_item_card"
+        app:layout_constraintRight_toRightOf="@id/carousel_item_card"
+        app:layout_constraintTop_toBottomOf="@id/carousel_item_card"
+        app:typographyType="paragraph_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

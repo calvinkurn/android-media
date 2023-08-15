@@ -39,7 +39,7 @@
             app:typographyType="display_3"
             android:paddingBottom="@dimen/spacing_lvl3"
             android:text="@string/minimal_char_template"
-            android:textColor="@color/Unify_R600" />
+            android:textColor="@color/Unify_RN500" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/submit"
@@ -52,7 +52,7 @@
             android:text="@string/title_save"
             app:unifyButtonSize="large"
 
-            android:textColor="@color/Unify_N0"/>
+            android:textColor="@color/Unify_NN0"/>
 
     </RelativeLayout>
 
@@ -65,7 +65,7 @@
         android:background="@color/Unify_Background"
         android:gravity="top"
         android:hint="@string/hint_template_chat"
-        android:textColorHint="@color/Unify_N700_20"
+        android:textColorHint="@color/Unify_NN950_20"
         android:textSize="@dimen/fontSize_lvl4" />
 
 </RelativeLayout>

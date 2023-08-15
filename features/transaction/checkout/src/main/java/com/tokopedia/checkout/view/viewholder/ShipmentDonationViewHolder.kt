@@ -1,54 +1,46 @@
 package com.tokopedia.checkout.view.viewholder
 
 import android.annotation.SuppressLint
-import android.view.View
-import android.view.ViewGroup
 import android.widget.CompoundButton
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
+import com.tokopedia.checkout.databinding.ItemDonationBinding
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
-import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 
-class ShipmentDonationViewHolder(itemView: View, private val shipmentAdapterActionListener: ShipmentAdapterActionListener) : RecyclerView.ViewHolder(itemView) {
-    private val cbDonation: CheckboxUnify = itemView.findViewById(R.id.cb_donation)
-    private val tvDonationTitle: TextView = itemView.findViewById(R.id.tv_donation_title)
-    private val imgDonationInfo: IconUnify = itemView.findViewById(R.id.img_donation_info)
-    private val llContainer: ViewGroup = itemView.findViewById(R.id.ll_container)
+class ShipmentDonationViewHolder(private val binding: ItemDonationBinding, private val shipmentAdapterActionListener: ShipmentAdapterActionListener) : RecyclerView.ViewHolder(binding.root) {
 
     @SuppressLint("ClickableViewAccessibility", "NewApi")
     fun bindViewHolder(shipmentDonationModel: ShipmentDonationModel) {
-        llContainer.setOnClickListener {
+        binding.llContainer.setOnClickListener {
             if (shipmentDonationModel.isEnabled) {
-                cbDonation.isChecked = !cbDonation.isChecked
+                binding.cbDonation.isChecked = !binding.cbDonation.isChecked
             }
         }
-        cbDonation.isChecked = shipmentDonationModel.isChecked
-        cbDonation.skipAnimation()
-        tvDonationTitle.text = shipmentDonationModel.donation.title
-        imgDonationInfo.setOnClickListener {
+        binding.cbDonation.isChecked = shipmentDonationModel.isChecked
+        binding.cbDonation.skipAnimation()
+        binding.tvDonationTitle.text = shipmentDonationModel.donation.title
+        binding.imgDonationInfo.setOnClickListener {
             if (shipmentDonationModel.isEnabled) {
                 showBottomSheet(shipmentDonationModel)
             }
         }
-        cbDonation.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+        binding.cbDonation.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
             if (shipmentDonationModel.isEnabled) {
                 shipmentAdapterActionListener.onDonationChecked(isChecked)
             }
         }
         if (shipmentDonationModel.isEnabled) {
-            cbDonation.isEnabled = true
+            binding.cbDonation.isEnabled = true
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                llContainer.foreground = ContextCompat.getDrawable(llContainer.context, com.tokopedia.purchase_platform.common.R.drawable.fg_enabled_item)
+                binding.llContainer.foreground = ContextCompat.getDrawable(binding.root.context, com.tokopedia.purchase_platform.common.R.drawable.fg_enabled_item)
             }
         } else {
-            cbDonation.isEnabled = false
+            binding.cbDonation.isEnabled = false
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                llContainer.foreground = ContextCompat.getDrawable(llContainer.context, com.tokopedia.purchase_platform.common.R.drawable.fg_disabled_item)
+                binding.llContainer.foreground = ContextCompat.getDrawable(binding.root.context, com.tokopedia.purchase_platform.common.R.drawable.fg_disabled_item)
             }
         }
     }
@@ -57,10 +49,10 @@ class ShipmentDonationViewHolder(itemView: View, private val shipmentAdapterActi
         GeneralBottomSheet().apply {
             setTitle(shipmentDonationModel.donation.title)
             setDesc(shipmentDonationModel.donation.description)
-            setButtonText(llContainer.context.getString(com.tokopedia.purchase_platform.common.R.string.label_button_bottomsheet_close))
+            setButtonText(binding.root.context.getString(com.tokopedia.purchase_platform.common.R.string.label_button_bottomsheet_close))
             setIcon(R.drawable.checkout_module_ic_donation)
             setButtonOnClickListener { it.dismiss() }
-        }.show(llContainer.context, shipmentAdapterActionListener.currentFragmentManager)
+        }.show(binding.root.context, shipmentAdapterActionListener.currentFragmentManager)
     }
 
     companion object {

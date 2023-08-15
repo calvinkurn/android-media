@@ -17,9 +17,11 @@ import com.tokopedia.autocompletecomponent.universal.presentation.viewmodel.Univ
 import com.tokopedia.autocompletecomponent.universal.presentation.viewmodel.UniversalSearchViewModelFactoryModule
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery.common.utils.Dimension90Utils
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_CUSTOM
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
@@ -127,7 +129,7 @@ open class UniversalSearchActivity : BaseActivity(), HasComponent<BaseAppCompone
             setCustomViewContentView(customContentView)
             setToolbarContentType(TOOLBAR_TYPE_CUSTOM)
             setIcon(
-                IconBuilder()
+                IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.SRP_UNIVERSAL))
                     .addIcon(
                         IconList.ID_NAV_GLOBAL,
                         disableRouteManager = false,

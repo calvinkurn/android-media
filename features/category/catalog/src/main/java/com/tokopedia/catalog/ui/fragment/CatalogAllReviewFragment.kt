@@ -69,7 +69,7 @@ class CatalogAllReviewFragment : BaseViewModelFragment<CatalogAllReviewsViewMode
     }
 
     private fun setObservers() {
-        catalogAllReviewsViewModel.getCatalogAllReviewsModel().observe(this,{
+        catalogAllReviewsViewModel.getCatalogAllReviewsModel().observe(this) {
             catalogAllReviewsViewModel.getCatalogShimmerLiveData().value = false
             when (it) {
                 is Success -> {
@@ -85,26 +85,15 @@ class CatalogAllReviewFragment : BaseViewModelFragment<CatalogAllReviewsViewMode
                     onError(it.throwable)
                 }
             }
-        })
+        }
 
-        catalogAllReviewsViewModel.getCatalogShimmerLiveData().observe(this,{ isShimmer ->
-            if(isShimmer){
+        catalogAllReviewsViewModel.getCatalogShimmerLiveData().observe(this) { isShimmer ->
+            if (isShimmer) {
                 startShimmer()
-            }else {
+            } else {
                 stopShimmer()
             }
-        })
-
-    }
-
-    private fun renderData(reviewData: CatalogProductReviewResponse.CatalogGetProductReview.ReviewData?) {
-        view?.findViewById<Typography>(R.id.review_rating_catalog)?.displayTextOrHide(CatalogUtil.getRatingString(reviewData?.avgRating))
-        if(reviewData?.avgRating?.isBlank() == true){
-            view?.findViewById<ImageView>(R.id.rating_review_star_catalog)?.hide()
-        }else {
-            view?.findViewById<ImageView>(R.id.rating_review_star_catalog)?.show()
         }
-        view?.findViewById<Typography>(R.id.review_count_catalog)?.displayTextOrHide(context?.resources?.getString(com.tokopedia.catalog.R.string.catalog_highlighted_reviews, reviewData?.totalHelpfulReview) ?: "")
 
     }
 

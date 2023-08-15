@@ -15,7 +15,7 @@ class EgoldAttributeModel(
     var tooltipText: String? = null,
     var isChecked: Boolean = false,
     var buyEgoldValue: Long = 0,
-    var egoldTieringModelArrayList: List<EgoldTieringModel> = emptyList(),
+    var egoldTieringModelArrayList: ArrayList<EgoldTieringModel> = ArrayList(),
     var isEnabled: Boolean = true,
     var hyperlinkText: String? = null,
     var hyperlinkUrl: String? = null,

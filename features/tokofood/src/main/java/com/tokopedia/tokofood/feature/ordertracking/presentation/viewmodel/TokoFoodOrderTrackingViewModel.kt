@@ -9,8 +9,10 @@ import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.tokochat_common.util.TokoChatValueUtil
 import com.tokopedia.tokofood.feature.ordertracking.domain.constants.OrderStatusType
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.*
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverPhoneNumberUiModel
@@ -41,7 +43,7 @@ import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-class TokoFoodOrderTrackingViewModel @Inject constructor(
+open class TokoFoodOrderTrackingViewModel @Inject constructor(
     val userSession: UserSessionInterface,
     private val savedStateHandle: SavedStateHandle,
     private val coroutineDispatchers: CoroutineDispatchers,
@@ -83,6 +85,7 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
 
     var channelId: String = ""
     var goFoodOrderNumber: String = ""
+    var isFromBubble = false
 
     init {
         viewModelScope.launch {
@@ -126,6 +129,7 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
         savedStateHandle[ORDER_ID] = orderId
         savedStateHandle[GOFOOD_ORDER_NUMBER] = goFoodOrderNumber
         savedStateHandle[CHANNEL_ID] = channelId
+        savedStateHandle[TokoChatValueUtil.IS_FROM_BUBBLE_KEY] = isFromBubble
     }
 
     fun onRestoreSavedInstanceState() {
@@ -134,6 +138,7 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
         )
         goFoodOrderNumber = savedStateHandle.get<String>(GOFOOD_ORDER_NUMBER).orEmpty()
         channelId = savedStateHandle.get<String>(CHANNEL_ID).orEmpty()
+        isFromBubble = savedStateHandle.get<Boolean>(TokoChatValueUtil.IS_FROM_BUBBLE_KEY).orFalse()
     }
 
     fun fetchOrderDetail(orderId: String) {
@@ -164,7 +169,10 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
 
     fun getUnReadChatCount(channelId: String): LiveData<Result<Int>> {
         return try {
-            Transformations.map(getUnReadChatCountUseCase.get().unReadCount(channelId)) {
+            Transformations.map(
+                getUnReadChatCountUseCase.get().unReadCount(channelId)
+                    ?: MutableLiveData(Int.ZERO) // Zero if unRead LiveData is null
+            ) {
                 if (it != null) {
                     Success(it)
                 } else {

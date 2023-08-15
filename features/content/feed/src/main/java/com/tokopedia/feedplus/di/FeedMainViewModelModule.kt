@@ -31,7 +31,6 @@ abstract class FeedMainViewModelModule {
     @ViewModelKey(FeedProductItemInfoViewModel::class)
     abstract fun feedProductItemInfoViewModel(viewModel: FeedProductItemInfoViewModel): ViewModel
 
-
     @Binds
     @IntoMap
     @ViewModelKey(FeedPostViewModel::class)

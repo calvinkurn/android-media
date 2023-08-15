@@ -356,7 +356,6 @@ object ConstantTransactionAnalytics {
         const val VIEW_ERROR_PAGE_WHEN_LOAD_CART = "view error page when load cart"
         const val CLICK_WISHLIST_ICON_IN_CART_PAGE = "click wishlist icon in cart page"
         const val CLICK_FOLLOW_SHOP_ON_UNAVAILABLE_SECTION = "click follow shop on unavailable section"
-        const val CLICK_BACK_BUTTON_NAV = "click back button nav"
         const val CLICK_GLOBAL_MENU_NAV = "click global menu nav"
 
         // Checkout TokoNow
@@ -402,6 +401,11 @@ object ConstantTransactionAnalytics {
         // Platform Fee
         const val CLICK_INFO_BUTTON_IN_PLATFORM_FEE = "click info button in platform fee"
         const val VIEW_PLATFORM_FEE_IN_CHECKOUT_PAGE = "view platform fee in checkout page"
+
+        // Add Ons Product Service
+        const val VIEW_ADD_ONS_PRODUCT_WIDGET = "view addons product widget"
+        const val CLICK_ADD_ONS_PRODUCT_WIDGET = "click addons product widget"
+        const val CLICK_LIHAT_SEMUA_ON_ADDONS_PRODUCT_WIDGET = "click lihat semua on addons product widget"
     }
 
     object EventLabel {
@@ -522,5 +526,21 @@ object ConstantTransactionAnalytics {
         // Platform Fee
         const val CLICK_INFO_BUTTON_IN_PLATFORM_FEE = "43346"
         const val VIEW_PLATFORM_FEE_IN_CHECKOUT_PAGE = "43710"
+
+        // AddOns Product Service
+        const val VIEW_ADDONS_PRODUCT_WIDGET = "45171"
+        const val CLICK_ADDONS_PRODUCT_WIDGET = "45173"
+        const val CLICK_LIHAT_SEMUA_ADDONS_PRODUCT_WIDGET = "45174"
+        const val VIEW_ADDONS_PRODUCT_WIDGET_CART = "45176"
+        const val CLICK_ADDONS_PRODUCT_WIDGET_CART = "45177"
+        const val VIEW_ADDONS_PRODUCT_WIDGET_OCC = "45322"
+        const val CLICK_ADDONS_PRODUCT_WIDGET_OCC = "45323"
+        const val CLICK_LIHAT_SEMUA_ADDONS_PRODUCT_WIDGET_OCC = "45324"
+
+        // Gopay Cicil
+        const val IMPRESSION_PROMO_ACTIVATED_GOPAY_CICIL = "45451"
+        const val CLICK_ACTIVATED_GOPAY_CICIL = "45453"
+        const val IMPRESSION_ELIGIBLE_PROMO_SECTION_GOPAY_CICIL = "45454"
+        const val IMPRESSION_INELIGIBLE_PROMO_SECTION_GOPAY_CICIL_PROMO_VALIDATION = "45456"
     }
 }

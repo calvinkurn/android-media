@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.shop.score.penalty.domain.mapper.PenaltyMapper
+import com.tokopedia.shop.score.penalty.domain.mapper.PenaltyDetailMapper
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ShopPenaltyDetailUiModel
 import kotlinx.coroutines.launch
@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class ShopPenaltyDetailViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers,
-    private val penaltyMapper: PenaltyMapper
+    private val penaltyDetailMapper: PenaltyDetailMapper
 ) : BaseViewModel(dispatchers.main) {
 
     private val _penaltyDetailData = MutableLiveData<ShopPenaltyDetailUiModel>()
@@ -21,7 +21,7 @@ class ShopPenaltyDetailViewModel @Inject constructor(
 
     fun getPenaltyDetailData(itemPenaltyUiModel: ItemPenaltyUiModel) {
         launch {
-            _penaltyDetailData.value = penaltyMapper.mapToPenaltyDetail(itemPenaltyUiModel)
+            _penaltyDetailData.value = penaltyDetailMapper.mapToPenaltyDetail(itemPenaltyUiModel)
         }
     }
 }

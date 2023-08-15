@@ -1,21 +1,21 @@
 package com.tokopedia.applink.user
 
-import android.content.Context
-import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.applink.startsWithPattern
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 
 object DeeplinkMapperUser {
 
+    const val ROLLENCE_GOTO_KYC = "goto_kyc_apps"
     const val ROLLENCE_PRIVACY_CENTER = "privacy_center_and_3"
 
-    fun getRegisteredNavigationUser(context: Context, deeplink: String): String {
-        val uri = Uri.parse(deeplink)
+    fun getRegisteredNavigationUser(deeplink: String): String {
         return when {
             deeplink.startsWith(ApplinkConst.CHANGE_INACTIVE_PHONE) -> deeplink.replace(
                 ApplinkConst.CHANGE_INACTIVE_PHONE,
@@ -29,7 +29,26 @@ object DeeplinkMapperUser {
             deeplink == ApplinkConst.ADD_PHONE -> ApplinkConstInternalUserPlatform.ADD_PHONE
             deeplink == ApplinkConst.PRIVACY_CENTER -> getApplinkPrivacyCenter()
             deeplink == ApplinkConst.User.DSAR -> ApplinkConstInternalUserPlatform.DSAR
+            deeplink.startsWithPattern(ApplinkConst.GOTO_KYC) || deeplink.startsWithPattern(ApplinkConstInternalUserPlatform.GOTO_KYC) -> getApplinkGotoKyc(deeplink)
             else -> deeplink
+        }
+    }
+
+    private fun getApplinkGotoKyc(deeplink: String): String {
+        return if (isRollenceGotoKycActivated() && !GlobalConfig.isSellerApp()) {
+            deeplink.replace("${ApplinkConst.APPLINK_CUSTOMER_SCHEME}://", "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/")
+        } else {
+            ApplinkConstInternalUserPlatform.KYC_INFO_BASE + "?" + deeplink.substringAfter("?")
+        }
+    }
+
+    private fun isRollenceGotoKycActivated(): Boolean {
+        val rollence = getAbTestPlatform()
+            .getFilteredKeyByKeyName(ROLLENCE_GOTO_KYC)
+        return if (rollence.isNotEmpty()) {
+            getAbTestPlatform().getString(ROLLENCE_GOTO_KYC).isNotEmpty()
+        } else {
+            true
         }
     }
 
