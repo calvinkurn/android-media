@@ -59,6 +59,7 @@ class ShopHomeV4TerlarisViewHolder(
     private var productName3: TextView? = viewBinding?.terlarisProductName3
     private var productPrice3: TextView? = viewBinding?.terlarisProductPrice3
     private var productRank3: TextView? = viewBinding?.terlarisProductRankNumber3
+    private val whiteColor = com.tokopedia.unifyprinciples.R.color.Unify_N0
 
     override fun bind(element: ShopHomeCarousellProductUiModel?) {
         element?.let {
@@ -74,9 +75,15 @@ class ShopHomeV4TerlarisViewHolder(
             productCarouselData?.let { carouselData ->
                 val sanitizedProductListCarouselData = getCarouselData(carouselData)
                 if (sanitizedProductListCarouselData.size == PRODUCT_ONE) {
+                    // TODO: Put validation here to check whether we should override fontColor or not
+                    // Call this function overrideWidgetTheme() if you want to override the color with the ones from BE
                     showThreeItemLayout(productList = sanitizedProductListCarouselData)
                 } else if (sanitizedProductListCarouselData.size > PRODUCT_ONE) {
-                    showMoreThanThreeItemLayout(productList = sanitizedProductListCarouselData)
+                    // TODO: Put validation here to check whether we should override fontColor or not
+                    showMoreThanThreeItemLayout(
+                        productList = sanitizedProductListCarouselData,
+                        fontColor = null // Use null if you don't want to override the fontColor using the ones from BE
+                    )
                 } else {
                     hideTheWidget()
                 }
@@ -84,17 +91,20 @@ class ShopHomeV4TerlarisViewHolder(
         }
     }
 
-    private fun showThreeItemLayout(productList: List<List<ShopHomeProductUiModel>>){
+    private fun showThreeItemLayout(productList: List<List<ShopHomeProductUiModel>>) {
         showTheContainer()
         showLayoutThreeItem(productList = productList)
         hideHorizontalProductCarousel()
     }
 
-    private fun showMoreThanThreeItemLayout(productList: List<List<ShopHomeProductUiModel>>) {
+    private fun showMoreThanThreeItemLayout(productList: List<List<ShopHomeProductUiModel>>, fontColor: Int?) {
         showTheContainer()
         hideLayoutThreeItem()
         showHorizontalProductCarousel()
-        terlarisWidgetAdapter?.updateData(productList = productList)
+        terlarisWidgetAdapter?.updateData(
+            productList = productList,
+            color = fontColor
+        )
     }
 
     private fun hideTheWidget() {
@@ -127,7 +137,6 @@ class ShopHomeV4TerlarisViewHolder(
             productName3?.text = productList[0][2].name
             productPrice3?.text = productList[0][2].displayedPrice
             productRank3?.text = "3"
-
         }
     }
 
@@ -140,7 +149,8 @@ class ShopHomeV4TerlarisViewHolder(
     private fun getProductCarouselData(productList: List<ShopHomeProductUiModel>): List<ShopHomeProductUiModel>? {
         return if (productList.size == PRODUCT_THREE ||
             productList.size == PRODUCT_SIX ||
-            productList.size == PRODUCT_NINE) {
+            productList.size == PRODUCT_NINE
+        ) {
             productList
         } else if (productList.size in (PRODUCT_THREE + 1) until PRODUCT_SIX) {
             productList.take(PRODUCT_THREE)
@@ -173,11 +183,17 @@ class ShopHomeV4TerlarisViewHolder(
         terlarisWidgetContainer?.visibility = View.VISIBLE
     }
 
-    private fun setFontColor(fontColor: Int) {
+    // TODO
+    // 1. Need to handle light & dark theme from BE
+    // 2. Need to handle light & dark theme from User Preferences
+    private fun overrideWidgetTheme(fontColor: Int) {
         widgetTitle?.setTextColor(ContextCompat.getColor(itemView.context, fontColor))
         widgetSubtitle?.setTextColor(ContextCompat.getColor(itemView.context, fontColor))
         productName1?.setTextColor(ContextCompat.getColor(itemView.context, fontColor))
         productPrice1?.setTextColor(ContextCompat.getColor(itemView.context, fontColor))
+        productName2?.setTextColor(ContextCompat.getColor(itemView.context, fontColor))
+        productPrice2?.setTextColor(ContextCompat.getColor(itemView.context, fontColor))
+        productName3?.setTextColor(ContextCompat.getColor(itemView.context, fontColor))
+        productPrice3?.setTextColor(ContextCompat.getColor(itemView.context, fontColor))
     }
-
 }

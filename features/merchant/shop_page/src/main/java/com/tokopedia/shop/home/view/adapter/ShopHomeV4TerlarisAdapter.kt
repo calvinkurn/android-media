@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.isZero
@@ -20,9 +21,11 @@ class ShopHomeV4TerlarisAdapter(
 ) : RecyclerView.Adapter<ShopHomeV4TerlarisAdapter.TerlarisWidgetViewHolder>() {
 
     private var productListData: List<List<ShopHomeProductUiModel>> = listOf()
+    private var fontColor: Int? = null
 
-    fun updateData(productList: List<List<ShopHomeProductUiModel>>) {
+    fun updateData(productList: List<List<ShopHomeProductUiModel>>, color: Int?) {
         productListData = productList
+        fontColor = color
         notifyDataSetChanged()
     }
 
@@ -83,6 +86,12 @@ class ShopHomeV4TerlarisAdapter(
 
         fun bindData(productListData: List<ShopHomeProductUiModel>, rank: List<Int>) {
             if (!productListData.size.isZero() && productListData.size == PRODUCT_THREE) {
+                fontColor?.let {
+                    // If fontColor equals to null then use default color from xml layout or
+                    // use Dark/ light mode from user preferences
+                    overrideWidgetTheme(fontColor = it)
+                }
+
                 productContainer1?.setOnClickListener {
                     listener.onProductClick(productId = productListData[0].id)
                 }
@@ -105,6 +114,15 @@ class ShopHomeV4TerlarisAdapter(
                 productPrice3?.text = productListData[2].displayedPrice
                 productRank3?.text = rank[2].toString()
             }
+        }
+
+        private fun overrideWidgetTheme(fontColor: Int) {
+            productName1?.setTextColor(ContextCompat.getColor(itemView.context, fontColor))
+            productPrice1?.setTextColor(ContextCompat.getColor(itemView.context, fontColor))
+            productName2?.setTextColor(ContextCompat.getColor(itemView.context, fontColor))
+            productPrice2?.setTextColor(ContextCompat.getColor(itemView.context, fontColor))
+            productName3?.setTextColor(ContextCompat.getColor(itemView.context, fontColor))
+            productPrice3?.setTextColor(ContextCompat.getColor(itemView.context, fontColor))
         }
     }
 }
