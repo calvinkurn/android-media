@@ -151,17 +151,15 @@ private fun PromotionCardShimmer(modifier: Modifier = Modifier) {
                 }
 
                 Box(
-                    modifier = Modifier.padding(bottom = 10.dp).wrapContentSize()
+                    modifier = Modifier.size(45.dp).clip(RoundedCornerShape(bottomStart = 8.dp))
+                        .background(NestTheme.colors.NN._50)
                 ) {
-                    Box(
-                        modifier = Modifier.size(45.dp).clip(RoundedCornerShape(bottomStart = 8.dp))
-                            .background(NestTheme.colors.NN._50)
-                    )
-
-                    NestLoader(
-                        variant = Shimmer(type = NestShimmerType.Circle),
-                        modifier = Modifier.size(16.dp).align(Alignment.Center)
-                    )
+                    Box(modifier = Modifier.align(Alignment.Center)) {
+                        NestLoader(
+                            variant = Shimmer(type = NestShimmerType.Circle),
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
                 }
             }
 
