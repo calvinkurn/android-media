@@ -16,9 +16,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager.widget.ViewPager
-import androidx.work.WorkInfo
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -81,6 +81,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videoTabComponent.view.VideoTabFragment
 import kotlinx.android.synthetic.main.fragment_feed_plus_container.*
 import kotlinx.android.synthetic.main.partial_feed_error.*
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.trySendBlocking
+import kotlinx.coroutines.flow.callbackFlow
 import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.content.common.R as contentCommonR
@@ -109,7 +112,6 @@ class FeedPlusContainerFragment :
     private var tabLayout: TabsUnify? = null
     private var mInProgress = false
     private var coachMarkOverlay: View? = null
-    private var playShortsObserver: Observer<List<WorkInfo>>? = null
 
     companion object {
         const val PARAM_SHOW_PROGRESS_BAR = "show_posting_progress_bar"
@@ -392,11 +394,6 @@ class FeedPlusContainerFragment :
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        playShortsObserver?.let { observer -> playShortsUploader.cancelObserve(observer) }
-    }
-
     override fun onDestroy() {
         viewModel.tabResp.removeObservers(this)
         viewModel.whitelistResp.removeObservers(this)
@@ -574,42 +571,53 @@ class FeedPlusContainerFragment :
             }
         )
 
-        playShortsObserver = playShortsUploader.observe { progress, uploadData ->
-            when (progress) {
-                PlayShortsUploadConst.PROGRESS_COMPLETED -> {
-                    postProgressUpdateView?.hide()
-                    Toaster.build(
-                        view = requireView(),
-                        text = getString(R.string.feed_upload_content_success),
-                        duration = Toaster.LENGTH_LONG,
-                        type = Toaster.TYPE_NORMAL,
-                        actionText = getString(R.string.feed_upload_shorts_see_video),
-                        clickListener = View.OnClickListener {
-                            playShortsUploadAnalytic.clickRedirectToChannelRoom(
-                                uploadData.authorId,
-                                uploadData.authorType,
-                                uploadData.shortsId
-                            )
-                            RouteManager.route(
-                                requireContext(),
-                                ApplinkConst.PLAY_DETAIL,
-                                uploadData.shortsId
-                            )
-                        }
-                    ).show()
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            callbackFlow {
+                val observer = playShortsUploader.observe { progress, uploadData ->
+                    trySendBlocking(progress to uploadData)
                 }
-                PlayShortsUploadConst.PROGRESS_FAILED -> {
-                    postProgressUpdateView?.show()
-                    postProgressUpdateView?.handleShortsUploadFailed(
-                        uploadData,
-                        playShortsUploader,
-                        playShortsInFeedAnalytic
-                    )
-                }
-                else -> {
-                    postProgressUpdateView?.show()
-                    postProgressUpdateView?.setIcon(uploadData.coverUri.ifEmpty { uploadData.mediaUri })
-                    postProgressUpdateView?.setProgress(progress)
+
+                awaitClose { playShortsUploader.cancelObserve(observer) }
+
+            }.collect { data ->
+                val (progress, uploadData) = data
+
+                when (progress) {
+                    PlayShortsUploadConst.PROGRESS_COMPLETED -> {
+                        postProgressUpdateView?.hide()
+                        Toaster.build(
+                            view = requireView(),
+                            text = getString(R.string.feed_upload_content_success),
+                            duration = Toaster.LENGTH_LONG,
+                            type = Toaster.TYPE_NORMAL,
+                            actionText = getString(R.string.feed_upload_shorts_see_video),
+                            clickListener = View.OnClickListener {
+                                playShortsUploadAnalytic.clickRedirectToChannelRoom(
+                                    uploadData.authorId,
+                                    uploadData.authorType,
+                                    uploadData.shortsId
+                                )
+                                RouteManager.route(
+                                    requireContext(),
+                                    ApplinkConst.PLAY_DETAIL,
+                                    uploadData.shortsId
+                                )
+                            }
+                        ).show()
+                    }
+                    PlayShortsUploadConst.PROGRESS_FAILED -> {
+                        postProgressUpdateView?.show()
+                        postProgressUpdateView?.handleShortsUploadFailed(
+                            uploadData,
+                            playShortsUploader,
+                            playShortsInFeedAnalytic
+                        )
+                    }
+                    else -> {
+                        postProgressUpdateView?.show()
+                        postProgressUpdateView?.setIcon(uploadData.coverUri.ifEmpty { uploadData.mediaUri })
+                        postProgressUpdateView?.setProgress(progress)
+                    }
                 }
             }
         }
