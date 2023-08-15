@@ -20,6 +20,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel.Tab.ComponentList.Data.BannerType
 
 class ShopHomeProductCarouselViewPagerViewHolder(
     itemView: View,
@@ -44,18 +45,27 @@ class ShopHomeProductCarouselViewPagerViewHolder(
     }
 
     private fun setupViewAllChevron(model: ShopHomeProductCarouselUiModel) {
-        val productTabs = model.tabs.filter {
-            it.componentList.any { component -> component.componentType == ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITH_PRODUCT_INFO || component.componentType == ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITHOUT_PRODUCT_INFO }
-        }
-        val matchedProductTab = productTabs.getOrNull(0)
-        val firstProductComponent = matchedProductTab?.componentList?.firstOrNull { component -> component.componentType == ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITH_PRODUCT_INFO || component.componentType == ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITHOUT_PRODUCT_INFO }
-        val verticalBanner = firstProductComponent?.data?.firstOrNull { it.bannerType == ShopHomeProductCarouselUiModel.Tab.ComponentList.Data.BannerType.VERTICAL }
-        val hasVerticalBanner = verticalBanner != null
+        val hasVerticalBanner = hasVerticalBanner(model)
 
         viewBinding?.iconChevron?.isVisible = hasVerticalBanner
         viewBinding?.iconChevron?.setOnClickListener {
-            listener.onProductCarouselChevronViewAllClick(verticalBanner?.ctaLink.orEmpty())
+            listener.onProductCarouselChevronViewAllClick(model.viewAllChevronAppLink)
         }
+    }
+
+    private fun hasVerticalBanner(model: ShopHomeProductCarouselUiModel): Boolean {
+        model.tabs.forEach { tab ->
+            tab.componentList.forEach { component ->
+                component.data.forEach { data ->
+                    val hasVerticalBanner = data.bannerType == BannerType.VERTICAL
+                    if (hasVerticalBanner) {
+                        return true
+                    }
+                }
+            }
+        }
+
+        return false
     }
 
     private fun setupTitle(model: ShopHomeProductCarouselUiModel) {

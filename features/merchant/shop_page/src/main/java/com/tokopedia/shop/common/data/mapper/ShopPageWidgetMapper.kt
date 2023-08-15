@@ -276,7 +276,8 @@ object ShopPageWidgetMapper {
             title = response.header.title,
             tabs = tabs,
             name = response.name,
-            type = response.type
+            type = response.type,
+            viewAllChevronAppLink = response.header.ctaLink
         )
     }
 

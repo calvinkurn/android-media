@@ -16,7 +16,8 @@ data class ShopHomeProductCarouselUiModel(
     override val header: Header = Header(),
     override val isFestivity: Boolean = false,
     val title: String,
-    val tabs: List<Tab>
+    val tabs: List<Tab>,
+    val viewAllChevronAppLink: String
 ) : BaseShopHomeWidgetUiModel() {
 
     enum class ComponentType {
@@ -56,8 +57,6 @@ data class ShopHomeProductCarouselUiModel(
                     NONE("")
                 }
             }
-
-
         }
     }
 
