@@ -257,7 +257,9 @@ class CheckoutCalculator @Inject constructor(
         val listCheckedCrossModel = ArrayList<CheckoutCrossSellModel>()
         val crossSellGroup = listData.crossSellGroup() ?: CheckoutCrossSellGroupModel()
         val listCrossSellItem = arrayListOf<CheckoutCrossSellItem>()
-        var egold: CheckoutEgoldModel? = nullfor ((index, crossSellModel) in crossSellGroup.crossSellList.withIndex()) {
+        var egold: CheckoutEgoldModel? = null
+        var egoldIndex: Int = -1
+        for ((index, crossSellModel) in crossSellGroup.crossSellList.withIndex()) {
             when (crossSellModel) {
                 is CheckoutCrossSellModel -> {
                     if (crossSellModel.isChecked) {
@@ -288,8 +290,6 @@ class CheckoutCalculator @Inject constructor(
                 }
             }
         }
-        var egoldIndex: Int = -1
-
         if (upsellCost != null) {
             listCheckedCrossModel.add(upsellCost)
             totalPrice += upsellCost.crossSellModel.price
