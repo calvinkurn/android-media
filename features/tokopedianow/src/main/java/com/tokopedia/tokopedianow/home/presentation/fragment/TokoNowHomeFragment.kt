@@ -35,7 +35,9 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerData.NOW_HOME
 import com.tokopedia.linker.model.LinkerData.NOW_TYPE
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
@@ -89,6 +91,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseProductUiModel
 import com.tokopedia.tokopedianow.common.util.CustomLinearLayoutManager
 import com.tokopedia.tokopedianow.common.util.SharedPreferencesUtil
+import com.tokopedia.tokopedianow.common.util.ShopIdProvider
 import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
 import com.tokopedia.tokopedianow.common.util.TokoMartHomeErrorLogger
 import com.tokopedia.tokopedianow.common.util.TokoMartHomeErrorLogger.ATC_QUANTITY_ERROR
@@ -1259,12 +1262,16 @@ class TokoNowHomeFragment :
     }
 
     private fun setupReferralData(referral: HomeSharingReferralWidgetUiModel) {
+        val referralCode = referral.sharingUrlParam.removePrefix("${referral.slug}/")
+        val url = "$SHARE_HOME_URL?${LinkerConstants.QUERY_KEY_REFERRAL_CODE}=$referralCode"
+
         updateShareHomeData(
             pageIdConstituents = listOf(PAGE_TYPE_HOME),
             isScreenShot = false,
             thumbNailTitle = context?.resources?.getString(R.string.tokopedianow_share_thumbnail_title).orEmpty(),
             linkerType = NOW_HOME,
-            id = referral.sharingUrlParam.removePrefix("${referral.slug}/")
+            id = referralCode,
+            url = url
         )
 
         shareHomeTokonow?.apply {
@@ -1830,6 +1837,7 @@ class TokoNowHomeFragment :
             if (isEnableAffiliate) {
                 val shareInput = viewModelTokoNow.getAffiliateShareInput()
                 enableAffiliateCommission(shareInput)
+                updateShareDataForAffiliate()
             }
         }
 
@@ -1840,6 +1848,13 @@ class TokoNowHomeFragment :
         }
 
         showShareBottomSheet()
+    }
+
+    private fun updateShareDataForAffiliate() {
+        shareHomeTokonow?.apply {
+            id = ShopIdProvider.getShopId()
+            linkerType = LinkerData.SHOP_TYPE
+        }
     }
 
     private fun showShareBottomSheet() {

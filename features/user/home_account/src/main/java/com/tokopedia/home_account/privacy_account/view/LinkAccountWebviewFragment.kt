@@ -17,7 +17,7 @@ import javax.inject.Inject
 /**
  * Created by Yoris on 27/08/21.
  */
-
+@Deprecated("Remove this class after integrating SCP Login to Tokopedia")
 class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
 
     @Inject lateinit var analytics: LinkAccountTracker

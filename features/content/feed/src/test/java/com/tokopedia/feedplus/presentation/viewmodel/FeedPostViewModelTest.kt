@@ -11,6 +11,9 @@ import com.tokopedia.content.common.comment.model.CountComment
 import com.tokopedia.content.common.comment.usecase.GetCountCommentsUseCase
 import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
 import com.tokopedia.content.common.model.TrackVisitChannelResponse
+import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
+import com.tokopedia.content.common.report_content.model.UserReportOptions
+import com.tokopedia.content.common.report_content.model.UserReportSubmissionResponse
 import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.usecase.GetUserReportListUseCase
@@ -18,9 +21,15 @@ import com.tokopedia.content.common.usecase.PostUserReportUseCase
 import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.feed.component.product.FeedTaggedProductUiModel
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXGQLResponse
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXGetActivityProductsResponse
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.data.pojo.UpcomingCampaignResponse
 import com.tokopedia.feedcomponent.data.pojo.shopmutation.FollowShop
 import com.tokopedia.feedcomponent.data.pojo.shopmutation.ShopFollowModel
+import com.tokopedia.feedcomponent.domain.mapper.ProductMapper
+import com.tokopedia.feedcomponent.domain.usecase.FeedXGetActivityProductsUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
 import com.tokopedia.feedcomponent.people.model.ProfileDoFollowModelBase
 import com.tokopedia.feedcomponent.people.model.ProfileDoFollowedData
@@ -65,6 +74,7 @@ import com.tokopedia.topads.sdk.domain.model.*
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -110,6 +120,7 @@ class FeedPostViewModelTest {
     private val affiliateCookieHelper: AffiliateCookieHelper = mockk()
     private val submitReportUseCase: FeedComplaintSubmitReportUseCase = mockk()
     private val uiEventManager = UiEventManager<FeedPostEvent>()
+    private val feedXGetActivityProductsUseCase: FeedXGetActivityProductsUseCase = mockk()
 
     private lateinit var viewModel: FeedPostViewModel
 
@@ -136,6 +147,7 @@ class FeedPostViewModelTest {
             getReportUseCase = getReportListUseCase,
             postReportUseCase = postReportUseCase,
             uiEventManager = uiEventManager,
+            feedXGetActivityProductsUseCase = feedXGetActivityProductsUseCase,
             dispatchers = testDispatcher
         )
     }
@@ -212,6 +224,15 @@ class FeedPostViewModelTest {
         // then
         assert(viewModel.merchantVoucherLiveData.value is Success)
         assert((viewModel.merchantVoucherLiveData.value as Success).data == dummyData.data)
+    }
+
+    @Test
+    fun onClearMerchantVoucher_shouldReturnNull() {
+        // when
+        viewModel.clearMerchantVoucher()
+
+        // then
+        assert(viewModel.merchantVoucherLiveData.value == null)
     }
 
     @Test
@@ -1102,6 +1123,209 @@ class FeedPostViewModelTest {
         assert(response is Success)
         assert((response as Success).data == dummyResponse)
     }
+
+    @Test
+    fun fetchFeedProduct_whenFailed_shouldBeFail() {
+        // given
+        val activityId = "123456"
+        coEvery {
+            feedXGetActivityProductsUseCase.getFeedDetailParam(
+                activityId,
+                ""
+            )
+        } returns mapOf()
+        coEvery { feedXGetActivityProductsUseCase(any()) } throws Throwable("Failed")
+
+        // when
+        viewModel.fetchFeedProduct(
+            activityId,
+            emptyList(),
+            FeedTaggedProductUiModel.SourceType.Organic
+        )
+
+        // then
+        assert(viewModel.feedTagProductList.value is Fail)
+        val response = viewModel.feedTagProductList.value as Fail
+        assert(response.throwable.message == "Failed")
+    }
+
+    @Test
+    fun fetchFeedProduct_whenSuccess_shouldBeSuccess() {
+        // given
+        val activityId = "123456"
+        val dummyData = getDummyData()
+        val productList = dummyData.data.products.map {
+            ProductMapper.transform(
+                it,
+                dummyData.data.campaign,
+                FeedTaggedProductUiModel.SourceType.Organic
+            )
+        }
+        coEvery {
+            feedXGetActivityProductsUseCase.getFeedDetailParam(
+                activityId,
+                ""
+            )
+        } returns mapOf()
+        coEvery { feedXGetActivityProductsUseCase(any()) } returns getDummyData()
+
+        // when
+        viewModel.fetchFeedProduct(
+            activityId,
+            productList,
+            FeedTaggedProductUiModel.SourceType.Organic
+        )
+
+        // then
+        assert(viewModel.feedTagProductList.value is Success)
+        val response = viewModel.feedTagProductList.value as Success
+        assert(response.data.size == getDummyData().data.products.size)
+    }
+
+    @Test
+    fun fetchFeedProduct_whenSuccessWithoutDefault_shouldBeSuccess() {
+        // given
+        val activityId = "123456"
+        coEvery {
+            feedXGetActivityProductsUseCase.getFeedDetailParam(
+                activityId,
+                ""
+            )
+        } returns mapOf()
+        coEvery { feedXGetActivityProductsUseCase(any()) } returns getDummyData()
+
+        // when
+        viewModel.fetchFeedProduct(
+            activityId,
+            emptyList(),
+            FeedTaggedProductUiModel.SourceType.Organic
+        )
+
+        // then
+        assert(viewModel.feedTagProductList.value is Success)
+        val response = viewModel.feedTagProductList.value as Success
+        assert(response.data.size == getDummyData().data.products.size)
+    }
+
+    /**
+     * submit report
+     */
+
+    @Test
+    fun `when submit report return success`() {
+        coEvery { userSession.userId } returns "13232"
+        coEvery { userSession.isLoggedIn } returns true
+
+        val response = UserReportSubmissionResponse(
+            submissionReport = UserReportSubmissionResponse.Result(
+                "success"
+            )
+        )
+
+        coEvery { postReportUseCase.createParam(any(), any(), any(), any(), any(), any(), any(), any()) } coAnswers { RequestParams() }
+        coEvery { postReportUseCase.setRequestParams(any()) } coAnswers {}
+        coEvery { postReportUseCase.executeOnBackground() } returns response
+
+        viewModel.selectReport(PlayUserReportReasoningUiModel.Reasoning.Empty)
+        viewModel.submitReport("", 0L, FeedCardVideoContentModel.Empty)
+
+        assert(viewModel.isReported.value is Success)
+        assert(viewModel.selectedReport == PlayUserReportReasoningUiModel.Reasoning.Empty)
+    }
+
+    @Test
+    fun `when submit report video return error from be`() {
+        coEvery { userSession.isLoggedIn } returns true
+
+        coEvery { postReportUseCase.executeOnBackground() } throws MessageErrorException()
+
+        viewModel.selectReport(PlayUserReportReasoningUiModel.Reasoning.Empty)
+        viewModel.submitReport("", 0L, FeedCardVideoContentModel.Empty)
+
+        assert(viewModel.isReported.value is Fail)
+        assert(viewModel.selectedReport == PlayUserReportReasoningUiModel.Reasoning.Empty)
+    }
+
+    @Test
+    fun `when submit report video return error`() {
+        coEvery { userSession.isLoggedIn } returns true
+
+        val response = UserReportSubmissionResponse(
+            submissionReport = UserReportSubmissionResponse.Result(
+                "failed"
+            )
+        )
+        coEvery { postReportUseCase.executeOnBackground() } returns response
+
+        viewModel.selectReport(PlayUserReportReasoningUiModel.Reasoning.Empty)
+        viewModel.submitReport("", 0L, FeedCardVideoContentModel.Empty)
+
+        assert(viewModel.isReported.value is Fail)
+        assert(viewModel.selectedReport == PlayUserReportReasoningUiModel.Reasoning.Empty)
+    }
+
+    /**
+     * get list
+     */
+
+    @Test
+    fun `get reasoning list is success`() {
+        val response = UserReportOptions.Response(
+            data = listOf(
+                UserReportOptions(
+                    id = 1,
+                    value = "Harga melanggar etika",
+                    detail = ""
+                ),
+                UserReportOptions(
+                    id = 11,
+                    value = "Melanggar HAM",
+                    detail = ""
+                ),
+                UserReportOptions(
+                    id = 12,
+                    value = "SARA",
+                    detail = ""
+                ),
+                UserReportOptions(
+                    id = 9,
+                    value = "Melanggar etik",
+                    detail = ""
+                )
+            )
+        )
+
+        coEvery { getReportListUseCase.executeOnBackground() } returns response
+        viewModel.getReport()
+
+        assert(viewModel.userReportList is Success)
+        assert((viewModel.userReportList as Success<List<PlayUserReportReasoningUiModel>>).data.isNotEmpty())
+    }
+
+    @Test
+    fun `get reasoning list is error`() {
+        coEvery { getReportListUseCase.executeOnBackground() } throws MessageErrorException()
+        viewModel.getReport()
+
+        assert(viewModel.userReportList is Fail)
+    }
+
+    private fun getDummyData(): FeedXGQLResponse = FeedXGQLResponse(
+        data = FeedXGetActivityProductsResponse(
+            products = listOf(
+                FeedXProduct(shopID = "09876", id = "1"),
+                FeedXProduct(id = "2"),
+                FeedXProduct(id = "3"),
+                FeedXProduct(id = "4"),
+                FeedXProduct(id = "5")
+            ),
+            isFollowed = true,
+            contentType = "content type",
+            campaign = FeedXCampaign(),
+            nextCursor = "",
+            hasVoucher = false
+        )
+    )
 
     private fun provideDefaultFeedPostMockData() {
         coEvery { feedXHomeUseCase.createParams(any(), any(), any(), any()) } returns emptyMap()

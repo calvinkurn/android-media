@@ -61,6 +61,7 @@ object AddOnResultMapper {
             addOnMetadata = mapAddOnMetadataResult(addOnDataResponse.addOnMetadata)
             addOnPrice = addOnDataResponse.addOnPrice
             addOnQty = addOnDataResponse.addOnQty
+            addOnUniqueId = addOnDataResponse.addOnUniqueId
         }
     }
 
