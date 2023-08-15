@@ -745,6 +745,11 @@ class CartViewModel @Inject constructor(
         // Collect all Cart Item & also calculate total weight on each shop
         val cartItemDataList = getAvailableCartItemDataList(dataList)
 
+        var subtotalBmGmDiscount = 0.0
+        dataList.forEach {
+            if (it.hasBmGmOffer) subtotalBmGmDiscount += it.discountBmGmAmount
+        }
+
         // Calculate total total item, price and cashback for marketplace product
         val returnValueMarketplaceProduct = cartCalculator.calculatePriceMarketplaceProduct(
             allCartItemDataList = cartItemDataList,
@@ -755,7 +760,7 @@ class CartViewModel @Inject constructor(
         )
         totalItemQty += returnValueMarketplaceProduct.first
         subtotalBeforeSlashedPrice += returnValueMarketplaceProduct.second.first
-        subtotalPrice += returnValueMarketplaceProduct.second.second
+        subtotalPrice += (returnValueMarketplaceProduct.second.second - subtotalBmGmDiscount)
         subtotalCashback += returnValueMarketplaceProduct.third
 
         updateSummaryTransactionUiModel(

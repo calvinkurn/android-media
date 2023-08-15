@@ -241,6 +241,7 @@ object CartUiModelMapper {
                         ""
                     }
                 hasBmGmOffer = checkBmGmOffer(availableGroup.groupShopCartData.getOrNull(0)?.cartDetails)
+                discountBmGmAmount = getBmGmOffer(availableGroup.groupShopCartData.getOrNull(0)?.cartDetails)
             }
             cartGroupHolderDataList.add(groupUiModel)
             if (!groupUiModel.isCollapsed) {
@@ -874,10 +875,22 @@ object CartUiModelMapper {
         return hasBmGm
     }
 
+    private fun getBmGmOffer(cartDetail: List<CartDetail>?): Double {
+        var totalDiscountBmgm = 0.0
+        cartDetail?.forEach {
+            if (it.cartDetailInfo.cartDetailType == CART_DETAIL_TYPE_BMGM) {
+                totalDiscountBmgm += it.cartDetailInfo.bmgmData.totalDiscount
+            }
+        }
+        return totalDiscountBmgm
+    }
+
     private fun checkNeedToShowBmGmDivider(cartDetail: CartDetail, productId: String): Boolean {
         val isLastIndexProduct = if (cartDetail.products.isNotEmpty()) {
-            cartDetail.products[cartDetail.products.size-1].productId == productId
-        } else true
+            cartDetail.products[cartDetail.products.size - 1].productId == productId
+        } else {
+            true
+        }
         return cartDetail.cartDetailInfo.cartDetailType == CART_DETAIL_TYPE_BMGM && !isLastIndexProduct
     }
 }
