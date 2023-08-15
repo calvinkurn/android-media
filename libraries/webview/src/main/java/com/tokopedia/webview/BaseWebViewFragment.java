@@ -29,6 +29,7 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.view.InflateException;
@@ -163,6 +164,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     private UserSession userSession;
     private PermissionCheckerHelper permissionCheckerHelper;
+
+    private ContactPickerListener contactPicker;
     private RemoteConfig remoteConfig;
 
     /**
@@ -215,6 +218,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
 
         isTokopediaUrl = host != null && host.endsWith(TOKOPEDIA_COM) && !host.contains(ZOOM_US_STRING);
+        contactPicker = new ContactPicker();
     }
 
     private String getUrlFromArguments(Bundle args) {
@@ -474,6 +478,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             proceedPartnerKyc(intent);
         }
 
+        contactPicker.onContactSelected(requestCode, resultCode, intent, BaseWebViewFragment.this.getActivity().getContentResolver(), getContext());
     }
 
     private void proceedPartnerKyc(Intent intent) {
@@ -691,6 +696,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (permissionCheckerHelper != null) {
             permissionCheckerHelper.onRequestPermissionsResult(getContext(), requestCode, permissions, grantResults);
+            contactPicker.getPermissionCheckerHelper().onRequestPermissionsResult(getContext(), requestCode, permissions, grantResults);
         }
     }
 
@@ -878,6 +884,18 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if ("".equals(url)) {
             return false;
         }
+
+        if (url.contains("gift-card/redemption")) {
+            Intent intent2 = new Intent(
+                    Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+            startActivityForResult(intent2, ContactPicker.CONTACT_PICKER_REQUEST_CODE);
+//            contactPicker.openContactPicker(
+//                    BaseWebViewFragment.this,
+//                    intent -> startActivityForResult(intent2, ContactPicker.CONTACT_PICKER_REQUEST_CODE)
+//            );
+            return true;
+        }
+
         Uri uri = Uri.parse(url);
         if (uri.isOpaque()) {
             return false;

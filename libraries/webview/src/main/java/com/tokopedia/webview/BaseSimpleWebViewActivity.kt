@@ -31,6 +31,10 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     protected var backPressedMessage = ""
     var webViewTitle = ""
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         init(intent)
         super.onCreate(savedInstanceState)
