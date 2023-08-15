@@ -34,6 +34,22 @@ internal interface HeaderLayoutStrategy {
         headerColorMode: Int?
     )
 
+    /**
+     * @param itemView is view
+     * @param icon url
+     * @param stubChannelIconSubtitle view is image for icon
+     * @param channelHeader pojo model
+     *
+     * Only show channel icon subtitle when it is exist
+     */
+    fun renderIconSubtitle(
+        itemView: View,
+        channelHeader: ChannelHeader,
+        stubChannelIconSubtitle: View?,
+    ){
+
+    }
+
     fun renderSubtitle(
         context: Context,
         channelHeader: ChannelHeader,
@@ -45,12 +61,6 @@ internal interface HeaderLayoutStrategy {
         channelHeader: ChannelHeader,
         hasExpiredTime: Boolean,
         channelHeaderContainer: ConstraintLayout?
-    )
-
-    fun setIconSubtitleConstraints(
-        hasIconSubtitle: Boolean,
-        channelHeaderContainer: ConstraintLayout?,
-        resources: Resources
     )
 
     fun setSubtitleConstraints(

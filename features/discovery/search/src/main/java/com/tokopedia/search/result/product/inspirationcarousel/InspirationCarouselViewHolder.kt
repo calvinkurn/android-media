@@ -86,11 +86,6 @@ class InspirationCarouselViewHolder(
         bindHeaderRevamp(element)
         setListConstraint()
         eraseMargin()
-        if (!isNeedToShowSeeAll) hideViewSeeAll()
-    }
-
-    private fun hideViewSeeAll() {
-        binding?.componentHeaderViewInspiration?.hideCTAButton()
     }
 
     private fun isNeedToShowSeeAll(element: InspirationCarouselDataView): Boolean {

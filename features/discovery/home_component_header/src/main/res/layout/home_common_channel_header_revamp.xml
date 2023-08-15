@@ -45,12 +45,13 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/home_channel_header_margin_subtitle_to_icon"
         android:layout_marginLeft="@dimen/home_channel_header_margin_subtitle_to_icon"
-        android:layout_marginTop="@dimen/home_channel_header_subtitle_top_padding"
         android:visibility="gone"
         tools:visibility="visible"
         tools:text="Berakhir dalam"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/channel_title"
+        app:layout_goneMarginStart="@dimen/home_channel_header_margin_default"
+        app:layout_goneMarginTop="@dimen/home_channel_header_subtitle_top_padding"
+        app:layout_constraintBottom_toBottomOf="@+id/channel_subtitle_icon"
+        app:layout_constraintTop_toTopOf="@+id/channel_subtitle_icon"
         app:layout_constraintStart_toEndOf="@+id/channel_subtitle_icon" />
 
     <ViewStub

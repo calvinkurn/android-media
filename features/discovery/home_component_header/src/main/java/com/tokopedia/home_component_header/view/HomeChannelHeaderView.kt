@@ -33,7 +33,6 @@ class HomeChannelHeaderView : FrameLayout {
     private var channelIconSubtitle: ImageUnify? = null
     private var channelSubtitle: Typography? = null
     private var countDownView: TimerUnifySingle? = null
-    private var stubCtaButton: View? = null
 
     private var headerColorMode: Int = COLOR_MODE_NORMAL
     private var headerCtaMode: Int = CTA_MODE_SEE_ALL
@@ -87,11 +86,11 @@ class HomeChannelHeaderView : FrameLayout {
         val stubSeeAllButtonUnify: View? = findViewById(R.id.see_all_button_unify)
         val stubChannelSubtitle: View? = findViewById(R.id.channel_subtitle)
         val stubChannelIconSubtitle: View? = findViewById(R.id.channel_subtitle_icon)
-        stubCtaButton = findViewById(R.id.cta_button)
+        val stubCtaButton: View? = findViewById(R.id.cta_button)
         channelHeaderContainer?.let { channelHeaderContainer ->
             handleTitle(channelHeader.name, channelHeaderContainer, stubChannelTitle, channelHeader)
-            handleIconSubtitle(stubChannelIconSubtitle, channelHeader)
             handleSubtitle(channelHeader.subtitle, stubChannelSubtitle, channelHeader)
+            channelHeader.layoutStrategy.renderIconSubtitle(this, channelHeader, stubChannelIconSubtitle)
             channelHeader.layoutStrategy.renderCta(
                 this,
                 channelHeaderContainer,
@@ -105,7 +104,6 @@ class HomeChannelHeaderView : FrameLayout {
                 headerCtaMode,
                 headerColorMode
             )
-            handleHeaderIconSubtitle(channelHeader, channelHeaderContainer)
             handleHeaderExpiredTime(channelHeader, stubCountDownView, channelHeaderContainer)
             handleBackgroundColor(channelHeader, channelHeaderContainer, stubCtaButton, stubSeeAllButtonUnify)
         }
@@ -150,30 +148,6 @@ class HomeChannelHeaderView : FrameLayout {
         }
     }
 
-    /**
-     * @param icon url
-     * @param stubChannelIconSubtitle view
-     * @param channelHeader pojo model
-     *
-     * Only show channel icon subtitle when it is exist
-     */
-    private fun handleIconSubtitle(stubChannelIconSubtitle: View?, channelHeader: ChannelHeader) {
-        if (hasIconSubtitle(channelHeader)) {
-            channelIconSubtitle = if (stubChannelIconSubtitle is ViewStub &&
-                !isViewStubHasBeenInflated(stubChannelIconSubtitle)
-            ) {
-                val stubChannelView = stubChannelIconSubtitle.inflate()
-                stubChannelView?.findViewById(R.id.channel_subtitle_icon)
-            } else {
-                null
-            }
-            channelIconSubtitle?.loadImage(channelHeader.iconSubtitleUrl)
-            channelSubtitle?.visibility = View.VISIBLE
-        } else {
-            channelSubtitle?.visibility = View.GONE
-        }
-    }
-
     private fun handleSubtitle(channelSubtitleName: String?, stubChannelSubtitle: View?, channelHeader: ChannelHeader) {
         /**
          * Requirement:
@@ -199,15 +173,6 @@ class HomeChannelHeaderView : FrameLayout {
         } else {
             channelSubtitle?.visibility = View.GONE
         }
-    }
-
-    /**
-     * @param channelHeader pojo data
-     * @param stubSubtitleView is Typography of subtitle
-     * @param channelHeaderContainer is root container for channel header view
-     * */
-    private fun handleHeaderIconSubtitle(channelHeader: ChannelHeader, channelHeaderContainer: ConstraintLayout) {
-        channelHeader.layoutStrategy.setIconSubtitleConstraints(hasIconSubtitle(channelHeader), channelHeaderContainer, context.resources)
     }
 
     private fun handleHeaderExpiredTime(channelHeader: ChannelHeader, stubCountDownView: View?, channelHeaderContainer: ConstraintLayout) {
@@ -289,10 +254,6 @@ class HomeChannelHeaderView : FrameLayout {
 
     private fun isViewStubHasBeenInflated(viewStub: ViewStub?): Boolean {
         return viewStub?.parent == null
-    }
-
-    fun hideCTAButton() {
-        stubCtaButton?.gone()
     }
 
     companion object {
