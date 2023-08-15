@@ -47,6 +47,12 @@ internal interface HeaderLayoutStrategy {
         channelHeaderContainer: ConstraintLayout?
     )
 
+    fun setIconSubtitleConstraints(
+        hasIconSubtitle: Boolean,
+        channelHeaderContainer: ConstraintLayout?,
+        resources: Resources
+    )
+
     fun setSubtitleConstraints(
         hasExpiredTime: Boolean,
         channelHeaderContainer: ConstraintLayout?,

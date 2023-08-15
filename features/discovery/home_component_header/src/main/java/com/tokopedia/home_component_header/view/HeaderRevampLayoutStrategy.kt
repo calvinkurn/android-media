@@ -192,6 +192,26 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
         constraintSet.applyTo(channelHeaderContainer)
     }
 
+    override fun setIconSubtitleConstraints(
+        hasIconSubtitle: Boolean,
+        channelHeaderContainer: ConstraintLayout?,
+        resources: Resources
+    ) {
+        if (hasIconSubtitle) {
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(channelHeaderContainer)
+            constraintSet.connect(R.id.channel_subtitle_icon, ConstraintSet.TOP, R.id.channel_subtitle, ConstraintSet.TOP, 0)
+            constraintSet.connect(R.id.channel_subtitle_icon, ConstraintSet.BOTTOM, R.id.channel_subtitle, ConstraintSet.BOTTOM, 0)
+            constraintSet.applyTo(channelHeaderContainer)
+        } else {
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(channelHeaderContainer)
+            constraintSet.connect(R.id.channel_subtitle, ConstraintSet.START, R.id.channel_title, ConstraintSet.START, 0)
+            constraintSet.connect(R.id.channel_subtitle, ConstraintSet.BOTTOM, R.id.channel_title, ConstraintSet.BOTTOM, 0)
+            constraintSet.applyTo(channelHeaderContainer)
+        }
+    }
+
     override fun setSubtitleConstraints(
         hasExpiredTime: Boolean,
         channelHeaderContainer: ConstraintLayout?,

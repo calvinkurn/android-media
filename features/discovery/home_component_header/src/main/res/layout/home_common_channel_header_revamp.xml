@@ -23,20 +23,35 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <ViewStub
+        android:id="@+id/channel_subtitle_icon"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:inflatedId="@+id/channel_subtitle_icon"
+        android:layout="@layout/view_stub_icon_subtitle_revamp"
+        android:layout_marginStart="@dimen/home_channel_header_margin_default"
+        android:layout_marginLeft="@dimen/home_channel_header_margin_default"
+        android:layout_marginTop="@dimen/home_channel_header_subtitle_top_padding"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/channel_title"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible" />
+
+    <ViewStub
         android:id="@+id/channel_subtitle"
         android:inflatedId="@+id/channel_subtitle"
         android:layout="@layout/view_stub_header_subtitle_revamp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/home_channel_header_margin_default"
-        android:layout_marginLeft="@dimen/home_channel_header_margin_default"
+        android:layout_marginStart="@dimen/home_channel_header_margin_subtitle_to_icon"
+        android:layout_marginLeft="@dimen/home_channel_header_margin_subtitle_to_icon"
         android:layout_marginTop="@dimen/home_channel_header_subtitle_top_padding"
         android:visibility="gone"
         tools:visibility="visible"
         tools:text="Berakhir dalam"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/channel_title"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/channel_title"
+        app:layout_constraintStart_toEndOf="@+id/channel_subtitle_icon" />
 
     <ViewStub
         android:id="@+id/count_down"

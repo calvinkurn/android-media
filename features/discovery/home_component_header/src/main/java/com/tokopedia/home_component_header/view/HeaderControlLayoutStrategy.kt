@@ -192,6 +192,13 @@ class HeaderControlLayoutStrategy : HeaderLayoutStrategy {
         }
     }
 
+    override fun setIconSubtitleConstraints(
+        hasIconSubtitle: Boolean,
+        channelHeaderContainer: ConstraintLayout?,
+        resources: Resources
+    ) {
+    }
+
     override fun setSubtitleConstraints(
         hasExpiredTime: Boolean,
         channelHeaderContainer: ConstraintLayout?,

@@ -2,13 +2,17 @@ package com.tokopedia.search.result.product.broadmatch
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselViewAllCardData
+import com.tokopedia.home_component_header.view.HomeChannelHeaderListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.ProductCardModel
@@ -17,12 +21,14 @@ import com.tokopedia.search.databinding.SearchResultProductBroadMatchLayoutBindi
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
+import com.tokopedia.search.utils.convertToChannelHeader
 import com.tokopedia.utils.view.binding.viewBinding
 
 class BroadMatchViewHolder(
         itemView: View,
         private val broadMatchListener: BroadMatchListener,
         private val recycledViewPool: RecyclerView.RecycledViewPool,
+        private val isReimagine: Boolean = false,
 ) : AbstractViewHolder<BroadMatchDataView>(itemView) {
 
     companion object {
@@ -34,11 +40,69 @@ class BroadMatchViewHolder(
     private var binding: SearchResultProductBroadMatchLayoutBinding? by viewBinding()
 
     override fun bind(element: BroadMatchDataView) {
-        bindTitle(element)
-        bindSubtitle(element)
-        bindSubtitleImage(element)
-        bindSeeMore(element)
+        if (isReimagine) {
+            setShowHeaderRevamp()
+            bindHeaderViewRevamp(element)
+            setSearchBroadMatchListConstraint()
+            erasePaddingOnContainerBroadMatchListConstraint()
+            setOldHeaderGone()
+        } else {
+            setHideHeaderRevamp()
+            bindTitle(element)
+            bindSubtitle(element)
+            bindSubtitleImage(element)
+            bindSeeMore(element)
+        }
         setupRecyclerView(element)
+    }
+
+    private fun bindHeaderViewRevamp(broadMatchDataView: BroadMatchDataView) {
+        val headerView = binding?.componentHeaderView ?: return
+        headerView.bind(
+            channelHeader = broadMatchDataView.convertToChannelHeader(headerView.context ?: return),
+            listener = object : HomeChannelHeaderListener {
+                override fun onSeeAllClick(link: String) {
+                    broadMatchListener.onBroadMatchSeeMoreClicked(broadMatchDataView)
+                }
+            }
+        )
+        headerView.addOnImpressionListener(broadMatchDataView) {
+            broadMatchListener.onBroadMatchImpressed(broadMatchDataView)
+        }
+    }
+
+    private fun setShowHeaderRevamp() {
+        val headerView = binding?.componentHeaderView ?: return
+        headerView.visible()
+    }
+
+    private fun setHideHeaderRevamp() {
+        val headerView = binding?.componentHeaderView ?: return
+        headerView.visible()
+    }
+
+    private fun setOldHeaderGone() {
+        binding?.searchBroadMatchTitle?.gone()
+        binding?.searchBroadMatchSubtitle?.gone()
+        binding?.searchBroadMatchSubtitleIcon?.gone()
+        binding?.searchBroadMatchSeeMore?.gone()
+    }
+
+    private fun setSearchBroadMatchListConstraint() {
+        val constraintContainerBroadMatchView = binding?.constraintContainerBroadMatchView ?: return
+        val recyclerViewBroadMatchList = binding?.searchBroadMatchList ?: return
+        val headerViewBroadMatchList = binding?.componentHeaderView ?: return
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(constraintContainerBroadMatchView)
+        constraintSet.connect(recyclerViewBroadMatchList.id, ConstraintSet.TOP, headerViewBroadMatchList.id, ConstraintSet.BOTTOM, 0)
+        constraintSet.connect(recyclerViewBroadMatchList.id, ConstraintSet.START, constraintContainerBroadMatchView.id, ConstraintSet.START, 0)
+        constraintSet.connect(recyclerViewBroadMatchList.id, ConstraintSet.END, constraintContainerBroadMatchView.id, ConstraintSet.END, 0)
+        constraintSet.applyTo(constraintContainerBroadMatchView)
+    }
+
+    private fun erasePaddingOnContainerBroadMatchListConstraint() {
+        val constraintContainerBroadMatchView = binding?.constraintContainerBroadMatchView ?: return
+        constraintContainerBroadMatchView.setPadding(0,0,0,0)
     }
 
     private fun bindTitle(broadMatchDataView: BroadMatchDataView) {

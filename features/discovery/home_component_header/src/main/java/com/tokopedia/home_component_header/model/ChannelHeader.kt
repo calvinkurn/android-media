@@ -18,7 +18,8 @@ data class ChannelHeader(
     val channelId: String = "",
     val serverTimeOffset: Long = 0,
     val headerType: HeaderType = HeaderType.CONTROL,
-) {
+    val iconSubtitleUrl: String = "",
+    ) {
     internal val layoutStrategy: HeaderLayoutStrategy = HeaderLayoutStrategyFactory.create(headerType)
 
     enum class HeaderType {

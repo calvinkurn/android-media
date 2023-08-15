@@ -127,6 +127,7 @@ class ProductListTypeFactoryImpl(
     private val isSneakPeekEnabled: Boolean = false,
     private val inspirationKeywordListener: InspirationKeywordListener,
     private val inspirationProductListener: InspirationProductListener,
+    private val isReimagine: Boolean = false,
 ) : BaseAdapterTypeFactory(), ProductListTypeFactory {
 
     override fun type(cpmDataView: CpmDataView): Int {
@@ -271,7 +272,7 @@ class ProductListTypeFactoryImpl(
             EmptyStateFilterViewHolder.LAYOUT -> EmptyStateFilterViewHolder(view, emptyStateListener)
             GlobalNavViewHolder.LAYOUT -> GlobalNavViewHolder(view, globalNavListener)
             InspirationCarouselViewHolder.LAYOUT ->
-                InspirationCarouselViewHolder(view, inspirationCarouselListener, recycledViewPool)
+                InspirationCarouselViewHolder(view, inspirationCarouselListener, recycledViewPool, isReimagine)
             InspirationCarouselVideoViewHolder.LAYOUT -> InspirationCarouselVideoViewHolder(
                     view,
                     videoCarouselListener,
@@ -288,7 +289,7 @@ class ProductListTypeFactoryImpl(
                 RecommendationItemViewHolder(view, recommendationListener)
             BannedProductsEmptySearchViewHolder.LAYOUT -> BannedProductsEmptySearchViewHolder(view)
             BroadMatchViewHolder.LAYOUT ->
-                BroadMatchViewHolder(view, broadMatchListener, recycledViewPool)
+                BroadMatchViewHolder(view, broadMatchListener, recycledViewPool, isReimagine)
             SmallGridInspirationCardViewHolder.LAYOUT ->
                 SmallGridInspirationCardViewHolder(view, inspirationCardListener)
             BigGridInspirationCardViewHolder.LAYOUT ->
