@@ -453,10 +453,13 @@ internal class PromoUsageViewModel @Inject constructor(
         validateUsePromoRequest: ValidateUsePromoRequest,
         boPromoCodes: List<String>
     ) {
-        if (entryPoint == PromoPageEntryPoint.CART_PAGE) {
-            onApplyPromo(validateUsePromoRequest, boPromoCodes)
-        } else if (entryPoint == PromoPageEntryPoint.ONE_CLICK_CHECKOUT_PAGE) {
-            onApplyPromo(validateUsePromoRequest, boPromoCodes)
+        _promoPageUiState.ifSuccess { pageState ->
+            val hasSelectedPromo = pageState.items.getSelectedPromoCodes().isNotEmpty()
+            if (hasSelectedPromo) {
+                onApplyPromo(validateUsePromoRequest, boPromoCodes)
+            } else {
+                onClearPromo(validateUsePromoRequest, boPromoCodes)
+            }
         }
     }
 
