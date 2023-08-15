@@ -4,7 +4,6 @@ import com.tokopedia.adapterdelegate.BaseCommonAdapter
 import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxAllCounterResponse
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxMenuItemDelegate
-import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxMenuSectionDelegate
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxMenuSeparatorDelegate
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxRecommendationDelegate
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxRecommendationLoaderDelegate
@@ -39,7 +38,6 @@ class UniversalInboxAdapter(
 
     init {
         delegatesManager.addDelegate(UniversalInboxWidgetMetaDelegate(widgetListener))
-        delegatesManager.addDelegate(UniversalInboxMenuSectionDelegate())
         delegatesManager.addDelegate(UniversalInboxMenuItemDelegate(menuListener))
         delegatesManager.addDelegate(
             UniversalInboxTopAdsBannerDelegate(tdnBannerResponseListener, topAdsClickListener)

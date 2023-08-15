@@ -19,12 +19,12 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         // When
         launchActivity()
         generalRobot {
-            scrollToPosition(9)
+            scrollToPosition(7)
         }
 
         // Then
-        assertPrePurchaseRecommendation(9)
-        assertProductRecommendation(11)
+        assertPrePurchaseRecommendation(7)
+        assertProductRecommendation(9)
     }
 
     @Test
@@ -35,11 +35,11 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         // When
         launchActivity()
         generalRobot {
-            scrollToPosition(10)
+            scrollToPosition(8)
         }
 
         // Then
-        assertInboxRvTotalItem(10)
+        assertInboxRvTotalItem(8)
     }
 
     @Test
@@ -50,12 +50,12 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         // When
         launchActivity()
         generalRobot {
-            scrollToPosition(9)
+            scrollToPosition(7)
         }
 
         // Then
-        assertPrePurchaseRecommendation(9)
-        assertPrePurchaseRecommendationGone(9)
+        assertPrePurchaseRecommendation(7)
+        assertPrePurchaseRecommendationGone(7)
     }
 
     @Test
@@ -67,11 +67,11 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         // When
         launchActivity()
         generalRobot {
-            scrollToPosition(9)
+            scrollToPosition(7)
         }
 
         // Then
-        assertPrePurchaseRecommendation(9)
-        assertPrePurchaseRecommendationGone(9)
+        assertPrePurchaseRecommendation(7)
+        assertPrePurchaseRecommendationGone(7)
     }
 }
