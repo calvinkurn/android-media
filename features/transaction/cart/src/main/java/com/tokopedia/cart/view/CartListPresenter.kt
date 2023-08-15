@@ -1463,7 +1463,7 @@ class CartListPresenter @Inject constructor(
             } else {
                 setBoAffordability("")
             }
-            setCartStringGroup(cartItemHolderData.cartString)
+            setDimension136(cartItemHolderData.cartString)
         }
         return enhancedECommerceProductCartMapData
     }

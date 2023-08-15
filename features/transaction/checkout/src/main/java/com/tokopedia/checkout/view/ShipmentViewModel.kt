@@ -764,7 +764,7 @@ class ShipmentViewModel @Inject constructor(
                     enhancedECommerceProductCartMapData.setDimension118(
                         cartItemModel.bundleId
                     )
-                    enhancedECommerceProductCartMapData.setCartStringGroup(
+                    enhancedECommerceProductCartMapData.setDimension136(
                         cartItemModel.cartStringGroup
                     )
                     enhancedECommerceCheckout.addProduct(
@@ -816,7 +816,8 @@ class ShipmentViewModel @Inject constructor(
             getPromoFlag(step),
             eventCategory,
             eventAction,
-            eventLabel
+            eventLabel,
+            step
         )
     }
     // endregion
