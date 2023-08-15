@@ -82,7 +82,6 @@ class RecyclerViewUpdater @Inject constructor(
             layoutManager = rvLayoutManager
             adapter = productListAdapter
             addItemDecoration(ProductItemDecoration(getSpacing(), productListAdapter))
-            addItemDecoration(SeparatorItemDecoration(context, productListAdapter))
             addItemDecoration(ProductListViewItemDecoration(context, productListAdapter))
             onScrollListenerList.filterNotNull().forEach(::addOnScrollListener)
         }
