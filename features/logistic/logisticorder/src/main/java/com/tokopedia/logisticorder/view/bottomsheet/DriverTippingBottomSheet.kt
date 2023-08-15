@@ -35,8 +35,8 @@ import com.tokopedia.logisticorder.utils.TippingConstant.OPEN
 import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_PAYMENT
 import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_TIPPING
 import com.tokopedia.logisticorder.utils.TippingConstant.WAITING_PAYMENT
-import com.tokopedia.logisticorder.view.TrackingPageViewModel
 import com.tokopedia.logisticorder.view.adapter.TippingValueAdapter
+import com.tokopedia.logisticorder.view.tipping.TippingDriverViewModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -53,8 +53,8 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private var binding by autoCleared<BottomsheetTippingGojekBinding>()
-    private val viewModel: TrackingPageViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[TrackingPageViewModel::class.java]
+    private val viewModel: TippingDriverViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[TippingDriverViewModel::class.java]
     }
 
     private var orderId: String? = ""
@@ -314,7 +314,7 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
         binding.etNominalTip.editText.setText(tippingValue.toString())
     }
 
-    fun show(fm: FragmentManager, orderId: String?, trackingDataModel: TrackingDataModel) {
+    fun show(fm: FragmentManager, orderId: String?, trackingDataModel: TrackingDataModel?) {
         this.orderId = orderId
         this.trackingDataModel = trackingDataModel
         show(fm, "TAG")
