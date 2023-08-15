@@ -52,4 +52,6 @@ object ApplinkConstInternalMechant {
     const val MERCHANT_STATISTIC_DASHBOARD = "$INTERNAL_MERCHANT/statistic_dashboard"
 
     const val SHOP_NIB_CUSTOMER_APP = "$INTERNAL_MERCHANT/shop-nib"
+
+    const val BUY_MORE_GET_MORE_OLP = "$INTERNAL_MERCHANT/buy-more-get-more/{shop_id}/olp"
 }

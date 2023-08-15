@@ -8,6 +8,7 @@ import com.tokopedia.applink.ApplinkConst.ADD_FINGERPRINT_ONBOARDING
 import com.tokopedia.applink.ApplinkConst.BRAND_LIST
 import com.tokopedia.applink.ApplinkConst.BRAND_LIST_WITH_SLASH
 import com.tokopedia.applink.ApplinkConst.BUYER_ORDER_EXTENSION
+import com.tokopedia.applink.ApplinkConst.BUY_MORE_GET_MORE_OLP
 import com.tokopedia.applink.ApplinkConst.CHANGE_INACTIVE_PHONE
 import com.tokopedia.applink.ApplinkConst.CONTACT_US
 import com.tokopedia.applink.ApplinkConst.CONTACT_US_NATIVE
@@ -432,6 +433,7 @@ object DeeplinkDFMapper : CoroutineScope {
                     ApplinkConstInternalMechant.SHOP_NIB_CUSTOMER_APP
                 )
             }, DF_BASE, R.string.title_seller_shop_nib))
+            add(DFP({ it.startsWith(BUY_MORE_GET_MORE_OLP) }, DF_BASE, R.string.title_buy_more_get_more))
 
             add(DFP({ it.startsWith(INTERNAL_SELLER) }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.SELLER_ORDER }))
             add(DFP({
@@ -621,6 +623,7 @@ object DeeplinkDFMapper : CoroutineScope {
                 (it.startsWith(SETTING_PROFILE)
                     || it.startsWith(ADD_PHONE)
                     || it.startsWith(NEW_ADD_PHONE)
+                    || it.startsWith(ApplinkConstInternalUserPlatform.PROFILE_MANAGEMENT)
                     || it.startsWith(ADD_EMAIL)
                     || it.startsWith(ADD_BOD)
                     || it.startsWithPattern(CHANGE_NAME)
@@ -630,7 +633,6 @@ object DeeplinkDFMapper : CoroutineScope {
                     || it.startsWith(ApplinkConstInternalUserPlatform.ADD_PIN_ONBOARDING)
                     || it.startsWith(ADD_PIN)
                     || it.startsWith(ApplinkConstInternalUserPlatform.ADD_PIN_COMPLETE)
-                    || it.startsWith(ApplinkConstInternalUserPlatform.SETTING_PROFILE)
                     )
             }, DF_USER_SETTINGS, R.string.applink_profile_completion_title, { DFWebviewFallbackUrl.USER_PROFILE_SETTINGS }))
             add(DFP({ it.startsWith(ApplinkConstInternalUserPlatform.PROFILE_COMPLETION) }, DF_USER_SETTINGS, R.string.applink_profile_completion_title))
