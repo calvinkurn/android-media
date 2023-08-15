@@ -28,7 +28,6 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bann
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.MultiBannerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.model.PushNotificationBannerSubscription
 import com.tokopedia.kotlin.extensions.view.EMPTY
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import io.mockk.*
