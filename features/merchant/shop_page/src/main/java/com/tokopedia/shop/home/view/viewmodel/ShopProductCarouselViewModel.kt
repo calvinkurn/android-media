@@ -33,6 +33,7 @@ class ShopProductCarouselViewModel @Inject constructor(
         private const val SORT_ID_MOST_SOLD = 8
         private const val SORT_ID_NEWEST = 2
         private const val LABEL_TITLE_PRODUCT_SOLD_COUNT = "Terjual"
+        private const val BANNER_TYPE_VERTICAL_ID = "vertical"
     }
 
     private val _carouselWidgets = MutableLiveData<Result<List<ShopHomeProductCarouselVerticalBannerItemType>>>()
@@ -52,7 +53,7 @@ class ShopProductCarouselViewModel @Inject constructor(
                 val verticalBanner = getVerticalBanner(firstProductWidget)
                 val products = getProducts(shopId, userAddress, firstProductWidget)
 
-                val hasVerticalBanner = firstProductWidget.bannerType == "vertical"
+                val hasVerticalBanner = firstProductWidget.bannerType == BANNER_TYPE_VERTICAL_ID
                 val carouselWidgets = if (hasVerticalBanner) {
                     verticalBanner + products
                 } else {

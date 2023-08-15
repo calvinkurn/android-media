@@ -78,7 +78,7 @@ import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePersoProductCompa
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePersoProductComparisonPlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerTimerViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerTimerPlaceholderViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductCarouselViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductCarouselViewPagerViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowCaseNavigationCarouselViewHolder
 import com.tokopedia.shop.home.view.listener.*
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
@@ -141,7 +141,7 @@ open class ShopHomeAdapterTypeFactory(
             PRODUCT -> getShopHomeCarousellProductViewHolder(baseShopHomeWidgetUiModel)
             VOUCHER_STATIC -> ShopHomeVoucherViewHolder.LAYOUT
             SHOWCASE_NAVIGATION_BANNER -> determineShowcaseWidgetAppearance(baseShopHomeWidgetUiModel)
-            DYNAMIC_COMPONENT -> ShopHomeProductCarouselViewHolder.LAYOUT
+            DYNAMIC_COMPONENT -> ShopHomeProductCarouselViewPagerViewHolder.LAYOUT
             RECENT_ACTIVITY, BUY_AGAIN, REMINDER, ADD_ONS, TRENDING -> getShopHomeCarouselProductPersonalizationViewHolder(baseShopHomeWidgetUiModel)
             NEW_PRODUCT_LAUNCH_CAMPAIGN -> getShopHomeNplCampaignViewHolder(baseShopHomeWidgetUiModel)
             FLASH_SALE_TOKO -> getShopFlashSaleViewHolder(baseShopHomeWidgetUiModel)
@@ -431,8 +431,8 @@ open class ShopHomeAdapterTypeFactory(
             ShopHomeShowCaseNavigationCarouselViewHolder.LAYOUT -> {
                 ShopHomeShowCaseNavigationCarouselViewHolder(parent, shopHomeShowcaseNavigationListener)
             }
-            ShopHomeProductCarouselViewHolder.LAYOUT -> {
-                ShopHomeProductCarouselViewHolder(parent, shopHomeProductCarouselListener, shopHomeProductCarouselTabDataProvider)
+            ShopHomeProductCarouselViewPagerViewHolder.LAYOUT -> {
+                ShopHomeProductCarouselViewPagerViewHolder(parent, shopHomeProductCarouselListener, shopHomeProductCarouselTabDataProvider)
             }
             ShopLayoutLoadingShimmerViewHolder.LAYOUT -> {
                 ShopLayoutLoadingShimmerViewHolder(parent)

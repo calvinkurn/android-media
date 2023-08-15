@@ -21,7 +21,7 @@ import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.utils.view.binding.viewBinding
 
-class ShopHomeProductCarouselViewHolder(
+class ShopHomeProductCarouselViewPagerViewHolder(
     itemView: View,
     private val listener: ShopHomeProductCarouselListener,
     private val provider: ShopHomeProductCarouselTabDataProvider
