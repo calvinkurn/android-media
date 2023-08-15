@@ -5,11 +5,12 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.MoveAction
 import com.tokopedia.discovery2.data.notifier.NotifierCheckReminder
 import com.tokopedia.discovery2.data.notifier.NotifierSetReminder
 import com.tokopedia.discovery2.data.push.PushStatusResponse
@@ -20,7 +21,6 @@ import com.tokopedia.discovery2.usecase.bannerusecase.BannerUseCase
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.BANNER_ACTION_CODE
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.MultiBannerViewModel
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.utils.view.DarkModeUtil
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import io.mockk.*
 import junit.framework.TestCase
@@ -59,7 +59,7 @@ class MultiBannerViewModelTest {
     }
 
     val list = arrayListOf<DataItem>()
-    var dataItem:DataItem = mockk()
+    var dataItem: DataItem = mockk()
     var userSession: UserSession = mockk()
     var context: Context = mockk(relaxed = true)
 
@@ -92,7 +92,7 @@ class MultiBannerViewModelTest {
     }
 
     @Test
-    fun `test for application`(){
+    fun `test for application`() {
         assert(viewModel.application === application)
     }
 
@@ -157,7 +157,6 @@ class MultiBannerViewModelTest {
         every { componentsItem.properties } returns null
         every { componentsItem.verticalProductFailState } returns false
         assert(!viewModel.shouldShowShimmer())
-
     }
 
     /****************************************** onAttachToViewHolder() ****************************************/
@@ -213,21 +212,19 @@ class MultiBannerViewModelTest {
         TestCase.assertEquals(viewModel.showErrorState.value, true)
     }
 
-
     /****************************************** banner width ****************************************/
     @Test
-    fun `test for banner width`(){
-        every { Utils.extractDimension(any(),any()) } returns 100
+    fun `test for banner width`() {
+        every { Utils.extractDimension(any(), any()) } returns 100
         val list = mutableListOf(DataItem(imageUrlDynamicMobile = "https://images.tokopedia.net/img/cache/900/QBrNqa/2021/11/30/4a521cc9-560d-4763-9ff2-85a1c22abcf8.png.webp"))
         every { componentsItem.data } returns list
 
         assert(viewModel.getBannerUrlWidth() == 100)
     }
 
-
     /****************************************** onAttachToViewHolder() ****************************************/
     @Test
-    fun `test for banner height`(){
+    fun `test for banner height`() {
         every { Utils.extractDimension(any()) } returns 100
         val list = mutableListOf(DataItem(imageUrlDynamicMobile = "https://images.tokopedia.net/img/cache/900/QBrNqa/2021/11/30/4a521cc9-560d-4763-9ff2-85a1c22abcf8.png.webp"))
         every { componentsItem.data } returns list
@@ -236,7 +233,7 @@ class MultiBannerViewModelTest {
     }
 
     @Test
-    fun `test for position passed`(){
+    fun `test for position passed`() {
         assert(viewModel.position == 99)
     }
 
@@ -247,7 +244,7 @@ class MultiBannerViewModelTest {
 
     /****************************************** user LogIn() ****************************************/
     @Test
-    fun `isUser Logged in`(){
+    fun `isUser Logged in`() {
         every { constructedWith<UserSession>(OfTypeMatcher<Context>(Context::class)).isLoggedIn } returns false
         assert(!viewModel.isUserLoggedIn())
         every { constructedWith<UserSession>(OfTypeMatcher<Context>(Context::class)).isLoggedIn } returns true
@@ -260,7 +257,7 @@ class MultiBannerViewModelTest {
     fun `test for onBannerClicked when bannerData value is null`() {
         every { componentsItem.data } returns null
 
-        viewModel.onBannerClicked(0,context)
+        viewModel.onBannerClicked(0, context)
 
         TestCase.assertEquals(viewModel.syncData.value, null)
     }
@@ -272,7 +269,7 @@ class MultiBannerViewModelTest {
         list.add(item)
         every { componentsItem.data } returns list
 
-        viewModel.onBannerClicked(1,context)
+        viewModel.onBannerClicked(1, context)
 
         TestCase.assertEquals(viewModel.syncData.value, null)
     }
@@ -280,26 +277,42 @@ class MultiBannerViewModelTest {
     @Test
     fun `banner action is APPLINK`() {
         list.clear()
-        coEvery { componentsItem.data} returns list
+        coEvery { componentsItem.data } returns list
         list.add(dataItem)
         every { dataItem.action } returns "APPLINK"
         every { dataItem.applinks } returns "tokopedia://xyz"
-        every { viewModel.navigate(context,any()) } just Runs
+        every { dataItem.moveAction } returns MoveAction("redirection", value = "tokopedia://xyz")
+        every { viewModel.navigate(context, any()) } just Runs
         viewModel.onBannerClicked(0, context)
 
-        coVerify { viewModel.navigate(context,"tokopedia://xyz") }
+        coVerify { viewModel.navigate(context, "tokopedia://xyz") }
     }
+
+    @Test
+    fun `banner action is NAVIGATION`() {
+        list.clear()
+        coEvery { componentsItem.data } returns list
+        list.add(dataItem)
+        every { dataItem.action } returns "APPLINK"
+        every { dataItem.applinks } returns "tokopedia://xyz"
+        every { dataItem.moveAction } returns MoveAction("navigation", value = "activeTab=2&componentID=24")
+        every { viewModel.navigate(context, any()) } just Runs
+        viewModel.onBannerClicked(0, context)
+
+        coVerify(inverse = true) { viewModel.navigate(context, "tokopedia://xyz") }
+    }
+
     @Test
     fun `banner action is Empty`() {
         list.clear()
-        coEvery { componentsItem.data} returns list
+        coEvery { componentsItem.data } returns list
         list.add(dataItem)
         every { dataItem.action } returns ""
         every { dataItem.applinks } returns "tokopedia://xyz"
-        every { viewModel.navigate(context,any()) } just Runs
+        every { viewModel.navigate(context, any()) } just Runs
         viewModel.onBannerClicked(0, context)
 
-        coVerify { viewModel.navigate(context,"tokopedia://xyz") }
+        coVerify { viewModel.navigate(context, "tokopedia://xyz") }
     }
 
     @Test
@@ -308,8 +321,8 @@ class MultiBannerViewModelTest {
         val item = DataItem(applinks = "tokopedia", action = "CODE")
         list.add(item)
         every { componentsItem.data } returns list
-        val clipData : ClipData = mockk(relaxed = true)
-        every { (application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).setPrimaryClip(clipData)} just Runs
+        val clipData: ClipData = mockk(relaxed = true)
+        every { (application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).setPrimaryClip(clipData) } just Runs
 
         viewModel.onBannerClicked(0, context)
 
@@ -402,9 +415,9 @@ class MultiBannerViewModelTest {
         every { dataItem.action } returns "LOGIN"
         every { dataItem.applinks } returns "tokopedia://xyz"
         every { viewModel.navigate(context, any()) } just Runs
-        every { viewModel.isUserLoggedIn()} returns false
+        every { viewModel.isUserLoggedIn() } returns false
 
-        viewModel.onBannerClicked(0,context)
+        viewModel.onBannerClicked(0, context)
 
         assert(viewModel.isPageRefresh().value == true)
     }
@@ -418,9 +431,9 @@ class MultiBannerViewModelTest {
         every { componentsItem.data } returns list
         every { viewModel.navigate(context, any()) } just Runs
 
-        viewModel.onBannerClicked(0,context)
+        viewModel.onBannerClicked(0, context)
 
-        verify { viewModel.navigate(context,any()) }
+        verify { viewModel.navigate(context, any()) }
     }
 
     /****************************************** end of onBannerClicked() ****************************************/
@@ -433,7 +446,7 @@ class MultiBannerViewModelTest {
         val item = DataItem(applinks = "tokopedia", action = "PUSH_NOTIFIER")
         list.add(item)
         every { componentsItem.data } returns list
-        every { viewModel.isUserLoggedIn()} returns true
+        every { viewModel.isUserLoggedIn() } returns true
         val notifierCheckReminder = NotifierCheckReminder(status = 1)
         val pushSubscriptionResponse = PushStatusResponse(notifierCheckReminder = notifierCheckReminder)
         coEvery { checkPushStatusUseCase.checkPushStatus(any()) } returns pushSubscriptionResponse
@@ -450,7 +463,7 @@ class MultiBannerViewModelTest {
         val item = DataItem(applinks = "tokopedia", action = "PUSH_NOTIFIER")
         list.add(item)
         every { componentsItem.data } returns list
-        every { viewModel.isUserLoggedIn()} returns true
+        every { viewModel.isUserLoggedIn() } returns true
         coEvery { checkPushStatusUseCase.checkPushStatus(any()) } throws Exception("Error")
 
         viewModel.campaignSubscribedStatus(0)
@@ -465,7 +478,7 @@ class MultiBannerViewModelTest {
         val item = DataItem(applinks = "tokopedia", action = "LOCAL_CALENDAR")
         list.add(item)
         every { componentsItem.data } returns list
-        every { viewModel.isUserLoggedIn()} returns false
+        every { viewModel.isUserLoggedIn() } returns false
         val notifierSetReminder = NotifierCheckReminder(status = 1)
         val pushSubscriptionResponse = PushStatusResponse(notifierCheckReminder = notifierSetReminder)
         coEvery { checkPushStatusUseCase.checkPushStatus(any()) } returns pushSubscriptionResponse
@@ -491,12 +504,13 @@ class MultiBannerViewModelTest {
 
         TestCase.assertEquals(viewModel.hideShimmer.value, true)
     }
+
     @Test
     fun `test for setComponentPromoNameForCoupons when component is SingleBanner`() {
         val list = mutableListOf(DataItem(action = BANNER_ACTION_CODE))
         every { componentsItem.data } returns list
 
-        viewModel.setComponentPromoNameForCoupons(ComponentNames.SingleBanner.componentName,list)
+        viewModel.setComponentPromoNameForCoupons(ComponentNames.SingleBanner.componentName, list)
         assert(viewModel.getComponentData().value?.data?.firstOrNull()?.componentPromoName == "single_promo_code")
     }
 
@@ -505,7 +519,7 @@ class MultiBannerViewModelTest {
         val list = mutableListOf(DataItem(action = BANNER_ACTION_CODE))
         every { componentsItem.data } returns list
 
-        viewModel.setComponentPromoNameForCoupons(ComponentNames.DoubleBanner.componentName,list)
+        viewModel.setComponentPromoNameForCoupons(ComponentNames.DoubleBanner.componentName, list)
         assert(viewModel.getComponentData().value?.data?.firstOrNull()?.componentPromoName == "double_promo_code")
     }
 
@@ -522,23 +536,23 @@ class MultiBannerViewModelTest {
     fun `test for layoutSelector`() {
         every { componentsItem.name } returns ComponentNames.SingleBanner.componentName
 
-        assert( viewModel.layoutSelector() == R.layout.disco_shimmer_single_banner_layout )
+        assert(viewModel.layoutSelector() == R.layout.disco_shimmer_single_banner_layout)
 
         every { componentsItem.name } returns ComponentNames.DoubleBanner.componentName
 
-        assert( viewModel.layoutSelector() == R.layout.disco_shimmer_double_banner_layout )
+        assert(viewModel.layoutSelector() == R.layout.disco_shimmer_double_banner_layout)
 
         every { componentsItem.name } returns ComponentNames.TripleBanner.componentName
 
-        assert( viewModel.layoutSelector() == R.layout.disco_shimmer_triple_banner_layout )
+        assert(viewModel.layoutSelector() == R.layout.disco_shimmer_triple_banner_layout)
 
         every { componentsItem.name } returns ComponentNames.QuadrupleBanner.componentName
 
-        assert( viewModel.layoutSelector() == R.layout.disco_shimmer_quadruple_banner_layout )
+        assert(viewModel.layoutSelector() == R.layout.disco_shimmer_quadruple_banner_layout)
 
         every { componentsItem.name } returns ComponentNames.AnchorTabs.componentName
 
-        assert( viewModel.layoutSelector() == R.layout.multi_banner_layout )
+        assert(viewModel.layoutSelector() == R.layout.multi_banner_layout)
     }
 
     @After
