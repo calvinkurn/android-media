@@ -18,10 +18,10 @@ import com.tokopedia.shop.databinding.FragmentShopProductCarouselBinding
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.view.adapter.ShopHomeProductCarouselAdapter
-import com.tokopedia.shop.home.view.model.ProductCard
+import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselProductCardVerticalBanner
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselItemType
-import com.tokopedia.shop.home.view.model.VerticalBanner
+import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerItemType
+import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerVerticalBanner
 import com.tokopedia.shop.home.view.viewmodel.ShopProductCarouselViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -64,8 +64,8 @@ class ShopProductCarouselFragment : BaseDaggerFragment() {
     private val viewModel by lazy { viewModelProvider[ShopProductCarouselViewModel::class.java] }
 
     private var onMainBannerClick : (ShopHomeProductCarouselUiModel.Tab.ComponentList.Data) -> Unit = {}
-    private var onProductClick : (ProductCard) -> Unit = {}
-    private var onVerticalBannerClick : (VerticalBanner) -> Unit = {}
+    private var onProductClick : (ShopHomeProductCarouselProductCardVerticalBanner) -> Unit = {}
+    private var onVerticalBannerClick : (ShopHomeProductCarouselVerticalBannerVerticalBanner) -> Unit = {}
 
     private var binding by autoClearedNullable<FragmentShopProductCarouselBinding>()
     private val productAdapter = ShopHomeProductCarouselAdapter()
@@ -155,7 +155,7 @@ class ShopProductCarouselFragment : BaseDaggerFragment() {
         viewModel.getCarouselWidgets(widgets, shopId, userAddress)
     }
 
-    private fun renderCarouselWidgets(widgets: List<ShopHomeProductCarouselItemType>) {
+    private fun renderCarouselWidgets(widgets: List<ShopHomeProductCarouselVerticalBannerItemType>) {
         productAdapter.submit(widgets)
     }
 
@@ -163,11 +163,11 @@ class ShopProductCarouselFragment : BaseDaggerFragment() {
         this.onMainBannerClick = onMainBannerClick
     }
 
-    fun setOnVerticalBannerClick(onVerticalBannerClick: (VerticalBanner) -> Unit) {
+    fun setOnVerticalBannerClick(onVerticalBannerClick: (ShopHomeProductCarouselVerticalBannerVerticalBanner) -> Unit) {
         this.onVerticalBannerClick = onVerticalBannerClick
     }
 
-    fun setOnProductClick(onProductClick: (ProductCard) -> Unit) {
+    fun setOnProductClick(onProductClick: (ShopHomeProductCarouselProductCardVerticalBanner) -> Unit) {
         this.onProductClick = onProductClick
     }
 

@@ -11,15 +11,15 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopHomeProductCarouselProductInfoCardBinding
 import com.tokopedia.shop.databinding.ItemShopHomeProductCarouselVerticalBannerCardBinding
-import com.tokopedia.shop.home.view.model.ProductCard
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselItemType
-import com.tokopedia.shop.home.view.model.VerticalBanner
+import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselProductCardVerticalBanner
+import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerItemType
+import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerVerticalBanner
 
 class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var items = mutableListOf<ShopHomeProductCarouselItemType>()
-    private var onProductClick: (ProductCard) -> Unit = {}
-    private var onVerticalBannerClick: (VerticalBanner) -> Unit = {}
+    private var items = mutableListOf<ShopHomeProductCarouselVerticalBannerItemType>()
+    private var onProductClick: (ShopHomeProductCarouselProductCardVerticalBanner) -> Unit = {}
+    private var onVerticalBannerClick: (ShopHomeProductCarouselVerticalBannerVerticalBanner) -> Unit = {}
 
     private var showProductInfo : Boolean = false
 
@@ -50,7 +50,7 @@ class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<RecyclerView.ViewHol
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = items[position]
-        if (item is VerticalBanner) {
+        if (item is ShopHomeProductCarouselVerticalBannerVerticalBanner) {
             (holder as VerticalBannerViewHolder).bind(item)
         } else {
             (holder as ProductViewHolder).bind(item)
@@ -60,7 +60,7 @@ class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<RecyclerView.ViewHol
     override fun getItemViewType(position: Int): Int {
         val item = items[position]
 
-        if (item is VerticalBanner) {
+        if (item is ShopHomeProductCarouselVerticalBannerVerticalBanner) {
             return VIEW_TYPE_VERTICAL_BANNER
         }
 
@@ -71,8 +71,8 @@ class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<RecyclerView.ViewHol
         private val binding: ItemShopHomeProductCarouselProductInfoCardBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: ShopHomeProductCarouselItemType) {
-            val product = item as? ProductCard
+        fun bind(item: ShopHomeProductCarouselVerticalBannerItemType) {
+            val product = item as? ShopHomeProductCarouselProductCardVerticalBanner
 
             product?.let {
                 binding.imgProduct.loadImage(product.imageUrl)
@@ -114,8 +114,8 @@ class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<RecyclerView.ViewHol
         private val binding: ItemShopHomeProductCarouselVerticalBannerCardBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: ShopHomeProductCarouselItemType) {
-            val banner = item as? VerticalBanner
+        fun bind(item: ShopHomeProductCarouselVerticalBannerItemType) {
+            val banner = item as? ShopHomeProductCarouselVerticalBannerVerticalBanner
 
             banner?.let {
                 binding.imgVerticalBanner.loadImage(banner.imageUrl)
@@ -125,8 +125,8 @@ class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     inner class DiffCallback(
-        private val oldItems: List<ShopHomeProductCarouselItemType>,
-        private val newItems: List<ShopHomeProductCarouselItemType>
+        private val oldItems: List<ShopHomeProductCarouselVerticalBannerItemType>,
+        private val newItems: List<ShopHomeProductCarouselVerticalBannerItemType>
     ) : DiffUtil.Callback() {
 
         override fun getOldListSize() = oldItems.size
@@ -146,7 +146,7 @@ class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<RecyclerView.ViewHol
         this.showProductInfo = showProductInfo
     }
 
-    fun submit(newProducts: List<ShopHomeProductCarouselItemType>) {
+    fun submit(newProducts: List<ShopHomeProductCarouselVerticalBannerItemType>) {
         val diffCallback = DiffCallback(this.items, newProducts)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
 
@@ -156,11 +156,11 @@ class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<RecyclerView.ViewHol
         diffResult.dispatchUpdatesTo(this)
     }
 
-    fun setOnProductClick(onProductClick: (ProductCard) -> Unit) {
+    fun setOnProductClick(onProductClick: (ShopHomeProductCarouselProductCardVerticalBanner) -> Unit) {
         this.onProductClick = onProductClick
     }
 
-    fun setOnVerticalBannerClick(onVerticalBannerClick: (VerticalBanner) -> Unit) {
+    fun setOnVerticalBannerClick(onVerticalBannerClick: (ShopHomeProductCarouselVerticalBannerVerticalBanner) -> Unit) {
         this.onVerticalBannerClick = onVerticalBannerClick
     }
 }

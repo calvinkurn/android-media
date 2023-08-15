@@ -8,10 +8,10 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.shop.common.constant.ShopPageConstant
-import com.tokopedia.shop.home.view.model.ProductCard
+import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselProductCardVerticalBanner
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselItemType
-import com.tokopedia.shop.home.view.model.VerticalBanner
+import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerItemType
+import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerVerticalBanner
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -32,8 +32,8 @@ class ShopProductCarouselViewModel @Inject constructor(
         private const val SORT_ID_NEWEST = 2
     }
 
-    private val _carouselWidgets = MutableLiveData<Result<List<ShopHomeProductCarouselItemType>>>()
-    val carouselWidgets: LiveData<Result<List<ShopHomeProductCarouselItemType>>>
+    private val _carouselWidgets = MutableLiveData<Result<List<ShopHomeProductCarouselVerticalBannerItemType>>>()
+    val carouselWidgets: LiveData<Result<List<ShopHomeProductCarouselVerticalBannerItemType>>>
         get() = _carouselWidgets
 
     fun getCarouselWidgets(
@@ -81,7 +81,7 @@ class ShopProductCarouselViewModel @Inject constructor(
         shopId: String,
         userAddress: LocalCacheModel,
         firstWidget: ShopHomeProductCarouselUiModel.Tab.ComponentList.Data
-    ): List<ProductCard> {
+    ): List<ShopHomeProductCarouselProductCardVerticalBanner> {
         val productLinkType = firstWidget.linkType
 
         val sortId = when (productLinkType) {
@@ -106,7 +106,7 @@ class ShopProductCarouselViewModel @Inject constructor(
         val response = getShopProductUseCase.executeOnBackground()
 
         val products = response.data.map { product ->
-            ProductCard(
+            ShopHomeProductCarouselProductCardVerticalBanner(
                 product.productId,
                 product.primaryImage.thumbnail,
                 product.name,
@@ -122,9 +122,9 @@ class ShopProductCarouselViewModel @Inject constructor(
         return products
     }
 
-    private fun getVerticalBanner(widget: ShopHomeProductCarouselUiModel.Tab.ComponentList.Data): List<VerticalBanner> {
+    private fun getVerticalBanner(widget: ShopHomeProductCarouselUiModel.Tab.ComponentList.Data): List<ShopHomeProductCarouselVerticalBannerVerticalBanner> {
         return listOf(
-            VerticalBanner(widget.imageUrl, widget.bannerType, widget.ctaLink, widget.imageUrl)
+            ShopHomeProductCarouselVerticalBannerVerticalBanner(widget.imageUrl, widget.bannerType, widget.ctaLink, widget.imageUrl)
         )
     }
 }

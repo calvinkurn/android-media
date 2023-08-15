@@ -150,7 +150,6 @@ import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.WidgetName.VOUCHER_STATIC
 import com.tokopedia.shop.home.WidgetType
 import com.tokopedia.shop.home.WidgetType.DYNAMIC
-import com.tokopedia.shop.home.WidgetType.DYNAMIC_COMPONENT
 import com.tokopedia.shop.home.WidgetType.PERSONALIZATION
 import com.tokopedia.shop.home.WidgetType.PROMO
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
@@ -183,7 +182,7 @@ import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
 import com.tokopedia.shop.home.view.model.CheckCampaignNotifyMeUiModel
 import com.tokopedia.shop.home.view.model.GetCampaignNotifyMeUiModel
 import com.tokopedia.shop.home.view.model.NotifyMeAction
-import com.tokopedia.shop.home.view.model.ProductCard
+import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselProductCardVerticalBanner
 import com.tokopedia.shop.home.view.model.ShopHomeCardDonationUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
@@ -199,7 +198,7 @@ import com.tokopedia.shop.home.view.model.ShopPageLayoutUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerProductHotspotUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
-import com.tokopedia.shop.home.view.model.VerticalBanner
+import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerVerticalBanner
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
@@ -1937,7 +1936,6 @@ open class ShopPageHomeFragment :
             widgetProductComparison?.let {
                 getProductComparisonWidgetData()
             }
-            //widgetProductCarouselLayout?.let { getProductCarouselWidgetData() }
             listWidgetLayoutToLoad.clear()
         }
     }
@@ -1957,13 +1955,6 @@ open class ShopPageHomeFragment :
     protected fun getMvcWidgetData() {
         shopHomeAdapter?.getMvcWidgetUiModel()?.let {
             viewModel?.getMerchantVoucherCoupon(shopId, context, it)
-        }
-    }
-
-    private fun getProductCarouselWidgetData() {
-        val userAddress = ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
-        shopHomeAdapter?.getProductCarouselModel()?.let {
-            viewModel?.getProductCarousel(shopId, userAddress, it)
         }
     }
 
@@ -5021,7 +5012,7 @@ open class ShopPageHomeFragment :
         }
     }
 
-    override fun onProductCarouselProductClick(selectedProduct: ProductCard) {
+    override fun onProductCarouselProductClick(selectedProduct: ShopHomeProductCarouselProductCardVerticalBanner) {
         try {
             RouteManager.route(activity ?: return, selectedProduct.appLink)
         } catch (_: Exception) {
@@ -5029,9 +5020,9 @@ open class ShopPageHomeFragment :
 
     }
 
-    override fun onProductCarouselVerticalBannerClick(verticalBanner: VerticalBanner) {
+    override fun onProductCarouselVerticalBannerClick(shopHomeProductCarouselVerticalBanner: ShopHomeProductCarouselVerticalBannerVerticalBanner) {
         try {
-            RouteManager.route(activity ?: return, verticalBanner.appLink)
+            RouteManager.route(activity ?: return, shopHomeProductCarouselVerticalBanner.appLink)
         } catch (_: Exception) {
         }
     }
