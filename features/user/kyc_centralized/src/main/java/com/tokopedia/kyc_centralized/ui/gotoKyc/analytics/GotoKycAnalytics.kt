@@ -45,6 +45,8 @@ object GotoKycAnalytics {
     private const val ACTION_CLICK_KIRIM_ULANG = "click on button kirim ulang"
     private const val ACTION_CLICK_CLOSE_PENDING_PAGE = "click on close button gopay pending"
     private const val ACTION_CLICK_GET_READY_FIRST = "click on button siap siap dulu"
+    private const val ACTION_CLICK_AURORA_READY = "click on button ok aurora confirmation"
+    private const val ACTION_CLICK_AURORA_LATER = "click on button later aurora confirmation"
     private const val ACTION_VIEW_MANUAL_FOTO_QUESTION = "view on manual foto question"
     private const val ACTION_VIEW_STATUS_PAGE = "view on kyc status page"
     private const val ACTION_VIEW_DOB_PAGE = "view on kyc dob page"
@@ -54,6 +56,7 @@ object GotoKycAnalytics {
     private const val ACTION_VIEW_SELFIE_PAGE = "view on selfie page"
     private const val ACTION_VIEW_REVIEW_PAGE = "view on kyc review page"
     private const val ACTION_VIEW_GOPAY_PENDING = "view on gopay status pending"
+    private const val ACTION_VIEW_AURORA_EXHAUSTED = "view on aurora confirmation"
     private const val ACTION_SCAN_KTP_IMAGE = "scan ktp image"
     private const val ACTION_SCAN_SELFIE_IMAGE = "scan selfie image"
     private const val EVENT_CLICK_ACCOUNT = "clickAccount"
@@ -111,6 +114,10 @@ object GotoKycAnalytics {
     private const val VALUE_TRACKER_ID_43889 = "43889"
     private const val VALUE_TRACKER_ID_43890 = "43890"
     private const val VALUE_TRACKER_ID_43892 = "43892"
+    private const val VALUE_TRACKER_ID_44812 = "44812"
+    private const val VALUE_TRACKER_ID_46124 = "46124"
+    private const val VALUE_TRACKER_ID_46125 = "46125"
+    private const val VALUE_TRACKER_ID_46126 = "46126"
     private const val LABEL_PROGRESSIVE = "progressive"
     private const val LABEL_NON_PROGRESSIVE = "non progressive"
     private const val VALUE_BUSINESS_UNIT = "user platform"
@@ -486,12 +493,12 @@ object GotoKycAnalytics {
     }
 
     //B4
-    fun sendViewGuideSelfiePage(projectId: String) {
+    fun sendViewGuideSelfiePage(kycFlowType: String, detectionType: String, projectId: String) {
         Tracker.Builder()
             .setEvent(EVENT_VIEW_ACCOUNT_IRIS)
             .setEventAction(ACTION_VIEW_GUIDE_SELFIE_PAGE)
             .setEventCategory(CATEGORY_SELFIE_PAGE)
-            .setEventLabel(projectId)
+            .setEventLabel("$kycFlowType - $detectionType - $projectId")
             .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43334)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
@@ -499,24 +506,25 @@ object GotoKycAnalytics {
             .send()
     }
 
-    fun sendClickNeedTimeGuideSelfiePage(projectId: String) {
+    fun sendClickNeedTimeGuideSelfiePage(kycFlowType: String, detectionType: String, projectId: String) {
         Tracker.Builder()
             .setEvent(EVENT_CLICK_ACCOUNT)
             .setEventAction(ACTION_CLICK_GET_READY_FIRST)
             .setEventCategory(CATEGORY_SELFIE_PAGE)
-            .setEventLabel(projectId)
+            .setEventLabel("$kycFlowType - $detectionType - $projectId")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_44812)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
             .send()
     }
 
-    fun sendScanSelfieImage(statusScan: String, projectId: String) {
+    fun sendScanSelfieImage(statusScan: String, kycFlowType: String, detectionType: String, projectId: String) {
         Tracker.Builder()
             .setEvent(EVENT_VIEW_ACCOUNT_IRIS)
             .setEventAction(ACTION_SCAN_SELFIE_IMAGE)
             .setEventCategory(CATEGORY_SELFIE_PAGE)
-            .setEventLabel("$statusScan - $projectId")
+            .setEventLabel("$statusScan - $kycFlowType - $detectionType - $projectId")
             .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43338)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
@@ -525,12 +533,12 @@ object GotoKycAnalytics {
     }
 
     //2k
-    fun sendClickOnStartSelfie(projectId: String) {
+    fun sendClickOnStartSelfie(kycFlowType: String, detectionType: String, projectId: String) {
         Tracker.Builder()
             .setEvent(EVENT_CLICK_ACCOUNT)
             .setEventAction(ACTION_CLICK_ON_BUTTON_MULAI_SELFIE)
             .setEventCategory(CATEGORY_SELFIE_PAGE)
-            .setEventLabel(projectId)
+            .setEventLabel("$kycFlowType - $detectionType - $projectId")
             .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43335)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
@@ -539,12 +547,12 @@ object GotoKycAnalytics {
     }
 
     //B5
-    fun sendViewSelfiePage(isManual: Boolean, projectId: String) {
+    fun sendViewSelfiePage(kycFlowType: String, detectionType: String, projectId: String) {
         Tracker.Builder()
             .setEvent(EVENT_VIEW_ACCOUNT_IRIS)
             .setEventAction(ACTION_VIEW_SELFIE_PAGE)
             .setEventCategory(CATEGORY_SELFIE_PAGE)
-            .setEventLabel("${convertCaptureMode(isManual)} - $projectId")
+            .setEventLabel("$kycFlowType - $detectionType - $projectId")
             .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43337)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
@@ -553,13 +561,61 @@ object GotoKycAnalytics {
     }
 
     //2l
-    fun sendClickOnButtonBackSelfiePage(projectId: String) {
+    fun sendClickOnButtonBackSelfiePage(detectionType: String, projectId: String) {
         Tracker.Builder()
             .setEvent(EVENT_CLICK_ACCOUNT)
             .setEventAction(ACTION_CLICK_ON_BACK_SELFIE_PAGE)
             .setEventCategory(CATEGORY_SELFIE_PAGE)
-            .setEventLabel(projectId)
+            .setEventLabel("$detectionType - $projectId")
             .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43635)
+            .setBusinessUnit(VALUE_BUSINESS_UNIT)
+            .setCurrentSite(VALUE_CURRENT_SITE)
+            .build()
+            .send()
+    }
+
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3935
+    // Tracker ID: 46124
+    fun sendViewOnAuroraConfirmationEvent (kycFlowType: String, projectId: String) {
+        Tracker.Builder()
+            .setEvent(EVENT_VIEW_ACCOUNT_IRIS)
+            .setEventAction(ACTION_VIEW_AURORA_EXHAUSTED)
+            .setEventCategory(CATEGORY_SELFIE_PAGE)
+            .setEventLabel("$kycFlowType - $projectId")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_46124)
+            .setBusinessUnit(VALUE_BUSINESS_UNIT)
+            .setCurrentSite(VALUE_CURRENT_SITE)
+            .build()
+            .send()
+    }
+
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3935
+    // Tracker ID: 46125
+    fun sendClickOnButtonOkAuroraConfirmationEvent (kycFlowType: String, projectId: String) {
+        Tracker.Builder()
+            .setEvent(EVENT_CLICK_ACCOUNT)
+            .setEventAction(ACTION_CLICK_AURORA_READY)
+            .setEventCategory(CATEGORY_SELFIE_PAGE)
+            .setEventLabel("$kycFlowType - $projectId")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_46125)
+            .setBusinessUnit(VALUE_BUSINESS_UNIT)
+            .setCurrentSite(VALUE_CURRENT_SITE)
+            .build()
+            .send()
+    }
+
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3935
+    // Tracker ID: 46126
+    fun sendClickOnButtonLaterAuroraConfirmationEvent (kycFlowType: String, projectId: String) {
+        Tracker.Builder()
+            .setEvent(EVENT_CLICK_ACCOUNT)
+            .setEventAction(ACTION_CLICK_AURORA_LATER)
+            .setEventCategory(CATEGORY_SELFIE_PAGE)
+            .setEventLabel("$kycFlowType - $projectId")
+            .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_46126)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
