@@ -12,7 +12,7 @@
         android:layout_height="24dp"
         android:background="@drawable/editshipping_circle_border"
         android:gravity="center"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         app:typographyType="small"
         app:typographyWeight="bold"
         tools:text="1" />
