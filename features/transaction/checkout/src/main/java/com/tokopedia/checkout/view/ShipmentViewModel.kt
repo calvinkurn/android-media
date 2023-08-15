@@ -843,7 +843,8 @@ class ShipmentViewModel @Inject constructor(
                         cornerId,
                         deviceId,
                         checkoutLeasingId,
-                        isPlusSelected
+                        isPlusSelected,
+                        false
                     )
                 )
                 if (view != null) {

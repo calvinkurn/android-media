@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.revamp.view
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
@@ -51,7 +52,7 @@ open class BaseCheckoutViewModelTest {
     @MockK
     lateinit var getShipmentAddressFormV4UseCase: GetShipmentAddressFormV4UseCase
 
-    @MockK
+    @MockK(relaxed = true)
     lateinit var saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase
 
     @MockK
@@ -114,8 +115,9 @@ open class BaseCheckoutViewModelTest {
     @MockK(relaxed = true)
     lateinit var checkoutAnalyticsCourierSelection: CheckoutAnalyticsCourierSelection
 
-    @MockK
-    lateinit var shipmentDataRequestConverter: ShipmentDataRequestConverter
+    private val shipmentDataRequestConverter: ShipmentDataRequestConverter = ShipmentDataRequestConverter(
+        Gson()
+    )
 
     var dataConverter: CheckoutDataConverter = CheckoutDataConverter()
 

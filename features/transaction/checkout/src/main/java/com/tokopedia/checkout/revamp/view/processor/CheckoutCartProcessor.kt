@@ -67,7 +67,8 @@ class CheckoutCartProcessor @Inject constructor(
                         cornerId,
                         deviceId,
                         checkoutLeasingId,
-                        isPlusSelected
+                        isPlusSelected,
+                        true
                     )
                 )
                 validateShipmentAddressFormData(

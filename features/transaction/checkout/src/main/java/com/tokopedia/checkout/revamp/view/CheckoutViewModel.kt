@@ -1631,6 +1631,9 @@ class CheckoutViewModel @Inject constructor(
                 )
             )
             if (validateUsePromoRevampUiModel != null) {
+                val itemList = listData.value.toMutableList()
+                itemList[itemList.size - 4] = itemList.promo()!!.copy(promo = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(validateUsePromoRevampUiModel.promoUiModel))
+                listData.value = itemList
                 val notEligiblePromoHolderdataList = arrayListOf<NotEligiblePromoHolderdata>()
                 if (validateUsePromoRevampUiModel.promoUiModel.messageUiModel.state == "red") {
                     val notEligiblePromoHolderdata = NotEligiblePromoHolderdata()
