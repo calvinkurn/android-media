@@ -19,5 +19,6 @@
     <string name="order_bmgm_not_yet_deducted_price_info_label">Harga ini belum termasuk potongan %s, ya.</string>
     <string name="label_product_price_and_quantity">%1$d x %2$s</string>
 
+    <string name="om_error_message_cant_open_snapshot_when_waiting_invoice">Oops, halaman detail produk belum bisa di akses karena sedang menunggu invoice</string>
 
 </resources>

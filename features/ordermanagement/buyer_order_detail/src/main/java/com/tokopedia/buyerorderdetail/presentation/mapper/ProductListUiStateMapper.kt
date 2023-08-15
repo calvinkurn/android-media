@@ -562,7 +562,7 @@ object ProductListUiStateMapper {
         addOnIcon: String,
         collapseProductList: Boolean,
         remainingSlot: Int
-    ): Pair<Int, List<ProductListUiModel.ProductBmgmUiModel>> {
+    ): Pair<Int, List<ProductBmgmSectionUiModel>> {
         /**
          * Reduce the bmgm response items to be mapped based on the remaining slot on the product
          * list view when collapsed (Ex: if there is 5 product bmgm on the response and the product list view
@@ -578,7 +578,7 @@ object ProductListUiStateMapper {
             }
         } ?: (Int.ZERO to null)
         val mappedProductBmgm = reducedBmgmDetail?.map { bmgm ->
-            ProductListUiModel.ProductBmgmUiModel(
+            ProductBmgmSectionUiModel(
                 bmgmId = bmgm.id,
                 bmgmName = bmgm.bmgmTierName,
                 bmgmIconUrl = bmgmIcon,

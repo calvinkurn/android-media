@@ -1,4 +1,4 @@
-package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
+package com.tokopedia.order_management_common.presentation.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -9,13 +9,12 @@ import com.tokopedia.order_management_common.constants.OrderManagementConstants
 import com.tokopedia.order_management_common.databinding.ItemOrderProductBmgmSectionBinding
 import com.tokopedia.order_management_common.presentation.adapter.ProductBmgmItemAdapter
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
-import com.tokopedia.sellerorder.detail.presentation.model.SomBmgmUiModel
 import com.tokopedia.unifycomponents.Toaster
 
-class SomBmgmSectionViewHolder(
+class BmgmSectionViewHolder(
     view: View?,
     private val listener: Listener,
-) : AbstractViewHolder<SomBmgmUiModel>(view),
+) : AbstractViewHolder<ProductBmgmSectionUiModel>(view),
     ProductBmgmItemAdapter.ViewHolder.Listener {
 
     companion object {
@@ -30,7 +29,7 @@ class SomBmgmSectionViewHolder(
         setupBundleAdapter()
     }
 
-    override fun bind(element: SomBmgmUiModel) {
+    override fun bind(element: ProductBmgmSectionUiModel) {
         setupBmgmHeader(element.bmgmName, element.bmgmIconUrl)
         setupBmgmItems(element.bmgmItemList)
         setupBmgmTotalPrice(element.totalPriceText)
@@ -38,13 +37,13 @@ class SomBmgmSectionViewHolder(
     }
 
     override fun bind(
-        element: SomBmgmUiModel?,
+        element: ProductBmgmSectionUiModel?,
         payloads: MutableList<Any>
     ) {
         payloads.firstOrNull()?.let {
             if (it is Pair<*, *>) {
                 val (oldItem, newItem) = it
-                if (oldItem is SomBmgmUiModel && newItem is SomBmgmUiModel) {
+                if (oldItem is ProductBmgmSectionUiModel && newItem is ProductBmgmSectionUiModel) {
                     if (oldItem.bmgmName != newItem.bmgmName || oldItem.bmgmIconUrl != newItem.bmgmIconUrl) {
                         setupBmgmHeader(newItem.bmgmName, newItem.bmgmIconUrl)
                     }
@@ -67,7 +66,7 @@ class SomBmgmSectionViewHolder(
         if (item.orderId != OrderManagementConstants.WAITING_INVOICE_ORDER_ID) {
             listener.onBmgmItemClicked(item)
         } else {
-            showToaster(getString(com.tokopedia.sellerorder.R.string.om_error_message_cant_open_snapshot_when_waiting_invoice))
+            showToaster(getString(com.tokopedia.order_management_common.R.string.om_error_message_cant_open_snapshot_when_waiting_invoice))
         }
     }
 

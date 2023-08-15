@@ -28,6 +28,7 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiSta
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderInsuranceUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderResolutionTicketStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ScpRewardsMedalTouchPointWidgetUiState
+import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.adapter.uimodel.ScpRewardsMedalTouchPointWidgetUiModel
 
 @Suppress("UNCHECKED_CAST")
@@ -285,9 +286,9 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addProductBmgmListSection(
-        productBmgmList: List<ProductListUiModel.ProductBmgmUiModel>
+        productBmgmList: List<ProductBmgmSectionUiModel>
     ) {
-        addAll(productBmgmList)
+        (productBmgmList as? List<Visitable<BuyerOrderDetailTypeFactory>>)?.let { addAll(it) }
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addProductBundlingListSection(

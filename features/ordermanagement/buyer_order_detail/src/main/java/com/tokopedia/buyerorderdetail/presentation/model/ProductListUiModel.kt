@@ -10,7 +10,7 @@ import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSec
 
 data class ProductListUiModel(
     val productList: List<ProductUiModel>,
-    val productBmgmList: List<ProductBmgmUiModel>,
+    val productBmgmList: List<ProductBmgmSectionUiModel>,
     val productBundlingList: List<ProductBundlingUiModel>,
     val productUnFulfilledList: List<ProductUiModel>?,
     val productFulfilledHeaderLabel: ProductPofHeaderLabelUiModel?,
@@ -83,28 +83,6 @@ data class ProductListUiModel(
             val logoUrl: String,
             val label: String
         )
-    }
-
-    data class ProductBmgmUiModel(
-        override val bmgmId: String,
-        override val bmgmName: String,
-        override val bmgmIconUrl: String,
-        override val totalPrice: Double,
-        override val totalPriceText: String,
-        override val totalPriceReductionInfoText: String,
-        override val bmgmItemList: List<ProductUiModel>
-    ) : ProductBmgmSectionUiModel(
-        bmgmId,
-        bmgmName,
-        bmgmIconUrl,
-        totalPrice,
-        totalPriceText,
-        totalPriceReductionInfoText,
-        bmgmItemList
-    ), Visitable<BuyerOrderDetailTypeFactory> {
-        override fun type(typeFactory: BuyerOrderDetailTypeFactory): Int {
-            return typeFactory.type(this)
-        }
     }
 
     data class ProductBundlingUiModel(

@@ -875,7 +875,7 @@ open class SomDetailFragment :
     }
 
     private fun observingEditAwb() {
-        somDetailViewModel.editRefNumResult.observe(viewLifecycleOwner, {
+        somDetailViewModel.editRefNumResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     successEditAwbResponse = it.data
@@ -885,6 +885,7 @@ open class SomDetailFragment :
                         showToaster(getString(R.string.global_error), view, TYPE_ERROR)
                     }
                 }
+
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_EDIT_AWB)
                     failEditAwbResponse.message = context?.run {
@@ -904,7 +905,7 @@ open class SomDetailFragment :
                     )
                 }
             }
-        })
+        }
     }
 
     override fun onRejectReasonItemClick(rejectReason: SomReasonRejectData.Data.SomRejectReason) {

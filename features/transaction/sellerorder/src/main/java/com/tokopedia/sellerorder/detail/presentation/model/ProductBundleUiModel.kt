@@ -1,7 +1,7 @@
 package com.tokopedia.sellerorder.detail.presentation.model
 
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
-import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactory
+import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactoryImpl
 
 /**
  * Created By @ilhamsuaib on 05/07/21
@@ -16,7 +16,7 @@ data class ProductBundleUiModel(
     val orderDetail: List<SomDetailOrder.Data.GetSomDetail.Details.Product>,
 ) : BaseProductUiModel {
 
-    override fun type(typeFactory: SomDetailAdapterFactory): Int {
+    override fun type(typeFactory: SomDetailAdapterFactoryImpl): Int {
         return typeFactory.type(this)
     }
 }
