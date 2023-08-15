@@ -1,8 +1,5 @@
 package com.tokopedia.promousage.view.custom
 
-import android.animation.Animator
-import android.animation.TimeInterpolator
-import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -10,20 +7,12 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
 import android.graphics.Region
-import android.graphics.drawable.ColorDrawable
-import android.os.Handler
 import android.util.AttributeSet
-import android.util.Log
-import android.view.MotionEvent
-import android.view.ViewConfiguration
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.toPx
-import com.tokopedia.unifyprinciples.UnifyMotion
-import timber.log.Timber
 
-
-class VoucherCardView @JvmOverloads constructor(
+class PromoCardView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
@@ -34,15 +23,7 @@ class VoucherCardView @JvmOverloads constructor(
         private const val EXPIRED_DATE_BACKGROUND_HEIGHT = 38f
         private const val CIRCLE_CUT_OUT_MARGIN_BOTTOM = 28f
         private const val CIRCLE_RADIUS = 20F
-
-        private const val ALPHA_20 = 50
-        private const val ALPHA_10 = 25
-        private const val ALPHA_0 = 0
     }
-
-    private var scaleAnimator: ValueAnimator = ValueAnimator.ofFloat()
-    private var overlayAnimator: ValueAnimator = ValueAnimator.ofFloat()
-    private var overlayDrawable: ColorDrawable? = null
 
     init {
         radius = CARD_VIEW_CORNER_RADIUS
@@ -203,123 +184,5 @@ class VoucherCardView @JvmOverloads constructor(
         cardViewBorder.color =
             ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN200)
         invalidate()
-    }
-
-    val longPressHandler = Handler()
-    private var isLongPress = false
-    var onLongPress = Runnable {
-        if (parent != null) {
-            isLongPress = true
-            performLongClick()
-        }
-    }
-
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
-        when (event?.action) {
-            MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> {
-                longPressHandler.removeCallbacks(onLongPress)
-                Handler().postDelayed(
-                    {
-                        animateOverlay(ALPHA_20, ALPHA_0, UnifyMotion.T2, UnifyMotion.EASE_OUT)
-                        animateScaling(0.95f, 1.01f, UnifyMotion.T1, UnifyMotion.EASE_OUT)
-
-                        scaleAnimator.addListener(object : Animator.AnimatorListener {
-                            override fun onAnimationRepeat(animator: Animator) {
-
-                            }
-
-                            override fun onAnimationCancel(animator: Animator) {
-
-                            }
-
-                            override fun onAnimationStart(animator: Animator) {
-
-                            }
-
-                            override fun onAnimationEnd(animator: Animator) {
-                                animateScaling(1.01f, 1f, UnifyMotion.T1, UnifyMotion.EASE_IN_OUT)
-                            }
-                        })
-
-                        overlayAnimator.addListener(object : Animator.AnimatorListener {
-                            override fun onAnimationRepeat(animator: Animator) {
-
-                            }
-
-                            override fun onAnimationCancel(animator: Animator) {
-
-                            }
-
-                            override fun onAnimationStart(animator: Animator) {
-
-                            }
-
-                            override fun onAnimationEnd(animator: Animator) {
-                                animateOverlay(ALPHA_10, ALPHA_0, UnifyMotion.T1, UnifyMotion.LINEAR)
-                            }
-                        })
-                    },
-                    if (event.eventTime - event.downTime <= UnifyMotion.T1) {
-                        UnifyMotion.T1 - (event.eventTime - event.downTime)
-                    } else {
-                        0.toLong()
-                    }
-                )
-
-                if (event.action == MotionEvent.ACTION_UP) {
-                    if (!isLongPress) {
-                        val result = performClick()
-                        Timber.d("$result")
-                    }
-                    isLongPress = false
-                }
-                return true
-            }
-
-            MotionEvent.ACTION_DOWN -> {
-                longPressHandler.postDelayed(onLongPress, ViewConfiguration.getLongPressTimeout().toLong())
-                animateOverlay(ALPHA_0, ALPHA_20, UnifyMotion.T1, UnifyMotion.EASE_OUT)
-                animateScaling(1f, 0.95f, UnifyMotion.T1, UnifyMotion.EASE_OUT)
-                return true
-            }
-        }
-        return super.onTouchEvent(event)
-    }
-
-    private fun animateScaling(
-        start: Float,
-        end: Float,
-        duration: Long,
-        interpolator: TimeInterpolator
-    ) {
-        scaleAnimator = ValueAnimator.ofFloat()
-        scaleAnimator.setFloatValues(start, end)
-        scaleAnimator.removeAllListeners()
-        scaleAnimator.removeAllUpdateListeners()
-        scaleAnimator.addUpdateListener {
-            scaleX = it.animatedValue as Float
-            scaleY = it.animatedValue as Float
-        }
-        scaleAnimator.duration = duration
-        scaleAnimator.interpolator = interpolator
-        scaleAnimator.start()
-    }
-
-    private fun animateOverlay(
-        start: Int,
-        end: Int,
-        duration: Long,
-        interpolator: TimeInterpolator
-    ) {
-        overlayAnimator = ValueAnimator.ofFloat()
-        overlayAnimator.setIntValues(start, end)
-        overlayAnimator.removeAllListeners()
-        overlayAnimator.removeAllUpdateListeners()
-        overlayAnimator.addUpdateListener {
-            overlayDrawable?.alpha = it.animatedValue as Int
-        }
-        overlayAnimator.duration = duration
-        overlayAnimator.interpolator = interpolator
-        overlayAnimator.start()
     }
 }

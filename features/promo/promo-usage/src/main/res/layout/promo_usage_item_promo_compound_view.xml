@@ -48,7 +48,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.tokopedia.promousage.view.custom.VoucherCardView
+    <com.tokopedia.promousage.view.custom.PromoCardView
         android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -211,7 +211,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </com.tokopedia.promousage.view.custom.VoucherCardView>
+    </com.tokopedia.promousage.view.custom.PromoCardView>
 
     <FrameLayout
         android:id="@+id/layoutRemainingQuotaRibbon"

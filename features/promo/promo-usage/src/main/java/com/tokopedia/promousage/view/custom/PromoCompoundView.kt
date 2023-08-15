@@ -1,9 +1,16 @@
 package com.tokopedia.promousage.view.custom
 
+import android.animation.Animator
+import android.animation.TimeInterpolator
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.os.Handler
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.ViewConfiguration
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -25,12 +32,31 @@ import com.tokopedia.promousage.domain.entity.list.PromoItem
 import com.tokopedia.promousage.util.extension.isGreyscale
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.UnifyMotion
 
-class VoucherCompoundView @JvmOverloads constructor(
+class PromoCompoundView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
+
+    companion object {
+        private const val ALPHA_20 = 50
+        private const val ALPHA_10 = 25
+        private const val ALPHA_0 = 0
+    }
+
+    private var scaleAnimator: ValueAnimator = ValueAnimator.ofFloat()
+    private var overlayAnimator: ValueAnimator = ValueAnimator.ofFloat()
+    private var overlayDrawable: ColorDrawable? = null
+    private val longPressHandler = Handler()
+    private var isLongPress = false
+    private var onLongPress = Runnable {
+        if (parent != null) {
+            isLongPress = true
+            performLongClick()
+        }
+    }
 
     private var binding: PromoUsageItemPromoCompoundViewBinding? = null
 
@@ -250,10 +276,6 @@ class VoucherCompoundView @JvmOverloads constructor(
         }
     }
 
-    override fun setOnClickListener(onClickListener: OnClickListener?) {
-        binding?.cardView?.setOnClickListener(onClickListener)
-    }
-
     private fun renderPromoQuota(promo: PromoItem) {
         binding?.run {
             if (promo.remainingPromoCount > 1) {
@@ -291,5 +313,125 @@ class VoucherCompoundView @JvmOverloads constructor(
             cardView.layoutParams = layoutParams
             cardView.requestLayout()
         }
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        when (event?.action) {
+            MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> {
+                longPressHandler.removeCallbacks(onLongPress)
+                Handler().postDelayed(
+                    {
+                        animateOverlay(
+                            ALPHA_20,
+                            ALPHA_0, UnifyMotion.T2, UnifyMotion.EASE_OUT
+                        )
+                        animateScaling(0.95f, 1.01f, UnifyMotion.T1, UnifyMotion.EASE_OUT)
+
+                        scaleAnimator.addListener(object : Animator.AnimatorListener {
+                            override fun onAnimationRepeat(animator: Animator) {
+
+                            }
+
+                            override fun onAnimationCancel(animator: Animator) {
+
+                            }
+
+                            override fun onAnimationStart(animator: Animator) {
+
+                            }
+
+                            override fun onAnimationEnd(animator: Animator) {
+                                animateScaling(1.01f, 1f, UnifyMotion.T1, UnifyMotion.EASE_IN_OUT)
+                            }
+                        })
+
+                        overlayAnimator.addListener(object : Animator.AnimatorListener {
+                            override fun onAnimationRepeat(animator: Animator) {
+
+                            }
+
+                            override fun onAnimationCancel(animator: Animator) {
+
+                            }
+
+                            override fun onAnimationStart(animator: Animator) {
+
+                            }
+
+                            override fun onAnimationEnd(animator: Animator) {
+                                animateOverlay(
+                                    ALPHA_10,
+                                    ALPHA_0, UnifyMotion.T1, UnifyMotion.LINEAR
+                                )
+                            }
+                        })
+                    },
+                    if (event.eventTime - event.downTime <= UnifyMotion.T1) {
+                        UnifyMotion.T1 - (event.eventTime - event.downTime)
+                    } else {
+                        0.toLong()
+                    }
+                )
+
+                if (event.action == MotionEvent.ACTION_UP) {
+                    if (!isLongPress) {
+                        performClick()
+                    }
+                    isLongPress = false
+                }
+                return true
+            }
+
+            MotionEvent.ACTION_DOWN -> {
+                longPressHandler.postDelayed(
+                    onLongPress,
+                    ViewConfiguration.getLongPressTimeout().toLong()
+                )
+                animateOverlay(
+                    ALPHA_0,
+                    ALPHA_20, UnifyMotion.T1, UnifyMotion.EASE_OUT
+                )
+                animateScaling(1f, 0.95f, UnifyMotion.T1, UnifyMotion.EASE_OUT)
+                return true
+            }
+        }
+        return super.onTouchEvent(event)
+    }
+
+    private fun animateScaling(
+        start: Float,
+        end: Float,
+        duration: Long,
+        interpolator: TimeInterpolator
+    ) {
+        scaleAnimator = ValueAnimator.ofFloat()
+        scaleAnimator.setFloatValues(start, end)
+        scaleAnimator.removeAllListeners()
+        scaleAnimator.removeAllUpdateListeners()
+        scaleAnimator.addUpdateListener {
+            scaleX = it.animatedValue as Float
+            scaleY = it.animatedValue as Float
+        }
+        scaleAnimator.duration = duration
+        scaleAnimator.interpolator = interpolator
+        scaleAnimator.start()
+    }
+
+    private fun animateOverlay(
+        start: Int,
+        end: Int,
+        duration: Long,
+        interpolator: TimeInterpolator
+    ) {
+        overlayAnimator = ValueAnimator.ofFloat()
+        overlayAnimator.setIntValues(start, end)
+        overlayAnimator.removeAllListeners()
+        overlayAnimator.removeAllUpdateListeners()
+        overlayAnimator.addUpdateListener {
+            overlayDrawable?.alpha = it.animatedValue as Int
+        }
+        overlayAnimator.duration = duration
+        overlayAnimator.interpolator = interpolator
+        overlayAnimator.start()
     }
 }

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.promousage.view.custom.VoucherCompoundView
+    <com.tokopedia.promousage.view.custom.PromoCompoundView
         android:id="@+id/vcvPromo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
