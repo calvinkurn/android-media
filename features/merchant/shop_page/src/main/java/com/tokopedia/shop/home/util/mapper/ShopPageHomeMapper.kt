@@ -444,21 +444,21 @@ object ShopPageHomeMapper {
             }
             // Includes V4 Widgets: Terlaris widget
             PRODUCT.toLowerCase() -> {
-                // =========== For testing Purpose =========== //
-                mapToProducTerlaristWidgetUiModel(
-                    widgetModel = widgetResponse,
-                    isMyOwnProduct = isMyOwnProduct,
-                    isEnableDirectPurchase = isEnableDirectPurchase,
-                    widgetLayout = widgetLayout
-                )
-                // =========== For testing Purpose =========== //
-                // TODO: Enable codes below to dynamically map data from BE
-//                mapToProductWidgetUiModel(
+//                // =========== For testing Purpose =========== //
+//                mapToProducTerlaristWidgetUiModel(
 //                    widgetModel = widgetResponse,
 //                    isMyOwnProduct = isMyOwnProduct,
 //                    isEnableDirectPurchase = isEnableDirectPurchase,
 //                    widgetLayout = widgetLayout
 //                )
+//                // =========== For testing Purpose =========== //
+                // TODO: Enable codes below to dynamically map data from BE
+                mapToProductWidgetUiModel(
+                    widgetModel = widgetResponse,
+                    isMyOwnProduct = isMyOwnProduct,
+                    isEnableDirectPurchase = isEnableDirectPurchase,
+                    widgetLayout = widgetLayout
+                )
             }
             CAMPAIGN.toLowerCase() -> {
                 if (isThematicWidgetShown) {
@@ -1064,7 +1064,6 @@ object ShopPageHomeMapper {
             }
         )
         return _data
-        // return listOf()
     }
 
     fun mapToHeaderModel(
