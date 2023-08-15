@@ -109,7 +109,9 @@ import com.tokopedia.cartrevamp.view.uimodel.UndoDeleteEvent
 import com.tokopedia.cartrevamp.view.uimodel.UpdateCartAndGetLastApplyEvent
 import com.tokopedia.cartrevamp.view.uimodel.UpdateCartCheckoutState
 import com.tokopedia.cartrevamp.view.uimodel.UpdateCartPromoState
+import com.tokopedia.cartrevamp.view.viewholder.CartItemViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.CartRecommendationViewHolder
+import com.tokopedia.cartrevamp.view.viewholder.CartSelectedAmountViewHolder
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
@@ -264,7 +266,11 @@ class CartRevampFragment :
     private var isCheckUncheckDirectAction = true
     private var plusCoachMark: CoachMark2? = null
     private var mainFlowCoachMark: CoachMark2? = null
-    private var bulkActionCoachMark: Pair<CoachMark2?, ArrayList<CoachMark2Item>> = Pair(null, arrayListOf())
+    private var bulkActionCoachMark: CoachMark2? = null
+
+    private var isFirstCheckEvent: Boolean = true
+    private var hasShowBulkActionCoachMark: Boolean = false
+    private var bulkActionCoachMarkLastActiveIndex: Int = 0
 
     private lateinit var editBundleActivityResult: ActivityResultLauncher<Intent>
     private lateinit var shipmentActivityResult: ActivityResultLauncher<Intent>
@@ -390,21 +396,7 @@ class CartRevampFragment :
             cartAdapter.setMainCoachMark(it, coachMarkItems)
         }
 
-        bulkActionCoachMark = Pair(CoachMark2(requireContext()), arrayListOf())
-        val bulkActionCoachMarkItems = arrayListOf<CoachMark2Item>()
-        binding?.navToolbar?.let {
-            bulkActionCoachMarkItems.add(
-                CoachMark2Item(
-                    it,
-                    "",
-                    "Kalau mau hapus produk yang kamu pilih, bisa langsung klik di sini, ya.",
-                    CoachMark2.POSITION_BOTTOM
-                )
-            )
-        }
-        bulkActionCoachMark.let {
-            cartAdapter.setBulkActionCoachMark(bulkActionCoachMark)
-        }
+        bulkActionCoachMark = CoachMark2(requireContext())
 
         // Check if currently not refreshing, not ATC external flow and not on error state
         if (refreshHandler?.isRefreshing == false && !isAtcExternalFlow() && binding?.layoutGlobalError?.visibility != View.VISIBLE) {
@@ -539,6 +531,15 @@ class CartRevampFragment :
 
         setCheckboxGlobalState()
         setSelectedAmountVisibility()
+
+        if (viewModel.selectedAmountState.value > 0 && !hasShowBulkActionCoachMark && !CoachMarkPreference.hasShown(requireContext(), CART_BULK_ACTION_COACH_MARK)) {
+            showBulkActionCoachMark()
+            hasShowBulkActionCoachMark = true
+        } else if (!CartDataHelper.hasSelectedCartItem(viewModel.cartDataList.value)) {
+            hasShowBulkActionCoachMark = false
+            bulkActionCoachMark?.dismissCoachMark()
+            bulkActionCoachMarkLastActiveIndex = 0
+        }
     }
 
     override fun onCartShopGroupTickerClicked(cartGroupHolderData: CartGroupHolderData) {
@@ -1119,8 +1120,9 @@ class CartRevampFragment :
     }
 
     override fun onCartItemCheckChanged(position: Int, cartItemHolderData: CartItemHolderData) {
-        viewModel.setItemSelected(position, cartItemHolderData, !cartItemHolderData.isSelected)
-        updateStateAfterCheckChanged()
+        val selected = !cartItemHolderData.isSelected
+        viewModel.setItemSelected(position, cartItemHolderData, selected)
+        updateStateAfterCheckChanged(selected)
     }
 
     override fun onBundleItemCheckChanged(cartItemHolderData: CartItemHolderData) {
@@ -1135,7 +1137,7 @@ class CartRevampFragment :
                     viewModel.setItemSelected(index + position, cartItemHolderData, selected)
                 }
             }
-            updateStateAfterCheckChanged()
+            updateStateAfterCheckChanged(selected)
         }
     }
 
@@ -1523,6 +1525,10 @@ class CartRevampFragment :
                     disableSwipeRefresh()
                 } else {
                     enableSwipeRefresh()
+                }
+
+                if (dy != 0) {
+                    bulkActionCoachMark?.dismissCoachMark()
                 }
 
                 handleSelectedAmountVisibilityOnScroll(dy)
@@ -1932,10 +1938,6 @@ class CartRevampFragment :
 
     private fun handleCheckboxGlobalChangeEvent() {
         val isChecked = binding?.checkboxGlobal?.isChecked ?: return
-        if (isChecked) {
-            bulkActionCoachMark.first?.showCoachMark(bulkActionCoachMark.second)
-            CoachMarkPreference.setShown(requireContext(), CART_BULK_ACTION_COACH_MARK, true)
-        }
         if (isCheckUncheckDirectAction) {
             viewModel.setAllAvailableItemCheck(isChecked)
             viewModel.updateSelectedAmount()
@@ -1943,6 +1945,19 @@ class CartRevampFragment :
             viewModel.saveCheckboxState()
             setSelectedAmountVisibility()
             cartPageAnalytics.eventCheckUncheckGlobalCheckbox(isChecked)
+
+            if (isChecked && !isFirstCheckEvent && !CoachMarkPreference.hasShown(requireContext(), CART_BULK_ACTION_COACH_MARK)) {
+                showBulkActionCoachMark()
+                hasShowBulkActionCoachMark = true
+            } else if (!isChecked) {
+                hasShowBulkActionCoachMark = false
+                bulkActionCoachMark?.dismissCoachMark()
+                bulkActionCoachMarkLastActiveIndex = 0
+            }
+
+            if (isFirstCheckEvent) {
+                isFirstCheckEvent = false
+            }
 
             reloadAppliedPromoFromGlobalCheck()
         }
@@ -1959,6 +1974,11 @@ class CartRevampFragment :
                         val initialPosition = navToolbar.y
                         rlTopLayout.animate().y(initialPosition)
                             .setDuration(SELECTED_AMOUNT_ANIMATION_DURATION).start()
+                    }
+                    if (hasShowBulkActionCoachMark && viewModel.selectedAmountState.value > 0) {
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            showBulkActionCoachMark()
+                        }, SELECTED_AMOUNT_ANIMATION_DURATION)
                     }
                 }
         }
@@ -3075,6 +3095,7 @@ class CartRevampFragment :
     }
 
     private fun refreshCartWithSwipeToRefresh() {
+        bulkActionCoachMark?.dismissCoachMark()
         refreshHandler?.isRefreshing = true
         resetRecentViewList()
         if (viewModel.dataHasChanged()) {
@@ -3390,6 +3411,10 @@ class CartRevampFragment :
         renderSelectedAmount()
         setInitialCheckboxGlobalState(cartData)
         setSelectedAmountVisibility()
+
+        if (!cartData.isGlobalCheckboxState) {
+            isFirstCheckEvent = false
+        }
 
         validateGoToCheckout()
         scrollToLastAddedProductShop()
@@ -3943,7 +3968,7 @@ class CartRevampFragment :
                 binding?.llCartContainer?.setBackgroundColor(
                     ContextCompat.getColor(
                         it,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N50
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN50
                     )
                 )
             }
@@ -3951,7 +3976,7 @@ class CartRevampFragment :
             it.window.decorView.setBackgroundColor(
                 ContextCompat.getColor(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N50
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN50
                 )
             )
         }
@@ -4116,6 +4141,58 @@ class CartRevampFragment :
                     context
                 )
             }
+        }
+    }
+
+    private fun showBulkActionCoachMark() {
+        bulkActionCoachMark?.dismissCoachMark()
+        bulkActionCoachMark = CoachMark2(requireContext())
+        bulkActionCoachMark?.setStepListener(object : CoachMark2.OnStepListener {
+            override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                bulkActionCoachMarkLastActiveIndex = currentIndex
+            }
+        })
+        val layoutManager: GridLayoutManager = binding?.rvCart?.layoutManager as GridLayoutManager
+        val position = layoutManager.findFirstCompletelyVisibleItemPosition()
+        val bulkActionCoachMarkItems = arrayListOf<CoachMark2Item>()
+        if (position > 0) {
+            binding?.topLayout?.textActionDelete?.let {
+                bulkActionCoachMarkItems.add(
+                    CoachMark2Item(
+                        it,
+                        "",
+                        "Kalau mau hapus produk yang kamu pilih, bisa langsung klik di sini, ya.",
+                        CoachMark2.POSITION_BOTTOM
+                    )
+                )
+            }
+        } else {
+            val selectedAmountViewHolder = binding?.rvCart?.findViewHolderForAdapterPosition(0) as CartSelectedAmountViewHolder
+            val textActionDeleteView = selectedAmountViewHolder.getTextActionDeleteView()
+            bulkActionCoachMarkItems.add(
+                CoachMark2Item(
+                    textActionDeleteView,
+                    "",
+                    "Kalau mau hapus produk yang kamu pilih, bisa langsung klik di sini, ya.",
+                    CoachMark2.POSITION_BOTTOM
+                )
+            )
+        }
+        val data = viewModel.cartDataList.value
+        val nearestItemHolderDataPosition = CartDataHelper.getNearestCartItemHolderDataPosition(position, data)
+        if (nearestItemHolderDataPosition != -1) {
+            val nearestCartItemViewHolder = binding?.rvCart?.findViewHolderForAdapterPosition(nearestItemHolderDataPosition) as CartItemViewHolder
+            val quantityView = nearestCartItemViewHolder.getMinQuantityView()
+            bulkActionCoachMarkItems.add(
+                CoachMark2Item(
+                    quantityView,
+                    "",
+                    "Selain itu, kamu juga bisa hapus produk di sini. Cukup dengan klik tombol kurangi sampai habis.",
+                    CoachMark2.POSITION_BOTTOM
+                )
+            )
+            bulkActionCoachMark?.showCoachMark(bulkActionCoachMarkItems, null, bulkActionCoachMarkLastActiveIndex)
+            CoachMarkPreference.setShown(requireContext(), CART_BULK_ACTION_COACH_MARK, true)
         }
     }
 
@@ -4417,11 +4494,21 @@ class CartRevampFragment :
         return null
     }
 
-    private fun updateStateAfterCheckChanged() {
+    private fun updateStateAfterCheckChanged(isChecked: Boolean) {
         viewModel.cartModel.hasPerformChecklistChange = true
         viewModel.reCalculateSubTotal()
         setCheckboxGlobalState()
         setSelectedAmountVisibility()
+
+        if (isChecked && !hasShowBulkActionCoachMark && !CoachMarkPreference.hasShown(requireContext(), CART_BULK_ACTION_COACH_MARK)) {
+            showBulkActionCoachMark()
+            hasShowBulkActionCoachMark = true
+        } else if (!CartDataHelper.hasSelectedCartItem(viewModel.cartDataList.value)) {
+            hasShowBulkActionCoachMark = false
+            bulkActionCoachMark?.dismissCoachMark()
+            bulkActionCoachMarkLastActiveIndex = 0
+        }
+
         validateGoToCheckout()
         val params = generateParamGetLastApplyPromo()
         if (isNeedHitUpdateCartAndValidateUse(params)) {

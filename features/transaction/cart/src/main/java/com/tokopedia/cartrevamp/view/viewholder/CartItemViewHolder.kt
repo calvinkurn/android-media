@@ -27,7 +27,6 @@ import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
@@ -113,21 +112,6 @@ class CartItemViewHolder constructor(
             coachMarkItems.add(0, noteCoachMark)
             mainCoachMark.first!!.showCoachMark(coachMarkItems)
             CoachMarkPreference.setShown(itemView.context, CART_MAIN_COACH_MARK, true)
-        }
-
-        if (bulkActionCoachMark.first != null && !CoachMarkPreference.hasShown(
-                itemView.context,
-                CART_BULK_ACTION_COACH_MARK
-            ) && bulkActionCoachMark.second.isEmpty()
-        ) {
-            val coachMarkItems = bulkActionCoachMark.second
-            val minQuantityCoachMark = CoachMark2Item(
-                binding.qtyEditorProduct.subtractButton,
-                "",
-                "Selain itu, kamu juga bisa hapus produk di sini. Cukup dengan klik tombol kurangi sampai habis.",
-                CoachMark2.POSITION_BOTTOM
-            )
-            coachMarkItems.add(0, minQuantityCoachMark)
         }
     }
 
@@ -378,7 +362,7 @@ class CartItemViewHolder constructor(
     private fun renderProductActionSection(data: CartItemHolderData) {
         if (data.isBundlingItem) {
             if (data.isMultipleBundleProduct && (data.bundlingItemPosition == BUNDLING_ITEM_HEADER || data.bundlingItemPosition == CartItemHolderData.BUNDLING_ITEM_DEFAULT)) {
-                binding.qtyEditorProduct.invisible()
+                binding.qtyEditorProduct.gone()
             } else {
                 binding.qtyEditorProduct.show()
             }
@@ -1157,7 +1141,7 @@ class CartItemViewHolder constructor(
             setTextColor(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 )
             )
             show()
@@ -1241,6 +1225,10 @@ class CartItemViewHolder constructor(
                 )
             )
         }
+    }
+
+    fun getMinQuantityView(): IconUnify {
+        return binding.qtyEditorProduct.subtractButton
     }
 
     interface ViewHolderListener {
