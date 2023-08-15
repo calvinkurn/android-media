@@ -50,7 +50,7 @@ abstract class OwocViewModelTestFixture {
         txId: String
     ) {
         coEvery {
-            getBomGroupedOrderUseCase.get().execute(orderId, txId)
+            getBomGroupedOrderUseCase.get().execute(txId, orderId)
         } returns owocGroupedOrderWrapper
     }
 
@@ -59,13 +59,13 @@ abstract class OwocViewModelTestFixture {
         txId: String,
         exception: Throwable
     ) {
-        coEvery { getBomGroupedOrderUseCase.get().execute(orderId, txId) } throws exception
+        coEvery { getBomGroupedOrderUseCase.get().execute(txId, orderId) } throws exception
     }
 
     protected fun verifyGetBomGroupedOrderUseCaseUseCaseCalled(
         orderId: String,
         txId: String
     ) {
-        coVerify { getBomGroupedOrderUseCase.get().execute(orderId, txId) }
+        coVerify { getBomGroupedOrderUseCase.get().execute(txId, orderId) }
     }
 }
