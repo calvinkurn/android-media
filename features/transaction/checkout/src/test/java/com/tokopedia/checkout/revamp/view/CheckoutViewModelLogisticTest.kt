@@ -13,10 +13,12 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerErrorModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutUpsellModel
+import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
 import com.tokopedia.logisticcart.shipping.model.CashOnDeliveryProduct
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
@@ -24,6 +26,7 @@ import com.tokopedia.logisticcart.shipping.model.MerchantVoucherProductModel
 import com.tokopedia.logisticcart.shipping.model.OntimeDelivery
 import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.RatesParam
+import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
@@ -45,6 +48,8 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
+
+    private var shippingDurationConverter = ShippingDurationConverter()
 
     @Test
     fun generate_rates_param() {
@@ -437,6 +442,91 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
         coVerify {
             validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
         }
+    }
+
+    @Test
+    fun `WHEN get shipping rates and schedule delivery rates success THEN should render success`() {
+        // Given
+        val ratesResponse = DataProvider.provideRatesV3Response()
+        val ratesScheduleDeliveryResponse = DataProvider.provideScheduleDeliveryRatesResponse()
+        val shippingRecommendationData =
+            shippingDurationConverter.convertModel(ratesResponse.ratesData)
+        shippingRecommendationData.scheduleDeliveryData =
+            ratesScheduleDeliveryResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
+
+        coEvery { ratesWithScheduleUseCase(any()) } returns shippingRecommendationData
+
+        val orderModel = CheckoutOrderModel("123", ratesValidationFlow = true, shippingId = 1, spId = 1)
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // When
+        viewModel.loadShipping(orderModel, 5)
+
+        // Then
+        coVerify {
+            ratesWithScheduleUseCase(any())
+        }
+    }
+
+    @Test
+    fun set_selected_schedule_delivery() {
+        // given
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200")
+
+        val orderModel = CheckoutOrderModel("123")
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(recipientAddressModel = RecipientAddressModel()),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+        val scheduleDeliveryUiModel = ScheduleDeliveryUiModel(false)
+        val courierItemData = CourierItemData(scheduleDeliveryUiModel = scheduleDeliveryUiModel)
+
+        // when
+        viewModel.setSelectedScheduleDelivery(
+            5,
+            orderModel,
+            CourierItemData(),
+            scheduleDeliveryUiModel,
+            courierItemData
+        )
+
+        // then
+        assertEquals(
+            courierItemData,
+            (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData
+        )
     }
 
     @Test
