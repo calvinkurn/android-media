@@ -10,7 +10,7 @@ import com.tokopedia.home_account.privacy_account.view.adapter.viewholder.Accoun
 /**
  * Created by Yoris on 04/08/21.
  */
-
+@Deprecated("Remove this class after integrating SCP Login to Tokopedia")
 class LinkAccountAdapter(private val listener: AccountItemListener): RecyclerView.Adapter<AccountViewHolder>() {
 
     private var internalList = arrayListOf<UserAccountDataView>()
