@@ -161,7 +161,15 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
             imgTipDriver.urlSrc = IMG_SUCCESS_TIPPING
             tvTipResult.text = getString(if (logisticDriverModel.status == SUCCESS_PAYMENT) com.tokopedia.logisticorder.R.string.tipping_success_payment_text else com.tokopedia.logisticorder.R.string.tipping_success_to_gojek_text)
             tvTipResultDesc.text = HtmlLinkHelper(this.root.context, getString(com.tokopedia.logisticorder.R.string.tipping_result_desc)).spannedString
-            tvResiValue.text = trackingDataModel?.trackOrder?.shippingRefNum
+            if (trackingDataModel != null) {
+                tvResiValue.text = trackingDataModel?.trackOrder?.shippingRefNum
+            } else {
+                tvResiValue.gone()
+                tvResi.gone()
+            }
+            trackingDataModel?.let {
+                tvResiValue.text = it.trackOrder.shippingRefNum
+            }
             tvInvoiceValue.text = orderId
             tvDriverNameValue.text = logisticDriverModel.lastDriver.name
             tvPhoneNumberValue.text = logisticDriverModel.lastDriver.phone
