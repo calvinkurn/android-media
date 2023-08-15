@@ -160,7 +160,7 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
         position: Int,
         isSubscribed: Boolean
     ) {
-        if (bannersItemList.isNotEmpty() && position != Utils.BANNER_SUBSCRIPTION_DEFAULT_STATUS &&
+        if (bannersItemList.isNotEmpty() && position != Utils.BANNER_SUBSCRIPTION_DEFAULT_POSITION &&
             !bannersItemList[position].bannerItemData.registeredImageApp.isNullOrEmpty()
         ) {
             (bannersItemList[position].bannerImageView as ImageUnify).apply {

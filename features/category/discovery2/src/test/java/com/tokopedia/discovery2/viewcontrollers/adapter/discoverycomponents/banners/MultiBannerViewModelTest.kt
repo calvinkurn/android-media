@@ -8,19 +8,28 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.Utils.Companion.BANNER_SUBSCRIPTION_REMINDED_STATUS
+import com.tokopedia.discovery2.Utils.Companion.BANNER_SUBSCRIPTION_UNREMINDED_STATUS
+import com.tokopedia.discovery2.common.TestUtils.getPrivateField
+import com.tokopedia.discovery2.common.TestUtils.mockPrivateField
+import com.tokopedia.discovery2.common.TestUtils.verify
+import com.tokopedia.discovery2.data.BannerAction
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.notifier.NotifierCheckReminder
 import com.tokopedia.discovery2.data.notifier.NotifierSetReminder
 import com.tokopedia.discovery2.data.push.PushStatusResponse
 import com.tokopedia.discovery2.data.push.PushSubscriptionResponse
+import com.tokopedia.discovery2.data.push.PushUnSubscriptionResponse
 import com.tokopedia.discovery2.usecase.CheckPushStatusUseCase
 import com.tokopedia.discovery2.usecase.SubScribeToUseCase
 import com.tokopedia.discovery2.usecase.bannerusecase.BannerUseCase
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.BANNER_ACTION_CODE
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.MultiBannerViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.model.PushNotificationBannerSubscription
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.utils.view.DarkModeUtil
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import io.mockk.*
 import junit.framework.TestCase
@@ -29,6 +38,7 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -260,7 +270,7 @@ class MultiBannerViewModelTest {
     fun `test for onBannerClicked when bannerData value is null`() {
         every { componentsItem.data } returns null
 
-        viewModel.onBannerClicked(0,context)
+        viewModel.onBannerClicked(0,context, String.EMPTY)
 
         TestCase.assertEquals(viewModel.syncData.value, null)
     }
@@ -272,7 +282,7 @@ class MultiBannerViewModelTest {
         list.add(item)
         every { componentsItem.data } returns list
 
-        viewModel.onBannerClicked(1,context)
+        viewModel.onBannerClicked(1,context, String.EMPTY)
 
         TestCase.assertEquals(viewModel.syncData.value, null)
     }
@@ -285,7 +295,7 @@ class MultiBannerViewModelTest {
         every { dataItem.action } returns "APPLINK"
         every { dataItem.applinks } returns "tokopedia://xyz"
         every { viewModel.navigate(context,any()) } just Runs
-        viewModel.onBannerClicked(0, context)
+        viewModel.onBannerClicked(0, context, String.EMPTY)
 
         coVerify { viewModel.navigate(context,"tokopedia://xyz") }
     }
@@ -297,7 +307,7 @@ class MultiBannerViewModelTest {
         every { dataItem.action } returns ""
         every { dataItem.applinks } returns "tokopedia://xyz"
         every { viewModel.navigate(context,any()) } just Runs
-        viewModel.onBannerClicked(0, context)
+        viewModel.onBannerClicked(0, context, String.EMPTY)
 
         coVerify { viewModel.navigate(context,"tokopedia://xyz") }
     }
@@ -311,72 +321,528 @@ class MultiBannerViewModelTest {
         val clipData : ClipData = mockk(relaxed = true)
         every { (application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).setPrimaryClip(clipData)} just Runs
 
-        viewModel.onBannerClicked(0, context)
+        viewModel.onBannerClicked(0, context, String.EMPTY)
 
         assert(viewModel.checkApplink().value != null)
     }
 
     @Test
-    fun `banner action test when action is push notifier and login is true`() {
+    fun `When banner is clicked but user not logged in yet`() {
+        val bannerPosition = 0
+        val notifierSetReminderIsSuccess = 2
+        val privateFieldNameBannerStatus = "pushNotificationBannerStatus"
+        val defaultErrorMessage = "Yuk, pastikan internetmu lancar dengan cek ulang paket data, WIFI, atau jaringan di tempatmu."
+        val subscribeResponse = PushSubscriptionResponse(
+            notifierSetReminder = NotifierSetReminder(
+                isSuccess = notifierSetReminderIsSuccess
+            )
+        )
+        val expected = true
+
         viewModel.subScribeToUseCase = subScribeToUseCase
-        val list = ArrayList<DataItem>()
-        val item = DataItem(applinks = "tokopedia", action = "PUSH_NOTIFIER")
-        list.add(item)
-        every { componentsItem.data } returns list
-        every { viewModel.isUserLoggedIn() } returns true
-        val notifierSetReminder = NotifierSetReminder(isSuccess = 1)
-        val pushSubscriptionResponse = PushSubscriptionResponse(notifierSetReminder = notifierSetReminder)
-        coEvery { subScribeToUseCase.subscribeToPush(any()) } returns pushSubscriptionResponse
 
-        viewModel.onBannerClicked(0, context)
+        mockIsUserLoggedIn(
+            isUserLoggedIn = false
+        )
 
-        assert(viewModel.getPushBannerStatusData().value?.first == 0)
+        mockSubscribeResponse(
+            response = subscribeResponse
+        )
+
+        mockDataItemList(
+            action = BannerAction.PUSH_NOTIFIER.name
+        )
+
+        viewModel.mockPrivateField(
+            name = privateFieldNameBannerStatus,
+            value = mutableMapOf(
+                bannerPosition to BANNER_SUBSCRIPTION_UNREMINDED_STATUS
+            )
+        )
+
+        viewModel.onBannerClicked(
+            position = bannerPosition,
+            context = context,
+            defaultErrorMessage = defaultErrorMessage
+        )
+
+        viewModel
+            .getShowLoginData()
+            .verify(expected)
     }
 
     @Test
-    fun `banner action test when action is push notifier and NotifierSetReminder returns isSuccess as 2`() {
+    fun `When banner is clicked push notification not subscribed because getting error result`() {
+        val bannerPosition = 0
+        val defaultErrorMessage = "Yuk, pastikan internetmu lancar dengan cek ulang paket data, WIFI, atau jaringan di tempatmu."
+        val expected = PushNotificationBannerSubscription(
+            position = bannerPosition,
+            errorMessage = defaultErrorMessage,
+            isSubscribed = false
+        )
+
         viewModel.subScribeToUseCase = subScribeToUseCase
-        val list = ArrayList<DataItem>()
-        val item = DataItem(applinks = "tokopedia", action = "PUSH_NOTIFIER")
-        list.add(item)
-        every { componentsItem.data } returns list
-        every { viewModel.isUserLoggedIn() } returns true
-        val notifierSetReminder = NotifierSetReminder(isSuccess = 2)
-        val pushSubscriptionResponse = PushSubscriptionResponse(notifierSetReminder = notifierSetReminder)
-        coEvery { subScribeToUseCase.subscribeToPush(any()) } returns pushSubscriptionResponse
 
-        viewModel.onBannerClicked(0, context)
+        mockIsUserLoggedIn(
+            isUserLoggedIn = true
+        )
 
-        assert(viewModel.getPushBannerStatusData().value?.first == 0)
+        mockSubscribeResponse(
+            throwable = Throwable()
+        )
+
+        mockDataItemList(
+            action = BannerAction.PUSH_NOTIFIER.name
+        )
+
+        viewModel.onBannerClicked(
+            position = bannerPosition,
+            context = context,
+            defaultErrorMessage = defaultErrorMessage
+        )
+
+        coVerify { subScribeToUseCase.subscribeToPush(any()) }
+
+        viewModel
+            .getPushNotificationBannerSubscriptionUpdated()
+            .verify(expected)
     }
 
     @Test
-    fun `banner action test when action is push notifier and subscribeToPush throws exception`() {
+    fun `When banner is clicked push notification not unsubscribed because getting error result`() {
+        val bannerPosition = 0
+        val privateFieldNameBannerStatus = "pushNotificationBannerStatus"
+        val defaultErrorMessage = "Yuk, pastikan internetmu lancar dengan cek ulang paket data, WIFI, atau jaringan di tempatmu."
+        val expected = PushNotificationBannerSubscription(
+            position = bannerPosition,
+            errorMessage = defaultErrorMessage,
+            isSubscribed = true
+        )
+
         viewModel.subScribeToUseCase = subScribeToUseCase
-        val list = ArrayList<DataItem>()
-        val item = DataItem(applinks = "tokopedia", action = "PUSH_NOTIFIER")
-        list.add(item)
-        every { componentsItem.data } returns list
-        every { viewModel.isUserLoggedIn() } returns true
-        coEvery { subScribeToUseCase.subscribeToPush(any()) } throws Exception("Error")
 
-        viewModel.onBannerClicked(0, context)
+        mockIsUserLoggedIn(
+            isUserLoggedIn = true
+        )
 
-        assert(viewModel.syncData.value == null)
+        mockUnsubscribeResponse(
+            throwable = Throwable()
+        )
+
+        mockDataItemList(
+            action = BannerAction.PUSH_NOTIFIER.name
+        )
+
+        viewModel.mockPrivateField(
+            name = privateFieldNameBannerStatus,
+            value = mutableMapOf(
+                bannerPosition to BANNER_SUBSCRIPTION_REMINDED_STATUS
+            )
+        )
+
+        viewModel.onBannerClicked(
+            position = bannerPosition,
+            context = context,
+            defaultErrorMessage = defaultErrorMessage
+        )
+
+        coVerify { subScribeToUseCase.unSubscribeToPush(any()) }
+
+        viewModel
+            .getPushNotificationBannerSubscriptionUpdated()
+            .verify(expected)
     }
 
     @Test
-    fun `banner action test when action is push notifier and login is false`() {
+    fun `When banner is clicked push notification subscribed and getting expected result`() {
+        val bannerPosition = 0
+        val notifierSetReminderIsSuccess = 2
+        val privateFieldNameBannerStatus = "pushNotificationBannerStatus"
+        val defaultErrorMessage = "Yuk, pastikan internetmu lancar dengan cek ulang paket data, WIFI, atau jaringan di tempatmu."
+        val subscribeResponse = PushSubscriptionResponse(
+            notifierSetReminder = NotifierSetReminder(
+                isSuccess = notifierSetReminderIsSuccess
+            )
+        )
+        val expected = PushNotificationBannerSubscription(
+            position = bannerPosition,
+            errorMessage = subscribeResponse.getErrorMessage(),
+            isSubscribed = true
+        )
+
         viewModel.subScribeToUseCase = subScribeToUseCase
-        val list = ArrayList<DataItem>()
-        val item = DataItem(applinks = "tokopedia", action = "PUSH_NOTIFIER")
-        list.add(item)
-        every { componentsItem.data } returns list
-        every { viewModel.isUserLoggedIn() } returns false
 
-        viewModel.onBannerClicked(0, context)
+        mockIsUserLoggedIn(
+            isUserLoggedIn = true
+        )
 
-        assert(viewModel.getShowLoginData().value == true)
+        mockSubscribeResponse(
+            response = subscribeResponse
+        )
+
+        mockDataItemList(
+            action = BannerAction.PUSH_NOTIFIER.name
+        )
+
+        viewModel.mockPrivateField(
+            name = privateFieldNameBannerStatus,
+            value = mutableMapOf(
+                bannerPosition to BANNER_SUBSCRIPTION_UNREMINDED_STATUS
+            )
+        )
+
+        viewModel.onBannerClicked(
+            position = bannerPosition,
+            context = context,
+            defaultErrorMessage = defaultErrorMessage
+        )
+
+        coVerify { subScribeToUseCase.subscribeToPush(any()) }
+
+        viewModel
+            .getPushNotificationBannerSubscriptionUpdated()
+            .verify(expected)
+    }
+
+    @Test
+    fun `When banner is clicked push notification not subscribed because response is not successful`() {
+        val bannerPosition = 0
+        val notifierSetReminderIsSuccess = 0
+        val privateFieldNameBannerStatus = "pushNotificationBannerStatus"
+        val defaultErrorMessage = "Yuk, pastikan internetmu lancar dengan cek ulang paket data, WIFI, atau jaringan di tempatmu."
+        val subscribeResponse = PushSubscriptionResponse(
+            notifierSetReminder = NotifierSetReminder(
+                isSuccess = notifierSetReminderIsSuccess
+            )
+        )
+        val expected = PushNotificationBannerSubscription()
+
+        viewModel.subScribeToUseCase = subScribeToUseCase
+
+        mockIsUserLoggedIn(
+            isUserLoggedIn = true
+        )
+
+        mockSubscribeResponse(
+            response = subscribeResponse
+        )
+
+        mockDataItemList(
+            action = BannerAction.PUSH_NOTIFIER.name
+        )
+
+        viewModel.mockPrivateField(
+            name = privateFieldNameBannerStatus,
+            value = mutableMapOf(
+                bannerPosition to BANNER_SUBSCRIPTION_UNREMINDED_STATUS
+            )
+        )
+
+        viewModel.onBannerClicked(
+            position = bannerPosition,
+            context = context,
+            defaultErrorMessage = defaultErrorMessage
+        )
+
+        coVerify { subScribeToUseCase.subscribeToPush(any()) }
+
+        viewModel
+            .getPushNotificationBannerSubscriptionUpdated()
+            .verify(expected)
+    }
+
+    @Test
+    fun `When banner is clicked push notification not subscribed because usecase value is null`() {
+        val bannerPosition = 0
+        val privateFieldNameBannerStatus = "pushNotificationBannerStatus"
+        val defaultErrorMessage = "Yuk, pastikan internetmu lancar dengan cek ulang paket data, WIFI, atau jaringan di tempatmu."
+
+        val expected = PushNotificationBannerSubscription()
+
+        viewModel.subScribeToUseCase = null
+
+        mockIsUserLoggedIn(
+            isUserLoggedIn = true
+        )
+
+        mockDataItemList(
+            action = BannerAction.PUSH_NOTIFIER.name
+        )
+
+        viewModel.mockPrivateField(
+            name = privateFieldNameBannerStatus,
+            value = mutableMapOf(
+                bannerPosition to BANNER_SUBSCRIPTION_UNREMINDED_STATUS
+            )
+        )
+
+        viewModel.onBannerClicked(
+            position = bannerPosition,
+            context = context,
+            defaultErrorMessage = defaultErrorMessage
+        )
+
+        viewModel
+            .getPushNotificationBannerSubscriptionUpdated()
+            .verify(expected)
+    }
+
+    @Test
+    fun `When banner is clicked push notification subscribed but status will not be changed because there is an error message`() {
+        val bannerPosition = 0
+        val notifierSetReminderIsSuccess = 2
+        val privateFieldNameBannerStatus = "pushNotificationBannerStatus"
+        val defaultErrorMessage = "Yuk, pastikan internetmu lancar dengan cek ulang paket data, WIFI, atau jaringan di tempatmu."
+        val responseErrorMessage = "This error is from server"
+        val subscribeResponse = PushSubscriptionResponse(
+            notifierSetReminder = NotifierSetReminder(
+                errorMessage = responseErrorMessage,
+                isSuccess = notifierSetReminderIsSuccess
+            )
+        )
+        val expected = PushNotificationBannerSubscription(
+            position = bannerPosition,
+            errorMessage = subscribeResponse.getErrorMessage(),
+            isSubscribed = true
+        )
+
+        viewModel.subScribeToUseCase = subScribeToUseCase
+
+        mockIsUserLoggedIn(
+            isUserLoggedIn = true
+        )
+
+        mockSubscribeResponse(
+            response = subscribeResponse
+        )
+
+        mockDataItemList(
+            action = BannerAction.PUSH_NOTIFIER.name
+        )
+
+        viewModel.mockPrivateField(
+            name = privateFieldNameBannerStatus,
+            value = mutableMapOf(
+                bannerPosition to BANNER_SUBSCRIPTION_UNREMINDED_STATUS
+            )
+        )
+
+        viewModel.onBannerClicked(
+            position = bannerPosition,
+            context = context,
+            defaultErrorMessage = defaultErrorMessage
+        )
+
+        coVerify { subScribeToUseCase.subscribeToPush(any()) }
+
+        val bannerStatus = viewModel.getPrivateField<MutableMap<Int,Int>>(
+            name = privateFieldNameBannerStatus
+        )
+        Assert
+            .assertNotEquals(
+                BANNER_SUBSCRIPTION_REMINDED_STATUS,
+                bannerStatus[bannerPosition]
+            )
+
+        viewModel
+            .getPushNotificationBannerSubscriptionUpdated()
+            .verify(expected)
+    }
+
+    @Test
+    fun `When banner is clicked push notification unsubscribed and getting expected result`() {
+        val bannerPosition = 0
+        val notifierSetReminderIsSuccess = 2
+        val privateFieldNameBannerStatus = "pushNotificationBannerStatus"
+        val defaultErrorMessage = "Yuk, pastikan internetmu lancar dengan cek ulang paket data, WIFI, atau jaringan di tempatmu."
+        val unsubscribeResponse = PushUnSubscriptionResponse(
+            notifierSetReminder = NotifierSetReminder(
+                isSuccess = notifierSetReminderIsSuccess
+            )
+        )
+        val expected = PushNotificationBannerSubscription(
+            position = bannerPosition,
+            errorMessage = unsubscribeResponse.getErrorMessage(),
+            isSubscribed = false
+        )
+
+        viewModel.subScribeToUseCase = subScribeToUseCase
+
+        mockIsUserLoggedIn(
+            isUserLoggedIn = true
+        )
+
+        mockUnsubscribeResponse(
+            response = unsubscribeResponse
+        )
+
+        mockDataItemList(
+            action = BannerAction.PUSH_NOTIFIER.name
+        )
+
+        viewModel.mockPrivateField(
+            name = privateFieldNameBannerStatus,
+            value = mutableMapOf(
+                bannerPosition to BANNER_SUBSCRIPTION_REMINDED_STATUS
+            )
+        )
+
+        viewModel.onBannerClicked(
+            position = bannerPosition,
+            context = context,
+            defaultErrorMessage = defaultErrorMessage
+        )
+
+        coVerify { subScribeToUseCase.unSubscribeToPush(any()) }
+
+        viewModel
+            .getPushNotificationBannerSubscriptionUpdated()
+            .verify(expected)
+    }
+
+    @Test
+    fun `When banner is clicked push notification not unsubscribed because response is not success`() {
+        val bannerPosition = 0
+        val notifierSetReminderIsSuccess = 0
+        val privateFieldNameBannerStatus = "pushNotificationBannerStatus"
+        val defaultErrorMessage = "Yuk, pastikan internetmu lancar dengan cek ulang paket data, WIFI, atau jaringan di tempatmu."
+        val subscribeResponse = PushUnSubscriptionResponse(
+            notifierSetReminder = NotifierSetReminder(
+                isSuccess = notifierSetReminderIsSuccess
+            )
+        )
+        val expected = PushNotificationBannerSubscription()
+
+        viewModel.subScribeToUseCase = subScribeToUseCase
+
+        mockIsUserLoggedIn(
+            isUserLoggedIn = true
+        )
+
+        mockUnsubscribeResponse(
+            response = subscribeResponse
+        )
+
+        mockDataItemList(
+            action = BannerAction.PUSH_NOTIFIER.name
+        )
+
+        viewModel.mockPrivateField(
+            name = privateFieldNameBannerStatus,
+            value = mutableMapOf(
+                bannerPosition to BANNER_SUBSCRIPTION_REMINDED_STATUS
+            )
+        )
+
+        viewModel.onBannerClicked(
+            position = bannerPosition,
+            context = context,
+            defaultErrorMessage = defaultErrorMessage
+        )
+
+        coVerify { subScribeToUseCase.unSubscribeToPush(any()) }
+
+        viewModel
+            .getPushNotificationBannerSubscriptionUpdated()
+            .verify(expected)
+    }
+
+    @Test
+    fun `When banner is clicked push notification not unsubscribed because usecase value is null`() {
+        val bannerPosition = 0
+        val privateFieldNameBannerStatus = "pushNotificationBannerStatus"
+        val defaultErrorMessage = "Yuk, pastikan internetmu lancar dengan cek ulang paket data, WIFI, atau jaringan di tempatmu."
+
+        val expected = PushNotificationBannerSubscription()
+
+        viewModel.subScribeToUseCase = null
+
+        mockIsUserLoggedIn(
+            isUserLoggedIn = true
+        )
+
+        mockDataItemList(
+            action = BannerAction.PUSH_NOTIFIER.name
+        )
+
+        viewModel.mockPrivateField(
+            name = privateFieldNameBannerStatus,
+            value = mutableMapOf(
+                bannerPosition to BANNER_SUBSCRIPTION_REMINDED_STATUS
+            )
+        )
+
+        viewModel.onBannerClicked(
+            position = bannerPosition,
+            context = context,
+            defaultErrorMessage = defaultErrorMessage
+        )
+
+        viewModel
+            .getPushNotificationBannerSubscriptionUpdated()
+            .verify(expected)
+    }
+
+    @Test
+    fun `When banner is clicked push notification unsubscribed but status will not be changed because there is an error message`() {
+        val bannerPosition = 0
+        val notifierSetReminderIsSuccess = 2
+        val privateFieldNameBannerStatus = "pushNotificationBannerStatus"
+        val defaultErrorMessage = "Yuk, pastikan internetmu lancar dengan cek ulang paket data, WIFI, atau jaringan di tempatmu."
+        val responseErrorMessage = "This error is from server"
+        val subscribeResponse = PushUnSubscriptionResponse(
+            notifierSetReminder = NotifierSetReminder(
+                errorMessage = responseErrorMessage,
+                isSuccess = notifierSetReminderIsSuccess
+            )
+        )
+        val expected = PushNotificationBannerSubscription(
+            position = bannerPosition,
+            errorMessage = subscribeResponse.getErrorMessage(),
+            isSubscribed = false
+        )
+
+        viewModel.subScribeToUseCase = subScribeToUseCase
+
+        mockIsUserLoggedIn(
+            isUserLoggedIn = true
+        )
+
+        mockUnsubscribeResponse(
+            response = subscribeResponse
+        )
+
+        mockDataItemList(
+            action = BannerAction.PUSH_NOTIFIER.name
+        )
+
+        viewModel.mockPrivateField(
+            name = privateFieldNameBannerStatus,
+            value = mutableMapOf(
+                bannerPosition to BANNER_SUBSCRIPTION_REMINDED_STATUS
+            )
+        )
+
+        viewModel.onBannerClicked(
+            position = bannerPosition,
+            context = context,
+            defaultErrorMessage = defaultErrorMessage
+        )
+
+        coVerify { subScribeToUseCase.unSubscribeToPush(any()) }
+
+        val bannerStatus = viewModel.getPrivateField<MutableMap<Int,Int>>(
+            name = privateFieldNameBannerStatus
+        )
+        Assert
+            .assertNotEquals(
+                BANNER_SUBSCRIPTION_UNREMINDED_STATUS,
+                bannerStatus[bannerPosition]
+            )
+
+        viewModel
+            .getPushNotificationBannerSubscriptionUpdated()
+            .verify(expected)
     }
 
     @Test
@@ -389,7 +855,7 @@ class MultiBannerViewModelTest {
         every { viewModel.navigate(context, any()) } just Runs
         every { viewModel.isUserLoggedIn() } returns true
 
-        viewModel.onBannerClicked(0, context)
+        viewModel.onBannerClicked(0, context, String.EMPTY)
 
         assert(viewModel.isPageRefresh().value != true)
     }
@@ -404,7 +870,7 @@ class MultiBannerViewModelTest {
         every { viewModel.navigate(context, any()) } just Runs
         every { viewModel.isUserLoggedIn()} returns false
 
-        viewModel.onBannerClicked(0,context)
+        viewModel.onBannerClicked(0,context, String.EMPTY)
 
         assert(viewModel.isPageRefresh().value == true)
     }
@@ -418,7 +884,7 @@ class MultiBannerViewModelTest {
         every { componentsItem.data } returns list
         every { viewModel.navigate(context, any()) } just Runs
 
-        viewModel.onBannerClicked(0,context)
+        viewModel.onBannerClicked(0,context, String.EMPTY)
 
         verify { viewModel.navigate(context,any()) }
     }
@@ -440,7 +906,7 @@ class MultiBannerViewModelTest {
 
         viewModel.campaignSubscribedStatus(0)
 
-        assert(viewModel.getPushBannerSubscriptionData().value == 0)
+        assert(viewModel.getPushNotificationBannerSubscriptionInit().value?.position == 0)
     }
 
     @Test
@@ -472,7 +938,7 @@ class MultiBannerViewModelTest {
 
         viewModel.campaignSubscribedStatus(0)
 
-        assert(viewModel.getPushBannerSubscriptionData().value == 0)
+        assert(viewModel.getPushNotificationBannerSubscriptionInit().value?.position == 0)
     }
 
     /****************************************** end of campaignSubscribedStatus() ****************************************/
@@ -544,5 +1010,40 @@ class MultiBannerViewModelTest {
     @After
     fun shutDown() {
         Dispatchers.resetMain()
+    }
+
+    private fun mockIsUserLoggedIn(
+        isUserLoggedIn: Boolean
+    ) {
+        every { viewModel.isUserLoggedIn() } returns isUserLoggedIn
+    }
+
+    private fun mockSubscribeResponse(response: PushSubscriptionResponse) {
+        coEvery { subScribeToUseCase.subscribeToPush(any()) } returns response
+    }
+
+    private fun mockUnsubscribeResponse(response: PushUnSubscriptionResponse) {
+        coEvery { subScribeToUseCase.unSubscribeToPush(any()) } returns response
+    }
+
+    private fun mockSubscribeResponse(throwable: Throwable) {
+        coEvery { subScribeToUseCase.subscribeToPush(any()) } throws throwable
+    }
+
+    private fun mockUnsubscribeResponse(throwable: Throwable) {
+        coEvery { subScribeToUseCase.unSubscribeToPush(any()) } throws throwable
+    }
+
+    private fun mockDataItemList(
+        action: String
+    ) {
+        val appLinks = "tokopedia://rewards"
+        val list = ArrayList<DataItem>()
+        val item = DataItem(
+            applinks = appLinks,
+            action = action
+        )
+        list.add(item)
+        every { componentsItem.data } returns list
     }
 }

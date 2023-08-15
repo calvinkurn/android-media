@@ -201,9 +201,9 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     private suspend fun subscribeUserForPushNotification(
         position: Int
     ) {
-        val pushSubscriptionResponse = subScribeToUseCase?.subscribeToPush(getCampaignId(position))
-        if (pushSubscriptionResponse?.notifierSetReminder?.isSuccess == 1 || pushSubscriptionResponse?.notifierSetReminder?.isSuccess == 2) {
-            val errorMessage = pushSubscriptionResponse.notifierSetReminder.errorMessage.orEmpty()
+        val response = subScribeToUseCase?.subscribeToPush(getCampaignId(position))
+        if (response != null && response.isSuccess()) {
+            val errorMessage = response.getErrorMessage()
             pushNotificationBannerSubscriptionUpdatedData.value = PushNotificationBannerSubscription(
                 position = position,
                 errorMessage = errorMessage,
@@ -218,9 +218,9 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     private suspend fun unsubscribeUserForPushNotification(
         position: Int
     ) {
-        val pushSubscriptionResponse = subScribeToUseCase?.unSubscribeToPush(getCampaignId(position))
-        if (pushSubscriptionResponse?.notifierSetReminder?.isSuccess == 1 || pushSubscriptionResponse?.notifierSetReminder?.isSuccess == 2) {
-            val errorMessage = pushSubscriptionResponse.notifierSetReminder.errorMessage.orEmpty()
+        val response = subScribeToUseCase?.unSubscribeToPush(getCampaignId(position))
+        if (response != null && response.isSuccess()) {
+            val errorMessage = response.getErrorMessage()
             pushNotificationBannerSubscriptionUpdatedData.value = PushNotificationBannerSubscription(
                 position = position,
                 errorMessage = errorMessage,
