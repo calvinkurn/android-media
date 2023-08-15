@@ -16,6 +16,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticcart.shipping.model.CashOnDeliveryProduct
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
@@ -436,5 +437,84 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
         coVerify {
             validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
         }
+    }
+
+    @Test
+    fun prepare_full_checkout_page() {
+        // given
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                    provinceName = "jakarta"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123"),
+            CheckoutOrderModel("123", shippingId = 1, spId = 1),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        val shippingCourierUiModel = ShippingCourierUiModel(productData = ProductData(shipperId = 1, shipperProductId = 1))
+        coEvery { ratesUseCase.invoke(any()) } returns ShippingRecommendationData(
+            shippingDurationUiModels = listOf(
+                ShippingDurationUiModel(
+                    shippingCourierViewModelList = listOf(
+                        shippingCourierUiModel
+                    )
+                )
+            )
+        )
+
+        // when
+        viewModel.prepareFullCheckoutPage()
+
+        // then
+        assertEquals(
+            CheckoutOrderShipment(
+                courierItemData = CourierItemData(
+                    name = "",
+                    estimatedTimeDelivery = "",
+                    shipperFormattedPrice = "",
+                    insuranceUsedInfo = "",
+                    promoCode = "",
+                    checksum = "",
+                    ut = "",
+                    now = false,
+                    priorityInnactiveMessage = "",
+                    priorityFormattedPrice = "",
+                    priorityDurationMessage = "",
+                    priorityCheckboxMessage = "",
+                    priorityWarningboxMessage = "",
+                    priorityFeeMessage = "",
+                    priorityPdpMessage = "",
+                    ontimeDelivery = OntimeDelivery(
+                        textLabel = "",
+                        textDetail = "",
+                        urlDetail = ""
+                    ),
+                    codProductData = CashOnDeliveryProduct(0, "", 0, "", "", ""),
+                    etaText = "",
+                    etaErrorCode = -1,
+                    merchantVoucherProductModel = MerchantVoucherProductModel(0),
+                    isSelected = true,
+                    shipperProductId = 1,
+                    shipperId = 1
+                ),
+                shippingCourierUiModels = listOf(shippingCourierUiModel)
+            ),
+            (viewModel.listData.value[5] as CheckoutOrderModel).shipment
+        )
     }
 }

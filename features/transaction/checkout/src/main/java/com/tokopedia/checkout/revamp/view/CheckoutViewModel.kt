@@ -705,7 +705,7 @@ class CheckoutViewModel @Inject constructor(
         }
     }
 
-    fun fetchEpharmacyData() {
+    private fun fetchEpharmacyData() {
         viewModelScope.launch(dispatchers.immediate) {
             addOnProcessor.fetchEpharmacyData(listData.value) {
                 if (it != null) {

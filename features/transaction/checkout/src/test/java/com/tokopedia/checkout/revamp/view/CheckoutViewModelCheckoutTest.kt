@@ -54,20 +54,6 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
         )
-//        viewModel.shipmentCartItemModelList = listOf(
-//            ShipmentCartItemModel(cartStringGroup = "").apply {
-//                cartItemModels = listOf(CartItemModel(cartStringGroup = ""))
-//                selectedShipmentDetailData = ShipmentDetailData(
-//                    selectedCourier = CourierItemData()
-//                )
-//            }
-//        )
-//        viewModel.recipientAddressModel = RecipientAddressModel().apply {
-//            id = "1"
-//        }
-//        viewModel.listShipmentCrossSellModel = arrayListOf()
-//        val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
-//        viewModel.setUploadPrescriptionData(uploadModel)
 
         coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200")
 

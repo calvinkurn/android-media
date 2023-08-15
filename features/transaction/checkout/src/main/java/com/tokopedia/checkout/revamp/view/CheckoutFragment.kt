@@ -151,10 +151,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoCleared
 import com.tokopedia.utils.time.TimeHelper
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product as GiftingProduct
 
@@ -2191,21 +2187,6 @@ class CheckoutFragment :
                 uploadPrescriptionUiModel.shopIds,
                 uploadPrescriptionUiModel.cartIds
             )
-        }
-    }
-
-    private fun delayEpharmacyProcess(uploadPrescriptionUiModel: UploadPrescriptionUiModel?) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                delay(1_000)
-                if (isActive && activity != null) {
-                    if (uploadPrescriptionUiModel?.consultationFlow == true) {
-                        viewModel.fetchEpharmacyData()
-                    }
-                }
-            } catch (t: Throwable) {
-                Timber.d(t)
-            }
         }
     }
 
