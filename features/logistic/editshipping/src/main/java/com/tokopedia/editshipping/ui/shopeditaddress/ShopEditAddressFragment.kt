@@ -323,9 +323,9 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun checkAddressSimilarity(addressHelper: String, userAddress: String): Boolean {
-        val normalizeAddressHelper = ShopEditAddressUtils.normalize(addressHelper)
-        val normalizeUserAddress = ShopEditAddressUtils.normalize(userAddress)
-        return ShopEditAddressUtils.validateAddressSimilarity(
+        val normalizeAddressHelper = ShopEditAddressLevenshteinUtils.normalize(addressHelper)
+        val normalizeUserAddress = ShopEditAddressLevenshteinUtils.normalize(userAddress)
+        return ShopEditAddressLevenshteinUtils.validateAddressSimilarity(
             normalizeAddressHelper,
             normalizeUserAddress
         )
