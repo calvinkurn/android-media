@@ -3,6 +3,11 @@ package com.tokopedia.mvc.data.mapper
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.mvc.data.response.MerchantVoucherModel
 import com.tokopedia.mvc.domain.entity.Voucher
+import com.tokopedia.mvc.domain.entity.Voucher.*
+import com.tokopedia.mvc.domain.entity.enums.ProgramStatus
+import com.tokopedia.mvc.domain.entity.enums.PromotionStatus
+import com.tokopedia.mvc.domain.entity.enums.SubsidyInfo
+import com.tokopedia.mvc.domain.entity.enums.VoucherCreator
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import javax.inject.Inject
@@ -57,13 +62,64 @@ class GetVoucherListMapper @Inject constructor() {
                 } ?: VoucherTargetBuyer.ALL_BUYER,
                 discountTypeFormatted = it.discountTypeFormatted,
                 productIds = it.toProductIds(),
-                isParent = it.isParent
+                isParent = it.isParent,
+                labelVoucher = it.toLabelVoucher(),
+                isEditable = it.isEditable,
+                subsidyDetail = it.subsidyDetail.toSubsidyDetail()
             )
         }
 
-    private fun MerchantVoucherModel.toProductIds(): List<Voucher.ProductId> {
+    private fun MerchantVoucherModel.toLabelVoucher(): LabelVoucher {
+        return LabelVoucher(
+            labelQuota = labelVoucher.labelQuota,
+            labelQuotaFormatted = labelVoucher.labelQuotaFormatted,
+            labelQuotaColorType = labelVoucher.labelQuotaColorType,
+            labelCreator = VoucherCreator.values().firstOrNull { value ->
+                value.id == labelVoucher.labelCreator
+            } ?: VoucherCreator.SELLER,
+            labelCreatorFormatted = labelVoucher.labelCreatorFormatted,
+            labelCreatorColorType = labelVoucher.labelCreatorColorType,
+            labelSubsidyInfo = SubsidyInfo.values().firstOrNull { value ->
+                value.id == labelVoucher.labelSubsidyInfo
+            } ?: SubsidyInfo.NOT_SUBSIDIZED,
+            labelSubsidyInfoFormatted = labelVoucher.labelSubsidyInfoFormatted,
+            labelSubsidyInfoColorType = labelVoucher.labelSubsidyInfoColorType,
+            labelBudgetsVoucher = labelVoucher.labelBudgetsVoucher.map {
+                LabelVoucher.LabelBudgetVoucher(
+                    labelBudgetVoucher = it.labelBudgetVoucher,
+                    labelBudgetVoucherValue = it.labelBudgetVoucherValue,
+                    labelBudgetVoucherFormatted = it.labelBudgetVoucherFormatted
+                )
+            }
+        )
+    }
+
+    private fun MerchantVoucherModel.SubsidyDetail.toSubsidyDetail(): SubsidyDetail {
+        return SubsidyDetail(
+            programDetail = SubsidyDetail.ProgramDetail(
+                programName = programDetail.programName,
+                programStatus = ProgramStatus.values().firstOrNull { value ->
+                    value.id == programDetail.programStatus
+                } ?: ProgramStatus.ONGOING,
+                programLabel = programDetail.programLabel,
+                programLabelDetail = programDetail.programLabelDetail,
+                promotionStatus = PromotionStatus.values().firstOrNull { value ->
+                    value.id == programDetail.promotionStatus
+                } ?: PromotionStatus.REGISTERED,
+                promotionLabel = programDetail.promotionLabel
+            ),
+            quotaSubsidized = SubsidyDetail.QuotaSubsidized(
+                voucherQuota = quotaSubsidized.voucherQuota,
+                remainingQuota = quotaSubsidized.remainingQuota,
+                confirmedGlobalQuota = quotaSubsidized.confirmedGlobalQuota,
+                bookedGlobalQuota = quotaSubsidized.bookedGlobalQuota
+            )
+        )
+    }
+
+    private fun MerchantVoucherModel.toProductIds(): List<ProductId> {
         return productIds.map {
-            Voucher.ProductId(
+            ProductId(
                 it.parentProductId,
                 it.childProductId
             )

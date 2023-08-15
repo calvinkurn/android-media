@@ -1,5 +1,6 @@
 package com.tokopedia.people.views.adapter
 
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.people.views.uimodel.UserReviewUiModel
@@ -9,13 +10,14 @@ import com.tokopedia.people.views.viewholder.UserReviewViewHolder
  * Created By : Jonathan Darwin on May 15, 2023
  */
 class UserReviewAdapter(
+    lifecycleOwner: LifecycleOwner,
     listener: UserReviewViewHolder.Review.Listener,
     private val onLoading: () -> Unit
 ) : BaseDiffUtilAdapter<UserReviewAdapter.Model>() {
 
     init {
         delegatesManager
-            .addDelegate(UserReviewAdapterDelegate.Review(listener))
+            .addDelegate(UserReviewAdapterDelegate.Review(lifecycleOwner, listener))
             .addDelegate(UserReviewAdapterDelegate.Shimmer())
             .addDelegate(UserReviewAdapterDelegate.Loading())
     }

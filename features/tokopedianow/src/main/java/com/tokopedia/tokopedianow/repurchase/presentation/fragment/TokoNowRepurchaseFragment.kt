@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.ApplinkConst
@@ -949,8 +948,8 @@ class TokoNowRepurchaseFragment:
     }
 
     private fun onScrollProductList() {
-        val layoutManager = rvRepurchase?.layoutManager as? StaggeredGridLayoutManager
-        val index = layoutManager?.findLastCompletelyVisibleItemPositions(null)
+        val layoutManager = rvRepurchase?.layoutManager as? GridLayoutManager
+        val index = layoutManager?.findLastCompletelyVisibleItemPosition()
         val itemCount = layoutManager?.itemCount.orZero()
         viewModel.onScrollProductList(index, itemCount)
     }

@@ -1,5 +1,6 @@
 package com.tokopedia.shop.campaign.view.fragment
 
+import android.content.res.Resources
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
@@ -7,6 +8,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -88,6 +91,7 @@ import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHead
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -116,6 +120,9 @@ class ShopPageCampaignFragment :
         private const val HOME_TAB_APP_LINK_LAST_SEGMENT = "home"
         private const val QUERY_PARAM_TAB = "tab"
         private const val PATTERN_CROP_TOP_PERCENTAGE = 0.25
+        private const val DEVICE_WIDTH_540 = 540
+        private const val PATTERN_HEIGHT_PERCENTAGE_FOR_DEVICE_WIDTH_BELOW_540  = 0.39f
+        private const val PATTERN_HEIGHT_PERCENTAGE_FOR_DEVICE_WIDTH_ABOVE_540  = 0.48f
 
         fun createInstance(shopId: String): ShopPageCampaignFragment {
             val bundle = Bundle()
@@ -137,7 +144,7 @@ class ShopPageCampaignFragment :
     private var viewModelCampaign: ShopCampaignViewModel? = null
     private var isDarkTheme: Boolean = false
 
-    private val shopCampaignTabAdapter: ShopCampaignTabAdapter
+    val shopCampaignTabAdapter: ShopCampaignTabAdapter
         get() = adapter as ShopCampaignTabAdapter
     private val shopCampaignTabAdapterTypeFactory by lazy {
         ShopCampaignTabAdapterTypeFactory(
@@ -371,6 +378,7 @@ class ShopPageCampaignFragment :
     private fun renderPatternBackground() {
         viewBindingCampaignTab?.imageBackgroundPattern?.apply {
             if (drawable == null) {
+                setImageHeightPercentage(this)
                 val patternUrl = listPatternImage.getOrNull(Int.ZERO).orEmpty()
                 shouldShowWithAction(patternUrl.isNotEmpty()) {}
                 Glide.with(context)
@@ -385,6 +393,19 @@ class ShopPageCampaignFragment :
                     .into(this)
             }
         }
+    }
+
+    private fun setImageHeightPercentage(imageUnify: ImageUnify) {
+        val screenWidth = Resources.getSystem().displayMetrics.widthPixels
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(view as? ConstraintLayout)
+        val heightPercentage = if (screenWidth <= DEVICE_WIDTH_540) {
+            PATTERN_HEIGHT_PERCENTAGE_FOR_DEVICE_WIDTH_BELOW_540
+        } else{
+            PATTERN_HEIGHT_PERCENTAGE_FOR_DEVICE_WIDTH_ABOVE_540
+        }
+        constraintSet.constrainPercentHeight(imageUnify.id, heightPercentage)
+        constraintSet.applyTo(view as? ConstraintLayout)
     }
 
     override fun observePlayWidget() {
@@ -646,8 +667,9 @@ class ShopPageCampaignFragment :
 
     override fun loadData(page: Int) {}
 
-    override fun scrollToTop() {
-        isClickToScrollToTop = true
+    override fun scrollToTop(isUserClick: Boolean) {
+        if(isUserClick)
+            isClickToScrollToTop = true
         getRecyclerView(view)?.scrollToPosition(0)
     }
 
@@ -758,7 +780,7 @@ class ShopPageCampaignFragment :
     private fun checkShouldSelectHomeTab(appLink: String) {
         val tabValue = Uri.parse(appLink).getQueryParameter(QUERY_PARAM_TAB).orEmpty()
         if (tabValue == ShopPageHeaderTabName.HOME) {
-            (parentFragment as? ShopPageHeaderFragment)?.selectShopTab(ShopPageHeaderTabName.HOME)
+            (parentFragment as? ShopPageHeaderFragment)?.selectShopTab(ShopPageHeaderTabName.HOME, true)
         }
     }
 

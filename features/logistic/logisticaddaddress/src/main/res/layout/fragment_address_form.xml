@@ -99,13 +99,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/barrier_consent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:barrierDirection="bottom"
-            app:constraint_referenced_ids="user_consent, user_consent_widget" />
-
         <com.tokopedia.usercomponents.userconsent.ui.UserConsentWidget
             android:id="@+id/user_consent_widget"
             android:layout_width="0dp"
@@ -114,19 +107,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/layout_cb_default_loc" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/user_consent"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:textAlignment="center"
-            android:textColor="@color/Unify_NN950_68"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_cb_default_loc"
-            app:typographyType="body_3"
-            tools:text="Dengan klik Simpan, kamu menyetujui kebijakan privasi dan syarat dan ketentuan." />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_save_address_new"
@@ -141,7 +121,7 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/barrier_consent"
+            app:layout_constraintTop_toBottomOf="@id/user_consent_widget"
             app:unifyButtonType="main"
             app:unifyButtonVariant="filled" />
 
@@ -150,7 +130,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/barrier_consent"
+            app:layout_constraintBottom_toBottomOf="@id/user_consent_widget"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
