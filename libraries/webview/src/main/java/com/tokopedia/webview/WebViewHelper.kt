@@ -599,11 +599,6 @@ object WebViewHelper {
                 }
             }
 
-            val queryParams = uri.queryParameterNames
-            if (queryParams.isNotEmpty() && queryParams.contains("appClientId")) {
-                return false
-            }
-
             return true
         }
 
