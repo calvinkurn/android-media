@@ -56,7 +56,7 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
                 }
             )
 
-            multiBannerViewModel.getPushNotificationBannerSubscription().observe(
+            multiBannerViewModel.getPushNotificationBannerSubscriptionUpdated().observe(
                 fragment.viewLifecycleOwner
             ) { model ->
                 if (model.errorMessage.isNotEmpty()) {

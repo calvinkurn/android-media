@@ -46,7 +46,7 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     private val applinkCheck: MutableLiveData<String> = MutableLiveData()
     private val refreshPage: MutableLiveData<Boolean> = MutableLiveData()
 
-    private val pushNotificationBannerSubscriptionData: MutableLiveData<PushNotificationBannerSubscription> = MutableLiveData()
+    private val pushNotificationBannerSubscriptionUpdatedData: MutableLiveData<PushNotificationBannerSubscription> = MutableLiveData()
     private val pushNotificationBannerSubscriptionInitData: MutableLiveData<PushNotificationBannerSubscription> = MutableLiveData()
 
     private val _hideShimmer = SingleLiveEvent<Boolean>()
@@ -72,12 +72,12 @@ class MultiBannerViewModel(val application: Application, var components: Compone
 
     init {
         bannerData.value = components
-        pushNotificationBannerSubscriptionData.value = PushNotificationBannerSubscription()
+        pushNotificationBannerSubscriptionUpdatedData.value = PushNotificationBannerSubscription()
         pushNotificationBannerSubscriptionInitData.value = PushNotificationBannerSubscription()
     }
 
     fun getComponentData(): LiveData<ComponentsItem> = bannerData
-    fun getPushNotificationBannerSubscription(): LiveData<PushNotificationBannerSubscription> = pushNotificationBannerSubscriptionData
+    fun getPushNotificationBannerSubscriptionUpdated(): LiveData<PushNotificationBannerSubscription> = pushNotificationBannerSubscriptionUpdatedData
     fun getPushNotificationBannerSubscriptionInit(): LiveData<PushNotificationBannerSubscription> = pushNotificationBannerSubscriptionInitData
     fun getShowLoginData(): LiveData<Boolean> = showLogin
     fun getBannerUrlHeight() = Utils.extractDimension(bannerData.value?.data?.firstOrNull()?.imageUrlDynamicMobile)
@@ -185,7 +185,7 @@ class MultiBannerViewModel(val application: Application, var components: Compone
                     }
                 },
                 onError = {
-                    pushNotificationBannerSubscriptionData.value = PushNotificationBannerSubscription(
+                    pushNotificationBannerSubscriptionUpdatedData.value = PushNotificationBannerSubscription(
                         position = position,
                         errorMessage = defaultErrorMessage,
                         isSubscribed = isSubscribed
@@ -204,7 +204,7 @@ class MultiBannerViewModel(val application: Application, var components: Compone
         val pushSubscriptionResponse = subScribeToUseCase?.subscribeToPush(getCampaignId(position))
         if (pushSubscriptionResponse?.notifierSetReminder?.isSuccess == 1 || pushSubscriptionResponse?.notifierSetReminder?.isSuccess == 2) {
             val errorMessage = pushSubscriptionResponse.notifierSetReminder.errorMessage.orEmpty()
-            pushNotificationBannerSubscriptionData.value = PushNotificationBannerSubscription(
+            pushNotificationBannerSubscriptionUpdatedData.value = PushNotificationBannerSubscription(
                 position = position,
                 errorMessage = errorMessage,
                 isSubscribed = true
@@ -221,7 +221,7 @@ class MultiBannerViewModel(val application: Application, var components: Compone
         val pushSubscriptionResponse = subScribeToUseCase?.unSubscribeToPush(getCampaignId(position))
         if (pushSubscriptionResponse?.notifierSetReminder?.isSuccess == 1 || pushSubscriptionResponse?.notifierSetReminder?.isSuccess == 2) {
             val errorMessage = pushSubscriptionResponse.notifierSetReminder.errorMessage.orEmpty()
-            pushNotificationBannerSubscriptionData.value = PushNotificationBannerSubscription(
+            pushNotificationBannerSubscriptionUpdatedData.value = PushNotificationBannerSubscription(
                 position = position,
                 errorMessage = errorMessage,
                 isSubscribed = false
