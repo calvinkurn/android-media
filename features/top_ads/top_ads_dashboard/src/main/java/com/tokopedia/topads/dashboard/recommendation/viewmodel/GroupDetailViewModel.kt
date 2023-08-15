@@ -32,6 +32,7 @@ import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConsta
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_SHOP_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.Utils
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.GroupDetailMapper
+import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsListAllInsightCountsResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianDailyBudgetUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianGroupBidUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianKataKunciUiModel
@@ -115,6 +116,12 @@ class GroupDetailViewModel @Inject constructor(
             InsightTypeChipsUiModel(list, insightList.toMutableList())
     }
 
+    private fun getGroupName(adgroupID: String, data: TopAdsListAllInsightCountsResponse, groupName: String): String {
+        return if (adgroupID.isEmpty())
+            data.topAdsListAllInsightCounts.adGroups.firstOrNull()?.adGroupName ?: ""
+        else groupName
+    }
+
     fun loadDetailPageOnAction(adType: Int, adgroupID: String, insightType: Int, isSwitchAdType: Boolean = false, groupName: String = "") {
         launchCatchError(dispatcher.main, block = {
             if (isSwitchAdType) {
@@ -125,11 +132,11 @@ class GroupDetailViewModel @Inject constructor(
                 )
                 loadDetailPage(
                     adType,
-                    data.topAdsListAllInsightCounts.adGroups.firstOrNull()?.adGroupID ?: ""
+                    adgroupID.ifEmpty { data.topAdsListAllInsightCounts.adGroups.firstOrNull()?.adGroupID ?: "" }
                 )
                 val list = mutableListOf(
                     if (adType == TYPE_PRODUCT_VALUE) TAB_NAME_PRODUCT else TAB_NAME_SHOP,
-                    data.topAdsListAllInsightCounts.adGroups.firstOrNull()?.adGroupName ?: ""
+                    getGroupName(adgroupID, data, groupName)
                 )
                 groupDetailMapper.detailPageDataMap[TYPE_INSIGHT] =
                     InsightTypeChipsUiModel(

@@ -39,6 +39,7 @@ class PlayProductTagsModelBuilder {
         number: String = "0",
         rating: String = "",
         soldQuantity: String = "",
+        label: PlayProductUiModel.Product.Label = PlayProductUiModel.Product.Label(rankColors = emptyList(), rankFmt = "", rankType = ""),
     ) = PlayProductUiModel.Product(
         id = id,
         shopId = shopId,
@@ -58,6 +59,7 @@ class PlayProductTagsModelBuilder {
         isNumerationShown = isProductNumerationShown,
         rating = rating,
         soldQuantity = soldQuantity,
+        label = label,
     )
 
     fun buildMerchantVoucher(
