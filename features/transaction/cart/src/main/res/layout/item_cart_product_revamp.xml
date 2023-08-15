@@ -52,8 +52,6 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <include layout="@layout/item_cart_bmgm_ticker" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_product_information"
         android:layout_width="match_parent"

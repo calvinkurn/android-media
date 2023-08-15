@@ -43,6 +43,7 @@ import com.tokopedia.cartrevamp.view.uimodel.DisabledReasonHolderData
 import com.tokopedia.cartrevamp.view.uimodel.PromoSummaryData
 import com.tokopedia.cartrevamp.view.uimodel.PromoSummaryDetailData
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.purchase_platform.common.constant.BmGmConstant.CART_DETAIL_TYPE_BMGM
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant.QTY_ADDON_REPLACE
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EpharmacyConsultationInfoResponse
@@ -239,6 +240,7 @@ object CartUiModelMapper {
                     } else {
                         ""
                     }
+                hasBmGmOffer = checkBmGmOffer(availableGroup.groupShopCartData.getOrNull(0)?.cartDetails)
             }
             cartGroupHolderDataList.add(groupUiModel)
             if (!groupUiModel.isCollapsed) {
@@ -606,7 +608,7 @@ object CartUiModelMapper {
             warehouseId = product.warehouseId
             bundleIds = product.bundleIds
             addOnsProduct = mapCartAddOnData(product.addOn)
-            isBmGm = isBmGmProduct(product)
+            isShowBmGmDivider = checkNeedToShowBmGmDivider(cartDetail, productId)
         }
     }
 
@@ -864,7 +866,18 @@ object CartUiModelMapper {
         }
     }
 
-    private fun isBmGmProduct(product: Product): Boolean {
-        return true
+    private fun checkBmGmOffer(cartDetail: List<CartDetail>?): Boolean {
+        var hasBmGm = false
+        cartDetail?.forEach {
+            if (it.cartDetailInfo.cartDetailType == CART_DETAIL_TYPE_BMGM) hasBmGm = true
+        }
+        return hasBmGm
+    }
+
+    private fun checkNeedToShowBmGmDivider(cartDetail: CartDetail, productId: String): Boolean {
+        val isLastIndexProduct = if (cartDetail.products.isNotEmpty()) {
+            cartDetail.products[cartDetail.products.size-1].productId == productId
+        } else true
+        return cartDetail.cartDetailInfo.cartDetailType == CART_DETAIL_TYPE_BMGM && !isLastIndexProduct
     }
 }

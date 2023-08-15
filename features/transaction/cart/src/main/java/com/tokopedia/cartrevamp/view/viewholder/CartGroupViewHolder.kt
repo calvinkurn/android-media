@@ -51,6 +51,7 @@ class CartGroupViewHolder(
         validateFulfillmentLayout(cartGroupHolderData)
         renderFreeShipping(cartGroupHolderData)
         renderMaximumWeight(cartGroupHolderData)
+        renderBmGmOfferTicker(cartGroupHolderData)
     }
 
     private fun renderDivider(cartGroupHolderData: CartGroupHolderData) {
@@ -344,6 +345,14 @@ class CartGroupViewHolder(
             with(binding) {
                 tickerWarning.gone()
             }
+        }
+    }
+
+    private fun renderBmGmOfferTicker(cartGroupHolderData: CartGroupHolderData) {
+        if (cartGroupHolderData.hasBmGmOffer) {
+            binding.cartBmgmOfferTicker.root.visible()
+        } else {
+            binding.cartBmgmOfferTicker.root.gone()
         }
     }
 

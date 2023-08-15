@@ -474,7 +474,7 @@ class CartItemViewHolder constructor(
 
     private fun adjustProductVerticalSeparatorConstraint(data: CartItemHolderData) {
         // TODO: perlu hide kalo index terakhir dari list BMGM
-        if ((data.isError || !data.isBundlingItem) && !data.isBmGm) {
+        if ((data.isError || !data.isBundlingItem) && !data.isShowBmGmDivider) {
             binding.vBundlingProductSeparator.gone()
             return
         }
@@ -484,7 +484,7 @@ class CartItemViewHolder constructor(
             clone(binding.containerProductInformation)
 
             // Top
-            if (data.isBmGm) {
+            if (data.isShowBmGmDivider) {
                 connect(
                         R.id.v_bundling_product_separator,
                         ConstraintSet.TOP,
@@ -523,7 +523,7 @@ class CartItemViewHolder constructor(
             }
 
             // Bottom
-            if (data.isBmGm) {
+            if (data.isShowBmGmDivider) {
                 connect(
                         R.id.v_bundling_product_separator,
                         ConstraintSet.BOTTOM,

@@ -101,7 +101,7 @@ data class CartItemHolderData(
     var addOnsProduct: CartAddOnData = CartAddOnData(),
 
     // BMGM
-    var isBmGm: Boolean = true
+    var isShowBmGmDivider: Boolean = false
 ) {
     companion object {
         const val BUNDLING_ITEM_DEFAULT = 0
