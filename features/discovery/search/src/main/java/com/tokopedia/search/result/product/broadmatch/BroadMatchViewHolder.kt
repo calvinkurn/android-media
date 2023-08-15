@@ -10,6 +10,7 @@ import com.tokopedia.carouselproductcard.CarouselViewAllCardData
 import com.tokopedia.home_component_header.view.HomeChannelHeaderListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
@@ -78,7 +79,7 @@ class BroadMatchViewHolder(
 
     private fun setHideHeaderRevamp() {
         val headerView = binding?.componentHeaderView ?: return
-        headerView.visible()
+        headerView.hide()
     }
 
     private fun setOldHeaderGone() {

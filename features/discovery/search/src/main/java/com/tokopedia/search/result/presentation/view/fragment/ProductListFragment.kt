@@ -43,7 +43,6 @@ import com.tokopedia.filter.common.helper.toMapParam
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.util.IrisSession
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
@@ -423,7 +422,7 @@ class ProductListFragment: BaseDaggerFragment(),
             ),
             createProductListTypeFactory(),
             viewLifecycleOwner,
-            isReimagine()
+            isReimagine(),
         )
 
         recyclerViewUpdater.recyclerView?.let {
@@ -520,7 +519,7 @@ class ProductListFragment: BaseDaggerFragment(),
                 this,
                 this
             ),
-            isReimagine = isReimagine()
+            isReimagine = isReimagine(),
         )
     }
 
