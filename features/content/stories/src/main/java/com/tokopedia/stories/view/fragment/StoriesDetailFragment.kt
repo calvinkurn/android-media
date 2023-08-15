@@ -24,6 +24,7 @@ import com.tokopedia.stories.view.components.indicator.StoriesDetailTimerEvent.N
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimerEvent.NEXT_GROUP
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
 import com.tokopedia.stories.view.model.StoriesGroupUiModel
+import com.tokopedia.stories.view.utils.StoriesSharingComponent
 import com.tokopedia.stories.view.utils.TouchEventStories
 import com.tokopedia.stories.view.utils.onTouchEventStories
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
@@ -169,6 +170,9 @@ class StoriesDetailFragment @Inject constructor(
         vStoriesKebabIcon.setOnClickListener {
             viewModelAction(StoriesUiAction.OpenKebabMenu)
         }
+        vStoriesShareIcon.setOnClickListener {
+            viewModelAction(StoriesUiAction.TapSharing)
+        }
     }
 
     private fun pauseStories() = with(binding) {
@@ -197,6 +201,10 @@ class StoriesDetailFragment @Inject constructor(
                         .getOrCreateFragment(childFragmentManager, requireActivity().classLoader)
                         .show(childFragmentManager)
 
+                    is StoriesUiEvent.TapSharing -> {
+                        val sheet = StoriesSharingComponent(rootView = requireView())
+                        sheet.show(childFragmentManager, event.metadata)
+                    }
                     else -> {}
                 }
             }

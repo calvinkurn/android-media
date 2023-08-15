@@ -8,6 +8,7 @@ import com.tokopedia.stories.view.model.StoriesDetailUiModel
 import com.tokopedia.stories.view.model.StoriesDetailUiModel.StoriesDetailUiEvent
 import com.tokopedia.stories.view.model.StoriesGroupUiModel
 import com.tokopedia.stories.view.model.StoriesUiState
+import com.tokopedia.stories.view.utils.StoriesSharingComponent
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import kotlinx.coroutines.flow.Flow
@@ -59,6 +60,7 @@ class StoriesViewModel @Inject constructor(
             StoriesUiAction.PauseStories -> handleOnPauseStories()
             StoriesUiAction.ResumeStories -> handleOnResumeStories()
             StoriesUiAction.OpenKebabMenu -> handleOpenKebab()
+            StoriesUiAction.TapSharing -> handleSharing()
         }
     }
 
@@ -140,6 +142,12 @@ class StoriesViewModel @Inject constructor(
     private fun handleOpenKebab() {
         viewModelScope.launch {
             _uiEvent.emit(StoriesUiEvent.OpenKebab)
+        }
+    }
+
+    private fun handleSharing() {
+        viewModelScope.launch {
+            _uiEvent.emit(StoriesUiEvent.TapSharing(StoriesSharingComponent.StoriesSharingMetadata(image = "", title = "Boneka")))
         }
     }
 
