@@ -139,12 +139,14 @@ class OfferLandingPageFragment :
         }
 
         viewModel.error.observe(viewLifecycleOwner) { throwable ->
-            setViewState(VIEW_ERROR)
+//            setViewState(VIEW_ERROR)
+            setupContent(OfferInfoForBuyerUiModel())
+            setViewState(VIEW_CONTENT)
         }
     }
 
     private fun setupHeader(offerInfoForBuyer: OfferInfoForBuyerUiModel) {
-        setStatusBarColor()
+        setupStatusBar()
         setupToolbar(offerInfoForBuyer)
     }
 
@@ -152,7 +154,7 @@ class OfferLandingPageFragment :
         setupHeader(offerInfoForBuyer)
         olpAdapter?.submitList(
             newList = listOf(
-                offerInfoForBuyer, // pass offering data
+                generateDummyOfferingData(), // pass offering data
                 OfferProductSortingUiModel() // pass product count
             )
         )
@@ -162,27 +164,16 @@ class OfferLandingPageFragment :
     private fun setupToolbar(offerInfoForBuyer: OfferInfoForBuyerUiModel) {
         binding?.apply {
             header.apply {
-                headerSubTitle = offerInfoForBuyer.offerings.firstOrNull()?.offerName
-                    ?: "Offering name" // update this with real data
-                addRightIcon(com.tokopedia.iconunify.R.drawable.iconunify_cart)
-                    .apply {
-                        setOnClickListener {
-                            // Go to Cart
-                        }
-                    }
-                addRightIcon(com.tokopedia.iconunify.R.drawable.iconunify_menu_hamburger)
-                    .apply {
-                        setOnClickListener {
-                            // Go to setting
-                        }
-                    }
-
-                setNavigationOnClickListener { activity?.finish() }
+                title = getString(R.string.bmgm_title)
+                subTitle = offerInfoForBuyer.offerings.firstOrNull()?.offerName.orEmpty()
+                setNavigationOnClickListener { activity?.finish()}
+                cartButton?.setOnClickListener { TODO("Navigate to cart") }
+                moreMenuButton?.setOnClickListener { TODO("Navigate to more menu") }
             }
         }
     }
 
-    private fun setStatusBarColor() {
+    private fun setupStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (activity?.isDarkMode() == true) {
                 activity?.window?.decorView?.systemUiVisibility =
