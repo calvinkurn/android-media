@@ -104,7 +104,6 @@ class StoriesDetailFragment @Inject constructor(
 
         storiesDetailsTimer(state)
 
-        binding.tvText.text = "Group ${viewModel.mGroupPosition.plus(1)} | Detail ${viewModel.mDetailPosition.plus(1)}"
         binding.ivStoriesDetailContent.setImageUrl(state.imageContent)
     }
 

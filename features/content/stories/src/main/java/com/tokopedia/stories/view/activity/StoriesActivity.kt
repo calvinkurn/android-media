@@ -1,12 +1,15 @@
 package com.tokopedia.stories.view.activity
 
 import android.os.Bundle
+import android.view.View
+import android.view.WindowManager
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.stories.databinding.ActivityStoriesBinding
 import com.tokopedia.stories.di.StoriesInjector
 import com.tokopedia.stories.view.fragment.StoriesGroupFragment
 import javax.inject.Inject
+
 
 class StoriesActivity : BaseActivity() {
 
@@ -23,12 +26,20 @@ class StoriesActivity : BaseActivity() {
         inject()
         getData()
         super.onCreate(savedInstanceState)
+        setFullScreen()
         setupViews()
     }
 
     private fun inject() {
         StoriesInjector.get(this).inject(this)
         supportFragmentManager.fragmentFactory = fragmentFactory
+    }
+
+    private fun setFullScreen() {
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        val winParams = window.attributes
+        winParams.flags = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+        window.attributes = winParams
     }
 
     private fun getData() {

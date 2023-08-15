@@ -79,8 +79,8 @@ private fun StoriesDetailTimerContent(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            .height(48.dp)
-            .padding(horizontal = 8.dp),
+            .padding(horizontal = 8.dp)
+            .background(Color.Transparent),
     ) {
         for (index in 1..count) {
             Row(
@@ -107,7 +107,7 @@ private fun StoriesDetailTimerContent(
     }
 }
 
-@Preview(showSystemUi = true)
+@Preview(showBackground = true)
 @Composable
 internal fun StoriesDetailTimerPreview() {
     StoriesDetailTimer(
