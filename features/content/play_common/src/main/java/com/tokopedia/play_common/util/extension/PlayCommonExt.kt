@@ -180,7 +180,7 @@ suspend inline fun View.awaitPreDraw() = suspendCancellableCoroutine<Unit> { con
         override fun onPreDraw(): Boolean {
             if (cont.isActive) {
                 cont.resume(Unit)
-            } else return false
+            } else return true
 
             when {
                 vto.isAlive -> vto.removeOnPreDrawListener(this)

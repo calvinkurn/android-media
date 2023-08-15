@@ -48,8 +48,9 @@ internal class FeedDiffUtilCallback(
     }
 
     override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
-        if ((oldItemPosition in (oldListSize + 1)..-1) || newItemPosition in (newListSize + 1)..-1)
+        if ((oldItemPosition < 0 && oldItemPosition >= oldListSize) || (newItemPosition < 0 && newItemPosition >= newListSize)) {
             return null
+        }
         return if (oldList[oldItemPosition] is CarouselPlayCardModel && newList[newItemPosition] is CarouselPlayCardModel) Unit
         else super.getChangePayload(oldItemPosition, newItemPosition)
     }
