@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:defaultTemplate="TNC_MANDATORY"
-        app:hide_when_already_submitted_consent="true"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <com.tokopedia.usercomponents.userconsent.ui.UserConsentWidget
@@ -22,7 +21,6 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:defaultTemplate="TNC_MANDATORY"
-        app:hide_when_already_submitted_consent="true"
         app:layout_constraintTop_toBottomOf="@id/viewCrossSellConsentWidget"/>
 
     <com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView

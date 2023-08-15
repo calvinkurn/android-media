@@ -292,4 +292,27 @@ class PlayChannelRecomTest {
             stateAndEvent.first.exploreWidget.category.state.isFail.assertTrue()
         }
     }
+
+    @Test
+    fun `if has category get two tabs`() {
+        createPlayViewModelRobot(
+            repo = repo,
+            dispatchers = testDispatcher,
+            remoteConfig = mockRemoteConfig,
+        ).use {
+            it.createPage(mockChannelData)
+            it.focusPage(mockChannelData)
+
+            val state = it.recordState {}
+            state.channel.channelRecomConfig.categoryWidgetConfig.assertType<CategoryWidgetConfig> { c ->
+                c.categorySourceId.assertEqualTo(config.categoryWidgetConfig.categorySourceId)
+                c.categoryGroup.assertEqualTo(config.categoryWidgetConfig.categoryGroup)
+                c.categorySourceType.assertEqualTo(config.categoryWidgetConfig.categorySourceType)
+                c.categoryName.assertEqualTo(config.categoryWidgetConfig.categoryName)
+            }
+            it.viewModel.exploreWidgetTabs.size.assertEqualTo(2)
+            it.viewModel.exploreWidgetTabs.first().assertEqualTo(state.channel.channelRecomConfig.categoryWidgetConfig.categoryName)
+            it.viewModel.exploreWidgetTabs.last().assertEqualTo("Eksplor")
+        }
+    }
 }
