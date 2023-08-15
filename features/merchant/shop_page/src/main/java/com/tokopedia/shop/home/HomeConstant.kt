@@ -15,7 +15,7 @@ object WidgetType {
     const val CARD = "card"
     const val BUNDLE = "bundle"
     const val VOUCHER_SLIDER = "voucher_slider"
-    const val DYNAMIC_COMPONENT = "dynamic_component"
+    const val COMPONENT = "component"
 }
 
 object WidgetName {
@@ -47,7 +47,7 @@ object WidgetName {
     const val PRODUCT_HIGHLIGHT = "product_highlight"
     const val VOUCHER = "voucher"
     const val SHOWCASE_NAVIGATION_BANNER = "showcase_navigation_banner"
-    const val DYNAMIC_COMPONENT = "dynamic_component"
+    const val BANNER_PRODUCT_GROUP = "banner_product_group"
 
     // showcase widget name list
     const val SHOWCASE_SLIDER_SMALL = "etalase_slider_kecil"

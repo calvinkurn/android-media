@@ -2002,10 +2002,6 @@ open class ShopPageHomeFragment :
         return data.widgetType == PROMO && data.widgetName == VOUCHER_STATIC
     }
 
-    private fun isWidgetProductCarousel(data: ShopPageWidgetUiModel): Boolean {
-        return data.widgetType == WidgetType.DYNAMIC_COMPONENT && data.widgetName == WidgetName.DYNAMIC_COMPONENT
-    }
-
     protected fun isWidgetPlay(data: ShopPageWidgetUiModel): Boolean {
         return data.widgetType == DYNAMIC && data.widgetName == PLAY_CAROUSEL_WIDGET
     }

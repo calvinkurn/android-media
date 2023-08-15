@@ -11,8 +11,8 @@ import kotlinx.parcelize.Parcelize
 data class ShopHomeProductCarouselUiModel(
     override val widgetId: String = "",
     override val layoutOrder: Int = -1,
-    override val name: String = WidgetName.DYNAMIC_COMPONENT,
-    override val type: String = WidgetType.DYNAMIC_COMPONENT,
+    override val name: String = WidgetName.BANNER_PRODUCT_GROUP,
+    override val type: String = WidgetType.COMPONENT,
     override val header: Header = Header(),
     override val isFestivity: Boolean = false,
     val title: String,

@@ -43,7 +43,7 @@ import com.tokopedia.shop.home.WidgetType.CAMPAIGN
 import com.tokopedia.shop.home.WidgetType.CARD
 import com.tokopedia.shop.home.WidgetType.DISPLAY
 import com.tokopedia.shop.home.WidgetType.DYNAMIC
-import com.tokopedia.shop.home.WidgetType.DYNAMIC_COMPONENT
+import com.tokopedia.shop.home.WidgetType.COMPONENT
 import com.tokopedia.shop.home.WidgetType.PERSONALIZATION
 import com.tokopedia.shop.home.WidgetType.SHOWCASE
 import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
@@ -476,7 +476,7 @@ object ShopPageHomeMapper {
                     }
                 }
             }
-            DYNAMIC_COMPONENT.toLowerCase(Locale.getDefault()) -> {
+            COMPONENT.toLowerCase(Locale.getDefault()) -> {
                 ShopPageWidgetMapper.mapToHomeProductCarouselWidget(widgetResponse)
             }
             DYNAMIC.toLowerCase(Locale.getDefault()) -> mapCarouselPlayWidget(widgetResponse, widgetLayout)
