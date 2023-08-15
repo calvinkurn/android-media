@@ -126,27 +126,27 @@ class AffiliateAdapter(
     ) {
         when (holder) {
             is AffiliatePromotionShopItemVH -> {
-                val item = list[holder.bindingAdapterPosition] as? AffiliatePromotionShopModel
-                if (itemImpressionSet.add(item.hashCode())) {
+                val item = list.getOrNull(holder.bindingAdapterPosition) as? AffiliatePromotionShopModel
+                if (item != null && itemImpressionSet.add(item.hashCode())) {
                     sendPromoShopImpression(
-                        item?.promotionItem,
+                        item.promotionItem,
                         holder.bindingAdapterPosition
                     )
                 }
             }
             is AffiliatePromotionCardItemVH -> {
-                val item = list[holder.bindingAdapterPosition] as? AffiliatePromotionCardModel
-                if (itemImpressionSet.add(item.hashCode())) {
+                val item = list.getOrNull(holder.bindingAdapterPosition) as? AffiliatePromotionCardModel
+                if (item != null && itemImpressionSet.add(item.hashCode())) {
                     sendPromoProductImpression(
-                        item?.promotionItem,
+                        item.promotionItem,
                         holder.bindingAdapterPosition
                     )
                 }
             }
             is AffiliateDiscoBannerVH -> {
-                val item = list[holder.bindingAdapterPosition] as? AffiliateDiscoBannerUiModel
-                if (itemImpressionSet.add(item.hashCode())) {
-                    sendPromoDiscoImpression(item?.article, holder.bindingAdapterPosition)
+                val item = list.getOrNull(holder.bindingAdapterPosition) as? AffiliateDiscoBannerUiModel
+                if (item != null && itemImpressionSet.add(item.hashCode())) {
+                    sendPromoDiscoImpression(item.article, holder.bindingAdapterPosition)
                 }
             }
         }
@@ -157,10 +157,10 @@ class AffiliateAdapter(
     ) {
         when (holder) {
             is AffiliateSSAShopItemVH -> {
-                val item = list[holder.bindingAdapterPosition] as? AffiliateSSAShopUiModel
-                if (itemImpressionSet.add(item.hashCode())) {
+                val item = list.getOrNull(holder.bindingAdapterPosition) as? AffiliateSSAShopUiModel
+                if (item != null && itemImpressionSet.add(item.hashCode())) {
                     sendSSAShopImpression(
-                        item?.ssaShop,
+                        item.ssaShop,
                         holder.bindingAdapterPosition
                     )
                 }
@@ -173,9 +173,9 @@ class AffiliateAdapter(
     ) {
         if (holder is AffiliatePerformaSharedProductCardsItemVH) {
             val item =
-                list[holder.bindingAdapterPosition] as? AffiliatePerformaSharedProductCardsModel
-            if (itemImpressionSet.add(item.hashCode())) {
-                sendHomeAdpImpression(item?.product, holder.bindingAdapterPosition)
+                list.getOrNull(holder.bindingAdapterPosition) as? AffiliatePerformaSharedProductCardsModel
+            if (item != null && itemImpressionSet.add(item.hashCode())) {
+                sendHomeAdpImpression(item.product, holder.bindingAdapterPosition)
             }
         }
     }
@@ -186,10 +186,10 @@ class AffiliateAdapter(
         when (holder) {
             is AffiliateDiscoBannerListVH -> {
                 val item =
-                    list[holder.bindingAdapterPosition] as? AffiliateDiscoBannerListUiModel
-                if (itemImpressionSet.add(item.hashCode())) {
+                    list.getOrNull(holder.bindingAdapterPosition) as? AffiliateDiscoBannerListUiModel
+                if (item != null && itemImpressionSet.add(item.hashCode())) {
                     sendDiscoBannerListImpression(
-                        item?.article,
+                        item.article,
                         holder.bindingAdapterPosition
                     )
                 }
@@ -202,48 +202,48 @@ class AffiliateAdapter(
     ) {
         when (holder) {
             is AffiliateEducationBannerItemVH -> {
-                val item = list[holder.bindingAdapterPosition] as? AffiliateEducationBannerUiModel
-                if (itemImpressionSet.add(item.hashCode())) {
+                val item = list.getOrNull(holder.bindingAdapterPosition) as? AffiliateEducationBannerUiModel
+                if (item != null && itemImpressionSet.add(item.hashCode())) {
                     sendEducationImpressions(
-                        item?.bannerList?.get(0)?.title,
-                        item?.bannerList?.get(0)?.bannerId.toString(),
+                        item.bannerList?.get(0)?.title,
+                        item.bannerList?.get(0)?.bannerId.toString(),
                         AffiliateAnalytics.ActionKeys.IMPRESSION_MAIN_BANNER
                     )
                 }
             }
             is AffiliateEducationEventRVVH -> {
-                val item = list[holder.bindingAdapterPosition] as? AffiliateEducationEventRVUiModel
-                if (itemImpressionSet.add(item.hashCode())) {
+                val item = list.getOrNull(holder.bindingAdapterPosition) as? AffiliateEducationEventRVUiModel
+                if (item != null && itemImpressionSet.add(item.hashCode())) {
                     sendEducationImpressions(
-                        item?.event?.title,
-                        item?.event?.id,
+                        item.event?.title,
+                        item.event?.id,
                         AffiliateAnalytics.ActionKeys.IMPRESSION_EVENT_CARD
                     )
                 }
             }
             is AffiliateEducationArticleRVVH -> {
                 val item =
-                    list[holder.bindingAdapterPosition] as? AffiliateEducationArticleRVUiModel
-                if (itemImpressionSet.add(item.hashCode())) {
+                    list.getOrNull(holder.bindingAdapterPosition) as? AffiliateEducationArticleRVUiModel
+                if (item != null && itemImpressionSet.add(item.hashCode())) {
                     sendEducationImpressions(
-                        item?.article?.title,
-                        item?.article?.id,
+                        item.article?.title,
+                        item.article?.id,
                         AffiliateAnalytics.ActionKeys.IMPRESSION_LATEST_ARTICLE_CARD
                     )
                 }
             }
             is AffiliateEducationTutorialRVVH -> {
-                val item = list[holder.bindingAdapterPosition] as? AffiliateEducationTutorialUiModel
-                if (itemImpressionSet.add(item.hashCode())) {
+                val item = list.getOrNull(holder.bindingAdapterPosition) as? AffiliateEducationTutorialUiModel
+                if (item != null && itemImpressionSet.add(item.hashCode())) {
                     sendEducationImpressions(
-                        item?.articleTopic?.title,
-                        item?.articleTopic?.id.toString(),
+                        item.articleTopic?.title,
+                        item.articleTopic?.id.toString(),
                         AffiliateAnalytics.ActionKeys.IMPRESSION_TUTORIAL_CATEGORY
                     )
                 }
             }
             is AffiliateEducationSocialRVVH -> {
-                val item = list[holder.bindingAdapterPosition] as? AffiliateEducationSocialRVUiModel
+                val item = list.getOrNull(holder.bindingAdapterPosition) as? AffiliateEducationSocialRVUiModel
                 item?.socialList?.forEach {
                     if (itemImpressionSet.add(it.hashCode())) {
                         sendEducationImpressions(
@@ -259,7 +259,7 @@ class AffiliateAdapter(
 
     private fun handleEducationSeeAllImpression(holder: AbstractViewHolder<*>) {
         if (holder is AffiliateEducationSeeAllVH) {
-            val item = list[holder.bindingAdapterPosition] as? AffiliateEducationSeeAllUiModel
+            val item = list.getOrNull(holder.bindingAdapterPosition) as? AffiliateEducationSeeAllUiModel
             when (item?.pageType) {
                 PAGE_EDUCATION_EVENT -> sendEducationImpressions(
                     item.article?.title,

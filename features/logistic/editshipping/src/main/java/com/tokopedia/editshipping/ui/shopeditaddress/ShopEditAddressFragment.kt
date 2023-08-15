@@ -151,7 +151,6 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     }
 
                     address?.let {
-                        viewModel.getAutoCompleteList(it.districtName)
                         warehouseModel?.districtId = it.districtId
                     }
                 }
@@ -225,13 +224,6 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     }
                 }
                 is Fail -> zipCodes = arrayListOf()
-            }
-        }
-
-        viewModel.autoCompleteList.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> viewModel.getDistrictLocation(it.data.data.first().placeId)
-                is Fail -> Timber.d(it.throwable)
             }
         }
 
@@ -341,9 +333,13 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
             val latLong = "$currentLat,$currentLong"
             warehouseModel?.let {
                 viewModel.saveEditShopLocation(
-                    userSession.shopId.toLong(), it.warehouseId, binding?.etNamaLokasiShop?.text.toString(),
-                    it.districtId, latLong, userSession.email, binding?.etDetailAlamatShop?.text.toString(),
-                    binding?.etKodePosShop?.text.toString(), userSession.phoneNumber
+                    userSession.shopId.toLong(),
+                    it.warehouseId,
+                    binding?.etNamaLokasiShop?.text.toString(),
+                    it.districtId,
+                    latLong,
+                    binding?.etDetailAlamatShop?.text.toString(),
+                    binding?.etKodePosShop?.text.toString()
                 )
             }
         } else {
@@ -369,10 +365,8 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                         binding?.etNamaLokasiShop?.text.toString(),
                         it.districtId,
                         latLong,
-                        userSession.email,
                         binding?.etDetailAlamatShop?.text.toString(),
-                        binding?.etKodePosShop?.text.toString(),
-                        userSession.phoneNumber
+                        binding?.etKodePosShop?.text.toString()
                     )
                 }
             }

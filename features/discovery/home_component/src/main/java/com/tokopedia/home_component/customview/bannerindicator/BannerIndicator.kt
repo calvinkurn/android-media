@@ -224,6 +224,10 @@ class BannerIndicator : LinearLayout {
         }
     }
     private fun isAnimationTurnedOff(): Boolean {
-        return Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE) == 0f
+        return try {
+            Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE) == 0f
+        } catch (_: Settings.SettingNotFoundException) {
+            true
+        }
     }
 }
