@@ -15,6 +15,8 @@ object ApplinkConstInternalLogistic {
 
     const val ORDER_TRACKING = "$INTERNAL_LOGISTIC/shipping/tracking/"
 
+    const val TIPPING_DRIVER = "$INTERNAL_LOGISTIC/shipping/tipping"
+
     const val MANAGE_ADDRESS = "$INTERNAL_LOGISTIC/manageaddress/"
 
     const val SHOP_EDIT_ADDRESS = "$INTERNAL_LOGISTIC/editaddress/"
