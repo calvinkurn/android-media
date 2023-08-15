@@ -18,8 +18,11 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.MenuItemType
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSeparatorUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationLoaderUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationTitleUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaUiModel
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
@@ -68,7 +71,7 @@ class UniversalInboxAdapter(
     }
 
     fun getProductRecommendationFirstPosition(): Int? {
-        if (recommendationFirstPosition != null) {
+        if (checkCachedRecommendationFirstPosition()) {
             return recommendationFirstPosition
         } else {
             itemList.forEachIndexed { index, item ->
@@ -79,6 +82,16 @@ class UniversalInboxAdapter(
             }
             return null
         }
+    }
+
+    private fun checkCachedRecommendationFirstPosition(): Boolean {
+        var result = false
+        recommendationFirstPosition?.let {
+            if (it < itemList.size) {
+                result = itemList[it] is RecommendationItem
+            }
+        }
+        return result
     }
 
     private fun isRecommendationLoader(position: Int): Boolean {
@@ -155,5 +168,24 @@ class UniversalInboxAdapter(
             Timber.d(throwable)
             false
         }
+    }
+
+    fun removeAllProductRecommendation() {
+        getProductRecommendationFirstPosition()?.let {
+            var itemCountToDrop = itemList.size - it
+            if (it < itemList.size && // out of bound
+                it > Int.ZERO && // not -1
+                isRecommendationTitle(it - Int.ONE)
+            ) {
+                itemCountToDrop++
+            }
+            val result = itemList.dropLast(itemCountToDrop)
+            clearAllItems() // clear all
+            addItemsAndAnimateChanges(result) // add the widget & menu
+        }
+    }
+
+    private fun isRecommendationTitle(position: Int): Boolean {
+        return itemList[position]::class == UniversalInboxRecommendationTitleUiModel::class
     }
 }

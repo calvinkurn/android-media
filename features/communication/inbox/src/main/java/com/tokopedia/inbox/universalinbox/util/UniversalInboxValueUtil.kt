@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.universalinbox.util
 
+import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
 import com.tokopedia.topads.sdk.utils.PARAM_DEVICE
 import com.tokopedia.topads.sdk.utils.PARAM_EP
 import com.tokopedia.topads.sdk.utils.PARAM_HEADLINE_PRODUCT_COUNT
@@ -24,6 +25,14 @@ object UniversalInboxValueUtil {
      * Rollence (for analytics only)
      */
     const val VAR_B = "var_b"
+
+    const val ROLLENCE_REFRESH_RECOMMENDATION = "refresh_inboxUpdate"
+    fun shouldRefreshProductRecommendation(abTestPlatform: UniversalInboxAbPlatform): Boolean {
+        return abTestPlatform.getString(
+            ROLLENCE_REFRESH_RECOMMENDATION,
+            ""
+        ) == ROLLENCE_REFRESH_RECOMMENDATION
+    }
 
     /**
      * User Session
@@ -63,7 +72,6 @@ object UniversalInboxValueUtil {
      * Recommendation
      */
     // PDP
-    const val REQUEST_FROM_PDP = 138
     const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
 
     // TopAds
