@@ -8,8 +8,8 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.inbox.R
-import com.tokopedia.inbox.common.viewmatcher.withRecyclerView
 import com.tokopedia.inbox.universalinbox.stub.common.atPositionCheckInstanceOf
+import com.tokopedia.inbox.universalinbox.stub.common.withRecyclerView
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetModel
 

@@ -75,6 +75,10 @@ import com.tokopedia.search.result.product.responsecode.ResponseCodeImpl
 import com.tokopedia.search.result.product.responsecode.ResponseCodeProvider
 import com.tokopedia.search.result.product.safesearch.SafeSearchPresenter
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordPresenter
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordPresenterDelegate
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductPresenter
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductPresenterDelegate
 import com.tokopedia.search.result.product.similarsearch.SimilarSearchOnBoardingPresenterDelegate
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
 import com.tokopedia.search.result.product.ticker.TickerPresenter
@@ -153,7 +157,9 @@ class ProductListPresenter @Inject constructor(
     private val remoteConfig: RemoteConfig,
     private val responseCodeImpl: ResponseCodeImpl,
     private val similarSearchOnBoardingPresenterDelegate: SimilarSearchOnBoardingPresenterDelegate,
-): BaseDaggerPresenter<ProductListSectionContract.View>(),
+    private val inspirationKeywordPresenter: InspirationKeywordPresenterDelegate,
+    private val inspirationProductItemPresenter: InspirationProductPresenterDelegate,
+    ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
     BannerAdsPresenter by BannerAdsPresenterDelegate(topAdsHeadlineHelper),
@@ -166,7 +172,9 @@ class ProductListPresenter @Inject constructor(
     WishlistPresenter by wishlistPresenterDelegate,
     BottomSheetFilterPresenter by bottomSheetFilterPresenter,
     InspirationCarouselPresenter by inspirationCarouselPresenter,
-    ResponseCodeProvider by responseCodeImpl {
+    ResponseCodeProvider by responseCodeImpl,
+    InspirationKeywordPresenter by inspirationKeywordPresenter,
+    InspirationProductPresenter by inspirationProductItemPresenter{
 
     companion object {
         private val generalSearchTrackingRelatedKeywordResponseCodeList = listOf("3", "4", "5", "6")

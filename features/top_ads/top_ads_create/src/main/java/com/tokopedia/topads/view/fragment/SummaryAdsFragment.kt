@@ -233,17 +233,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                     budget = txtDailyBudget?.textFieldInput?.text.toString().removeCommaRawString().toIntOrZero()
                 } catch (e: NumberFormatException) {
                 }
-                if (budget < suggestion && txtDailyBudget?.isVisible == true) {
-                    txtDailyBudget?.setMessage(
-                        String.format(
-                            getString(R.string.topads_common_minimum_daily_budget),
-                            minBudget
-                        )
-                    )
-                    txtDailyBudget?.setError(true)
-                    validation2 = false
-                    actionEnable()
-                }
+                validateDailyBudget(budget)
             } else {
                 txtDailyBudget?.visibility = View.GONE
                 txtDailyBudget?.setError(false)
@@ -437,45 +427,49 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                 override fun onNumberChanged(number: Double) {
                     super.onNumberChanged(number)
                     val input = number.toInt()
-                    if (isMinValidation(input)) {
-                        daily_budget.setError(true)
-                        daily_budget.setMessage(
-                            String.format(
-                                getString(com.tokopedia.topads.common.R.string.angarran_harrian_min_bid_error),
-                                Utils.convertToCurrency(minBudget.toLong())
-                            )
-                        )
-                        validation2 = false
-                        actionEnable()
-                    } else if (input % DAILYBUDGET_FACTOR != 0) {
-                        daily_budget.setError(true)
-                        daily_budget.setMessage(
-                            String.format(
-                                getString(R.string.topads_common_error_multiple_50),
-                                DAILYBUDGET_FACTOR
-                            )
-                        )
-                        validation2 = false
-                        actionEnable()
-                    } else if (input > MAXIMUM_LIMIT.toDouble() && daily_budget.isVisible) {
-                        daily_budget.setError(true)
-                        daily_budget.setMessage(
-                            String.format(
-                                getString(com.tokopedia.topads.common.R.string.angarran_harrian_max_bid_error),
-                                Utils.convertToCurrency(MAXIMUM_LIMIT.toLong())
-                            )
-                        )
-                        validation2 = false
-                        actionEnable()
-                    } else {
-                        stepperModel?.dailyBudget = input
-                        daily_budget.setMessage("")
-                        daily_budget.setError(false)
-                        validation2 = true
-                        actionEnable()
-                    }
+                    validateDailyBudget(input)
                 }
             }
+        }
+    }
+
+    private fun validateDailyBudget(input: Int){
+        if (isMinValidation(input)) {
+            txtDailyBudget?.setError(true)
+            txtDailyBudget?.setMessage(
+                String.format(
+                    getString(com.tokopedia.topads.common.R.string.topads_common_angarran_harrian_min_bid_error),
+                    Utils.convertToCurrency(minBudget.toLong())
+                )
+            )
+            validation2 = false
+            actionEnable()
+        } else if (input % DAILYBUDGET_FACTOR != 0) {
+            txtDailyBudget?.setError(true)
+            txtDailyBudget?.setMessage(
+                String.format(
+                    getString(R.string.topads_common_error_multiple_50),
+                    DAILYBUDGET_FACTOR
+                )
+            )
+            validation2 = false
+            actionEnable()
+        } else if (input > MAXIMUM_LIMIT.toDouble() && txtDailyBudget?.isVisible == true) {
+            txtDailyBudget?.setError(true)
+            txtDailyBudget?.setMessage(
+                String.format(
+                    getString(com.tokopedia.topads.common.R.string.topads_common_angarran_harrian_max_bid_error),
+                    Utils.convertToCurrency(MAXIMUM_LIMIT.toLong())
+                )
+            )
+            validation2 = false
+            actionEnable()
+        } else {
+            stepperModel?.dailyBudget = input
+            txtDailyBudget?.setMessage("")
+            txtDailyBudget?.setError(false)
+            validation2 = true
+            actionEnable()
         }
     }
 
