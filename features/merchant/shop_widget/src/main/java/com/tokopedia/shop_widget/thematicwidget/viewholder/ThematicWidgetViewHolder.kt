@@ -57,6 +57,7 @@ class ThematicWidgetViewHolder (
         private const val CONTENT_CONTAINER_DEFAULT_MARGIN_BOTTOM = 8f
         private const val CONTENT_CONTAINER_FESTIVITY_MARGIN_BOTTOM = 10f
         private const val BIG_CAMPAIGN_THEMATIC = "big_campaign_thematic"
+        private val SHOP_RE_IMAGINE_MARGIN = 16f.dpToPx()
     }
 
     private var binding: ItemThematicWidgetBinding? by viewBinding()
@@ -169,8 +170,8 @@ class ThematicWidgetViewHolder (
         containerMixLeft?.let {
             it.clipToOutline = true
             it.background = MethodChecker.getDrawable(itemView.context, R.drawable.bg_shop_reimagined_rounded)
-            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart = 16f.dpToPx().toInt()
-            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginEnd = 16f.dpToPx().toInt()
+            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart = SHOP_RE_IMAGINE_MARGIN.toInt()
+            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginEnd = SHOP_RE_IMAGINE_MARGIN.toInt()
         }
     }
 

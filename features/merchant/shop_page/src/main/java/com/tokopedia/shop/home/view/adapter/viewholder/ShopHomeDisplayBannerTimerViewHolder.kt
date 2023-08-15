@@ -70,6 +70,7 @@ class ShopHomeDisplayBannerTimerViewHolder(
         val LAYOUT = R.layout.item_shop_home_display_banner_timer
         private const val DURATION_TO_HIDE_REMIND_ME_WORDING = 5000L
         private val TOTAL_NOTIFY_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+        private val SHOP_RE_IMAGINE_MARGIN = 16f.dpToPx()
     }
 
     override fun bind(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
@@ -284,8 +285,8 @@ class ShopHomeDisplayBannerTimerViewHolder(
         containerProductList?.let {
             it.clipToOutline = true
             it.background = MethodChecker.getDrawable(itemView.context, com.tokopedia.shop_widget.R.drawable.bg_shop_reimagined_rounded)
-            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart = 16f.dpToPx().toInt()
-            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginEnd = 16f.dpToPx().toInt()
+            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart = SHOP_RE_IMAGINE_MARGIN.toInt()
+            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginEnd = SHOP_RE_IMAGINE_MARGIN.toInt()
         }
     }
 

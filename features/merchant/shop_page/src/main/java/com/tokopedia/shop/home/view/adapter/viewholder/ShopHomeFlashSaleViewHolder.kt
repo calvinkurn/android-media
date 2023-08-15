@@ -72,6 +72,7 @@ class ShopHomeFlashSaleViewHolder(
         private const val CONTENT_CONTAINER_DEFAULT_MARGIN_BOTTOM = 12f
         private const val RV_CONTAINER_FESTIVITY_MARGIN_TOP = 9f
         private const val RV_CONTAINER_DEFAULT_MARGIN_TOP = 12f
+        private val SHOP_RE_IMAGINE_MARGIN = 16f.dpToPx()
     }
 
     init {
@@ -126,8 +127,8 @@ class ShopHomeFlashSaleViewHolder(
         rvContainer?.let {
             it.clipToOutline = true
             it.background = MethodChecker.getDrawable(itemView.context, com.tokopedia.shop_widget.R.drawable.bg_shop_reimagined_rounded)
-            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart = 16f.dpToPx().toInt()
-            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginEnd = 16f.dpToPx().toInt()
+            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart = SHOP_RE_IMAGINE_MARGIN.toInt()
+            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginEnd = SHOP_RE_IMAGINE_MARGIN.toInt()
         }
     }
 

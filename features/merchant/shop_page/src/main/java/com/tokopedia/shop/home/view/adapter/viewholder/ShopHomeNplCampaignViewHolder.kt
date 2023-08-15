@@ -84,6 +84,7 @@ class ShopHomeNplCampaignViewHolder(
         private const val NPL_RULE_ID_FOLLOWERS_ONLY = "33"
         private const val RV_CAROUSEL_MARGIN_TOP = 24f
         private const val BANNER_IMAGE_RATION_EMPTY_PRODUCT = "1:1"
+        private val SHOP_RE_IMAGINE_MARGIN = 16f.dpToPx()
     }
 
     private var productListCampaignAdapter: ShopCampaignCarouselProductAdapter? = null
@@ -156,8 +157,8 @@ class ShopHomeNplCampaignViewHolder(
         containerProductList?.let {
             it.clipToOutline = true
             it.background = MethodChecker.getDrawable(itemView.context, com.tokopedia.shop_widget.R.drawable.bg_shop_reimagined_rounded)
-            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart = 16f.dpToPx().toInt()
-            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginEnd = 16f.dpToPx().toInt()
+            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart = SHOP_RE_IMAGINE_MARGIN.toInt()
+            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginEnd = SHOP_RE_IMAGINE_MARGIN.toInt()
         }
     }
 
