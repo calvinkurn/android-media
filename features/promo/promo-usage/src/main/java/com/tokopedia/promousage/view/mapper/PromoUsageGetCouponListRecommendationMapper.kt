@@ -105,7 +105,22 @@ internal class PromoUsageGetCouponListRecommendationMapper @Inject constructor()
                 }
 
                 PromoPageSection.SECTION_INPUT_PROMO_CODE -> {
-                    items.add(PromoAttemptItem(id = couponSection.id))
+                    items.add(
+                        PromoAttemptItem(
+                            id = couponSection.id
+                        )
+                    )
+                    couponSection.coupons.forEachIndexed { index, coupon ->
+                        items.add(
+                            mapCouponToPromo(
+                                index = index,
+                                couponSection = couponSection,
+                                coupon = coupon,
+                                recommendedPromoCodes = recommendedPromoCodes,
+                                selectedPromoCodes = selectedPromoCodes
+                            )
+                        )
+                    }
                 }
 
                 else -> {
