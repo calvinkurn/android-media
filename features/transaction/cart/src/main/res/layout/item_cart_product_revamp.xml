@@ -354,17 +354,6 @@
                 app:typographyWeight="bold"
                 tools:text="Rp100.000" />
 
-            <!--            <com.tokopedia.unifycomponents.Label-->
-            <!--                android:id="@+id/label_slash_price_percentage"-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_marginEnd="4dp"-->
-            <!--                android:gravity="center_vertical"-->
-            <!--                android:visibility="gone"-->
-            <!--                app:labelType="general_light_red"-->
-            <!--                tools:labelTitle="60%"-->
-            <!--                tools:visibility="visible" />-->
-
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/text_slash_price"
                 android:layout_width="wrap_content"
@@ -505,7 +494,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            android:src="@drawable/ic_add_note"
+            app:srcCompat="@drawable/ic_add_note"
             app:layout_constraintStart_toEndOf="@id/iu_image_product"
             app:layout_constraintTop_toBottomOf="@+id/item_addon_cart"
             tools:visibility="visible" />
