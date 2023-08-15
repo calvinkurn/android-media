@@ -2605,8 +2605,6 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
 
     private fun showFinishOrderToaster() {
         if (responseFinishOrder.success == 1) {
-            responseFinishOrder.message.firstOrNull()
-                ?.let { it1 -> showToaster(it1, Toaster.TYPE_NORMAL) }
             loadUohItemDelay(orderIdNeedUpdated, currIndexNeedUpdate)
         } else {
             if (responseFinishOrder.message.isNotEmpty()) {
