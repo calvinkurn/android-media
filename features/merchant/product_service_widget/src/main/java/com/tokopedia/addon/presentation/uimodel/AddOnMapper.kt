@@ -56,13 +56,17 @@ object AddOnMapper {
 
     fun mapAddOnWithSelectedIds(
         addonGroupList: List<AddOnGroupUIModel>,
-        selectedAddonIds: List<String>
+        selectedAddonIds: List<String>,
+        predeselectedAddonIds: List<String>
     ): List<AddOnGroupUIModel> {
         return addonGroupList.map {
+            val activateAutoselect = !it.addon.any { addon ->
+                addon.id in predeselectedAddonIds
+            }
             it.copy(
                 addon = it.addon.map { addon ->
                     val isPreselected = if (selectedAddonIds.isEmpty()) {
-                        addon.isMandatory || addon.isAutoselect
+                        addon.isMandatory || (addon.isAutoselect && activateAutoselect)
                     } else {
                         addon.id in selectedAddonIds || addon.isMandatory
                     }
