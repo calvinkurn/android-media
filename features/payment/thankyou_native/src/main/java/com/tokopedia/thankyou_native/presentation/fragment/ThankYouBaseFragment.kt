@@ -69,6 +69,7 @@ import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewMo
 import com.tokopedia.thankyou_native.presentation.views.GyroView
 import com.tokopedia.thankyou_native.presentation.views.RegisterMemberShipListener
 import com.tokopedia.thankyou_native.presentation.views.TopAdsView
+import com.tokopedia.thankyou_native.presentation.views.listener.BannerListener
 import com.tokopedia.thankyou_native.presentation.views.listener.MarketplaceRecommendationListener
 import com.tokopedia.thankyou_native.recommendation.presentation.view.IRecommendationView
 import com.tokopedia.thankyou_native.recommendation.presentation.view.MarketPlaceRecommendation
@@ -95,7 +96,8 @@ abstract class ThankYouBaseFragment :
     BaseDaggerFragment(),
     OnDialogRedirectListener,
     RegisterMemberShipListener,
-    MarketplaceRecommendationListener {
+    MarketplaceRecommendationListener,
+    BannerListener {
 
     abstract fun getRecommendationContainer(): LinearLayout?
     abstract fun getFeatureListingContainer(): GyroView?
@@ -150,7 +152,7 @@ abstract class ThankYouBaseFragment :
     private val bottomContentAdapter: BottomContentAdapter by lazy(LazyThreadSafetyMode.NONE) {
         BottomContentAdapter(
             ArrayList(),
-            BottomContentFactory(this, this)
+            BottomContentFactory(this, this, this)
         )
     }
 
@@ -777,6 +779,17 @@ abstract class ThankYouBaseFragment :
         } else if (bottomSheetContentItem.membershipType == CLOSE_MEMBERSHIP) {
             openTokomemberBottomsheet()
         }
+    }
+
+    override fun onBannerClick(bannerItem: BannerItem, position: Int) {
+        if (context == null) return
+        thankYouPageAnalytics.get().sendBannerClickEvent(thanksPageData, bannerItem, position)
+        RouteManager.route(context, bannerItem.applink)
+    }
+
+    override fun onBannerImpressed(bannerItem: BannerItem, position: Int) {
+        if (context == null) return
+        thankYouPageAnalytics.get().sendBannerImpressionEvent(thanksPageData, bannerItem, position)
     }
 
     private fun openTokomemberBottomsheet() {

@@ -51,7 +51,7 @@ class TokoNowProductRecommendationOocViewHolder(
                     adapterPosition = adapterPosition,
                     scrollToPosition = scrollToPosition.orZero(),
                     isForceRefresh = element.isFirstLoad,
-                    isTokonow = true,
+                    isTokonow = element.isTokoNow,
                     categoryIds = element.categoryId,
                     keyword = element.keywords,
                     miniCartSource = element.miniCartSource
