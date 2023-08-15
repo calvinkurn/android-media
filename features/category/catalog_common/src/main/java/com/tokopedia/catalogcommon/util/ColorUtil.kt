@@ -12,7 +12,11 @@ fun Int?.orDefaultColor(context: Context,default: Int = R.color.Unify_N150_20): 
 fun String.stringHexColorParseToInt(alphaPercentage:Int = 100): Int {
     val colorValue = Color.parseColor(this)
     val alphaValue: Int = (alphaPercentage * 255) / 100
-    return Color.argb(alphaValue, Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue))
+    return try {
+        Color.argb(alphaValue, Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue))
+    }catch (e:Exception){
+        Color.RED
+    }
 }
 
 fun Int.colorResToInt(context: Context, alphaPercentage:Int = 100): Int {

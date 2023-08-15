@@ -1,10 +1,11 @@
 package com.tokopedia.catalogcommon.uimodel
 
-import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactory
+import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
 
 data class TopFeaturesUiModel(
     override val idWidget: String,
+    val backgroundColorWidget: Int? = null,
     val items: List<ItemTopFeatureUiModel>
 ) : BaseCatalogUiModel(idWidget) {
 
@@ -16,28 +17,31 @@ data class TopFeaturesUiModel(
         val id: String,
         val icon: String,
         val name: String,
-        val backgroundColor: Int = R.color.Unify_N0,
-        val textColor: Int = R.color.Unify_NN600,
-        val borderColor: Int? = null
+        val backgroundColor: Int,
+        val textColor: Int,
+        val borderColor: Int
     )
 
-
-    companion object{
-        fun dummyTopFeatures() = listOf(
-            ItemTopFeatureUiModel(
-                "",
-                "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png",
-                "Lorep Ipsum"
-            ),
-            ItemTopFeatureUiModel(
-                "",
-                "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png",
-                "Lorep Ipsum"
-            ),
-            ItemTopFeatureUiModel(
-                "",
-                "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png",
-                "Lorep Ipsum"
+    companion object {
+        fun dummyTopFeatures() = TopFeaturesUiModel(
+            "dummy", "#000000".stringHexColorParseToInt(),
+            items = listOf(
+                ItemTopFeatureUiModel(
+                    "",
+                    "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png",
+                    "Lorep Ipsum",
+                    textColor = "#AEB2BF".stringHexColorParseToInt(),
+                    backgroundColor = "#AAB4C8".stringHexColorParseToInt(30),
+                    borderColor = "#AAB4C8".stringHexColorParseToInt(30)
+                ),
+                ItemTopFeatureUiModel(
+                    "",
+                    "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png",
+                    "Lorep Ipsum",
+                    textColor = "#AEB2BF".stringHexColorParseToInt(),
+                    backgroundColor = "#AAB4C8".stringHexColorParseToInt(30),
+                    borderColor = "#AAB4C8".stringHexColorParseToInt(30)
+                ),
             )
         )
     }
