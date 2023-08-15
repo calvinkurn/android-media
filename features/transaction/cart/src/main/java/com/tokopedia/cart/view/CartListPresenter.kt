@@ -1520,7 +1520,7 @@ class CartListPresenter @Inject constructor(
             setQty(cartRecentViewItemHolderData.minOrder)
             setDimension52(cartRecentViewItemHolderData.shopId)
             setDimension57(cartRecentViewItemHolderData.shopName)
-            setDimension81(cartRecentViewItemHolderData.shopType)
+            setDimension59(cartRecentViewItemHolderData.shopType)
             setDimension77(addToCartDataResponseModel.data.cartId)
             setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
             setCategoryId("")
