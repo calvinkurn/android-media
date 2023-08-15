@@ -23,11 +23,12 @@ object BuyerCommunicationMapper {
     private fun mapShipmentOptions(
         shippingDetails: GetBuyerCommunication.ShippingDetails
     ): List<ShipmentOptionData> {
-        return shippingDetails.options.map {
+        return shippingDetails.options.mapIndexed { index, options ->
             ShipmentOptionData(
-                name = it.name,
-                detail = it.details,
-                available = it.available
+                index = index,
+                name = options.name,
+                details = options.details.split("\n"),
+                available = options.available
             )
         }
     }

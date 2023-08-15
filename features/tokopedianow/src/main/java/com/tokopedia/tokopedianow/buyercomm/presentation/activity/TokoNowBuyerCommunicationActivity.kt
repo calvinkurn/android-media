@@ -11,7 +11,7 @@ import com.tokopedia.tokopedianow.common.base.activity.BaseTokoNowActivity
 class TokoNowBuyerCommunicationActivity: BaseTokoNowActivity() {
 
     companion object {
-        fun startActivity(context: Context, data: BuyerCommunicationData) {
+        fun startActivity(context: Context, data: BuyerCommunicationData?) {
             val intent = RouteManager.getIntent(context,
                 ApplinkConstInternalTokopediaNow.BUYER_COMMUNICATION_BOTTOM_SHEET)
             intent.putExtra(EXTRA_BUYER_COMMUNICATION_DATA, data)

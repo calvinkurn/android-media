@@ -8,5 +8,14 @@ data class BuyerCommunicationData(
     val warehouseStatus: String = "",
     val operationHour: String = "",
     val shipmentOptions: List<ShipmentOptionData> = emptyList()
-): Parcelable
+): Parcelable {
+
+    companion object {
+        private const val WAREHOUSE_STATUS_OPEN = "Buka"
+    }
+
+    fun isWarehouseOpen(): Boolean {
+        return warehouseStatus == WAREHOUSE_STATUS_OPEN
+    }
+}
 
