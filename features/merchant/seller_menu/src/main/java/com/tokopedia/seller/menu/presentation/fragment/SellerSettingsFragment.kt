@@ -99,7 +99,6 @@ class SellerSettingsFragment : Fragment(), SettingTrackingListener {
         val settingsList = context?.let {
             SellerSettingsList.create(
                 it,
-                true,
                 userSession,
                 adminPermissionMapper
             )
@@ -114,5 +113,4 @@ class SellerSettingsFragment : Fragment(), SettingTrackingListener {
             UpdateShopActiveWorker.execute(it)
         }
     }
-
 }

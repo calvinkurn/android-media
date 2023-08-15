@@ -26,7 +26,6 @@ object SellerSettingsList {
 
     fun create(
         context: Context,
-        isMultilocation: Boolean = false,
         userSession: UserSessionInterface,
         adminPermissionMapper: AdminPermissionMapper
     ): List<SettingUiModel> {
@@ -34,181 +33,99 @@ object SellerSettingsList {
 
         val isShopOwner = userSession.isShopOwner
 
-        return if (isMultilocation) {
-            listOf(
-                SellerSettingsTitleUiModel(
-                    context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_profile),
-                    IconUnify.SHOP_SETTING
-                ),
-                SellerMenuItemUiModel(
-                    context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_basic_info),
-                    clickApplink = null,
-                    settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
-                    type = MenuItemType.BASIC_INFO,
-                    clickAction = {
-                        checkAccessPermissionIfNotShopOwner(
-                            context,
-                            isShopOwner,
-                            adminPermissionMapper,
-                            AdminFeature.SHOP_SETTINGS_INFO
-                        )
-                    }
-                ),
-                SellerMenuItemUiModel(
-                    context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_notes),
-                    clickApplink = null,
-                    settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
-                    type = MenuItemType.NOTES,
-                    clickAction = {
-                        checkAccessPermissionIfNotShopOwner(
-                            context,
-                            isShopOwner,
-                            adminPermissionMapper,
-                            AdminFeature.SHOP_SETTINGS_NOTES
-                        )
-                    }
-                ),
-                SellerMenuItemUiModel(
-                    context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_working_hours),
-                    clickApplink = null,
-                    settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
-                    type = MenuItemType.SCHEDULE,
-                    clickAction = {
-                        checkAccessPermissionIfNotShopOwner(
-                            context,
-                            isShopOwner,
-                            adminPermissionMapper,
-                            AdminFeature.SHOP_OPERATIONAL_HOURS
-                        )
-                    }
-                ),
-                DividerUiModel(DividerType.THIN_INDENTED),
-                IndentedSettingTitleUiModel(context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_location_and_shipment)),
-                SellerMenuItemUiModel(
-                    context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_add_and_shop_location),
-                    clickApplink = null,
-                    settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
-                    type = MenuItemType.LOCATION,
-                    clickAction = {
-                        checkAccessPermissionIfNotShopOwner(
-                            context,
-                            isShopOwner,
-                            adminPermissionMapper,
-                            AdminFeature.SHOP_SETTING_ADDR
-                        )
-                    }
-                ),
-                SellerMenuItemUiModel(
-                    context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_set_shipment_method),
-                    clickApplink = null,
-                    settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
-                    trackingAlias = trackingAliasMap[context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_set_shipment_method)],
-                    type = MenuItemType.SHIPPING,
-                    clickAction = {
-                        checkAccessPermissionIfNotShopOwner(
-                            context,
-                            isShopOwner,
-                            adminPermissionMapper,
-                            AdminFeature.SHIPPING_EDITOR
-                        )
-                    }
-                ),
-                DividerUiModel(DividerType.THICK),
-                SellerMenuItemUiModel(
-                    context.getString(com.tokopedia.seller.menu.R.string.seller_menu_notification_setting),
-                    eventActionSuffix = SettingTrackingConstant.SETTINGS,
-                    type = MenuItemType.NOTIFICATION,
-                    iconUnify = IconUnify.PHONE_SETTING
-                ) {
-                    val intent = RouteManager.getIntent(
+        return listOf(
+            SellerSettingsTitleUiModel(
+                context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_profile),
+                IconUnify.SHOP_SETTING
+            ),
+            SellerMenuItemUiModel(
+                context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_basic_info),
+                clickApplink = null,
+                settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
+                type = MenuItemType.BASIC_INFO,
+                clickAction = {
+                    checkAccessPermissionIfNotShopOwner(
                         context,
-                        ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
+                        isShopOwner,
+                        adminPermissionMapper,
+                        AdminFeature.SHOP_SETTINGS_INFO
                     )
-                    intent.putExtra(EXTRA_OPEN_SELLER_NOTIF, true)
-                    context.startActivity(intent)
                 }
-            )
-        } else {
-            listOf(
-                SellerSettingsTitleUiModel(
-                    context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_profile),
-                    IconUnify.SHOP_SETTING
-                ),
-                SellerMenuItemUiModel(
-                    context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_basic_info),
-                    clickApplink = null,
-                    settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
-                    type = MenuItemType.BASIC_INFO,
-                    clickAction = {
-                        checkAccessPermissionIfNotShopOwner(
-                            context,
-                            isShopOwner,
-                            adminPermissionMapper,
-                            AdminFeature.SHOP_SETTINGS_INFO
-                        )
-                    }
-                ),
-                SellerMenuItemUiModel(
-                    context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_notes),
-                    clickApplink = null,
-                    settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
-                    type = MenuItemType.NOTES,
-                    clickAction = {
-                        checkAccessPermissionIfNotShopOwner(
-                            context,
-                            isShopOwner,
-                            adminPermissionMapper,
-                            AdminFeature.SHOP_SETTINGS_NOTES
-                        )
-                    }
-                ),
-                SellerMenuItemUiModel(
-                    context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_working_hours),
-                    clickApplink = null,
-                    settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
-                    type = MenuItemType.SCHEDULE,
-                    clickAction = {
-                        checkAccessPermissionIfNotShopOwner(
-                            context,
-                            isShopOwner,
-                            adminPermissionMapper,
-                            AdminFeature.SHOP_OPERATIONAL_HOURS
-                        )
-                    }
-                ),
-                DividerUiModel(DividerType.THIN_INDENTED),
-                IndentedSettingTitleUiModel(context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_location_and_shipment)),
-                SellerMenuItemUiModel(
-                    context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_set_shipment_method),
-                    clickApplink = null,
-                    settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
-                    trackingAlias = trackingAliasMap[context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_set_shipment_method)],
-                    type = MenuItemType.SHIPPING,
-                    clickAction = {
-                        checkAccessPermissionIfNotShopOwner(
-                            context,
-                            isShopOwner,
-                            adminPermissionMapper,
-                            AdminFeature.SHIPPING_EDITOR
-                        )
-                    }
-                ),
-                DividerUiModel(DividerType.THICK),
-                SellerMenuItemUiModel(
-                    context.getString(com.tokopedia.seller.menu.R.string.seller_menu_notification_setting),
-                    eventActionSuffix = SettingTrackingConstant.SETTINGS,
-                    type = MenuItemType.NOTIFICATION,
-                    iconUnify = IconUnify.PHONE_SETTING
-                ) {
-                    val intent = RouteManager.getIntent(
+            ),
+            SellerMenuItemUiModel(
+                context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_notes),
+                clickApplink = null,
+                settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
+                type = MenuItemType.NOTES,
+                clickAction = {
+                    checkAccessPermissionIfNotShopOwner(
                         context,
-                        ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
+                        isShopOwner,
+                        adminPermissionMapper,
+                        AdminFeature.SHOP_SETTINGS_NOTES
                     )
-                    intent.putExtra(EXTRA_OPEN_SELLER_NOTIF, true)
-                    context.startActivity(intent)
                 }
-            )
-        }
+            ),
+            SellerMenuItemUiModel(
+                context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_working_hours),
+                clickApplink = null,
+                settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
+                type = MenuItemType.SCHEDULE,
+                clickAction = {
+                    checkAccessPermissionIfNotShopOwner(
+                        context,
+                        isShopOwner,
+                        adminPermissionMapper,
+                        AdminFeature.SHOP_OPERATIONAL_HOURS
+                    )
+                }
+            ),
+            DividerUiModel(DividerType.THIN_INDENTED),
+            IndentedSettingTitleUiModel(context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_location_and_shipment)),
+            SellerMenuItemUiModel(
+                context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_add_and_shop_location),
+                clickApplink = null,
+                settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
+                type = MenuItemType.LOCATION,
+                clickAction = {
+                    checkAccessPermissionIfNotShopOwner(
+                        context,
+                        isShopOwner,
+                        adminPermissionMapper,
+                        AdminFeature.SHOP_SETTING_ADDR
+                    )
+                }
+            ),
+            SellerMenuItemUiModel(
+                context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_set_shipment_method),
+                clickApplink = null,
+                settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
+                trackingAlias = trackingAliasMap[context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_set_shipment_method)],
+                type = MenuItemType.SHIPPING,
+                clickAction = {
+                    checkAccessPermissionIfNotShopOwner(
+                        context,
+                        isShopOwner,
+                        adminPermissionMapper,
+                        AdminFeature.SHIPPING_EDITOR
+                    )
+                }
+            ),
+            DividerUiModel(DividerType.THICK),
+            SellerMenuItemUiModel(
+                context.getString(com.tokopedia.seller.menu.R.string.seller_menu_notification_setting),
+                eventActionSuffix = SettingTrackingConstant.SETTINGS,
+                type = MenuItemType.NOTIFICATION,
+                iconUnify = IconUnify.PHONE_SETTING
+            ) {
+                val intent = RouteManager.getIntent(
+                    context,
+                    ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
+                )
+                intent.putExtra(EXTRA_OPEN_SELLER_NOTIF, true)
+                context.startActivity(intent)
+            }
+        )
     }
 
     private fun trackingAliasMap(context: Context): Map<String, String?> {
@@ -218,13 +135,22 @@ object SellerSettingsList {
         )
     }
 
-    private fun checkAccessPermissionIfNotShopOwner(context: Context?, isShopOwner: Boolean, mapper: AdminPermissionMapper, @AdminFeature feature: String) {
+    private fun checkAccessPermissionIfNotShopOwner(
+        context: Context?,
+        isShopOwner: Boolean,
+        mapper: AdminPermissionMapper,
+        @AdminFeature feature: String
+    ) {
         if (context != null) {
             val intent =
                 if (isShopOwner) {
                     mapper.mapFeatureToDestination(context, feature)
                 } else {
-                    RouteManager.getIntent(context, ApplinkConstInternalSellerapp.ADMIN_AUTHORIZE, feature)
+                    RouteManager.getIntent(
+                        context,
+                        ApplinkConstInternalSellerapp.ADMIN_AUTHORIZE,
+                        feature
+                    )
                 }
             context.startActivity(intent)
         }
