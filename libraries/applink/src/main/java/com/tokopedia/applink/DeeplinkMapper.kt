@@ -192,13 +192,8 @@ object DeeplinkMapper {
             return ApplinkConstInternalPromo.TOKOPOINTS_HOME
         }
 
-        val appLinkContent =
-            DeeplinkMapperContent.getRegisteredNavigationContentFromHttp(uri, deeplink)
+        val appLinkContent = DeeplinkMapperContent.getNavContentFromHttp(uri, deeplink)
         if (appLinkContent.isNotBlank()) return appLinkContent
-
-        val appLinkFeed =
-            DeeplinkMapperContent.getRegisteredNavigationFeedVideoFromHttp(uri, deeplink)
-        if (appLinkFeed.isNotBlank()) return appLinkFeed
 
         val applinkDigital =
             DeeplinkMapperDigital.getRegisteredNavigationFromHttpDigital(context, deeplink)

@@ -239,7 +239,9 @@ class ShipmentFragment :
     ExpireTimeDialogListener,
     UploadPrescriptionListener {
 
-    private var binding by autoClearedNullable<FragmentShipmentBinding>()
+    private var binding by autoClearedNullable<FragmentShipmentBinding>() {
+        onDestroyViewBinding()
+    }
     private var progressDialogNormal: AlertDialog? = null
     private var shippingCourierBottomsheet: ShippingCourierBottomsheet? = null
     private var shipmentTracePerformance: PerformanceMonitoring? = null
@@ -366,12 +368,16 @@ class ShipmentFragment :
         hideLoading()
     }
 
+    private fun onDestroyViewBinding() {
+        val countDownTimer = binding?.partialCountdown?.countDown?.timer
+        countDownTimer?.cancel()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         toasterThrottleSubscription?.unsubscribe()
         shippingCourierBottomsheet = null
-        val countDownTimer = binding?.partialCountdown?.countDown?.timer
-        countDownTimer?.cancel()
+        onDestroyViewBinding()
         shipmentViewModel.detachView()
     }
 
@@ -3348,9 +3354,11 @@ class ShipmentFragment :
             binding?.partialCountdown?.tvCountDown?.text = timer.timerDescription
             binding?.partialCountdown?.countDown?.remainingMilliseconds = diff
             binding?.partialCountdown?.countDown?.onFinish = {
-                val dialog =
-                    newInstance(timer, checkoutAnalyticsCourierSelection, this@ShipmentFragment)
-                dialog.show(fragmentManager!!, "expired dialog")
+                fragmentManager?.let { fm ->
+                    val dialog =
+                        newInstance(timer, checkoutAnalyticsCourierSelection, this@ShipmentFragment)
+                    dialog.show(fm, "expired dialog")
+                }
             }
         }
     }
@@ -3920,11 +3928,14 @@ class ShipmentFragment :
         // tokopedia://addon/2148784281/?cartId=123123&selectedAddonIds=111,222,333&source=cart&warehouseId=789789&isTokocabang=false
         val productId = cartItemModel.productId
         val cartId = cartItemModel.cartId
+
         val addOnIds = arrayListOf<Long>()
+        val deselectAddOnIds = arrayListOf<Long>()
+
         cartItemModel.addOnProduct.listAddOnProductData.forEach { addOnItem ->
             if (addOnItem.status == ADD_ON_PRODUCT_STATUS_CHECK) {
                 addOnIds.add(addOnItem.id)
-            }
+            } else if (addOnItem.status == ADD_ON_PRODUCT_STATUS_UNCHECK) deselectAddOnIds.add(addOnItem.id)
         }
 
         val price: Double
@@ -3943,14 +3954,15 @@ class ShipmentFragment :
             mapOf(
                 AddOnConstant.QUERY_PARAM_CART_ID to cartId,
                 AddOnConstant.QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds.toString().replace("[", "").replace("]", ""),
+                AddOnConstant.QUERY_PARAM_DESELECTED_ADDON_IDS to deselectAddOnIds.toString().replace("[", "").replace("]", ""),
                 AddOnConstant.QUERY_PARAM_PAGE_ATC_SOURCE to SOURCE_NORMAL_CHECKOUT,
                 ApplinkConstInternalMechant.QUERY_PARAM_WAREHOUSE_ID to cartItemModel.warehouseId,
                 AddOnConstant.QUERY_PARAM_IS_TOKOCABANG to cartItemModel.isTokoCabang,
                 AddOnConstant.QUERY_PARAM_CATEGORY_ID to cartItemModel.productCatId,
                 AddOnConstant.QUERY_PARAM_SHOP_ID to cartItemModel.shopId,
                 AddOnConstant.QUERY_PARAM_QUANTITY to cartItemModel.quantity,
-                AddOnConstant.QUERY_PARAM_PRICE to price.toString().removeSingleDecimalSuffix(),
-                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toString().removeSingleDecimalSuffix()
+                AddOnConstant.QUERY_PARAM_PRICE to price.toBigDecimal().toPlainString().removeSingleDecimalSuffix(),
+                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toBigDecimal().toPlainString().removeSingleDecimalSuffix()
             )
         )
 
@@ -4322,8 +4334,9 @@ class ShipmentFragment :
                 val cartIdAddOn = addOnProductDataResult.cartId
                 val needUpdateAddOnItem = shipmentAdapter.getAddOnProductServicePosition(cartIdAddOn)
                 var updatedCartItemModel = needUpdateAddOnItem.second
-                needUpdateAddOnItem.second?.addOnProduct?.listAddOnProductData?.forEach { addOnExisting ->
-                    for (addOnUiModel in addOnProductDataResult.aggregatedData.selectedAddons) {
+
+                for (addOnUiModel in addOnProductDataResult.aggregatedData.selectedAddons) {
+                    needUpdateAddOnItem.second?.addOnProduct?.listAddOnProductData?.forEach { addOnExisting ->
                         if (addOnExisting.type == addOnUiModel.addOnType) {
                             addOnExisting.apply {
                                 id = addOnUiModel.id.toLongOrZero()
@@ -4335,23 +4348,24 @@ class ShipmentFragment :
                                 status = addOnUiModel.getSaveAddonSelectedStatus().value
                             }
                         }
+                    }
 
-                        if (addOnUiModel.addOnType == PRODUCT_PROTECTION_INSURANCE_TYPE) {
-                            isProteksiProdukUpdated = true
-                            if (addOnUiModel.getSaveAddonSelectedStatus().value == ADD_ON_PRODUCT_STATUS_CHECK ||
-                                addOnUiModel.getSaveAddonSelectedStatus().value == ADD_ON_PRODUCT_STATUS_MANDATORY
-                            ) {
-                                updatedCartItemModel = needUpdateAddOnItem.second?.copy(
-                                    isProtectionOptIn = true
-                                )
-                            } else {
-                                updatedCartItemModel = needUpdateAddOnItem.second?.copy(
-                                    isProtectionOptIn = false
-                                )
-                            }
+                    if (addOnUiModel.addOnType == PRODUCT_PROTECTION_INSURANCE_TYPE) {
+                        isProteksiProdukUpdated = true
+                        updatedCartItemModel = if (addOnUiModel.getSaveAddonSelectedStatus().value == ADD_ON_PRODUCT_STATUS_CHECK ||
+                            addOnUiModel.getSaveAddonSelectedStatus().value == ADD_ON_PRODUCT_STATUS_MANDATORY
+                        ) {
+                            needUpdateAddOnItem.second?.copy(
+                                isProtectionOptIn = true
+                            )
+                        } else {
+                            needUpdateAddOnItem.second?.copy(
+                                isProtectionOptIn = false
+                            )
                         }
                     }
                 }
+
                 if (isProteksiProdukUpdated) {
                     updatedCartItemModel?.let { shipmentAdapter.onCheckPurchaseProtection(needUpdateAddOnItem.first, it) }
                 } else {

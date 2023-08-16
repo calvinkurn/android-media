@@ -21,6 +21,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -68,6 +69,7 @@ import com.tokopedia.topads.dashboard.view.fragment.TopAdsDashboardBerandaFragme
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightShopKeywordRecommendationFragment
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsRecommendationFragment
+import com.tokopedia.topads.dashboard.view.listener.RecommendationWidgetCTAListener
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.CustomDatePicker
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
@@ -100,7 +102,8 @@ class TopAdsDashboardActivity :
     TopAdsProductIklanFragment.AppBarAction,
     TopAdsProductIklanFragment.AdInfo,
     TopAdsHeadlineBaseFragment.AppBarActionHeadline,
-    CustomDatePicker.ActionListener {
+    CustomDatePicker.ActionListener,
+    RecommendationWidgetCTAListener {
 
     private var appBarLayout: AppBarLayout? = null
     private var tabLayout: TabsUnify? = null
@@ -672,5 +675,10 @@ class TopAdsDashboardActivity :
                 is TopAdsDashboardBerandaFragment -> (frag.fragment as TopAdsDashboardBerandaFragment).loadSummaryStats()
             }
         }
+    }
+
+    override fun onWidgetCTAClick() {
+        ((viewPager.adapter as TopAdsDashboardBasePagerAdapter).getItem(CONST_3) as? RecommendationFragment)?.selectTab(Int.ONE)
+        switchTab(INSIGHT_PAGE)
     }
 }

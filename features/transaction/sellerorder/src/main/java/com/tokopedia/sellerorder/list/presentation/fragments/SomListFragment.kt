@@ -204,6 +204,7 @@ open class SomListFragment :
                     putString(TAB_STATUS, bundle.getString(TAB_STATUS))
                     putString(QUERY_PARAM_SEARCH, bundle.getString(QUERY_PARAM_SEARCH))
                     putString(FILTER_ORDER_TYPE, bundle.getString(FILTER_ORDER_TYPE))
+                    putString(SomConsts.COACHMARK_KEY, bundle.getString(SomConsts.COACHMARK_KEY))
                 }
             }
         }
@@ -270,6 +271,11 @@ open class SomListFragment :
         somListBinding?.root?.context?.let {
             CoachMark2(it)
         }
+    }
+
+    // The isEnabledCoachmark allows the EP team to automate tests with coachmark hiding on the SOM Page
+    private val isEnabledCoachmark: Boolean by lazy {
+        arguments?.getString(SomConsts.COACHMARK_KEY).orEmpty() != SomConsts.COACHMARK_DISABLED
     }
 
     protected var somListBinding by autoClearedNullable<FragmentSomListBinding> {
@@ -951,7 +957,7 @@ open class SomListFragment :
         setupSearchBar()
         setupListeners()
         setupMasks()
-        coachMarkManager = SomListCoachMarkManager(somListBinding, userSession.userId)
+        coachMarkManager = SomListCoachMarkManager(somListBinding, userSession.userId, isEnabledCoachmark)
     }
 
     private fun setupMasks() {
@@ -2937,7 +2943,7 @@ open class SomListFragment :
     }
 
     private fun showCoachMarkAutoTabbing(highLightStatusKey: String) {
-        if (highLightStatusKey in listOf(STATUS_NEW_ORDER, KEY_CONFIRM_SHIPPING)) {
+        if (isEnabledCoachmark && highLightStatusKey in listOf(STATUS_NEW_ORDER, KEY_CONFIRM_SHIPPING)) {
             context?.let {
                 if (!CoachMarkPreference.hasShown(it, SHARED_PREF_SOM_LIST_TAB_COACH_MARK)) {
                     val coachMarkMessage = getCoachMarkMessageAutoTabbing(it, highLightStatusKey)

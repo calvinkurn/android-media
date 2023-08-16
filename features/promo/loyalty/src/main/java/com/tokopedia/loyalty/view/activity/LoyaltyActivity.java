@@ -301,11 +301,11 @@ public class LoyaltyActivity extends BaseSimpleActivity
 
     private void setTabProperties() {
         indicator.setTabMode(TabLayout.MODE_FIXED);
-        indicator.setSelectedTabIndicatorColor(ContextCompat.getColor(this, R.color.tkpd_main_green));
+        indicator.setSelectedTabIndicatorColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.tkpd_main_green));
         indicator.setTabTextColors(
-                ContextCompat.getColor(this, R.color.black_38),
-                ContextCompat.getColor(this, R.color.tkpd_main_green));
-        indicator.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
+                ContextCompat.getColor(this, com.tokopedia.design.R.color.black_38),
+                ContextCompat.getColor(this, com.tokopedia.design.R.color.tkpd_main_green));
+        indicator.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.white));
     }
 
 
@@ -684,14 +684,14 @@ public class LoyaltyActivity extends BaseSimpleActivity
     private ShowCaseDialog createShowCaseDialog() {
         return new ShowCaseBuilder()
                 .customView(R.layout.show_case_hachiko)
-                .titleTextColorRes(R.color.white)
+                .titleTextColorRes(com.tokopedia.design.R.color.white)
                 .spacingRes(R.dimen.spacing_show_case)
                 .arrowWidth(R.dimen.arrow_width_show_case)
-                .textColorRes(R.color.grey_400)
-                .shadowColorRes(R.color.shadow)
-                .backgroundContentColorRes(R.color.black)
+                .textColorRes(com.tokopedia.design.R.color.grey_400)
+                .shadowColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+                .backgroundContentColorRes(com.tokopedia.design.R.color.black)
                 .circleIndicatorBackgroundDrawableRes(R.drawable.selector_circle_green)
-                .textSizeRes(R.dimen.sp_12)
+                .textSizeRes(com.tokopedia.design.R.dimen.dp_12)
                 .finishStringRes(R.string.show_case_finish)
                 .useCircleIndicator(true)
                 .clickable(true)
