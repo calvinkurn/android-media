@@ -32,7 +32,19 @@ fun StoriesDetailTimer(
     data: StoriesDetailUiModel,
     timerFinished: () -> Unit,
 ) {
-    val anim = remember(data.selected) { Animatable(0F) }
+    /**
+     * TODO
+     * pause mechanism still buggy because we depend
+     * on data to reset timer
+     *
+     * current -> everytime user pause will reset timer and
+     * trigger timerFinished because anim.target value will be 0
+     * look at line (63); if (anim.value == anim.targetValue) timerFinished.invoke()
+     *
+     * expected -> every state should be restart timer but pause state
+     * how? (don't tell me to not using compose >,<)
+     */
+    val anim = remember(data) { Animatable(0F) }
 
     LaunchedEffect(data) {
         when (data.event) {

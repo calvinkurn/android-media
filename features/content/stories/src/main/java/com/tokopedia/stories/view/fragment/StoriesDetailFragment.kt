@@ -159,6 +159,10 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun pauseStories() = with(binding) {
+        /**
+         * TODO
+         * un-comment later still on development ehe :3
+         */
 //        icClose.hide()
 //        rvStoriesCategory.hide()
 //        cvStoriesDetailTimer.hide()
@@ -166,9 +170,13 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun resumeStories() = with(binding) {
-        icClose.show()
-        rvStoriesCategory.show()
-        cvStoriesDetailTimer.show()
+        /**
+         * TODO
+         * un-comment later still on development ehe :3
+         */
+//        icClose.show()
+//        rvStoriesCategory.show()
+//        cvStoriesDetailTimer.show()
         viewModelAction(ResumeStories)
     }
 
