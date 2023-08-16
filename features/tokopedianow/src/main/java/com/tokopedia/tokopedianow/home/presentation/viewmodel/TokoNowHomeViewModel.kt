@@ -163,7 +163,7 @@ class TokoNowHomeViewModel @Inject constructor(
     updateCartUseCase: UpdateCartUseCase,
     deleteCartUseCase: DeleteCartUseCase,
     affiliateService: NowAffiliateService,
-    getTargetedTickerUseCase: GetTargetedTickerUseCase,
+    getTargetedTickerUseCase: GetTargetedTickerUseCase
 ) : BaseTokoNowViewModel(
     addToCartUseCase,
     updateCartUseCase,
@@ -235,12 +235,15 @@ class TokoNowHomeViewModel @Inject constructor(
     private var getMiniCartJob: Job? = null
     private var switchProductCarouselChipJob: Job? = null
 
+    var isEmptyState = false
+
     fun trackOpeningScreen(screenName: String) {
         _openScreenTracker.value = screenName
     }
 
     fun getLoadingState() {
         channelToken = ""
+        isEmptyState = false
 
         homeLayoutItemList.addLoadingIntoList(addressData)
         val data = HomeLayoutListUiModel(
@@ -253,6 +256,7 @@ class TokoNowHomeViewModel @Inject constructor(
 
     fun getEmptyState(@HomeStaticLayoutId id: String, serviceType: String) {
         launchCatchError(block = {
+            isEmptyState = true
             homeLayoutItemList.clear()
             homeLayoutItemList.addEmptyStateIntoList(id, serviceType)
             val data = HomeLayoutListUiModel(
@@ -300,7 +304,7 @@ class TokoNowHomeViewModel @Inject constructor(
                 response = homeLayoutResponse,
                 removeAbleWidgets = removeAbleWidgets,
                 miniCartData = miniCartData,
-                addressData = addressData,
+                localCacheModel = localCacheModel,
                 isLoggedIn = userSession.isLoggedIn,
                 hasBlockedAddToCart = hasBlockedAddToCart,
                 tickerList = tickerData?.second.orEmpty(),
@@ -989,7 +993,7 @@ class TokoNowHomeViewModel @Inject constructor(
         return asyncCatchError(block = {
             val playWidgetUiModel = getPlayWidget(item, isAutoRefresh = false)
 
-            if(playWidgetUiModel.playWidgetState.model.items.isNotEmpty()) {
+            if (playWidgetUiModel.playWidgetState.model.items.isNotEmpty()) {
                 homeLayoutItemList.mapPlayWidgetData(playWidgetUiModel)
             } else {
                 homeLayoutItemList.removeItem(item.id)
@@ -1382,7 +1386,7 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     private fun updateAtcQuantity(data: HomeLayoutListUiModel) {
-        if(getHomeLayoutJob?.isCompleted == true) {
+        if (getHomeLayoutJob?.isCompleted == true) {
             _atcQuantity.postValue(Success(data))
         }
     }

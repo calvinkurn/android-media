@@ -1764,25 +1764,29 @@ class TokoNowHomeFragment :
                         }
 
                         override fun onSwitchToLightToolbar() {
-                            if(context.isDarkMode()) {
+                            if (context.isDarkMode()) {
                                 toolbar.setBackButtonColor(
-                                    com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+                                    com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                                )
                             } else {
                                 toolbar.setBackButtonColor(
-                                    com.tokopedia.unifyprinciples.R.color.Unify_Static_Black)
+                                    com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
+                                )
                             }
                             switchToLightToolbar()
                         }
 
                         override fun onSwitchToDarkToolbar() {
-                            if(localCacheModel?.isOutOfCoverage() == true && !context.isDarkMode()) {
+                            if (viewModelTokoNow.isEmptyState && !context.isDarkMode()) {
                                 toolbar.setBackButtonColor(
-                                    com.tokopedia.unifyprinciples.R.color.Unify_Static_Black)
+                                    com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
+                                )
                                 toolbar.switchToLightToolbar()
                                 switchToLightToolbar()
                             } else {
                                 toolbar.setBackButtonColor(
-                                    com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+                                    com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                                )
                                 switchToDarkToolbar()
                             }
                             navToolbar?.hideShadow()
