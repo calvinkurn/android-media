@@ -5,13 +5,18 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.style.DynamicDrawableSpan
+import android.text.style.ForegroundColorSpan
 import android.text.style.ImageSpan
 import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
+import androidx.core.content.ContextCompat
+import androidx.core.text.bold
+import androidx.core.text.color
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.databinding.ItemCheckoutProductBinding
 import com.tokopedia.checkout.databinding.LayoutCheckoutProductBinding
@@ -33,7 +38,6 @@ import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.databinding.ItemAddOnProductBinding
 import com.tokopedia.purchase_platform.common.utils.getHtmlFormat
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
-import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -213,15 +217,13 @@ class CheckoutProductViewHolder(
 
         with(bmgmBinding) {
             ivBmgmProductImage.setImageUrl(product.imageUrl)
-            tvBmgmProductName.text = "Product Name"
-            tvBmgmProductPrice.text = "Rp 123.456.789"
-            tvBmgmOptionalNoteToSeller.text = "Product Note"
+            tvBmgmProductName.text = product.name
 
             if (product.ethicalDrugDataModel.needPrescription && product.ethicalDrugDataModel.iconUrl.isNotEmpty()) {
-                product.ethicalDrugDataModel.iconUrl.getBitmapImageUrl(productBinding.root.context) {
+                product.ethicalDrugDataModel.iconUrl.getBitmapImageUrl(bmgmBinding.root.context) {
                     try {
-                        productBinding.tvProductName.text = SpannableStringBuilder("  ${product.name}").apply {
-                            setSpan(ImageSpan(productBinding.root.context, it, DynamicDrawableSpan.ALIGN_CENTER), 0, 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+                        tvBmgmProductName.text = SpannableStringBuilder("  ${product.name}").apply {
+                            setSpan(ImageSpan(bmgmBinding.root.context, it, DynamicDrawableSpan.ALIGN_CENTER), 0, 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
                         }
                     } catch (t: Throwable) {
                         t.printStackTrace()
@@ -233,13 +235,20 @@ class CheckoutProductViewHolder(
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(product.price, false)
                     .removeDecimalSuffix()
             val qty = product.quantity
-            productBinding.tvProductPrice.text = "$qty x $priceInRp"
+            tvBmgmProductPrice.text = "$qty x $priceInRp"
 
             tvBmgmVariant.shouldShowWithAction(product.variant.isNotBlank()) {
-                tvBmgmVariant.text = "Product Variant"
+                tvBmgmVariant.text = product.variant
             }
             tvBmgmOptionalNoteToSeller.shouldShowWithAction(product.noteToSeller.isNotEmpty()) {
                 tvBmgmOptionalNoteToSeller.text = "\"${product.noteToSeller}\""
+            }
+
+            if (product.shouldShowBmgmInfo) {
+                (vBmgmProductSeparator.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(itemView.resources.displayMetrics)
+                (vBmgmProductSeparator.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(itemView.resources.displayMetrics)
+            } else {
+                (vBmgmProductSeparator.layoutParams as? MarginLayoutParams)?.topMargin = 0
             }
 
             renderAddOnBMGM(product)
@@ -316,8 +325,13 @@ class CheckoutProductViewHolder(
     private fun renderBMGMGroupInfo(product: CheckoutProductModel) {
         with(binding) {
             if (product.shouldShowBmgmInfo) {
+                val color = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                val spannedTitle = SpannableStringBuilder()
+                    .color(color) { bold { append("${product.bmgmOfferName} • ") } }
+                    .color(color) { append(product.bmgmOfferMessage) }
+
                 ivCheckoutBmgmBadge.setImageUrl(product.bmgmIconUrl)
-                tvCheckoutBmgmTitle.text = product.bmgmTitle
+                tvCheckoutBmgmTitle.text = spannedTitle
                 ivCheckoutBmgmDetail.setOnClickListener {
                     // TODO: [Misael] Applink show mini cart detail punya ka Ilham
                 }
@@ -536,7 +550,7 @@ class CheckoutProductViewHolder(
                 addOnProduct.listAddOnProductData.forEach { addon ->
                     if (addon.name.isNotEmpty()) {
                         val addOnView =
-                            ItemAddOnProductBinding.inflate(layoutInflater, productBinding.llAddonProductItems, false)
+                            ItemAddOnProductBinding.inflate(layoutInflater, llAddonBmgmProductItems, false)
                         addOnView.apply {
                             // TODO: [Misael ini sebelumnya di comment (ngga ada addon.iconUrl jg), tanya Hansen nnti
                             icProductAddon.setImageUrl(addon.iconUrl)

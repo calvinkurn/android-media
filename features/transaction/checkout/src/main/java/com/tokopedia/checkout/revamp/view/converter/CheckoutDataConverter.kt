@@ -523,7 +523,9 @@ class CheckoutDataConverter @Inject constructor() {
             isFreeShippingPlus = groupShop.shipmentInformationData.freeShippingGeneral.isBoTypePlus(),
             shouldShowGroupInfo = index == 0,
             isBMGMItem = product.isBmgmItem,
-            bmgmTitle = product.bmgmTitle,
+            bmgmOfferName = product.bmgmOfferName,
+            bmgmOfferMessage = product.bmgmOfferMessage,
+            bmgmItemPosition = product.bmgmItemPosition,
             bmgmIconUrl = product.bmgmIconUrl,
             bmgmTotalDiscount = product.bmgmTotalDiscount,
             shouldShowBmgmInfo = product.bmgmItemPosition == BMGM_ITEM_HEADER

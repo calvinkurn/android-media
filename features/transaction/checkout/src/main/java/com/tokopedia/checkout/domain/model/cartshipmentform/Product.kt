@@ -65,7 +65,8 @@ data class Product(
     // bmgm
     var isBmgmItem: Boolean = false,
     var bmgmIconUrl: String = "",
-    var bmgmTitle: String = "",
+    var bmgmOfferName: String = "",
+    var bmgmOfferMessage: String = "",
     var bmgmItemPosition: Int = 0,
     var bmgmTotalDiscount: Double = 0.0,
 

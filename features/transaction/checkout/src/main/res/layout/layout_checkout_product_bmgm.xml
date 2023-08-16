@@ -7,11 +7,11 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_bmgm_product_image"
-        android:layout_width="66dp"
-        android:layout_height="66dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toEndOf="@id/v_bmgm_product_separator"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription"
         tools:src="@color/Unify_G400" />
@@ -58,6 +58,20 @@
         app:typographyType="display_3"
         app:typographyWeight="bold"
         tools:text="1 x Rp200.000" />
+
+    <View
+        android:id="@+id/v_bmgm_product_separator"
+        android:layout_width="2dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/Unify_NN50"
+        android:fillViewport="true"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_bmgm_optional_note_to_seller"

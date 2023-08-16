@@ -86,9 +86,11 @@ data class CheckoutProductModel(
 
     // bmgm data
     val isBMGMItem: Boolean = false,
-    val bmgmTitle: String = "",
+    val bmgmOfferName: String = "",
+    val bmgmOfferMessage: String = "",
     val bmgmIconUrl: String = "",
     val bmgmTotalDiscount: Double = 0.0,
+    val bmgmItemPosition: Int = 0,
     val shouldShowBmgmInfo: Boolean = false,
 
     // shop data
