@@ -129,7 +129,7 @@ class ShopHomeProductCarouselViewPagerViewHolder(
             fragment.setOnProductClick { selectedShowcase -> listener.onProductCarouselProductClick(selectedShowcase) }
             fragment.setOnVerticalBannerClick { verticalBanner -> listener.onProductCarouselVerticalBannerClick(verticalBanner) }
 
-            val displayedTabName = currentTab.name
+            val displayedTabName = currentTab.label
             pages.add(Pair(displayedTabName, fragment))
         }
 
