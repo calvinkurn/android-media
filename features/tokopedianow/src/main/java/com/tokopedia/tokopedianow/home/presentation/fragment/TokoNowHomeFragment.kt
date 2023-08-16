@@ -887,6 +887,7 @@ class TokoNowHomeFragment :
                 adapter = this@TokoNowHomeFragment.adapter
                 rvLayoutManager = CustomLinearLayoutManager(it)
                 layoutManager = rvLayoutManager
+                itemAnimator = null
             }
 
             rvHome?.setItemViewCacheSize(ITEM_VIEW_CACHE_SIZE)
