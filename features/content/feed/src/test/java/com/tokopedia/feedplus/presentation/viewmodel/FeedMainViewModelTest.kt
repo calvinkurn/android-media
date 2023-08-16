@@ -10,7 +10,7 @@ import com.tokopedia.feedplus.presentation.model.ActiveTabSource
 import com.tokopedia.feedplus.presentation.model.CreateContentType
 import com.tokopedia.feedplus.presentation.model.CreatorType
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
-import com.tokopedia.feedplus.presentation.onboarding.OnboardingPreferences
+import com.tokopedia.feedplus.presentation.onboarding.OnBoardingPreferences
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.user.session.UserSessionInterface
@@ -46,7 +46,7 @@ class FeedMainViewModelTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val scope = TestScope(testDispatcher.io)
-    private val onBoardingPreferences: OnboardingPreferences = mockk()
+    private val onBoardingPreferences: OnBoardingPreferences = mockk()
     private val userSession: UserSessionInterface = mockk()
     private val uiEventManager: UiEventManager<FeedMainEvent> = mockk()
 
@@ -60,7 +60,7 @@ class FeedMainViewModelTest {
             userSession.isLoggedIn
         } returns true
         coEvery {
-            onBoardingPreferences.hasShownSwipeOnboarding()
+            onBoardingPreferences.hasShownSwipeOnBoarding()
         } returns false
 
         viewModel = FeedMainViewModel(
@@ -79,7 +79,7 @@ class FeedMainViewModelTest {
         val name = "Muhammad Furqan"
         coEvery { userSession.name } returns name
         coEvery { userSession.isLoggedIn } returns true
-        coEvery { onBoardingPreferences.setHasShownSwipeOnboarding() } coAnswers {}
+        coEvery { onBoardingPreferences.setHasShownSwipeOnBoarding() } coAnswers {}
         coEvery { uiEventManager.emitEvent(any()) } coAnswers {}
 
         // when

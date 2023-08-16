@@ -17,7 +17,7 @@ import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.model.FeedTabModel
 import com.tokopedia.feedplus.presentation.model.MetaModel
 import com.tokopedia.feedplus.presentation.model.SwipeOnboardingStateModel
-import com.tokopedia.feedplus.presentation.onboarding.OnboardingPreferences
+import com.tokopedia.feedplus.presentation.onboarding.OnBoardingPreferences
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
@@ -41,10 +41,10 @@ class FeedMainViewModel @AssistedInject constructor(
     @Assisted val activeTabSource: ActiveTabSource,
     private val repository: FeedRepository,
     private val deletePostCacheUseCase: DeleteMediaPostCacheUseCase,
-    private val onboardingPreferences: OnboardingPreferences,
+    private val onBoardingPreferences: OnBoardingPreferences,
     private val userSession: UserSessionInterface,
     private val uiEventManager: UiEventManager<FeedMainEvent>
-) : ViewModel(), OnboardingPreferences by onboardingPreferences {
+) : ViewModel(), OnBoardingPreferences by onBoardingPreferences {
 
     @AssistedFactory
     interface Factory {
@@ -79,9 +79,9 @@ class FeedMainViewModel @AssistedInject constructor(
     val reportResponse: LiveData<Result<FeedComplaintSubmitReportResponse>>
         get() = _reportResponse
 
-    private val _swipeOnboardingState = MutableStateFlow(
+    private val _swipeOnBoardingState = MutableStateFlow(
         SwipeOnboardingStateModel.Empty.copy(
-            hasShown = onboardingPreferences.hasShownSwipeOnboarding() && userSession.isLoggedIn
+            hasShown = onBoardingPreferences.hasShownSwipeOnBoarding() && userSession.isLoggedIn
         )
     )
 
@@ -105,15 +105,15 @@ class FeedMainViewModel @AssistedInject constructor(
 
     init {
         viewModelScope.launch {
-            _swipeOnboardingState
+            _swipeOnBoardingState
                 .map { it.isEligibleToShow }
                 .distinctUntilChanged()
                 .collectLatest { isEligible ->
                     if (!isEligible) return@collectLatest
                     uiEventManager.emitEvent(FeedMainEvent.ShowSwipeOnboarding)
 
-                    if (userSession.isLoggedIn) onboardingPreferences.setHasShownSwipeOnboarding()
-                    _swipeOnboardingState.update { it.copy(hasShown = true) }
+                    if (userSession.isLoggedIn) onBoardingPreferences.setHasShownSwipeOnBoarding()
+                    _swipeOnBoardingState.update { it.copy(hasShown = true) }
                 }
         }
     }
@@ -193,13 +193,13 @@ class FeedMainViewModel @AssistedInject constructor(
     }
 
     fun onPostDataLoaded(isLoaded: Boolean) {
-        _swipeOnboardingState.update {
+        _swipeOnBoardingState.update {
             it.copy(onDataLoaded = isLoaded)
         }
     }
 
     fun setReadyToShowOnboarding() {
-        _swipeOnboardingState.update {
+        _swipeOnBoardingState.update {
             it.copy(isReadyToShow = true)
         }
     }
