@@ -1,5 +1,6 @@
 package com.tokopedia.stories.view.adapter
 
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
@@ -7,6 +8,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.tokopedia.stories.view.fragment.StoriesDetailFragment
 import com.tokopedia.stories.view.model.StoriesGroupUiModel
+import com.tokopedia.stories.view.utils.STORIES_GROUP_ID
 
 class StoriesGroupPagerAdapter(
     private val fragmentManager: FragmentManager,
@@ -28,7 +30,11 @@ class StoriesGroupPagerAdapter(
         return StoriesDetailFragment.getFragment(
             fragmentManager = fragmentManager,
             classLoader = fragmentActivity.classLoader,
-        )
+        ).apply {
+            arguments = Bundle().apply {
+                putString(STORIES_GROUP_ID, group.getOrNull(position)?.id.orEmpty())
+            }
+        }
     }
 
 }
