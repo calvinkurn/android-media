@@ -14,8 +14,10 @@ import com.tokopedia.pdpsimulation.activateCheckout.presentation.fragment.Activa
 import com.tokopedia.pdpsimulation.common.analytics.PayLaterAnalyticsBase
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
+import com.tokopedia.pdpsimulation.common.constants.PARAM_CATEGORY_ID
 import com.tokopedia.pdpsimulation.common.constants.PARAM_GATEWAY_CODE
 import com.tokopedia.pdpsimulation.common.constants.PARAM_GATEWAY_ID
+import com.tokopedia.pdpsimulation.common.constants.PARAM_PARENT_ID
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_ID
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_TENURE
 import com.tokopedia.pdpsimulation.common.di.component.DaggerPdpSimulationComponent
@@ -70,8 +72,9 @@ class OptimizedCheckoutActivity : BaseSimpleActivity(), HasComponent<PdpSimulati
                 bundle.putString(PARAM_PRODUCT_ID, it.getString(PARAM_PRODUCT_ID))
                 bundle.putString(PARAM_PRODUCT_TENURE, it.getString(PARAM_PRODUCT_TENURE))
                 bundle.putString(PARAM_GATEWAY_CODE, it.getString(PARAM_GATEWAY_CODE))
+                bundle.putString(PARAM_PARENT_ID, it.getString(PARAM_PARENT_ID))
+                bundle.putString(PARAM_CATEGORY_ID, it.getString(PARAM_CATEGORY_ID))
             }
-
 
             return ActivationCheckoutFragment.newInstance(bundle)
         }

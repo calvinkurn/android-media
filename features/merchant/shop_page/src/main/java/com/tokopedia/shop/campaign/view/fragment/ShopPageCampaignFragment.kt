@@ -144,7 +144,7 @@ class ShopPageCampaignFragment :
     private var viewModelCampaign: ShopCampaignViewModel? = null
     private var isDarkTheme: Boolean = false
 
-    private val shopCampaignTabAdapter: ShopCampaignTabAdapter
+    val shopCampaignTabAdapter: ShopCampaignTabAdapter
         get() = adapter as ShopCampaignTabAdapter
     private val shopCampaignTabAdapterTypeFactory by lazy {
         ShopCampaignTabAdapterTypeFactory(

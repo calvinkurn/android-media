@@ -22,7 +22,7 @@ class TopAdsInfoBottomSheet {
     fun setView(context: Context) {
         dialog?.setOnShowListener { dialogInterface: DialogInterface ->
             val dialog = dialogInterface as BottomSheetDialog
-            val frameLayout = dialog.findViewById<FrameLayout>(R.id.design_bottom_sheet)
+            val frameLayout = dialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
             frameLayout?.let {
                 val behavior =
                     BottomSheetBehavior.from(frameLayout)
