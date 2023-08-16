@@ -227,14 +227,8 @@ object DeeplinkMainApp {
             }
         ),
         "content" to mutableListOf(
-            DLP.matchPattern("explore/{tab_name}/{category_id}") { deeplink: String ->
-                DeeplinkMapperHome.getRegisteredNavigationHomeContentExplore(deeplink)
-            },
-            DLP.matchPattern("detail/{source_id}") { deeplink: String ->
-                DeepLinkMapperFeed.getRegisteredFeed(deeplink)
-            },
-            DLP.matchPattern("{source_id}") { deeplink: String ->
-                DeeplinkMapperContent.getContentFeedDeeplink(deeplink)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperContent.getNavContentFromAppLink(deeplink)
             }
         ),
         "customercare" to mutableListOf(
@@ -287,23 +281,8 @@ object DeeplinkMainApp {
             }
         ),
         "feed" to mutableListOf(
-            DLP.matchPattern("") { _: String ->
-                DeeplinkMapperHome.getRegisteredNavigationHomeFeed()
-            },
-            DLP.matchPattern("explore") { _: String ->
-                DeeplinkMapperContent.getRegisteredNavigationHomeFeedExplore()
-            },
-            DLP.matchPattern("video") { deeplink: String ->
-                DeeplinkMapperContent.getRegisteredNavigationHomeFeedVideo(deeplink)
-            },
-            DLP.startsWith("following") { deeplink: String ->
-                DeeplinkMapperContent.getRegisteredNavigationHomeFeedFollowing(deeplink)
-            },
-            DLP.startsWith("creation-product-search") { deeplink: String ->
-                DeeplinkMapperContent.getContentCreatePostDeepLink(deeplink)
-            },
-            DLP.startsWith("creation-shop-search") { deeplink: String ->
-                DeeplinkMapperContent.getContentCreatePostDeepLink(deeplink)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperContent.getNavContentFromAppLink(deeplink)
             }
         ),
         "feedcommunicationdetail" to mutableListOf(
