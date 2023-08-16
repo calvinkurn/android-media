@@ -21,8 +21,10 @@
             android:id="@+id/icShopGrade"
             android:layout_width="16dp"
             android:layout_height="16dp"
+            android:layout_marginEnd="4dp"
             app:unify_image_corner_radius="0"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tvShopName"
             app:layout_constraintTop_toTopOf="@id/tvShopName"
             app:layout_constraintBottom_toBottomOf="@id/tvShopName" />
 
@@ -31,7 +33,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:layout_marginStart="4dp"
             app:layout_constraintStart_toEndOf="@id/icShopGrade"
             app:layout_constraintEnd_toStartOf="@id/tvOrderNumber"
             app:layout_constraintTop_toTopOf="parent"
@@ -57,9 +58,9 @@
             android:id="@+id/tvInvoiceNumber"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="6dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvShopName"
+            app:layout_constraintTop_toBottomOf="@id/icShopGrade"
             android:textColor="@color/Unify_NN600"
             app:typographyType="small"
             tools:text="INV/20161025/XVI/X/55069657 "/>
