@@ -67,10 +67,6 @@ class BmgmMiniCartDataMapper @Inject constructor() {
         return BmgmMiniCartDataUiModel()
     }
 
-    fun mapToCommonDataModel(): BmgmCommonDataModel {
-        return BmgmCommonDataModel()
-    }
-
     fun getDummy(): BmgmMiniCartDataUiModel {
         return BmgmMiniCartDataUiModel(
             offerId = 1,

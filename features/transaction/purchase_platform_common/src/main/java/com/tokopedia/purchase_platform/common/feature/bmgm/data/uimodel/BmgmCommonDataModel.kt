@@ -47,7 +47,6 @@ class BmgmCommonDataModel(
         val productName: String = "",
         val productImage: String = "",
         val productPrice: Double = 0.0,
-        val productPriceFmt: String = "",
         val quantity: Int = 0
     ) {
         fun getProductPriceFmt(): String {
