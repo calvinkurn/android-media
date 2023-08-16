@@ -22,7 +22,6 @@ import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData.Companion.BUNDLING_ITEM_FOOTER
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData.Companion.BUNDLING_ITEM_HEADER
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -99,8 +98,11 @@ class CartItemViewHolder constructor(
             with(binding) {
                 checkboxProduct.gone()
                 vBundlingProductSeparator.show()
-                val marginStart =
+                val marginStart = if (data.isError) {
+                    IMAGE_PRODUCT_MARGIN_START_6.dpToPx(itemView.resources.displayMetrics)
+                } else {
                     BUNDLING_SEPARATOR_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
+                }
                 val constraintSet = ConstraintSet()
                 constraintSet.clone(containerProductInformation)
                 constraintSet.connect(
@@ -320,7 +322,11 @@ class CartItemViewHolder constructor(
     private fun renderBundlingInfo(data: CartItemHolderData) {
         if (data.isBundlingItem && data.bundlingItemPosition == BUNDLING_ITEM_HEADER) {
             binding.productBundlingInfo.show()
-            binding.checkboxBundle.show()
+            if (data.isError) {
+                binding.checkboxBundle.gone()
+            } else {
+                binding.checkboxBundle.show()
+            }
 
             renderBundlingInfoDetail(data)
         } else {
@@ -519,7 +525,7 @@ class CartItemViewHolder constructor(
                         ConstraintSet.BOTTOM,
                         R.id.iu_image_product,
                         ConstraintSet.BOTTOM,
-                        MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
+                        0
                     )
                 } else {
                     connect(
@@ -943,8 +949,7 @@ class CartItemViewHolder constructor(
                     )
                     data.isAlreadyShowMaximumQuantityPurchasedError = true
                     binding.labelQuantityError.show()
-                }
-                else if (lastQty > data.minOrder && lastQty < data.maxOrder) {
+                } else if (lastQty > data.minOrder && lastQty < data.maxOrder) {
                     data.isAlreadyShowMaximumQuantityPurchasedError = false
                     binding.labelQuantityError.gone()
                 }
@@ -1107,7 +1112,7 @@ class CartItemViewHolder constructor(
             setTextColor(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 )
             )
             show()
@@ -1145,13 +1150,29 @@ class CartItemViewHolder constructor(
     private fun renderContainer(cartItemHolderData: CartItemHolderData) {
         val layoutParams =
             binding.containerProductInformation.layoutParams as ViewGroup.MarginLayoutParams
+        val layoutParamsIuImageProduct =
+            binding.iuImageProduct.layoutParams as ViewGroup.MarginLayoutParams
         if (cartItemHolderData.isError) {
+            layoutParamsIuImageProduct.topMargin = 0
             layoutParams.bottomMargin =
                 PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
         } else {
-            if (cartItemHolderData.isBundlingItem && cartItemHolderData.isMultipleBundleProduct && cartItemHolderData.bundlingItemPosition != BUNDLING_ITEM_FOOTER) {
-                layoutParams.bottomMargin = 0
+            if (cartItemHolderData.isBundlingItem && cartItemHolderData.isMultipleBundleProduct) {
+                if (cartItemHolderData.bundlingItemPosition != BUNDLING_ITEM_HEADER) {
+                    layoutParamsIuImageProduct.topMargin = IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
+                }
+                else {
+                    layoutParamsIuImageProduct.topMargin = 0
+                }
+
+                if (cartItemHolderData.bundlingItemPosition == BUNDLING_ITEM_FOOTER) {
+                    layoutParams.bottomMargin = PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
+                }
+                else {
+                    layoutParams.bottomMargin = 0
+                }
             } else {
+                layoutParamsIuImageProduct.topMargin = 0
                 layoutParams.bottomMargin = PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
             }
         }

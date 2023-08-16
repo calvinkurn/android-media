@@ -57,12 +57,12 @@ class CartActivity :
         bundle.putLong(EXTRA_PRODUCT_ID, productId)
         bundle.putBoolean(EXTRA_IS_FROM_CART_ACTIVITY, true)
         val isRevamp = CartCheckoutRevampRollenceManager(RemoteConfigInstance.getInstance().abTestPlatform).isRevamp()
-        if (isRevamp) {
+        return if (isRevamp) {
             revampFragment = CartRevampFragment.newInstance(bundle, "")
-            return revampFragment
+            revampFragment
         } else {
             fragment = CartFragment.newInstance(bundle, "")
-            return fragment
+            fragment
         }
     }
 

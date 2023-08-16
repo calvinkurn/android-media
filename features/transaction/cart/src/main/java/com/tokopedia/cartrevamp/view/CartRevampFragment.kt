@@ -10,6 +10,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -278,7 +279,6 @@ class CartRevampFragment :
         private const val SPAN_SIZE_ONE = 1
         private const val SPAN_SIZE_TWO = 2
 
-        const val HAS_ELEVATION = 9
         const val CART_TRACE = "mp_cart"
         const val CART_ALL_TRACE = "mp_cart_all"
         const val CART_PAGE = "cart"
@@ -567,7 +567,7 @@ class CartRevampFragment :
             if (isClickable) {
                 binding?.vDisabledGoToCourierPageButton?.setOnClickListener {
                     if (CartDataHelper.getAllAvailableCartItemData(viewModel.cartDataList.value)
-                            .isNotEmpty()
+                        .isNotEmpty()
                     ) {
                         showToastMessageGreen(getString(R.string.message_no_cart_item_selected))
                     }
@@ -1472,12 +1472,6 @@ class CartRevampFragment :
                     binding?.llPromoCheckout?.gone()
                 }
 
-                if (recyclerView.canScrollVertically(-1)) {
-                    disableSwipeRefresh()
-                } else {
-                    enableSwipeRefresh()
-                }
-
                 handleSelectedAmountVisibilityOnScroll(dy)
                 handlePromoButtonVisibilityOnScroll(dy)
                 handleFloatingSelectedAmountVisibility(recyclerView)
@@ -1958,7 +1952,6 @@ class CartRevampFragment :
             }
 
             if (promoTranslationLength != 0f) {
-
                 if (dy < 0 && valueY < initialPromoButtonPosition) {
                     // Prevent scroll up move button exceed initial view position
                     animatePromoButtonToStartingPosition()
@@ -1984,9 +1977,11 @@ class CartRevampFragment :
             CartDataHelper.hasSelectedCartItem(adapterData) &&
             firstVisibleItemData !is CartSelectedAmountHolderData
         ) {
+            disableSwipeRefresh()
             setTopLayoutVisibility(true)
         } else {
             setTopLayoutVisibility(false)
+            enableSwipeRefresh()
             handleSelectedAmountVisibilityOnIdle(RecyclerView.SCROLL_STATE_IDLE)
         }
     }
@@ -2294,13 +2289,13 @@ class CartRevampFragment :
                 is CartState.Success -> {
                     renderLoadGetCartDataFinish()
                     renderInitialGetCartListDataSuccess(state.data)
-                    stopCartPerformanceTrace(true)
+                    stopCartPerformanceTrace()
                 }
 
                 is CartState.Failed -> {
                     renderLoadGetCartDataFinish()
                     renderErrorInitialGetCartListData(state.throwable)
-                    stopCartPerformanceTrace(false)
+                    stopCartPerformanceTrace()
                 }
             }
         }
@@ -2782,6 +2777,7 @@ class CartRevampFragment :
             viewModel.removeProductByCartId(deletedCartIds, needRefresh, isFromGlobalCheckbox)
         removeLocalCartItem(updateListResult, forceExpandCollapsedUnavailableItems)
 
+        Log.d("<RESULT>", "onDeleteCartDataSuccess: ")
         hideProgressLoading()
 
         setTopLayoutVisibility()
@@ -3088,7 +3084,7 @@ class CartRevampFragment :
             CartDataHelper.getAllShopGroupDataList(updateListResult.third)
 
         // Check if cart list has exactly 1 shop, and it's a toko now
-        if (allShopGroupDataList[0].isTokoNow) {
+        if (allShopGroupDataList.isNotEmpty() && allShopGroupDataList[0].isTokoNow) {
             allShopGroupDataList[0].let {
                 val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(
                     it.cartString,
@@ -3312,9 +3308,7 @@ class CartRevampFragment :
 
         if (!hasCalledOnSaveInstanceState) {
             context?.let { context ->
-                fragmentManager?.let { fragmentManager ->
-                    showGlobalErrorBottomsheet(fragmentManager, context, ::retryGoToShipment)
-                }
+                showGlobalErrorBottomsheet(parentFragmentManager, context, ::retryGoToShipment)
             }
         }
     }
@@ -3394,7 +3388,7 @@ class CartRevampFragment :
 
             val onClickListener: (applied: Boolean) -> Unit = { applied ->
                 if (CartDataHelper.getSelectedCartItemData(viewModel.cartDataList.value)
-                        .isEmpty()
+                    .isEmpty()
                 ) {
                     showToastMessageGreen(getString(R.string.promo_choose_item_cart))
                     PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
@@ -3423,7 +3417,7 @@ class CartRevampFragment :
             } else {
                 isApplied = false
                 if (CartDataHelper.getSelectedCartItemData(viewModel.cartDataList.value)
-                        .isEmpty()
+                    .isEmpty()
                 ) {
                     binding?.promoCheckoutBtnCart?.showInactive(
                         getString(R.string.promo_desc_no_selected_item),
@@ -4050,17 +4044,11 @@ class CartRevampFragment :
     }
 
     private fun setTopLayoutVisibility(isShow: Boolean) {
-        var isShowToolbarShadow = binding?.topLayoutShadow?.visibility == View.VISIBLE
-
         if (isShow) {
             binding?.rlTopLayout?.show()
-            if (binding?.appBarLayout?.elevation == HAS_ELEVATION.toFloat()) {
-                isShowToolbarShadow = true
-            }
         } else {
             binding?.rlTopLayout?.invisible()
         }
-
     }
 
     private fun showBottomSheetSummaryTransaction() {
@@ -4176,7 +4164,7 @@ class CartRevampFragment :
         showToastMessageRed("")
     }
 
-    private fun stopCartPerformanceTrace(isSuccessLoadCart: Boolean) {
+    private fun stopCartPerformanceTrace() {
         if (!isTraceCartStopped) {
             EmbraceMonitoring.stopMoments(EmbraceKey.KEY_MP_CART)
             cartPerformanceMonitoring?.stopTrace()
