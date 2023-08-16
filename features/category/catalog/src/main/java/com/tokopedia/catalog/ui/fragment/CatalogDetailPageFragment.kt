@@ -15,6 +15,7 @@ import com.tokopedia.catalogcommon.adapter.WidgetCatalogAdapter
 import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
+import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
 import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -76,6 +77,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment() {
             widgets.add(HeroBannerUiModel("bannercoy","","" ,"konten"))
             widgets.add(DummyUiModel("dummybann", "","","konten"))
             widgets.add(TopFeaturesUiModel.dummyTopFeatures())
+            widgets.add(SliderImageTextUiModel.dummySliderImageText())
             widgetAdapter.addWidget(widgets)
         }
 
