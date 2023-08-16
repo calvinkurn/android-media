@@ -5,7 +5,9 @@ import com.tokopedia.editor.R
 import com.tokopedia.editor.base.BaseEditorFragment
 import com.tokopedia.editor.databinding.FragmentImageMainEditorBinding
 import com.tokopedia.editor.ui.main.EditorParamFetcher
+import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
@@ -23,5 +25,15 @@ class ImageMainEditorFragment @Inject constructor(
     }
 
     override fun initObserver() {}
+
+    fun updateImage(newPath: String) {
+        binding?.imgSample?.let {
+            it.clearImage()
+            it.loadImage(newPath) {
+                useCache(false)
+                setCacheStrategy(MediaCacheStrategy.NONE)
+            }
+        }
+    }
 
 }

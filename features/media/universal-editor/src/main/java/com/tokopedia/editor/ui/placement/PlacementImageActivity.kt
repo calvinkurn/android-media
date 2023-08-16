@@ -3,8 +3,6 @@ package com.tokopedia.editor.ui.placement
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
@@ -13,6 +11,8 @@ import com.tokopedia.editor.R
 import com.tokopedia.editor.di.ModuleInjector
 import com.tokopedia.editor.ui.EditorFragmentProvider
 import com.tokopedia.editor.ui.EditorFragmentProviderImpl
+import com.tokopedia.editor.ui.model.ImagePlacementModel
+import com.tokopedia.picker.common.UniversalEditorParam
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
 import com.tokopedia.picker.common.component.ToolbarTheme
@@ -42,6 +42,7 @@ class PlacementImageActivity : BaseActivity(), NavToolbarComponent.Listener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_placement)
 
+        initBundle(savedInstanceState)
         initFragment()
         initView()
     }
@@ -49,8 +50,27 @@ class PlacementImageActivity : BaseActivity(), NavToolbarComponent.Listener {
     override fun onCloseClicked() {}
 
     override fun onContinueClicked() {
-        (supportFragmentManager.findFragmentById(R.id.fragment_view) as PlacementImageFragment).captureImage {
-            // TODO: send result
+        (supportFragmentManager.findFragmentById(R.id.fragment_view) as PlacementImageFragment).let {
+            it.captureImage { filePath ->
+                val intent = Intent()
+
+                val result = ImagePlacementModel(
+                    path = filePath ?: "",
+                    matrix = arrayOf()
+                )
+
+                intent.putExtra(PLACEMENT_RESULT_KEY, result)
+
+                setResult(0, intent)
+                finish()
+            }
+        }
+    }
+
+    private fun initBundle(savedInstanceState: Bundle?) {
+        (savedInstanceState?.getString(PLACEMENT_PARAM_KEY)
+            ?: intent?.getStringExtra(PLACEMENT_PARAM_KEY))?.also {
+            viewModel.imagePath = it
         }
     }
 
@@ -86,7 +106,8 @@ class PlacementImageActivity : BaseActivity(), NavToolbarComponent.Listener {
     }
 
     companion object {
-        const val INPUT_PLACEMENT_RESULT = "input_placement_result"
+        const val PLACEMENT_RESULT_KEY = "input_placement_result"
+        const val PLACEMENT_PARAM_KEY = "placement_param_key"
 
         fun create(context: Context): Intent {
             return Intent(context, PlacementImageActivity::class.java)

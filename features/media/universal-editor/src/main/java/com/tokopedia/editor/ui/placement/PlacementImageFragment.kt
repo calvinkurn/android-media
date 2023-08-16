@@ -10,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import com.tokopedia.editor.R
 import com.tokopedia.editor.base.BaseEditorFragment
 import com.tokopedia.editor.databinding.FragmentPlacementBinding
+import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.view.binding.viewBinding
 import com.yalantis.ucrop.view.TransformImageView
 import java.io.File
@@ -25,16 +26,16 @@ class PlacementImageFragment @Inject constructor() : BaseEditorFragment(R.layout
         super.onCreate(savedInstanceState)
     }
 
-    override fun initObserver() {
-
-    }
+    override fun initObserver() {}
 
     override fun initView() {
         viewBinding?.cropArea?.let { ucropRef ->
             ucropRef.getCropImageView()?.let { gestureCropImage ->
+
+                val outputPath = FileUtil.getTokopediaInternalDirectory(CACHE_FOLDER).path + RESULT_FILE_NAME
                 gestureCropImage.setImageUri(
-                    Uri.fromFile(File(sourceImage)),
-                    Uri.parse(resultImage)
+                    Uri.fromFile(File(viewModel.imagePath)),
+                    Uri.parse(outputPath)
                 )
 
                 gestureCropImage.setTransformImageListener(object :
@@ -64,7 +65,7 @@ class PlacementImageFragment @Inject constructor() : BaseEditorFragment(R.layout
     }
 
     companion object {
-        val sourceImage = "/storage/emulated/0/Pictures/iN76Hq7 (1).jpeg"
-        val resultImage = "/storage/emulated/0/Android/data/com.tokopedia.tkpd/cache/Tokopedia/Editor-Cache/stories_result.png"
+        private const val RESULT_FILE_NAME = "/stories_editor.png"
+        private const val CACHE_FOLDER = "Tokopedia"
     }
 }

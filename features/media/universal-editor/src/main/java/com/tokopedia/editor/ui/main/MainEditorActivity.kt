@@ -16,10 +16,10 @@ import com.tokopedia.editor.ui.EditorFragmentProvider
 import com.tokopedia.editor.ui.EditorFragmentProviderImpl
 import com.tokopedia.editor.ui.main.component.NavigationToolUiComponent
 import com.tokopedia.editor.ui.main.component.PagerContainerUiComponent
+import com.tokopedia.editor.ui.model.ImagePlacementModel
 import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.editor.ui.placement.PlacementImageActivity
 import com.tokopedia.editor.ui.text.InputTextActivity
-import com.tokopedia.editor.ui.widget.DynamicTextCanvasView
 import com.tokopedia.picker.common.EXTRA_UNIVERSAL_EDITOR_PARAM
 import com.tokopedia.picker.common.RESULT_UNIVERSAL_EDITOR
 import com.tokopedia.picker.common.UniversalEditorParam
@@ -84,7 +84,12 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
     private val placementIntent = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
-        // TODO, implement
+        val result = it.data?.getParcelableExtra<ImagePlacementModel>(PlacementImageActivity.PLACEMENT_RESULT_KEY)
+
+        if (result?.path?.isNotEmpty() == true) {
+            // TODO: only capable on single media, need improvement
+            pagerContainer.updateView(result.path)
+        }
     }
 
     private val viewModel: MainEditorViewModel by viewModels { viewModelFactory }
@@ -145,7 +150,9 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
             }
             ToolType.PLACEMENT -> {
                 val intent = PlacementImageActivity.create(this)
-                intent.putExtra(PLACEMENT_PARAM_KEY, "")
+
+                // need to improve for support multiple media
+                intent.putExtra(PlacementImageActivity.PLACEMENT_PARAM_KEY, viewModel.state.value.param.paths.first())
                 placementIntent.launch(intent)
             }
             ToolType.AUDIO_MUTE -> {}
@@ -189,9 +196,5 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
         return (1..length)
             .map { allowedChars.random() }
             .joinToString("")
-    }
-
-    companion object {
-        const val PLACEMENT_PARAM_KEY = "placement_param_key"
     }
 }

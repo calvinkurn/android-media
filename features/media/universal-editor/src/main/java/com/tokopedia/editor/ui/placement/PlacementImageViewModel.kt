@@ -4,4 +4,5 @@ import androidx.lifecycle.ViewModel
 import javax.inject.Inject
 
 class PlacementImageViewModel @Inject constructor(): ViewModel() {
+    var imagePath = ""
 }

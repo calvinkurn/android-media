@@ -13,9 +13,3 @@ data class ImageModel(
      */
     var texts: Map<String, InputTextModel> = emptyMap()
 ) : Parcelable
-
-@Parcelize
-data class ImagePlacementModel(
-    var x: Int,
-    var y: Int,
-) : Parcelable

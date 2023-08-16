@@ -50,7 +50,15 @@ open class CropImageViewStories : CropImageView {
 
     override fun setImageUri(imageUri: Uri, outputUri: Uri?) {
         outputPath = outputUri
-        super.setImageUri(imageUri, outputUri)
+
+        outputPath?.path?.let {
+            val file = File(it)
+            if (!file.isFile) {
+                file.createNewFile()
+            }
+        }
+
+        super.setImageUri(imageUri, outputPath)
     }
 
     override fun getMaxScale(): Float {
