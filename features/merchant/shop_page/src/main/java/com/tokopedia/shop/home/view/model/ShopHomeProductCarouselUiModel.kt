@@ -48,7 +48,8 @@ data class ShopHomeProductCarouselUiModel(
                 val isShowProductInfo: Boolean,
                 val bannerType: BannerType
             ) : Parcelable {
-                enum class BannerType(val id : String) {
+                @Parcelize
+                enum class BannerType(val id : String) : Parcelable  {
                     VERTICAL("vertical"),
                     NONE("")
                 }

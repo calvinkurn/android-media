@@ -30,8 +30,6 @@ class ShopProductCarouselTabViewModel @Inject constructor(
         private const val FIRST_LABEL_INDEX = 0
         private const val FIRST_PAGE = 1
         private const val PRODUCT_COUNT_TO_FETCH = 5
-        private const val SORT_ID_MOST_SOLD = 8
-        private const val SORT_ID_NEWEST = 2
         private const val LABEL_TITLE_PRODUCT_SOLD_COUNT = "Terjual"
     }
 
@@ -81,20 +79,30 @@ class ShopProductCarouselTabViewModel @Inject constructor(
         userAddress: LocalCacheModel,
         firstWidget: ShopHomeProductCarouselUiModel.Tab.ComponentList.Data
     ): List<ShopHomeProductCarouselProductCard> {
-        val productLinkType = firstWidget.linkType
+        val linkType = firstWidget.linkType
+        val showcaseId = if (linkType == "showcase") firstWidget.linkId.toString() else ShopPageConstant.ALL_SHOWCASE_ID
+        val isShowcaseLinkType = linkType == "showcase"
 
-        val sortId = when (productLinkType) {
-            "terlaris" -> SORT_ID_MOST_SOLD
-            "terbaru" -> SORT_ID_NEWEST
-            else -> SORT_ID_MOST_SOLD
+        return if (isShowcaseLinkType) {
+            getShowcaseProducts(showcaseId)
+        } else {
+            val sortId = firstWidget.linkId
+            getSortedProducts(shopId, showcaseId, userAddress, sortId)
         }
+    }
 
+    private suspend fun getSortedProducts(
+        shopId: String,
+        showcaseId: String,
+        userAddress: LocalCacheModel,
+        sortId: Long
+    ): List<ShopHomeProductCarouselProductCard> {
         getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(
             shopId,
             ShopProductFilterInput().apply {
-                etalaseMenu = ShopPageConstant.ALL_SHOWCASE_ID
+                etalaseMenu = showcaseId
                 this.page = FIRST_PAGE
-                sort = sortId
+                sort = sortId.toInt()
                 perPage = PRODUCT_COUNT_TO_FETCH
                 userDistrictId = userAddress.district_id
                 userCityId = userAddress.city_id
@@ -122,6 +130,11 @@ class ShopProductCarouselTabViewModel @Inject constructor(
 
         return products
     }
+
+    private suspend fun getShowcaseProducts(showcaseId: String) : List<ShopHomeProductCarouselProductCard>{
+        return emptyList()
+    }
+
 
     private fun ShopProduct.soldCount() : String {
         val soldLabels = labelGroupList
