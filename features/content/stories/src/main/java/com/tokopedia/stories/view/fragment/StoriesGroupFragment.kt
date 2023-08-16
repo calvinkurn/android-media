@@ -14,21 +14,26 @@ import com.tokopedia.stories.databinding.FragmentStoriesGroupBinding
 import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.adapter.StoriesGroupPagerAdapter
 import com.tokopedia.stories.view.model.StoriesGroupUiModel
+import com.tokopedia.stories.view.utils.STORIES_GROUP_ID
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
+import com.tokopedia.stories.view.viewmodel.StoriesViewModelFactory
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 class StoriesGroupFragment @Inject constructor(
-    private val viewModelFactory: ViewModelProvider.Factory,
+    private val viewModelFactory: StoriesViewModelFactory.Creator,
 ) : TkpdBaseV4Fragment() {
+
+    private val groupId: String
+        get() = arguments?.getString(STORIES_GROUP_ID).orEmpty()
 
     private var _binding: FragmentStoriesGroupBinding? = null
     private val binding: FragmentStoriesGroupBinding
         get() = _binding!!
 
-    private val viewModel by activityViewModels<StoriesViewModel> { viewModelFactory }
+    private val viewModel by activityViewModels<StoriesViewModel> { viewModelFactory.create(groupId) }
 
     private val pagerAdapter: StoriesGroupPagerAdapter by lazy(LazyThreadSafetyMode.NONE) {
         StoriesGroupPagerAdapter(

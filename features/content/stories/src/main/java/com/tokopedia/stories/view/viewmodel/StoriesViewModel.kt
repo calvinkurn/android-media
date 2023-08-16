@@ -10,17 +10,24 @@ import com.tokopedia.stories.view.model.StoriesGroupUiModel
 import com.tokopedia.stories.view.model.StoriesUiState
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-class StoriesViewModel @Inject constructor(
+class StoriesViewModel @AssistedInject constructor(
     private val repository: StoriesRepository,
+    @Assisted groupId: String,
 ) : ViewModel() {
+    @AssistedFactory
+    interface Factory {
+        fun create(@Assisted groupId: String): StoriesViewModel
+    }
 
     private var shopId: String = ""
     private var storiesId: String = ""
