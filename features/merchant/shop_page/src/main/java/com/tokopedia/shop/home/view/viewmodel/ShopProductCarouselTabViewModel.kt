@@ -21,7 +21,7 @@ import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel.Tab.ComponentList.ComponentType
 
-class ShopProductCarouselViewModel @Inject constructor(
+class ShopProductCarouselTabViewModel @Inject constructor(
     private val dispatcherProvider: CoroutineDispatchers,
     private val getShopProductUseCase: GqlGetShopProductUseCase
 ) : BaseViewModel(dispatcherProvider.main) {
