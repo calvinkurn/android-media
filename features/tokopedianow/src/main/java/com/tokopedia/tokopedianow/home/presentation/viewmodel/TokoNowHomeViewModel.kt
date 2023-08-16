@@ -242,7 +242,7 @@ class TokoNowHomeViewModel @Inject constructor(
     fun getLoadingState() {
         channelToken = ""
 
-        homeLayoutItemList.addLoadingIntoList()
+        homeLayoutItemList.addLoadingIntoList(addressData)
         val data = HomeLayoutListUiModel(
             items = getHomeVisitableList(),
             state = TokoNowLayoutState.LOADING
@@ -300,7 +300,7 @@ class TokoNowHomeViewModel @Inject constructor(
                 response = homeLayoutResponse,
                 removeAbleWidgets = removeAbleWidgets,
                 miniCartData = miniCartData,
-                localCacheModel = localCacheModel,
+                addressData = addressData,
                 isLoggedIn = userSession.isLoggedIn,
                 hasBlockedAddToCart = hasBlockedAddToCart,
                 tickerList = tickerData?.second.orEmpty(),

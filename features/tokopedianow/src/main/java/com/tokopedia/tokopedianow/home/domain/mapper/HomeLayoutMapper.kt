@@ -41,6 +41,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowBundleUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
@@ -96,6 +97,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiM
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
+import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.HOME_HEADER
 import com.tokopedia.tokopedianow.home.domain.mapper.oldrepurchase.HomeRepurchaseMapper
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeHeaderUiModel
@@ -129,13 +131,14 @@ object HomeLayoutMapper {
         BUNDLING_WIDGET
     )
 
-    fun MutableList<HomeLayoutItemUiModel?>.addLoadingIntoList() {
+    fun MutableList<HomeLayoutItemUiModel?>.addLoadingIntoList(addressData: TokoNowLocalAddress) {
         val headerUiModel = findHeaderUiModel()
+        val warehouses = addressData.getWarehousesData()
         val loadingLayout = HomeLayoutItemUiModel(
             HomeLoadingStateUiModel(id = LOADING_STATE), HomeLayoutItemState.LOADED)
 
         clearHomeLayoutItemList()
-        addHeader(headerUiModel)
+        addHeader(headerUiModel, warehouses)
         add(loadingLayout)
     }
 
@@ -173,15 +176,18 @@ object HomeLayoutMapper {
         response: List<HomeLayoutResponse>,
         removeAbleWidgets: List<HomeRemoveAbleWidget>,
         miniCartData: MiniCartSimplifiedData?,
-        localCacheModel: LocalCacheModel,
+        addressData: TokoNowLocalAddress,
         isLoggedIn: Boolean,
         hasBlockedAddToCart: Boolean,
         tickerList: List<TickerData>,
         enableNewRepurchase: Boolean
     ) {
         val headerUiModel = findHeaderUiModel()
+        val warehouses = addressData.getWarehousesData()
+        val localCacheModel = addressData.getAddressData()
+
         clearHomeLayoutItemList()
-        addHeader(headerUiModel)
+        addHeader(headerUiModel, warehouses)
 
         if (tickerList.isNotEmpty()) {
             val ticker = TokoNowTickerUiModel(id = TICKER_WIDGET_ID, tickers = tickerList)
@@ -467,14 +473,17 @@ object HomeLayoutMapper {
     }
 
     private fun MutableList<HomeLayoutItemUiModel?>.addHeader(
-        headerUiModel: HomeLayoutItemUiModel?
+        headerUiModel: HomeLayoutItemUiModel?,
+        warehouses: List<WarehouseData>
     ) {
         if (headerUiModel == null) {
             add(HomeLayoutItemUiModel(
                 HomeHeaderUiModel(id = HOME_HEADER), HomeLayoutItemState.NOT_LOADED
             ))
         } else {
-            add(headerUiModel)
+            val layout = (headerUiModel.layout as HomeHeaderUiModel)
+                .copy(warehouses = warehouses)
+            add(headerUiModel.copy(layout = layout))
         }
     }
 
