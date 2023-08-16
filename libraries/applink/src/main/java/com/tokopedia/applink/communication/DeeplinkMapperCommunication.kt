@@ -16,8 +16,8 @@ object DeeplinkMapperCommunication {
 
     private const val CHAT_SETTINGS = "chatsettings"
 
-    const val UNIVERSAL_INBOX_REMOVE_CONFIG = "android_enable_inbox_universal"
-    const val TOKOCHAT_REMOTE_CONFIG = "android_enable_tokochat"
+    const val UNIVERSAL_INBOX_ROLLENCE = "newInbox_rollout"
+    private const val TOKOCHAT_REMOTE_CONFIG = "android_enable_tokochat"
 
     /**
      * Remote Config util
@@ -96,11 +96,7 @@ object DeeplinkMapperCommunication {
      */
     fun getRegisteredNavigationInbox(context: Context, deeplink: String): String {
         return if (isUserLoggedIn(context)) {
-            val useUnivInbox = isRemoteConfigActive(
-                context,
-                UNIVERSAL_INBOX_REMOVE_CONFIG,
-                true
-            )
+            val useUnivInbox = isABTestActive(UNIVERSAL_INBOX_ROLLENCE) == UNIVERSAL_INBOX_ROLLENCE
             return if (useUnivInbox) {
                 ApplinkConstInternalCommunication.UNIVERSAL_INBOX
             } else {
