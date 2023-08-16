@@ -5,9 +5,11 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
+import com.tokopedia.catalogcommon.uimodel.PanelImageUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
 import com.tokopedia.catalogcommon.viewholder.DummyViewHolder
 import com.tokopedia.catalogcommon.viewholder.HeroBannerViewHolder
+import com.tokopedia.catalogcommon.viewholder.PanelImageViewHolder
 import com.tokopedia.catalogcommon.viewholder.TopFeatureViewHolder
 
 class CatalogAdapterFactoryImpl : BaseAdapterTypeFactory(), CatalogAdapterFactory {
@@ -17,6 +19,7 @@ class CatalogAdapterFactoryImpl : BaseAdapterTypeFactory(), CatalogAdapterFactor
             TopFeatureViewHolder.LAYOUT -> TopFeatureViewHolder(view)
             HeroBannerViewHolder.LAYOUT -> HeroBannerViewHolder(view)
             DummyViewHolder.LAYOUT -> DummyViewHolder(view)
+            PanelImageViewHolder.LAYOUT -> PanelImageViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }
@@ -31,5 +34,9 @@ class CatalogAdapterFactoryImpl : BaseAdapterTypeFactory(), CatalogAdapterFactor
 
     override fun type(uiModel: DummyUiModel): Int {
         return DummyViewHolder.LAYOUT
+    }
+
+    override fun type(uiModel: PanelImageUiModel): Int {
+        return PanelImageViewHolder.LAYOUT
     }
 }
