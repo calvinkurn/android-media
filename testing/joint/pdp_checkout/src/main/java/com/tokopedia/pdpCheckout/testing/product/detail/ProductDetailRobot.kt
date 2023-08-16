@@ -24,6 +24,7 @@ import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.core.AllOf
+import com.tokopedia.unifycomponents.R as unifyComponentsR
 
 class ProductDetailRobot {
 
@@ -31,7 +32,7 @@ class ProductDetailRobot {
         // select variant with normal button
         selectVariant(2)
 
-        onView(withId(R.id.btn_atc_variant))
+        onView(withId(com.tkpd.atcvariant.R.id.btn_atc_variant))
             .check(matches(isDisplayed()))
             .check(matches(ViewMatchers.withText("+ Keranjang test")))
             .perform(click())
@@ -42,7 +43,7 @@ class ProductDetailRobot {
         onView(withId(R.id.btn_buy_now)).perform(click())
         selectVariant(2)
 
-        onView(withId(R.id.btn_buy_variant))
+        onView(withId(com.tkpd.atcvariant.R.id.btn_buy_variant))
             .check(matches(isDisplayed()))
             .check(matches(ViewMatchers.withText("Beli test")))
             .perform(click())
@@ -50,7 +51,7 @@ class ProductDetailRobot {
 
     fun clickBeliPakaiOvoOcs() {
         selectVariantOnVbs(0)
-        onView(withId(R.id.btn_buy_variant))
+        onView(withId(com.tkpd.atcvariant.R.id.btn_atc_variant))
             .check(matches(isDisplayed()))
             .check(matches(ViewMatchers.withText("Beli pakai OVO")))
             .check(
@@ -62,13 +63,13 @@ class ProductDetailRobot {
                 )
             )
 
-        onView(withId(R.id.btn_buy_variant)).perform(click())
+        onView(withId(com.tkpd.atcvariant.R.id.btn_atc_variant)).perform(click())
     }
 
     fun clickBeliLangsungOcc() {
         selectVariantOnVbs(3)
         Thread.sleep(5_000)
-        onView(withId(R.id.btn_buy_variant))
+        onView(withId(com.tkpd.atcvariant.R.id.btn_atc_variant))
             .check(matches(isDisplayed()))
             .check(matches(ViewMatchers.withText("Beli Langsung")))
             .perform(click())
@@ -90,7 +91,7 @@ class ProductDetailRobot {
         pdpInterceptor?.customRecomWidgetRecomAtcResponsePath = RESPONSE_RECOM_AFTER_ATC_PATH
         clickAtcNormal()
         Thread.sleep(1_000)
-        onView(withId(R.id.snackbar_btn))
+        onView(withId(unifyComponentsR.id.snackbar_btn))
             .perform(click())
     }
 
@@ -110,16 +111,16 @@ class ProductDetailRobot {
             matches(isDisplayed())
         )
         viewInteraction.perform(
-            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(index, clickChildViewWithId(R.id.atc_variant_chip_container))
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(index, clickChildViewWithId(com.tokopedia.product.detail.common.R.id.atc_variant_chip_container))
         )
     }
 
     private fun selectVariant(index: Int) {
         // checking recyclerview variant bottom sheet is display or not
-        onView(AllOf.allOf(withId(R.id.rv_atc_variant_bottomsheet))).check(matches(isDisplayed()))
+        onView(AllOf.allOf(withId(com.tkpd.atcvariant.R.id.rv_atc_variant_bottomsheet))).check(matches(isDisplayed()))
         // click item on position
-        onView(AllOf.allOf(withId(R.id.rv_variant_viewholder))).check(matches(isDisplayed()))
-        val viewInteraction = onView(AllOf.allOf(withId(R.id.chip_group_atc_variant))).check(
+        onView(AllOf.allOf(withId(com.tkpd.atcvariant.R.id.rv_variant_viewholder))).check(matches(isDisplayed()))
+        val viewInteraction = onView(AllOf.allOf(withId(com.tkpd.atcvariant.R.id.chip_group_atc_variant))).check(
             matches(
                 isDisplayed()
             )

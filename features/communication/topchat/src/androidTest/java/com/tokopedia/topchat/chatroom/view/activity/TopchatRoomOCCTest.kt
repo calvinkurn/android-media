@@ -117,7 +117,7 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         )
 
         //Then
-        hasProductCarouselBuyButtonWithText(context.getString(R.string.action_buy), 0)
+        hasProductCarouselBuyButtonWithText(context.getString(com.tokopedia.chat_common.R.string.action_buy), 0)
     }
 
     @Test
@@ -136,7 +136,7 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         )
 
         //Then
-        hasProductCarouselBuyButtonWithText(context.getString(R.string.action_buy), 0)
+        hasProductCarouselBuyButtonWithText(context.getString(com.tokopedia.chat_common.R.string.action_buy), 0)
     }
 
     @Test
@@ -155,7 +155,7 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         )
 
         //Then
-        hasProductCarouselBuyButtonWithText(context.getString(R.string.action_buy), 0)
+        hasProductCarouselBuyButtonWithText(context.getString(com.tokopedia.chat_common.R.string.action_buy), 0)
     }
 
     @Test
@@ -174,7 +174,7 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         )
 
         //Then
-        hasProductCarouselBuyButtonWithText(context.getString(R.string.action_buy), 0)
+        hasProductCarouselBuyButtonWithText(context.getString(com.tokopedia.chat_common.R.string.action_buy), 0)
     }
 
     @Test
