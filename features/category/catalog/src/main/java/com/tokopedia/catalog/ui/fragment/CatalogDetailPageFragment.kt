@@ -73,8 +73,8 @@ class CatalogDetailPageFragment : BaseDaggerFragment() {
                 layoutManager = LinearLayoutManager(it)
                 adapter = widgetAdapter
             }
-            widgets.add(HeroBannerUiModel("bannercoy", "konten"))
-            widgets.add(DummyUiModel("dummybann", "konten"))
+            widgets.add(HeroBannerUiModel("bannercoy","","" ,"konten"))
+            widgets.add(DummyUiModel("dummybann", "","","konten"))
             widgets.add(TopFeaturesUiModel.dummyTopFeatures())
             widgetAdapter.addWidget(widgets)
         }
