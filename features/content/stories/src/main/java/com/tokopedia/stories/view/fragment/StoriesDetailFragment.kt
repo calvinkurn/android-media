@@ -19,7 +19,6 @@ import com.tokopedia.stories.databinding.FragmentStoriesDetailBinding
 import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.adapter.StoriesGroupAdapter
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
-import com.tokopedia.stories.view.components.indicator.StoriesDetailTimerEvent.NEXT
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
 import com.tokopedia.stories.view.model.StoriesGroupUiModel
 import com.tokopedia.stories.view.utils.TouchEventStories
@@ -115,11 +114,7 @@ class StoriesDetailFragment @Inject constructor(
                     StoriesDetailTimer(
                         itemCount = viewModel.mDetailMaxInGroup,
                         data = state,
-                    ) { event ->
-                        when (event) {
-                            NEXT -> viewModelAction(NextDetail)
-                        }
-                    }
+                    ) { viewModelAction(NextDetail) }
                 }
             }
         }

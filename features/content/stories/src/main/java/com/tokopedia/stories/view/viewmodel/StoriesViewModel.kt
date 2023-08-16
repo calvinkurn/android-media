@@ -85,7 +85,12 @@ class StoriesViewModel @Inject constructor(
     }
 
     private fun handlePrevious() {
-        updateStoriesDetailData(detailPosition = mDetailPosition - 1)
+        if (mDetailPosition > 0) {
+            updateStoriesDetailData(detailPosition = mDetailPosition - 1)
+        } else {
+            if (mGroupPosition > 0) selectGroup(mGroupPosition - 1)
+            else updateStoriesDetailData(detailPosition = mDetailPosition)
+        }
     }
 
     private fun handleOnPauseStories() {

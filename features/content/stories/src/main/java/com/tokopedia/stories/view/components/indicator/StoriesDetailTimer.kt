@@ -22,7 +22,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.tokopedia.stories.view.components.indicator.StoriesDetailTimerEvent.NEXT
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
 import com.tokopedia.stories.view.model.StoriesDetailUiModel.StoriesDetailUiEvent.PAUSE
 import com.tokopedia.stories.view.model.StoriesDetailUiModel.StoriesDetailUiEvent.START
@@ -31,7 +30,7 @@ import com.tokopedia.stories.view.model.StoriesDetailUiModel.StoriesDetailUiEven
 fun StoriesDetailTimer(
     itemCount: Int,
     data: StoriesDetailUiModel,
-    event: (StoriesDetailTimerEvent) -> Unit,
+    timerFinished: () -> Unit,
 ) {
     val anim = remember(data.selected) { Animatable(0F) }
 
@@ -42,14 +41,14 @@ fun StoriesDetailTimer(
                 anim.animateTo(
                     targetValue = 1f,
                     animationSpec = tween(
-                        durationMillis = (3000 * (1f - anim.value)).toInt(),
+                        durationMillis = (TIMER_DURATION * (1f - anim.value)).toInt(),
                         easing = LinearEasing,
                     )
                 )
             }
         }
 
-        if (anim.value == anim.targetValue) event.invoke(NEXT)
+        if (anim.value == anim.targetValue) timerFinished.invoke()
     }
 
     StoriesDetailTimerContent(
@@ -91,7 +90,7 @@ private fun StoriesDetailTimerContent(
                         },
                 )
             }
-            if (index != count) Spacer(modifier = Modifier.width(4.dp))
+            Spacer(modifier = Modifier.width(4.dp))
         }
     }
 }
@@ -110,6 +109,4 @@ internal fun StoriesDetailTimerPreview() {
     ) { }
 }
 
-enum class StoriesDetailTimerEvent {
-    NEXT,
-}
+private const val TIMER_DURATION = 7 * 1000
