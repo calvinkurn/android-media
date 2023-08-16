@@ -6,7 +6,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="center"
-    tools:background="@color/Unify_Static_Black"
     >
 
     <com.tokopedia.iconunify.IconUnify
