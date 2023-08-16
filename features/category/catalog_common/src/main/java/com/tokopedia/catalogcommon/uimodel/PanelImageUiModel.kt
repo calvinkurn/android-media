@@ -4,8 +4,11 @@ import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactory
 
 data class PanelImageUiModel(
     override val idWidget: String,
+    override val widgetType: String,
+    override val widgetName: String,
+    val backgroundColorWidget: Int? = null,
     val content: List<PanelImageItemData>
-): BaseCatalogUiModel(idWidget) {
+) : BaseCatalogUiModel(idWidget, widgetType, widgetName) {
 
     override fun type(typeFactory: CatalogAdapterFactory): Int {
         return typeFactory.type(this)
@@ -17,5 +20,4 @@ data class PanelImageUiModel(
         val title: String,
         val description: String
     )
-
 }

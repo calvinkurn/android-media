@@ -9,6 +9,5 @@ interface CatalogAdapterFactory {
     fun type(uiModel: TopFeaturesUiModel): Int
     fun type(uiModel: HeroBannerUiModel): Int
     fun type(uiModel: DummyUiModel): Int
-
     fun type(uiModel: PanelImageUiModel): Int
 }
