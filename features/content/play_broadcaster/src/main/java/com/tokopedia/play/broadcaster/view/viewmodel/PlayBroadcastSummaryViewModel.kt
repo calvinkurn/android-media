@@ -2,9 +2,11 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
 import com.tokopedia.play.broadcaster.domain.usecase.*
@@ -360,16 +362,17 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
 
             val (hour, minute) = when (split.size) {
                 /** HH:mm:ss */
-                3 -> Pair(split[0].toInt(), split[1].toInt())
+                3 -> Pair(split[0].toIntOrZero(), split[1].toIntOrZero())
 
                 /** mm:ss */
-                2 -> Pair(0, split[0].toInt())
+                2 -> Pair(0, split[0].toIntOrZero())
 
                 else -> Pair(0, 0)
             }
 
             hour > 0 || minute > 0
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             false
         }
     }
