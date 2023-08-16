@@ -1402,6 +1402,7 @@ class TokoNowHomeFragment :
     }
 
     private fun onFailedGetHomeLayout(throwable: Throwable) {
+        switchToLightToolbar()
         showFailedToFetchData()
         stickyLoginLoadContent()
         logHomeLayoutError(throwable)
