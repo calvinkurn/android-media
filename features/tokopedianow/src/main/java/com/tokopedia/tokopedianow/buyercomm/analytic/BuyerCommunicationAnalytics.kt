@@ -59,7 +59,6 @@ object BuyerCommunicationAnalytics {
             .send()
     }
 
-
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4158
     // Tracker ID: 46104
     fun sendClickChevronButtonEvent(warehouses: List<WarehouseData>) {
