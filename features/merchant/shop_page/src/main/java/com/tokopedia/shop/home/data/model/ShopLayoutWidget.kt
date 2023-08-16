@@ -196,7 +196,7 @@ data class ShopLayoutWidget(
                 val data : List<Data> = emptyList()
             ) {
                 data class Data(
-                    @SerializedName("imageUrl")
+                    @SerializedName("imageURL")
                     val imageUrl: String = "",
                     @SerializedName("ctaText")
                     val ctaText: String = "",
