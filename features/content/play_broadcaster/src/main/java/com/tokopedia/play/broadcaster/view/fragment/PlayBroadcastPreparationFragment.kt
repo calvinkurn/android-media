@@ -709,10 +709,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         autoScrollToPerformanceDashBoardBanner()
 
         if (coachMarkItems.size == 1) {
-            if (coachMarkItems[0].title == getString(contentCommonR.string.performance_dashboard_coachmark_title)) {
-                analytic.onViewCoachMarkPerformanceDashboardPrepPage(parentViewModel.authorId)
-            }
-
             coachMark?.simpleCloseIcon?.setOnClickListener { onDismissCoachMark() }
         } else {
             coachMark?.stepCloseIcon?.setOnClickListener { onDismissCoachMark() }
@@ -1033,6 +1029,12 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             val coachMark = getCoachMarkPerformanceDashboardEntryPoint()
             if (coachMark != null) {
                 setupCoachMark(coachMark)
+
+                if (coachMarkItems.size == 1 &&
+                    coachMarkItems[0].title == getString(contentCommonR.string.performance_dashboard_coachmark_title)
+                ) {
+                    analytic.onViewCoachMarkPerformanceDashboardPrepPage(parentViewModel.authorId)
+                }
             }
         }
     }
