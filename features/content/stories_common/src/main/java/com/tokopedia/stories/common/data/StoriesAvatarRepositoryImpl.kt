@@ -6,6 +6,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey.MAINAPP_DISABLED_STORIES_ENTRY_POINTS
 import com.tokopedia.remoteconfig.RemoteConfigKey.SELLERAPP_DISABLED_STORIES_ENTRY_POINTS
+import com.tokopedia.stories.common.GetShopStoriesStatusUseCase
 import com.tokopedia.stories.common.StoriesKey
 import com.tokopedia.stories.common.domain.ShopStoriesState
 import com.tokopedia.stories.common.domain.StoriesAvatarRepository
@@ -18,6 +19,7 @@ import javax.inject.Inject
  */
 class StoriesAvatarRepositoryImpl @Inject constructor(
     private val prefUtil: StoriesAvatarPreferenceUtil,
+    private val getShopStoriesUseCase: GetShopStoriesStatusUseCase,
     private val remoteConfig: RemoteConfig,
     private val dispatchers: CoroutineDispatchers
 ) : StoriesAvatarRepository {
@@ -25,13 +27,11 @@ class StoriesAvatarRepositoryImpl @Inject constructor(
     private var mHasSeen = false
 
     override suspend fun setHasSeenCoachMark() {
-//        prefUtil.setHasSeenCoachMark()
-        mHasSeen = true
+        prefUtil.setHasSeenCoachMark()
     }
 
     override suspend fun hasSeenCoachMark(): Boolean {
-//        return prefUtil.hasSeenCoachMark()
-        return mHasSeen
+        return prefUtil.hasSeenCoachMark()
     }
 
     override suspend fun getShopStoriesState(
