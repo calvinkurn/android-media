@@ -21,6 +21,7 @@
       "event": "checkout_progress",
       "eventAction": "view checkout page",
       "sessionIris": ".*",
+      "trackerId": "\\d+",
       "items": [
         {
           "dimension81": ".*",
@@ -71,6 +72,7 @@
       "event": "checkout_progress",
       "eventAction": "click all courier selected",
       "sessionIris": ".*",
+      "trackerId": "\\d+",
       "items": [
         {
           "dimension81": ".*",
@@ -87,7 +89,7 @@
           "price": "\\d*.\\d*|\\d.\\d+E\\d",
           "dimension14": ".*",
           "dimension58": "true|false",
-          "dimension67": "true|false",
+          "dimension57": "true|false",
           "dimension79": "\\d+",
           "shop_id": "\\d+",
           "item_variant": ".*",
@@ -105,7 +107,8 @@
           "dimension40": ".*",
           "dimension49": ".*",
           "dimension48": "\\d+",
-          "dimension90": ".*"
+          "dimension90": ".*",
+          "dimension136": ".*"
         }
       ],
       "eventLabel": "",
@@ -122,6 +125,7 @@
       "event": "checkout_progress",
       "eventAction": "click pilih metode pembayaran",
       "sessionIris": ".*",
+      "trackerId": "\\d+",
       "items": [
         {
           "dimension81": ".*",
@@ -138,7 +142,7 @@
           "price": "\\d*.\\d*|\\d.\\d+E\\d",
           "dimension14": ".*",
           "dimension58": "true|false",
-          "dimension67": "true|false",
+          "dimension57": "true|false",
           "dimension79": "\\d+",
           "shop_id": "\\d+",
           "item_variant": ".*",
@@ -156,7 +160,8 @@
           "dimension40": ".*",
           "dimension49": ".*",
           "dimension48": "\\d+",
-          "dimension90": ".*"
+          "dimension90": ".*",
+          "dimension136": ".*"
         }
       ],
       "eventLabel": "success",
