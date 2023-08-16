@@ -251,6 +251,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         val expectedLayoutList = createLoadingState()
 
         verifyGetHomeLayoutListSuccess(expectedLayoutList)
+        assertEquals(viewModel.isEmptyState, false)
     }
 
     @Test
@@ -263,6 +264,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         val expectedLayoutList = createEmptyState(idEmptyState, serviceType)
 
         verifyGetHomeLayoutListSuccess(expectedLayoutList)
+        assertEquals(viewModel.isEmptyState, true)
     }
 
     @Test
