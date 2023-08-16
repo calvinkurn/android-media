@@ -281,7 +281,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
                                         channel.basic.coverUrl,
                                         convertDate(channel.basic.timestamp.publishedAt),
                                         reportChannelSummary.duration,
-                                        _channelSummary.value.isEligiblePostVideo,
+                                        isEligiblePostVideo(reportChannelSummary.duration),
                                         hydraConfigStore.getAuthor(),
                                     )
             getSellerLeaderboardUseCase.setRequestParams(GetSellerLeaderboardUseCase.createParams(channelId))
@@ -304,9 +304,14 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
             }.toList()
 
             _trafficMetric.value = NetworkResult.Success(metrics)
+
+            if (!isEligiblePostVideo(reportChannelSummary.duration)) {
+                _uiEvent.emit(PlayBroadcastSummaryEvent.VideoUnder60Seconds)
+            }
         }) {
             _channelSummary.value = ChannelSummaryUiModel.empty()
             _trafficMetric.value = NetworkResult.Fail(it) { fetchLiveTraffic() }
+            _uiEvent.emit(PlayBroadcastSummaryEvent.VideoUnder60Seconds)
         }
     }
 
@@ -347,6 +352,27 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     /** Helper */
     private fun convertDate(raw: String): String =
         PlayDateTimeFormatter.formatDate(raw, outputPattern = PlayDateTimeFormatter.dMMMMyyyy)
+
+    @Suppress("MagicNumber")
+    private fun isEligiblePostVideo(duration: String): Boolean {
+        return try {
+            val split = duration.split(":")
+
+            val (hour, minute) = when (split.size) {
+                /** HH:mm:ss */
+                3 -> Pair(split[0].toInt(), split[1].toInt())
+
+                /** mm:ss */
+                2 -> Pair(0, split[0].toInt())
+
+                else -> Pair(0, 0)
+            }
+
+            hour > 0 || minute > 0
+        } catch (e: Exception) {
+            false
+        }
+    }
 
     companion object {
         private const val LIVE_STATISTICS_DELAY = 300L
