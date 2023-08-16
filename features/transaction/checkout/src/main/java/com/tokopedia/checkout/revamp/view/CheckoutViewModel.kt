@@ -1369,16 +1369,6 @@ class CheckoutViewModel @Inject constructor(
     ) {
         viewModelScope.launch(dispatchers.immediate) {
             pageState.value = CheckoutPageState.Loading
-            if (scheduleDeliveryUiModel.isSelected) {
-                order.scheduleDate = newCourierItemData.selectedShipper.scheduleDate
-                order.timeslotId = newCourierItemData.selectedShipper.timeslotId
-                order.validationMetadata =
-                    scheduleDeliveryUiModel.deliveryProduct.validationMetadata
-            } else {
-                order.scheduleDate = ""
-                order.timeslotId = 0
-                order.validationMetadata = ""
-            }
             if (courierItemData.selectedShipper.logPromoCode.isNullOrEmpty() && newCourierItemData.selectedShipper.logPromoCode.isNullOrEmpty()) {
                 // no promo
                 val checkoutItems = listData.value.toMutableList()
@@ -1390,6 +1380,16 @@ class CheckoutViewModel @Inject constructor(
 //                    shippingCourierUiModels = shippingCourierUiModels
                 )
                 val newOrder = checkoutOrderModel.copy(shipment = newShipment)
+                if (scheduleDeliveryUiModel.isSelected) {
+                    newOrder.scheduleDate = newCourierItemData.selectedShipper.scheduleDate
+                    newOrder.timeslotId = newCourierItemData.selectedShipper.timeslotId
+                    newOrder.validationMetadata =
+                        scheduleDeliveryUiModel.deliveryProduct.validationMetadata
+                } else {
+                    newOrder.scheduleDate = ""
+                    newOrder.timeslotId = 0
+                    newOrder.validationMetadata = ""
+                }
                 checkoutItems[cartPosition] = newOrder
                 listData.value = checkoutItems
                 cartProcessor.processSaveShipmentState(
@@ -1408,6 +1408,16 @@ class CheckoutViewModel @Inject constructor(
                     courierItemData = newCourierItemData
                 )
                 val newOrder = checkoutOrderModel.copy(shipment = newShipment)
+                if (scheduleDeliveryUiModel.isSelected) {
+                    newOrder.scheduleDate = newCourierItemData.selectedShipper.scheduleDate
+                    newOrder.timeslotId = newCourierItemData.selectedShipper.timeslotId
+                    newOrder.validationMetadata =
+                        scheduleDeliveryUiModel.deliveryProduct.validationMetadata
+                } else {
+                    newOrder.scheduleDate = ""
+                    newOrder.timeslotId = 0
+                    newOrder.validationMetadata = ""
+                }
                 checkoutItems[cartPosition] = newOrder
                 listData.value = checkoutItems
                 val shouldClearPromoBenefit = promoProcessor.clearPromo(
@@ -1514,6 +1524,19 @@ class CheckoutViewModel @Inject constructor(
                     isTradeIn,
                     isTradeInByDropOff
                 )
+                val newOrder = newItems[cartPosition] as CheckoutOrderModel
+                if (newOrder.shipment.courierItemData != null) {
+                    if (scheduleDeliveryUiModel.isSelected) {
+                        newOrder.scheduleDate = newCourierItemData.selectedShipper.scheduleDate
+                        newOrder.timeslotId = newCourierItemData.selectedShipper.timeslotId
+                        newOrder.validationMetadata =
+                            scheduleDeliveryUiModel.deliveryProduct.validationMetadata
+                    } else {
+                        newOrder.scheduleDate = ""
+                        newOrder.timeslotId = 0
+                        newOrder.validationMetadata = ""
+                    }
+                }
                 listData.value = newItems
                 cartProcessor.processSaveShipmentState(
                     listData.value,
@@ -1695,7 +1718,7 @@ class CheckoutViewModel @Inject constructor(
                         commonToaster.emit(
                             CheckoutPageToaster(
                                 Toaster.TYPE_ERROR,
-                                "Gagal clear, coba lagi"
+                                CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
                             )
                         )
                         pageState.value = CheckoutPageState.Normal
@@ -1712,7 +1735,7 @@ class CheckoutViewModel @Inject constructor(
                 commonToaster.emit(
                     CheckoutPageToaster(
                         Toaster.TYPE_ERROR,
-                        "Gagal validate use, coba lagi"
+                        CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
                     )
                 )
             }
@@ -1795,7 +1818,7 @@ class CheckoutViewModel @Inject constructor(
             )
             CheckoutLogger.logOnErrorCheckout(
                 MessageErrorException(toasterMessage),
-                checkoutResult.checkoutRequest.toString(),
+                checkoutResult.checkoutRequest,
                 isOneClickShipment,
                 isTradeIn,
                 isTradeInByDropOff
