@@ -479,7 +479,8 @@ class CartItemViewHolder constructor(
     }
 
     private fun adjustProductVerticalSeparatorConstraint(data: CartItemHolderData) {
-        if (data.isError || !data.isBundlingItem) {
+        // TODO: perlu hide kalo index terakhir dari list BMGM
+        if ((data.isError || !data.isBundlingItem) && !data.isBmGm) {
             binding.vBundlingProductSeparator.gone()
             return
         }
@@ -489,61 +490,81 @@ class CartItemViewHolder constructor(
             clone(binding.containerProductInformation)
 
             // Top
-            if (data.isMultipleBundleProduct) {
-                if (data.bundlingItemPosition != BUNDLING_ITEM_HEADER) {
-                    connect(
+            if (data.isBmGm) {
+                connect(
                         R.id.v_bundling_product_separator,
                         ConstraintSet.TOP,
-                        ConstraintSet.PARENT_ID,
-                        ConstraintSet.TOP,
-                        0
-                    )
+                        R.id.checkbox_product,
+                        ConstraintSet.BOTTOM,
+                        IMAGE_PRODUCT_MARGIN_START_6.dpToPx(itemView.resources.displayMetrics)
+                )
+            } else {
+                if (data.isMultipleBundleProduct) {
+                    if (data.bundlingItemPosition != BUNDLING_ITEM_HEADER) {
+                        connect(
+                                R.id.v_bundling_product_separator,
+                                ConstraintSet.TOP,
+                                ConstraintSet.PARENT_ID,
+                                ConstraintSet.TOP,
+                                0
+                        )
+                    } else {
+                        connect(
+                                R.id.v_bundling_product_separator,
+                                ConstraintSet.TOP,
+                                R.id.checkbox_bundle,
+                                ConstraintSet.BOTTOM,
+                                MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
+                        )
+                    }
                 } else {
                     connect(
-                        R.id.v_bundling_product_separator,
-                        ConstraintSet.TOP,
-                        R.id.checkbox_bundle,
-                        ConstraintSet.BOTTOM,
-                        MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
+                            R.id.v_bundling_product_separator,
+                            ConstraintSet.TOP,
+                            R.id.checkbox_bundle,
+                            ConstraintSet.BOTTOM,
+                            MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
                     )
                 }
-            } else {
-                connect(
-                    R.id.v_bundling_product_separator,
-                    ConstraintSet.TOP,
-                    R.id.checkbox_bundle,
-                    ConstraintSet.BOTTOM,
-                    MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
-                )
             }
 
             // Bottom
-            if (data.isMultipleBundleProduct) {
-                if (data.bundlingItemPosition == BUNDLING_ITEM_FOOTER) {
-                    connect(
-                        R.id.v_bundling_product_separator,
-                        ConstraintSet.BOTTOM,
-                        R.id.iu_image_product,
-                        ConstraintSet.BOTTOM,
-                        0
-                    )
-                } else {
-                    connect(
+            if (data.isBmGm) {
+                connect(
                         R.id.v_bundling_product_separator,
                         ConstraintSet.BOTTOM,
                         ConstraintSet.PARENT_ID,
                         ConstraintSet.BOTTOM,
                         0
+                )
+            } else {
+                if (data.isMultipleBundleProduct) {
+                    if (data.bundlingItemPosition == BUNDLING_ITEM_FOOTER) {
+                        connect(
+                                R.id.v_bundling_product_separator,
+                                ConstraintSet.BOTTOM,
+                                R.id.iu_image_product,
+                                ConstraintSet.BOTTOM,
+                                0
+                        )
+                    } else {
+                        connect(
+                                R.id.v_bundling_product_separator,
+                                ConstraintSet.BOTTOM,
+                                ConstraintSet.PARENT_ID,
+                                ConstraintSet.BOTTOM,
+                                0
+                        )
+                    }
+                } else {
+                    connect(
+                            R.id.v_bundling_product_separator,
+                            ConstraintSet.BOTTOM,
+                            R.id.iu_image_product,
+                            ConstraintSet.BOTTOM,
+                            MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
                     )
                 }
-            } else {
-                connect(
-                    R.id.v_bundling_product_separator,
-                    ConstraintSet.BOTTOM,
-                    R.id.iu_image_product,
-                    ConstraintSet.BOTTOM,
-                    MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
-                )
             }
 
             applyTo(binding.containerProductInformation)
