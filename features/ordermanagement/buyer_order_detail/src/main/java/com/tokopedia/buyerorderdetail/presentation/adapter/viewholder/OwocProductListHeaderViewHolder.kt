@@ -137,7 +137,7 @@ class OwocProductListHeaderViewHolder(
     private fun showShopBadge(url: String) {
         binding.ivOwocShopTier.let {
             it.loadImage(url) {
-                setErrorDrawable(com.tokopedia.kotlin.extensions.R.drawable.ic_loading_error)
+                setErrorDrawable(com.tokopedia.utils.R.drawable.ic_loading_error)
             }
         }
     }
