@@ -591,6 +591,7 @@ internal fun renderLabelOverlay(
     labelOverlayBackground: ImageView?,
     labelOverlay: Typography?,
     labelGroup: ProductCardModel.LabelGroup?,
+    isRotateBackground: Boolean = true,
 ) {
     if (isShow && labelGroup != null) {
         labelOverlay?.let {
@@ -599,7 +600,7 @@ internal fun renderLabelOverlay(
         }
         labelOverlayBackground?.let { background ->
             background.show()
-            background.rotationX = 180f
+            if (isRotateBackground) background.rotationX = 180f
             background.loadImageTopRightCrop(labelGroup.imageUrl)
         }
     } else {
@@ -644,7 +645,7 @@ private fun Label.determineOverlayLabelType(labelGroupType: String) {
 private fun Label.setCustomOverlayLabelType(colorHexString: String) {
     unlockFeature = true
 
-    setLabelType(colorHexString)
+    try { setLabelType(colorHexString) } catch (_: Exception) { }
 }
 
 private fun Label.trySetCustomOverlayLabelType(labelGroupType: String) {

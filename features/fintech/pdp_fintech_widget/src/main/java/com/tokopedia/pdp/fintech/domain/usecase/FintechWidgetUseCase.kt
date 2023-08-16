@@ -19,10 +19,13 @@ class FintechWidgetUseCase @Inject constructor(graphqlRepository: GraphqlReposit
         productCategory: String,
         listofAmountandUrls: HashMap<String, FintechPriceDataModel>,
         shopId: String,
+        parentId: String,
         ) {
         try {
             this.setTypeClass(WidgetDetail::class.java)
-            this.setRequestParams(getRequestParams(productCategory, listofAmountandUrls, shopId))
+            this.setRequestParams(
+                getRequestParams(productCategory, listofAmountandUrls, shopId, parentId)
+            )
             this.setGraphqlQuery(PayLaterGetPdpWidget.GQL_QUERY)
             this.execute(
                 { result ->
@@ -40,13 +43,14 @@ class FintechWidgetUseCase @Inject constructor(graphqlRepository: GraphqlReposit
         productCategory: String,
         listofAmountandUrls: HashMap<String, FintechPriceDataModel>,
         shopId: String,
+        parentId: String
     ): MutableMap<String, Any?> {
 
         var listOfVariantDetail: MutableList<WidgetRequestModel> =
             setAmountList(listofAmountandUrls)
 
         return mutableMapOf(
-            REQUEST to setProductDetailMap(productCategory, listOfVariantDetail, shopId)
+            REQUEST to setProductDetailMap(productCategory, listOfVariantDetail, shopId, parentId)
         )
     }
 
@@ -68,11 +72,13 @@ class FintechWidgetUseCase @Inject constructor(graphqlRepository: GraphqlReposit
         productCategory: String,
         listOfVariantDetail: List<WidgetRequestModel>,
         shopId: String,
+        parentId: String
     ): MutableMap<String, Any> {
         val detailMap = mutableMapOf<String, Any>()
         detailMap[PARAM_PRODUCT_CATEGORY] = productCategory
         detailMap[PARAM_LIST_PRODUCT_DETAIL] = listOfVariantDetail
         detailMap[PARAM_SHOP_ID_V2] = shopId
+        detailMap[PARAM_PRODUCT_ID] = parentId
         return detailMap
     }
 
@@ -80,6 +86,7 @@ class FintechWidgetUseCase @Inject constructor(graphqlRepository: GraphqlReposit
         const val PARAM_PRODUCT_CATEGORY = "product_category"
         const val PARAM_LIST_PRODUCT_DETAIL = "list"
         const val PARAM_SHOP_ID_V2 = "shop_id_v2"
+        const val PARAM_PRODUCT_ID = "product_id"
         const val REQUEST = "request"
     }
 }

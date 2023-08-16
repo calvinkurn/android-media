@@ -13,20 +13,31 @@ import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewOutlineProvider
 import androidx.annotation.RequiresApi
+import androidx.fragment.app.Fragment
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tkpd.atcvariant.BuildConfig
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.MoveAction
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.QUERY_PARENT
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.minicart.common.domain.data.*
 import com.tokopedia.user.session.UserSession
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.plus
 import java.net.URLDecoder
 import java.net.URLEncoder
 import java.text.ParseException
@@ -34,7 +45,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
 import kotlin.math.floor
-
 
 const val LIGHT_GREY = "lightGrey"
 const val LIGHT_BLUE = "lightBlue"
@@ -98,9 +108,9 @@ class Utils {
         private val setOfKeysToNotSendToShare = mutableSetOf(
             DiscoveryActivity.AFFILIATE_UNIQUE_ID,
             DiscoveryActivity.CHANNEL,
-            DiscoveryActivity.QUERY_PARENT
+            DiscoveryActivity.QUERY_PARENT,
+            DiscoveryActivity.SOURCE
         )
-
 
         fun extractDimension(url: String?, dimension: String = "height"): Int? {
             val uri = Uri.parse(url)
@@ -108,7 +118,7 @@ class Utils {
             try {
                 return uri?.getQueryParameter(dimension)?.toInt()
             } catch (e: Exception) {
-                //Added temp fix for disco to handled in invlaid url from backend
+                // Added temp fix for disco to handled in invlaid url from backend
 
                 try {
                     val newUrl = uri?.getQueryParameter(dimension)?.replace("[^-?0-9]+".toRegex(), " ")?.replace("?", "")
@@ -118,7 +128,7 @@ class Utils {
                 }
             }
 
-            return 1;
+            return 1
         }
 
         fun shareData(context: Context?, shareTxt: String?, productUri: String?) {
@@ -151,10 +161,13 @@ class Utils {
             }
         }
 
-        fun getQueryMap(componentId: String, pageIdentifier: String,
-                        selectedFilterMapParameter: Map<String, String?>? = null,
-                        userId: String? = "0",
-                        addCountFilters: Boolean = false): Map<String, Any> {
+        fun getQueryMap(
+            componentId: String,
+            pageIdentifier: String,
+            selectedFilterMapParameter: Map<String, String?>? = null,
+            userId: String? = "0",
+            addCountFilters: Boolean = false
+        ): Map<String, Any> {
             val component = getComponent(componentId, pageIdentifier)
             val filtersMasterMapParam = mutableMapOf<String, String?>()
             discoComponentQuery?.let {
@@ -172,7 +185,6 @@ class Utils {
                     it[RPC_PAGE_SIZE] = "10"
                     it[RPC_PAGE_NUMBER] = "1"
                     it[RPC_USER_ID] = if (userId.isNullOrEmpty()) "0" else userId
-
                 }
                 filtersMasterMapParam.putAll(filtersMap)
             }
@@ -186,7 +198,7 @@ class Utils {
                 }
             }
 
-            return getComponentsGQLParams(componentId,pageIdentifier,queryString.toString())
+            return getComponentsGQLParams(componentId, pageIdentifier, queryString.toString())
         }
 
         fun getComponentsGQLParams(componentId: String, pageIdentifier: String, queryString: String): MutableMap<String, Any> {
@@ -222,13 +234,13 @@ class Utils {
             return addressQueryParameterMap
         }
 
-
         fun addAddressQueryMapWithWareHouse(userAddressData: LocalCacheModel?): MutableMap<String, String> {
             val addressQueryParameterMap = addAddressQueryMap(userAddressData)
             userAddressData?.let {
-                if (it.warehouse_id.isNotEmpty())
+                if (it.warehouse_id.isNotEmpty()) {
                     addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_WAREHOUSE_ID] = userAddressData.warehouse_id
-                if(!it.warehouses.isNullOrEmpty()){
+                }
+                if (!it.warehouses.isNullOrEmpty()) {
                     addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_WAREHOUSE_IDS] = setUserWarehouseIds(userAddressData.warehouses)
                 }
             }
@@ -250,14 +262,13 @@ class Utils {
         fun isFutureSale(saleStartDate: String, timerFormat: String = TIMER_SPRINT_SALE_DATE_FORMAT): Boolean {
             if (saleStartDate.isEmpty()) return false
             val currentSystemTime = Calendar.getInstance().time
-            val parsedDate = parseData(saleStartDate,timerFormat)
+            val parsedDate = parseData(saleStartDate, timerFormat)
             return if (parsedDate != null) {
                 currentSystemTime.time < parsedDate.time
             } else {
                 false
             }
         }
-
 
         fun isFutureSaleOngoing(saleStartDate: String, saleEndDate: String, timerFormat: String = TIMER_SPRINT_SALE_DATE_FORMAT): Boolean {
             if (saleStartDate.isEmpty() || saleEndDate.isEmpty()) return false
@@ -286,7 +297,7 @@ class Utils {
             return date?.let {
                 try {
                     SimpleDateFormat(timerFormat, Locale.getDefault())
-                            .parse(date)
+                        .parse(date)
                 } catch (parseException: ParseException) {
                     null
                 }
@@ -297,7 +308,7 @@ class Utils {
             if (!saleTime.isNullOrEmpty() && saleTime.length >= CONSTANT_19) {
                 val date = saleTime.substring(CONSTANT_0, CONSTANT_10)
                 val time = saleTime.substring(CONSTANT_11, CONSTANT_19)
-                return "${date}T${time}"
+                return "${date}T$time"
             }
             return ""
         }
@@ -317,10 +328,11 @@ class Utils {
             }
             val regex = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3}|[A-Fa-f0-9]{8})$"
             val pattern: Pattern = Pattern.compile(regex)
-            return if(pattern.matcher(color).matches())
+            return if (pattern.matcher(color).matches()) {
                 color
-            else
+            } else {
                 context.resources.getString(com.tokopedia.unifyprinciples.R.color.Unify_Background)
+            }
         }
 
         fun setTimerBoxDynamicBackground(view: View, color: Int) {
@@ -353,23 +365,51 @@ class Utils {
         fun getShareUrlQueryParamAppended(url: String?, queryParameterMap: Map<String, String?>?): String {
             var isAllKeyNullOrEmpty = true
             val queryString = StringBuilder()
+            val queryParent = queryParameterMap?.get(QUERY_PARENT)
+            val queryParams = queryParent?.processQueryParent()
+            queryParams?.let {
+                isAllKeyNullOrEmpty = false
+                queryString.appendParams(it.first, it.second)
+            }
             queryParameterMap?.forEach { (key, value) ->
                 if (!value.isNullOrEmpty() && !setOfKeysToNotSendToShare.contains(key)) {
                     isAllKeyNullOrEmpty = false
-                    if (queryString.isNotEmpty()) {
-                        queryString.append('&')
-                    }
-                    queryString.append(key).append('=').append(value)
+                    queryString.appendParams(key, value)
                 }
             }
 
             if (url.isNullOrEmpty()) return ""
 
-            return if (isAllKeyNullOrEmpty) url else {
+            return if (isAllKeyNullOrEmpty) {
+                url
+            } else {
                 "$url?$queryString"
             }
         }
 
+        private fun String?.processQueryParent(): Pair<String, String>? {
+            if (!this.isNullOrEmpty()) {
+                val queryParams = this.split('=', '&')
+                var queryIndex = 0
+                while (queryIndex < queryParams.size - 1) {
+                    val paramKey = queryParams[queryIndex]
+                    val paramValue = queryParams[queryIndex + 1]
+
+                    if (paramKey == "q") {
+                        return (Pair(paramKey, paramValue))
+                    }
+                    queryIndex = queryIndex + 2
+                }
+            }
+            return null
+        }
+
+        private fun StringBuilder.appendParams(key: String, value: String) {
+            if (this.isNotEmpty()) {
+                this.append('&')
+            }
+            this.append(key).append('=').append(value)
+        }
 
         fun getDisplayMetric(context: Context?): DisplayMetrics {
             val displayMetrics = DisplayMetrics()
@@ -379,48 +419,51 @@ class Utils {
 
         fun nextPageAvailable(component: ComponentsItem, productPerPage: Int): Boolean {
             return component.nextPageKey?.isNotEmpty()
-                ?: (component.getComponentsItem()?.size.isMoreThanZero()
-                        && component.getComponentsItem()?.size?.rem(productPerPage) == 0)
+                ?: (
+                    component.getComponentsItem()?.size.isMoreThanZero() &&
+                        component.getComponentsItem()?.size?.rem(productPerPage) == 0
+                    )
         }
 
         fun getUserId(context: Context?): String {
             return context?.let { UserSession(it).userId } ?: ""
         }
 
-        fun extractFromHtml(couponName: String?):String? {
-             return try {
-               if(couponName?.isNotEmpty() == true) {
-                   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                       Html.fromHtml(couponName, Html.FROM_HTML_MODE_LEGACY).toString()
-                   } else {
-                       Html.fromHtml(couponName).toString()
-                   }
-               } else {
+        fun extractFromHtml(couponName: String?): String? {
+            return try {
+                if (couponName?.isNotEmpty() == true) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        Html.fromHtml(couponName, Html.FROM_HTML_MODE_LEGACY).toString()
+                    } else {
+                        Html.fromHtml(couponName).toString()
+                    }
+                } else {
                     couponName
                 }
-            }catch (e:Exception){
-             couponName
+            } catch (e: Exception) {
+                couponName
             }
         }
 
-        fun corners(view:View,leftOffset:Int, topOffset:Int, rightOffset:Int, bottomOffset:Int, radius:Float){
+        fun corners(view: View, leftOffset: Int, topOffset: Int, rightOffset: Int, bottomOffset: Int, radius: Float) {
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     view.outlineProvider = object : ViewOutlineProvider() {
                         @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
                         override fun getOutline(view: View?, outline: Outline?) {
-                            outline?.setRoundRect(leftOffset, topOffset, (view?.width).toZeroIfNull()+rightOffset, (view?.height).toZeroIfNull()+ bottomOffset, radius)
+                            outline?.setRoundRect(leftOffset, topOffset, (view?.width).toZeroIfNull() + rightOffset, (view?.height).toZeroIfNull() + bottomOffset, radius)
                         }
                     }
                     view.clipToOutline = true
                 }
-            }catch (e:Exception){
-
+            } catch (e: Exception) {
             }
         }
 
-        fun updateProductAddedInCart(products:List<ComponentsItem>,
-                                             map: Map<MiniCartItemKey, MiniCartItem>?) {
+        fun updateProductAddedInCart(
+            products: List<ComponentsItem>,
+            map: Map<MiniCartItemKey, MiniCartItem>?
+        ) {
             if (map == null) return
             products.forEach { componentsItem ->
                 componentsItem.data?.firstOrNull()?.let { dataItem ->
@@ -428,7 +471,7 @@ class Utils {
                         map.getMiniCartItemParentProduct(dataItem.parentProductId ?: "")?.totalQuantity?.let { quantity ->
                             dataItem.quantity = quantity
                         }
-                    }else if (dataItem.hasATC && !dataItem.productId.isNullOrEmpty() && map.containsKey(MiniCartItemKey(dataItem.productId ?: ""))) {
+                    } else if (dataItem.hasATC && !dataItem.productId.isNullOrEmpty() && map.containsKey(MiniCartItemKey(dataItem.productId ?: ""))) {
                         map.getMiniCartItemProduct(dataItem.productId ?: "")?.quantity?.let { quantity ->
                             dataItem.quantity = quantity
                         }
@@ -437,10 +480,10 @@ class Utils {
             }
         }
 
-        fun getParentPosition(componentsItem:ComponentsItem):Int{
+        fun getParentPosition(componentsItem: ComponentsItem): Int {
             var parentComponentPosition = componentsItem.parentComponentPosition
-            if(componentsItem.parentComponentId.isNotEmpty()){
-                getComponent(componentsItem.parentComponentId,componentsItem.pageEndPoint)?.let { parentComp ->
+            if (componentsItem.parentComponentId.isNotEmpty()) {
+                getComponent(componentsItem.parentComponentId, componentsItem.pageEndPoint)?.let { parentComp ->
                     parentComponentPosition = parentComp.position
                 }
             }
@@ -455,26 +498,28 @@ class Utils {
             }
         }
 
-        fun String.toEncodedString(): String{
+        fun String.toEncodedString(): String {
             return try {
-                URLEncoder.encode(this,DEFAULT_ENCODING)
-            }catch (exception: Exception){
+                URLEncoder.encode(this, DEFAULT_ENCODING)
+            } catch (exception: Exception) {
                 this
             }
         }
 
-        fun String.toDecodedString(): String{
+        fun String.toDecodedString(): String {
             return try {
-                URLDecoder.decode(this,DEFAULT_ENCODING)
-            }catch (exception: Exception){
+                URLDecoder.decode(this, DEFAULT_ENCODING)
+            } catch (exception: Exception) {
                 this
             }
         }
 
-        fun ComponentsItem.areFiltersApplied():Boolean{
+        fun ComponentsItem.areFiltersApplied(): Boolean {
             return (selectedSort != null && selectedFilters != null) &&
-                (selectedSort?.isNotEmpty() == true ||
-                    selectedFilters?.isNotEmpty() == true)
+                (
+                    selectedSort?.isNotEmpty() == true ||
+                        selectedFilters?.isNotEmpty() == true
+                    )
         }
 
         fun generateRandomUUID(): String {
@@ -489,11 +534,12 @@ class Utils {
                     components.pageEndPoint
                 )?.let parent@{ parentItem ->
                     parentItem.getComponentsItem()?.forEach {
-                        if (!it.dynamicOriginalId.isNullOrEmpty())
+                        if (!it.dynamicOriginalId.isNullOrEmpty()) {
                             if (it.dynamicOriginalId == compId) {
                                 compId = it.id
                                 return@parent
                             }
+                        }
                     }
                 }
             }
@@ -506,7 +552,7 @@ class Utils {
         ): String {
             if (valueOfRpcFilter.contains("_")) {
                 val splitValues = valueOfRpcFilter.split("_")
-                if(splitValues.size < 2) return ""
+                if (splitValues.size < 2) return ""
                 val tabPosition = splitValues[0].toIntOrNull()?.minus(1)
                 val actualValue = splitValues[1]
                 if (tabPosition == null || actualValue.isEmpty()) return ""
@@ -521,6 +567,47 @@ class Utils {
 
         fun dpToPx(dp: Int): Float {
             return (dp * Resources.getSystem().displayMetrics.density)
+        }
+
+        fun setParameterMapUtil(queryParameterMap: String?, queryParameterMapWithRpc: MutableMap<String, String>, queryParameterMapWithoutRpc: MutableMap<String, String>) {
+            val queryMap =
+                URLParser(ApplinkConstInternalDiscovery.INTERNAL_DISCOVERY + "?" + queryParameterMap).paramKeyValueMapDecoded
+            for ((key, value) in queryMap) {
+                if (!value.isNullOrEmpty()) {
+                    if (key.startsWith(RPC_FILTER_KEY)) {
+                        val keyWithoutPrefix = key.removePrefix(RPC_FILTER_KEY)
+                        queryParameterMapWithRpc[keyWithoutPrefix] = value
+                    } else {
+                        queryParameterMapWithoutRpc[key] = value
+                    }
+                }
+            }
+        }
+
+        fun routingBasedOnMoveAction(moveAction : MoveAction, fragment : Fragment){
+            when (moveAction.type) {
+                Constant.REDIRECTION -> {
+                    if (!moveAction.value.isNullOrEmpty()) {
+                        RouteManager.route(fragment.activity, moveAction.value)
+                    }
+                }
+
+                Constant.NAVIGATION -> {
+                    if (!moveAction.value.isNullOrEmpty()) {
+                        (fragment as? DiscoveryFragment)?.redirectToOtherTab(moveAction.value)
+                    }
+                }
+            }
+        }
+
+        fun setTabSelectedBasedOnDataItem(componentItem: ComponentsItem, isSelected: Boolean){
+            componentItem.apply {
+                if (!data.isNullOrEmpty()) {
+                    data?.get(0)?.let { tabData ->
+                        tabData.isSelected = isSelected
+                    }
+                }
+            }
         }
     }
 }

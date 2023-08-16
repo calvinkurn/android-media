@@ -125,7 +125,7 @@ abstract class ChatListTest {
 
     protected fun setLabelNew(value: Boolean) {
         cacheManager.saveState(
-            BROADCAST_FAB_LABEL_PREF_NAME,
+            "${BROADCAST_FAB_LABEL_PREF_NAME}_${userSession.userId}",
             value
         )
     }
