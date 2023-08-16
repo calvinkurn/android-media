@@ -68,6 +68,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
+import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.SCREEN_NAME_TOKONOW_OOC
@@ -1407,6 +1408,7 @@ class TokoNowHomeFragment :
     }
 
     private fun onLoadingHomeLayout(data: HomeLayoutListUiModel) {
+        hideTopSpacingView()
         showHomeLayout(data)
         checkAddressDataAndServiceArea()
         showHideChooseAddress()
@@ -1420,6 +1422,7 @@ class TokoNowHomeFragment :
     }
 
     private fun onHideHomeLayout(data: HomeLayoutListUiModel) {
+        showTopSpacingView()
         showHomeLayout(data)
         stickyLoginLoadContent()
         stopPerformanceMonitoring()
@@ -1439,6 +1442,20 @@ class TokoNowHomeFragment :
         localCacheModel?.let {
             viewModelTokoNow.getLayoutComponentData(it)
         }
+    }
+
+    private fun showTopSpacingView() {
+        binding?.apply {
+            context?.let {
+                viewTopSpacing.layoutParams.height =
+                    NavToolbarExt.getFullToolbarHeight(it)
+                viewTopSpacing.show()
+            }
+        }
+    }
+
+    private fun hideTopSpacingView() {
+        binding?.viewTopSpacing?.hide()
     }
 
     private fun showOnBoarding() {
@@ -1762,11 +1779,12 @@ class TokoNowHomeFragment :
                                 toolbar.setBackButtonColor(
                                     com.tokopedia.unifyprinciples.R.color.Unify_Static_Black)
                                 toolbar.switchToLightToolbar()
+                                switchToLightToolbar()
                             } else {
                                 toolbar.setBackButtonColor(
                                     com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+                                switchToDarkToolbar()
                             }
-                            switchToDarkToolbar()
                             navToolbar?.hideShadow()
                         }
 
