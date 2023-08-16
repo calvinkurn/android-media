@@ -63,6 +63,7 @@ internal class StoriesAvatarViewModel @AssistedInject constructor(
             val storiesState = repository.getShopStoriesState(key, shopIds)
             val storiesStateMap = storiesState.associate {
                 it.shopId to StoriesAvatarState(
+                    it.shopId,
                     it.getStoriesStatus(),
                     it.appLink
                 )

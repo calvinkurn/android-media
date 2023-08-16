@@ -17,7 +17,8 @@ import kotlinx.coroutines.launch
 internal class StoriesAvatarObserver(
     viewModel: StoriesAvatarViewModel,
     lifecycleOwner: LifecycleOwner,
-    view: StoriesBorderLayout
+    view: StoriesBorderLayout,
+    animationStrategy: AnimationStrategy,
 ) {
 
     private val _shopId = MutableStateFlow("")
@@ -30,6 +31,13 @@ internal class StoriesAvatarObserver(
                         viewModel.getStoriesState(it)
                     }.collectLatest { newState ->
                         view.setState { newState ?: it }
+
+                        if (newState == null) return@collectLatest
+                        if (newState.status != StoriesStatus.HasUnseenStories) return@collectLatest
+                        if (animationStrategy.shouldPlayAnimation(newState.shopId)) {
+                            view.startAnimation()
+                            animationStrategy.onAnimate(newState.shopId)
+                        }
                     }
                 }
             }

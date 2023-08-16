@@ -25,14 +25,10 @@ import com.tokopedia.product.detail.databinding.ViewShopCredibilityShimmeringBin
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.inflateWithBinding
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.stories.common.StoriesAvatarManager
-import com.tokopedia.stories.common.StoriesKey
-import com.tokopedia.stories.common.storiesManager
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
-import java.lang.ref.WeakReference
 
 /**
  * Created by Yehezkiel on 15/06/20

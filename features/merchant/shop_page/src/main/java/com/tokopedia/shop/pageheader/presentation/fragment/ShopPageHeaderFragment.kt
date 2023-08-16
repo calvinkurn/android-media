@@ -201,6 +201,7 @@ import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
 import com.tokopedia.shop_widget.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop_widget.mvc_locked_to_product.util.MvcLockedToProductUtil
 import com.tokopedia.shop_widget.note.view.bottomsheet.ShopNoteBottomSheet
+import com.tokopedia.stories.common.OneTimeAnimationStrategy
 import com.tokopedia.stories.common.StoriesAvatarManager
 import com.tokopedia.stories.common.StoriesKey
 import com.tokopedia.stories.common.storiesManager
@@ -455,7 +456,10 @@ class ShopPageHeaderFragment :
     }
     private var queryParamTab: String = ""
 
-    private val storiesManager by storiesManager(StoriesKey.ShopPage) { viewBindingShopContentLayout?.appBarLayout?.parent as? View }
+    private val storiesManager by storiesManager(StoriesKey.ShopPage) {
+        setScrollingParent(viewBindingShopContentLayout?.appBarLayout?.parent as? View)
+        setAnimationStrategy(OneTimeAnimationStrategy())
+    }
 
     override fun getComponent() = activity?.run {
         DaggerShopPageHeaderComponent.builder().shopPageHeaderModule(ShopPageHeaderModule())

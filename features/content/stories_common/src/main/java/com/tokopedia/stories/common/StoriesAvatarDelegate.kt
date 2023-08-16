@@ -1,6 +1,5 @@
 package com.tokopedia.stories.common
 
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.play_common.lifecycle.AbstractLifecycleBoundDelegate
@@ -21,16 +20,22 @@ class StoriesAvatarDelegate<LO : LifecycleOwner>(
     }
 }
 
-fun activityStoriesManager(key: StoriesKey, scrollingView: View? = null): StoriesAvatarDelegate<AppCompatActivity> {
+fun activityStoriesManager(
+    key: StoriesKey,
+    builderOptions: StoriesAvatarManager.Builder.() -> Unit = {},
+): StoriesAvatarDelegate<AppCompatActivity> {
     return StoriesAvatarDelegate(
         lifecycleBound(
-            { StoriesAvatarManager.create(key, it, scrollingView) }
+            { StoriesAvatarManager.create(key, it, builderOptions) }
         )
     )
 }
 
-fun storiesManager(key: StoriesKey, scrollingView: () -> View? = { null }) = StoriesAvatarDelegate(
+fun storiesManager(
+    key: StoriesKey,
+    builderOptions: StoriesAvatarManager.Builder.() -> Unit = {},
+) = StoriesAvatarDelegate(
     viewLifecycleBound(
-        { StoriesAvatarManager.create(key, it, scrollingView()) }
+        { StoriesAvatarManager.create(key, it, builderOptions) }
     )
 )

@@ -8,18 +8,17 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.LinearGradient
 import android.graphics.Paint
-import android.graphics.Path
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.RectF
-import android.graphics.Region
 import android.graphics.Shader
-import android.os.Build
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import androidx.interpolator.view.animation.FastOutLinearInInterpolator
-import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.stories.common.animation.LinearEasingInterpolator
+import kotlin.math.min
 
 /**
  * Created by kenny.hadisaputra on 11/08/23
@@ -53,12 +52,11 @@ internal class StoriesBorderView : View {
         xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_OUT)
     }
 
-    private val circleBorderPath = Path()
     private val ovalRect = RectF()
 
     private var mBorderConfig = BorderConfiguration(
-        unseenStoriesWidth = 2.dpToPx(resources.displayMetrics),
-        seenStoriesWidth = 1.dpToPx(resources.displayMetrics),
+        unseenStoriesWidth = BorderValue.Adaptive,
+        seenStoriesWidth = BorderValue.Adaptive,
     )
     set(value) {
         field = value
@@ -70,6 +68,9 @@ internal class StoriesBorderView : View {
     init {
         setWillNotDraw(false)
         seenStoriesPaint.color = Color.parseColor("#80BFC9D9")
+
+        scaleX = 0.97f
+        scaleY = 0.97f
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -130,22 +131,53 @@ internal class StoriesBorderView : View {
         invalidate()
     }
 
-    private fun setupBorderPath(width: Int, height: Int) {
-        circleBorderPath.reset()
-        circleBorderPath.addCircle(
-            width / 2f,
-            height / 2f,
-            width / 2f - getBorderWidth(),
-            Path.Direction.CW
-        )
+    private fun getBorderWidth(): Float {
+        return when (mStoriesStatus) {
+            StoriesStatus.AllStoriesSeen -> getStoriesSeenBorderValue(mBorderConfig.seenStoriesWidth)
+            StoriesStatus.HasUnseenStories -> getUnseenStoriesBorderValue(mBorderConfig.unseenStoriesWidth)
+            else -> 0f
+        }
     }
 
-    private fun getBorderWidth(): Int {
-        return when (mStoriesStatus) {
-            StoriesStatus.AllStoriesSeen -> mBorderConfig.seenStoriesWidth
-            StoriesStatus.HasUnseenStories -> mBorderConfig.unseenStoriesWidth
-            else -> 0
+    private fun getStoriesSeenBorderValue(borderValue: BorderValue): Float {
+        return when (borderValue) {
+            BorderValue.Adaptive -> getStoriesSeenAdaptiveBorderWidth()
+            is BorderValue.Fixed -> borderValue.value
         }
+    }
+
+    private fun getStoriesSeenAdaptiveBorderWidth(): Float {
+        val minSize = min(width, height)
+        val sizeInDp = minSize.pxToDp(resources.displayMetrics)
+
+        val borderInPx = when {
+            sizeInDp >= 64 -> 1f
+            sizeInDp < 32 -> 0.5f
+            else -> 0.5f
+        }
+
+        return borderInPx.dpToPx()
+    }
+
+    private fun getUnseenStoriesBorderValue(borderValue: BorderValue): Float {
+        return when (borderValue) {
+            BorderValue.Adaptive -> getUnseenStoriesAdaptiveBorderWidth()
+            is BorderValue.Fixed -> borderValue.value
+        }
+    }
+
+    private fun getUnseenStoriesAdaptiveBorderWidth(): Float {
+        val minSize = min(width, height)
+        val sizeInDp = minSize.pxToDp(resources.displayMetrics)
+
+        Log.d("StoriesBorderView", "Size in dp: $sizeInDp")
+        val borderInPx = when {
+            sizeInDp >= 64 -> 2f
+            sizeInDp < 32 -> 1f
+            else -> 1.5f
+        }
+
+        return borderInPx.dpToPx()
     }
 
     private fun setupShader(width: Int, height: Int) {
@@ -161,32 +193,10 @@ internal class StoriesBorderView : View {
         gradientStoriesPaint.shader = shader
     }
 
-    private fun Canvas.clipStoriesBorderPath() {
-        setupBorderPath(width, height)
-        clipOutPathCompat(circleBorderPath)
-    }
-
-    private fun Canvas.drawStoriesBorder() {
-        drawCircle(
-            width / 2f,
-            height / 2f,
-            width / 2f,
-            getStoriesBorderPaint()
-        )
-    }
-
     private fun getStoriesBorderPaint(): Paint {
         return when (mStoriesStatus) {
             StoriesStatus.HasUnseenStories -> gradientStoriesPaint
             else -> seenStoriesPaint
-        }
-    }
-
-    private fun Canvas.clipOutPathCompat(path: Path) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            clipOutPath(path)
-        } else {
-            clipPath(path, Region.Op.DIFFERENCE)
         }
     }
 
@@ -270,8 +280,18 @@ internal class StoriesBorderView : View {
         }
     }
 
+    private fun Float.dpToPx(): Float = this * resources.displayMetrics.density
+
     internal data class BorderConfiguration(
-        val unseenStoriesWidth: Int,
-        val seenStoriesWidth: Int,
+        val unseenStoriesWidth: BorderValue,
+        val seenStoriesWidth: BorderValue,
     )
+
+    internal sealed interface BorderValue {
+        object Adaptive : BorderValue
+        @JvmInline
+        value class Fixed(val value: Float) : BorderValue {
+            constructor(value: Int): this(value.toFloat())
+        }
+    }
 }

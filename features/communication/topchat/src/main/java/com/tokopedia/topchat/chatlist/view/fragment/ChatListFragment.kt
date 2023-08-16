@@ -137,7 +137,9 @@ class ChatListFragment :
     private var menu: Menu? = null
     private var broadCastButton: BroadcastButtonLayout? = null
 
-    private val mStoriesAvatarManager by storiesManager(StoriesKey.TopChatList) { rv }
+    private val mStoriesAvatarManager by storiesManager(StoriesKey.TopChatList) {
+        setScrollingParent(rv)
+    }
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
     override fun getSwipeRefreshLayoutResourceId() = R.id.swipe_refresh_layout

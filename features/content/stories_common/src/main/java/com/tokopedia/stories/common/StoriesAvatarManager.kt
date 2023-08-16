@@ -33,7 +33,7 @@ class StoriesAvatarManager private constructor(
     context: Context,
     private val lifecycleOwner: LifecycleOwner,
     private val viewModelStoreOwner: ViewModelStoreOwner,
-    parentScrollingView: View? = null,
+    private val options: Options,
 ) {
 
     private val component = createComponent(context)
@@ -96,8 +96,8 @@ class StoriesAvatarManager private constructor(
             }
         }
 
-        Log.d("StoriesBorderLayout", "parentScrollingView: $parentScrollingView")
-        parentScrollingView?.let { observeScrollingView(it) }
+        Log.d("StoriesBorderLayout", "parentScrollingView: ${options.scrollingParent}")
+        options.scrollingParent?.let { observeScrollingView(it) }
     }
 
     fun manage(storiesView: StoriesBorderLayout, shopId: String) {
@@ -200,7 +200,8 @@ class StoriesAvatarManager private constructor(
         return StoriesAvatarObserver(
             getViewModel(),
             lifecycleOwner,
-            this
+            this,
+            options.animStrategy,
         )
     }
 
@@ -237,26 +238,85 @@ class StoriesAvatarManager private constructor(
 
     companion object {
 
-        fun create(key: StoriesKey, fragment: Fragment, scrollingView: View? = null): StoriesAvatarManager {
+        fun create(
+            key: StoriesKey,
+            fragment: Fragment,
+            builderOptions: Builder.() -> Unit
+        ): StoriesAvatarManager {
+            val builder = Builder(key, fragment)
+            builder.builderOptions()
+            return builder.build()
+        }
+
+        fun create(
+            key: StoriesKey,
+            activity: AppCompatActivity,
+            builderOptions: Builder.() -> Unit
+        ): StoriesAvatarManager {
+            val builder = Builder(key, activity)
+            builder.builderOptions()
+            return builder.build()
+        }
+    }
+
+    class Builder private constructor(
+        private val key: StoriesKey,
+        private val context: Context,
+        private val lifecycleOwner: LifecycleOwner,
+        private val viewModelStoreOwner: ViewModelStoreOwner,
+    ) {
+
+        constructor(key: StoriesKey, fragment: Fragment) : this(
+            key,
+            fragment.requireContext(),
+            fragment.viewLifecycleOwner,
+            fragment,
+        )
+        constructor(key: StoriesKey, activity: AppCompatActivity) : this(
+            key,
+            activity,
+            activity,
+            activity,
+        )
+
+        private var mScrollingParent: View? = null
+        private var mAnimationStrategy: AnimationStrategy = NoAnimateAnimationStrategy()
+
+        fun setScrollingParent(view: View?) = builder {
+            this.mScrollingParent = view
+        }
+
+        fun setAnimationStrategy(animStrategy: AnimationStrategy) = builder {
+            mAnimationStrategy = animStrategy
+        }
+
+        fun build(): StoriesAvatarManager {
             return StoriesAvatarManager(
                 key,
-                fragment.requireContext(),
-                fragment.viewLifecycleOwner,
-                fragment,
-                scrollingView
+                context,
+                lifecycleOwner,
+                viewModelStoreOwner,
+                createOptions(),
             )
         }
 
-        fun create(key: StoriesKey, activity: AppCompatActivity, scrollingView: View? = null): StoriesAvatarManager {
-            return StoriesAvatarManager(
-                key,
-                activity,
-                activity,
-                activity,
-                scrollingView,
+        private fun createOptions(): Options {
+            return Options(
+                mScrollingParent,
+                mAnimationStrategy,
             )
         }
+
+        private fun builder(onBuild: () -> Unit): Builder {
+            onBuild()
+            return this
+        }
     }
+
+    class Options(
+        val scrollingParent: View?,
+        val animStrategy: AnimationStrategy,
+    )
 
     internal data class StoriesAvatarMeta(
         val shopId: String,

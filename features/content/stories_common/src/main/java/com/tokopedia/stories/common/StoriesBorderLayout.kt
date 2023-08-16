@@ -39,10 +39,6 @@ class StoriesBorderLayout @JvmOverloads constructor(
         }
     }
 
-    private val circleChildPath = Path()
-
-    private val childMargin = 4.dpToPx(resources.displayMetrics)
-
     private var mState by Delegates.observable(StoriesAvatarState.Default) { _, _, newProp ->
         getChildBorderView()?.setStoriesStatus(newProp.status)
     }
@@ -56,8 +52,8 @@ class StoriesBorderLayout @JvmOverloads constructor(
         getChildBorderView()?.let {
             it.setBorderConfig { config ->
                 config.copy(
-                    seenStoriesWidth = if (seenBorderWidth != -1) seenBorderWidth else config.seenStoriesWidth,
-                    unseenStoriesWidth = if (unseenBorderWidth != -1) unseenBorderWidth else config.unseenStoriesWidth,
+                    seenStoriesWidth = if (seenBorderWidth != -1) StoriesBorderView.BorderValue.Fixed(seenBorderWidth) else config.seenStoriesWidth,
+                    unseenStoriesWidth = if (unseenBorderWidth != -1) StoriesBorderView.BorderValue.Fixed(unseenBorderWidth) else config.unseenStoriesWidth,
                 )
             }
         }
@@ -74,16 +70,6 @@ class StoriesBorderLayout @JvmOverloads constructor(
     }
 
     override fun drawChild(canvas: Canvas, child: View?, drawingTime: Long): Boolean {
-//        if (child is StoriesBorderView) {
-//            return super.drawChild(canvas, child, drawingTime)
-//        }
-//
-//        canvas.save()
-//        canvas.clipChildPath()
-//        val drawChild = super.drawChild(canvas, child, drawingTime)
-//        canvas.restore()
-//
-//        return drawChild
         return super.drawChild(canvas, child, drawingTime)
     }
 
@@ -94,28 +80,6 @@ class StoriesBorderLayout @JvmOverloads constructor(
 
     fun startAnimation() {
         binding.border.startAnimation()
-    }
-
-    private fun setupChildPath(width: Int, height: Int) {
-        circleChildPath.reset()
-        circleChildPath.addCircle(
-            width / 2f,
-            height / 2f,
-            width / 2f - getChildMargin(),
-            Path.Direction.CW
-        )
-    }
-
-    private fun Canvas.clipChildPath() {
-        setupChildPath(width, height)
-        clipPath(circleChildPath)
-    }
-
-    private fun getChildMargin(): Int {
-        return when (mState.status) {
-            StoriesStatus.NoStories -> 0
-            else -> childMargin
-        }
     }
 
     private fun getChildBorderView(): StoriesBorderView? {
