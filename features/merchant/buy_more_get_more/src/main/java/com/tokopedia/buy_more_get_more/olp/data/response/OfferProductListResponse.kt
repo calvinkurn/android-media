@@ -11,16 +11,16 @@ data class OfferProductListResponse(
         @SerializedName("response_header")
         val responseHeader: ResponseHeader = ResponseHeader(),
         @SerializedName("products")
-        val productList: List<Product> = emptyList()
+        val productList: List<Product> = emptyList(),
+        @SerializedName("total_product")
+        val totalProduct: Int = 0
     )
 
     data class ResponseHeader(
         @SerializedName("success")
         val success: Boolean = true,
-        @SerializedName("error_code")
-        val error_code: Long = 0,
-        @SerializedName("process_time")
-        val processTime: String = ""
+        @SerializedName("errorMessage")
+        val errorMessage: List<String> = emptyList()
     )
 
     data class Product(
@@ -32,6 +32,8 @@ data class OfferProductListResponse(
         val productId: Int = 0,
         @SerializedName("warehouse_id")
         val warehouseId: Int = 0,
+        @SerializedName("product_url")
+        val productUrl: String = "",
         @SerializedName("image_url")
         val imageUrl: String = "",
         @SerializedName("name")
@@ -42,10 +44,6 @@ data class OfferProductListResponse(
         val rating: String = "",
         @SerializedName("sold_count")
         val soldCount: Int = 0,
-        @SerializedName("min_order")
-        val minOrder: Int = 0,
-        @SerializedName("max_order")
-        val maxOrder: Int = 0,
         @SerializedName("stock")
         val stock: Int = 0,
         @SerializedName("is_vbs")
@@ -61,13 +59,20 @@ data class OfferProductListResponse(
             @SerializedName("discounted_price")
             val discountedPrice: String = "",
             @SerializedName("discounted_percentage")
-            val discountedPercentage: String = "",
-            @SerializedName("min_order")
-            val minOrder: Int = 0,
-            @SerializedName("max_order")
-            val maxOrder: Int = 0,
+            val discountedPercentage: Int = 0,
             @SerializedName("custom_stock")
             val customStock: Int = 0
+        )
+
+        data class LabelGroup(
+            @SerializedName("position")
+            val position: String = "",
+            @SerializedName("title")
+            val title: String = "",
+            @SerializedName("type")
+            val type: String = "",
+            @SerializedName("url")
+            val url: String = ""
         )
     }
 }

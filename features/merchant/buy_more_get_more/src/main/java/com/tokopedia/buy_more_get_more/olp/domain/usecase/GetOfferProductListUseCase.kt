@@ -23,7 +23,7 @@ class GetOfferProductListUseCase @Inject constructor(
     }
 
     companion object {
-        private const val REQUEST_PARAMS = "params"
+        private const val REQUEST_PARAMS = "input"
     }
 
     private val query = object : GqlQueryInterface {
@@ -31,38 +31,43 @@ class GetOfferProductListUseCase @Inject constructor(
         private val QUERY = """
               query $OPERATION_NAME(${'$'}input: GetOfferingProductListRequest!) {
                   GetOfferingProductList(input: ${'$'}input) {
-                     response_header{
+                     response_header {
                           status
                           errorMessage
                           success
                           processTime
                         }
-                     products{
+                        products {
                           offer_id
                           parent_id
                           product_id
                           warehouse_id
+                          product_url
                           image_url
                           name
                           price
                           rating
                           sold_count
-                          min_order
-                          max_order
                           stock
                           is_vbs
-                          campaign{
+                          campaign {
                             name
                             original_price
                             discounted_price
                             discounted_percentage
-                            min_order
-                            max_order
                             custom_stock
-                          }  
+                          }
+                          label_group {
+                            position
+                            title
+                            type
+                            url
+                          }
+                        }
+                        total_product
+                      }
                     }
-                  }
-                }
+
 
 
         """.trimIndent()

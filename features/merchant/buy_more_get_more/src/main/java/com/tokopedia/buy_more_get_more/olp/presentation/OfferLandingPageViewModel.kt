@@ -1,7 +1,9 @@
 package com.tokopedia.buy_more_get_more.olp.presentation
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.buy_more_get_more.olp.data.request.GetOfferingInfoForBuyerRequestParam
@@ -14,12 +16,15 @@ import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetOfferProductListUse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.searchbar.navigation_component.datamodel.TopNavNotificationModel
+import com.tokopedia.searchbar.navigation_component.domain.GetNotificationUseCase
 import javax.inject.Inject
 
 class OfferLandingPageViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getOfferInfoForBuyerUseCase: GetOfferInfoForBuyerUseCase,
-    private val getOfferProductListUseCase: GetOfferProductListUseCase
+    private val getOfferProductListUseCase: GetOfferProductListUseCase,
+    private val getNotificationUseCase: GetNotificationUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     private val _offeringInfo = MutableLiveData<OfferInfoForBuyerUiModel>()
@@ -29,6 +34,10 @@ class OfferLandingPageViewModel @Inject constructor(
     private val _productList = MutableLiveData<OfferProductListUiModel>()
     val productList: LiveData<OfferProductListUiModel>
         get() = _productList
+
+    private val _navNotificationModel = MutableLiveData(TopNavNotificationModel())
+    val navNotificationLiveData: LiveData<TopNavNotificationModel>
+        get() = _navNotificationModel
 
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
@@ -100,6 +109,19 @@ class OfferLandingPageViewModel @Inject constructor(
             },
             onError = {
                 _error.postValue(it)
+            }
+        )
+    }
+
+    fun getNotification() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val result = getNotificationUseCase.executeOnBackground()
+                _navNotificationModel.postValue(result)
+            },
+            onError = {
+
             }
         )
     }

@@ -9,15 +9,15 @@ class GetOfferProductListMapper @Inject constructor() {
     fun map(response: OfferProductListResponse): OfferProductListUiModel {
         return OfferProductListUiModel(
             responseHeader = response.offeringProductList.responseHeader.toResponseHeaderModel(),
-            productList = response.offeringProductList.productList.toProductListModel()
+            productList = response.offeringProductList.productList.toProductListModel(),
+            totalProduct = response.offeringProductList.totalProduct
         )
     }
 
     private fun OfferProductListResponse.ResponseHeader.toResponseHeaderModel(): OfferProductListUiModel.ResponseHeader {
         return OfferProductListUiModel.ResponseHeader(
             success,
-            error_code,
-            processTime
+            errorMessage
         )
     }
 
@@ -28,13 +28,12 @@ class GetOfferProductListMapper @Inject constructor() {
                 parentId = it.parentId,
                 productId = it.productId,
                 warehouseId = it.warehouseId,
+                productUrl = it.productUrl,
                 imageUrl = it.imageUrl,
                 name = it.name,
                 price = it.price,
                 rating = it.rating,
                 soldCount = it.soldCount,
-                minOrder = it.minOrder,
-                maxOrder = it.maxOrder,
                 stock = it.stock,
                 isVbs = it.isVbs,
                 campaign = it.campaign.toCampaignModel()
@@ -48,9 +47,13 @@ class GetOfferProductListMapper @Inject constructor() {
             originalPrice,
             discountedPrice,
             discountedPercentage,
-            minOrder,
-            maxOrder,
             customStock
+        )
+    }
+
+    private fun OfferProductListResponse.Product.LabelGroup.toLabelGroup(): OfferProductListUiModel.Product.LabelGroup {
+        return OfferProductListUiModel.Product.LabelGroup(
+            position, title, type, url
         )
     }
 }

@@ -118,6 +118,9 @@ dependencies {implementation rootProject.ext.supportLibDependencies.recyclerView
     //Product Detail Common
     implementation projectOrAar(rootProject.ext.features.productDetailCommon)
 
+    //SearchBar
+    implementation projectOrAar(rootProject.ext.features.searchbar)
+
     // UI test
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib

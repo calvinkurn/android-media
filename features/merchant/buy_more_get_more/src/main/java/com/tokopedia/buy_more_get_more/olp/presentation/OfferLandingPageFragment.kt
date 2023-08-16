@@ -32,6 +32,7 @@ import com.tokopedia.buy_more_get_more.olp.utils.DataEndlessScrollListener
 import com.tokopedia.buy_more_get_more.sort.activity.ShopProductSortActivity
 import com.tokopedia.buy_more_get_more.sort.listener.ProductSortListener
 import com.tokopedia.campaign.helper.BuyMoreGetMoreHelper
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
@@ -90,8 +91,12 @@ class OfferLandingPageFragment :
     lateinit var viewModel: OfferLandingPageViewModel
     private val shopId by lazy { arguments?.getString(BundleConstant.BUNDLE_SHOP_ID).orEmpty() }
     private val offerId by lazy { arguments?.getString(BundleConstant.BUNDLE_OFFER_ID).orEmpty() }
-    private val warehouseIds by lazy { arguments?.getIntegerArrayList(BuyMoreGetMoreHelper.KEY_WAREHOUSE_IDS).orEmpty() }
-    private val productIds by lazy { arguments?.getIntegerArrayList(BuyMoreGetMoreHelper.KEY_PRODUCT_IDS).orEmpty() }
+    private val warehouseIds by lazy {
+        arguments?.getIntegerArrayList(BuyMoreGetMoreHelper.KEY_WAREHOUSE_IDS).orEmpty()
+    }
+    private val productIds by lazy {
+        arguments?.getIntegerArrayList(BuyMoreGetMoreHelper.KEY_PRODUCT_IDS).orEmpty()
+    }
 
     override fun getScreenName() = ""
 
@@ -134,42 +139,53 @@ class OfferLandingPageFragment :
 
     private fun setupObservables() {
         viewModel.offeringInfo.observe(viewLifecycleOwner) { offerInfoForBuyer ->
-            setupContent(offerInfoForBuyer)
+            setupHeader(offerInfoForBuyer)
+        }
+
+        viewModel.productList.observe(viewLifecycleOwner) { productList ->
+            setupProductList(productList)
             setViewState(VIEW_CONTENT)
         }
 
+        viewModel.navNotificationLiveData.observe(viewLifecycleOwner) { notification ->
+            updateCartCounter(notification.totalCart)
+        }
+
         viewModel.error.observe(viewLifecycleOwner) { throwable ->
-//            setViewState(VIEW_ERROR)
-            setupContent(OfferInfoForBuyerUiModel())
-            setViewState(VIEW_CONTENT)
+            setViewState(VIEW_ERROR, throwable.localizedMessage)
         }
     }
 
     private fun setupHeader(offerInfoForBuyer: OfferInfoForBuyerUiModel) {
         setupStatusBar()
         setupToolbar(offerInfoForBuyer)
-    }
-
-    private fun setupContent(offerInfoForBuyer: OfferInfoForBuyerUiModel) {
-        setupHeader(offerInfoForBuyer)
         olpAdapter?.submitList(
             newList = listOf(
-                generateDummyOfferingData(), // pass offering data
-                OfferProductSortingUiModel() // pass product count
+                offerInfoForBuyer,
+                OfferProductSortingUiModel()
             )
         )
-        olpAdapter?.setProductListData(generateDummyProductData()) // pass product list data
+        viewModel.getNotification()
+        viewModel.getOfferingProductList(
+            offerIds = listOf(offerId.toIntOrZero()),
+            warehouseIds = listOf(1, 2),
+            localCacheModel = localCacheModel,
+            page = 1,
+            pageSize = 10
+        )
+    }
+
+    private fun setupProductList(offerProductList: OfferProductListUiModel) {
+        olpAdapter?.setProductListData(offerProductList.productList)
     }
 
     private fun setupToolbar(offerInfoForBuyer: OfferInfoForBuyerUiModel) {
-        binding?.apply {
-            header.apply {
-                title = getString(R.string.bmgm_title)
-                subTitle = offerInfoForBuyer.offerings.firstOrNull()?.offerName.orEmpty()
-                setNavigationOnClickListener { activity?.finish()}
-                cartButton?.setOnClickListener { TODO("Navigate to cart") }
-                moreMenuButton?.setOnClickListener { TODO("Navigate to more menu") }
-            }
+        binding?.header?.apply {
+            title = getString(R.string.bmgm_title)
+            subTitle = offerInfoForBuyer.offerings.firstOrNull()?.offerName.orEmpty()
+            setNavigationOnClickListener { activity?.finish() }
+            cartButton?.setOnClickListener { TODO("Navigate to cart") }
+            moreMenuButton?.setOnClickListener { TODO("Navigate to more menu") }
         }
     }
 
@@ -250,7 +266,7 @@ class OfferLandingPageFragment :
         }
     }
 
-    private fun setViewState(viewState: Int) {
+    private fun setViewState(viewState: Int, errorMsg: String = "") {
         when (viewState) {
             VIEW_LOADING -> {
                 binding?.apply {
@@ -267,6 +283,7 @@ class OfferLandingPageFragment :
                     groupHeader.gone()
                     stickyContent.gone()
                     errorPageLarge.visible()
+                    errorPageLarge.setTitle(errorMsg)
                 }
             }
 
@@ -313,7 +330,7 @@ class OfferLandingPageFragment :
                     campaign = OfferProductListUiModel.Product.Campaign(
                         discountedPrice = "Rp.10.000",
                         originalPrice = "Rp.15.000",
-                        discountedPercentage = "50%"
+                        discountedPercentage = 50
                     )
                 )
             )
@@ -341,6 +358,12 @@ class OfferLandingPageFragment :
                 shopId = shopId,
                 startActivitResult = this::startActivityForResult
             )
+        }
+    }
+
+    private fun updateCartCounter(cartCount: Int) {
+        binding?.header?.apply {
+            this.cartCount = cartCount
         }
     }
 }

@@ -42,7 +42,7 @@ class OfferingProductListViewHolder(
         return ProductCardModel(
             productImageUrl = imageUrl,
             productName = name,
-            discountPercentage = campaign.discountedPercentage,
+            discountPercentage = "${campaign.discountedPercentage}%",
             slashedPrice = campaign.originalPrice,
             formattedPrice = campaign.discountedPrice.ifEmpty { price },
             countSoldRating = rating,
