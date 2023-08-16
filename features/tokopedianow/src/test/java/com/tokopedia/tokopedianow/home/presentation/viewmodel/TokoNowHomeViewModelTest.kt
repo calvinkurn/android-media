@@ -124,6 +124,9 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `when getting homeLayout should run and give the success result`() {
+        val warehouses = listOf(
+            WarehouseData("12556", "hub")
+        )
         val homeLayoutListResponse = createHomeLayoutList()
         val categoryListResponse = createCategoryList(emptyList())
         val buyerCommunicationResponse = createBuyerCommunicationResponse()
@@ -131,6 +134,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         onGetHomeLayoutData_thenReturn(homeLayoutListResponse)
         onGetCategoryList_thenReturn(categoryListResponse)
         onGetBuyerCommunication_thenReturn(buyerCommunicationResponse)
+        onGetWarehouseData_thenReturn(warehouses)
 
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
@@ -142,7 +146,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         )
 
         val homeHeaderUiModel = HomeHeaderMapper
-            .mapToHomeHeaderUiModel(buyerCommunicationResponse)
+            .mapToHomeHeaderUiModel(warehouses, buyerCommunicationResponse)
 
         val expectedHomeLayoutList = HomeLayoutListUiModel(
             items = listOf(

@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.home.mapper
 
 import com.tokopedia.tokopedianow.buyercomm.domain.mapper.BuyerCommunicationMapper
 import com.tokopedia.tokopedianow.buyercomm.domain.model.GetBuyerCommunication.GetBuyerCommunicationResponse
+import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.presentation.model.HomeHeaderBackgroundData
@@ -9,7 +10,10 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeHeaderUiModel
 
 object HomeHeaderMapper {
 
-    fun mapToHomeHeaderUiModel(response: GetBuyerCommunicationResponse): HomeHeaderUiModel {
+    fun mapToHomeHeaderUiModel(
+        warehouses: List<WarehouseData>,
+        response: GetBuyerCommunicationResponse
+    ): HomeHeaderUiModel {
         val shopDetails = response.data.shopDetails
         val shippingDetails = response.data.shippingDetails
         val backgroundData = mapToHeaderBackgroundData(response)
@@ -26,6 +30,7 @@ object HomeHeaderMapper {
             shippingHint = shippingHint,
             logoUrl = logoUrl,
             background = backgroundData,
+            warehouses = warehouses,
             buyerCommunication = buyerCommunicationData,
             state = HomeLayoutItemState.LOADED
         )

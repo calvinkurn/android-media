@@ -5,11 +5,10 @@ import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
@@ -17,8 +16,9 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeHeaderUiModel
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.buyercomm.analytic.BuyerCommunicationAnalytics.sendClickChevronButtonEvent
+import com.tokopedia.tokopedianow.buyercomm.analytic.BuyerCommunicationAnalytics.sendImpressionBuyerCommunicationEvent
 import com.tokopedia.tokopedianow.buyercomm.presentation.activity.TokoNowBuyerCommunicationActivity
 import com.tokopedia.tokopedianow.buyercomm.presentation.data.BuyerCommunicationData
 import com.tokopedia.tokopedianow.common.util.ViewUtil
@@ -26,6 +26,7 @@ import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeHeaderBinding
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeHeaderUiModel
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeChooseAddressWidgetListener
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -60,6 +61,7 @@ class HomeHeaderViewHolder(
             HomeLayoutItemState.LOADED -> {
                 showHeaderBackground(header)
                 showHeaderContent(header)
+                addImpressionListener(header)
                 hideLoading()
             }
             HomeLayoutItemState.ERROR -> {
@@ -154,7 +156,7 @@ class HomeHeaderViewHolder(
             val shippingHint = header.shippingHint
             val subTitle = itemView.context
                 .getString(R.string.tokopedianow_home_header_subtitle, shopStatus, shippingHint)
-            setOnClickListener(buyerCommunication)
+            setOnClickListener(header)
 
             textTitle.text = header.title
             textSubtitle.text = MethodChecker.fromHtml(subTitle)
@@ -233,11 +235,13 @@ class HomeHeaderViewHolder(
         }
     }
 
-    private fun setOnClickListener(buyerCommunicationData: BuyerCommunicationData) {
+    private fun setOnClickListener(header: HomeHeaderUiModel) {
         binding?.apply {
             arrayListOf(imageChevronDown, textSubtitle).forEach {
                 it.setOnClickListener {
+                    val buyerCommunicationData = header.buyerCommunication
                     openBuyerCommunicationBottomSheet(buyerCommunicationData)
+                    sendClickChevronButtonEvent(header.warehouses)
                 }
             }
         }
@@ -248,6 +252,15 @@ class HomeHeaderViewHolder(
     ) {
         TokoNowBuyerCommunicationActivity.startActivity(
             itemView.context, buyerCommunicationData)
+    }
+
+    private fun addImpressionListener(header: HomeHeaderUiModel) {
+        itemView.addOnImpressionListener(header) {
+            sendImpressionBuyerCommunicationEvent(
+                header.title,
+                header.warehouses
+            )
+        }
     }
 
     interface HomeHeaderListener {

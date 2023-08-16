@@ -5,6 +5,7 @@ import com.tokopedia.tokopedianow.buyercomm.domain.model.GetBuyerCommunication.G
 import com.tokopedia.tokopedianow.buyercomm.domain.usecase.GetBuyerCommunicationUseCase
 import com.tokopedia.tokopedianow.buyercomm.mapper.BuyerCommunicationMapper
 import com.tokopedia.tokopedianow.buyercomm.presentation.data.BuyerCommunicationData
+import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.data.BuyerCommunicationDataFactory.createBuyerCommunicationResponse
 import com.tokopedia.unit.test.ext.verifyValueEquals
@@ -12,6 +13,7 @@ import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -77,11 +79,26 @@ class TokoNowBuyerCommunicationViewModelTest {
             .verifyValueEquals(null)
     }
 
+    @Test
+    fun `when get warehouses data should return list of warehouses`() {
+        val warehouses = listOf(
+            WarehouseData("125566", "fc")
+        )
+
+        onGetWarehousesData_thenReturn(warehouses)
+
+        assertEquals(warehouses, viewModel.getWarehousesData())
+    }
+
     private fun onGetBuyerRecommendation_thenReturn(response: GetBuyerCommunicationResponse) {
         coEvery { getBuyerCommunicationUseCase.execute(addressData) } returns response
     }
 
     private fun onGetBuyerRecommendation_thenReturn(error: Throwable) {
         coEvery { getBuyerCommunicationUseCase.execute(addressData) } throws error
+    }
+
+    private fun onGetWarehousesData_thenReturn(warehouses: List<WarehouseData>) {
+        coEvery { addressData.getWarehousesData() } returns warehouses
     }
 }

@@ -641,6 +641,10 @@ abstract class TokoNowHomeViewModelTestFixture {
         }
     }
 
+    protected fun onGetWarehouseData_thenReturn(warehouses: List<WarehouseData>) {
+        coEvery { addressData.getWarehousesData() } returns warehouses
+    }
+
     protected fun addHomeLayoutItem(item: HomeLayoutItemUiModel?) {
         privateHomeLayoutItemList.add(item)
     }

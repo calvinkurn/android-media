@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tokopedianow.buyercomm.domain.mapper.BuyerCommunicationMapper
 import com.tokopedia.tokopedianow.buyercomm.domain.usecase.GetBuyerCommunicationUseCase
 import com.tokopedia.tokopedianow.buyercomm.presentation.data.BuyerCommunicationData
+import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import javax.inject.Inject
 
@@ -28,6 +29,10 @@ class TokoNowBuyerCommunicationViewModel @Inject constructor(
         } else {
             updateBuyerCommunicationData(data)
         }
+    }
+
+    fun getWarehousesData(): List<WarehouseData> {
+        return addressData.getWarehousesData()
     }
 
     private fun getBuyerCommunicationData() {

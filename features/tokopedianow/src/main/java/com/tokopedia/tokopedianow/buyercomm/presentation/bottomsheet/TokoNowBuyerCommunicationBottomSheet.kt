@@ -19,6 +19,9 @@ import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.buyercomm.analytic.BuyerCommunicationAnalytics.sendClickCloseButtonEvent
+import com.tokopedia.tokopedianow.buyercomm.analytic.BuyerCommunicationAnalytics.sendClickTermsAndConditionButtonEvent
+import com.tokopedia.tokopedianow.buyercomm.analytic.BuyerCommunicationAnalytics.sendImpressionBottomSheetEvent
 import com.tokopedia.tokopedianow.buyercomm.di.component.DaggerBuyerCommunicationComponent
 import com.tokopedia.tokopedianow.buyercomm.presentation.data.BuyerCommunicationData
 import com.tokopedia.tokopedianow.buyercomm.presentation.view.BuyerCommunicationBenefitItemView
@@ -97,6 +100,8 @@ class TokoNowBuyerCommunicationBottomSheet: BottomSheetUnify() {
         showBenefitList()
         showIllustrationImage()
         showTermsAndConditionText()
+        setCloseButtonClickListener()
+        sendImpressionTracker()
     }
 
     private fun showOperationHour(data: BuyerCommunicationData) {
@@ -116,7 +121,7 @@ class TokoNowBuyerCommunicationBottomSheet: BottomSheetUnify() {
         }
     }
 
-    private fun showShipmentOptions(data: BuyerCommunicationData, ) {
+    private fun showShipmentOptions(data: BuyerCommunicationData) {
         context?.let { context ->
             data.shipmentOptions.forEach { shipment ->
                 val shipmentItemView = BuyerCommunicationShipmentItemView(context)
@@ -159,6 +164,7 @@ class TokoNowBuyerCommunicationBottomSheet: BottomSheetUnify() {
 
             binding?.textTnc?.setOnClickListener {
                 openTermsAndConditionWebview()
+                sendClickTermsAndConditionTracker()
             }
             binding?.textTnc?.text = text
         }
@@ -177,6 +183,28 @@ class TokoNowBuyerCommunicationBottomSheet: BottomSheetUnify() {
             context,
             "${ApplinkConst.WEBVIEW}?url=${ConstantUrl.TERMS_AND_CONDITION}"
         )
+    }
+
+    private fun setCloseButtonClickListener() {
+        setCloseClickListener {
+            sendClickCloseButtonTracker()
+            dismiss()
+        }
+    }
+
+    private fun sendImpressionTracker() {
+        val warehouses = viewModel.getWarehousesData()
+        sendImpressionBottomSheetEvent(warehouses)
+    }
+
+    private fun sendClickCloseButtonTracker() {
+        val warehouses = viewModel.getWarehousesData()
+        sendClickCloseButtonEvent(warehouses)
+    }
+
+    private fun sendClickTermsAndConditionTracker() {
+        val warehouses = viewModel.getWarehousesData()
+        sendClickTermsAndConditionButtonEvent(warehouses)
     }
 
     private fun injectDependencies() {

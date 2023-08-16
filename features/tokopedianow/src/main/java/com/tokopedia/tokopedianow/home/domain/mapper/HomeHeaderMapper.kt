@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.home.domain.mapper
 
 import com.tokopedia.tokopedianow.buyercomm.domain.mapper.BuyerCommunicationMapper
 import com.tokopedia.tokopedianow.buyercomm.domain.model.GetBuyerCommunication.GetBuyerCommunicationResponse
+import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.updateItemById
@@ -13,6 +14,7 @@ object HomeHeaderMapper {
 
     fun MutableList<HomeLayoutItemUiModel?>.mapToHomeHeaderUiModel(
         item: HomeHeaderUiModel,
+        warehouses: List<WarehouseData>,
         buyerCommunicationResponse: GetBuyerCommunicationResponse?
     ) {
         buyerCommunicationResponse?.let {
@@ -33,6 +35,7 @@ object HomeHeaderMapper {
                 logoUrl = logoUrl,
                 background = backgroundData,
                 buyerCommunication = buyerCommunicationData,
+                warehouses = warehouses,
                 state = HomeLayoutItemState.LOADED
             )
 
