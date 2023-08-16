@@ -31,20 +31,6 @@ object VisitableDataHelper {
         return null
     }
 
-    fun MutableList<Visitable<*>>.getProductByCartId(cartId: String): Pair<Int, TokoFoodPurchaseProductTokoFoodPurchaseUiModel>? {
-        loop@ for ((index, data) in this.withIndex()) {
-            when {
-                data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && data.cartId == cartId -> {
-                    return Pair(index, data)
-                }
-                data is TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel || data is TokoFoodPurchasePromoTokoFoodPurchaseUiModel -> {
-                    break@loop
-                }
-            }
-        }
-        return null
-    }
-
     fun MutableList<Visitable<*>>.getProductByUpdateParam(param: UpdateProductParam): Pair<Int, TokoFoodPurchaseProductTokoFoodPurchaseUiModel>? {
         loop@ for ((index, data) in this.withIndex()) {
             val isMatchingProduct =
