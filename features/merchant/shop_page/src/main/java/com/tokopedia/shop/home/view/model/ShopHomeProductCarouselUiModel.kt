@@ -44,14 +44,21 @@ data class ShopHomeProductCarouselUiModel(
                 val imageUrl: String,
                 val ctaLink: String,
                 val linkId: Long,
-                val linkType: String,
+                val linkType: LinkType,
                 val isShowProductInfo: Boolean,
                 val bannerType: BannerType
             ) : Parcelable {
                 @Parcelize
-                enum class BannerType(val id : String) : Parcelable  {
+                enum class BannerType(val id: String) : Parcelable {
                     VERTICAL("vertical"),
                     NONE("")
+                }
+
+                @Parcelize
+                enum class LinkType(var id: String) : Parcelable {
+                    PRODUCT("product"),
+                    SHOWCASE("showcase"),
+                    FEATURED_PRODUCT("featured")
                 }
             }
         }

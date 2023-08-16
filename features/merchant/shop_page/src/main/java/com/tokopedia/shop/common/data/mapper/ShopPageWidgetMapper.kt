@@ -20,6 +20,7 @@ import com.tokopedia.shop.home.view.model.ShowcaseNavigationBannerWidgetStyle
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel.Tab.ComponentList.Data.BannerType
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel.Tab.ComponentList.ComponentType
+import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel.Tab.ComponentList.Data.LinkType
 
 //TODO need to migrate all other shop widget mapper on home mapper to this mapper
 object ShopPageWidgetMapper {
@@ -229,11 +230,18 @@ object ShopPageWidgetMapper {
                 }
 
                 val data = component.data.map { data ->
+                    val linkType = when (data.linkType) {
+                        LinkType.PRODUCT.id -> LinkType.PRODUCT
+                        LinkType.SHOWCASE.id -> LinkType.SHOWCASE
+                        LinkType.FEATURED_PRODUCT.id -> LinkType.FEATURED_PRODUCT
+                        else -> LinkType.PRODUCT
+                    }
+
                     ShopHomeProductCarouselUiModel.Tab.ComponentList.Data(
                         data.imageUrl,
                         data.ctaLink,
                         data.linkID,
-                        data.linkType,
+                        linkType,
                         data.isShowProductInfo,
                         BannerType.NONE
                     )

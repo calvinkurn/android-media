@@ -23,6 +23,8 @@ import com.tokopedia.shop.product.data.model.ShopFeaturedProductParams
 import com.tokopedia.shop.product.domain.interactor.GetShopFeaturedProductUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
+import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel.Tab.ComponentList.Data.LinkType
+import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel.Tab.ComponentList.Data.BannerType
 
 class ShopProductCarouselTabViewModel @Inject constructor(
     private val dispatcherProvider: CoroutineDispatchers,
@@ -55,7 +57,7 @@ class ShopProductCarouselTabViewModel @Inject constructor(
                 val verticalBanner = getVerticalBanner(firstProductWidget)
                 val products = getProducts(shopId, userAddress, firstProductWidget)
 
-                val hasVerticalBanner = firstProductWidget.bannerType == ShopHomeProductCarouselUiModel.Tab.ComponentList.Data.BannerType.VERTICAL
+                val hasVerticalBanner = firstProductWidget.bannerType == BannerType.VERTICAL
                 val carouselWidgets = if (hasVerticalBanner) {
                     verticalBanner + products
                 } else {
@@ -85,23 +87,22 @@ class ShopProductCarouselTabViewModel @Inject constructor(
         firstWidget: ShopHomeProductCarouselUiModel.Tab.ComponentList.Data
     ): List<ShopHomeProductCarouselProductCard> {
         return when(firstWidget.linkType) {
-            "featured" -> {
+            LinkType.FEATURED_PRODUCT -> {
                 val featuredProducts = getFeaturedProducts(shopId, userSession.userId, userAddress)
                 featuredProducts
             }
-            "product" -> {
+            LinkType.PRODUCT -> {
                 val sortId = firstWidget.linkId
                 val showcaseId = ShopPageConstant.ALL_SHOWCASE_ID
-                val products = getSortedProducts(shopId, showcaseId, userAddress, sortId)
-                products
+                val sortedProducts = getSortedProducts(shopId, showcaseId, userAddress, sortId)
+                sortedProducts
             }
-            "showcase" -> {
+            LinkType.SHOWCASE -> {
                 val sortId = firstWidget.linkId
                 val showcaseId = firstWidget.linkId.toString()
-                val products = getSortedProducts(shopId, showcaseId, userAddress, sortId)
-                products
+                val showCaseProducts = getSortedProducts(shopId, showcaseId, userAddress, sortId)
+                showCaseProducts
             }
-            else -> emptyList()
         }
     }
 
