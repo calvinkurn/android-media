@@ -58,6 +58,7 @@ class GetShipmentAddressFormV4UseCase @Inject constructor(
             paramMap[PARAM_KEY_DEVICE_ID] = params.deviceId ?: ""
         }
         paramMap[PARAM_KEY_IS_PLUS_SELECTED] = params.isPlusSelected
+        paramMap[PARAM_KEY_IS_CHECKOUT_REIMAGINE] = params.isCheckoutReimagine
 
         val request = GraphqlRequest(
             ShipmentAddressFormQuery(),
@@ -89,6 +90,7 @@ class GetShipmentAddressFormV4UseCase @Inject constructor(
         private const val PARAM_KEY_DEVICE_ID = "dev_id"
         private const val PARAM_KEY_VEHICLE_LEASING_ID = "vehicle_leasing_id"
         private const val PARAM_KEY_IS_PLUS_SELECTED = "is_plus_selected"
+        private const val PARAM_KEY_IS_CHECKOUT_REIMAGINE = "is_checkout_reimagine"
 
         private const val QUERY_SHIPMENT_ADDRESS_FORM = "ShipmentAddressFormQuery"
     }

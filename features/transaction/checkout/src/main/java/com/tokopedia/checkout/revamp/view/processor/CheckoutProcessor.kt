@@ -169,7 +169,7 @@ class CheckoutProcessor @Inject constructor(
         }
     }
 
-    fun generateCheckoutRequest(listData: List<CheckoutItem>, recipientAddressModel: RecipientAddressModel, validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?, checkoutLeasingId: String, isTradeInDropOff: Boolean): Carts {
+    private fun generateCheckoutRequest(listData: List<CheckoutItem>, recipientAddressModel: RecipientAddressModel, validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?, checkoutLeasingId: String, isTradeInDropOff: Boolean): Carts {
         // Set promo merchant request data
         val data = removeErrorShopProduct(listData, recipientAddressModel, isTradeInDropOff)
         if (validateUsePromoRevampUiModel != null) {

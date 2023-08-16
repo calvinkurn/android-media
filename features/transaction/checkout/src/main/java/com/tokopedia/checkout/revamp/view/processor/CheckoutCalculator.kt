@@ -287,6 +287,7 @@ class CheckoutCalculator @Inject constructor(
                 is CheckoutEgoldModel -> {
                     egold = crossSellModel
                     egoldIndex = index
+                    listCrossSellItem.add(index, crossSellModel)
                 }
             }
         }
@@ -307,12 +308,9 @@ class CheckoutCalculator @Inject constructor(
                 }
             }
             totalOtherFee += shipmentCost.emasPrice
-            listCrossSellItem.add(
-                egoldIndex,
-                egold.copy(
-                    egoldAttributeModel = egoldAttribute,
-                    buyEgoldValue = egoldAttribute.buyEgoldValue
-                )
+            listCrossSellItem[egoldIndex] = egold.copy(
+                egoldAttributeModel = egoldAttribute,
+                buyEgoldValue = egoldAttribute.buyEgoldValue
             )
         }
         shipmentCost = shipmentCost.copy(totalOtherFee = totalOtherFee)

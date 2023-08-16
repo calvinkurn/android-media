@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderShipment
@@ -117,7 +118,7 @@ class CheckoutLogisticProcessor @Inject constructor(
             } catch (t: Throwable) {
                 val exception = getActualThrowableForRx(t)
                 Timber.d(exception)
-                EditAddressResult(isSuccess = false, throwable = t)
+                EditAddressResult(isSuccess = false, throwable = exception)
             }
         }
     }
@@ -198,7 +199,13 @@ class CheckoutLogisticProcessor @Inject constructor(
         val categoryList: HashSet<String> = hashSetOf()
         orderProducts.forEach {
             if (!it.isError) {
-                orderValue += (it.quantity * it.price).toLong()
+                if (it.isBundlingItem) {
+                    if (it.bundlingItemPosition == ShipmentMapper.BUNDLING_ITEM_HEADER) {
+                        orderValue += (it.bundleQuantity * it.bundlePrice).toLong()
+                    }
+                } else {
+                    orderValue += (it.quantity * it.price).toLong()
+                }
                 totalWeight += it.quantity * it.weight
                 totalWeightActual += if (it.weightActual > 0) {
                     it.quantity * it.weightActual

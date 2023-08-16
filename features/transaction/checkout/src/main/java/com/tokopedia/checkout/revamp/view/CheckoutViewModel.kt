@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.revamp.view
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -94,14 +93,7 @@ import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerA
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -109,7 +101,7 @@ import javax.inject.Inject
 
 class CheckoutViewModel @Inject constructor(
     private val cartProcessor: CheckoutCartProcessor,
-    private val logisticProcessor: CheckoutLogisticProcessor,
+    internal val logisticProcessor: CheckoutLogisticProcessor,
     private val promoProcessor: CheckoutPromoProcessor,
     private val addOnProcessor: CheckoutAddOnProcessor,
     private val paymentProcessor: CheckoutPaymentProcessor,
@@ -123,13 +115,6 @@ class CheckoutViewModel @Inject constructor(
     private val userSessionInterface: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
-
-    var currentJob: Job? = null
-    var counter: Int = 0
-
-    var ms = MutableStateFlow(true)
-
-    var sm = flow<Boolean> { }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), true)
 
     val listData: CheckoutMutableLiveData<List<CheckoutItem>> = CheckoutMutableLiveData(emptyList())
 
@@ -181,23 +166,6 @@ class CheckoutViewModel @Inject constructor(
 
     // list summary default
     private var summariesAddOnUiModel: HashMap<Int, String> = hashMapOf()
-
-    fun test() {
-        currentJob = viewModelScope.launch {
-            Log.i("qwertyuiop", "start launch")
-            doSomething(++counter)
-            Log.i("qwertyuiop", "done launch")
-        }
-    }
-
-    private suspend fun doSomething(count: Int) {
-        currentJob?.join()
-        withContext(dispatchers.io) {
-            Log.i("qwertyuiop", "start delay $count")
-            delay(5_000)
-            Log.i("qwertyuiop", "done delay $count")
-        }
-    }
 
     fun stopEmbraceTrace() {
         val emptyMap: Map<String, Any> = HashMap()
@@ -301,20 +269,17 @@ class CheckoutViewModel @Inject constructor(
 
                     val crossSellList = arrayListOf<CheckoutCrossSellItem>()
                     if (!tickerError.isError) {
-                        crossSellList.addAll(
-                            saf.cartShipmentAddressFormData.crossSell.mapIndexedNotNull { index, crossSellModel ->
-                                if (!crossSellModel.checkboxDisabled) {
-                                    CheckoutCrossSellModel(
-                                        crossSellModel,
-                                        crossSellModel.isChecked,
-                                        crossSellModel.checkboxDisabled,
-                                        index
-                                    )
-                                } else {
-                                    null
-                                }
-                            }
-                        )
+                        val crossSellModel = saf.cartShipmentAddressFormData.crossSell.firstOrNull()
+                        if (crossSellModel != null && !crossSellModel.checkboxDisabled) {
+                            crossSellList.add(
+                                CheckoutCrossSellModel(
+                                    crossSellModel,
+                                    crossSellModel.isChecked,
+                                    crossSellModel.checkboxDisabled,
+                                    0
+                                )
+                            )
+                        }
                         if (saf.cartShipmentAddressFormData.egoldAttributes != null && saf.cartShipmentAddressFormData.egoldAttributes!!.isEnabled && saf.cartShipmentAddressFormData.egoldAttributes!!.isEligible) {
                             crossSellList.add(
                                 CheckoutEgoldModel(
@@ -413,7 +378,7 @@ class CheckoutViewModel @Inject constructor(
         }
     }
 
-    fun sendEEStep4(
+    private fun sendEEStep4(
         transactionId: String,
         deviceModel: String,
         devicePrice: Long,
@@ -740,7 +705,7 @@ class CheckoutViewModel @Inject constructor(
         }
     }
 
-    fun fetchEpharmacyData() {
+    private fun fetchEpharmacyData() {
         viewModelScope.launch(dispatchers.immediate) {
             addOnProcessor.fetchEpharmacyData(listData.value) {
                 if (it != null) {
@@ -760,7 +725,7 @@ class CheckoutViewModel @Inject constructor(
         pageState.value = CheckoutPageState.Loading
         val result = addOnProcessor.setMiniConsultationResult(results, listData.value)
         if (result != null) {
-            listData.value = result
+            listData.value = result!!
             pageState.value = CheckoutPageState.Normal
             calculateTotal()
         }
@@ -793,16 +758,6 @@ class CheckoutViewModel @Inject constructor(
                     summariesAddOnUiModel
                 )
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        Log.i("qwertyuiop", "done clear")
-        Log.i("qwertyuiop", "job: ${currentJob?.isCompleted}")
-        Log.i(
-            "qwertyuiop",
-            "parent job: ${viewModelScope.coroutineContext.job?.children?.find { !it.isCompleted }}"
-        )
     }
 
     fun updateAddOnGiftingProductLevelDataBottomSheet(saveAddOnStateResult: SaveAddOnStateResult) {
@@ -1231,7 +1186,7 @@ class CheckoutViewModel @Inject constructor(
             shippingCourierUiModels.forEach {
                 it.isSelected = it.productData.shipperProductId == courierItemData.shipperProductId
             }
-            if (shipment.courierItemData?.logPromoCode?.isNotEmpty() == true) {
+            if (shipment.courierItemData?.selectedShipper?.logPromoCode?.isNotEmpty() == true) {
                 val newShipment = shipment.copy(
                     isLoading = true,
                     courierItemData = courierItemData,
@@ -1261,7 +1216,7 @@ class CheckoutViewModel @Inject constructor(
                     ClearPromoOrder(
                         checkoutOrderModel.boUniqueId,
                         checkoutOrderModel.boMetadata.boType,
-                        arrayListOf(shipment.courierItemData.logPromoCode!!),
+                        arrayListOf(shipment.courierItemData.selectedShipper.logPromoCode!!),
                         checkoutOrderModel.shopId,
                         checkoutOrderModel.isProductIsPreorder,
                         checkoutOrderModel.preOrderDurationDay.toString(),
@@ -1676,6 +1631,9 @@ class CheckoutViewModel @Inject constructor(
                 )
             )
             if (validateUsePromoRevampUiModel != null) {
+                val itemList = listData.value.toMutableList()
+                itemList[itemList.size - 4] = itemList.promo()!!.copy(promo = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(validateUsePromoRevampUiModel.promoUiModel))
+                listData.value = itemList
                 val notEligiblePromoHolderdataList = arrayListOf<NotEligiblePromoHolderdata>()
                 if (validateUsePromoRevampUiModel.promoUiModel.messageUiModel.state == "red") {
                     val notEligiblePromoHolderdata = NotEligiblePromoHolderdata()
@@ -1848,6 +1806,29 @@ class CheckoutViewModel @Inject constructor(
                 isReloadAfterPriceChangeHigher = false
             )
         }
+    }
+
+    fun updateCrossSell(checked: Boolean, crossSellModel: CheckoutCrossSellModel) {
+        val checkoutItems = listData.value.toMutableList()
+        val crossSellGroup = checkoutItems.crossSellGroup()!!
+        val newList: MutableList<CheckoutCrossSellItem> = arrayListOf()
+        for (checkoutCrossSellItem in crossSellGroup.crossSellList) {
+            if (checkoutCrossSellItem is CheckoutCrossSellModel) {
+                newList.add(
+                    checkoutCrossSellItem.copy(
+                        crossSellModel = checkoutCrossSellItem.crossSellModel.copy(
+                            isChecked = checked
+                        ),
+                        isChecked = checked
+                    )
+                )
+            } else {
+                newList.add(checkoutCrossSellItem)
+            }
+        }
+        checkoutItems[checkoutItems.size - 2] = crossSellGroup.copy(crossSellList = newList)
+        listData.value = checkoutItems
+        calculateTotal()
     }
 
     fun updateEgold(checked: Boolean) {
@@ -2284,7 +2265,7 @@ class CheckoutViewModel @Inject constructor(
         skipUpdateOnboardingState: Boolean,
         isReloadAfterPriceChangeHigher: Boolean
     ) {
-        viewModelScope.launch {
+        viewModelScope.launch(dispatchers.immediate) {
             pageState.value = CheckoutPageState.Loading
             hitClearAllBo()
             loadSAF(
@@ -2298,7 +2279,7 @@ class CheckoutViewModel @Inject constructor(
     fun clearAllBoOnTemporaryUpsell() {
         val upsell = listData.value.upsell()
         if (upsell != null && upsell.upsell.isShow && upsell.upsell.isSelected) {
-            GlobalScope.launch {
+            GlobalScope.launch(dispatchers.io) {
                 hitClearAllBo()
             }
         }
@@ -2310,7 +2291,22 @@ class CheckoutViewModel @Inject constructor(
         order: CheckoutOrderModel
     ) {
         viewModelScope.launch {
-            // todo
+            val checkoutItems = listData.value.toMutableList()
+            checkoutItems[position] = order.copy(shipment = order.shipment.copy(courierItemData = null))
+            listData.value = checkoutItems
+            promoProcessor.clearPromo(
+                ClearPromoOrder(
+                    order.boUniqueId,
+                    order.boMetadata.boType,
+                    arrayListOf(promoCode),
+                    order.shopId,
+                    order.isProductIsPreorder,
+                    order.preOrderDurationDay.toString(),
+                    order.fulfillmentId,
+                    order.cartStringGroup
+                )
+            )
+            validatePromo()
         }
     }
 

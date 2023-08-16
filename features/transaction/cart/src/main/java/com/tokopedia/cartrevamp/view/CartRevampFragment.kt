@@ -1521,12 +1521,6 @@ class CartRevampFragment :
                     binding?.llPromoCheckout?.gone()
                 }
 
-                if (recyclerView.canScrollVertically(-1)) {
-                    disableSwipeRefresh()
-                } else {
-                    enableSwipeRefresh()
-                }
-
                 if (dy != 0) {
                     bulkActionCoachMark?.dismissCoachMark()
                 }
@@ -2054,9 +2048,11 @@ class CartRevampFragment :
             CartDataHelper.hasSelectedCartItem(adapterData) &&
             firstVisibleItemData !is CartSelectedAmountHolderData
         ) {
+            disableSwipeRefresh()
             setTopLayoutVisibility(true)
         } else {
             setTopLayoutVisibility(false)
+            enableSwipeRefresh()
             handleSelectedAmountVisibilityOnIdle(RecyclerView.SCROLL_STATE_IDLE)
         }
     }

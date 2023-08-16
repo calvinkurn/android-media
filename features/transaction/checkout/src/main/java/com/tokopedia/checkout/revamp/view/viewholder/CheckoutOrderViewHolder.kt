@@ -197,11 +197,13 @@ class CheckoutOrderViewHolder(
                     )
                 )
                 if (order.isError) {
-                    listener.onCancelVoucherLogisticClicked(
-                        courierItemData.logPromoCode!!,
-                        bindingAdapterPosition,
-                        order
-                    )
+                    if (bindingAdapterPosition > RecyclerView.NO_POSITION) {
+                        listener.onCancelVoucherLogisticClicked(
+                            courierItemData.logPromoCode!!,
+                            bindingAdapterPosition,
+                            order
+                        )
+                    }
                 }
                 binding.shippingWidget.renderFreeShippingCourier(
                     ShippingWidgetUiModel(

@@ -48,6 +48,7 @@ import com.tokopedia.checkout.revamp.di.DaggerCheckoutComponent
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapter
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutDiffUtilCallback
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
@@ -150,10 +151,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoCleared
 import com.tokopedia.utils.time.TimeHelper
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product as GiftingProduct
 
@@ -1430,7 +1427,9 @@ class CheckoutFragment :
     }
 
     override fun onLoadShippingState(order: CheckoutOrderModel, position: Int) {
-        viewModel.loadShipping(order, position)
+        if (!viewModel.isLoading()) {
+            viewModel.loadShipping(order, position)
+        }
     }
 
     override fun onChangeShippingDuration(order: CheckoutOrderModel, position: Int) {
@@ -2007,6 +2006,23 @@ class CheckoutFragment :
         return binding.root.width
     }
 
+    override fun onCrossSellItemChecked(checked: Boolean, crossSellModel: CheckoutCrossSellModel) {
+        val shipmentCartItemModels = viewModel.listData.value.filterIsInstance(CheckoutProductModel::class.java)
+        viewModel.updateCrossSell(checked, crossSellModel)
+        val digitalCategoryName = crossSellModel.crossSellModel.orderSummary.title
+        val digitalProductId = crossSellModel.crossSellModel.id
+        val eventLabel = "$digitalCategoryName - $digitalProductId"
+        val digitalProductName = crossSellModel.crossSellModel.info.title
+        checkoutAnalyticsCourierSelection.eventClickCheckboxCrossSell(
+            checked,
+            userSessionInterface.userId,
+            0.toString(),
+            eventLabel,
+            digitalProductName,
+            ArrayList(shipmentCartItemModels.map { it.productCatId })
+        )
+    }
+
     override fun onEgoldChecked(checked: Boolean) {
         viewModel.updateEgold(checked)
 //        shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
@@ -2049,33 +2065,35 @@ class CheckoutFragment :
     }
 
     override fun onProcessToPayment() {
-        var publicKey: String? = null
-        if (CheckoutFingerprintUtil.getEnableFingerprintPayment(activity)) {
-            val fpk = CheckoutFingerprintUtil.getFingerprintPublicKey(
-                activity
-            )
-            if (fpk != null) {
-                publicKey = FingerPrintUtil.getPublicKey(fpk)
+        if (!viewModel.isLoading()) {
+            var publicKey: String? = null
+            if (CheckoutFingerprintUtil.getEnableFingerprintPayment(activity)) {
+                val fpk = CheckoutFingerprintUtil.getFingerprintPublicKey(
+                    activity
+                )
+                if (fpk != null) {
+                    publicKey = FingerPrintUtil.getPublicKey(fpk)
+                }
             }
-        }
-        viewModel.checkout(publicKey, { showEpharmacyToaster ->
-            sendAnalyticsEpharmacyClickPembayaran(showEpharmacyToaster)
-        }) {
-            val paymentPassData = PaymentPassData()
-            paymentPassData.redirectUrl = it.checkoutData!!.redirectUrl
-            paymentPassData.transactionId = it.checkoutData.transactionId
-            paymentPassData.paymentId = it.checkoutData.paymentId
-            paymentPassData.callbackSuccessUrl = it.checkoutData.callbackSuccessUrl
-            paymentPassData.callbackFailedUrl = it.checkoutData.callbackFailedUrl
-            paymentPassData.queryString = it.checkoutData.queryString
-            val intent =
-                RouteManager.getIntent(activity, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
-            intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
-            intent.putExtra(
-                PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT,
-                it.hasClearPromoBeforeCheckout
-            )
-            startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
+            viewModel.checkout(publicKey, { showEpharmacyToaster ->
+                sendAnalyticsEpharmacyClickPembayaran(showEpharmacyToaster)
+            }) {
+                val paymentPassData = PaymentPassData()
+                paymentPassData.redirectUrl = it.checkoutData!!.redirectUrl
+                paymentPassData.transactionId = it.checkoutData.transactionId
+                paymentPassData.paymentId = it.checkoutData.paymentId
+                paymentPassData.callbackSuccessUrl = it.checkoutData.callbackSuccessUrl
+                paymentPassData.callbackFailedUrl = it.checkoutData.callbackFailedUrl
+                paymentPassData.queryString = it.checkoutData.queryString
+                val intent =
+                    RouteManager.getIntent(activity, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
+                intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
+                intent.putExtra(
+                    PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT,
+                    it.hasClearPromoBeforeCheckout
+                )
+                startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
+            }
         }
     }
 
@@ -2169,21 +2187,6 @@ class CheckoutFragment :
                 uploadPrescriptionUiModel.shopIds,
                 uploadPrescriptionUiModel.cartIds
             )
-        }
-    }
-
-    private fun delayEpharmacyProcess(uploadPrescriptionUiModel: UploadPrescriptionUiModel?) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                delay(1_000)
-                if (isActive && activity != null) {
-                    if (uploadPrescriptionUiModel?.consultationFlow == true) {
-                        viewModel.fetchEpharmacyData()
-                    }
-                }
-            } catch (t: Throwable) {
-                Timber.d(t)
-            }
         }
     }
 
