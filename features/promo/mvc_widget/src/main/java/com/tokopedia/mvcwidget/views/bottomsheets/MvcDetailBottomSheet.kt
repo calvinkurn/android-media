@@ -52,50 +52,13 @@ class MvcDetailBottomSheet : BottomSheetUnify() {
         savedInstanceState: Bundle?
     ): View? {
         customPeekHeight = (getScreenHeight() / 2).toDp()
+        userSession = UserSession(context)
         setTitle(getString(R.string.mvc_daftar_kupon_toko))
-        context?.let {
-            userSession = UserSession(it)
-            val childView = MvcDetailView(it)
-
-            if (!applink.isNullOrEmpty()) {
-                childView.findViewById<LinearLayout>(R.id.btn_layout)?.visibility = View.VISIBLE
-                childView.findViewById<UnifyButton>(R.id.btn_continue)?.let { button ->
-                    if (mvcSource == MvcSource.DISCO) {
-                        button.text = getString(R.string.mvc_kunjungi_toko)
-                    }
-                    button.setOnClickListener { _ ->
-                        shopName?.let { mShopName ->
-                            mvcTracker.userClickBottomSheetCTA(
-                                childView.widgetType,
-                                mShopName,
-                                userSession?.userId ?: ""
-                            )
-                        }
-                        RouteManager.route(it, applink)
-                        dismiss()
-                    }
-                }
-            }
-
-            setOnDismissListener {
-                if (isOnResume) {
-                    mvcTracker.closeMainBottomSheet(
-                        childView.widgetType,
-                        shopId,
-                        userSession?.userId ?: "",
-                        mvcSource
-                    )
-                }
-            }
-
-            setChild(childView)
-            childView.show(shopId, false, mvcSource, mvcTracker, productId, additionalParamJson)
-        }
+        setupChild()
 
         setShowListener {
-            val titleMargin = dpToPx(16).toInt()
-            bottomSheetWrapper.setPadding(0, dpToPx(16).toInt(), 0, 0)
-            bottomSheetTitle.setMargin(titleMargin, 0, 0, 0)
+            bottomSheetWrapper.setPadding(0, SIXTEEN_DP_IN_PX, 0, 0)
+            bottomSheetTitle.setMargin(SIXTEEN_DP_IN_PX, 0, 0, 0)
         }
 
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -139,5 +102,49 @@ class MvcDetailBottomSheet : BottomSheetUnify() {
         this.additionalParamJson = additionalParamJson
 
         show(manager, tag)
+    }
+
+    private fun setupChild() {
+        context?.let {
+            val childView = MvcDetailView(it)
+
+            if (!applink.isNullOrEmpty()) {
+                childView.findViewById<LinearLayout>(R.id.btn_layout)?.visibility = View.VISIBLE
+                childView.findViewById<UnifyButton>(R.id.btn_continue)?.let { button ->
+                    if (mvcSource == MvcSource.DISCO) {
+                        button.text = getString(R.string.mvc_kunjungi_toko)
+                    }
+                    button.setOnClickListener { _ ->
+                        shopName?.let { mShopName ->
+                            mvcTracker.userClickBottomSheetCTA(
+                                childView.widgetType,
+                                mShopName,
+                                userSession?.userId ?: ""
+                            )
+                        }
+                        RouteManager.route(it, applink)
+                        dismiss()
+                    }
+                }
+            }
+
+            setOnDismissListener {
+                if (isOnResume) {
+                    mvcTracker.closeMainBottomSheet(
+                        childView.widgetType,
+                        shopId,
+                        userSession?.userId ?: "",
+                        mvcSource
+                    )
+                }
+            }
+
+            setChild(childView)
+            childView.show(shopId, false, mvcSource, mvcTracker, productId, additionalParamJson)
+        }
+    }
+
+    companion object {
+        private val SIXTEEN_DP_IN_PX = dpToPx(16).toInt()
     }
 }
