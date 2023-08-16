@@ -1080,12 +1080,7 @@ public class GTMAnalytics extends ContextAnalytics {
 
         campaign.setScreenName(screenName);
 
-        // V5
         sendCampaign(campaign.getCampaign());
-
-        // v4
-        pushEvent("campaignTrack", campaign.getCampaign());
-        sendGeneralEvent(campaign.getNullCampaignMap());
 
         sendGeneralEvent(new EventTracking(
                 AppEventTracking.Event.CAMPAIGN,
