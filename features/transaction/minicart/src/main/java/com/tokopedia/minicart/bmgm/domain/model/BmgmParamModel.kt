@@ -7,10 +7,10 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class BmgmParamModel(
-    @SerializedName("offer_id")
-    val offerId: Long,
+    @SerializedName("offer_ids")
+    val offerIds: List<Long>,
     @SerializedName("offer_json_data")
-    val offerJsonData: Long,
+    val offerJsonData: String,
     @SerializedName("warehouse_ids")
     val warehouseIds: List<String>
 )

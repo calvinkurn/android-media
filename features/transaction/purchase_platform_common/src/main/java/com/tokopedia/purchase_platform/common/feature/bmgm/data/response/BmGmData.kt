@@ -17,6 +17,9 @@ data class BmGmData(
     @SerializedName("offer_message")
     val offerMessage: String = "",
     @Expose
+    @SerializedName("offer_status")
+    val offerStatus: Int = 1,
+    @Expose
     @SerializedName("offer_landing_page_link")
     val offerLandingPageLink: String = "",
     @Expose

@@ -32,8 +32,7 @@ sealed interface BmgmMiniCartVisitable : Visitable<BmgmMiniCartAdapterFactory> {
         val warehouseId: String = "",
         val productName: String = "",
         val productImage: String = "",
-        val productPrice: Double = 0.0,
-        val productPriceFmt: String = "",
+        val finalPrice: Double = 0.0,
         val quantity: Int = 0
     ) : BmgmMiniCartVisitable {
 

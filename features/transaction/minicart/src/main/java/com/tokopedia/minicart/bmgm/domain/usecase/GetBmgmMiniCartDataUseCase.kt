@@ -8,8 +8,8 @@ import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper.Companion.KEY_CHOSEN_ADDRESS
 import com.tokopedia.minicart.bmgm.domain.mapper.BmgmMiniCartDataMapper
 import com.tokopedia.minicart.bmgm.domain.model.BmgmParamModel
-import com.tokopedia.minicart.bmgm.domain.model.GetMiniCartDataResponse
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartDataUiModel
+import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
@@ -22,15 +22,14 @@ class GetBmgmMiniCartDataUseCase @Inject constructor(
     private val mapper: BmgmMiniCartDataMapper,
     private val chosenAddressRequestHelper: ChosenAddressRequestHelper,
     graphqlRepository: GraphqlRepository
-) : GraphqlUseCase<GetMiniCartDataResponse>(graphqlRepository) {
+) : GraphqlUseCase<MiniCartData>(graphqlRepository) {
 
     init {
         setGraphqlQuery(GetBmgmMiniCartDataQuery())
-        setTypeClass(GetMiniCartDataResponse::class.java)
+        setTypeClass(MiniCartData::class.java)
     }
 
     suspend operator fun invoke(shopId: String, bmgmParam: BmgmParamModel): BmgmMiniCartDataUiModel {
-        return mapper.getDummy()
         try {
             val requestParam = createRequestParam(shopId, bmgmParam)
             setRequestParams(requestParam.parameters)
@@ -66,7 +65,55 @@ class GetBmgmMiniCartDataUseCase @Inject constructor(
         private const val PARAM_VALUE_SOURCE = "bmgm_olp_mini_cart"
 
         const val QUERY = """
-            
+            query mini_cart_v3(${'$'}lang: String, $${'$'}additional_params: CartRevampAdditionalParams) {
+              mini_cart_v3(lang: $${'$'}lang, additional_params: $${'$'}additional_params) {
+                error_message
+                status
+                data {
+                  available_section {
+                    available_group {
+                      cart_details {
+                        cart_detail_info {
+                          cart_detail_type
+                          bmgm {
+                            offer_id
+                            offer_name
+                            offer_message
+                            total_discount
+                            offer_json_data
+                            tiers_applied {
+                              tier_id
+                              tier_message
+                              tier_discount_text
+                              tier_discount_amount
+                              price_before_benefit
+                              price_after_benefit
+                              list_product {
+                                product_id
+                                warehouse_id
+                                qty
+                                final_price
+                                cart_id
+                              }
+                            }
+                          }
+                        }
+                        products {
+                          cart_id
+                          product_id
+                          product_quantity
+                          product_name
+                          product_image {
+                            image_src_100_square
+                          }
+                          warehouse_id
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
         """
     }
 }

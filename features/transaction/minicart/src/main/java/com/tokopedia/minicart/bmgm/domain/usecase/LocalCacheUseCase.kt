@@ -63,8 +63,7 @@ class LocalCacheUseCase @Inject constructor(
                 warehouseId = p.warehouseId,
                 productName = p.productName,
                 productImage = p.productImage,
-                productPrice = p.productPrice,
-                productPriceFmt = p.productPriceFmt,
+                productPrice = p.finalPrice,
                 quantity = p.quantity,
             )
         }

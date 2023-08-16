@@ -39,7 +39,7 @@ class BmgmMiniCartDetailProductViewHolder(
                 PRODUCT_NAME_FORMAT, product.quantity.toString(), product.productName
             ).parseAsHtml()
             tvBmgmDetailProductName.text = productName
-            tvBmgmDetailProductPrice.text = product.productPriceFmt
+            tvBmgmDetailProductPrice.text = product.getProductPriceFmt()
             dividerBmgmDetailProduct.isVisible = element.isDiscountedProduct
             showProductImage(element)
         }

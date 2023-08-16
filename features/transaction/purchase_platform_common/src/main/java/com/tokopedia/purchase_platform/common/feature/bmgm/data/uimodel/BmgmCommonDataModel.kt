@@ -1,5 +1,7 @@
 package com.tokopedia.purchase_platform.common.feature.bmgm.data.uimodel
 
+import com.tokopedia.utils.currency.CurrencyFormatUtil
+
 /**
  * Created by @ilhamsuaib on 07/08/23.
  */
@@ -47,5 +49,9 @@ class BmgmCommonDataModel(
         val productPrice: Double = 0.0,
         val productPriceFmt: String = "",
         val quantity: Int = 0
-    )
+    ) {
+        fun getProductPriceFmt(): String {
+            return CurrencyFormatUtil.convertPriceValueToIdrFormat(productPrice, false)
+        }
+    }
 }

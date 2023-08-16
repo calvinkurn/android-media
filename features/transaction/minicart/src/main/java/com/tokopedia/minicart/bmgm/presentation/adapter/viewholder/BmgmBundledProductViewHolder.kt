@@ -3,6 +3,7 @@ package com.tokopedia.minicart.bmgm.presentation.adapter.viewholder
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.bmgm.presentation.adapter.BmgmBundledProductAdapter
 import com.tokopedia.minicart.bmgm.presentation.adapter.BmgmMiniCartAdapter
@@ -35,7 +36,9 @@ class BmgmBundledProductViewHolder(
 
     private fun setupProductList(products: List<BmgmMiniCartVisitable.ProductUiModel>) {
         with(binding.rvBmgmBundledProduct) {
-            addItemDecoration(BmgmBundledProductItemDecoration())
+            if (itemDecorationCount == Int.ZERO) {
+                addItemDecoration(BmgmBundledProductItemDecoration())
+            }
             layoutManager = object : LinearLayoutManager(context, HORIZONTAL, false) {
                 override fun canScrollHorizontally(): Boolean = false
             }

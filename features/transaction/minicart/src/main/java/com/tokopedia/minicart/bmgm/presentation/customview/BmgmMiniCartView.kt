@@ -70,7 +70,6 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
     override fun onStart(owner: LifecycleOwner) {
         super.onStart(owner)
         observeCartData()
-        fetchMiniCartData()
     }
 
     override fun onDestroy(owner: LifecycleOwner) {
@@ -83,9 +82,13 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
         RouteManager.route(context, ApplinkConstInternalGlobal.BMGM_MINI_CART)
     }
 
-    fun fetchMiniCartData() {
+    fun fetchData(offerIds: List<Long>, offerJsonData: String, warehouseIds: List<String>) {
         getLifecycleOwner()?.lifecycleScope?.launchWhenStarted {
-            val param = BmgmParamModel(0L, 0L, listOf())
+            val param = BmgmParamModel(
+                offerIds = offerIds,
+                offerJsonData = offerJsonData,
+                warehouseIds = warehouseIds
+            )
             viewModel.getMiniCartData(param)
         }
     }
