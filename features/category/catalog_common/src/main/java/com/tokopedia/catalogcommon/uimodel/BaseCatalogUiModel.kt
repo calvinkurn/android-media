@@ -4,5 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactory
 
 abstract class BaseCatalogUiModel(
-    open val idWidget: String
+    open val idWidget: String,
+    open val widgetType: String,
+    open val widgetName: String
 ): Visitable<CatalogAdapterFactory>

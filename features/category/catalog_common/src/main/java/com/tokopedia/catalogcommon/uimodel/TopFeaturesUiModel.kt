@@ -5,9 +5,11 @@ import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
 
 data class TopFeaturesUiModel(
     override val idWidget: String,
+    override val widgetType: String,
+    override val widgetName: String,
     val backgroundColorWidget: Int? = null,
     val items: List<ItemTopFeatureUiModel>
-) : BaseCatalogUiModel(idWidget) {
+) : BaseCatalogUiModel(idWidget, widgetType, widgetName) {
 
     override fun type(typeFactory: CatalogAdapterFactory): Int {
         return typeFactory.type(this)
@@ -24,7 +26,7 @@ data class TopFeaturesUiModel(
 
     companion object {
         fun dummyTopFeatures() = TopFeaturesUiModel(
-            "dummy", "#000000".stringHexColorParseToInt(),
+            "dummy", "","","#000000".stringHexColorParseToInt(),
             items = listOf(
                 ItemTopFeatureUiModel(
                     "",
