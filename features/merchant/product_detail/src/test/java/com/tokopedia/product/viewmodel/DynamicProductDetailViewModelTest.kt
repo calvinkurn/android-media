@@ -93,6 +93,7 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -3066,6 +3067,17 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             affiliateEligibilityCheckUseCase.executeOnBackground()
         }
         assertTrue(viewModel.resultAffiliate.value is Fail)
+    }
+
+    fun `setAPlusContentCollapseState should update aPlusContentMediaCollapse value`() {
+        val initialValue = viewModel.isAPlusContentCollapsed()
+        val expectedValue = !initialValue
+        viewModel.setAPlusContentCollapseState(expectedValue)
+        assertEquals(expectedValue, viewModel.isAPlusContentCollapsed())
+    }
+
+    fun `initial aPlusContentMediaCollapse value should be false`() {
+        assertFalse(viewModel.isAPlusContentCollapsed())
     }
 
     companion object {

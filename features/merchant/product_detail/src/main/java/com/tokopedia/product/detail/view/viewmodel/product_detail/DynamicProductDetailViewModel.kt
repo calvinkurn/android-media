@@ -317,6 +317,8 @@ class DynamicProductDetailViewModel @Inject constructor(
 
     var deviceId: String = userSessionInterface.deviceId ?: ""
 
+    private var aPlusContentCollapsed: Boolean = true
+
     override fun getP1(): DynamicProductInfoP1? = getDynamicProductInfoP1
 
     override fun getP2(): ProductInfoP2UiData? = p2Data.value
@@ -1388,4 +1390,10 @@ class DynamicProductDetailViewModel @Inject constructor(
             error = error
         )
     }
+
+    fun setAPlusContentCollapseState(collapse: Boolean) {
+        aPlusContentCollapsed = collapse
+    }
+
+    fun isAPlusContentCollapsed() = aPlusContentCollapsed
 }
