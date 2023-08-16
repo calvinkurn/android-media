@@ -1370,182 +1370,220 @@ class CheckoutViewModel @Inject constructor(
         viewModelScope.launch(dispatchers.immediate) {
             pageState.value = CheckoutPageState.Loading
             if (courierItemData.selectedShipper.logPromoCode.isNullOrEmpty() && newCourierItemData.selectedShipper.logPromoCode.isNullOrEmpty()) {
-                // no promo
-                val checkoutItems = listData.value.toMutableList()
-                val checkoutOrderModel = checkoutItems[cartPosition] as CheckoutOrderModel
-                val shipment = checkoutOrderModel.shipment
-                val newShipment = shipment.copy(
-                    isLoading = false,
-                    courierItemData = newCourierItemData
-//                    shippingCourierUiModels = shippingCourierUiModels
-                )
-                val newOrder = checkoutOrderModel.copy(shipment = newShipment)
-                if (scheduleDeliveryUiModel.isSelected) {
-                    newOrder.scheduleDate = newCourierItemData.selectedShipper.scheduleDate
-                    newOrder.timeslotId = newCourierItemData.selectedShipper.timeslotId
-                    newOrder.validationMetadata =
-                        scheduleDeliveryUiModel.deliveryProduct.validationMetadata
-                } else {
-                    newOrder.scheduleDate = ""
-                    newOrder.timeslotId = 0
-                    newOrder.validationMetadata = ""
-                }
-                checkoutItems[cartPosition] = newOrder
-                listData.value = checkoutItems
-                cartProcessor.processSaveShipmentState(
-                    newOrder,
-                    listData.value.address()!!.recipientAddressModel
-                )
-                validatePromo()
-                pageState.value = CheckoutPageState.Normal
+                setSelectedScheduleDeliveryWithNoPromo(cartPosition, newCourierItemData, scheduleDeliveryUiModel)
             } else if (!courierItemData.selectedShipper.logPromoCode.isNullOrEmpty() && newCourierItemData.selectedShipper.logPromoCode.isNullOrEmpty()) {
-                // need to clear old promo code
-                val checkoutItems = listData.value.toMutableList()
-                val checkoutOrderModel = checkoutItems[cartPosition] as CheckoutOrderModel
-                val shipment = checkoutOrderModel.shipment
-                val newShipment = shipment.copy(
-                    isLoading = true,
-                    courierItemData = newCourierItemData
-                )
-                val newOrder = checkoutOrderModel.copy(shipment = newShipment)
-                if (scheduleDeliveryUiModel.isSelected) {
-                    newOrder.scheduleDate = newCourierItemData.selectedShipper.scheduleDate
-                    newOrder.timeslotId = newCourierItemData.selectedShipper.timeslotId
-                    newOrder.validationMetadata =
-                        scheduleDeliveryUiModel.deliveryProduct.validationMetadata
-                } else {
-                    newOrder.scheduleDate = ""
-                    newOrder.timeslotId = 0
-                    newOrder.validationMetadata = ""
-                }
-                checkoutItems[cartPosition] = newOrder
-                listData.value = checkoutItems
-                val shouldClearPromoBenefit = promoProcessor.clearPromo(
-                    ClearPromoOrder(
-                        checkoutOrderModel.boUniqueId,
-                        checkoutOrderModel.boMetadata.boType,
-                        arrayListOf(courierItemData.logPromoCode!!),
-                        checkoutOrderModel.shopId,
-                        checkoutOrderModel.isProductIsPreorder,
-                        checkoutOrderModel.preOrderDurationDay.toString(),
-                        checkoutOrderModel.fulfillmentId,
-                        checkoutOrderModel.cartStringGroup
-                    )
-                )
-                if (shouldClearPromoBenefit) {
-                    val list = listData.value.toMutableList()
-                    val newPromo = list.promo()!!.copy(promo = LastApplyUiModel())
-                    list[list.size - 4] = newPromo
-                    listData.value = list
-                }
-                val list = listData.value.toMutableList()
-                var newOrder1 = list[cartPosition] as CheckoutOrderModel
-                val newShipment1 = shipment.copy(
-                    isLoading = false,
-                    courierItemData = newCourierItemData
-                )
-                newOrder1 = newOrder1.copy(shipment = newShipment1, isShippingBorderRed = false)
-                list[cartPosition] = newOrder1
-                listData.value = list
-                cartProcessor.processSaveShipmentState(
-                    newOrder1,
-                    listData.value.address()!!.recipientAddressModel
-                )
-                validatePromo()
-                pageState.value = CheckoutPageState.Normal
-            } else {
-                // need to apply promo
-                if (courierItemData.selectedShipper.logPromoCode != newCourierItemData.selectedShipper.logPromoCode) {
-                    // clear old promo before applying new one
-                    promoProcessor.clearPromo(
-                        ClearPromoOrder(
-                            order.boUniqueId,
-                            order.boMetadata.boType,
-                            arrayListOf(courierItemData.logPromoCode!!),
-                            order.shopId,
-                            order.isProductIsPreorder,
-                            order.preOrderDurationDay.toString(),
-                            order.fulfillmentId,
-                            order.cartStringGroup
-                        )
-                    )
-                }
-                val validateUsePromoRequest = generateValidateUsePromoRequest()
-                val selectedShipper = newCourierItemData.selectedShipper
-                if (selectedShipper.logPromoCode != null && selectedShipper.logPromoCode!!.isNotEmpty()) {
-                    for (orderPromo in validateUsePromoRequest.orders) {
-                        if (orderPromo.cartStringGroup == order.cartStringGroup && !orderPromo.codes.contains(
-                                newCourierItemData.selectedShipper.logPromoCode
-                            )
-                        ) {
-                            if (order.shipment.courierItemData?.selectedShipper?.logPromoCode != null) {
-                                // remove previous logistic promo code
-                                orderPromo.codes.remove(order.shipment.courierItemData.selectedShipper.logPromoCode)
-                            }
-                            orderPromo.codes.add(selectedShipper.logPromoCode!!)
-                            orderPromo.boCode = selectedShipper.logPromoCode!!
-                        }
-                    }
-                }
-                val shipmentCartItemModelLists =
-                    listData.value.filterIsInstance(CheckoutOrderModel::class.java)
-                if (shipmentCartItemModelLists.isNotEmpty()) {
-                    for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
-                        for (orderPromo in validateUsePromoRequest.orders) {
-                            if (order.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == orderPromo.cartStringGroup && tmpShipmentCartItemModel.shipment.courierItemData?.selectedShipper?.logPromoCode != null &&
-                                !tmpShipmentCartItemModel.isFreeShippingPlus
-                            ) {
-                                orderPromo.codes.remove(tmpShipmentCartItemModel.shipment.courierItemData.selectedShipper.logPromoCode)
-                                orderPromo.boCode = ""
-                            }
-                        }
-                    }
-                }
-                for (ordersItem in validateUsePromoRequest.orders) {
-                    if (ordersItem.cartStringGroup == order.cartStringGroup) {
-                        ordersItem.spId = selectedShipper.shipperProductId
-                        ordersItem.shippingId = selectedShipper.shipperId
-                        ordersItem.freeShippingMetadata = selectedShipper.freeShippingMetadata
-                        ordersItem.boCampaignId = selectedShipper.boCampaignId
-                        ordersItem.shippingSubsidy = selectedShipper.shippingSubsidy
-                        ordersItem.benefitClass = selectedShipper.benefitClass
-                        ordersItem.shippingPrice = selectedShipper.shippingRate.toDouble()
-                        ordersItem.etaText = selectedShipper.etaText!!
-                        ordersItem.validationMetadata = order.validationMetadata
-                    }
-                }
-                val newItems = promoProcessor.validateUseLogisticPromo(
-                    validateUsePromoRequest,
-                    order.cartStringGroup,
-                    newCourierItemData.selectedShipper.logPromoCode!!,
-                    listData.value,
+                setSelectedScheduleDeliveryWithClearOldPromo(
+                    cartPosition,
                     newCourierItemData,
-                    isOneClickShipment,
-                    isTradeIn,
-                    isTradeInByDropOff
+                    scheduleDeliveryUiModel,
+                    courierItemData
                 )
-                val newOrder = newItems[cartPosition] as CheckoutOrderModel
-                if (newOrder.shipment.courierItemData != null) {
-                    if (scheduleDeliveryUiModel.isSelected) {
-                        newOrder.scheduleDate = newCourierItemData.selectedShipper.scheduleDate
-                        newOrder.timeslotId = newCourierItemData.selectedShipper.timeslotId
-                        newOrder.validationMetadata =
-                            scheduleDeliveryUiModel.deliveryProduct.validationMetadata
-                    } else {
-                        newOrder.scheduleDate = ""
-                        newOrder.timeslotId = 0
-                        newOrder.validationMetadata = ""
-                    }
-                }
-                listData.value = newItems
-                cartProcessor.processSaveShipmentState(
-                    listData.value,
-                    listData.value.address()!!.recipientAddressModel
+            } else {
+                setSelectedScheduleDeliveryWithApplyPromo(
+                    courierItemData,
+                    newCourierItemData,
+                    order,
+                    cartPosition,
+                    scheduleDeliveryUiModel
                 )
-                validatePromo()
-                pageState.value = CheckoutPageState.Normal
             }
         }
+    }
+
+    private suspend fun setSelectedScheduleDeliveryWithApplyPromo(
+        courierItemData: CourierItemData,
+        newCourierItemData: CourierItemData,
+        order: CheckoutOrderModel,
+        cartPosition: Int,
+        scheduleDeliveryUiModel: ScheduleDeliveryUiModel
+    ) {
+        // need to apply promo
+        if (courierItemData.selectedShipper.logPromoCode != newCourierItemData.selectedShipper.logPromoCode) {
+            // clear old promo before applying new one
+            promoProcessor.clearPromo(
+                ClearPromoOrder(
+                    order.boUniqueId,
+                    order.boMetadata.boType,
+                    arrayListOf(courierItemData.logPromoCode!!),
+                    order.shopId,
+                    order.isProductIsPreorder,
+                    order.preOrderDurationDay.toString(),
+                    order.fulfillmentId,
+                    order.cartStringGroup
+                )
+            )
+        }
+        val validateUsePromoRequest = generateValidateUsePromoRequest()
+        val selectedShipper = newCourierItemData.selectedShipper
+        if (selectedShipper.logPromoCode != null && selectedShipper.logPromoCode!!.isNotEmpty()) {
+            for (orderPromo in validateUsePromoRequest.orders) {
+                if (orderPromo.cartStringGroup == order.cartStringGroup && !orderPromo.codes.contains(
+                        newCourierItemData.selectedShipper.logPromoCode
+                    )
+                ) {
+                    if (order.shipment.courierItemData?.selectedShipper?.logPromoCode != null) {
+                        // remove previous logistic promo code
+                        orderPromo.codes.remove(order.shipment.courierItemData.selectedShipper.logPromoCode)
+                    }
+                    orderPromo.codes.add(selectedShipper.logPromoCode!!)
+                    orderPromo.boCode = selectedShipper.logPromoCode!!
+                }
+            }
+        }
+        val shipmentCartItemModelLists =
+            listData.value.filterIsInstance(CheckoutOrderModel::class.java)
+        if (shipmentCartItemModelLists.isNotEmpty()) {
+            for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
+                for (orderPromo in validateUsePromoRequest.orders) {
+                    if (order.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == orderPromo.cartStringGroup && tmpShipmentCartItemModel.shipment.courierItemData?.selectedShipper?.logPromoCode != null &&
+                        !tmpShipmentCartItemModel.isFreeShippingPlus
+                    ) {
+                        orderPromo.codes.remove(tmpShipmentCartItemModel.shipment.courierItemData.selectedShipper.logPromoCode)
+                        orderPromo.boCode = ""
+                    }
+                }
+            }
+        }
+        for (ordersItem in validateUsePromoRequest.orders) {
+            if (ordersItem.cartStringGroup == order.cartStringGroup) {
+                ordersItem.spId = selectedShipper.shipperProductId
+                ordersItem.shippingId = selectedShipper.shipperId
+                ordersItem.freeShippingMetadata = selectedShipper.freeShippingMetadata
+                ordersItem.boCampaignId = selectedShipper.boCampaignId
+                ordersItem.shippingSubsidy = selectedShipper.shippingSubsidy
+                ordersItem.benefitClass = selectedShipper.benefitClass
+                ordersItem.shippingPrice = selectedShipper.shippingRate.toDouble()
+                ordersItem.etaText = selectedShipper.etaText!!
+                ordersItem.validationMetadata = order.validationMetadata
+            }
+        }
+        val newItems = promoProcessor.validateUseLogisticPromo(
+            validateUsePromoRequest,
+            order.cartStringGroup,
+            newCourierItemData.selectedShipper.logPromoCode!!,
+            listData.value,
+            newCourierItemData,
+            isOneClickShipment,
+            isTradeIn,
+            isTradeInByDropOff
+        )
+        val newOrder = newItems[cartPosition] as CheckoutOrderModel
+        if (newOrder.shipment.courierItemData != null) {
+            if (scheduleDeliveryUiModel.isSelected) {
+                newOrder.scheduleDate = newCourierItemData.selectedShipper.scheduleDate
+                newOrder.timeslotId = newCourierItemData.selectedShipper.timeslotId
+                newOrder.validationMetadata =
+                    scheduleDeliveryUiModel.deliveryProduct.validationMetadata
+            } else {
+                newOrder.scheduleDate = ""
+                newOrder.timeslotId = 0
+                newOrder.validationMetadata = ""
+            }
+        }
+        listData.value = newItems
+        cartProcessor.processSaveShipmentState(
+            listData.value,
+            listData.value.address()!!.recipientAddressModel
+        )
+        validatePromo()
+        pageState.value = CheckoutPageState.Normal
+    }
+
+    private suspend fun setSelectedScheduleDeliveryWithClearOldPromo(
+        cartPosition: Int,
+        newCourierItemData: CourierItemData,
+        scheduleDeliveryUiModel: ScheduleDeliveryUiModel,
+        courierItemData: CourierItemData
+    ) {
+        // need to clear old promo code
+        val checkoutItems = listData.value.toMutableList()
+        val checkoutOrderModel = checkoutItems[cartPosition] as CheckoutOrderModel
+        val shipment = checkoutOrderModel.shipment
+        val newShipment = shipment.copy(
+            isLoading = true,
+            courierItemData = newCourierItemData
+        )
+        val newOrder = checkoutOrderModel.copy(shipment = newShipment)
+        if (scheduleDeliveryUiModel.isSelected) {
+            newOrder.scheduleDate = newCourierItemData.selectedShipper.scheduleDate
+            newOrder.timeslotId = newCourierItemData.selectedShipper.timeslotId
+            newOrder.validationMetadata =
+                scheduleDeliveryUiModel.deliveryProduct.validationMetadata
+        } else {
+            newOrder.scheduleDate = ""
+            newOrder.timeslotId = 0
+            newOrder.validationMetadata = ""
+        }
+        checkoutItems[cartPosition] = newOrder
+        listData.value = checkoutItems
+        val shouldClearPromoBenefit = promoProcessor.clearPromo(
+            ClearPromoOrder(
+                checkoutOrderModel.boUniqueId,
+                checkoutOrderModel.boMetadata.boType,
+                arrayListOf(courierItemData.logPromoCode!!),
+                checkoutOrderModel.shopId,
+                checkoutOrderModel.isProductIsPreorder,
+                checkoutOrderModel.preOrderDurationDay.toString(),
+                checkoutOrderModel.fulfillmentId,
+                checkoutOrderModel.cartStringGroup
+            )
+        )
+        if (shouldClearPromoBenefit) {
+            val list = listData.value.toMutableList()
+            val newPromo = list.promo()!!.copy(promo = LastApplyUiModel())
+            list[list.size - 4] = newPromo
+            listData.value = list
+        }
+        val list = listData.value.toMutableList()
+        var newOrder1 = list[cartPosition] as CheckoutOrderModel
+        val newShipment1 = shipment.copy(
+            isLoading = false,
+            courierItemData = newCourierItemData
+        )
+        newOrder1 = newOrder1.copy(shipment = newShipment1, isShippingBorderRed = false)
+        list[cartPosition] = newOrder1
+        listData.value = list
+        cartProcessor.processSaveShipmentState(
+            newOrder1,
+            listData.value.address()!!.recipientAddressModel
+        )
+        validatePromo()
+        pageState.value = CheckoutPageState.Normal
+    }
+
+    private suspend fun setSelectedScheduleDeliveryWithNoPromo(
+        cartPosition: Int,
+        newCourierItemData: CourierItemData,
+        scheduleDeliveryUiModel: ScheduleDeliveryUiModel
+    ) {
+        // no promo
+        val checkoutItems = listData.value.toMutableList()
+        val checkoutOrderModel = checkoutItems[cartPosition] as CheckoutOrderModel
+        val shipment = checkoutOrderModel.shipment
+        val newShipment = shipment.copy(
+            isLoading = false,
+            courierItemData = newCourierItemData
+            //                    shippingCourierUiModels = shippingCourierUiModels
+        )
+        val newOrder = checkoutOrderModel.copy(shipment = newShipment)
+        if (scheduleDeliveryUiModel.isSelected) {
+            newOrder.scheduleDate = newCourierItemData.selectedShipper.scheduleDate
+            newOrder.timeslotId = newCourierItemData.selectedShipper.timeslotId
+            newOrder.validationMetadata =
+                scheduleDeliveryUiModel.deliveryProduct.validationMetadata
+        } else {
+            newOrder.scheduleDate = ""
+            newOrder.timeslotId = 0
+            newOrder.validationMetadata = ""
+        }
+        checkoutItems[cartPosition] = newOrder
+        listData.value = checkoutItems
+        cartProcessor.processSaveShipmentState(
+            newOrder,
+            listData.value.address()!!.recipientAddressModel
+        )
+        validatePromo()
+        pageState.value = CheckoutPageState.Normal
     }
 
     // region campaign
