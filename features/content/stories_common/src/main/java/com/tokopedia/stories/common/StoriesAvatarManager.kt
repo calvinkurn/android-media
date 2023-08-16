@@ -2,7 +2,6 @@ package com.tokopedia.stories.common
 
 import android.content.Context
 import android.graphics.Rect
-import android.util.Log
 import android.view.View
 import android.view.View.OnAttachStateChangeListener
 import androidx.appcompat.app.AppCompatActivity
@@ -18,6 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.stories.common.di.DaggerStoriesAvatarComponent
 import com.tokopedia.stories.common.di.StoriesAvatarComponent
 import kotlinx.coroutines.Job
@@ -33,7 +33,7 @@ class StoriesAvatarManager private constructor(
     context: Context,
     private val lifecycleOwner: LifecycleOwner,
     private val viewModelStoreOwner: ViewModelStoreOwner,
-    private val options: Options,
+    private val options: Options
 ) {
 
     private val component = createComponent(context)
@@ -42,6 +42,13 @@ class StoriesAvatarManager private constructor(
     private val viewToObserverMap = mutableMapOf<StoriesBorderLayout, StoriesAvatarMeta>()
 
     private var showCoachMarkJob: Job? = null
+
+    private val storiesViewListener = object : StoriesBorderLayout.Listener {
+        override fun onClickedWhenHasStories(view: StoriesBorderLayout, state: StoriesAvatarState) {
+            RouteManager.route(context, state.appLink)
+            options.trackingManager.clickEntryPoints(key)
+        }
+    }
 
     @Suppress("UNCHECKED_CAST")
     private val viewModelProvider by lazy {
@@ -96,7 +103,6 @@ class StoriesAvatarManager private constructor(
             }
         }
 
-        Log.d("StoriesBorderLayout", "parentScrollingView: ${options.scrollingParent}")
         options.scrollingParent?.let { observeScrollingView(it) }
     }
 
@@ -171,10 +177,8 @@ class StoriesAvatarManager private constructor(
             val shopId = mShopIdCoachMarked ?: return@addOnScrollChangedListener
             val storiesLayout = getViewByShopId(shopId) ?: return@addOnScrollChangedListener
             if (storiesLayout.getLocalVisibleRect(scrollBounds)) {
-                Log.d("StoriesBorderLayout", "Request Stories CoachMark")
                 requestShowCoachMark()
             } else {
-                Log.d("StoriesBorderLayout", "Hide CoachMark")
                 hideCoachMark()
             }
         }
@@ -185,11 +189,14 @@ class StoriesAvatarManager private constructor(
         observer.observe(shopId)
         assign(shopId, observer)
 
+        setListener(storiesViewListener)
+
         if (shopId == mShopIdCoachMarked) requestShowCoachMark()
     }
 
     private fun StoriesBorderLayout.onDetached() {
         coachMark.hide(this)
+        setListener(null)
     }
 
     private fun StoriesBorderLayout.getObserver(): StoriesAvatarObserver? {
@@ -201,7 +208,7 @@ class StoriesAvatarManager private constructor(
             getViewModel(),
             lifecycleOwner,
             this,
-            options.animStrategy,
+            options.animStrategy
         )
     }
 
@@ -263,24 +270,25 @@ class StoriesAvatarManager private constructor(
         private val key: StoriesKey,
         private val context: Context,
         private val lifecycleOwner: LifecycleOwner,
-        private val viewModelStoreOwner: ViewModelStoreOwner,
+        private val viewModelStoreOwner: ViewModelStoreOwner
     ) {
 
         constructor(key: StoriesKey, fragment: Fragment) : this(
             key,
             fragment.requireContext(),
             fragment.viewLifecycleOwner,
-            fragment,
+            fragment
         )
         constructor(key: StoriesKey, activity: AppCompatActivity) : this(
             key,
             activity,
             activity,
-            activity,
+            activity
         )
 
         private var mScrollingParent: View? = null
         private var mAnimationStrategy: AnimationStrategy = NoAnimateAnimationStrategy()
+        private var mTrackingManager: TrackingManager = DefaultTrackingManager()
 
         fun setScrollingParent(view: View?) = builder {
             this.mScrollingParent = view
@@ -290,13 +298,17 @@ class StoriesAvatarManager private constructor(
             mAnimationStrategy = animStrategy
         }
 
+        fun setTrackingManager(trackingManager: TrackingManager) = builder {
+            mTrackingManager = trackingManager
+        }
+
         fun build(): StoriesAvatarManager {
             return StoriesAvatarManager(
                 key,
                 context,
                 lifecycleOwner,
                 viewModelStoreOwner,
-                createOptions(),
+                createOptions()
             )
         }
 
@@ -304,6 +316,7 @@ class StoriesAvatarManager private constructor(
             return Options(
                 mScrollingParent,
                 mAnimationStrategy,
+                mTrackingManager
             )
         }
 
@@ -316,6 +329,7 @@ class StoriesAvatarManager private constructor(
     class Options(
         val scrollingParent: View?,
         val animStrategy: AnimationStrategy,
+        val trackingManager: TrackingManager
     )
 
     internal data class StoriesAvatarMeta(
