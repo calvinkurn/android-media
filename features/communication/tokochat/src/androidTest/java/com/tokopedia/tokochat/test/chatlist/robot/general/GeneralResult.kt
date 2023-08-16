@@ -85,7 +85,7 @@ object GeneralResult {
         onView(
             withRecyclerView(R.id.tokochat_list_rv)
                 .atPositionOnView(position, R.id.tokochat_list_counter)
-        ).check(matches(ViewMatchers.withEffectiveVisibility(ViewMatchers.Visibility.INVISIBLE)))
+        ).check(matches(ViewMatchers.withEffectiveVisibility(ViewMatchers.Visibility.GONE)))
     }
 
     fun assertChatListItemTotal(count: Int) {

@@ -5,7 +5,6 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
@@ -90,14 +89,14 @@ class TokoChatListItemViewHolder(
     private fun bindCounter(element: TokoChatListItemUiModel, shouldShow: Boolean) {
         binding?.tokochatListCounter?.apply {
             if (element.counter > Int.ZERO && shouldShow) {
+                show()
                 setNotification(
                     notif = element.counter.toString(),
                     notificationType = NotificationUnify.COUNTER_TYPE,
                     NotificationUnify.COLOR_PRIMARY
                 )
-                show()
             } else {
-                invisible()
+                hide()
             }
         }
     }

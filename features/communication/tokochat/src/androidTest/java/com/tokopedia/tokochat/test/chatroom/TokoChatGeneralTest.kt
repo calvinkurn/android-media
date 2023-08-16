@@ -197,6 +197,7 @@ class TokoChatGeneralTest : BaseTokoChatRoomTest() {
         launchChatRoomActivity {
             it.data = Uri.parse(dummyApplink)
         }
+        Thread.sleep(300)
 
         // Then
         HeaderResult.assertOrderHistoryLocalLoad()

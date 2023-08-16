@@ -64,9 +64,10 @@ object TokoChatModuleStub {
     fun provideTokoChatRepositoryStub(
         @TokoChatQualifier retrofit: Retrofit,
         @TokoChatQualifier context: Context,
-        @TokoChatQualifier babbleCourierClient: BabbleCourierClient
+        @TokoChatQualifier babbleCourierClient: BabbleCourierClient,
+        @TokoChatQualifier remoteConfig: RemoteConfig
     ): TokoChatRepositoryStub {
-        return TokoChatRepositoryStub(retrofit, context, babbleCourierClient)
+        return TokoChatRepositoryStub(retrofit, context, babbleCourierClient, remoteConfig)
     }
 
     @Provides
