@@ -7,15 +7,18 @@ import android.content.Context
  */
 class Cache(context: Context) {
 
-    private val sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE)
+    private val sharedPreferences =
+        context.getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE)
     private val editor = sharedPreferences.edit()
+
+    private var hasVisitApp: Boolean? = null
 
     fun setEnabled(isEnabled: Boolean) {
         editor.putBoolean(IRIS_ENABLED, isEnabled)
         editor.commit()
     }
 
-    fun isEnabled() : Boolean {
+    fun isEnabled(): Boolean {
         return sharedPreferences.getBoolean(IRIS_ENABLED, true)
     }
 
@@ -24,7 +27,22 @@ class Cache(context: Context) {
         editor.commit()
     }
 
-    fun isPerformanceEnabled() : Boolean {
+    fun isPerformanceEnabled(): Boolean {
         return sharedPreferences.getBoolean(IRIS_PERFORMANCE_ENABLED, true)
+    }
+
+    fun hasVisit(): Boolean {
+        val hasVisit = hasVisitApp
+        return if (hasVisit == null) {
+            val hasVisitTemp = sharedPreferences.getBoolean(IRIS_HAS_VISIT, false)
+            hasVisitApp = hasVisitTemp
+            hasVisitTemp
+        } else {
+            hasVisit
+        }
+    }
+
+    fun setVisit() {
+        sharedPreferences.edit().putBoolean(IRIS_HAS_VISIT, true).apply()
     }
 }

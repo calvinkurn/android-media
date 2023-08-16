@@ -24,7 +24,8 @@ class TrackingMapper {
         track: String,
         sessionId: String,
         userId: String,
-        deviceId: String
+        deviceId: String,
+        cache: Cache
     ): String {
 
         val result = JSONObject()
@@ -32,7 +33,7 @@ class TrackingMapper {
         val row = JSONObject()
         val event = JSONArray()
 
-        event.put(reformatEvent(track, sessionId))
+        event.put(reformatEvent(track, sessionId, cache))
 
         row.put(DEVICE_ID, deviceId)
         row.put(USER_ID, userId)
@@ -169,16 +170,23 @@ class TrackingMapper {
         const val KEY_LOW_POWER = "low_power"
         const val ANDROID_DASH = "android-"
         const val ANDROID_PREV_VERSION_SUFFIX = "before"
+        const val EVENT_OPEN_SCREEN = "openScreen"
+        const val KEY_NEW_VISIT = "newVisit"
 
-        fun reformatEvent(event: String, sessionId: String): JSONObject {
+        fun reformatEvent(event: String, sessionId: String, cache: Cache): JSONObject {
             return try {
                 var valueEvent = VALUE_EVENT_MAINAPP
                 if (GlobalConfig.isSellerApp()) {
                     valueEvent = VALUE_EVENT_SELLERAPP
                 }
                 val item = JSONObject(event)
-                if (item.has(KEY_EVENT) && item.get(KEY_EVENT) != null) {
-                    item.put(KEY_EVENT_GA, item.get(KEY_EVENT))
+                if (item.has(KEY_EVENT)) {
+                    val eventName = item.get(KEY_EVENT)
+                    if (!cache.hasVisit() && eventName == EVENT_OPEN_SCREEN) {
+                        item.put(KEY_NEW_VISIT, "1")
+                        cache.setVisit()
+                    }
+                    item.put(KEY_EVENT_GA, eventName)
                     item.remove(KEY_EVENT)
                 }
                 item.put("iris_session_id", sessionId)

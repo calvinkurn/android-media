@@ -100,6 +100,8 @@ public class GTMAnalytics extends ContextAnalytics {
     // have status that describe pending.
     private static final String CHECKOUT_PROGRESS = "checkout_progress";
     private static final String PROMOCLICK = "promoclick";
+
+    private static int prevCampaignHash = 0;
     public static String[] GENERAL_EVENT_KEYS = new String[]{
             KEY_ACTION, KEY_CATEGORY, KEY_LABEL, KEY_EVENT
     };
@@ -1039,7 +1041,7 @@ public class GTMAnalytics extends ContextAnalytics {
         switch (keyEvent.toLowerCase()) {
             case PRODUCTVIEW:
                 String itemListString = bundle.getString(FirebaseAnalytics.Param.ITEM_LIST);
-                if (TextUtils.isEmpty(bundle.getString(FirebaseAnalytics.Param.ITEM_LIST_NAME))){
+                if (TextUtils.isEmpty(bundle.getString(FirebaseAnalytics.Param.ITEM_LIST_NAME))) {
                     bundle.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, itemListString);
                 }
                 keyEvent = FirebaseAnalytics.Event.VIEW_ITEM_LIST;
@@ -1098,6 +1100,14 @@ public class GTMAnalytics extends ContextAnalytics {
     public void sendCampaign(Map<String, Object> param) {
         if (!TrackingUtils.isValidCampaign(param)) return;
 
+        // this is to prevent double campaign sent
+        // we check the campaign hash with param. If the hash is same, we conclude that the campaign is the same campaign.
+        if (sameCampaignWithPrevCampaignSent(param)) {
+            return;
+        } else {
+            saveCampaignHash(param);
+        }
+
         Bundle bundle = new Bundle();
         String afUniqueId = getAfUniqueId(context);
 
@@ -1136,6 +1146,14 @@ public class GTMAnalytics extends ContextAnalytics {
         }
 
         pushEventV5("campaignTrack", wrapWithSessionIris(bundle), context);
+    }
+
+    private Boolean sameCampaignWithPrevCampaignSent(Map<String, Object> param) {
+        return param.hashCode() == prevCampaignHash;
+    }
+
+    private void saveCampaignHash(Map<String, Object> param) {
+        prevCampaignHash = param.hashCode();
     }
 
     public void pushGeneralGtmV5Internal(Map<String, Object> params) {
