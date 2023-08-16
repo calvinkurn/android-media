@@ -40,6 +40,14 @@
                 app:framePosition="100"
                 app:motionTarget="@+id/play_tv_ribbon" />
             <KeyAttribute
+                android:alpha="0.0"
+                app:framePosition="0"
+                app:motionTarget="@+id/glare" />
+            <KeyAttribute
+                android:alpha="1.0"
+                app:framePosition="100"
+                app:motionTarget="@+id/glare" />
+            <KeyAttribute
                 android:translationX="-50dp"
                 app:framePosition="75"
                 app:motionTarget="@+id/glare" />
