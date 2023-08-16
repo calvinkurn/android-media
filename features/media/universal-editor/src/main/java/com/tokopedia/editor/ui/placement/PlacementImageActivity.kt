@@ -3,6 +3,8 @@ package com.tokopedia.editor.ui.placement
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
@@ -44,10 +46,12 @@ class PlacementImageActivity : BaseActivity(), NavToolbarComponent.Listener {
         initView()
     }
 
-    override fun onCloseClicked() {
-    }
+    override fun onCloseClicked() {}
 
     override fun onContinueClicked() {
+        (supportFragmentManager.findFragmentById(R.id.fragment_view) as PlacementImageFragment).captureImage {
+            // TODO: send result
+        }
     }
 
     private fun initInjector() {

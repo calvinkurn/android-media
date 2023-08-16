@@ -16,12 +16,12 @@
         app:unify_header_title="Preview"
         app:unify_header_transparent_mode="true" />
 
-    <TextView
-        android:text="TEST"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+    <com.tokopedia.editor.ui.components.custom.crop.StoriesEditorUcrop
+        android:id="@+id/crop_area"
+        app:layout_constraintTop_toBottomOf="@id/header"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
