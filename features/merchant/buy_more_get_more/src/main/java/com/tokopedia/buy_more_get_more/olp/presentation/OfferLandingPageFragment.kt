@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.core.view.WindowCompat
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -32,13 +33,14 @@ import com.tokopedia.buy_more_get_more.olp.utils.DataEndlessScrollListener
 import com.tokopedia.buy_more_get_more.sort.activity.ShopProductSortActivity
 import com.tokopedia.buy_more_get_more.sort.listener.ProductSortListener
 import com.tokopedia.campaign.helper.BuyMoreGetMoreHelper
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
@@ -151,6 +153,16 @@ class OfferLandingPageFragment :
             updateCartCounter(notification.totalCart)
         }
 
+        viewModel.miniCartAdd.observe(viewLifecycleOwner) { atc ->
+            when(atc) {
+                is Success -> {
+                    Toast.makeText(context, atc.data.data.success.toString(), Toast.LENGTH_SHORT).show()
+                }
+                is Fail -> {
+                    Toast.makeText(context, "error", Toast.LENGTH_SHORT).show()}
+            }
+        }
+
         viewModel.error.observe(viewLifecycleOwner) { throwable ->
             setViewState(VIEW_ERROR, throwable.localizedMessage)
         }
@@ -176,7 +188,10 @@ class OfferLandingPageFragment :
     }
 
     private fun setupProductList(offerProductList: OfferProductListUiModel) {
-        olpAdapter?.setProductListData(offerProductList.productList)
+        olpAdapter?.apply {
+            updateProductCount(offerProductList.totalProduct)
+            setProductListData(offerProductList.productList)
+        }
     }
 
     private fun setupToolbar(offerInfoForBuyer: OfferInfoForBuyerUiModel) {
@@ -347,6 +362,7 @@ class OfferLandingPageFragment :
     }
 
     private fun addToCartProduct(product: OfferProductListUiModel.Product) {
+        viewModel.addToCart(product, shopId)
     }
 
     private fun openAtcVariant(product: OfferProductListUiModel.Product) {
