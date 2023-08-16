@@ -109,6 +109,7 @@ class StoriesDetailFragment @Inject constructor(
         if (prevState == state) return
 
         storiesDetailsTimer(state)
+        renderAuthor(state)
     }
 
     private fun storiesDetailsTimer(state: StoriesDetailUiModel) {
@@ -129,6 +130,12 @@ class StoriesDetailFragment @Inject constructor(
             }
         }
     }
+
+    private fun renderAuthor(state: StoriesDetailUiModel) = with(binding.vStoriesPartner) {
+        tvPartnerName.text = state.author.name
+        ivIcon.setImageUrl(state.author.thumbnailUrl)
+    }
+
 
     private fun setupStoriesView() = with(binding) {
         binding.icClose.hide()

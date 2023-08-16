@@ -1,5 +1,7 @@
 package com.tokopedia.stories.view.model
 
+import com.tokopedia.stories.uimodel.StoryAuthor
+
 data class StoriesUiModel(
     val selectedGroup: Int,
     val groups: List<StoriesGroupUiModel>,
@@ -19,6 +21,7 @@ data class StoriesDetailUiModel(
     val selected: Int,
     val event: StoriesDetailUiEvent,
     val imageContent: String,
+    val author: StoryAuthor,
 ) {
 
     enum class StoriesDetailUiEvent {
@@ -30,6 +33,7 @@ data class StoriesDetailUiModel(
             selected = 1,
             event = StoriesDetailUiEvent.START,
             imageContent = "",
+            author = StoryAuthor.Unknown,
         )
     }
 }

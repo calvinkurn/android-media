@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tokopedia.stories.uimodel.StoryAuthor
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimerEvent.NEXT_DETAIL
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimerEvent.NEXT_GROUP
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
@@ -109,6 +110,7 @@ internal fun StoriesDetailTimerPreview() {
             selected = 1,
             event = StoriesDetailUiModel.StoriesDetailUiEvent.START,
             imageContent = "",
+            author = StoryAuthor.Buyer("", "", "")
         )
     ) { }
 }
