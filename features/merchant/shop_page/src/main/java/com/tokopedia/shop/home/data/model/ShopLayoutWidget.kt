@@ -192,16 +192,14 @@ data class ShopLayoutWidget(
                 val componentName: String = "",
                 @SerializedName("componentType")
                 val componentType: String = "",
-                @SerializedName("ratio")
-                val ratio: String = "",
                 @SerializedName("data")
-                val componentChild : List<ComponentChild> = emptyList()
+                val data : List<Data> = emptyList()
             ) {
-                data class ComponentChild(
-                    @SerializedName("imageID")
-                    val imageID: Long = 0,
+                data class Data(
                     @SerializedName("imageUrl")
                     val imageUrl: String = "",
+                    @SerializedName("ctaText")
+                    val ctaText: String = "",
                     @SerializedName("ctaLink")
                     val ctaLink: String = "",
                     @SerializedName("linkID")
@@ -210,8 +208,8 @@ data class ShopLayoutWidget(
                     val linkType: String = "",
                     @SerializedName("isShowProductInfo")
                     val isShowProductInfo: Boolean = false,
-                    @SerializedName("bannerType")
-                    val bannerType: String = ""
+                    @SerializedName("ratio")
+                    val ratio: String = ""
                 )
             }
 

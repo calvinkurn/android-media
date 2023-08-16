@@ -19,11 +19,11 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
-
+import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel.Tab.ComponentList.ComponentType
 
 class ShopProductCarouselViewModel @Inject constructor(
     private val dispatcherProvider: CoroutineDispatchers,
-    private val getShopProductUseCase: GqlGetShopProductUseCase,
+    private val getShopProductUseCase: GqlGetShopProductUseCase
 ) : BaseViewModel(dispatcherProvider.main) {
 
     companion object {
@@ -69,11 +69,7 @@ class ShopProductCarouselViewModel @Inject constructor(
 
     private fun getProductWidgets(widgets: List<ShopHomeProductCarouselUiModel.Tab.ComponentList>): ShopHomeProductCarouselUiModel.Tab.ComponentList.Data? {
         val productWidgets = widgets
-            .filter { widget ->
-                widget.componentType == ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITH_PRODUCT_INFO
-                    ||
-                    widget.componentType == ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITHOUT_PRODUCT_INFO
-            }
+            .filter { widget -> widget.componentType == ComponentType.PRODUCT }
 
         val firstComponent = productWidgets.getOrNull(0)
         val firstWidget = firstComponent?.data?.getOrNull(0)

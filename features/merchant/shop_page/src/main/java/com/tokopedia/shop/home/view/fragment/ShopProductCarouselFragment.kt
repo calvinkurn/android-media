@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.media.loader.loadImage
@@ -28,6 +28,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 import kotlin.collections.ArrayList
+import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel.Tab.ComponentList.ComponentType
 
 class ShopProductCarouselFragment : BaseDaggerFragment() {
 
@@ -101,7 +102,7 @@ class ShopProductCarouselFragment : BaseDaggerFragment() {
     }
 
     private fun setupMainBanner() {
-        val singleBanners = widgets.firstOrNull { widget -> widget.componentType == ShopHomeProductCarouselUiModel.ComponentType.BANNER_SINGLE }
+        val singleBanners = widgets.firstOrNull { widget -> widget.componentType == ComponentType.DISPLAY_SINGLE_COLUMN }
 
         val hasMainBanner = singleBanners != null
         if (hasMainBanner) {
@@ -132,10 +133,10 @@ class ShopProductCarouselFragment : BaseDaggerFragment() {
             onVerticalBannerClick(verticalBanner)
         }
 
-        val showProductInfo = widgets
-            .filter { widget -> widget.componentType == ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITH_PRODUCT_INFO }
-            .size
-            .isMoreThanZero()
+        val productComponents = widgets.filter { widget -> widget.componentType == ComponentType.PRODUCT }
+        val productWidget = productComponents.getOrNull(0)
+
+        val showProductInfo = productWidget?.data?.any { data -> data.isShowProductInfo }.orFalse()
 
         productAdapter.setShowProductInfo(showProductInfo)
     }

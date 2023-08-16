@@ -124,13 +124,6 @@ class ShopHomeViewModel @Inject constructor(
     private val getComparisonProductUseCase: Provider<GetRecommendationUseCase>
     ) : BaseViewModel(dispatcherProvider.main) {
 
-    companion object {
-        private const val FIRST_PAGE = 1
-        private const val PRODUCT_COUNT_TO_FETCH = 5
-        private const val SORT_ID_MOST_SOLD = 8
-        private const val SORT_ID_NEWEST = 2
-    }
-
     val productListData: LiveData<Result<GetShopHomeProductUiModel>>
         get() = _productListData
     private val _productListData = MutableLiveData<Result<GetShopHomeProductUiModel>>()

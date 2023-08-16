@@ -20,12 +20,6 @@ data class ShopHomeProductCarouselUiModel(
     val viewAllChevronAppLink: String
 ) : BaseShopHomeWidgetUiModel() {
 
-    enum class ComponentType {
-        BANNER_SINGLE,
-        PRODUCT_CARD_WITHOUT_PRODUCT_INFO,
-        PRODUCT_CARD_WITH_PRODUCT_INFO
-    }
-
     @Parcelize
     data class Tab(
         val label: String,
@@ -38,13 +32,15 @@ data class ShopHomeProductCarouselUiModel(
             val componentId: Long,
             val componentName: String,
             val componentType: ComponentType,
-            val ratio: String,
             val data: List<Data>
         ) : Parcelable {
+            enum class ComponentType(val id: String) {
+                DISPLAY_SINGLE_COLUMN("display_single_column"),
+                PRODUCT("product")
+            }
 
             @Parcelize
             data class Data(
-                val imageId: Long,
                 val imageUrl: String,
                 val ctaLink: String,
                 val linkId: Long,

@@ -8,7 +8,6 @@ import com.tokopedia.shop.campaign.view.model.ShopCampaignWidgetCarouselProductU
 import com.tokopedia.shop.campaign.view.model.ShopWidgetDisplaySliderBannerHighlightUiModel
 import com.tokopedia.shop.common.data.model.DynamicRule
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
-import com.tokopedia.shop.home.ComponentType
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.data.model.ShopPageWidgetRequestModel
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
@@ -20,6 +19,7 @@ import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
 import com.tokopedia.shop.home.view.model.ShowcaseNavigationBannerWidgetStyle
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel.Tab.ComponentList.Data.BannerType
+import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel.Tab.ComponentList.ComponentType
 
 //TODO need to migrate all other shop widget mapper on home mapper to this mapper
 object ShopPageWidgetMapper {
@@ -220,37 +220,22 @@ object ShopPageWidgetMapper {
     }
     fun mapToHomeProductCarouselWidget(response: ShopLayoutWidget.Widget): ShopHomeProductCarouselUiModel {
         val tabs = response.data.map { tab ->
-            val tabComponentLists = tab.componentList.map { component ->
+            val componentList = tab.componentList.map { component ->
+
                 val componentType = when (component.componentType) {
-                    ComponentType.BANNER_SINGLE -> {
-                        ShopHomeProductCarouselUiModel.ComponentType.BANNER_SINGLE
-                    }
-                    ComponentType.PRODUCT_CARD_WITH_INFO -> {
-                        ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITH_PRODUCT_INFO
-                    }
-                    ComponentType.PRODUCT_CARD_WITHOUT_INFO -> {
-                        ShopHomeProductCarouselUiModel.ComponentType.PRODUCT_CARD_WITHOUT_PRODUCT_INFO
-                    }
-                    else -> {
-                        ShopHomeProductCarouselUiModel.ComponentType.BANNER_SINGLE
-                    }
+                    ComponentType.PRODUCT.id -> ComponentType.PRODUCT
+                    ComponentType.DISPLAY_SINGLE_COLUMN.id -> ComponentType.DISPLAY_SINGLE_COLUMN
+                    else -> ComponentType.DISPLAY_SINGLE_COLUMN
                 }
 
-                val componentListChild = component.componentChild.map { componentChild ->
-                    val bannerType = if (componentChild.bannerType == BannerType.VERTICAL.id) {
-                        BannerType.VERTICAL
-                    } else {
-                        BannerType.NONE
-                    }
-
+                val data = component.data.map { data ->
                     ShopHomeProductCarouselUiModel.Tab.ComponentList.Data(
-                        componentChild.imageID,
-                        componentChild.imageUrl,
-                        componentChild.ctaLink,
-                        componentChild.linkID,
-                        componentChild.linkType,
-                        componentChild.isShowProductInfo,
-                        bannerType
+                        data.imageUrl,
+                        data.ctaLink,
+                        data.linkID,
+                        data.linkType,
+                        data.isShowProductInfo,
+                        BannerType.NONE
                     )
                 }
 
@@ -258,16 +243,11 @@ object ShopPageWidgetMapper {
                     component.componentID,
                     component.componentName,
                     componentType,
-                    component.ratio,
-                    componentListChild
+                    data
                 )
             }
 
-            ShopHomeProductCarouselUiModel.Tab(
-                tab.tabLabel,
-                tab.tabName,
-                tabComponentLists
-            )
+            ShopHomeProductCarouselUiModel.Tab(tab.tabLabel, tab.tabName, componentList)
         }
 
         return ShopHomeProductCarouselUiModel(
