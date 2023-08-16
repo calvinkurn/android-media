@@ -175,13 +175,13 @@ open class TalkInboxFragment :
     override fun startRenderPerformanceMonitoring() {
         talkPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
         binding?.talkInboxRecyclerView?.viewTreeObserver?.addOnGlobalLayoutListener(object :
-                ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    talkPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
-                    talkPerformanceMonitoringListener?.stopPerformanceMonitoring()
-                    binding?.talkInboxRecyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-                }
-            })
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                talkPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
+                talkPerformanceMonitoringListener?.stopPerformanceMonitoring()
+                binding?.talkInboxRecyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+            }
+        })
     }
 
     override fun castContextToTalkPerformanceMonitoringListener(context: Context): TalkPerformanceMonitoringListener? {
@@ -232,27 +232,6 @@ open class TalkInboxFragment :
             goToReply(it.questionID)
         }
     }
-
-    override fun onSwipeRefresh() {
-        containerListener?.refreshNotificationCounter()
-        super.onSwipeRefresh()
-    }
-
-    override fun onRoleChanged(role: Int) {
-        if (!::viewModel.isInitialized) return
-        when (role) {
-            RoleType.BUYER -> inboxType = TalkInboxTab.BUYER_TAB
-            RoleType.SELLER -> inboxType = TalkInboxTab.SHOP_TAB
-        }
-        clearAllData()
-        setInboxType()
-        initSortFilter()
-        updateSettingsIconVisibility()
-        shouldHitRoleChangedTracker = true
-    }
-
-    override fun onPageClickedAgain() {
-        getRecyclerView(view)?.scrollToPosition(0)
 
     override fun onPause() {
         super.onPause()
