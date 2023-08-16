@@ -301,7 +301,6 @@ import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
-import com.tokopedia.topads.detail_sheet.TopAdsDetailSheet
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ImageUnify
@@ -558,10 +557,6 @@ open class DynamicProductDetailFragment :
                 dismiss()
             }
         }
-    }
-
-    private val topAdsDetailSheet: TopAdsDetailSheet? by lazy {
-        TopAdsDetailSheet.newInstance()
     }
 
     private val recommendationCarouselPositionSavedState = SparseIntArray()
@@ -4692,18 +4687,6 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    private fun showTopAdsBottomSheet() {
-        context?.let {
-            context?.let {
-                topAdsDetailSheet?.show(
-                    childFragmentManager,
-                    topAdsGetProductManage.data.adType,
-                    topAdsGetProductManage.data.adId,
-                    viewModel.p2Login.value?.topAdsGetShopInfo?.category ?: 0
-                )
-            }
-        }
-    }
 
     private fun clickButtonWhenVariantTokonow() {
         if (buttonActionType == ProductDetailCommonConstant.CHECK_WISHLIST_BUTTON) {
