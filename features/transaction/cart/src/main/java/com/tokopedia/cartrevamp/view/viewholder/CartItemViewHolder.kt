@@ -525,7 +525,7 @@ class CartItemViewHolder constructor(
                         ConstraintSet.BOTTOM,
                         R.id.iu_image_product,
                         ConstraintSet.BOTTOM,
-                        MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
+                        0
                     )
                 } else {
                     connect(
@@ -1150,13 +1150,29 @@ class CartItemViewHolder constructor(
     private fun renderContainer(cartItemHolderData: CartItemHolderData) {
         val layoutParams =
             binding.containerProductInformation.layoutParams as ViewGroup.MarginLayoutParams
+        val layoutParamsIuImageProduct =
+            binding.iuImageProduct.layoutParams as ViewGroup.MarginLayoutParams
         if (cartItemHolderData.isError) {
+            layoutParamsIuImageProduct.topMargin = 0
             layoutParams.bottomMargin =
                 PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
         } else {
-            if (cartItemHolderData.isBundlingItem && cartItemHolderData.isMultipleBundleProduct && cartItemHolderData.bundlingItemPosition != BUNDLING_ITEM_FOOTER) {
-                layoutParams.bottomMargin = 0
+            if (cartItemHolderData.isBundlingItem && cartItemHolderData.isMultipleBundleProduct) {
+                if (cartItemHolderData.bundlingItemPosition != BUNDLING_ITEM_HEADER) {
+                    layoutParamsIuImageProduct.topMargin = IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
+                }
+                else {
+                    layoutParamsIuImageProduct.topMargin = 0
+                }
+
+                if (cartItemHolderData.bundlingItemPosition == BUNDLING_ITEM_FOOTER) {
+                    layoutParams.bottomMargin = PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
+                }
+                else {
+                    layoutParams.bottomMargin = 0
+                }
             } else {
+                layoutParamsIuImageProduct.topMargin = 0
                 layoutParams.bottomMargin = PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
             }
         }

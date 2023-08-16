@@ -1,5 +1,6 @@
 package com.tokopedia.cartrevamp.view.viewholder
 
+import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cart.R
@@ -9,6 +10,7 @@ import com.tokopedia.cartrevamp.view.uimodel.CartShopBottomHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartShopGroupTickerState
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -32,12 +34,15 @@ class CartShopBottomViewHolder(
         if (!cartShopBottomHolderData.shopData.isError && cartShopBottomHolderData.shopData.isCollapsible) {
             val showMoreWording = itemView.context.getString(R.string.cart_new_default_wording_show_more)
             val showLessWording = itemView.context.getString(R.string.cart_new_default_wording_show_less)
+            val separatorAccordionLayoutParams = binding.separatorAccordion.layoutParams as ViewGroup.MarginLayoutParams
             if (cartShopBottomHolderData.shopData.isCollapsed) {
                 binding.imageChevron.rotation = CHEVRON_ROTATION_0
                 binding.textAccordion.text = showMoreWording
+                separatorAccordionLayoutParams.topMargin = SEPARATOR_MARGIN_TOP.dpToPx(itemView.resources.displayMetrics)
             } else {
                 binding.imageChevron.rotation = CHEVRON_ROTATION_180
                 binding.textAccordion.text = showLessWording
+                separatorAccordionLayoutParams.topMargin = 0
             }
 
             binding.layoutAccordion.setOnClickListener {
@@ -148,5 +153,7 @@ class CartShopBottomViewHolder(
 
         private const val CHEVRON_ROTATION_0 = 0f
         private const val CHEVRON_ROTATION_180 = 180f
+
+        private const val SEPARATOR_MARGIN_TOP = 16
     }
 }
