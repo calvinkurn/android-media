@@ -44,24 +44,32 @@ class TagListViewComponent(
         listener.onTagClicked(this, tag)
     }
 
-    fun setDescription(tag: PlayTagUiModel) {
-        binding.tvBroSelectTagDescription.text = getString(
-            R.string.play_shorts_content_tagging_description_template,
-            tag.maxTags
-        )
-    }
-
-    fun setTags(tags: List<PlayTagItem>) {
+    fun setTags(
+        tags: List<PlayTagItem>,
+        maxTags: Int = -1,
+    ) {
         binding.localLoadTagError.hide()
         binding.tvBroSelectTagTitle.showWithCondition(tags.isNotEmpty())
         binding.clEmptyStateTag.showWithCondition(tags.isEmpty())
 
-        adapter.setItemsAndAnimateChanges(tags)
+        if (maxTags < 0) {
+            binding.tvBroSelectTagDescription.hide()
+        } else {
+            binding.tvBroSelectTagDescription.text = getString(
+                R.string.play_shorts_content_tagging_description_template,
+                maxTags
+            )
+            binding.tvBroSelectTagDescription.showWithCondition(tags.isNotEmpty())
+        }
+
+
+        adapter.setItemsAndAnimateChanges(tags.toList())
     }
 
     fun setPlaceholder() {
         binding.localLoadTagError.hide()
         binding.tvBroSelectTagTitle.show()
+        binding.tvBroSelectTagDescription.hide()
         binding.clEmptyStateTag.hide()
 
         adapter.setItemsAndAnimateChanges(List(1) { })
@@ -72,6 +80,7 @@ class TagListViewComponent(
 
         binding.localLoadTagError.show()
         binding.tvBroSelectTagTitle.show()
+        binding.tvBroSelectTagDescription.hide()
         binding.clEmptyStateTag.hide()
     }
 

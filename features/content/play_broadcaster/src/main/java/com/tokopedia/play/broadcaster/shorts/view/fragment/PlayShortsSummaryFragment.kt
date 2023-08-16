@@ -177,10 +177,10 @@ class PlayShortsSummaryFragment @Inject constructor(
 
         when (curr.tags) {
             is NetworkResult.Loading -> tagListView.setPlaceholder()
-            is NetworkResult.Success -> {
-                tagListView.setDescription(curr.tags.data)
-                tagListView.setTags(curr.tags.data.tags.toList())
-            }
+            is NetworkResult.Success -> tagListView.setTags(
+                tags = curr.tags.data.tags.toList(),
+                maxTags = curr.tags.data.maxTags,
+            )
             is NetworkResult.Fail -> tagListView.setError()
             else -> {}
         }

@@ -21,6 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:textColor="@color/Unify_NN600"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@id/tv_bro_select_tag_title"
         app:layout_constraintStart_toStartOf="@id/tv_bro_select_tag_title"
         app:layout_constraintTop_toBottomOf="@id/tv_bro_select_tag_title"
