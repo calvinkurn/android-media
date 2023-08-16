@@ -1,6 +1,8 @@
 package com.tokopedia.feedplus.presentation.fragment
 
+import android.content.Context
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +10,7 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -41,10 +44,12 @@ import com.tokopedia.feedplus.presentation.receiver.UploadStatus
 import com.tokopedia.feedplus.presentation.receiver.UploadType
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.play_common.shortsuploader.analytic.PlayShortsUploadAnalytic
+import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -193,6 +198,7 @@ class FeedBaseFragment :
         feedMainViewModel.fetchFeedTabs()
 
         setupView()
+        setupInsets()
 
         observeFeedTabData()
         observeCreateContentBottomSheetData()
@@ -333,6 +339,23 @@ class FeedBaseFragment :
         binding.viewVerticalSwipeOnboarding.setText(
             getString(R.string.feed_check_next_content)
         )
+    }
+
+    private fun setupInsets() {
+        binding.vMenuCenter.doOnApplyWindowInsets { v, insets, _, margin ->
+
+            val displayMetrics = DisplayMetrics()
+            val windowManager = requireContext().applicationContext.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+            windowManager.defaultDisplay.getMetrics(displayMetrics)
+
+            val offset24 = 24.dpToPx(displayMetrics)
+            val insetsMargin = insets.systemWindowInsetTop + offset24
+            if (insetsMargin > margin.top) {
+                getAllMotionScene().forEach {
+                    it.setMargin(binding.vMenuCenter.id, ConstraintSet.TOP, insetsMargin)
+                }
+            }
+        }
     }
 
     private fun checkResume(): Boolean {
@@ -732,6 +755,13 @@ class FeedBaseFragment :
         } else {
             binding.root.transitionToEnd()
         }
+    }
+
+    private fun getAllMotionScene(): List<ConstraintSet> {
+        return listOf(
+            binding.root.getConstraintSet(R.id.for_you_state),
+            binding.root.getConstraintSet(R.id.following_state),
+        )
     }
 
     companion object {
