@@ -43,6 +43,9 @@ class StoriesViewModel @Inject constructor(
         )
     }
 
+    val currentStoryId : String
+        get() = _storiesGroup.value.firstOrNull { story -> story.selected }?.id.orEmpty()
+
     init {
         val response = repository.getStoriesData()
         _storiesGroup.update { response.groups }
