@@ -72,8 +72,6 @@ class PlayBroadcastReportFragment @Inject constructor(
         creator = { PlayToaster(binding.toasterLayout, it.viewLifecycleOwner) }
     )
 
-    private var shouldShowToasterUnEligiblePost = false
-
     override fun getScreenName(): String = "Play Report Page"
 
     private fun generateInAppLink(appLink: String): String {
@@ -162,12 +160,10 @@ class PlayBroadcastReportFragment @Inject constructor(
             viewModel.uiEvent.collect {
                 when (it) {
                     is PlayBroadcastSummaryEvent.VideoUnder60Seconds -> {
-                        if (shouldShowToasterUnEligiblePost) {
-                            toaster.showToaster(
-                                message = getString(R.string.play_bro_cant_post_video_message),
-                                actionLabel = getString(R.string.play_ok),
-                            )
-                        }
+                        toaster.showToaster(
+                            message = getString(R.string.play_bro_cant_post_video_message),
+                            actionLabel = getString(R.string.play_ok),
+                        )
                     }
                     PlayBroadcastSummaryEvent.CloseReportPage -> requireActivity().onBackPressed()
                     PlayBroadcastSummaryEvent.OpenLeaderboardBottomSheet -> openInteractiveLeaderboardSheet()
@@ -245,7 +241,6 @@ class PlayBroadcastReportFragment @Inject constructor(
     private fun renderPostVideoButton(prev: PlayChannelUiState?, state: PlayChannelUiState) {
         if (prev == state) return
 
-        shouldShowToasterUnEligiblePost = state.showPostVideoButton
         binding.btnPostVideo.showWithCondition(state.showPostVideoButton)
     }
 
