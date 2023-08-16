@@ -159,13 +159,6 @@ class PlayBroadcastReportFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect {
                 when (it) {
-                    is PlayBroadcastSummaryEvent.VideoUnder60Seconds -> {
-                        toaster.showToaster(
-                            message = getString(R.string.play_bro_cant_post_video_message),
-                            actionLabel = getString(R.string.play_ok),
-                        )
-                    }
-
                     PlayBroadcastSummaryEvent.CloseReportPage -> requireActivity().onBackPressed()
                     PlayBroadcastSummaryEvent.OpenLeaderboardBottomSheet -> openInteractiveLeaderboardSheet()
                     PlayBroadcastSummaryEvent.OpenPostVideoPage -> mListener?.onClickPostButton()

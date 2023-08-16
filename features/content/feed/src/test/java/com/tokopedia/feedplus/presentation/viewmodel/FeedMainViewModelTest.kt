@@ -5,7 +5,8 @@ import com.tokopedia.content.common.producttag.view.uimodel.NetworkResult
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.createpost.common.domain.usecase.cache.DeleteMediaPostCacheUseCase
 import com.tokopedia.feedplus.data.FeedTabsModelBuilder
-import com.tokopedia.feedplus.domain.repository.FeedRepository
+import com.tokopedia.feedplus.domain.FeedRepository
+import com.tokopedia.feedplus.presentation.model.ActiveTabSource
 import com.tokopedia.feedplus.presentation.model.CreateContentType
 import com.tokopedia.feedplus.presentation.model.CreatorType
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
@@ -35,6 +36,8 @@ class FeedMainViewModelTest {
     @get:Rule
     val coroutineTestRule = UnconfinedTestRule()
 
+    private val activeTabSource = ActiveTabSource(null, 0)
+
     private val repository: FeedRepository = mockk()
     private val deletePostCacheUseCase: DeleteMediaPostCacheUseCase = mockk()
 
@@ -61,6 +64,7 @@ class FeedMainViewModelTest {
         } returns false
 
         viewModel = FeedMainViewModel(
+            activeTabSource,
             repository,
             deletePostCacheUseCase,
             onBoardingPreferences,
@@ -80,6 +84,7 @@ class FeedMainViewModelTest {
 
         // when
         val mViewModel = FeedMainViewModel(
+            activeTabSource,
             repository,
             deletePostCacheUseCase,
             onBoardingPreferences,
@@ -119,7 +124,7 @@ class FeedMainViewModelTest {
         // given
         val expectedValue = tabsModelBuilder.buildUiModel()
 
-        coEvery { repository.getTabs() } returns expectedValue
+        coEvery { repository.getTabs(activeTabSource) } returns expectedValue
 
         // when
         viewModel.fetchFeedTabs()
@@ -134,7 +139,7 @@ class FeedMainViewModelTest {
         // given
         val expectedValue = MessageErrorException("Failed to fetch")
 
-        coEvery { repository.getTabs() } throws expectedValue
+        coEvery { repository.getTabs(activeTabSource) } throws expectedValue
 
         // when
         viewModel.fetchFeedTabs()
@@ -150,57 +155,9 @@ class FeedMainViewModelTest {
     }
 
     @Test
-    fun onChangeCurrentTabByType_whenTabsSuccess_shouldChangeCurrentTabsIndex() {
-        // given
-        val mockValue = tabsModelBuilder.buildUiModel(
-            data = tabsModelBuilder.buildDefaultTabsModel()
-        )
-        coEvery { repository.getTabs() } returns mockValue
-        viewModel.fetchFeedTabs()
-
-        // when 1
-        viewModel.changeCurrentTabByType("foryou")
-        // then 1
-        assert(viewModel.currentTabIndex.value == 0)
-
-        // when 2
-        viewModel.changeCurrentTabByType("following")
-        // then 2
-        assert(viewModel.currentTabIndex.value == 1)
-    }
-
-    @Test
-    fun onChangeCurrentTabByIndex_whenTabsSuccess_shouldChangeCurrentTabsIndex() {
-        // given
-
-        // when 1
-        viewModel.changeCurrentTabByIndex(0)
-        // then 1
-        assert(viewModel.currentTabIndex.value == 0)
-
-        // when 2
-        viewModel.changeCurrentTabByIndex(1)
-        // then 2
-        assert(viewModel.currentTabIndex.value == 1)
-    }
-
-    @Test
-    fun onChangeCurrentTabByType_whenTabsFail_shouldNotChangeCurrentTabsIndex() {
-        // given
-        val currentTabIndex = viewModel.currentTabIndex.value
-
-        coEvery { repository.getTabs() } throws Exception()
-
-        // when
-        viewModel.changeCurrentTabByType("foryou")
-        // then
-        assert(viewModel.currentTabIndex.value == currentTabIndex)
-    }
-
-    @Test
     fun onScrollCurrentTabToTop_whenTabIsNotSuccess_shouldNotEmitEvent() {
         // given
-        coEvery { repository.getTabs() } throws Exception()
+        coEvery { repository.getTabs(activeTabSource) } throws Exception()
         viewModel.fetchFeedTabs()
 
         // when
@@ -216,7 +173,7 @@ class FeedMainViewModelTest {
         val mockValue = tabsModelBuilder.buildUiModel(
             data = tabsModelBuilder.buildCustomTabsModel()
         )
-        coEvery { repository.getTabs() } returns mockValue
+        coEvery { repository.getTabs(activeTabSource) } returns mockValue
         viewModel.fetchFeedTabs()
 
         // when
@@ -233,7 +190,7 @@ class FeedMainViewModelTest {
         val mockValue = tabsModelBuilder.buildUiModel(
             data = tabsModelBuilder.buildDefaultTabsModel()
         )
-        coEvery { repository.getTabs() } returns mockValue
+        coEvery { repository.getTabs(activeTabSource) } returns mockValue
         viewModel.fetchFeedTabs()
 
         coEvery { uiEventManager.emitEvent(any()) } coAnswers {}
@@ -247,54 +204,10 @@ class FeedMainViewModelTest {
     }
 
     @Test
-    fun onGetCurrentType_whenSuccess_shouldReturnCorrectType() {
-        var currentTabType = viewModel.getCurrentTabType()
-        assert(currentTabType.isEmpty())
-        var currentTabByIndex = viewModel.getTabType(0)
-        assert(currentTabByIndex.isEmpty())
-
-        // prepare feed tabs data
-        val mockValue = tabsModelBuilder.buildUiModel(
-            data = tabsModelBuilder.buildDefaultTabsModel()
-        )
-        coEvery { repository.getTabs() } returns mockValue
-        viewModel.fetchFeedTabs()
-
-        // get current tab type
-        viewModel.changeCurrentTabByIndex(0)
-        currentTabType = viewModel.getCurrentTabType()
-        assert(currentTabType == "foryou")
-
-        // should be empty if index more than size
-        currentTabByIndex = viewModel.getTabType(10)
-        assert(currentTabByIndex.isEmpty())
-
-        // change and assert new tab type
-        viewModel.changeCurrentTabByType("following")
-        currentTabType = viewModel.getCurrentTabType()
-        assert(currentTabType == "following")
-
-        // get tab by index
-        currentTabByIndex = viewModel.getTabType(1)
-        assert(currentTabByIndex == "following")
-    }
-
-    @Test
-    fun onGetCurrentType_whenFailed_shouldReturnEmpty() {
-        // given
-        coEvery { repository.getTabs() } throws Exception()
-        viewModel.fetchFeedTabs()
-
-        // when 2
-        val currentTabType = viewModel.getCurrentTabType()
-        assert(currentTabType == "")
-    }
-
-    @Test
     fun onFetchMetaData_whenSuccess_shouldChangeValueToSuccess() {
         // given
         val expectedValue = tabsModelBuilder.buildUiModel().meta
-        coEvery { repository.getMeta() } returns expectedValue
+        coEvery { repository.getMeta(activeTabSource) } returns expectedValue
 
         // when
         viewModel.fetchFeedMetaData()
@@ -317,7 +230,7 @@ class FeedMainViewModelTest {
                 )
             )
         ).meta
-        coEvery { repository.getMeta() } returns expectedValue
+        coEvery { repository.getMeta(activeTabSource) } returns expectedValue
 
         // when
         viewModel.fetchFeedMetaData()

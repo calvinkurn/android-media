@@ -77,9 +77,18 @@ class FeedBaseFragment :
     @Inject
     internal lateinit var userSession: UserSessionInterface
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val feedMainViewModel: FeedMainViewModel by viewModels { viewModelFactory }
+    @Inject lateinit var viewModelAssistedFactory: FeedMainViewModel.Factory
+    private val feedMainViewModel: FeedMainViewModel by viewModels {
+        FeedMainViewModel.provideFactory(viewModelAssistedFactory, activeTabSource)
+    }
+
+    private val activeTabSource: ActiveTabSource
+        get() {
+            return ActiveTabSource(
+                tabName = arguments?.getString(ApplinkConstInternalContent.UF_EXTRA_FEED_TAB_NAME),
+                index = 0
+            )
+        }
 
     @Inject
     lateinit var uploadReceiverFactory: FeedMultipleSourceUploadReceiver.Factory
@@ -128,22 +137,10 @@ class FeedBaseFragment :
             )
         }
 
-    private var appLinkTabPosition: Int
-        get() = arguments?.getString(
-            ApplinkConstInternalContent.EXTRA_FEED_TAB_POSITION
-        )?.toIntOrZero() ?: TAB_FIRST_INDEX
-        set(value) {
-            val arguments = getOrCreateArguments()
-            arguments.putString(
-                ApplinkConstInternalContent.EXTRA_FEED_TAB_POSITION,
-                value.toString()
-            )
-        }
-
     private val openCreateShorts =
         registerForActivityResult(OpenCreateShortsContract()) { isCreatingNewShorts ->
             if (!isCreatingNewShorts) return@registerForActivityResult
-            appLinkTabPosition = TAB_SECOND_INDEX
+            feedMainViewModel.setActiveTab(TAB_TYPE_FOLLOWING)
         }
 
     private val openAppLink = registerForActivityResult(RouteContract()) {}
@@ -159,9 +156,9 @@ class FeedBaseFragment :
                     duration = Toaster.LENGTH_LONG
                 )
 
-                feedMainViewModel.changeCurrentTabByType(TAB_TYPE_FOLLOWING)
+                feedMainViewModel.setActiveTab(TAB_TYPE_FOLLOWING)
             } else {
-                feedMainViewModel.changeCurrentTabByType(TAB_TYPE_FOR_YOU)
+                feedMainViewModel.setActiveTab(TAB_TYPE_FOR_YOU)
             }
         }
 
@@ -207,7 +204,6 @@ class FeedBaseFragment :
         setupView()
 
         observeFeedTabData()
-        observeCurrentTabPosition()
 
         observeEvent()
 
@@ -240,12 +236,12 @@ class FeedBaseFragment :
     override fun onCreationItemClick(creationTypeItem: ContentCreationTypeItem) {
         when (creationTypeItem.type) {
             CreateContentType.Live -> {
-                feedNavigationAnalytics.eventClickCreateLive(feedMainViewModel.getCurrentTabType())
+                feedNavigationAnalytics.eventClickCreateLive()
 
                 openAppLink.launch(ApplinkConst.PLAY_BROADCASTER)
             }
             CreateContentType.Post -> {
-                feedNavigationAnalytics.eventClickCreatePost(feedMainViewModel.getCurrentTabType())
+                feedNavigationAnalytics.eventClickCreatePost()
 
                 val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2).apply {
                     putExtra(
@@ -274,7 +270,7 @@ class FeedBaseFragment :
             }
 
             CreateContentType.ShortVideo -> {
-                feedNavigationAnalytics.eventClickCreateVideo(feedMainViewModel.getCurrentTabType())
+                feedNavigationAnalytics.eventClickCreateVideo()
 
                 openCreateShorts.launch()
             }
@@ -295,7 +291,7 @@ class FeedBaseFragment :
 
         if (isJustLoggedIn) {
             showJustLoggedInToaster()
-            feedMainViewModel.changeCurrentTabByType(TAB_TYPE_FOLLOWING)
+            feedMainViewModel.setActiveTab(TAB_TYPE_FOLLOWING)
         }
         isJustLoggedIn = false
 
@@ -310,13 +306,18 @@ class FeedBaseFragment :
                     positionOffset: Float,
                     positionOffsetPixels: Int
                 ) {
-                    if (feedMainViewModel.getTabType(position) == TAB_TYPE_FOLLOWING && !userSession.isLoggedIn) {
-                        onNonLoginGoToFollowingTab.launch(
-                            RouteManager.getIntent(
-                                context,
-                                ApplinkConst.LOGIN
+                    if (!userSession.isLoggedIn &&
+                        activeTabSource.tabName == null // not coming from appLink
+                    ) {
+                        val activeTab = feedMainViewModel.activeTab ?: return
+                        if (activeTab.isFollowingTab) {
+                            onNonLoginGoToFollowingTab.launch(
+                                RouteManager.getIntent(
+                                    context,
+                                    ApplinkConst.LOGIN
+                                )
                             )
-                        )
+                        }
                     }
 
                     if (shouldSendSwipeTracker) {
@@ -330,8 +331,6 @@ class FeedBaseFragment :
                 }
 
                 override fun onPageSelected(position: Int) {
-                    feedMainViewModel.changeCurrentTabByIndex(position)
-                    appLinkTabPosition = position
                 }
 
                 override fun onPageScrollStateChanged(state: Int) {
@@ -406,13 +405,6 @@ class FeedBaseFragment :
         }
     }
 
-    private fun observeCurrentTabPosition() {
-        feedMainViewModel.currentTabIndex.observe(viewLifecycleOwner) {
-            binding.vpFeedTabItemsContainer.setCurrentItem(it, true)
-            onChangeTab(it)
-        }
-    }
-
     private fun observeEvent() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
@@ -425,6 +417,9 @@ class FeedBaseFragment :
                         }
                         FeedMainEvent.ShowSwipeOnboarding -> {
                             showSwipeOnboarding()
+                        }
+                        is FeedMainEvent.SelectTab -> {
+                            handleActiveTab(event.data, event.position)
                         }
                         else -> {}
                     }
@@ -522,17 +517,17 @@ class FeedBaseFragment :
         }
 
         binding.btnFeedCreatePost.setOnClickListener {
-            feedNavigationAnalytics.eventClickCreationButton(feedMainViewModel.getCurrentTabType())
+            feedNavigationAnalytics.eventClickCreationButton()
             onCreatePostClicked()
         }
 
         binding.btnFeedLive.setOnClickListener {
-            feedNavigationAnalytics.eventClickLiveButton(feedMainViewModel.getCurrentTabType())
+            feedNavigationAnalytics.eventClickLiveButton()
             openAppLink.launch(meta.liveApplink)
         }
 
         binding.feedUserProfileImage.setOnClickListener {
-            feedNavigationAnalytics.eventClickProfileButton(feedMainViewModel.getCurrentTabType())
+            feedNavigationAnalytics.eventClickProfileButton()
             if (feedMainViewModel.isLoggedIn) {
                 openAppLink.launch(meta.profileApplink)
             } else {
@@ -555,7 +550,8 @@ class FeedBaseFragment :
         }
     }
 
-    private fun initTabsView(data: List<FeedDataModel>) {
+    private fun initTabsView(tab: FeedTabModel) {
+        val data = tab.data
         adapter.setTabsList(data)
 
         var firstTabData: FeedDataModel? = null
@@ -572,7 +568,7 @@ class FeedBaseFragment :
             binding.tyFeedFirstTab.text = firstTabData.title
             binding.tyFeedFirstTab.setOnClickListener {
                 feedNavigationAnalytics.eventClickForYouTab()
-                feedMainViewModel.changeCurrentTabByIndex(TAB_FIRST_INDEX)
+                selectActiveTab(TAB_FIRST_INDEX)
             }
             binding.tyFeedFirstTab.show()
         } else {
@@ -583,14 +579,31 @@ class FeedBaseFragment :
             binding.tyFeedSecondTab.text = secondTabData.title
             binding.tyFeedSecondTab.setOnClickListener {
                 feedNavigationAnalytics.eventClickFollowingTab()
-                feedMainViewModel.changeCurrentTabByIndex(TAB_SECOND_INDEX)
+                selectActiveTab(TAB_SECOND_INDEX)
             }
             binding.tyFeedSecondTab.show()
         } else {
             binding.tyFeedSecondTab.hide()
         }
 
-        scrollToDefaultTabPosition()
+        setupActiveTab(tab)
+    }
+
+    private fun setupActiveTab(tab: FeedTabModel) {
+        val source = tab.activeTabSource
+        when {
+            source.tabName != null -> {
+                feedMainViewModel.setActiveTab(source.tabName)
+            }
+            source.index > -1 && source.index < tab.data.size -> {
+                selectActiveTab(source.index)
+            }
+            else -> selectActiveTab(0)
+        }
+    }
+
+    private fun selectActiveTab(position: Int) {
+        feedMainViewModel.setActiveTab(position)
     }
 
     private fun showOnboarding(meta: MetaModel) {
@@ -635,18 +648,6 @@ class FeedBaseFragment :
                 }).build()
 
             mOnboarding?.show()
-        }
-    }
-
-    private fun scrollToDefaultTabPosition() {
-        feedMainViewModel.changeCurrentTabByIndex(appLinkTabPosition)
-    }
-
-    private fun onChangeTab(position: Int) {
-        if (position == TAB_FIRST_INDEX) {
-            binding.root.transitionToStart()
-        } else {
-            binding.root.transitionToEnd()
         }
     }
 
@@ -695,6 +696,24 @@ class FeedBaseFragment :
         activity?.intent?.getStringExtra(ApplinkConstInternalContent.UF_EXTRA_FEED_ENTRY_POINT)
     } else {
         FeedAnalytics.ENTRY_POINT_SHARE_LINK
+    }
+
+    /**
+     * to select tab position,
+     * please use:
+     * - selectActiveTab(position); or
+     * - viewModel.setActiveTab(position);
+     * - viewModel.setActiveTab(type);
+     */
+    private fun handleActiveTab(dataModel: FeedDataModel, position: Int) {
+        // keep active tab updated whenever sending tracker
+        feedNavigationAnalytics.setActiveTab(dataModel)
+        binding.vpFeedTabItemsContainer.setCurrentItem(position, true)
+        if (position == TAB_FIRST_INDEX) {
+            binding.root.transitionToStart()
+        } else {
+            binding.root.transitionToEnd()
+        }
     }
 
     private fun showLoading() {

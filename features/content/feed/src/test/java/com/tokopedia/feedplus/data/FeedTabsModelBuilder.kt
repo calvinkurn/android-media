@@ -1,9 +1,11 @@
 package com.tokopedia.feedplus.data
 
+import com.tokopedia.feedplus.presentation.model.ActiveTabSource
 import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
 import com.tokopedia.feedplus.presentation.model.CreateContentType
 import com.tokopedia.feedplus.presentation.model.CreatorType
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
+import com.tokopedia.feedplus.presentation.model.FeedTabModel
 import com.tokopedia.feedplus.presentation.model.FeedTabsModel
 import com.tokopedia.feedplus.presentation.model.MetaModel
 
@@ -17,13 +19,12 @@ class FeedTabsModelBuilder {
         data: List<FeedDataModel> = emptyList()
     ) = FeedTabsModel(
         meta = meta,
-        data = data
+        tab = FeedTabModel(data, ActiveTabSource(null, 0))
     )
 
     fun buildDefaultMetaModel(
         eligibleCreationEntryPoints: List<ContentCreationTypeItem> = emptyList()
     ) = MetaModel(
-        selectedIndex = 0,
         profileApplink = "",
         profilePhotoUrl = "",
         showMyProfile = false,
