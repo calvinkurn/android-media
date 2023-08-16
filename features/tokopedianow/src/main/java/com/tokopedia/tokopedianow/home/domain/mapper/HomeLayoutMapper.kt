@@ -41,6 +41,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowBundleUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper
 import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
@@ -176,15 +177,14 @@ object HomeLayoutMapper {
         response: List<HomeLayoutResponse>,
         removeAbleWidgets: List<HomeRemoveAbleWidget>,
         miniCartData: MiniCartSimplifiedData?,
-        addressData: TokoNowLocalAddress,
+        localCacheModel: LocalCacheModel,
         isLoggedIn: Boolean,
         hasBlockedAddToCart: Boolean,
         tickerList: List<TickerData>,
         enableNewRepurchase: Boolean
     ) {
         val headerUiModel = findHeaderUiModel()
-        val warehouses = addressData.getWarehousesData()
-        val localCacheModel = addressData.getAddressData()
+        val warehouses = AddressMapper.mapToWarehousesData(localCacheModel)
 
         clearHomeLayoutItemList()
         addHeader(headerUiModel, warehouses)
