@@ -823,6 +823,7 @@ class CheckoutLogisticProcessor @Inject constructor(
             courierItemData.etaText = it.etaData.textEta
             courierItemData.etaErrorCode = it.etaData.errorCode
             courierItemData.freeShippingChosenCourierTitle = it.freeShippingChosenCourierTitle
+            courierItemData.freeShippingChosenImage = it.imageChosenFreeShipping
             courierItemData.freeShippingMetadata = it.freeShippingMetadata
             courierItemData.benefitClass = it.benefitClass
             courierItemData.shippingSubsidy = it.shippingSubsidy
@@ -1371,6 +1372,7 @@ class CheckoutLogisticProcessor @Inject constructor(
             courierItemData.etaText = it.etaData.textEta
             courierItemData.etaErrorCode = it.etaData.errorCode
             courierItemData.freeShippingChosenCourierTitle = it.freeShippingChosenCourierTitle
+            courierItemData.freeShippingChosenImage = it.imageChosenFreeShipping
             courierItemData.freeShippingMetadata = it.freeShippingMetadata
             courierItemData.benefitClass = it.benefitClass
             courierItemData.shippingSubsidy = it.shippingSubsidy
@@ -1610,6 +1612,7 @@ class CheckoutLogisticProcessor @Inject constructor(
             etaText = logisticPromoUiModel.etaData.textEta
             etaErrorCode = logisticPromoUiModel.etaData.errorCode
             freeShippingChosenCourierTitle = logisticPromoUiModel.freeShippingChosenCourierTitle
+            freeShippingChosenImage = logisticPromoUiModel.imageChosenFreeShipping
             freeShippingMetadata = logisticPromoUiModel.freeShippingMetadata
             benefitClass = logisticPromoUiModel.benefitClass
             shippingSubsidy = logisticPromoUiModel.shippingSubsidy

@@ -224,6 +224,7 @@ class CheckoutOrderViewHolder(
                         // Bebas ongkir & NOW Shipment
                         hideShipperName = courierItemData.isHideShipperName,
                         freeShippingTitle = courierItemData.freeShippingChosenCourierTitle,
+                        freeShippingLogo = courierItemData.freeShippingChosenImage,
                         // Now Shipment
                         // label
                         logPromoDesc = "",

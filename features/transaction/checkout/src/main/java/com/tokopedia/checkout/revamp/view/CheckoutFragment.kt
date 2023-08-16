@@ -1631,9 +1631,9 @@ class CheckoutFragment :
                             promoCode
                         )
                     ) {
-                        if (shipmentCartItemModel.voucherLogisticItemUiModel != null) {
+                        if (shipmentCartItemModel.shipment.courierItemData?.selectedShipper?.logPromoCode != null) {
                             // remove previous logistic promo code
-                            order.codes.remove(shipmentCartItemModel.voucherLogisticItemUiModel!!.code)
+                            order.codes.remove(shipmentCartItemModel.shipment.courierItemData.selectedShipper.logPromoCode)
                         }
                         order.codes.add(promoCode)
                         order.boCode = promoCode
@@ -1645,10 +1645,10 @@ class CheckoutFragment :
             if (shipmentCartItemModelLists.isNotEmpty() && !shipmentCartItemModel.isFreeShippingPlus) {
                 for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
                     for (order in validateUsePromoRequest.orders) {
-                        if (shipmentCartItemModel.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == order.cartStringGroup && tmpShipmentCartItemModel.voucherLogisticItemUiModel != null &&
+                        if (shipmentCartItemModel.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == order.cartStringGroup && tmpShipmentCartItemModel.shipment.courierItemData?.selectedShipper?.logPromoCode != null &&
                             !tmpShipmentCartItemModel.isFreeShippingPlus
                         ) {
-                            order.codes.remove(tmpShipmentCartItemModel.voucherLogisticItemUiModel!!.code)
+                            order.codes.remove(tmpShipmentCartItemModel.shipment.courierItemData.selectedShipper.logPromoCode)
                             order.boCode = ""
                         }
                     }

@@ -826,8 +826,10 @@ class CheckoutPromoProcessor @Inject constructor(
 
     private fun getBBOCount(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel): Int {
         var bboCount = 0
+        val cartStrings: MutableSet<String> = mutableSetOf()
         for (voucherOrder in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
-            if (voucherOrder.type.equals("logistic", ignoreCase = true)) {
+            if (voucherOrder.type.equals("logistic", ignoreCase = true) && !cartStrings.contains(voucherOrder.cartStringGroup)) {
+                cartStrings.add(voucherOrder.cartStringGroup)
                 bboCount++
             }
         }
@@ -1084,7 +1086,7 @@ class CheckoutPromoProcessor @Inject constructor(
         // this should be a rare case
         for ((index, shipmentCartItemModel) in checkoutItems.withIndex()) {
             if (shipmentCartItemModel is CheckoutOrderModel) {
-                val code = shipmentCartItemModel.voucherLogisticItemUiModel?.code
+                val code = shipmentCartItemModel.shipment.courierItemData?.selectedShipper?.logPromoCode
                 if (!code.isNullOrEmpty() && !updatedCartStringGroup.contains(shipmentCartItemModel.cartStringGroup)) {
                     newCheckoutItems[index] = shipmentCartItemModel.copy(
                         shipment = shipmentCartItemModel.shipment.copy(

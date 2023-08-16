@@ -1468,9 +1468,9 @@ class CheckoutViewModel @Inject constructor(
                                 newCourierItemData.selectedShipper.logPromoCode
                             )
                         ) {
-                            if (order.voucherLogisticItemUiModel != null) {
+                            if (order.shipment.courierItemData?.selectedShipper?.logPromoCode != null) {
                                 // remove previous logistic promo code
-                                orderPromo.codes.remove(order.voucherLogisticItemUiModel!!.code)
+                                orderPromo.codes.remove(order.shipment.courierItemData.selectedShipper.logPromoCode)
                             }
                             orderPromo.codes.add(selectedShipper.logPromoCode!!)
                             orderPromo.boCode = selectedShipper.logPromoCode!!
@@ -1482,10 +1482,10 @@ class CheckoutViewModel @Inject constructor(
                 if (shipmentCartItemModelLists.isNotEmpty()) {
                     for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
                         for (orderPromo in validateUsePromoRequest.orders) {
-                            if (order.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == orderPromo.cartStringGroup && tmpShipmentCartItemModel.voucherLogisticItemUiModel != null &&
+                            if (order.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == orderPromo.cartStringGroup && tmpShipmentCartItemModel.shipment.courierItemData?.selectedShipper?.logPromoCode != null &&
                                 !tmpShipmentCartItemModel.isFreeShippingPlus
                             ) {
-                                orderPromo.codes.remove(tmpShipmentCartItemModel.voucherLogisticItemUiModel!!.code)
+                                orderPromo.codes.remove(tmpShipmentCartItemModel.shipment.courierItemData.selectedShipper.logPromoCode)
                                 orderPromo.boCode = ""
                             }
                         }
@@ -1955,7 +1955,7 @@ class CheckoutViewModel @Inject constructor(
             for (voucherOrdersItemUiModel in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
                 // voucher with shippingId not zero, spId not zero, and voucher type logistic as promo for BO
                 if (voucherOrdersItemUiModel.shippingId > 0 && voucherOrdersItemUiModel.spId > 0 && voucherOrdersItemUiModel.type == "logistic") {
-                    if (voucherOrdersItemUiModel.messageUiModel.state == "green") {
+                    if (voucherOrdersItemUiModel.messageUiModel.state == "green" && unprocessedUniqueIds.contains(voucherOrdersItemUiModel.cartStringGroup)) {
                         toBeAppliedVoucherOrders.add(voucherOrdersItemUiModel)
                         unprocessedUniqueIds.remove(voucherOrdersItemUiModel.cartStringGroup)
                     }
@@ -1974,183 +1974,16 @@ class CheckoutViewModel @Inject constructor(
             listData.value = list
             checkoutItems = list
 
-            var firstScrollIndex = -1
-            for ((index, shipmentCartItemModel) in checkoutItems.withIndex()) {
-                if (shipmentCartItemModel is CheckoutOrderModel) {
-                    val logPromoCode = shipmentCartItemModel.shipment.courierItemData?.logPromoCode
-                    if (!logPromoCode.isNullOrEmpty() &&
-                        unprocessedUniqueIds.contains(shipmentCartItemModel.cartStringGroup)
-                    ) {
-                        promoProcessor.clearPromo(
-                            ClearPromoOrder(
-                                shipmentCartItemModel.boUniqueId,
-                                shipmentCartItemModel.boMetadata.boType,
-                                arrayListOf(logPromoCode),
-                                shipmentCartItemModel.shopId,
-                                shipmentCartItemModel.isProductIsPreorder,
-                                shipmentCartItemModel.preOrderDurationDay.toString(),
-                                shipmentCartItemModel.fulfillmentId,
-                                shipmentCartItemModel.cartStringGroup
-                            )
-                        )
-                        // reset shipment
-                        checkoutItems[index] =
-                            shipmentCartItemModel.copy(
-                                shipment = CheckoutOrderShipment(),
-                                isTriggerShippingVibrationAnimation = true,
-                                isStateAllItemViewExpanded = false,
-                                isShippingBorderRed = true
-                            )
-                        unappliedBoPromoUniqueIds.add(shipmentCartItemModel.cartStringGroup)
-                        reloadedUniqueIds.add(shipmentCartItemModel.cartStringGroup)
-                        if (firstScrollIndex == -1) {
-                            firstScrollIndex = index
-                        }
-                    }
-                }
-            }
-            if (validateUsePromoRevampUiModel.promoUiModel.additionalInfoUiModel.errorDetailUiModel.message.isNotEmpty()) {
-                commonToaster.emit(
-                    CheckoutPageToaster(
-                        Toaster.TYPE_NORMAL,
-                        validateUsePromoRevampUiModel.promoUiModel.additionalInfoUiModel.errorDetailUiModel.message
-                    )
-                )
-            } else if (unappliedBoPromoUniqueIds.size > 0) {
-                // when messageInfo is empty and has unapplied BO show hard coded toast
-                commonToaster.emit(
-                    CheckoutPageToaster(
-                        Toaster.TYPE_NORMAL,
-                        "Pengiriman disesuaikan karena ada perubahan di promo yang kamu pilih."
-                    )
-                )
-            }
-            for (voucher in toBeAppliedVoucherOrders) {
-                val cartPosition =
-                    checkoutItems.indexOfFirst { it is CheckoutOrderModel && it.cartStringGroup == voucher.cartStringGroup }
-                val order = checkoutItems[cartPosition] as CheckoutOrderModel
-                if (voucher.code == order.shipment.courierItemData?.logPromoCode) {
-                    continue
-                }
-                val result = logisticProcessor.getRatesWithBoCode(
-                    logisticProcessor.getRatesParam(
-                        order,
-                        helper.getOrderProducts(checkoutItems, order.cartStringGroup),
-                        checkoutItems.address()!!.recipientAddressModel,
-                        isTradeIn,
-                        isTradeInByDropOff,
-                        codData,
-                        cartDataForRates,
-                        "",
-                        false,
-                        checkoutItems.promo()!!
-                    ),
-                    order.shopShipmentList,
-                    voucher.shippingId,
-                    voucher.spId,
-                    order,
-                    isTradeInByDropOff,
-                    voucher.code,
-                    isOneClickShipment,
-                    isTradeIn
-                )
-                if (result?.first != null) {
-                    val courierItemData = result.first
-                    val shouldValidatePromo =
-                        !result.first.selectedShipper.logPromoCode.isNullOrEmpty()
-                    if (shouldValidatePromo) {
-                        val validateUsePromoRequest = generateValidateUsePromoRequest(checkoutItems)
-                        for (ordersItem in validateUsePromoRequest.orders) {
-                            if (ordersItem.cartStringGroup == order.cartStringGroup) {
-                                if (!ordersItem.codes.contains(
-                                        courierItemData.selectedShipper.logPromoCode
-                                    )
-                                ) {
-                                    ordersItem.codes.add(
-                                        courierItemData.selectedShipper.logPromoCode!!
-                                    )
-                                    ordersItem.boCode =
-                                        courierItemData.selectedShipper.logPromoCode!!
-                                }
-                                ordersItem.shippingId =
-                                    courierItemData.selectedShipper.shipperId
-                                ordersItem.spId =
-                                    courierItemData.selectedShipper.shipperProductId
-                                ordersItem.freeShippingMetadata =
-                                    courierItemData.selectedShipper.freeShippingMetadata
-                                ordersItem.boCampaignId =
-                                    courierItemData.selectedShipper.boCampaignId
-                                ordersItem.shippingSubsidy =
-                                    courierItemData.selectedShipper.shippingSubsidy
-                                ordersItem.benefitClass =
-                                    courierItemData.selectedShipper.benefitClass
-                                ordersItem.shippingPrice =
-                                    courierItemData.selectedShipper.shippingRate.toDouble()
-                                ordersItem.etaText =
-                                    courierItemData.selectedShipper.etaText!!
-                                ordersItem.validationMetadata =
-                                    order.validationMetadata
-                            }
-                        }
-                        removeInvalidBoCodeFromPromoRequest(
-                            order,
-                            checkoutItems,
-                            validateUsePromoRequest
-                        )
-                        checkoutItems = promoProcessor.validateUseLogisticPromo(
-                            validateUsePromoRequest,
-                            order.cartStringGroup,
-                            result.first.logPromoCode!!,
-                            checkoutItems,
-                            courierItemData,
-                            isOneClickShipment,
-                            isTradeIn,
-                            isTradeInByDropOff
-                        ).toMutableList()
-                    }
-                } else {
-                    promoProcessor.clearPromo(
-                        ClearPromoOrder(
-                            order.boUniqueId,
-                            order.boMetadata.boType,
-                            arrayListOf(voucher.code),
-                            order.shopId,
-                            order.isProductIsPreorder,
-                            order.preOrderDurationDay.toString(),
-                            order.fulfillmentId,
-                            order.cartStringGroup
-                        )
-                    )
-                    val newOrderModel = order.copy(
-                        shipment = order.shipment.copy(
-                            isLoading = false,
-                            courierItemData = result?.first,
-                            shippingCourierUiModels = result?.third ?: emptyList(),
-                            insurance = result?.second?.let {
-                                CheckoutOrderInsurance(
-                                    when (result.second.insuranceType) {
-                                        InsuranceConstant.INSURANCE_TYPE_MUST -> {
-                                            true
-                                        }
+            val resultClear =
+                doValidateBoClearUnapplied(checkoutItems, unprocessedUniqueIds, unappliedBoPromoUniqueIds, reloadedUniqueIds)
+            val firstScrollIndex = resultClear.first
+            checkoutItems = resultClear.second
 
-                                        InsuranceConstant.INSURANCE_TYPE_NO -> {
-                                            false
-                                        }
+            doValidateBoToaster(validateUsePromoRevampUiModel, unappliedBoPromoUniqueIds)
 
-                                        InsuranceConstant.INSURANCE_TYPE_OPTIONAL -> {
-                                            result.second.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_YES
-                                        }
-
-                                        else -> false
-                                    }
-                                )
-                            } ?: CheckoutOrderInsurance()
-                        )
-                    )
-                    checkoutItems[cartPosition] = newOrderModel
-                }
-            }
+            checkoutItems = doValidateBoApply(toBeAppliedVoucherOrders, checkoutItems)
             listData.value = checkoutItems
+
             if (firstScrollIndex != -1) {
                 pageState.value = CheckoutPageState.ScrollTo(firstScrollIndex)
             }
@@ -2163,6 +1996,205 @@ class CheckoutViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    private suspend fun doValidateBoApply(
+        toBeAppliedVoucherOrders: MutableList<PromoCheckoutVoucherOrdersItemUiModel>,
+        listData: MutableList<CheckoutItem>
+    ): MutableList<CheckoutItem> {
+        var checkoutItems = listData
+        for (voucher in toBeAppliedVoucherOrders) {
+            val cartPosition =
+                checkoutItems.indexOfFirst { it is CheckoutOrderModel && it.cartStringGroup == voucher.cartStringGroup }
+            val order = checkoutItems[cartPosition] as CheckoutOrderModel
+            if (voucher.code == order.shipment.courierItemData?.logPromoCode) {
+                continue
+            }
+            val result = logisticProcessor.getRatesWithBoCode(
+                logisticProcessor.getRatesParam(
+                    order,
+                    helper.getOrderProducts(checkoutItems, order.cartStringGroup),
+                    checkoutItems.address()!!.recipientAddressModel,
+                    isTradeIn,
+                    isTradeInByDropOff,
+                    codData,
+                    cartDataForRates,
+                    "",
+                    false,
+                    checkoutItems.promo()!!
+                ),
+                order.shopShipmentList,
+                voucher.shippingId,
+                voucher.spId,
+                order,
+                isTradeInByDropOff,
+                voucher.code,
+                isOneClickShipment,
+                isTradeIn
+            )
+            if (result?.first != null) {
+                val courierItemData = result.first
+                val shouldValidatePromo =
+                    !result.first.selectedShipper.logPromoCode.isNullOrEmpty()
+                if (shouldValidatePromo) {
+                    val validateUsePromoRequest = generateValidateUsePromoRequest(checkoutItems)
+                    for (ordersItem in validateUsePromoRequest.orders) {
+                        if (ordersItem.cartStringGroup == order.cartStringGroup) {
+                            if (!ordersItem.codes.contains(
+                                    courierItemData.selectedShipper.logPromoCode
+                                )
+                            ) {
+                                ordersItem.codes.add(
+                                    courierItemData.selectedShipper.logPromoCode!!
+                                )
+                                ordersItem.boCode =
+                                    courierItemData.selectedShipper.logPromoCode!!
+                            }
+                            ordersItem.shippingId =
+                                courierItemData.selectedShipper.shipperId
+                            ordersItem.spId =
+                                courierItemData.selectedShipper.shipperProductId
+                            ordersItem.freeShippingMetadata =
+                                courierItemData.selectedShipper.freeShippingMetadata
+                            ordersItem.boCampaignId =
+                                courierItemData.selectedShipper.boCampaignId
+                            ordersItem.shippingSubsidy =
+                                courierItemData.selectedShipper.shippingSubsidy
+                            ordersItem.benefitClass =
+                                courierItemData.selectedShipper.benefitClass
+                            ordersItem.shippingPrice =
+                                courierItemData.selectedShipper.shippingRate.toDouble()
+                            ordersItem.etaText =
+                                courierItemData.selectedShipper.etaText!!
+                            ordersItem.validationMetadata =
+                                order.validationMetadata
+                        }
+                    }
+                    removeInvalidBoCodeFromPromoRequest(
+                        order,
+                        checkoutItems,
+                        validateUsePromoRequest
+                    )
+                    checkoutItems = promoProcessor.validateUseLogisticPromo(
+                        validateUsePromoRequest,
+                        order.cartStringGroup,
+                        result.first.logPromoCode!!,
+                        checkoutItems,
+                        courierItemData,
+                        isOneClickShipment,
+                        isTradeIn,
+                        isTradeInByDropOff
+                    ).toMutableList()
+                }
+            } else {
+                promoProcessor.clearPromo(
+                    ClearPromoOrder(
+                        order.boUniqueId,
+                        order.boMetadata.boType,
+                        arrayListOf(voucher.code),
+                        order.shopId,
+                        order.isProductIsPreorder,
+                        order.preOrderDurationDay.toString(),
+                        order.fulfillmentId,
+                        order.cartStringGroup
+                    )
+                )
+                val newOrderModel = order.copy(
+                    shipment = order.shipment.copy(
+                        isLoading = false,
+                        courierItemData = result?.first,
+                        shippingCourierUiModels = result?.third ?: emptyList(),
+                        insurance = result?.second?.let {
+                            CheckoutOrderInsurance(
+                                when (result.second.insuranceType) {
+                                    InsuranceConstant.INSURANCE_TYPE_MUST -> {
+                                        true
+                                    }
+
+                                    InsuranceConstant.INSURANCE_TYPE_NO -> {
+                                        false
+                                    }
+
+                                    InsuranceConstant.INSURANCE_TYPE_OPTIONAL -> {
+                                        result.second.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_YES
+                                    }
+
+                                    else -> false
+                                }
+                            )
+                        } ?: CheckoutOrderInsurance()
+                    )
+                )
+                checkoutItems[cartPosition] = newOrderModel
+            }
+        }
+        return checkoutItems
+    }
+
+    private suspend fun doValidateBoToaster(
+        validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel,
+        unappliedBoPromoUniqueIds: ArrayList<String>
+    ) {
+        if (validateUsePromoRevampUiModel.promoUiModel.additionalInfoUiModel.errorDetailUiModel.message.isNotEmpty()) {
+            commonToaster.emit(
+                CheckoutPageToaster(
+                    Toaster.TYPE_NORMAL,
+                    validateUsePromoRevampUiModel.promoUiModel.additionalInfoUiModel.errorDetailUiModel.message
+                )
+            )
+        } else if (unappliedBoPromoUniqueIds.size > 0) {
+            // when messageInfo is empty and has unapplied BO show hard coded toast
+            commonToaster.emit(
+                CheckoutPageToaster(
+                    Toaster.TYPE_NORMAL,
+                    "Pengiriman disesuaikan karena ada perubahan di promo yang kamu pilih."
+                )
+            )
+        }
+    }
+
+    private suspend fun doValidateBoClearUnapplied(
+        checkoutItems: MutableList<CheckoutItem>,
+        unprocessedUniqueIds: ArrayList<String>,
+        unappliedBoPromoUniqueIds: ArrayList<String>,
+        reloadedUniqueIds: ArrayList<String>
+    ): Pair<Int, MutableList<CheckoutItem>> {
+        var firstScrollIndex = -1
+        for ((index, shipmentCartItemModel) in checkoutItems.withIndex()) {
+            if (shipmentCartItemModel is CheckoutOrderModel) {
+                val logPromoCode = shipmentCartItemModel.shipment.courierItemData?.logPromoCode
+                if (!logPromoCode.isNullOrEmpty() &&
+                    unprocessedUniqueIds.contains(shipmentCartItemModel.cartStringGroup)
+                ) {
+                    promoProcessor.clearPromo(
+                        ClearPromoOrder(
+                            shipmentCartItemModel.boUniqueId,
+                            shipmentCartItemModel.boMetadata.boType,
+                            arrayListOf(logPromoCode),
+                            shipmentCartItemModel.shopId,
+                            shipmentCartItemModel.isProductIsPreorder,
+                            shipmentCartItemModel.preOrderDurationDay.toString(),
+                            shipmentCartItemModel.fulfillmentId,
+                            shipmentCartItemModel.cartStringGroup
+                        )
+                    )
+                    // reset shipment
+                    checkoutItems[index] =
+                        shipmentCartItemModel.copy(
+                            shipment = CheckoutOrderShipment(),
+                            isTriggerShippingVibrationAnimation = true,
+                            isStateAllItemViewExpanded = false,
+                            isShippingBorderRed = true
+                        )
+                    unappliedBoPromoUniqueIds.add(shipmentCartItemModel.cartStringGroup)
+                    reloadedUniqueIds.add(shipmentCartItemModel.cartStringGroup)
+                    if (firstScrollIndex == -1) {
+                        firstScrollIndex = index
+                    }
+                }
+            }
+        }
+        return firstScrollIndex to checkoutItems
     }
 
     private suspend fun hitClearAllBo() {

@@ -278,6 +278,7 @@ class CheckoutProcessor @Inject constructor(
     private fun setCheckoutRequestPromoData(data: List<Data>, validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel) {
         for (dataCheckoutRequest in data) {
             for (groupOrder in dataCheckoutRequest.groupOrders) {
+                var hasInsertLogisticPromoInGroupOrder = false
                 for (shopOrder in groupOrder.shopOrders) {
                     // reset promo to prevent duplicate bo promo in owoc order
                     shopOrder.promos = emptyList()
@@ -285,6 +286,12 @@ class CheckoutProcessor @Inject constructor(
                         if (groupOrder.cartStringGroup == voucherOrder.cartStringGroup && shopOrder.cartStringOrder == voucherOrder.uniqueId) {
                             if (voucherOrder.code.isNotEmpty() && voucherOrder.type.isNotEmpty()) {
                                 if (!hasInsertPromo(shopOrder.promos, voucherOrder.code)) {
+                                    if (voucherOrder.isTypeLogistic() && hasInsertLogisticPromoInGroupOrder) {
+                                        continue
+                                    }
+                                    if (voucherOrder.isTypeLogistic()) {
+                                        hasInsertLogisticPromoInGroupOrder = true
+                                    }
                                     val promoRequest = Promo()
                                     promoRequest.code = voucherOrder.code
                                     promoRequest.type = voucherOrder.type

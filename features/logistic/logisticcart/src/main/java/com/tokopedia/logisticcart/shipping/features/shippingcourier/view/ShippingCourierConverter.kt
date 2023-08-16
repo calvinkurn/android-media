@@ -243,6 +243,7 @@ class ShippingCourierConverter @Inject constructor() {
         courierData.etaText = data.etaData.textEta
         courierData.etaErrorCode = data.etaData.errorCode
         courierData.freeShippingChosenCourierTitle = data.freeShippingChosenCourierTitle
+        courierData.freeShippingChosenImage = data.imageChosenFreeShipping
         courierData.freeShippingMetadata = data.freeShippingMetadata
         courierData.benefitClass = data.benefitClass
         courierData.shippingSubsidy = data.shippingSubsidy

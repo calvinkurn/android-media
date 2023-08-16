@@ -84,11 +84,11 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
                 shippingInfoCheckoutRequest.finsurance = if (shipmentDetailData.insurance.isCheckInsurance) 1 else 0
                 val promoCodes = ArrayList<String>()
                 val promoRequests: ArrayList<Promo> = ArrayList()
-                val voucherLogisticItemUiModel = shipmentCartItemModel.voucherLogisticItemUiModel
+                val voucherLogisticItemUiModel = shipmentCartItemModel.shipment.courierItemData?.selectedShipper?.logPromoCode
                 if (voucherLogisticItemUiModel != null) {
-                    promoCodes.add(voucherLogisticItemUiModel.code)
+                    promoCodes.add(voucherLogisticItemUiModel)
                     val promoRequest = Promo()
-                    promoRequest.code = voucherLogisticItemUiModel.code
+                    promoRequest.code = voucherLogisticItemUiModel
                     promoRequest.type = Promo.TYPE_LOGISTIC
                     promoRequests.add(promoRequest)
                 }
