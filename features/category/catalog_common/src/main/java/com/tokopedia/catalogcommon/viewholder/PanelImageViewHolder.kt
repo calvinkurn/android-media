@@ -10,13 +10,12 @@ import com.tokopedia.catalogcommon.uimodel.PanelImageUiModel
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 
-class PanelImageViewHolder(itemView: View): AbstractViewHolder<PanelImageUiModel>(itemView) {
+class PanelImageViewHolder(itemView: View) : AbstractViewHolder<PanelImageUiModel>(itemView) {
 
     companion object {
 
         @LayoutRes
         val LAYOUT = R.layout.widget_catalog_panel_image
-
     }
 
     private val binding by viewBinding<WidgetCatalogPanelImageBinding>()
@@ -24,9 +23,8 @@ class PanelImageViewHolder(itemView: View): AbstractViewHolder<PanelImageUiModel
     override fun bind(element: PanelImageUiModel) {
         binding?.let {
             if (element.content.size > 1) {
-
                 // TODO: Put the validation here to check whether we should override the text color or not
-                // Call this function `overrideWidgetTheme` to override the widget's theme 
+                // Call this function `overrideWidgetTheme` to override the widget's theme
 
                 ImageHandler.loadImageRounded2(itemView.context, it.catalogPanelWidgetImage1, element.content[0].imageUrl, 8.toPx().toFloat())
                 ImageHandler.loadImageRounded2(itemView.context, it.catalogPanelWidgetImage1, element.content[1].imageUrl, 8.toPx().toFloat())
@@ -50,5 +48,4 @@ class PanelImageViewHolder(itemView: View): AbstractViewHolder<PanelImageUiModel
             it.catalogPanelWidgetTxtDescription2.setTextColor(fontColor)
         }
     }
-
 }
