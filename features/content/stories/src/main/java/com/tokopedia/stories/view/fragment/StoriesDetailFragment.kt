@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.stories.bottomsheet.StoriesThreeDotsBottomSheet
 import com.tokopedia.stories.databinding.FragmentStoriesDetailBinding
+import com.tokopedia.stories.uimodel.StoryAuthor
 import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.adapter.StoriesGroupAdapter
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
@@ -134,6 +135,11 @@ class StoriesDetailFragment @Inject constructor(
     private fun renderAuthor(state: StoriesDetailUiModel) = with(binding.vStoriesPartner) {
         tvPartnerName.text = state.author.name
         ivIcon.setImageUrl(state.author.thumbnailUrl)
+        btnFollow.setOnClickListener {
+            //TODO(): Follow
+        }
+        if (state.author is StoryAuthor.Shop)
+            ivBadge.setImageUrl(state.author.badgeUrl)
     }
 
 

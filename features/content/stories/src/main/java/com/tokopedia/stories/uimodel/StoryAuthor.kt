@@ -9,7 +9,7 @@ sealed class StoryAuthor {
     abstract val thumbnailUrl: String
     abstract val name: String
 
-    data class Shop(val shopName: String, val shopId: String, val avatarUrl: String) : //TODO : add badge url for shop
+    data class Shop(val shopName: String, val shopId: String, val avatarUrl: String, val badgeUrl: String) :
         StoryAuthor() {
         override val id: String
             get() = shopId
