@@ -2,7 +2,7 @@ package com.tokopedia.tokofood.feature.purchase.promopage.domain.param
 
 import com.google.gson.annotations.SerializedName
 
-data class PromoTokoFoodParamOld(
+data class MerchantPromoTokoFoodParam(
     @SerializedName("additional_attributes")
     val additionalAttributes: String = "",
     @SerializedName("source")

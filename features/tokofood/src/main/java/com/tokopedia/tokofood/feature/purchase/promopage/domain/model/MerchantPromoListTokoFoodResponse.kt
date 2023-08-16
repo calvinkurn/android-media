@@ -3,7 +3,7 @@ package com.tokopedia.tokofood.feature.purchase.promopage.domain.model
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 
-class PromoListTokoFoodResponseOld(
+class MerchantPromoListTokoFoodResponse(
     @SerializedName("promo_list_tokofood")
     val promoListTokoFood: PromoListTokoFood = PromoListTokoFood()
 )
@@ -25,18 +25,18 @@ class PromoListTokoFoodData(
     @SerializedName("change_restriction_message")
     val changeRestrictionMessage: String = "",
     @SerializedName("error_page")
-    val errorPage: PromoListTokoFoodErrorPageOld = PromoListTokoFoodErrorPageOld(),
+    val errorPage: MerchantPromoListTokoFoodErrorPage = MerchantPromoListTokoFoodErrorPage(),
     @SerializedName("empty_state")
-    val emptyState: PromoListTokoFoodEmptyStateOld = PromoListTokoFoodEmptyStateOld(),
+    val emptyState: MerchantPromoListTokoFoodEmptyState = MerchantPromoListTokoFoodEmptyState(),
     @SerializedName("available_section")
-    val availableSection: PromoListTokoFoodSectionOld = PromoListTokoFoodSectionOld(),
+    val availableSection: MerchantPromoListTokoFoodSection = MerchantPromoListTokoFoodSection(),
     @SerializedName("unavailable_section")
-    val unavailableSection: PromoListTokoFoodSectionOld = PromoListTokoFoodSectionOld(),
+    val unavailableSection: MerchantPromoListTokoFoodSection = MerchantPromoListTokoFoodSection(),
     @SerializedName("promo_summary")
-    val promoSummary: PromoListTokoFoodSummaryOld = PromoListTokoFoodSummaryOld()
+    val promoSummary: MerchantPromoListTokoFoodSummary = MerchantPromoListTokoFoodSummary()
 )
 
-data class PromoListTokoFoodErrorPageOld(
+data class MerchantPromoListTokoFoodErrorPage(
     @SerializedName("is_show_error_page")
     val isShowErrorPage: Boolean = false,
     @SerializedName("image")
@@ -46,10 +46,10 @@ data class PromoListTokoFoodErrorPageOld(
     @SerializedName("description")
     val description: String = "",
     @SerializedName("button")
-    val button: List<PromoListTokoFoodButtonOld> = listOf()
+    val button: List<MerchantPromoListTokoFoodButton> = listOf()
 )
 
-data class PromoListTokoFoodButtonOld(
+data class MerchantPromoListTokoFoodButton(
     @SerializedName("text")
     val text: String = "",
     @SerializedName("color")
@@ -65,7 +65,7 @@ data class PromoListTokoFoodButtonOld(
     }
 }
 
-data class PromoListTokoFoodEmptyStateOld(
+data class MerchantPromoListTokoFoodEmptyState(
     @SerializedName("title")
     val title: String = "",
     @SerializedName("description")
@@ -74,7 +74,7 @@ data class PromoListTokoFoodEmptyStateOld(
     val imageUrl: String = ""
 )
 
-data class PromoListTokoFoodSectionOld(
+data class MerchantPromoListTokoFoodSection(
     @SerializedName("title")
     val title: String = "",
     @SerializedName("sub_title")
@@ -84,10 +84,10 @@ data class PromoListTokoFoodSectionOld(
     @SerializedName("is_enabled")
     val isEnabled: Boolean = false,
     @SerializedName("sub_section")
-    val subSection: PromoListTokoFoodSubSectionOld = PromoListTokoFoodSubSectionOld()
+    val subSection: MerchantPromoListTokoFoodSubSection = MerchantPromoListTokoFoodSubSection()
 )
 
-data class PromoListTokoFoodSubSectionOld(
+data class MerchantPromoListTokoFoodSubSection(
     @SerializedName("title")
     val title: String = "",
     @SerializedName("icon_url")
@@ -97,10 +97,10 @@ data class PromoListTokoFoodSubSectionOld(
     @SerializedName("ticker_message")
     val tickerMessage: String = "",
     @SerializedName("coupons")
-    val coupons: List<PromoListTokoFoodCouponOld> = listOf()
+    val coupons: List<MerchantPromoListTokoFoodCoupon> = listOf()
 )
 
-data class PromoListTokoFoodCouponOld(
+data class MerchantPromoListTokoFoodCoupon(
     @SerializedName("title")
     val title: String = "",
     @SerializedName("expiry_info")
@@ -113,7 +113,7 @@ data class PromoListTokoFoodCouponOld(
     val additionalInformation: String = ""
 )
 
-data class PromoListTokoFoodSummaryOld(
+data class MerchantPromoListTokoFoodSummary(
     @SerializedName("title")
     val title: String = "",
     @SerializedName("total")
