@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/icShopGrade"
+            app:layout_constraintTop_toBottomOf="@id/tvShopName"
             android:textColor="@color/Unify_NN600"
             app:typographyType="small"
             tools:text="INV/20161025/XVI/X/55069657 "/>
