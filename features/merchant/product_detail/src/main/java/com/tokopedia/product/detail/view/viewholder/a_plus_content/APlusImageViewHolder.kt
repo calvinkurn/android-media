@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.viewholder.a_plus_content
 
 import android.view.View
+import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.iconunify.IconUnify
@@ -8,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.utils.extensions.validDimensionRatio
@@ -32,6 +34,11 @@ class APlusImageViewHolder(
         setupImage(element)
         setupToggle(element)
         setupImpressionListener(element)
+    }
+
+    override fun onViewRecycled() {
+        super.onViewRecycled()
+        resetImage()
     }
 
     private fun setupDivider(showTopDivider: Boolean) {
@@ -60,7 +67,9 @@ class APlusImageViewHolder(
             constraintSet.clone(binding.root)
             constraintSet.setDimensionRatio(binding.ivProductDetailAPlusImage.id, element.ratio)
             constraintSet.applyTo(binding.root)
-            binding.ivProductDetailAPlusImage.loadImage(element.url)
+            binding.ivProductDetailAPlusImage.loadImage(element.url) {
+                listener(onSuccess = { bitmap, _ -> if (bitmap != null) makeImageScaleToFit() })
+            }
             binding.ivProductDetailAPlusImage.show()
         } else {
             binding.ivProductDetailAPlusImage.gone()
@@ -106,5 +115,22 @@ class APlusImageViewHolder(
                 element.trackerData.copy(adapterPosition = bindingAdapterPosition)
             )
         }
+    }
+
+    private fun resetImage() {
+        makeImageCenterFit()
+        binding.ivProductDetailAPlusImage.clearImage()
+    }
+
+    // Used to make the image scale to fit the width and height
+    // Only call this when the image has successfully loaded
+    private fun makeImageScaleToFit() {
+        binding.ivProductDetailAPlusImage.scaleType = ImageView.ScaleType.FIT_XY
+    }
+
+    // Used to make the image scale to fit while keeping aspect ratio
+    // Call this when the view holder get recycled so that the image placeholder will not be stretched
+    private fun makeImageCenterFit() {
+        binding.ivProductDetailAPlusImage.scaleType = ImageView.ScaleType.FIT_CENTER
     }
 }
