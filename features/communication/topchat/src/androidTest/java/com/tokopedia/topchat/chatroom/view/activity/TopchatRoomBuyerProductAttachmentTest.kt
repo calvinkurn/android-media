@@ -38,6 +38,10 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRob
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot.clickProductAttachmentAt
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot.clickWishlistButtonAt
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductPreviewResult.verifyVariantLabel
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult.hasNoVisibleEmptyStockLabelAt
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult.hasNoVisibleRemindMeBtnAt
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult.hasProductName
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult.hasProductPrice
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
 import com.tokopedia.topchat.matchers.withTotalItem
 import org.hamcrest.CoreMatchers.not
@@ -430,6 +434,24 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
 
         // Then
         intended(hasData("tokopedia://product/2148833237?extParam=whid=341734&src=chat"))
+    }
+
+    @Test
+    fun should_not_show_label_empty_and_remind_button_when_product_is_archived() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentUseCase.productArchivedAttachment
+        launchChatRoomActivity()
+
+        // When
+        intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        doScrollChatToPosition(1)
+
+        // Then
+        hasProductName(1, "")
+        hasProductPrice(1, "")
+        hasNoVisibleEmptyStockLabelAt(1)
+        hasNoVisibleRemindMeBtnAt(1)
     }
 
     // TODO: assert attach product, stock info seller, and tokocabang is not displayed on buyer side

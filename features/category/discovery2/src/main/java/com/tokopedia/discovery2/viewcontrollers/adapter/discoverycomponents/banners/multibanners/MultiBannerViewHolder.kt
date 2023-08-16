@@ -132,6 +132,12 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
                     handleError()
                 }
             }
+
+            multiBannerViewModel.redirectedTab.observe(fragment.viewLifecycleOwner) { redirectedTabValue ->
+                if (!redirectedTabValue.isNullOrEmpty()) {
+                    (fragment as? DiscoveryFragment)?.redirectToOtherTab(redirectedTabValue)
+                }
+            }
         }
     }
 

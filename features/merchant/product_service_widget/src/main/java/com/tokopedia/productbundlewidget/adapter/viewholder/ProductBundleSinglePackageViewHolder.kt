@@ -29,14 +29,14 @@ class ProductBundleSinglePackageViewHolder(itemView: View): RecyclerView.ViewHol
                 background.setTint(
                     ContextCompat.getColor(
                         context,
-                        com.tokopedia.unifycomponents.R.color.Unify_GN50
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN50
                     )
                 )
                 background.setTintMode(PorterDuff.Mode.MULTIPLY)
             } else {
                 val textColor = ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifycomponents.R.color.Unify_NN950
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950
                 )
                 setTextColor(textColor)
             }

@@ -51,7 +51,11 @@ object PlayProductTagSocketResponse {
                     "is_pinned" : false,
                     "product_number" : 0,
                     "rating" : "",
-                    "sold_quantity" : ""
+                    "sold_quantity" : "",
+                    "social_proof_rank": "Diminati",
+                    "social_proof_tag_color": ["#E02954", "#FF7182"],
+                    "social_proof_raw_value": 1,
+                    "social_proof_type_value": "diminati"
               }
             """.trimIndent()
             if (i != size) productList += ","

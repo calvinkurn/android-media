@@ -15,7 +15,6 @@ object SomFilterUtil {
     fun getDefaultSortBy(orderStatusFilterKey: String): Long {
         return if (Utils.isEnableOperationalGuideline()) {
             if (orderStatusFilterKey in listOf(
-                    SomConsts.STATUS_ALL_ORDER,
                     SomConsts.STATUS_NEW_ORDER,
                     SomConsts.KEY_CONFIRM_SHIPPING
                 )

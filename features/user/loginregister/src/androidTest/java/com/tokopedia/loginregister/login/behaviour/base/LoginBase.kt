@@ -83,7 +83,7 @@ open class LoginBase : LoginRegisterBase() {
     }
 
     fun clickTopRegister() {
-        val viewInteraction = onView(withId(R.id.actionTextID)).check(matches(isDisplayed()))
+        val viewInteraction = onView(withId(com.tokopedia.header.R.id.actionTextID)).check(matches(isDisplayed()))
         viewInteraction.perform(click())
     }
 
