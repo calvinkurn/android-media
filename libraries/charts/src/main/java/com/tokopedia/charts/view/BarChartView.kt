@@ -18,6 +18,7 @@ import com.tokopedia.charts.databinding.ViewBarChartBinding
 import com.tokopedia.charts.model.AxisLabel
 import com.tokopedia.charts.model.BarChartConfigModel
 import com.tokopedia.charts.model.BarChartData
+import com.tokopedia.charts.model.StackedBarChartData
 import com.tokopedia.charts.renderer.EllipsizedXAxisRenderer
 import com.tokopedia.kotlin.extensions.view.orZero
 
@@ -82,6 +83,31 @@ class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
             }
             val dataSet = BarDataSet(barEntries, metric.title)
             dataSet.color = getColor(metric.barHexColor)
+            dataSet.highLightAlpha = config.highLightAlpha
+            dataSet.setDrawValues(config.isShowValueEnabled)
+
+            barDataSets.add(dataSet)
+        }
+
+        val barData = BarData(barDataSets.toList())
+        binding?.barChart?.data = barData
+
+        if (data.metrics.size > 1) {
+            showMultiBar(data)
+        }
+    }
+
+    fun setData(data: StackedBarChartData) {
+        setXAxisLabelFormatter(data.xAxisLabels)
+        setYAxisLabelFormatter()
+        val barDataSets = mutableListOf<BarDataSet>()
+
+        data.metrics.forEach { metric ->
+            val barEntries: List<BarEntry> = metric.values.mapIndexed { i, value ->
+                BarEntry(i.toFloat(), value.values.map { it.value.toFloat() }.toFloatArray(), value)
+            }
+            val dataSet = BarDataSet(barEntries, metric.title)
+            dataSet.colors = getColors()
             dataSet.highLightAlpha = config.highLightAlpha
             dataSet.setDrawValues(config.isShowValueEnabled)
 
@@ -163,7 +189,33 @@ class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
         return Color.parseColor(hexColor)
     }
 
+    private fun getColors(): List<Int> {
+        return listOf(
+            Color.parseColor("#4FE397"),
+            Color.parseColor("#00AA5B")
+        )
+    }
+
     private fun showMultiBar(data: BarChartData) {
+        val startValue = data.xAxisLabels.firstOrNull()?.value.orZero()
+        val groupCount = data.metrics.size
+
+        val groupSpace = 0.08f
+        val barSpace = 0.03f // x4 DataSet
+        val barWidth = 0.2f // 0.2f -> x4 DataSet
+        // (0.2 + 0.03) * 4 + 0.08 = 1.00 -> interval per "group"
+
+        // specify the width each bar should have
+        binding?.run {
+            barChart.barData.barWidth = barWidth
+            barChart.xAxis.axisMinimum = startValue
+            barChart.xAxis.axisMaximum =
+                startValue + barChart.barData.getGroupWidth(groupSpace, barSpace) * groupCount
+            barChart.groupBars(startValue, groupSpace, barSpace)
+        }
+    }
+
+    private fun showMultiBar(data: StackedBarChartData) {
         val startValue = data.xAxisLabels.firstOrNull()?.value.orZero()
         val groupCount = data.metrics.size
 

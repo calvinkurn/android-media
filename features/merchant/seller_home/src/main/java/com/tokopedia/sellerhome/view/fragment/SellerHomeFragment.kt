@@ -31,6 +31,12 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.charts.config.BarChartConfig
+import com.tokopedia.charts.model.AxisLabel
+import com.tokopedia.charts.model.BarChartMetricValue
+import com.tokopedia.charts.model.StackedBarChartData
+import com.tokopedia.charts.model.StackedBarChartMetric
+import com.tokopedia.charts.model.StackedBarChartMetricValue
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.empty_state.EmptyStateUnify
@@ -356,6 +362,45 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         observeWidgetDismissalStatus()
         observeShopStateInfo()
         showSellerHomeToaster()
+
+        binding?.testBarChart?.run {
+            init(
+                BarChartConfig.create {
+                    roundedBarEnabled { true }
+                }
+            )
+            setData(
+                StackedBarChartData(
+                    yAxis = listOf(
+                        AxisLabel(
+                            0.5f, "100"
+                        )
+                    ),
+                    xAxisLabels = listOf(
+                        AxisLabel(
+                            0.5f, "100"
+                        )
+                    ),
+                    metrics = listOf(
+                        StackedBarChartMetric(
+                            "test",
+                            values = listOf(
+                                StackedBarChartMetricValue(
+                                    listOf(
+                                        BarChartMetricValue(
+                                            100, "y", "x"
+                                        ),
+                                        BarChartMetricValue(
+                                            50, "y", "x"
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        }
 
         context?.let { UpdateShopActiveWorker.execute(it) }
     }
