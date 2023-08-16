@@ -298,9 +298,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         .filterNotNull()
         .map {
             PlayChannelUiState(
-                showPostVideoButton = if (remoteConfig.getBoolean(SHOW_LIVE_TO_VOD_BUTTON_KEY, false)) {
-                    it.showSaveButton
-                } else { false },
+                showPostVideoButton = it.showSaveButton && remoteConfig.getBoolean(SHOW_LIVE_TO_VOD_BUTTON_KEY, true),
                 streamAllowed = it.streamAllowed,
                 shortVideoAllowed = it.shortVideoAllowed,
                 hasContent = it.hasContent,
