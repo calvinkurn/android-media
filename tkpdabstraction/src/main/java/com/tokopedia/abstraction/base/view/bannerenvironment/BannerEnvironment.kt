@@ -54,8 +54,8 @@ class BannerEnvironment {
         if (liveStatus.isNotEmpty()) {
             decorView = activity.window.decorView as ViewGroup
             bannerEnvironmentView = BannerEnvironmentView(activity).apply {
-                updateText(liveStatus, R.color.Unify_NN0)
-                updateBannerColor(R.color.Unify_GN500)
+                updateText(liveStatus, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+                updateBannerColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                 bannerGravity = BannerEnvironmentGravity.END
             }
             val bannerSize = activity.resources.getDimension(R.dimen.banner_default_size_debug).toInt()
@@ -87,7 +87,7 @@ class BannerEnvironment {
         } else if (isBeta(context)) {
             "BETA"
         } else {
-            ""
+            "LIVE"
         }
     }
 }
