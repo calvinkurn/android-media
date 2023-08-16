@@ -48,7 +48,6 @@ class TokoNowLocalAddress @Inject constructor(@ApplicationContext private val co
     }
 
     fun isOutOfCoverage(): Boolean {
-        updateLocalDataIfAddressHasUpdated()
         return getWarehouseId() == OOC_WAREHOUSE_ID
     }
 
