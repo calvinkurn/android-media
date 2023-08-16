@@ -26,12 +26,7 @@ public class TrackingUtils{
     @Deprecated
     public static void eventCampaign(Context context, Campaign campaign) {
         if (!isValidCampaign(campaign.getCampaign())) return;
-
-        // V5
         TrackApp.getInstance().getGTM().sendCampaign(campaign.getCampaign());
-
-        // v4
-        TrackApp.getInstance().getGTM().pushEvent("campaignTrack", campaign.getCampaign());
         TrackApp.getInstance().getGTM().sendGeneralEvent(campaign.getNullCampaignMap());
     }
 

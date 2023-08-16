@@ -1135,7 +1135,13 @@ public class GTMAnalytics extends ContextAnalytics {
             bundle.putString("utmTerm", (String) param.get(AppEventTracking.GTM.UTM_TERM));
         }
 
-        pushEventV5("campaignTrack", wrapWithSessionIris(bundle), context);
+        bundle = wrapWithSessionIris(bundle);
+
+        //v5
+        pushEventV5("campaignTrack", bundle, context);
+
+        //v4
+        pushEvent("campaignTrack", bundleToMap(bundle));
     }
 
     public void pushGeneralGtmV5Internal(Map<String, Object> params) {
