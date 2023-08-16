@@ -1747,8 +1747,13 @@ class TokoNowHomeFragment :
                         }
 
                         override fun onSwitchToLightToolbar() {
-                            toolbar.setBackButtonColor(
-                                com.tokopedia.unifyprinciples.R.color.Unify_Static_Black)
+                            if(context.isDarkMode()) {
+                                toolbar.setBackButtonColor(
+                                    com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+                            } else {
+                                toolbar.setBackButtonColor(
+                                    com.tokopedia.unifyprinciples.R.color.Unify_Static_Black)
+                            }
                         }
 
                         override fun onSwitchToDarkToolbar() {
