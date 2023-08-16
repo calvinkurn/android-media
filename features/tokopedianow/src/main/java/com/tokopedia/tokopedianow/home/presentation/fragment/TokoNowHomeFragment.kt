@@ -1754,6 +1754,7 @@ class TokoNowHomeFragment :
                                 toolbar.setBackButtonColor(
                                     com.tokopedia.unifyprinciples.R.color.Unify_Static_Black)
                             }
+                            switchToLightToolbar()
                         }
 
                         override fun onSwitchToDarkToolbar() {
@@ -1765,6 +1766,7 @@ class TokoNowHomeFragment :
                                 toolbar.setBackButtonColor(
                                     com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
                             }
+                            switchToDarkToolbar()
                             navToolbar?.hideShadow()
                         }
 
@@ -1779,6 +1781,14 @@ class TokoNowHomeFragment :
         context?.let {
             setCustomBackButton(color = ContextCompat.getColor(it, color))
         }
+    }
+
+    private fun switchToDarkToolbar() {
+        (activity as? TokoNowHomeActivity)?.switchToDarkToolbar()
+    }
+
+    private fun switchToLightToolbar() {
+        (activity as? TokoNowHomeActivity)?.switchToLightToolbar()
     }
 
     private fun createHomeComponentScrollListener(): RecyclerView.OnScrollListener {
