@@ -43,8 +43,14 @@ class StoriesViewModel @Inject constructor(
         )
     }
 
-    val currentStoryId : String
+    val groupId : String
         get() = _storiesGroup.value.firstOrNull { story -> story.selected }?.id.orEmpty()
+
+    val storyId : String
+        get()  {
+            val currentGroup = _storiesGroup.value.firstOrNull { story -> story.selected }
+            return currentGroup?.details?.get(currentGroup.selectedDetail)?.id.orEmpty()
+        }
 
     init {
         val response = repository.getStoriesData()

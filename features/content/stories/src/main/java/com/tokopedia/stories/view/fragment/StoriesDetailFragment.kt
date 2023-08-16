@@ -25,6 +25,7 @@ import com.tokopedia.stories.view.components.indicator.StoriesDetailTimerEvent.N
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimerEvent.NEXT_GROUP
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
 import com.tokopedia.stories.view.model.StoriesGroupUiModel
+import com.tokopedia.stories.view.utils.STORIES_GROUP_ID
 import com.tokopedia.stories.view.utils.TouchEventStories
 import com.tokopedia.stories.view.utils.onTouchEventStories
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
@@ -59,6 +60,9 @@ class StoriesDetailFragment @Inject constructor(
     private val mLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
         LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
     }
+
+    private val groupId: String
+        get() = arguments?.getString(STORIES_GROUP_ID).orEmpty()
 
     override fun getScreenName(): String {
         return TAG
