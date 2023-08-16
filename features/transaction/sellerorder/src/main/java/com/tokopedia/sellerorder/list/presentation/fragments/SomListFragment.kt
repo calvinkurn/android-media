@@ -2859,7 +2859,9 @@ open class SomListFragment :
             val tabActiveFilter =
                 if (tabActive == SomConsts.STATUS_HISTORY || tabActive == STATUS_ALL_ORDER) String.EMPTY else tabActive
             viewModel.setTabActiveFromAppLink(tabActiveFilter)
-            viewModel.setFirstPageOpened(true)
+            if (tabActiveFilter.isBlank()) {
+                viewModel.setFirstPageOpened(true)
+            }
         } else {
             val tabActive = arguments?.getString(TAB_ACTIVE)
                 ?: if (GlobalConfig.isSellerApp()) SomConsts.STATUS_NEW_ORDER else STATUS_ALL_ORDER
