@@ -127,7 +127,7 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
         if (claimBtn.isEnabled) {
             claimBtn.isInverse = true
             claimBtn.buttonVariant = UnifyButton.Variant.GHOST
-            claimBtn.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            claimBtn.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
         } else {
             claimBtn.isInverse = false
             claimBtn.buttonVariant = UnifyButton.Variant.FILLED
