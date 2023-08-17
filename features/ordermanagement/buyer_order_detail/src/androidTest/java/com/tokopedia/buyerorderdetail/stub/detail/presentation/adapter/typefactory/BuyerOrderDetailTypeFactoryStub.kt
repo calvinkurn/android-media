@@ -20,6 +20,7 @@ import com.tokopedia.buyerorderdetail.stub.detail.presentation.adapter.viewholde
 import com.tokopedia.buyerorderdetail.stub.detail.presentation.adapter.viewholder.PgRecommendationViewHolderStub
 import com.tokopedia.buyerorderdetail.stub.detail.presentation.adapter.viewholder.ProductViewHolderStub
 import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.adapter.viewholder.ScpRewardsMedalTouchPointWidgetViewHolder
 
 class BuyerOrderDetailTypeFactoryStub(
     productBundlingViewListener: ProductBundlingViewHolder.Listener,
@@ -28,6 +29,7 @@ class BuyerOrderDetailTypeFactoryStub(
     digitalRecommendationListener: DigitalRecommendationViewHolder.ActionListener,
     courierInfoViewHolderListener: CourierInfoViewHolder.CourierInfoViewHolderListener,
     productListToggleListener: ProductListToggleViewHolder.Listener,
+    scpRewardsMedalTouchPointWidgetListener: ScpRewardsMedalTouchPointWidgetViewHolder.ScpRewardsMedalTouchPointWidgetListener,
     pofRefundInfoListener: PofRefundInfoViewHolder.Listener,
     productViewListener: PartialProductItemViewHolder.ProductViewListener,
     navigator: BuyerOrderDetailNavigator,
@@ -41,6 +43,7 @@ class BuyerOrderDetailTypeFactoryStub(
     courierInfoViewHolderListener,
     productListToggleListener,
     pofRefundInfoListener,
+    scpRewardsMedalTouchPointWidgetListener,
     productViewListener,
     navigator,
     buyerOrderDetailBindRecomWidgetListener,
