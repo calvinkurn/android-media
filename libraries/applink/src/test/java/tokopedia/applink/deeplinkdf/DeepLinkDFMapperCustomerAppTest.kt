@@ -826,6 +826,12 @@ class DeepLinkDFMapperCustomerAppTest : DeepLinkDFMapperTestFixture() {
     }
 
     @Test
+    fun `check profile management from applink then should return DF_USER_SETTINGS in customerapp`() {
+        val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/profile-management"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_SETTINGS)
+    }
+
+    @Test
     fun `check goto kyc from applink then should return DF_USER_SETTINGS in customerapp`() {
         val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/goto-kyc?projectId=123456"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_SETTINGS)

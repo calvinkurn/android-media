@@ -362,6 +362,7 @@ class AffiliateActivity :
                 affiliateBottomNavigation?.showBottomNav()
                 openFragment(AffiliateAdpFragment.getFragmentInstance(this, this))
             }
+
             PROMO_MENU -> {
                 if (isAffiliatePromoWebViewEnabled()) {
                     openFragment(AffiliatePromoWebViewFragment.getFragmentInstance())
@@ -371,6 +372,7 @@ class AffiliateActivity :
                     affiliateBottomNavigation?.showBottomNav()
                 }
             }
+
             INCOME_MENU -> {
                 affiliateBottomNavigation?.showBottomNav()
                 openFragment(
@@ -531,6 +533,10 @@ class AffiliateActivity :
 
                 is AffiliatePromoWebViewFragment -> {
                     (currentFragment as? AffiliatePromoWebViewFragment)?.handleBack()
+                }
+
+                else -> {
+                    handleBackButton(false)
                 }
             }
         } else {
