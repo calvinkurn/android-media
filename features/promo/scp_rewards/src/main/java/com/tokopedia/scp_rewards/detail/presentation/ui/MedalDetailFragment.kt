@@ -546,7 +546,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
                 )
             }
 
-            binding.couponView.renderCoupons(couponList) {
+            binding.couponView.renderCoupons("", couponList) {
                 MedalDetailAnalyticsImpl.sendImpressionCouponError(
                     badgeId = medaliSlug,
                     promoCode = medalDetailViewModel.couponCode

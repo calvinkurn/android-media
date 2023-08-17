@@ -72,7 +72,7 @@
                         app:layout_constraintTop_toBottomOf="@id/divider"
                         tools:visibility="visible" />
 
-                    <com.tokopedia.scp_rewards_widgets.views.rewardsview.MedalRewardsView
+                    <com.tokopedia.scp_rewards_widgets.coupon_section.WidgetCouponView
                         android:id="@+id/coupon_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
