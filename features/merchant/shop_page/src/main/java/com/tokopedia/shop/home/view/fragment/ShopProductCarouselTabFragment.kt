@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -97,7 +96,7 @@ class ShopProductCarouselTabFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         observeCarouselsWidgets()
         setupMainBanner()
-        setupProductRecyclerView()
+        setupRecyclerView()
         getCarouselWidgets()
     }
 
@@ -120,7 +119,8 @@ class ShopProductCarouselTabFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setupProductRecyclerView() {
+    private fun setupRecyclerView() {
+        
         binding?.recyclerView?.apply {
             adapter = productAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -132,13 +132,6 @@ class ShopProductCarouselTabFragment : BaseDaggerFragment() {
         productAdapter.setOnVerticalBannerClick { verticalBanner ->
             onVerticalBannerClick(verticalBanner)
         }
-
-        val productComponents = widgets.filter { widget -> widget.componentType == ComponentType.PRODUCT }
-        val productWidget = productComponents.getOrNull(0)
-
-        val showProductInfo = productWidget?.data?.any { data -> data.isShowProductInfo }.orFalse()
-
-        productAdapter.setShowProductInfo(showProductInfo)
     }
 
     private fun observeCarouselsWidgets() {
