@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -21,8 +20,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.applink.sellerfeedback.DeeplinkMapperSellerFeedback
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.config.GlobalConfig
@@ -248,7 +247,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
 
     private fun openFeedbackForm() {
         context?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalSellerapp.SELLER_FEEDBACK)
+            val intent = RouteManager.getIntent(it, DeeplinkMapperSellerFeedback.getSellerFeedbackInternalAppLink(it))
             intent.putExtra(EXTRA_SHOW_SETTING_BOTTOM_SHEET, true)
             startActivityForResult(intent, REQ_CODE_GLOBAL_FEEDBACK)
         }
@@ -427,8 +426,10 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     }
 
     private fun openGlobalFeedback() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SELLER_FEEDBACK)
-        startActivityForResult(intent, REQ_CODE_GLOBAL_FEEDBACK)
+        context?.let {
+            val intent = RouteManager.getIntent(it, DeeplinkMapperSellerFeedback.getSellerFeedbackInternalAppLink(it))
+            startActivityForResult(intent, REQ_CODE_GLOBAL_FEEDBACK)
+        }
     }
 
     private fun openSocialMediaLinksBottomSheet() {

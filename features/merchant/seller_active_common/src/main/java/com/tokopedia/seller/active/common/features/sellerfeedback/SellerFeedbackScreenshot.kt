@@ -11,6 +11,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.sellerfeedback.DeeplinkMapperSellerFeedback
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.screenshot_observer.Screenshot
 import com.tokopedia.seller.active.common.R
@@ -64,7 +65,7 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
     }
 
     private fun openFeedbackForm(uri: Uri, currentActivity: Activity) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SELLER_FEEDBACK)
+        val intent = RouteManager.getIntent(context, DeeplinkMapperSellerFeedback.getSellerFeedbackInternalAppLink(currentActivity))
         val activityName = getActivityName(currentActivity)
         intent.putExtra(EXTRA_URI_IMAGE, uri)
         intent.putExtra(

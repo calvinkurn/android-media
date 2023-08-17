@@ -111,6 +111,9 @@ object ApplinkConstInternalSellerapp {
     // SellerFeedbackActivity
     const val SELLER_FEEDBACK = "$INTERNAL_SELLERAPP/seller-feedback"
 
+    // SellerFeedbackKmpActivity
+    const val SELLER_FEEDBACK_KMP = "$INTERNAL_SELLERAPP/seller-feedback-kmp"
+
     const val REVIEW_REMINDER = "$INTERNAL_SELLERAPP/review-reminder"
 
     // AdminRestrictionActivity

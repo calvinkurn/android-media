@@ -1008,7 +1008,7 @@ object DeeplinkDFMapper : CoroutineScope {
 
             add(
                 DFP(
-                    { it.startsWithPattern(ApplinkConstInternalSellerapp.SELLER_FEEDBACK) },
+                    { it.startsWithPattern(ApplinkConstInternalSellerapp.SELLER_FEEDBACK) || it.startsWithPattern(ApplinkConstInternalSellerapp.SELLER_FEEDBACK_KMP) },
                     DF_SELLER_FEEDBACK,
                     R.string.title_seller_feedback
                 )

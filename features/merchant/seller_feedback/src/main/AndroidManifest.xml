@@ -24,5 +24,25 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".presentation.activity.SellerFeedbackKmpActivity"
+            android:exported="false"
+            android:label="@string/seller_feedback"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.SellerFeedback">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_sellerapp"
+                    android:path="@string/path_seller_feedback"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>
