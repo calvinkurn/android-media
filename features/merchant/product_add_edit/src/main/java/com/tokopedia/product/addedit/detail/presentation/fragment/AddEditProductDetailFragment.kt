@@ -622,7 +622,8 @@ class AddEditProductDetailFragment :
 
                     productCategoryId = categoryId.toString()
                     productCategoryName = categoryName ?: ""
-                    productCategoryManifestInputModel = CategoryMetadataInputModel()
+                    productCategoryManifestInputModel?.recommendationRank = Int.ZERO
+                    productCategoryManifestInputModel?.isFromRecommendation = false
 
                     val categoryRecommendationResult = viewModel.productCategoryRecommendationLiveData.value
                     val categoryList = if (categoryRecommendationResult != null && categoryRecommendationResult is Success) {
