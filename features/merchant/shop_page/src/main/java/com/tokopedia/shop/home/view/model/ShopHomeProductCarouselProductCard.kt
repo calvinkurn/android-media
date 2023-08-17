@@ -10,5 +10,6 @@ data class ShopHomeProductCarouselProductCard(
     val rating: String,
     val soldCount: String,
     val appLink: String,
+    val showProductInfo: Boolean,
     override val id : String = productId
 ) : ShopHomeProductCarouselVerticalBannerItemType

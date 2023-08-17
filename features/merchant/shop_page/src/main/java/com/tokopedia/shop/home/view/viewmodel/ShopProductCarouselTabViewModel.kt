@@ -72,9 +72,11 @@ class ShopProductCarouselTabViewModel @Inject constructor(
         )
     }
 
-    private fun getProductWidgets(widgets: List<ShopHomeProductCarouselUiModel.Tab.ComponentList>): ShopHomeProductCarouselUiModel.Tab.ComponentList.Data? {
-        val productWidgets = widgets
-            .filter { widget -> widget.componentType == ComponentType.PRODUCT }
+    private fun getProductWidgets(
+        widgets: List<ShopHomeProductCarouselUiModel.Tab.ComponentList>
+    ): ShopHomeProductCarouselUiModel.Tab.ComponentList.Data? {
+        val productWidgets =
+            widgets.filter { widget -> widget.componentType == ComponentType.PRODUCT }
 
         val firstComponent = productWidgets.getOrNull(0)
         val firstWidget = firstComponent?.data?.getOrNull(0)
@@ -84,23 +86,23 @@ class ShopProductCarouselTabViewModel @Inject constructor(
     private suspend fun getProducts(
         shopId: String,
         userAddress: LocalCacheModel,
-        firstWidget: ShopHomeProductCarouselUiModel.Tab.ComponentList.Data
+        productWidget: ShopHomeProductCarouselUiModel.Tab.ComponentList.Data,
     ): List<ShopHomeProductCarouselProductCard> {
-        return when(firstWidget.linkType) {
+        return when(productWidget.linkType) {
             LinkType.FEATURED_PRODUCT -> {
-                val featuredProducts = getFeaturedProducts(shopId, userSession.userId, userAddress)
+                val featuredProducts = getFeaturedProducts(shopId, userSession.userId, userAddress, productWidget.isShowProductInfo)
                 featuredProducts
             }
             LinkType.PRODUCT -> {
-                val sortId = firstWidget.linkId
+                val sortId = productWidget.linkId
                 val showcaseId = ShopPageConstant.ALL_SHOWCASE_ID
-                val sortedProducts = getSortedProducts(shopId, showcaseId, userAddress, sortId)
+                val sortedProducts = getSortedProducts(shopId, showcaseId, userAddress, sortId, productWidget.isShowProductInfo)
                 sortedProducts
             }
             LinkType.SHOWCASE -> {
-                val sortId = firstWidget.linkId
-                val showcaseId = firstWidget.linkId.toString()
-                val showCaseProducts = getSortedProducts(shopId, showcaseId, userAddress, sortId)
+                val sortId = productWidget.linkId
+                val showcaseId = productWidget.linkId.toString()
+                val showCaseProducts = getSortedProducts(shopId, showcaseId, userAddress, sortId, productWidget.isShowProductInfo)
                 showCaseProducts
             }
         }
@@ -110,7 +112,8 @@ class ShopProductCarouselTabViewModel @Inject constructor(
         shopId: String,
         showcaseId: String,
         userAddress: LocalCacheModel,
-        sortId: Long
+        sortId: Long,
+        showProductInfo: Boolean
     ): List<ShopHomeProductCarouselProductCard> {
         getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(
             shopId,
@@ -139,7 +142,8 @@ class ShopProductCarouselTabViewModel @Inject constructor(
                 product.campaign.discountedPercentage.toIntOrZero(),
                 product.stats.averageRating,
                 soldLabel,
-                product.appLink
+                product.appLink,
+                showProductInfo
             )
         }
 
@@ -149,7 +153,8 @@ class ShopProductCarouselTabViewModel @Inject constructor(
     private suspend fun getFeaturedProducts(
         shopId: String,
         userId: String,
-        userAddress: LocalCacheModel
+        userAddress: LocalCacheModel,
+        showProductInfo: Boolean
     ): List<ShopHomeProductCarouselProductCard> {
         getShopFeaturedProductUseCase.params = GetShopFeaturedProductUseCase.createParams(
             ShopFeaturedProductParams(
@@ -173,6 +178,7 @@ class ShopProductCarouselTabViewModel @Inject constructor(
                 product.ratingAverage,
                 product.labelGroupList.soldCount(),
                 product.uri,
+                showProductInfo,
                 product.productId
             )
         }
