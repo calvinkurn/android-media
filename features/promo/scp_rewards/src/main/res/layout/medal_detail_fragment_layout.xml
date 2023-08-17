@@ -77,6 +77,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp_16"
+                        android:alpha="80"
+                        android:background="@color/Unify_GN50"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/view_tasks_progress" />
 

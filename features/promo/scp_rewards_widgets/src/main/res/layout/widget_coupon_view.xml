@@ -4,15 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#FFF0F7F1"
-    android:paddingHorizontal="@dimen/dp_16"
-    android:paddingVertical="@dimen/dp_20"
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_20"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,5 +20,15 @@
         app:typographyWeight="bold"
         tools:text="Powered by L'Oreal Paris" />
 
+    <com.tokopedia.scp_rewards_widgets.coupon_section.CouponViewCard
+        android:id="@+id/card_coupon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/dp_16"
+        android:layout_marginVertical="@dimen/dp_10"
+        android:theme="@style/Theme.MaterialComponents.Light"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
 </merge>

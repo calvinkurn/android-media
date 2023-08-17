@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="@color/Unify_NN0"
+    app:cardForegroundColor="@color/Unify_NN0"
+    tools:parentTag="com.google.android.material.card.MaterialCardView">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_background"
+            android:layout_width="@dimen/dp_75"
+            android:layout_height="0dp"
+            android:layout_margin="@dimen/dp_4"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="H, 3:5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:unify_image_corner_radius="5" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_12"
+            android:maxLines="1"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintStart_toEndOf="@id/iv_background"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_3"
+            app:typographyWeight="bold"
+            tools:text="Diskon Rp50 rb" />
+
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_2"
+            android:layout_marginBottom="@dimen/dp_12"
+            android:maxLines="2"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintBottom_toTopOf="@id/divider"
+            app:layout_constraintStart_toStartOf="@id/tv_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_title"
+            app:layout_constraintVertical_bias="0.0"
+            app:typographyType="paragraph_3"
+            tools:text="Min. transaction Rp10k" />
+
+        <ImageView
+            android:id="@+id/divider"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="5dp"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_45"
+            android:src="@drawable/dotted_line"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/tv_title" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_additional"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/tv_title"
+            app:typographyType="small"
+            tools:text="Min. transaction Rp10k" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_apply"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_12"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:unifyButtonSize="micro"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="filled"
+            tools:text="Use" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</merge>
