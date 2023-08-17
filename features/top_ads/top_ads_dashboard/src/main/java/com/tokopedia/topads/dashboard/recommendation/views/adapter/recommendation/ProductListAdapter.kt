@@ -10,10 +10,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.ProductItemUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.ProductListUiModel
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.EMPTY_PRODUCT_LIST_IMG_URL
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.EmptyStateUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.FeaturedProductsUiModel
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 
-class ProductListAdapter(private val onItemCheckedChangeListener: () -> Unit) :
+class ProductListAdapter(
+    private val onItemCheckedChangeListener: (() -> Unit)?,
+    private val reloadPage: (() -> Unit)?
+) :
     ListAdapter<ProductListUiModel, RecyclerView.ViewHolder>(ProductListDiffUtilCallBack()) {
 
     inner class ProductListItemViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
@@ -26,7 +33,7 @@ class ProductListAdapter(private val onItemCheckedChangeListener: () -> Unit) :
 
         fun bind(
             item: ProductItemUiModel,
-            onItemCheckedChangeListener: () -> Unit
+            onItemCheckedChangeListener: (() -> Unit)?
         ) {
             title.text = item.productName
             description.text = HtmlCompat.fromHtml(
@@ -41,13 +48,33 @@ class ProductListAdapter(private val onItemCheckedChangeListener: () -> Unit) :
 
             checkboxUnify.setOnClickListener {
                 item.isSelected = checkboxUnify.isChecked
-                onItemCheckedChangeListener.invoke()
+                onItemCheckedChangeListener?.invoke()
             }
         }
     }
 
     inner class EmptyStateViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
-        fun bind() {}
+        private val image: ImageUnify = view.findViewById(R.id.emptyStateImage)
+        private val title: com.tokopedia.unifyprinciples.Typography =
+            view.findViewById(R.id.emptyStateTitle)
+        private val desc: com.tokopedia.unifyprinciples.Typography =
+            view.findViewById(R.id.emptyStateDesc)
+        private val reloadCta: UnifyButton = view.findViewById(R.id.emptyStateCta)
+
+        fun bind(item: EmptyStateUiModel, reloadPage: (() -> Unit)?) {
+            image.urlSrc = EMPTY_PRODUCT_LIST_IMG_URL
+            reloadCta.setOnClickListener {
+                reloadPage?.invoke()
+            }
+        }
+    }
+
+    inner class FeaturedProductsViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+        private val image: ImageUnify = view.findViewById(R.id.productImg)
+
+        fun bind(item: FeaturedProductsUiModel) {
+            image.urlSrc = item.imgUrl
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -57,9 +84,14 @@ class ProductListAdapter(private val onItemCheckedChangeListener: () -> Unit) :
                     .inflate(R.layout.topads_potential_product_item_layout, parent, false)
                 ProductListItemViewHolder(view)
             }
+            R.layout.topads_insight_centre_featured_products_layout -> {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.topads_insight_centre_featured_products_layout, parent, false)
+                FeaturedProductsViewHolder(view)
+            }
             else -> {
                 val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.topads_potential_product_item_layout, parent, false)
+                    .inflate(R.layout.topads_potential_product_empty_layout, parent, false)
                 EmptyStateViewHolder(view)
             }
         }
@@ -70,12 +102,20 @@ class ProductListAdapter(private val onItemCheckedChangeListener: () -> Unit) :
             is ProductItemUiModel -> {
                 (holder as? ProductListItemViewHolder)?.bind(item, onItemCheckedChangeListener)
             }
+            is EmptyStateUiModel -> {
+                (holder as? EmptyStateViewHolder)?.bind(item, reloadPage)
+            }
+            is FeaturedProductsUiModel -> {
+                (holder as? FeaturedProductsViewHolder)?.bind(item)
+            }
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
             is ProductItemUiModel -> R.layout.topads_potential_product_item_layout
+            is EmptyStateUiModel -> R.layout.topads_insight_centre_empty_state_layout
+            is FeaturedProductsUiModel -> R.layout.topads_insight_centre_featured_products_layout
             else -> throw IllegalArgumentException("Invalid item type")
         }
     }

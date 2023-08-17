@@ -9,33 +9,34 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.advertiseProducts
 import com.tokopedia.topads.dashboard.databinding.FragmentTopadsPotentialProductBinding
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.ProductRecommendationViewModel
-import com.tokopedia.topads.dashboard.recommendation.views.activities.ProductRecommendationActivity
 import javax.inject.Inject
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.DEFAULT_SELECTED_ITEMS_COUNT
+import com.tokopedia.topads.dashboard.recommendation.data.mapper.ProductRecommendationMapper
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.ProductItemUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopadsProductListState
+import com.tokopedia.topads.dashboard.recommendation.views.activities.RoutingCallback
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.recommendation.ProductListAdapter
 
 class PotentialProductFragment : BaseDaggerFragment() {
 
     private var binding: FragmentTopadsPotentialProductBinding? = null
 
-    private val layoutManager by lazy {
-        LinearLayoutManager(
-            context,
-            LinearLayoutManager.VERTICAL,
-            false
+    private val productListAdapter by lazy {
+        ProductListAdapter(
+            ::onItemCheckedChangeListener,
+            ::reloadPage
         )
     }
 
-    private val productListAdapter by lazy { ProductListAdapter(::onItemCheckedChangeListener) }
-
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var mapper: ProductRecommendationMapper
 
     private val viewModel: ProductRecommendationViewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(
@@ -54,15 +55,19 @@ class PotentialProductFragment : BaseDaggerFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        (activity as? ProductRecommendationActivity)?.setUpHeader(advertiseProducts)
         initializeViews()
-        getProducts()
+        loadProducts()
         observeViewModel()
         attachClickListener()
     }
 
     private fun initializeViews() {
-        binding?.productsListRv?.layoutManager = layoutManager
+        if (binding?.productsListRv?.layoutManager == null)
+            binding?.productsListRv?.layoutManager = LinearLayoutManager(
+                context,
+                LinearLayoutManager.VERTICAL,
+                false
+            )
         binding?.productsListRv?.adapter = productListAdapter
         updateSelectedItemsCount(DEFAULT_SELECTED_ITEMS_COUNT)
     }
@@ -74,43 +79,72 @@ class PotentialProductFragment : BaseDaggerFragment() {
         )
     }
 
-    private fun hideLoader() {
-        binding?.productsGroup?.showWithCondition(true)
+    private fun showProductsList() {
         binding?.shimmerLoader?.root?.showWithCondition(false)
+        binding?.productsListRv?.showWithCondition(true)
+        binding?.selectAllCheckbox?.showWithCondition(true)
+        binding?.itemsCount?.showWithCondition(true)
+        binding?.selectProductsButton?.showWithCondition(true)
+    }
+
+    private fun showEmptyState() {
+        binding?.shimmerLoader?.root?.showWithCondition(false)
+        binding?.productsListRv?.showWithCondition(true)
+        binding?.selectAllCheckbox?.showWithCondition(false)
+        binding?.itemsCount?.showWithCondition(false)
+        binding?.selectProductsButton?.showWithCondition(false)
     }
 
     private fun showLoader() {
-        binding?.productsGroup?.showWithCondition(false)
         binding?.shimmerLoader?.root?.showWithCondition(true)
+        binding?.productsListRv?.showWithCondition(false)
+        binding?.selectAllCheckbox?.showWithCondition(false)
+        binding?.itemsCount?.showWithCondition(false)
+        binding?.selectProductsButton?.showWithCondition(false)
     }
 
-    private fun getProducts() {
-        viewModel.getProductList()
+    private fun loadProducts() {
+        showLoader()
+        viewModel.loadProductList()
     }
 
     private fun observeViewModel() {
         viewModel.productItemsLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is TopadsProductListState.Success -> {
-                    hideLoader()
+                    showProductsList()
                     productListAdapter.submitList(it.data)
+                    val list = it.data.filter { (it as? ProductItemUiModel)?.isSelected ?: false }
+                    updateSelectedItemsCount(list.size)
                 }
-                is TopadsProductListState.Fail -> {}
+                is TopadsProductListState.Fail -> {
+                    showEmptyState()
+                    productListAdapter.submitList(mapper.getEmptyProductListDefaultUIModel())
+                }
                 is TopadsProductListState.Loading -> {}
             }
         }
     }
 
-    private fun attachClickListener(){
-        binding?.selectProductsButton?.setOnClickListener {
+    private fun attachClickListener() {
+        binding?.headerPotentialProduct?.setNavigationOnClickListener {
+            activity?.onBackPressed()
+        }
 
+        binding?.selectProductsButton?.setOnClickListener {
+            activity?.let {
+                if (it is RoutingCallback) {
+                    it.routeToGroupSettings()
+                }
+            }
         }
 
         binding?.selectAllCheckbox?.setOnClickListener {
             when (val products = viewModel.productItemsLiveData.value) {
                 is TopadsProductListState.Success -> {
                     products.data.forEach { item ->
-                        item.isSelected = binding?.selectAllCheckbox?.isChecked ?: false
+                        (item as? ProductItemUiModel)?.isSelected =
+                            binding?.selectAllCheckbox?.isChecked ?: false
                     }
                     productListAdapter.notifyDataSetChanged()
                     updateSelectAllCtaState()
@@ -124,10 +158,14 @@ class PotentialProductFragment : BaseDaggerFragment() {
         updateSelectAllCtaState()
     }
 
+    private fun reloadPage() {
+        loadProducts()
+    }
+
     private fun updateSelectAllCtaState() {
         when (val products = viewModel.productItemsLiveData.value) {
             is TopadsProductListState.Success -> {
-                val list = products.data.filter { it.isSelected }
+                val list = products.data.filter { (it as? ProductItemUiModel)?.isSelected ?: false }
                 updateSelectedItemsCount(list.size)
                 binding?.selectAllCheckbox?.isChecked = list.isNotEmpty()
                 binding?.selectAllCheckbox?.setIndeterminate(list.size != products.data.size)

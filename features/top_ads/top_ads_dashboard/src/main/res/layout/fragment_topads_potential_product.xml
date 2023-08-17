@@ -1,39 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:padding="16dp">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/headerPotentialProduct"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_header_is_show_back_button="true"
+        app:unify_header_is_show_shadow="false"
+        app:unify_header_title="@string/topads_insight_centre_choose_product_title" />
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
         android:id="@+id/selectAllCheckbox"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
-    
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerPotentialProduct" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/itemsCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:textColor="@color/Unify_NN950"
+        android:visibility="gone"
         app:layout_constraintStart_toEndOf="@id/selectAllCheckbox"
         app:layout_constraintTop_toTopOf="@id/selectAllCheckbox"
-        tools:text="@string/topads_insight_centre_choose_potential_products_with_count"
-        android:textColor="@color/Unify_NN950"
         app:typographyType="display_2"
         app:typographyWeight="bold"
-        android:layout_marginStart="16dp"/>
+        tools:text="@string/topads_insight_centre_choose_potential_products_with_count" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/productsListRv"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/selectAllCheckbox"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/selectProductsButton"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="25dp"
-        android:layout_marginBottom="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/selectAllCheckbox"
         tools:itemCount="1"
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/topads_potential_product_item_layout"
@@ -41,23 +57,25 @@
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/selectProductsButton"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginBottom="16dp"
+        android:text="@string/topads_insight_centre_choose_product"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:unifyButtonSize="large"
-        android:text="@string/topads_insight_centre_choose_product"/>
+        app:layout_constraintEnd_toEndOf="@id/productsListRv"
+        app:layout_constraintStart_toStartOf="@id/selectAllCheckbox"
+        app:unifyButtonSize="large" />
 
     <include
         android:id="@+id/shimmerLoader"
         layout="@layout/topads_potential_product_list_shimmer"
-        android:visibility="visible"/>
-
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/productsGroup"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="itemsCount,selectAllCheckbox,productsListRv,selectProductsButton"
-        android:visibility="gone"/>
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerPotentialProduct" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

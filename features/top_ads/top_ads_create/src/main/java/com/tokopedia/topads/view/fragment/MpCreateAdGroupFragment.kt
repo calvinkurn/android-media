@@ -16,6 +16,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.*
+import com.tokopedia.topads.common.view.sheet.CreateGroupBudgetHelpSheet
 import com.tokopedia.topads.constants.MpTopadsConst.AUTO_BID_CONST
 import com.tokopedia.topads.constants.MpTopadsConst.BASIC_DATE_FORMAT
 import com.tokopedia.topads.constants.MpTopadsConst.CONST_2
@@ -29,7 +30,6 @@ import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivit
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.trackers.MpTracker
 import com.tokopedia.topads.view.model.MpAdsCreateGroupViewModel
-import com.tokopedia.topads.view.sheet.MpCreateGroupBudgetHelpSheet
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.NumberTextWatcher
@@ -111,7 +111,7 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
 
     private fun attachClickListeners() {
         binding?.dailyBudget?.iconContainer?.setOnClickListener {
-            MpCreateGroupBudgetHelpSheet().show(
+            CreateGroupBudgetHelpSheet().show(
                 childFragmentManager,
                 MpCreateAdGroupFragment::class.java.name
             )
@@ -211,7 +211,7 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
     private fun onSuccessNameSuggestion(response: TopAdsProductResponse) {
         response.product.let {
             var groupName: String =
-                (if (it.category?.name.isNullOrEmpty()) getString(R.string.group) else it.category?.name) + " " + DateUtil.getCurrentDate()
+                (if (it.category?.name.isNullOrEmpty()) getString(com.tokopedia.topads.common.R.string.topads_common_group) else it.category?.name) + " " + DateUtil.getCurrentDate()
                     .formatTo(BASIC_DATE_FORMAT)
             autofillGroupName = groupName
             createGroupViewModel.validateGroup(groupName, this::checkAutofillGroupNameValidation)
