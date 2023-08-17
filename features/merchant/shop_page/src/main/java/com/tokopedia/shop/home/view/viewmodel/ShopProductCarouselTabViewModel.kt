@@ -177,7 +177,7 @@ class ShopProductCarouselTabViewModel @Inject constructor(
                 product.percentageAmount,
                 product.ratingAverage,
                 product.labelGroupList.soldCount(),
-                product.uri,
+                "tokopedia://product/${product.productId}",
                 showProductInfo,
                 product.productId
             )
