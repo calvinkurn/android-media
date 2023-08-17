@@ -17,6 +17,8 @@ import com.tokopedia.epharmacy.adapters.factory.EPharmacyAttachmentDetailDiffUti
 import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyShimmerDataModel
+import com.tokopedia.epharmacy.databinding.EpharmacyCheckoutChatDokterFragmentBinding
+import com.tokopedia.epharmacy.databinding.EpharmacyQuantityChangeFragmentBinding
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.utils.CategoryKeys
 import com.tokopedia.epharmacy.utils.EPharmacyAttachmentUiUpdater
@@ -29,11 +31,14 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.picker.common.basecomponent.utils.rootCurrentView
+import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -60,6 +65,8 @@ class EPharmacyQuantityChangeFragment: BaseDaggerFragment(), EPharmacyListener {
         linkedMapOf()
     )
 
+    private var binding by autoClearedNullable<EpharmacyQuantityChangeFragmentBinding>()
+
     private val ePharmacyAdapterFactory by lazy(LazyThreadSafetyMode.NONE) { EPharmacyAdapterFactoryImpl(this) }
 
     private val ePharmacyAdapter by lazy(LazyThreadSafetyMode.NONE) {
@@ -75,7 +82,12 @@ class EPharmacyQuantityChangeFragment: BaseDaggerFragment(), EPharmacyListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.epharmacy_quantity_change_fragment, container, false)
+        binding = EpharmacyQuantityChangeFragmentBinding.inflate(
+            inflater,
+            container,
+            false
+        )
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -104,7 +116,7 @@ class EPharmacyQuantityChangeFragment: BaseDaggerFragment(), EPharmacyListener {
 
     private fun getData() {
         addShimmer()
-        ePharmacyPrescriptionAttachmentViewModel.getPrepareProductGroup()
+        ePharmacyPrescriptionAttachmentViewModel.getPrepareProductGroup("QuantityChange")
     }
 
     private fun addShimmer() {
@@ -192,9 +204,25 @@ class EPharmacyQuantityChangeFragment: BaseDaggerFragment(), EPharmacyListener {
 
     private fun showToast(type: Int = Toaster.TYPE_NORMAL, message: String) {
         if (message.isNotBlank()) {
-            view?.let { safeView ->
+            binding?.root?.rootView?.let { safeView ->
                 Toaster.build(safeView, message, Toaster.LENGTH_LONG, type).show()
             }
+        }
+    }
+
+    override fun onToast(toasterType: Int, message: String) {
+        super.onToast(toasterType, message)
+        showToast(toasterType, message)
+    }
+
+    override fun onQuantityChanged() {
+        super.onQuantityChanged()
+        calculateTotalAmount()
+    }
+
+    private fun calculateTotalAmount() {
+        ePharmacyAttachmentUiUpdater.mapOfData.values.forEach {
+
         }
     }
 

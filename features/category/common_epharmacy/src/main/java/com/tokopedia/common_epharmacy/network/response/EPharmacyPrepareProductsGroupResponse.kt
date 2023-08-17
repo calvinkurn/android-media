@@ -55,7 +55,7 @@ data class EPharmacyPrepareProductsGroupResponse(
                 @Parcelize
                 data class Ticker(
                     @SerializedName("ticker_type")
-                    var tickerType: String?,
+                    var tickerType: Int?,
                     @SerializedName("title")
                     val title: String?
                 ) : Parcelable
@@ -136,7 +136,9 @@ data class EPharmacyPrepareProductsGroupResponse(
                         @SerializedName("daily")
                         val daily: Daily?,
                         @SerializedName("duration")
-                        val duration: String? = ""
+                        val duration: String? = "",
+                        @SerializedName("is_closing_hour")
+                        val isClosingHour: Boolean? = false
                     ) : Parcelable {
                         @Parcelize
                         data class Daily(

@@ -29,7 +29,9 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
     private var duration = ""
     private var price = ""
     private var note = ""
+    private var isOutsideWorkingHours = false
     private var isOnlyConsultation = false
+
     companion object {
         fun newInstance(
             enableImageURL: String,
@@ -38,6 +40,7 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
             price: String?,
             duration: String?,
             note: String?,
+            isOutsideWorkingHours: Boolean,
             isOnlyConsult: Boolean
         ): EPharmacyChooserBottomSheet {
             return EPharmacyChooserBottomSheet().apply {
@@ -54,6 +57,7 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
                     putString(EPHARMACY_CONS_PRICE, price)
                     putString(EPHARMACY_CONS_DURATION, duration)
                     putString(EPHARMACY_NOTE, note)
+                    putBoolean(EPHARMACY_IS_OUTSIDE_WORKING_HOURS, isOutsideWorkingHours)
                     putBoolean(EPHARMACY_IS_ONLY_CONSULT, isOnlyConsult)
                 }
             }
@@ -102,6 +106,7 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
         price = arguments?.getString(EPHARMACY_CONS_PRICE) ?: ""
         duration = arguments?.getString(EPHARMACY_CONS_DURATION) ?: ""
         note = arguments?.getString(EPHARMACY_NOTE) ?: ""
+        isOutsideWorkingHours = arguments?.getBoolean(EPHARMACY_IS_OUTSIDE_WORKING_HOURS) ?: false
         isOnlyConsultation = arguments?.getBoolean(EPHARMACY_IS_ONLY_CONSULT) ?: false
     }
 

@@ -1,6 +1,8 @@
 package com.tokopedia.epharmacy.utils
 
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
+import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
+import com.tokopedia.epharmacy.component.model.EPharmacyAccordionProductDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyAttachmentDataModel
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup as EGroup
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo as EProductInfo
@@ -25,7 +27,7 @@ object EPharmacyMapper {
             group.consultationData?.consultationStatus,
             group.consultationData?.consultationString,
             group.consultationSource?.price,
-            group.consultationSource?.operatingSchedule?.duration,
+            group.consultationSource?.operatingSchedule,
             group.consultationSource?.note,
             getTickerData(group,shopIndex),
             getQuantityChangedModel(info),
@@ -38,9 +40,24 @@ object EPharmacyMapper {
             group.consultationData,
             false,
             group.prescriptionCTA,
+            getSubProductsModel(info),
             isLastIndex(group.shopInfo, shopIndex),
             (isLastIndex(group.shopInfo, shopIndex) && isLastGroup).not()
         )
+    }
+
+    private fun getSubProductsModel(shopInfo: EProductInfo?): List<BaseEPharmacyDataModel>? {
+        return getProductVisitablesWithoutFirst(shopInfo)
+    }
+
+    private fun getProductVisitablesWithoutFirst(shopInfo: EProductInfo?): List<BaseEPharmacyDataModel> {
+        val productSubList = arrayListOf<EPharmacyAccordionProductDataModel>()
+        shopInfo?.products?.forEachIndexed { index, product ->
+            if (index != 0) {
+                productSubList.add(EPharmacyAccordionProductDataModel("${PRODUCT_COMPONENT}_${product?.productId}", PRODUCT_COMPONENT, product))
+            }
+        }
+        return productSubList
     }
 
     private fun getPartnerLogo(

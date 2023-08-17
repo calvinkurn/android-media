@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.adapters.EPharmacyAdapter
 import com.tokopedia.epharmacy.adapters.EPharmacyListener
@@ -20,6 +19,7 @@ import com.tokopedia.epharmacy.adapters.factory.EPharmacyAttachmentDetailDiffUti
 import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyAccordionProductDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyAttachmentDataModel
+import com.tokopedia.epharmacy.ui.fragment.EPharmacyQuantityChangeFragment
 import com.tokopedia.epharmacy.utils.EPHARMACY_FULL_ALPHA
 import com.tokopedia.epharmacy.utils.EPHARMACY_HALF_ALPHA
 import com.tokopedia.epharmacy.utils.EPharmacyConsultationStatus
@@ -70,7 +70,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     private val quantityChangedEditor = view.findViewById<QuantityEditorUnify>(R.id.quantity_change)
     private val productQuantityType = view.findViewById<Typography>(R.id.quantity_type)
     private val totalQuantity = view.findViewById<Typography>(R.id.total_quantity)
-    private val totalAmount = view.findViewById<Typography>(R.id.total_amount)
+    private val totalAmount = view.findViewById<Typography>(R.id.qc_total_amount)
     companion object {
         val LAYOUT = R.layout.epharmacy_prescription_attachment_view_item
         private const val VIBRATION_ANIMATION_DURATION = 1250
@@ -104,18 +104,14 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
         renderProductsData()
         renderButton()
         renderDivider()
-        renderObstruction()
         renderTicker()
+        renderObstruction()
     }
 
     private fun renderTicker() {
         if(!dataModel?.ticker?.title.isNullOrBlank()){
             ticker.show()
-            if(dataModel?.ticker?.tickerType == "INFO"){
-                ticker.tickerType = Ticker.TYPE_INFORMATION
-            }else {
-                ticker.tickerType = Ticker.TYPE_WARNING
-            }
+            ticker.tickerType = dataModel?.ticker?.tickerType ?: Ticker.TYPE_INFORMATION
             ticker.setHtmlDescription(dataModel?.ticker?.title ?: "")
         }else {
             ticker.hide()
@@ -123,25 +119,33 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     }
 
     private fun renderQuantityChangedLayout() {
-        if(dataModel?.quantityChangedModel != null){
+        if(dataModel?.quantityChangedModel != null && ePharmacyListener is EPharmacyQuantityChangeFragment){
             if(dataModel?.quantityChangedModel?.currentQty == 0){
                 dataModel?.quantityChangedModel?.currentQty = dataModel?.quantityChangedModel?.recommendedQty ?: 0
             }
 
             quantityChangedLayout?.show()
-            initialProductQuantity.text = "${dataModel?.quantityChangedModel?.initialQty.toString()} barang"
-            productQuantityType.text = "barang"
+            initialProductQuantity.text = java.lang.String.format(
+                itemView.context.getString(com.tokopedia.epharmacy.R.string.epharmacy_barang_quantity),
+                dataModel?.quantityChangedModel?.initialQty.toString()
+            )
+            productQuantityType.text = itemView.context.getString(R.string.epharmacy_barang)
             val currentEditorValue = quantityChangedEditor.getValue()
             if(dataModel?.quantityChangedModel?.currentQty != currentEditorValue && currentEditorValue != 1)
                 quantityChangedEditor.setValue(dataModel?.quantityChangedModel?.recommendedQty ?: 0)
             if(quantityChangedEditor.getValue() >= (dataModel?.quantityChangedModel?.recommendedQty ?: 0)){
                 quantityChangedEditor.addButton.isEnabled = false
             }
-            totalAmount.displayTextOrHide(getTotalAmount(dataModel?.quantityChangedModel))
-            totalQuantity.displayTextOrHide("Subtotal (${dataModel?.quantityChangedModel?.currentQty.toString()} barang)")
+            totalAmount.displayTextOrHide(EPharmacyUtils.getTotalAmount(dataModel?.quantityChangedModel?.currentQty, dataModel?.quantityChangedModel?.productPrice))
+            totalQuantity.displayTextOrHide(java.lang.String.format(
+                itemView.context.getString(com.tokopedia.epharmacy.R.string.epharmacy_subtotal_quantity_change),
+                dataModel?.quantityChangedModel?.currentQty.toString()
+            ))
             quantityChangedEditor.setValueChangedListener { newValue, oldValue, isOver ->
+                ePharmacyListener?.onQuantityChanged()
                 if(newValue == 1){
-                    ePharmacyListener?.onToast(Toaster.TYPE_ERROR,"Jumlah barang tidak boleh melebihi yang sudah diresepkan atau kurang dari 1.")
+                    ePharmacyListener.onToast(Toaster.TYPE_ERROR,
+                        itemView.context.resources?.getString(com.tokopedia.epharmacy.R.string.epharmacy_minimum_quantity_reached) ?: "")
                     quantityChangedEditor.subtractButton.isEnabled = false
                 }else if(newValue == dataModel?.quantityChangedModel?.recommendedQty){
                     quantityChangedEditor.addButton.isEnabled = false
@@ -155,11 +159,6 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
         }else {
             quantityChangedLayout?.hide()
         }
-    }
-
-    // TODO Format
-    private fun getTotalAmount(quantityChangedModel: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product.QtyComparison?): String {
-        return "Rp${(quantityChangedModel?.currentQty?.toDouble() ?: 0.0) * ((dataModel?.quantityChangedModel?.productPrice?: 0.0))}"
     }
 
     private fun renderOrderTitle() {
@@ -243,11 +242,12 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
 
         if ((dataModel?.shopInfo?.products?.size ?: 0) > 1) {
             productAccordionView.show()
-            if(dataModel?.isAccordionEnable == true){
-                productAccordionViewRL.show()
-            }else {
+
+            if(ePharmacyListener is EPharmacyQuantityChangeFragment){
                 productAccordionViewRL.hide()
+                dataModel?.productsIsExpanded = true
             }
+
             if (productAccordionRV.adapter == null) {
                 productAccordionRV.layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
                 productAccordionRV.adapter = ePharmacyAdapter
@@ -256,11 +256,9 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
                 }
             }
 
-            dataModel?.shopInfo?.let { products ->
-                ePharmacyAdapter.submitList(getProductVisitablesWithoutFirst(products))
-            }
+            ePharmacyAdapter.submitList(dataModel?.subProductsDataModel)
 
-            if (dataModel?.productsIsExpanded == true || dataModel?.isAccordionEnable == false) {
+            if (dataModel?.productsIsExpanded == true) {
                 productChevronTitle.text = view.context.getString(R.string.epharmacy_show_less)
                 productAccordionRV.show()
                 productAccordionChevron.setImage(IconUnify.CHEVRON_UP, null, null, null, null)
@@ -272,16 +270,6 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
         } else {
             productAccordionView.hide()
         }
-    }
-
-    private fun getProductVisitablesWithoutFirst(shopInfo: EProductInfo?): List<BaseEPharmacyDataModel> {
-        val productSubList = arrayListOf<EPharmacyAccordionProductDataModel>()
-        shopInfo?.products?.forEachIndexed { index, product ->
-            if (index != 0) {
-                productSubList.add(EPharmacyAccordionProductDataModel("${PRODUCT_COMPONENT}_${product?.productId}", PRODUCT_COMPONENT, product))
-            }
-        }
-        return productSubList
     }
 
     private fun renderButton() {

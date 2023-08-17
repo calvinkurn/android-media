@@ -267,6 +267,10 @@ object EPharmacyUtils {
         } else {
             Html.fromHtml(htmlText)
         }
+
+    fun getTotalAmount(quantity: Int?, price: Double?): String {
+        return "Rp${(quantity?.toDouble() ?: 0.0) * ((price ?: 0.0))}"
+    }
 }
 
 enum class PrescriptionActionType(val type: String) {

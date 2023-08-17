@@ -170,11 +170,11 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
     }
 
     private fun setCartInfo(cart: EPCart?) {
-        binding?.apply {
-            epharmacyCheckoutDetailView.serviceTypeValue.text = cart?.customResponse?.serviceType
-            epharmacyCheckoutDetailView.serviceProviderValue.text = cart?.customResponse?.enablerName
-            epharmacyCheckoutDetailView.durationValue.text = "${cart?.customResponse?.durationMinutes} Menit"
-            epharmacyCheckoutDetailView.serviceTypeValue.text = cart?.priceFmt
+        binding?.epharmacyCheckoutDetailView?.apply {
+            serviceTypeValue.text = cart?.customResponse?.serviceType
+            serviceProviderValue.text = cart?.customResponse?.enablerName
+            durationValue.text = "${cart?.customResponse?.durationMinutes} Menit"
+            serviceTypeValue.text = cart?.priceFmt
         }
     }
 
@@ -186,11 +186,11 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
     }
 
     private fun setTotalInfo(shoppingSummary: EPharmacyAtcInstantResponse.CartGeneralAddToCartInstant.CartGeneralAddToCartInstantData.BusinessDataList.BusinessData.ShoppingSummary?) {
-        binding?.apply {
-            totalAmount.setLabelTitle("Total Tagihan")
-            totalAmount.setAmount(shoppingSummary?.product?.totalPriceFmt ?: "")
-            totalAmount.setCtaText("Pilih Pembayaran")
-            totalAmount.amountCtaView.setOnClickListener {
+        binding?.qcTotalAmount?.apply {
+            setLabelTitle("Total Tagihan")
+            setAmount(shoppingSummary?.product?.totalPriceFmt ?: "")
+            setCtaText("Pilih Pembayaran")
+            amountCtaView.setOnClickListener {
                 onSelectPayment()
             }
         }

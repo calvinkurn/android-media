@@ -21,6 +21,7 @@ const val EPHARMACY_CONS_DURATION = "epharmacy_cons_duration"
 const val EPHARMACY_CONS_PRICE = "epharmacy_cons_price"
 const val EPHARMACY_NOTE = "epharmacy_note"
 const val EPHARMACY_IS_ONLY_CONSULT = "epharmacy_is_only_consult"
+const val EPHARMACY_IS_OUTSIDE_WORKING_HOURS = "epharmacy_is_outside_working_hours"
 
 const val STATIC_INFO_COMPONENT = "static info component"
 const val PRESCRIPTION_COMPONENT = "prescription component"

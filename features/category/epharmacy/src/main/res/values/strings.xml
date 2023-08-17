@@ -50,6 +50,10 @@
     <string name="epharmacy_jenis_layanan">Jenis Layanan</string>
     <string name="epharmacy_penyedia_layanan">Penyedia Layanan</string>
     <string name="epharmacy_barang">barang</string>
+    <string name="epharmacy_barang_quantity">%s barang</string>
     <string name="epharmacy_pesanan_awal">Pesanan Awal</string>
     <string name="epharmacy_sesuai_resep">Sesuai Resep</string>
-</resources>
+    <string name="epharmacy_chooser_outside">Tersedia %s – %s WIB.</string>
+    <string name="epharmacy_minimum_quantity_reached">Jumlah barang tidak boleh melebihi yang sudah diresepkan atau kurang dari 1.</string>
+    <string name="epharmacy_subtotal_quantity_change">Subtotal (%s barang)</string>
+ </resources>

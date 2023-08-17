@@ -97,7 +97,7 @@
         />
 
     <com.tokopedia.totalamount.TotalAmount
-        android:id="@+id/total_amount"
+        android:id="@+id/qc_total_amount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
@@ -109,7 +109,7 @@
         android:id="@+id/epharmacy_data"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="title_chat_dokter,total_amount,subtotal,subtotal_value,subtotal_text,divider,divider_icon,chat_dokter_icon,epharmacy_checkout_detail_view"
+        app:constraint_referenced_ids="title_chat_dokter,qc_total_amount,subtotal,subtotal_value,subtotal_text,divider,divider_icon,chat_dokter_icon,epharmacy_checkout_detail_view"
         android:visibility="gone"
         />
 

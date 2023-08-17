@@ -13,16 +13,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"
-        android:paddingBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@id/total_amount"
+        android:layout_marginTop="32dp"
+        android:paddingBottom="32dp"
+        app:layout_constraintBottom_toTopOf="@id/qc_total_amount"
         tools:listitem="@layout/epharmacy_prescription_attachment_view_item"
         tools:itemCount="3"
         />
 
 
     <com.tokopedia.totalamount.TotalAmount
-        android:id="@+id/total_amount"
+        android:id="@+id/qc_total_amount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"

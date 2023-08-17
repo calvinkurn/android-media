@@ -158,7 +158,7 @@
         android:id="@+id/barrier_quantity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="division_single_card,lbl_PAP_productAmount,lbl_PAP_productName"
+        app:constraint_referenced_ids="product_image_card,division_single_card,lbl_PAP_productAmount,lbl_PAP_productName"
         app:barrierDirection="bottom"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

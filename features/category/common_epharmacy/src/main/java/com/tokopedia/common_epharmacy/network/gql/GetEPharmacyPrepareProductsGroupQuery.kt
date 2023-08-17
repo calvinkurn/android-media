@@ -144,6 +144,7 @@ object GetEPharmacyPrepareProductsGroupQuery : GqlQueryInterface {
                         }
                         close_days
                         duration
+                        is_closing_hour
                       }
                       status
                     }

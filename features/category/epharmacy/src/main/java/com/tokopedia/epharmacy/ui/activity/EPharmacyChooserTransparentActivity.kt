@@ -13,6 +13,7 @@ import com.tokopedia.epharmacy.utils.EPHARMACY_CONS_PRICE
 import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_NAME
 import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_IS_ONLY_CONSULT
+import com.tokopedia.epharmacy.utils.EPHARMACY_IS_OUTSIDE_WORKING_HOURS
 import com.tokopedia.epharmacy.utils.EPHARMACY_NOTE
 
 class EPharmacyChooserTransparentActivity : BaseActivity() {
@@ -23,6 +24,7 @@ class EPharmacyChooserTransparentActivity : BaseActivity() {
     private var duration = ""
     private var price = ""
     private var note = ""
+    private var isOutsideWorkingHours = false
     private var isOnlyConsultation = false
 
     private val binding: EpharmacyMiniConsultationTransparentActivityBinding by lazy {
@@ -44,11 +46,12 @@ class EPharmacyChooserTransparentActivity : BaseActivity() {
         price = intent.extras?.getString(EPHARMACY_CONS_PRICE) ?: ""
         duration = intent.extras?.getString(EPHARMACY_CONS_DURATION) ?: ""
         note = intent.extras?.getString(EPHARMACY_NOTE) ?: ""
+        isOutsideWorkingHours = intent.extras?.getBoolean(EPHARMACY_IS_OUTSIDE_WORKING_HOURS) ?: false
         isOnlyConsultation = intent.extras?.getBoolean(EPHARMACY_IS_ONLY_CONSULT) ?: false
     }
 
     private fun openBottomSheet() {
-        EPharmacyChooserBottomSheet.newInstance(enableImageURL, groupId, enablerName, price, duration, note, isOnlyConsultation).show(supportFragmentManager, EPharmacyChooserBottomSheet::class.simpleName)
+        EPharmacyChooserBottomSheet.newInstance(enableImageURL, groupId, enablerName, price, duration, note, isOutsideWorkingHours, isOnlyConsultation).show(supportFragmentManager, EPharmacyChooserBottomSheet::class.simpleName)
     }
 
     private fun adjustOrientation() {

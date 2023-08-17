@@ -59,6 +59,7 @@ import com.tokopedia.epharmacy.utils.EXTRA_CHECKOUT_ID_STRING
 import com.tokopedia.epharmacy.utils.EXTRA_SOURCE_STRING
 import com.tokopedia.epharmacy.utils.LabelKeys.Companion.FAILED
 import com.tokopedia.epharmacy.utils.LabelKeys.Companion.SUCCESS
+import com.tokopedia.epharmacy.utils.OPEN_TIME
 import com.tokopedia.epharmacy.utils.PrescriptionActionType
 import com.tokopedia.epharmacy.utils.SHIMMER_COMPONENT
 import com.tokopedia.epharmacy.utils.SHIMMER_COMPONENT_1
@@ -81,6 +82,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.util.*
 import javax.inject.Inject
 
 class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharmacyListener {
@@ -486,7 +488,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             model.prescriptionCTA,
             model.tokoConsultationId,
             model.price,
-            model.duration,
+            model.operatingSchedule,
             model.note
         )
         EPharmacyMiniConsultationAnalytics.clickAttachPrescriptionButton(
@@ -527,18 +529,18 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         prescriptionCTA: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionCTA?,
         tokoConsultationId: String?,
         price: String?,
-        duration: String?,
+        operatingSchedule: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationSource.OperatingSchedule?,
         note: String?
     ) {
         when (prescriptionCTA?.actionType) {
             PrescriptionActionType.REDIRECT_PWA.type -> {
-                startAttachmentChooser(chooserLogo, groupId, enablerName, price, duration, note, true)
+                startAttachmentChooser(chooserLogo, groupId, enablerName, price, operatingSchedule, note, true)
             }
             PrescriptionActionType.REDIRECT_UPLOAD.type -> {
                 startPhotoUpload(enablerName, groupId)
             }
             PrescriptionActionType.REDIRECT_OPTION.type -> {
-                startAttachmentChooser(chooserLogo, groupId, enablerName, price, duration, note)
+                startAttachmentChooser(chooserLogo, groupId, enablerName, price, operatingSchedule, note)
             }
             PrescriptionActionType.REDIRECT_PRESCRIPTION.type -> {
                 tokoConsultationId?.let {
@@ -558,7 +560,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         ePharmacyGroupId: String?,
         enablerName: String?,
         price: String?,
-        duration: String?,
+        operatingSchedule: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationSource.OperatingSchedule?,
         note: String?,
         isOnlyConsult: Boolean = false
     ) {
@@ -567,12 +569,25 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             putExtra(EPHARMACY_GROUP_ID, ePharmacyGroupId)
             putExtra(EPHARMACY_ENABLER_NAME, enablerName)
             putExtra(EPHARMACY_CONS_PRICE, price)
-            putExtra(EPHARMACY_CONS_DURATION, duration)
-            putExtra(EPHARMACY_NOTE, note)
+            putExtra(EPHARMACY_CONS_DURATION, operatingSchedule?.duration)
+            putExtra(EPHARMACY_NOTE, getChatDokterNote(operatingSchedule, note))
             putExtra(EPHARMACY_IS_ONLY_CONSULT, isOnlyConsult)
         }.also {
             startActivityForResult(it, EPHARMACY_CHOOSER_REQUEST_CODE)
         }
+    }
+
+    private fun getChatDokterNote(operatingSchedule: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationSource.OperatingSchedule?, note: String?): String {
+        if(operatingSchedule?.isClosingHour == true){
+            val openTimeLocal: Date? = EPharmacyUtils.formatDateToLocal(dateString = operatingSchedule.daily?.openTime ?: "")
+            val closeTimeLocal: Date? = EPharmacyUtils.formatDateToLocal(dateString = operatingSchedule.daily?.closeTime ?: "")
+            return getString(
+                com.tokopedia.epharmacy.R.string.epharmacy_chooser_outside,
+                EPharmacyUtils.getTimeFromDate(openTimeLocal),
+                EPharmacyUtils.getTimeFromDate(closeTimeLocal)
+            )
+        }
+        return note ?: ""
     }
 
     private fun startPhotoUpload(enablerName: String?, groupId: String?, requestCode: Int = EPHARMACY_UPLOAD_REQUEST_CODE) {

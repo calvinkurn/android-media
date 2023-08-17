@@ -30,4 +30,5 @@ interface EPharmacyListener {
 
     fun onToast(toasterType: Int, message: String) {}
 
+    fun onQuantityChanged() {}
 }
