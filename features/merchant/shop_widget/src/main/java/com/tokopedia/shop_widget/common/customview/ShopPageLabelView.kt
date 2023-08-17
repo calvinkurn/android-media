@@ -77,9 +77,9 @@ class ShopPageLabelView : ShopPageBaseCustomView {
             if (drawableId >= 0) {
                 imageDrawable = AppCompatResources.getDrawable(context, drawableId)
             }
-            imageWidth = styledAttributes.getDimension(R.styleable.ShopPageLabelView_shop_lv_image_width, resources.getDimension(R.dimen.dp_32)).toInt()
+            imageWidth = styledAttributes.getDimension(R.styleable.ShopPageLabelView_shop_lv_image_width, resources.getDimension(com.tokopedia.shop_widget.R.dimen.dp_32)).toInt()
             imageHeight = styledAttributes.getDimension(R.styleable.ShopPageLabelView_shop_lv_image_height, imageWidth.toFloat()).toInt()
-            imageMarginRight = styledAttributes.getDimension(R.styleable.ShopPageLabelView_shop_lv_image_margin_right, resources.getDimension(R.dimen.dp_8)).toInt()
+            imageMarginRight = styledAttributes.getDimension(R.styleable.ShopPageLabelView_shop_lv_image_margin_right, resources.getDimension(com.tokopedia.shop_widget.R.dimen.dp_8)).toInt()
             titleText = styledAttributes.getString(R.styleable.ShopPageLabelView_shop_lv_title)
             titleColorValue = styledAttributes.getColor(R.styleable.ShopPageLabelView_shop_lv_title_color, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
             subtitleColorValue = styledAttributes.getColor(R.styleable.ShopPageLabelView_shop_lv_sub_title_color, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_32))
@@ -90,10 +90,10 @@ class ShopPageLabelView : ShopPageBaseCustomView {
             contentTextStyleValue = styledAttributes.getInt(R.styleable.ShopPageLabelView_shop_lv_content_text_style, Typeface.NORMAL)
             titleTextStyleValue = styledAttributes.getInt(R.styleable.ShopPageLabelView_shop_lv_title_text_style, Typeface.NORMAL)
             maxLines = styledAttributes.getInt(R.styleable.ShopPageLabelView_shop_lv_content_max_lines, 1)
-            contentTextSize = styledAttributes.getDimension(R.styleable.ShopPageLabelView_shop_lv_content_text_size, resources.getDimension(R.dimen.sp_16))
+            contentTextSize = styledAttributes.getDimension(R.styleable.ShopPageLabelView_shop_lv_content_text_size, resources.getDimension(com.tokopedia.shop_widget.R.dimen.sp_16))
             contentMaxWidthPercentage = styledAttributes.getFloat(R.styleable.ShopPageLabelView_shop_lv_content_max_width_percentage, MAX_WIDTH_PERCENT_CONTENT)
             titleTextSize = styledAttributes.getDimension(R.styleable.ShopPageLabelView_shop_lv_title_text_size, contentTextSize)
-            subTitleTextSize = styledAttributes.getDimension(R.styleable.ShopPageLabelView_shop_lv_sub_title_text_size, resources.getDimension(R.dimen.sp_12))
+            subTitleTextSize = styledAttributes.getDimension(R.styleable.ShopPageLabelView_shop_lv_sub_title_text_size, resources.getDimension(com.tokopedia.shop_widget.R.dimen.sp_12))
             minTitleWidth = styledAttributes.getDimensionPixelSize(R.styleable.ShopPageLabelView_shop_lv_title_min_width, 0)
             isArrowShown = styledAttributes.getBoolean(R.styleable.ShopPageLabelView_shop_lv_show_arrow, false)
         } finally {

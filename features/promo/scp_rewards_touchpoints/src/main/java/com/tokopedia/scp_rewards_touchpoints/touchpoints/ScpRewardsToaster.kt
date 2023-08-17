@@ -1,7 +1,5 @@
 package com.tokopedia.scp_rewards_touchpoints.touchpoints
 
-import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.graphics.Color
 import android.view.Gravity
 import android.view.View
@@ -10,11 +8,13 @@ import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.scp_rewards_touchpoints.R
-import com.tokopedia.scp_rewards_touchpoints.touchpoints.model.ScpToasterData
+import com.tokopedia.scp_rewards_touchpoints.common.util.ViewUtil.rotate
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.model.ScpToasterData
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.UnifyMotion
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 object ScpRewardsToaster {
     private val emptyClickListener = View.OnClickListener { }
@@ -49,7 +49,7 @@ object ScpRewardsToaster {
         val cta = if (toasterData.ctaIsShown) WITH_CTA else WITHOUT_CTA
         if (cta == WITH_CTA) {
             onCTAClick = clickListener
-            ctaText = toasterData.ctaTitle
+            ctaText = toasterData.ctaText
         }
         return initToaster(view, toasterData, type, cta)!!
     }
@@ -68,15 +68,15 @@ object ScpRewardsToaster {
         tv_title.text = toasterData.title
         tv_desc.text = toasterData.subtitle
 
-        frame_icon.setImageBitmap(toasterData.sunflare)
-        badge.setImageBitmap(toasterData.badgeImage)
+        frame_icon.setImageBitmap(toasterData.sunburstImage)
+        badge.setImageBitmap(toasterData.iconImage)
 
         val constraintLayoutToaster = viewLayout.findViewById<View>(R.id.constraintLayoutToaster)
 
         if (type == TYPE_NORMAL) {
             constraintLayoutToaster.setBackgroundResource(R.drawable.scp_rewards_toaster_bg_normal)
         } else {
-            constraintLayoutToaster.setBackgroundResource(R.drawable.toaster_bg_error)
+            constraintLayoutToaster.setBackgroundResource(unifycomponentsR.drawable.toaster_bg_error)
         }
 
         val actionTextButton = viewLayout.findViewById<Typography>(R.id.snackbar_btn)
@@ -150,19 +150,8 @@ object ScpRewardsToaster {
 
         toasterCustomBottomHeight = 0
 
-        rotateSunflare(frame_icon)
+        frame_icon.rotate()
 
         return tempSnackBar
-    }
-
-    private fun rotateSunflare(frame_icon: ImageUnify) {
-        frame_icon.apply {
-            ObjectAnimator.ofFloat(this, View.ROTATION, 0f, 360f).apply {
-                duration = 5000
-                interpolator = null
-                repeatCount = ValueAnimator.INFINITE
-                start()
-            }
-        }
     }
 }

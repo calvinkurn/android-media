@@ -5,8 +5,6 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.tokopedia.graphql.data.db.DbMetadata
-import com.tokopedia.graphql.data.db.GraphqlDatabase
 import com.tokopedia.home.beranda.data.datasource.local.HomeDatabase.Companion.homeVersion
 import com.tokopedia.home.beranda.data.datasource.local.converter.Converters
 import com.tokopedia.home.beranda.data.datasource.local.dao.HomeDao
@@ -21,15 +19,6 @@ abstract class HomeDatabase: RoomDatabase() {
     companion object{
         const val homeDatabase = "HomeCache.db"
         const val homeVersion = 10
-
-        @Volatile private var INSTANCE: HomeDatabase? = null
-
-        @JvmStatic
-        fun getInstance(context: Context): HomeDatabase {
-            return INSTANCE ?: synchronized(this){
-                INSTANCE ?: buildDatabase(context).also{ INSTANCE = it}
-            }
-        }
         fun buildDatabase(context: Context) = Room.databaseBuilder(context.applicationContext, HomeDatabase::class.java, homeDatabase).fallbackToDestructiveMigration().build()
     }
 }

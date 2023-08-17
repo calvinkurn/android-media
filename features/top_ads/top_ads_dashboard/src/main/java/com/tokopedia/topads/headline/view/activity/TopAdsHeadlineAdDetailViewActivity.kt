@@ -20,10 +20,13 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.clearImage
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.response.HeadlineInfoResponse
+import com.tokopedia.topads.common.recommendation.RecommendationWidget
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_ACTIVATE
@@ -33,12 +36,16 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EDIT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_ID
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.IS_CHANGED
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.KATA_KUNCI
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SOURCE_HEADLINE_GROUP_DETAIL_PAGE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
+import com.tokopedia.topads.dashboard.recommendation.views.activities.GroupDetailActivity
 import com.tokopedia.topads.dashboard.view.activity.TopAdsBaseDetailActivity
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsDashStatisticFragment
@@ -74,6 +81,7 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(),
     private var progressStatus2: Typography? = null
     private var progressBar: ProgressBarUnify? = null
     private var pager: ViewPager? = null
+    private var entryPointHeadlineGroup: RecommendationWidget? = null
 
     private var dataStatistic: DataStatistic? = null
     private var selectedStatisticType: Int = 0
@@ -154,6 +162,7 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(),
         progressStatus2 = findViewById(R.id.progress_status2)
         progressBar = findViewById(R.id.progress_bar)
         pager = findViewById(R.id.pager)
+        entryPointHeadlineGroup = findViewById(R.id.entryPointHeadlineGroup)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -211,6 +220,8 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(),
                 }
             }
         })
+        viewModel.getGroupInsightData(groupId.toString(), SOURCE_HEADLINE_GROUP_DETAIL_PAGE)
+        setUpObserver()
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(view_detail_iklan,
             "{${userSession.shopId}} - {$groupId}",
             userSession.userId)
@@ -223,6 +234,28 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(),
             setResult(Activity.RESULT_OK, intent)
         }
         super.onBackPressed()
+    }
+
+    private fun setUpObserver() {
+        viewModel.groupInsightCount.observe(this) {
+            if (it is TopAdsListAllInsightState.Success) {
+                entryPointHeadlineGroup?.renderWidgetOnDetailPage(it.data.topAdsBatchGetInsightCountByAdGroupID.groups.firstOrNull()?.groupData?.count
+                    ?: Int.ZERO)
+                entryPointHeadlineGroup?.show()
+                entryPointHeadlineGroup?.binding?.widgetCTAButton?.setOnClickListener {
+                    val bundle = Bundle()
+                    bundle.putString(RecommendationConstants.AD_GROUP_TYPE_KEY, RecommendationConstants.HEADLINE_KEY)
+                    bundle.putString(RecommendationConstants.AD_GROUP_NAME_KEY, groupName)
+                    bundle.putString(RecommendationConstants.AD_GROUP_ID_KEY, groupId.toString())
+                    bundle.putInt(RecommendationConstants.INSIGHT_TYPE_KEY, RecommendationConstants.DEFAULT_SELECTED_INSIGHT_TYPE)
+                    Intent(this, GroupDetailActivity::class.java).apply {
+                        this.putExtra(RecommendationConstants.GROUP_DETAIL_BUNDLE_KEY, bundle)
+                        startActivity(this)
+                    }
+
+                }
+            }
+        }
     }
 
     private fun loadData() {

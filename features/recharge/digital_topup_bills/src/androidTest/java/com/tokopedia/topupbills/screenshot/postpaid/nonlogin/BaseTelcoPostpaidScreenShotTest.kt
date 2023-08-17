@@ -117,34 +117,34 @@ abstract class BaseTelcoPostpaidScreenShotTest {
         onView(withId(R.id.action_overflow_menu)).perform(click())
         Thread.sleep(2000)
         CommonActions.findViewAndScreenShot(
-                R.id.container_menu,
+            com.tokopedia.common.topupbills.R.id.container_menu,
                 generatePrefix(),
                 "interaction_menu"
         )
         Thread.sleep(2000)
-        onView(withId(R.id.bottom_sheet_close)).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)).perform(click())
     }
 
     fun take_screenshot_interaction_promo() {
         onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).perform(click())
         Thread.sleep(2000)
         val viewInteraction = onView(AllOf.allOf(
-                allOf(withId(R.id.recycler_view_menu_component), withParent(withId(R.id.layout_widget)),
+                allOf(withId(com.tokopedia.common.topupbills.R.id.recycler_view_menu_component), withParent(withId(com.tokopedia.common.topupbills.R.id.layout_widget)),
                         isDisplayed()))).check(matches(isDisplayed()))
 
         Thread.sleep(2000)
         CommonActions.findViewAndScreenShot(
-                R.id.layout_widget,
+            com.tokopedia.common.topupbills.R.id.layout_widget,
                 generatePrefix(),
                 "promo"
         )
 
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TopupBillsPromoListAdapter.PromoItemViewHolder>(0,
-                CommonActions.clickChildViewWithId(R.id.btn_copy_promo)))
+                CommonActions.clickChildViewWithId(com.tokopedia.common.topupbills.R.id.btn_copy_promo)))
 
         Thread.sleep(2000)
         CommonActions.findViewAndScreenShot(
-                R.id.layout_widget,
+            com.tokopedia.common.topupbills.R.id.layout_widget,
                 generatePrefix(),
                 "promo_chosen"
         )

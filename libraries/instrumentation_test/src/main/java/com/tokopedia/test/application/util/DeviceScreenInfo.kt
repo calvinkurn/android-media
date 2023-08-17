@@ -44,6 +44,6 @@ object DeviceScreenInfo {
 
     @JvmStatic
     fun isTablet(context: Context): Boolean {
-        return context.resources.getBoolean(R.bool.isTablet)
+        return context.resources.getBoolean(com.tokopedia.device.info.R.bool.isTablet)
     }
 }

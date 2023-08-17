@@ -14,6 +14,7 @@ class TokoNowEmptyStateNoResultUiModel(
     val defaultImage: String = "",
     val defaultTextPrimaryButton: String = "",
     val defaultUrlPrimaryButton: String = "",
+    val excludeFilter: Option? = null,
     @StringRes val defaultTitleResId: Int? = null,
     @StringRes val defaultDescriptionResId: Int? = null,
     @StringRes val globalSearchBtnTextResId: Int? = null

@@ -15,6 +15,7 @@ import com.tokopedia.play.util.assertType
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.action.*
+import com.tokopedia.play.view.uimodel.event.ShowVariantSheet
 import com.tokopedia.play.view.uimodel.recom.ExploreWidgetConfig
 import com.tokopedia.play.view.uimodel.recom.PlayChannelRecommendationConfig
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMock
@@ -296,5 +297,48 @@ class PlayExploreWidgetTest {
             it.viewModel.isAnyBottomSheetsShown.assertTrue()
             stateAndEvent.first.exploreWidget.data.state.isFail.assertTrue()
         }
+    }
+
+    @Test
+    fun `if theres category get two tabs`() {
+        createPlayViewModelRobot(
+            repo = repo,
+            dispatchers = testDispatcher,
+            remoteConfig = mockRemoteConfig,
+        ).use {
+            it.createPage(mockChannelData)
+            it.focusPage(mockChannelData)
+
+            val state = it.recordState {}
+            state.channel.channelRecomConfig.exploreWidgetConfig.assertType<ExploreWidgetConfig> {
+                    c -> c.sourceId.assertEqualTo(config.exploreWidgetConfig.sourceId)
+                c.group.assertEqualTo(config.exploreWidgetConfig.group)
+                c.sourceType.assertEqualTo(config.exploreWidgetConfig.sourceType)
+                c.categoryName.assertEqualTo(config.exploreWidgetConfig.categoryName)
+            }
+            it.viewModel.exploreWidgetTabs.size.assertEqualTo(1)
+            it.viewModel.exploreWidgetTabs.first().assertEqualTo("Eksplor")
+            it.viewModel.exploreWidgetTabs.last().assertEqualTo("Eksplor")
+        }
+    }
+
+    @Test
+    fun `hidesheet` () {
+        createPlayViewModelRobot(
+            repo = repo,
+            dispatchers = testDispatcher,
+            remoteConfig = mockRemoteConfig,
+        ).use {
+            it.createPage(mockChannelData)
+            it.focusPage(mockChannelData)
+
+            val event = it.recordEvent {
+                FetchWidgets(ExploreWidgetType.Default)
+                submitAction(HideBottomSheet)
+            }
+
+            it.viewModel.isAnyBottomSheetsShown.assertFalse()
+        }
+
     }
 }
