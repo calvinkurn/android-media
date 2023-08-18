@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -66,6 +68,7 @@ class ShopProductCarouselTabFragment : BaseDaggerFragment() {
     private var onMainBannerClick : (ShopHomeProductCarouselUiModel.Tab.ComponentList.Data) -> Unit = {}
     private var onProductClick : (ShopHomeProductCarouselProductCard) -> Unit = {}
     private var onVerticalBannerClick : (ShopHomeProductCarouselVerticalBannerVerticalBanner) -> Unit = {}
+    private var isReachedLastItem: (Boolean) -> Unit = {}
 
     private var binding by autoClearedNullable<FragmentShopProductCarouselTabBinding>()
     private val productAdapter = ShopHomeProductCarouselAdapter()
@@ -123,7 +126,32 @@ class ShopProductCarouselTabFragment : BaseDaggerFragment() {
         
         binding?.recyclerView?.apply {
             adapter = productAdapter
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = linearLayoutManager
+            addOnScrollListener(object : OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    val canScroll = recyclerView.canScrollHorizontally(1)
+                    val isOnStartItem = recyclerView.canScrollHorizontally(0)
+                    val isOnLastItem = !canScroll
+
+                    val isScrollLeft = dx < 0
+                    val isScrollRight = dx > 0
+
+                    val itemPosition = linearLayoutManager.findFirstVisibleItemPosition()
+
+                    println("RV: isOnStartItem $isOnStartItem isOnLastItem $isOnLastItem")
+
+                    if (canScroll) {
+                        isReachedLastItem(false)
+                    } else if (isOnStartItem) {
+                        isReachedLastItem(true)
+                    } else if (isOnLastItem) {
+                        isReachedLastItem(true)
+                    } else {
+                        isReachedLastItem(false)
+                    }
+                }
+            })
         }
         productAdapter.setOnProductClick { selectedProduct ->
             onProductClick(selectedProduct)
@@ -165,4 +193,7 @@ class ShopProductCarouselTabFragment : BaseDaggerFragment() {
         this.onProductClick = onProductClick
     }
 
+    fun setOnProductHorizontalScrollChange(isReachedLastItem: (Boolean) -> Unit) {
+        this.isReachedLastItem = isReachedLastItem
+    }
 }

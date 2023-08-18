@@ -1,12 +1,14 @@
 package com.tokopedia.shop.home.view.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.strikethrough
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopHomeProductCarouselProductInfoCardBinding
@@ -76,38 +78,42 @@ class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<RecyclerView.ViewHol
                 binding.imgProduct.loadImage(product.imageUrl)
 
                 binding.tpgProductName.text = product.name
-                binding.tpgProductName.isVisible = product.showProductInfo
+                binding.tpgProductName.showIfOrInvisible(product.showProductInfo)
 
                 binding.tpgProductPrice.text = product.price
-                binding.tpgProductPrice.isVisible = product.showProductInfo
+                binding.tpgProductPrice.showIfOrInvisible(product.showProductInfo)
 
                 val isDiscounted = product.slashedPricePercent.isMoreThanZero()
 
                 binding.tpgSlashedProductPrice.text = product.slashedPrice
                 binding.tpgSlashedProductPrice.strikethrough()
-                binding.tpgSlashedProductPrice.isVisible = product.showProductInfo && isDiscounted
+                binding.tpgSlashedProductPrice.showIfOrInvisible(product.showProductInfo && isDiscounted)
 
                 val discountPercentage = binding.labelDiscount.context.getString(R.string.shop_page_placeholder_discount_percentage, product.slashedPricePercent)
                 binding.labelDiscount.setLabel(discountPercentage)
-                binding.labelDiscount.isVisible = product.showProductInfo && isDiscounted
+                binding.labelDiscount.showIfOrInvisible(product.showProductInfo && isDiscounted)
 
                 val hasRating = product.rating.isNotEmpty()
 
-                binding.imgStar.isVisible = product.showProductInfo && hasRating
-                binding.tpgBullet.isVisible = product.showProductInfo && hasRating
+                binding.imgStar.showIfOrInvisible(product.showProductInfo && hasRating)
+                binding.tpgBullet.showIfOrInvisible(product.showProductInfo && hasRating)
 
                 binding.tpgRating.text = product.rating
-                binding.tpgRating.isVisible = product.showProductInfo && hasRating
+                binding.tpgRating.showIfOrInvisible(product.showProductInfo && hasRating)
 
                 val hasBeenPurchased = product.soldCount.isNotEmpty()
                 binding.tpgProductSoldCount.text = product.soldCount
-                binding.tpgProductSoldCount.isVisible = product.showProductInfo && hasBeenPurchased
+                binding.tpgProductSoldCount.showIfOrInvisible(product.showProductInfo && hasBeenPurchased)
 
                 binding.root.setOnClickListener { onProductClick(product) }
             }
         }
     }
 
+    private fun View.showIfOrInvisible(show: Boolean) {
+        if (show) visible() else invisible()
+    }
+    
     inner class VerticalBannerViewHolder(
         private val binding: ItemShopHomeProductCarouselVerticalBannerCardBinding
     ) : RecyclerView.ViewHolder(binding.root) {

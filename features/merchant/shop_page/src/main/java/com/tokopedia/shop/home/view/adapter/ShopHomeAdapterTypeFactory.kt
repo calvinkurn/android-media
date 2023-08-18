@@ -92,7 +92,6 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowCaseNavigationLeftMainBannerViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowCaseNavigationTopMainBannerViewHolder
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
 import com.tokopedia.shop_widget.common.util.WidgetState
@@ -295,25 +294,6 @@ open class ShopHomeAdapterTypeFactory(
         } else {
             ShopHomeShowCaseNavigationCarouselViewHolder.LAYOUT
         }
-    }
-
-    fun determineProductCarouselWidgetAppearance(model: BaseShopHomeWidgetUiModel) : Int {
-        val uiModel = model as? ShopHomeProductCarouselUiModel
-        val tabs= uiModel?.tabs
-
-        /* - Tabs
-               - Component list
-        *            - Banner Single
-        *            - Product card
-        *               - Has vertical banner
-                            - With product info
-                            - Without product info
-        *               - No vertical banner
-                            - With product info
-                            - Without product info
-        * */
-
-        return 0
     }
 
     fun isShowThematicWidgetPlaceHolder(model: ThematicWidgetUiModel): Boolean {
