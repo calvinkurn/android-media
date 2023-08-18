@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/parent_layout"
+<androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/parent_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_NN0">
+    android:background="@color/Unify_NN0"
+    xmlns:tools="http://schemas.android.com/tools">
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/group_header"
@@ -43,13 +43,13 @@
         <include
             android:id="@+id/loading_state_olp"
             layout="@layout/loading_state_olp"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
         <com.tokopedia.buy_more_get_more.olp.view.widget.StickySingleHeaderView
             android:id="@+id/sticky_content"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/miniCartPlaceholder"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/header">

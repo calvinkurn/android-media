@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.core.view.WindowCompat
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -33,7 +32,9 @@ import com.tokopedia.buy_more_get_more.olp.utils.DataEndlessScrollListener
 import com.tokopedia.buy_more_get_more.sort.activity.ShopProductSortActivity
 import com.tokopedia.buy_more_get_more.sort.listener.ProductSortListener
 import com.tokopedia.campaign.helper.BuyMoreGetMoreHelper
+import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -156,10 +157,10 @@ class OfferLandingPageFragment :
         viewModel.miniCartAdd.observe(viewLifecycleOwner) { atc ->
             when (atc) {
                 is Success -> {
-                    Toast.makeText(context, atc.data.data.success.toString(), Toast.LENGTH_SHORT).show()
+                    binding?.miniCartPlaceholder.showToaster(atc.data.data.success.toString())
                 }
                 is Fail -> {
-                    Toast.makeText(context, atc.throwable.localizedMessage, Toast.LENGTH_SHORT).show()
+                    binding?.miniCartPlaceholder.showToaster(message = atc.throwable.localizedMessage)
                 }
             }
         }
