@@ -4,6 +4,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import com.tokopedia.inbox.R
 import com.tokopedia.inbox.universalinbox.stub.common.withRecyclerView
+import com.tokopedia.carouselproductcard.R as carouselproductcardR
 
 object RecommendationRobot {
     fun clickProductOnPosition(position: Int) {
@@ -15,8 +16,8 @@ object RecommendationRobot {
 
     fun clickPrePurchaseProductOnPosition(position: Int) {
         onView(
-            withRecyclerView(com.tokopedia.carouselproductcard.R.id.carouselProductCardRecyclerView)
-                .atPositionOnView(position, com.tokopedia.carouselproductcard.R.id.carouselProductCardItem)
+            withRecyclerView(carouselproductcardR.id.carouselProductCardRecyclerView)
+                .atPositionOnView(position, carouselproductcardR.id.carouselProductCardItem)
         ).perform(click())
     }
 }

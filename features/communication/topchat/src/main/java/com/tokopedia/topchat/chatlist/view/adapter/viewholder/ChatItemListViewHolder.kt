@@ -372,8 +372,7 @@ class ChatItemListViewHolder constructor(
 
     private fun bindLabelIcon(chat: ItemChatListPojo) {
         chat.labelIcon.run {
-            val validation = isNotEmpty()
-            if (validation) {
+            if (isNotEmpty()) {
                 labelIcon?.showWithCondition(!listener.isTabSeller())
                 labelIcon?.loadImage(chat.labelIcon)
             } else {
