@@ -160,6 +160,8 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
 
                 // need to improve for support multiple media
                 intent.putExtra(PlacementImageActivity.PLACEMENT_PARAM_KEY, viewModel.state.value.param.paths.first())
+                intent.putExtra(PlacementImageActivity.PLACEMENT_MODEL_KEY, viewModel.state.value.model?.image?.placement)
+
                 placementIntent.launch(intent)
             }
             ToolType.AUDIO_MUTE -> {}

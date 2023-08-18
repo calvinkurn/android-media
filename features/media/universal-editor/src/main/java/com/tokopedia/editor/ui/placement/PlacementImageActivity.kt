@@ -66,6 +66,11 @@ class PlacementImageActivity : BaseActivity(), NavToolbarComponent.Listener {
             ?: intent?.getStringExtra(PLACEMENT_PARAM_KEY))?.also {
             viewModel.imagePath = it
         }
+
+        (savedInstanceState?.getParcelable<ImagePlacementModel>(PLACEMENT_MODEL_KEY)
+            ?: intent?.getParcelableExtra(PLACEMENT_MODEL_KEY))?.also {
+            viewModel.placementModel = it
+        }
     }
 
     private fun initInjector() {
@@ -101,7 +106,9 @@ class PlacementImageActivity : BaseActivity(), NavToolbarComponent.Listener {
 
     companion object {
         const val PLACEMENT_RESULT_KEY = "input_placement_result"
+
         const val PLACEMENT_PARAM_KEY = "placement_param_key"
+        const val PLACEMENT_MODEL_KEY = "placement_model_key"
 
         fun create(context: Context): Intent {
             return Intent(context, PlacementImageActivity::class.java)
