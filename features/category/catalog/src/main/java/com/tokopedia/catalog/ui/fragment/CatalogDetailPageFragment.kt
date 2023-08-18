@@ -17,7 +17,6 @@ import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
 import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
-import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -32,7 +31,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment() {
         WidgetCatalogAdapter(CatalogAdapterFactoryImpl())
     }
 
-    private val widgets by  lazy {
+    private val widgets by lazy {
         arrayListOf<BaseCatalogUiModel>()
     }
 
@@ -74,15 +73,32 @@ class CatalogDetailPageFragment : BaseDaggerFragment() {
                 layoutManager = LinearLayoutManager(it)
                 adapter = widgetAdapter
             }
-            widgets.add(HeroBannerUiModel("bannercoy","","" ,"konten"))
-            widgets.add(DummyUiModel("dummybann", "","","konten"))
+            widgets.add(
+                HeroBannerUiModel(
+                    "bannercoy",
+                    "",
+                    "",
+                    widgetBackgroundColor = null,
+                    widgetTextColor = null,
+                    "konten"
+                )
+            )
+            widgets.add(
+                DummyUiModel(
+                    "dummybann",
+                    "",
+                    "",
+                    widgetBackgroundColor = null,
+                    widgetTextColor = null,
+                    "konten"
+                )
+            )
             widgets.add(TopFeaturesUiModel.dummyTopFeatures())
             widgets.add(SliderImageTextUiModel.dummySliderImageText())
             widgetAdapter.addWidget(widgets)
         }
 
     }
-
 
 
 }

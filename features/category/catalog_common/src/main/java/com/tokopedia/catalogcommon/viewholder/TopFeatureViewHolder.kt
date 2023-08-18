@@ -31,7 +31,7 @@ class TopFeatureViewHolder(itemView: View) : AbstractViewHolder<TopFeaturesUiMod
 
 
     override fun bind(element: TopFeaturesUiModel) {
-        binding?.lnRootUi?.setBackgroundColor(element.backgroundColorWidget.orDefaultColor(itemView.context))
+        binding?.lnRootUi?.setBackgroundColor(element.widgetBackgroundColor.orDefaultColor(itemView.context))
         element.items.forEachIndexed { index, item ->
             createItem(item)
             if (index < element.items.size - 1) {

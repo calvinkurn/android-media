@@ -26,7 +26,7 @@ class SliderImageTextViewHolder(itemView: View) :
     private val displayMetrics = itemView.resources.displayMetrics
 
     override fun bind(element: SliderImageTextUiModel) {
-        binding?.root?.setBackgroundColor(element.backgroundColor.orDefaultColor(itemView.context))
+        binding?.root?.setBackgroundColor(element.widgetBackgroundColor.orDefaultColor(itemView.context))
         binding?.rvItems?.apply {
             adapter = ItemSliderImageTextAdapter(element.items)
             layoutManager =
