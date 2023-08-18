@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/content_common_space_16"
-    android:background="@color/stories_background_dms">
+    android:background="@color/Unify_Static_Black">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_stories_detail_content"
