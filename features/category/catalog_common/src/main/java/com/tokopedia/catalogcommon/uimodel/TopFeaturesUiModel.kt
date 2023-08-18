@@ -44,6 +44,22 @@ data class TopFeaturesUiModel(
                     backgroundColor = "#AAB4C8".stringHexColorParseToInt(30),
                     borderColor = "#AAB4C8".stringHexColorParseToInt(30)
                 ),
+                ItemTopFeatureUiModel(
+                    "",
+                    "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png",
+                    "Lorep Ipsum",
+                    textColor = "#AEB2BF".stringHexColorParseToInt(),
+                    backgroundColor = "#AAB4C8".stringHexColorParseToInt(30),
+                    borderColor = "#AAB4C8".stringHexColorParseToInt(30)
+                ),
+                ItemTopFeatureUiModel(
+                    "",
+                    "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png",
+                    "Lorep Ipsum",
+                    textColor = "#AEB2BF".stringHexColorParseToInt(),
+                    backgroundColor = "#AAB4C8".stringHexColorParseToInt(30),
+                    borderColor = "#AAB4C8".stringHexColorParseToInt(30)
+                )
             )
         )
     }

@@ -10,7 +10,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.databinding.WidgetItemTopFeatureBinding
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
-import com.tokopedia.catalogcommon.util.Divider
 import com.tokopedia.catalogcommon.util.orDefaultColor
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -35,6 +34,9 @@ class TopFeatureViewHolder(itemView: View) : AbstractViewHolder<TopFeaturesUiMod
         binding?.lnRootUi?.setBackgroundColor(element.backgroundColorWidget.orDefaultColor(itemView.context))
         element.items.forEachIndexed { index, item ->
             createItem(item)
+            if (index < element.items.size - 1) {
+                binding?.lnRootUi?.addView(Divider())
+            }
         }
     }
 
@@ -60,7 +62,6 @@ class TopFeatureViewHolder(itemView: View) : AbstractViewHolder<TopFeaturesUiMod
         val linearLayout = LinearLayout(itemView.context)
         val layoutParam = LinearLayout.LayoutParams(width, height)
         layoutParam.weight = 1f
-        layoutParam.setMargins(5.dpToPx(displayMetrics),0,5.dpToPx(displayMetrics),0)
         linearLayout.layoutParams = layoutParam
         linearLayout.orientation = LinearLayout.VERTICAL
         linearLayout.gravity = Gravity.CENTER
@@ -103,5 +104,15 @@ class TopFeatureViewHolder(itemView: View) : AbstractViewHolder<TopFeaturesUiMod
         icon.layoutParams = layoutParam
         icon.loadImage(image)
         return icon
+    }
+
+    private fun Divider(width: Int = 8): View {
+        val view = View(itemView.context)
+        val layoutParam = LinearLayout.LayoutParams(
+            width.dpToPx(displayMetrics),
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+        view.layoutParams = layoutParam
+        return view
     }
 }
