@@ -1293,12 +1293,8 @@ open class ShopPageHomeFragment :
             viewLifecycleOwner,
             Observer {
                 when (it) {
-                    is Success -> {
-                        shopHomeAdapter?.setProductCarousel(it.data)
-                    }
-                    is Fail -> {
-
-                    }
+                    is Success -> shopHomeAdapter?.setProductCarousel(it.data)
+                    is Fail -> {}
                 }
             }
         )

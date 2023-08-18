@@ -146,7 +146,7 @@ class ShopProductCarouselTabFragment : BaseDaggerFragment() {
                 }
 
                 is ShopProductCarouselTabViewModel.UiState.Error -> {
-
+                    productAdapter.submit(emptyList())
                 }
             }
         }
