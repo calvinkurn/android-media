@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="4dp"
-    android:paddingBottom="4dp">
+    android:layout_marginEnd="4dp">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgProduct"
@@ -69,7 +68,6 @@
         android:id="@+id/imgStar"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        android:layout_marginTop="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/labelDiscount"
@@ -80,8 +78,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="2dp"
-        android:layout_marginTop="4dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
         android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imgStar"
         app:layout_constraintTop_toBottomOf="@+id/labelDiscount"
         app:typographyType="display_3"
@@ -91,12 +91,13 @@
         android:id="@+id/tpgBullet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:paddingTop="4dp"
         android:paddingStart="4dp"
         android:paddingEnd="4dp"
+        android:paddingBottom="4dp"
         android:text="@string/shop_page_dot_character"
         android:textColor="@color/Unify_NN600"
-        app:layout_constraintBottom_toBottomOf="@+id/imgStar"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/tpgRating"
         app:layout_constraintTop_toBottomOf="@+id/labelDiscount"
         app:typographyType="display_3" />
@@ -105,14 +106,14 @@
         android:id="@+id/tpgProductSoldCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
         android:textColor="@color/Unify_NN600"
-        app:layout_constraintBottom_toBottomOf="@+id/imgStar"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/tpgBullet"
         app:layout_constraintTop_toBottomOf="@+id/labelDiscount"
-        app:layout_constraintVertical_bias="0.00999999"
         app:typographyType="display_3"
         tools:text="Terjual 500" />
 

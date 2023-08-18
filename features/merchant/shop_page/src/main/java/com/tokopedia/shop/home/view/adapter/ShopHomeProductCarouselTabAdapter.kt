@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.strikethrough
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
@@ -32,6 +33,15 @@ class ShopHomeProductCarouselTabAdapter : RecyclerView.Adapter<RecyclerView.View
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType) {
+            VIEW_TYPE_SHIMMER -> {
+                val binding = ItemShopHomeProductCarouselShimmerBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+                ShimmerViewHolder(binding)
+            }
+
             VIEW_TYPE_VERTICAL_BANNER -> {
                 val binding = ItemShopHomeProductCarouselVerticalBannerCardBinding.inflate(
                     LayoutInflater.from(parent.context),
@@ -48,15 +58,6 @@ class ShopHomeProductCarouselTabAdapter : RecyclerView.Adapter<RecyclerView.View
                 )
                 ProductViewHolder(binding)
             }
-            VIEW_TYPE_SHIMMER -> {
-                val binding = ItemShopHomeProductCarouselShimmerBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
-                )
-                ShimmerViewHolder(binding)
-            }
-
             else -> {
                 val binding = ItemShopHomeProductCarouselProductInfoCardBinding.inflate(
                     LayoutInflater.from(parent.context),
@@ -72,18 +73,15 @@ class ShopHomeProductCarouselTabAdapter : RecyclerView.Adapter<RecyclerView.View
 
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val item = items[position]
-        when (item) {
-            ShopHomeProductCarouselShimmer -> (holder as ShimmerViewHolder).bind()
+        when (val item = items[position]) {
+            ShopHomeProductCarouselShimmer -> {}
             is ShopHomeProductCarouselProductCard -> (holder as ProductViewHolder).bind(item)
             is ShopHomeProductCarouselVerticalBannerVerticalBanner -> (holder as VerticalBannerViewHolder).bind(item)
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        val item = items[position]
-
-        return when(item) {
+        return when(items[position]) {
             ShopHomeProductCarouselShimmer -> VIEW_TYPE_SHIMMER
             is ShopHomeProductCarouselVerticalBannerVerticalBanner -> VIEW_TYPE_VERTICAL_BANNER
             is ShopHomeProductCarouselProductCard -> VIEW_TYPE_PRODUCT
@@ -91,13 +89,8 @@ class ShopHomeProductCarouselTabAdapter : RecyclerView.Adapter<RecyclerView.View
     }
 
     inner class ShimmerViewHolder(
-        private val binding: ItemShopHomeProductCarouselShimmerBinding
-    ) : RecyclerView.ViewHolder(binding.root) {
-
-        fun bind() {
-
-        }
-    }
+        binding: ItemShopHomeProductCarouselShimmerBinding
+    ) : RecyclerView.ViewHolder(binding.root)
 
     inner class ProductViewHolder(
         private val binding: ItemShopHomeProductCarouselProductInfoCardBinding
@@ -112,36 +105,49 @@ class ShopHomeProductCarouselTabAdapter : RecyclerView.Adapter<RecyclerView.View
                 binding.tpgProductName.text = product.name
                 binding.tpgProductName.showIfOrInvisible(product.showProductInfo)
 
-                binding.tpgProductPrice.text = product.price
-                binding.tpgProductPrice.showIfOrInvisible(product.showProductInfo)
-
-                val isDiscounted = product.slashedPricePercent.isMoreThanZero()
-
-                binding.tpgSlashedProductPrice.text = product.slashedPrice
-                binding.tpgSlashedProductPrice.strikethrough()
-                binding.tpgSlashedProductPrice.showIfOrInvisible(product.showProductInfo && isDiscounted)
-
-                val discountPercentage = binding.labelDiscount.context.getString(R.string.shop_page_placeholder_discount_percentage, product.slashedPricePercent)
-                binding.labelDiscount.setLabel(discountPercentage)
-                binding.labelDiscount.showIfOrInvisible(product.showProductInfo && isDiscounted)
-
-                val hasRating = product.rating.isNotEmpty()
-
-                binding.imgStar.showIfOrInvisible(product.showProductInfo && hasRating)
-                binding.tpgBullet.showIfOrInvisible(product.showProductInfo && hasRating)
-
-                binding.tpgRating.text = product.rating
-                binding.tpgRating.showIfOrInvisible(product.showProductInfo && hasRating)
-
-                val hasBeenPurchased = product.soldCount.isNotEmpty()
-                binding.tpgProductSoldCount.text = product.soldCount
-                binding.tpgProductSoldCount.showIfOrInvisible(product.showProductInfo && hasBeenPurchased)
+                renderProductPrice(product)
+                renderSlashedProductPrice(product)
+                renderProductRating(product)
+                renderProductSoldCount(product)
 
                 binding.root.setOnClickListener { onProductClick(product) }
             }
         }
-    }
 
+        private fun renderProductSoldCount(product: ShopHomeProductCarouselProductCard) {
+            val hasBeenPurchased = product.soldCount.isNotEmpty()
+            binding.tpgProductSoldCount.text = product.soldCount
+            binding.tpgProductSoldCount.isVisible = product.showProductInfo && hasBeenPurchased
+        }
+
+        private fun renderProductRating(product: ShopHomeProductCarouselProductCard) {
+            val hasRating = product.rating.isNotEmpty()
+
+            binding.imgStar.isVisible = product.showProductInfo && hasRating
+            binding.tpgBullet.isVisible = product.showProductInfo && hasRating
+
+            binding.tpgRating.text = product.rating
+            binding.tpgRating.isVisible = product.showProductInfo && hasRating
+        }
+
+        private fun renderProductPrice(product: ShopHomeProductCarouselProductCard) {
+            binding.tpgProductPrice.text = product.price
+            binding.tpgProductPrice.showIfOrInvisible(product.showProductInfo)
+        }
+
+        private fun renderSlashedProductPrice(product: ShopHomeProductCarouselProductCard) {
+            val isDiscounted = product.slashedPricePercent.isMoreThanZero()
+            binding.tpgSlashedProductPrice.text = product.slashedPrice
+            binding.tpgSlashedProductPrice.strikethrough()
+            binding.tpgSlashedProductPrice.isVisible = product.showProductInfo && isDiscounted
+
+            val discountPercentage = binding.labelDiscount.context.getString(R.string.shop_page_placeholder_discount_percentage, product.slashedPricePercent)
+            binding.labelDiscount.setLabel(discountPercentage)
+            binding.labelDiscount.isVisible = product.showProductInfo && isDiscounted
+        }
+    }
+    
+    
     private fun View.showIfOrInvisible(show: Boolean) {
         if (show) visible() else invisible()
     }

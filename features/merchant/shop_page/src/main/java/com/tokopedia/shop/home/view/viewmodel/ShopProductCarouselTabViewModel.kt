@@ -70,7 +70,7 @@ class ShopProductCarouselTabViewModel @Inject constructor(
                     products
                 }
 
-                //delay(15_000)
+                delay(15_000)
                 _carouselWidgets.postValue(UiState.Success(carouselWidgets))
             } ,
             onError = { throwable ->
@@ -97,19 +97,19 @@ class ShopProductCarouselTabViewModel @Inject constructor(
     ): List<ShopHomeProductCarouselProductCard> {
         return when(productWidget.linkType) {
             LinkType.FEATURED_PRODUCT -> {
-                val featuredProducts = getFeaturedProducts(shopId, userSession.userId, userAddress, productWidget.isShowProductInfo)
+                val featuredProducts = getFeaturedProducts(shopId, userSession.userId, userAddress, true)
                 featuredProducts
             }
             LinkType.PRODUCT -> {
                 val sortId = productWidget.linkId
                 val showcaseId = ShopPageConstant.ALL_SHOWCASE_ID
-                val sortedProducts = getSortedProducts(shopId, showcaseId, userAddress, sortId, productWidget.isShowProductInfo)
+                val sortedProducts = getSortedProducts(shopId, showcaseId, userAddress, sortId, true)
                 sortedProducts
             }
             LinkType.SHOWCASE -> {
                 val sortId = productWidget.linkId
                 val showcaseId = productWidget.linkId.toString()
-                val showCaseProducts = getSortedProducts(shopId, showcaseId, userAddress, sortId, productWidget.isShowProductInfo)
+                val showCaseProducts = getSortedProducts(shopId, showcaseId, userAddress, sortId, true)
                 showCaseProducts
             }
         }

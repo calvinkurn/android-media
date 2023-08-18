@@ -652,10 +652,6 @@ open class ShopHomeAdapter(
         return visitables.filterIsInstance<ShopHomeVoucherUiModel>().firstOrNull()
     }
 
-    fun getProductCarouselModel(): ShopHomeProductCarouselUiModel? {
-        return visitables.filterIsInstance<ShopHomeProductCarouselUiModel>().firstOrNull()
-    }
-
     fun getPersoProductComparisonWidgetUiModel(): ShopHomePersoProductComparisonUiModel? {
         return visitables.filterIsInstance<ShopHomePersoProductComparisonUiModel>().firstOrNull()
     }

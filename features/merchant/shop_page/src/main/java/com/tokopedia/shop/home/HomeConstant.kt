@@ -58,9 +58,3 @@ object WidgetName {
     const val SHOWCASE_GRID_BIG = "etalase_banner_besar_2x1"
     const val IS_SHOW_ETALASE_NAME = 1
 }
-
-object ComponentType {
-    const val BANNER_SINGLE = "banner_single"
-    const val PRODUCT_CARD_WITH_INFO = "product_card_with_info"
-    const val PRODUCT_CARD_WITHOUT_INFO = "product_card_without_info"
-}
