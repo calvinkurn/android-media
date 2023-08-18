@@ -45,6 +45,7 @@ import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.navigation_common.listener.FragmentListener
@@ -375,6 +376,7 @@ class FeedBaseFragment :
             feedMainViewModel.feedTabs
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.RESUMED)
                 .collectLatest { state ->
+                    if (state == null) return@collectLatest
                     when (state) {
                         NetworkResult.Loading -> {
                             hideErrorView()
@@ -386,11 +388,10 @@ class FeedBaseFragment :
                             initTabsView(state.data)
                         }
                         is NetworkResult.Error -> {
-                            hideLoading()
                             showErrorView(state.error)
                         }
-                        else -> {
-                            // nothing
+                        NetworkResult.Unknown -> {
+                            // ignore
                         }
                     }
                 }
@@ -505,26 +506,26 @@ class FeedBaseFragment :
     private fun initMetaView(meta: MetaModel) {
         showOnboarding(meta)
 
-        binding.feedUserProfileImage.show()
+        binding.containerFeedTopNav.feedUserProfileImage.show()
         if (userSession.isLoggedIn) {
             if (meta.showMyProfile && meta.profilePhotoUrl.isNotEmpty()) {
-                binding.feedUserProfileImage.setImageUrl(meta.profilePhotoUrl)
+                binding.containerFeedTopNav.feedUserProfileImage.setImageUrl(meta.profilePhotoUrl)
             } else {
-                binding.feedUserProfileImage.hide()
+                binding.containerFeedTopNav.feedUserProfileImage.hide()
             }
         }
 
-        binding.btnFeedCreatePost.setOnClickListener {
+        binding.containerFeedTopNav.btnFeedCreatePost.setOnClickListener {
             feedNavigationAnalytics.eventClickCreationButton()
             onCreatePostClicked()
         }
 
-        binding.btnFeedLive.setOnClickListener {
+        binding.containerFeedTopNav.btnFeedLive.setOnClickListener {
             feedNavigationAnalytics.eventClickLiveButton()
             openAppLink.launch(meta.liveApplink)
         }
 
-        binding.feedUserProfileImage.setOnClickListener {
+        binding.containerFeedTopNav.feedUserProfileImage.setOnClickListener {
             feedNavigationAnalytics.eventClickProfileButton()
             if (feedMainViewModel.isLoggedIn) {
                 openAppLink.launch(meta.profileApplink)
@@ -534,17 +535,17 @@ class FeedBaseFragment :
         }
 
         if (meta.isCreationActive && userSession.isLoggedIn) {
-            binding.btnFeedCreatePost.show()
+            binding.containerFeedTopNav.btnFeedCreatePost.show()
         } else {
-            binding.btnFeedCreatePost.hide()
+            binding.containerFeedTopNav.btnFeedCreatePost.hide()
         }
 
         if (meta.showLive) {
-            binding.btnFeedLive.show()
-            binding.labelFeedLive.show()
+            binding.containerFeedTopNav.btnFeedLive.show()
+            binding.containerFeedTopNav.labelFeedLive.show()
         } else {
-            binding.btnFeedLive.hide()
-            binding.labelFeedLive.hide()
+            binding.containerFeedTopNav.btnFeedLive.hide()
+            binding.containerFeedTopNav.labelFeedLive.hide()
         }
     }
 
@@ -563,25 +564,25 @@ class FeedBaseFragment :
         }
 
         if (firstTabData != null) {
-            binding.tyFeedFirstTab.text = firstTabData.title
-            binding.tyFeedFirstTab.setOnClickListener {
+            binding.containerFeedTopNav.tyFeedFirstTab.text = firstTabData.title
+            binding.containerFeedTopNav.tyFeedFirstTab.setOnClickListener {
                 feedNavigationAnalytics.eventClickForYouTab()
                 selectActiveTab(TAB_FIRST_INDEX)
             }
-            binding.tyFeedFirstTab.show()
+            binding.containerFeedTopNav.tyFeedFirstTab.show()
         } else {
-            binding.tyFeedFirstTab.hide()
+            binding.containerFeedTopNav.tyFeedFirstTab.hide()
         }
 
         if (secondTabData != null) {
-            binding.tyFeedSecondTab.text = secondTabData.title
-            binding.tyFeedSecondTab.setOnClickListener {
+            binding.containerFeedTopNav.tyFeedSecondTab.text = secondTabData.title
+            binding.containerFeedTopNav.tyFeedSecondTab.setOnClickListener {
                 feedNavigationAnalytics.eventClickFollowingTab()
                 selectActiveTab(TAB_SECOND_INDEX)
             }
-            binding.tyFeedSecondTab.show()
+            binding.containerFeedTopNav.tyFeedSecondTab.show()
         } else {
-            binding.tyFeedSecondTab.hide()
+            binding.containerFeedTopNav.tyFeedSecondTab.hide()
         }
 
         setupActiveTab(tab)
@@ -616,14 +617,14 @@ class FeedBaseFragment :
                         !feedMainViewModel.hasShownCreateContent() &&
                         feedMainViewModel.isShortEntryPointShowed
                     ) {
-                        binding.btnFeedCreatePost
+                        binding.containerFeedTopNav.btnFeedCreatePost
                     } else {
                         null
                     }
                 )
                 .setProfileEntryPointView(
                     if (meta.showMyProfile && !feedMainViewModel.hasShownProfileEntryPoint()) {
-                        binding.feedUserProfileImage
+                        binding.containerFeedTopNav.feedUserProfileImage
                     } else {
                         null
                     }
@@ -711,29 +712,29 @@ class FeedBaseFragment :
 
     private fun handleTabTransition(position: Int) {
         if (position == TAB_FIRST_INDEX) {
-            binding.root.transitionToStart()
+            binding.containerFeedTopNav.root.transitionToStart()
         } else {
-            binding.root.transitionToEnd()
+            binding.containerFeedTopNav.root.transitionToEnd()
         }
     }
 
     private fun showLoading() {
-        binding.feedLoading.show()
+        binding.containerFeedTopNav.root.invisible()
+        binding.loaderFeedTopNav.root.show()
     }
 
     private fun hideLoading() {
-        binding.feedLoading.hide()
+        binding.containerFeedTopNav.root.visible()
+        binding.loaderFeedTopNav.root.hide()
     }
 
     private fun showErrorView(error: Throwable) {
-        if (error.isUserNetworkError) {
-            binding.feedError.visible()
-            binding.feedError.setIcon(IconUnify.SIGNAL_INACTIVE)
-            binding.feedError.setTitle(getString(R.string.feed_label_error_fetch_title))
-            binding.feedError.setDescription(getString(R.string.feed_label_error_fetch_subtitle))
-            binding.feedError.setButton(getString(R.string.feed_label_error_fetch_button)) {
-                feedMainViewModel.fetchFeedTabs()
-            }
+        binding.feedError.visible()
+        binding.feedError.setIcon(IconUnify.RELOAD)
+        binding.feedError.setTitle(getString(R.string.feed_failed_to_load_content))
+        binding.feedError.setDescription("")
+        binding.feedError.setButton(getString(R.string.feed_label_error_fetch_button)) {
+            feedMainViewModel.fetchFeedTabs()
         }
     }
 

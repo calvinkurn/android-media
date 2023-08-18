@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.motion.widget.MotionLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:layoutDescription="@xml/fragment_feed_base_scene">
+    android:layout_height="match_parent">
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/vp_feed_tab_items_container"
@@ -18,130 +17,41 @@
         app:layout_constraintTop_toTopOf="parent"
         />
 
-    <View
-        android:id="@+id/v_menu_center"
-        android:layout_width="wrap_content"
-        android:layout_height="1dp"
-        android:layout_marginTop="48dp"
+    <include
+        android:id="@+id/loader_feed_top_nav"
+        layout="@layout/layout_feed_loader_top_nav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="16dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/container_feed_top_nav"
+        app:layout_constraintStart_toStartOf="@id/container_feed_top_nav"
+        app:layout_constraintTop_toTopOf="@id/container_feed_top_nav"
+        tools:visibility="visible" />
+
+    <include
+        android:id="@+id/container_feed_top_nav"
+        layout="@layout/layout_feed_top_nav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        />
-
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/btn_feed_create_post"
-        android:layout_width="28dp"
-        android:layout_height="28dp"
-        android:layout_marginStart="16dp"
-        android:visibility="gone"
-        app:icon_color_light_enable="@color/Unify_Static_White"
-        app:icon_color_night_enable="@color/Unify_Static_White"
-        app:icon_name="ADD_CIRCLE"
-        app:layout_constraintBottom_toBottomOf="@id/v_menu_center"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/v_menu_center"
-        tools:visibility="visible"
-        />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/ty_feed_first_tab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        app:layout_goneMarginStart="16dp"
-        android:text="@string/feed_for_you_label"
-        android:textColor="@color/Unify_Static_White"
-        app:layout_constraintBottom_toBottomOf="@id/v_menu_center"
-        app:layout_constraintStart_toEndOf="@id/btn_feed_create_post"
-        app:layout_constraintTop_toTopOf="@id/v_menu_center"
-        app:typographyType="display_1"
-        app:typographyWeight="bold" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/ty_feed_second_tab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:text="@string/feed_following_label"
-        android:textColor="@color/Unify_Static_White"
-        app:layout_constraintBottom_toBottomOf="@id/v_menu_center"
-        app:layout_constraintStart_toEndOf="@id/ty_feed_first_tab"
-        app:layout_constraintTop_toTopOf="@id/v_menu_center"
-        app:typographyType="display_1"
-        app:typographyWeight="bold" />
-
-    <View
-        android:id="@+id/view_feed_tab_indicator"
-        android:layout_width="16dp"
-        android:layout_height="2dp"
-        android:layout_marginTop="6dp"
-        android:background="@color/Unify_Static_White"
-        app:layout_constraintEnd_toEndOf="@id/ty_feed_first_tab"
-        app:layout_constraintStart_toStartOf="@id/ty_feed_first_tab"
-        app:layout_constraintTop_toBottomOf="@id/ty_feed_first_tab" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/container_live"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="12dp"
-        app:layout_constraintTop_toTopOf="@id/v_menu_center"
-        app:layout_constraintBottom_toBottomOf="@id/v_menu_center"
-        app:layout_constraintEnd_toStartOf="@id/feed_user_profile_image"
-        >
-
-        <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/btn_feed_live"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:icon_color_light_enable="@color/Unify_Static_White"
-            app:icon_color_night_enable="@color/Unify_Static_White"
-            app:icon_name="VIDEO"
-            />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/label_feed_live"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_label_live_feed"
-            android:text="@string/feed_live_label"
-            android:textAlignment="center"
-            android:textColor="@color/Unify_Static_White"
-            android:textSize="7sp"
-            app:layout_constraintBottom_toBottomOf="@id/btn_feed_live"
-            app:layout_constraintEnd_toEndOf="@id/btn_feed_live"
-            app:layout_constraintStart_toStartOf="@id/btn_feed_live"
-            tools:ignore="SmallSp"
-            />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/feed_user_profile_image"
-        android:layout_width="28dp"
-        android:layout_height="28dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintBottom_toBottomOf="@id/v_menu_center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/v_menu_center"
-        app:srcCompat="@drawable/iconunify_user"
-        app:unify_image_type="circle"
-        tools:visibility="visible" />
+        tools:visibility="invisible" />
 
     <com.tokopedia.feedplus.presentation.customview.UploadInfoView
         android:id="@+id/upload_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="14dp"
         android:visibility="gone"
-        app:layout_constraintStart_toStartOf="@id/btn_feed_create_post"
-        app:layout_constraintTop_toBottomOf="@id/view_feed_tab_indicator"
-        app:layout_goneMarginStart="16dp"
-        tools:visibility="visible"
-        />
+        app:layout_constraintStart_toStartOf="@id/container_feed_top_nav"
+        app:layout_constraintTop_toBottomOf="@id/container_feed_top_nav"
+        tools:visibility="visible" />
 
     <com.tokopedia.content.common.ui.custom.VerticalSwipeOnboardingView
         android:id="@+id/view_vertical_swipe_onboarding"
@@ -154,17 +64,6 @@
         app:layout_constraintTop_toTopOf="parent"
         />
 
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/feed_loading"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_gravity="center_horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:loader_type="decorative_white" />
-
     <com.tokopedia.feedplus.presentation.customview.FeedCustomErrorView
         android:id="@+id/feed_error"
         android:layout_width="match_parent"
@@ -175,4 +74,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-</androidx.constraintlayout.motion.widget.MotionLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -26,10 +26,10 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_marginTop="12dp"
-        android:text="@string/feed_label_no_content_title"
         android:textAlignment="center"
         android:textColor="@color/Unify_Static_White"
-        app:typographyType="heading_3" />
+        app:typographyType="heading_3"
+        tools:text="@string/feed_label_no_content_title" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/ty_feed_no_content_subtitle"
@@ -37,20 +37,20 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/ty_feed_no_content_title"
         android:layout_marginTop="8dp"
-        android:text="@string/feed_label_no_content_subtitle"
         android:textAlignment="center"
         android:textColor="@color/Unify_Static_White"
-        app:typographyType="display_2" />
+        app:typographyType="display_2"
+        tools:text="@string/feed_label_no_content_subtitle" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_show_other_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:layout_below="@id/ty_feed_no_content_subtitle"
-        android:text="@string/feed_label_no_content_button"
+        android:layout_marginTop="16dp"
         app:unifyButtonInvers="true"
         app:unifyButtonSize="medium"
-        app:unifyButtonVariant="ghost" />
+        app:unifyButtonVariant="ghost"
+        tools:text="@string/feed_label_no_content_button" />
 
 </RelativeLayout>

@@ -5,6 +5,8 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.RelativeLayout
 import com.tokopedia.feedplus.databinding.LayoutFeedErrorBinding
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 
 /**
  * Created by meyta.taliti on 11/08/23.
@@ -27,11 +29,21 @@ class FeedCustomErrorView : RelativeLayout {
     }
 
     fun setTitle(label: String) {
-        binding.tyFeedNoContentTitle.text = label
+        if (label.isBlank()) {
+            binding.tyFeedNoContentTitle.gone()
+        } else {
+            binding.tyFeedNoContentTitle.text = label
+            binding.tyFeedNoContentTitle.visible()
+        }
     }
 
     fun setDescription(label: String) {
-        binding.tyFeedNoContentSubtitle.text = label
+        if (label.isBlank()) {
+            binding.tyFeedNoContentSubtitle.gone()
+        } else {
+            binding.tyFeedNoContentSubtitle.text = label
+            binding.tyFeedNoContentSubtitle.visible()
+        }
     }
 
     fun setButton(label: String, onClickListener: () -> Unit) {
