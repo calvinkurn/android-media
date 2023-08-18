@@ -15,7 +15,7 @@
         android:layout_height="40dp"
         android:layout_centerVertical="true">
 
-        <com.tokopedia.stories.widget.StoriesBorderLayout
+        <com.tokopedia.stories.widget.StoriesWidgetLayout
             android:id="@+id/stories_border"
             android:layout_width="40dp"
             android:layout_height="40dp"
@@ -30,7 +30,7 @@
                 tools:src="@color/Unify_YN500"
                 />
 
-        </com.tokopedia.stories.widget.StoriesBorderLayout>
+        </com.tokopedia.stories.widget.StoriesWidgetLayout>
 
         <ImageView
             android:id="@+id/online_status"

@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 internal class StoriesAvatarObserver(
     viewModel: StoriesAvatarViewModel,
     lifecycleOwner: LifecycleOwner,
-    view: StoriesBorderLayout,
+    view: StoriesWidgetLayout,
     animationStrategy: com.tokopedia.stories.widget.AnimationStrategy,
 ) {
 

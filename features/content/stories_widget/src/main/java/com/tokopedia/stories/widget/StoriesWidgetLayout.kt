@@ -14,7 +14,7 @@ import kotlin.properties.Delegates
 /**
  * Created by kenny.hadisaputra on 11/08/23
  */
-class StoriesBorderLayout @JvmOverloads constructor(
+class StoriesWidgetLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
@@ -46,9 +46,9 @@ class StoriesBorderLayout @JvmOverloads constructor(
 
     private fun initAttrs(attrs: AttributeSet?) {
         if (attrs == null) return
-        val attributeArray = context.obtainStyledAttributes(attrs, R.styleable.StoriesBorderLayout)
-        val seenBorderWidth = attributeArray.getDimensionPixelSize(R.styleable.StoriesBorderLayout_seen_stories_border_width, -1)
-        val unseenBorderWidth = attributeArray.getDimensionPixelSize(R.styleable.StoriesBorderLayout_unseen_stories_border_width, -1)
+        val attributeArray = context.obtainStyledAttributes(attrs, R.styleable.StoriesWidgetLayout)
+        val seenBorderWidth = attributeArray.getDimensionPixelSize(R.styleable.StoriesWidgetLayout_seen_stories_border_width, -1)
+        val unseenBorderWidth = attributeArray.getDimensionPixelSize(R.styleable.StoriesWidgetLayout_unseen_stories_border_width, -1)
 
         getChildBorderView()?.let {
             it.setBorderConfig { config ->
@@ -63,7 +63,7 @@ class StoriesBorderLayout @JvmOverloads constructor(
     }
 
     override fun setOnClickListener(l: OnClickListener?) {
-        error("You are not allowed to call setOnClickListener on StoriesBorderLayout, use StoriesBorderLayout.Listener instead")
+        error("You are not allowed to call setOnClickListener on StoriesWidgetLayout, use StoriesWidgetLayout.Listener instead")
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
@@ -92,6 +92,6 @@ class StoriesBorderLayout @JvmOverloads constructor(
     }
 
     interface Listener {
-        fun onClickedWhenHasStories(view: StoriesBorderLayout, state: StoriesAvatarState)
+        fun onClickedWhenHasStories(view: StoriesWidgetLayout, state: StoriesAvatarState)
     }
 }

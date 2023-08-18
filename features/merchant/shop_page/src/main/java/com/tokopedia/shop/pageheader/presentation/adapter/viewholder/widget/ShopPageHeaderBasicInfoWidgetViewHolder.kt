@@ -17,7 +17,7 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHead
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderImageOnlyComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel
 import com.tokopedia.stories.widget.StoriesAvatarManager
-import com.tokopedia.stories.widget.StoriesBorderLayout
+import com.tokopedia.stories.widget.StoriesWidgetLayout
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -45,7 +45,7 @@ class ShopPageHeaderBasicInfoWidgetViewHolder(
     }
 
     private val viewBinding: LayoutShopHeaderBasicInfoWidgetBinding? by viewBinding()
-    private val shopLogoContainer: StoriesBorderLayout? = viewBinding?.imageShopContainer
+    private val shopLogoContainer: StoriesWidgetLayout? = viewBinding?.imageShopContainer
     private val shopLogoImageView: ImageView? = viewBinding?.imageShopLogo
     private val shopBadgeImageView: ImageView? = viewBinding?.imageShopBadge
     private val shopChevronImageView: ImageView? = viewBinding?.shopPageChevronShopInfo

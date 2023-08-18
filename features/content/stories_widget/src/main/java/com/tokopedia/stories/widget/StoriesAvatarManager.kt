@@ -40,12 +40,12 @@ class StoriesAvatarManager private constructor(
     private val component = createComponent(context)
     private val viewModelFactory = component.storiesViewModelFactory()
 
-    private val viewToObserverMap = mutableMapOf<StoriesBorderLayout, StoriesAvatarMeta>()
+    private val viewToObserverMap = mutableMapOf<StoriesWidgetLayout, StoriesAvatarMeta>()
 
     private var showCoachMarkJob: Job? = null
 
-    private val storiesViewListener = object : StoriesBorderLayout.Listener {
-        override fun onClickedWhenHasStories(view: StoriesBorderLayout, state: StoriesAvatarState) {
+    private val storiesViewListener = object : StoriesWidgetLayout.Listener {
+        override fun onClickedWhenHasStories(view: StoriesWidgetLayout, state: StoriesAvatarState) {
             RouteManager.route(context, state.appLink)
             options.trackingManager.clickEntryPoints(key)
         }
@@ -107,7 +107,7 @@ class StoriesAvatarManager private constructor(
         options.scrollingParent?.let { observeScrollingView(it) }
     }
 
-    fun manage(storiesView: StoriesBorderLayout, shopId: String) {
+    fun manage(storiesView: StoriesWidgetLayout, shopId: String) {
         val meta = storiesView.getMeta() ?: StoriesAvatarMeta.Empty
         meta.attachListener?.let {
             storiesView.removeOnAttachStateChangeListener(it)
@@ -158,7 +158,7 @@ class StoriesAvatarManager private constructor(
             ?.let(::showCoachMarkOnView)
     }
 
-    private fun showCoachMarkOnView(view: StoriesBorderLayout) {
+    private fun showCoachMarkOnView(view: StoriesWidgetLayout) {
         if (showCoachMarkJob?.isActive == true) return
         showCoachMarkJob = lifecycleOwner.lifecycleScope.launch {
             delay(1000)
@@ -185,7 +185,7 @@ class StoriesAvatarManager private constructor(
         }
     }
 
-    private fun StoriesBorderLayout.onAttached(shopId: String) {
+    private fun StoriesWidgetLayout.onAttached(shopId: String) {
         val observer = getOrCreateObserver()
         observer.observe(shopId)
         assign(shopId, observer)
@@ -195,16 +195,16 @@ class StoriesAvatarManager private constructor(
         if (shopId == mShopIdCoachMarked) requestShowCoachMark()
     }
 
-    private fun StoriesBorderLayout.onDetached() {
+    private fun StoriesWidgetLayout.onDetached() {
         coachMark.hide(this)
         setListener(null)
     }
 
-    private fun StoriesBorderLayout.getObserver(): StoriesAvatarObserver? {
+    private fun StoriesWidgetLayout.getObserver(): StoriesAvatarObserver? {
         return viewToObserverMap[this]?.observer
     }
 
-    private fun StoriesBorderLayout.createObserver(): StoriesAvatarObserver {
+    private fun StoriesWidgetLayout.createObserver(): StoriesAvatarObserver {
         return StoriesAvatarObserver(
             getViewModel(),
             lifecycleOwner,
@@ -213,11 +213,11 @@ class StoriesAvatarManager private constructor(
         )
     }
 
-    private fun StoriesBorderLayout.getOrCreateObserver(): StoriesAvatarObserver {
+    private fun StoriesWidgetLayout.getOrCreateObserver(): StoriesAvatarObserver {
         return getObserver() ?: createObserver()
     }
 
-    private fun StoriesBorderLayout.assign(shopId: String, observer: StoriesAvatarObserver) {
+    private fun StoriesWidgetLayout.assign(shopId: String, observer: StoriesAvatarObserver) {
         val meta = getOrCreateMeta().copy(
             shopId = shopId,
             observer = observer
@@ -225,22 +225,22 @@ class StoriesAvatarManager private constructor(
         viewToObserverMap[this] = meta
     }
 
-    private fun getViewByShopId(shopId: String): StoriesBorderLayout? {
+    private fun getViewByShopId(shopId: String): StoriesWidgetLayout? {
         val meta = viewToObserverMap.entries.firstOrNull {
             it.value.shopId == shopId
         } ?: return null
         return meta.key
     }
 
-    private fun StoriesBorderLayout.getMeta(): StoriesAvatarMeta? {
+    private fun StoriesWidgetLayout.getMeta(): StoriesAvatarMeta? {
         return viewToObserverMap[this]
     }
 
-    private fun StoriesBorderLayout.getOrCreateMeta(): StoriesAvatarMeta {
+    private fun StoriesWidgetLayout.getOrCreateMeta(): StoriesAvatarMeta {
         return getMeta() ?: StoriesAvatarMeta.Empty
     }
 
-    private fun StoriesBorderLayout.setMeta(meta: StoriesAvatarMeta) {
+    private fun StoriesWidgetLayout.setMeta(meta: StoriesAvatarMeta) {
         viewToObserverMap[this] = meta
     }
 
