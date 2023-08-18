@@ -13,6 +13,12 @@ enum class BottomSheetType {
 }
 
 val Map<BottomSheetType, Boolean>.isAnyShown: Boolean
-    get() = this[BottomSheetType.Product]?.orFalse() == true ||
-        this[BottomSheetType.Kebab]?.orFalse() == true ||
-        this[BottomSheetType.Sharing]?.orFalse() == true
+    get() = values.any { it }
+val BottomSheetStatusDefault: Map<BottomSheetType, Boolean>
+    get() = mapOf(
+        BottomSheetType.Sharing to false,
+        BottomSheetType.Product to false,
+        BottomSheetType.Kebab to false,
+    )
+
+

@@ -132,10 +132,10 @@ class StoriesDetailFragment @Inject constructor(
 
     private fun observeBottomSheetStatus(
         prevState: Map<BottomSheetType, Boolean>?,
-        state: Map<BottomSheetType, Boolean>?,
+        state: Map<BottomSheetType, Boolean>,
     ) {
         if (prevState == state) return
-        if (state?.isAnyShown.orFalse()) pauseStories()
+        if (state.isAnyShown.orFalse()) pauseStories() else resumeStories()
     }
 
     private fun storiesDetailsTimer(state: StoriesDetailUiModel) {

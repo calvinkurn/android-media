@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.stories.data.StoriesRepository
+import com.tokopedia.stories.view.model.BottomSheetStatusDefault
 import com.tokopedia.stories.view.model.BottomSheetType
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
 import com.tokopedia.stories.view.model.StoriesDetailUiModel.StoriesDetailUiEvent
@@ -31,7 +32,7 @@ class StoriesViewModel @Inject constructor(
 
     private var _storiesGroup = MutableStateFlow(listOf<StoriesGroupUiModel>())
     private var _storiesDetail = MutableStateFlow(StoriesDetailUiModel.Empty)
-    private val bottomSheetStatus = MutableStateFlow(emptyMap<BottomSheetType, Boolean>())
+    private val bottomSheetStatus = MutableStateFlow(BottomSheetStatusDefault)
 
     private val _uiEvent = MutableSharedFlow<StoriesUiEvent>(extraBufferCapacity = 100)
     val uiEvent: Flow<StoriesUiEvent>
