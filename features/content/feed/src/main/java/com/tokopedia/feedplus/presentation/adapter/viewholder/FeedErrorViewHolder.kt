@@ -1,6 +1,5 @@
 package com.tokopedia.feedplus.presentation.adapter.viewholder
 
-import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedplus.R
@@ -19,16 +18,11 @@ class FeedErrorViewHolder(
     private val customErrorView = binding.root
 
     override fun bind(element: ErrorNetworkModel?) {
-        customErrorView.setIcon(IconUnify.RELOAD)
+        customErrorView.setIcon(IconUnify.SIGNAL_INACTIVE)
         customErrorView.setTitle(getString(R.string.feed_label_error_fetch_title))
         customErrorView.setDescription(getString(R.string.feed_label_error_fetch_subtitle))
         customErrorView.setButton(getString(R.string.feed_label_error_fetch_button)) {
             listener.reload()
         }
-    }
-
-    companion object {
-        @LayoutRes
-        val LAYOUT = R.layout.layout_feed_error
     }
 }
