@@ -289,9 +289,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 }
             }
 
-            updateVerticalRecommendationWidget(productId, loadInitialData)
-
             if (loadInitialData) {
+                updateVerticalRecommendationWidget(productId)
                 verticalRecommendationItems.clear()
             }
         }
@@ -1213,10 +1212,10 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    private fun updateVerticalRecommendationWidget(productId: String, loadInitialData: Boolean) {
+    private fun updateVerticalRecommendationWidget(productId: String) {
         mapOfData.forEach { (key, data) ->
             if (key.startsWith(RECOM_VERTICAL)) {
-                updateData(key, loadInitialData) {
+                updateData(key, true) {
                     mapOfData[key] = (data as? PdpRecommendationWidgetDataModel)?.run {
                         updateVerticalRecommendationWidgetProductId(productId)
                     } ?: data
