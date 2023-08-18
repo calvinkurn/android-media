@@ -44,16 +44,16 @@ fun StoriesDetailTimer(
      * expected -> every state should be restart timer but pause state
      * how? (don't tell me to not using compose >,<)
      */
-    val anim = remember(data) { Animatable(0F) }
+    val anim = remember(data) { Animatable(INITIAL_ANIMATION) }
 
     LaunchedEffect(data) {
         when (data.event) {
             PAUSE -> anim.stop()
             START -> {
                 anim.animateTo(
-                    targetValue = 1f,
+                    targetValue = TARGET_ANIMATION,
                     animationSpec = tween(
-                        durationMillis = (TIMER_DURATION * (1f - anim.value)).toInt(),
+                        durationMillis = (TIMER_DURATION * (TARGET_ANIMATION - anim.value)).toInt(),
                         easing = LinearEasing,
                     )
                 )
@@ -121,4 +121,6 @@ internal fun StoriesDetailTimerPreview() {
     ) { }
 }
 
+private const val TARGET_ANIMATION = 1F
+private const val INITIAL_ANIMATION = 0F
 private const val TIMER_DURATION = 7 * 1000
