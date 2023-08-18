@@ -11,7 +11,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -47,7 +46,6 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.play_common.shortsuploader.analytic.PlayShortsUploadAnalytic
@@ -727,7 +725,7 @@ class FeedBaseFragment :
     private fun showErrorView(error: Throwable) {
         if (error.isUserNetworkError) {
             binding.feedError.visible()
-            binding.feedError.setIcon(IconUnify.RELOAD)
+            binding.feedError.setIcon(IconUnify.SIGNAL_INACTIVE)
             binding.feedError.setTitle(getString(R.string.feed_label_error_fetch_title))
             binding.feedError.setDescription(getString(R.string.feed_label_error_fetch_subtitle))
             binding.feedError.setButton(getString(R.string.feed_label_error_fetch_button)) {

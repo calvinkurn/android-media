@@ -19,7 +19,7 @@ class FeedTabsModelBuilder {
         data: List<FeedDataModel> = emptyList()
     ) = FeedTabsModel(
         meta = meta,
-        tab = FeedTabModel(data, ActiveTabSource(null, 0))
+        tab = FeedTabModel(data, ActiveTabSource.Empty)
     )
 
     fun buildDefaultMetaModel(

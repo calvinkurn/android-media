@@ -75,10 +75,6 @@ class FeedMainViewModel @AssistedInject constructor(
     private val _isPageResumed = MutableLiveData<Boolean>(null)
     val isPageResumed get() = _isPageResumed
 
-    private val _reportResponse = MutableLiveData<Result<FeedComplaintSubmitReportResponse>>()
-    val reportResponse: LiveData<Result<FeedComplaintSubmitReportResponse>>
-        get() = _reportResponse
-
     private val _swipeOnBoardingState = MutableStateFlow(
         SwipeOnboardingStateModel.Empty.copy(
             hasShown = onBoardingPreferences.hasShownSwipeOnBoarding() && userSession.isLoggedIn
@@ -131,7 +127,7 @@ class FeedMainViewModel @AssistedInject constructor(
             val tabModel = (_feedTabs.value as? NetworkResult.Success<FeedTabModel>)?.data ?: return@launch
             if (position < tabModel.data.size) {
                 val data = tabModel.data[position]
-                emitSelectedTabEvent(data, position)
+                emitEvent(FeedMainEvent.SelectTab(data, position))
                 // keep track active tab
                 _activeTab.value = tabModel.data[position]
             }
@@ -146,7 +142,7 @@ class FeedMainViewModel @AssistedInject constructor(
             val tabModel = (_feedTabs.value as? NetworkResult.Success<FeedTabModel>)?.data ?: return@launch
             tabModel.data.forEachIndexed { index, tab ->
                 if (tab.type.equals(type, true)) {
-                    emitSelectedTabEvent(tab, index)
+                    emitEvent(FeedMainEvent.SelectTab(tab, index))
 
                     // keep track active tab
                     _activeTab.value = tab
@@ -154,10 +150,6 @@ class FeedMainViewModel @AssistedInject constructor(
                 }
             }
         }
-    }
-
-    private suspend fun emitSelectedTabEvent(data: FeedDataModel, position: Int) {
-        uiEventManager.emitEvent(FeedMainEvent.SelectTab(data, position))
     }
 
     fun scrollCurrentTabToTop() {
