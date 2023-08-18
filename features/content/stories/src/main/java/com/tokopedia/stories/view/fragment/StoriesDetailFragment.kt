@@ -250,7 +250,13 @@ class StoriesDetailFragment @Inject constructor(
                         .show(childFragmentManager)
 
                     is StoriesUiEvent.TapSharing -> {
+                        if (groupId != viewModel.groupId) return@collectLatest
                         val sheet = StoriesSharingComponent(rootView = requireView())
+                        sheet.setListener(object : StoriesSharingComponent.Listener{
+                            override fun onDismissEvent(view: StoriesSharingComponent) {
+                                viewModelAction(StoriesUiAction.DismissSheet(BottomSheetType.Sharing))
+                            }
+                        })
                         sheet.show(childFragmentManager, event.metadata)
                     }
                     else -> {}

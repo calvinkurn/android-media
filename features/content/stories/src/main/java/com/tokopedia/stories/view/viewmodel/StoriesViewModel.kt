@@ -202,6 +202,12 @@ class StoriesViewModel @Inject constructor(
     private fun handleSharing() {
         viewModelScope.launch {
             _uiEvent.emit(StoriesUiEvent.TapSharing(StoriesSharingComponent.StoriesSharingMetadata(image = "", title = "Boneka")))
+            bottomSheetStatus.update { bottomSheet -> bottomSheet.mapValues {
+                if (it.key == BottomSheetType.Sharing)
+                    true
+                else it.value
+                }
+            }
         }
     }
 
