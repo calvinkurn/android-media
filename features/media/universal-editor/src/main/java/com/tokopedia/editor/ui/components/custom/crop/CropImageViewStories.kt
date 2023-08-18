@@ -10,6 +10,8 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.net.Uri
 import android.util.AttributeSet
+import androidx.core.graphics.values
+import com.tokopedia.editor.ui.model.ImagePlacementModel
 import com.yalantis.ucrop.model.ImageState
 import com.yalantis.ucrop.util.BitmapLoadUtils
 import com.yalantis.ucrop.util.RectUtils
@@ -23,7 +25,7 @@ import java.io.OutputStream
 
 open class CropImageViewStories : CropImageView {
 
-    private val mCropRectClone: RectF = RectF()
+    private val mCropRect: RectF = RectF()
 
     private var outputPath: Uri? = null
 
@@ -39,7 +41,7 @@ open class CropImageViewStories : CropImageView {
     }
 
     override fun setCropRect(cropRect: RectF) {
-        mCropRectClone.set(
+        mCropRect.set(
             cropRect.left - paddingLeft,
             cropRect.top - paddingTop,
             cropRect.right - paddingRight,
@@ -69,16 +71,16 @@ open class CropImageViewStories : CropImageView {
         return 0.1f
     }
 
-    fun customCrop(onFinish: (url: String?) -> Unit) {
+    fun customCrop(onFinish: (placementModel: ImagePlacementModel) -> Unit) {
         val imageState = ImageState(
-            mCropRectClone, RectUtils.trapToRect(mCurrentImageCorners),
+            mCropRect, RectUtils.trapToRect(mCurrentImageCorners),
             currentScale, currentAngle
         )
 
         val mCurrentImageRect = imageState.currentImageRect
         val mCurrentScale = imageState.currentScale
 
-        val bitmapResult = Bitmap.createBitmap(mCropRectClone.width().toInt(), mCropRectClone.height().toInt(), Bitmap.Config.ARGB_8888)
+        val bitmapResult = Bitmap.createBitmap(mCropRect.width().toInt(), mCropRect.height().toInt(), Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmapResult)
 
         canvas.drawRect(0f, 0f, bitmapResult.width.toFloat(),bitmapResult.height.toFloat(), Paint())
@@ -99,8 +101,8 @@ open class CropImageViewStories : CropImageView {
                 drawBitmap(rotatedBitmap, 0f, 0f, null)
             }
 
-            val xPos = (mCropRectClone.left - mCurrentImageRect.left) * -1f
-            val yPos = (mCropRectClone.top - mCurrentImageRect.top) * -1f
+            val xPos = (mCropRect.left - mCurrentImageRect.left) * -1f
+            val yPos = (mCropRect.top - mCurrentImageRect.top) * -1f
 
             canvas.drawBitmap(
                 finalBitmap,
@@ -115,7 +117,19 @@ open class CropImageViewStories : CropImageView {
                 saveImage(bitmapResult)
 
                 with(Dispatchers.Main) {
-                    onFinish(outputPath?.path)
+                    val imageMatrix = imageMatrix.values()
+                    val translateX = imageMatrix[2]
+                    val translateY = imageMatrix[5]
+
+                    onFinish(
+                        ImagePlacementModel(
+                            outputPath?.path ?: "",
+                            currentScale,
+                            currentAngle,
+                            translateX,
+                            translateY
+                        )
+                    )
                 }
             }
         }

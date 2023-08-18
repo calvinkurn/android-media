@@ -14,4 +14,10 @@ import kotlinx.parcelize.Parcelize
 data class EditorModel(
     val image: ImageModel? = null,
     val video: VideoModel? = null,
-) : Parcelable
+) : Parcelable {
+    fun clone(): EditorModel {
+        return EditorModel(
+            image?.copy(), video?.copy()
+        )
+    }
+}

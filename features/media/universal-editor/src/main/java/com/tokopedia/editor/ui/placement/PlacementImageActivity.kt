@@ -51,15 +51,9 @@ class PlacementImageActivity : BaseActivity(), NavToolbarComponent.Listener {
 
     override fun onContinueClicked() {
         (supportFragmentManager.findFragmentById(R.id.fragment_view) as PlacementImageFragment).let {
-            it.captureImage { filePath ->
+            it.captureImage { placementModel ->
                 val intent = Intent()
-
-                val result = ImagePlacementModel(
-                    path = filePath ?: "",
-                    matrix = arrayOf()
-                )
-
-                intent.putExtra(PLACEMENT_RESULT_KEY, result)
+                intent.putExtra(PLACEMENT_RESULT_KEY, placementModel)
 
                 setResult(0, intent)
                 finish()

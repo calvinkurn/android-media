@@ -10,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import com.tokopedia.editor.R
 import com.tokopedia.editor.base.BaseEditorFragment
 import com.tokopedia.editor.databinding.FragmentPlacementBinding
+import com.tokopedia.editor.ui.model.ImagePlacementModel
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.view.binding.viewBinding
 import com.yalantis.ucrop.view.TransformImageView
@@ -56,10 +57,10 @@ class PlacementImageFragment @Inject constructor() : BaseEditorFragment(R.layout
         }
     }
 
-    fun captureImage(onFinish: (path: String?) -> Unit) {
+    fun captureImage(onFinish: (placementModel: ImagePlacementModel) -> Unit) {
         viewBinding?.cropArea?.getCropImageView()?.let {
-            it.customCrop { filePath ->
-                onFinish(filePath)
+            it.customCrop { placementModel ->
+                onFinish(placementModel)
             }
         }
     }

@@ -49,6 +49,8 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    private var isPageInitialize = false
+
     private val toolbar by uiComponent {
         NavToolbarComponent(
             listener = this,
@@ -87,8 +89,7 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
         val result = it.data?.getParcelableExtra<ImagePlacementModel>(PlacementImageActivity.PLACEMENT_RESULT_KEY)
 
         if (result?.path?.isNotEmpty() == true) {
-            // TODO: only capable on single media, need improvement
-            pagerContainer.updateView(result.path)
+            viewModel.updatePlacement(result)
         }
     }
 
@@ -129,14 +130,20 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
         lifecycleScope.launchWhenCreated {
             viewModel.state.collect {
                 initView(it)
+
+                it.model?.image?.placement?.path?.let { pathString ->
+                    pagerContainer.updateView(pathString)
+                }
             }
         }
     }
 
     private fun initView(model: MainEditorUiModel) {
+        if (isPageInitialize) return
         setupToolbar(model.param)
         pagerContainer.setupView(model.param)
         navigationTool.setupView(model.tools)
+        isPageInitialize = true
     }
 
     private fun onToolClicked(@ToolType type: Int) {

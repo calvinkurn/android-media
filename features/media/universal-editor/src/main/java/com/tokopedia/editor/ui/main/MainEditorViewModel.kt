@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.editor.data.repository.NavigationToolRepository
 import com.tokopedia.editor.ui.model.EditorModel
 import com.tokopedia.editor.ui.model.ImageModel
+import com.tokopedia.editor.ui.model.ImagePlacementModel
 import com.tokopedia.editor.ui.model.VideoModel
 import com.tokopedia.picker.common.UniversalEditorParam
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -43,6 +44,15 @@ class MainEditorViewModel @Inject constructor(
 
     fun setAction(action: MainEditorEvent) {
         _event.tryEmit(action)
+    }
+
+    fun updatePlacement(placementModel: ImagePlacementModel) {
+        _state.update {
+            val model = it.model?.clone()
+            model?.image?.placement = placementModel
+
+            it.copy(model = model)
+        }
     }
 
     private fun initEditorModel(param: UniversalEditorParam) {
