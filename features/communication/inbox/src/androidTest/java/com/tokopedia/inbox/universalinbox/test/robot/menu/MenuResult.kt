@@ -22,12 +22,12 @@ import org.hamcrest.CoreMatchers.not
 object MenuResult {
 
     fun assertNotificationCounter(counterText: String) {
-        onView(withId(R.id.notification))
+        onView(withId(com.tokopedia.iconnotification.R.id.notification))
             .check(matches(withText(counterText)))
     }
 
     fun assertNotificationCounterGone() {
-        onView(withId(R.id.notification))
+        onView(withId(com.tokopedia.iconnotification.R.id.notification))
             .check(matches(not(isDisplayed())))
     }
 
