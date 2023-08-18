@@ -1,8 +1,6 @@
 package com.tokopedia.feedplus.presentation.fragment
 
-import android.content.Context
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,7 +42,6 @@ import com.tokopedia.feedplus.presentation.receiver.UploadStatus
 import com.tokopedia.feedplus.presentation.receiver.UploadType
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
-import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.navigation_common.listener.FragmentListener
@@ -107,6 +104,10 @@ class FeedBaseFragment :
 
     private val toasterBottomMargin by lazy {
         resources.getDimensionPixelOffset(R.dimen.feed_toaster_bottom_margin)
+    }
+
+    private val tabExtraTopOffset by lazy {
+        resources.getDimensionPixelOffset(R.dimen.feed_space_24)
     }
 
     private val adapter by lazy {
@@ -342,17 +343,17 @@ class FeedBaseFragment :
     }
 
     private fun setupInsets() {
-        binding.vMenuCenter.doOnApplyWindowInsets { v, insets, _, margin ->
+        binding.vMenuCenter.doOnApplyWindowInsets { _, insets, _, margin ->
 
-            val displayMetrics = DisplayMetrics()
-            val windowManager = requireContext().applicationContext.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-            windowManager.defaultDisplay.getMetrics(displayMetrics)
+            val topInsetsMargin = insets.systemWindowInsetTop + tabExtraTopOffset
 
-            val offset24 = 24.dpToPx(displayMetrics)
-            val insetsMargin = insets.systemWindowInsetTop + offset24
-            if (insetsMargin > margin.top) {
+            if (topInsetsMargin > margin.top) {
                 getAllMotionScene().forEach {
-                    it.setMargin(binding.vMenuCenter.id, ConstraintSet.TOP, insetsMargin)
+                    it.setMargin(binding.vMenuCenter.id, ConstraintSet.TOP, topInsetsMargin)
+                }
+            } else {
+                getAllMotionScene().forEach {
+                    it.setMargin(binding.vMenuCenter.id, ConstraintSet.TOP, margin.top)
                 }
             }
         }
