@@ -2,6 +2,9 @@ package com.tokopedia.thankyou_native.presentation.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.os.CountDownTimer
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +19,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.data.mapper.CashOnDelivery
@@ -51,6 +55,9 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
         viewModelProvider.get(CheckWhiteListViewModel::class.java)
     }
+
+    private var countDownTimer: CountDownTimer? = null
+    private var countdownMillis: Long = 0
 
     override fun getLoadingView(): View? = loadingLayout
 
@@ -105,6 +112,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
     override fun onDestroy() {
         super.onDestroy()
         cancelGratifDialog()
+        countDownTimer?.cancel()
     }
 
     fun cancelGratifDialog() {
@@ -170,15 +178,52 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
 
         clPaymentMethod.setOnClickListener { openInvoiceDetail(thanksPageData) }
 
-        btn_see_transaction_list.setOnClickListener {
-            if (thanksPageData.customDataAppLink == null
-                    || thanksPageData.customDataAppLink.order.isNullOrBlank()) {
-                gotoOrderList()
-            } else {
-                gotoOrderList(thanksPageData.customDataAppLink.order)
+        setUpHomeButton(btnShopAgain)
+        setUpSecondaryButton(thanksPageData)
+
+        countDownTimer = object : CountDownTimer(
+//            thanksPageData.customDataOther?.delayDuration?.toLong() ?: 0L,
+            5000L,
+            1000
+        ) {
+            override fun onTick(millisUntilFinished: Long) {
+                if (context == null) return
+
+                val secondsRemaining = millisUntilFinished / 1000
+//                val spannableString = SpannableString(thanksPageData.customDataMessage?.loaderText + secondsRemaining.toString() + "detik")
+                val spannableString = SpannableString("Kamu akan diarahkan ke sesi chat dengan Dokter dalam $secondsRemaining detik")
+
+
+                val secondIndex = spannableString.indexOf(secondsRemaining.toString())
+                spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_GN500)), secondIndex, secondIndex + secondsRemaining.toString().length, 0)
+
+                tv_payment_success_info.text = spannableString
+            }
+
+            override fun onFinish() {
+                if (context == null) return
+
+//                RouteManager.route(requireContext(), thanksPageData.customDataAppLink?.autoRedirect)
+                RouteManager.route(requireContext(), "tokopedia://home")
             }
         }
-        setUpHomeButton(btnShopAgain)
+
+        countDownTimer?.start()
+    }
+
+    private fun setUpSecondaryButton(thanksPageData: ThanksPageData) {
+        btn_see_transaction_list.shouldShowWithAction(
+            thanksPageData.configFlagData?.shouldHideOrderButton != false
+        ) {
+            btn_see_transaction_list.setOnClickListener {
+                if (thanksPageData.customDataAppLink == null
+                    || thanksPageData.customDataAppLink.order.isNullOrBlank()) {
+                    gotoOrderList()
+                } else {
+                    gotoOrderList(thanksPageData.customDataAppLink.order)
+                }
+            }
+        }
     }
 
     private fun setSummaryData(thanksSummaryInfo: ArrayList<ThanksSummaryInfo>) {
