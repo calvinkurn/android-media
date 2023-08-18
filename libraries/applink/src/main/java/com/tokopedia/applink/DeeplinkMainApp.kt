@@ -51,11 +51,11 @@ import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.applink.promo.DeeplinkMapperPromo
-import com.tokopedia.applink.promo.DeeplinkMapperPromo.getCelebrationBottomsheetDeeplink
 import com.tokopedia.applink.promo.DeeplinkMapperPromo.getInternalDeeplinkForScpCelebration
 import com.tokopedia.applink.promo.DeeplinkMapperPromo.getInternalDeeplinkForScpMedalCabinet
 import com.tokopedia.applink.promo.DeeplinkMapperPromo.getInternalDeeplinkForScpMedalCabinetSeeMore
 import com.tokopedia.applink.promo.DeeplinkMapperPromo.getInternalDeeplinkForScpMedalDetail
+import com.tokopedia.applink.promo.DeeplinkMapperPromo.getCelebrationBottomsheetDeeplink
 import com.tokopedia.applink.promo.DeeplinkMapperPromo.invokeScpToasterUniversalAppLink
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperUoh
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperWishlist
@@ -973,16 +973,6 @@ object DeeplinkMainApp {
         ),
         "snapshot" to mutableListOf(
             DLP.startsWith("order", DeeplinkMapperOrder::getSnapshotOrderInternalAppLink)
-        ),
-        "stories" to mutableListOf(
-            DLP.matchPattern(
-                "shop/{shop_id}",
-                DeeplinkMapperContent::getRegisteredNavigation
-            ),
-            DLP.matchPattern(
-                "shop/{shop_id}/{stories_id}",
-                DeeplinkMapperContent::getRegisteredNavigation
-            ),
         ),
         "talk" to mutableListOf(
             DLP.goTo(DeeplinkMapper::getRegisteredNavigationTalk)
