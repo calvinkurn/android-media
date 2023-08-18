@@ -23,7 +23,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.content.common.producttag.view.uimodel.NetworkResult
 import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.content.common.util.Router
-import com.tokopedia.content.common.util.isUserNetworkError
 import com.tokopedia.content.common.util.reduceDragSensitivity
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
 import com.tokopedia.feedplus.R
@@ -736,6 +735,7 @@ class FeedBaseFragment :
         binding.feedError.setDescription("")
         binding.feedError.setButton(getString(R.string.feed_label_error_fetch_button)) {
             feedMainViewModel.fetchFeedTabs()
+            feedMainViewModel.fetchFeedMetaData()
         }
     }
 
