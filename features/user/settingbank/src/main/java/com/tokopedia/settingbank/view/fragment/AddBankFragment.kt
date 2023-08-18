@@ -173,7 +173,7 @@ class AddBankFragment : BaseDaggerFragment() {
                 getIconUnifyDrawable(
                     context,
                     IconUnify.CHEVRON_DOWN,
-                    ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_NN900),
+                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900),
                 )
             )
         }
@@ -606,7 +606,7 @@ class AddBankFragment : BaseDaggerFragment() {
             originalText?.indexOf(getString(R.string.sbank_untuk_tnc))?.minus(1) ?: 0
         val spannableStringPrivacyPolicy = SpannableString(originalText)
         val color =
-            MethodChecker.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_GN500)
+            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         spannableStringPrivacyPolicy.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {
                 openPrivacyBottomSheet()
@@ -630,7 +630,7 @@ class AddBankFragment : BaseDaggerFragment() {
         val startIndex = originalText.indexOf(getString(R.string.sbank_terms))
         val endIndex = originalText.indexOf(getString(R.string.sbank_serta_tnc)).minus(1)
         val color =
-            MethodChecker.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_GN500)
+            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         spannableStringTermAndCondition.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {
                 loadTncForAddBank()

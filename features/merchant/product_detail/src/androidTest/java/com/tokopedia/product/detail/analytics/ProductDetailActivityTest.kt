@@ -338,7 +338,7 @@ class ProductDetailActivityTest {
         viewInteraction.perform(
             RecyclerViewActions.actionOnItemAtPosition<ItemVariantChipViewHolder>(
                 0,
-                clickChildViewWithId(R.id.atc_variant_chip)
+                clickChildViewWithId(com.tokopedia.product.detail.common.R.id.atc_variant_chip)
             )
         )
     }

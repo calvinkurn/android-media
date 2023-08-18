@@ -126,12 +126,12 @@ abstract class BaseTelcoPostpaidScreenShotLoginTest {
         Espresso.onView(ViewMatchers.withId(R.id.action_overflow_menu)).perform(ViewActions.click())
         Thread.sleep(2000)
         findViewAndScreenShot(
-                R.id.container_menu,
+            com.tokopedia.common.topupbills.R.id.container_menu,
                 generatePrefix(),
                 "interaction_menu"
         )
         Thread.sleep(2000)
-        Espresso.onView(ViewMatchers.withId(R.id.bottom_sheet_close)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)).perform(ViewActions.click())
     }
 
     fun take_screenshot_enquiry_phone_number() {
@@ -156,7 +156,7 @@ abstract class BaseTelcoPostpaidScreenShotLoginTest {
 
         Thread.sleep(2000)
         findViewAndScreenShot(
-                R.id.layout_widget,
+            com.tokopedia.common.topupbills.R.id.layout_widget,
                 generatePrefix(),
                 "pager_recent"
         )
@@ -165,22 +165,22 @@ abstract class BaseTelcoPostpaidScreenShotLoginTest {
 
         Thread.sleep(2000)
         val viewInteraction = Espresso.onView(AllOf.allOf(
-                CoreMatchers.allOf(ViewMatchers.withId(R.id.recycler_view_menu_component), ViewMatchers.withParent(ViewMatchers.withId(R.id.layout_widget)),
+                CoreMatchers.allOf(ViewMatchers.withId(com.tokopedia.common.topupbills.R.id.recycler_view_menu_component), ViewMatchers.withParent(ViewMatchers.withId(com.tokopedia.common.topupbills.R.id.layout_widget)),
                         ViewMatchers.isDisplayed()))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
         Thread.sleep(2000)
         findViewAndScreenShot(
-                R.id.layout_widget,
+            com.tokopedia.common.topupbills.R.id.layout_widget,
                 generatePrefix(),
                 "pager_promo"
         )
 
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TopupBillsPromoListAdapter.PromoItemViewHolder>(0,
-                CommonActions.clickChildViewWithId(R.id.btn_copy_promo)))
+                CommonActions.clickChildViewWithId(com.tokopedia.common.topupbills.R.id.btn_copy_promo)))
 
         Thread.sleep(2000)
         findViewAndScreenShot(
-                R.id.layout_widget,
+            com.tokopedia.common.topupbills.R.id.layout_widget,
                 generatePrefix(),
                 "pager_promo_chosen"
         )
@@ -195,7 +195,7 @@ abstract class BaseTelcoPostpaidScreenShotLoginTest {
         fadeOut.fillAfter = true
 
         Thread.sleep(2000)
-        val recyclerView = mActivityRule.activity.findViewById<RecyclerView>(R.id.recycler_view_menu_component)
+        val recyclerView = mActivityRule.activity.findViewById<RecyclerView>(com.tokopedia.common.topupbills.R.id.recycler_view_menu_component)
         scrollRecyclerViewToPosition(recyclerView, 5)
 
         mActivityRule.runOnUiThread {

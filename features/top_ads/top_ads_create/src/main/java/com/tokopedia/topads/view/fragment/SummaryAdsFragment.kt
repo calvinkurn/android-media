@@ -448,7 +448,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             txtDailyBudget?.setError(true)
             txtDailyBudget?.setMessage(
                 String.format(
-                    getString(R.string.topads_common_error_multiple_50),
+                    getString(com.tokopedia.topads.common.R.string.topads_common_error_multiple_50),
                     DAILYBUDGET_FACTOR
                 )
             )
