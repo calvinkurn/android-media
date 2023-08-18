@@ -28,7 +28,7 @@
     <Transition
         app:constraintSetEnd="@id/end"
         app:constraintSetStart="@+id/start"
-        app:duration="3000"
+        app:duration="2500"
         app:motionInterpolator="easeInOut">
         <KeyFrameSet>
             <KeyAttribute
