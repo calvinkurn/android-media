@@ -280,10 +280,10 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
             DialogUnify.WITH_ILLUSTRATION
         )
         dialog.setImageUrl(successImageUrl)
-        dialog.setDescription(getString(R.string.success_dailog_description))
-        dialog.setTitle(getString(R.string.product_successfully_advertised))
-        dialog.setPrimaryCTAText(getString(R.string.manage_ads_group))
-        dialog.setSecondaryCTAText(getString(R.string.stay_here))
+        dialog.setDescription(getString(com.tokopedia.topads.common.R.string.topads_common_create_group_success_dailog_desc))
+        dialog.setTitle(getString(com.tokopedia.topads.common.R.string.topads_common_product_successfully_advertised))
+        dialog.setPrimaryCTAText(getString(com.tokopedia.topads.common.R.string.topads_common_manage_ads_group))
+        dialog.setSecondaryCTAText(getString(com.tokopedia.topads.common.R.string.topads_common_stay_here))
         dialog.setPrimaryCTAClickListener {
             MpTracker.clickAdGroupCreatedManageCta()
             val intent =

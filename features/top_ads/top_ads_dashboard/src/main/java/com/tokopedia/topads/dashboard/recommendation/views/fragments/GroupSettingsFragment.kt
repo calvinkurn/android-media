@@ -113,6 +113,10 @@ class GroupSettingsFragment : BaseDaggerFragment() {
                 binding?.createNewGroupCta?.isChecked = false
             }
         }
+
+        binding?.reset?.setOnClickListener {
+            activity?.supportFragmentManager?.popBackStack()
+        }
     }
 
     private fun setUpCreateGroupPage(){
@@ -120,7 +124,7 @@ class GroupSettingsFragment : BaseDaggerFragment() {
     }
 
     private fun setUpChooseGroupPage(){
-//        changeChildFragment()
+        changeChildFragment(ChooseGroupFragment.createInstance())
     }
 
     private fun changeChildFragment(fragment: Fragment){

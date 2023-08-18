@@ -12,10 +12,15 @@ import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.ResponseGroupValidateName.TopAdsGroupValidateNameV2
 import com.tokopedia.topads.common.data.response.TopadsBidInfo
+import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
 import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
+import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupDataUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGroupValidateNameUseCase
-import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.INSIGHT_CENTRE_GQL_SOURCE
+import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.INSIGHT_CENTRE_CREATE_GROUP_SOURCE
+import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.INSIGHT_CENTRE_BID_INFO_SOURCE
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.ProductRecommendationMapper
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.ProductItemUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.ProductListUiModel
 import kotlinx.coroutines.CoroutineScope
 import javax.inject.Inject
@@ -27,6 +32,8 @@ class ProductRecommendationViewModel @Inject constructor(
     private val topadsGetProductRecommendationV2Usecase: TopadsGetProductRecommendationV2Usecase,
     private val mapper: ProductRecommendationMapper,
     private val topAdsGroupValidateNameUseCase: TopAdsGroupValidateNameUseCase,
+    private val topAdsCreateUseCase: TopAdsCreateUseCase,
+    private val topAdsGetGroupDataUseCase: TopAdsGetGroupDataUseCase,
 ) : BaseViewModel(dispatcher.main), CoroutineScope {
 
     private val _productItemsLiveData =
@@ -41,6 +48,14 @@ class ProductRecommendationViewModel @Inject constructor(
     private val _bidInfoLiveData = MutableLiveData<List<TopadsBidInfo.DataItem>>()
     val bidInfoLiveData: LiveData<List<TopadsBidInfo.DataItem>>
         get() = _bidInfoLiveData
+
+    private val _createGroupLiveData = MutableLiveData<TopadsProductListState<String>>()
+    val createGroupLiveData: LiveData<TopadsProductListState<String>>
+        get() = _createGroupLiveData
+
+    private val _topadsGroupsLiveData = MutableLiveData<TopadsProductListState<GroupItemResponse.GetTopadsDashboardGroups>>()
+    val topadsGroupsLiveData: LiveData<TopadsProductListState<GroupItemResponse.GetTopadsDashboardGroups>>
+        get() = _topadsGroupsLiveData
 
     fun loadProductList() {
         launchCatchError(dispatcher.main, {
@@ -59,7 +74,7 @@ class ProductRecommendationViewModel @Inject constructor(
     fun validateGroup(
         groupName: String,
     ) {
-        topAdsGroupValidateNameUseCase.setParams(groupName, INSIGHT_CENTRE_GQL_SOURCE)
+        topAdsGroupValidateNameUseCase.setParams(groupName, INSIGHT_CENTRE_BID_INFO_SOURCE)
         topAdsGroupValidateNameUseCase.execute({
             _validateNameLiveData.value = it.topAdsGroupValidateName
         }, { throwable ->
@@ -70,7 +85,11 @@ class ProductRecommendationViewModel @Inject constructor(
     fun getBidInfo(
         suggestions: List<DataSuggestions>,
     ) {
-        bidInfoUseCase.setParams(suggestions, ParamObject.AUTO_BID_STATE, /*INSIGHT_CENTRE_GQL_SOURCE*/ "android.group_detail")
+        bidInfoUseCase.setParams(
+            suggestions,
+            ParamObject.AUTO_BID_STATE,
+            INSIGHT_CENTRE_BID_INFO_SOURCE
+        )
         bidInfoUseCase.executeQuerySafeMode(
             {
                 _bidInfoLiveData.value = it.topadsBidInfo.data
@@ -79,5 +98,74 @@ class ProductRecommendationViewModel @Inject constructor(
                 throwable.printStackTrace()
             }
         )
+    }
+
+
+    fun topAdsCreate(
+        productIds: List<String>,
+        currentGroupName: String,
+        dailyBudget: Double,
+    ) {
+        val param =
+            topAdsCreateUseCase.createRequestParamActionCreate(
+                productIds,
+                currentGroupName,
+                0.0,
+                0.0,
+                dailyBudget,
+                INSIGHT_CENTRE_CREATE_GROUP_SOURCE
+            )
+        launchCatchError(block = {
+            val response = topAdsCreateUseCase.execute(param)
+
+            val dataGroup = response.topadsManageGroupAds.groupResponse
+            val dataKeyword = response.topadsManageGroupAds.keywordResponse
+            if (dataGroup.errors.isNullOrEmpty() && dataKeyword.errors.isNullOrEmpty()) {
+                _createGroupLiveData.value = TopadsProductListState.Success(dataGroup.data.id)
+            } else {
+                _createGroupLiveData.value = TopadsProductListState.Fail(Exception())
+            }
+        }, onError = {
+            _createGroupLiveData.value = TopadsProductListState.Fail(it)
+        })
+    }
+
+    fun getTopadsGroups(
+        page: Int,
+        search: String,
+        sort: String,
+        status: Int?,
+        startDate: String,
+        endDate: String,
+        groupType: Int,
+    ) {
+        val requestParams = topAdsGetGroupDataUseCase.setParams(
+            search,
+            page,
+            sort,
+            status,
+            startDate,
+            endDate,
+            groupType
+        )
+        launchCatchError(block = {
+            val response = topAdsGetGroupDataUseCase.execute(requestParams)
+            _topadsGroupsLiveData.value = TopadsProductListState.Success(response.getTopadsDashboardGroups)
+        }, onError = {
+            _topadsGroupsLiveData.value = TopadsProductListState.Fail(it)
+        })
+    }
+
+    fun getSelectedProductItems(): List<ProductListUiModel>? {
+        return when (val products = productItemsLiveData.value) {
+            is TopadsProductListState.Success -> {
+                products.data.filter {
+                    (it as? ProductItemUiModel)?.isSelected ?: false
+                }
+            }
+            else -> {
+                null
+            }
+        }
     }
 }

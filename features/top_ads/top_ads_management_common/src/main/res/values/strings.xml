@@ -283,4 +283,8 @@
     <string name="topads_common_create_group_budget_help_desc">Semakin tinggi anggaran harian, durasi tampil iklanmu akan semakin lama dan dapat menjangkau semakin banyak pembeli.</string>
     <string name="topads_common_daily_budget_tips">Tips Anggaran Harian</string>
     <string name="topads_common_create_group_daily_budget_desc">Untuk memaksimalkan penjualanmu, biaya iklan akan diatur otomatis dulu ya. Kamu bisa atur lagi nanti.</string>
+    <string name="topads_common_create_group_success_dailog_desc">Kamu bisa tambah produk, atur biaya iklan, kata kunci, dan anggaran harian dengan klik tombol Atur Grup Iklan.</string>
+    <string name="topads_common_product_successfully_advertised">Produk berhasil diiklankan!</string>
+    <string name="topads_common_manage_ads_group">Atur Grup Iklan</string>
+    <string name="topads_common_stay_here">Tetap di Sini</string>
 </resources>

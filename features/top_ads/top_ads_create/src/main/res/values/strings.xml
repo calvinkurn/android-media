@@ -190,16 +190,12 @@
 
     <string name="buat_grup">Buat Grup</string>
     <string name="nama_grup">Nama Grup</string>
-    <string name="product_successfully_advertised">Produk berhasil diiklankan!</string>
-    <string name="success_dailog_description">Kamu bisa tambah produk, atur biaya iklan, kata kunci, dan anggaran harian dengan klik tombol Atur Grup Iklan.</string>
-    <string name="manage_ads_group">Atur Grup Iklan</string>
     <string name="topads_ad_status">Status Iklan</string>
     <string name="topads_create_failed_to_load">Gagal Memuat</string>
     <string name="your_product_ad_performance">Performa Iklan Produkmu</string>
     <string name="product_and_advertising_costs_are_set_automatically_by_topads">Produk dan biaya iklan diatur otomatis oleh TopAds.</string>
     <string name="see_group_settings">Lihat Pengaturan Grup</string>
     <string name="setup_auto_ads">Atur Iklan Otomatis</string>
-    <string name="stay_here">Tetap di Sini</string>
     <string name="ads_created_successfully_but_cant_appear_yet">Iklan berhasil dibuat, tapi belum bisa tampil nih</string>
     <string name="success_group_creation_insufficient_credits_text">Saat ini, Kredit TopAds-mu Rpx.xxx dan belum cukup untuk beriklan. Tambah Kredit TopAds dulu, yuk.</string>
     <string name="add_credit">Tambah Kredit</string>
