@@ -65,6 +65,7 @@ data class CartItemHolderData(
     var isFinalItem: Boolean = false,
     var isAlreadyShowMinimumQuantityPurchasedError: Boolean = false,
     var isAlreadyShowMaximumQuantityPurchasedError: Boolean = false,
+    var showBundlePrice: Boolean = false,
 
     // OWOC
     var shopHolderData: CartShopHolderData = CartShopHolderData(),

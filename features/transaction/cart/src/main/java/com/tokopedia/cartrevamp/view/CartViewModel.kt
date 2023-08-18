@@ -541,6 +541,7 @@ class CartViewModel @Inject constructor(
             cartListData = cartData,
             summaryTransactionUiModel = CartUiModelMapper.mapSummaryTransactionUiModel(cartData),
             summariesAddOnUiModel = CartUiModelMapper.getShoppingSummaryAddOns(cartData.shoppingSummary.summaryAddOnList),
+            promoSummaryUiModel = CartUiModelMapper.mapPromoSummaryUiModel(cartData.promoSummary),
             showChoosePromoWidget = cartData.promo.showChoosePromoWidget,
             promoTicker = cartData.promo.ticker,
             recommendationPage = RECOMMENDATION_START_PAGE

@@ -28,7 +28,6 @@ import com.tokopedia.cartrevamp.domain.model.cartlist.SummaryTransactionUiModel
 import com.tokopedia.cartrevamp.view.uimodel.CartAddOnData
 import com.tokopedia.cartrevamp.view.uimodel.CartAddOnProductData
 import com.tokopedia.cartrevamp.view.uimodel.CartAddOnWidgetData
-import com.tokopedia.cartrevamp.view.uimodel.CartChooseAddressHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartEmptyHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
@@ -76,10 +75,6 @@ object CartUiModelMapper {
             title = ticker.title,
             message = ticker.message
         )
-    }
-
-    fun mapChooseAddressUiModel(): CartChooseAddressHolderData {
-        return CartChooseAddressHolderData()
     }
 
     fun mapCartEmptyUiModel(context: Context?): CartEmptyHolderData {
@@ -360,8 +355,8 @@ object CartUiModelMapper {
                     }
                     productUiModelList.lastOrNull()?.apply {
                         isFinalItem = true
-                        showErrorBottomDivider = sectionIndex != cartData.unavailableSections.lastIndex
-                            || (sectionIndex == cartData.unavailableSections.lastIndex && groupIndex != unavailableSection.unavailableGroups.lastIndex)
+                        showErrorBottomDivider = sectionIndex != cartData.unavailableSections.lastIndex ||
+                            (sectionIndex == cartData.unavailableSections.lastIndex && groupIndex != unavailableSection.unavailableGroups.lastIndex)
                         shouldDivideHalfErrorBottomDivider = showErrorBottomDivider && groupIndex != unavailableSection.unavailableGroups.lastIndex
                     }
                 }
@@ -606,6 +601,7 @@ object CartUiModelMapper {
             warehouseId = product.warehouseId
             bundleIds = product.bundleIds
             addOnsProduct = mapCartAddOnData(product.addOn)
+            showBundlePrice = cartData.showBundlePrice
         }
     }
 

@@ -49,8 +49,7 @@ import java.util.*
 class CartItemViewHolder constructor(
     private val binding: ItemCartProductRevampBinding,
     private var actionListener: CartItemAdapter.ActionListener?,
-    private var mainCoachMark: Pair<CoachMark2?, ArrayList<CoachMark2Item>>,
-    private var bulkActionCoachMark: Pair<CoachMark2?, ArrayList<CoachMark2Item>>
+    private var mainCoachMark: Pair<CoachMark2?, ArrayList<CoachMark2Item>>
 ) : RecyclerView.ViewHolder(binding.root) {
 
     private var viewHolderListener: ViewHolderListener? = null
@@ -746,6 +745,11 @@ class CartItemViewHolder constructor(
     }
 
     private fun renderPrice(data: CartItemHolderData) {
+        if (data.isBundlingItem && data.showBundlePrice) {
+            binding.textProductPrice.gone()
+        } else {
+            binding.textProductPrice.visible()
+        }
         validateErrorView(binding.textProductPrice, data.isError)
 
         if (data.wholesalePriceFormatted != null) {
@@ -976,7 +980,6 @@ class CartItemViewHolder constructor(
                 KeyboardHandler.DropKeyboard(qtyEditorProduct.editText.context, itemView)
                 if (qtyEditorProduct.editText.text.toString() == "0") {
                     actionListener?.onCartItemDeleteButtonClicked(data, true)
-                    true
                 }
                 if (lastQty > data.maxOrder) {
                     binding.labelQuantityError.text = String.format(
@@ -1196,15 +1199,13 @@ class CartItemViewHolder constructor(
             if (cartItemHolderData.isBundlingItem && cartItemHolderData.isMultipleBundleProduct) {
                 if (cartItemHolderData.bundlingItemPosition != BUNDLING_ITEM_HEADER) {
                     layoutParamsIuImageProduct.topMargin = IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
-                }
-                else {
+                } else {
                     layoutParamsIuImageProduct.topMargin = 0
                 }
 
                 if (cartItemHolderData.bundlingItemPosition == BUNDLING_ITEM_FOOTER) {
                     layoutParams.bottomMargin = PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
-                }
-                else {
+                } else {
                     layoutParams.bottomMargin = 0
                 }
             } else {
@@ -1277,7 +1278,6 @@ class CartItemViewHolder constructor(
         const val ALPHA_FULL = 1.0f
 
         private const val CART_MAIN_COACH_MARK = "cart_main_coach_mark"
-        private const val CART_BULK_ACTION_COACH_MARK = "cart_bulk_action_coach_mark"
 
         private const val DEFAULT_DIVIDER_HEIGHT = 2
         private const val IMAGE_PRODUCT_MARGIN_START_6 = 6

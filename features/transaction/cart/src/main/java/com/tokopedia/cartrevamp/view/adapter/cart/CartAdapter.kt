@@ -153,7 +153,7 @@ class CartAdapter constructor(
                     parent,
                     false
                 )
-                return CartItemViewHolder(binding, cartItemActionListener, mainCoachMark, bulkActionCoachMark)
+                return CartItemViewHolder(binding, cartItemActionListener, mainCoachMark)
             }
 
             CartShopBottomViewHolder.LAYOUT -> {
