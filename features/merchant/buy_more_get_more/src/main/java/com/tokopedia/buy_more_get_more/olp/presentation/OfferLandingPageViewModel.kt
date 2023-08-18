@@ -89,8 +89,7 @@ class OfferLandingPageViewModel @Inject constructor(
         offerIds: List<Int>,
         warehouseIds: List<Int>? = emptyList(),
         localCacheModel: LocalCacheModel?,
-        page: Int,
-        pageSize: Int
+        page: Int
     ) {
         launchCatchError(
             dispatchers.io,
@@ -109,7 +108,7 @@ class OfferLandingPageViewModel @Inject constructor(
                         cityId = localCacheModel?.city_id.toIntOrZero()
                     ),
                     page = page,
-                    pageSize = pageSize
+                    pageSize = 5
                 )
 
                 val result = getOfferProductListUseCase.execute(param)

@@ -31,10 +31,11 @@ import com.tokopedia.buy_more_get_more.olp.utils.BundleConstant
 import com.tokopedia.buy_more_get_more.olp.utils.DataEndlessScrollListener
 import com.tokopedia.buy_more_get_more.sort.activity.ShopProductSortActivity
 import com.tokopedia.buy_more_get_more.sort.listener.ProductSortListener
+import com.tokopedia.campaign.delegates.HasPaginatedList
+import com.tokopedia.campaign.delegates.HasPaginatedListImpl
 import com.tokopedia.campaign.helper.BuyMoreGetMoreHelper
 import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -49,7 +50,8 @@ import javax.inject.Inject
 class OfferLandingPageFragment :
     BaseListFragment<Visitable<*>, AdapterTypeFactory>(),
     ProductSortListener,
-    AtcProductListener {
+    AtcProductListener,
+    HasPaginatedList by HasPaginatedListImpl() {
 
     companion object {
         @JvmStatic
@@ -132,12 +134,7 @@ class OfferLandingPageFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupObservables()
-        getRecyclerView(view)?.let {
-            it.layoutManager = StaggeredGridLayoutManager(
-                2,
-                StaggeredGridLayoutManager.VERTICAL
-            )
-        }
+        setupProductRv()
     }
 
     private fun setupObservables() {
@@ -148,6 +145,7 @@ class OfferLandingPageFragment :
         viewModel.productList.observe(viewLifecycleOwner) { productList ->
             setupProductList(productList)
             setViewState(VIEW_CONTENT)
+            notifyLoadResult(productList.productList.size >= 5)
         }
 
         viewModel.navNotificationLiveData.observe(viewLifecycleOwner) { notification ->
@@ -159,6 +157,7 @@ class OfferLandingPageFragment :
                 is Success -> {
                     binding?.miniCartPlaceholder.showToaster(atc.data.data.success.toString())
                 }
+
                 is Fail -> {
                     binding?.miniCartPlaceholder.showToaster(message = atc.throwable.localizedMessage)
                 }
@@ -180,13 +179,7 @@ class OfferLandingPageFragment :
             )
         )
         viewModel.getNotification()
-        viewModel.getOfferingProductList(
-            offerIds = listOf(offerId.toIntOrZero()),
-            warehouseIds = listOf(1, 2),
-            localCacheModel = localCacheModel,
-            page = 1,
-            pageSize = 10
-        )
+        getProductListData(1)
     }
 
     private fun setupProductList(offerProductList: OfferProductListUiModel) {
@@ -233,6 +226,15 @@ class OfferLandingPageFragment :
         // update product list data
     }
 
+    private fun getProductListData(page: Int) {
+        viewModel.getOfferingProductList(
+            offerIds = listOf(offerId.toIntOrZero()),
+            warehouseIds = listOf(1, 2),
+            localCacheModel = localCacheModel,
+            page = page
+        )
+    }
+
     override fun loadInitialData() {
         setViewState(VIEW_LOADING)
         viewModel.getOfferingInfo(
@@ -274,11 +276,34 @@ class OfferLandingPageFragment :
         return OlpAdapter(olpAdapterTypeFactory)
     }
 
+    private fun setupProductRv() {
+        getRecyclerView(view)?.apply {
+            this.layoutManager = StaggeredGridLayoutManager(
+                2,
+                StaggeredGridLayoutManager.VERTICAL
+            )
+            val config = HasPaginatedList.Config(
+                pageSize = 5,
+                onLoadNextPage = {
+                    // TODO: Implement loading
+
+                },
+                onLoadNextPageFinished = {
+                    // TODO: Implement loading
+                }
+            )
+            attachPaging(this, config) { page, _ ->
+                Log.d("Masuk", "load more page : $page") // load more data
+                getProductListData(page)
+            }
+        }
+    }
+
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
         return object :
             DataEndlessScrollListener(getRecyclerView(view)?.layoutManager, olpAdapter) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                Log.d("Masuk", "load more") // load more data
+//                getProductListData(page)
             }
         }
     }
