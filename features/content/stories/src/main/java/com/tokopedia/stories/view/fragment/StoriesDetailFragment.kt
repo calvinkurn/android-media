@@ -204,9 +204,15 @@ class StoriesDetailFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collectLatest { event ->
                 when (event) {
-                    StoriesUiEvent.OpenKebab -> StoriesThreeDotsBottomSheet
-                        .getOrCreateFragment(childFragmentManager, requireActivity().classLoader)
-                        .show(childFragmentManager)
+                    StoriesUiEvent.OpenKebab -> {
+                        if (groupId != viewModel.groupId) return@collectLatest
+                        StoriesThreeDotsBottomSheet
+                            .getOrCreateFragment(
+                                childFragmentManager,
+                                requireActivity().classLoader
+                            )
+                            .show(childFragmentManager)
+                    }
 
                     else -> {}
                 }
