@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:background="@color/Unify_GN500">
 
     <View
         android:id="@+id/view_top_spacing"
@@ -120,6 +121,7 @@
         android:id="@+id/image_chevron_down"
         android:layout_width="16dp"
         android:layout_height="16dp"
+        android:layout_marginTop="3dp"
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_name="CHEVRON_DOWN"
         app:layout_constraintBottom_toBottomOf="@id/text_subtitle"
