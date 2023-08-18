@@ -96,8 +96,8 @@ ext {
     robolectricVersion = "4.9"
     orchestratorVersion = '1.4.1'
     leakCanaryVersion = '2.9.1'
-    embraceVersion = '4.15.0'
-    newRelicVersion = '6.6.0'
+    embraceVersion = '5.22.0'
+    newRelicVersion = '7.0.0'
     windowVersion = '1.0.0'
     localBroadcastManagerVersion = '1.0.0'
     gojekSSOVersion = '1.0.1-67-0738bd6'
