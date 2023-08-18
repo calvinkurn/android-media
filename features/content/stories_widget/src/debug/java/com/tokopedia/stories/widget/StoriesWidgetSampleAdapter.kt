@@ -2,19 +2,18 @@ package com.tokopedia.stories.widget
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.compose.ui.unit.dp
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.tokopedia.stories.widget.databinding.ItemStoriesAvatarSampleBinding
+import com.tokopedia.stories.widget.databinding.ItemStoriesWidgetSampleBinding
 
 /**
  * Created by kenny.hadisaputra on 27/07/23
  */
-class StoriesAvatarSampleAdapter(
-    private val storiesAvatarManager: StoriesAvatarManager
-) : ListAdapter<String, StoriesAvatarSampleAdapter.ViewHolder>(
+class StoriesWidgetSampleAdapter(
+    private val storiesWidgetManager: StoriesWidgetManager
+) : ListAdapter<String, StoriesWidgetSampleAdapter.ViewHolder>(
     object : DiffUtil.ItemCallback<String>() {
         override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
             return oldItem == newItem
@@ -27,7 +26,7 @@ class StoriesAvatarSampleAdapter(
 ) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder.create(parent, storiesAvatarManager)
+        return ViewHolder.create(parent, storiesWidgetManager)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -35,24 +34,24 @@ class StoriesAvatarSampleAdapter(
     }
 
     class ViewHolder(
-        private val binding: ItemStoriesAvatarSampleBinding,
-        private val storiesAvatarManager: StoriesAvatarManager
+        private val binding: ItemStoriesWidgetSampleBinding,
+        private val storiesWidgetManager: StoriesWidgetManager
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(shopId: String) {
             binding.imgAvatar.load("https://4.img-dpreview.com/files/p/E~TS590x0~articles/3925134721/0266554465.jpeg")
-            storiesAvatarManager.manage(binding.root, shopId)
+            storiesWidgetManager.manage(binding.root, shopId)
         }
 
         companion object {
-            fun create(parent: ViewGroup, storiesAvatarManager: StoriesAvatarManager): ViewHolder {
+            fun create(parent: ViewGroup, storiesWidgetManager: StoriesWidgetManager): ViewHolder {
                 return ViewHolder(
-                    ItemStoriesAvatarSampleBinding.inflate(
+                    ItemStoriesWidgetSampleBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
                         false
                     ),
-                    storiesAvatarManager
+                    storiesWidgetManager
                 )
             }
         }

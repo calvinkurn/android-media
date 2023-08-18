@@ -15,7 +15,7 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore("s
 /**
  * Created by kenny.hadisaputra on 27/07/23
  */
-class StoriesAvatarPreferenceUtil @Inject constructor(
+class StoriesWidgetPreferenceUtil @Inject constructor(
     @ApplicationContext private val appContext: Context
 ) {
     private val hasSeenCoachMark = booleanPreferencesKey(KEY_HAS_SEEN_COACH_MARK)

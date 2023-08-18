@@ -43,7 +43,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
-import com.tokopedia.stories.widget.StoriesAvatarManager
+import com.tokopedia.stories.widget.StoriesWidgetManager
 import com.tokopedia.stories.widget.domain.StoriesKey
 import com.tokopedia.stories.widget.storiesManager
 import com.tokopedia.topchat.R
@@ -134,7 +134,7 @@ open class ChatListInboxFragment :
 
     private lateinit var performanceMonitoring: PerformanceMonitoring
 
-    private val mStoriesAvatarManager by storiesManager(StoriesKey.TopChatList) {
+    private val mStoriesWidgetManager by storiesManager(StoriesKey.TopChatList) {
         setScrollingParent(rv)
     }
 
@@ -715,7 +715,7 @@ open class ChatListInboxFragment :
     private fun onSuccessGetChatList(data: ChatListPojo.ChatListDataPojo) {
         renderList(data.list, data.hasNext)
         if (role == RoleType.BUYER) {
-            mStoriesAvatarManager.updateStories(data.list.map { it.id })
+            mStoriesWidgetManager.updateStories(data.list.map { it.id })
         }
         fpmStopTrace()
         setIndicatorCurrentActiveChat(currentActiveMessageId)
@@ -1026,8 +1026,8 @@ open class ChatListInboxFragment :
         return childFragmentManager
     }
 
-    override fun getStoriesAvatarManager(): StoriesAvatarManager {
-        return mStoriesAvatarManager
+    override fun getStoriesWidgetManager(): StoriesWidgetManager {
+        return mStoriesWidgetManager
     }
 
     override fun pinUnpinChat(element: ItemChatListPojo, position: Int, isPinChat: Boolean) {

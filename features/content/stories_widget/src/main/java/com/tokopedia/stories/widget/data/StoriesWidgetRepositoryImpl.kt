@@ -9,7 +9,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey.SELLERAPP_DISABLED_STORIES_ENT
 import com.tokopedia.stories.widget.domain.GetShopStoriesStatusUseCase
 import com.tokopedia.stories.widget.domain.StoriesKey
 import com.tokopedia.stories.widget.domain.ShopStoriesState
-import com.tokopedia.stories.widget.domain.StoriesAvatarRepository
+import com.tokopedia.stories.widget.domain.StoriesWidgetRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -17,12 +17,12 @@ import javax.inject.Inject
 /**
  * Created by kenny.hadisaputra on 27/07/23
  */
-internal class StoriesAvatarRepositoryImpl @Inject constructor(
-    private val prefUtil: StoriesAvatarPreferenceUtil,
+internal class StoriesWidgetRepositoryImpl @Inject constructor(
+    private val prefUtil: StoriesWidgetPreferenceUtil,
     private val getShopStoriesUseCase: GetShopStoriesStatusUseCase,
     private val remoteConfig: RemoteConfig,
     private val dispatchers: CoroutineDispatchers
-) : StoriesAvatarRepository {
+) : StoriesWidgetRepository {
 
     private var mHasSeen = false
 

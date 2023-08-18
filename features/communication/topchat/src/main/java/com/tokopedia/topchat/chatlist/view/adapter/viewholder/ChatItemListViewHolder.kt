@@ -129,7 +129,7 @@ class ChatItemListViewHolder constructor(
 
     private fun bindProfilePicture(chat: ItemChatListPojo) {
         thumbnail.loadImageCircle(chat.thumbnail)
-        listener.getStoriesAvatarManager().manage(storiesBorder, chat.id)
+        listener.getStoriesWidgetManager().manage(storiesBorder, chat.id)
     }
 
     private fun bindPin(chat: ItemChatListPojo) {

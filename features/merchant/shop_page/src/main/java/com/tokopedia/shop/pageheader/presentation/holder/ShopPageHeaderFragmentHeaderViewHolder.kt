@@ -32,7 +32,6 @@ import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.Shop
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopPageHeaderRequestUnmoderateBottomSheet
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderTickerData
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel
-import com.tokopedia.stories.widget.StoriesAvatarManager
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback

@@ -9,7 +9,7 @@ import com.tokopedia.coachmark.CoachMark2Item
 /**
  * Created by kenny.hadisaputra on 31/07/23
  */
-internal class StoriesAvatarCoachMark(
+internal class StoriesWidgetCoachMark(
     private val context: Context,
     private val onClosedByUser: () -> Unit
 ) {

@@ -1,23 +1,23 @@
 package com.tokopedia.stories.widget.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.stories.widget.StoriesAvatarViewModel
+import com.tokopedia.stories.widget.StoriesWidgetViewModel
 import dagger.Component
 
 /**
  * Created by kenny.hadisaputra on 27/07/23
  */
-@StoriesAvatarScope
+@StoriesWidgetScope
 @Component(
     dependencies = [
         BaseAppComponent::class
     ],
     modules = [
-        StoriesAvatarModule::class,
+        StoriesWidgetModule::class,
         StoriesRemoteConfigModule::class
     ]
 )
-internal interface StoriesAvatarComponent {
+internal interface StoriesWidgetComponent {
 
-    fun storiesViewModelFactory(): StoriesAvatarViewModel.Factory
+    fun storiesViewModelFactory(): StoriesWidgetViewModel.Factory
 }

@@ -2,22 +2,22 @@ package com.tokopedia.stories.widget
 
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.stories.widget.databinding.ActivityStoriesAvatarSampleBinding
+import com.tokopedia.stories.widget.databinding.ActivityStoriesWidgetSampleBinding
 import com.tokopedia.stories.widget.domain.StoriesKey
 
 /**
  * Created by kenny.hadisaputra on 24/07/23
  */
-class StoriesAvatarSampleActivity : BaseActivity() {
+class StoriesWidgetSampleActivity : BaseActivity() {
 
     private val binding by lazy {
-        ActivityStoriesAvatarSampleBinding.inflate(layoutInflater)
+        ActivityStoriesWidgetSampleBinding.inflate(layoutInflater)
     }
 
     private val storiesManager by activityStoriesManager(StoriesKey.ShopPage)
 
     private val adapter by lazy {
-        StoriesAvatarSampleAdapter(storiesManager)
+        StoriesWidgetSampleAdapter(storiesManager)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

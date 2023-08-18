@@ -16,7 +16,7 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopPage
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderBadgeTextValueComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderImageOnlyComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel
-import com.tokopedia.stories.widget.StoriesAvatarManager
+import com.tokopedia.stories.widget.StoriesWidgetManager
 import com.tokopedia.stories.widget.StoriesWidgetLayout
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
@@ -41,7 +41,7 @@ class ShopPageHeaderBasicInfoWidgetViewHolder(
             shopPageHeaderWidgetUiModel: ShopPageHeaderWidgetUiModel?
         )
 
-        fun getStoriesAvatarManager(): StoriesAvatarManager
+        fun getStoriesWidgetManager(): StoriesWidgetManager
     }
 
     private val viewBinding: LayoutShopHeaderBasicInfoWidgetBinding? by viewBinding()
@@ -77,7 +77,7 @@ class ShopPageHeaderBasicInfoWidgetViewHolder(
         val shopId = component?.shopId.orEmpty()
         shopLogoImageView?.loadImageCircle(shopLogoUrl)
         shopLogoContainer?.run {
-            shopHeaderBasicInfoWidgetListener.getStoriesAvatarManager().manage(this, shopId)
+            shopHeaderBasicInfoWidgetListener.getStoriesWidgetManager().manage(this, shopId)
         }
 //        shopLogoContainer?.startAnimation()
     }

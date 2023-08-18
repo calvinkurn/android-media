@@ -39,7 +39,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/item_stories_avatar_sample"
+        tools:listitem="@layout/item_stories_widget_sample"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

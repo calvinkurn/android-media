@@ -36,7 +36,7 @@ class StoriesWidgetLayout @JvmOverloads constructor(
         }
     }
 
-    private var mState by Delegates.observable(StoriesAvatarState.Default) { _, _, newProp ->
+    private var mState by Delegates.observable(StoriesWidgetState.Default) { _, _, newProp ->
         getChildBorderView()?.setStoriesStatus(newProp.status)
 
         isClickable = newProp.status != StoriesStatus.NoStories
@@ -74,7 +74,7 @@ class StoriesWidgetLayout @JvmOverloads constructor(
         return super.drawChild(canvas, child, drawingTime)
     }
 
-    fun setState(onUpdate: (StoriesAvatarState) -> StoriesAvatarState) {
+    fun setState(onUpdate: (StoriesWidgetState) -> StoriesWidgetState) {
         mState = onUpdate(mState)
         invalidate()
     }
@@ -92,6 +92,6 @@ class StoriesWidgetLayout @JvmOverloads constructor(
     }
 
     interface Listener {
-        fun onClickedWhenHasStories(view: StoriesWidgetLayout, state: StoriesAvatarState)
+        fun onClickedWhenHasStories(view: StoriesWidgetLayout, state: StoriesWidgetState)
     }
 }

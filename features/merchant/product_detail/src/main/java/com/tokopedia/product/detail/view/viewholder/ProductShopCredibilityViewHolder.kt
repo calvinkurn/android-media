@@ -328,7 +328,7 @@ class ProductShopCredibilityViewHolder(
         }
 
         shopCredibilityAva.loadImageCircle(element.shopAva)
-        listener.getStoriesAvatarManager().manage(storiesBorder, element.shopId)
+        listener.getStoriesWidgetManager().manage(storiesBorder, element.shopId)
     }
 
     private fun isNewShopBadgeEnabled() = true

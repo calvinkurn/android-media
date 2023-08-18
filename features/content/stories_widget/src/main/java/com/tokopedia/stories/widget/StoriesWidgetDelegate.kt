@@ -12,31 +12,31 @@ import kotlin.reflect.KProperty
 /**
  * Created by kenny.hadisaputra on 04/08/23
  */
-class StoriesAvatarDelegate<LO : LifecycleOwner>(
-    private val delegate: AbstractLifecycleBoundDelegate<LO, StoriesAvatarManager>
-) : ReadOnlyProperty<LO, StoriesAvatarManager> {
+class StoriesWidgetDelegate<LO : LifecycleOwner>(
+    private val delegate: AbstractLifecycleBoundDelegate<LO, StoriesWidgetManager>
+) : ReadOnlyProperty<LO, StoriesWidgetManager> {
 
-    override fun getValue(thisRef: LO, property: KProperty<*>): StoriesAvatarManager {
+    override fun getValue(thisRef: LO, property: KProperty<*>): StoriesWidgetManager {
         return delegate.getValue(thisRef, property)
     }
 }
 
 fun activityStoriesManager(
     key: StoriesKey,
-    builderOptions: StoriesAvatarManager.Builder.() -> Unit = {},
-): StoriesAvatarDelegate<AppCompatActivity> {
-    return StoriesAvatarDelegate(
+    builderOptions: StoriesWidgetManager.Builder.() -> Unit = {},
+): StoriesWidgetDelegate<AppCompatActivity> {
+    return StoriesWidgetDelegate(
         lifecycleBound(
-            { StoriesAvatarManager.create(key, it, builderOptions) }
+            { StoriesWidgetManager.create(key, it, builderOptions) }
         )
     )
 }
 
 fun storiesManager(
     key: StoriesKey,
-    builderOptions: StoriesAvatarManager.Builder.() -> Unit = {},
-) = StoriesAvatarDelegate(
+    builderOptions: StoriesWidgetManager.Builder.() -> Unit = {},
+) = StoriesWidgetDelegate(
     viewLifecycleBound(
-        { StoriesAvatarManager.create(key, it, builderOptions) }
+        { StoriesWidgetManager.create(key, it, builderOptions) }
     )
 )

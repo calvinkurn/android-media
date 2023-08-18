@@ -14,11 +14,11 @@ import kotlinx.coroutines.launch
  * Created by kenny.hadisaputra on 28/07/23
  */
 @OptIn(ExperimentalCoroutinesApi::class)
-internal class StoriesAvatarObserver(
-    viewModel: StoriesAvatarViewModel,
+internal class StoriesWidgetObserver(
+    viewModel: StoriesWidgetViewModel,
     lifecycleOwner: LifecycleOwner,
     view: StoriesWidgetLayout,
-    animationStrategy: com.tokopedia.stories.widget.AnimationStrategy,
+    animationStrategy: AnimationStrategy,
 ) {
 
     private val _shopId = MutableStateFlow("")

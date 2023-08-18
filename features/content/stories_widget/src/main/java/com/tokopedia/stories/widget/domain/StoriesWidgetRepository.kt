@@ -3,7 +3,7 @@ package com.tokopedia.stories.widget.domain
 /**
  * Created by kenny.hadisaputra on 27/07/23
  */
-interface StoriesAvatarRepository {
+interface StoriesWidgetRepository {
 
     suspend fun setHasSeenCoachMark()
 

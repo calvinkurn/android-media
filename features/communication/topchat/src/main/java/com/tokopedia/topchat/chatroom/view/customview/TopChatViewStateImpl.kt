@@ -37,7 +37,7 @@ import com.tokopedia.topchat.chatroom.view.custom.ChatTextAreaTabLayout
 import com.tokopedia.topchat.chatroom.view.custom.ChatTextAreaTabLayoutListener
 import com.tokopedia.topchat.chatroom.view.listener.HeaderMenuListener
 import com.tokopedia.topchat.chatroom.view.listener.SendButtonListener
-import com.tokopedia.topchat.chatroom.view.listener.StoriesAvatarListener
+import com.tokopedia.topchat.chatroom.view.listener.StoriesWidgetListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.uimodel.ReplyParcelableModel
 import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
@@ -76,7 +76,7 @@ open class TopChatViewStateImpl constructor(
     private val stickerMenuListener: ChatMenuStickerView.StickerMenuListener,
     private val headerMenuListener: HeaderMenuListener,
     private val chatTextAreaTabLayoutListener: ChatTextAreaTabLayoutListener,
-    private val storiesAvatarListener: StoriesAvatarListener,
+    private val storiesWidgetListener: StoriesWidgetListener,
     toolbar: Toolbar,
     val analytics: TopChatAnalytics,
     private val userSession: UserSessionInterface
@@ -392,7 +392,7 @@ open class TopChatViewStateImpl constructor(
 
     private fun bindStories(chatRoom: ChatroomViewModel) {
         val storiesBorder = toolbar.findViewById<StoriesWidgetLayout>(com.tokopedia.chat_common.R.id.stories_border)
-        val manager = storiesAvatarListener.getStoriesAvatarManager()
+        val manager = storiesWidgetListener.getStoriesWidgetManager()
         manager.manage(storiesBorder, chatRoom.headerModel.shopId)
     }
 

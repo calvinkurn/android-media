@@ -44,7 +44,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
-import com.tokopedia.stories.widget.StoriesAvatarManager
+import com.tokopedia.stories.widget.StoriesWidgetManager
 import com.tokopedia.stories.widget.domain.StoriesKey
 import com.tokopedia.stories.widget.storiesManager
 import com.tokopedia.topchat.R
@@ -137,7 +137,7 @@ class ChatListFragment :
     private var menu: Menu? = null
     private var broadCastButton: BroadcastButtonLayout? = null
 
-    private val mStoriesAvatarManager by storiesManager(StoriesKey.TopChatList) {
+    private val mStoriesWidgetManager by storiesManager(StoriesKey.TopChatList) {
         setScrollingParent(rv)
     }
 
@@ -580,7 +580,7 @@ class ChatListFragment :
     private fun onSuccessGetChatList(data: ChatListPojo.ChatListDataPojo) {
         renderList(data.list, data.hasNext)
         if (sightTag == PARAM_TAB_USER) {
-            mStoriesAvatarManager.updateStories(data.list.map { it.id })
+            mStoriesWidgetManager.updateStories(data.list.map { it.id })
         }
         fpmStopTrace()
     }
@@ -910,8 +910,8 @@ class ChatListFragment :
         return childFragmentManager
     }
 
-    override fun getStoriesAvatarManager(): StoriesAvatarManager {
-        return mStoriesAvatarManager
+    override fun getStoriesWidgetManager(): StoriesWidgetManager {
+        return mStoriesWidgetManager
     }
 
     override fun pinUnpinChat(element: ItemChatListPojo, position: Int, isPinChat: Boolean) {

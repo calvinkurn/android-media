@@ -1,7 +1,6 @@
 package com.tokopedia.product.detail.view.adapter.factory
 
 import android.view.View
-import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
@@ -91,8 +90,6 @@ import com.tokopedia.product.detail.view.viewholder.product_detail_info.ProductD
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
 import com.tokopedia.product.detail.view.viewholder.show_review.ProductShopReviewViewHolder
 import com.tokopedia.product.detail.view.viewholder.social_proof.ProductMiniSocialProofViewHolder
-import com.tokopedia.stories.widget.StoriesAvatarManager
-import java.lang.ref.WeakReference
 
 class DynamicProductDetailAdapterFactoryImpl(
     private val listener: DynamicProductDetailListener,

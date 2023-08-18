@@ -6,9 +6,9 @@ import java.util.UUID
 /**
  * Created by kenny.hadisaputra on 26/07/23
  */
-sealed class StoriesAvatarMessage : UiEvent {
+sealed class StoriesWidgetMessage : UiEvent {
 
     override val id: Long = UUID.randomUUID().mostSignificantBits
 
-    data class ShowCoachMark(val shopId: String) : StoriesAvatarMessage()
+    data class ShowCoachMark(val shopId: String) : StoriesWidgetMessage()
 }

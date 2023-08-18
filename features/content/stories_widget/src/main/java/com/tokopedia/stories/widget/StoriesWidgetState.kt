@@ -3,14 +3,14 @@ package com.tokopedia.stories.widget
 /**
  * Created by kenny.hadisaputra on 25/07/23
  */
-data class StoriesAvatarState(
+data class StoriesWidgetState(
     val shopId: String,
     val status: StoriesStatus,
     val appLink: String
 ) {
     companion object {
-        val Default: StoriesAvatarState
-            get() = StoriesAvatarState(
+        val Default: StoriesWidgetState
+            get() = StoriesWidgetState(
                 shopId = "",
                 status = StoriesStatus.NoStories,
                 appLink = ""

@@ -18,8 +18,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.stories.widget.di.DaggerStoriesAvatarComponent
-import com.tokopedia.stories.widget.di.StoriesAvatarComponent
+import com.tokopedia.stories.widget.di.DaggerStoriesWidgetComponent
+import com.tokopedia.stories.widget.di.StoriesWidgetComponent
 import com.tokopedia.stories.widget.domain.StoriesKey
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
 /**
  * Created by kenny.hadisaputra on 27/07/23
  */
-class StoriesAvatarManager private constructor(
+class StoriesWidgetManager private constructor(
     private val key: StoriesKey,
     context: Context,
     private val lifecycleOwner: LifecycleOwner,
@@ -40,12 +40,12 @@ class StoriesAvatarManager private constructor(
     private val component = createComponent(context)
     private val viewModelFactory = component.storiesViewModelFactory()
 
-    private val viewToObserverMap = mutableMapOf<StoriesWidgetLayout, StoriesAvatarMeta>()
+    private val viewToObserverMap = mutableMapOf<StoriesWidgetLayout, StoriesWidgetMeta>()
 
     private var showCoachMarkJob: Job? = null
 
     private val storiesViewListener = object : StoriesWidgetLayout.Listener {
-        override fun onClickedWhenHasStories(view: StoriesWidgetLayout, state: StoriesAvatarState) {
+        override fun onClickedWhenHasStories(view: StoriesWidgetLayout, state: StoriesWidgetState) {
             RouteManager.route(context, state.appLink)
             options.trackingManager.clickEntryPoints(key)
         }
@@ -63,8 +63,8 @@ class StoriesAvatarManager private constructor(
         )
     }
 
-    private val coachMark = StoriesAvatarCoachMark(context) {
-        getViewModel().onIntent(StoriesAvatarIntent.HasSeenCoachMark)
+    private val coachMark = StoriesWidgetCoachMark(context) {
+        getViewModel().onIntent(StoriesWidgetIntent.HasSeenCoachMark)
         mShopIdCoachMarked = null
     }
 
@@ -83,7 +83,7 @@ class StoriesAvatarManager private constructor(
 
                 launch {
                     viewModel.stories.collectLatest {
-                        viewModel.onIntent(StoriesAvatarIntent.ShowCoachMark)
+                        viewModel.onIntent(StoriesWidgetIntent.ShowCoachMark)
                     }
                 }
 
@@ -92,7 +92,7 @@ class StoriesAvatarManager private constructor(
                         if (message == null) return@collect
 
                         when (message) {
-                            is StoriesAvatarMessage.ShowCoachMark -> {
+                            is StoriesWidgetMessage.ShowCoachMark -> {
                                 mShopIdCoachMarked = message.shopId
                                 showCoachMarkOnId(message.shopId)
                             }
@@ -108,7 +108,7 @@ class StoriesAvatarManager private constructor(
     }
 
     fun manage(storiesView: StoriesWidgetLayout, shopId: String) {
-        val meta = storiesView.getMeta() ?: StoriesAvatarMeta.Empty
+        val meta = storiesView.getMeta() ?: StoriesWidgetMeta.Empty
         meta.attachListener?.let {
             storiesView.removeOnAttachStateChangeListener(it)
         }
@@ -130,7 +130,7 @@ class StoriesAvatarManager private constructor(
 
     fun updateStories(shopIds: List<String>) {
         getViewModel().onIntent(
-            StoriesAvatarIntent.GetStoriesStatus(shopIds)
+            StoriesWidgetIntent.GetStoriesStatus(shopIds)
         )
     }
 
@@ -140,15 +140,15 @@ class StoriesAvatarManager private constructor(
     }
 
     private fun requestShowCoachMark() {
-        getViewModel().onIntent(StoriesAvatarIntent.ShowCoachMark)
+        getViewModel().onIntent(StoriesWidgetIntent.ShowCoachMark)
     }
 
-    private fun getViewModel(): StoriesAvatarViewModel {
+    private fun getViewModel(): StoriesWidgetViewModel {
         return viewModelProvider.get()
     }
 
-    private fun createComponent(context: Context): StoriesAvatarComponent {
-        return DaggerStoriesAvatarComponent.builder()
+    private fun createComponent(context: Context): StoriesWidgetComponent {
+        return DaggerStoriesWidgetComponent.builder()
             .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
             .build()
     }
@@ -200,12 +200,12 @@ class StoriesAvatarManager private constructor(
         setListener(null)
     }
 
-    private fun StoriesWidgetLayout.getObserver(): StoriesAvatarObserver? {
+    private fun StoriesWidgetLayout.getObserver(): StoriesWidgetObserver? {
         return viewToObserverMap[this]?.observer
     }
 
-    private fun StoriesWidgetLayout.createObserver(): StoriesAvatarObserver {
-        return StoriesAvatarObserver(
+    private fun StoriesWidgetLayout.createObserver(): StoriesWidgetObserver {
+        return StoriesWidgetObserver(
             getViewModel(),
             lifecycleOwner,
             this,
@@ -213,11 +213,11 @@ class StoriesAvatarManager private constructor(
         )
     }
 
-    private fun StoriesWidgetLayout.getOrCreateObserver(): StoriesAvatarObserver {
+    private fun StoriesWidgetLayout.getOrCreateObserver(): StoriesWidgetObserver {
         return getObserver() ?: createObserver()
     }
 
-    private fun StoriesWidgetLayout.assign(shopId: String, observer: StoriesAvatarObserver) {
+    private fun StoriesWidgetLayout.assign(shopId: String, observer: StoriesWidgetObserver) {
         val meta = getOrCreateMeta().copy(
             shopId = shopId,
             observer = observer
@@ -232,15 +232,15 @@ class StoriesAvatarManager private constructor(
         return meta.key
     }
 
-    private fun StoriesWidgetLayout.getMeta(): StoriesAvatarMeta? {
+    private fun StoriesWidgetLayout.getMeta(): StoriesWidgetMeta? {
         return viewToObserverMap[this]
     }
 
-    private fun StoriesWidgetLayout.getOrCreateMeta(): StoriesAvatarMeta {
-        return getMeta() ?: StoriesAvatarMeta.Empty
+    private fun StoriesWidgetLayout.getOrCreateMeta(): StoriesWidgetMeta {
+        return getMeta() ?: StoriesWidgetMeta.Empty
     }
 
-    private fun StoriesWidgetLayout.setMeta(meta: StoriesAvatarMeta) {
+    private fun StoriesWidgetLayout.setMeta(meta: StoriesWidgetMeta) {
         viewToObserverMap[this] = meta
     }
 
@@ -250,7 +250,7 @@ class StoriesAvatarManager private constructor(
             key: StoriesKey,
             fragment: Fragment,
             builderOptions: Builder.() -> Unit
-        ): StoriesAvatarManager {
+        ): StoriesWidgetManager {
             val builder = Builder(key, fragment)
             builder.builderOptions()
             return builder.build()
@@ -260,7 +260,7 @@ class StoriesAvatarManager private constructor(
             key: StoriesKey,
             activity: AppCompatActivity,
             builderOptions: Builder.() -> Unit
-        ): StoriesAvatarManager {
+        ): StoriesWidgetManager {
             val builder = Builder(key, activity)
             builder.builderOptions()
             return builder.build()
@@ -303,8 +303,8 @@ class StoriesAvatarManager private constructor(
             mTrackingManager = trackingManager
         }
 
-        fun build(): StoriesAvatarManager {
-            return StoriesAvatarManager(
+        fun build(): StoriesWidgetManager {
+            return StoriesWidgetManager(
                 key,
                 context,
                 lifecycleOwner,
@@ -333,14 +333,14 @@ class StoriesAvatarManager private constructor(
         val trackingManager: TrackingManager
     )
 
-    internal data class StoriesAvatarMeta(
+    internal data class StoriesWidgetMeta(
         val shopId: String,
-        val observer: StoriesAvatarObserver?,
+        val observer: StoriesWidgetObserver?,
         val attachListener: OnAttachStateChangeListener?
     ) {
         companion object {
-            val Empty: StoriesAvatarMeta
-                get() = StoriesAvatarMeta(
+            val Empty: StoriesWidgetMeta
+                get() = StoriesWidgetMeta(
                     "",
                     null,
                     null

@@ -296,7 +296,7 @@ import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
-import com.tokopedia.stories.widget.StoriesAvatarManager
+import com.tokopedia.stories.widget.StoriesWidgetManager
 import com.tokopedia.stories.widget.domain.StoriesKey
 import com.tokopedia.stories.widget.storiesManager
 import com.tokopedia.topads.detail_sheet.TopAdsDetailSheet
@@ -576,7 +576,7 @@ open class DynamicProductDetailFragment :
 
     private val compositeSubscription by lazy { CompositeSubscription() }
 
-    private val mStoriesAvatarManager by storiesManager(StoriesKey.ProductDetail) {
+    private val mStoriesWidgetManager by storiesManager(StoriesKey.ProductDetail) {
         setScrollingParent(binding?.rvPdp)
     }
 
@@ -2963,7 +2963,7 @@ open class DynamicProductDetailFragment :
                     affiliateChannel = affiliateChannel
                 )
 
-                mStoriesAvatarManager.updateStories(listOf(p1.basic.shopID))
+                mStoriesWidgetManager.updateStories(listOf(p1.basic.shopID))
             }
             onSuccessGetDataP2(it, boeData, ratesData, shipmentPlus)
             checkAffiliateEligibility(it.shopInfo)
@@ -5804,8 +5804,8 @@ open class DynamicProductDetailFragment :
         return trackingQueue
     }
 
-    override fun getStoriesAvatarManager(): StoriesAvatarManager {
-        return mStoriesAvatarManager
+    override fun getStoriesWidgetManager(): StoriesWidgetManager {
+        return mStoriesWidgetManager
     }
 
     override fun getUserSession(): UserSessionInterface {
