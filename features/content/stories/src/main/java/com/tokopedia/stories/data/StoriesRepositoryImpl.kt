@@ -272,7 +272,7 @@ class StoriesRepositoryImpl @Inject constructor() : StoriesRepository {
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/12/30/e1ada065-5330-4952-940c-4ff17220a47f.jpg",
                         ),
                         StoriesDetailUiModel(
-                            id = "27",
+                            id = "28",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/4/8/61592e1f-6c0d-408d-a535-57a4a6858bf0.jpg",
@@ -287,31 +287,31 @@ class StoriesRepositoryImpl @Inject constructor() : StoriesRepository {
                     selected = false,
                     details = listOf(
                         StoriesDetailUiModel(
-                            id = "28",
-                            selected = 1,
-                            event = StoriesDetailUiEvent.START,
-                            imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/12/30/e1ada065-5330-4952-940c-4ff17220a47f.jpg",
-                        ),
-                        StoriesDetailUiModel(
                             id = "29",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
-                            imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/4/8/61592e1f-6c0d-408d-a535-57a4a6858bf0.jpg",
+                            imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/12/30/e1ada065-5330-4952-940c-4ff17220a47f.jpg",
                         ),
                         StoriesDetailUiModel(
                             id = "30",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
-                            imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                            imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/4/8/61592e1f-6c0d-408d-a535-57a4a6858bf0.jpg",
                         ),
                         StoriesDetailUiModel(
                             id = "31",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
-                            imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/12/30/e1ada065-5330-4952-940c-4ff17220a47f.jpg",
+                            imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
                         ),
                         StoriesDetailUiModel(
                             id = "32",
+                            selected = 1,
+                            event = StoriesDetailUiEvent.START,
+                            imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/12/30/e1ada065-5330-4952-940c-4ff17220a47f.jpg",
+                        ),
+                        StoriesDetailUiModel(
+                            id = "33",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/4/8/61592e1f-6c0d-408d-a535-57a4a6858bf0.jpg",

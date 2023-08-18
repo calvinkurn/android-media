@@ -12,8 +12,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showToast
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.stories.databinding.FragmentStoriesDetailBinding
 import com.tokopedia.stories.utils.withCache
@@ -92,7 +92,6 @@ class StoriesDetailFragment @Inject constructor(
     ) {
         if (prevState == state) return
         mAdapter.setItems(state)
-        binding.icClose.show()
     }
 
     private fun renderStoriesDetail(
@@ -102,7 +101,6 @@ class StoriesDetailFragment @Inject constructor(
         if (prevState == state || state == StoriesDetailUiModel.Empty) return
 
         storiesDetailsTimer(state)
-
         binding.ivStoriesDetailContent.setImageUrl(state.imageContent)
     }
 
@@ -118,6 +116,7 @@ class StoriesDetailFragment @Inject constructor(
                 }
             }
         }
+        isShouldShowStoriesComponent(true)
     }
 
     private fun setupStoriesView() = with(binding) {
@@ -158,26 +157,20 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun pauseStories() = with(binding) {
-        /**
-         * TODO
-         * un-comment later still on development ehe :3
-         */
-//        icClose.hide()
-//        rvStoriesCategory.hide()
-//        cvStoriesDetailTimer.hide()
+    private fun pauseStories() {
+        isShouldShowStoriesComponent(false)
         viewModelAction(PauseStories)
     }
 
-    private fun resumeStories() = with(binding) {
-        /**
-         * TODO
-         * un-comment later still on development ehe :3
-         */
-//        icClose.show()
-//        rvStoriesCategory.show()
-//        cvStoriesDetailTimer.show()
+    private fun resumeStories() {
+        isShouldShowStoriesComponent(true)
         viewModelAction(ResumeStories)
+    }
+
+    private fun isShouldShowStoriesComponent(isShow: Boolean) {
+        binding.icClose.showWithCondition(isShow)
+        binding.rvStoriesCategory.showWithCondition(isShow)
+        binding.cvStoriesDetailTimer.showWithCondition(isShow)
     }
 
     private fun viewModelAction(event: StoriesUiAction) {
