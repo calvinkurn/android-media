@@ -15,8 +15,8 @@ object RecommendationRobot {
 
     fun clickPrePurchaseProductOnPosition(position: Int) {
         onView(
-            withRecyclerView(com.tokopedia.recommendation_widget_common.R.id.carouselProductCardRecyclerView)
-                .atPositionOnView(position, com.tokopedia.recommendation_widget_common.R.id.carouselProductCardItem)
+            withRecyclerView(com.tokopedia.carouselproductcard.R.id.carouselProductCardRecyclerView)
+                .atPositionOnView(position, com.tokopedia.carouselproductcard.R.id.carouselProductCardItem)
         ).perform(click())
     }
 }

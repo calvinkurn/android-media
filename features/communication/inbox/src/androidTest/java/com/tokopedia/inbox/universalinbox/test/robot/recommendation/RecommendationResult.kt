@@ -57,7 +57,7 @@ object RecommendationResult {
 
     fun assertProductWidgetRecommendationName(position: Int, name: String) {
         onView(
-            withRecyclerView(com.tokopedia.recommendation_widget_common.R.id.carouselProductCardRecyclerView)
+            withRecyclerView(com.tokopedia.carouselproductcard.R.id.carouselProductCardRecyclerView)
                 .atPositionOnView(position, com.tokopedia.productcard.R.id.textViewProductName)
         ).check(matches(withText(name)))
     }
