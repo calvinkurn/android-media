@@ -21,18 +21,6 @@ import dagger.Provides
 )
 class CheckoutModule {
 
-//    @Provides
-//    @ActivityScope
-//    fun provideCompositeSubscription(): CompositeSubscription {
-//        return CompositeSubscription()
-//    }
-
-//    @Provides
-//    @ActivityScope
-//    fun provideScheduler(): SchedulerProvider {
-//        return MainScheduler()
-//    }
-
     @Provides
     @ActivityScope
     fun provideExecutorSchedulers(): ExecutorSchedulers = DefaultSchedulers
