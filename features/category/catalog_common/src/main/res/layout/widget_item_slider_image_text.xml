@@ -1,14 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:paddingVertical="16dp"
-    android:orientation="horizontal">
+    android:orientation="vertical">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvItems"
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewPager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="135dp"/>
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvHighlight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:typographyType="display_3"
+        tools:text="Highlight has a max. 1 line"
+        android:textColor="@color/Unify_NN600"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:maxLength="35"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:typographyType="paragraph_2"
+        tools:text="Highlight has a max. 1 line"
+        android:textColor="@color/Unify_NN950"
+        android:layout_marginTop="8dp"
+        app:typographyWeight="bold"
+        android:maxLength="55"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:typographyType="display_3"
+        tools:text="The description must have 4 lines! so please give as much context as possible but make it concise! Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed"
+        android:textColor="@color/Unify_NN600"
+        android:layout_marginTop="4dp"
+        android:maxLength="145"
+        android:ellipsize="end"
+        android:maxLines="4"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        />
 </LinearLayout>

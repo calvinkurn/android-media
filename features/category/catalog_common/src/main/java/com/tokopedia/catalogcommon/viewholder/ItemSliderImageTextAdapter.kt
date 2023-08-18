@@ -22,7 +22,7 @@ class ItemSliderImageTextAdapter(private val itemList: List<SliderImageTextUiMod
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val itemUiModel = itemList[position]
-        holder.bindToView(itemUiModel)
+//        holder.bindToView(itemUiModel)
     }
 
     override fun getItemCount(): Int {
@@ -31,9 +31,9 @@ class ItemSliderImageTextAdapter(private val itemList: List<SliderImageTextUiMod
 
     inner class ViewHolder(itemView: ItemSliderTextImageBinding) : RecyclerView.ViewHolder(itemView.root) {
         private val ivImage = itemView.ivImage
-        private val tvHighlight = itemView.tvHighlight
-        private val tvTitle = itemView.tvTitle
-        private val tvDescription = itemView.tvDescription
+//        private val tvHighlight = itemView.tvHighlight
+//        private val tvTitle = itemView.tvTitle
+//        private val tvDescription = itemView.tvDescription
 
         init {
             val widthPercentage = 0.65
@@ -43,19 +43,19 @@ class ItemSliderImageTextAdapter(private val itemList: List<SliderImageTextUiMod
             itemView.root.layoutParams.width = desiredWidth
         }
 
-        fun bindToView(itemUiModel: SliderImageTextUiModel.ItemSliderImageText){
-            ivImage.loadImageRounded(itemUiModel.image,8f)
-            tvHighlight.text = itemUiModel.textHighlight
-            tvTitle.text = itemUiModel.textTitle
-            tvDescription.text = itemUiModel.textDescription
-            overrideWidgetTheme(itemUiModel.textColor)
-        }
-
-        private fun overrideWidgetTheme(fontColor: Int){
-            tvHighlight.setTextColor(fontColor)
-            tvTitle.setTextColor(fontColor)
-            tvDescription.setTextColor(fontColor)
-        }
+//        fun bindToView(itemUiModel: SliderImageTextUiModel.ItemSliderImageText){
+//            ivImage.loadImageRounded(itemUiModel.image,8f)
+//            tvHighlight.text = itemUiModel.textHighlight
+//            tvTitle.text = itemUiModel.textTitle
+//            tvDescription.text = itemUiModel.textDescription
+//            overrideWidgetTheme(itemUiModel.textColor)
+//        }
+//
+//        private fun overrideWidgetTheme(fontColor: Int){
+//            tvHighlight.setTextColor(fontColor)
+//            tvTitle.setTextColor(fontColor)
+//            tvDescription.setTextColor(fontColor)
+//        }
 
     }
 }
