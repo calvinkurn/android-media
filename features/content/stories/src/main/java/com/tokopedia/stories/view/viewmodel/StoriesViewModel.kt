@@ -3,6 +3,7 @@ package com.tokopedia.stories.view.viewmodel
 import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.stories.data.StoriesRepository
 import com.tokopedia.stories.view.model.BottomSheetStatusDefault
 import com.tokopedia.stories.view.model.BottomSheetType
@@ -12,6 +13,7 @@ import com.tokopedia.stories.view.model.StoriesGroupUiModel
 import com.tokopedia.stories.view.model.StoriesUiState
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
+import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,6 +35,7 @@ class StoriesViewModel @Inject constructor(
     private var _storiesGroup = MutableStateFlow(listOf<StoriesGroupUiModel>())
     private var _storiesDetail = MutableStateFlow(StoriesDetailUiModel.Empty)
     private val bottomSheetStatus = MutableStateFlow(BottomSheetStatusDefault)
+    private val products = MutableStateFlow(emptyList<ContentTaggedProductUiModel>())
 
     private val _uiEvent = MutableSharedFlow<StoriesUiEvent>(extraBufferCapacity = 100)
     val uiEvent: Flow<StoriesUiEvent>
@@ -41,12 +44,14 @@ class StoriesViewModel @Inject constructor(
     val uiState = combine(
         _storiesGroup,
         _storiesDetail,
-        bottomSheetStatus
-    ) { storiesCategories, storiesItem, bottomSheet ->
+        bottomSheetStatus,
+        products
+    ) { storiesCategories, storiesItem, bottomSheet, products ->
         StoriesUiState(
             storiesGroup = storiesCategories,
             storiesDetail = storiesItem,
             bottomSheetStatus = bottomSheet,
+            products = products,
         )
     }
 
@@ -203,7 +208,15 @@ class StoriesViewModel @Inject constructor(
                     else it.value
                 }
             }
+            getProducts()
         }
+    }
+
+    private fun getProducts() {
+        viewModelScope.launchCatchError(block = {
+            val response = repository.getStoriesProducts()
+            products.update { response }
+        }) {}
     }
 
     companion object {

@@ -1,5 +1,6 @@
 package com.tokopedia.stories.data
 
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.stories.uimodel.StoryAuthor
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
 import com.tokopedia.stories.view.model.StoriesDetailUiModel.StoriesDetailUiEvent
@@ -359,4 +360,21 @@ class StoriesRepositoryImpl @Inject constructor() : StoriesRepository {
         )
     }
 
+    override fun getStoriesProducts(): List<ContentTaggedProductUiModel> {
+        return List(5) {
+            ContentTaggedProductUiModel(
+                id = "1",
+                parentID = "11",
+                showGlobalVariant = true,
+                shop = ContentTaggedProductUiModel.Shop("6", "Play"),
+                title = "Product keren!",
+                imageUrl = "",
+                price = ContentTaggedProductUiModel.NormalPrice(formattedPrice = "Rp.10.000", price = 10000.0),
+                appLink = "",
+                campaign = ContentTaggedProductUiModel.Campaign(ContentTaggedProductUiModel.CampaignType.NoCampaign, ContentTaggedProductUiModel.CampaignStatus.Unknown, isExclusiveForMember = false),
+                affiliate = ContentTaggedProductUiModel.Affiliate(id = "", channel = "66"),
+                stock = ContentTaggedProductUiModel.Stock.Available,
+            )
+        }
+    }
 }
