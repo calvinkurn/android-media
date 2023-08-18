@@ -23,6 +23,9 @@ import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.not
 import com.tokopedia.globalerror.R as globalErrorRes
+import com.tokopedia.play_common.R as commonR
+import com.tokopedia.unifycomponents.R as unifyComponentsR
+import com.tokopedia.iconnotification.R as iconNotificationR
 
 /**
  * Created by kenny.hadisaputra on 15/07/22
@@ -63,7 +66,7 @@ class PlayActivityRobot(
 
     fun closeAnyBottomSheet() = chainable {
         Espresso.onView(
-            withId(R.id.iv_sheet_close)
+            withId(commonR.id.iv_sheet_close)
         ).perform(ViewActions.click())
     }
 
@@ -107,7 +110,7 @@ class PlayActivityRobot(
 
     fun clickToasterAction() = chainable {
         Espresso.onView(
-            withId(R.id.snackbar_btn)
+            withId(unifyComponentsR.id.snackbar_btn)
         ).perform(
             ViewActions.click()
         )
@@ -186,7 +189,7 @@ class PlayActivityRobot(
 
     fun assertShowCartCountInProductBottomSheet(isShown: Boolean) = chainable {
         val viewMatcher = allOf(
-            withId(com.tokopedia.play_common.R.id.notification),
+            withId(iconNotificationR.id.notification),
             isDescendantOfA(withParent(withId(R.id.cl_product_sheet))),
             isDescendantOfA(withParent(withId(R.id.bottom_sheet_header))),
         )
@@ -202,7 +205,7 @@ class PlayActivityRobot(
 
     fun assertCartCountInProductBottomSheet(count: String) = chainable {
         val viewMatcher = allOf(
-            withId(com.tokopedia.play_common.R.id.notification),
+            withId(com.tokopedia.iconnotification.R.id.notification),
             isDescendantOfA(withParent(withId(R.id.cl_product_sheet))),
             isDescendantOfA(withParent(withId(R.id.bottom_sheet_header))),
         )
@@ -218,8 +221,8 @@ class PlayActivityRobot(
             .atPosition(0)
             .matches(hasDescendant(
                 hasBackground(
-                    if (isGame) R.drawable.bg_play_quiz_widget //QUIZ
-                    else R.drawable.bg_play_voucher_widget)
+                    if (isGame) com.tokopedia.play_common.R.drawable.bg_play_quiz_widget //QUIZ
+                    else com.tokopedia.play_common.R.drawable.bg_play_voucher_widget)
                 )
             )
     }

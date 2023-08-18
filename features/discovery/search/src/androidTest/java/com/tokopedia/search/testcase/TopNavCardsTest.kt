@@ -66,7 +66,7 @@ internal class TopNavCardsTest {
         val productListAdapter = recyclerView.getProductListAdapter()
         val globalNavViewModelPosition = productListAdapter.itemList.getGlobalNavViewModelPosition()
 
-        onView(withId(recyclerViewId)).perform(actionOnItemAtPosition<GlobalNavViewHolder>(globalNavViewModelPosition, clickChildViewWithId(R.id.globalNavCardItemCardView)))
+        onView(withId(recyclerViewId)).perform(actionOnItemAtPosition<GlobalNavViewHolder>(globalNavViewModelPosition, clickChildViewWithId(com.tokopedia.globalnavwidget.R.id.globalNavCardItemCardView)))
     }
 
     @After
