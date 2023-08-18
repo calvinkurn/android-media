@@ -1,5 +1,6 @@
 package com.tokopedia.buy_more_get_more.olp.presentation
 
+import android.R.color.transparent
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
@@ -210,7 +211,7 @@ class OfferLandingPageFragment :
         activity?.let {
             val transparent = MethodChecker.getColor(
                 context,
-                R.color.transparent
+                transparent
             )
             it.window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             it.window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
@@ -286,7 +287,6 @@ class OfferLandingPageFragment :
                 pageSize = 5,
                 onLoadNextPage = {
                     // TODO: Implement loading
-
                 },
                 onLoadNextPageFinished = {
                     // TODO: Implement loading

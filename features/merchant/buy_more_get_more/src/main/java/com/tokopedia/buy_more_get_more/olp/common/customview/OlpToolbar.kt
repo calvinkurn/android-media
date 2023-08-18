@@ -4,18 +4,18 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Build
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.buy_more_get_more.R
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.NotificationUnify
+import com.tokopedia.unifyprinciples.R.color.Unify_Static_White
 import com.tokopedia.unifyprinciples.Typography
 import timber.log.Timber
 
@@ -60,7 +60,7 @@ class OlpToolbar : Toolbar {
     private var backIconWhite = getIconUnifyDrawable(
         context,
         IconUnify.ARROW_BACK,
-        ContextCompat.getColor(context, R.color.Unify_Static_White)
+        ContextCompat.getColor(context, Unify_Static_White)
     )
 
     constructor(context: Context) : super(context)
@@ -112,5 +112,4 @@ class OlpToolbar : Toolbar {
         tpgTitle?.text = title
         tpgSubTitle?.text = subTitle
     }
-
 }
