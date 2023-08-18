@@ -22,6 +22,7 @@ import com.tokopedia.stories.databinding.FragmentStoriesDetailBinding
 import com.tokopedia.stories.uimodel.StoryAuthor
 import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.adapter.StoriesGroupAdapter
+import com.tokopedia.stories.view.animation.StoriesProductNotch
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
 import com.tokopedia.stories.view.model.BottomSheetType
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
@@ -125,6 +126,7 @@ class StoriesDetailFragment @Inject constructor(
         storiesDetailsTimer(state)
         binding.ivStoriesDetailContent.setImageUrl(state.imageContent)
         renderAuthor(state)
+        renderNotch(state)
     }
 
     private fun observeBottomSheetStatus(
@@ -202,6 +204,19 @@ class StoriesDetailFragment @Inject constructor(
         }
         vStoriesProductIcon.root.setOnClickListener {
             viewModelAction(StoriesUiAction.OpenProduct)
+        }
+    }
+
+    private fun renderNotch(state: StoriesDetailUiModel) {
+        with(binding.notchStoriesProduct) {
+            apply {
+                setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+                setContent {
+                    StoriesProductNotch(state.productCount) {
+                        viewModelAction(StoriesUiAction.OpenProduct)
+                    }
+                }
+            }
         }
     }
 

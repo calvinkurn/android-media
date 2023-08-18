@@ -29,6 +29,7 @@ data class StoriesDetailUiModel(
     val author: StoryAuthor,
     //TODO() rename, temp list
     val menus: List<FeedMenuItem> = defaultMenu,
+    val productCount : Int = 5,
 ) {
 
     enum class StoriesDetailUiEvent {
