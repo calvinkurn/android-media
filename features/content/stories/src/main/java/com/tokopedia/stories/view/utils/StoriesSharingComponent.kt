@@ -2,9 +2,9 @@ package com.tokopedia.stories.view.utils
 
 import android.view.View
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.stories.view.model.StoriesDetailUiModel
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
-import com.tokopedia.universal_sharing.view.model.LinkProperties
 import com.tokopedia.universal_sharing.view.model.ShareModel
 
 /**
@@ -27,13 +27,13 @@ class StoriesSharingComponent (rootView: View) {
         mListener = listener
     }
 
-    fun show (fg: FragmentManager, metadata: StoriesSharingMetadata) {
+    fun show (fg: FragmentManager, data: StoriesDetailUiModel.Sharing) {
         if (sharingSheet.isAdded) return
         sharingSheet.setMetaData(
-            tnImage = metadata.image,
-            tnTitle = metadata.title
+            tnImage = data.metadata.ogImageUrl,
+            tnTitle = data.metadata.ogTitle,
         )
-        sharingSheet.setLinkProperties(LinkProperties())
+        sharingSheet.setLinkProperties(data.metadata)
         sharingSheet.show(fg, TAG)
     }
 
@@ -44,10 +44,4 @@ class StoriesSharingComponent (rootView: View) {
     interface Listener {
         fun onDismissEvent(view: StoriesSharingComponent)
     }
-
-    @Deprecated("replace with universal's LinkProperties")
-    data class StoriesSharingMetadata(
-        val title: String,
-        val image: String,
-    )
 }

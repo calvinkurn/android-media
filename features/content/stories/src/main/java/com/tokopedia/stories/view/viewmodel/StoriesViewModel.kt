@@ -201,7 +201,8 @@ class StoriesViewModel @Inject constructor(
 
     private fun handleSharing() {
         viewModelScope.launch {
-            _uiEvent.emit(StoriesUiEvent.TapSharing(StoriesSharingComponent.StoriesSharingMetadata(image = "", title = "Boneka")))
+            val data = _storiesDetail.value.share
+            _uiEvent.emit(StoriesUiEvent.TapSharing(data))
             bottomSheetStatus.update { bottomSheet -> bottomSheet.mapValues {
                 if (it.key == BottomSheetType.Sharing)
                     true

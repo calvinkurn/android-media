@@ -5,6 +5,7 @@ import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
 import com.tokopedia.content.common.report_content.model.FeedMenuItem
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.stories.uimodel.StoryAuthor
+import com.tokopedia.universal_sharing.view.model.LinkProperties
 
 data class StoriesUiModel(
     val selectedGroup: Int,
@@ -28,11 +29,17 @@ data class StoriesDetailUiModel(
     val author: StoryAuthor,
     //TODO() rename, temp list
     val menus: List<FeedMenuItem> = defaultMenu,
+    val share : Sharing = defaultSharing,
 ) {
 
     enum class StoriesDetailUiEvent {
         PAUSE, START,
     }
+
+    data class Sharing(
+        val isShareable: Boolean,
+        val metadata: LinkProperties,
+    )
     companion object {
         val Empty = StoriesDetailUiModel(
             id = "0",
@@ -61,3 +68,13 @@ val defaultMenu = buildList<FeedMenuItem> {
         )
     )
 }
+
+val defaultSharing = StoriesDetailUiModel.Sharing (
+    isShareable = true,
+    metadata = LinkProperties(
+        ogTitle = "Product keren!",
+        ogDescription = "Ayo lihat barangnya dulu",
+        deeplink = "",
+        ogImageUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/12/30/e1ada065-5330-4952-940c-4ff17220a47f.jpg",
+    ),
+)
