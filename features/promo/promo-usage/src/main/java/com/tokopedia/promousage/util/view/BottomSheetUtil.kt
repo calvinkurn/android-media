@@ -1,4 +1,4 @@
-package com.tokopedia.promousage.util
+package com.tokopedia.promousage.util.view
 
 import android.content.Context
 import android.graphics.Color
