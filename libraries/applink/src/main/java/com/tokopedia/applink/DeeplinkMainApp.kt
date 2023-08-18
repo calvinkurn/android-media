@@ -989,6 +989,16 @@ object DeeplinkMainApp {
         "tokopoints" to mutableListOf(
             DLP.goTo(DeeplinkMapperPromo::getRegisteredNavigationTokopoints)
         ),
+        "stories" to mutableListOf(
+            DLP.matchPattern(
+                "shop/{shop_id}",
+                DeeplinkMapperContent::getRegisteredNavigation
+            ),
+            DLP.matchPattern(
+                "shop/{shop_id}/{stories_id}",
+                DeeplinkMapperContent::getRegisteredNavigation
+            ),
+        ),
         "topads" to mutableListOf(
             DLP.startsWith(
                 "create-manual-ads",
