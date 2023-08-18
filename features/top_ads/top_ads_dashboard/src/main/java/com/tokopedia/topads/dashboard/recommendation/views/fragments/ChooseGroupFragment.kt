@@ -16,7 +16,7 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopadsProd
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.ProductRecommendationViewModel
 import javax.inject.Inject
 
-class ChooseGroupFragment : BaseDaggerFragment(){
+class ChooseGroupFragment : BaseDaggerFragment() {
 
     private var binding: FragmentTopadsChooseGroupBinding? = null
 
@@ -44,7 +44,7 @@ class ChooseGroupFragment : BaseDaggerFragment(){
         observeViewModel()
     }
 
-    private fun init(){
+    private fun init() {
         when (val products = viewModel.productItemsLiveData.value) {
             is TopadsProductListState.Success -> {
                 val selectedItems =
@@ -59,15 +59,16 @@ class ChooseGroupFragment : BaseDaggerFragment(){
             else -> {}
         }
 
-        viewModel.getTopadsGroups(1,"","impression",1,"","",1)
+        viewModel.getTopadsGroups(1, "", "impression", 1, "", "", 1)
     }
 
-    private fun observeViewModel(){
-        viewModel.topadsGroupsLiveData.observe(viewLifecycleOwner){
-            when(val data = it){
+    private fun observeViewModel() {
+        viewModel.topadsGroupsLiveData.observe(viewLifecycleOwner) {
+            when (val data = it) {
                 is TopadsProductListState.Success -> {
-
-                } else -> {
+                    data
+                }
+                else -> {
 
                 }
             }
