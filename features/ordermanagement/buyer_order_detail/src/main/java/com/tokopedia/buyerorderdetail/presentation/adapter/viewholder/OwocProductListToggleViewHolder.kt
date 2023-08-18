@@ -8,7 +8,7 @@ import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.databinding.ItemOwocProductListToggleBinding
 import com.tokopedia.buyerorderdetail.presentation.model.BaseOwocVisitableUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocProductListUiModel
-
+import com.tokopedia.buyerorderdetail.R as buyerOrderDetailR
 
 class OwocProductListToggleViewHolder(
     itemView: View,
@@ -31,9 +31,9 @@ class OwocProductListToggleViewHolder(
 
     private fun bindToggleText(isExpanded: Boolean) = with(binding) {
         tvOwocProductListToggle.text = if (isExpanded) {
-            getString(com.tokopedia.buyerorderdetail.R.string.buyer_order_detail_product_list_collapse)
+            getString(buyerOrderDetailR.string.buyer_order_detail_product_list_collapse)
         } else {
-            getString(com.tokopedia.buyerorderdetail.R.string.buyer_order_detail_owoc_product_list_expand)
+            getString(buyerOrderDetailR.string.buyer_order_detail_owoc_product_list_expand)
         }
     }
 
@@ -128,4 +128,3 @@ class OwocProductListToggleViewHolder(
         )
     }
 }
-
