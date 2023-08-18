@@ -9,8 +9,8 @@ import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
 import kotlinx.parcelize.Parcelize
 
 data class ShopHomeShowcaseNavigationUiModel(
-    val showcaseHeader: ShowcaseHeader,
-    val tabs: List<Tab>,
+    val showcaseHeader: ShowcaseHeader = ShowcaseHeader(),
+    val tabs: List<Tab> = emptyList(),
     override val widgetId: String = "",
     override val layoutOrder: Int = -1,
     override val name: String = WidgetName.SHOWCASE_NAVIGATION_BANNER,
@@ -20,9 +20,9 @@ data class ShopHomeShowcaseNavigationUiModel(
 ): BaseShopHomeWidgetUiModel() {
 
     data class ShowcaseHeader(
-        val title: String,
-        val ctaLink: String,
-        val widgetStyle: WidgetStyle
+        val title: String = "",
+        val ctaLink: String = "",
+        val widgetStyle: WidgetStyle = WidgetStyle.ROUNDED_CORNER
     )
 
     enum class WidgetStyle {

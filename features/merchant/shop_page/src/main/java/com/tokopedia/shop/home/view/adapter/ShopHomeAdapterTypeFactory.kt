@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.shop.common.util.ShopProductViewGridType
@@ -82,7 +83,9 @@ import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePersoProductCompa
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerTimerViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerTimerPlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductCarouselViewPagerViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowCaseNavigationCarouselPlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowCaseNavigationCarouselViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowCaseNavigationLeftMainBannerPlaceholderViewHolder
 import com.tokopedia.shop.home.view.listener.*
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
@@ -93,6 +96,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductListEmptyUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowCaseNavigationLeftMainBannerViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowCaseNavigationTopMainBannerPlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowCaseNavigationTopMainBannerViewHolder
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
@@ -102,6 +106,8 @@ import com.tokopedia.shop_widget.thematicwidget.typefactory.ThematicWidgetTypeFa
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetLoadingStateViewHolder
 import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetViewHolder
+import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationUiModel.MainBannerPosition
+import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationUiModel.WidgetStyle
 
 open class ShopHomeAdapterTypeFactory(
     private val listener: ShopHomeDisplayWidgetListener,
@@ -298,30 +304,53 @@ open class ShopHomeAdapterTypeFactory(
      * widgetStyle == "circle" -> use carousel appearance
      */
     private fun determineShowcaseWidgetAppearance(model: BaseShopHomeWidgetUiModel): Int {
-        val uiModel = model as? ShopHomeShowcaseNavigationUiModel
-        val widgetStyle = uiModel?.showcaseHeader?.widgetStyle
+        val uiModel = (model as? ShopHomeShowcaseNavigationUiModel)  ?: ShopHomeShowcaseNavigationUiModel()
 
-        return if (widgetStyle == ShopHomeShowcaseNavigationUiModel.WidgetStyle.ROUNDED_CORNER) {
+        val isLoading = uiModel.isWidgetShowPlaceholder().orFalse()
+        val widgetStyle = uiModel.showcaseHeader.widgetStyle
+        val isCarouselWidgetStyle = widgetStyle == WidgetStyle.CIRCLE
+
+        return if (isLoading) {
+            determineShowcaseNavigationWidgetPlaceholderLayoutId(isCarouselWidgetStyle, uiModel)
+        } else {
+            determineShowcaseNavigationWidgetLayoutId(isCarouselWidgetStyle, uiModel)
+        }
+    }
+
+    private fun determineShowcaseNavigationWidgetPlaceholderLayoutId(
+        isCarouselWidgetStyle: Boolean,
+        uiModel: ShopHomeShowcaseNavigationUiModel
+    ) : Int {
+        return if (isCarouselWidgetStyle) {
+            ShopHomeShowCaseNavigationCarouselPlaceholderViewHolder.LAYOUT
+        } else {
             val firstTab = uiModel.tabs.getOrNull(0)
             val firstTabMainBannerPosition = firstTab?.mainBannerPosition
 
             when (firstTabMainBannerPosition) {
-                ShopHomeShowcaseNavigationUiModel.MainBannerPosition.LEFT -> {
-                    ShopHomeShowCaseNavigationLeftMainBannerViewHolder.LAYOUT
-                }
-                ShopHomeShowcaseNavigationUiModel.MainBannerPosition.TOP -> {
-                    ShopHomeShowCaseNavigationTopMainBannerViewHolder.LAYOUT
-                }
-                else -> {
-                    ShopHomeShowCaseNavigationTopMainBannerViewHolder.LAYOUT
-                }
+                MainBannerPosition.LEFT -> ShopHomeShowCaseNavigationLeftMainBannerPlaceholderViewHolder.LAYOUT
+                MainBannerPosition.TOP -> ShopHomeShowCaseNavigationTopMainBannerPlaceholderViewHolder.LAYOUT
+                else -> ShopHomeShowCaseNavigationCarouselPlaceholderViewHolder.LAYOUT
             }
-
-        } else {
-            ShopHomeShowCaseNavigationCarouselViewHolder.LAYOUT
         }
     }
+    private fun determineShowcaseNavigationWidgetLayoutId(
+        isCarouselWidgetStyle: Boolean,
+        uiModel: ShopHomeShowcaseNavigationUiModel
+    ): Int {
+        return if (isCarouselWidgetStyle) {
+            ShopHomeShowCaseNavigationCarouselViewHolder.LAYOUT
+        } else {
+            val firstTab = uiModel.tabs.getOrNull(0)
+            val firstTabMainBannerPosition = firstTab?.mainBannerPosition
 
+            when (firstTabMainBannerPosition) {
+                MainBannerPosition.LEFT -> ShopHomeShowCaseNavigationLeftMainBannerViewHolder.LAYOUT
+                MainBannerPosition.TOP -> ShopHomeShowCaseNavigationTopMainBannerViewHolder.LAYOUT
+                else -> ShopHomeShowCaseNavigationTopMainBannerViewHolder.LAYOUT
+            }
+        }
+    }
     fun isShowThematicWidgetPlaceHolder(model: ThematicWidgetUiModel): Boolean {
         return model.widgetState == WidgetState.PLACEHOLDER || model.widgetState == WidgetState.LOADING
     }
@@ -425,6 +454,9 @@ open class ShopHomeAdapterTypeFactory(
             ShopHomeVoucherViewHolder.LAYOUT -> {
                 ShopHomeVoucherViewHolder(parent, onMerchantVoucherListWidgetListener)
             }
+            ShopHomeShowCaseNavigationLeftMainBannerPlaceholderViewHolder.LAYOUT -> {
+                ShopHomeShowCaseNavigationLeftMainBannerPlaceholderViewHolder(parent)
+            }
             ShopHomeShowCaseNavigationLeftMainBannerViewHolder.LAYOUT -> {
                 ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
                     parent,
@@ -432,8 +464,14 @@ open class ShopHomeAdapterTypeFactory(
                     shopHomeShowcaseNavigationDependencyProvider
                 )
             }
+            ShopHomeShowCaseNavigationTopMainBannerPlaceholderViewHolder.LAYOUT -> {
+                ShopHomeShowCaseNavigationTopMainBannerPlaceholderViewHolder(parent)
+            }
             ShopHomeShowCaseNavigationTopMainBannerViewHolder.LAYOUT -> {
                 ShopHomeShowCaseNavigationTopMainBannerViewHolder(parent, shopHomeShowcaseNavigationListener)
+            }
+            ShopHomeShowCaseNavigationCarouselPlaceholderViewHolder.LAYOUT -> {
+                ShopHomeShowCaseNavigationCarouselPlaceholderViewHolder(parent)
             }
             ShopHomeShowCaseNavigationCarouselViewHolder.LAYOUT -> {
                 ShopHomeShowCaseNavigationCarouselViewHolder(parent, shopHomeShowcaseNavigationListener)
