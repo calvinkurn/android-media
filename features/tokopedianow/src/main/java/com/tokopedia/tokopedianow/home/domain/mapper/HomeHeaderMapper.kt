@@ -45,9 +45,7 @@ object HomeHeaderMapper {
         }
     }
 
-    fun MutableList<HomeLayoutItemUiModel?>.mapHomeHeaderErrorState(
-        item: HomeHeaderUiModel,
-    ) {
+    fun MutableList<HomeLayoutItemUiModel?>.mapHomeHeaderErrorState(item: HomeHeaderUiModel) {
         updateItemById(item.id) {
             val layoutUiModel = item.copy(state = HomeLayoutItemState.ERROR)
             HomeLayoutItemUiModel(layoutUiModel, HomeLayoutItemState.LOADED)
