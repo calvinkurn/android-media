@@ -54,7 +54,7 @@ class BrandRecommendationItemViewHolder(itemView: View, private val fragment: Fr
     private fun updateCardDesign() {
         when (brandRecommendationItemViewModel?.getDesignType()) {
             RECTANGLE_DESIGN -> {
-                val cardPadding = context.resources.getDimension(R.dimen.dp_4).toInt()
+                val cardPadding = context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_4).toInt()
                 val layoutParams: ViewGroup.LayoutParams = itemView.layoutParams
                 layoutParams.width = context.resources.getDimension(R.dimen.dp_90).toInt()
                 layoutParams.height = context.resources.getDimension(R.dimen.dp_60).toInt()
