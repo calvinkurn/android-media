@@ -74,6 +74,7 @@ class StoriesViewModel @Inject constructor(
             StoriesUiAction.ResumeStories -> handleOnResumeStories()
             StoriesUiAction.OpenKebabMenu -> handleOpenKebab()
             is StoriesUiAction.DismissSheet -> handleDismissSheet(action.type)
+            StoriesUiAction.ShowDeleteDialog -> handleShowDialogDelete()
         }
     }
 
@@ -181,6 +182,12 @@ class StoriesViewModel @Inject constructor(
                 false
             else it.value
         } }
+    }
+
+    private fun handleShowDialogDelete() {
+        viewModelScope.launch {
+            _uiEvent.emit(StoriesUiEvent.ShowDeleteDialog)
+        }
     }
 
     companion object {

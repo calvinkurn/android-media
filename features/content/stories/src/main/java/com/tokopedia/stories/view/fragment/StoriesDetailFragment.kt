@@ -71,11 +71,7 @@ class StoriesDetailFragment @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         childFragmentManager.addFragmentOnAttachListener { _, fragment ->
             when (fragment) {
-                is StoriesThreeDotsBottomSheet -> fragment.setListener(object : StoriesThreeDotsBottomSheet.Listener {
-                    override fun onDismissEvent(view: StoriesThreeDotsBottomSheet) {
-                        viewModelAction(StoriesUiAction.DismissSheet(BottomSheetType.Kebab))
-                    }
-                })
+                is StoriesThreeDotsBottomSheet -> {}
             }
         }
         super.onCreate(savedInstanceState)

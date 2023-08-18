@@ -1,5 +1,9 @@
 package com.tokopedia.stories.view.model
 
+import com.tokopedia.content.common.R
+import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
+import com.tokopedia.content.common.report_content.model.FeedMenuItem
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.stories.uimodel.StoryAuthor
 
 data class StoriesUiModel(
@@ -22,6 +26,8 @@ data class StoriesDetailUiModel(
     val event: StoriesDetailUiEvent,
     val imageContent: String,
     val author: StoryAuthor,
+    //TODO() rename, temp list
+    val menus: List<FeedMenuItem> = defaultMenu,
 ) {
 
     enum class StoriesDetailUiEvent {
@@ -36,4 +42,22 @@ data class StoriesDetailUiModel(
             author = StoryAuthor.Unknown,
         )
     }
+}
+
+//TODO() please remove
+val defaultMenu = buildList<FeedMenuItem> {
+    add(
+        FeedMenuItem(
+            iconUnify = IconUnify.WARNING,
+            name = R.string.content_common_menu_report,
+            type = FeedMenuIdentifier.Report
+        )
+    )
+    add(
+        FeedMenuItem(
+            iconUnify = IconUnify.DELETE,
+            name = com.tokopedia.stories.R.string.stories_delete_story_title,
+            type = FeedMenuIdentifier.Delete,
+        )
+    )
 }

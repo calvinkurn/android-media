@@ -33,7 +33,8 @@ import com.tokopedia.unifyprinciples.R
 @Composable
 fun ThreeDotsPage(
     menuList: List<FeedMenuItem>,
-    onMenuClicked: (FeedMenuItem) -> Unit
+    onDeleteStoryClicked: (FeedMenuItem) -> Unit,
+    onMenuClicked: (FeedMenuItem) -> Unit = {}
 ) {
     NestTheme {
         ConstraintLayout(
@@ -53,7 +54,10 @@ fun ThreeDotsPage(
                     }
             ) {
                 items(menuList) {
-                    ItemMenu(menu = it, onMenuClicked = onMenuClicked)
+                    ItemMenu(
+                        menu = it,
+                        onMenuClicked = if (it.type == FeedMenuIdentifier.Delete) onDeleteStoryClicked else onMenuClicked
+                    )
                 }
             }
         }
@@ -105,9 +109,11 @@ fun ItemMenu(menu: FeedMenuItem, onMenuClicked: (FeedMenuItem) -> Unit) {
         NestTypography(
             text = ctx.getString(menu.name),
             maxLines = 2,
-            textStyle = NestTheme.typography.display2.copy(fontWeight = FontWeight.Bold, color = colorResource(
-                id = styleColor
-            )),
+            textStyle = NestTheme.typography.display2.copy(
+                fontWeight = FontWeight.Bold, color = colorResource(
+                    id = styleColor
+                )
+            ),
             modifier = Modifier.constrainAs(nameView) {
                 width = Dimension.wrapContent
                 height = Dimension.wrapContent

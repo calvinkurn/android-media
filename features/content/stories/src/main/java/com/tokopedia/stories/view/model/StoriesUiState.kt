@@ -1,12 +1,19 @@
 package com.tokopedia.stories.view.model
 
-import com.tokopedia.kotlin.extensions.orFalse
-
 data class StoriesUiState(
     val storiesGroup: List<StoriesGroupUiModel>,
     val storiesDetail: StoriesDetailUiModel,
     val bottomSheetStatus: Map<BottomSheetType, Boolean>
-)
+) {
+    companion object {
+        val Empty
+            get() = StoriesUiState(
+                storiesDetail = StoriesDetailUiModel.Empty,
+                storiesGroup = emptyList(),
+                bottomSheetStatus = BottomSheetStatusDefault
+            )
+    }
+}
 
 enum class BottomSheetType {
     Kebab, Product, Sharing, Unknown;
