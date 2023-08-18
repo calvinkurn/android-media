@@ -2,9 +2,11 @@
 <com.tokopedia.play_common.view.RoundedConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/play_widget_card_medium_width"
-    android:layout_height="@dimen/play_widget_card_medium_height"
-    app:rcl_cornerRadius="8dp">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:rcl_cornerRadius="8dp"
+    tools:layout_height="213dp"
+    tools:layout_width="120dp">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/view_play_widget_thumbnail"

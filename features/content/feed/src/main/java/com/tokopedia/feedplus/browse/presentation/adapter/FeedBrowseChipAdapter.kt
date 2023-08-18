@@ -5,9 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
-import com.tokopedia.feedcomponent.databinding.ItemFeedPlaySlotTabCardBinding
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseChipViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
+import com.tokopedia.feedplus.databinding.ItemFeedBrowseChipBinding
 
 /**
  * Created by meyta.taliti on 11/08/23.
@@ -34,7 +34,7 @@ class FeedBrowseChipAdapter: BaseDiffUtilAdapter<FeedBrowseChipUiModel>(isFlexib
 
     internal class AdapterDelegate:
         TypedAdapterDelegate<FeedBrowseChipUiModel, FeedBrowseChipUiModel, FeedBrowseChipViewHolder>(
-            com.tokopedia.feedcomponent.R.layout.item_feed_play_slot_tab_card
+            com.tokopedia.feedplus.R.layout.item_feed_browse_chip
         ) {
         override fun onBindViewHolder(
             item: FeedBrowseChipUiModel,
@@ -48,7 +48,7 @@ class FeedBrowseChipAdapter: BaseDiffUtilAdapter<FeedBrowseChipUiModel>(isFlexib
             basicView: View
         ): FeedBrowseChipViewHolder {
             return FeedBrowseChipViewHolder(
-                ItemFeedPlaySlotTabCardBinding.inflate(
+                ItemFeedBrowseChipBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false,
