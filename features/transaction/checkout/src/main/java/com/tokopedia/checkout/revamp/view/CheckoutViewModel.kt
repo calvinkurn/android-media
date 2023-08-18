@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
+import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnProductServiceMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
@@ -110,6 +111,7 @@ class CheckoutViewModel @Inject constructor(
     private val dataConverter: CheckoutDataConverter,
     private val mTrackerShipment: CheckoutAnalyticsCourierSelection,
     private val mTrackerTradeIn: CheckoutTradeInAnalytics,
+    private val mTrackerPurchaseProtection: CheckoutAnalyticsPurchaseProtection,
     private val helper: CheckoutDataHelper,
     private val userSessionInterface: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers
@@ -135,6 +137,8 @@ class CheckoutViewModel @Inject constructor(
     var isPlusSelected: Boolean = false
 
     var checkoutPageSource: String = CheckoutConstant.CHECKOUT_PAGE_SOURCE_PDP
+
+    var isPurchaseProtectionPage: Boolean = false
 
     val cornerId: String?
         get() = recipientAddressModel.cornerId
@@ -218,8 +222,17 @@ class CheckoutViewModel @Inject constructor(
 
                     isUsingDdp = saf.cartShipmentAddressFormData.isUsingDdp
                     shipmentPlatformFeeData = saf.cartShipmentAddressFormData.shipmentPlatformFee
-//                    listSummaryAddOnModel =
-//                        ShipmentAddOnProductServiceMapper.mapSummaryAddOns(saf.cartShipmentAddressFormData)
+                    val ppImpressionData: List<String> =
+                        saf.cartShipmentAddressFormData.getAvailablePurchaseProtection
+                    if (ppImpressionData.isNotEmpty()) {
+                        isPurchaseProtectionPage = true
+                        mTrackerPurchaseProtection.eventImpressionOfProduct(
+                            userSessionInterface.userId,
+                            ppImpressionData
+                        )
+                    } else {
+                        isPurchaseProtectionPage = false
+                    }
                     cartDataForRates = saf.cartShipmentAddressFormData.cartData
                     codData = saf.cartShipmentAddressFormData.cod
                     campaignTimer = saf.cartShipmentAddressFormData.campaignTimerUi
@@ -915,10 +928,10 @@ class CheckoutViewModel @Inject constructor(
         val list = listData.value.toMutableList()
         val orderModel = list[cartPosition] as? CheckoutOrderModel
         if (orderModel != null) {
-            if (result?.first != null) {
-                val courierItemData = result.first
+            if (result?.courier != null) {
+                val courierItemData = result.courier
                 val shouldValidatePromo =
-                    result.first.selectedShipper.logPromoCode != null && result.first.selectedShipper.logPromoCode!!.isNotEmpty()
+                    courierItemData.selectedShipper.logPromoCode != null && courierItemData.selectedShipper.logPromoCode!!.isNotEmpty()
                 if (shouldValidatePromo) {
                     val validateUsePromoRequest = generateValidateUsePromoRequest()
                     for (ordersItem in validateUsePromoRequest.orders) {
@@ -962,22 +975,25 @@ class CheckoutViewModel @Inject constructor(
                         cartPosition,
                         orderModel.cartStringGroup,
                         validateUsePromoRequest,
-                        result.first.logPromoCode!!,
+                        courierItemData.logPromoCode!!,
                         true,
-                        result.first,
-                        result.second
+                        courierItemData,
+                        result.insurance
                     )
                     return
                 }
             }
+            if (result != null && result.akamaiError.isNotEmpty()) {
+                pageState.value = CheckoutPageState.AkamaiRatesError(result.akamaiError)
+            }
             val newOrderModel = orderModel.copy(
                 shipment = orderModel.shipment.copy(
                     isLoading = false,
-                    courierItemData = result?.first,
-                    shippingCourierUiModels = result?.third ?: emptyList(),
-                    insurance = result?.second?.let {
+                    courierItemData = result?.courier,
+                    shippingCourierUiModels = result?.couriers ?: emptyList(),
+                    insurance = result?.insurance?.let {
                         CheckoutOrderInsurance(
-                            when (result.second.insuranceType) {
+                            when (it.insuranceType) {
                                 InsuranceConstant.INSURANCE_TYPE_MUST -> {
                                     true
                                 }
@@ -987,7 +1003,7 @@ class CheckoutViewModel @Inject constructor(
                                 }
 
                                 InsuranceConstant.INSURANCE_TYPE_OPTIONAL -> {
-                                    result.second.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_YES
+                                    it.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_YES
                                 }
 
                                 else -> false
@@ -1043,10 +1059,10 @@ class CheckoutViewModel @Inject constructor(
         val list = listData.value.toMutableList()
         val orderModel = list[cartPosition] as? CheckoutOrderModel
         if (orderModel != null) {
-            if (result?.first != null) {
-                val courierItemData = result.first
+            if (result?.courier != null) {
+                val courierItemData = result.courier
                 val shouldValidatePromo =
-                    result.first.selectedShipper.logPromoCode != null && result.first.selectedShipper.logPromoCode!!.isNotEmpty()
+                    courierItemData.selectedShipper.logPromoCode != null && courierItemData.selectedShipper.logPromoCode!!.isNotEmpty()
                 if (shouldValidatePromo) {
                     val validateUsePromoRequest = generateValidateUsePromoRequest()
                     for (ordersItem in validateUsePromoRequest.orders) {
@@ -1090,13 +1106,16 @@ class CheckoutViewModel @Inject constructor(
                         cartPosition,
                         orderModel.cartStringGroup,
                         validateUsePromoRequest,
-                        result.first.logPromoCode!!,
+                        courierItemData.logPromoCode!!,
                         false,
-                        result.first,
-                        result.second
+                        courierItemData,
+                        result.insurance
                     )
                     return
                 }
+            }
+            if (result != null && result.akamaiError.isNotEmpty()) {
+                pageState.value = CheckoutPageState.AkamaiRatesError(result.akamaiError)
             }
             if (orderModel.boCode.isNotEmpty()) {
                 promoProcessor.clearPromo(
@@ -1121,11 +1140,11 @@ class CheckoutViewModel @Inject constructor(
             val newOrderModel = orderModel.copy(
                 shipment = orderModel.shipment.copy(
                     isLoading = false,
-                    courierItemData = result?.first,
-                    shippingCourierUiModels = result?.third ?: emptyList(),
-                    insurance = result?.second?.let {
+                    courierItemData = result?.courier,
+                    shippingCourierUiModels = result?.couriers ?: emptyList(),
+                    insurance = result?.insurance?.let {
                         CheckoutOrderInsurance(
-                            when (result.second.insuranceType) {
+                            when (it.insuranceType) {
                                 InsuranceConstant.INSURANCE_TYPE_MUST -> {
                                     true
                                 }
@@ -1135,7 +1154,7 @@ class CheckoutViewModel @Inject constructor(
                                 }
 
                                 InsuranceConstant.INSURANCE_TYPE_OPTIONAL -> {
-                                    result.second.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_YES
+                                    it.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_YES
                                 }
 
                                 else -> false
@@ -1352,7 +1371,11 @@ class CheckoutViewModel @Inject constructor(
         viewModelScope.launch(dispatchers.immediate) {
             pageState.value = CheckoutPageState.Loading
             if (courierItemData.selectedShipper.logPromoCode.isNullOrEmpty() && newCourierItemData.selectedShipper.logPromoCode.isNullOrEmpty()) {
-                setSelectedScheduleDeliveryWithNoPromo(cartPosition, newCourierItemData, scheduleDeliveryUiModel)
+                setSelectedScheduleDeliveryWithNoPromo(
+                    cartPosition,
+                    newCourierItemData,
+                    scheduleDeliveryUiModel
+                )
             } else if (!courierItemData.selectedShipper.logPromoCode.isNullOrEmpty() && newCourierItemData.selectedShipper.logPromoCode.isNullOrEmpty()) {
                 setSelectedScheduleDeliveryWithClearOldPromo(
                     cartPosition,
@@ -1587,7 +1610,11 @@ class CheckoutViewModel @Inject constructor(
     }
     // endregion
 
-    fun checkout(fingerprintPublicKey: String?, triggerEpharmacyTracker: (Boolean) -> Unit, onSuccessCheckout: (CheckoutResult) -> Unit) {
+    fun checkout(
+        fingerprintPublicKey: String?,
+        triggerEpharmacyTracker: (Boolean) -> Unit,
+        onSuccessCheckout: (CheckoutResult) -> Unit
+    ) {
         viewModelScope.launch(dispatchers.immediate) {
             pageState.value = CheckoutPageState.Loading
             val items = listData.value.toMutableList()
@@ -1635,7 +1662,8 @@ class CheckoutViewModel @Inject constructor(
                 }
                 if (checkoutItem is CheckoutEpharmacyModel) {
                     if (isPrescriptionFrontEndValidationError) {
-                        items[index] = checkoutItem.copy(epharmacy = checkoutItem.epharmacy.copy(isError = true))
+                        items[index] =
+                            checkoutItem.copy(epharmacy = checkoutItem.epharmacy.copy(isError = true))
                     }
                 }
             }
@@ -1674,7 +1702,11 @@ class CheckoutViewModel @Inject constructor(
             )
             if (validateUsePromoRevampUiModel != null) {
                 val itemList = listData.value.toMutableList()
-                itemList[itemList.size - 4] = itemList.promo()!!.copy(promo = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(validateUsePromoRevampUiModel.promoUiModel))
+                itemList[itemList.size - 4] = itemList.promo()!!.copy(
+                    promo = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(
+                        validateUsePromoRevampUiModel.promoUiModel
+                    )
+                )
                 listData.value = itemList
                 val notEligiblePromoHolderdataList = arrayListOf<NotEligiblePromoHolderdata>()
                 if (validateUsePromoRevampUiModel.promoUiModel.messageUiModel.state == "red") {
@@ -1781,6 +1813,12 @@ class CheckoutViewModel @Inject constructor(
             hasClearPromoBeforeCheckout
         )
         if (checkoutResult.success) {
+            if (isPurchaseProtectionPage) {
+                mTrackerPurchaseProtection.eventClickOnBuy(
+                    userSessionInterface.userId,
+                    checkoutResult.checkoutRequest.protectionAnalyticsData
+                )
+            }
             sendEEStep4(
                 checkoutResult.transactionId,
                 checkoutResult.deviceModel,
@@ -1837,7 +1875,7 @@ class CheckoutViewModel @Inject constructor(
             )
             CheckoutLogger.logOnErrorCheckout(
                 MessageErrorException(toasterMessage),
-                checkoutResult.checkoutRequest,
+                checkoutResult.checkoutRequest.toString(),
                 isOneClickShipment,
                 isTradeIn,
                 isTradeInByDropOff
@@ -1997,7 +2035,10 @@ class CheckoutViewModel @Inject constructor(
             for (voucherOrdersItemUiModel in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
                 // voucher with shippingId not zero, spId not zero, and voucher type logistic as promo for BO
                 if (voucherOrdersItemUiModel.shippingId > 0 && voucherOrdersItemUiModel.spId > 0 && voucherOrdersItemUiModel.type == "logistic") {
-                    if (voucherOrdersItemUiModel.messageUiModel.state == "green" && unprocessedUniqueIds.contains(voucherOrdersItemUiModel.cartStringGroup)) {
+                    if (voucherOrdersItemUiModel.messageUiModel.state == "green" && unprocessedUniqueIds.contains(
+                            voucherOrdersItemUiModel.cartStringGroup
+                        )
+                    ) {
                         toBeAppliedVoucherOrders.add(voucherOrdersItemUiModel)
                         unprocessedUniqueIds.remove(voucherOrdersItemUiModel.cartStringGroup)
                     }
@@ -2017,7 +2058,12 @@ class CheckoutViewModel @Inject constructor(
             checkoutItems = list
 
             val resultClear =
-                doValidateBoClearUnapplied(checkoutItems, unprocessedUniqueIds, unappliedBoPromoUniqueIds, reloadedUniqueIds)
+                doValidateBoClearUnapplied(
+                    checkoutItems,
+                    unprocessedUniqueIds,
+                    unappliedBoPromoUniqueIds,
+                    reloadedUniqueIds
+                )
             val firstScrollIndex = resultClear.first
             checkoutItems = resultClear.second
 
@@ -2074,10 +2120,10 @@ class CheckoutViewModel @Inject constructor(
                 isOneClickShipment,
                 isTradeIn
             )
-            if (result?.first != null) {
-                val courierItemData = result.first
+            if (result?.courier != null) {
+                val courierItemData = result.courier
                 val shouldValidatePromo =
-                    !result.first.selectedShipper.logPromoCode.isNullOrEmpty()
+                    !courierItemData.selectedShipper.logPromoCode.isNullOrEmpty()
                 if (shouldValidatePromo) {
                     val validateUsePromoRequest = generateValidateUsePromoRequest(checkoutItems)
                     for (ordersItem in validateUsePromoRequest.orders) {
@@ -2120,7 +2166,7 @@ class CheckoutViewModel @Inject constructor(
                     checkoutItems = promoProcessor.validateUseLogisticPromo(
                         validateUsePromoRequest,
                         order.cartStringGroup,
-                        result.first.logPromoCode!!,
+                        courierItemData.logPromoCode!!,
                         checkoutItems,
                         courierItemData,
                         isOneClickShipment,
@@ -2129,6 +2175,9 @@ class CheckoutViewModel @Inject constructor(
                     ).toMutableList()
                 }
             } else {
+                if (result != null && result.akamaiError.isNotEmpty()) {
+                    pageState.value = CheckoutPageState.AkamaiRatesError(result.akamaiError)
+                }
                 promoProcessor.clearPromo(
                     ClearPromoOrder(
                         order.boUniqueId,
@@ -2144,27 +2193,9 @@ class CheckoutViewModel @Inject constructor(
                 val newOrderModel = order.copy(
                     shipment = order.shipment.copy(
                         isLoading = false,
-                        courierItemData = result?.first,
-                        shippingCourierUiModels = result?.third ?: emptyList(),
-                        insurance = result?.second?.let {
-                            CheckoutOrderInsurance(
-                                when (result.second.insuranceType) {
-                                    InsuranceConstant.INSURANCE_TYPE_MUST -> {
-                                        true
-                                    }
-
-                                    InsuranceConstant.INSURANCE_TYPE_NO -> {
-                                        false
-                                    }
-
-                                    InsuranceConstant.INSURANCE_TYPE_OPTIONAL -> {
-                                        result.second.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_YES
-                                    }
-
-                                    else -> false
-                                }
-                            )
-                        } ?: CheckoutOrderInsurance()
+                        courierItemData = null,
+                        shippingCourierUiModels = emptyList(),
+                        insurance = CheckoutOrderInsurance()
                     )
                 )
                 checkoutItems[cartPosition] = newOrderModel
@@ -2363,7 +2394,8 @@ class CheckoutViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             val checkoutItems = listData.value.toMutableList()
-            checkoutItems[position] = order.copy(shipment = order.shipment.copy(courierItemData = null))
+            checkoutItems[position] =
+                order.copy(shipment = order.shipment.copy(courierItemData = null))
             listData.value = checkoutItems
             promoProcessor.clearPromo(
                 ClearPromoOrder(

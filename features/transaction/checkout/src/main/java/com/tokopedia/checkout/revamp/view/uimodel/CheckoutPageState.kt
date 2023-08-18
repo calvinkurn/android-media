@@ -17,6 +17,7 @@ sealed class CheckoutPageState {
     data class PriceValidation(val priceValidationData: PriceValidationData) : CheckoutPageState()
     data class Prompt(val prompt: com.tokopedia.checkout.domain.model.checkout.Prompt) : CheckoutPageState()
     object EpharmacyCoachMark : CheckoutPageState()
+    data class AkamaiRatesError(val message: String) : CheckoutPageState()
 }
 
 data class CheckoutPageToaster(

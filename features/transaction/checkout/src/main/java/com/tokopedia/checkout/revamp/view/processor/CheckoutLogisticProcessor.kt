@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
@@ -350,7 +351,7 @@ class CheckoutLogisticProcessor @Inject constructor(
         isOneClickShipment: Boolean,
         isTradeIn: Boolean,
         isTradeInByDropOff: Boolean
-    ): Triple<CourierItemData, InsuranceData, List<ShippingCourierUiModel>>? {
+    ): RatesResult? {
         return withContext(dispatchers.io) {
             try {
                 var shippingRecommendationData = ratesUseCase(ratesParam)
@@ -404,7 +405,7 @@ class CheckoutLogisticProcessor @Inject constructor(
                                                         shippingRecommendationData,
                                                         logisticPromo
                                                     )
-                                                return@withContext Triple(
+                                                return@withContext RatesResult(
                                                     courierItemData,
                                                     shippingCourierUiModel.productData.insurance,
                                                     shippingDurationUiModel.shippingCourierViewModelList
@@ -469,7 +470,7 @@ class CheckoutLogisticProcessor @Inject constructor(
                                             if (!shouldValidatePromo) {
                                                 shippingCourierUiModel.isSelected = true
                                             }
-                                            return@withContext Triple(
+                                            return@withContext RatesResult(
                                                 courierItemData,
                                                 shippingCourierUiModel.productData.insurance,
                                                 shippingDurationUiModel.shippingCourierViewModelList
@@ -503,7 +504,7 @@ class CheckoutLogisticProcessor @Inject constructor(
                                     if (!shouldValidatePromo) {
                                         shippingCourier.isSelected = true
                                     }
-                                    return@withContext Triple(
+                                    return@withContext RatesResult(
                                         courierItemData,
                                         shippingCourier.productData.insurance,
                                         shippingDuration.shippingCourierViewModelList
@@ -528,6 +529,14 @@ class CheckoutLogisticProcessor @Inject constructor(
                 return@withContext null
             } catch (t: Throwable) {
                 Timber.d(t)
+                if (t is AkamaiErrorException) {
+                    return@withContext RatesResult(
+                        null,
+                        InsuranceData(),
+                        emptyList(),
+                        t.message ?: ""
+                    )
+                }
                 return@withContext null
             }
         }
@@ -662,7 +671,7 @@ class CheckoutLogisticProcessor @Inject constructor(
         isOneClickShipment: Boolean,
         isTradeIn: Boolean,
         isTradeInByDropOff: Boolean
-    ): Triple<CourierItemData, InsuranceData, List<ShippingCourierUiModel>>? {
+    ): RatesResult? {
         return withContext(dispatchers.io) {
             try {
                 var shippingRecommendationData =
@@ -712,7 +721,7 @@ class CheckoutLogisticProcessor @Inject constructor(
                                                         shippingRecommendationData,
                                                         logisticPromo
                                                     )
-                                                return@withContext Triple(
+                                                return@withContext RatesResult(
                                                     courierItemData,
                                                     shippingCourierUiModel.productData.insurance,
                                                     shippingDurationUiModel.shippingCourierViewModelList
@@ -778,7 +787,7 @@ class CheckoutLogisticProcessor @Inject constructor(
                                             if (!shouldValidatePromo) {
                                                 shippingCourierUiModel.isSelected = true
                                             }
-                                            return@withContext Triple(
+                                            return@withContext RatesResult(
                                                 courierItemData,
                                                 shippingCourierUiModel.productData.insurance,
                                                 shippingDurationUiModel.shippingCourierViewModelList
@@ -813,7 +822,7 @@ class CheckoutLogisticProcessor @Inject constructor(
                                     if (!shouldValidatePromo) {
                                         shippingCourier.isSelected = true
                                     }
-                                    return@withContext Triple(
+                                    return@withContext RatesResult(
                                         courierItemData,
                                         shippingCourier.productData.insurance,
                                         shippingDuration.shippingCourierViewModelList
@@ -838,6 +847,14 @@ class CheckoutLogisticProcessor @Inject constructor(
                 return@withContext null
             } catch (t: Throwable) {
                 Timber.d(t)
+                if (t is AkamaiErrorException) {
+                    return@withContext RatesResult(
+                        null,
+                        InsuranceData(),
+                        emptyList(),
+                        t.message ?: ""
+                    )
+                }
                 return@withContext null
             }
         }
@@ -952,7 +969,7 @@ class CheckoutLogisticProcessor @Inject constructor(
         promoCode: String,
         isOneClickShipment: Boolean,
         isTradeIn: Boolean
-    ): Triple<CourierItemData, InsuranceData, List<ShippingCourierUiModel>>? {
+    ): RatesResult? {
         return withContext(dispatchers.io) {
             try {
                 var shippingRecommendationData = if (isTradeInDropOff) {
@@ -998,7 +1015,7 @@ class CheckoutLogisticProcessor @Inject constructor(
                                                     shippingRecommendationData,
                                                     logisticPromo
                                                 )
-                                            return@withContext Triple(
+                                            return@withContext RatesResult(
                                                 courierItemData,
                                                 shippingCourierUiModel.productData.insurance,
                                                 shippingDurationUiModel.shippingCourierViewModelList
@@ -1025,6 +1042,14 @@ class CheckoutLogisticProcessor @Inject constructor(
                     isTradeInDropOff,
                     promoCode
                 )
+                if (t is AkamaiErrorException) {
+                    return@withContext RatesResult(
+                        null,
+                        InsuranceData(),
+                        emptyList(),
+                        t.message ?: ""
+                    )
+                }
                 return@withContext null
             }
         }
@@ -1068,4 +1093,11 @@ data class EditAddressResult(
     val isSuccess: Boolean,
     val errorMessage: String = "",
     val throwable: Throwable? = null
+)
+
+data class RatesResult(
+    val courier: CourierItemData?,
+    val insurance: InsuranceData,
+    val couriers: List<ShippingCourierUiModel>,
+    val akamaiError: String = ""
 )
