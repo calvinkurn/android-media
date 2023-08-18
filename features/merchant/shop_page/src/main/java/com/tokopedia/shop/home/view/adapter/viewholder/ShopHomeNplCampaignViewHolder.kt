@@ -3,6 +3,7 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 import android.content.Context
 import android.util.TypedValue
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -35,6 +36,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiMode
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.date.toString
@@ -71,6 +73,7 @@ class ShopHomeNplCampaignViewHolder(
     private val textFollowersOnly: Typography? = viewBinding?.tvExclusiveFollower
     private val nplPromoOfferContainer: ConstraintLayout? = viewBinding?.nplPromoOfferContainer
     private val textVoucherWording: Typography? = viewBinding?.nplOfferText
+    private val containerProductList: View? = viewBinding?.containerProductList
     override val coroutineContext = masterJob + Dispatchers.Main
 
     companion object {
@@ -81,6 +84,7 @@ class ShopHomeNplCampaignViewHolder(
         private const val NPL_RULE_ID_FOLLOWERS_ONLY = "33"
         private const val RV_CAROUSEL_MARGIN_TOP = 24f
         private const val BANNER_IMAGE_RATION_EMPTY_PRODUCT = "1:1"
+        private val SHOP_RE_IMAGINE_MARGIN = 16f.dpToPx()
     }
 
     private var productListCampaignAdapter: ShopCampaignCarouselProductAdapter? = null
@@ -145,6 +149,16 @@ class ShopHomeNplCampaignViewHolder(
         timerMoreThanOneDay?.apply {
             background = MethodChecker.getDrawable(itemView.context, R.drawable.bg_shop_timer_red_rect)
             setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+        }
+        setShopReimaginedContainerMargin()
+    }
+
+    private fun setShopReimaginedContainerMargin() {
+        containerProductList?.let {
+            it.clipToOutline = true
+            it.background = MethodChecker.getDrawable(itemView.context, com.tokopedia.shop_widget.R.drawable.bg_shop_reimagined_rounded)
+            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart = SHOP_RE_IMAGINE_MARGIN.toInt()
+            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginEnd = SHOP_RE_IMAGINE_MARGIN.toInt()
         }
     }
 

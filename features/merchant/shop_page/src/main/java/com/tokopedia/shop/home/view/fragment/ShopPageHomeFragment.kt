@@ -4118,7 +4118,7 @@ open class ShopPageHomeFragment :
             shopId,
             extParam,
             ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel(),
-            "CampaignTab"
+            getSelectedTabName()
         )
     }
 

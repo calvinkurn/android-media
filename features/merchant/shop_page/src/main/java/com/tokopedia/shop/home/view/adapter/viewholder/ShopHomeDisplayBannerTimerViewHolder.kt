@@ -1,6 +1,7 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -30,6 +31,7 @@ import com.tokopedia.shop.home.view.listener.ShopHomeDisplayBannerTimerWidgetLis
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.date.toString
@@ -61,12 +63,14 @@ class ShopHomeDisplayBannerTimerViewHolder(
     private val textSeeAll: Typography? = viewBinding?.textSeeAll
     private val imageTnc: ImageView? = viewBinding?.imageTnc
     private val textTitle: Typography? = viewBinding?.textTitle
+    private val containerProductList: View? = viewBinding?.containerProductList
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_display_banner_timer
         private const val DURATION_TO_HIDE_REMIND_ME_WORDING = 5000L
         private val TOTAL_NOTIFY_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+        private val SHOP_RE_IMAGINE_MARGIN = 16f.dpToPx()
     }
 
     override fun bind(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
@@ -273,6 +277,16 @@ class ShopHomeDisplayBannerTimerViewHolder(
                     com.tokopedia.unifyprinciples.R.color.Unify_NN0
                 )
             )
+        }
+        setShopReimaginedContainerMargin()
+    }
+
+    private fun setShopReimaginedContainerMargin() {
+        containerProductList?.let {
+            it.clipToOutline = true
+            it.background = MethodChecker.getDrawable(itemView.context, com.tokopedia.shop_widget.R.drawable.bg_shop_reimagined_rounded)
+            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart = SHOP_RE_IMAGINE_MARGIN.toInt()
+            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginEnd = SHOP_RE_IMAGINE_MARGIN.toInt()
         }
     }
 
