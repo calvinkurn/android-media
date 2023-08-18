@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.stories.data.StoriesRepository
+import com.tokopedia.stories.view.model.BottomSheetType
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
 import com.tokopedia.stories.view.model.StoriesDetailUiModel.StoriesDetailUiEvent
 import com.tokopedia.stories.view.model.StoriesGroupUiModel
@@ -30,6 +31,7 @@ class StoriesViewModel @Inject constructor(
 
     private var _storiesGroup = MutableStateFlow(listOf<StoriesGroupUiModel>())
     private var _storiesDetail = MutableStateFlow(StoriesDetailUiModel.Empty)
+    private val bottomSheetStatus = MutableStateFlow(emptyMap<BottomSheetType, Boolean>())
 
     private val _uiEvent = MutableSharedFlow<StoriesUiEvent>(extraBufferCapacity = 100)
     val uiEvent: Flow<StoriesUiEvent>
@@ -38,10 +40,12 @@ class StoriesViewModel @Inject constructor(
     val uiState = combine(
         _storiesGroup,
         _storiesDetail,
-    ) { storiesCategories, storiesItem ->
+        bottomSheetStatus
+    ) { storiesCategories, storiesItem, bottomSheet ->
         StoriesUiState(
             storiesGroup = storiesCategories,
             storiesDetail = storiesItem,
+            bottomSheetStatus = bottomSheet,
         )
     }
 
@@ -68,6 +72,7 @@ class StoriesViewModel @Inject constructor(
             StoriesUiAction.PauseStories -> handleOnPauseStories()
             StoriesUiAction.ResumeStories -> handleOnResumeStories()
             StoriesUiAction.OpenKebabMenu -> handleOpenKebab()
+            is StoriesUiAction.DismissSheet -> handleDismissSheet(action.type)
         }
     }
 
@@ -159,7 +164,22 @@ class StoriesViewModel @Inject constructor(
     private fun handleOpenKebab() {
         viewModelScope.launch {
             _uiEvent.emit(StoriesUiEvent.OpenKebab)
+            bottomSheetStatus.update {
+                bottomSheet -> bottomSheet.mapValues {
+                    if (it.key == BottomSheetType.Kebab)
+                        true
+                    else it.value
+                }
+            }
         }
+    }
+
+    private fun handleDismissSheet(bottomSheetType: BottomSheetType) {
+        bottomSheetStatus.update { bottomSheet -> bottomSheet.mapValues {
+            if (it.key == bottomSheetType)
+                false
+            else it.value
+        } }
     }
 
     companion object {

@@ -1,6 +1,7 @@
 package com.tokopedia.stories.view.viewmodel.action
 
 import android.os.Bundle
+import com.tokopedia.stories.view.model.BottomSheetType
 
 sealed interface StoriesUiAction {
 
@@ -16,4 +17,6 @@ sealed interface StoriesUiAction {
     object ResumeStories: StoriesUiAction
 
     object OpenKebabMenu : StoriesUiAction
+
+    data class DismissSheet(val type: BottomSheetType) : StoriesUiAction
 }
