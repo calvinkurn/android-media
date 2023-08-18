@@ -12,8 +12,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showToast
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.stories.bottomsheet.StoriesThreeDotsBottomSheet
 import com.tokopedia.stories.databinding.FragmentStoriesDetailBinding
@@ -21,8 +21,6 @@ import com.tokopedia.stories.uimodel.StoryAuthor
 import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.adapter.StoriesGroupAdapter
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
-import com.tokopedia.stories.view.components.indicator.StoriesDetailTimerEvent.NEXT_DETAIL
-import com.tokopedia.stories.view.components.indicator.StoriesDetailTimerEvent.NEXT_GROUP
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
 import com.tokopedia.stories.view.model.StoriesGroupUiModel
 import com.tokopedia.stories.view.utils.STORIES_GROUP_ID
@@ -31,7 +29,6 @@ import com.tokopedia.stories.view.utils.onTouchEventStories
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.NextDetail
-import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.NextGroup
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.PauseStories
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.PreviousDetail
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.ResumeStories
@@ -52,7 +49,7 @@ class StoriesDetailFragment @Inject constructor(
     private val mAdapter: StoriesGroupAdapter by lazyThreadSafetyNone {
         StoriesGroupAdapter(object : StoriesGroupAdapter.Listener {
             override fun onClickGroup(position: Int) {
-                viewModelAction(StoriesUiAction.SelectGroup(position))
+                viewModelAction(StoriesUiAction.SetGroupMainData(position))
             }
         })
     }
@@ -85,12 +82,11 @@ class StoriesDetailFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-        binding.tvCounter.text = "Group ${viewModel.mGroupPosition.plus(1)}"
         setupObserver()
     }
 
     private fun setupObserver() {
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.uiState.withCache().collectLatest { (prevState, state) ->
                 renderStoriesGroup(prevState?.storiesGroup, state.storiesGroup)
                 renderStoriesDetail(prevState?.storiesDetail, state.storiesDetail)
@@ -104,16 +100,16 @@ class StoriesDetailFragment @Inject constructor(
     ) {
         if (prevState == state) return
         mAdapter.setItems(state)
-        binding.icClose.show()
     }
 
     private fun renderStoriesDetail(
         prevState: StoriesDetailUiModel?,
         state: StoriesDetailUiModel,
     ) {
-        if (prevState == state) return
+        if (prevState == state || state == StoriesDetailUiModel.Empty) return
 
         storiesDetailsTimer(state)
+        binding.ivStoriesDetailContent.setImageUrl(state.imageContent)
         renderAuthor(state)
     }
 
@@ -123,17 +119,13 @@ class StoriesDetailFragment @Inject constructor(
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                 setContent {
                     StoriesDetailTimer(
-                        itemCount = 2,
+                        itemCount = viewModel.mDetailMaxInGroup,
                         data = state,
-                    ) { event ->
-                        when (event) {
-                            NEXT_DETAIL -> viewModelAction(NextDetail)
-                            NEXT_GROUP -> viewModelAction(NextGroup)
-                        }
-                    }
+                    ) { viewModelAction(NextDetail) }
                 }
             }
         }
+        isShouldShowStoriesComponent(true)
     }
 
     private fun renderAuthor(state: StoriesDetailUiModel) = with(binding.vStoriesPartner) {
@@ -188,18 +180,20 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun pauseStories() = with(binding) {
-        icClose.hide()
-        rvStoriesCategory.hide()
-        cvStoriesDetailTimer.hide()
+    private fun pauseStories() {
+        isShouldShowStoriesComponent(false)
         viewModelAction(PauseStories)
     }
 
-    private fun resumeStories() = with(binding) {
-        icClose.show()
-        rvStoriesCategory.show()
-        cvStoriesDetailTimer.show()
+    private fun resumeStories() {
+        isShouldShowStoriesComponent(true)
         viewModelAction(ResumeStories)
+    }
+
+    private fun isShouldShowStoriesComponent(isShow: Boolean) {
+        binding.icClose.showWithCondition(isShow)
+        binding.rvStoriesCategory.showWithCondition(isShow)
+        binding.cvStoriesDetailTimer.showWithCondition(isShow)
     }
 
     private fun viewModelAction(event: StoriesUiAction) {

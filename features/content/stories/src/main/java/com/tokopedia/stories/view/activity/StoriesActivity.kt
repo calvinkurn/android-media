@@ -8,6 +8,7 @@ import com.tokopedia.stories.di.StoriesInjector
 import com.tokopedia.stories.view.fragment.StoriesGroupFragment
 import javax.inject.Inject
 
+
 class StoriesActivity : BaseActivity() {
 
     @Inject

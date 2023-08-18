@@ -23,37 +23,33 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.stories.uimodel.StoryAuthor
-import com.tokopedia.stories.view.components.indicator.StoriesDetailTimerEvent.NEXT_DETAIL
-import com.tokopedia.stories.view.components.indicator.StoriesDetailTimerEvent.NEXT_GROUP
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
+import com.tokopedia.stories.view.model.StoriesDetailUiModel.StoriesDetailUiEvent.PAUSE
+import com.tokopedia.stories.view.model.StoriesDetailUiModel.StoriesDetailUiEvent.START
 
 @Composable
 fun StoriesDetailTimer(
     itemCount: Int,
     data: StoriesDetailUiModel,
-    event: (StoriesDetailTimerEvent) -> Unit,
+    timerFinished: () -> Unit,
 ) {
-    val anim = remember { Animatable(0F) }
+    val anim = remember(data.selected, data.id) { Animatable(INITIAL_ANIMATION) }
 
     LaunchedEffect(data) {
         when (data.event) {
-            StoriesDetailUiModel.StoriesDetailUiEvent.PAUSE -> anim.stop()
-            StoriesDetailUiModel.StoriesDetailUiEvent.START -> {
+            PAUSE -> anim.stop()
+            START -> {
                 anim.animateTo(
-                    targetValue = 1f,
+                    targetValue = TARGET_ANIMATION,
                     animationSpec = tween(
-                        durationMillis = (3000 * (1f - anim.value)).toInt(),
+                        durationMillis = (TIMER_DURATION * (TARGET_ANIMATION - anim.value)).toInt(),
                         easing = LinearEasing,
                     )
                 )
-
-                event.invoke(
-                    if (data.selected >= itemCount) NEXT_GROUP
-                    else NEXT_DETAIL
-                )
             }
-            StoriesDetailUiModel.StoriesDetailUiEvent.RESTART -> { anim.snapTo(0F) }
         }
+
+        if (anim.value == anim.targetValue) timerFinished.invoke()
     }
 
     StoriesDetailTimerContent(
@@ -72,10 +68,10 @@ private fun StoriesDetailTimerContent(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            .height(48.dp)
-            .padding(horizontal = 8.dp),
+            .padding(horizontal = 8.dp)
+            .background(Color.Transparent),
     ) {
-        for (index in 1..count) {
+        for (index in 0 until count) {
             Row(
                 modifier = Modifier
                     .height(4.dp)
@@ -95,12 +91,12 @@ private fun StoriesDetailTimerContent(
                         },
                 )
             }
-            if (index != count) Spacer(modifier = Modifier.width(4.dp))
+            Spacer(modifier = Modifier.width(4.dp))
         }
     }
 }
 
-@Preview(showSystemUi = true)
+@Preview(showBackground = true)
 @Composable
 internal fun StoriesDetailTimerPreview() {
     StoriesDetailTimer(
@@ -108,13 +104,13 @@ internal fun StoriesDetailTimerPreview() {
         data = StoriesDetailUiModel(
             id = "1",
             selected = 1,
-            event = StoriesDetailUiModel.StoriesDetailUiEvent.START,
+            event = START,
             imageContent = "",
             author = StoryAuthor.Buyer("", "", "")
         )
     ) { }
 }
 
-enum class StoriesDetailTimerEvent {
-    NEXT_DETAIL, NEXT_GROUP,
-}
+private const val TARGET_ANIMATION = 1F
+private const val INITIAL_ANIMATION = 0F
+private const val TIMER_DURATION = 7 * 1000

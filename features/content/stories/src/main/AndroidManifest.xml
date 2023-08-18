@@ -6,7 +6,7 @@
             android:name=".view.activity.StoriesActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/Stories.FullScreen">
+            android:theme="@style/Stories.Theme">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
