@@ -239,11 +239,15 @@ class StoriesDetailFragment @Inject constructor(
                             .show(childFragmentManager)
                     }
 
-                    StoriesUiEvent.OpenProduct -> StoriesProductBottomSheet.getOrCreateFragment(
-                        childFragmentManager,
-                        requireActivity().classLoader
-                    )
-                        .show(childFragmentManager)
+                    StoriesUiEvent.OpenProduct -> {
+                        if (groupId != viewModel.groupId) return@collectLatest
+
+                        StoriesProductBottomSheet.getOrCreateFragment(
+                            childFragmentManager,
+                            requireActivity().classLoader
+                        )
+                            .show(childFragmentManager)
+                    }
 
                     else -> {}
                 }

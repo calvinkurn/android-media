@@ -50,11 +50,11 @@ class StoriesViewModel @Inject constructor(
         )
     }
 
-    val groupId : String
+    val groupId: String
         get() = _storiesGroup.value.firstOrNull { story -> story.selected }?.id.orEmpty()
 
-    val storyId : String
-        get()  {
+    val storyId: String
+        get() {
             val currentGroup = _storiesGroup.value.firstOrNull { story -> story.selected }
             return currentGroup?.details?.get(currentGroup.selectedDetail)?.id.orEmpty()
         }
@@ -167,8 +167,8 @@ class StoriesViewModel @Inject constructor(
     private fun handleOpenKebab() {
         viewModelScope.launch {
             _uiEvent.emit(StoriesUiEvent.OpenKebab)
-            bottomSheetStatus.update {
-                bottomSheet -> bottomSheet.mapValues {
+            bottomSheetStatus.update { bottomSheet ->
+                bottomSheet.mapValues {
                     if (it.key == BottomSheetType.Kebab)
                         true
                     else it.value
@@ -178,11 +178,13 @@ class StoriesViewModel @Inject constructor(
     }
 
     private fun handleDismissSheet(bottomSheetType: BottomSheetType) {
-        bottomSheetStatus.update { bottomSheet -> bottomSheet.mapValues {
-            if (it.key == bottomSheetType)
-                false
-            else it.value
-        } }
+        bottomSheetStatus.update { bottomSheet ->
+            bottomSheet.mapValues {
+                if (it.key == bottomSheetType)
+                    false
+                else it.value
+            }
+        }
     }
 
     private fun handleShowDialogDelete() {
@@ -194,6 +196,13 @@ class StoriesViewModel @Inject constructor(
     private fun handleOpenProduct() {
         viewModelScope.launch {
             _uiEvent.emit(StoriesUiEvent.OpenProduct)
+            bottomSheetStatus.update { bottomSheet ->
+                bottomSheet.mapValues {
+                    if (it.key == BottomSheetType.Product)
+                        true
+                    else it.value
+                }
+            }
         }
     }
 

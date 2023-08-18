@@ -1,5 +1,6 @@
 package com.tokopedia.stories.bottomsheet
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,12 +9,22 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.stories.view.model.BottomSheetType
+import com.tokopedia.stories.view.viewmodel.StoriesViewModel
+import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import javax.inject.Inject
 
 /**
  * @author by astidhiyaa on 25/07/23
  */
-class StoriesProductBottomSheet : BottomSheetUnify() {
+class StoriesProductBottomSheet @Inject constructor(
+    private val viewModelFactory: ViewModelProvider.Factory,
+) : BottomSheetUnify() {
+
+    private val viewModel by activityViewModels<StoriesViewModel> { viewModelFactory }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,7 +66,13 @@ class StoriesProductBottomSheet : BottomSheetUnify() {
 
     override fun dismiss() {
         if (!isAdded) return
+        viewModel.submitAction(StoriesUiAction.DismissSheet(BottomSheetType.Product))
         super.dismiss()
+    }
+
+    override fun onCancel(dialog: DialogInterface) {
+        viewModel.submitAction(StoriesUiAction.DismissSheet(BottomSheetType.Product))
+        super.onCancel(dialog)
     }
 
     companion object {
