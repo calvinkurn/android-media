@@ -15,7 +15,7 @@ import com.tokopedia.order_management_common.util.RecyclerViewItemDivider
 import com.tokopedia.unifycomponents.toPx
 
 class BmgmAddOnSummaryViewHolder(
-    somDetailAddOnListener: BmgmAddOnViewHolder.Listener,
+    bmgmAddOnListener: BmgmAddOnViewHolder.Listener,
     private val binding: PartialBmgmAddOnSummaryBinding?,
     private val recyclerViewSharedPool: RecyclerView.RecycledViewPool
 ) {
@@ -24,7 +24,7 @@ class BmgmAddOnSummaryViewHolder(
         private const val ITEM_DECORATION_VERTICAL_MARGIN = 12
     }
 
-    private val typeFactory = AddOnAdapterFactory(somDetailAddOnListener)
+    private val typeFactory = AddOnAdapterFactory(bmgmAddOnListener)
     private val adapter = BaseAdapter(typeFactory)
 
     init {

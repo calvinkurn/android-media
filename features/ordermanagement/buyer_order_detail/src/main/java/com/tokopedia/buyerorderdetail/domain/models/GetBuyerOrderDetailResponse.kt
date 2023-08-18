@@ -529,8 +529,8 @@ data class GetBuyerOrderDetailResponse(
                     val tierDiscountAmountFormatted: String = ""
                 ) {
                     data class OrderDetail(
-                        @SerializedName("order_dtl_id")
-                        val orderDtlId: String = "0",
+                        @SerializedName("order_detail_id")
+                        val orderDetailId: String = "0",
                         @SerializedName("product_id")
                         val productId: String = "0",
                         @SerializedName("product_name")

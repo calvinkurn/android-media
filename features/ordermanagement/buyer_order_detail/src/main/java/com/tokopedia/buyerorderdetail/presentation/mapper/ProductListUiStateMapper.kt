@@ -804,7 +804,7 @@ object ProductListUiStateMapper {
     ): ProductBmgmSectionUiModel.ProductUiModel {
         return ProductBmgmSectionUiModel.ProductUiModel(
             orderId = orderId,
-            orderDetailId = product.orderDtlId,
+            orderDetailId = product.orderDetailId,
             productId = product.productId,
             productName = product.productName,
             price = product.price,
@@ -815,26 +815,28 @@ object ProductListUiStateMapper {
             category = product.category,
             thumbnailUrl = product.thumbnail,
             button = mapActionButton(product.button),
-            addOnSummaryUiModel = com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel(
-                totalPriceText = product.addonSummary?.totalPriceStr.orEmpty(),
-                addonsLogoUrl = addOnIcon,
-                addonsTitle = addOnLabel,
-                addonItemList = product.addonSummary?.addons?.map { addon ->
-                    val addOnNote = addon.metadata?.addOnNote
-                    com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel.AddonItemUiModel(
-                        priceText = addon.priceStr,
-                        quantity = addon.quantity,
-                        addonsId = addon.id,
-                        addOnsName = addon.name,
-                        type = addon.type,
-                        addOnsThumbnailUrl = addon.imageUrl,
-                        toStr = addOnNote?.to.orEmpty(),
-                        fromStr = addOnNote?.from.orEmpty(),
-                        message = addOnNote?.notes.orEmpty(),
-                        hasShop = true
-                    )
-                }.orEmpty(),
-            )
+            addOnSummaryUiModel = product.addonSummary?.let {
+                com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel(
+                    totalPriceText = it.totalPriceStr,
+                    addonsLogoUrl = addOnIcon,
+                    addonsTitle = addOnLabel,
+                    addonItemList = it.addons?.map { addon ->
+                        val addOnNote = addon.metadata?.addOnNote
+                        com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel.AddonItemUiModel(
+                            priceText = addon.priceStr,
+                            quantity = addon.quantity,
+                            addonsId = addon.id,
+                            addOnsName = addon.name,
+                            type = addon.type,
+                            addOnsThumbnailUrl = addon.imageUrl,
+                            toStr = addOnNote?.to.orEmpty(),
+                            fromStr = addOnNote?.from.orEmpty(),
+                            message = addOnNote?.notes.orEmpty(),
+                            hasShop = true
+                        )
+                    }.orEmpty(),
+                )
+            }
         )
     }
 

@@ -411,7 +411,7 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                     price_after_benefit
                     price_after_benefit_formatted
                     order_detail {
-                      order_dtl_id
+                      order_detail_id
                       product_id
                       product_name
                       thumbnail

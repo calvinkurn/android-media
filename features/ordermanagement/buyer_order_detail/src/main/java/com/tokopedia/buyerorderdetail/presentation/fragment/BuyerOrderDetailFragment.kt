@@ -75,6 +75,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
+import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnViewHolder
 import com.tokopedia.order_management_common.presentation.viewholder.BmgmSectionViewHolder
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -173,7 +174,8 @@ open class BuyerOrderDetailFragment :
             this,
             navigator,
             this,
-            this
+            this,
+            recyclerViewSharedPool
         )
     }
     protected open val adapter: BuyerOrderDetailAdapter by lazy {
@@ -188,6 +190,8 @@ open class BuyerOrderDetailFragment :
     private val remoteConfig: FirebaseRemoteConfigImpl by lazy {
         FirebaseRemoteConfigImpl(context)
     }
+
+    private val recyclerViewSharedPool = RecyclerView.RecycledViewPool()
 
     protected val digitalRecommendationData: DigitalRecommendationData
         get() = DigitalRecommendationData(
@@ -390,6 +394,7 @@ open class BuyerOrderDetailFragment :
         if (rvBuyerOrderDetail?.adapter != adapter) {
             rvBuyerOrderDetail?.adapter = adapter
         }
+        recyclerViewSharedPool.setMaxRecycledViews(BmgmAddOnViewHolder.RES_LAYOUT, BmgmAddOnViewHolder.MAX_RECYCLED_VIEWS)
     }
 
     private fun setupStickyActionButtons() {
@@ -960,5 +965,9 @@ open class BuyerOrderDetailFragment :
 
     override fun onBmgmItemClicked(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
         navigator.goToProductSnapshotPage(uiModel.orderId, uiModel.orderDetailId)
+    }
+
+    override fun onCopyAddOnDescription(label: String, description: CharSequence) {
+        //no op for bmgm add on because there is no function copy
     }
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.typefactory
 
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -73,7 +74,8 @@ open class BuyerOrderDetailTypeFactory(
     protected val productViewListener: PartialProductItemViewHolder.ProductViewListener,
     protected val navigator: BuyerOrderDetailNavigator,
     protected val buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener,
-    protected val orderResolutionListener: OrderResolutionViewHolder.OrderResolutionListener
+    protected val orderResolutionListener: OrderResolutionViewHolder.OrderResolutionListener,
+    private val recyclerViewSharedPool: RecyclerView.RecycledViewPool
 ) : BaseAdapterTypeFactory(),
     ScpRewardsMedalTouchPointWidgetTypeFactory, BuyMoreGetMoreTypeFactory
 {
@@ -123,7 +125,7 @@ open class BuyerOrderDetailTypeFactory(
             PofHeaderLabelViewHolder.LAYOUT -> PofHeaderLabelViewHolder(parent)
             PofRefundInfoViewHolder.LAYOUT -> PofRefundInfoViewHolder(parent, pofRefundInfoListener)
             ScpRewardsMedalTouchPointWidgetViewHolder.LAYOUT -> ScpRewardsMedalTouchPointWidgetViewHolder(parent, scpRewardsMedalTouchPointWidgetListener)
-            BmgmSectionViewHolder.LAYOUT -> BmgmSectionViewHolder(parent, bmgmListener)
+            BmgmSectionViewHolder.LAYOUT -> BmgmSectionViewHolder(parent, bmgmListener, recyclerViewSharedPool)
             else -> super.createViewHolder(parent, type)
         }
     }

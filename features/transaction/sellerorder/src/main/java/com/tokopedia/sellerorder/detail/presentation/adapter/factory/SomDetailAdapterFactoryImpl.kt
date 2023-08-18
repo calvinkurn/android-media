@@ -97,7 +97,7 @@ class SomDetailAdapterFactoryImpl(
                 SomDetailPofDataViewHolder(parent)
             }
             BmgmSectionViewHolder.LAYOUT -> {
-                BmgmSectionViewHolder(parent, actionListener)
+                BmgmSectionViewHolder(parent, actionListener, recyclerViewSharedPool)
             }
             else -> super.createViewHolder(parent, type)
         }
@@ -114,7 +114,7 @@ class SomDetailAdapterFactoryImpl(
         fun onCopiedInvoice(invoice: String, str: String)
         fun onClickProduct(orderDetailId: Long)
         fun onCopiedAddress(address: String, str: String)
-        fun onCopyAddOnDescription(label: String, description: CharSequence)
+        override fun onCopyAddOnDescription(label: String, description: CharSequence)
         fun onResoClicked(redirectPath: String)
     }
 }

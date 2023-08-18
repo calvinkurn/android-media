@@ -2,6 +2,7 @@ package com.tokopedia.order_management_common.presentation.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.order_management_common.R
@@ -14,6 +15,7 @@ import com.tokopedia.unifycomponents.Toaster
 class BmgmSectionViewHolder(
     view: View?,
     private val listener: Listener,
+    private val recyclerViewSharedPool: RecyclerView.RecycledViewPool
 ) : AbstractViewHolder<ProductBmgmSectionUiModel>(view),
     ProductBmgmItemAdapter.ViewHolder.Listener {
 
@@ -21,7 +23,7 @@ class BmgmSectionViewHolder(
         val LAYOUT = R.layout.item_order_product_bmgm_section
     }
 
-    private val bmgmItemAdapter = ProductBmgmItemAdapter(this)
+    private val bmgmItemAdapter = ProductBmgmItemAdapter(this, recyclerViewSharedPool)
 
     private val binding = ItemOrderProductBmgmSectionBinding.bind(itemView)
 
@@ -60,6 +62,10 @@ class BmgmSectionViewHolder(
                 }
             }
         }
+    }
+
+    override fun onCopyAddOnDescription(label: String, description: CharSequence) {
+        listener.onCopyAddOnDescription(label, description)
     }
 
     override fun onBmgmItemClicked(item: ProductBmgmSectionUiModel.ProductUiModel) {
@@ -104,6 +110,7 @@ class BmgmSectionViewHolder(
     }
 
     interface Listener {
+        fun onCopyAddOnDescription(label: String, description: CharSequence)
         fun onBmgmItemClicked(uiModel: ProductBmgmSectionUiModel.ProductUiModel)
     }
 }

@@ -8,14 +8,14 @@ import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUi
 import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnViewHolder
 
 class AddOnAdapterFactory(
-    private val somDetailAddOnListener: BmgmAddOnViewHolder.Listener
+    private val bmgmAddOnListener: BmgmAddOnViewHolder.Listener
 ): BaseAdapterTypeFactory() {
 
     fun type(addOnUiModel: AddOnSummaryUiModel.AddonItemUiModel): Int = BmgmAddOnViewHolder.RES_LAYOUT
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
-            BmgmAddOnViewHolder.RES_LAYOUT -> BmgmAddOnViewHolder(parent, somDetailAddOnListener)
+            BmgmAddOnViewHolder.RES_LAYOUT -> BmgmAddOnViewHolder(parent, bmgmAddOnListener)
             else -> super.createViewHolder(parent, type)
         }
     }
