@@ -133,9 +133,7 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
         hasDataElements: Boolean
     ) {
         with(binding.viewProductConsentWidget) {
-            if (hasDataElements) {
-                // TODO: [Misael] Handle consent widget
-            }
+            hideWhenAlreadySubmittedConsent = hasDataElements
             setOnCheckedChangeListener { isChecked ->
                 isCheckoutButtonEnabled = isChecked
             }
