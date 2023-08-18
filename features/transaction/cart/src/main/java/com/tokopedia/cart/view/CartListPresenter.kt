@@ -2159,7 +2159,7 @@ class CartListPresenter @Inject constructor(
                             it.productId.toLong(),
                             it.isFreeShipping,
                             it.isFreeShippingExtra,
-                            it.shopHolderData.shopId
+                            it.shopHolderData.shopId.toLongOrZero()
                         )
                     }
                 }
