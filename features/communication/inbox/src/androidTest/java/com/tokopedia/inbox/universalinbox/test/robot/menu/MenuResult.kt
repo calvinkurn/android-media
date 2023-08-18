@@ -18,16 +18,17 @@ import com.tokopedia.inbox.universalinbox.stub.common.withRecyclerView
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
 import org.hamcrest.CoreMatchers.not
+import com.tokopedia.iconnotification.R as iconnotificationR
 
 object MenuResult {
 
     fun assertNotificationCounter(counterText: String) {
-        onView(withId(com.tokopedia.iconnotification.R.id.notification))
+        onView(withId(iconnotificationR.id.notification))
             .check(matches(withText(counterText)))
     }
 
     fun assertNotificationCounterGone() {
-        onView(withId(com.tokopedia.iconnotification.R.id.notification))
+        onView(withId(iconnotificationR.id.notification))
             .check(matches(not(isDisplayed())))
     }
 
