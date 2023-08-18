@@ -117,6 +117,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.atcVariant)
     implementation projectOrAar(rootProject.ext.features.shopAdmin)
 
+    // Content
+    implementation projectOrAar(rootProject.ext.features.stories)
+
     // Order Management
     implementation projectOrAar(rootProject.ext.features.ordermanagementhistory)
 
