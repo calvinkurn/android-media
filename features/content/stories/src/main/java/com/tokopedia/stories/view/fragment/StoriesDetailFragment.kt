@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -21,8 +22,10 @@ import com.tokopedia.stories.uimodel.StoryAuthor
 import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.adapter.StoriesGroupAdapter
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
+import com.tokopedia.stories.view.model.BottomSheetType
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
 import com.tokopedia.stories.view.model.StoriesGroupUiModel
+import com.tokopedia.stories.view.model.isAnyShown
 import com.tokopedia.stories.view.utils.STORIES_GROUP_ID
 import com.tokopedia.stories.view.utils.TouchEventStories
 import com.tokopedia.stories.view.utils.onTouchEventStories
@@ -65,6 +68,19 @@ class StoriesDetailFragment @Inject constructor(
         return TAG
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        childFragmentManager.addFragmentOnAttachListener { _, fragment ->
+            when (fragment) {
+                is StoriesThreeDotsBottomSheet -> fragment.setListener(object : StoriesThreeDotsBottomSheet.Listener {
+                    override fun onDismissEvent(view: StoriesThreeDotsBottomSheet) {
+                        viewModelAction(StoriesUiAction.DismissSheet(BottomSheetType.Kebab))
+                    }
+                })
+            }
+        }
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -90,6 +106,7 @@ class StoriesDetailFragment @Inject constructor(
             viewModel.uiState.withCache().collectLatest { (prevState, state) ->
                 renderStoriesGroup(prevState?.storiesGroup, state.storiesGroup)
                 renderStoriesDetail(prevState?.storiesDetail, state.storiesDetail)
+                observeBottomSheetStatus(prevState?.bottomSheetStatus, state.bottomSheetStatus)
             }
         }
     }
@@ -111,6 +128,14 @@ class StoriesDetailFragment @Inject constructor(
         storiesDetailsTimer(state)
         binding.ivStoriesDetailContent.setImageUrl(state.imageContent)
         renderAuthor(state)
+    }
+
+    private fun observeBottomSheetStatus(
+        prevState: Map<BottomSheetType, Boolean>?,
+        state: Map<BottomSheetType, Boolean>?,
+    ) {
+        if (prevState == state) return
+        if (state?.isAnyShown.orFalse()) pauseStories()
     }
 
     private fun storiesDetailsTimer(state: StoriesDetailUiModel) {

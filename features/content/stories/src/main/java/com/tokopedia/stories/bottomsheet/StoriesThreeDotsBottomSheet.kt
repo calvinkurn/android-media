@@ -1,5 +1,6 @@
 package com.tokopedia.stories.bottomsheet
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +21,8 @@ import com.tokopedia.content.common.R as commonR
  * @author by astidhiyaa on 08/08/23
  */
 class StoriesThreeDotsBottomSheet : BottomSheetUnify() {
+
+    private var mListener: Listener? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -63,7 +66,26 @@ class StoriesThreeDotsBottomSheet : BottomSheetUnify() {
 
     override fun dismiss() {
         if (!isAdded) return
+        mListener?.onDismissEvent(this)
         super.dismiss()
+    }
+
+    override fun onCancel(dialog: DialogInterface) {
+        mListener?.onDismissEvent(this)
+        super.onCancel(dialog)
+    }
+
+    override fun onDestroyView() {
+        mListener = null
+        super.onDestroyView()
+    }
+
+    fun setListener(listener: Listener) {
+        mListener = listener
+    }
+
+    interface Listener {
+        fun onDismissEvent(view: StoriesThreeDotsBottomSheet)
     }
 
     companion object {
