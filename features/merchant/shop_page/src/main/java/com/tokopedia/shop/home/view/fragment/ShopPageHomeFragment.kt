@@ -148,7 +148,6 @@ import com.tokopedia.shop.home.WidgetName.PERSO_PRODUCT_COMPARISON
 import com.tokopedia.shop.home.WidgetName.PLAY_CAROUSEL_WIDGET
 import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.WidgetName.VOUCHER_STATIC
-import com.tokopedia.shop.home.WidgetType
 import com.tokopedia.shop.home.WidgetType.DYNAMIC
 import com.tokopedia.shop.home.WidgetType.PERSONALIZATION
 import com.tokopedia.shop.home.WidgetType.PROMO
@@ -164,6 +163,7 @@ import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerProd
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductListSellerEmptyListener
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePersoProductComparisonViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeV4TerlarisViewHolder
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeFlashSaleTncBottomSheet
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeNplCampaignTncBottomSheet
 import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
@@ -258,7 +258,9 @@ open class ShopPageHomeFragment :
     ShopHomeDisplayBannerProductHotspotViewHolder.Listener,
     ShopHomeShowcaseNavigationListener,
     ShopHomeShowcaseNavigationDependencyProvider,
-    ShopHomeProductCarouselTabDataProvider, ShopHomeProductCarouselListener {
+    ShopHomeV4TerlarisViewHolder.ShopHomeV4TerlarisViewHolderListener,
+    ShopHomeProductCarouselTabDataProvider,
+    ShopHomeProductCarouselListener {
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -417,6 +419,7 @@ open class ShopPageHomeFragment :
             shopHomeDisplayBannerProductHotspotListener = this,
             shopHomeShowcaseNavigationListener = this,
             shopHomeShowcaseNavigationDependencyProvider = this,
+            shopHomeV4TerlarisViewHolderListener = this,
             shopHomeProductCarouselListener = this,
             shopHomeProductCarouselTabDataProvider = this
         )
@@ -4996,6 +4999,11 @@ open class ShopPageHomeFragment :
 
     override val currentFragment: Fragment
         get() = this
+
+    override fun onProductClick(productId: String) {
+        // TODO: Put tracker here
+        RouteManager.route(context, ApplinkConst.PRODUCT_INFO, productId)
+    }
 
     override fun onProductCarouselMainBannerClick(mainBanner: ShopHomeProductCarouselUiModel.Tab.ComponentList.Data) {
         try {

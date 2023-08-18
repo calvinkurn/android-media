@@ -47,6 +47,7 @@ object WidgetName {
     const val PRODUCT_HIGHLIGHT = "product_highlight"
     const val VOUCHER = "voucher"
     const val SHOWCASE_NAVIGATION_BANNER = "showcase_navigation_banner"
+    const val TERLARIS = "terlaris"
     const val BANNER_PRODUCT_GROUP = "banner_product_group"
 
     // showcase widget name list
