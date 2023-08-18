@@ -37,6 +37,9 @@ class ShopHomeProductCarouselViewPagerViewHolder(
 
     private val viewBinding: ItemShopHomeProductCarouselViewpagerBinding? by viewBinding()
 
+    init {
+        disableTabSwipeBehavior()
+    }
 
     override fun bind(model: ShopHomeProductCarouselUiModel) {
         setupTitle(model)
@@ -74,19 +77,7 @@ class ShopHomeProductCarouselViewPagerViewHolder(
     }
 
     private fun setupTabs(tabs: List<ShopHomeProductCarouselUiModel.Tab>) {
-        val fragments = createFragments(
-            tabs = tabs,
-            onProductHorizontalScrollChange = { isReachedLastItem ->
-                if (isReachedLastItem) {
-                    //Allow viewpager to switch to next tab
-                    viewBinding?.viewPager?.isUserInputEnabled = true
-                } else {
-                    //Prevent viewpager from switching to next tab
-                    viewBinding?.viewPager?.isUserInputEnabled = false
-                }
-                println("RV: setupTabs callback. isReachedLastItem = $isReachedLastItem")
-            }
-        )
+        val fragments = createFragments(tabs)
         val pagerAdapter = TabPagerAdapter(provider.fragment, fragments)
 
         viewBinding?.run {
@@ -133,8 +124,7 @@ class ShopHomeProductCarouselViewPagerViewHolder(
     }
 
     private fun createFragments(
-        tabs: List<ShopHomeProductCarouselUiModel.Tab>,
-        onProductHorizontalScrollChange: (Boolean) -> Unit
+        tabs: List<ShopHomeProductCarouselUiModel.Tab>
     ): List<Pair<String, Fragment>> {
         val pages = mutableListOf<Pair<String, Fragment>>()
 
@@ -143,10 +133,6 @@ class ShopHomeProductCarouselViewPagerViewHolder(
             fragment.setOnMainBannerClick { mainBanner -> listener.onProductCarouselMainBannerClick(mainBanner) }
             fragment.setOnProductClick { selectedShowcase -> listener.onProductCarouselProductClick(selectedShowcase) }
             fragment.setOnVerticalBannerClick { verticalBanner -> listener.onProductCarouselVerticalBannerClick(verticalBanner) }
-            fragment.setOnProductHorizontalScrollChange { isReachedLastItem ->
-                onProductHorizontalScrollChange(isReachedLastItem)
-                println("RV: ShopHomeProductCarouselViewPagerViewHolder callback. isReachedLastItem = $isReachedLastItem")
-            }
 
             val displayedTabName = currentTab.label
             pages.add(Pair(displayedTabName, fragment))
@@ -155,4 +141,7 @@ class ShopHomeProductCarouselViewPagerViewHolder(
         return pages
     }
 
+    private fun disableTabSwipeBehavior() {
+        viewBinding?.viewPager?.isUserInputEnabled = false
+    }
 }
