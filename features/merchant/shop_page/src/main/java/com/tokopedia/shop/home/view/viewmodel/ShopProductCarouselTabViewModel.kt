@@ -14,9 +14,6 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerI
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerVerticalBanner
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel.Tab.ComponentList.ComponentType
 import com.tokopedia.shop.product.data.model.ShopFeaturedProductParams
@@ -25,6 +22,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel.Tab.ComponentList.Data.LinkType
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel.Tab.ComponentList.Data.BannerType
+import kotlinx.coroutines.delay
 
 class ShopProductCarouselTabViewModel @Inject constructor(
     private val dispatcherProvider: CoroutineDispatchers,
@@ -40,15 +38,23 @@ class ShopProductCarouselTabViewModel @Inject constructor(
         private const val LABEL_TITLE_PRODUCT_SOLD_COUNT = "Terjual"
     }
 
-    private val _carouselWidgets = MutableLiveData<Result<List<ShopHomeProductCarouselVerticalBannerItemType>>>()
-    val carouselWidgets: LiveData<Result<List<ShopHomeProductCarouselVerticalBannerItemType>>>
+    private val _carouselWidgets = MutableLiveData<UiState>()
+    val carouselWidgets: LiveData<UiState>
         get() = _carouselWidgets
+
+    sealed class UiState {
+        object Loading: UiState()
+        data class Success(val data: List<ShopHomeProductCarouselVerticalBannerItemType>): UiState()
+        data class Error(val error: Throwable): UiState()
+    }
 
     fun getCarouselWidgets(
         widgets: List<ShopHomeProductCarouselUiModel.Tab.ComponentList>,
         shopId: String,
         userAddress: LocalCacheModel
     ) {
+        _carouselWidgets.postValue(UiState.Loading)
+
         val firstProductWidget = getProductWidgets(widgets) ?: return
 
         launchCatchError(
@@ -64,10 +70,11 @@ class ShopProductCarouselTabViewModel @Inject constructor(
                     products
                 }
 
-                _carouselWidgets.postValue(Success(carouselWidgets))
+                //delay(15_000)
+                _carouselWidgets.postValue(UiState.Success(carouselWidgets))
             } ,
             onError = { throwable ->
-                _carouselWidgets.postValue(Fail(throwable))
+                _carouselWidgets.postValue(UiState.Error(throwable))
             }
         )
     }

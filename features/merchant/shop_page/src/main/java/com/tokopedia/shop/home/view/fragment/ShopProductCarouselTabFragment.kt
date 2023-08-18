@@ -16,14 +16,13 @@ import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.databinding.FragmentShopProductCarouselTabBinding
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
-import com.tokopedia.shop.home.view.adapter.ShopHomeProductCarouselAdapter
+import com.tokopedia.shop.home.view.adapter.ShopHomeProductCarouselTabAdapter
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselProductCard
+import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselShimmer
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerItemType
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerVerticalBanner
 import com.tokopedia.shop.home.view.viewmodel.ShopProductCarouselTabViewModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -68,7 +67,7 @@ class ShopProductCarouselTabFragment : BaseDaggerFragment() {
     private var onVerticalBannerClick : (ShopHomeProductCarouselVerticalBannerVerticalBanner) -> Unit = {}
 
     private var binding by autoClearedNullable<FragmentShopProductCarouselTabBinding>()
-    private val productAdapter = ShopHomeProductCarouselAdapter()
+    private val productAdapter = ShopHomeProductCarouselTabAdapter()
 
     override fun getScreenName(): String = ShopProductCarouselTabFragment::class.java.canonicalName.orEmpty()
 
@@ -95,18 +94,18 @@ class ShopProductCarouselTabFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeCarouselsWidgets()
-        setupMainBanner()
         setupRecyclerView()
         getCarouselWidgets()
     }
 
-    private fun setupMainBanner() {
+    private fun showMainBanner() {
         val singleBanners = widgets.firstOrNull { widget -> widget.componentType == ComponentType.DISPLAY_SINGLE_COLUMN }
 
         val hasMainBanner = singleBanners != null
         if (hasMainBanner) {
             val mainBanner = singleBanners?.data?.getOrNull(0)
             val mainBannerImageUrl = mainBanner?.imageUrl.orEmpty()
+
             if (mainBannerImageUrl.isNotEmpty()) {
                 binding?.imgMainBanner?.visible()
                 binding?.imgMainBanner?.loadImage(mainBannerImageUrl)
@@ -114,13 +113,13 @@ class ShopProductCarouselTabFragment : BaseDaggerFragment() {
                     onMainBannerClick(mainBanner ?: return@setOnClickListener)
                 }
             }
+
         } else {
             binding?.imgMainBanner?.gone()
         }
     }
 
     private fun setupRecyclerView() {
-        
         binding?.recyclerView?.apply {
             adapter = productAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -137,8 +136,16 @@ class ShopProductCarouselTabFragment : BaseDaggerFragment() {
     private fun observeCarouselsWidgets() {
         viewModel.carouselWidgets.observe(viewLifecycleOwner) { result ->
             when(result) {
-                is Success -> renderCarouselWidgets(result.data)
-                is Fail -> {}
+                ShopProductCarouselTabViewModel.UiState.Loading -> {
+                    productAdapter.submit(listOf(ShopHomeProductCarouselShimmer))
+                }
+                is ShopProductCarouselTabViewModel.UiState.Success -> {
+                    showProductCarousel(result.data)
+                    showMainBanner()
+                }
+                is ShopProductCarouselTabViewModel.UiState.Error ->{
+
+                }
             }
         }
     }
@@ -149,7 +156,7 @@ class ShopProductCarouselTabFragment : BaseDaggerFragment() {
         viewModel.getCarouselWidgets(widgets, shopId, userAddress)
     }
 
-    private fun renderCarouselWidgets(widgets: List<ShopHomeProductCarouselVerticalBannerItemType>) {
+    private fun showProductCarousel(widgets: List<ShopHomeProductCarouselVerticalBannerItemType>) {
         productAdapter.submit(widgets)
     }
 

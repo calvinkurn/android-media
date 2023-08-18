@@ -12,36 +12,59 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopHomeProductCarouselProductInfoCardBinding
+import com.tokopedia.shop.databinding.ItemShopHomeProductCarouselShimmerBinding
 import com.tokopedia.shop.databinding.ItemShopHomeProductCarouselVerticalBannerCardBinding
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselProductCard
+import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselShimmer
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerItemType
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerVerticalBanner
 
-class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ShopHomeProductCarouselTabAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var items = mutableListOf<ShopHomeProductCarouselVerticalBannerItemType>()
     private var onProductClick: (ShopHomeProductCarouselProductCard) -> Unit = {}
     private var onVerticalBannerClick: (ShopHomeProductCarouselVerticalBannerVerticalBanner) -> Unit = {}
 
     companion object {
+        private const val VIEW_TYPE_SHIMMER = 0
         private const val VIEW_TYPE_VERTICAL_BANNER = 1
         private const val VIEW_TYPE_PRODUCT = 2
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return if (viewType == VIEW_TYPE_VERTICAL_BANNER) {
-            val binding = ItemShopHomeProductCarouselVerticalBannerCardBinding.inflate(
+        return when(viewType) {
+            VIEW_TYPE_VERTICAL_BANNER -> {
+                val binding = ItemShopHomeProductCarouselVerticalBannerCardBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
-            VerticalBannerViewHolder(binding)
-        } else {
-            val binding = ItemShopHomeProductCarouselProductInfoCardBinding.inflate(
+                VerticalBannerViewHolder(binding)
+            }
+            VIEW_TYPE_PRODUCT -> {
+                val binding = ItemShopHomeProductCarouselProductInfoCardBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
-            ProductViewHolder(binding)
+                ProductViewHolder(binding)
+            }
+            VIEW_TYPE_SHIMMER -> {
+                val binding = ItemShopHomeProductCarouselShimmerBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+                ShimmerViewHolder(binding)
+            }
+
+            else -> {
+                val binding = ItemShopHomeProductCarouselProductInfoCardBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+                ProductViewHolder(binding)
+            }
         }
     }
 
@@ -50,21 +73,30 @@ class ShopHomeProductCarouselAdapter : RecyclerView.Adapter<RecyclerView.ViewHol
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = items[position]
-        if (item is ShopHomeProductCarouselVerticalBannerVerticalBanner) {
-            (holder as VerticalBannerViewHolder).bind(item)
-        } else {
-            (holder as ProductViewHolder).bind(item)
+        when (item) {
+            ShopHomeProductCarouselShimmer -> (holder as ShimmerViewHolder).bind()
+            is ShopHomeProductCarouselProductCard -> (holder as ProductViewHolder).bind(item)
+            is ShopHomeProductCarouselVerticalBannerVerticalBanner -> (holder as VerticalBannerViewHolder).bind(item)
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         val item = items[position]
 
-        if (item is ShopHomeProductCarouselVerticalBannerVerticalBanner) {
-            return VIEW_TYPE_VERTICAL_BANNER
+        return when(item) {
+            ShopHomeProductCarouselShimmer -> VIEW_TYPE_SHIMMER
+            is ShopHomeProductCarouselVerticalBannerVerticalBanner -> VIEW_TYPE_VERTICAL_BANNER
+            is ShopHomeProductCarouselProductCard -> VIEW_TYPE_PRODUCT
         }
+    }
 
-        return VIEW_TYPE_PRODUCT
+    inner class ShimmerViewHolder(
+        private val binding: ItemShopHomeProductCarouselShimmerBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bind() {
+
+        }
     }
 
     inner class ProductViewHolder(
