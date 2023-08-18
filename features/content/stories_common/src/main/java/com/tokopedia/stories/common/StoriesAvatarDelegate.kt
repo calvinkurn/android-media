@@ -5,6 +5,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.play_common.lifecycle.AbstractLifecycleBoundDelegate
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
+import com.tokopedia.stories.common.domain.StoriesKey
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 

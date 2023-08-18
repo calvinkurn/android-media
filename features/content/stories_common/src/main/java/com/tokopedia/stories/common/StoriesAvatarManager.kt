@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.stories.common.di.DaggerStoriesAvatarComponent
 import com.tokopedia.stories.common.di.StoriesAvatarComponent
+import com.tokopedia.stories.common.domain.StoriesKey
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest

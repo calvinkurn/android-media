@@ -3,6 +3,7 @@ package com.tokopedia.stories.common
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.stories.common.databinding.ActivityStoriesAvatarSampleBinding
+import com.tokopedia.stories.common.domain.StoriesKey
 
 /**
  * Created by kenny.hadisaputra on 24/07/23

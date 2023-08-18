@@ -297,7 +297,7 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.stories.common.StoriesAvatarManager
-import com.tokopedia.stories.common.StoriesKey
+import com.tokopedia.stories.common.domain.StoriesKey
 import com.tokopedia.stories.common.storiesManager
 import com.tokopedia.topads.detail_sheet.TopAdsDetailSheet
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -324,7 +324,6 @@ import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
-import java.lang.ref.WeakReference
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject

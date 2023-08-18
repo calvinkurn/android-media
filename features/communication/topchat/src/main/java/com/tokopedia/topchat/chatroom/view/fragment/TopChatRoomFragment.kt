@@ -95,7 +95,7 @@ import com.tokopedia.reputation.common.constant.ReputationCommonConstants
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.stories.common.StoriesAvatarManager
-import com.tokopedia.stories.common.StoriesKey
+import com.tokopedia.stories.common.domain.StoriesKey
 import com.tokopedia.stories.common.storiesManager
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.data.ImageUploadServiceModel

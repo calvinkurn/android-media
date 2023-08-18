@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.stories.common.domain.ShopStoriesState
 import com.tokopedia.stories.common.domain.StoriesAvatarRepository
+import com.tokopedia.stories.common.domain.StoriesKey
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject

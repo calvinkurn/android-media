@@ -54,6 +54,7 @@ dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
 
     implementation rootProject.ext.miscDependencies.dataStorePreferences
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
@@ -63,6 +64,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.nestPrinciples
     implementation rootProject.ext.unifyDependencies.nestComponents
+
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 }
 
 project.ext {

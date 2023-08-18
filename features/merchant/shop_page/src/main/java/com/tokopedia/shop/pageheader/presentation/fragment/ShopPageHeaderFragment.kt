@@ -203,7 +203,7 @@ import com.tokopedia.shop_widget.mvc_locked_to_product.util.MvcLockedToProductUt
 import com.tokopedia.shop_widget.note.view.bottomsheet.ShopNoteBottomSheet
 import com.tokopedia.stories.common.OneTimeAnimationStrategy
 import com.tokopedia.stories.common.StoriesAvatarManager
-import com.tokopedia.stories.common.StoriesKey
+import com.tokopedia.stories.common.domain.StoriesKey
 import com.tokopedia.stories.common.storiesManager
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.*

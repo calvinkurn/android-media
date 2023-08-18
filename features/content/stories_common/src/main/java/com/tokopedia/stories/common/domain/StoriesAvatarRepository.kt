@@ -1,7 +1,5 @@
 package com.tokopedia.stories.common.domain
 
-import com.tokopedia.stories.common.StoriesKey
-
 /**
  * Created by kenny.hadisaputra on 27/07/23
  */
