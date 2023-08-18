@@ -1,6 +1,6 @@
 package com.tokopedia.feedcomponent.domain.mapper
 
-import com.tokopedia.feed.component.product.FeedTaggedProductUiModel
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 
@@ -11,12 +11,12 @@ object ProductMapper {
     fun transform(
         product: FeedXProduct,
         campaign: FeedXCampaign,
-        sourceType: FeedTaggedProductUiModel.SourceType
-    ): FeedTaggedProductUiModel {
+        sourceType: ContentTaggedProductUiModel.SourceType
+    ): ContentTaggedProductUiModel {
         val newCampaign = mapCampaignProduct(product, campaign)
-        return FeedTaggedProductUiModel(
+        return ContentTaggedProductUiModel(
             id = product.id,
-            shop = FeedTaggedProductUiModel.Shop(
+            shop = ContentTaggedProductUiModel.Shop(
                 id = product.shopID,
                 name = product.shopName
             ),
@@ -24,64 +24,64 @@ object ProductMapper {
             title = product.name,
             imageUrl = product.coverURL,
             price = if (campaign.isUpcoming) {
-                FeedTaggedProductUiModel.CampaignPrice(
+                ContentTaggedProductUiModel.CampaignPrice(
                     originalFormattedPrice = product.priceFmt,
                     formattedPrice = product.priceMaskedFmt,
                     price = product.priceMasked.toDouble()
                 )
             } else if (product.isDiscount) {
-                FeedTaggedProductUiModel.DiscountedPrice(
+                ContentTaggedProductUiModel.DiscountedPrice(
                     discount = product.discount,
                     originalFormattedPrice = product.priceOriginalFmt,
                     formattedPrice = product.priceDiscountFmt,
                     price = product.priceDiscount.toDouble()
                 )
             } else {
-                FeedTaggedProductUiModel.NormalPrice(
+                ContentTaggedProductUiModel.NormalPrice(
                     formattedPrice = product.priceFmt,
                     price = product.price.toDouble()
                 )
             },
             campaign = newCampaign,
-            affiliate = FeedTaggedProductUiModel.Affiliate(
+            affiliate = ContentTaggedProductUiModel.Affiliate(
                 id = product.affiliate.id,
                 channel = product.affiliate.channel
             ),
             parentID = product.parentID,
             showGlobalVariant = product.hasVariant && product.isParent,
-            stock = if (product.isAvailable || sourceType == FeedTaggedProductUiModel.SourceType.NonOrganic)
-                FeedTaggedProductUiModel.Stock.Available else FeedTaggedProductUiModel.Stock.OutOfStock
+            stock = if (product.isAvailable || sourceType == ContentTaggedProductUiModel.SourceType.NonOrganic)
+                ContentTaggedProductUiModel.Stock.Available else ContentTaggedProductUiModel.Stock.OutOfStock
         )
     }
 
     private fun mapCampaignProduct(
         product: FeedXProduct,
         campaign: FeedXCampaign
-    ): FeedTaggedProductUiModel.Campaign {
+    ): ContentTaggedProductUiModel.Campaign {
         val status = when (campaign.status) {
             "upcoming" -> {
-                FeedTaggedProductUiModel.CampaignStatus.Upcoming
+                ContentTaggedProductUiModel.CampaignStatus.Upcoming
             }
             "ongoing" -> {
-                FeedTaggedProductUiModel.CampaignStatus.Ongoing(
+                ContentTaggedProductUiModel.CampaignStatus.Ongoing(
                     product.stockWording,
                     product.stockSoldPercentage
                 )
             }
             else -> {
-                FeedTaggedProductUiModel.CampaignStatus.Unknown
+                ContentTaggedProductUiModel.CampaignStatus.Unknown
             }
         }
         val type = when (campaign.name) {
             "asgc_flash_sale_toko", "Rilisan Spesial" -> {
-                FeedTaggedProductUiModel.CampaignType.FlashSaleToko
+                ContentTaggedProductUiModel.CampaignType.FlashSaleToko
             }
             "asgc_rilisan_spesial", "Flash Sale Toko" -> {
-                FeedTaggedProductUiModel.CampaignType.RilisanSpecial
+                ContentTaggedProductUiModel.CampaignType.RilisanSpecial
             }
-            else -> FeedTaggedProductUiModel.CampaignType.NoCampaign
+            else -> ContentTaggedProductUiModel.CampaignType.NoCampaign
         }
-        return FeedTaggedProductUiModel.Campaign(
+        return ContentTaggedProductUiModel.Campaign(
             status = status,
             type = type,
             isExclusiveForMember = campaign.isRSFollowersRestrictionOn

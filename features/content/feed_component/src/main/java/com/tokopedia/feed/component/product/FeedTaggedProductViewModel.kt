@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.feedcomponent.domain.mapper.ProductMapper
 import com.tokopedia.feedcomponent.domain.usecase.FeedXGetActivityProductsUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -22,20 +23,20 @@ class FeedTaggedProductViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
-    private val _feedTagProductList = MutableLiveData<Result<List<FeedTaggedProductUiModel>>>()
-    val feedTagProductList: LiveData<Result<List<FeedTaggedProductUiModel>>>
+    private val _feedTagProductList = MutableLiveData<Result<List<ContentTaggedProductUiModel>>>()
+    val feedTagProductList: LiveData<Result<List<ContentTaggedProductUiModel>>>
         get() = _feedTagProductList
 
     var shopId = ""
     private var cursor = ""
     private var prevActivityId = ""
 
-    fun fetchFeedProduct(activityId: String, products: List<FeedTaggedProductUiModel>, sourceType: FeedTaggedProductUiModel.SourceType) {
+    fun fetchFeedProduct(activityId: String, products: List<ContentTaggedProductUiModel>, sourceType: ContentTaggedProductUiModel.SourceType) {
         viewModelScope.launch {
             try {
                 if (activityId != prevActivityId) cursor = ""
 
-                val currentList: List<FeedTaggedProductUiModel> = when {
+                val currentList: List<ContentTaggedProductUiModel> = when {
                     products.isNotEmpty() -> products
                     _feedTagProductList.value is Success && activityId == prevActivityId -> (_feedTagProductList.value as Success).data
                     else -> emptyList()

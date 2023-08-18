@@ -1,15 +1,12 @@
 package com.tokopedia.stories.view.viewmodel.action
 
 import android.os.Bundle
+import com.tokopedia.stories.view.model.BottomSheetType
 
 sealed interface StoriesUiAction {
 
-    data class SetInitialData(val data: Bundle?): StoriesUiAction
-    data class SelectGroup(val selectedGroup: Int): StoriesUiAction
-
-    object NextGroup: StoriesUiAction
-
-    object PreviousGroup: StoriesUiAction
+    data class SetArgumentsData(val data: Bundle?): StoriesUiAction
+    data class SetGroupMainData(val selectedGroup: Int): StoriesUiAction
 
     object NextDetail: StoriesUiAction
 
@@ -22,4 +19,9 @@ sealed interface StoriesUiAction {
     object OpenKebabMenu : StoriesUiAction
 
     object TapSharing : StoriesUiAction
+    data class DismissSheet(val type: BottomSheetType) : StoriesUiAction
+
+    object ShowDeleteDialog : StoriesUiAction
+
+    object OpenProduct : StoriesUiAction
 }

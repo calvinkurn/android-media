@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.feedcomponent.R
 
 /**
@@ -11,32 +12,32 @@ import com.tokopedia.feedcomponent.R
  */
 class FeedTaggedProductBottomSheetAdapter(
     listener: FeedTaggedProductBottomSheetViewHolder.Listener
-): BaseDiffUtilAdapter<FeedTaggedProductUiModel>(isFlexibleType = true) {
+): BaseDiffUtilAdapter<ContentTaggedProductUiModel>(isFlexibleType = true) {
 
     init {
         delegatesManager.addDelegate(Delegate(listener))
     }
 
     override fun areItemsTheSame(
-        oldItem: FeedTaggedProductUiModel,
-        newItem: FeedTaggedProductUiModel
+        oldItem: ContentTaggedProductUiModel,
+        newItem: ContentTaggedProductUiModel
     ): Boolean {
         return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(
-        oldItem: FeedTaggedProductUiModel,
-        newItem: FeedTaggedProductUiModel
+        oldItem: ContentTaggedProductUiModel,
+        newItem: ContentTaggedProductUiModel
     ): Boolean {
         return oldItem == newItem
     }
 
     class Delegate(
         private val listener: FeedTaggedProductBottomSheetViewHolder.Listener
-    ): TypedAdapterDelegate<FeedTaggedProductUiModel, FeedTaggedProductUiModel, FeedTaggedProductBottomSheetViewHolder>(R.layout.item_feed_tagged_product) {
+    ): TypedAdapterDelegate<ContentTaggedProductUiModel, ContentTaggedProductUiModel, FeedTaggedProductBottomSheetViewHolder>(R.layout.item_feed_tagged_product) {
 
         override fun onBindViewHolder(
-            item: FeedTaggedProductUiModel,
+            item: ContentTaggedProductUiModel,
             holder: FeedTaggedProductBottomSheetViewHolder
         ) {
             holder.bind(item)

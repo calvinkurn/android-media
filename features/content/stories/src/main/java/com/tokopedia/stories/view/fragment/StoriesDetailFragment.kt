@@ -11,26 +11,29 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showToast
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.stories.bottomsheet.StoriesProductBottomSheet
 import com.tokopedia.stories.bottomsheet.StoriesThreeDotsBottomSheet
 import com.tokopedia.stories.databinding.FragmentStoriesDetailBinding
+import com.tokopedia.stories.uimodel.StoryAuthor
 import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.adapter.StoriesGroupAdapter
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
-import com.tokopedia.stories.view.components.indicator.StoriesDetailTimerEvent.NEXT_DETAIL
-import com.tokopedia.stories.view.components.indicator.StoriesDetailTimerEvent.NEXT_GROUP
+import com.tokopedia.stories.view.model.BottomSheetType
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
 import com.tokopedia.stories.view.model.StoriesGroupUiModel
 import com.tokopedia.stories.view.utils.StoriesSharingComponent
+import com.tokopedia.stories.view.model.isAnyShown
+import com.tokopedia.stories.view.utils.STORIES_GROUP_ID
 import com.tokopedia.stories.view.utils.TouchEventStories
 import com.tokopedia.stories.view.utils.onTouchEventStories
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.NextDetail
-import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.NextGroup
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.PauseStories
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.PreviousDetail
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.ResumeStories
@@ -51,7 +54,7 @@ class StoriesDetailFragment @Inject constructor(
     private val mAdapter: StoriesGroupAdapter by lazyThreadSafetyNone {
         StoriesGroupAdapter(object : StoriesGroupAdapter.Listener {
             override fun onClickGroup(position: Int) {
-                viewModelAction(StoriesUiAction.SelectGroup(position))
+                viewModelAction(StoriesUiAction.SetGroupMainData(position))
             }
         })
     }
@@ -60,8 +63,20 @@ class StoriesDetailFragment @Inject constructor(
         LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
     }
 
+    private val groupId: String
+        get() = arguments?.getString(STORIES_GROUP_ID).orEmpty()
+
     override fun getScreenName(): String {
         return TAG
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        childFragmentManager.addFragmentOnAttachListener { _, fragment ->
+            when (fragment) {
+                is StoriesThreeDotsBottomSheet -> {}
+            }
+        }
+        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(
@@ -81,15 +96,15 @@ class StoriesDetailFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-        binding.tvCounter.text = "Group ${viewModel.mGroupPosition.plus(1)}"
         setupObserver()
     }
 
     private fun setupObserver() {
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.uiState.withCache().collectLatest { (prevState, state) ->
                 renderStoriesGroup(prevState?.storiesGroup, state.storiesGroup)
                 renderStoriesDetail(prevState?.storiesDetail, state.storiesDetail)
+                observeBottomSheetStatus(prevState?.bottomSheetStatus, state.bottomSheetStatus)
             }
         }
     }
@@ -100,16 +115,25 @@ class StoriesDetailFragment @Inject constructor(
     ) {
         if (prevState == state) return
         mAdapter.setItems(state)
-        binding.icClose.show()
     }
 
     private fun renderStoriesDetail(
         prevState: StoriesDetailUiModel?,
         state: StoriesDetailUiModel,
     ) {
-        if (prevState == state) return
+        if (prevState == state || state == StoriesDetailUiModel.Empty) return
 
         storiesDetailsTimer(state)
+        binding.ivStoriesDetailContent.setImageUrl(state.imageContent)
+        renderAuthor(state)
+    }
+
+    private fun observeBottomSheetStatus(
+        prevState: Map<BottomSheetType, Boolean>?,
+        state: Map<BottomSheetType, Boolean>,
+    ) {
+        if (prevState == state) return
+        if (state.isAnyShown.orFalse()) pauseStories() else resumeStories()
     }
 
     private fun storiesDetailsTimer(state: StoriesDetailUiModel) {
@@ -118,18 +142,25 @@ class StoriesDetailFragment @Inject constructor(
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                 setContent {
                     StoriesDetailTimer(
-                        itemCount = 2,
+                        itemCount = viewModel.mDetailMaxInGroup,
                         data = state,
-                    ) { event ->
-                        when (event) {
-                            NEXT_DETAIL -> viewModelAction(NextDetail)
-                            NEXT_GROUP -> viewModelAction(NextGroup)
-                        }
-                    }
+                    ) { viewModelAction(NextDetail) }
                 }
             }
         }
+        isShouldShowStoriesComponent(true)
     }
+
+    private fun renderAuthor(state: StoriesDetailUiModel) = with(binding.vStoriesPartner) {
+        tvPartnerName.text = state.author.name
+        ivIcon.setImageUrl(state.author.thumbnailUrl)
+        btnFollow.setOnClickListener {
+            //TODO(): Follow
+        }
+        if (state.author is StoryAuthor.Shop)
+            ivBadge.setImageUrl(state.author.badgeUrl)
+    }
+
 
     private fun setupStoriesView() = with(binding) {
         binding.icClose.hide()
@@ -173,20 +204,25 @@ class StoriesDetailFragment @Inject constructor(
         vStoriesShareIcon.setOnClickListener {
             viewModelAction(StoriesUiAction.TapSharing)
         }
+        vStoriesProductIcon.root.setOnClickListener {
+            viewModelAction(StoriesUiAction.OpenProduct)
+        }
     }
 
-    private fun pauseStories() = with(binding) {
-        icClose.hide()
-        rvStoriesCategory.hide()
-        cvStoriesDetailTimer.hide()
+    private fun pauseStories() {
+        isShouldShowStoriesComponent(false)
         viewModelAction(PauseStories)
     }
 
-    private fun resumeStories() = with(binding) {
-        icClose.show()
-        rvStoriesCategory.show()
-        cvStoriesDetailTimer.show()
+    private fun resumeStories() {
+        isShouldShowStoriesComponent(true)
         viewModelAction(ResumeStories)
+    }
+
+    private fun isShouldShowStoriesComponent(isShow: Boolean) {
+        binding.icClose.showWithCondition(isShow)
+        binding.rvStoriesCategory.showWithCondition(isShow)
+        binding.cvStoriesDetailTimer.showWithCondition(isShow)
     }
 
     private fun viewModelAction(event: StoriesUiAction) {
@@ -197,8 +233,20 @@ class StoriesDetailFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collectLatest { event ->
                 when (event) {
-                    StoriesUiEvent.OpenKebab -> StoriesThreeDotsBottomSheet
-                        .getOrCreateFragment(childFragmentManager, requireActivity().classLoader)
+                    StoriesUiEvent.OpenKebab -> {
+                        if (groupId != viewModel.groupId) return@collectLatest
+                        StoriesThreeDotsBottomSheet
+                            .getOrCreateFragment(
+                                childFragmentManager,
+                                requireActivity().classLoader
+                            )
+                            .show(childFragmentManager)
+                    }
+
+                    StoriesUiEvent.OpenProduct -> StoriesProductBottomSheet.getOrCreateFragment(
+                        childFragmentManager,
+                        requireActivity().classLoader
+                    )
                         .show(childFragmentManager)
 
                     is StoriesUiEvent.TapSharing -> {

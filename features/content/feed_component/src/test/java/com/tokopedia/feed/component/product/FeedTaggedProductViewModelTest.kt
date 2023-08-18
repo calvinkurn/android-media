@@ -1,6 +1,7 @@
 package com.tokopedia.feed.component.product
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXGQLResponse
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXGetActivityProductsResponse
@@ -62,7 +63,7 @@ internal class FeedTaggedProductViewModelTest {
         coEvery { feedXGetActivityProductsUseCase(any()) } throws Throwable("Failed")
 
         // when
-        viewModel.fetchFeedProduct(activityId, emptyList(), FeedTaggedProductUiModel.SourceType.Organic)
+        viewModel.fetchFeedProduct(activityId, emptyList(), ContentTaggedProductUiModel.SourceType.Organic)
 
         // then
         assert(viewModel.feedTagProductList.value is Fail)
@@ -79,7 +80,7 @@ internal class FeedTaggedProductViewModelTest {
             ProductMapper.transform(
                 it,
                 dummyData.data.campaign,
-                FeedTaggedProductUiModel.SourceType.Organic
+                ContentTaggedProductUiModel.SourceType.Organic
             )
         }
         coEvery {
@@ -91,7 +92,7 @@ internal class FeedTaggedProductViewModelTest {
         coEvery { feedXGetActivityProductsUseCase(any()) } returns getDummyData()
 
         // when
-        viewModel.fetchFeedProduct(activityId, productList, FeedTaggedProductUiModel.SourceType.Organic)
+        viewModel.fetchFeedProduct(activityId, productList, ContentTaggedProductUiModel.SourceType.Organic)
 
         // then
         assert(viewModel.feedTagProductList.value is Success)
@@ -112,7 +113,7 @@ internal class FeedTaggedProductViewModelTest {
         coEvery { feedXGetActivityProductsUseCase(any()) } returns getDummyData()
 
         // when
-        viewModel.fetchFeedProduct(activityId, emptyList(), FeedTaggedProductUiModel.SourceType.Organic)
+        viewModel.fetchFeedProduct(activityId, emptyList(), ContentTaggedProductUiModel.SourceType.Organic)
 
         // then
         assert(viewModel.feedTagProductList.value is Success)

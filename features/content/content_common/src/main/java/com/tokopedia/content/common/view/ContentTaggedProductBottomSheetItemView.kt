@@ -1,13 +1,12 @@
-package com.tokopedia.feed.component.product
+package com.tokopedia.content.common.view
 
 import android.content.Context
 import android.graphics.Paint
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
-import com.tokopedia.feedcomponent.R
-import com.tokopedia.feedcomponent.databinding.ViewFeedTaggedProductBottomSheetCardBinding
+import com.tokopedia.content.common.R
+import com.tokopedia.content.common.databinding.ViewContentTaggedProductBottomSheetCardBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -17,12 +16,12 @@ import kotlin.math.roundToInt
 /**
  * Created by shruti.agarwal on 23/02/23
  */
-class FeedTaggedProductBottomSheetItemView(
+class ContentTaggedProductBottomSheetItemView(
     context: Context,
     attrs: AttributeSet?
 ) : CardUnify(context, attrs) {
 
-    private val binding = ViewFeedTaggedProductBottomSheetCardBinding.inflate(
+    private val binding = ViewContentTaggedProductBottomSheetCardBinding.inflate(
         LayoutInflater.from(context),
         this
     )
@@ -37,7 +36,7 @@ class FeedTaggedProductBottomSheetItemView(
         mListener = listener
     }
 
-    fun bindData(product: FeedTaggedProductUiModel) {
+    fun bindData(product: ContentTaggedProductUiModel) {
         binding.ivProductImage.setImageUrl(product.imageUrl)
         binding.tvProductTitle.text = product.title
 
@@ -65,22 +64,22 @@ class FeedTaggedProductBottomSheetItemView(
         bindStock(product.stock)
     }
 
-    private fun bindPrice(price: FeedTaggedProductUiModel.Price) {
+    private fun bindPrice(price: ContentTaggedProductUiModel.Price) {
         when (price) {
-            is FeedTaggedProductUiModel.CampaignPrice -> {
+            is ContentTaggedProductUiModel.CampaignPrice -> {
                 binding.tvProductDiscount.hide()
                 binding.tvOriginalPrice.show()
                 binding.tvOriginalPrice.text = price.originalFormattedPrice
                 binding.tvCurrentPrice.text = price.formattedPrice
             }
-            is FeedTaggedProductUiModel.DiscountedPrice -> {
+            is ContentTaggedProductUiModel.DiscountedPrice -> {
                 binding.tvProductDiscount.show()
                 binding.tvOriginalPrice.show()
                 binding.tvProductDiscount.text = context.getString(com.tokopedia.content.common.R.string.feed_product_discount_percent, price.discount)
                 binding.tvOriginalPrice.text = price.originalFormattedPrice
                 binding.tvCurrentPrice.text = price.formattedPrice
             }
-            is FeedTaggedProductUiModel.NormalPrice -> {
+            is ContentTaggedProductUiModel.NormalPrice -> {
                 binding.tvProductDiscount.hide()
                 binding.tvOriginalPrice.hide()
                 binding.tvCurrentPrice.text = price.formattedPrice
@@ -88,17 +87,17 @@ class FeedTaggedProductBottomSheetItemView(
         }
     }
 
-    private fun bindCampaign(campaign: FeedTaggedProductUiModel.Campaign) {
-        if (campaign.status is FeedTaggedProductUiModel.CampaignStatus.Ongoing) {
+    private fun bindCampaign(campaign: ContentTaggedProductUiModel.Campaign) {
+        if (campaign.status is ContentTaggedProductUiModel.CampaignStatus.Ongoing) {
             binding.pbStock.setValue(campaign.status.stockInPercent.roundToInt(), true)
             binding.pbStock.progressBarColor = intArrayOf(
                 ContextCompat.getColor(
                     context,
-                    R.color.feed_dms_asgc_progress_0_color
+                    R.color.content_dms_asgc_progress_0_color
                 ),
                 ContextCompat.getColor(
                     context,
-                    R.color.feed_dms_asgc_progress_100_color
+                    R.color.content_dms_asgc_progress_100_color
                 )
             )
             binding.tvStock.text = campaign.status.stockLabel
@@ -106,7 +105,7 @@ class FeedTaggedProductBottomSheetItemView(
         } else {
             binding.llStockContainer.hide()
         }
-        if (campaign.status is FeedTaggedProductUiModel.CampaignStatus.Upcoming) {
+        if (campaign.status is ContentTaggedProductUiModel.CampaignStatus.Upcoming) {
             binding.llProductActionButton.hide()
             binding.btnProductLongAtc.show()
         } else {
@@ -115,8 +114,8 @@ class FeedTaggedProductBottomSheetItemView(
         }
     }
 
-    private fun bindStock(stock: FeedTaggedProductUiModel.Stock) {
-        val isShown = stock is FeedTaggedProductUiModel.Stock.Available
+    private fun bindStock(stock: ContentTaggedProductUiModel.Stock) {
+        val isShown = stock is ContentTaggedProductUiModel.Stock.Available
         binding.btnProductBuy.isEnabled = isShown
         binding.btnProductAtc.isEnabled = isShown
         binding.viewOverlayOos.showWithCondition(!isShown)
@@ -125,18 +124,18 @@ class FeedTaggedProductBottomSheetItemView(
 
     interface Listener {
         fun onProductCardClicked(
-            view: FeedTaggedProductBottomSheetItemView,
-            product: FeedTaggedProductUiModel
+            view: ContentTaggedProductBottomSheetItemView,
+            product: ContentTaggedProductUiModel
         )
 
         fun onAddToCartProductButtonClicked(
-            view: FeedTaggedProductBottomSheetItemView,
-            product: FeedTaggedProductUiModel
+            view: ContentTaggedProductBottomSheetItemView,
+            product: ContentTaggedProductUiModel
         )
 
         fun onBuyProductButtonClicked(
-            view: FeedTaggedProductBottomSheetItemView,
-            product: FeedTaggedProductUiModel
+            view: ContentTaggedProductBottomSheetItemView,
+            product: ContentTaggedProductUiModel
         )
     }
 }

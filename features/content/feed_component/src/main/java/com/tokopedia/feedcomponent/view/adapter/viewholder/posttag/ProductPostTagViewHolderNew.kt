@@ -158,8 +158,8 @@ class ProductPostTagViewHolderNew(
 
     private fun setGradientColorForProgressBar(item: ProductPostTagModelNew ){
         val progressBarColor: IntArray = intArrayOf(
-            ContextCompat.getColor(itemView.context, com.tokopedia.feedcomponent.R.color.feed_dms_asgc_progress_0_color),
-            ContextCompat.getColor(itemView.context, com.tokopedia.feedcomponent.R.color.feed_dms_asgc_progress_100_color)
+            ContextCompat.getColor(itemView.context, com.tokopedia.feedcomponent.R.color.content_dms_asgc_progress_0_color),
+            ContextCompat.getColor(itemView.context, com.tokopedia.feedcomponent.R.color.content_dms_asgc_progress_100_color)
         )
 
         val value = (item.product.stockSoldPercentage).roundToInt()
