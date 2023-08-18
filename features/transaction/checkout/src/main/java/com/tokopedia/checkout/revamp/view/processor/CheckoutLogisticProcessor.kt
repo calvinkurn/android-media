@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderShipment
@@ -199,6 +200,10 @@ class CheckoutLogisticProcessor @Inject constructor(
         orderProducts.forEach {
             if (!it.isError) {
                 orderValue += (it.quantity * it.price).toLong()
+                if (it.isBMGMItem && it.bmgmItemPosition == ShipmentMapper.BMGM_ITEM_HEADER) {
+                    // TODO: [Misael] check is price_after_bmgm the same as total_discount
+                    orderValue -= it.bmgmTotalDiscount.toLong()
+                }
                 totalWeight += it.quantity * it.weight
                 totalWeightActual += if (it.weightActual > 0) {
                     it.quantity * it.weightActual

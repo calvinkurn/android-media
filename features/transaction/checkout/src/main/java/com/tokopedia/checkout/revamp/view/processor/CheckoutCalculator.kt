@@ -143,11 +143,8 @@ class CheckoutCalculator @Inject constructor(
                         } else {
                             totalItemPrice += cartItem.quantity * cartItem.price
                         }
-                        if (cartItem.isBMGMItem) {
-                            // TODO: [Misael] check this logic
-                            if (cartItem.bmgmItemPosition == ShipmentMapper.BMGM_ITEM_HEADER) {
-                                totalBmgmDiscount += cartItem.bmgmTotalDiscount
-                            }
+                        if (cartItem.isBMGMItem && cartItem.bmgmItemPosition == ShipmentMapper.BMGM_ITEM_HEADER) {
+                            totalBmgmDiscount += cartItem.bmgmTotalDiscount
                         }
                         if (cartItem.addOnGiftingProductLevelModel.status == 1) {
                             if (cartItem.addOnGiftingProductLevelModel.addOnsDataItemModelList.isNotEmpty()) {
@@ -226,7 +223,8 @@ class CheckoutCalculator @Inject constructor(
         }
         totalPrice =
             totalItemPrice + finalShippingFee + insuranceFee + totalPurchaseProtectionPrice + additionalFee + totalBookingFee -
-            shipmentCost.productDiscountAmount - tradeInPrice + totalAddOnGiftingPrice + totalAddOnProductServicePrice
+            shipmentCost.productDiscountAmount - tradeInPrice + totalAddOnGiftingPrice + totalAddOnProductServicePrice -
+            totalBmgmDiscount
         shipmentCost = shipmentCost.copy(totalWeight = totalWeight)
         shipmentCost = shipmentCost.copy(additionalFee = additionalFee)
         shipmentCost = shipmentCost.copy(originalItemPrice = totalItemPrice)
