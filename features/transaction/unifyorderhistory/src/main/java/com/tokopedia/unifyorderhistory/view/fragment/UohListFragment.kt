@@ -895,18 +895,32 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
             when (it) {
                 is Success -> {
                     responseFinishOrder = it.data
-                    if (isScpRewardTouchPointEnabled()) {
-                        scpTouchPointViewModel.getMedalTouchPoint(
-                            orderId = responseFinishOrder.orderId.toLongOrZero(),
-                            sourceName = SOURCE_NAME
-                        )
+                    if (responseFinishOrder.success == 1) {
+                        if (isScpRewardTouchPointEnabled()) {
+                            scpTouchPointViewModel.getMedalTouchPoint(
+                                orderId = responseFinishOrder.orderId.toLongOrZero(),
+                                sourceName = SOURCE_NAME
+                            )
+                        } else {
+                            showFinishOrderToaster()
+                        }
+                        loadUohItemDelay(orderIdNeedUpdated, currIndexNeedUpdate)
                     } else {
-                        showFinishOrderToaster()
+                        if (responseFinishOrder.message.isNotEmpty()) {
+                            responseFinishOrder.message.firstOrNull()?.let { errorMessage ->
+                                showToaster(errorMessage, Toaster.TYPE_ERROR)
+                            }
+                        } else {
+                            context?.getString(R.string.fail_cancellation)?.let { commonErrorMessage ->
+                                showToaster(commonErrorMessage, Toaster.TYPE_ERROR)
+                            }
+                        }
                     }
                 }
                 is Fail -> {
-                    responseFinishOrder.message.firstOrNull()
-                        ?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
+                    responseFinishOrder.message.firstOrNull()?.let { errorMessage ->
+                        showToaster(errorMessage, Toaster.TYPE_ERROR)
+                    }
                 }
             }
         }

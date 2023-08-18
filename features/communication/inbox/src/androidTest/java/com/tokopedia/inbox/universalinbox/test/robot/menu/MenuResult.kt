@@ -38,7 +38,7 @@ object MenuResult {
 
     fun assertNotificationCounterGone() {
         onView(withId(R.id.notification))
-            .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.INVISIBLE)))
+            .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)))
     }
 
     fun assertMenuCounter(position: Int, counterText: String) {
