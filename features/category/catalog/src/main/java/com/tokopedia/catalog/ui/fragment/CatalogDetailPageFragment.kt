@@ -47,7 +47,6 @@ import com.tokopedia.catalog.model.util.CatalogUiUpdater
 import com.tokopedia.catalog.model.util.CatalogUtil
 import com.tokopedia.catalog.model.util.nestedrecyclerview.NestedRecyclerView
 import com.tokopedia.catalog.ui.activity.CatalogGalleryActivity
-import com.tokopedia.catalog.ui.activity.CatalogYoutubePlayerActivity
 import com.tokopedia.catalog.ui.bottomsheet.CatalogComponentBottomSheet
 import com.tokopedia.catalog.ui.bottomsheet.CatalogPreferredProductsBottomSheet
 import com.tokopedia.catalog.ui.bottomsheet.CatalogSpecsAndDetailBottomSheet
@@ -737,9 +736,8 @@ class CatalogDetailPageFragment :
             if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
                 == YouTubeInitializationResult.SUCCESS
             ) {
-                catalogVideo.url?.let { videoUrl ->
-                    // Sending only one video so selectedIndex to be 0 always
-                    startActivity(CatalogYoutubePlayerActivity.createIntent(it, listOf(videoUrl), 0))
+                catalogVideo.videoId?.let { videoId ->
+                    redirectToYoutubePlayerPage(videoId)
                 }
             } else {
                 // Handle if user didn't have any apps to open Youtube * Usually rooted phone
@@ -754,6 +752,10 @@ class CatalogDetailPageFragment :
                 }
             }
         }
+    }
+
+    private fun redirectToYoutubePlayerPage(videoId: String) {
+        RouteManager.route(context, ApplinkConst.YOUTUBE_PLAYER, videoId)
     }
 
     override fun comparisonCatalogClicked(comparisonCatalogId: String) {
