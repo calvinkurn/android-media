@@ -7,7 +7,7 @@ data class OfferProductListUiModel(
     val responseHeader: ResponseHeader = ResponseHeader(),
     val productList: List<Product> = emptyList(),
     val totalProduct: Int = 0
-){
+) {
     data class ResponseHeader(
         val success: Boolean = true,
         val errorMessage: List<String> = emptyList()
@@ -26,8 +26,9 @@ data class OfferProductListUiModel(
         val soldCount: Int = 0,
         val stock: Int = 0,
         val isVbs: Boolean = false,
-        val campaign: Campaign = Campaign()
-    ) : Visitable<OlpAdapterTypeFactory>  {
+        val campaign: Campaign = Campaign(),
+        val labelGroup: List<LabelGroup> = emptyList()
+    ) : Visitable<OlpAdapterTypeFactory> {
         data class Campaign(
             val name: String = "",
             val originalPrice: String = "",

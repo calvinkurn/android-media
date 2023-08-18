@@ -49,7 +49,9 @@ data class OfferProductListResponse(
         @SerializedName("is_vbs")
         val isVbs: Boolean = false,
         @SerializedName("campaign")
-        val campaign: Campaign = Campaign()
+        val campaign: Campaign = Campaign(),
+        @SerializedName("label_group")
+        val labelGroup: List<LabelGroup> = emptyList()
     ) {
         data class Campaign(
             @SerializedName("name")

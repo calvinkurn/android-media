@@ -47,13 +47,18 @@ class OfferingProductListViewHolder(
             formattedPrice = campaign.discountedPrice.ifEmpty { price },
             countSoldRating = rating,
             hasAddToCartButton = true,
-            labelGroupList = listOf(
-                ProductCardModel.LabelGroup(
-                    position = "integrity",
-                    title = "terjual $soldCount",
-                    type = "textDarkGrey"
-                )
-            )
+            labelGroupList = labelGroup.toLabelGroup()
         )
+    }
+
+    private fun List<OfferProductListUiModel.Product.LabelGroup>.toLabelGroup(): List<ProductCardModel.LabelGroup> {
+        return map {
+            ProductCardModel.LabelGroup(
+                position = it.position,
+                title = it.title,
+                type = it.type,
+                imageUrl = it.url
+            )
+        }
     }
 }

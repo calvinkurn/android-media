@@ -36,7 +36,8 @@ class GetOfferProductListMapper @Inject constructor() {
                 soldCount = it.soldCount,
                 stock = it.stock,
                 isVbs = it.isVbs,
-                campaign = it.campaign.toCampaignModel()
+                campaign = it.campaign.toCampaignModel(),
+                labelGroup = it.labelGroup.toLabelGroup()
             )
         }
     }
@@ -51,9 +52,14 @@ class GetOfferProductListMapper @Inject constructor() {
         )
     }
 
-    private fun OfferProductListResponse.Product.LabelGroup.toLabelGroup(): OfferProductListUiModel.Product.LabelGroup {
-        return OfferProductListUiModel.Product.LabelGroup(
-            position, title, type, url
-        )
+    private fun List<OfferProductListResponse.Product.LabelGroup>.toLabelGroup(): List<OfferProductListUiModel.Product.LabelGroup> {
+        return map {
+            OfferProductListUiModel.Product.LabelGroup(
+                position = it.position,
+                title = it.title,
+                type = it.type,
+                url = it.url
+            )
+        }
     }
 }

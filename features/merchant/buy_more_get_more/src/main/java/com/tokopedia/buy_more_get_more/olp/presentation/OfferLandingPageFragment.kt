@@ -154,12 +154,13 @@ class OfferLandingPageFragment :
         }
 
         viewModel.miniCartAdd.observe(viewLifecycleOwner) { atc ->
-            when(atc) {
+            when (atc) {
                 is Success -> {
                     Toast.makeText(context, atc.data.data.success.toString(), Toast.LENGTH_SHORT).show()
                 }
                 is Fail -> {
-                    Toast.makeText(context, "error", Toast.LENGTH_SHORT).show()}
+                    Toast.makeText(context, atc.throwable.localizedMessage, Toast.LENGTH_SHORT).show()
+                }
             }
         }
 
