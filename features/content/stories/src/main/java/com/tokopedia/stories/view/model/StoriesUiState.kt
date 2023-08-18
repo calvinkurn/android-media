@@ -14,7 +14,7 @@ data class StoriesUiState(
                 storiesDetail = StoriesDetailUiModel.Empty,
                 storiesGroup = emptyList(),
                 bottomSheetStatus = BottomSheetStatusDefault,
-                products = emptyList(),
+                products = listProduct,
             )
     }
 }

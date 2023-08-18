@@ -49,7 +49,14 @@ class StoriesProductBottomSheet @Inject constructor(
             }
         }
         setChild(composable)
+        setTitle("Produk pilihan")
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel.getProducts()
     }
 
     fun show(fg: FragmentManager) {

@@ -208,15 +208,14 @@ class StoriesViewModel @Inject constructor(
                     else it.value
                 }
             }
-            getProducts()
         }
     }
 
-    private fun getProducts() {
-        viewModelScope.launchCatchError(block = {
+    fun getProducts() {
+        viewModelScope.launch {
             val response = repository.getStoriesProducts()
-            products.update { response }
-        }) {}
+            products.value = response
+        }
     }
 
     companion object {
