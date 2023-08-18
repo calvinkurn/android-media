@@ -184,13 +184,13 @@ class ShopHomeProductCarouselTabAdapter : RecyclerView.Adapter<RecyclerView.View
 
     }
 
-    fun submit(newProducts: List<ShopHomeProductCarouselVerticalBannerItemType>) {
-        val diffCallback = DiffCallback(this.items, newProducts)
+    fun submit(newItems: List<ShopHomeProductCarouselVerticalBannerItemType>) {
+        val diffCallback = DiffCallback(this.items, newItems)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
 
         this.items.clear()
 
-        this.items.addAll(newProducts)
+        this.items.addAll(newItems)
         diffResult.dispatchUpdatesTo(this)
     }
 

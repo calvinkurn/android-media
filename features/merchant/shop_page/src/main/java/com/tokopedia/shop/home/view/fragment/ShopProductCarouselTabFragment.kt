@@ -139,11 +139,13 @@ class ShopProductCarouselTabFragment : BaseDaggerFragment() {
                 ShopProductCarouselTabViewModel.UiState.Loading -> {
                     productAdapter.submit(listOf(ShopHomeProductCarouselShimmer))
                 }
+
                 is ShopProductCarouselTabViewModel.UiState.Success -> {
                     showProductCarousel(result.data)
                     showMainBanner()
                 }
-                is ShopProductCarouselTabViewModel.UiState.Error ->{
+
+                is ShopProductCarouselTabViewModel.UiState.Error -> {
 
                 }
             }
