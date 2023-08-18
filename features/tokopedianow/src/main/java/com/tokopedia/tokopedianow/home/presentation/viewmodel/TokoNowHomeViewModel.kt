@@ -1032,9 +1032,9 @@ class TokoNowHomeViewModel @Inject constructor(
 
     private fun getGetBuyerCommunicationAsync(item: HomeHeaderUiModel): Deferred<Unit?> {
         return asyncCatchError(block = {
-            val wareshouses = addressData.getWarehousesData()
+            val warehouses = addressData.getWarehousesData()
             val response = getBuyerCommunicationUseCase.execute(addressData)
-            homeLayoutItemList.mapToHomeHeaderUiModel(item, wareshouses, response)
+            homeLayoutItemList.mapToHomeHeaderUiModel(item, warehouses, response)
         }) {
             homeLayoutItemList.mapHomeHeaderErrorState(item)
         }
