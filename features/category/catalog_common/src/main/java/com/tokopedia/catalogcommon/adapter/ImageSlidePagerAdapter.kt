@@ -8,13 +8,20 @@ import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.catalogcommon.databinding.ItemSliderTextImageBinding
 import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 
-class ImageSlideAdapter(private var imageList: List<SliderImageTextUiModel.ItemSliderImageText>) :
+class ImageSlidePagerAdapter(private var imageList: List<SliderImageTextUiModel.ItemSliderImageText>) :
     PagerAdapter() {
 
+    companion object{
+        private const val THIRTY_PERCENT_TRANSPARANT = 0.3f
+        private const val SEVENTY_FIVE_PERCENT_TRANSPARANT = 0.75f
+        private const val NOT_TRANSPARANT = 1f
+
+    }
     private val views = mutableListOf<View>()
 
     override fun getCount(): Int {
@@ -57,7 +64,6 @@ class ImageSlideAdapter(private var imageList: List<SliderImageTextUiModel.ItemS
             binding.ivImage.loadImageRounded(item.image)
         }
 
-        binding.root.tag = position.toString()
         val vp = container as ViewPager
         views.add(binding.root)
         vp.addView(binding.root, 0)
@@ -74,26 +80,18 @@ class ImageSlideAdapter(private var imageList: List<SliderImageTextUiModel.ItemS
     }
 
     override fun getPageWidth(position: Int): Float {
-        return (0.75f)
+        return SEVENTY_FIVE_PERCENT_TRANSPARANT
     }
 
     private fun setSelectedItemColor(currentSelectionPosition: Int) {
-        val previousSelectionPosition = currentSelectionPosition - 1
-        val nexSelectionPosition = currentSelectionPosition + 1
-
-        var view = views[currentSelectionPosition]
-        view.alpha = 1f
+        val view = views[currentSelectionPosition]
+        view.alpha = NOT_TRANSPARANT
         view.requestLayout()
+    }
 
-        if (previousSelectionPosition != -1) {
-            view = views[previousSelectionPosition]
-            view.alpha = 0.3f
-            view.requestLayout()
-        }
-
-        if (nexSelectionPosition <= imageList.size - 1) {
-            view = views[nexSelectionPosition]
-            view.alpha = 0.3f
+    fun resetAlphaView(){
+        views.forEach {view ->
+            view.alpha = THIRTY_PERCENT_TRANSPARANT
             view.requestLayout()
         }
     }
