@@ -36,6 +36,8 @@ buildscript {
 }
 
 dependencies {
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    
     implementation rootProject.ext.miscDependencies.dataStorePreferences
 }
 
