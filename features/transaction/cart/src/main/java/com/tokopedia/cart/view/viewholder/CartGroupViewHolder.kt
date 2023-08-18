@@ -19,7 +19,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.purchase_platform.common.prefs.PlusCoachmarkPrefs
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
@@ -115,19 +114,21 @@ class CartGroupViewHolder(
     private fun renderGroupName(cartGroupHolderData: CartGroupHolderData) {
         binding.tvShopName.text = Utils.getHtmlFormat(cartGroupHolderData.groupName)
         if (cartGroupHolderData.isError) {
-            val shopId = cartGroupHolderData.productUiModelList.getOrNull(0)?.shopHolderData?.shopId
-            val shopName = cartGroupHolderData.productUiModelList.getOrNull(0)?.shopHolderData?.shopName
+            val shop = cartGroupHolderData.productUiModelList.getOrNull(0)?.shopHolderData
             binding.tvShopName.setOnClickListener {
                 actionListener.onCartShopNameClicked(
-                    shopId,
-                    shopName,
+                    shop?.shopId,
+                    shop?.shopName,
                     cartGroupHolderData.isTokoNow
                 )
             }
         } else if (cartGroupHolderData.groupAppLink.isNotEmpty()) {
             binding.tvShopName.setOnClickListener {
                 actionListener.onCartGroupNameClicked(
-                    cartGroupHolderData.groupAppLink
+                    cartGroupHolderData.groupAppLink,
+                    cartGroupHolderData.shop.shopId,
+                    cartGroupHolderData.shop.shopName,
+                    cartGroupHolderData.isTypeOWOC()
                 )
             }
         } else {

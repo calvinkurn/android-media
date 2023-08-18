@@ -20,6 +20,7 @@ import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummary
 import com.tokopedia.mvcwidget.trackers.DefaultMvcTrackerImpl
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.trackers.MvcTrackerImpl
+import com.tokopedia.mvcwidget.views.bottomsheets.MvcDetailBottomSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -84,20 +85,20 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
                 mAdapter.setItemsAndAnimateChanges(it.data)
                 binding.root.let { view ->
                     view.viewTreeObserver.addOnGlobalLayoutListener(object :
-                            OnGlobalLayoutListener {
-                            override fun onGlobalLayout() {
-                                view.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                                view.layoutParams = view.layoutParams.apply {
-                                    if (view.measuredHeight > maxHeight) {
-                                        height = maxHeight
-                                    } else if (view.measuredHeight < minHeight) {
-                                        height = minHeight
-                                    } else if (height != ViewGroup.LayoutParams.WRAP_CONTENT) {
-                                        height = ViewGroup.LayoutParams.WRAP_CONTENT
-                                    }
+                        OnGlobalLayoutListener {
+                        override fun onGlobalLayout() {
+                            view.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                            view.layoutParams = view.layoutParams.apply {
+                                if (view.measuredHeight > maxHeight) {
+                                    height = maxHeight
+                                } else if (view.measuredHeight < minHeight) {
+                                    height = minHeight
+                                } else if (height != ViewGroup.LayoutParams.WRAP_CONTENT) {
+                                    height = ViewGroup.LayoutParams.WRAP_CONTENT
                                 }
                             }
-                        })
+                        }
+                    })
                 }
             }
             is Fail -> {
@@ -166,7 +167,16 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
                 mvcData = MvcData(info),
                 shopId = shopId,
                 source = MvcSource.FEED_BOTTOM_SHEET,
-                mvcTrackerImpl = tracker
+                mvcTrackerImpl = tracker,
+                startActivityForResultFunction = {
+                    MvcDetailBottomSheet().also {
+                        it.show(
+                            shopId = shopId,
+                            source = MvcSource.FEED_BOTTOM_SHEET,
+                            manager = parentFragmentManager,
+                        )
+                    }
+                }
             )
             binding.mvcTaggedProduct.show()
         } else {
