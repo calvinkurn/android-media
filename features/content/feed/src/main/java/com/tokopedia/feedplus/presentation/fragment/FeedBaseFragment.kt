@@ -323,6 +323,7 @@ class FeedBaseFragment :
                 }
 
                 override fun onPageSelected(position: Int) {
+                    selectActiveTab(position)
                 }
 
                 override fun onPageScrollStateChanged(state: Int) {
