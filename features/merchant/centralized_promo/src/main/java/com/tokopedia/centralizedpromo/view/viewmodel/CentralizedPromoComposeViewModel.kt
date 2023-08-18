@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.CENTRALIZED_PROMO_PREF
+import com.tokopedia.centralizedpromo.common.errorhandler.CentralizedPromoErrorHandler
 import com.tokopedia.centralizedpromo.domain.usecase.GetOnGoingPromotionUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetPromotionUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.PromoPlayAuthorConfigUseCase
@@ -13,8 +14,10 @@ import com.tokopedia.centralizedpromo.view.LayoutType.ON_GOING_PROMO
 import com.tokopedia.centralizedpromo.view.LayoutType.PROMO_CREATION
 import com.tokopedia.centralizedpromo.view.LoadingType
 import com.tokopedia.centralizedpromo.view.PromoCreationMapper
+import com.tokopedia.centralizedpromo.view.fragment.CentralizedPromoFragment
 import com.tokopedia.centralizedpromo.view.model.BaseUiModel
 import com.tokopedia.centralizedpromo.view.model.CentralizedPromoEvent
+import com.tokopedia.centralizedpromo.view.model.CentralizedPromoEvent.CoachMarkShown
 import com.tokopedia.centralizedpromo.view.model.CentralizedPromoEvent.FilterUpdate
 import com.tokopedia.centralizedpromo.view.model.CentralizedPromoEvent.UpdateRbacBottomSheet
 import com.tokopedia.centralizedpromo.view.model.CentralizedPromoEvent.UpdateToasterState
@@ -25,16 +28,14 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
-
-data class Toasters(
-    val shouldShow: Boolean = false
-)
 
 class CentralizedPromoComposeViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
@@ -48,8 +49,8 @@ class CentralizedPromoComposeViewModel @Inject constructor(
     private val _layoutList = MutableStateFlow(CentralizedPromoUiState(isLoading = LoadingType.ALL))
     val layoutList = _layoutList.asStateFlow()
 
-    private val _toasterState = MutableStateFlow(false)
-    val toasterState = _toasterState.asStateFlow()
+    private val _toasterState = MutableSharedFlow<Boolean>()
+    val toasterState = _toasterState.asSharedFlow()
 
     init {
         // Initial load tabId = "", means no filter is selected
@@ -71,6 +72,9 @@ class CentralizedPromoComposeViewModel @Inject constructor(
             is UpdateToasterState -> {
                 updateToasterState(event.showToaster)
             }
+            is CoachMarkShown -> {
+                setKeyRBAC(event.key + "coachmark")
+            }
             else -> {
                 swipeToRefresh()
             }
@@ -79,6 +83,10 @@ class CentralizedPromoComposeViewModel @Inject constructor(
 
     fun getKeyRBAC(key: String): Boolean {
         return pref.getBoolean(key, false)
+    }
+
+    fun getCoachmarkSharedPref(pageId: String): Boolean {
+        return pref.getBoolean(pageId + "coachmark", false)
     }
 
     private fun setKeyRBAC(key: String) {
@@ -104,7 +112,10 @@ class CentralizedPromoComposeViewModel @Inject constructor(
 
     private fun swipeToRefresh() {
         _layoutList.update {
-            it.copy(isSwipeRefresh = true)
+            it.copy(
+                isSwipeRefresh = true,
+                isLoading = LoadingType.ALL
+            )
         }
 
         getOnGoingOrPromoCreation(
@@ -141,8 +152,8 @@ class CentralizedPromoComposeViewModel @Inject constructor(
     }
 
     private fun updateToasterState(showToaster: Boolean) {
-        _toasterState.update {
-            showToaster
+        viewModelScope.launch {
+            _toasterState.emit(showToaster)
         }
     }
 
@@ -157,6 +168,10 @@ class CentralizedPromoComposeViewModel @Inject constructor(
                 GetOnGoingPromotionUseCase.getRequestParams(false)
             Success(getOnGoingPromotionUseCase.executeOnBackground())
         } catch (e: Throwable) {
+            CentralizedPromoErrorHandler.logException(
+                e,
+                String.format(CentralizedPromoFragment.ERROR_GET_LAYOUT_DATA, ON_GOING_PROMO)
+            )
             Fail(e)
         }
     }
@@ -176,6 +191,10 @@ class CentralizedPromoComposeViewModel @Inject constructor(
             )
             Success(promotionListUiModel)
         } catch (e: Throwable) {
+            CentralizedPromoErrorHandler.logException(
+                e,
+                String.format(CentralizedPromoFragment.ERROR_GET_LAYOUT_DATA, PROMO_CREATION)
+            )
             Fail(e)
         }
 

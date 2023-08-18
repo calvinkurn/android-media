@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.category.DeeplinkMapperCategory
+import com.tokopedia.applink.centralizedpromo.DeeplinkMapperCentralizedPromo.getRegisteredNavigationCentralizedPromo
 import com.tokopedia.applink.chatbot.DeeplinkMapperChatbot.getChatbotDeeplink
 import com.tokopedia.applink.communication.DeeplinkMapperCommunication
 import com.tokopedia.applink.constant.DeeplinkConstant
@@ -401,6 +402,8 @@ object DeeplinkMapper {
                 deeplink
             )
 
+            deeplink.startsWith(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO) -> getRegisteredNavigationCentralizedPromo(context)
+
             else -> return ""
         }
     }
@@ -450,7 +453,7 @@ object DeeplinkMapper {
             ApplinkConst.SellerApp.VOUCHER_ACTIVE -> ApplinkConstInternalSellerapp.SELLER_MVC_LIST_ACTIVE
             ApplinkConst.SellerApp.VOUCHER_HISTORY -> ApplinkConstInternalSellerapp.SELLER_MVC_LIST_HISTORY
             ApplinkConst.SellerApp.CAMPAIGN_LIST -> ApplinkConstInternalSellerapp.CAMPAIGN_LIST
-            ApplinkConst.SellerApp.CENTRALIZED_PROMO -> ApplinkConstInternalSellerapp.CENTRALIZED_PROMO
+            ApplinkConst.SellerApp.CENTRALIZED_PROMO -> getRegisteredNavigationCentralizedPromo(context)
             ApplinkConst.SellerApp.PLAY_BROADCASTER -> ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER
             ApplinkConst.SellerApp.SELLER_SHIPPING_EDITOR -> ApplinkConstInternalMarketplace.SHOP_SETTINGS_SHIPPING
             ApplinkConst.SellerApp.REVIEW_REMINDER -> ApplinkConstInternalSellerapp.REVIEW_REMINDER

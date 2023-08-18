@@ -277,6 +277,10 @@ class CentralizedPromoComposeViewModelTest {
             viewModel.layoutList.collect()
         }
 
+        val job2 = launch(UnconfinedTestDispatcher()) {
+            viewModel.toasterState.collect()
+        }
+
         advanceUntilIdle()
 
         coVerify {
@@ -296,7 +300,11 @@ class CentralizedPromoComposeViewModelTest {
         assertTrue(data.promoCreationData is Fail)
         assertTrue(data.onGoingData is Fail)
 
+        val toasterData = viewModel.toasterState.value
+        assertTrue(toasterData == true)
+
         job.cancel()
+        job2.cancel()
     }
 
     @Test

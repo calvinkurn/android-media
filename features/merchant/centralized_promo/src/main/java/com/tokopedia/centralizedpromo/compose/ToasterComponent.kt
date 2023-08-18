@@ -2,29 +2,33 @@ package com.tokopedia.centralizedpromo.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import com.tokopedia.centralizedpromo.R
 import com.tokopedia.centralizedpromo.view.model.CentralizedPromoEvent
+import com.tokopedia.centralizedpromo.view.viewmodel.CentralizedPromoComposeViewModel
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.delay
 
 @Composable
-fun showToaster(
-    showToaster: Boolean,
-    sendEvent: (CentralizedPromoEvent) -> Unit = {}
+fun ShowToaster(
+    viewModel: CentralizedPromoComposeViewModel
 ) {
-    if (showToaster) {
-        ToasterView(sendEvent)
+    val showToaster = remember { mutableStateOf(false) }
 
-        LaunchedEffect(Unit) {
+    LaunchedEffect(Unit) {
+        viewModel.toasterState.collect {
+            showToaster.value = it
+        }
+    }
+
+    if (showToaster.value) {
+        ToasterView(viewModel::sendEvent)
+        LaunchedEffect(showToaster) {
             delay(5000)
-            // reset after 5s so if the user try to show toaster while toaster is showing
-            // it will ignored
-            sendEvent(
-                CentralizedPromoEvent
-                    .UpdateToasterState(false)
-            )
+            showToaster.value = false
         }
     }
 }

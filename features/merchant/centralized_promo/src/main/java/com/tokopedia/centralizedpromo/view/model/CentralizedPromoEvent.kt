@@ -7,6 +7,9 @@ sealed class CentralizedPromoEvent {
     data class UpdateRbacBottomSheet(val key: String) :
         CentralizedPromoEvent()
 
+    data class CoachMarkShown(val key: String) :
+        CentralizedPromoEvent()
+
     data class UpdateToasterState(val showToaster: Boolean) :
         CentralizedPromoEvent()
 

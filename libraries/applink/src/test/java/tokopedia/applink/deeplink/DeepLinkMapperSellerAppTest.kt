@@ -189,6 +189,32 @@ class DeepLinkMapperSellerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check centralized promo appLink and remote config true then should return tokopedia internal centralized promo in sellerapp`() {
+        setRemoteConfig(true)
+        assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.CENTRALIZED_PROMO,
+            ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_COMPOSE
+        )
+    }
+
+    @Test
+    fun `check centralized promo internal appLink and remote config true then should return tokopedia internal centralized promo compose in sellerapp`() {
+        setRemoteConfig(true)
+        assertEqualsDeepLinkMapper(
+            ApplinkConstInternalSellerapp.CENTRALIZED_PROMO,
+            ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_COMPOSE
+        )
+    }
+
+    @Test
+    fun `check centralized promo internal appLink and remote config false then should return tokopedia internal centralized promo compose in sellerapp`() {
+        setRemoteConfig(false)
+        assertEqualsDeepLinkMapper(
+            ApplinkConstInternalSellerapp.CENTRALIZED_PROMO,
+            ApplinkConstInternalSellerapp.CENTRALIZED_PROMO
+        )
+    }
+
+    @Test
     fun `check shop feed appLink then should return tokopedia internal feed in sellerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop-page/1479278/feed"
         val appLink = UriUtil.buildUri(ApplinkConst.SellerApp.SHOP_FEED, "1479278")

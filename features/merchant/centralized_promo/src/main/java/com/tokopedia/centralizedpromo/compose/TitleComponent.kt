@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -18,11 +19,14 @@ import com.tokopedia.nest.principles.ui.NestTheme
 
 
 fun LazyGridScope.TitleSection(
-    title: String,
+    title: Int,
     modifier: Modifier = Modifier
-) = item(span = { GridItemSpan(2) }) {
+) = item(
+    span = { GridItemSpan(2) },
+    contentType = { 1 }
+) {
     PromoSectionTitle(
-        text = title,
+        text = stringResource(title),
         modifier = modifier.padding(vertical = 16.dp)
     )
 }

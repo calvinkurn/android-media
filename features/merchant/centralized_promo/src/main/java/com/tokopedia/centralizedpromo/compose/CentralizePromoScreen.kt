@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -40,6 +41,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.centralizedpromo.R.drawable
+import com.tokopedia.centralizedpromo.R.string
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.view.LayoutType.PROMO_CREATION
 import com.tokopedia.centralizedpromo.view.LoadingType
@@ -58,6 +60,8 @@ import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
 import com.tokopedia.centralizedpromo.view.model.Status
 import com.tokopedia.header.compose.NestHeader
 import com.tokopedia.header.compose.NestHeaderType
+import com.tokopedia.nest.components.CoachMarkAnchor
+import com.tokopedia.nest.components.coachmarkableOn
 import com.tokopedia.nest.principles.utils.addImpression
 import com.tokopedia.sortfilter.compose.NestSortFilter
 import com.tokopedia.sortfilter.compose.SortFilter
@@ -66,12 +70,17 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import java.util.*
 
+/**
+ * enableCoachmark used to disable globalLayoutListener if we don't want to show toaster (reducing recomposition)
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CentralizedPromoScreen(
     uiState: CentralizedPromoUiState,
     onEvent: (CentralizedPromoEvent) -> Unit = {},
     checkRbac: (String) -> Boolean = { false },
+    enableCoachMark: Boolean = false,
+    coachMarkAnchor: (CoachMarkAnchor, String) -> Unit = { _, _ -> },
     onBackPressed: () -> Unit = {}
 ) {
 
@@ -84,7 +93,7 @@ fun CentralizedPromoScreen(
         topBar = {
             NestHeader(
                 type = NestHeaderType.SingleLine().copy(
-                    title = "Iklan dan Promosi",
+                    title = stringResource(string.centralized_promo_toolbar_title),
                     onBackClicked = onBackPressed
                 )
             )
@@ -135,6 +144,7 @@ fun CentralizedPromoScreen(
                         selectedTabId = uiState.selectedTabId(),
                         isLoadingPromoList = uiState.isLoadingBody(),
                         onFilterClicked = { tabData ->
+                            CentralizedPromoTracking.sendClickFilter(tabData.first)
                             onEvent.invoke(
                                 CentralizedPromoEvent.FilterUpdate(
                                     selectedTabFilterData = tabData.first to tabData.second
@@ -157,6 +167,18 @@ fun CentralizedPromoScreen(
                         onLocalLoadRefreshClicked = {
                             if (!uiState.isSwipeRefresh) {
                                 onEvent.invoke(CentralizedPromoEvent.SwipeRefresh)
+                            }
+                        },
+                        coachMarkListener = { pageId ->
+                            //disable coachmarlableOn when we don't have to show coachmark anymore
+                            if (enableCoachMark) {
+                                Modifier.coachmarkableOn(
+                                    pageId == PromoCreationUiModel.PAGE_ID_SHOP_COUPON
+                                ) {
+                                    coachMarkAnchor.invoke(it, pageId)
+                                }
+                            } else {
+                                Modifier
                             }
                         }
                     )
@@ -268,7 +290,8 @@ private fun LazyGridScope.BodySection(
     onFilterClicked: (Pair<String, String>) -> Unit,
     onPromoClicked: (PromoCreationUiModel) -> Unit,
     promoCreationImpressed: (String) -> Unit,
-    onLocalLoadRefreshClicked: () -> Unit
+    onLocalLoadRefreshClicked: () -> Unit,
+    coachMarkListener: (String) -> Modifier
 ) {
     val promoCreationDataCast = (promoCreationData as? Success)?.data as? PromoCreationListUiModel
 
@@ -289,7 +312,8 @@ private fun LazyGridScope.BodySection(
                     PromoCreationSection(
                         list = promoCreationDataCast.items,
                         onPromoClicked = onPromoClicked,
-                        promoCreationImpressed = promoCreationImpressed
+                        promoCreationImpressed = promoCreationImpressed,
+                        coachMarkListener = coachMarkListener,
                     )
                 }
             }
@@ -359,17 +383,18 @@ private fun LazyGridScope.HeaderSection(
 }
 
 private fun LazyGridScope.TitleHeader() {
-    TitleSection("Fitur promosi aktifmu")
+    TitleSection(string.sah_label_promo_and_ads)
 }
 
 private fun LazyGridScope.TitleBody() {
-    TitleSection("Buat Promosi")
+    TitleSection(string.sh_lbl_create_promotion)
 }
 
 private fun LazyGridScope.PromoCreationSection(
     list: List<PromoCreationUiModel>,
     onPromoClicked: (PromoCreationUiModel) -> Unit,
-    promoCreationImpressed: (String) -> Unit
+    promoCreationImpressed: (String) -> Unit,
+    coachMarkListener: (String) -> Modifier
 ) = items(
     items = list,
     key = { it.pageId + it.title },
@@ -388,14 +413,14 @@ private fun LazyGridScope.PromoCreationSection(
             listState = state,
             onItemViewed = {
                 promoCreationImpressed.invoke(it)
-                println("key $it impressed")
             },
             impressInterval = 0
         ),
         notAvailableText = data.notAvailableText,
         onPromoClicked = {
             onPromoClicked.invoke(data)
-        }
+        },
+        titleModifier = coachMarkListener.invoke(data.pageId)
     )
 }
 
@@ -427,7 +452,6 @@ private fun LazyGridScope.OnGoingPromoSection(
                     lazyListState = state,
                     onItemViewed = {
                         onGoingPromoImpressed.invoke(it)
-                        println("key $it impressed")
                     },
                     impressInterval = 0L
                 )

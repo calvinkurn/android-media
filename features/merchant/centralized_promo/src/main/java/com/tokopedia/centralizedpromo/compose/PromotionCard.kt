@@ -3,9 +3,11 @@ package com.tokopedia.centralizedpromo.compose
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -13,28 +15,43 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.tokopedia.centralizedpromo.R
+import com.tokopedia.centralizedpromo.R.string
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.nest.components.CoachMarkAnchor
+import com.tokopedia.nest.components.CoachMarkItem
+import com.tokopedia.nest.components.CoachMarkPosition.TOP
+import com.tokopedia.nest.components.NestCoachMark
 import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.components.NestLabel
 import com.tokopedia.nest.components.NestLabelType.HIGHLIGHT_DARK_RED
 import com.tokopedia.nest.components.card.NestCard
 import com.tokopedia.nest.components.card.NestCardType
+import com.tokopedia.nest.components.coachmarkableOn
 import com.tokopedia.nest.components.loader.NestLoader
 import com.tokopedia.nest.components.loader.NestLoaderType.Shimmer
 import com.tokopedia.nest.components.loader.NestShimmerType
@@ -42,6 +59,7 @@ import com.tokopedia.nest.components.loader.NestShimmerType.Rect
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
+import com.tokopedia.nest.principles.utils.toAnnotatedString
 
 @Composable
 fun PromotionCard(
@@ -51,7 +69,8 @@ fun PromotionCard(
     notAvailableText: String,
     imageUrl: String,
     modifier: Modifier = Modifier,
-    onPromoClicked: () -> Unit
+    onPromoClicked: () -> Unit,
+    titleModifier: Modifier = Modifier
 ) {
     NestCard(
         modifier = modifier.heightIn(min = 130.dp).fillMaxWidth(),
@@ -62,7 +81,10 @@ fun PromotionCard(
             Row(modifier = Modifier) {
                 NestTypography(
                     text = title,
-                    modifier = Modifier.padding(start = 12.dp, top = 8.dp, end = 4.dp).weight(1f),
+                    modifier = Modifier
+                        .padding(start = 12.dp, top = 8.dp, end = 4.dp)
+                        .weight(1f)
+                        .then(titleModifier),
                     overflow = TextOverflow.Ellipsis,
                     textStyle = NestTheme.typography.display3.copy(
                         color = NestTheme.colors.NN._950,
@@ -78,14 +100,14 @@ fun PromotionCard(
                 description
             } else {
                 context.getString(
-                    R.string.centralized_promo_description,
+                    string.centralized_promo_description,
                     notAvailableText,
                     description
                 ).parseAsHtml()
             }
 
             NestTypography(
-                text = desc,
+                text = desc.toAnnotatedString(),
                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 15.dp),
                 textStyle = NestTheme.typography.small.copy(color = NestTheme.colors.NN._600),
                 overflow = TextOverflow.Ellipsis,
@@ -189,10 +211,11 @@ private fun PromotionCardPreview() {
             description = "Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli",
             imageUrl = "",
             labelNew = "Baru",
-            notAvailableText = ""
-        ) {
+            notAvailableText = "",
+            onPromoClicked = {
 
-        }
+            }
+        )
     }
 }
 
@@ -223,12 +246,44 @@ private fun PromotionCardGridPreview() {
                         description = "Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli Iklankan produkmu untuk menjangkau lebih banyak pembeli",
                         imageUrl = "",
                         labelNew = "Baru",
-                        notAvailableText = ""
-                    ) {
-
-                    }
+                        notAvailableText = "",
+                        onPromoClicked = {}
+                    )
                 }
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun LazyColumnWithTextItems() {
+    var coachMarkAnchor: CoachMarkAnchor by remember { mutableStateOf(CoachMarkAnchor()) }
+
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(16.dp)
+    ) {
+        items(100) { index ->
+            Text(
+                text = "Item $index",
+                style = TextStyle(fontSize = 16.sp),
+                modifier = Modifier.coachmarkableOn(index == 20) {
+                    coachMarkAnchor = it
+                }
+            )
+        }
+    }
+
+    NestCoachMark(
+        visible = coachMarkAnchor.y > 0,
+        item = CoachMarkItem(
+            stringResource(string.centralize_promo_flash_sale_title_coachmark),
+            stringResource(string.centralize_promo_flash_sale_desc_coachmark),
+            coachMarkAnchor,
+            TOP
+        ),
+        onCloseIconClick = {
+        }
+    )
 }
