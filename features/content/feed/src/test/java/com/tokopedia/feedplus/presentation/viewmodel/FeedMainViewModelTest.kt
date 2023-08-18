@@ -1,10 +1,6 @@
 package com.tokopedia.feedplus.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
-import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
-import com.tokopedia.content.common.util.UiEventManager
-import com.tokopedia.createpost.common.domain.usecase.cache.DeleteMediaPostCacheUseCase
 import com.tokopedia.content.common.model.AuthorItem
 import com.tokopedia.content.common.model.Authors
 import com.tokopedia.content.common.model.Creation
@@ -17,6 +13,9 @@ import com.tokopedia.content.common.model.MetaData
 import com.tokopedia.content.common.model.Tab
 import com.tokopedia.content.common.model.UserProfile
 import com.tokopedia.content.common.usecase.FeedXHeaderUseCase
+import com.tokopedia.content.common.util.UiEventManager
+import com.tokopedia.createpost.common.domain.usecase.cache.DeleteMediaPostCacheUseCase
+import com.tokopedia.feedplus.presentation.model.ActiveTabSource
 import com.tokopedia.feedplus.presentation.model.CreateContentType
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.onboarding.OnboardingPreferences
@@ -48,7 +47,6 @@ class FeedMainViewModelTest {
     val coroutineTestRule = UnconfinedTestRule()
 
     private val feedXHeaderUseCase: FeedXHeaderUseCase = mockk()
-    private val submitReportUseCase: FeedComplaintSubmitReportUseCase = mockk()
     private val deletePostCacheUseCase: DeleteMediaPostCacheUseCase = mockk()
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -59,6 +57,8 @@ class FeedMainViewModelTest {
     private val onBoardingPreferences: OnboardingPreferences = mockk()
     private val userSession: UserSessionInterface = mockk()
     private val uiEventManager: UiEventManager<FeedMainEvent> = mockk()
+
+    private val activeTabSource = ActiveTabSource(null, 0)
 
     private lateinit var viewModel: FeedMainViewModel
 
@@ -72,8 +72,8 @@ class FeedMainViewModelTest {
         } returns false
 
         viewModel = FeedMainViewModel(
+            activeTabSource,
             feedXHeaderUseCase,
-            submitReportUseCase,
             deletePostCacheUseCase,
             testDispatcher,
             onBoardingPreferences,
@@ -93,8 +93,8 @@ class FeedMainViewModelTest {
 
         // when
         val mViewModel = FeedMainViewModel(
+            activeTabSource,
             feedXHeaderUseCase,
-            submitReportUseCase,
             deletePostCacheUseCase,
             testDispatcher,
             onBoardingPreferences,
@@ -144,7 +144,7 @@ class FeedMainViewModelTest {
         val feedTabs = viewModel.feedTabs.value
         assert(feedTabs is Success)
 
-        val successFeedTabsData = (feedTabs as Success).data
+        val successFeedTabsData = (feedTabs as Success).data.data
         assert(successFeedTabsData.size == dummyResponse.feedXHeaderData.data.tab.items.size)
 
         dummyResponse.feedXHeaderData.data.tab.items.forEachIndexed { index, items ->
@@ -172,55 +172,6 @@ class FeedMainViewModelTest {
         val failedTabsData = feedTabsData as Fail
         assert(failedTabsData.throwable is MessageErrorException)
         assert(failedTabsData.throwable.message == "Failed to fetch")
-    }
-
-    @Test
-    fun onChangeCurrentTabByType_whenTabsSuccess_shouldChangeCurrentTabsIndex() {
-        // given
-        val dummyResponse = getDummyFeedXHeaderData()
-        coEvery { feedXHeaderUseCase.setRequestParams(any()) } coAnswers {}
-        coEvery { feedXHeaderUseCase.executeOnBackground() } returns dummyResponse
-        viewModel.fetchFeedTabs()
-
-        // when 1
-        viewModel.changeCurrentTabByType("foryou")
-        // then 1
-        assert(viewModel.currentTabIndex.value == 0)
-
-        // when 2
-        viewModel.changeCurrentTabByType("following")
-        // then 2
-        assert(viewModel.currentTabIndex.value == 1)
-    }
-
-    @Test
-    fun onChangeCurrentTabByIndex_whenTabsSuccess_shouldChangeCurrentTabsIndex() {
-        // given
-
-        // when 1
-        viewModel.changeCurrentTabByIndex(0)
-        // then 1
-        assert(viewModel.currentTabIndex.value == 0)
-
-        // when 2
-        viewModel.changeCurrentTabByIndex(1)
-        // then 2
-        assert(viewModel.currentTabIndex.value == 1)
-    }
-
-    @Test
-    fun onChangeCurrentTabByType_whenTabsFail_shouldNotChangeCurrentTabsIndex() {
-        // given
-        val currentTabIndex = viewModel.currentTabIndex.value
-
-        coEvery { feedXHeaderUseCase.setRequestParams(any()) } coAnswers {}
-        coEvery { feedXHeaderUseCase.executeOnBackground() } throws MessageErrorException("")
-        viewModel.fetchFeedTabs()
-
-        // when
-        viewModel.changeCurrentTabByType("foryou")
-        // then
-        assert(viewModel.currentTabIndex.value == currentTabIndex)
     }
 
     @Test
@@ -299,49 +250,6 @@ class FeedMainViewModelTest {
     }
 
     @Test
-    fun onGetCurrentType_whenSuccess_shouldReturnCorrectType() {
-        var currentTabType = viewModel.getCurrentTabType()
-        assert(currentTabType.isEmpty())
-        var currentTabByIndex = viewModel.getTabType(0)
-        assert(currentTabByIndex.isEmpty())
-
-        // prepare feed tabs data
-        val dummyResponse = getDummyFeedXHeaderData()
-        coEvery { feedXHeaderUseCase.setRequestParams(any()) } coAnswers {}
-        coEvery { feedXHeaderUseCase.executeOnBackground() } returns dummyResponse
-        viewModel.fetchFeedTabs()
-
-        // get current tab type
-        currentTabType = viewModel.getCurrentTabType()
-        assert(currentTabType == "foryou")
-
-        // should be empty if index more than size
-        currentTabByIndex = viewModel.getTabType(10)
-        assert(currentTabByIndex.isEmpty())
-
-        // change and assert new tab type
-        viewModel.changeCurrentTabByType("following")
-        currentTabType = viewModel.getCurrentTabType()
-        assert(currentTabType == "following")
-
-        // get tab by index
-        currentTabByIndex = viewModel.getTabType(1)
-        assert(currentTabByIndex == "following")
-    }
-
-    @Test
-    fun onGetCurrentType_whenFailed_shouldReturnEmpty() {
-        // given
-        coEvery { feedXHeaderUseCase.setRequestParams(any()) } coAnswers {}
-        coEvery { feedXHeaderUseCase.executeOnBackground() } throws MessageErrorException("")
-        viewModel.fetchFeedTabs()
-
-        // when 2
-        val currentTabType = viewModel.getCurrentTabType()
-        assert(currentTabType == "")
-    }
-
-    @Test
     fun onFetchMetaData_whenFailed_shouldChangeValueToFail() {
         // given
         coEvery { feedXHeaderUseCase.setRequestParams(any()) } coAnswers {}
@@ -359,6 +267,7 @@ class FeedMainViewModelTest {
         val errorBottomSheetData = viewModel.feedCreateContentBottomSheetData.value as Fail
         assert(errorBottomSheetData.throwable is MessageErrorException)
         assert(errorBottomSheetData.throwable.message == "Failed")
+        assert(!viewModel.isShortEntryPointShowed)
     }
 
     @Test
@@ -374,7 +283,6 @@ class FeedMainViewModelTest {
         // then
         assert(viewModel.metaData.value is Success)
         val successData = (viewModel.metaData.value as Success).data
-        assert(successData.selectedIndex == 0)
         assert(successData.profileApplink == dummyData.feedXHeaderData.data.userProfile.applink)
         assert(successData.profilePhotoUrl == dummyData.feedXHeaderData.data.userProfile.image)
         assert(successData.showMyProfile == dummyData.feedXHeaderData.data.userProfile.isShown)
@@ -386,6 +294,49 @@ class FeedMainViewModelTest {
         assert(creationData[0].type == CreateContentType.CREATE_SHORT_VIDEO)
         assert(creationData[1].type == CreateContentType.CREATE_POST)
         assert(creationData[2].type == CreateContentType.CREATE_LIVE)
+        assert(viewModel.isShortEntryPointShowed)
+    }
+
+    @Test
+    fun onFetchMetaData_whenSuccessWithoutShortsCreation_isShortEntryPointShowedShouldBeFalse() {
+        // given
+        val dummyData = getDummyFeedXHeaderData()
+        val dummyDataWithoutShortsCreation = dummyData.copy(
+            feedXHeaderData = dummyData.feedXHeaderData.copy(
+                data = dummyData.feedXHeaderData.data.copy(
+                    creation = dummyData.feedXHeaderData.data.creation.copy(
+                        authors = dummyData.feedXHeaderData.data.creation.authors.map { author ->
+                            author.copy(
+                                items = author.items.filter {
+                                    it.type != CreateContentType.CREATE_SHORT_VIDEO.value
+                                }
+                            )
+                        }
+                    )
+                )
+            )
+        )
+
+        coEvery { feedXHeaderUseCase.setRequestParams(any()) } coAnswers {}
+        coEvery { feedXHeaderUseCase.executeOnBackground() } returns dummyDataWithoutShortsCreation
+
+        // when
+        viewModel.fetchFeedMetaData()
+
+        // then
+        assert(viewModel.metaData.value is Success)
+        val successData = (viewModel.metaData.value as Success).data
+        assert(successData.profileApplink == dummyData.feedXHeaderData.data.userProfile.applink)
+        assert(successData.profilePhotoUrl == dummyData.feedXHeaderData.data.userProfile.image)
+        assert(successData.showMyProfile == dummyData.feedXHeaderData.data.userProfile.isShown)
+        assert(successData.isCreationActive == dummyData.feedXHeaderData.data.creation.isActive)
+        assert(successData.showLive == dummyData.feedXHeaderData.data.live.isActive)
+        assert(successData.liveApplink == dummyData.feedXHeaderData.data.live.applink)
+
+        val creationData = (viewModel.feedCreateContentBottomSheetData.value as Success).data
+        assert(creationData[0].type == CreateContentType.CREATE_POST)
+        assert(creationData[1].type == CreateContentType.CREATE_LIVE)
+        assert(!viewModel.isShortEntryPointShowed)
     }
 
     @Test
@@ -480,7 +431,6 @@ class FeedMainViewModelTest {
         // then
         assert(viewModel.metaData.value is Success)
         val successData = (viewModel.metaData.value as Success).data
-        assert(successData.selectedIndex == 0)
         assert(successData.profileApplink == dummyData.feedXHeaderData.data.userProfile.applink)
         assert(successData.profilePhotoUrl == dummyData.feedXHeaderData.data.userProfile.image)
         assert(successData.showMyProfile == dummyData.feedXHeaderData.data.userProfile.isShown)
@@ -555,60 +505,6 @@ class FeedMainViewModelTest {
 
         viewModel.setReadyToShowOnboarding()
         coVerify(exactly = 1) { uiEventManager.emitEvent(FeedMainEvent.ShowSwipeOnboarding) }
-    }
-
-    @Test
-    fun onReportContent_whenFailUsecase_shouldChangeValueToFail() {
-        // given
-        coEvery { submitReportUseCase(any()) } throws MessageErrorException("Failed to fetch")
-
-        // when
-        viewModel.reportContent(FeedComplaintSubmitReportUseCase.Param("", "", "", ""))
-
-        // then
-        val response = viewModel.reportResponse.value
-        assert(response is Fail)
-        assert((response as Fail).throwable is MessageErrorException)
-        assert(response.throwable.message == "Failed to fetch")
-    }
-
-    @Test
-    fun onReportContent_whenNotSuccess_shouldChangeValueToFail() {
-        // given
-        val dummyResponse = FeedComplaintSubmitReportResponse(
-            data = FeedComplaintSubmitReportResponse.FeedComplaintSubmitReport(
-                success = false
-            )
-        )
-        coEvery { submitReportUseCase(any()) } returns dummyResponse
-
-        // when
-        viewModel.reportContent(FeedComplaintSubmitReportUseCase.Param("", "", "", ""))
-
-        // then
-        val response = viewModel.reportResponse.value
-        assert(response is Fail)
-        assert((response as Fail).throwable is MessageErrorException)
-        assert(response.throwable.message == "Error in Reporting")
-    }
-
-    @Test
-    fun onReportContent_whenSuccess_shouldChangeValueToSuccess() {
-        // given
-        val dummyResponse = FeedComplaintSubmitReportResponse(
-            data = FeedComplaintSubmitReportResponse.FeedComplaintSubmitReport(
-                success = true
-            )
-        )
-        coEvery { submitReportUseCase(any()) } returns dummyResponse
-
-        // when
-        viewModel.reportContent(FeedComplaintSubmitReportUseCase.Param("", "", "", ""))
-
-        // then
-        val response = viewModel.reportResponse.value
-        assert(response is Success)
-        assert((response as Success).data == dummyResponse)
     }
 
     private fun getDummyFeedXHeaderData() = FeedXHeaderResponse(

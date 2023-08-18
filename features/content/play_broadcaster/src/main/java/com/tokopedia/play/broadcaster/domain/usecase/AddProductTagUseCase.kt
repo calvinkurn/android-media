@@ -1,58 +1,56 @@
 package com.tokopedia.play.broadcaster.domain.usecase
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.play.broadcaster.domain.model.AddProductTagChannelResponse
-import com.tokopedia.play.broadcaster.util.handler.DefaultUseCaseHandler
-import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.play.broadcaster.domain.model.AddProductTagChannelResponse.GetProductId
+import com.tokopedia.play.broadcaster.domain.model.addproduct.AddProductTagChannelRequest
 import javax.inject.Inject
-
 
 /**
  * Created by mzennis on 05/06/20.
  */
 class AddProductTagUseCase @Inject constructor(
-        private val graphqlRepository: GraphqlRepository
-) : UseCase<AddProductTagChannelResponse.GetProductId>() {
+    private val repository: GraphqlRepository,
+    dispatcher: CoroutineDispatchers,
+) : CoroutineUseCase<AddProductTagChannelRequest, GetProductId>(dispatcher.io) {
 
-    private val query = """
+    override suspend fun execute(params: AddProductTagChannelRequest): GetProductId {
+        return try {
+            val param = generateParams(params)
+            repository.request(graphqlQuery(), param)
+        } catch (expected: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(expected)
+            throw MessageErrorException(expected.message)
+        }
+    }
+
+    override fun graphqlQuery(): String {
+        return """
             mutation setProductTag(${'$'}channelId: String!, ${'$'}productIds: [String]!){
               broadcasterSetActiveProductTags(req: {
                 channelID: ${'$'}channelId,
                 productIDs: ${'$'}productIds,
               }){
-                    productIDs
+                 productIDs
               }
             }
-        """
+        """.trimIndent()
+    }
 
-    var params: Map<String, Any> = emptyMap()
-
-    override suspend fun executeOnBackground(): AddProductTagChannelResponse.GetProductId {
-        val gqlResponse = DefaultUseCaseHandler(
-                gqlRepository = graphqlRepository,
-                query = query,
-                typeOfT = AddProductTagChannelResponse::class.java,
-                params = params,
-                gqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-        ).executeWithRetry()
-        val response = gqlResponse.getData<AddProductTagChannelResponse>(AddProductTagChannelResponse::class.java)
-        return response.productId
+    private fun generateParams(params: AddProductTagChannelRequest): Map<String, Any> {
+        return mapOf(
+            PARAMS_CHANNEL_ID to params.channelId,
+            PARAMS_PRODUCT_ID to params.productIds,
+        )
     }
 
     companion object {
-
         private const val PARAMS_CHANNEL_ID = "channelId"
         private const val PARAMS_PRODUCT_ID = "productIds"
-
-        fun createParams(
-                channelId: String,
-                productIds: List<String>
-        ): Map<String, Any> = mapOf(
-                PARAMS_CHANNEL_ID to channelId,
-                PARAMS_PRODUCT_ID to productIds
-        )
     }
 
 }

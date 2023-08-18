@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.common.viewholder.categorymenu
 
+import android.content.Context
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,6 +20,7 @@ import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuI
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowCategoryMenuBinding
+import com.tokopedia.tokopedianow.oldcategory.utils.TOKONOW_CATEGORY_L1
 import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoNowCategoryMenuViewHolder(
@@ -62,8 +64,10 @@ class TokoNowCategoryMenuViewHolder(
     }
 
     override fun onSeeAllClicked(
+        context: Context,
         headerName: String,
-        appLink: String
+        appLink: String,
+        widgetId: String
     ) {
         onClickSeeAll(appLink)
     }
@@ -114,7 +118,13 @@ class TokoNowCategoryMenuViewHolder(
         header.setListener(this@TokoNowCategoryMenuViewHolder)
         header.setModel(
             model = TokoNowDynamicHeaderUiModel(
-                title = data.title.ifEmpty { root.context.getString(R.string.tokopedianow_repurchase_category_menu_title) },
+                title = data.title.ifEmpty {
+                    if (data.source == TOKONOW_CATEGORY_L1) {
+                        root.context.getString(R.string.tokopedianow_category_l1_category_menu_title)
+                    } else {
+                        root.context.getString(R.string.tokopedianow_repurchase_category_menu_title)
+                    }
+                },
                 ctaText = root.context.getString(R.string.tokopedianow_see_all),
                 ctaTextLink = data.seeAllAppLink
             )

@@ -1,25 +1,28 @@
 package com.tokopedia.universal_sharing.view.usecase
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
-import com.tokopedia.universal_sharing.view.model.EligibleCommission
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
+import javax.inject.Inject
 
-class AffiliateEligibilityCheckUseCase constructor(
-    private val graphqlRepository: GraphqlRepository
-): GraphqlUseCase<GenerateAffiliateLinkEligibility>(graphqlRepository) {
+class AffiliateEligibilityCheckUseCase @Inject constructor(
+    @ApplicationContext private val graphqlRepository: GraphqlRepository
+) : GraphqlUseCase<GenerateAffiliateLinkEligibility>(graphqlRepository) {
 
     var params: HashMap<String, Any> = HashMap()
 
     override suspend fun executeOnBackground(): GenerateAffiliateLinkEligibility {
         val gqlRequest = GraphqlRequest(QUERY, GenerateAffiliateLinkEligibility.Response::class.java, params)
-        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
-            .Builder(CacheType.ALWAYS_CLOUD).build())
+        val gqlResponse = graphqlRepository.response(
+            listOf(gqlRequest),
+            GraphqlCacheStrategy
+                .Builder(CacheType.ALWAYS_CLOUD).build()
+        )
 
         val response = gqlResponse.getData<GenerateAffiliateLinkEligibility.Response>(GenerateAffiliateLinkEligibility.Response::class.java)
         return response.generateAffiliateLinkEligibility
@@ -61,9 +64,9 @@ class AffiliateEligibilityCheckUseCase constructor(
                 }
                 """
 
-        fun createParam(affiliatePDPInput: AffiliatePDPInput): HashMap<String, Any> {
+        fun createParam(affiliateInput: AffiliateInput): HashMap<String, Any> {
             return hashMapOf(
-                ELIGIBILITY_REQUEST to affiliatePDPInput
+                ELIGIBILITY_REQUEST to affiliateInput
             )
         }
     }

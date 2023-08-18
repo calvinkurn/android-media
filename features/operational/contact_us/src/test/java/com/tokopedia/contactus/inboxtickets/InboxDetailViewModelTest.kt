@@ -14,27 +14,20 @@ import com.tokopedia.contactus.inboxtickets.view.inboxdetail.uimodel.InboxDetail
 import com.tokopedia.contactus.inboxtickets.view.utils.Utils
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
 import com.tokopedia.graphql.data.model.GraphqlError
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.mockk
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.lang.reflect.Method
-import kotlin.coroutines.intrinsics.suspendCoroutineUninterceptedOrReturn
 
 class InboxDetailViewModelTest {
 
@@ -59,7 +52,7 @@ class InboxDetailViewModelTest {
     lateinit var closeTicketByUserUseCase: CloseTicketByUserUseCase
 
     @RelaxedMockK
-    lateinit var contactUsUploadImageUseCase: ContactUsUploadImageUseCase
+    lateinit var getFileUseCase: GetFileUseCase
 
     @RelaxedMockK
     lateinit var chipUploadHostConfigUseCase: ChipUploadHostConfigUseCase
@@ -89,13 +82,14 @@ class InboxDetailViewModelTest {
             inboxOptionUseCase,
             submitRatingUseCase,
             closeTicketByUserUseCase,
-            contactUsUploadImageUseCase,
+            getFileUseCase,
             chipUploadHostConfigUseCase,
             secureUploadUseCase,
             userSession,
             CoroutineTestDispatchersProvider
         )
 
+        mockkStatic(Utils::class)
         utlis = Utils()
     }
 
@@ -330,7 +324,7 @@ class InboxDetailViewModelTest {
     @Test
     fun `send text message with Image but serverId is 0 or failed to get `() {
         runBlockingTest {
-            coEvery { contactUsUploadImageUseCase.getFile(any()) } returns arrayListOf()
+            coEvery { getFileUseCase.getFilePath(any()) } returns arrayListOf()
             coEvery { chipUploadHostConfigUseCase(Unit) } returns createConfigServerUploadResponse()
             val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
@@ -347,7 +341,7 @@ class InboxDetailViewModelTest {
     @Test
     fun `send text message with Image but failed because coroutine`() {
         runBlockingTest {
-            coEvery { contactUsUploadImageUseCase.getFile(any()) } throws Exception()
+            coEvery { getFileUseCase.getFilePath(any()) } throws Exception()
             val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
@@ -367,7 +361,7 @@ class InboxDetailViewModelTest {
     @Test
     fun `send text with Image but serverId is 1, then failed send it because get file process`() {
         runBlockingTest {
-            coEvery { contactUsUploadImageUseCase.getFile(any()) } returns arrayListOf()
+            coEvery { getFileUseCase.getFilePath(any()) } returns arrayListOf()
             coEvery { chipUploadHostConfigUseCase(Unit) } returns createConfigServerUploadResponse(
                 false,
                 "1"
@@ -377,385 +371,6 @@ class InboxDetailViewModelTest {
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
-            viewModel.sendMessage(1, arrayListOf(ImageUpload()), "aa")
-            val actualEvent = emittedValues.last()
-            val isErrorSendMessageType = actualEvent is InboxDetailUiEffect.SendTextMessageFailed
-            assertEquals(true, isErrorSendMessageType)
-            job.cancel()
-        }
-    }
-
-    @Test
-    fun `send text with Image but serverId is 1, then failed send because upload process`() {
-        runBlockingTest {
-            coEvery { contactUsUploadImageUseCase.getFile(any()) } returns arrayListOf("/sasdasd")
-            coEvery { chipUploadHostConfigUseCase(Unit) } returns createConfigServerUploadResponse(
-                false,
-                "1"
-            )
-            coEvery {
-                secureUploadUseCase.getSecureImageParameter(
-                    any(),
-                    any()
-                )
-            } returns createGetSecureImageParameter(false)
-            coEvery {
-                contactUsUploadImageUseCase.uploadFile(
-                    any(),
-                    any(),
-                    any(),
-                    any()
-                )
-            } returns arrayListOf()
-
-            val emittedValues = arrayListOf<InboxDetailUiEffect>()
-            val job = launch {
-                viewModel.uiEffect.toList(emittedValues)
-            }
-            viewModel.sendMessage(1, arrayListOf(ImageUpload()), "aa")
-            val actualEvent = emittedValues.last()
-            val isErrorSendMessageType = actualEvent is InboxDetailUiEffect.SendTextMessageFailed
-            assertEquals(true, isErrorSendMessageType)
-            job.cancel()
-        }
-    }
-
-    @Test
-    fun `send text with Image but serverId is 1 then failed send because getCreateTicketResult say FAILED`() {
-        runBlockingTest {
-            val graphResponseSend: TicketReplyResponse = mockk(relaxed = true)
-            val successData: TicketReplyResponse = mockk(relaxed = true)
-            coEvery { contactUsUploadImageUseCase.getFile(any()) } returns arrayListOf("/sasdasd")
-            coEvery { chipUploadHostConfigUseCase(Unit) } returns createConfigServerUploadResponse(
-                false,
-                "1"
-            )
-            coEvery {
-                secureUploadUseCase.getSecureImageParameter(
-                    any(),
-                    any()
-                )
-            } returns createGetSecureImageParameter(false)
-            coEvery {
-                contactUsUploadImageUseCase.uploadFile(
-                    any(),
-                    any(),
-                    any(),
-                    any()
-                )
-            } returns arrayListOf(
-                ImageUpload()
-            )
-            coEvery {
-                postMessageUseCase.createRequestParams(
-                    any(),
-                    any(),
-                    any(),
-                    any(),
-                    any(),
-                    any()
-                )
-            } returns mockk(relaxed = false)
-            coEvery { postMessageUseCase(any()) } returns graphResponseSend
-            coEvery { successData.getTicketReplay().getTicketReplayData().status } returns "FAILED"
-
-            val emittedValues = arrayListOf<InboxDetailUiEffect>()
-            val job = launch {
-                viewModel.uiEffect.toList(emittedValues)
-            }
-            viewModel.sendMessage(1, arrayListOf(ImageUpload()), "aa")
-            val actualEvent = emittedValues.last()
-            val isErrorSendMessageType = actualEvent is InboxDetailUiEffect.SendTextMessageFailed
-            assertEquals(true, isErrorSendMessageType)
-            job.cancel()
-        }
-    }
-
-    @Test
-    fun `send text message with Image but serverId is 1 but failed to send it because ticketReplyData postKey is empty`() {
-        runBlockingTest {
-            val successData: TicketReplyResponse = mockk(relaxed = true)
-            coEvery { contactUsUploadImageUseCase.getFile(any()) } returns arrayListOf("/sasdasd")
-            coEvery { chipUploadHostConfigUseCase(Unit)} returns createConfigServerUploadResponse(
-                false,
-                "1"
-            )
-            coEvery {
-                secureUploadUseCase.getSecureImageParameter(
-                    any(),
-                    any()
-                )
-            } returns createGetSecureImageParameter(false)
-            coEvery {
-                contactUsUploadImageUseCase.uploadFile(
-                    any(),
-                    any(),
-                    any(),
-                    any()
-                )
-            } returns arrayListOf(
-                ImageUpload()
-            )
-            coEvery {
-                postMessageUseCase.createRequestParams(
-                    any(),
-                    any(),
-                    any(),
-                    any(),
-                    any(),
-                    any()
-                )
-            } returns mockk(relaxed = false)
-            coEvery { postMessageUseCase(any()) } returns successData
-            coEvery { successData.getTicketReplay().getTicketReplayData().status } returns "OK"
-            coEvery { successData.getTicketReplay().getTicketReplayData().postKey } returns ""
-
-            val emittedValues = arrayListOf<InboxDetailUiEffect>()
-            val job = launch {
-                viewModel.uiEffect.toList(emittedValues)
-            }
-            viewModel.sendMessage(1, arrayListOf(ImageUpload()), "aa")
-            val actualEvent = emittedValues.last()
-            val isErrorSendMessageType = actualEvent is InboxDetailUiEffect.SendTextMessageFailed
-            assertEquals(true, isErrorSendMessageType)
-            job.cancel()
-        }
-    }
-
-    @Test
-    fun `send text message with Image but serverId is 1 but failed because secureUploadUseCase getSecureImageParameter are failed`() {
-        runBlockingTest {
-            val successData: TicketReplyResponse = mockk(relaxed = true)
-            coEvery { contactUsUploadImageUseCase.getFile(any()) } returns arrayListOf("/sasdasd")
-            coEvery { chipUploadHostConfigUseCase(Unit) } returns createConfigServerUploadResponse(
-                false,
-                "1"
-            )
-            coEvery {
-                secureUploadUseCase.getSecureImageParameter(
-                    any(),
-                    any()
-                )
-            } returns createGetSecureImageParameter(true)
-            coEvery {
-                contactUsUploadImageUseCase.uploadFile(
-                    any(),
-                    any(),
-                    any(),
-                    any()
-                )
-            } returns arrayListOf(
-                ImageUpload()
-            )
-            coEvery {
-                postMessageUseCase.createRequestParams(
-                    any(),
-                    any(),
-                    any(),
-                    any(),
-                    any(),
-                    any()
-                )
-            } returns mockk(relaxed = false)
-            coEvery { postMessageUseCase(any()) } returns successData
-            coEvery { successData.getTicketReplay().getTicketReplayData().status } returns "OK"
-            coEvery { successData.getTicketReplay().getTicketReplayData().postKey } returns ""
-
-            val emittedValues = arrayListOf<InboxDetailUiEffect>()
-            val job = launch {
-                viewModel.uiEffect.toList(emittedValues)
-            }
-            viewModel.sendMessage(1, arrayListOf(ImageUpload()), "aa")
-            val actualEvent = emittedValues.last()
-            val isErrorSendMessageType = actualEvent is InboxDetailUiEffect.SendTextMessageFailed
-            assertEquals(true, isErrorSendMessageType)
-            job.cancel()
-        }
-    }
-
-    @Test
-    fun `send text message with Image but serverId is 1 but failed to send it because postMessageUseCase getInboxDataResponse is failed`() {
-        runBlockingTest {
-            val successData: TicketReplyResponse = mockk(relaxed = true)
-            val successSend: StepTwoResponse = mockk(relaxed = true)
-            coEvery { contactUsUploadImageUseCase.getFile(any()) } returns arrayListOf("/sasdasd")
-            coEvery { chipUploadHostConfigUseCase(Unit) } returns createConfigServerUploadResponse(
-                false,
-                "1"
-            )
-            coEvery {
-                secureUploadUseCase.getSecureImageParameter(
-                    any(),
-                    any()
-                )
-            } returns createGetSecureImageParameter(false)
-            coEvery {
-                contactUsUploadImageUseCase.uploadFile(
-                    any(),
-                    any(),
-                    any(),
-                    any()
-                )
-            } returns arrayListOf(
-                ImageUpload()
-            )
-            coEvery {
-                postMessageUseCase.createRequestParams(
-                    any(),
-                    any(),
-                    any(),
-                    any(),
-                    any(),
-                    any()
-                )
-            } returns mockk(relaxed = false)
-            coEvery { postMessageUseCase(any()) } returns successData
-            coEvery { successData.getTicketReplay().getTicketReplayData().status } returns "OK"
-            coEvery { successData.getTicketReplay().getTicketReplayData().postKey } returns "dsadsa"
-
-            coEvery {
-                postMessageUseCase2.createRequestParams(
-                    any(),
-                    any(),
-                    any(),
-                    any()
-                )
-            } returns mockk(relaxed = true)
-            coEvery { postMessageUseCase2(any()) } returns successSend
-            coEvery { successSend.getTicketAttach().getAttachment().isSuccess } returns 0
-
-            val emittedValues = arrayListOf<InboxDetailUiEffect>()
-            val job = launch {
-                viewModel.uiEffect.toList(emittedValues)
-            }
-            viewModel.sendMessage(1, arrayListOf(ImageUpload()), "aa")
-            val actualEvent = emittedValues.last()
-            val isErrorSendMessageType = actualEvent is InboxDetailUiEffect.SendTextMessageFailed
-            assertEquals(true, isErrorSendMessageType)
-            job.cancel()
-        }
-    }
-
-    @Test
-    fun `send text message with Image serverId is 1 and send data is success`() {
-        runBlockingTest {
-            val successData: TicketReplyResponse = mockk(relaxed = true)
-            val successSend: StepTwoResponse = mockk(relaxed = true)
-            coEvery { contactUsUploadImageUseCase.getFile(any()) } returns arrayListOf("/sasdasd")
-            coEvery { chipUploadHostConfigUseCase(Unit) } returns createConfigServerUploadResponse(
-                false,
-                "1"
-            )
-            coEvery {
-                secureUploadUseCase.getSecureImageParameter(
-                    any(),
-                    any()
-                )
-            } returns createGetSecureImageParameter(false)
-            coEvery {
-                contactUsUploadImageUseCase.uploadFile(
-                    any(),
-                    any(),
-                    any(),
-                    any()
-                )
-            } returns arrayListOf(
-                ImageUpload()
-            )
-            coEvery {
-                postMessageUseCase.createRequestParams(
-                    any(),
-                    any(),
-                    any(),
-                    any(),
-                    any(),
-                    any()
-                )
-            } returns mockk(relaxed = false)
-            coEvery { postMessageUseCase(any()) } returns successData
-            coEvery { successData.getTicketReplay().getTicketReplayData().status } returns "OK"
-            coEvery { successData.getTicketReplay().getTicketReplayData().postKey } returns "dsadsa"
-
-            coEvery {
-                postMessageUseCase2.createRequestParams(
-                    any(),
-                    any(),
-                    any(),
-                    any()
-                )
-            } returns mockk(relaxed = true)
-            coEvery { postMessageUseCase2(any()) } returns successSend
-            coEvery { successSend.getTicketAttach().getAttachment().isSuccess } returns 1
-
-            val emittedValues = arrayListOf<InboxDetailUiEffect>()
-            val job = launch {
-                viewModel.uiEffect.toList(emittedValues)
-            }
-            viewModel.sendMessage(1, arrayListOf(ImageUpload()), "aa")
-            val actualEvent = emittedValues.last()
-            val isSuccessSendMessage = actualEvent is InboxDetailUiEffect.SendTextMessageSuccess
-            assertEquals(true, isSuccessSendMessage)
-            job.cancel()
-        }
-    }
-
-    @Test
-    fun `send text message with Image serverId is 1 but postMessageUseCase2 getInboxDataResponse is error`() {
-        runBlockingTest {
-            val successData: TicketReplyResponse = mockk(relaxed = true)
-            coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
-                showRating = true
-            )
-            coEvery { contactUsUploadImageUseCase.getFile(any()) } returns arrayListOf("/sasdasd")
-            coEvery { chipUploadHostConfigUseCase(Unit) } returns createConfigServerUploadResponse(
-                false,
-                "1"
-            )
-            coEvery {
-                secureUploadUseCase.getSecureImageParameter(
-                    any(),
-                    any()
-                )
-            } returns createGetSecureImageParameter(false)
-            coEvery {
-                contactUsUploadImageUseCase.uploadFile(
-                    any(),
-                    any(),
-                    any(),
-                    any()
-                )
-            } returns arrayListOf(
-                ImageUpload()
-            )
-            coEvery {
-                postMessageUseCase.createRequestParams(
-                    any(),
-                    any(),
-                    any(),
-                    any(),
-                    any(),
-                    any()
-                )
-            } returns mockk(relaxed = false)
-            coEvery { postMessageUseCase(any()) } returns successData
-            coEvery { successData.getTicketReplay().getTicketReplayData().status } returns "OK"
-            coEvery { successData.getTicketReplay().getTicketReplayData().postKey } returns "dsadsa"
-
-            coEvery {
-                postMessageUseCase2.createRequestParams(
-                    any(),
-                    any(),
-                    any(),
-                    any()
-                )
-            } returns mockk(relaxed = true)
-            coEvery { postMessageUseCase2(any()) } throws Exception()
-
-            val emittedValues = arrayListOf<InboxDetailUiEffect>()
-            val job = launch {
-                viewModel.uiEffect.toList(emittedValues)
-            }
-            viewModel.ticketId("1213")
             viewModel.sendMessage(1, arrayListOf(ImageUpload()), "aa")
             val actualEvent = emittedValues.last()
             val isErrorSendMessageType = actualEvent is InboxDetailUiEffect.SendTextMessageFailed
@@ -1373,93 +988,150 @@ class InboxDetailViewModelTest {
     }
 
     @Test
-    fun `getSecurelyUploadedImages is empty because one of get secure url is failed`() {
+    fun `replay message with Image and it's success`(){
         runBlockingTest {
-            val responseSecure: SecureImageParameter = mockk(relaxed = true)
-            val responseChipUpload: ChipUploadHostConfig = mockk(relaxed = true)
-            val responseChipUpload2: ChipUploadHostConfig = mockk(relaxed = true)
-            coEvery { contactUsUploadImageUseCase.getFile(any()) } returns arrayListOf(
-                "/sasdasd",
-                "/dasdad"
+            val replayMessageResponse: TicketReplyResponse = mockk(relaxed = true)
+            val sendingUrlAttachmentOfReplayMessage: StepTwoResponse = mockk(relaxed = true)
+            coEvery { getFileUseCase.getFilePath(any()) } returns arrayListOf("dsadsa")
+            coEvery { chipUploadHostConfigUseCase(Unit) } returns createConfigServerUploadResponse(
+                isError = false, serverId = "1"
             )
-            coEvery {
-                secureUploadUseCase.getSecureImageParameter(
-                    any(),
-                    any()
-                )
-            } returns responseSecure
-            coEvery {
-                responseChipUpload.getUploadHostConfig().getUploadHostConfigData().getHost()
-                    .getServerID()
-            } returns "1"
-            coEvery { chipUploadHostConfigUseCase(Unit) } returnsMany arrayListOf(
-                responseChipUpload,
-                responseChipUpload2
-            )
-            every { responseSecure.getImage().isSuccess() } returnsMany arrayListOf(1, 0)
-            coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
-                statusTickets = "open"
-            )
+            coEvery { secureUploadUseCase.uploadSecureImage(any(), any(), any()) } returns "dasdasdasdsad"
+            coEvery { postMessageUseCase(any()) } returns replayMessageResponse
+            coEvery { replayMessageResponse.getTicketReplay().getTicketReplayData().status } returns "OK"
+            coEvery { replayMessageResponse.getTicketReplay().getTicketReplayData().postKey } returns "daspdopasdoasd"
+            coEvery { postMessageUseCase2(any()) } returns sendingUrlAttachmentOfReplayMessage
+            coEvery { sendingUrlAttachmentOfReplayMessage.getTicketAttach().getAttachment().isSuccess } returns 1
             val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
-
-            viewModel.ticketId("1234")
-            viewModel.sendMessage(1, arrayListOf(ImageUpload(), ImageUpload()), "aa")
-            val actualResult = emittedValues.last()
-            val isFailed = actualResult is InboxDetailUiEffect.SendTextMessageFailed
-            assertEquals(true, isFailed)
+            viewModel.sendMessage(1, arrayListOf(ImageUpload()), "aa")
+            val actualEvent = emittedValues.last()
+            val isSendMessageTypeSuccess = actualEvent is InboxDetailUiEffect.SendTextMessageSuccess
+            assertEquals(true, isSendMessageTypeSuccess)
             job.cancel()
         }
     }
 
     @Test
-    fun `getSecurelyUploadedImages is empty`() {
+    fun `replay message with image but upload image is failed`(){
         runBlockingTest {
-            val responseSecure: SecureImageParameter = mockk(relaxed = true)
-            val responseChipUpload: ChipUploadHostConfig = mockk(relaxed = true)
-            val responseChipUpload2: ChipUploadHostConfig = mockk(relaxed = true)
-            coEvery { contactUsUploadImageUseCase.getFile(any()) } returns arrayListOf(
-                "/sasdasd",
-                "/dasdad"
+            coEvery { getFileUseCase.getFilePath(any()) } returns arrayListOf("dsadsa")
+            coEvery { chipUploadHostConfigUseCase(Unit) } returns createConfigServerUploadResponse(
+                isError = false, serverId = "1"
             )
-            coEvery {
-                secureUploadUseCase.getSecureImageParameter(
-                    any(),
-                    any()
-                )
-            } returns responseSecure
-            coEvery {
-                responseChipUpload.getUploadHostConfig().getUploadHostConfigData().getHost()
-                    .getServerID()
-            } returns "1"
-            coEvery { chipUploadHostConfigUseCase(Unit) } returnsMany arrayListOf(
-                responseChipUpload,
-                responseChipUpload2
-            )
-            every { responseSecure.getImage().isSuccess() } returnsMany arrayListOf(0, 0)
-            coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
-                statusTickets = "open"
-            )
+            coEvery { secureUploadUseCase.uploadSecureImage(any(), any(), any()) } returns ""
             val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
-
-            viewModel.ticketId("1234")
-            viewModel.sendMessage(1, arrayListOf(ImageUpload(), ImageUpload()), "aa")
-            val actualResult = emittedValues.last()
-            val isFailed = actualResult is InboxDetailUiEffect.SendTextMessageFailed
-            assertEquals(true, isFailed)
+            viewModel.sendMessage(1, arrayListOf(ImageUpload()), "aa")
+            val actualEvent = emittedValues.last()
+            val isSendMessageTypeFailed = actualEvent is InboxDetailUiEffect.SendTextMessageFailed
+            assertEquals(true, isSendMessageTypeFailed)
             job.cancel()
         }
     }
 
-    private fun createGetSecureImageParameter(isError: Boolean): SecureImageParameter {
-        return SecureImageParameter(
-            imageData = SecureImageParameter.ImageData(isSuccess = if (isError) 0 else 1)
-        )
+    @Test
+    fun `replay message with image but upload image is failed because failed to send message`(){
+        runBlockingTest {
+            val replayMessageResponse: TicketReplyResponse = mockk(relaxed = true)
+            coEvery { getFileUseCase.getFilePath(any()) } returns arrayListOf("dsadsa")
+            coEvery { chipUploadHostConfigUseCase(Unit) } returns createConfigServerUploadResponse(
+                isError = false, serverId = "1"
+            )
+            coEvery { secureUploadUseCase.uploadSecureImage(any(), any(), any()) } returns "dasdadas"
+            coEvery { postMessageUseCase(any()) } returns replayMessageResponse
+            coEvery { replayMessageResponse.getTicketReplay().getTicketReplayData().status } returns "FAILED"
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
+            val job = launch {
+                viewModel.uiEffect.toList(emittedValues)
+            }
+            viewModel.sendMessage(1, arrayListOf(ImageUpload()), "aa")
+            val actualEvent = emittedValues.last()
+            val isSendMessageTypeFailed = actualEvent is InboxDetailUiEffect.SendTextMessageFailed
+            assertEquals(true, isSendMessageTypeFailed)
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `replay message with Image but it's failed because send message return empty postkey`(){
+        runBlockingTest {
+            val replayMessageResponse: TicketReplyResponse = mockk(relaxed = true)
+            coEvery { getFileUseCase.getFilePath(any()) } returns arrayListOf("dsadsa")
+            coEvery { chipUploadHostConfigUseCase(Unit) } returns createConfigServerUploadResponse(
+                isError = false, serverId = "1"
+            )
+            coEvery { secureUploadUseCase.uploadSecureImage(any(), any(), any()) } returns "dasdasdasdsad"
+            coEvery { postMessageUseCase(any()) } returns replayMessageResponse
+            coEvery { replayMessageResponse.getTicketReplay().getTicketReplayData().status } returns "OK"
+            coEvery { replayMessageResponse.getTicketReplay().getTicketReplayData().postKey } returns ""
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
+            val job = launch {
+                viewModel.uiEffect.toList(emittedValues)
+            }
+            viewModel.sendMessage(1, arrayListOf(ImageUpload()), "aa")
+            val actualEvent = emittedValues.last()
+            val isSendMessageTypeFailed = actualEvent is InboxDetailUiEffect.SendTextMessageFailed
+            assertEquals(true, isSendMessageTypeFailed)
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `replay message with Image but it's failed because failed to send attachment url`(){
+        runBlockingTest {
+            val replayMessageResponse: TicketReplyResponse = mockk(relaxed = true)
+            val sendingUrlAttachmentOfReplayMessage: StepTwoResponse = mockk(relaxed = true)
+            coEvery { getFileUseCase.getFilePath(any()) } returns arrayListOf("dsadsa")
+            coEvery { chipUploadHostConfigUseCase(Unit) } returns createConfigServerUploadResponse(
+                isError = false, serverId = "1"
+            )
+            coEvery { secureUploadUseCase.uploadSecureImage(any(), any(), any()) } returns "dasdasdasdsad"
+            coEvery { postMessageUseCase(any()) } returns replayMessageResponse
+            coEvery { replayMessageResponse.getTicketReplay().getTicketReplayData().status } returns "OK"
+            coEvery { replayMessageResponse.getTicketReplay().getTicketReplayData().postKey } returns "daspdopasdoasd"
+            coEvery { postMessageUseCase2(any()) } returns sendingUrlAttachmentOfReplayMessage
+            coEvery { sendingUrlAttachmentOfReplayMessage.getTicketAttach().getAttachment().isSuccess } returns 0
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
+            val job = launch {
+                viewModel.uiEffect.toList(emittedValues)
+            }
+            viewModel.sendMessage(1, arrayListOf(ImageUpload()), "aa")
+            val actualEvent = emittedValues.last()
+            val isSendMessageTypeFailed = actualEvent is InboxDetailUiEffect.SendTextMessageFailed
+            assertEquals(true, isSendMessageTypeFailed)
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `replay message with Image but it's failed because send attachment url is down`(){
+        runBlockingTest {
+            val replayMessageResponse: TicketReplyResponse = mockk(relaxed = true)
+            val sendingUrlAttachmentOfReplayMessage: StepTwoResponse = mockk(relaxed = true)
+            coEvery { getFileUseCase.getFilePath(any()) } returns arrayListOf("dsadsa")
+            coEvery { chipUploadHostConfigUseCase(Unit) } returns createConfigServerUploadResponse(
+                isError = false, serverId = "1"
+            )
+            coEvery { secureUploadUseCase.uploadSecureImage(any(), any(), any()) } returns "dasdasdasdsad"
+            coEvery { postMessageUseCase(any()) } returns replayMessageResponse
+            coEvery { replayMessageResponse.getTicketReplay().getTicketReplayData().status } returns "OK"
+            coEvery { replayMessageResponse.getTicketReplay().getTicketReplayData().postKey } returns "daspdopasdoasd"
+            coEvery { postMessageUseCase2(any()) } throws Exception()
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
+            val job = launch {
+                viewModel.uiEffect.toList(emittedValues)
+            }
+            viewModel.sendMessage(1, arrayListOf(ImageUpload()), "aa")
+            val actualEvent = emittedValues.last()
+            val isSendMessageTypeFailed = actualEvent is InboxDetailUiEffect.SendTextMessageFailed
+            assertEquals(true, isSendMessageTypeFailed)
+            job.cancel()
+        }
     }
 
     private fun createTicketDetail(
@@ -1558,9 +1230,4 @@ class InboxDetailViewModelTest {
             .apply { isAccessible = true }
             .set(this, value)
     }
-
-    suspend fun Method.invokeSuspend(obj: Any, vararg args: Any?): Any? =
-        suspendCoroutineUninterceptedOrReturn { cont ->
-            invoke(obj, *args, cont)
-        }
 }

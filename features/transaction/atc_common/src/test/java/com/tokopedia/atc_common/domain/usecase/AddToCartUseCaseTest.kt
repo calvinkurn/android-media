@@ -67,7 +67,7 @@ class AddToCartUseCaseTest {
         result[objectType] = MockResponseProvider.getResponseAtcSuccess()
 
         every { graphqlUseCase.createObservable(any()) } returns
-                Observable.just(GraphqlResponse(result, errors, false))
+            Observable.just(GraphqlResponse(result, errors, false))
 
         every { addToCartDataMapper.mapAddToCartResponse(any()) } returns AddToCartDataModel(status = "OK", data = DataModel(success = 1))
 
@@ -101,8 +101,10 @@ class AddToCartUseCaseTest {
         // should run analytics
         verify {
             AddToCartBaseAnalytics.sendAppsFlyerTracking(any(), any(), any(), any(), any())
-            AddToCartBaseAnalytics.sendBranchIoTracking(any(), any(), any(), any(), any(),
-                    any(), any(), any(), any(), any(), any(), any())
+            AddToCartBaseAnalytics.sendBranchIoTracking(
+                any(), any(), any(), any(), any(),
+                any(), any(), any(), any(), any(), any(), any()
+            )
         }
 
         // should complete
@@ -143,8 +145,10 @@ class AddToCartUseCaseTest {
         // Should not run analytics
         verify(inverse = true) {
             AddToCartBaseAnalytics.sendAppsFlyerTracking(any(), any(), any(), any(), any())
-            AddToCartBaseAnalytics.sendBranchIoTracking(any(), any(), any(), any(), any(),
-                    any(), any(), any(), any(), any(), any(), any())
+            AddToCartBaseAnalytics.sendBranchIoTracking(
+                any(), any(), any(), any(), any(),
+                any(), any(), any(), any(), any(), any(), any()
+            )
         }
 
         // Should complete

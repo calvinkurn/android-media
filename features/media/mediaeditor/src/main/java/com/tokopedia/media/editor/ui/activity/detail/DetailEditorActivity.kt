@@ -40,10 +40,14 @@ class DetailEditorActivity : BaseEditorActivity() {
     private var editorModel = EditorUiModel()
 
     override fun onHeaderActionClick() {
-        if (editorIntent.isToolAddLogo()) {
-            fragment?.let {
-                if (!it.isAdded) return@let
-                (fragment as DetailEditorFragment).showAddLogoUploadTips(false)
+        fragment?.let {
+            if (!it.isAdded) return@let
+            (fragment as DetailEditorFragment).apply {
+                if (editorIntent.isToolAddLogo()) {
+                    showAddLogoUploadTips(false)
+                } else if (editorIntent.isToolAddText()) {
+                    showAddTextTips()
+                }
             }
         }
     }
@@ -88,7 +92,14 @@ class DetailEditorActivity : BaseEditorActivity() {
 
         setHeader(
             getString(getToolEditorText(editorIntent.editorToolType)),
-            rightIcon = if (editorIntent.isToolAddLogo()) IconUnify.INFORMATION else null
+            rightIcon = if (
+                editorIntent.isToolAddLogo() ||
+                editorIntent.isToolAddText()
+            ) {
+                IconUnify.INFORMATION
+            } else {
+                null
+            }
         )
     }
 

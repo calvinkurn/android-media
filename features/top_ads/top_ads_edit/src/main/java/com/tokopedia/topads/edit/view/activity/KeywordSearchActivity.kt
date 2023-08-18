@@ -108,10 +108,10 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
         val tooltipView =
             layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null)
                 .apply {
-                    tvToolTipText = this.findViewById(R.id.tooltip_text)
+                    tvToolTipText = this.findViewById(com.tokopedia.topads.common.R.id.tooltip_text)
                     tvToolTipText?.text =
                         getString(com.tokopedia.topads.common.R.string.topads_common_tip_memilih_kata_kunci)
-                    imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
+                    imgTooltipIcon = this.findViewById(com.tokopedia.topads.common.R.id.tooltip_icon)
                     imgTooltipIcon?.setImageDrawable(AppCompatResources.getDrawable(this.context,
                         com.tokopedia.topads.common.R.drawable.topads_ic_tips))
                 }
@@ -248,7 +248,7 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
         val startIndex = 0
         val endIndex = spannableText.length
         spannableText.setSpan(ForegroundColorSpan(ContextCompat.getColor(this,
-            com.tokopedia.unifyprinciples.R.color.Unify_G500)),
+            com.tokopedia.unifyprinciples.R.color.Unify_GN500)),
             startIndex,
             endIndex,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -262,7 +262,7 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
                 super.updateDrawState(ds)
                 ds.isUnderlineText = false
                 ds.color = ContextCompat.getColor(baseContext,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500)
             }
         }
         spannableText.setSpan(clickableSpan,

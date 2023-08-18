@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsBottomsheetDetailCategoryFlashSaleTkpdBinding
@@ -54,6 +55,7 @@ class DetailCategoryFlashSaleBottomSheet : BottomSheetUnify() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        applyUnifyBackgroundColor()
         setupBottomSheet(inflater, container)
         return super.onCreateView(inflater, container, savedInstanceState)
     }

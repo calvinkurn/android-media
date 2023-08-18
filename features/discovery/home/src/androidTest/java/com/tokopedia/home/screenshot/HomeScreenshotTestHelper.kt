@@ -29,7 +29,6 @@ object HomeScreenshotTestHelper {
             ScreenshotModel(name = "Lego4Image"),
             ScreenshotModel(name = "Lego3Image"),
             ScreenshotModel(name = "1x2Banner"),
-            ScreenshotModel(name = "4BannerAuto"),
             ScreenshotModel(name = "6ImageAuto"),
             ScreenshotModel(name = "RecommendationListCarousel"),
             ScreenshotModel(name = "ProductHighlight"),
@@ -60,9 +59,10 @@ object HomeScreenshotTestHelper {
             ScreenshotModel(name = "Lego4ImagePadding"),
             ScreenshotModel(name = "Lego3ImagePadding"),
             ScreenshotModel(name = "Lego6ImagePadding"),
-            ScreenshotModel(name = "Lego4AutoPadding"),
             ScreenshotModel(name = "TodoWidget"),
-            ScreenshotModel(name = "DealsWidget")
+            ScreenshotModel(name = "DealsWidget"),
+            ScreenshotModel(name = "FlashSaleWidget"),
+            ScreenshotModel(name = "SpecialReleaseRevampWidget"),
         )
     }
 

@@ -104,13 +104,19 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
                 setOnFailedGetCollectionListener {
                     isCheckoutButtonEnabled = false
                 }
-                setOnDetailConsentListener { _, consentType ->
-                    if (isCrossSellConsentWidgetVisible()) {
-                        isCheckoutButtonEnabled = when (consentType) {
-                            is ConsentType.SingleInfo -> true
-                            is ConsentType.SingleChecklist -> false
-                            is ConsentType.MultipleChecklist -> false
-                            else -> true
+                setOnDetailConsentListener { isShowConsent, consentType ->
+                    if (isShowConsent) {
+                        if (isCrossSellConsentWidgetVisible()) {
+                            isCheckoutButtonEnabled = when (consentType) {
+                                is ConsentType.SingleInfo -> true
+                                is ConsentType.SingleChecklist -> false
+                                is ConsentType.MultipleChecklist -> false
+                                else -> true
+                            }
+                        }
+                    } else {
+                        if (!isProductConsentWidgetVisible()) {
+                            isCheckoutButtonEnabled = true
                         }
                     }
                     removeConsentCollectionObserver()
@@ -119,6 +125,7 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
             load(lifecycleOwner, viewModelStoreOwner, consentCollectionParam)
         }
     }
+
     fun setProductConsentWidget(
         lifecycleOwner: LifecycleOwner,
         viewModelStoreOwner: ViewModelStoreOwner,
@@ -131,15 +138,19 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
             setOnFailedGetCollectionListener {
                 isCheckoutButtonEnabled = false
             }
-            setOnDetailConsentListener { _, consentType ->
-                if (isProductConsentWidgetVisible()) {
-                    isCheckoutButtonEnabled = when (consentType) {
-                        is ConsentType.SingleInfo -> true
-                        is ConsentType.SingleChecklist -> false
-                        is ConsentType.MultipleChecklist -> false
-                        else -> true
+            setOnDetailConsentListener { isShowConsent, consentType ->
+                if (isShowConsent) {
+                    if (isProductConsentWidgetVisible()) {
+                        isCheckoutButtonEnabled = when (consentType) {
+                            is ConsentType.SingleInfo -> true
+                            is ConsentType.SingleChecklist -> false
+                            is ConsentType.MultipleChecklist -> false
+                            else -> true
+                        }
+                        removeConsentCollectionObserver()
                     }
-                    removeConsentCollectionObserver()
+                } else {
+                    isCheckoutButtonEnabled = true
                 }
             }
             load(lifecycleOwner, viewModelStoreOwner, consentCollectionParam)

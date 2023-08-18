@@ -12,7 +12,8 @@ include "libraries:graphql"
 include "libraries:akamai_bot_lib"
 include "libraries:iris_session"
 include "libraries:base_list"
-include "libraries:kotlin_extensions"
+
+
 include "libraries:analytics_debugger_noop"
 include "libraries:dev_monitoring_tools"
 include "libraries:device_info"
@@ -49,7 +50,6 @@ include "features:transaction:atc_common"
 include "libraries:videoplayer"
 include "features:discovery:carousel_productcard"
 include "features:communication:chat_common"
-include "features:merchant:variant_common"
 include ':libraries:annotation_proc_central'
 include "libraries:image_picker"
 include "features:promo:promo_checkout_common"

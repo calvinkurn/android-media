@@ -38,7 +38,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/title_save_address_as_layout"
-                android:textColorHint="@color/Unify_N400_68" >
+                android:textColorHint="@color/Unify_NN600_68" >
 
                 <EditText
                     android:id="@+id/address_type"
@@ -49,7 +49,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     android:textSize="14sp"
-                    android:textColor="@color/Unify_N700"/>
+                    android:textColor="@color/Unify_NN950"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -57,7 +57,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/title_receiver_name"
-                android:textColorHint="@color/Unify_N400_68" >
+                android:textColorHint="@color/Unify_NN600_68" >
 
                 <EditText
                     android:id="@+id/receiver_name"
@@ -67,7 +67,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     android:textSize="14sp"
-                    android:textColor="@color/Unify_N700" />
+                    android:textColor="@color/Unify_NN950" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
@@ -87,7 +87,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/title_address_add_address"
-                android:textColorHint="@color/Unify_N400_68" >
+                android:textColorHint="@color/Unify_NN600_68" >
 
                 <EditText
                     android:id="@+id/address"
@@ -99,7 +99,7 @@
                     android:inputType="text"
                     android:maxLines="1"
                     android:textSize="14sp"
-                    android:textColor="@color/Unify_N700" />
+                    android:textColor="@color/Unify_NN950" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.tokopedia.unifyprinciples.Typography
@@ -122,7 +122,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/logistic_district_recommendation_label"
-                android:textColorHint="@color/Unify_N400_68">
+                android:textColorHint="@color/Unify_NN600_68">
 
                 <EditText
                     android:id="@+id/district"
@@ -132,7 +132,7 @@
                     android:clickable="true"
                     android:focusable="false"
                     android:textSize="14sp"
-                    android:textColor="@color/Unify_N700" />
+                    android:textColor="@color/Unify_NN950" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -140,7 +140,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/logistic_zip_code_label"
-                android:textColorHint="@color/Unify_N400_68" >
+                android:textColorHint="@color/Unify_NN600_68" >
 
                 <AutoCompleteTextView
                     android:id="@+id/autocomplete_postal_code"
@@ -170,7 +170,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/title_province"
-                android:textColor="@color/Unify_N300"
+                android:textColor="@color/Unify_NN500"
                 app:typographyType="body_2"/>
 
             <Spinner
@@ -185,7 +185,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/error_province"
-                android:textColor="@color/Unify_R600"
+                android:textColor="@color/Unify_RN500"
                 android:visibility="gone"
                 app:typographyType="body_3"/>
 
@@ -194,7 +194,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/title_regency"
-                android:textColor="@color/Unify_N300"
+                android:textColor="@color/Unify_NN500"
                 android:textSize="5dp"
                 android:visibility="gone" />
 
@@ -217,7 +217,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/error_regency"
-                android:textColor="@color/Unify_R600"
+                android:textColor="@color/Unify_RN500"
                 android:visibility="gone"
                 app:typographyType="body_3"/>
 
@@ -226,7 +226,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/title_sub_district"
-                android:textColor="@color/Unify_N300"
+                android:textColor="@color/Unify_NN500"
                 android:textSize="5dp"
                 android:visibility="gone" />
 
@@ -249,7 +249,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/error_sub_district"
-                android:textColor="@color/Unify_R600"
+                android:textColor="@color/Unify_RN500"
                 app:typographyType="body_3"
                 android:visibility="gone" />
 
@@ -258,7 +258,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/title_post_code"
-                android:textColorHint="@color/Unify_N400_68" >
+                android:textColorHint="@color/Unify_NN600_68" >
 
                 <EditText
                     android:id="@+id/post_code"
@@ -267,7 +267,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="number"
                     android:textSize="14sp"
-                    android:textColor="@color/Unify_N700" />
+                    android:textColor="@color/Unify_NN950" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
@@ -284,7 +284,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/title_receiver_phone_no"
-                android:textColorHint="@color/Unify_N400_68" >
+                android:textColorHint="@color/Unify_NN600_68" >
 
                 <EditText
                     android:id="@+id/receiver_phone"
@@ -294,7 +294,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="number"
                     android:textSize="14sp"
-                    android:textColor="@color/Unify_N700" />
+                    android:textColor="@color/Unify_NN950" />
             </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
@@ -312,7 +312,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/title_delivery_location_pickup"
-                android:textColor="@color/Unify_N300"
+                android:textColor="@color/Unify_NN500"
                 app:typographyType="body_2" />
 
             <RelativeLayout
@@ -348,7 +348,7 @@
                     android:focusable="false"
                     android:hint="@string/choose_location"
                     android:textSize="14sp"
-                    android:textColor="@color/Unify_N700" />
+                    android:textColor="@color/Unify_NN950" />
 
             </RelativeLayout>
 
@@ -356,7 +356,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/desc_delivery_location"
-                android:textColor="@color/Unify_N300"
+                android:textColor="@color/Unify_NN500"
                 app:typographyType="body_3"/>
 
         </LinearLayout>
@@ -367,7 +367,7 @@
             android:layout_height="wrap_content"
             android:textAlignment="center"
             android:layout_marginTop="8dp"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:typographyType="body_3" />
 
         <com.tokopedia.unifycomponents.UnifyButton

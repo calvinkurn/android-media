@@ -26,7 +26,7 @@ class MerchantVoucherCarouselViewHolder(itemView: View, val fragment: Fragment) 
     private var mHeaderView: FrameLayout = itemView.findViewById(R.id.header_view)
     private var linearLayoutManager: LinearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
     private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
-    private lateinit var merchantVoucherCarouselViewModel: MerchantVoucherCarouselViewModel
+    private var merchantVoucherCarouselViewModel: MerchantVoucherCarouselViewModel? = null
 
     init {
         recyclerView.layoutManager = linearLayoutManager
@@ -36,12 +36,14 @@ class MerchantVoucherCarouselViewHolder(itemView: View, val fragment: Fragment) 
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         merchantVoucherCarouselViewModel = discoveryBaseViewModel as MerchantVoucherCarouselViewModel
-        getSubComponent().inject(merchantVoucherCarouselViewModel)
-        if(UserSession(fragment.context).isLoggedIn) {
+        merchantVoucherCarouselViewModel?.let {
+            getSubComponent().inject(it)
+        }
+        if (UserSession(fragment.context).isLoggedIn) {
             shimmer.show()
             discoveryBaseViewModel.getLihatSemuaHeader()
             discoveryBaseViewModel.fetchCouponData()
-        }else{
+        } else {
             handleErrorState()
         }
         handleCarouselPagination()
@@ -55,9 +57,9 @@ class MerchantVoucherCarouselViewHolder(itemView: View, val fragment: Fragment) 
                 val totalItemCount: Int = linearLayoutManager.itemCount
                 val firstVisibleItemPosition: Int =
                     linearLayoutManager.findFirstVisibleItemPosition()
-                if (!merchantVoucherCarouselViewModel.isLoadingData() && !merchantVoucherCarouselViewModel.isLastPage()) {
+                if (merchantVoucherCarouselViewModel?.isLoadingData() == false && merchantVoucherCarouselViewModel?.isLastPage() == false) {
                     if ((visibleItemCount + firstVisibleItemPosition >= totalItemCount) && firstVisibleItemPosition >= 0) {
-                        merchantVoucherCarouselViewModel.fetchCarouselPaginatedCoupon()
+                        merchantVoucherCarouselViewModel?.fetchCarouselPaginatedCoupon()
                     }
                 }
             }
@@ -67,25 +69,26 @@ class MerchantVoucherCarouselViewHolder(itemView: View, val fragment: Fragment) 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let { lifecycle ->
-            merchantVoucherCarouselViewModel.headerData.observe(lifecycle, { component->
+            merchantVoucherCarouselViewModel?.headerData?.observe(lifecycle) { component ->
                 addCardHeader(component)
-            })
-            merchantVoucherCarouselViewModel.couponList.observe(lifecycle, { item ->
+            }
+            merchantVoucherCarouselViewModel?.couponList?.observe(lifecycle) { item ->
                 shimmer.hide()
                 recyclerView.show()
                 mDiscoveryRecycleAdapter.setDataList(item)
-            })
-            merchantVoucherCarouselViewModel.loadError.observe(lifecycle ,{
-                if(it)
-                handleErrorState()
-            })
-
+            }
+            merchantVoucherCarouselViewModel?.loadError?.observe(lifecycle) {
+                if (it) {
+                    handleErrorState()
+                }
+            }
         }
     }
 
     private fun handleErrorState() {
-        if (mHeaderView.childCount > 0)
+        if (mHeaderView.childCount > 0) {
             mHeaderView.removeAllViews()
+        }
         recyclerView.hide()
         shimmer.hide()
     }
@@ -99,8 +102,13 @@ class MerchantVoucherCarouselViewHolder(itemView: View, val fragment: Fragment) 
         componentsItem?.data?.firstOrNull()?.let {
             if (!it.title.isNullOrEmpty() || !it.subtitle.isNullOrEmpty()) {
                 mHeaderView.addView(
-                    CustomViewCreator.getCustomViewObject(itemView.context,
-                    ComponentsList.LihatSemua, componentsItem, fragment))
+                    CustomViewCreator.getCustomViewObject(
+                        itemView.context,
+                        ComponentsList.LihatSemua,
+                        componentsItem,
+                        fragment
+                    )
+                )
             }
         }
     }
@@ -108,9 +116,9 @@ class MerchantVoucherCarouselViewHolder(itemView: View, val fragment: Fragment) 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            merchantVoucherCarouselViewModel.couponList.removeObservers(it)
-            merchantVoucherCarouselViewModel.loadError.removeObservers(it)
-            merchantVoucherCarouselViewModel.headerData.removeObservers(it)
+            merchantVoucherCarouselViewModel?.couponList?.removeObservers(it)
+            merchantVoucherCarouselViewModel?.loadError?.removeObservers(it)
+            merchantVoucherCarouselViewModel?.headerData?.removeObservers(it)
         }
     }
 }

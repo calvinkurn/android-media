@@ -14,7 +14,6 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RollenceKey
-import timber.log.Timber
 
 /**
  * Created by kenny.hadisaputra on 12/05/23
@@ -32,7 +31,7 @@ class FeedIntermediaryFragment : Fragment(), FragmentListener {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentFeedIntermediaryBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -65,8 +64,8 @@ class FeedIntermediaryFragment : Fragment(), FragmentListener {
         }
     }
 
-    private fun isUsingImmersiveFeed(): Boolean {
-        return try {
+    private fun isUsingImmersiveFeed(): Boolean =
+        try {
             // check for the remote config
             if (remoteConfig.getBoolean(RemoteConfigKey.IS_USING_NEW_FEED, true)) {
                 // check for rollence
@@ -76,11 +75,9 @@ class FeedIntermediaryFragment : Fragment(), FragmentListener {
             } else {
                 false
             }
-        } catch (t: Throwable) {
-            Timber.e(t)
+        } catch (_: Throwable) {
             true
         }
-    }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)

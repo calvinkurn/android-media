@@ -1,6 +1,6 @@
 package com.tokopedia.mediauploader.video.data
 
-import com.tokopedia.mediauploader.common.util.NetworkTimeOutInterceptor.Companion.HEADER_TIMEOUT
+import com.tokopedia.mediauploader.common.util.interceptor.NetworkTimeOutInterceptor.Companion.HEADER_TIMEOUT
 import com.tokopedia.mediauploader.video.data.entity.LargeUploader
 import com.tokopedia.mediauploader.video.data.entity.SimpleUploader
 import com.tokopedia.mediauploader.video.data.entity.Transcoding

@@ -79,8 +79,6 @@ import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.build
@@ -90,6 +88,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
 import com.tokopedia.usercomponents.userconsent.domain.submission.DataElements
+import com.tokopedia.usercomponents.userconsent.ui.UserConsentWidget
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -128,9 +127,6 @@ class DigitalCartFragment :
 
     private val viewModel by viewModels<DigitalCartViewModel> { viewModelFactory }
     private val addToCartViewModel by viewModels<DigitalAddToCartViewModel> { viewModelFactory }
-    private val remoteConfig: RemoteConfig by lazy(LazyThreadSafetyMode.NONE) {
-        FirebaseRemoteConfigImpl(context)
-    }
     private var binding by autoClearedNullable<FragmentDigitalCheckoutPageBinding>()
 
     private var cartPassData: DigitalCheckoutPassData? = null
@@ -769,8 +765,9 @@ class DigitalCartFragment :
                 renderCrossSellConsentJob?.cancel()
                 renderCrossSellConsentJob = lifecycleScope.launch {
                     val consentParam = ConsentCollectionParam(
-                        collectionPointData.collectionPointId,
-                        collectionPointData.collectionPointVersion
+                        collectionId = collectionPointData.collectionPointId,
+                        version = collectionPointData.collectionPointVersion,
+                        identifier = userSession.userId
                     )
                     checkoutBottomViewWidget.setCrossSellConsentWidget(
                         viewLifecycleOwner,
@@ -792,16 +789,19 @@ class DigitalCartFragment :
                 renderProductConsentJob?.cancel()
                 renderProductConsentJob = lifecycleScope.launch {
                     val consentParam = ConsentCollectionParam(
-                        collectionPointData.collectionPointId,
-                        collectionPointData.collectionPointVersion,
-                        collectionDataElements.map {
+                        collectionId = collectionPointData.collectionPointId,
+                        version = collectionPointData.collectionPointVersion,
+                        dataElements = collectionDataElements.map {
                             DataElements(it.key, it.value)
-                        }.toMutableList()
+                        }.toMutableList(),
+                        identifier = userSession.userId
                     )
+
                     checkoutBottomViewWidget.setProductConsentWidget(
                         viewLifecycleOwner,
                         this@DigitalCartFragment,
-                        consentParam
+                        consentParam,
+                        collectionDataElements.isNotEmpty()
                     )
                 }
             }

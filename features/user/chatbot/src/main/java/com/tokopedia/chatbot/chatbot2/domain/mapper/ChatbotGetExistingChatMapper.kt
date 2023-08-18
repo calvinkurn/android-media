@@ -10,6 +10,7 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY_
 import com.tokopedia.chat_common.data.FallbackAttachmentUiModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
+import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_CHAT_SEPARATOR
@@ -27,15 +28,19 @@ import com.tokopedia.chatbot.chatbot2.data.dynamicAttachment.DynamicAttachment
 import com.tokopedia.chatbot.chatbot2.data.dynamicAttachment.DynamicStickyButton
 import com.tokopedia.chatbot.chatbot2.data.helpfullquestion.HelpFullQuestionPojo
 import com.tokopedia.chatbot.chatbot2.data.imageupload.ChatbotImageUploadAttributes
+import com.tokopedia.chatbot.chatbot2.data.owocinvoice.DynamicOwocInvoicePojo
 import com.tokopedia.chatbot.chatbot2.data.quickreply.ListInvoicesSelectionPojo
 import com.tokopedia.chatbot.chatbot2.data.quickreply.QuickReplyAttachmentAttributes
 import com.tokopedia.chatbot.chatbot2.data.quickreply.QuickReplyPojo
+import com.tokopedia.chatbot.chatbot2.data.rejectreasons.DynamicAttachmentRejectReasons
+import com.tokopedia.chatbot.chatbot2.data.rejectreasons.DynamicAttachmentRejectReasonsSend
 import com.tokopedia.chatbot.chatbot2.data.stickyactionbutton.StickyActionButtonPojo
 import com.tokopedia.chatbot.chatbot2.data.uploadsecure.ChatbotVideoUploadAttributes
 import com.tokopedia.chatbot.chatbot2.view.uimodel.chatactionbubble.ChatActionBubbleUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.chatactionbubble.ChatActionSelectionBubbleUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.csatoptionlist.CsatOptionsUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.dynamicattachment.DynamicAttachmentTextUiModel
+import com.tokopedia.chatbot.chatbot2.view.uimodel.dynamicattachment.DynamicOwocInvoiceUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.dynamicattachment.DynamicStickyButtonUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.helpfullquestion.HelpFullQuestionsUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.invoice.AttachInvoiceSelectionUiModel
@@ -94,6 +99,18 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
                             chatItemPojoByDateByTime,
                             dynamicAttachment
                         )
+                        ChatbotConstant.DynamicAttachment.DYNAMIC_REJECT_REASON -> convertToDynamicAttachmentWithContentCode107(
+                            chatItemPojoByDateByTime,
+                            dynamicAttachment
+                        )
+                        ChatbotConstant.DynamicAttachment.DYNAMIC_REJECT_REASON_SEND -> convertToDynamicAttachmentWithContentCode108(
+                            chatItemPojoByDateByTime,
+                            dynamicAttachment
+                        )
+                        ChatbotConstant.DynamicAttachment.DYNAMIC_INVOICE_OWOC -> convertToDynamicOwocInvoice(
+                            chatItemPojoByDateByTime,
+                            dynamicAttachment
+                        )
                         else -> convertToDynamicAttachmentFallback(chatItemPojoByDateByTime)
                     }
                 } else {
@@ -137,6 +154,57 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
         return DynamicAttachmentTextUiModel.Builder()
             .withResponseFromGQL(pojo)
             .withMsgContent(dynamicStickyButton.text)
+            .build()
+    }
+
+    private fun convertToDynamicAttachmentWithContentCode107(
+        pojo: Reply,
+        dynamicAttachment: DynamicAttachment
+    ): DynamicAttachmentTextUiModel {
+        val dynamicStickyButton = gson.fromJson(
+            dynamicAttachment.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.dynamicContent,
+            DynamicAttachmentRejectReasons::class.java
+        )
+
+        return DynamicAttachmentTextUiModel.Builder()
+            .withResponseFromGQL(pojo)
+            .isSender(false)
+            .withMsg(dynamicStickyButton.helpfulQuestion.message)
+            .withRejectReasons(dynamicStickyButton)
+            .build()
+    }
+
+    private fun convertToDynamicOwocInvoice(
+        pojo: Reply,
+        dynamicAttachment: DynamicAttachment
+    ): DynamicOwocInvoiceUiModel {
+        val dynamicOwocInvoicePojo = gson.fromJson(
+            dynamicAttachment.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.dynamicContent,
+            DynamicOwocInvoicePojo::class.java
+        )
+
+        return DynamicOwocInvoiceUiModel.Builder()
+            .withResponseFromGQL(pojo)
+            .withMsg(dynamicOwocInvoicePojo.message ?: "")
+            .withOwocInvoiceList(dynamicOwocInvoicePojo.invoiceCardList)
+            .build()
+    }
+
+    private fun convertToDynamicAttachmentWithContentCode108(
+        pojo: Reply,
+        dynamicAttachment: DynamicAttachment
+    ): DynamicAttachmentTextUiModel {
+        val dynamicStickyButton = gson.fromJson(
+            dynamicAttachment.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.dynamicContent,
+            DynamicAttachmentRejectReasonsSend::class.java
+        )
+        var msg = ""
+        if (dynamicStickyButton.helpfulQuestionFeedbackForm.helpfulQuestion.newQuickReplies.isNotEmpty()) {
+            msg = dynamicStickyButton.helpfulQuestionFeedbackForm.helpfulQuestion.newQuickReplies[0].text
+        }
+        return DynamicAttachmentTextUiModel.Builder()
+            .withResponseFromGQL(pojo)
+            .withMsgContent(msg)
             .build()
     }
 

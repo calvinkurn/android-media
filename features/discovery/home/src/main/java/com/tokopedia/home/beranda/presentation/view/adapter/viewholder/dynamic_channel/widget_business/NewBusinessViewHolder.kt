@@ -69,21 +69,36 @@ class NewBusinessViewHolder(
             override fun putEnhanceEcommerce(tracker: HashMap<String, Any>) {
                 listener.putEEToTrackingQueue(tracker)
             }
+
+            override val userId: String
+                get() = listener.userId
         },
         cardInteraction
     )
     private var isPaddingStyle = false
 
-    private val tabChangeListener = object : BaseOnTabSelectedListener<TabLayout.Tab> {
-        override fun onTabReselected(p0: TabLayout.Tab?) {}
+    private fun tabChangeListener(tabList: List<HomeWidget.TabItem>, channelModel: ChannelModel) =
+        object : BaseOnTabSelectedListener<TabLayout.Tab> {
+            override fun onTabReselected(p0: TabLayout.Tab?) {}
 
-        override fun onTabUnselected(p0: TabLayout.Tab?) {}
+            override fun onTabUnselected(p0: TabLayout.Tab?) {}
 
-        override fun onTabSelected(tab: TabLayout.Tab) {
-            listener.sendEETracking(BusinessUnitTracking.getPageSelected(tab.text.toString()) as HashMap<String, Any>)
-            viewPager.setCurrentItem(tab.position, false)
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                val tabItem = tabList.getOrNull(tab.position) ?: return
+                val position = tab.position + 1
+                val data =
+                    BusinessUnitTracking.getPageSelected(
+                        tabItem.id.toString(),
+                        tabItem.name,
+                        position,
+                        channelModel.id,
+                        channelModel.trackingAttributionModel.campaignCode,
+                        listener.userId,
+                    ) as HashMap<String, Any>
+                listener.sendEETracking(data)
+                viewPager.setCurrentItem(tab.position, false)
+            }
         }
-    }
 
     init {
         tabLayout.customTabMode = TabLayout.MODE_SCROLLABLE
@@ -116,7 +131,7 @@ class NewBusinessViewHolder(
             hideLoading()
         }
         if (element?.tabList != null && tabLayout.tabLayout.tabCount < 1) {
-            initTabLayout(element.tabList)
+            initTabLayout(element.tabList, element.channelModel)
             initContainerColor(element.backColor)
             performanceMonitoring?.stopTrace()
             performanceMonitoring = null
@@ -144,7 +159,7 @@ class NewBusinessViewHolder(
                     viewPager.show()
                     if (element?.tabList != null) {
                         clearTabLayout()
-                        initTabLayout(element.tabList)
+                        initTabLayout(element.tabList, element.channelModel)
                     }
                     if (element?.contentsList != null) {
                         initViewPager(element.contentsList)
@@ -216,13 +231,13 @@ class NewBusinessViewHolder(
         tabLayout.tabLayout.removeAllTabs()
     }
 
-    private fun initTabLayout(tabList: List<HomeWidget.TabItem>) {
+    private fun initTabLayout(tabList: List<HomeWidget.TabItem>, channelModel: ChannelModel) {
         tabLayout.show()
         if (tabLayout.tabLayout.tabCount == 0) {
             tabList.forEach {
                 tabLayout.addNewTab(it.name).text = it.name
             }
-            tabLayout.tabLayout.addOnTabSelectedListener(tabChangeListener)
+            tabLayout.tabLayout.addOnTabSelectedListener(tabChangeListener(tabList, channelModel))
         }
         tabLayout.tabLayout.background = ContextCompat.getDrawable(tabLayout.context, R.drawable.bg_tabs_design_team)
     }

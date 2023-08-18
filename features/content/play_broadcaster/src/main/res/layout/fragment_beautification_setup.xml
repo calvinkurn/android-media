@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/transparent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifycomponents.RangeSliderUnify
+        android:id="@+id/slider_beautification"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:visibility="invisible"
+        app:isShowTooltip="true"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_play_bottom_sheet"
+        android:clickable="true"
+        android:focusable="true"
+        app:behavior_hideable="true"
+        app:behavior_skipCollapsed="true"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        tools:parentTag="androidx.coordinatorlayout.widget.CoordinatorLayout">
+
+        <View
+            android:id="@+id/view_bottom_sheet_knob"
+            android:layout_width="40dp"
+            android:layout_height="4dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_play_bro_knob"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_bottom_sheet_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/play_bro_face_filter_label"
+            app:typographyType="heading_3"
+            app:layout_constraintTop_toBottomOf="@id/view_bottom_sheet_knob"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_bottom_sheet_action"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/play_broadcaster_reset_filter"
+            app:typographyType="paragraph_2"
+            app:typographyWeight="bold"
+            android:textColor="@color/Unify_GN500"
+            app:layout_constraintTop_toTopOf="@id/tv_bottom_sheet_title"
+            app:layout_constraintBottom_toBottomOf="@id/tv_bottom_sheet_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="16dp"
+            />
+
+        <com.tokopedia.unifycomponents.TabsUnify
+            android:id="@+id/tab_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.Light"
+            android:layout_marginTop="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_bottom_sheet_title"
+            app:tabGravity="fill"
+            app:tabIndicatorColor="@color/Unify_GN500"
+            app:tabIndicatorHeight="@dimen/dp_1"
+            app:tabMode="fixed" />
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toBottomOf="@id/tab_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

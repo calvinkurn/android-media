@@ -7,6 +7,7 @@ import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatusUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
+import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 
 /**
@@ -45,17 +46,7 @@ class ProductSetupUiModelBuilder {
         imageUrl: String = "",
         stock: Long = 10,
         price: ProductPrice = OriginalPrice("Rp 12.000", 12000.0),
-    ) = ProductUiModel(id, name, imageUrl, stock, price)
-
-    fun buildProductTagSection(
-        name: String = "Section 1",
-        campaignStatus: CampaignStatus = CampaignStatus.Ongoing,
-        products: List<ProductUiModel> = emptyList(),
-    ) = ProductTagSectionUiModel(
-        name = name,
-        campaignStatus = campaignStatus,
-        products = products,
-    )
+    ) = ProductUiModel(id, name, false, "", 0, false, imageUrl, stock, price, PinProductUiModel.Empty, "")
 
     fun buildProductTagSectionList(
         sectionSize: Int = 5,

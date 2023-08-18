@@ -15,6 +15,7 @@ import androidx.lifecycle.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tkpd.atcvariant.util.roundToIntOrZero
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
@@ -57,6 +58,7 @@ import com.tokopedia.play_common.util.extension.awaitResume
 import com.tokopedia.play_common.util.extension.dismissToaster
 import com.tokopedia.content.common.view.addKeyboardInsetsListener
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.play.view.uimodel.action.HideBottomSheet
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
@@ -127,7 +129,7 @@ class PlayFragment @Inject constructor(
 
     private var isFirstTopBoundsCalculated = false
 
-    private val offset16 by lazyThreadSafetyNone { context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4) ?: 0 }
+    private val offset24 by lazyThreadSafetyNone { context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5) ?: 0 }
 
     /**
      * Global Variant Bottom Sheet
@@ -145,12 +147,31 @@ class PlayFragment @Inject constructor(
             fun onResume() {
                 if (::variantSheet.isInitialized.not()) return
 
+                //Need to override
+                variantSheet.setShowListener {
+                    variantSheet.bottomSheet.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                        override fun onSlide(p0: View, p1: Float) {}
+
+                        override fun onStateChanged(p0: View, p1: Int) {
+                            when (p1) {
+                                BottomSheetBehavior.STATE_HIDDEN -> variantSheet.dismiss()
+                                BottomSheetBehavior.STATE_DRAGGING -> variantSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+                            }
+                        }
+                    })
+                }
+
+                variantSheet.bottomSheetClose.setOnClickListener {
+                    playViewModel.submitAction(HideBottomSheet)
+                    variantSheet.dismiss()
+                }
+
                 variantSheet.dialog?.window?.setDimAmount(0f)
                 val bottomSheetWrapper = variantSheet.view?.findViewById<LinearLayout>(com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper)
                 val rootView = variantSheet.view?.findViewById<View>(com.tkpd.atcvariant.R.id.cl_atc_variant)
 
                 bottomSheetWrapper?.layoutParams = bottomSheetWrapper?.layoutParams?.apply {
-                    height = sheetMaxHeight - offset16 //adjust bottom sheet wrapper height
+                    height = sheetMaxHeight - offset24 //adjust bottom sheet wrapper height
                 }
 
                 rootView?.layoutParams = rootView?.layoutParams?.apply {
@@ -311,6 +332,7 @@ class PlayFragment @Inject constructor(
             variantSheet.lifecycle.addObserver(variantSheetObserver)
             if (forceTop) {
                 variantSheet.setOnDismissListener {
+                    playViewModel.submitAction(HideBottomSheet)
                     onBottomInsetsViewHidden()
                 }
             }
@@ -321,12 +343,12 @@ class PlayFragment @Inject constructor(
 
         val orientation = playViewModel.videoOrientation
         val height = if (orientation is VideoOrientation.Horizontal) {
-            val dstStart = ivClose.right + offset16
+            val dstStart = ivClose.right + offset24
             val dstEnd = requireView().right - dstStart
             val dstWidth = dstEnd - dstStart
             (1 / (orientation.widthRatio / orientation.heightRatio.toFloat()) * dstWidth)
         } else {
-            requireView().height - sheetMaxHeight - offset16 - ivClose.top
+            requireView().height - sheetMaxHeight - offset24 - ivClose.top
         }.toInt()
 
         onBottomInsetsViewShown(height)

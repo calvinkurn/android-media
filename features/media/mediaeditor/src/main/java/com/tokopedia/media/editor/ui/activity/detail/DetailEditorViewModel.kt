@@ -16,7 +16,6 @@ import com.tokopedia.media.editor.utils.ResourceProvider
 import com.tokopedia.media.editor.utils.getImageSize
 import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
@@ -34,7 +33,8 @@ class DetailEditorViewModel @Inject constructor(
     private val saveImageRepository: SaveImageRepository,
     private val getWatermarkUseCase: GetWatermarkUseCase,
     private val bitmapCreationRepository: BitmapCreationRepository,
-    private val addLogoFilterRepository: AddLogoFilterRepository
+    private val addLogoFilterRepository: AddLogoFilterRepository,
+    private val addTextFilterRepository: AddTextFilterRepository
 ) : ViewModel() {
 
     private var _isLoading = MutableLiveData<Boolean>()
@@ -80,10 +80,12 @@ class DetailEditorViewModel @Inject constructor(
 
     fun setContrast(value: Float?, sourceBitmap: Bitmap?) {
         if (value == null || sourceBitmap == null) return
-        _contrastFilter.value = contrastFilterRepository.contrast(
+        contrastFilterRepository.contrast(
             value,
             sourceBitmap.copy(sourceBitmap.config, true)
-        )
+        )?.let {
+            _contrastFilter.value = it
+        }
     }
 
     fun setRemoveBackground(filePath: String, onError: (t: Throwable) -> Unit) {
@@ -225,6 +227,26 @@ class DetailEditorViewModel @Inject constructor(
         return getImageSize(url).let { (width, height) ->
             bitmapCreationRepository.isBitmapOverflow(width, height)
         }
+    }
+
+    fun generateAddTextOverlay(size: Pair<Int, Int>, data: EditorAddTextUiModel): Bitmap? {
+        return addTextFilterRepository.generateOverlayText(
+            size,
+            data
+        )
+    }
+
+    fun cropImage(source: Bitmap, cropRotateUiModel: EditorCropRotateUiModel): Bitmap? {
+        val (offsetX, offsetY, imageWidth, imageHeight) = cropRotateUiModel
+        return bitmapCreationRepository.createBitmap(
+            BitmapCreation.cropBitmap(
+                source,
+                x = offsetX,
+                y = offsetY,
+                width = imageWidth,
+                height = imageHeight
+            )
+        )
     }
 
     private fun initializeWatermarkAsset() {

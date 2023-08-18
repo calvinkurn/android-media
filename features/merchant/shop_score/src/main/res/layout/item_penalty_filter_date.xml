@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="16dp">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_penalty_filter_date_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_filter_penalty_date"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"/>
+
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/card_penalty_filter_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/tv_penalty_filter_date_title"
+        app:card_type="border">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="15dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="15dp">
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/ic_penalty_filter_date"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tv_penalty_filter_date"
+                app:layout_constraintBottom_toBottomOf="@id/tv_penalty_filter_date"
+                app:icon_name="CALENDAR"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_penalty_filter_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Unify_NN950"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/ic_penalty_filter_date"
+                app:typographyType="display_2"
+                tools:text="4 Apr - 4 Mei 2023"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify2>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

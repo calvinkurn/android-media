@@ -4,9 +4,12 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.test.application.graphql.GqlMockUtil
 import com.tokopedia.test.application.graphql.GqlQueryParser
 import com.tokopedia.topchat.chatlist.domain.pojo.NotificationsPojo
+import com.tokopedia.topchat.stub.chatlist.data.GqlResponseStub
+import com.tokopedia.topchat.stub.chatlist.data.ResponseStub
 import timber.log.Timber
 
 class FakeGraphqlRepository : GraphqlRepository {
@@ -25,8 +28,18 @@ class FakeGraphqlRepository : GraphqlRepository {
                 }
                 GqlMockUtil.createSuccessResponse(mockedNotif)
             }
+            GqlResponseStub.blastSellerMetaDataResponse.query -> {
+                shouldThrow(GqlResponseStub.blastSellerMetaDataResponse)
+                GqlMockUtil.createSuccessResponse(
+                    GqlResponseStub.blastSellerMetaDataResponse.responseObject
+                )
+            }
             else -> throw IllegalArgumentException()
         }
+    }
+
+    private fun shouldThrow(response: ResponseStub<*>) {
+        if (response.isError) throw MessageErrorException("Oops!")
     }
 }
 

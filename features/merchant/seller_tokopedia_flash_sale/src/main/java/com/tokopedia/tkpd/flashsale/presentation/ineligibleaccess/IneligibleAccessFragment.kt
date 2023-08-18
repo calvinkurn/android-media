@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.campaign.components.bottomsheet.rbac.IneligibleAccessWarningBottomSheet
 import com.tokopedia.campaign.utils.extension.routeToUrl
+import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentIneligibleAccessBinding
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -49,6 +50,7 @@ class IneligibleAccessFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        applyUnifyBackgroundColor()
         setupView()
         showIneligibleAccessBottomSheet()
     }

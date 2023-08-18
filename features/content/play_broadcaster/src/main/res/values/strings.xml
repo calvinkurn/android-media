@@ -25,6 +25,7 @@
     <string name="play_broadcast_end">Akhiri</string>
     <string name="play_batal">Batal</string>
     <string name="play_bro_next_action">Lanjut</string>
+    <string name="play_broadcaster_retry">Ulangi</string>
 
     <string name="play_prepare_broadcast_create_promo_title">Buat Promo</string>
     <string name="play_prepare_broadcast_edit_promo_title">Ubah Promo</string>
@@ -189,6 +190,7 @@
     <string name="play_bro_cover_label">Cover</string>
     <string name="play_bro_product_label">Produk</string>
     <string name="play_bro_schedule_label">Atur Jadwal</string>
+    <string name="play_bro_face_filter_label">Filter Wajah</string>
     <string name="play_bro_save">Simpan</string>
 
     <string name="play_bro_title_form_hint">Tulis Judul Live</string>
@@ -235,8 +237,7 @@
 
     <!-- Post Video -->
     <string name="play_bro_add_tag_title">Tambah Tag</string>
-    <string name="play_bro_select_tag_title">Pilih tag agar videomu mudah ditemukan</string>
-    <string name="play_bro_cant_post_video_message">Karena durasi kurang dari 60 detik, Live-mu tidak bisa di-posting jadi video.</string>
+    <string name="play_bro_select_tag_title">Video ini ceritanya tentang apa?</string>
 
     <!-- Tag Recommendation -->
     <string name="play_bro_tag_recommendation_error_title">Tag ini gagal ditampilkan</string>
@@ -296,6 +297,9 @@
     <string name="play_bro_banner_shorts_description">Buat video yang menarik &amp; inspiratif, yuk</string>
     <string name="play_bro_banner_shorts_coachmark_title">Baru! Bisa buat video pendek 🥳</string>
     <string name="play_bro_banner_shorts_coachmark_description">Buat video hingga 90 detik tentang produk jualanmu supaya banyak pembeli tertarik!</string>
+    <string name="play_bro_banner_shorts_join_affiliate_title">Yuk, daftar Tokopedia Affiliate!</string>
+    <string name="play_bro_banner_shorts_join_affiliate_description">Biar bisa dapat komisi cuma dengan promosikan produk di videomu.</string>
+
     <string name="play_bro_banner_performance_title">Cek performa di Wawasan Video</string>
     <string name="play_bro_banner_performance_subtitle">Untuk analisa video yang lebih detail</string>
 
@@ -327,4 +331,37 @@
     <string name="play_shorts_summary_upload_action">Upload Video</string>
 
     <string name="play_title_bottom_sheet_hint">Promo menarik cuma hari ini!</string>
+
+    <!-- shorts x affiliate -->
+    <string name="play_shorts_affiliate_tnc_title">Daftar Tokopedia Affiliate, yuk!</string>
+    <string name="play_shorts_affiliate_tnc_description">Supaya kamu bisa promosikan produk sambil ngonten di Tokopedia Play! Dapatkan komisi jika ada penonton yang beli produknya.</string>
+    <string name="play_shorts_affiliate_success_title">Hai %s, selamat bergabung di Tokopedia Affiliate!</string>
+    <string name="play_shorts_affiliate_success_description">Ayo bikin konten, tag produk yang mau kamu promosikan, &amp; dapat komisi jika ada yang beli!</string>
+    <string name="play_shorts_affiliate_success_description_learn_more">Penasaran tentang Tokopedia Affiliate? Pelajari di sini.</string>
+    <string name="play_shorts_affiliate_success_description_learn_more_action">Pelajari di sini.</string>
+    <string name="play_shorts_affiliate_success_button_next">Lanjut Buat Konten</string>
+    <string name="play_shorts_affiliate_commission_extra">Komisi Ekstra</string>
+    <string name="play_shorts_affiliate_commission_fmt">Komisi %s</string>
+    <string name="play_shorts_affiliate_success_tnc_web_link">https://www.tokopedia.com/help/article/syarat-ketentuan-tokopedia-affiliate</string>
+    <string name="play_shorts_affiliate_success_learn_more_web_link">https://affiliate.tokopedia.com</string>
+    <string name="play_shorts_affiliate_coach_mark_product_commission_title">Cek produk bertanda komisi di sini, ya</string>
+    <string name="play_shorts_affiliate_coach_mark_product_commission_subtitle">Tag produk di videonya biar bisa kamu promosikan supaya dapat komisi kalau ada yang beli.</string>
+    <string name="play_shorts_affiliate_coach_mark_product_summary_commission_title">Nge-tag produk bisa dapat komisi, lho</string>
+    <string name="play_shorts_affiliate_coach_mark_product_summary_commission_subtitle">Sekalian promosikan produknya di videomu, &amp; kamu akan dapat komisi kalau ada yang beli!</string>
+
+    <!-- Play Broadcaster Beautification -->
+    <string name="play_broadcaster_face_filter_coachmark_title">Wow, kamu makin cakep aja nih 😍</string>
+    <string name="play_broadcaster_face_filter_coachmark_description">Ayo pakai filternya biar penampilanmu makin cakep, keren &amp; lebih pede di depan penonton!</string>
+    <string name="play_broadcaster_reset_filter">Reset Filter</string>
+    <string name="play_broadcaster_face_tab">Wajah</string>
+    <string name="play_broadcaster_makeup_tab">Makeup</string>
+    <string name="play_broadcaster_reset_filter_confirmation_title">Yakin mau reset filter?</string>
+    <string name="play_broadcaster_reset_filter_confirmation_description">Jika di-reset, maka akan kembali ke pengaturan filter semula.</string>
+    <string name="play_broadcaster_reset_filter_cancel">Batal</string>
+    <string name="play_broadcaster_reset_filter_confirm">Reset</string>
+    <string name="play_broadcaster_fail_download_filter">Oops, gagal mendownload filter</string>
+    <string name="play_broadcaster_fail_apply_filter">Oops, tidak dapat menampilkan filter</string>
+    <string name="play_broadcaster_fail_save_filter">Oops, gagal menyimpan filter</string>
+
+    <string name="play_shorts_content_tagging_description_template">Pilih maks. %d tag yang sesuai videomu supaya mudah ditemuin sama penonton yang tepat.</string>
 </resources>

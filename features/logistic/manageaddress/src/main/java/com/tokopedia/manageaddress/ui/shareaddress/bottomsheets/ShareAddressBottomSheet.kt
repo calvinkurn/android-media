@@ -8,6 +8,7 @@ import android.provider.ContactsContract
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -161,9 +162,16 @@ class ShareAddressBottomSheet : BottomSheetUnify() {
                     ),
                     PorterDuff.Mode.SRC_IN
                 )
-                contactIcon.setOnClickListener {
-                    onNavigateToContact()
-                }
+                contactIcon.setOnTouchListener(object : View.OnTouchListener {
+                    override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
+                        if (p1?.action == MotionEvent.ACTION_DOWN) {
+                            onNavigateToContact()
+                            return true
+                        }
+                        contactIcon.performClick()
+                        return false
+                    }
+                })
             }
         }
     }

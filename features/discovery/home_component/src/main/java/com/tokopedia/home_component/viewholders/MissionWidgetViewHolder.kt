@@ -103,10 +103,11 @@ class MissionWidgetViewHolder(
                     buType = missionWidget.buType,
                     isTopads = missionWidget.isTopads,
                     isCarousel = missionWidget.isCarousel,
+                    shopId = missionWidget.shopId,
                     subtitleHeight = subtitleHeight,
                     missionWidgetComponentListener = missionWidgetComponentListener,
                     channel = element.channelModel,
-                    verticalPosition = adapterPosition
+                    verticalPosition = element.channelModel.verticalPosition
                 )
             )
         }

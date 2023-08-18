@@ -13,6 +13,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.keys'
+    testNamespace 'com.tokopedia.keys.test'
+}
+
 dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 }

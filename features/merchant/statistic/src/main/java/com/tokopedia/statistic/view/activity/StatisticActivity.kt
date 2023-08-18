@@ -1,5 +1,6 @@
 package com.tokopedia.statistic.view.activity
 
+import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -9,6 +10,7 @@ import android.os.CountDownTimer
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayout
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -129,6 +131,11 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
         handleAppLink(intent)
     }
 
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(newBase)
+        SplitCompat.installActivity(this)
+    }
+
     override fun startNetworkPerformanceMonitoring() {
         performanceMonitoring.startNetworkPerformanceMonitoring()
     }
@@ -164,21 +171,21 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
 
     private fun getWhiteListedPages(): List<StatisticPageUiModel> {
         return listOf(
-            pageHelper.getShopStatistic(),
-            pageHelper.getProductStatistic(),
-            pageHelper.getTrafficStatistic(),
-            pageHelper.getOperationalStatistic(),
-            pageHelper.getBuyerStatistic()
+            pageHelper.getShopStatistic(this),
+            pageHelper.getProductStatistic(this),
+            pageHelper.getTrafficStatistic(this),
+            pageHelper.getOperationalStatistic(this),
+            pageHelper.getBuyerStatistic(this)
         )
     }
 
     private fun getNonWhiteListedPages(): List<StatisticPageUiModel> {
         return listOf(
-            pageHelper.getShopStatistic(),
-            pageHelper.getProductStatistic(),
-            pageHelper.getTrafficStatistic(),
-            pageHelper.getOperationalStatistic(),
-            pageHelper.getBuyerStatistic()
+            pageHelper.getShopStatistic(this),
+            pageHelper.getProductStatistic(this),
+            pageHelper.getTrafficStatistic(this),
+            pageHelper.getOperationalStatistic(this),
+            pageHelper.getBuyerStatistic(this)
         )
     }
 
@@ -302,13 +309,13 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
             coachMark.showCoachMark(ArrayList(coachMarkItems))
             coachMark.setStepListener(object : CoachMark2.OnStepListener {
                 override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                    coachMarkHelper.saveCoachMarkHasShownByTitle(coachMarkItem.title.toString())
+                    coachMarkHelper.saveCoachMarkHasShownByTitle(this@StatisticActivity, coachMarkItem.title.toString())
                     sendCoachMarkImpressionTracker(coachMarkItem.title.toString())
                     sendCoachMarkClickTracker(currentIndex)
                 }
             })
             val title = coachMarkItems.firstOrNull()?.title?.toString().orEmpty()
-            coachMarkHelper.saveCoachMarkHasShownByTitle(title)
+            coachMarkHelper.saveCoachMarkHasShownByTitle(this, title)
         }
     }
 
@@ -316,7 +323,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
         val item = coachMark.coachMarkItem.getOrNull(currentIndex.minus(Int.ONE))
         item?.let {
             val title = it.title.toString()
-            if (coachMarkHelper.getIsTrafficInsightTab(title)) {
+            if (coachMarkHelper.getIsTrafficInsightTab(this, title)) {
                 StatisticTracker.sendTrafficInsightCoachMarkCtaClickEvent(
                     Const.PageSource.TRAFFIC_INSIGHT,
                     title
@@ -326,7 +333,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
     }
 
     private fun sendCoachMarkImpressionTracker(title: String) {
-        if (coachMarkHelper.getIsTrafficInsightTab(title)) {
+        if (coachMarkHelper.getIsTrafficInsightTab(this, title)) {
             StatisticTracker.sendTrafficInsightImpressionCoachMarkEvent(
                 Const.PageSource.TRAFFIC_INSIGHT,
                 title

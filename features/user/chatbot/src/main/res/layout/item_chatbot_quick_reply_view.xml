@@ -30,7 +30,7 @@
         android:singleLine="true"
         app:typographyType="display_3"
         app:typographyWeight="bold"
-        android:textColor="@color/Unify_G400"
+        android:textColor="@color/Unify_GN500"
         tools:text="Maafm" />
 
 </LinearLayout>

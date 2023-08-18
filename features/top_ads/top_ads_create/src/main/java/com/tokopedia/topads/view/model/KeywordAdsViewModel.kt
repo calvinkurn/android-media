@@ -47,7 +47,7 @@ class KeywordAdsViewModel @Inject constructor(
     }
 
     fun searchKeyword(keyword: String, product_ids: String, onSucceed: (List<SearchData>) -> Unit) {
-        GraphqlHelper.loadRawString(context.resources, R.raw.topads_gql_search_keywords)?.let { query ->
+        GraphqlHelper.loadRawString(context.resources, com.tokopedia.topads.common.R.raw.topads_gql_search_keywords)?.let { query ->
             val params = mapOf(PRODUCT_IDS to product_ids,
                     SEARCH_TERM to keyword, SHOP_id to userSession.shopId)
 

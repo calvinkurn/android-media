@@ -6,6 +6,7 @@ import android.os.Bundle
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_EDIT
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.DaggerAddNewAddressRevampComponent
@@ -21,6 +22,7 @@ class PinpointNewPageActivity : BaseSimpleActivity(), HasComponent<AddNewAddress
         UserSession(this)
     }
     private var isEdit: Boolean? = false
+    private var isGetPinPointOnly: Boolean? = false
 
     override fun getComponent(): AddNewAddressRevampComponent {
         return DaggerAddNewAddressRevampComponent.builder()
@@ -33,6 +35,7 @@ class PinpointNewPageActivity : BaseSimpleActivity(), HasComponent<AddNewAddress
         var fragment: PinpointNewPageFragment? = null
         if (bundle != null) {
             isEdit = bundle.getBoolean(EXTRA_IS_EDIT)
+            isGetPinPointOnly = bundle.getBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY)
             fragment = PinpointNewPageFragment.newInstance(bundle)
         }
         return fragment
@@ -40,10 +43,12 @@ class PinpointNewPageActivity : BaseSimpleActivity(), HasComponent<AddNewAddress
 
     override fun onBackPressed() {
         super.onBackPressed()
-        if (isEdit == true) {
-            EditAddressRevampAnalytics.onClickBackPinpoint(userSession.userId)
-        } else {
-            AddNewAddressRevampAnalytics.onClickBackArrowPinpoint(userSession.userId)
+        if (isGetPinPointOnly == false) {
+            if (isEdit == true) {
+                EditAddressRevampAnalytics.onClickBackPinpoint(userSession.userId)
+            } else {
+                AddNewAddressRevampAnalytics.onClickBackArrowPinpoint(userSession.userId)
+            }
         }
     }
 

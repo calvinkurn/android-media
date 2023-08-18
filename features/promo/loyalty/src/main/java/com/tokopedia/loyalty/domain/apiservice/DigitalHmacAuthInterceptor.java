@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.loyalty.domain.model.TkpdDigitalResponse;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.exception.ResponseErrorException;
@@ -55,7 +54,7 @@ public class DigitalHmacAuthInterceptor extends TkpdAuthInterceptor {
             String path, String strParam, String method, String authKey, String contentTypeHeader
     ) {
         return AuthUtil.generateHeadersWithXUserId(
-                path, strParam, method, authKey, contentTypeHeader, userSession.getUserId(), userSession
+                path, strParam, method, authKey, contentTypeHeader, userSession.getUserId(), userSession, getHeaderTheme()
         );
     }
 }

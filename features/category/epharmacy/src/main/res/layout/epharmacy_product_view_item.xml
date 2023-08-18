@@ -36,7 +36,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:typographyType="small"
         tools:text="Jakarta Bharat"
         />

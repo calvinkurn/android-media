@@ -37,16 +37,21 @@ class VariantValueAdapter(private val removeButtonClickListener: OnRemoveButtonC
 
     override fun onRemoveButtonClicked(position: Int) {
         // rapid click will change the position to -1
-        if (position != INVALID_POSITION) {
+        if (position > INVALID_POSITION && position < items.size) {
             val removedUnitValue = items[position]
             removeButtonClickListener.onRemoveButtonClicked(position, layoutPosition, removedUnitValue)
-            items.removeAt(position)
-            notifyItemRemoved(position)
         }
     }
 
     fun setData(items: List<UnitValue>) {
         this.items = items.toMutableList()
         notifyDataSetChanged()
+    }
+
+    fun getData() = items
+
+    fun removeData(position: Int){
+        items.removeAt(position)
+        notifyItemRemoved(position)
     }
 }

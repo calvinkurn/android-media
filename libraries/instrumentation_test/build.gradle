@@ -18,6 +18,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.instrumentation.test'
+    testNamespace 'com.tokopedia.instrumentation.test.test'
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
@@ -85,6 +87,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     implementation projectOrAar(rootProject.ext.libraries.keys)

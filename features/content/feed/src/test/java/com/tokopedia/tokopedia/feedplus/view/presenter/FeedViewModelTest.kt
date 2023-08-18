@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.content.common.model.TrackVisitChannelResponse
+import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXAuthor
@@ -19,7 +21,6 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.data.pojo.FeedXTrackViewerResponse
 import com.tokopedia.feedcomponent.data.pojo.PostUpcomingCampaign
 import com.tokopedia.feedcomponent.data.pojo.UpcomingCampaignResponse
-import com.tokopedia.feedcomponent.data.pojo.VisitChannelTracking
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Header
 import com.tokopedia.feedcomponent.data.pojo.shopmutation.FollowShop
@@ -31,7 +32,6 @@ import com.tokopedia.feedcomponent.domain.model.ResultItem
 import com.tokopedia.feedcomponent.domain.model.ShopCore
 import com.tokopedia.feedcomponent.domain.model.ShopFollowingEntity
 import com.tokopedia.feedcomponent.domain.model.ShopInfoById
-import com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.FeedXTrackViewerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedNewUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetFollowingUseCase
@@ -112,7 +112,7 @@ class FeedViewModelTest {
     private val testDispatcher = coroutineTestRule.dispatchers
 
     private val mockReport: SubmitReportContentUseCase = mockk(relaxed = true)
-    private val mockTrackChannel: FeedBroadcastTrackerUseCase = mockk(relaxed = true)
+    private val mockTrackChannel: TrackVisitChannelBroadcasterUseCase = mockk(relaxed = true)
     private val mockTrackViewer: FeedXTrackViewerUseCase = mockk(relaxed = true)
     private val mockLike: SubmitLikeContentUseCase = mockk(relaxed = true)
     private val mockDelete: SubmitActionContentUseCase = mockk(relaxed = true)
@@ -194,7 +194,7 @@ class FeedViewModelTest {
     @Test
     fun `track visit channel - success`() {
         val expected =
-            VisitChannelTracking.Response(reportVisitChannelTracking = VisitChannelTracking(success = true))
+            TrackVisitChannelResponse.Response(model = TrackVisitChannelResponse(success = true))
 
         coEvery { mockTrackChannel.executeOnBackground() } returns expected
 

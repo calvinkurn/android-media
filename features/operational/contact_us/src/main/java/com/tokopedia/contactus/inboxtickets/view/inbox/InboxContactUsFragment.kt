@@ -1,24 +1,24 @@
 package com.tokopedia.contactus.inboxtickets.view.inbox
 
-import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst.CONTACT_US_NATIVE
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
@@ -80,7 +80,9 @@ class InboxContactUsFragment :
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelProvider.get(InboxContactUsViewModel::class.java) }
+    private val viewModel by lazy { viewModelProvider[InboxContactUsViewModel::class.java] }
+
+    private val toTicketFeedBack = getInboxDetailResultActivityLauncher()
 
     private var isFromTokopediaHelp = false
 
@@ -88,8 +90,6 @@ class InboxContactUsFragment :
         const val FLAG_FROM_TOKOPEDIA_HELP = "isFromTokopediaHelp"
         private const val RAISE_TICKET_TAG = "raiseTicket"
         private const val PAGE_SIZE = 10
-        const val REQUEST_DETAILS = 204
-        const val REQUEST_CLEAR_ACTIVITY = 100
 
         @JvmStatic
         fun newInstance(isFromInboxPage: Boolean = false): InboxContactUsFragment {
@@ -180,6 +180,13 @@ class InboxContactUsFragment :
         } else {
             hideChatBotWidget()
             showErrorTopChatStatus(uiState.errorMessageChatBotWidget)
+            sendRecordToFirebase(uiState.exception)
+        }
+    }
+
+    private fun sendRecordToFirebase(e : Exception?){
+        e?.let {
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
     }
 
@@ -313,11 +320,8 @@ class InboxContactUsFragment :
                 override fun onClickTicket(index: Int, isOfficialStore: Boolean) {
                     val itemTicket = viewModel.getItemTicketOnPosition(index)
                     val ticketId = itemTicket.id.orEmpty()
-                    val detailIntent =
-                        getIntent(context ?: return, ticketId, isOfficialStore)
-                    @Suppress("DEPRECATION")
-                    startActivityForResult(detailIntent, REQUEST_DETAILS)
                     sendTrackingClickToDetailTicketMessage(index)
+                    goToInboxDetail(ticketId, isOfficialStore)
                 }
             })
             adapter = mAdapter
@@ -418,7 +422,8 @@ class InboxContactUsFragment :
     }
 
     fun servicePriorityBottomSheet() {
-        servicePrioritiesBottomSheet = ServicePrioritiesBottomSheet(context ?: return, this)
+        servicePrioritiesBottomSheet = ServicePrioritiesBottomSheet()
+        servicePrioritiesBottomSheet?.setCloseButtonListener(this)
         servicePrioritiesBottomSheet?.show(parentFragmentManager, "servicePrioritiesBottomSheet")
     }
 
@@ -491,10 +496,9 @@ class InboxContactUsFragment :
         chatWidget?.hide()
     }
 
-    @SuppressLint("DeprecatedMethod")
     private fun raiseTicket() {
         if (tvRaiseTicket?.tag == RAISE_TICKET_TAG) {
-            routeEmptyPage()
+            routeOnEmptyPage()
         } else {
             viewModel.autoPickShowAllOptionsFilter()
             viewModel.restartPageOfList()
@@ -502,7 +506,7 @@ class InboxContactUsFragment :
         }
     }
 
-    private fun routeEmptyPage(){
+    private fun routeOnEmptyPage(){
         ContactUsTracking.sendGTMInboxTicket(
             "",
             InboxTicketTracking.Category.EventInboxTicket,
@@ -512,12 +516,10 @@ class InboxContactUsFragment :
         if(isFromTokopediaHelp) {
             activity?.finish()
         } else {
-            val route = "$CONTACT_US_NATIVE?$FLAG_FROM_TOKOPEDIA_HELP=true"
-            startActivity(RouteManager.getIntent(context ?: return, route))
+            ContactUsHomeActivity.start(context?:requireContext())
         }
     }
 
-    @SuppressLint("DeprecatedMethod")
     private fun sendGTMClickChatButton() {
         ContactUsTracking.sendGTMInboxTicket(
             InboxTicketTracking.Event.Event,
@@ -527,7 +529,6 @@ class InboxContactUsFragment :
         )
     }
 
-    @SuppressLint("DeprecatedMethod")
     private fun sendGtmClickTicketFilter(selected: String) {
         ContactUsTracking.sendGTMInboxTicket(
             InboxTicketTracking.Event.Event,
@@ -545,24 +546,32 @@ class InboxContactUsFragment :
         binding?.progressBarLayout?.gone()
     }
 
+    private fun goToInboxDetail(ticketId : String, isOfficialStore: Boolean) {
+        val detailIntent =
+            getIntent(context ?: return, ticketId, isOfficialStore)
+        toTicketFeedBack.launch(detailIntent)
+    }
+
+    private fun getInboxDetailResultActivityLauncher() : ActivityResultLauncher<Intent> {
+        return registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == RESULT_FINISH) {
+                routeToHomeContactUs()
+            }
+        }
+    }
+
+    private fun routeToHomeContactUs(){
+        activity?.startActivity(
+            Intent(
+                context,
+                ContactUsHomeActivity::class.java
+            ).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        )
+        activity?.finish()
+    }
+
     override fun onDestroy() {
         viewModel.flush()
         super.onDestroy()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode != Activity.RESULT_CANCELED && requestCode == REQUEST_DETAILS) {
-            if (resultCode == RESULT_FINISH) {
-                @Suppress("DEPRECATION")
-                activity?.startActivityForResult(
-                    Intent(
-                        context,
-                        ContactUsHomeActivity::class.java
-                    ).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP),
-                    REQUEST_CLEAR_ACTIVITY
-                )
-                activity?.finish()
-            }
-        }
     }
 }

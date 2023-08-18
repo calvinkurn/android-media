@@ -8,6 +8,7 @@ import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.config.GlobalConfig
 import io.mockk.every
@@ -21,11 +22,6 @@ class DeepLinkMapperSellerAppTest : DeepLinkMapperTestFixture() {
     override fun setup() {
         super.setup()
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
-    }
-
-    override fun finish() {
-        super.finish()
-        GlobalConfig.APPLICATION_TYPE = GlobalConfig.CONSUMER_APPLICATION
     }
 
     @Test
@@ -458,5 +454,12 @@ class DeepLinkMapperSellerAppTest : DeepLinkMapperTestFixture() {
         val appLink = ApplinkConst.SellerApp.SELLER_PERSONA
         val expectedDeepLink = ApplinkConstInternalSellerapp.SELLER_PERSONA
         assertEqualsDeepLinkMapperApp(AppType.SELLER_APP, appLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check topads dashboard applink should return topads internal applink`() {
+        val expectedDeepLink = ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
+        val actualDeeplink = ApplinkConst.SellerApp.TOPADS_DASH_BOARD
+        assertEqualsDeepLinkMapper(actualDeeplink, expectedDeepLink)
     }
 }

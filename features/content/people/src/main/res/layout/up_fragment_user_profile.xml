@@ -19,10 +19,9 @@
 
         <com.tokopedia.globalerror.GlobalError
             android:id="@+id/global_error"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/user_profile_error_margin" />
+            android:layout_gravity="center" />
 
     </ViewFlipper>
 

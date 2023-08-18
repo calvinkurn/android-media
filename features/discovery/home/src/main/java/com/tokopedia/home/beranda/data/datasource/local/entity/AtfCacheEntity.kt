@@ -8,6 +8,7 @@ import com.tokopedia.home.constant.AtfKey
 data class AtfCacheEntity(
         @PrimaryKey
         val id: Int = 0,
+        val position: Int = 0,
         val name: String = "",
         val component: String = "",
         val param: String = "",

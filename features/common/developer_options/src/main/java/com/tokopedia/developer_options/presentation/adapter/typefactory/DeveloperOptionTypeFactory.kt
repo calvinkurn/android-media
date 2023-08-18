@@ -1,6 +1,58 @@
 package com.tokopedia.developer_options.presentation.adapter.typefactory
 
-import com.tokopedia.developer_options.presentation.model.*
+import com.tokopedia.developer_options.presentation.model.AccessTokenUiModel
+import com.tokopedia.developer_options.presentation.model.AnalyticsLogOnNotificationUiModel
+import com.tokopedia.developer_options.presentation.model.AppVersionUiModel
+import com.tokopedia.developer_options.presentation.model.ApplinkLogOnNotificationUiModel
+import com.tokopedia.developer_options.presentation.model.BranchLinkUiModel
+import com.tokopedia.developer_options.presentation.model.CassavaUiModel
+import com.tokopedia.developer_options.presentation.model.ConvertResourceIdUiModel
+import com.tokopedia.developer_options.presentation.model.DataExplorerActivityUiModel
+import com.tokopedia.developer_options.presentation.model.DeprecatedApiSwitcherToasterUiModel
+import com.tokopedia.developer_options.presentation.model.DevOptsAuthorizationUiModel
+import com.tokopedia.developer_options.presentation.model.DeveloperOptionsOnNotificationUiModel
+import com.tokopedia.developer_options.presentation.model.DeviceIdUiModel
+import com.tokopedia.developer_options.presentation.model.FakeResponseActivityUiModel
+import com.tokopedia.developer_options.presentation.model.ForceCrashUiModel
+import com.tokopedia.developer_options.presentation.model.ForceDarkModeUiModel
+import com.tokopedia.developer_options.presentation.model.ForceLogoutUiModel
+import com.tokopedia.developer_options.presentation.model.FpiMonitoringUiModel
+import com.tokopedia.developer_options.presentation.model.FpmLogOnFileUiModel
+import com.tokopedia.developer_options.presentation.model.FpmLogOnNotificationUiModel
+import com.tokopedia.developer_options.presentation.model.HomeAndNavigationRevampSwitcherUiModel
+import com.tokopedia.developer_options.presentation.model.JourneyLogOnNotificationUiModel
+import com.tokopedia.developer_options.presentation.model.LeakCanaryUiModel
+import com.tokopedia.developer_options.presentation.model.LoggingToServerUiModel
+import com.tokopedia.developer_options.presentation.model.LoginHelperUiModel
+import com.tokopedia.developer_options.presentation.model.NetworkLogOnNotificationUiModel
+import com.tokopedia.developer_options.presentation.model.OpenScreenRecorderUiModel
+import com.tokopedia.developer_options.presentation.model.PdpDevUiModel
+import com.tokopedia.developer_options.presentation.model.PlayWebSocketSseLoggingUiModel
+import com.tokopedia.developer_options.presentation.model.RemoteConfigEditorUiModel
+import com.tokopedia.developer_options.presentation.model.RequestNewFcmTokenUiModel
+import com.tokopedia.developer_options.presentation.model.ResetOnBoardingNavigationUiModel
+import com.tokopedia.developer_options.presentation.model.ResetOnBoardingUiModel
+import com.tokopedia.developer_options.presentation.model.RollenceAbTestingManualSwitcherUiModel
+import com.tokopedia.developer_options.presentation.model.RouteManagerUiModel
+import com.tokopedia.developer_options.presentation.model.SellerAppReviewDebuggingUiModel
+import com.tokopedia.developer_options.presentation.model.SendFirebaseCrashExceptionUiModel
+import com.tokopedia.developer_options.presentation.model.SharedPreferencesEditorUiModel
+import com.tokopedia.developer_options.presentation.model.ShowApplinkOnToastUiModel
+import com.tokopedia.developer_options.presentation.model.StrictModeLeakPublisherUiModel
+import com.tokopedia.developer_options.presentation.model.SystemNonSystemAppsUiModel
+import com.tokopedia.developer_options.presentation.model.TopAdsLogOnNotificationUiModel
+import com.tokopedia.developer_options.presentation.model.TopchatWebSocketLoggingUiModel
+import com.tokopedia.developer_options.presentation.model.TranslatorUiModel
+import com.tokopedia.developer_options.presentation.model.TypographySwitchUiModel
+import com.tokopedia.developer_options.presentation.model.UrlEnvironmentUiModel
+import com.tokopedia.developer_options.presentation.model.ViewAnalyticsLogUiModel
+import com.tokopedia.developer_options.presentation.model.ViewApplinkLogUiModel
+import com.tokopedia.developer_options.presentation.model.ViewFpmLogUiModel
+import com.tokopedia.developer_options.presentation.model.ViewHanselPatchUiModel
+import com.tokopedia.developer_options.presentation.model.ViewIrisLogUiModel
+import com.tokopedia.developer_options.presentation.model.ViewJourneyLogUiModel
+import com.tokopedia.developer_options.presentation.model.ViewNetworkLogUiModel
+import com.tokopedia.developer_options.presentation.model.ViewTopAdsLogUiModel
 
 /**
  * @author Said Faisal on 24/11/2021
@@ -60,4 +112,7 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: LoginHelperUiModel): Int
     fun type(uiModel: DevOptsAuthorizationUiModel): Int
     fun type(uiModel: DeprecatedApiSwitcherToasterUiModel): Int
+
+    fun type(uiModel: BranchLinkUiModel): Int
+    fun type(uiModel: FpiMonitoringUiModel): Int
 }

@@ -7,7 +7,6 @@ import javax.inject.Inject
 class CheckoutAnalyticsPurchaseProtection @Inject constructor() : TransactionAnalytics() {
     /**
      * User clicks on pelajari and successfullyt land to corresponding page
-     * @param url destination *Pelajari* url
      */
     fun eventClickOnPelajari(userId: String, insuranceBrand: String?, protectionPrice: Int?, catLvl3Id: String?) {
         val gtmData = getGtmData(
@@ -25,7 +24,7 @@ class CheckoutAnalyticsPurchaseProtection @Inject constructor() : TransactionAna
     /**
      * User clicks on bayar successfully. Please capture the tickmark element on purchase
      * protection, whether being check or not
-     * @param label tickmark on purchase protection checkbox
+     * @param labelList tickmark on purchase protection checkbox
      */
     fun eventClickOnBuy(userId: String, labelList: List<String>?) {
         labelList?.forEach { label ->

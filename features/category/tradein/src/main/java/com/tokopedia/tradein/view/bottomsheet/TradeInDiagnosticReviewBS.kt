@@ -46,9 +46,9 @@ class TradeInDiagnosticReviewBS: BottomSheetUnify() {
                 doubleTextView.apply {
                     setTopText(review.field)
                     setTopTextSize(textSize)
-                    setTopTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                    setTopTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
                     setBottomTextSize(textSize)
-                    setBottomTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+                    setBottomTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
                     setBottomTextStyle("bold")
                     setBottomText(review.value)
                     setBottomGravity(Gravity.END)

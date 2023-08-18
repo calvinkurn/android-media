@@ -10,8 +10,6 @@ import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.stub.Config
 import com.tokopedia.sessioncommon.data.Error
-import com.tokopedia.sessioncommon.data.GenerateKeyPojo
-import com.tokopedia.sessioncommon.data.KeyData
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
 import com.tokopedia.sessioncommon.data.PopupError
@@ -21,7 +19,7 @@ import org.hamcrest.CoreMatchers.containsString
 import org.junit.Test
 
 @UiTest
-class LoginNegativeCase: LoginBase() {
+class LoginNegativeCase : LoginBase() {
 
     @Test
     fun givenInputCases_registerButtonShouldDisabled() {
@@ -41,8 +39,8 @@ class LoginNegativeCase: LoginBase() {
         }
     }
 
-    @Test
     /* Disable button "Selanjutnya" when input text length is too long for phone number */
+    @Test
     fun phoneNumberTooLong() {
         val errorMsg = "Phone too long"
         val data = RegisterCheckPojo(RegisterCheckData(errors = arrayListOf(errorMsg)))
@@ -55,8 +53,8 @@ class LoginNegativeCase: LoginBase() {
         }
     }
 
-    @Test
     /* Got error from backend during register check */
+    @Test
     fun registerCheckError_BE() {
         val errorMsg = "got errors from be"
         val data = RegisterCheckPojo(RegisterCheckData(errors = arrayListOf(errorMsg)))
@@ -69,8 +67,8 @@ class LoginNegativeCase: LoginBase() {
         }
     }
 
-    @Test
     /* Show snackbar if discover providers is empty */
+    @Test
     fun forbiddenPage_discoverEmpty() {
         fakeRepo.discoverConfig = Config.Error
         runTest {
@@ -78,8 +76,8 @@ class LoginNegativeCase: LoginBase() {
         }
     }
 
-    @Test
     /* Display error text when user click on Masuk button while password is empty */
+    @Test
     fun displayError_IfPasswordEmpty() {
         runTest {
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
@@ -89,8 +87,8 @@ class LoginNegativeCase: LoginBase() {
         }
     }
 
-    @Test
     /* Disable Email Input if password wrapper visible */
+    @Test
     fun disableEmailInput_IfPasswordVisible() {
         runTest {
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
@@ -99,17 +97,13 @@ class LoginNegativeCase: LoginBase() {
         }
     }
 
-    @Test
     /* Show toaster when got error response from backend during login v2 */
+    @Test
     fun login_errorBE() {
         val errorMsg = "Salah pak"
         val data = LoginToken(errors = arrayListOf(Error("", errorMsg)))
         val loginToken = LoginTokenPojoV2(data)
         loginTokenV2UseCaseStub.response = loginToken
-
-        val keyData = KeyData(key = "abc1234", hash = "1234")
-        val keyResponse = GenerateKeyPojo(keyData = keyData)
-        generatePublicKeyUseCaseStub.response = keyResponse
 
         runTest {
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
@@ -121,18 +115,14 @@ class LoginNegativeCase: LoginBase() {
         onView(allOf(withText(containsString(errorMsg)), isDisplayed()))
     }
 
-    @Test
     /* Show popup error */
+    @Test
     fun showPopupAkamai() {
         val title = "header title"
         val popupError = PopupError(title, "body", "action")
         val data = LoginToken(popupError = popupError)
         val loginToken = LoginTokenPojoV2(data)
         loginTokenV2UseCaseStub.response = loginToken
-
-        val keyData = KeyData(key = "abc1234", hash = "1234")
-        val keyResponse = GenerateKeyPojo(keyData = keyData)
-        generatePublicKeyUseCaseStub.response = keyResponse
 
         runTest {
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
@@ -160,5 +150,4 @@ class LoginNegativeCase: LoginBase() {
 //            isDisplayingGivenText(R.id.snackbar_txt, "Akun gagal terautentikasi (%s). Mohon coba kembali.")
 //        }
 //    }
-
 }

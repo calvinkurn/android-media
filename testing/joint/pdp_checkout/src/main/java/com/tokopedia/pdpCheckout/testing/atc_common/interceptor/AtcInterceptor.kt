@@ -8,7 +8,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody.Companion.toResponseBody
 import okio.Buffer
 
-open class AtcInterceptor(private val context: Context): Interceptor {
+open class AtcInterceptor(private val context: Context) : Interceptor {
 
     var customAtcThrowable: Throwable? = null
     var customAtcResponseResource: Int? = null
@@ -43,16 +43,16 @@ open class AtcInterceptor(private val context: Context): Interceptor {
 
     private fun mockResponse(copy: Request, responseString: String): Response {
         return Response.Builder()
-                .request(copy)
-                .code(200)
-                .protocol(Protocol.HTTP_2)
-                .message(responseString)
-                .body(
-                    responseString.toByteArray()
-                        .toResponseBody("application/json".toMediaTypeOrNull())
-                )
-                .addHeader("content-type", "application/json")
-                .build()
+            .request(copy)
+            .code(200)
+            .protocol(Protocol.HTTP_2)
+            .message(responseString)
+            .body(
+                responseString.toByteArray()
+                    .toResponseBody("application/json".toMediaTypeOrNull())
+            )
+            .addHeader("content-type", "application/json")
+            .build()
     }
 
     companion object {

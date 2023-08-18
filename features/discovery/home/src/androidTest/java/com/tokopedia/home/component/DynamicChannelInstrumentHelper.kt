@@ -15,7 +15,6 @@ import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers
 import com.google.android.material.tabs.TabLayout
-import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager
 import com.tokopedia.collapsing.tab.layout.CollapsingTabLayout
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
@@ -54,11 +53,7 @@ const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CATEGORY_WIDGET = "tracker/home/cat
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BU_WIDGET = "tracker/home/bu_widget.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_LEFT = "tracker/home/mix_left.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_TOP = "tracker/home/mix_top.json"
-const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_TAB = "tracker/home/recommendation_tab.json"
-const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_BANNER = "tracker/home/recom_feed_banner.json"
-const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_PRODUCT_LOGIN = "tracker/home/recom_feed_product_login.json"
-const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_PRODUCT_NONLOGIN = "tracker/home/recom_feed_product_nonlogin.json"
-const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_ICON = "tracker/home/recommendation_icon.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED = "tracker/home/recom_feed.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECHARGE_BU_WIDGET = "tracker/home/recharge_bu_widget.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_RECHARGE_CLOSE = "tracker/home/reminder_widget_recharge_close.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_SALAM_CLOSE = "tracker/home/reminder_widget_salam_close.json"
@@ -74,9 +69,11 @@ const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_DEALS_WIDGET = "tracker/home/deals_
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MISSION_WIDGET = "tracker/home/mission_widget.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_LEGO_4_PRODUCT = "tracker/home/lego_4_product.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TODO_WIDGET = "tracker/home/todo_widget.json"
-const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BALANCE_WIDGET_GOPAY_LINKED = "tracker/home/balance_widget.json"
-const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BALANCE_WIDGET_GOPAY_NOT_LINKED = "tracker/home/balance_widget_gopay_not_linked.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_FLASH_SALE_WIDGET = "tracker/home/flash_sale_widget.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BALANCE_WIDGET = "tracker/home/balance_widget.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_DYNAMIC_ICON = "tracker/home/home_icon.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_LOGIN_WIDGET = "tracker/home/login_widget.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_SPECIAL_RELEASE_REVAMP = "tracker/home/special_release_revamp.json"
 
 private const val CHOOSE_ADDRESS_PREFERENCE_NAME = "coahmark_choose_address"
 private const val CHOOSE_ADDRESS_EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK"
@@ -163,75 +160,39 @@ fun String.name(loggedIn: Boolean, darkMode: Boolean = false) = this + (if (logg
 
 fun clickOnProductHighlightItem() {
     try {
-        Espresso.onView(firstView(ViewMatchers.withId(R.id.master_product_card_deals)))
+        Espresso.onView(firstView(ViewMatchers.withId(com.tokopedia.home_component.R.id.master_product_card_deals)))
             .perform(ViewActions.click())
     } catch (e: PerformException) {
         e.printStackTrace()
     }
 }
 
-fun clickOnPopularKeywordSection(viewHolder: RecyclerView.ViewHolder) {
+fun clickOnPopularKeywordSection(viewHolder: RecyclerView.ViewHolder, position: Int) {
     waitForPopularKeywordData()
     clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_popular_keyword, 0)
-    clickLihatSemuaPopularKeyword()
+    clickLihatSemuaPopularKeyword(viewHolder.itemView, position)
 }
 
 fun clickOnMixLeftSection(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
     clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
-    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_product, 0)
+    clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.home_component.R.id.rv_product, 0)
 }
 
 fun clickOnMixLeftPaddingSection(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
     clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
-    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_product_mix_left_padding, 0)
+    clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.home_component.R.id.rv_product_mix_left_padding, 0)
 }
 
 fun clickOnMixTopSection(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
     clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
-    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
+    clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.home_component.R.id.dc_banner_rv, 0)
     clickOnMixTopCTA(viewHolder.itemView)
 }
 
 fun clickOnLegoBannerSection(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
     clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
-    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList, 0)
+    clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.home_component.R.id.recycleList, 0)
     clickSingleItemOnRecyclerView(R.id.recycleList)
-}
-
-fun clickOnRecommendationFeedSection(viewHolder: RecyclerView.ViewHolder) {
-    waitForData()
-    clickRecommendationFeedTab()
-    val recyclerView: RecyclerView = viewHolder.itemView.findViewById(R.id.home_feed_fragment_recycler_view)
-    val rvCount = recyclerView.adapter!!.itemCount
-    for (i in 0 until rvCount) {
-        try {
-            Espresso.onView(firstView(ViewMatchers.withId(R.id.home_feed_fragment_recycler_view)))
-                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(i, clickHomeRecommendationItem()))
-        } catch (e: PerformException) {
-            e.printStackTrace()
-        }
-    }
-}
-
-fun clickHomeRecommendationItem(): ViewAction? {
-    return object : ViewAction {
-        override fun getConstraints(): Matcher<View>? {
-            return null
-        }
-
-        override fun getDescription(): String {
-            return "Click home recommendation item"
-        }
-
-        override fun perform(uiController: UiController?, view: View) {
-            val bannerView: View? = view.findViewById(R.id.bannerImageView)
-            if (bannerView != null) {
-                bannerView.performClick()
-            } else {
-                view.performClick()
-            }
-        }
-    }
 }
 
 fun clickCloseOnReminderWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int, homeRecyclerView: RecyclerView) {
@@ -272,40 +233,46 @@ fun clickOnTickerSection(viewHolder: RecyclerView.ViewHolder) {
     clickTickerItem(viewHolder.itemView)
 }
 
-fun clickHPBSection(viewHolder: RecyclerView.ViewHolder) {
-    clickHomeBannerItemAndViewAll(viewHolder)
-}
-
 fun actionOnBannerCarouselWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
     clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
-    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_banner, 0)
+    clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.home_component.R.id.rv_banner, 0)
 }
 
 fun actionOnMerchantVoucherWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
     clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
-    clickOnEachItemRecyclerViewMerchantVoucher(viewHolder.itemView, R.id.home_component_mvc_rv, 0)
+    clickOnEachItemRecyclerViewMerchantVoucher(viewHolder.itemView, com.tokopedia.home_component.R.id.home_component_mvc_rv, 0)
 }
 
 fun actionOnCueWidgetCategory(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
-    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_component_cue_category_rv, 0)
+    clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.home_component.R.id.home_component_cue_category_rv, 0)
 }
 
 fun actionOnVpsWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
     clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
-    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList, 0)
+    clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.home_component.R.id.recycleList, 0)
 }
 
 fun actionOnMissionWidget(viewHolder: RecyclerView.ViewHolder) {
-    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_component_mission_widget_rcv, 0)
+    clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.home_component.R.id.home_component_mission_widget_rcv, 0)
 }
 
 fun actionOnLego4Product(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
     clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition, -200)
-    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList, 0)
+    clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.home_component.R.id.recycleList, 0)
 }
 
 fun actionOnTodoWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
     clickAndCloseOnEachTodoWidget(viewHolder.itemView, com.tokopedia.home_component.R.id.home_component_todo_widget_rv, 0)
+}
+
+fun actionOnFlashSaleWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
+    clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
+    clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.carouselproductcard.R.id.carouselProductCardRecyclerView, 0)
+}
+
+fun actionOnSpecialReleaseRevampWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
+    clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
+    clickOnEachItemRecyclerViewSpecialRelease(viewHolder.itemView, com.tokopedia.home_component.R.id.home_component_special_release_rv, 0)
 }
 
 fun clickOnEachItemRecyclerViewMerchantVoucher(view: View, recyclerViewId: Int, fixedItemPositionLimit: Int) {
@@ -318,13 +285,45 @@ fun clickOnEachItemRecyclerViewMerchantVoucher(view: View, recyclerViewId: Int, 
     for (i in 0 until childItemCountExcludeViewAllCard) {
         try {
             Espresso.onView(ViewMatchers.withId(recyclerViewId)).perform(
-                actionOnItemAtPosition<RecyclerView.ViewHolder>(i, clickOnViewChild(R.id.container_shop))
+                actionOnItemAtPosition<RecyclerView.ViewHolder>(i, clickOnViewChild(com.tokopedia.home_component.R.id.container_shop))
             )
             Espresso.onView(ViewMatchers.withId(recyclerViewId)).perform(
-                actionOnItemAtPosition<RecyclerView.ViewHolder>(i, clickOnViewChild(R.id.container_product))
+                actionOnItemAtPosition<RecyclerView.ViewHolder>(i, clickOnViewChild(com.tokopedia.home_component.R.id.container_product))
             )
         } catch (e: PerformException) {
             e.printStackTrace()
+        }
+    }
+    Espresso.onView(
+        allOf(
+            ViewMatchers.withId(recyclerViewId)
+        )
+    )
+        .perform(
+            actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                childItemCountExcludeViewAllCard,
+                ViewActions.click()
+            )
+        )
+}
+
+fun clickOnEachItemRecyclerViewSpecialRelease(view: View, recyclerViewId: Int, fixedItemPositionLimit: Int) {
+    val childRecyclerView: RecyclerView = view.findViewById(recyclerViewId)
+
+    var childItemCountExcludeViewAllCard = (childRecyclerView.adapter?.itemCount ?: 0) - 1
+    if (fixedItemPositionLimit > 0) {
+        childItemCountExcludeViewAllCard = fixedItemPositionLimit
+    }
+    for (i in 0 until childItemCountExcludeViewAllCard) {
+        try {
+            Espresso.onView(ViewMatchers.withId(recyclerViewId)).perform(
+                actionOnItemAtPosition<RecyclerView.ViewHolder>(i, clickOnViewChild(com.tokopedia.home_component.R.id.cta))
+            )
+            Espresso.onView(ViewMatchers.withId(recyclerViewId)).perform(
+                actionOnItemAtPosition<RecyclerView.ViewHolder>(i, clickOnViewChild(com.tokopedia.home_component.R.id.product_card))
+            )
+        } catch (e: PerformException) {
+            Log.e(TAG, "clickOnEachItemRecyclerViewSpecialRelease: ", e)
         }
     }
     Espresso.onView(
@@ -390,7 +389,7 @@ fun checkRechargeBUWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int
 private fun impressionRechargeBUWidget() {
     waitForData()
     try {
-        Espresso.onView(ViewMatchers.withId(R.id.rv_recharge_bu_product))
+        Espresso.onView(ViewMatchers.withId(com.tokopedia.recharge_component.R.id.rv_recharge_bu_product))
             .perform(RecyclerViewActions.scrollToPosition<RechargeBUWidgetMixLeftViewHolder>(5))
     } catch (e: PerformException) {
         e.printStackTrace()
@@ -400,7 +399,7 @@ private fun impressionRechargeBUWidget() {
 private fun clickProductRechargeBUWidget() {
     waitForData()
     try {
-        Espresso.onView(ViewMatchers.withId(R.id.rv_recharge_bu_product))
+        Espresso.onView(ViewMatchers.withId(com.tokopedia.recharge_component.R.id.rv_recharge_bu_product))
             .perform(RecyclerViewActions.actionOnItemAtPosition<RechargeBUWidgetMixLeftViewHolder>(4, ViewActions.click()))
     } catch (e: PerformException) {
         e.printStackTrace()
@@ -409,19 +408,19 @@ private fun clickProductRechargeBUWidget() {
 
 fun actionOnSpecialReleaseWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
     clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
-    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_component_special_release_rv, 0)
+    clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.home_component.R.id.home_component_special_release_rv, 0)
 }
 
 fun actionOnCampaignWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
     clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
-    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycler_view, 0)
+    clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.home_component.R.id.recycler_view, 0)
 }
 
 private fun clickAllProductCardRechargeBUWidget() {
     waitForData()
     try {
-        Espresso.onView(ViewMatchers.withId(R.id.rv_recharge_bu_product)).perform(scrollToPosition<RechargeBUWidgetMixLeftViewHolder>(5))
-        Espresso.onView(ViewMatchers.withId(R.id.card_see_more_banner_mix))
+        Espresso.onView(ViewMatchers.withId(com.tokopedia.recharge_component.R.id.rv_recharge_bu_product)).perform(scrollToPosition<RechargeBUWidgetMixLeftViewHolder>(5))
+        Espresso.onView(ViewMatchers.withId(com.tokopedia.home_component.R.id.card_see_more_banner_mix))
             .perform(ViewActions.click())
     } catch (e: PerformException) {
         e.printStackTrace()
@@ -431,7 +430,7 @@ private fun clickAllProductCardRechargeBUWidget() {
 private fun clickEmptyBannerRechargeBUWidget() {
     waitForData()
     try {
-        Espresso.onView(ViewMatchers.withId(R.id.rv_recharge_bu_product))
+        Espresso.onView(ViewMatchers.withId(com.tokopedia.recharge_component.R.id.rv_recharge_bu_product))
             .perform(RecyclerViewActions.actionOnItemAtPosition<CarouselEmptyCardViewHolder>(0, ViewActions.click()))
     } catch (e: PerformException) {
         e.printStackTrace()
@@ -449,7 +448,7 @@ private fun clickSeeAllRechargeBUWidget(viewHolder: RecyclerView.ViewHolder, ite
 
 private fun clickRecommendationFeedTab() {
     try {
-        Espresso.onView(ViewMatchers.withId(R.id.tab_layout_home_feeds)).perform(selectTabAtPosition(0))
+        Espresso.onView(ViewMatchers.withId(com.tokopedia.home.R.id.tab_layout_home_feeds)).perform(selectTabAtPosition(0))
     } catch (e: PerformException) {
         e.printStackTrace()
     }
@@ -457,10 +456,10 @@ private fun clickRecommendationFeedTab() {
 
 fun clickAllRecommendationFeedTabs(view: View) {
     try {
-        val tabLayout: CollapsingTabLayout = view.findViewById(R.id.tab_layout_home_feeds)
+        val tabLayout: CollapsingTabLayout = view.findViewById(com.tokopedia.home.R.id.tab_layout_home_feeds)
         val count = tabLayout.tabCount
         for (i in 0 until count) {
-            Espresso.onView(ViewMatchers.withId(R.id.tab_layout_home_feeds)).perform(selectTabAtPosition(i))
+            Espresso.onView(ViewMatchers.withId(com.tokopedia.home.R.id.tab_layout_home_feeds)).perform(selectTabAtPosition(i))
         }
     } catch (e: PerformException) {
         e.printStackTrace()
@@ -469,10 +468,10 @@ fun clickAllRecommendationFeedTabs(view: View) {
 
 private fun clickOnMixTopCTA(view: View) {
     val childView = view
-    val bannerButton = childView.findViewById<View>(R.id.banner_button)
+    val bannerButton = childView.findViewById<View>(com.tokopedia.home_component.R.id.banner_button)
     if (bannerButton.visibility == View.VISIBLE) {
         try {
-            Espresso.onView(firstView(ViewMatchers.withId(R.id.banner_button)))
+            Espresso.onView(firstView(ViewMatchers.withId(com.tokopedia.home_component.R.id.banner_button)))
                 .perform(ViewActions.click())
         } catch (e: PerformException) {
             e.printStackTrace()
@@ -480,10 +479,15 @@ private fun clickOnMixTopCTA(view: View) {
     }
 }
 
-private fun clickLihatSemuaPopularKeyword() {
+private fun clickLihatSemuaPopularKeyword(view: View, position: Int) {
     try {
-        Espresso.onView(firstView(ViewMatchers.withId(R.id.tv_reload)))
-            .perform(ViewActions.click())
+        if (view.findViewById<View?>(R.id.tv_reload).isVisible) {
+            Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
+                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(position, clickOnViewChild(R.id.tv_reload, 0)))
+        } else if (view.findViewById<View?>(com.tokopedia.home_component.R.id.cta_button_revamp).isVisible) {
+            Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
+                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(position, clickOnViewChild(com.tokopedia.home_component.R.id.cta_button_revamp, 0)))
+        }
     } catch (e: PerformException) {
         e.printStackTrace()
     }
@@ -491,7 +495,7 @@ private fun clickLihatSemuaPopularKeyword() {
 
 private fun clickBUWidgetTab() {
     try {
-        Espresso.onView(ViewMatchers.withId(R.id.tab_layout)).perform(selectTabAtPosition(1))
+        Espresso.onView(ViewMatchers.withId(com.tokopedia.home.R.id.tab_layout)).perform(selectTabAtPosition(1))
     } catch (e: PerformException) {
         e.printStackTrace()
     }
@@ -499,58 +503,32 @@ private fun clickBUWidgetTab() {
 
 private fun clickTickerItem(view: View) {
     try {
-        Espresso.onView(firstView(AllOf.allOf(ViewMatchers.withId(R.id.ticker_description), ViewMatchers.isDisplayed()))).perform(ViewActions.click())
+        Espresso.onView(firstView(AllOf.allOf(ViewMatchers.withId(com.tokopedia.unifycomponents.R.id.ticker_description), ViewMatchers.isDisplayed()))).perform(ViewActions.click())
     } catch (e: PerformException) {
         e.printStackTrace()
     }
 
     try {
-        Espresso.onView(firstView(ViewMatchers.withId(R.id.ticker_close_icon)))
+        Espresso.onView(firstView(ViewMatchers.withId(com.tokopedia.unifycomponents.R.id.ticker_close_icon)))
             .perform(ViewActions.click())
     } catch (e: PerformException) {
         e.printStackTrace()
-    }
-}
-
-private fun clickHomeBannerItemAndViewAll(viewHolder: RecyclerView.ViewHolder) {
-    val view = viewHolder.itemView
-    val childView = view
-    val seeAllButton = childView.findViewById<View>(R.id.see_more_label)
-
-    // banner item click
-    val bannerViewPager = childView.findViewById<CircularViewPager>(R.id.circular_view_pager)
-    val itemCount = bannerViewPager.getViewPager().adapter?.itemCount ?: 0
-    bannerViewPager.pauseAutoScroll()
-    try {
-        Espresso.onView(firstView(ViewMatchers.withId(R.id.circular_view_pager)))
-            .perform(ViewActions.click())
-    } catch (e: PerformException) {
-        e.printStackTrace()
-    }
-    // see all promo button click
-    if (seeAllButton.visibility == View.VISIBLE) {
-        try {
-            Espresso.onView(firstView(ViewMatchers.withId(R.id.see_more_label)))
-                .perform(ViewActions.click())
-        } catch (e: PerformException) {
-            e.printStackTrace()
-        }
     }
 }
 
 private fun clickLihatSemuaButtonIfAvailable(view: View, itemPos: Int, scrollVerticalBy: Int = 0) {
     val childView = view
     val seeAllButton = childView.findViewById<View>(R.id.see_all_button)
-    val ctaButton = childView.findViewById<View>(R.id.cta_button_revamp)
+    val ctaButton = childView.findViewById<View>(com.tokopedia.home_component.R.id.cta_button_revamp)
     if (seeAllButton != null && seeAllButton.isVisible) {
         try {
-            Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
-                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(itemPos, clickOnViewChild(R.id.see_all_button, scrollVerticalBy)))
+            Espresso.onView(ViewMatchers.withId(com.tokopedia.home.R.id.home_fragment_recycler_view))
+                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(itemPos, clickOnViewChild(com.tokopedia.home.R.id.see_all_button, scrollVerticalBy)))
         } catch (_: PerformException) { }
     } else if (ctaButton != null && ctaButton.isVisible) {
         try {
             Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
-                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(itemPos, clickOnViewChild(R.id.cta_button_revamp, scrollVerticalBy)))
+                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(itemPos, clickOnViewChild(com.tokopedia.home_component.R.id.cta_button_revamp, scrollVerticalBy)))
         } catch (_: PerformException) { }
     }
 }
@@ -569,7 +547,7 @@ private fun clickClosedReminderWidgetSalam() {
         Espresso.onView(
             CommonMatcher.getElementFromMatchAtPosition(
                 AllOf.allOf(
-                    ViewMatchers.withId(R.id.ic_close_reminder_recommendation),
+                    ViewMatchers.withId(com.tokopedia.home_component.R.id.ic_close_reminder_recommendation),
                     ViewMatchers.isDisplayed()
                 ),
                 0
@@ -585,7 +563,7 @@ private fun clickClosedReminderWidgetRecharge() {
         Espresso.onView(
             CommonMatcher.getElementFromMatchAtPosition(
                 AllOf.allOf(
-                    ViewMatchers.withId(R.id.ic_close_reminder_recommendation),
+                    ViewMatchers.withId(com.tokopedia.home_component.R.id.ic_close_reminder_recommendation),
                     ViewMatchers.isDisplayed()
                 ),
                 0
@@ -600,7 +578,7 @@ private fun clickReminderWidgetSalam() {
     try {
         Espresso.onView(
             AllOf.allOf(
-                ViewMatchers.withId(R.id.btn_reminder_recommendation),
+                ViewMatchers.withId(com.tokopedia.home_component.R.id.btn_reminder_recommendation),
                 ViewMatchers.isDisplayed(),
                 ViewMatchers.withText("Berbagi Sekarang")
             )
@@ -612,14 +590,14 @@ private fun clickReminderWidgetSalam() {
 
 private fun clickReminderWidgetRecharge(i: Int) {
     try {
-        Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
+        Espresso.onView(ViewMatchers.withId(com.tokopedia.home.R.id.home_fragment_recycler_view))
             .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(i - 1))
-        Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
+        Espresso.onView(ViewMatchers.withId(com.tokopedia.home.R.id.home_fragment_recycler_view))
             .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(i))
         Espresso.onView(
             CommonMatcher.getElementFromMatchAtPosition(
                 AllOf.allOf(
-                    ViewMatchers.withId(R.id.btn_reminder_recommendation),
+                    ViewMatchers.withId(com.tokopedia.home_component.R.id.btn_reminder_recommendation),
                     ViewMatchers.isDisplayed(),
                     ViewMatchers.withText("Bayar Sekarang")
                 ),
@@ -632,11 +610,11 @@ private fun clickReminderWidgetRecharge(i: Int) {
 }
 
 fun actionOnBalanceWidget(viewHolder: RecyclerView.ViewHolder) {
-    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_balance_widget_data, 0)
+    clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.home.R.id.rv_balance_widget_data, 0)
 }
 
 fun actionOnDynamicIcon(viewHolder: RecyclerView.ViewHolder) {
-    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dynamic_icon_recycler_view, 0)
+    clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.home_component.R.id.dynamic_icon_recycler_view, 0)
 }
 
 // ==================================== end of item action ======================================

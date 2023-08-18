@@ -5,7 +5,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderSt
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ToolbarLiveTrackingUiModel
 import javax.inject.Inject
 
-class TokoFoodOrderStatusMapper @Inject constructor() : OrderDetailSectionCommon() {
+open class TokoFoodOrderStatusMapper @Inject constructor() : OrderDetailSectionCommon() {
 
     fun mapToOrderStatusLiveTrackingUiModel(
         tokofoodOrderDetail: TokoFoodOrderStatusResponse.TokofoodOrderDetail

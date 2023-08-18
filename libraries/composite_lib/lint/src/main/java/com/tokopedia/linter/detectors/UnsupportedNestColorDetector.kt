@@ -17,11 +17,13 @@ import com.android.tools.lint.detector.api.SourceCodeScanner
 import com.android.tools.lint.detector.api.XmlContext
 import com.android.tools.lint.detector.api.XmlScanner
 import com.intellij.psi.PsiElement
+import com.tokopedia.linter.LinterConstants
 import com.tokopedia.linter.Priority
 import com.tokopedia.linter.unify.UnifyComponentsList
 import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UField
+import org.jetbrains.uast.UFieldEx
 import org.jetbrains.uast.ULocalVariable
 import org.jetbrains.uast.UMethod
 import org.jetbrains.uast.UReturnExpression
@@ -31,24 +33,20 @@ import org.w3c.dom.Attr
 class UnsupportedNestColorDetector : Detector(), XmlScanner, SourceCodeScanner {
     companion object {
         private const val ISSUE_ID = "UnsupportedNestColor"
-        private const val BRIEF_DESC = "Deprecated color should not be used."
-        private const val ERROR_MESSAGE =
-            "Please use color with token contains 'N' before color number, ex: " +
-                "❌ : Unify_N100 → ✅ : Unify_NN100, or you can consultation with your designer."
-        private const val QUICK_FIX_MESSAGE = "\n⚒️ ️Quick Fix:\n@s"
-        private val ISSUE_PRIORITY = Priority.Medium
-        private val ISSUE_SEVERITY = Severity.WARNING
+        private const val BRIEF_DESC = "The color has deprecated."
+        private const val ERROR_MESSAGE = "%s is obsolete please change to %s"
+        private const val EXPLANATION = "$BRIEF_DESC Please use NestColor or consultation to your designer."
+        private val ISSUE_PRIORITY = Priority.High
+        private val ISSUE_SEVERITY = Severity.ERROR
         private val ISSUE_CATEGORY = Category.CORRECTNESS
-        private const val NEST_INDEX = 7
-        private const val NEST_CHARACTER = "N"
-        val REGEX_OLD_COLOR = "(Unify_[A-Z]\\d{1,4}_\\d{1,2})|(Unify_[A-Z]\\d{1,4})".toRegex()
+        val XML_REGEX_OLD_COLOR = "Unify_[A-Z]\\d{1,4}_\\d{1,2}|Unify_[A-Z]\\d{1,4}".toRegex()
         val JAVA_REGEX_OLD_COLOR =
-            ".(R.color.Unify_[A-Z]\\d{1,4}_\\d{1,2})|(R.color.Unify_[A-Z]\\d{1,4})".toRegex()
+            ".R.color.Unify_[A-Z]\\d{1,4}_\\d{1,2}|R.color.Unify_[A-Z]\\d{1,4}".toRegex()
 
         val JAVA_ISSUE = Issue.create(
             id = ISSUE_ID,
             briefDescription = BRIEF_DESC,
-            explanation = ERROR_MESSAGE,
+            explanation = EXPLANATION,
             category = ISSUE_CATEGORY,
             priority = ISSUE_PRIORITY.value,
             severity = ISSUE_SEVERITY,
@@ -61,7 +59,7 @@ class UnsupportedNestColorDetector : Detector(), XmlScanner, SourceCodeScanner {
         val XML_ISSUE = Issue.create(
             id = ISSUE_ID,
             briefDescription = BRIEF_DESC,
-            explanation = ERROR_MESSAGE,
+            explanation = EXPLANATION,
             category = ISSUE_CATEGORY,
             priority = ISSUE_PRIORITY.value,
             severity = ISSUE_SEVERITY,
@@ -119,13 +117,15 @@ class UnsupportedNestColorDetector : Detector(), XmlScanner, SourceCodeScanner {
             SdkConstants.ATTR_TEXT_COLOR_LINK,
             SdkConstants.ATTR_CACHE_COLOR_HINT,
             SdkConstants.ATTR_TEXT_COLOR_HIGHLIGHT,
-            SdkConstants.ATTR_TEXT_COLOR_HINT
-
+            SdkConstants.ATTR_TEXT_COLOR_HINT,
+            LinterConstants.Attrs.START_COLOR,
+            LinterConstants.Attrs.END_COLOR,
+            LinterConstants.Attrs.CENTER_COLOR
         )
     }
 
     override fun visitAttribute(context: XmlContext, attribute: Attr) {
-        if (attribute.value.contains(REGEX_OLD_COLOR)) {
+        if (attribute.value.contains(XML_REGEX_OLD_COLOR)) {
             reportXmlError(context, attribute)
         }
     }
@@ -134,15 +134,14 @@ class UnsupportedNestColorDetector : Detector(), XmlScanner, SourceCodeScanner {
         val attrValue = StringBuilder(attribute.value)
         val sAttrValue = attrValue.toString()
         val token = sAttrValue.substringAfter("/")
-        val suggestion = UnifyComponentsList.unifyToNestColor[token]
-            ?: attrValue.insert(NEST_INDEX, NEST_CHARACTER).toString()
+        val colorSuggestion = UnifyComponentsList.unifyToNestColor[token] ?: return
+        val suggestion = "@color/$colorSuggestion"
         val quickFix = LintFix.create()
             .replace()
             .text(sAttrValue)
             .with(suggestion)
             .build()
-        val quickFixDesc = " ❌: $sAttrValue → ✅: $suggestion"
-        val message = ERROR_MESSAGE + QUICK_FIX_MESSAGE.replace("@s", quickFixDesc)
+        val message = ERROR_MESSAGE.format(sAttrValue, suggestion)
 
         context.report(
             XML_ISSUE,
@@ -157,7 +156,7 @@ class UnsupportedNestColorDetector : Detector(), XmlScanner, SourceCodeScanner {
     // region JAVA detector
     override fun getApplicableUastTypes(): List<Class<out UElement>> {
         return listOf(
-            UField::class.java,
+            UFieldEx::class.java,
             ULocalVariable::class.java,
             UCallExpression::class.java,
             UReturnExpression::class.java,
@@ -167,13 +166,14 @@ class UnsupportedNestColorDetector : Detector(), XmlScanner, SourceCodeScanner {
 
     override fun createUastHandler(context: JavaContext): UElementHandler {
         return object : UElementHandler() {
+
             override fun visitField(node: UField) {
-                val value = node.text
+                val value = node.text.orEmpty()
                 validate(node = node, value = value)
             }
 
             override fun visitLocalVariable(node: ULocalVariable) {
-                val value = node.text
+                val value = node.text.orEmpty()
                 validate(node = node, value = value)
             }
 
@@ -214,7 +214,7 @@ class UnsupportedNestColorDetector : Detector(), XmlScanner, SourceCodeScanner {
                 }
             }
 
-            private fun validate(node: UVariable, value: String) {
+            private fun validate(node: UVariable?, value: String) {
                 if (shouldScanResource(value = value)) {
                     reportJavaError(context = context, node = node)
                 }
@@ -231,69 +231,65 @@ class UnsupportedNestColorDetector : Detector(), XmlScanner, SourceCodeScanner {
         psi: PsiElement? = null
     ) {
         if (psi != null) {
-            val source = psi.text.ifBlank { return }
-            val component = getJavaMessageAndQuickFix(source = source)
-            val location = context.getLocation(psi)
+            psi.children.forEach { children ->
+                val source = children.text.ifBlank { return }
+                val components = getJavaMessageAndQuickFix(source = source) ?: return
 
-            context.report(
-                JAVA_ISSUE,
-                psi,
-                location,
-                component.first,
-                component.second
-            )
+                for (component in components) {
+                    val location = context.getLocation(children)
+
+                    context.report(
+                        JAVA_ISSUE,
+                        children,
+                        location,
+                        component.first,
+                        component.second
+                    )
+                }
+            }
         } else {
             val source = (node?.asSourceString() ?: return).ifBlank { return }
-            val component = getJavaMessageAndQuickFix(source = source)
-            val location = context.getLocation(node)
+            val components = getJavaMessageAndQuickFix(source = source) ?: return
 
-            context.report(
-                JAVA_ISSUE,
-                node,
-                location,
-                component.first,
-                component.second
-            )
-        }
-    }
+            for (component in components) {
+                val location = context.getLocation(node)
 
-    private fun getJavaMessageAndQuickFix(source: String): Pair<String, LintFix> {
-        val attrValue = StringBuilder(source)
-        val sAttrValue = attrValue.toString()
-        val token = sAttrValue.substringAfter("Unify_").substringBefore(" ")
-        val suggestion = getJavaSuggestion(token, sAttrValue, attrValue)
-        val quickFix = LintFix.create()
-            .replace()
-            .text(sAttrValue)
-            .with(suggestion)
-            .build()
-        val message = getQuickFixDesc(suggestion, sAttrValue)
-
-        return message to quickFix
-    }
-
-    private fun getQuickFixDesc(suggestion: String, sAttrValue: String) =
-        if (suggestion.isBlank()) {
-            ERROR_MESSAGE
-        } else {
-            ERROR_MESSAGE + QUICK_FIX_MESSAGE.replace(
-                "@s",
-                "❌: $sAttrValue → ✅: $suggestion"
-            )
-        }
-
-    private fun getJavaSuggestion(
-        token: String,
-        sAttrValue: String,
-        attrValue: StringBuilder
-    ): String = UnifyComponentsList.unifyToNestColor["Unify_$token"]
-        ?: run {
-            try {
-                val index = sAttrValue.indexOf("Unify_", 0, false)
-                attrValue.insert(index + NEST_INDEX, NEST_CHARACTER).toString()
-            } catch (_: Throwable) {
-                ""
+                context.report(
+                    JAVA_ISSUE,
+                    node,
+                    location,
+                    component.first,
+                    component.second
+                )
             }
         }
+    }
+
+    private fun getJavaMessageAndQuickFix(source: String): List<Pair<String, LintFix>>? {
+        val tokens = getToken(source = source).ifEmpty { return null }
+        val result = mutableListOf<Pair<String, LintFix>>()
+
+        for (token in tokens) {
+            val colorSuggestion = UnifyComponentsList.unifyToNestColor[token] ?: return null
+            val suggestion = "com.tokopedia.unifyprinciples.R.color.$colorSuggestion"
+            val quickFix = LintFix.create()
+                .replace()
+                .text(token)
+                .with(suggestion)
+                .build()
+            val message = getQuickFixDesc(suggestion, token)
+            result.add(message to quickFix)
+        }
+
+        return result
+    }
+
+    private fun getToken(source: String): List<String> {
+        return JAVA_REGEX_OLD_COLOR.findAll(source).map {
+            it.value.replace("R.color.", "")
+        }.toList()
+    }
+
+    private fun getQuickFixDesc(suggestion: String, sAttrValue: String) = ERROR_MESSAGE.format(sAttrValue, suggestion)
     // endregion JAVA detector
 }

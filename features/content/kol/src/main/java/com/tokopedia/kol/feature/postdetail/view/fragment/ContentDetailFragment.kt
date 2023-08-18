@@ -90,7 +90,7 @@ import java.net.SocketTimeoutException
 import java.net.URLEncoder
 import java.net.UnknownHostException
 import javax.inject.Inject
-import com.tokopedia.feedcomponent.R as feedComponentR
+import com.tokopedia.content.common.R as contentCommonR
 import com.tokopedia.kol.R as kolR
 import com.tokopedia.network.R as networkR
 import com.tokopedia.wishlist_common.R as wishlistR
@@ -200,7 +200,7 @@ class ContentDetailFragment :
                     is Fail -> {
                         finishLoading()
                         showToast(
-                            getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_error_reminder),
+                            getString(contentCommonR.string.feed_video_tab_error_reminder),
                             Toaster.TYPE_ERROR
                         )
                     }
@@ -215,7 +215,7 @@ class ContentDetailFragment :
                     else -> {
                         finishLoading()
                         showToast(
-                            getString(feedComponentR.string.feed_video_tab_error_reminder),
+                            getString(contentCommonR.string.feed_video_tab_error_reminder),
                             Toaster.TYPE_ERROR
                         )
                     }
@@ -230,7 +230,7 @@ class ContentDetailFragment :
                     else -> {
                         finishLoading()
                         showToast(
-                            getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_error_reminder),
+                            getString(contentCommonR.string.feed_video_tab_error_reminder),
                             Toaster.TYPE_ERROR
                         )
                     }
@@ -548,12 +548,12 @@ class ContentDetailFragment :
             feedXCardData.followers.isFollowed = !feedXCardData.followers.isFollowed
             if (!feedXCardData.followers.isFollowed && data.action.isUnFollowing) {
                 showToast(
-                    getString(com.tokopedia.feedcomponent.R.string.feed_component_unfollow_success_toast),
+                    getString(contentCommonR.string.feed_component_unfollow_success_toast),
                     Toaster.TYPE_NORMAL
                 )
             } else {
                 showToast(
-                    getString(com.tokopedia.feedcomponent.R.string.feed_component_follow_success_toast),
+                    getString(contentCommonR.string.feed_component_follow_success_toast),
                     Toaster.TYPE_NORMAL
                 )
             }
@@ -831,7 +831,7 @@ class ContentDetailFragment :
             productTagBS.dismissedByClosing = true
             productTagBS.dismiss()
         }
-        val desc = context?.getString(feedComponentR.string.cdp_share_default_text)?.let {
+        val desc = context?.getString(contentCommonR.string.cdp_share_default_text)?.let {
             String.format(
                 it,
                 item.product.name,
@@ -1958,16 +1958,16 @@ class ContentDetailFragment :
     private fun showToastOnSuccessReminderSetForFSTorRS(card: FeedXCard) {
         when {
             card.campaign.reminder is FeedASGCUpcomingReminderStatus.On && card.campaign.isFlashSaleToko -> showToast(
-                getString(com.tokopedia.feedcomponent.R.string.feed_asgc_reminder_activate_fst_message),
+                getString(contentCommonR.string.feed_asgc_reminder_activate_fst_message),
                 Toaster.TYPE_NORMAL
             )
             card.campaign.reminder is FeedASGCUpcomingReminderStatus.On && card.campaign.isRilisanSpl -> showToast(
-                getString(com.tokopedia.feedcomponent.R.string.feed_asgc_reminder_activate_rs_message),
+                getString(contentCommonR.string.feed_asgc_reminder_activate_rs_message),
                 Toaster.TYPE_NORMAL
             )
             card.campaign.reminder is FeedASGCUpcomingReminderStatus.Off -> showToast(
                 getString(
-                    com.tokopedia.feedcomponent.R.string.feed_asgc_reminder_deactivate_message
+                    contentCommonR.string.feed_asgc_reminder_deactivate_message
                 ),
                 Toaster.TYPE_NORMAL
             )
@@ -2015,9 +2015,9 @@ class ContentDetailFragment :
                     if (it.data.isFollowedFromRSRestrictionBottomSheet && it.data.action.isFollowing) {
                         if (::productTagBS.isInitialized) {
                             productTagBS.showToasterOnBottomSheetOnSuccessFollow(
-                                getString(com.tokopedia.feedcomponent.R.string.feed_follow_bottom_sheet_success_toaster_text),
+                                getString(contentCommonR.string.feed_follow_bottom_sheet_success_toaster_text),
                                 Toaster.TYPE_NORMAL,
-                                getString(com.tokopedia.feedcomponent.R.string.feed_ok)
+                                getString(contentCommonR.string.feed_ok)
                             )
                             feedFollowersOnlyBottomSheet?.dismiss()
                         }
@@ -2061,9 +2061,9 @@ class ContentDetailFragment :
                     currentPosition = it.data.currentPosition
 
                     val toastMessage = if (it.data.isFollow) {
-                        getString(com.tokopedia.feedcomponent.R.string.feed_unfollow_ugc_success_toaster_text)
+                        getString(contentCommonR.string.feed_unfollow_ugc_success_toaster_text)
                     } else {
-                        getString(com.tokopedia.feedcomponent.R.string.feed_follow_ugc_success_toaster_text)
+                        getString(contentCommonR.string.feed_follow_ugc_success_toaster_text)
                     }
                     showToast(toastMessage, Toaster.TYPE_NORMAL)
                 }

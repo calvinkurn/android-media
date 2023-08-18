@@ -36,11 +36,12 @@ class ProductSummaryRobot(
 
     private val context = InstrumentationRegistry.getInstrumentation().context
 
-    val scenario = launchFragment(themeResId = R.style.AppTheme) {
+    val scenario = launchFragment(themeResId = com.tokopedia.empty_state.R.style.AppTheme) {
         ProductSetupContainer(viewModel) {
             when (it) {
                 LoadingDialogFragment::class.java.name -> LoadingDialogFragment()
                 else -> ProductSummaryBottomSheet(
+                    coachMarkSharedPref = mockk(relaxed = true),
                     analytic = PlayBroadcastAnalytic(
                         analyticUserSession,
                         setupProductAnalytic = PlayBroSetupProductAnalyticImpl(
@@ -56,6 +57,7 @@ class ProductSummaryRobot(
                         accountAnalytic = mockk(relaxed = true),
                         shortsEntryPointAnalytic = mockk(relaxed = true),
                         playPerformanceDashboardEntryPointAnalytic = mockk(relaxed = true),
+                        beautificationAnalytic = mockk(relaxed = true),
                     )
                 )
             }

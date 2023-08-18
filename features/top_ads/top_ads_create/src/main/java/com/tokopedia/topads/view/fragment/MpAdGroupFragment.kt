@@ -413,6 +413,7 @@ class MpAdGroupFragment :
         dialog.setOnDismissListener {
             binding?.adGroupCta?.isLoading = false
             adGroupViewModel?.unChooseAdGroup(adGroupViewModel?.getSelectedAdGroupPosition().orZero())
+            binding?.adGroupCta?.isEnabled = false
         }
         dialog.show()
     }
@@ -436,6 +437,7 @@ class MpAdGroupFragment :
         dialog.setOnDismissListener {
             binding?.adGroupCta?.isLoading = false
             adGroupViewModel?.unChooseAdGroup(adGroupViewModel?.getSelectedAdGroupPosition().orZero())
+            binding?.adGroupCta?.isEnabled = false
         }
         dialog.show()
     }

@@ -3,6 +3,7 @@ package com.tokopedia.media.preview.ui.activity
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.app.Activity
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
@@ -35,7 +36,9 @@ import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
+import java.io.File
 import javax.inject.Inject
+
 
 open class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
     DrawerSelectionWidget.Listener {
@@ -213,7 +216,27 @@ open class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
                         PREVIEW_PAGE_UPLOAD
                     }
 
-                    previewAnalytics.clickNextButton(buttonState)
+                    // size, resolution, total pixel
+                    val imageDetailList: MutableList<Triple<String, String, Int>> = mutableListOf()
+                    it.originalPaths.forEach { pathImg ->
+                        val (width, height) = getImageResolution(pathImg)
+
+                        imageDetailList.add(
+                            Triple(
+                                getImageSize(pathImg).toString(),
+                                "${width}x$height",
+                                width*height
+                            )
+                        )
+                    }
+                    imageDetailList.sortByDescending { (_, _, pixel) ->
+                        pixel
+                    }
+
+                    previewAnalytics.clickNextButton(
+                        buttonState,
+                        imageDetailList
+                    )
                     onFinishIntent(it, withEditor)
                 }
         }
@@ -355,6 +378,23 @@ open class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
         intent.putExtra(EXTRA_EDITOR_PICKER, withEditor)
         setResult(Activity.RESULT_OK, intent)
         finish()
+    }
+
+    // Temporary will removed later
+    private fun getImageResolution(path: String): Pair<Int, Int> {
+        return try {
+            val option = BitmapFactory.Options()
+            option.inJustDecodeBounds = true
+            BitmapFactory.decodeFile(path, option)
+            return Pair(option.outWidth, option.outHeight)
+        } catch (_: Exception) {
+            Pair(0, 0)
+        }
+    }
+
+    private fun getImageSize(path: String): Int {
+        val file: File = File(path)
+       return (file.length() / 1024).toString().toInt()
     }
 
     protected open fun initInjector() {

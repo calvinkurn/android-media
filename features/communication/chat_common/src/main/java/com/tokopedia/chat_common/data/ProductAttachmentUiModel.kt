@@ -152,12 +152,22 @@ open class ProductAttachmentUiModel protected constructor(
         for (variant in variants) {
             val variantOption = variant.options
             if (variantOption.isColor()) {
-                colorVariantId = variantOption.id
-                colorVariant = variantOption.value
-                colorHexVariant = variantOption.hex
+                variantOption.id?.let {
+                    colorVariantId = it
+                }
+                variantOption.value?.let {
+                    colorVariant = it
+                }
+                variantOption.hex?.let {
+                    colorHexVariant = it
+                }
             } else {
-                sizeVariantId = variantOption.id
-                sizeVariant = variantOption.value
+                variantOption.id?.let {
+                    sizeVariantId = it
+                }
+                variantOption.value?.let {
+                    sizeVariant = it
+                }
             }
         }
     }
@@ -196,6 +206,10 @@ open class ProductAttachmentUiModel protected constructor(
 
     fun isWishListed(): Boolean {
         return wishList
+    }
+
+    fun isProductArchived(): Boolean {
+        return status == statusArchived
     }
 
     fun getStringProductId(): String {
@@ -306,6 +320,7 @@ open class ProductAttachmentUiModel protected constructor(
         const val statusDeleted = 0
         const val statusActive = 1
         const val statusWarehouse = 3
+        const val statusArchived = 99
 
         const val NO_PRODUCT_ID = "0"
     }

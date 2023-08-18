@@ -12,7 +12,7 @@
         android:id="@+id/tg_deal_details"
         app:typographyType="heading_2"
         app:typographyWeight="bold"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -31,7 +31,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:gravity="end"
-        android:textColor="@color/Unify_N700_32"
+        android:textColor="@color/Unify_NN950_32"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tg_deal_details"
         app:layout_goneMarginRight="16dp"
@@ -46,7 +46,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="2dp"
         android:includeFontPadding="false"
-        android:textColor="@color/Unify_Y500"
+        android:textColor="@color/Unify_YN500"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tg_mrp"
         tools:text="Rp50.000.000" />
@@ -64,7 +64,7 @@
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:paddingTop="2dp"
-        android:textColor="@color/Unify_R500"
+        android:textColor="@color/Unify_RN500"
         app:layout_constraintBottom_toBottomOf="@+id/tg_mrp"
         app:layout_constraintLeft_toRightOf="@+id/tg_mrp"
         app:layout_constraintTop_toTopOf="@+id/tg_mrp"
@@ -84,7 +84,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tg_favourite"
-        android:textColor="@color/Unify_N700_44"
+        android:textColor="@color/Unify_NN950_44"
         app:typographyType="display_3"
         app:typographyWeight="reguler"
         android:layout_width="wrap_content"
@@ -102,7 +102,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="16dp"
-        android:background="@color/Unify_N75"
+        android:background="@color/Unify_NN50"
         app:layout_constraintTop_toBottomOf="@+id/tg_sales_price" />
 
     <com.tokopedia.unifycomponents.ImageUnify
@@ -127,7 +127,7 @@
         app:layout_constraintLeft_toRightOf="@+id/iv_clock"
         app:layout_constraintTop_toTopOf="@+id/iv_clock"
         app:layout_constraintVertical_bias="0.5"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         tools:text="Berlaku hingga tanggal 1 Juni 2018" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -141,14 +141,14 @@
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:layout_marginTop="16dp"
-            android:background="@color/Unify_N75"
+            android:background="@color/Unify_NN50"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_popular"
             app:typographyType="heading_3"
             app:typographyWeight="reguler"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -163,7 +163,7 @@
             app:typographyWeight="reguler"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:textColor="@color/Unify_N700_32"
+            android:textColor="@color/Unify_NN950_32"
             app:layout_constraintBottom_toBottomOf="@+id/tv_popular"
             app:layout_constraintLeft_toRightOf="@+id/tv_popular"
             app:layout_constraintTop_toTopOf="@+id/tv_popular"
@@ -172,7 +172,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tg_see_all_locations"
-            android:textColor="@color/Unify_G400"
+            android:textColor="@color/Unify_GN500"
             app:typographyType="display_3"
             app:typographyWeight="reguler"
             android:layout_width="wrap_content"
@@ -201,7 +201,7 @@
             android:id="@+id/tg_brand_name"
             app:typographyType="display_1"
             app:typographyWeight="bold"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
@@ -215,7 +215,7 @@
             android:id="@+id/tg_brand_venue"
             app:typographyType="display_3"
             app:typographyWeight="bold"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
@@ -234,7 +234,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginTop="2dp"
             android:maxLines="2"
-            android:textColor="@color/Unify_N700_32"
+            android:textColor="@color/Unify_NN950_32"
             app:layout_constraintLeft_toLeftOf="@+id/tg_brand_venue"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tg_brand_venue"
@@ -244,7 +244,7 @@
             android:id="@+id/tg_view_map"
             app:typographyType="display_3"
             app:typographyWeight="bold"
-            android:textColor="@color/Unify_G400"
+            android:textColor="@color/Unify_GN500"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
@@ -260,7 +260,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="16dp"
-        android:background="@color/Unify_N100"
+        android:background="@color/Unify_NN200"
         app:layout_constraintTop_toBottomOf="@+id/cl_outlets" />
 
 
@@ -274,7 +274,7 @@
             android:id="@+id/tg_description"
             app:typographyType="heading_3"
             app:typographyWeight="reguler"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -293,7 +293,7 @@
             android:layout_marginTop="8dp"
             android:ellipsize="end"
             android:maxLines="10"
-            android:textColor="@color/Unify_N700_44"
+            android:textColor="@color/Unify_NN950_44"
             app:layout_constraintLeft_toLeftOf="@+id/tg_description"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tg_description" />
@@ -302,7 +302,7 @@
             android:id="@+id/seemorebutton_description"
             app:typographyType="display_3"
             app:typographyWeight="reguler"
-            android:textColor="@color/Unify_G400"
+            android:textColor="@color/Unify_GN500"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -315,7 +315,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="16dp"
-            android:background="@color/Unify_N100"
+            android:background="@color/Unify_NN200"
             app:layout_constraintTop_toBottomOf="@+id/seemorebutton_description" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -329,7 +329,7 @@
             android:id="@+id/tg_tnc"
             app:typographyType="heading_3"
             app:typographyWeight="reguler"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -347,7 +347,7 @@
             android:layout_marginTop="8dp"
             android:ellipsize="end"
             android:maxLines="10"
-            android:textColor="@color/Unify_N700_44"
+            android:textColor="@color/Unify_NN950_44"
             app:layout_constraintLeft_toLeftOf="@+id/tg_tnc"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tg_tnc" />
@@ -356,7 +356,7 @@
             android:id="@+id/seemorebutton_tnc"
             app:typographyType="display_3"
             app:typographyWeight="reguler"
-            android:textColor="@color/Unify_G400"
+            android:textColor="@color/Unify_GN500"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -369,7 +369,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="16dp"
-            android:background="@color/Unify_N100"
+            android:background="@color/Unify_NN200"
             app:layout_constraintTop_toBottomOf="@+id/seemorebutton_tnc" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -399,7 +399,7 @@
             android:layout_marginStart="8dp"
             app:typographyType="display_2"
             app:typographyWeight="reguler"
-            android:textColor="@color/Unify_G400"
+            android:textColor="@color/Unify_GN500"
             android:text="@string/deals_pdp_see_how_to_redeem_voucher"
             app:layout_constraintBottom_toBottomOf="@+id/iv_how_to_redeem"
             app:layout_constraintLeft_toRightOf="@+id/iv_how_to_redeem"
@@ -412,7 +412,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginEnd="16dp"
-            android:tint="@color/Unify_N150"
+            android:tint="@color/Unify_NN400"
             app:layout_constraintBottom_toBottomOf="@+id/iv_how_to_redeem"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="parent"
@@ -434,7 +434,7 @@
         android:id="@+id/tg_recommended_deals"
         app:typographyType="heading_3"
         app:typographyWeight="reguler"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"

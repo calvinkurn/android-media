@@ -14,19 +14,19 @@ class GetRepurchaseProductListUseCase @Inject constructor(
 ) {
 
     companion object {
-        private const val WAREHOUSE_ID = "warehouseID"
+        private const val WAREHOUSES = "warehouses"
         private const val QUERY_PARAM = "queryParam"
 
         private const val DEFAULT_ERROR_MESSAGE = "Failed to get repurchase product list"
 
         private val QUERY = """
             query TokonowRepurchasePage(
-                ${'$'}$WAREHOUSE_ID: String!, 
+                ${'$'}$WAREHOUSES:[WarehousePerService!], 
                 ${'$'}$QUERY_PARAM: String 
             ) {
               TokonowRepurchasePage(
-                warehouseID:${'$'}$WAREHOUSE_ID, 
-                queryParam:${'$'}$QUERY_PARAM 
+                $WAREHOUSES:${'$'}$WAREHOUSES, 
+                $QUERY_PARAM:${'$'}$QUERY_PARAM 
               ) {
                 header {
                   process_time
@@ -85,7 +85,7 @@ class GetRepurchaseProductListUseCase @Inject constructor(
     suspend fun execute(param: GetRepurchaseProductListParam): GetRepurchaseProductListResponse {
         return graphql.run {
             val requestParams = RequestParams().apply {
-                putString(WAREHOUSE_ID, param.warehouseID)
+                putObject(WAREHOUSES, param.warehouses)
                 putString(QUERY_PARAM, param.generateQuery())
             }.parameters
 

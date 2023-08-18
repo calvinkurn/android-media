@@ -1,7 +1,6 @@
 package com.tokopedia.productcard
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.productcard.layout.LayoutStrategy
 import com.tokopedia.productcard.layout.LayoutStrategyFactory
 import com.tokopedia.productcard.utils.LABEL_BEST_SELLER
 import com.tokopedia.productcard.utils.LABEL_CAMPAIGN
@@ -16,12 +15,14 @@ import com.tokopedia.productcard.utils.LABEL_INTEGRITY
 import com.tokopedia.productcard.utils.LABEL_OVERLAY
 import com.tokopedia.productcard.utils.LABEL_PRICE
 import com.tokopedia.productcard.utils.LABEL_PRODUCT_STATUS
+import com.tokopedia.productcard.utils.LABEL_RIBBON
 import com.tokopedia.productcard.utils.LABEL_SHIPPING
 import com.tokopedia.productcard.utils.MIN_LABEL_VARIANT_COUNT
 import com.tokopedia.productcard.utils.MIN_QUANTITY_NON_VARIANT
 import com.tokopedia.productcard.utils.TYPE_VARIANT_COLOR
 import com.tokopedia.productcard.utils.TYPE_VARIANT_CUSTOM
 import com.tokopedia.productcard.utils.TYPE_VARIANT_SIZE
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.UnifyButton
 
 data class ProductCardModel (
@@ -78,10 +79,14 @@ data class ProductCardModel (
         val hasAddToCartWishlist: Boolean = false,
         val hasSimilarProductWishlist: Boolean = false,
         val customVideoURL : String = "",
-        val cardInteraction: Boolean = false,
+        @Deprecated("replaced with animateOnPress")
+        val cardInteraction: Boolean? = null,
         val productListType: ProductListType = ProductListType.CONTROL,
         val isPortrait: Boolean = false,
         val seeOtherProductText: String = "",
+        val isTopStockBar: Boolean = false,
+        val cardType: Int = CardUnify2.TYPE_SHADOW,
+        val animateOnPress: Int = CardUnify2.ANIMATE_OVERLAY,
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false
@@ -90,7 +95,11 @@ data class ProductCardModel (
     @Deprecated("replace with labelGroupList")
     var isProductWholesale: Boolean = false
 
-    internal val layoutStrategy: LayoutStrategy = LayoutStrategyFactory.create(productListType)
+    internal val layoutStrategy =
+        LayoutStrategyFactory.create(productListType, isTopStockBar, cardType)
+
+    val showRibbon: Boolean
+        get() = getLabelRibbon()?.title?.isNotEmpty() == true
 
     val hasVideo : Boolean = customVideoURL.isNotBlank()
 
@@ -223,6 +232,10 @@ data class ProductCardModel (
 
     fun getLabelOverlay(): LabelGroup? {
         return findLabelGroup(LABEL_OVERLAY)
+    }
+
+    fun getLabelRibbon(): LabelGroup? {
+        return findLabelGroup(LABEL_RIBBON)
     }
 
     fun willShowRatingAndReviewCount(): Boolean {
@@ -397,5 +410,8 @@ data class ProductCardModel (
         GIMMICK,
         PORTRAIT,
         ETA,
+        BEST_SELLER,
+        FIXED_GRID,
+        LIST_VIEW,
     }
 }

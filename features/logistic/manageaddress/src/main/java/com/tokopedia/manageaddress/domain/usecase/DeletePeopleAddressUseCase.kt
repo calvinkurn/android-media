@@ -25,6 +25,29 @@ class DeletePeopleAddressUseCase @Inject constructor(
               kero_remove_address(addr_id: ${"$"}inputAddressId, is_tokonow_request: ${"$"}isTokonowRequest, consent_json: ${"$"}consent_json) {
                     data{
                         is_success
+                        is_state_chosen_address_changed
+                        chosen_address {
+                            addr_id
+                            receiver_name
+                            addr_name
+                            district
+                            city
+                            city_name
+                            district_name
+                            status
+                            latitude
+                            longitude
+                            postal_code
+                        }
+                        tokonow {
+                            shop_id
+                            warehouse_id
+                            warehouses {
+                                warehouse_id
+                                service_type
+                            }
+                            service_type
+                        }
                     }
                     status
                     config

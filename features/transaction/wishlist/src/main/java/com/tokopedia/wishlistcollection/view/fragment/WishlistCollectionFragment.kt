@@ -19,7 +19,6 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_INTERNAL
@@ -36,6 +35,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -58,7 +58,7 @@ import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter.Companion.LAYOUT_RE
 import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment
 import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics
 import com.tokopedia.wishlistcollection.data.model.WishlistCollectionCarouselEmptyStateData
-import com.tokopedia.wishlistcollection.data.params.UpdateWishlistCollectionParams
+import com.tokopedia.wishlistcommon.data.params.UpdateWishlistCollectionParams
 import com.tokopedia.wishlistcollection.data.response.CreateWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionComponent
@@ -72,7 +72,7 @@ import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.REQUEST_CO
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLECTION_SHARE
 import com.tokopedia.wishlistcollection.util.WishlistCollectionPrefs
 import com.tokopedia.wishlistcollection.util.WishlistCollectionSharingUtils
-import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionEditActivity
+import com.tokopedia.wishlistcollection.view.IWishlistCollectionFragment
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter.Companion.LAYOUT_DIVIDER
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter.Companion.LAYOUT_LOADER
@@ -81,8 +81,8 @@ import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetCreateNewCol
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetKebabMenuWishlistCollection
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetOnboardingWishlistCollection
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetUpdateWishlistCollectionName
+import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetWishlistAffiliateOnBoarding
 import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerBottomSheetMenu
-import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerFromCollectionPage
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionViewModel
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -92,8 +92,8 @@ import kotlin.math.roundToInt
 @Keep
 class WishlistCollectionFragment :
     BaseDaggerFragment(),
+    IWishlistCollectionFragment,
     WishlistCollectionAdapter.ActionListener,
-    ActionListenerFromCollectionPage,
     BottomSheetUpdateWishlistCollectionName.ActionListener,
     BottomSheetOnboardingWishlistCollection.ActionListener,
     ActionListenerBottomSheetMenu {
@@ -144,6 +144,8 @@ class WishlistCollectionFragment :
     private val coachMarkItemSharing2 = arrayListOf<CoachMark2Item>()
     private var coachMarkSharing2: CoachMark2? = null
 
+    private var isAffiliateRegistered: Boolean = false
+
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
@@ -182,6 +184,7 @@ class WishlistCollectionFragment :
         WishlistCollectionAnalytics.sendWishListHomePageOpenedEvent(userSession.isLoggedIn, userSession.userId)
         checkLogin()
         initTrackingQueue()
+        collectionViewModel.getAffiliateUserDetail()
     }
 
     private fun initTrackingQueue() {
@@ -249,6 +252,7 @@ class WishlistCollectionFragment :
         observingDeleteProgress()
         observeGetCollectionSharingData()
         observeUpdateAccessWishlistCollection()
+        observeAffiliateUserDetail()
     }
 
     private fun prepareLayout() {
@@ -256,7 +260,7 @@ class WishlistCollectionFragment :
             activity?.window?.decorView?.setBackgroundColor(
                 ContextCompat.getColor(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN0
                 )
             )
         }
@@ -269,19 +273,17 @@ class WishlistCollectionFragment :
             activityWishlistCollection =
                 arguments?.getString(PARAM_ACTIVITY_WISHLIST_COLLECTION, "") ?: ""
 
-            val pageSource: String
             val icons: IconBuilder
             viewLifecycleOwner.lifecycle.addObserver(wishlistCollectionNavtoolbar)
             if (activityWishlistCollection != PARAM_HOME) {
                 wishlistCollectionNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
-                icons = IconBuilder(IconBuilderFlag()).apply {
+                icons = IconBuilder(IconBuilderFlag(pageSource = NavSource.WISHLIST)).apply {
                     addIcon(IconList.ID_CART) {}
                     addIcon(IconList.ID_NAV_GLOBAL) {}
                 }
             } else {
-                pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_COLLECTION
                 wishlistCollectionNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
-                icons = IconBuilder(IconBuilderFlag(pageSource = pageSource)).apply {
+                icons = IconBuilder(IconBuilderFlag(pageSource = NavSource.HOME_WISHLIST)).apply {
                     addIcon(IconList.ID_MESSAGE) {}
                     addIcon(IconList.ID_NOTIFICATION) {}
                     addIcon(IconList.ID_CART) {}
@@ -689,6 +691,15 @@ class WishlistCollectionFragment :
         }
     }
 
+    private fun observeAffiliateUserDetail() {
+        collectionViewModel.isUserAffiliate.observe(viewLifecycleOwner) {
+            isAffiliateRegistered = when (it) {
+                is Success -> it.data.isRegistered
+                is Fail -> false
+            }
+        }
+    }
+
     private fun finishRefresh() {
         binding?.run {
             swipeRefreshLayout.isRefreshing = false
@@ -762,10 +773,14 @@ class WishlistCollectionFragment :
 
     override fun onEditCollection(collectionId: String, collectionName: String, actionText: String) {
         bottomSheetKebabMenu?.dismiss()
-        val intent = Intent(context, WishlistCollectionEditActivity::class.java)
-        intent.putExtra(COLLECTION_ID, collectionId)
-        intent.putExtra(COLLECTION_NAME, collectionName)
-        startActivityForResult(intent, EDIT_WISHLIST_COLLECTION_REQUEST_CODE)
+        val intentEditWishlistCollection =
+            RouteManager.getIntent(context, ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_EDIT)
+        intentEditWishlistCollection.putExtra(COLLECTION_ID, collectionId)
+        intentEditWishlistCollection.putExtra(COLLECTION_NAME, collectionName)
+        startActivityForResult(
+            intentEditWishlistCollection,
+            EDIT_WISHLIST_COLLECTION_REQUEST_CODE
+        )
     }
 
     override fun onDeleteCollection(collectionId: String, collectionName: String, actionText: String) {
@@ -1131,5 +1146,10 @@ class WishlistCollectionFragment :
                 getString(R.string.collection_CTA_oke)
             ) {}.show()
         }
+    }
+
+    override fun onAffiliateTickerCtaClick() {
+        BottomSheetWishlistAffiliateOnBoarding.getFragmentInstance(isAffiliateRegistered)
+            .show(childFragmentManager, null)
     }
 }

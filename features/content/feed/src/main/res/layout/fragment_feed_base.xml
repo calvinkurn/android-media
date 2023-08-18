@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.constraintlayout.motion.widget.MotionLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    app:layoutDescription="@xml/fragment_feed_base_scene">
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/vp_feed_tab_items_container"
@@ -124,14 +124,12 @@
         android:layout_width="28dp"
         android:layout_height="28dp"
         android:layout_marginEnd="16dp"
-        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/v_menu_center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/v_menu_center"
-        app:layout_constraintBottom_toBottomOf="@id/v_menu_center"
-        app:srcCompat="@drawable/ic_user_profile_default"
+        app:srcCompat="@drawable/iconunify_user"
         app:unify_image_type="circle"
-        tools:visibility="visible"
-        />
+        tools:visibility="visible" />
 
     <com.tokopedia.feedplus.presentation.customview.UploadInfoView
         android:id="@+id/upload_view"
@@ -156,14 +154,4 @@
         app:layout_constraintTop_toTopOf="parent"
         />
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/layout_toaster"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.motion.widget.MotionLayout>
