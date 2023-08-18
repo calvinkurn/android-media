@@ -298,11 +298,11 @@ class FeedBaseFragment :
                     positionOffset: Float,
                     positionOffsetPixels: Int
                 ) {
+                    handleTabTransition(position)
                     if (!userSession.isLoggedIn &&
                         activeTabSource.tabName == null // not coming from appLink
                     ) {
-                        val activeTab = feedMainViewModel.activeTab ?: return
-                        if (activeTab.isFollowingTab) {
+                        if (position == TAB_SECOND_INDEX) {
                             onNonLoginGoToFollowingTab.launch(
                                 RouteManager.getIntent(
                                     context,
@@ -727,6 +727,9 @@ class FeedBaseFragment :
         // keep active tab updated whenever sending tracker
         feedNavigationAnalytics.setActiveTab(dataModel)
         binding.vpFeedTabItemsContainer.setCurrentItem(position, true)
+    }
+
+    private fun handleTabTransition(position: Int) {
         if (position == TAB_FIRST_INDEX) {
             binding.root.transitionToStart()
         } else {
