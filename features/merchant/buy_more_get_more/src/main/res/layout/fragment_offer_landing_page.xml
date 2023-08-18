@@ -54,32 +54,39 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/header">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_olp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clipChildren="false"
-                    android:clipToPadding="false"
-                    android:focusable="false"
-                    android:fitsSystemWindows="true"
-                    android:focusableInTouchMode="false"
-                    android:nestedScrollingEnabled="false" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_olp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false" />
 
         </com.tokopedia.buy_more_get_more.olp.view.widget.StickySingleHeaderView>
 
-        <com.tokopedia.empty_state.EmptyStateUnify
-            android:id="@+id/errorPageLarge"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:unifyEmptyStateDescription="test"
-            app:unifyEmptyStateImageUrl="https://images.tokopedia.net/android/merchant_voucher/il_mvc_no_result.webp"
-            app:unifyEmptyStatePrimaryCTAText="test"
-            app:unifyEmptyStateTitle="" />
+    <com.tokopedia.minicart.bmgm.presentation.customview.BmgmMiniCartView
+        android:id="@+id/miniCartPlaceholder"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_height="60dp" />
 
+    <com.tokopedia.empty_state.EmptyStateUnify
+        android:id="@+id/errorPageLarge"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unifyEmptyStateDescription="test"
+        app:unifyEmptyStateImageUrl="https://images.tokopedia.net/android/merchant_voucher/il_mvc_no_result.webp"
+        app:unifyEmptyStatePrimaryCTAText="test"
+        app:unifyEmptyStateTitle="" />
 </androidx.constraintlayout.widget.ConstraintLayout>

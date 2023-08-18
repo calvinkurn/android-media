@@ -123,7 +123,9 @@ class ProductHighlightItem(
             with(singleBinding) {
                 if (this != null) {
                     try {
-                        bgImage.backgroundTintList = ColorStateList.valueOf(Color.parseColor(productHighlightData.boxColor))
+                        if(!productHighlightData.boxColor.isNullOrEmpty()) {
+                            bgImage.setColorFilter(Color.parseColor(productHighlightData.boxColor))
+                        }
                     } catch (e: Exception) {
                         Utils.logException(e)
                     }
@@ -234,7 +236,9 @@ class ProductHighlightItem(
             with(multipleBinding) {
                 if (this != null) {
                     try {
-                        bgImage.backgroundTintList = ColorStateList.valueOf(Color.parseColor(productHighlightData.boxColor))
+                        if(!productHighlightData.boxColor.isNullOrEmpty()) {
+                            bgImage.setColorFilter(Color.parseColor(productHighlightData.boxColor))
+                        }
                     } catch (e: Exception) {
                         Utils.logException(e)
                     }

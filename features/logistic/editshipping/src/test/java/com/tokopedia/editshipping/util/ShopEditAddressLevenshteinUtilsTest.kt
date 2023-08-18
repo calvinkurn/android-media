@@ -3,7 +3,7 @@ package com.tokopedia.editshipping.util
 import org.junit.Assert
 import org.junit.Test
 
-class ShopEditAddressUtilsTest {
+class ShopEditAddressLevenshteinUtilsTest {
 
     @Test
     fun `normalize String Success`() {
@@ -11,7 +11,7 @@ class ShopEditAddressUtilsTest {
 
         val expectedResult = "dr satrio jakarta selatan"
 
-        val actualResult = ShopEditAddressUtils.normalize(address)
+        val actualResult = ShopEditAddressLevenshteinUtils.normalize(address)
 
         Assert.assertEquals(expectedResult, actualResult)
     }
@@ -23,7 +23,7 @@ class ShopEditAddressUtilsTest {
 
         val expectedResult = true
 
-        val actualResult = ShopEditAddressUtils.validateAddressSimilarity(address1, address2)
+        val actualResult = ShopEditAddressLevenshteinUtils.validateAddressSimilarity(address1, address2)
 
         Assert.assertEquals(expectedResult, actualResult)
     }
@@ -35,7 +35,7 @@ class ShopEditAddressUtilsTest {
 
         val expectedResult = false
 
-        val actualResult = ShopEditAddressUtils.validateAddressSimilarity(address1, address2)
+        val actualResult = ShopEditAddressLevenshteinUtils.validateAddressSimilarity(address1, address2)
 
         Assert.assertEquals(expectedResult, actualResult)
     }

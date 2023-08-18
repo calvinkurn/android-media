@@ -1,26 +1,33 @@
 package com.tokopedia.inbox.fake.domain.usecase.notifcenter.topads
 
-import com.tokopedia.common.network.coroutines.repository.RestRepository
-import com.tokopedia.common.network.data.model.RestRequest
-import com.tokopedia.common.network.data.model.RestResponse
-import com.tokopedia.network.data.model.response.DataResponse
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.topads.sdk.domain.model.TopAdsBannerResponse
 import java.lang.reflect.Type
 
-class FakeTopAdsRestRepository : RestRepository {
+class FakeTopAdsRestRepository : GraphqlRepository {
 
     var isError = false
-    var response = DataResponse<TopAdsBannerResponse>()
+    var response = TopAdsBannerResponse(
+        TopAdsBannerResponse.TopadsDisplayBannerAdsV3(null, null)
+    )
 
-    override suspend fun getResponse(request: RestRequest): RestResponse {
+    override suspend fun response(
+        requests: List<GraphqlRequest>,
+        cacheStrategy: GraphqlCacheStrategy
+    ): GraphqlResponse {
         if (isError) {
             throw IllegalStateException("Error Get TDN")
         }
-        return RestResponse(response, 200, false)
-    }
-
-    // TODO: create fake impl
-    override suspend fun getResponses(requests: List<RestRequest>): Map<Type, RestResponse> {
-        return HashMap()
+        val map = mutableMapOf<Type, Any>(
+            TopAdsBannerResponse::class.java to response
+        )
+        return GraphqlResponse(
+            map,
+            mutableMapOf(),
+            false
+        )
     }
 }

@@ -218,8 +218,8 @@ private fun Label.trySetCustomLabelType(labelGroupType: String) {
 private fun String?.toUnifyLabelColor(context: Context): Int {
     return if (context.isDarkMode())
         when (this) {
-            TRANSPARENT_BLACK -> unifyRColor.Unify_N200_68
-            else -> unifyRColor.Unify_N200_68
+            TRANSPARENT_BLACK -> unifyRColor.Unify_Overlay_Lvl1
+            else -> unifyRColor.Unify_Overlay_Lvl1
         }
     else
         when (this) {
@@ -426,8 +426,17 @@ private fun renderStockPercentage(
                 height = it.context.resources.getDimension(FIRE_HEIGHT).toInt()
             )
         }
-        it.progressBarColorType = ProgressBarUnify.COLOR_RED
+        renderStockProgressBarColor(it)
         it.setValue(productCardModel.stockBarPercentage, false)
+    }
+}
+
+private fun renderStockProgressBarColor(progressBarStock: ProgressBarUnify?){
+    progressBarStock?.apply {
+        progressBarColor = intArrayOf(
+            ContextCompat.getColor(context, R.color.Unify_RN600),
+            ContextCompat.getColor(context, R.color.Unify_RN600)
+    )
     }
 }
 
