@@ -3,7 +3,7 @@ package com.tokopedia.scp_rewards.detail.domain.model
 import com.google.gson.annotations.SerializedName
 
 data class MedalBenefitResponseModel(
-    @SerializedName("scpRewardsMedaliBenefitList") val detail: RewardsGetMedaliBenefit? = null
+    @SerializedName("scpRewardsMedaliBenefitList") val scpRewardsMedaliBenefitList: RewardsGetMedaliBenefit? = null
 )
 
 data class RewardsGetMedaliBenefit(
@@ -37,7 +37,7 @@ data class MedaliBenefit(
     @SerializedName("iconImageURL") val iconImageURL: String? = null,
     @SerializedName("ribbonImageURL") val ribbonImageURL: String? = null,
     @SerializedName("dividerImageURL") val dividerImageURL: String? = null,
-    @SerializedName("statusImageURL") val statusImageURL: String? = null,
+    @SerializedName("statusInfo") val statusInfo: StatusInfo? = null,
     @SerializedName("isActive") val isActive: Boolean = false,
     @SerializedName("status") val status: String? = null,
     @SerializedName("title") val title: String? = null,
@@ -46,7 +46,12 @@ data class MedaliBenefit(
     @SerializedName("info") val info: String? = null,
     @SerializedName("appLink") val appLink: String? = null,
     @SerializedName("tnc") val tncList: List<Tnc>? = null,
-    @SerializedName("benefitCTA") val cta: BenefitButton? = null
+    @SerializedName("benefitCTA") val benefitCTA: BenefitButton? = null
+)
+
+data class StatusInfo(
+    @SerializedName("text") val text: String? = null,
+    @SerializedName("backgroundColor") val backgroundColor: String? = null
 )
 
 data class Tnc(

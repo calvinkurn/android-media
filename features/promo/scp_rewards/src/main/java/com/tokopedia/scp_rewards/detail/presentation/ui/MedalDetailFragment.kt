@@ -30,9 +30,6 @@ import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.scp_rewards.common.constants.NON_WHITELISTED_USER_ERROR_CODE
 import com.tokopedia.scp_rewards.common.constants.TrackerConstants
-import com.tokopedia.scp_rewards.common.data.Error
-import com.tokopedia.scp_rewards.common.data.Loading
-import com.tokopedia.scp_rewards.common.data.Success
 import com.tokopedia.scp_rewards.common.utils.MEDALI_DETAIL_PAGE
 import com.tokopedia.scp_rewards.common.utils.launchLink
 import com.tokopedia.scp_rewards.common.utils.launchWeblink
@@ -40,14 +37,16 @@ import com.tokopedia.scp_rewards.databinding.MedalDetailFragmentLayoutBinding
 import com.tokopedia.scp_rewards.detail.analytics.MedalDetailAnalyticsImpl
 import com.tokopedia.scp_rewards.detail.di.MedalDetailComponent
 import com.tokopedia.scp_rewards.detail.domain.model.BenefitButton
-import com.tokopedia.scp_rewards.detail.domain.model.MedalDetailResponseModel
+import com.tokopedia.scp_rewards.detail.domain.model.MedalBenefitResponseModel
 import com.tokopedia.scp_rewards.detail.domain.model.MedaliDetailPage
 import com.tokopedia.scp_rewards.detail.domain.model.Mission
+import com.tokopedia.scp_rewards.detail.mappers.MedalBenefitMapper
+import com.tokopedia.scp_rewards.detail.presentation.viewmodel.MDP_SECTION_TYPE_BENEFIT
 import com.tokopedia.scp_rewards.detail.presentation.viewmodel.MedalDetailViewModel
 import com.tokopedia.scp_rewards.widget.medalDetail.MedalDetail
 import com.tokopedia.scp_rewards.widget.medalHeader.MedalHeaderData
 import com.tokopedia.scp_rewards_widgets.medal_footer.FooterData
-import com.tokopedia.scp_rewards_widgets.model.MedalRewardsModel
+import com.tokopedia.scp_rewards_widgets.model.MedalBenefitSectionModel
 import com.tokopedia.scp_rewards_widgets.task_progress.Task
 import com.tokopedia.scp_rewards_widgets.task_progress.TaskProgress
 import com.tokopedia.unifycomponents.Toaster
@@ -215,24 +214,24 @@ class MedalDetailFragment : BaseDaggerFragment() {
         medalDetailViewModel.badgeLiveData.observe(viewLifecycleOwner) {
             it?.let { safeResult ->
                 when (safeResult) {
-                    is Success<*> -> {
+                    is MedalDetailViewModel.MdpState.Success -> {
                         binding.mainFlipper.displayedChild = 1
-                        val data = safeResult.data as MedalDetailResponseModel
+                        val data = safeResult.data
                         setTransparentStatusBar()
                         loadHeader(data.detail?.medaliDetailPage)
                         loadMedalDetails(data.detail?.medaliDetailPage)
                         loadTaskProgress(data.detail?.medaliDetailPage)
-                        loadCouponWidget(data.detail?.medaliDetailPage)
+                        loadCouponWidget(data.detail?.medaliDetailPage, safeResult.benefitData)
                         loadFooter(data.detail?.medaliDetailPage)
                         MedalDetailAnalyticsImpl.sendImpressionMDP(medaliSlug)
                     }
 
-                    is Error -> {
+                    is MedalDetailViewModel.MdpState.Error -> {
                         setWhiteStatusBar()
                         handleError(safeResult)
                     }
 
-                    is Loading -> {
+                    is MedalDetailViewModel.MdpState.Loading -> {
                         binding.loadContainer.loaderFlipper.visible()
                         MedalDetailAnalyticsImpl.sendImpressionPageShimmer(medaliSlug)
                     }
@@ -475,7 +474,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun handleError(scpError: Error) {
+    private fun handleError(scpError: MedalDetailViewModel.MdpState.Error) {
         binding.loadContainer.loaderFlipper.displayedChild = 1
         setToolbarBackButtonTint(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         val error = scpError.error
@@ -529,24 +528,23 @@ class MedalDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun loadCouponWidget(medaliDetailPage: MedaliDetailPage?) {
-        val benefits = medaliDetailPage?.benefits
-        if (benefits.isNullOrEmpty()) {
+    private fun loadCouponWidget(
+        medaliDetailPage: MedaliDetailPage?,
+        benefitResponseModel: MedalBenefitResponseModel?
+    ) {
+        val benefitData = benefitResponseModel?.scpRewardsMedaliBenefitList?.medaliBenefitList
+        if (benefitData == null) {
             binding.couponView.gone()
         } else {
-            val couponList = mutableListOf<MedalRewardsModel>()
-            benefits.forEach { benefit ->
-                couponList.add(
-                    MedalRewardsModel(
-                        imageUrl = benefit.imageUrl ?: "",
-                        status = benefit.status ?: "",
-                        statusDescription = benefit.statusDescription ?: "",
-                        isActive = benefit.isActive
-                    )
-                )
-            }
-
-            binding.couponView.renderCoupons("", couponList) {
+            val benefitSection = medaliDetailPage?.section?.find { it.type == MDP_SECTION_TYPE_BENEFIT }
+            val benefitSectionModel = MedalBenefitSectionModel(
+                benefitSection?.medaliSectionTitle?.content,
+                benefitSection?.backgroundColor,
+                benefitData.benefitInfo,
+                MedalBenefitMapper.mapBenefitApiResponseToBenefitModelList(benefitData),
+                benefitSection?.jsonParameter,
+            )
+            binding.couponView.renderCoupons(benefitSectionModel) {
                 MedalDetailAnalyticsImpl.sendImpressionCouponError(
                     badgeId = medaliSlug,
                     promoCode = medalDetailViewModel.couponCode
@@ -564,7 +562,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
 
     override fun onFragmentBackPressed(): Boolean {
         val state = medalDetailViewModel.badgeLiveData.value
-        if (state is Error && state.errorCode == NON_WHITELISTED_USER_ERROR_CODE) {
+        if (state is MedalDetailViewModel.MdpState.Error && state.errorCode == NON_WHITELISTED_USER_ERROR_CODE) {
             MedalDetailAnalyticsImpl.sendNonWhitelistedBackClick()
         } else {
             MedalDetailAnalyticsImpl.sendClickBackButton(medaliSlug)

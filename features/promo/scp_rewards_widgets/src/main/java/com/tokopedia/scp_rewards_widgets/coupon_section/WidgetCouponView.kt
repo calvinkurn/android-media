@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.scp_rewards_widgets.databinding.WidgetCouponViewBinding
-import com.tokopedia.scp_rewards_widgets.model.MedalRewardsModel
+import com.tokopedia.scp_rewards_widgets.model.MedalBenefitSectionModel
 
 class WidgetCouponView @JvmOverloads constructor(
     context: Context,
@@ -15,14 +15,14 @@ class WidgetCouponView @JvmOverloads constructor(
 
     private val binding = WidgetCouponViewBinding.inflate(LayoutInflater.from(context), this)
 
-    fun renderCoupons(title: String, coupons: List<MedalRewardsModel>, onErrorAction: () -> Unit) {
-        binding.tvTitle.text = title
+    fun renderCoupons(benefitSectionModel: MedalBenefitSectionModel, onErrorAction: () -> Unit) {
+        binding.tvTitle.text = benefitSectionModel.title
 
-        if (coupons.isEmpty()) {
+        if (benefitSectionModel.benefitList.isNullOrEmpty()) {
             // TODO: handle empty case 
         }
 
-        if (coupons.size == 1) {
+        if (benefitSectionModel.benefitList?.size == 1) {
             // TODO: handle single coupon
         } else {
             // TODO: handle multiple coupons 
