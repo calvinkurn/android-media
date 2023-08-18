@@ -3,6 +3,7 @@ package com.tokopedia.filter.common.data
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.filter.bottomsheet.filtergeneraldetail.OptionFilterShort
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -62,7 +63,7 @@ class Option(@SerializedName("name")
              @Expose
              var levelTwoCategoryList: List<LevelTwoCategory> = listOf(),
 
-             var inputState: String = "") : Parcelable, Cloneable {
+             var inputState: String = "") : Parcelable, Cloneable, OptionFilterShort {
 
     public override fun clone(): Option {
         return Option(
@@ -117,6 +118,10 @@ class Option(@SerializedName("name")
 
     val isRatingOption: Boolean
         get() = key == KEY_RATING
+
+    override fun getTitle(): String {
+        return name
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

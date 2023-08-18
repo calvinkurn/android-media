@@ -6,22 +6,34 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.filter.R
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.filter.common.helper.createColorSampleDrawable
 import com.tokopedia.filter.databinding.FilterGeneralDetailItemViewHolderBinding
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
 
 internal class FilterGeneralDetailAdapter(
-        private val callback: Callback
+    private val callback: Callback? = null,
 ): RecyclerView.Adapter<FilterGeneralDetailAdapter.FilterGeneralDetailViewHolder>() {
 
-    private val optionList = mutableListOf<Option>()
 
-    fun setOptionList(optionList: List<Option>) {
+    private val optionList = mutableListOf<OptionFilterShort>()
+    private var selectedItem: OptionFilterShort? = null
+
+    fun setOptionList(optionList: List<OptionFilterShort>) {
         this.optionList.clear()
         this.optionList.addAll(optionList)
+        notifyDataSetChanged()
+    }
+
+    fun setOptionList(optionList: List<OptionFilterShort>, selectedOption: OptionFilterShort?) {
+        this.optionList.clear()
+        this.optionList.addAll(optionList)
+        this.selectedItem = selectedOption
         notifyDataSetChanged()
     }
 
@@ -34,12 +46,12 @@ internal class FilterGeneralDetailAdapter(
     override fun getItemCount() = optionList.size
 
     override fun onBindViewHolder(holder: FilterGeneralDetailViewHolder, position: Int) {
-        holder.bind(optionList[position])
+        holder.bind(optionList[position], position = position)
     }
 
     override fun onBindViewHolder(holder: FilterGeneralDetailViewHolder, position: Int, payloads: MutableList<Any>) {
         if (payloads.isNotEmpty()) {
-            holder.bind(optionList[position], payloads)
+            holder.bind(optionList[position], payloads, position)
         } else {
             super.onBindViewHolder(holder, position, payloads)
         }
@@ -48,12 +60,24 @@ internal class FilterGeneralDetailAdapter(
     inner class FilterGeneralDetailViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         private var binding: FilterGeneralDetailItemViewHolderBinding? by viewBinding()
 
-        fun bind(option: Option, payload: List<Any>? = null) {
+        fun bind(option: OptionFilterShort, payload: List<Any>? = null, position: Int) {
+            when (option) {
+                is Option -> {
+                    bindBehaviourOfFilter(option, payload)
+                }
+                is Sort -> {
+                    bindBehaviourOfSort(option, payload, position)
+                }
+            }
+        }
+
+        private fun bindBehaviourOfFilter(optionOfFilter : OptionFilterShort, payload: List<Any>? = null){
+            val option = optionOfFilter as Option
             if (!isBindInputStateOnly(payload)) {
                 bindOnClickListener(option)
                 bindColorSample(option)
                 bindIconOption(option)
-                bindTitle(option)
+                bindTitle(option.name)
                 bindNewIcon(option)
                 bindDescription(option)
             }
@@ -61,10 +85,33 @@ internal class FilterGeneralDetailAdapter(
             bindCheckedState(option)
         }
 
+        private fun bindBehaviourOfSort(sortItem: Sort, payload: List<Any>? = null, position: Int) {
+            if (!isBindInputStateOnly(payload)) {
+                bindOnClickListener(sortItem, position)
+                bindTitle(sortItem.name)
+                bindRadioButtonState(sortItem)
+            }
+            bindRadioState(sortItem)
+        }
+
         private fun bindOnClickListener(option: Option) {
             binding?.filterDetailContainer?.setOnClickListener {
-                callback.onOptionClick(option, !option.isSelected(), adapterPosition)
+                callback?.onOptionClick(option, !option.isSelected(), adapterPosition)
             }
+        }
+
+        private fun bindOnClickListener(option: Sort, position: Int) {
+            val filterDetailRadio = binding?.filterDetailRadio ?: return
+            binding?.run {
+                root.setOnClickListener { selectItem(option, position) }
+                filterDetailRadio.setOnClickListener { selectItem(option, position) }
+            }
+        }
+
+        private fun selectItem(option: Sort, position: Int) {
+            callback?.onOptionClick(option, true, position)
+            selectedItem = option
+            notifyDataSetChanged()
         }
 
         private fun bindColorSample(option: Option) {
@@ -82,13 +129,12 @@ internal class FilterGeneralDetailAdapter(
             }
         }
 
-
         private fun bindNewIcon(option: Option) {
             binding?.newNotification?.showWithCondition(option.isNew)
         }
 
-        private fun bindTitle(option: Option) {
-            binding?.filterDetailTitle?.text = option.name
+        private fun bindTitle(title: String) {
+            binding?.filterDetailTitle?.text = title
         }
 
         private fun bindDescription(option: Option) {
@@ -103,9 +149,22 @@ internal class FilterGeneralDetailAdapter(
             filterDetailRadio.shouldShowWithAction(option.isTypeRadio) {
                 filterDetailRadio.isChecked = option.isSelected()
                 filterDetailRadio.setOnClickListener {
-                    callback.onOptionClick(option, !option.isSelected(), adapterPosition)
+                    callback?.onOptionClick(option, !option.isSelected(), adapterPosition)
                 }
             }
+        }
+
+        private fun bindRadioButtonState(sortItem: OptionFilterShort) {
+            val filterDetailRadio = binding?.filterDetailRadio ?: return
+            filterDetailRadio.isChecked = sortItem.getValueOptions() == selectedItem?.getValueOptions()
+        }
+
+        private fun bindRadioState(sortItem: OptionFilterShort) {
+            val filterDetailRadio = binding?.filterDetailRadio ?: return
+            val filterDetailCheckBox = binding?.filterDetailCheckBox ?: return
+            filterDetailRadio.show()
+            filterDetailCheckBox.hide()
+            filterDetailRadio.isChecked = sortItem.getValueOptions() == selectedItem?.getValueOptions()
         }
 
         private fun bindCheckedState(option: Option) {
@@ -114,7 +173,7 @@ internal class FilterGeneralDetailAdapter(
                 filterDetailCheckBox.setOnCheckedChangeListener(null)
                 filterDetailCheckBox.isChecked = option.isSelected()
                 filterDetailCheckBox.setOnCheckedChangeListener { _, isChecked ->
-                    callback.onOptionClick(option, isChecked, adapterPosition)
+                    callback?.onOptionClick(option, isChecked, adapterPosition)
                 }
             }
         }
@@ -126,7 +185,7 @@ internal class FilterGeneralDetailAdapter(
     }
 
     interface Callback {
-        fun onOptionClick(option: Option, isChecked: Boolean, position: Int)
+        fun onOptionClick(option: OptionFilterShort, isChecked: Boolean, position: Int)
     }
 
     enum class Payload {

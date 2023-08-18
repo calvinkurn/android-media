@@ -6,6 +6,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/progressBarSortBottomSheet"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/buttonApplyFilterDetailContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="circular"
+        tools:visibility="visible" />
+
     <com.tokopedia.unifycomponents.SearchBarUnify
         android:id="@+id/searchBarFilterDetail"
         android:layout_width="match_parent"

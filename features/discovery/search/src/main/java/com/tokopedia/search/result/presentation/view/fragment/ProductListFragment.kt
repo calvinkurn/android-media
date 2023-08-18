@@ -588,8 +588,8 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun trackScreenAuthenticated() {
         if (userVisibleHint
-                && activity != null
-                && activity?.applicationContext != null) {
+            && activity != null
+            && activity?.applicationContext != null) {
             SearchTracking.screenTrackSearchSectionFragment(screenName)
         }
     }
@@ -683,14 +683,14 @@ class ProductListFragment: BaseDaggerFragment(),
         activity?.let {
             AdultManager.handleActivityResult(it, requestCode, resultCode, data)
             handleProductCardOptionsActivityResult(
-                    requestCode = requestCode,
-                    resultCode = resultCode,
-                    data = data,
-                    wishlistCallback = object : ProductCardOptionsWishlistCallback {
-                        override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
-                            handleWishlistAction(productCardOptionsModel)
-                        }
+                requestCode = requestCode,
+                resultCode = resultCode,
+                data = data,
+                wishlistCallback = object : ProductCardOptionsWishlistCallback {
+                    override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
+                        handleWishlistAction(productCardOptionsModel)
                     }
+                }
             )
 
             atcVariantBottomSheetLauncher.onActivityResult(requestCode, resultCode, data)
@@ -795,8 +795,8 @@ class ProductListFragment: BaseDaggerFragment(),
     private fun createTopAdsProductFreeOngkirForTracking(item: ProductItemDataView?): FreeOngkir {
         return if (item?.freeOngkirDataView != null) {
             FreeOngkir(
-                    item.freeOngkirDataView.isActive,
-                    item.freeOngkirDataView.imageUrl
+                item.freeOngkirDataView.isActive,
+                item.freeOngkirDataView.imageUrl
             )
         } else FreeOngkir()
     }
@@ -1129,7 +1129,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
         override fun onFilterClicked() { openBottomSheetFilterRevamp() }
 
-        override fun onSortClicked() { }
+        override fun onSortClicked() { openBottomSheetSortRevamp() }
     }
 
     private fun setSortFilterNewNotification(items: List<SortFilterItem>) {
@@ -1288,9 +1288,9 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun sendTrackingEventMoEngageSearchAttempt(
-            query: String?,
-            hasProductList: Boolean,
-            category: HashMap<String?, String?>?,
+        query: String?,
+        hasProductList: Boolean,
+        category: HashMap<String?, String?>?,
     ) {
         SearchTracking.trackMoEngageSearchAttempt(query, hasProductList, category)
     }
@@ -1348,9 +1348,9 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override val lastProductItemPositionFromCache: Int
         get() = activity?.applicationContext?.let {
-                val cache = LocalCacheHandler(it, SEARCH_RESULT_ENHANCE_ANALYTIC)
-                return cache.getInt(LAST_POSITION_ENHANCE_PRODUCT, 0)
-            } ?: 0
+            val cache = LocalCacheHandler(it, SEARCH_RESULT_ENHANCE_ANALYTIC)
+            return cache.getInt(LAST_POSITION_ENHANCE_PRODUCT, 0)
+        } ?: 0
     //endregion
 
     //region on boarding / coachmark
@@ -1369,6 +1369,10 @@ class ProductListFragment: BaseDaggerFragment(),
         presenter?.openFilterPage(getSearchParameter()?.getSearchParameterMap())
     }
     //endregion
+
+    private fun openBottomSheetSortRevamp() {
+        presenter?.openSortPage(getSearchParameter()?.getSearchParameterMap())
+    }
 
     override fun onLocalizingAddressSelected() {
         presenter?.onLocalizingAddressSelected()
