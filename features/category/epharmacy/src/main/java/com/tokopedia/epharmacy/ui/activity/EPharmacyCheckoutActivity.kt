@@ -41,9 +41,11 @@ class EPharmacyCheckoutActivity : BaseSimpleActivity(), HasComponent<EPharmacyCo
     }
 
     private fun extractParameters() {
-        groupId = intent?.extras?.getString(EPHARMACY_GROUP_ID, "") ?: ""
-        enablerId = intent?.extras?.getString(EPHARMACY_ENABLER_ID, "") ?: ""
-        tokoConsultationId = intent?.extras?.getString(EPHARMACY_TOKO_CONSULTATION_ID, "") ?: ""
+        intent?.data?.let { uri ->
+            groupId = uri.getQueryParameter(EPHARMACY_GROUP_ID) ?: ""
+            enablerId = uri.getQueryParameter(EPHARMACY_ENABLER_ID) ?: ""
+            tokoConsultationId = uri.getQueryParameter(EPHARMACY_TOKO_CONSULTATION_ID) ?: ""
+        }
     }
 
     override fun getLayoutRes() = R.layout.epharmacy_activity
