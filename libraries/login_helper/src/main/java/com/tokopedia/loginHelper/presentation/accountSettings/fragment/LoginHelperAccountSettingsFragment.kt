@@ -15,6 +15,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.loginHelper.R
 import com.tokopedia.loginHelper.databinding.FragmentLoginHelperAccountSettingsBinding
 import com.tokopedia.loginHelper.di.component.DaggerLoginHelperComponent
 import com.tokopedia.loginHelper.presentation.accountSettings.viewmodel.LoginHelperAccountSettingsViewModel
@@ -83,7 +84,7 @@ class LoginHelperAccountSettingsFragment : BaseDaggerFragment() {
         header.setUpHeader()
         val currentEnv = getInstance().TYPE
         loginHelperTips.description = String.format(
-            context?.resources?.getString(com.tokopedia.loginHelper.R.string.login_helper_add_account_tips)
+            context?.resources?.getString(R.string.login_helper_add_account_tips)
                 .toBlankOrString(),
             currentEnv.value,
             currentEnv.value
@@ -106,7 +107,7 @@ class LoginHelperAccountSettingsFragment : BaseDaggerFragment() {
 
     private fun HeaderUnify.setUpHeader() {
         title =
-            context?.resources?.getString(com.tokopedia.loginHelper.R.string.login_helper_accounts_settings)
+            context?.resources?.getString(R.string.login_helper_accounts_settings)
                 .toBlankOrString()
         setNavigationOnClickListener {
             viewModel.processEvent(LoginHelperAccountSettingsEvent.GoToLoginHelperHome)
@@ -114,7 +115,7 @@ class LoginHelperAccountSettingsFragment : BaseDaggerFragment() {
     }
 
     override fun getScreenName(): String {
-        return context?.resources?.getString(com.tokopedia.loginHelper.R.string.login_helper_accounts_header_title)
+        return context?.resources?.getString(R.string.login_helper_accounts_header_title)
             .toBlankOrString()
     }
 
