@@ -35,6 +35,7 @@ includeIfEnabled("features:content:interest_pick")
 includeIfEnabled("features:content:interest_pick_common")
 includeIfEnabled("features:content:content_test")
 includeIfEnabled("features:content:stories_widget")
+includeIfEnabled("features:content:stories_internal")
 
 includeIfEnabled("features:category:basemvvm")
 includeIfEnabled("features:category:tradein")

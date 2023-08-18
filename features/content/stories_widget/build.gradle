@@ -7,7 +7,6 @@ android {
     testNamespace 'com.tokopedia.stories.widget.test'
     buildFeatures {
         viewBinding true
-        compose true
     }
 
     kotlinOptions {
@@ -49,8 +48,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.contentCommon)
     //to use viewlifecyclebound, will move it to content common in the next improvement
     implementation projectOrAar(rootProject.ext.features.playCommon)
-
-    implementation rootProject.ext.composeDependencies.composeUi
+    implementation projectOrAar(rootProject.ext.features.storiesInternal)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
