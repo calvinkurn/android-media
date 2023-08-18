@@ -302,4 +302,102 @@ class FeedMainViewModelTest {
         viewModel.setReadyToShowOnboarding()
         coVerify(exactly = 1) { uiEventManager.emitEvent(FeedMainEvent.ShowSwipeOnboarding) }
     }
+
+    @Test
+    fun onSetForYouTabByPosition_thenItShouldEmitSelectTabEvent() {
+        // given
+        val mockValue = tabsModelBuilder.buildUiModel(
+            data = tabsModelBuilder.buildDefaultTabsModel()
+        )
+        coEvery { repository.getTabs(activeTabSource) } returns mockValue
+        viewModel.fetchFeedTabs()
+
+        coEvery { uiEventManager.emitEvent(any()) } coAnswers {}
+
+        val expectedValue = mockValue.tab.data[0]
+
+        viewModel.setActiveTab(0)
+        coVerify(exactly = 1) { uiEventManager.emitEvent(FeedMainEvent.SelectTab(expectedValue, 0)) }
+    }
+
+    @Test
+    fun onSetFollowingTabByPosition_thenItShouldEmitSelectTabEvent() {
+        // given
+        val mockValue = tabsModelBuilder.buildUiModel(
+            data = tabsModelBuilder.buildDefaultTabsModel()
+        )
+        coEvery { repository.getTabs(activeTabSource) } returns mockValue
+        viewModel.fetchFeedTabs()
+
+        coEvery { uiEventManager.emitEvent(any()) } coAnswers {}
+
+        val expectedValue = mockValue.tab.data[1]
+
+        viewModel.setActiveTab(1)
+        coVerify(exactly = 1) { uiEventManager.emitEvent(FeedMainEvent.SelectTab(expectedValue, 1)) }
+    }
+
+    @Test
+    fun onSetUnknownTabByPosition_thenItShouldNotEmitSelectTabEvent() {
+        // given
+        val mockValue = tabsModelBuilder.buildUiModel(
+            data = tabsModelBuilder.buildDefaultTabsModel()
+        )
+        coEvery { repository.getTabs(activeTabSource) } returns mockValue
+        viewModel.fetchFeedTabs()
+
+        coEvery { uiEventManager.emitEvent(any()) } coAnswers {}
+
+        viewModel.setActiveTab(2)
+        coVerify(exactly = 0) { uiEventManager.emitEvent(any()) }
+    }
+
+    @Test
+    fun onSetForYouTabByType_thenItShouldEmitSelectTabEvent() {
+        // given
+        val mockValue = tabsModelBuilder.buildUiModel(
+            data = tabsModelBuilder.buildDefaultTabsModel()
+        )
+        coEvery { repository.getTabs(activeTabSource) } returns mockValue
+        viewModel.fetchFeedTabs()
+
+        coEvery { uiEventManager.emitEvent(any()) } coAnswers {}
+
+        val expectedValue = mockValue.tab.data[0]
+
+        viewModel.setActiveTab(expectedValue.type)
+        coVerify(exactly = 1) { uiEventManager.emitEvent(FeedMainEvent.SelectTab(expectedValue, 0)) }
+    }
+
+    @Test
+    fun onSetFollowingTabByType_thenItShouldEmitSelectTabEvent() {
+        // given
+        val mockValue = tabsModelBuilder.buildUiModel(
+            data = tabsModelBuilder.buildDefaultTabsModel()
+        )
+        coEvery { repository.getTabs(activeTabSource) } returns mockValue
+        viewModel.fetchFeedTabs()
+
+        coEvery { uiEventManager.emitEvent(any()) } coAnswers {}
+
+        val expectedValue = mockValue.tab.data[1]
+
+        viewModel.setActiveTab(expectedValue.type)
+        coVerify(exactly = 1) { uiEventManager.emitEvent(FeedMainEvent.SelectTab(expectedValue, 1)) }
+    }
+
+    @Test
+    fun onSetUnknownTabByType_thenItShouldEmitSelectTabEvent() {
+        // given
+        val mockValue = tabsModelBuilder.buildUiModel(
+            data = tabsModelBuilder.buildDefaultTabsModel()
+        )
+        coEvery { repository.getTabs(activeTabSource) } returns mockValue
+        viewModel.fetchFeedTabs()
+
+        coEvery { uiEventManager.emitEvent(any()) } coAnswers {}
+
+        viewModel.setActiveTab("unknown")
+        coVerify(exactly = 0) { uiEventManager.emitEvent(any()) }
+    }
 }

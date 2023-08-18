@@ -1,25 +1,21 @@
 package com.tokopedia.feedplus.presentation.viewmodel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
 import com.tokopedia.content.common.producttag.view.uimodel.NetworkResult
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.createpost.common.domain.usecase.cache.DeleteMediaPostCacheUseCase
 import com.tokopedia.feedplus.domain.FeedRepository
 import com.tokopedia.feedplus.presentation.model.ActiveTabSource
 import com.tokopedia.feedplus.presentation.model.CreateContentType
-import com.tokopedia.feedplus.presentation.model.FeedDataModel
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.model.FeedTabModel
 import com.tokopedia.feedplus.presentation.model.MetaModel
 import com.tokopedia.feedplus.presentation.model.SwipeOnboardingStateModel
 import com.tokopedia.feedplus.presentation.onboarding.OnBoardingPreferences
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -67,10 +63,6 @@ class FeedMainViewModel @AssistedInject constructor(
 
     private val _metaData = MutableStateFlow(MetaModel.Empty)
     val metaData get() = _metaData.asStateFlow()
-
-    val activeTab: FeedDataModel?
-        get() = _activeTab.value
-    private val _activeTab = MutableLiveData<FeedDataModel>()
 
     private val _isPageResumed = MutableLiveData<Boolean>(null)
     val isPageResumed get() = _isPageResumed
@@ -128,8 +120,6 @@ class FeedMainViewModel @AssistedInject constructor(
             if (position < tabModel.data.size) {
                 val data = tabModel.data[position]
                 emitEvent(FeedMainEvent.SelectTab(data, position))
-                // keep track active tab
-                _activeTab.value = tabModel.data[position]
             }
         }
     }
@@ -143,9 +133,6 @@ class FeedMainViewModel @AssistedInject constructor(
             tabModel.data.forEachIndexed { index, tab ->
                 if (tab.type.equals(type, true)) {
                     emitEvent(FeedMainEvent.SelectTab(tab, index))
-
-                    // keep track active tab
-                    _activeTab.value = tab
                     return@forEachIndexed
                 }
             }
