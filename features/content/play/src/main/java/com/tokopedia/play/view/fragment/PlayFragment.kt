@@ -229,7 +229,7 @@ class PlayFragment @Inject constructor(
                 channelId,
                 playViewModel.latestCompleteChannelData
             )
-        } catch (e: Throwable) {}
+        } catch (expected: Throwable) {}
         super.onPause()
     }
 
