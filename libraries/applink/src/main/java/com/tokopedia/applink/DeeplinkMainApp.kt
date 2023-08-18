@@ -517,7 +517,7 @@ object DeeplinkMainApp {
             DLP.matchPattern(
                 "settings/{user_id}",
                 DeeplinkMapperContent::getProfileDeeplink
-            ),
+            )
         ),
         "pesawat" to mutableListOf(
             DLP.matchPattern("order", DeeplinkMapperUoh::getRegisteredNavigationUohOrder),
