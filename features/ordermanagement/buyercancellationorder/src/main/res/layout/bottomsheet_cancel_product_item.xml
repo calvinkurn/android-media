@@ -5,13 +5,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/buyer_order_cancel_bundling_card_padding_bottom_14dp"
+    android:paddingBottom="14dp"
     android:paddingHorizontal="@dimen/spacing_lvl4">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_item_buyer_order_bundling_thumbnail"
-        android:layout_width="@dimen/buyer_order_cancel_bundling_card_title_margin_start_46dp"
-        android:layout_height="@dimen/buyer_order_cancel_bundling_card_title_margin_start_46dp"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@tools:sample/avatars"/>
