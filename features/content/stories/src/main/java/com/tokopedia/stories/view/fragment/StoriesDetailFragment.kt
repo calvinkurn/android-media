@@ -29,7 +29,6 @@ import com.tokopedia.stories.view.utils.STORIES_GROUP_ID
 import com.tokopedia.stories.view.utils.TouchEventStories
 import com.tokopedia.stories.view.utils.onTouchEventStories
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
-import com.tokopedia.stories.view.viewmodel.StoriesViewModelFactory
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.NextDetail
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.NextGroup
@@ -41,17 +40,14 @@ import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 class StoriesDetailFragment @Inject constructor(
-    private val viewModelFactory: StoriesViewModelFactory.Creator,
+    private val viewModelFactory: ViewModelProvider.Factory,
 ) : TkpdBaseV4Fragment() {
-
-    private val groupId: String
-        get() = arguments?.getString(STORIES_GROUP_ID).orEmpty()
 
     private var _binding: FragmentStoriesDetailBinding? = null
     private val binding: FragmentStoriesDetailBinding
         get() = _binding!!
 
-    private val viewModel by activityViewModels<StoriesViewModel> { viewModelFactory.create(groupId) }
+    private val viewModel by activityViewModels<StoriesViewModel> { viewModelFactory }
 
     private val mAdapter: StoriesGroupAdapter by lazyThreadSafetyNone {
         StoriesGroupAdapter(object : StoriesGroupAdapter.Listener {
@@ -64,6 +60,9 @@ class StoriesDetailFragment @Inject constructor(
     private val mLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
         LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
     }
+
+    private val groupId: String
+        get() = arguments?.getString(STORIES_GROUP_ID).orEmpty()
 
     override fun getScreenName(): String {
         return TAG
