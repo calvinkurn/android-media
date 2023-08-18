@@ -132,7 +132,7 @@
         android:textColor="@color/Unify_NN950_96"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/guideline"
-        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvBuyerOrderDetailTotalProductPriceLabel"
         app:layout_constraintWidth_default="wrap"
@@ -158,11 +158,23 @@
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled" />
 
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/btnShareProduct"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:icon_enable_state="true"
+        app:icon_name="SHARE_MOBILE"
+        app:layout_constraintBottom_toBottomOf="@+id/btnBuyerOrderDetailBuyProductAgain"
+        app:layout_constraintEnd_toStartOf="@+id/btnBuyerOrderDetailBuyProductAgain"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toTopOf="@+id/btnBuyerOrderDetailBuyProductAgain" />
+
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_percent="0.50121653" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

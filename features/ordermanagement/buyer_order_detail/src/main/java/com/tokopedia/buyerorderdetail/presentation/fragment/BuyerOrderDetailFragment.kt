@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.lazy.layout.rememberLazyNearestItemsRangeState
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
@@ -64,7 +65,6 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
 import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
-import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -76,11 +76,21 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.universal_sharing.tracker.PageType
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
+import com.tokopedia.universal_sharing.view.model.LinkProperties
+import com.tokopedia.universal_sharing.view.model.PageDetail
+import com.tokopedia.universal_sharing.view.model.Product
+import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.universal_sharing.view.model.Shop
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.text.currency.StringUtils
+import timber.log.Timber
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -97,7 +107,8 @@ open class BuyerOrderDetailFragment :
     PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener,
     OrderResolutionViewHolder.OrderResolutionListener,
     ProductListToggleViewHolder.Listener,
-    PofRefundInfoViewHolder.Listener {
+    PofRefundInfoViewHolder.Listener,
+    PartialProductItemViewHolder.ShareProductBottomSheetListener {
 
     companion object {
         @JvmStatic
@@ -123,6 +134,7 @@ open class BuyerOrderDetailFragment :
     private var toolbarBuyerOrderDetail: HeaderUnify? = null
     private var globalErrorBuyerOrderDetail: GlobalError? = null
     protected var loaderBuyerOrderDetail: LoaderUnify? = null
+    private var universalShareBottomSheet: UniversalShareBottomSheet? = null
 
     private var binding by autoClearedNullable<FragmentBuyerOrderDetailBinding>()
 
@@ -143,6 +155,7 @@ open class BuyerOrderDetailFragment :
             this,
             this,
             digitalRecommendationData,
+            this,
             this,
             this,
             this,
@@ -837,5 +850,32 @@ open class BuyerOrderDetailFragment :
         val bottomSheet =
             PofDetailRefundedBottomSheet.newInstance(cacheManager?.id.orEmpty())
         bottomSheet.show(childFragmentManager)
+    }
+
+    override fun onShareButtonClicked(element: ProductListUiModel.ProductUiModel) {
+        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            init(object: ShareBottomsheetListener {
+                override fun onShareOptionClicked(shareModel: ShareModel) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onCloseOptionClicked() {
+                }
+            })
+            setMetaData(element.productName, element.productThumbnailUrl, imageList =  arrayListOf(element.productThumbnailUrl))
+            enableDefaultShareIntent()
+            setLinkProperties(
+                LinkProperties(
+                    ogTitle = element.productName,
+                    ogDescription = element.addonsListUiModel?.addonsTitle ?: "",
+                    id = element.orderDetailId,
+                    desktopUrl = element.productUrl
+                )
+            )
+        }
+        universalShareBottomSheet?.show(
+            requireActivity().supportFragmentManager,
+            this@BuyerOrderDetailFragment
+        )
     }
 }

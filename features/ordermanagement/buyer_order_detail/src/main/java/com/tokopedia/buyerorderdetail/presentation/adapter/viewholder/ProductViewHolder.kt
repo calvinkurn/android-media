@@ -20,6 +20,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 open class ProductViewHolder(
     itemView: View?,
     private val listener: PartialProductItemViewHolder.ProductViewListener,
+    private val bottomSheetListener: PartialProductItemViewHolder.ShareProductBottomSheetListener,
     private val navigator: BuyerOrderDetailNavigator
 ) : BaseToasterViewHolder<ProductListUiModel.ProductUiModel>(itemView) {
 
@@ -76,7 +77,8 @@ open class ProductViewHolder(
             partialProductItemViewStub,
             listener,
             navigator,
-            item
+            item,
+            bottomSheetListener
         )
         setupProductThumbnail(item.productThumbnailUrl)
         setupButton(item.button, item.isProcessing)

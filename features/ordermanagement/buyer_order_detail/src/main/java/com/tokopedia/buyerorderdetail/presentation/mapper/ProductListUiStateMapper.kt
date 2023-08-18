@@ -690,7 +690,8 @@ object ProductListUiStateMapper {
             isProcessing = singleAtcResultFlow[product.productId] is AddToCartSingleRequestState.Requesting,
             addonsListUiModel = getAddonsSectionProductLevel(details, addonSummary),
             insurance = mapInsurance(product.productId, insuranceDetailData),
-            isPof = isPof
+            isPof = isPof,
+            productUrl = product.productUrl
         )
     }
 
@@ -758,7 +759,8 @@ object ProductListUiStateMapper {
             totalPrice = product.totalPrice,
             totalPriceText = product.totalPriceText,
             isProcessing = singleAtcResultFlow[product.productId] is AddToCartSingleRequestState.Requesting,
-            insurance = mapInsurance(product.productId, bundleId, insuranceDetailData)
+            insurance = mapInsurance(product.productId, bundleId, insuranceDetailData),
+            productUrl = ""
         )
     }
 
