@@ -259,7 +259,7 @@ class CheckoutFragment :
             val baseMainApplication = activity!!.application as BaseMainApplication
             DaggerCheckoutComponent.builder()
                 .baseAppComponent(baseMainApplication.baseAppComponent)
-                .checkoutModule(CheckoutModule(this))
+                .checkoutModule(CheckoutModule())
                 .build()
                 .inject(this)
         }
@@ -521,12 +521,6 @@ class CheckoutFragment :
                     }
                     stopTrace()
                     sendErrorAnalytics()
-                    // todo improve first load shipping
-//                    if (it.cartShipmentAddressFormData.epharmacyData.showImageUpload) {
-//                        val uploadPrescriptionUiModel =
-//                            viewModel.listData.value.firstOrNullInstanceOf(CheckoutEpharmacyModel::class.java)?.epharmacy
-//                        delayEpharmacyProcess(uploadPrescriptionUiModel)
-//                    }
                     setCampaignTimer()
                     viewModel.prepareFullCheckoutPage()
                 }

@@ -44,7 +44,6 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutUpsellModel
 import com.tokopedia.checkout.view.CheckoutLogger
 import com.tokopedia.checkout.view.CheckoutMutableLiveData
-import com.tokopedia.checkout.view.uimodel.ShipmentAddOnSummaryModel
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
@@ -162,7 +161,7 @@ class CheckoutViewModel @Inject constructor(
 
     // add ons product
     // list summary add on - ready to render
-    private var listSummaryAddOnModel: List<ShipmentAddOnSummaryModel> = emptyList()
+//    private var listSummaryAddOnModel: List<ShipmentAddOnSummaryModel> = emptyList()
 
     // list summary default
     private var summariesAddOnUiModel: HashMap<Int, String> = hashMapOf()
@@ -219,8 +218,8 @@ class CheckoutViewModel @Inject constructor(
 
                     isUsingDdp = saf.cartShipmentAddressFormData.isUsingDdp
                     shipmentPlatformFeeData = saf.cartShipmentAddressFormData.shipmentPlatformFee
-                    listSummaryAddOnModel =
-                        ShipmentAddOnProductServiceMapper.mapSummaryAddOns(saf.cartShipmentAddressFormData)
+//                    listSummaryAddOnModel =
+//                        ShipmentAddOnProductServiceMapper.mapSummaryAddOns(saf.cartShipmentAddressFormData)
                     cartDataForRates = saf.cartShipmentAddressFormData.cartData
                     codData = saf.cartShipmentAddressFormData.cod
                     campaignTimer = saf.cartShipmentAddressFormData.campaignTimerUi
@@ -353,11 +352,6 @@ class CheckoutViewModel @Inject constructor(
         var courierHasReseted = false
         for (shipmentCartItemModel in shipmentCartItemModels) {
             if (shipmentCartItemModel is CheckoutOrderModel) {
-//                val selectedShipmentDetailData = shipmentCartItemModel.selectedShipmentDetailData
-//                if (selectedShipmentDetailData == null) {
-//                    courierHasReseted = true
-//                    break
-//                }
                 val selectedCourier = shipmentCartItemModel.shipment.courierItemData
                 if (selectedCourier == null) {
                     courierHasReseted = true
@@ -444,7 +438,6 @@ class CheckoutViewModel @Inject constructor(
             if (shipmentCartItemModel is CheckoutOrderModel) {
                 val orderProducts = getOrderProducts(shipmentCartItemModel.cartStringGroup)
                 for (cartItemModel in orderProducts) {
-//                    val shipmentDetailData = shipmentCartItemModel.selectedShipmentDetailData
                     var courierItemData: CourierItemData? = null
                     if (shipmentCartItemModel.shipment.courierItemData != null
 //                            shipmentDetailData.selectedCourier != null ||
@@ -572,9 +565,6 @@ class CheckoutViewModel @Inject constructor(
                     }
                     if (checkoutItem is CheckoutOrderModel) {
                         if (loadCourierState(checkoutItem, recipientAddressModel)) {
-//                            if (pageState.value != CheckoutPageState.Loading) {
-//                                pageState.value = CheckoutPageState.Loading
-//                            }
                             loadShippingSuspend(checkoutItem, index)
                         }
                     }
@@ -583,9 +573,6 @@ class CheckoutViewModel @Inject constructor(
                     }
                 }
             }
-//            if (pageState.value == CheckoutPageState.Loading) {
-//                pageState.value = CheckoutPageState.Normal
-//            }
         }
     }
 
@@ -766,9 +753,6 @@ class CheckoutViewModel @Inject constructor(
             for (item in checkoutItems.withIndex()) {
                 val product = item.value
                 if (product is CheckoutProductModel) {
-//                    val cartItemModelList = shipmentCartItemModel.products
-//                    for (i in cartItemModelList.indices) {
-//                        val cartItemModel = cartItemModelList[i]
                     val keyProductLevel =
                         "${product.cartStringGroup}-${product.cartId}"
                     if (keyProductLevel.equals(addOnResult.addOnKey, ignoreCase = true)) {
@@ -781,7 +765,6 @@ class CheckoutViewModel @Inject constructor(
                                 product.cartId
                             )
                         )
-//                        }
                     }
                 }
             }
@@ -1238,7 +1221,6 @@ class CheckoutViewModel @Inject constructor(
                 courierItemData = courierItemData,
                 shippingCourierUiModels = shippingCourierUiModels
             )
-//            val newOrder = checkoutOrderModel.copy(shipment = newShipment)
             newOrder = newOrder.copy(shipment = newShipment, isShippingBorderRed = false)
             list[cartPosition] = newOrder
             listData.value = list
@@ -1563,7 +1545,6 @@ class CheckoutViewModel @Inject constructor(
         val newShipment = shipment.copy(
             isLoading = false,
             courierItemData = newCourierItemData
-            //                    shippingCourierUiModels = shippingCourierUiModels
         )
         val newOrder = checkoutOrderModel.copy(shipment = newShipment)
         if (scheduleDeliveryUiModel.isSelected) {
@@ -2294,9 +2275,6 @@ class CheckoutViewModel @Inject constructor(
         }
         listData.value = checkoutItems
         calculateTotal()
-//        shipmentViewModel.saveAddOnsProduct(cartItemModel)
-//        shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
-//        shipmentAdapter.updateSubtotal()
     }
 
     fun setAddonResult(cartIdAddOn: Long, addOnProductDataResult: AddOnPageResult) {
