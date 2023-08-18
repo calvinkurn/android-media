@@ -83,6 +83,7 @@ internal object OrderDetailQuery{
                   totalAmtString
                   needToPayAmt
                   needToPayAmtStr
+                  additionalInfo
                   manualTransfer{
                     uniqueCode
                     accountBankName

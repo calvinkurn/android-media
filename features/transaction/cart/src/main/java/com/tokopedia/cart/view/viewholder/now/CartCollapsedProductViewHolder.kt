@@ -82,7 +82,7 @@ class CartCollapsedProductViewHolder(val viewBinding: ItemCartCollapsedProductBi
             val margin = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_2)
             constraintSet.connect(R.id.text_product_price, ConstraintSet.TOP, R.id.text_variant_name, ConstraintSet.BOTTOM, margin)
         } else {
-            val margin = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_4)
+            val margin = itemView.context.resources.getDimensionPixelSize(com.tokopedia.cart.R.dimen.dp_4)
             constraintSet.connect(R.id.text_product_price, ConstraintSet.TOP, R.id.text_variant_name, ConstraintSet.BOTTOM, margin)
         }
         constraintSet.applyTo(viewBinding.containerCollapsedProduct)

@@ -145,6 +145,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.USER_NOTIF
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.BRANDLIST
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.BRANDLIST_SEARCH
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_ADDON
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_GIFTING
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_PRODUCT_BUNDLE
@@ -420,6 +421,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(OPEN_SHOP) }, DF_MERCHANT_LOGIN, R.string.title_open_shop))
             add(DFP({ it.startsWithPattern(MERCHANT_PRODUCT_BUNDLE) }, DF_MERCHANT_NONLOGIN, R.string.title_bundling_selection_page ))
             add(DFP({ it.startsWithPattern(MERCHANT_GIFTING) }, DF_MERCHANT_NONLOGIN, R.string.title_gifting_bottomsheet ))
+            add(DFP({ it.startsWithPattern(MERCHANT_ADDON) }, DF_MERCHANT_NONLOGIN, R.string.title_addon_bottomsheet ))
 
             add(DFP({ it.startsWith(FAVORITE) }, DF_MERCHANT_LOGIN, R.string.favorite_shop, { DFWebviewFallbackUrl.FAVORITE_SHOP }))
             add(DFP({ it.startsWithPattern(REPORT_PRODUCT) }, DF_MERCHANT_LOGIN, R.string.applink_report_title, ::getDefaultFallbackUrl))
@@ -621,6 +623,7 @@ object DeeplinkDFMapper : CoroutineScope {
                 (it.startsWith(SETTING_PROFILE)
                     || it.startsWith(ADD_PHONE)
                     || it.startsWith(NEW_ADD_PHONE)
+                    || it.startsWith(ApplinkConstInternalUserPlatform.PROFILE_MANAGEMENT)
                     || it.startsWith(ADD_EMAIL)
                     || it.startsWith(ADD_BOD)
                     || it.startsWithPattern(CHANGE_NAME)
@@ -630,7 +633,6 @@ object DeeplinkDFMapper : CoroutineScope {
                     || it.startsWith(ApplinkConstInternalUserPlatform.ADD_PIN_ONBOARDING)
                     || it.startsWith(ADD_PIN)
                     || it.startsWith(ApplinkConstInternalUserPlatform.ADD_PIN_COMPLETE)
-                    || it.startsWith(ApplinkConstInternalUserPlatform.SETTING_PROFILE)
                     )
             }, DF_USER_SETTINGS, R.string.applink_profile_completion_title, { DFWebviewFallbackUrl.USER_PROFILE_SETTINGS }))
             add(DFP({ it.startsWith(ApplinkConstInternalUserPlatform.PROFILE_COMPLETION) }, DF_USER_SETTINGS, R.string.applink_profile_completion_title))

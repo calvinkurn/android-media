@@ -15,9 +15,12 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.utils.ViewId
 import com.tokopedia.productcard.utils.ViewStubId
+import com.tokopedia.productcard.utils.expandTouchArea
 import com.tokopedia.productcard.utils.findViewById
+import com.tokopedia.productcard.utils.getDimensionPixelSize
 import com.tokopedia.productcard.utils.glideClear
 import com.tokopedia.productcard.utils.loadImage
+import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey.PRODUCT_CARD_ENABLE_INTERACTION
@@ -234,7 +237,11 @@ class ProductCardGridView : ConstraintLayout, IProductCardView {
 
         imageVideoIdentifier?.showWithCondition(productCardModel.hasVideo)
 
-        renderProductCardContent(productCardModel, productCardModel.isWideContent)
+        renderProductCardContent(
+            productCardModel,
+            productCardModel.isWideContent,
+            productCardModel.isWideContent,
+        )
 
         productCardModel
             .layoutStrategy
@@ -242,11 +249,16 @@ class ProductCardGridView : ConstraintLayout, IProductCardView {
 
         renderProductCardFooter(productCardModel, isProductCardList = false)
 
-        productCardModel.layoutStrategy.renderThreeDots(
-            imageThreeDots,
-            constraintLayoutProductCard,
-            productCardModel,
-        )
+        imageThreeDots.shouldShowWithAction(productCardModel.hasThreeDots) {
+            constraintLayoutProductCard?.post {
+                imageThreeDots?.expandTouchArea(
+                    it.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                    it.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                    it.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                    it.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
+                )
+            }
+        }
 
         cartExtension.setProductModel(productCardModel)
         video.setVideoURL(productCardModel.customVideoURL)
@@ -258,14 +270,17 @@ class ProductCardGridView : ConstraintLayout, IProductCardView {
             labelReposition,
             productCardModel,
         )
+
+        productCardModel.layoutStrategy.renderCardHeight(this, cardViewProductCard)
     }
 
     private fun cardViewAnimationOnPress(productCardModel: ProductCardModel): Int {
-        val isOverlayBounce =
-            remoteConfig.getBoolean(PRODUCT_CARD_ENABLE_INTERACTION, true)
-                && productCardModel.cardInteraction
-
-        return if (isOverlayBounce) ANIMATE_OVERLAY_BOUNCE else ANIMATE_OVERLAY
+        return if(productCardModel.cardInteraction != null) {
+            val isOverlayBounce =
+                remoteConfig.getBoolean(PRODUCT_CARD_ENABLE_INTERACTION, true)
+                    && productCardModel.cardInteraction
+            if (isOverlayBounce) ANIMATE_OVERLAY_BOUNCE else ANIMATE_OVERLAY
+        } else productCardModel.animateOnPress
     }
 
     fun setImageProductViewHintListener(impressHolder: ImpressHolder, viewHintListener: ViewHintListener) {

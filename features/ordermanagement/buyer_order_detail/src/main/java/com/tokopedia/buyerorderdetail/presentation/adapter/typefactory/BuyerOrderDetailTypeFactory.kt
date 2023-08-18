@@ -23,7 +23,6 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PaymentInf
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PgRecommendationViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PlainHeaderViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PlatformFeeInfoViewHolder
-import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofRefundEstimateBottomSheetViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductBundlingViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductListHeaderViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductListToggleViewHolder
@@ -44,6 +43,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.PlainHeaderUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PlatformFeeInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofHeaderLabelViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofRefundInfoViewHolder
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.adapter.viewholder.ScpRewardsMedalTouchPointWidgetViewHolder
 import com.tokopedia.buyerorderdetail.presentation.model.PofRefundInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
@@ -53,6 +53,8 @@ import com.tokopedia.buyerorderdetail.presentation.model.ThinDashedDividerUiMode
 import com.tokopedia.buyerorderdetail.presentation.model.ThinDividerUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
 import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.adapter.typefactory.ScpRewardsMedalTouchPointWidgetTypeFactory
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.adapter.uimodel.ScpRewardsMedalTouchPointWidgetUiModel
 
 @Suppress("UNUSED_PARAMETER")
 open class BuyerOrderDetailTypeFactory(
@@ -63,11 +65,14 @@ open class BuyerOrderDetailTypeFactory(
     private val courierInfoViewHolderListener: CourierInfoViewHolder.CourierInfoViewHolderListener,
     private val productListToggleListener: ProductListToggleViewHolder.Listener,
     private val pofRefundInfoListener: PofRefundInfoViewHolder.Listener,
+    private val scpRewardsMedalTouchPointWidgetListener: ScpRewardsMedalTouchPointWidgetViewHolder.ScpRewardsMedalTouchPointWidgetListener,
     protected val productViewListener: PartialProductItemViewHolder.ProductViewListener,
     protected val navigator: BuyerOrderDetailNavigator,
     protected val buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener,
     protected val orderResolutionListener: OrderResolutionViewHolder.OrderResolutionListener
-) : BaseAdapterTypeFactory() {
+) : BaseAdapterTypeFactory(),
+    ScpRewardsMedalTouchPointWidgetTypeFactory
+{
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
@@ -113,9 +118,12 @@ open class BuyerOrderDetailTypeFactory(
             ProductListToggleViewHolder.LAYOUT -> ProductListToggleViewHolder(parent, productListToggleListener)
             PofHeaderLabelViewHolder.LAYOUT -> PofHeaderLabelViewHolder(parent)
             PofRefundInfoViewHolder.LAYOUT -> PofRefundInfoViewHolder(parent, pofRefundInfoListener)
+            ScpRewardsMedalTouchPointWidgetViewHolder.LAYOUT -> ScpRewardsMedalTouchPointWidgetViewHolder(parent, scpRewardsMedalTouchPointWidgetListener)
             else -> super.createViewHolder(parent, type)
         }
     }
+
+    override fun type(uiModel: ScpRewardsMedalTouchPointWidgetUiModel): Int = ScpRewardsMedalTouchPointWidgetViewHolder.LAYOUT
 
     fun type(awbInfoUiModel: ShipmentInfoUiModel.AwbInfoUiModel): Int {
         return AwbInfoViewHolder.LAYOUT
