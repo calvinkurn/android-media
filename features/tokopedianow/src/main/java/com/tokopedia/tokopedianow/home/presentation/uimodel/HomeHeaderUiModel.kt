@@ -23,6 +23,7 @@ data class HomeHeaderUiModel(
 
     override fun getChangePayload(newModel: HomeLayoutUiModel): Any {
         val newItem = newModel as HomeHeaderUiModel
-        return title != newItem.title || warehouses != newItem.warehouses
+        return title != newItem.title || warehouses != newItem.warehouses ||
+            state != newItem.state
     }
 }
