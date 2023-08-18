@@ -32,14 +32,14 @@ class SomGetOrderDetailUseCase @Inject constructor(
         val somDynamicPriceParams = createParamDynamicPrice(orderId)
         val somDetailRequestParam = createParamGetOrderDetail(orderId)
 
-        val somDetailRequest = GraphqlRequest(QUERY_SOM_DETAIL, SomDetailOrder.Data::class.java, somDetailRequestParam)
+        val somDetailRequest = GraphqlRequest(QUERY_SOM_DETAIL, SomDetailOrder::class.java, somDetailRequestParam)
         val somDynamicPriceRequest = GraphqlRequest(QUERY_DYNAMIC_PRICE, SomDynamicPriceResponse::class.java, somDynamicPriceParams)
 
         val multipleRequest = mutableListOf(somDetailRequest, somDynamicPriceRequest)
 
         return try {
             val gqlResponse = graphQlRepository.response(multipleRequest)
-            getSomDetailResponse.getSomDetail = requireNotNull(gqlResponse.getData<SomDetailOrder.Data>(SomDetailOrder.Data::class.java).getSomDetail)
+            getSomDetailResponse.getSomDetail = requireNotNull(gqlResponse.getData<SomDetailOrder>(SomDetailOrder::class.java).getSomDetail)
             getSomDetailResponse.somDynamicPriceResponse = requireNotNull(gqlResponse.getData<SomDynamicPriceResponse>(SomDynamicPriceResponse::class.java).getSomDynamicPrice)
             getSomDetailResponse
         } catch (e: Throwable) {
@@ -49,8 +49,8 @@ class SomGetOrderDetailUseCase @Inject constructor(
 
     companion object {
         val QUERY_SOM_DETAIL = """
-            query GetSOMDetail(${'$'}orderID: String!, ${'$'}lang: String!) {
-              get_som_detail(orderID: ${'$'}orderID, lang: ${'$'}lang) {
+        query GetSOMDetail(${'$'}orderID: String!, ${'$'}lang: String!){
+              get_som_detail(orderID: ${'$'}orderID, lang: ${'$'}lang){
                 order_id
                 status
                 has_reso_status
@@ -309,6 +309,60 @@ class SomGetOrderDetailUseCase @Inject constructor(
                   bundle_icon
                   addon_icon
                   addon_label
+                  bmgm_icon
+                  bmgms {
+                    id
+                    bmgm_tier_name
+                    tier_discount_amount
+                    tier_discount_amount_formatted
+                    price_before_benefit
+                    price_before_benefit_formatted
+                    price_after_benefit
+                    price_after_benefit_formatted
+                    order_detail {
+                      id
+                      order_detail_id
+                      name
+                      thumbnail
+                      price
+                      price_text
+                      quantity
+                      note
+                      addon_summary {
+                        addons {
+                          order_id
+                          id
+                          reference_id
+                          level
+                          name
+                          price
+                          price_str
+                          subtotal_price
+                          subtotal_price_str
+                          quantity
+                          type
+                          image_url
+                          metadata {
+                            add_on_note {
+                              is_custom_note
+                              from
+                              to
+                              notes
+                              short_notes
+                            }
+                          }
+                          create_time
+                        }
+                        total
+                        total_price
+                        total_price_str
+                        total_quantity
+                      }
+                      flags {
+                        is_eligible_pof
+                      }
+                    }
+                  }
                 }
                 addon_info {
                   order_level {
@@ -341,61 +395,6 @@ class SomGetOrderDetailUseCase @Inject constructor(
                   }
                   label
                   icon_url
-                }
-                bmgm_icon
-                bmgms {
-                  id
-                  bmgm_tier_name
-                  label
-                  tier_discount_amount
-                  tier_discount_amount_formatted
-                  price_before_benefit
-                  price_before_benefit_formatted
-                  price_after_benefit
-                  price_after_benefit_formatted
-                  order_detail {
-                    id
-                    order_detail_id
-                    name
-                    thumbnail
-                    price
-                    price_text
-                    quantity
-                    note
-                    addon_summary {
-                      addons {
-                        order_id
-                        id
-                        reference_id
-                        level
-                        name
-                        price
-                        price_str
-                        subtotal_price
-                        subtotal_price_str
-                        quantity
-                        type
-                        image_url
-                        metadata {
-                          add_on_note {
-                            is_custom_note
-                            from
-                            to
-                            notes
-                            short_notes
-                          }
-                        }
-                        create_time
-                      }
-                      total
-                      total_price
-                      total_price_str
-                      total_quantity
-                    }
-                    flags {
-                      is_eligible_pof
-                    }
-                  }
                 }
               }
             }

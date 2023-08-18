@@ -17,7 +17,7 @@ import com.tokopedia.sellerorder.detail.presentation.model.ProductBundleUiModel
 
 class SomDetailAdapterFactoryImpl(
     private val actionListener: ActionListener,
-    private val recyclerViewSharedPool: RecyclerView.RecycledViewPool,
+    private val recyclerViewSharedPool: RecyclerView.RecycledViewPool
 ) : SomDetailAdapterFactory, BaseAdapterTypeFactory(), BuyMoreGetMoreTypeFactory {
     override fun type(typeLayout: String): Int {
         return when (typeLayout) {
@@ -107,9 +107,9 @@ class SomDetailAdapterFactoryImpl(
         fun onTextCopied(label: String, str: String, readableDataName: String)
         fun onInvalidResiUpload(awbUploadUrl: String)
         fun onDialPhone(strPhoneNo: String)
-        fun onShowInfoLogisticAll(logisticInfoList: List<SomDetailOrder.Data.GetSomDetail.LogisticInfo.All>)
+        fun onShowInfoLogisticAll(logisticInfoList: List<SomDetailOrder.GetSomDetail.LogisticInfo.All>)
         fun onShowBookingCode(bookingCode: String, bookingType: String)
-        fun onShowBuyerRequestCancelReasonBottomSheet(it: SomDetailOrder.Data.GetSomDetail.Button)
+        fun onShowBuyerRequestCancelReasonBottomSheet(it: SomDetailOrder.GetSomDetail.Button)
         fun onSeeInvoice(invoiceUrl: String, invoice: String)
         fun onCopiedInvoice(invoice: String, str: String)
         fun onClickProduct(orderDetailId: Long)

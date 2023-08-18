@@ -14,7 +14,7 @@ object SomDetailMapper {
     private const val THICK_DIVIDER_VERTICAL_MARGIN = 16
 
     private fun ArrayList<Visitable<SomDetailAdapterFactoryImpl>>.includeHeader(
-        somGetOrderDetailResponse: SomDetailOrder.Data.GetSomDetail?
+        somGetOrderDetailResponse: SomDetailOrder.GetSomDetail?
     ) {
         SomGetOrderDetailResponseMapper.mapResponseToHeaderUiModel(somGetOrderDetailResponse)?.let {
             add(it)
@@ -35,7 +35,7 @@ object SomDetailMapper {
     }
 
     private fun ArrayList<Visitable<SomDetailAdapterFactoryImpl>>.includeProducts(
-        somGetOrderDetailResponse: SomDetailOrder.Data.GetSomDetail?
+        somGetOrderDetailResponse: SomDetailOrder.GetSomDetail?
     ) {
         SomGetOrderDetailResponseMapper.mapResponseToProductsHeaderUiModel(somGetOrderDetailResponse)
             ?.let {
@@ -49,7 +49,7 @@ object SomDetailMapper {
     }
 
     private fun ArrayList<Visitable<SomDetailAdapterFactoryImpl>>.includeShipment(
-        somGetOrderDetailResponse: SomDetailOrder.Data.GetSomDetail?
+        somGetOrderDetailResponse: SomDetailOrder.GetSomDetail?
     ) {
         SomGetOrderDetailResponseMapper.mapResponseToShipmentUiModel(somGetOrderDetailResponse)?.let {
             add(it)
@@ -93,7 +93,7 @@ object SomDetailMapper {
     }
 
     fun mapSomGetOrderDetailResponseToVisitableList(
-        somGetOrderDetailResponse: SomDetailOrder.Data.GetSomDetail?,
+        somGetOrderDetailResponse: SomDetailOrder.GetSomDetail?,
         somGetSomDynamicPrice: SomDynamicPriceResponse.GetSomDynamicPrice?,
         resolutionTicketStatusResponse: GetResolutionTicketStatusResponse.ResolutionGetTicketStatus.ResolutionData?
     ): List<Visitable<SomDetailAdapterFactoryImpl>> {

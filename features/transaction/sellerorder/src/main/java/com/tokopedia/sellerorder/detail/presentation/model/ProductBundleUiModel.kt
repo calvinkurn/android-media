@@ -13,7 +13,7 @@ data class ProductBundleUiModel(
     val bundleName: String = "",
     val bundlePrice: String = "",
     val bundleSubTotal: String = "",
-    val orderDetail: List<SomDetailOrder.Data.GetSomDetail.Details.Product>,
+    val orderDetail: List<SomDetailOrder.GetSomDetail.Details.Product>
 ) : BaseProductUiModel {
 
     override fun type(typeFactory: SomDetailAdapterFactoryImpl): Int {

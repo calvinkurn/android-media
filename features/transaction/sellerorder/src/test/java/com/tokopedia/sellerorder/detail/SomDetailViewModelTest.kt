@@ -25,7 +25,7 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
 
-    private var listProducts = listOf<SomDetailOrder.Data.GetSomDetail.Details.Product>()
+    private var listProducts = listOf<SomDetailOrder.GetSomDetail.Details.Product>()
     private var listReasonReject = listOf(SomReasonRejectData.Data.SomRejectReason())
 
     @RelaxedMockK
@@ -61,7 +61,7 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
             authorizeChatReplyAccessUseCase
         )
 
-        val product1 = SomDetailOrder.Data.GetSomDetail.Details.Product("123")
+        val product1 = SomDetailOrder.GetSomDetail.Details.Product("123")
         listProducts = arrayListOf(product1).toMutableList()
 
         val reasonReject1 = SomReasonRejectData.Data.SomRejectReason(1)
@@ -71,78 +71,78 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     // order_detail
     @Test
     fun getOrderDetail_shouldCancelOldProcess() = coroutineTestRule.runTest {
-        //given
+        // given
         coEvery {
             somGetOrderDetailUseCase.execute(any())
-        } returns Success(GetSomDetailResponse(getSomDetail = SomDetailOrder.Data.GetSomDetail("123")))
+        } returns Success(GetSomDetailResponse(getSomDetail = SomDetailOrder.GetSomDetail("123")))
 
-        //when
+        // when
         viewModel.loadDetailOrder("")
         viewModel.loadDetailOrder("")
 
-        //then
+        // then
         assert(viewModel.orderDetailResult.value is Success)
         assert((viewModel.orderDetailResult.value as Success<GetSomDetailResponse>).data.getSomDetail?.orderId == "123")
     }
 
     @Test
     fun getOrderDetail_shouldReturnSuccess() = coroutineTestRule.runTest {
-        //given
+        // given
         coEvery {
             somGetOrderDetailUseCase.execute(any())
-        } returns Success(GetSomDetailResponse(getSomDetail = SomDetailOrder.Data.GetSomDetail("123")))
+        } returns Success(GetSomDetailResponse(getSomDetail = SomDetailOrder.GetSomDetail("123")))
 
-        //when
+        // when
         viewModel.loadDetailOrder("")
 
-        //then
+        // then
         assert(viewModel.orderDetailResult.value is Success)
         assert((viewModel.orderDetailResult.value as Success<GetSomDetailResponse>).data.getSomDetail?.orderId == "123")
     }
 
     @Test
     fun getOrderDetail_shouldReturnFail() = coroutineTestRule.runTest {
-        //given
+        // given
         coEvery {
             somGetOrderDetailUseCase.execute(any())
         } returns Fail(Throwable())
 
-        //when
+        // when
         viewModel.loadDetailOrder("")
 
-        //then
+        // then
         assert(viewModel.orderDetailResult.value is Fail)
     }
 
     @Test
     fun getOrderDetail_ifThrowableThrown_shouldFail() = coroutineTestRule.runTest {
-        //given
+        // given
         coEvery {
             somGetOrderDetailUseCase.execute(any())
         } throws Throwable()
 
-        //when
+        // when
         viewModel.loadDetailOrder("")
 
-        //then
+        // then
         assert(viewModel.orderDetailResult.value is Fail)
     }
 
     @Test
     fun getOrderDetail_shouldNotReturnEmpty() = coroutineTestRule.runTest {
-        //given
+        // given
         coEvery {
             somGetOrderDetailUseCase.execute(any())
         } returns Success(
             GetSomDetailResponse(
-                getSomDetail = SomDetailOrder.Data.GetSomDetail(details = SomDetailOrder.Data.GetSomDetail.Details(nonBundle = listProducts))
+                getSomDetail = SomDetailOrder.GetSomDetail(details = SomDetailOrder.GetSomDetail.Details(nonBundle = listProducts))
             )
         )
 
-        //when
+        // when
         viewModel.loadDetailOrder("")
 
-        //then
+        // then
         assert(viewModel.orderDetailResult.value is Success)
         assert(
             (viewModel.orderDetailResult.value as Success<GetSomDetailResponse>).data.getSomDetail?.getProductList()?.isNotEmpty()
@@ -153,58 +153,58 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     // reason_reject
     @Test
     fun getReasonReject_shouldReturnSuccess() = coroutineTestRule.runTest {
-        //given
+        // given
         coEvery {
             somReasonRejectUseCase.execute(any())
         } returns Success(SomReasonRejectData.Data(listSomRejectReason = listReasonReject))
 
-        //when
+        // when
         viewModel.getRejectReasons()
 
-        //then
+        // then
         assert(viewModel.rejectReasonResult.value is Success)
         assert((viewModel.rejectReasonResult.value as Success<SomReasonRejectData.Data>).data.listSomRejectReason.first().reasonCode == 1)
     }
 
     @Test
     fun getReasonReject_shouldReturnFail() = coroutineTestRule.runTest {
-        //given
+        // given
         coEvery {
             somReasonRejectUseCase.execute(any())
         } returns Fail(Throwable())
 
-        //when
+        // when
         viewModel.getRejectReasons()
 
-        //then
+        // then
         assert(viewModel.rejectReasonResult.value is Fail)
     }
 
     @Test
     fun getReasonReject_ifThrowableThrown_shouldReturnFail() = coroutineTestRule.runTest {
-        //given
+        // given
         coEvery {
             somReasonRejectUseCase.execute(any())
         } throws Throwable()
 
-        //when
+        // when
         viewModel.getRejectReasons()
 
-        //then
+        // then
         assert(viewModel.rejectReasonResult.value is Fail)
     }
 
     @Test
     fun getReasonReject_msgShouldNotReturnEmpty() = coroutineTestRule.runTest {
-        //given
+        // given
         coEvery {
             somReasonRejectUseCase.execute(any())
         } returns Success(SomReasonRejectData.Data(listSomRejectReason = listReasonReject))
 
-        //when
+        // when
         viewModel.getRejectReasons()
 
-        //then
+        // then
         assert(viewModel.rejectReasonResult.value is Success)
         assert((viewModel.rejectReasonResult.value as Success<SomReasonRejectData.Data>).data.listSomRejectReason.isNotEmpty())
     }
@@ -212,58 +212,58 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     // set_delivered
     @Test
     fun setDelivered_shouldReturnSuccess() = coroutineTestRule.runTest {
-        //given
+        // given
         coEvery {
             somSetDeliveredUseCase.execute(any(), any())
         } returns Success(SetDeliveredResponse(SetDelivered(success = 1)))
 
-        //when
+        // when
         viewModel.setDelivered("", "")
 
-        //then
+        // then
         assert(viewModel.setDelivered.value is Success)
         assert((viewModel.setDelivered.value as Success<SetDeliveredResponse>).data.setDelivered.success == 1)
     }
 
     @Test
     fun setDelivered_shouldReturnFail() = coroutineTestRule.runTest {
-        //given
+        // given
         coEvery {
             somSetDeliveredUseCase.execute(any(), any())
         } returns Fail(Throwable())
 
-        //when
+        // when
         viewModel.setDelivered("", "")
 
-        //then
+        // then
         assert(viewModel.setDelivered.value is Fail)
     }
 
     @Test
     fun setDelivered_ifThrowableThrown_shouldReturnFail() = coroutineTestRule.runTest {
-        //given
+        // given
         coEvery {
             somSetDeliveredUseCase.execute(any(), any())
         } throws Throwable()
 
-        //when
+        // when
         viewModel.setDelivered("", "")
 
-        //then
+        // then
         assert(viewModel.setDelivered.value is Fail)
     }
 
     @Test
     fun setDelivered_msgShouldNotReturnEmpty() = coroutineTestRule.runTest {
-        //given
+        // given
         coEvery {
             somSetDeliveredUseCase.execute(any(), any())
         } returns Success(SetDeliveredResponse(SetDelivered(message = listMsg)))
 
-        //when
+        // when
         viewModel.setDelivered("", "")
 
-        //then
+        // then
         assert(viewModel.setDelivered.value is Success)
         assert((viewModel.setDelivered.value as Success<SetDeliveredResponse>).data.setDelivered.message.first() == "msg1")
     }
@@ -345,4 +345,3 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
             Assert.assertEquals(pairs, (viewModel.somDetailChatEligibility.value as? Success)?.data)
         }
 }
-
