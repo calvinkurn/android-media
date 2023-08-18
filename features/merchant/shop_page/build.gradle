@@ -138,7 +138,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.affiliateSDK)
     implementation project(rootProject.ext.libraries.foldable)
     implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
-    implementation projectOrAar(rootProject.ext.features.storiesCommon)
+    implementation projectOrAar(rootProject.ext.features.storiesWidget)
 
     // UI Test
     androidTestImplementation projectOrAar(rootProject.ext.features.shopShowcase)

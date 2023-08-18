@@ -22,7 +22,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.stories.common.StoriesBorderLayout
+import com.tokopedia.stories.widget.StoriesBorderLayout
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatStateItem
 import com.tokopedia.topchat.chatlist.domain.pojo.ItemChatListPojo

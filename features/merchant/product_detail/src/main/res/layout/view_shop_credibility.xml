@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:paddingBottom="16dp">
 
-    <com.tokopedia.stories.common.StoriesBorderLayout
+    <com.tokopedia.stories.widget.StoriesBorderLayout
         android:id="@+id/stories_border"
         android:layout_width="48dp"
         android:layout_height="48dp"
@@ -24,7 +24,7 @@
             tools:src="@tools:sample/avatars"
             />
 
-    </com.tokopedia.stories.common.StoriesBorderLayout>
+    </com.tokopedia.stories.widget.StoriesBorderLayout>
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/shop_credibility_badge"

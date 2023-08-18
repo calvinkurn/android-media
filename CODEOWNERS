@@ -143,7 +143,7 @@
 /features/content/play_common/                          @tokopedia/android-minionlance-dev
 /features/content/play_broadcaster/                     @tokopedia/android-minionlance-dev
 /features/content/play_widget/                          @tokopedia/android-minionlance-dev
-/features/content/stories_common/                       @tokopedia/android-minionlance-dev
+/features/content/stories_widget/                       @tokopedia/android-minionlance-dev
 
 /features/recharge/common_digital                       @tokopedia/android-minionmark-dev
 /features/recharge/common_electronic_money              @tokopedia/android-minionmark-dev

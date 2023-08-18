@@ -296,9 +296,9 @@ import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
-import com.tokopedia.stories.common.StoriesAvatarManager
-import com.tokopedia.stories.common.domain.StoriesKey
-import com.tokopedia.stories.common.storiesManager
+import com.tokopedia.stories.widget.StoriesAvatarManager
+import com.tokopedia.stories.widget.domain.StoriesKey
+import com.tokopedia.stories.widget.storiesManager
 import com.tokopedia.topads.detail_sheet.TopAdsDetailSheet
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue

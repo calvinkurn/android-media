@@ -91,7 +91,7 @@ import com.tokopedia.product.detail.view.viewholder.product_detail_info.ProductD
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
 import com.tokopedia.product.detail.view.viewholder.show_review.ProductShopReviewViewHolder
 import com.tokopedia.product.detail.view.viewholder.social_proof.ProductMiniSocialProofViewHolder
-import com.tokopedia.stories.common.StoriesAvatarManager
+import com.tokopedia.stories.widget.StoriesAvatarManager
 import java.lang.ref.WeakReference
 
 class DynamicProductDetailAdapterFactoryImpl(

@@ -44,9 +44,9 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
-import com.tokopedia.stories.common.StoriesAvatarManager
-import com.tokopedia.stories.common.domain.StoriesKey
-import com.tokopedia.stories.common.storiesManager
+import com.tokopedia.stories.widget.StoriesAvatarManager
+import com.tokopedia.stories.widget.domain.StoriesKey
+import com.tokopedia.stories.widget.storiesManager
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_READ

@@ -201,10 +201,10 @@ import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
 import com.tokopedia.shop_widget.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop_widget.mvc_locked_to_product.util.MvcLockedToProductUtil
 import com.tokopedia.shop_widget.note.view.bottomsheet.ShopNoteBottomSheet
-import com.tokopedia.stories.common.OneTimeAnimationStrategy
-import com.tokopedia.stories.common.StoriesAvatarManager
-import com.tokopedia.stories.common.domain.StoriesKey
-import com.tokopedia.stories.common.storiesManager
+import com.tokopedia.stories.widget.OneTimeAnimationStrategy
+import com.tokopedia.stories.widget.StoriesAvatarManager
+import com.tokopedia.stories.widget.domain.StoriesKey
+import com.tokopedia.stories.widget.storiesManager
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper
@@ -458,7 +458,7 @@ class ShopPageHeaderFragment :
 
     private val storiesManager by storiesManager(StoriesKey.ShopPage) {
         setScrollingParent(viewBindingShopContentLayout?.appBarLayout?.parent as? View)
-        setAnimationStrategy(OneTimeAnimationStrategy())
+        setAnimationStrategy(com.tokopedia.stories.widget.OneTimeAnimationStrategy())
     }
 
     override fun getComponent() = activity?.run {

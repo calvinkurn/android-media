@@ -24,7 +24,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
-import com.tokopedia.stories.common.StoriesBorderLayout
+import com.tokopedia.stories.widget.StoriesBorderLayout
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.view.widget.LongClickMenu
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment

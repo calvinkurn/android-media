@@ -17,7 +17,7 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderW
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel.WidgetType.SHOP_BASIC_INFO
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel.WidgetType.SHOP_PERFORMANCE
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel.WidgetType.SHOP_PLAY
-import com.tokopedia.stories.common.StoriesAvatarManager
+import com.tokopedia.stories.widget.StoriesAvatarManager
 
 class ShopPageHeaderAdapterTypeFactory(
     private val shopPageHeaderBasicInfoWidgetListener: ShopPageHeaderBasicInfoWidgetViewHolder.Listener,

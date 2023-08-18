@@ -100,7 +100,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.minicart)
     implementation projectOrAar(rootProject.ext.features.affiliateSDK)
     implementation projectOrAar(rootProject.ext.features.productServiceWidget)
-    implementation projectOrAar(rootProject.ext.features.storiesCommon)
+    implementation projectOrAar(rootProject.ext.features.storiesWidget)
     implementation rootProject.ext.miscDependencies.viewPager2
     implementation rootProject.ext.miscDependencies.liveDataKtx
     implementation rootProject.ext.miscDependencies.rxAndroid

@@ -16,8 +16,8 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopPage
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderBadgeTextValueComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderImageOnlyComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel
-import com.tokopedia.stories.common.StoriesAvatarManager
-import com.tokopedia.stories.common.StoriesBorderLayout
+import com.tokopedia.stories.widget.StoriesAvatarManager
+import com.tokopedia.stories.widget.StoriesBorderLayout
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
