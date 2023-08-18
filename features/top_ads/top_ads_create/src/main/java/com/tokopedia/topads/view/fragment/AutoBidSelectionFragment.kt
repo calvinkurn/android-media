@@ -88,21 +88,21 @@ class AutoBidSelectionFragment : BaseStepperFragment<CreateManualAdsStepperModel
             stepperListener?.goToNextPage(stepperModel)
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsCreateEvent(
                 CLICK_SAVE_AUTO_BID,
-                getString(R.string.autobid_manual_title)
+                getString(com.tokopedia.topads.common.R.string.autobid_manual_title)
             )
         } else {
             stepperModel?.redirectionToSummary = true
             stepperListener?.getToFragment(UrlConstant.FRAGMENT_NUMBER_4, stepperModel)
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsCreateEvent(
                 CLICK_SAVE_AUTO_BID,
-                getString(R.string.autobid_otomatis_title)
+                getString(com.tokopedia.topads.common.R.string.autobid_otomatis_title)
             )
         }
     }
 
     private fun prepareView() {
         if (stepperModel?.redirectionToSummary == true) {
-            nextBtn.text = getString(R.string.topads_common_save_butt)
+            nextBtn.text = getString(com.tokopedia.topads.common.R.string.topads_common_save_butt)
         }
     }
 

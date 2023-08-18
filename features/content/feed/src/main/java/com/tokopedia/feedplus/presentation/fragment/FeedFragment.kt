@@ -16,9 +16,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_DRAGGING
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
@@ -63,6 +63,7 @@ import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.adapter.FeedContentAdapter
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.adapter.util.FeedPostLayoutManager
+import com.tokopedia.feedplus.presentation.model.ActiveTabSource
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
@@ -168,13 +169,15 @@ class FeedFragment :
     @Inject
     lateinit var dispatchers: CoroutineDispatchers
 
+    @Inject lateinit var viewModelAssistedFactory: FeedMainViewModel.Factory
     private val feedMainViewModel: FeedMainViewModel by viewModels(
         ownerProducer = {
             parentFragment ?: this
         },
         factoryProducer = {
-            viewModelFactory
+            FeedMainViewModel.provideFactory(viewModelAssistedFactory, ActiveTabSource.Empty)
         }
+
     )
     private val feedPostViewModel: FeedPostViewModel by viewModels { viewModelFactory }
 
@@ -240,7 +243,26 @@ class FeedFragment :
 
     private var feedFollowersOnlyBottomSheet: FeedFollowersOnlyBottomSheet? = null
 
-    private val layoutManager by lazy { FeedPostLayoutManager(context) }
+    private val layoutManager by lazy {
+        FeedPostLayoutManager(
+            context,
+            object : FeedPostLayoutManager.Listener {
+                override fun onScrolling(
+                    layoutManager: LinearLayoutManager,
+                    isOverScroll: Boolean
+                ) {
+                    if (isOverScroll) {
+                        adapter.stopScrolling()
+                        return
+                    }
+
+                    if (binding.rvFeedPost.scrollState == RecyclerView.SCROLL_STATE_IDLE) return
+                    adapter.onScrolling()
+                }
+            }
+        )
+    }
+
     private val contentScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             // update item state and send tracker
@@ -252,10 +274,8 @@ class FeedFragment :
 
                 val position = getCurrentPosition()
                 updateBottomActionView(position)
+
                 adapter.select(position)
-            } else if (newState == SCROLL_STATE_DRAGGING) {
-                val position = getCurrentPosition()
-                adapter.onScrolling(position)
             }
         }
     }
@@ -564,7 +584,7 @@ class FeedFragment :
     }
 
     override fun changeTab() {
-        feedMainViewModel.changeCurrentTabByType(FeedBaseFragment.TAB_TYPE_FOR_YOU)
+        feedMainViewModel.setActiveTab(FeedBaseFragment.TAB_TYPE_FOR_YOU)
     }
 
     override fun reload() {

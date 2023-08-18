@@ -195,20 +195,15 @@ object DeeplinkMapper {
     fun getRegisteredNavigationFromHttp(context: Context, uri: Uri, deeplink: String): String {
         val pathSize = uri.pathSegments.size
         if (pathSize == 1 && (
-                uri.pathSegments[0] == TOKOPOINTS ||
-                    uri.pathSegments[0] == ApplinkConst.RewardFallback.Reward.REWARDS
-                )
+            uri.pathSegments[0] == TOKOPOINTS ||
+                uri.pathSegments[0] == ApplinkConst.RewardFallback.Reward.REWARDS
+            )
         ) {
             return ApplinkConstInternalPromo.TOKOPOINTS_HOME
         }
 
-        val appLinkContent =
-            DeeplinkMapperContent.getRegisteredNavigationContentFromHttp(uri, deeplink)
+        val appLinkContent = DeeplinkMapperContent.getNavContentFromHttp(uri, deeplink)
         if (appLinkContent.isNotBlank()) return appLinkContent
-
-        val appLinkFeed =
-            DeeplinkMapperContent.getRegisteredNavigationFeedVideoFromHttp(uri, deeplink)
-        if (appLinkFeed.isNotBlank()) return appLinkFeed
 
         val applinkDigital =
             DeeplinkMapperDigital.getRegisteredNavigationFromHttpDigital(context, deeplink)
@@ -426,6 +421,7 @@ object DeeplinkMapper {
             ApplinkConst.SellerApp.WEBVIEW -> ApplinkConstInternalGlobal.WEBVIEW_BASE
             ApplinkConst.SellerApp.BROWSER -> ApplinkConstInternalGlobal.BROWSER
             ApplinkConst.SellerApp.TOPADS_DASHBOARD -> ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
+            ApplinkConst.SellerApp.TOPADS_DASH_BOARD -> ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
             ApplinkConst.SellerApp.SHOP_DISCOUNT -> ApplinkConstInternalSellerapp.SHOP_DISCOUNT
             ApplinkConst.SellerApp.TOPADS_CREDIT_HISTORY -> ApplinkConstInternalTopAds.TOPADS_HISTORY_CREDIT
             ApplinkConst.SellerApp.TOPADS_CREDIT -> ApplinkConstInternalTopAds.TOPADS_BUY_CREDIT
