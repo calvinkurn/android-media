@@ -239,6 +239,9 @@ class CartViewModel @Inject constructor(
     private val _followShopEvent: MutableLiveData<FollowShopEvent> = MutableLiveData()
     val followShopEvent: LiveData<FollowShopEvent> = _followShopEvent
 
+    private val _bmGmGroupProductTickerState: MutableLiveData<LoadWishlistV2State> = MutableLiveData()
+    val bmGmGroupProductTickerState: LiveData<LoadWishlistV2State> = _bmGmGroupProductTickerState
+
     private val _tokoNowProductUpdater =
         MutableSharedFlow<Boolean>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
     val tokoNowProductUpdater: SharedFlow<Boolean> = _tokoNowProductUpdater

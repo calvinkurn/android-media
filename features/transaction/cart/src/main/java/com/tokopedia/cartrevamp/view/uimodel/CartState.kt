@@ -147,12 +147,12 @@ sealed interface RemoveFromWishlistEvent {
 
     data class Success(
         val data: DeleteWishlistV2Response.Data.WishlistRemoveV2,
-        val productId: String,
+        val productId: String
     ) : RemoveFromWishlistEvent
 
     data class Failed(
         val throwable: Throwable,
-        val productId: String,
+        val productId: String
     ) : RemoveFromWishlistEvent
 }
 
@@ -192,6 +192,14 @@ sealed interface UpdateCartPromoState {
     data class Failed(val throwable: Throwable) : UpdateCartPromoState
 }
 
+sealed interface BmGmGroupProductTickerState {
+    data class Success(
+        val wishlists: List<GetWishlistV2Response.Data.WishlistV2.Item>,
+        val forceReload: Boolean
+    ) : BmGmGroupProductTickerState
+
+    object Failed : BmGmGroupProductTickerState
+}
 
 @Suppress("UNCHECKED_CAST")
 class CartMutableLiveData<T>(initialValue: T) : LiveData<T>(initialValue) {
