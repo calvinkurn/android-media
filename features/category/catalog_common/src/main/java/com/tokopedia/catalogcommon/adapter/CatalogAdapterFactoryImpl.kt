@@ -13,8 +13,11 @@ import com.tokopedia.catalogcommon.viewholder.HeroBannerViewHolder
 import com.tokopedia.catalogcommon.viewholder.SliderImageTextViewHolder
 import com.tokopedia.catalogcommon.viewholder.PanelImageViewHolder
 import com.tokopedia.catalogcommon.viewholder.TopFeatureViewHolder
+import com.tokopedia.home_component.HomeComponentTypeFactory
+import com.tokopedia.home_component.viewholders.BannerRevampViewHolder
+import com.tokopedia.home_component.visitable.BannerRevampDataModel
 
-class CatalogAdapterFactoryImpl : BaseAdapterTypeFactory(), CatalogAdapterFactory {
+class CatalogAdapterFactoryImpl : BaseAdapterTypeFactory(), HomeComponentTypeFactory, CatalogAdapterFactory {
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
@@ -23,6 +26,7 @@ class CatalogAdapterFactoryImpl : BaseAdapterTypeFactory(), CatalogAdapterFactor
             DummyViewHolder.LAYOUT -> DummyViewHolder(view)
             SliderImageTextViewHolder.LAYOUT -> SliderImageTextViewHolder(view)
             PanelImageViewHolder.LAYOUT -> PanelImageViewHolder(view)
+            BannerRevampViewHolder.LAYOUT -> BannerRevampViewHolder(view, null)
             else -> super.createViewHolder(view, type)
         }
     }
@@ -45,5 +49,9 @@ class CatalogAdapterFactoryImpl : BaseAdapterTypeFactory(), CatalogAdapterFactor
 
     override fun type(uiModel: PanelImageUiModel): Int {
         return PanelImageViewHolder.LAYOUT
+    }
+
+    override fun type(bannerRevampDataModel: BannerRevampDataModel): Int {
+        return BannerRevampViewHolder.LAYOUT
     }
 }
