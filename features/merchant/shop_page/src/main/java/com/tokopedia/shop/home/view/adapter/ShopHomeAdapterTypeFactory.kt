@@ -308,17 +308,17 @@ open class ShopHomeAdapterTypeFactory(
 
         val isLoading = uiModel.isWidgetShowPlaceholder().orFalse()
         val widgetStyle = uiModel.showcaseHeader.widgetStyle
+        val isCarouselWidgetStyle = widgetStyle == WidgetStyle.CIRCLE
         val firstTab = uiModel.tabs.getOrNull(0)
         val mainBannerPosition = firstTab?.mainBannerPosition //Widget appearance is determined by main banner position
-        val isCarouselWidgetStyle = (widgetStyle == WidgetStyle.CIRCLE) && (mainBannerPosition != MainBannerPosition.LEFT) && (mainBannerPosition != MainBannerPosition.TOP)
 
         return when {
             isLoading && isCarouselWidgetStyle -> ShopHomeShowCaseNavigationCarouselPlaceholderViewHolder.LAYOUT
             isLoading && mainBannerPosition == MainBannerPosition.LEFT -> ShopHomeShowCaseNavigationLeftMainBannerPlaceholderViewHolder.LAYOUT
             isLoading && mainBannerPosition == MainBannerPosition.TOP -> ShopHomeShowCaseNavigationTopMainBannerPlaceholderViewHolder.LAYOUT
-            isCarouselWidgetStyle -> ShopHomeShowCaseNavigationCarouselViewHolder.LAYOUT
-            mainBannerPosition == MainBannerPosition.LEFT -> ShopHomeShowCaseNavigationLeftMainBannerViewHolder.LAYOUT
-            mainBannerPosition == MainBannerPosition.TOP -> ShopHomeShowCaseNavigationTopMainBannerViewHolder.LAYOUT
+            !isLoading && isCarouselWidgetStyle -> ShopHomeShowCaseNavigationCarouselViewHolder.LAYOUT
+            !isLoading && mainBannerPosition == MainBannerPosition.LEFT -> ShopHomeShowCaseNavigationLeftMainBannerViewHolder.LAYOUT
+            !isLoading && mainBannerPosition == MainBannerPosition.TOP -> ShopHomeShowCaseNavigationTopMainBannerViewHolder.LAYOUT
             else -> ShopHomeShowCaseNavigationTopMainBannerViewHolder.LAYOUT
         }
     }

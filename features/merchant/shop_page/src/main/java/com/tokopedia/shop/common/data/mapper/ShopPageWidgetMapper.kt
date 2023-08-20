@@ -175,10 +175,15 @@ object ShopPageWidgetMapper {
     }
 
     fun mapToHomeShowcaseWidget(response: ShopLayoutWidget.Widget): ShopHomeShowcaseNavigationUiModel {
-        val widgetStyle = if (response.header.widgetStyle == ShowcaseNavigationBannerWidgetStyle.ROUNDED_CORNER.id) {
-            ShopHomeShowcaseNavigationUiModel.WidgetStyle.ROUNDED_CORNER
-        } else {
-            ShopHomeShowcaseNavigationUiModel.WidgetStyle.CIRCLE
+        val widgetStyle = when (response.header.widgetStyle) {
+            ShowcaseNavigationBannerWidgetStyle.ROUNDED_CORNER.id -> {
+                ShopHomeShowcaseNavigationUiModel.WidgetStyle.ROUNDED_CORNER
+            }
+            ShowcaseNavigationBannerWidgetStyle.CIRCLE.id -> {
+                ShopHomeShowcaseNavigationUiModel.WidgetStyle.CIRCLE
+            }
+            else -> ShopHomeShowcaseNavigationUiModel.WidgetStyle.ROUNDED_CORNER
+
         }
 
         val tabs = response.data.map { tab ->
