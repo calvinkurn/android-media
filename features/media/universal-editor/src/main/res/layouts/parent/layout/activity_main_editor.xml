@@ -18,13 +18,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <Button
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/btn_delete"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:text="H"
-        android:textColor="@color/white"
-        android:background="@drawable/sample_bg_circle"
+        app:icon_name="DELETE"
+        app:icon_color_light_enable="@color/white"
+        app:icon_color_night_enable="@color/white"
+        android:background="@drawable/editor_bg_button_removal"
+        android:padding="8dp"
         android:visibility="gone"
         android:layout_marginBottom="24dp"
         app:layout_constraintBottom_toBottomOf="@+id/canvas"

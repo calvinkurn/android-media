@@ -135,7 +135,6 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 inputTextIntent.launch(intent)
                 this.overridePendingTransition(0,0)
-
 //                val content = getRandomString(10)
 //                val canvas = findViewById<DynamicTextCanvasView>(R.id.canvas)
 //                canvas.addButtonView(findViewById(R.id.btn_delete))

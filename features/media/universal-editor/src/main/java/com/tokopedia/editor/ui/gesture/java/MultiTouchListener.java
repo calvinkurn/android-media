@@ -19,6 +19,9 @@ import com.tokopedia.unifyprinciples.Typography;
 public class MultiTouchListener implements View.OnTouchListener {
 
     private static final int INVALID_POINTER_ID = -1;
+    private static final float SCALE_DOWN_ANIM_REMOVAL = 0.3f;
+    private static final float ALIGNMENT_SNAP_THRESHOLD = 20f;
+
     private final GestureDetector gestureListener;
     boolean isRotateEnabled = true;
     boolean isTranslateEnabled = true;
@@ -153,7 +156,7 @@ public class MultiTouchListener implements View.OnTouchListener {
                     if (isPointerContain(x, y)) {
                         if (!isSelectedViewDraggedToTrash) {
                             isSelectedViewDraggedToTrash = true;
-                            applyScaleAnimation(view, 0.3f, 0.3f);
+                            applyScaleAnimation(view, SCALE_DOWN_ANIM_REMOVAL, SCALE_DOWN_ANIM_REMOVAL);
                             enableHapticFeedback(view);
                             return true;
                         }
@@ -262,13 +265,13 @@ public class MultiTouchListener implements View.OnTouchListener {
     private boolean isAlignedWithCenterX(View view) {
         float centerX = view.getX() + view.getWidth() / 2f;
         float parentCenterX = ((View) view.getParent()).getWidth() / 2f;
-        return Math.abs(centerX - parentCenterX) <= 20f;
+        return Math.abs(centerX - parentCenterX) <= ALIGNMENT_SNAP_THRESHOLD;
     }
 
     private boolean isAlignedWithCenterY(View view) {
         float centerY = view.getY() + view.getHeight() / 2f;
         float parentCenterY = ((View) view.getParent()).getHeight() / 2f;
-        return Math.abs(centerY - parentCenterY) <= 20f;
+        return Math.abs(centerY - parentCenterY) <= ALIGNMENT_SNAP_THRESHOLD;
     }
 
     private void applyScaleAnimation(View view, float scaleX, float scaleY) {
