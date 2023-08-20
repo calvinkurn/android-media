@@ -308,9 +308,9 @@ open class ShopHomeAdapterTypeFactory(
 
         val isLoading = uiModel.isWidgetShowPlaceholder().orFalse()
         val widgetStyle = uiModel.showcaseHeader.widgetStyle
-        val isCarouselWidgetStyle = widgetStyle == WidgetStyle.CIRCLE
         val firstTab = uiModel.tabs.getOrNull(0)
-        val mainBannerPosition = firstTab?.mainBannerPosition //Main banner position is determined by first widget on the tab
+        val mainBannerPosition = firstTab?.mainBannerPosition //Widget appearance is determined by main banner position
+        val isCarouselWidgetStyle = (widgetStyle == WidgetStyle.CIRCLE) && (mainBannerPosition != MainBannerPosition.LEFT) && (mainBannerPosition != MainBannerPosition.TOP)
 
         return when {
             isLoading && isCarouselWidgetStyle -> ShopHomeShowCaseNavigationCarouselPlaceholderViewHolder.LAYOUT
