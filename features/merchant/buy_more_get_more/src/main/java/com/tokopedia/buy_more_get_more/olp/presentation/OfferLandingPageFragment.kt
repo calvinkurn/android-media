@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -146,7 +145,7 @@ class OfferLandingPageFragment :
         viewModel.productList.observe(viewLifecycleOwner) { productList ->
             setupProductList(productList)
             setViewState(VIEW_CONTENT)
-            notifyLoadResult(productList.productList.size >= 5)
+            notifyLoadResult(productList.productList.size >= 10)
         }
 
         viewModel.navNotificationLiveData.observe(viewLifecycleOwner) { notification ->
@@ -224,15 +223,16 @@ class OfferLandingPageFragment :
 
     private fun renderSortFilter(sortId: String, sortName: String) {
         olpAdapter?.changeSelectedSortFilter(sortId, sortName)
-        // update product list data
+        getProductListData(1, sortId)
     }
 
-    private fun getProductListData(page: Int) {
+    private fun getProductListData(page: Int, sortId: String = "") {
         viewModel.getOfferingProductList(
             offerIds = listOf(offerId.toIntOrZero()),
             warehouseIds = listOf(1, 2),
             localCacheModel = localCacheModel,
-            page = page
+            page = page,
+            sortId = sortId
         )
     }
 
@@ -242,7 +242,7 @@ class OfferLandingPageFragment :
             offerIds = listOf(offerId.toIntOrZero()),
             shopId = shopId,
             productIds = productIds,
-            warehouseIds = warehouseIds,
+            warehouseIds = listOf(1, 2),
             localCacheModel
         )
     }
@@ -284,7 +284,7 @@ class OfferLandingPageFragment :
                 StaggeredGridLayoutManager.VERTICAL
             )
             val config = HasPaginatedList.Config(
-                pageSize = 5,
+                pageSize = 10,
                 onLoadNextPage = {
                     // TODO: Implement loading
                 },
@@ -293,7 +293,6 @@ class OfferLandingPageFragment :
                 }
             )
             attachPaging(this, config) { page, _ ->
-                Log.d("Masuk", "load more page : $page") // load more data
                 getProductListData(page)
             }
         }
@@ -316,6 +315,7 @@ class OfferLandingPageFragment :
                     groupHeader.gone()
                     stickyContent.gone()
                     errorPageLarge.gone()
+                    miniCartPlaceholder.gone()
                 }
             }
 
@@ -326,6 +326,7 @@ class OfferLandingPageFragment :
                     stickyContent.gone()
                     errorPageLarge.visible()
                     errorPageLarge.setTitle(errorMsg)
+                    miniCartPlaceholder.gone()
                 }
             }
 
@@ -335,6 +336,7 @@ class OfferLandingPageFragment :
                     groupHeader.visible()
                     stickyContent.visible()
                     errorPageLarge.gone()
+                    miniCartPlaceholder.visible()
                 }
             }
         }

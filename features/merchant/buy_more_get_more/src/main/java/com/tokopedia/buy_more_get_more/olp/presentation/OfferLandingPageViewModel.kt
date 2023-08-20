@@ -21,6 +21,7 @@ import com.tokopedia.searchbar.navigation_component.domain.GetNotificationUseCas
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class OfferLandingPageViewModel @Inject constructor(
@@ -28,7 +29,8 @@ class OfferLandingPageViewModel @Inject constructor(
     private val getOfferInfoForBuyerUseCase: GetOfferInfoForBuyerUseCase,
     private val getOfferProductListUseCase: GetOfferProductListUseCase,
     private val getNotificationUseCase: GetNotificationUseCase,
-    private val addToCartUseCase: AddToCartUseCase
+    private val addToCartUseCase: AddToCartUseCase,
+    private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatchers.main) {
 
     private val _offeringInfo = MutableLiveData<OfferInfoForBuyerUiModel>()
@@ -49,6 +51,9 @@ class OfferLandingPageViewModel @Inject constructor(
 
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
+
+    val userId: String
+        get() = userSession.userId
 
     fun getOfferingInfo(
         offerIds: List<Int>,
@@ -89,7 +94,8 @@ class OfferLandingPageViewModel @Inject constructor(
         offerIds: List<Int>,
         warehouseIds: List<Int>? = emptyList(),
         localCacheModel: LocalCacheModel?,
-        page: Int
+        page: Int,
+        sortId: String
     ) {
         launchCatchError(
             dispatchers.io,
@@ -107,8 +113,10 @@ class OfferLandingPageViewModel @Inject constructor(
                         longitude = localCacheModel?.long.orEmpty(),
                         cityId = localCacheModel?.city_id.toIntOrZero()
                     ),
+                    userId = userId.toIntOrZero(),
                     page = page,
-                    pageSize = 5
+                    pageSize = 10,
+                    orderBy = sortId.toIntOrZero()
                 )
 
                 val result = getOfferProductListUseCase.execute(param)
@@ -128,7 +136,6 @@ class OfferLandingPageViewModel @Inject constructor(
                 _navNotificationModel.postValue(result)
             },
             onError = {
-
             }
         )
     }
@@ -142,7 +149,7 @@ class OfferLandingPageViewModel @Inject constructor(
             block = {
                 val param = AddToCartUseCase.getMinimumParams(
                     productId = product.productId.toString(),
-                    shopId = shopId,
+                    shopId = shopId
                 )
                 addToCartUseCase.setParams(param)
                 val result = addToCartUseCase.executeOnBackground()
