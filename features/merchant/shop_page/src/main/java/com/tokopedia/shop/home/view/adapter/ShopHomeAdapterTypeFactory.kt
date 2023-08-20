@@ -309,48 +309,20 @@ open class ShopHomeAdapterTypeFactory(
         val isLoading = uiModel.isWidgetShowPlaceholder().orFalse()
         val widgetStyle = uiModel.showcaseHeader.widgetStyle
         val isCarouselWidgetStyle = widgetStyle == WidgetStyle.CIRCLE
+        val firstTab = uiModel.tabs.getOrNull(0)
+        val mainBannerPosition = firstTab?.mainBannerPosition //Main banner position is determined by first widget on the tab
 
-        return if (isLoading) {
-            determineShowcaseNavigationWidgetPlaceholderLayoutId(isCarouselWidgetStyle, uiModel)
-        } else {
-            determineShowcaseNavigationWidgetLayoutId(isCarouselWidgetStyle, uiModel)
+        return when {
+            isLoading && isCarouselWidgetStyle -> ShopHomeShowCaseNavigationCarouselPlaceholderViewHolder.LAYOUT
+            isLoading && mainBannerPosition == MainBannerPosition.LEFT -> ShopHomeShowCaseNavigationLeftMainBannerPlaceholderViewHolder.LAYOUT
+            isLoading && mainBannerPosition == MainBannerPosition.TOP -> ShopHomeShowCaseNavigationTopMainBannerPlaceholderViewHolder.LAYOUT
+            isCarouselWidgetStyle -> ShopHomeShowCaseNavigationCarouselViewHolder.LAYOUT
+            mainBannerPosition == MainBannerPosition.LEFT -> ShopHomeShowCaseNavigationLeftMainBannerViewHolder.LAYOUT
+            mainBannerPosition == MainBannerPosition.TOP -> ShopHomeShowCaseNavigationTopMainBannerViewHolder.LAYOUT
+            else -> ShopHomeShowCaseNavigationTopMainBannerViewHolder.LAYOUT
         }
     }
 
-    private fun determineShowcaseNavigationWidgetPlaceholderLayoutId(
-        isCarouselWidgetStyle: Boolean,
-        uiModel: ShopHomeShowcaseNavigationUiModel
-    ) : Int {
-        return if (isCarouselWidgetStyle) {
-            ShopHomeShowCaseNavigationCarouselPlaceholderViewHolder.LAYOUT
-        } else {
-            val firstTab = uiModel.tabs.getOrNull(0)
-            val firstTabMainBannerPosition = firstTab?.mainBannerPosition
-
-            when (firstTabMainBannerPosition) {
-                MainBannerPosition.LEFT -> ShopHomeShowCaseNavigationLeftMainBannerPlaceholderViewHolder.LAYOUT
-                MainBannerPosition.TOP -> ShopHomeShowCaseNavigationTopMainBannerPlaceholderViewHolder.LAYOUT
-                else -> ShopHomeShowCaseNavigationCarouselPlaceholderViewHolder.LAYOUT
-            }
-        }
-    }
-    private fun determineShowcaseNavigationWidgetLayoutId(
-        isCarouselWidgetStyle: Boolean,
-        uiModel: ShopHomeShowcaseNavigationUiModel
-    ): Int {
-        return if (isCarouselWidgetStyle) {
-            ShopHomeShowCaseNavigationCarouselViewHolder.LAYOUT
-        } else {
-            val firstTab = uiModel.tabs.getOrNull(0)
-            val firstTabMainBannerPosition = firstTab?.mainBannerPosition
-
-            when (firstTabMainBannerPosition) {
-                MainBannerPosition.LEFT -> ShopHomeShowCaseNavigationLeftMainBannerViewHolder.LAYOUT
-                MainBannerPosition.TOP -> ShopHomeShowCaseNavigationTopMainBannerViewHolder.LAYOUT
-                else -> ShopHomeShowCaseNavigationTopMainBannerViewHolder.LAYOUT
-            }
-        }
-    }
     fun isShowThematicWidgetPlaceHolder(model: ThematicWidgetUiModel): Boolean {
         return model.widgetState == WidgetState.PLACEHOLDER || model.widgetState == WidgetState.LOADING
     }
