@@ -92,7 +92,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment() {
                         "https://placekitten.com/201/301",
                         "https://placekitten.com/205/302"
                     ),
-                    isPremium = false
+                    isPremium = true
                 )
             )
             widgets.add(

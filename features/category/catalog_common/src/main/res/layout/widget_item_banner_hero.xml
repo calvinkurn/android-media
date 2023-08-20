@@ -2,14 +2,13 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tool="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <com.tokopedia.carousel.CarouselUnify
         android:id="@+id/carouselBanner"
         android:layout_width="match_parent"
-        android:layout_height="600dp"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
@@ -96,5 +95,16 @@
         android:textColor="@color/Unify_Static_White"
         app:layout_constraintTop_toBottomOf="@+id/iuBrand"
         app:typographyType="heading_2" />
+
+    <include
+        android:id="@+id/navigation"
+        layout="@layout/widget_item_banner_hero_navigation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginVertical="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
