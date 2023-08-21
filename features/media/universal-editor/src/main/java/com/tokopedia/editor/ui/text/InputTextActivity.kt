@@ -139,7 +139,10 @@ class InputTextActivity : BaseActivity(), NavToolbarComponent.Listener {
         const val INPUT_TEXT_STATE = "input_text_state"
 
         fun create(context: Context): Intent {
-            return Intent(context, InputTextActivity::class.java)
+            return Intent(context, InputTextActivity::class.java).also {
+                it.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            }
         }
     }
 }

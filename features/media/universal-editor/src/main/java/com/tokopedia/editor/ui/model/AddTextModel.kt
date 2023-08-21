@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class TextPlacementModel(
+data class AddTextModel(
     val deltaX: Float,
     val deltaY: Float,
     val deltaScale: Float,

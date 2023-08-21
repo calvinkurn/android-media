@@ -37,6 +37,9 @@ class MainEditorViewModel @Inject constructor(
                     is MainEditorEvent.GetNavigationTool -> {
                         getNavigationTool()
                     }
+                    is MainEditorEvent.InputText -> {
+                        setActiveInputTextModel(event.model)
+                    }
                 }
             }
         }
@@ -69,6 +72,14 @@ class MainEditorViewModel @Inject constructor(
 
         _state.update {
             it.copy(model = model)
+        }
+    }
+
+    private fun setActiveInputTextModel(model: InputTextModel) {
+        _state.update {
+            it.copy(
+                activeInputText = model
+            )
         }
     }
 

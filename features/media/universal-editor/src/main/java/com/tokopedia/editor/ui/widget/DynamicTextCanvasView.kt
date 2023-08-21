@@ -14,7 +14,10 @@ import android.view.View
 import android.widget.Button
 import android.widget.FrameLayout
 import com.tokopedia.editor.ui.gesture.java.MultiTouchListener
+import com.tokopedia.editor.ui.gesture.listener.OnGestureControl
 import com.tokopedia.editor.ui.gesture.listener.OnMultiTouchListener
+import com.tokopedia.editor.ui.model.InputTextModel
+import com.tokopedia.editor.util.FontAlignment
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.image.ImageProcessingUtil
 
@@ -25,26 +28,39 @@ class DynamicTextCanvasView @JvmOverloads constructor(
 
     private val guideline = GridGuidelineView(context)
     private lateinit var buttonView: Button
+    private var listener: Listener? = null
 
     init {
         addGridGuidelineView()
     }
 
-    fun addText(content: String) {
-        val textView = createTextView(content)
+    fun addText(model: InputTextModel) {
+        val textView = createTextView(model)
 
         val layoutParams = LayoutParams(
             LayoutParams.WRAP_CONTENT,
             LayoutParams.WRAP_CONTENT
         )
 
-        layoutParams.gravity = Gravity.CENTER
+        layoutParams.gravity = textAlignment(model.textAlign)
 
         addView(textView, layoutParams)
     }
 
     fun addButtonView(view: Button) {
         buttonView = view
+    }
+
+    fun setListener(listener: Listener) {
+        this.listener = listener
+    }
+
+    private fun textAlignment(alignment: FontAlignment): Int {
+        return when (alignment) {
+            FontAlignment.CENTER -> Gravity.CENTER
+            FontAlignment.LEFT -> Gravity.START
+            FontAlignment.RIGHT -> Gravity.END
+        }
     }
 
     // TODO: just for POC
@@ -68,16 +84,16 @@ class DynamicTextCanvasView @JvmOverloads constructor(
         return bitmap
     }
 
-    private fun createTextView(content: String): Typography {
+    private fun createTextView(model: InputTextModel): Typography {
         val text = Typography(context)
 
         text.setWeight(Typography.BOLD)
         text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24f)
-        text.setTextColor(Color.WHITE)
+        text.setTextColor(model.textColor)
         text.isFocusable = false
         text.isFocusableInTouchMode = false
-        text.gravity = Gravity.CENTER
-        text.text = content
+        text.gravity = textAlignment(model.textAlign)
+        text.text = model.text
 
         val touchListener = MultiTouchListener(
             context,
@@ -85,6 +101,16 @@ class DynamicTextCanvasView @JvmOverloads constructor(
             guideline,
             buttonView
         ).apply { setOnMultiTouchListener(this@DynamicTextCanvasView) }
+
+        touchListener.setOnGestureControl(object : OnGestureControl {
+            override fun onClick() {
+                listener?.onTextClick(text, model)
+            }
+
+            override fun onDown() {}
+
+            override fun onLongClick() {}
+        })
 
         text.setOnTouchListener(touchListener)
 
@@ -104,5 +130,9 @@ class DynamicTextCanvasView @JvmOverloads constructor(
 
     override fun onRemoveView(view: View) {
         removeView(view)
+    }
+
+    interface Listener {
+        fun onTextClick(text: Typography, model: InputTextModel)
     }
 }

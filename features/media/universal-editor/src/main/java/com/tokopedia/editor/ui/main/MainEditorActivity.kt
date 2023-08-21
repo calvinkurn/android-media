@@ -78,11 +78,14 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
         toolbar.setVisibility(true)
         navigationTool.setVisibility(true)
 
-        val result = it.data?.getParcelableExtra<InputTextModel>(InputTextActivity.INPUT_TEXT_RESULT)
+        val result = it.data?.getParcelableExtra<InputTextModel>(
+            InputTextActivity.INPUT_TEXT_RESULT
+        ) ?: return@registerForActivityResult
 
         if (result?.text?.isNotEmpty() != true) return@registerForActivityResult
 
         viewModel.setTextState(result)
+        viewModel.setAction(MainEditorEvent.InputText(result))
     }
 
     private val viewModel: MainEditorViewModel by viewModels { viewModelFactory }
@@ -138,21 +141,19 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
                 toolbar.setVisibility(false)
                 navigationTool.setVisibility(false)
 
-                val intent = InputTextActivity.create(this)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-
-                // TODO: only for development purpose for testing implement previous text state. this will be used on text edit state later
-                intent.putExtra(InputTextActivity.INPUT_TEXT_STATE, viewModel.state.value.model?.image?.texts?.toList()?.firstOrNull()?.second)
-
-                inputTextIntent.launch(intent)
-                this.overridePendingTransition(0,0)
+                navigateToInputTextTool()
             }
             ToolType.PLACEMENT -> {}
             ToolType.AUDIO_MUTE -> {}
             ToolType.TRIM -> {}
             else -> Unit
         }
+    }
+
+    private fun navigateToInputTextTool() {
+        val intent = InputTextActivity.create(this)
+        inputTextIntent.launch(intent)
+        overridePendingTransition(0,0)
     }
 
     private fun setupToolbar(param: UniversalEditorParam) {
@@ -183,12 +184,5 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
         ModuleInjector
             .get(this)
             .inject(this)
-    }
-
-    private fun getRandomString(length: Int) : String {
-        val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
-        return (1..length)
-            .map { allowedChars.random() }
-            .joinToString("")
     }
 }
