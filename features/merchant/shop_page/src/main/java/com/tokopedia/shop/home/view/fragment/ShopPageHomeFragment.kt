@@ -192,13 +192,13 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListSliderUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.shop.home.view.model.ShopPageLayoutUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerProductHotspotUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerVerticalBanner
+import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
@@ -4987,18 +4987,6 @@ open class ShopPageHomeFragment :
         RouteManager.route(context, uiModel.data.getOrNull(imageBannerPosition)?.listProductHotspot?.getOrNull(bubblePosition)?.productUrl.orEmpty())
     }
 
-    override fun onNavigationBannerViewAllShowcaseClick(selectedShowcaseHeader: ShopHomeShowcaseNavigationUiModel.ShowcaseHeader) {
-        RouteManager.route(activity ?: return, selectedShowcaseHeader.ctaLink)
-    }
-
-    override fun onNavigationBannerShowcaseClick(
-        selectedShowcase: ShopHomeShowcaseNavigationUiModel.Tab.Showcase
-    ) {
-        RouteManager.route(activity ?: return, selectedShowcase.ctaLink)
-    }
-
-    override val currentFragment: Fragment
-        get() = this
 
     override fun onProductClick(productId: String) {
         // TODO: Put tracker here
@@ -5034,8 +5022,23 @@ open class ShopPageHomeFragment :
         }
     }
 
+    override fun onNavigationBannerViewAllShowcaseClick(viewAllCtaAppLink: String) {
+        RouteManager.route(activity ?: return, viewAllCtaAppLink)
+    }
+
+    override fun onNavigationBannerShowcaseClick(
+        selectedShowcase: Showcase
+    ) {
+        RouteManager.route(activity ?: return, selectedShowcase.ctaLink)
+    }
+
     override val fragment: Fragment
         get() = this
+
     override val currentShopId: String
         get() = shopId
+
+    override val currentFragment: Fragment
+        get() = this
+
 }

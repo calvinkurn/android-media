@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.shop.common.util.ShopProductViewGridType
@@ -82,7 +83,9 @@ import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePersoProductCompa
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerTimerViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerTimerPlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductCarouselViewPagerViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowCaseNavigationCarouselPlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowCaseNavigationCarouselViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowCaseNavigationLeftMainBannerPlaceholderViewHolder
 import com.tokopedia.shop.home.view.listener.*
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
@@ -93,8 +96,11 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductListEmptyUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowCaseNavigationLeftMainBannerViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowCaseNavigationTopMainBannerPlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowCaseNavigationTopMainBannerViewHolder
-import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationUiModel
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.CarouselAppearance
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.LeftMainBannerAppearance
+import com.tokopedia.shop.home.view.model.showcase_navigation.ShopHomeShowcaseNavigationUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
 import com.tokopedia.shop_widget.common.util.WidgetState
@@ -102,6 +108,7 @@ import com.tokopedia.shop_widget.thematicwidget.typefactory.ThematicWidgetTypeFa
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetLoadingStateViewHolder
 import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetViewHolder
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.TopMainBannerAppearance
 
 open class ShopHomeAdapterTypeFactory(
     private val listener: ShopHomeDisplayWidgetListener,
@@ -298,27 +305,18 @@ open class ShopHomeAdapterTypeFactory(
      * widgetStyle == "circle" -> use carousel appearance
      */
     private fun determineShowcaseWidgetAppearance(model: BaseShopHomeWidgetUiModel): Int {
-        val uiModel = model as? ShopHomeShowcaseNavigationUiModel
-        val widgetStyle = uiModel?.showcaseHeader?.widgetStyle
+        val uiModel = (model as? ShopHomeShowcaseNavigationUiModel)  ?: ShopHomeShowcaseNavigationUiModel()
 
-        return if (widgetStyle == ShopHomeShowcaseNavigationUiModel.WidgetStyle.ROUNDED_CORNER) {
-            val firstTab = uiModel.tabs.getOrNull(0)
-            val firstTabMainBannerPosition = firstTab?.mainBannerPosition
+        val isLoading = uiModel.isWidgetShowPlaceholder().orFalse()
 
-            when (firstTabMainBannerPosition) {
-                ShopHomeShowcaseNavigationUiModel.MainBannerPosition.LEFT -> {
-                    ShopHomeShowCaseNavigationLeftMainBannerViewHolder.LAYOUT
-                }
-                ShopHomeShowcaseNavigationUiModel.MainBannerPosition.TOP -> {
-                    ShopHomeShowCaseNavigationTopMainBannerViewHolder.LAYOUT
-                }
-                else -> {
-                    ShopHomeShowCaseNavigationTopMainBannerViewHolder.LAYOUT
-                }
-            }
-
-        } else {
-            ShopHomeShowCaseNavigationCarouselViewHolder.LAYOUT
+        return when {
+            isLoading && uiModel.appearance is CarouselAppearance -> ShopHomeShowCaseNavigationCarouselPlaceholderViewHolder.LAYOUT
+            isLoading && uiModel.appearance is LeftMainBannerAppearance -> ShopHomeShowCaseNavigationLeftMainBannerPlaceholderViewHolder.LAYOUT
+            isLoading && uiModel.appearance is TopMainBannerAppearance -> ShopHomeShowCaseNavigationTopMainBannerPlaceholderViewHolder.LAYOUT
+            !isLoading && uiModel.appearance is CarouselAppearance -> ShopHomeShowCaseNavigationCarouselViewHolder.LAYOUT
+            !isLoading && uiModel.appearance is LeftMainBannerAppearance -> ShopHomeShowCaseNavigationLeftMainBannerViewHolder.LAYOUT
+            !isLoading && uiModel.appearance is TopMainBannerAppearance -> ShopHomeShowCaseNavigationTopMainBannerViewHolder.LAYOUT
+            else -> ShopHomeShowCaseNavigationTopMainBannerViewHolder.LAYOUT
         }
     }
 
@@ -425,6 +423,9 @@ open class ShopHomeAdapterTypeFactory(
             ShopHomeVoucherViewHolder.LAYOUT -> {
                 ShopHomeVoucherViewHolder(parent, onMerchantVoucherListWidgetListener)
             }
+            ShopHomeShowCaseNavigationLeftMainBannerPlaceholderViewHolder.LAYOUT -> {
+                ShopHomeShowCaseNavigationLeftMainBannerPlaceholderViewHolder(parent)
+            }
             ShopHomeShowCaseNavigationLeftMainBannerViewHolder.LAYOUT -> {
                 ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
                     parent,
@@ -432,8 +433,14 @@ open class ShopHomeAdapterTypeFactory(
                     shopHomeShowcaseNavigationDependencyProvider
                 )
             }
+            ShopHomeShowCaseNavigationTopMainBannerPlaceholderViewHolder.LAYOUT -> {
+                ShopHomeShowCaseNavigationTopMainBannerPlaceholderViewHolder(parent)
+            }
             ShopHomeShowCaseNavigationTopMainBannerViewHolder.LAYOUT -> {
                 ShopHomeShowCaseNavigationTopMainBannerViewHolder(parent, shopHomeShowcaseNavigationListener)
+            }
+            ShopHomeShowCaseNavigationCarouselPlaceholderViewHolder.LAYOUT -> {
+                ShopHomeShowCaseNavigationCarouselPlaceholderViewHolder(parent)
             }
             ShopHomeShowCaseNavigationCarouselViewHolder.LAYOUT -> {
                 ShopHomeShowCaseNavigationCarouselViewHolder(parent, shopHomeShowcaseNavigationListener)
