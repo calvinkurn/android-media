@@ -21,6 +21,8 @@ import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
 import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
 import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
 import com.tokopedia.shop.common.graphql.data.shopsort.ShopProductSort
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
@@ -30,6 +32,8 @@ import com.tokopedia.shop.product.domain.interactor.GetMembershipUseCaseNew
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.product.view.datamodel.*
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
+import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -1695,5 +1699,43 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
         assert(viewModelShopPageProductListViewModel.miniCartUpdate.value == null)
         assert(viewModelShopPageProductListViewModel.miniCartUpdate.value == null)
         assert(viewModelShopPageProductListViewModel.shopPageAtcTracker.value == null)
+    }
+
+    @Test
+    fun `check whether shopPageShopShareData post success value`() {
+        val mockShopId = "123"
+        val mockShopDomain = "mock domain"
+        val affiliateInput =  AffiliateInput()
+        coEvery {
+            gqlGetShopInfoForHeaderUseCase.get().executeOnBackground()
+        } returns ShopInfo()
+
+        coEvery {
+            eligibilityCheckUseCase.get().executeOnBackground()
+        } returns GenerateAffiliateLinkEligibility()
+
+        shopPageProductListResultViewModel.getShopShareData(mockShopId, mockShopDomain, affiliateInput)
+        assert(shopPageProductListResultViewModel.shopPageShopShareData.value is Success)
+        assert(shopPageProductListResultViewModel.resultAffiliate.value is Success)
+
+    }
+
+    @Test
+    fun `check whether shopPageShopShareData value is null if error when get shopInfo data`() {
+        val mockShopId = "123"
+        val mockShopDomain = "mock domain"
+        val affiliateInput =  AffiliateInput()
+
+        coEvery {
+            gqlGetShopInfoForHeaderUseCase.get().executeOnBackground()
+        } throws Exception()
+
+        coEvery {
+            eligibilityCheckUseCase.get().executeOnBackground()
+        } throws Exception()
+
+        shopPageProductListResultViewModel.getShopShareData(mockShopId, mockShopDomain, affiliateInput)
+        assert(shopPageProductListResultViewModel.resultAffiliate.value == null)
+        assert(shopPageProductListResultViewModel.shopPageShopShareData.value == null)
     }
 }

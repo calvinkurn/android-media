@@ -85,6 +85,9 @@ object ApplinkConstInternalUserPlatform {
     // ProfileInfoActivity
     const val SETTING_PROFILE = "$NEW_INTERNAL_USER/setting-profile"
 
+    // ProfileManagementActivity
+    const val PROFILE_MANAGEMENT = "$NEW_INTERNAL_USER/profile-management"
+
     /**
      * ExplicitProfileActivity
      * @Applink : tokopedia-android-internal://user/explicit-profile
@@ -212,12 +215,14 @@ object ApplinkConstInternalUserPlatform {
      * @Applink : tokopedia-android-internal://user/link-account-webview
      * @param : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_LD]
      **/
+    @Deprecated("Remove this class after integrating SCP Login to Tokopedia")
     const val LINK_ACCOUNT_WEBVIEW = "$NEW_INTERNAL_USER/link-account-webview"
 
     /**
      * LinkAccountActivity
      * @Applink : tokopedia-android-internal://user/link-account
      **/
+    @Deprecated("Remove this class after integrating SCP Login to Tokopedia")
     const val LINK_ACCOUNT = "$NEW_INTERNAL_USER/link-account"
 
     /**
@@ -498,6 +503,7 @@ object ApplinkConstInternalUserPlatform {
      * @Applink : tokopedia-android-internal://user/account-linking-webview
      * @param : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_LD]
      **/
+    @Deprecated("Remove this class after integrating SCP Login to Tokopedia")
     const val ACCOUNT_LINKING_WEBVIEW = "$NEW_INTERNAL_USER/account-linking-webview"
 
     /**

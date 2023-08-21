@@ -153,7 +153,7 @@ ext {
     unifyTotalAmountVersion = '1.0.7.2'
     unifyExplorePromoVersion = '1.0.3.2'
     unifyImageGalleryVersion = '1.0.8'
-    unifyViewAllCardVersion = '1.0.8'
+    unifyViewAllCardVersion = '1.0.12'
 
     gradlePlugin = [
             crashlytics   : "com.google.firebase:firebase-crashlytics-gradle:${crashlyticsGradleVersion}",
@@ -443,7 +443,7 @@ ext {
             explore_promo   : "com.tokopedia.unify.compositions:explore_promo:${unifyExplorePromoVersion}@aar",
             icons           : "com.tokopedia.unify:icons:${unifyIconsVersion}@aar",
             imageGallery    : "com.tokopedia.unify.compositions:image_gallery:${unifyImageGalleryVersion}@aar",
-            viewAllCard     : "com.tokopedia.unify.compositions:view_all_card:${unifyViewAllCardVersion}",
+            viewAllCard     : "com.tokopedia.unify.compositions:view_all_card:${unifyViewAllCardVersion}@aar",
             nestPrinciples  : "com.tokopedia.nest:principles:1.0.0",
             nestComponents  : "com.tokopedia.nest:components:1.0.0"
     ]

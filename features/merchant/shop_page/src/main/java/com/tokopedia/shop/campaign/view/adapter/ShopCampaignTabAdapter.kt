@@ -276,4 +276,9 @@ class ShopCampaignTabAdapter(
         }
     }
 
+    fun getCampaignBanner() : ShopWidgetDisplayBannerTimerUiModel?{
+        return visitables.filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>().firstOrNull()
+
+    }
+
 }

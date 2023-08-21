@@ -75,7 +75,9 @@ import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.data.ParamsForOpenScreen
 import com.tokopedia.discovery2.data.ScrollData
 import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
+import com.tokopedia.discovery2.datamapper.DYNAMIC_COMPONENT_IDENTIFIER
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
+import com.tokopedia.discovery2.datamapper.discoveryPageData
 import com.tokopedia.discovery2.datamapper.getSectionPositionMap
 import com.tokopedia.discovery2.datamapper.setCartData
 import com.tokopedia.discovery2.di.DiscoveryComponent
@@ -90,6 +92,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.DYNAMIC_SUBTITLE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.EMBED_CATEGORY
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.END_POINT
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.FORCED_NAVIGATION
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PIN_PRODUCT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.QUERY_PARENT
@@ -132,7 +135,6 @@ import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
@@ -158,9 +160,7 @@ import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScro
 import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
@@ -181,6 +181,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import com.tokopedia.unifyprinciples.R as RUnify
@@ -273,6 +277,7 @@ open class DiscoveryFragment :
     var currentTabPosition: Int? = null
     var isAffiliateInitialized = false
         private set
+    private var isFromForcedNavigation = false
 
     private var isManualScroll = true
     private var stickyHeaderShowing = false
@@ -758,6 +763,7 @@ open class DiscoveryFragment :
                         } else {
                             hideGlobalError()
                             scrollToPinnedComponent(listComponent)
+                            removePaddingIfComponent()
                         }
                     }
                     mProgressBar.hide()
@@ -1405,9 +1411,9 @@ open class DiscoveryFragment :
         discoveryViewModel.getDiscoveryData(discoveryViewModel.getQueryParameterMapFromBundle(arguments), userAddressData)
     }
 
-    private fun scrollToPinnedComponent(listComponent: List<ComponentsItem>) {
+    private fun scrollToPinnedComponent(listComponent: List<ComponentsItem>, pinnedId: String? = null) {
         if (!pinnedAlreadyScrolled) {
-            val pinnedComponentId = arguments?.getString(COMPONENT_ID, "")
+            val pinnedComponentId = pinnedId ?: arguments?.getString(COMPONENT_ID, "")
             if (!pinnedComponentId.isNullOrEmpty()) {
                 val (position, isTabPresent) = discoveryViewModel.scrollToPinnedComponent(listComponent, pinnedComponentId)
                 isTabPresentToDoubleScroll = isTabPresent
@@ -1415,6 +1421,19 @@ open class DiscoveryFragment :
                     userPressed = false
                     if (position > 0 && isTabPresent) {
                         handleAutoScrollUI()
+                        if(isFromForcedNavigation){
+                            var pos = -1
+                            CoroutineScope(Dispatchers.Main).launch {
+                                delay(2000)
+                                discoveryAdapter.currentList.forEachIndexed { index, componentsItem ->
+                                    if (componentsItem.id == pinnedComponentId) {
+                                        pos = index
+                                    }
+                                }
+                                recyclerView.smoothScrollToPosition(pos)
+                            }
+                            isFromForcedNavigation = false
+                        }
                     }
                     if (this.isResumed) {
                         recyclerView.smoothScrollToPosition(position)
@@ -1432,6 +1451,38 @@ open class DiscoveryFragment :
         chooseAddressWidget?.hide()
         chooseAddressWidgetDivider?.hide()
         recyclerView.setPaddingToInnerRV(0, recyclerView.dpToPx(55).toInt(), 0, 0)
+    }
+
+
+    private fun removePaddingIfComponent() {
+        recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                var pos = Int.MIN_VALUE
+                discoveryAdapter.currentList.forEachIndexed { index, componentsItem ->
+                    if (componentsItem.name == ComponentsList.Tabs.componentName) {
+                        pos = index
+                    }
+                    if(index == pos + 1){
+                        val i = pos+1
+                        val firstVisibleItemPositions = staggeredGridLayoutManager?.findFirstVisibleItemPositions(null)
+                        val lastVisibleItemPositions = staggeredGridLayoutManager?.findLastVisibleItemPositions(null)
+
+                        if (firstVisibleItemPositions != null && lastVisibleItemPositions != null) {
+                            val firstVisibleItemPosition = firstVisibleItemPositions.minOrNull() ?: -1
+                            val lastVisibleItemPosition = lastVisibleItemPositions.maxOrNull() ?: -1
+
+                            if (firstVisibleItemPosition != RecyclerView.NO_POSITION && lastVisibleItemPosition != RecyclerView.NO_POSITION) {
+                                if (i in firstVisibleItemPosition..lastVisibleItemPosition) {
+                                    recyclerView.setPaddingToInnerRV(0, recyclerView.dpToPx(0).toInt(), 0, 0)
+                                }
+                            }
+                        }
+                    }
+                }
+                recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
     }
 
     fun scrollToComponentWithID(componentID: String) {
@@ -2266,13 +2317,38 @@ open class DiscoveryFragment :
     }
 
     fun scrollToNextComponent(currentCompPosition: Int?) {
-        if(currentCompPosition != null && currentCompPosition + 1 < discoveryAdapter.itemCount) {
+        if (currentCompPosition != null && currentCompPosition + 1 < discoveryAdapter.itemCount) {
             smoothScrollToComponentWithPosition(currentCompPosition + 1)
         }
     }
 
     private fun getNavIconBuilderFlag(): IconBuilderFlag {
-        val pageSource = if(isFromCategory) NavSource.CLP else NavSource.DISCOVERY
+        val pageSource = if (isFromCategory) NavSource.CLP else NavSource.DISCOVERY
         return IconBuilderFlag(pageSource, pageEndPoint)
+    }
+
+    fun redirectToOtherTab(queryParams: String?) {
+        val queryParameterMapWithRpc = mutableMapOf<String, String>()
+        val queryParameterMapWithoutRpc = mutableMapOf<String, String>()
+
+        Utils.setParameterMapUtil(queryParams, queryParameterMapWithRpc, queryParameterMapWithoutRpc)
+
+        val activeTab = queryParameterMapWithoutRpc[ACTIVE_TAB]?.toIntOrNull()
+        val componentId = queryParameterMapWithoutRpc[COMPONENT_ID]?.toIntOrNull()
+        discoveryPageData[discoveryViewModel.pageIdentifier]?.let {
+            it.queryParamMapWithRpc.putAll(queryParameterMapWithRpc)
+            it.queryParamMapWithoutRpc.putAll(queryParameterMapWithoutRpc)
+        }
+        pinnedAlreadyScrolled = false
+        if (activeTab != null) {
+            this.arguments?.putString(FORCED_NAVIGATION, "true")
+            if (componentId != null) {
+                this.arguments?.putString(COMPONENT_ID, componentId.toString())
+                isFromForcedNavigation = true
+            }
+            discoveryViewModel.getDiscoveryData(discoveryViewModel.getQueryParameterMapFromBundle(arguments), userAddressData, true)
+        } else if (componentId != null) {
+            scrollToPinnedComponent(discoveryAdapter.currentList, componentId.toString())
+        }
     }
 }

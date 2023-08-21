@@ -270,7 +270,7 @@
     <ViewFlipper
         android:id="@+id/user_post_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:layout_gravity="top"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">

@@ -32,8 +32,13 @@ class AddOnViewModel @Inject constructor(
 
     private val mGetAddOnResult = MutableLiveData<List<AddOnGroupUIModel>>()
     val getAddOnResult = Transformations.map(mGetAddOnResult) {
-        val addonGroups = AddOnMapper.mapAddOnWithSelectedIds(it, preselectedAddonIds)
-        AddOnMapper.simplifyAddonGroup(addonGroups, isSimplified)
+        val addonGroups = AddOnMapper.mapAddOnWithSelectedIds(it, preselectedAddonIds, predeselectedAddonIds)
+        if (addonGroups.size > Int.ONE) {
+            AddOnMapper.simplifyAddonGroup(addonGroups, isSimplified)
+        } else {
+            isSimplified = false
+            addonGroups
+        }
     }
 
     private val mErrorThrowable = MutableLiveData<Throwable>()
@@ -79,6 +84,7 @@ class AddOnViewModel @Inject constructor(
     }
 
     var preselectedAddonIds: List<String> = emptyList()
+    var predeselectedAddonIds: List<String> = emptyList()
     var lastSelectedAddOnGroups: List<AddOnGroupUIModel> = emptyList()
     var lastSelectedAddOn: MutableList<AddOnUIModel> = mutableListOf()
     var isSimplified = false
@@ -107,6 +113,10 @@ class AddOnViewModel @Inject constructor(
 
     fun setPreselectedAddOn(preselectedAddonIds: List<String>) {
         this.preselectedAddonIds = preselectedAddonIds
+    }
+
+    fun setPredeselectedAddOn(addonIds: List<String>) {
+        this.predeselectedAddonIds = addonIds
     }
 
     fun saveAddOnState(cartId: Long, source: String) {
